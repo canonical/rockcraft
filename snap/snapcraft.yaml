@@ -12,6 +12,8 @@ license: GPL-3.0
 apps:
   rockcraft:
     command: bin/python $SNAP/bin/rockcraft
+    environment:
+      PATH: "/snap/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$SNAP/usr/bin:$SNAP/bin"
 
 build-packages:
   - libapt-pkg-dev
@@ -58,3 +60,38 @@ parts:
       snapcraftctl build
       # python3 fixup symlink (snapcraft bug)
       ln -sf ../usr/bin/python3.8 $SNAPCRAFT_PART_INSTALL/bin/python3
+
+  umoci:
+    plugin: make
+    source: https://github.com/opencontainers/umoci.git
+    source-tag: v0.4.7
+    make-parameters:
+        - umoci.static
+    override-build: |
+        make umoci.static
+        mkdir "$SNAPCRAFT_PART_INSTALL"/bin
+        install -m755 umoci.static "$SNAPCRAFT_PART_INSTALL"/bin/umoci
+    build-packages:
+        - golang-go
+        - make
+
+  skopeo:
+    plugin: nil
+    source: https://github.com/containers/skopeo.git
+    source-tag: v1.5.0
+    override-build: |
+        CGO=1 go build -ldflags -linkmode=external ./cmd/skopeo
+        mkdir "$SNAPCRAFT_PART_INSTALL"/bin
+        install -m755 skopeo "$SNAPCRAFT_PART_INSTALL"/bin/skopeo
+    stage-packages:
+        - libgpgme11
+        - libassuan0
+        - libbtrfs0
+        - libdevmapper1.02.1
+    build-packages:
+        - golang-go
+        - libgpgme-dev
+        - libassuan-dev
+        - libbtrfs-dev
+        - libdevmapper-dev
+        - pkg-config

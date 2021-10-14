@@ -1,6 +1,6 @@
 # -*- Mode:Python; indent-tabs-mode:nil; tab-width:4 -*-
 #
-# Copyright (C) 2021 Canonical Ltd
+# Copyright 2021 Canonical Ltd.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 3 as
@@ -14,23 +14,21 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from unittest import mock
+import sys
 
-import pytest
-from craft_providers import Executor
-
-from rockcraft import ui
+from rockcraft.providers import LXDProvider, MultipassProvider, get_provider
 
 
-@pytest.fixture
-def emit_mock():
-    """Setup a fake emitter."""
-    patcher = mock.patch.object(ui, "emit")
-    yield patcher.start()
-    patcher.stop()
+def test_get_provider_default():
+    if sys.platform == "linux":
+        assert isinstance(get_provider(), LXDProvider)
+    else:
+        assert isinstance(get_provider(), MultipassProvider)
 
 
-@pytest.fixture
-def mock_instance():
-    """Provide a mock instance (Executor)."""
-    yield mock.Mock(spec=Executor)
+def test_get_provider_developer_env(monkeypatch):
+    monkeypatch.setenv("ROCKCRAFT_PROVIDER", "lxd")
+    assert isinstance(get_provider(), LXDProvider)
+
+    monkeypatch.setenv("ROCKCRAFT_PROVIDER", "multipass")
+    assert isinstance(get_provider(), MultipassProvider)

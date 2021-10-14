@@ -91,5 +91,5 @@ virtualenv==20.8.1
 webencodings==0.5.1
 wrapt==1.13.2
 zipp==3.6.0
-git+https://github.com/canonical/craft-cli.git@616673f9312338c841e0da5de6417056aac88aa5#egg=craft_cli
+git+https://github.com/canonical/craft-cli.git@6d770943c40defbeddb44c3b800a97b1b6595c01#egg=craft_cli
 git+https://github.com/canonical/craft-parts.git@778f45d796cb1f6677633cd161ddd32ef4d64c1b#egg=craft_parts

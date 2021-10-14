@@ -89,3 +89,72 @@ jobs:
       - name: Run integration tests
         run: |
           make test-integrations
+
+  snap-build:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Build snap
+        uses: snapcore/action-build@v1
+        id: snapcraft
+      - name: Upload snap artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: snap
+          path: ${{ steps.snapcraft.outputs.snap }}
+
+  snap-tests:
+    needs: [snap-build]
+    strategy:
+      matrix:
+        os: [ubuntu-18.04, ubuntu-20.04]
+
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Download snap artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: snap
+          path: snap-artifacts
+      - name: Install snap
+        run: |
+          sudo snap install --classic --dangerous snap-artifacts/*.snap
+          rm -rf snap-artifacts
+      - name: Install LXD dependency on 18.04
+        if: ${{ matrix.os == 'ubuntu-18.04' }}
+        run: |
+          sudo apt remove -y lxd
+          sudo snap install lxd
+      - name: Refresh LXD dependency on 20.04
+        if: ${{ matrix.os == 'ubuntu-20.04' }}
+        run: |
+          sudo snap refresh lxd || echo "Cannot refresh LXD dependency, using $(lxd --version)"
+      - name: Configured LXD
+        run: |
+          sudo groupadd --force --system lxd
+          sudo usermod --append --groups lxd $USER
+          sudo snap start lxd
+          sudo lxd waitready --timeout=30
+          sudo lxd init --auto
+      - name: Run smoke tests
+        run: |
+          mkdir -p rock-smoke-test
+          pushd rock-smoke-test
+          cat <<- EOF > rockcraft.yaml
+          name: smoke-test
+          version: latest
+          base: ubuntu:20.04
+          build-base: ubuntu:20.04
+          parts:
+            foo:
+              plugin: nil
+              overlay-packages: [figlet]
+          EOF
+          sg lxd -c "rockcraft pack"
+          test -f smoke-test_latest.rock
+          test ! -d work
+          tar tf smoke-test_latest.rock | grep oci-layout
+          popd
