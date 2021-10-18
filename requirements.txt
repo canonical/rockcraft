@@ -1,2 +1,2 @@
-pydantic==1.8.2
+git+https://github.com/canonical/craft-cli.git@a0e36d0b70013573f2b04d3c513ac43bc3ac81ac#egg=craft_cli
 typing-extensions==3.10.0.2

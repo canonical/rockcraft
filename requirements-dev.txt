@@ -1,3 +1,4 @@
+git+https://github.com/canonical/craft-cli.git@a0e36d0b70013573f2b04d3c513ac43bc3ac81ac#egg=craft_cli
 alabaster==0.7.12
 astroid==2.8.2
 attrs==21.2.0
