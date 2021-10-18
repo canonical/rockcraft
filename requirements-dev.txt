@@ -1,6 +1,6 @@
-git+https://github.com/canonical/craft-cli.git@a0e36d0b70013573f2b04d3c513ac43bc3ac81ac#egg=craft_cli
 alabaster==0.7.12
-astroid==2.8.2
+appdirs==1.4.4
+astroid==2.8.3
 attrs==21.2.0
 autoflake==1.4
 Babel==2.9.1
@@ -17,7 +17,7 @@ coverage==6.0.2
 cryptography==35.0.0
 distlib==0.3.3
 docutils==0.17.1
-filelock==3.3.0
+filelock==3.3.1
 flake8==4.0.1
 idna==3.3
 imagesize==1.2.0
@@ -78,12 +78,13 @@ tomli==1.2.1
 tox==3.24.4
 tqdm==4.62.3
 twine==3.4.2
-types-PyYAML==5.4.11
-types-requests==2.25.10
-types-setuptools==57.4.1
+types-PyYAML==5.4.12
+types-requests==2.25.11
+types-setuptools==57.4.2
 typing-extensions==3.10.0.2
 urllib3==1.26.7
 virtualenv==20.8.1
 webencodings==0.5.1
-wrapt==1.12.1
+wrapt==1.13.2
 zipp==3.6.0
+git+https://github.com/canonical/craft-cli.git@616673f9312338c841e0da5de6417056aac88aa5#egg=craft_cli
