@@ -12,4 +12,4 @@ semver==2.13.0
 typing-extensions==3.10.0.2
 urllib3==1.26.7
 git+https://github.com/canonical/craft-cli.git@616673f9312338c841e0da5de6417056aac88aa5#egg=craft_cli
-git+https://github.com/canonical/craft-parts.git@47ce20b75a7074dff7f64dbda03b62d5740d5b60#egg=craft_parts
+git+https://github.com/cmatsuoka/craft-parts.git@f0b13a842f97bb344fe4de468dfd55fa1bf5271b#egg=craft_parts

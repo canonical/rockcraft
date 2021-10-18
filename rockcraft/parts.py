@@ -36,6 +36,8 @@ class PartsLifecycle:
 
     :param all_parts: A dictionary containing the parts defined in the project.
     :param work_dir: The working directory for parts processing.
+    :param base_layer_dir: The path to the extracted base root filesystem.
+    :param base_layer_hash: The base image digest.
 
     :raises PartsLifecycleError: On error initializing the parts lifecycle.
     """
@@ -45,6 +47,8 @@ class PartsLifecycle:
         all_parts: Dict[str, Any],
         *,
         work_dir: pathlib.Path,
+        base_layer_dir: pathlib.Path,
+        base_layer_hash: bytes,
     ):
         ui.emit.progress("Initializing parts lifecycle")
 
@@ -57,6 +61,8 @@ class PartsLifecycle:
                 application_name="rockcraft",
                 work_dir=work_dir,
                 cache_dir=cache_dir,
+                base_layer_dir=base_layer_dir,
+                base_layer_hash=base_layer_hash,
             )
         except craft_parts.PartsError as err:
             raise PartsLifecycleError(err) from err
@@ -76,12 +82,15 @@ class PartsLifecycle:
         """
         try:
             ui.emit.progress("Executing parts lifecycle")
+
             actions = self._lcm.plan(target_step)
             with self._lcm.action_executor() as aex:
                 for action in actions:
                     message = _action_message(action)
-                    ui.emit.progress(message)
+                    ui.emit.progress(f"Run parts lifecycle: {message}")
                     aex.execute(action)
+
+            ui.emit.message("Executed parts lifecycle")
         except RuntimeError as err:
             raise RuntimeError(f"Parts processing internal error: {err}") from err
         except OSError as err:
@@ -96,33 +105,33 @@ class PartsLifecycle:
 def _action_message(action: craft_parts.Action) -> str:
     msg = {
         Step.PULL: {
-            ActionType.RUN: "Pull",
-            ActionType.RERUN: "Repull",
-            ActionType.SKIP: "Skip pull",
-            ActionType.UPDATE: "Update sources for",
+            ActionType.RUN: "pull",
+            ActionType.RERUN: "repull",
+            ActionType.SKIP: "skip pull",
+            ActionType.UPDATE: "update sources for",
         },
         Step.OVERLAY: {
-            ActionType.RUN: "Overlay",
-            ActionType.RERUN: "Re-overlay",
-            ActionType.SKIP: "Skip overlay",
-            ActionType.UPDATE: "Update overlay for",
-            ActionType.REAPPLY: "Reapply",
+            ActionType.RUN: "overlay",
+            ActionType.RERUN: "re-overlay",
+            ActionType.SKIP: "skip overlay",
+            ActionType.UPDATE: "update overlay for",
+            ActionType.REAPPLY: "reapply",
         },
         Step.BUILD: {
-            ActionType.RUN: "Build",
-            ActionType.RERUN: "Rebuild",
-            ActionType.SKIP: "Skip build",
-            ActionType.UPDATE: "Update build for",
+            ActionType.RUN: "build",
+            ActionType.RERUN: "rebuild",
+            ActionType.SKIP: "skip build",
+            ActionType.UPDATE: "update build for",
         },
         Step.STAGE: {
-            ActionType.RUN: "Stage",
-            ActionType.RERUN: "Restage",
-            ActionType.SKIP: "Skip stage",
+            ActionType.RUN: "stage",
+            ActionType.RERUN: "restage",
+            ActionType.SKIP: "skip stage",
         },
         Step.PRIME: {
-            ActionType.RUN: "Prime",
-            ActionType.RERUN: "Re-prime",
-            ActionType.SKIP: "Skip prime",
+            ActionType.RUN: "prime",
+            ActionType.RERUN: "re-prime",
+            ActionType.SKIP: "skip prime",
         },
     }
 

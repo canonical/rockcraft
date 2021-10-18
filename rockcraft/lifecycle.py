@@ -23,6 +23,7 @@ from pathlib import Path
 import yaml
 from craft_cli.errors import CraftError
 
+from . import oci
 from .parts import PartsLifecycle, Step
 from .ui import emit
 
@@ -36,23 +37,46 @@ def pack():
     except OSError as err:
         raise CraftError(err) from err
 
+    name = yaml_data.get("name")
+    if not name:
+        emit.message("Project name not specified.")
+        return
+
+    tag = yaml_data.get("tag")
+    if not name:
+        emit.message("Project tag not specified.")
+        return
+
+    base = yaml_data.get("base")
+    if not base:
+        emit.message("Base not specified.")
+        return
+
     parts_data = yaml_data.get("parts")
     if not parts_data:
         emit.message("No parts specified.")
         return
 
-    # TODO: add base image retrieval
+    work_dir = Path("build").absolute()
+    image_dir = work_dir / "images"
+    bundle_dir = work_dir / "bundles"
 
-    # TODO: add base image extraction
+    # Obtain base image and extract it to use as our overlay base
+    # TODO: check if image was already downloaded, etc.
+    base_image = oci.Image.from_docker_registry(base, image_dir=image_dir)
+    rootfs = base_image.extract_to(bundle_dir)
 
-    # TODO: pass base image to parts lifecycle
+    # TODO: check if destination image already exists, etc.
+    project_image = base_image.copy_to(f"{name}:rockcraft-base", image_dir=image_dir)
 
     lifecycle = PartsLifecycle(
         parts_data,
-        work_dir=Path("build"),
+        work_dir=work_dir,
+        base_layer_dir=rootfs,
+        base_layer_hash=project_image.digest(),
     )
     lifecycle.run(Step.PRIME)
 
-    # TODO: generate layer with prime contents
+    project_image.add_layer(tag, lifecycle.prime_dir)
 
-    # TODO: build image with new layer
+    project_image.to_docker_daemon(tag)

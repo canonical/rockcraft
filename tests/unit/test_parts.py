@@ -23,7 +23,7 @@ from rockcraft import parts
 
 
 @tests.linux_only
-def test_parts_lifecycle_prime_dir(emit_mock):
+def test_parts_lifecycle_prime_dir(emit_mock, new_dir):
     parts_data = {
         "foo": {
             "plugin": "nil",
@@ -33,6 +33,8 @@ def test_parts_lifecycle_prime_dir(emit_mock):
     lifecycle = parts.PartsLifecycle(
         all_parts=parts_data,
         work_dir=Path("/some/workdir"),
+        base_layer_dir=new_dir,
+        base_layer_hash=b"digest",
     )
     assert lifecycle.prime_dir == Path("/some/workdir/prime")
 
@@ -52,6 +54,8 @@ def test_parts_lifecycle_run(emit_mock, new_dir):
     lifecycle = parts.PartsLifecycle(
         all_parts=parts_data,
         work_dir=Path("."),
+        base_layer_dir=new_dir,
+        base_layer_hash=b"digest",
     )
     lifecycle.run(parts.Step.PRIME)
 
@@ -59,7 +63,7 @@ def test_parts_lifecycle_run(emit_mock, new_dir):
 
 
 @tests.linux_only
-def test_parts_lifecycle_error(emit_mock):
+def test_parts_lifecycle_error(emit_mock, new_dir):
     parts_data = {
         "foo": {
             "invalid": True,
@@ -70,4 +74,6 @@ def test_parts_lifecycle_error(emit_mock):
         parts.PartsLifecycle(
             all_parts=parts_data,
             work_dir=Path("."),
+            base_layer_dir=new_dir,
+            base_layer_hash=b"digest",
         )
