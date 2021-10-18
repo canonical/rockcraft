@@ -1,2 +1,5 @@
+appdirs==1.4.4
 pydantic==1.8.2
+PyYAML==6.0
 typing-extensions==3.10.0.2
+git+https://github.com/canonical/craft-cli.git@616673f9312338c841e0da5de6417056aac88aa5#egg=craft_cli
