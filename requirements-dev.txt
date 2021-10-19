@@ -42,6 +42,7 @@ py==1.10.0
 pycodestyle==2.8.0
 pycparser==2.20
 pydantic==1.8.2
+pydantic-yaml==0.4.2
 pydocstyle==6.1.1
 pyflakes==2.4.0
 Pygments==2.10.0
@@ -53,13 +54,16 @@ pytest==6.2.5
 pytest-mock==3.6.1
 pytest-subprocess==1.2.0
 pytz==2021.3
+pyxdg==0.27
 PyYAML==6.0
 readme-renderer==30.0
 regex==2021.10.8
 requests==2.26.0
 requests-toolbelt==0.9.1
+requests-unixsocket==0.2.0
 rfc3986==1.5.0
 SecretStorage==3.3.1
+semver==2.13.0
 six==1.16.0
 snowballstemmer==2.1.0
 Sphinx==4.2.0
@@ -88,3 +92,4 @@ webencodings==0.5.1
 wrapt==1.13.2
 zipp==3.6.0
 git+https://github.com/canonical/craft-cli.git@616673f9312338c841e0da5de6417056aac88aa5#egg=craft_cli
+git+https://github.com/canonical/craft-parts.git@47ce20b75a7074dff7f64dbda03b62d5740d5b60#egg=craft_parts

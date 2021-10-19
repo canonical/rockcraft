@@ -18,9 +18,41 @@
 
 """Lifecycle integration."""
 
+from pathlib import Path
+
+import yaml
+from craft_cli.errors import CraftError
+
+from .parts import PartsLifecycle, Step
 from .ui import emit
 
 
 def pack():
     """Pack a ROCK."""
-    emit.progress("Fake packing")
+    # XXX: replace with proper rockcraft.yaml unmarshal and validation
+    try:
+        with open("rockcraft.yaml", encoding="utf-8") as yaml_file:
+            yaml_data = yaml.safe_load(yaml_file)
+    except OSError as err:
+        raise CraftError(err) from err
+
+    parts_data = yaml_data.get("parts")
+    if not parts_data:
+        emit.message("No parts specified.")
+        return
+
+    # TODO: add base image retrieval
+
+    # TODO: add base image extraction
+
+    # TODO: pass base image to parts lifecycle
+
+    lifecycle = PartsLifecycle(
+        parts_data,
+        work_dir=Path("build"),
+    )
+    lifecycle.run(Step.PRIME)
+
+    # TODO: generate layer with prime contents
+
+    # TODO: build image with new layer

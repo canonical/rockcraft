@@ -1,5 +1,15 @@
 appdirs==1.4.4
+certifi==2021.10.8
+charset-normalizer==2.0.7
+idna==3.3
 pydantic==1.8.2
+pydantic-yaml==0.4.2
+pyxdg==0.27
 PyYAML==6.0
+requests==2.26.0
+requests-unixsocket==0.2.0
+semver==2.13.0
 typing-extensions==3.10.0.2
+urllib3==1.26.7
 git+https://github.com/canonical/craft-cli.git@616673f9312338c841e0da5de6417056aac88aa5#egg=craft_cli
+git+https://github.com/canonical/craft-parts.git@47ce20b75a7074dff7f64dbda03b62d5740d5b60#egg=craft_parts
