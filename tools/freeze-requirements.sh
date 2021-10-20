@@ -7,7 +7,7 @@ requirements_fixups() {
   sed -i '/^python-apt==/d' "$req_file"
 
   echo "git+https://github.com/canonical/craft-cli.git@616673f9312338c841e0da5de6417056aac88aa5#egg=craft_cli" >> "$req_file"
-  echo "git+https://github.com/cmatsuoka/craft-parts.git@f0b13a842f97bb344fe4de468dfd55fa1bf5271b#egg=craft_parts" >> "$req_file"
+  echo "git+https://github.com/canonical/craft-parts.git@2a53bd013de156c4d055933b47759db466aa2e59#egg=craft_parts" >> "$req_file"
 }
 
 venv_dir="$(mktemp -d)"
@@ -25,7 +25,7 @@ cp -r usr/lib/python3/dist-packages/* "$site_pkgs"
 popd
 
 pip install git+https://github.com/canonical/craft-cli.git@616673f9312338c841e0da5de6417056aac88aa5#egg=craft_cli
-pip install git+https://github.com/cmatsuoka/craft-parts.git@f0b13a842f97bb344fe4de468dfd55fa1bf5271b#egg=craft_parts
+pip install git+https://github.com/canonical/craft-parts.git@2a53bd013de156c4d055933b47759db466aa2e59#egg=craft_parts
 pip install -e .
 pip freeze --exclude-editable | egrep -v "^craft-(cli|parts)" > requirements.txt
 requirements_fixups "requirements.txt"
