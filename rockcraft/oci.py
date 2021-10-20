@@ -150,6 +150,22 @@ class Image:
 
         ui.emit.message(f"Exported {name}:{tag} to local docker daemon")
 
+    def to_oci_archive(self, tag: str) -> None:
+        """Export the current image to the local docker daemon.
+
+        :param tag: The tag to export.
+        """
+        parts = self.image_name.split(":", 1)
+        name = parts[0]
+        archive = f"{name}-{tag}.oci.tar"
+
+        ui.emit.progress(f"Exporting to OCI archive {archive}")
+
+        src_path = self.path / f"{name}:{tag}"
+        _copy_image(f"oci:{str(src_path)}", f"oci-archive:{archive}:{tag}")
+
+        ui.emit.message(f"Exported to OCI archive {archive}")
+
     def digest(self) -> bytes:
         """Obtain the current image digest.
 

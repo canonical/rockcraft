@@ -123,6 +123,21 @@ class TestImage:
             )
         ]
 
+    def test_to_oci_archive(self, mock_run):
+        image = oci.Image("a:b", Path("/c"))
+        image.to_oci_archive("tag")
+        assert mock_run.mock_calls == [
+            call(
+                [
+                    "skopeo",
+                    "--insecure-policy",
+                    "copy",
+                    "oci:/c/a:tag",
+                    "oci-archive:a-tag.oci.tar:tag",
+                ]
+            )
+        ]
+
     def test_digest(self, mocker):
         image = oci.Image("a:b", Path("/c"))
         mock_output = mocker.patch(

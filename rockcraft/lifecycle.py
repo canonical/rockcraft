@@ -79,4 +79,4 @@ def pack():
 
     project_image.add_layer(tag, lifecycle.prime_dir)
 
-    project_image.to_docker_daemon(tag)
+    project_image.to_oci_archive(tag)
