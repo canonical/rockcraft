@@ -1,0 +1,60 @@
+name: rockcraft
+version: git
+base: core20
+summary: A craft like experience to create ROCKS
+description: |
+    Rockcraft aims to take the same primitives used in Charmcraft and Snapcraft
+    to create OCI images.
+confinement: classic
+grade: devel
+license: GPL-3.0
+
+apps:
+  rockcraft:
+    command: bin/python $SNAP/bin/rockcraft
+
+build-packages:
+  - libapt-pkg-dev
+  - libyaml-dev
+  - python3.8-dev
+  - pkg-config
+
+parts:
+  rockcraft-libs:
+    plugin: nil
+    stage-packages:
+        - apt
+        - apt-transport-https
+        - apt-utils
+        - binutils
+        - gpg
+        - gpgv
+        - libpython3-stdlib
+        - libpython3.8-stdlib
+        - libpython3.8-minimal
+        - python3-pip
+        - python3-setuptools
+        - python3-wheel
+        - python3-venv
+        - python3-minimal
+        - python3-distutils
+        - python3-pkg-resources
+        - python3.8-minimal
+
+  rockcraft:
+    source: .
+    plugin: python
+    python-packages:
+        - wheel
+        - pip
+        - setuptools
+    requirements:
+        - requirements-focal.txt
+        - requirements.txt
+    build-environment:
+        - "CFLAGS": "$(pkg-config python-3.8 yaml-0.1 --cflags)"
+    after: [rockcraft-libs]
+    override-build: |
+      snapcraftctl build
+      # python3 fixup symlink (snapcraft bug)
+      ln -sf ../usr/bin/python3.8 $SNAPCRAFT_PART_INSTALL/bin/python3

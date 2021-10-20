@@ -133,3 +133,6 @@ dmypy.json
 # direnv
 .direnv
 .envrc
+
+# snap
+rockcraft_*.snap
