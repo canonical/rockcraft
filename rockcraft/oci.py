@@ -134,7 +134,7 @@ class Image:
         _copy_image(f"oci:{str(src_path)}", f"docker-daemon:{name}:{tag}")
 
     def to_oci_archive(self, tag: str) -> None:
-        """Export the current image to the local docker daemon.
+        """Export the current image to a tar archive in OCI format.
 
         :param tag: The tag to export.
         """
