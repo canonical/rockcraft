@@ -51,13 +51,9 @@ class Image:
 
         :returns: The downloaded image.
         """
-        ui.emit.progress(f"Retrieving base {image_name}")
-
         image_dir.mkdir(parents=True, exist_ok=True)
         image_target = image_dir / image_name
         _copy_image(f"docker://{image_name}", f"oci:{image_target}")
-
-        ui.emit.message(f"Retrieved base {image_name}")
 
         return cls(image_name=image_name, path=image_dir)
 
@@ -80,15 +76,11 @@ class Image:
 
         :param bundle_dir: The directory to store runtime bundles.
         """
-        ui.emit.progress(f"Extracting {self.image_name}")
-
         bundle_dir.mkdir(parents=True, exist_ok=True)
         bundle_path = bundle_dir / self.image_name.replace(":", "-")
         image_path = self.path / self.image_name
         shutil.rmtree(bundle_path, ignore_errors=True)
         _process_run(["umoci", "unpack", "--image", str(image_path), str(bundle_path)])
-
-        ui.emit.message(f"Extracted {self.image_name}")
 
         return bundle_path / "rootfs"
 
@@ -99,8 +91,6 @@ class Image:
         :param layer_path: The path to the new layer root filesystem.
         """
         image_path = self.path / self.image_name
-
-        ui.emit.progress("Creating new layer")
 
         temp_file = Path(self.path, f".temp_layer.{os.getpid()}.tar")
         temp_file.unlink(missing_ok=True)
@@ -133,8 +123,6 @@ class Image:
         finally:
             temp_file.unlink(missing_ok=True)
 
-        ui.emit.message("Created new layer")
-
     def to_docker_daemon(self, tag: str) -> None:
         """Export the current image to the local docker daemon.
 
@@ -142,13 +130,8 @@ class Image:
         """
         parts = self.image_name.split(":", 1)
         name = parts[0]
-
-        ui.emit.progress(f"Exporting {name}:{tag} to local docker daemon")
-
         src_path = self.path / f"{name}:{tag}"
         _copy_image(f"oci:{str(src_path)}", f"docker-daemon:{name}:{tag}")
-
-        ui.emit.message(f"Exported {name}:{tag} to local docker daemon")
 
     def to_oci_archive(self, tag: str) -> None:
         """Export the current image to the local docker daemon.
@@ -158,13 +141,8 @@ class Image:
         parts = self.image_name.split(":", 1)
         name = parts[0]
         archive = f"{name}-{tag}.oci.tar"
-
-        ui.emit.progress(f"Exporting to OCI archive {archive}")
-
         src_path = self.path / f"{name}:{tag}"
         _copy_image(f"oci:{str(src_path)}", f"oci-archive:{archive}:{tag}")
-
-        ui.emit.message(f"Exported to OCI archive {archive}")
 
     def digest(self) -> bytes:
         """Obtain the current image digest.

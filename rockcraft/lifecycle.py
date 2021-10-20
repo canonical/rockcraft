@@ -23,9 +23,8 @@ from pathlib import Path
 import yaml
 from craft_cli.errors import CraftError
 
-from . import oci
+from . import oci, ui
 from .parts import PartsLifecycle, Step
-from .ui import emit
 
 
 def pack():
@@ -39,23 +38,19 @@ def pack():
 
     name = yaml_data.get("name")
     if not name:
-        emit.message("Project name not specified.")
-        return
+        raise CraftError("Project name not specified.")
 
     tag = yaml_data.get("tag")
     if not name:
-        emit.message("Project tag not specified.")
-        return
+        raise CraftError("Project tag not specified.")
 
     base = yaml_data.get("base")
     if not base:
-        emit.message("Base not specified.")
-        return
+        raise CraftError("Base not specified.")
 
     parts_data = yaml_data.get("parts")
     if not parts_data:
-        emit.message("No parts specified.")
-        return
+        raise CraftError("No parts specified.")
 
     work_dir = Path("build").absolute()
     image_dir = work_dir / "images"
@@ -63,8 +58,13 @@ def pack():
 
     # Obtain base image and extract it to use as our overlay base
     # TODO: check if image was already downloaded, etc.
+    ui.emit.progress(f"Retrieving base {base}")
     base_image = oci.Image.from_docker_registry(base, image_dir=image_dir)
+    ui.emit.message(f"Retrieved base {base}")
+
+    ui.emit.progress(f"Extracting {base_image.image_name}")
     rootfs = base_image.extract_to(bundle_dir)
+    ui.emit.message(f"Extracted {base_image.image_name}")
 
     # TODO: check if destination image already exists, etc.
     project_image = base_image.copy_to(f"{name}:rockcraft-base", image_dir=image_dir)
@@ -77,6 +77,10 @@ def pack():
     )
     lifecycle.run(Step.PRIME)
 
+    ui.emit.progress("Creating new layer")
     project_image.add_layer(tag, lifecycle.prime_dir)
+    ui.emit.message("Created new layer")
 
+    ui.emit.progress("Exporting to OCI archive")
     project_image.to_oci_archive(tag)
+    ui.emit.progress(f"Exported to OCI archive '{name}-{tag}.oci.tar'")
