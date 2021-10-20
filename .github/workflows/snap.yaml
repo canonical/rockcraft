@@ -1,0 +1,23 @@
+name: Snap
+
+on: [pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout snapcraft
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Build snapcraft snap
+        id: build-snapcraft
+        uses: snapcore/action-build@v1.0.9
+
+      - name: Upload snapcraft snap
+        uses: actions/upload-artifact@v2
+        with:
+          name: snap
+          path: ${{ steps.build-snapcraft.outputs.snap }}
