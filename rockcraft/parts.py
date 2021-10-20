@@ -63,7 +63,7 @@ class PartsLifecycle:
                 cache_dir=cache_dir,
                 base_layer_dir=base_layer_dir,
                 base_layer_hash=base_layer_hash,
-                ignore_local_sources=["*.oci.tar", "*.docker.tar"]
+                ignore_local_sources=["*.oci.tar", "*.docker.tar"],
             )
         except craft_parts.PartsError as err:
             raise PartsLifecycleError(err) from err

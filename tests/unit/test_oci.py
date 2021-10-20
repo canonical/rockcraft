@@ -21,6 +21,7 @@ from unittest.mock import ANY, call
 
 import pytest
 
+import tests
 from rockcraft import oci
 
 
@@ -29,6 +30,7 @@ def mock_run(mocker):
     yield mocker.patch("rockcraft.oci._process_run")
 
 
+@tests.linux_only
 @pytest.mark.usefixtures("emit_mock")
 class TestImage:
     """OCI image manipulation."""
