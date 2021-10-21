@@ -37,7 +37,7 @@ class Project(pydantic.BaseModel):
     build_base: str
     parts: Dict[str, Any]
 
-    class Config:
+    class Config:  # pylint: disable=too-few-public-methods
         """Pydantic model configuration."""
 
         validate_assignment = True

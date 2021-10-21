@@ -149,7 +149,6 @@ disable=print-statement,
         exception-escape,
         comprehension-escape,
         line-too-long,
-        too-few-public-methods,
         fixme,
         fixme-info
 
