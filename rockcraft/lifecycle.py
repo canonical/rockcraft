@@ -25,6 +25,7 @@ from craft_cli.errors import CraftError
 
 from . import oci, ui
 from .parts import PartsLifecycle, Step
+from .project import Project
 
 
 def pack():
@@ -36,21 +37,7 @@ def pack():
     except OSError as err:
         raise CraftError(err) from err
 
-    name = yaml_data.get("name")
-    if not name:
-        raise CraftError("Project name not specified.")
-
-    tag = yaml_data.get("tag")
-    if not name:
-        raise CraftError("Project tag not specified.")
-
-    base = yaml_data.get("base")
-    if not base:
-        raise CraftError("Base not specified.")
-
-    parts_data = yaml_data.get("parts")
-    if not parts_data:
-        raise CraftError("No parts specified.")
+    project = Project.unmarshal(yaml_data)
 
     work_dir = Path("work").absolute()
     image_dir = work_dir / "images"
@@ -58,19 +45,21 @@ def pack():
 
     # Obtain base image and extract it to use as our overlay base
     # TODO: check if image was already downloaded, etc.
-    ui.emit.progress(f"Retrieving base {base}")
-    base_image = oci.Image.from_docker_registry(base, image_dir=image_dir)
-    ui.emit.message(f"Retrieved base {base}")
+    ui.emit.progress(f"Retrieving base {project.base}")
+    base_image = oci.Image.from_docker_registry(project.base, image_dir=image_dir)
+    ui.emit.message(f"Retrieved base {project.base}")
 
     ui.emit.progress(f"Extracting {base_image.image_name}")
     rootfs = base_image.extract_to(bundle_dir)
     ui.emit.message(f"Extracted {base_image.image_name}")
 
     # TODO: check if destination image already exists, etc.
-    project_image = base_image.copy_to(f"{name}:rockcraft-base", image_dir=image_dir)
+    project_image = base_image.copy_to(
+        f"{project.name}:rockcraft-base", image_dir=image_dir
+    )
 
     lifecycle = PartsLifecycle(
-        parts_data,
+        project.parts,
         work_dir=work_dir,
         base_layer_dir=rootfs,
         base_layer_hash=project_image.digest(),
@@ -78,9 +67,9 @@ def pack():
     lifecycle.run(Step.PRIME)
 
     ui.emit.progress("Creating new layer")
-    project_image.add_layer(tag, lifecycle.prime_dir)
+    project_image.add_layer(tag=project.version, layer_path=lifecycle.prime_dir)
     ui.emit.message("Created new layer")
 
     ui.emit.progress("Exporting to OCI archive")
-    project_image.to_oci_archive(tag)
-    ui.emit.progress(f"Exported to OCI archive '{name}-{tag}.oci.tar'")
+    project_image.to_oci_archive(tag=project.version)
+    ui.emit.progress(f"Exported to OCI archive '{project.name}-{project.version}.rock'")

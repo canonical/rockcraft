@@ -21,7 +21,8 @@ from typing import Any, Dict
 
 import craft_parts
 from craft_cli.errors import CraftError
-from craft_parts import ActionType, Step
+from craft_parts import ActionType, Step, plugins
+from craft_parts.parts import PartSpec
 from xdg import BaseDirectory  # type: ignore
 
 from rockcraft import ui
@@ -63,7 +64,7 @@ class PartsLifecycle:
                 cache_dir=cache_dir,
                 base_layer_dir=base_layer_dir,
                 base_layer_hash=base_layer_hash,
-                ignore_local_sources=["*.oci.tar", "*.docker.tar"],
+                ignore_local_sources=["*.rock"],
             )
         except craft_parts.PartsError as err:
             raise PartsLifecycleError(err) from err
@@ -142,3 +143,28 @@ def _action_message(action: craft_parts.Action) -> str:
         message += f" ({action.reason})"
 
     return message
+
+
+def validate_part(data: Dict[str, Any]) -> None:
+    """Validate the given part data against common and plugin models.
+
+    :param data: The part data to validate.
+    """
+    if not isinstance(data, dict):
+        raise TypeError("value must be a dictionary")
+
+    # copy the original data, we'll modify it
+    spec = data.copy()
+
+    plugin_name = spec.get("plugin")
+    if not plugin_name:
+        raise ValueError("'plugin' not defined")
+
+    plugin_class = plugins.get_plugin_class(plugin_name)
+
+    # validate plugin properties
+    plugin_class.properties_class.unmarshal(spec)
+
+    # validate common part properties
+    part_spec = plugins.extract_part_properties(spec, plugin_name=plugin_name)
+    PartSpec(**part_spec)
