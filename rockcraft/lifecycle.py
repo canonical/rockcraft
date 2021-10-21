@@ -52,7 +52,7 @@ def pack():
     if not parts_data:
         raise CraftError("No parts specified.")
 
-    work_dir = Path("build").absolute()
+    work_dir = Path("work").absolute()
     image_dir = work_dir / "images"
     bundle_dir = work_dir / "bundles"
 
