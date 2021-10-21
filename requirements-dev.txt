@@ -57,7 +57,7 @@ pytz==2021.3
 pyxdg==0.27
 PyYAML==6.0
 readme-renderer==30.0
-regex==2021.10.8
+regex==2021.10.21
 requests==2.26.0
 requests-toolbelt==0.9.1
 requests-unixsocket==0.2.0
@@ -92,4 +92,4 @@ webencodings==0.5.1
 wrapt==1.13.2
 zipp==3.6.0
 git+https://github.com/canonical/craft-cli.git@616673f9312338c841e0da5de6417056aac88aa5#egg=craft_cli
-git+https://github.com/canonical/craft-parts.git@2a53bd013de156c4d055933b47759db466aa2e59#egg=craft_parts
+git+https://github.com/canonical/craft-parts.git@778f45d796cb1f6677633cd161ddd32ef4d64c1b#egg=craft_parts
