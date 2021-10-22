@@ -71,5 +71,6 @@ def pack():
     ui.emit.message("Created new layer")
 
     ui.emit.progress("Exporting to OCI archive")
-    project_image.to_oci_archive(tag=project.version)
-    ui.emit.progress(f"Exported to OCI archive '{project.name}-{project.version}.rock'")
+    archive_name = f"{project.name}-{project.version}.rock"
+    project_image.to_oci_archive(tag=project.version, filename=archive_name)
+    ui.emit.progress(f"Exported to OCI archive '{archive_name}'")

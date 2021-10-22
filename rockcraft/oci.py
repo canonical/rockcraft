@@ -133,16 +133,15 @@ class Image:
         src_path = self.path / f"{name}:{tag}"
         _copy_image(f"oci:{str(src_path)}", f"docker-daemon:{name}:{tag}")
 
-    def to_oci_archive(self, tag: str) -> None:
+    def to_oci_archive(self, tag: str, filename: str) -> None:
         """Export the current image to a tar archive in OCI format.
 
         :param tag: The tag to export.
         """
         parts = self.image_name.split(":", 1)
         name = parts[0]
-        archive = f"{name}-{tag}.oci.tar"
         src_path = self.path / f"{name}:{tag}"
-        _copy_image(f"oci:{str(src_path)}", f"oci-archive:{archive}:{tag}")
+        _copy_image(f"oci:{str(src_path)}", f"oci-archive:{filename}:{tag}")
 
     def digest(self) -> bytes:
         """Obtain the current image digest.

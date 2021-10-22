@@ -127,7 +127,7 @@ class TestImage:
 
     def test_to_oci_archive(self, mock_run):
         image = oci.Image("a:b", Path("/c"))
-        image.to_oci_archive("tag")
+        image.to_oci_archive("tag", filename="foobar")
         assert mock_run.mock_calls == [
             call(
                 [
@@ -135,7 +135,7 @@ class TestImage:
                     "--insecure-policy",
                     "copy",
                     "oci:/c/a:tag",
-                    "oci-archive:a-tag.oci.tar:tag",
+                    "oci-archive:foobar:tag",
                 ]
             )
         ]
