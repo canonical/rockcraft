@@ -19,13 +19,18 @@
 from typing import Any, Dict, Tuple
 
 import pydantic
+import yaml
 from craft_cli.errors import CraftError
 
 from rockcraft.parts import validate_part
 
 
-class ProjectDefinitionError(CraftError):
-    """Error in rockcraft.yaml."""
+class ProjectLoadError(CraftError):
+    """Error loading rockcraft.yaml."""
+
+
+class ProjectValidationError(CraftError):
+    """Error validatiing rockcraft.yaml."""
 
 
 class Project(pydantic.BaseModel):
@@ -72,7 +77,7 @@ class Project(pydantic.BaseModel):
         try:
             project = Project(**data)
         except pydantic.ValidationError as err:
-            raise ProjectDefinitionError(_format_pydantic_errors(err.errors())) from err
+            raise ProjectValidationError(_format_pydantic_errors(err.errors())) from err
 
         return project
 
@@ -162,3 +167,25 @@ def _printable_field_location_split(location: str) -> Tuple[str, str]:
         return field_name, repr(".".join(loc_split))
 
     return field_name, "top-level"
+
+
+def load_project(filename: str) -> Project:
+    """Load and unmarshal the project YAML file.
+
+    :param filename: The YAML file to load.
+
+    :returns: The populated project data.
+
+    :raises ProjectLoadError: If loading fails.
+    :raises ProjectValidationError: If data validation fails.
+    """
+    try:
+        with open(filename, encoding="utf-8") as yaml_file:
+            yaml_data = yaml.safe_load(yaml_file)
+    except OSError as err:
+        msg = err.strerror
+        if err.filename:
+            msg = f"{msg}: {err.filename!r}."
+        raise ProjectLoadError(msg) from err
+
+    return Project.unmarshal(yaml_data)
