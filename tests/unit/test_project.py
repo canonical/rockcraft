@@ -14,9 +14,17 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import textwrap
+from pathlib import Path
+
 import pytest
 
-from rockcraft.project import Project, ProjectDefinitionError
+from rockcraft.project import (
+    Project,
+    ProjectLoadError,
+    ProjectValidationError,
+    load_project,
+)
 
 
 @pytest.fixture
@@ -54,7 +62,7 @@ def test_project_unmarshal(yaml_data):
 def test_project_missing_field(yaml_data, field):
     del yaml_data[field]
 
-    with pytest.raises(ProjectDefinitionError) as err:
+    with pytest.raises(ProjectValidationError) as err:
         Project.unmarshal(yaml_data)
     assert str(err.value) == (
         "Bad rockcraft.yaml content:\n"
@@ -65,7 +73,7 @@ def test_project_missing_field(yaml_data, field):
 def test_project_extra_field(yaml_data):
     yaml_data["extra"] = "invalid"
 
-    with pytest.raises(ProjectDefinitionError) as err:
+    with pytest.raises(ProjectValidationError) as err:
         Project.unmarshal(yaml_data)
     assert str(err.value) == (
         "Bad rockcraft.yaml content:\n"
@@ -76,12 +84,50 @@ def test_project_extra_field(yaml_data):
 def test_project_parts_validation(yaml_data):
     yaml_data["parts"]["foo"]["invalid"] = True
 
-    with pytest.raises(ProjectDefinitionError) as err:
+    with pytest.raises(ProjectValidationError) as err:
         Project.unmarshal(yaml_data)
     assert str(err.value) == (
         "Bad rockcraft.yaml content:\n"
         "- extra field 'invalid' not permitted in 'parts.foo' configuration"
     )
+
+
+def test_project_load(new_dir):
+    Path("rockcraft.yaml").write_text(
+        textwrap.dedent(
+            """
+            name: mytest
+            version: latest
+            base: ubuntu:20.04
+            build_base: ubuntu:20.04
+
+            parts:
+              foo:
+                plugin: nil
+                overlay-script: "ls"
+            """
+        ),
+        encoding="utf-8",
+    )
+
+    project = load_project("rockcraft.yaml")
+
+    assert project.name == "mytest"
+    assert project.version == "latest"
+    assert project.base == "ubuntu:20.04"
+    assert project.build_base == "ubuntu:20.04"
+    assert project.parts == {
+        "foo": {
+            "plugin": "nil",
+            "overlay-script": "ls",
+        }
+    }
+
+
+def test_project_load_error():
+    with pytest.raises(ProjectLoadError) as err:
+        load_project("does_not_exist.txt")
+    assert str(err.value) == "No such file or directory: 'does_not_exist.txt'."
 
 
 # TODO: add additional validation and formatting tests

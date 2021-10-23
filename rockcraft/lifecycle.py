@@ -20,24 +20,14 @@
 
 from pathlib import Path
 
-import yaml
-from craft_cli.errors import CraftError
-
 from . import oci, ui
 from .parts import PartsLifecycle, Step
-from .project import Project
+from .project import load_project
 
 
 def pack():
     """Pack a ROCK."""
-    # XXX: replace with proper rockcraft.yaml unmarshal and validation
-    try:
-        with open("rockcraft.yaml", encoding="utf-8") as yaml_file:
-            yaml_data = yaml.safe_load(yaml_file)
-    except OSError as err:
-        raise CraftError(err) from err
-
-    project = Project.unmarshal(yaml_data)
+    project = load_project("rockcraft.yaml")
 
     work_dir = Path("work").absolute()
     image_dir = work_dir / "images"
