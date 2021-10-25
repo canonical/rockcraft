@@ -152,9 +152,17 @@ jobs:
             foo:
               plugin: nil
               overlay-packages: [figlet]
+              overlay-script: |
+                 chroot "\$ROCKCRAFT_OVERLAY" /bin/bash -c "rm /etc/issue"
+                 chroot "\$ROCKCRAFT_OVERLAY" /bin/bash -c "echo -e '#!/bin/bash\\ntest ! -f /etc/issue;echo \"Ship it!\"|figlet'>/run.sh;chmod +x /run.sh"
           EOF
           sg lxd -c "rockcraft pack"
           test -f smoke-test_latest.rock
           test ! -d work
           tar tf smoke-test_latest.rock | grep oci-layout
+          # test container execution
+          sudo docker images
+          sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:smoke-test_latest.rock docker-daemon:smoke-test:latest
+          sudo docker images
+          sudo docker run --entrypoint /run.sh smoke-test:latest
           popd
