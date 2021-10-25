@@ -89,10 +89,10 @@ class PartsLifecycle:
             with self._lcm.action_executor() as aex:
                 for action in actions:
                     message = _action_message(action)
-                    ui.emit.progress(f"Run parts lifecycle: {message}")
+                    ui.emit.progress(f"Executing parts lifecycle: {message}")
                     aex.execute(action)
 
-            ui.emit.message("Executed parts lifecycle")
+            ui.emit.message("Executed parts lifecycle", intermediate=True)
         except RuntimeError as err:
             raise RuntimeError(f"Parts processing internal error: {err}") from err
         except OSError as err:

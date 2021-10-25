@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # -*- Mode:Python; indent-tabs-mode:nil; tab-width:4 -*-
 #
 # Copyright (C) 2021 Canonical Ltd
@@ -15,9 +14,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from unittest.mock import patch
+from unittest import mock
 
 import pytest
+from craft_providers import Executor
 
 from rockcraft import ui
 
@@ -25,6 +25,12 @@ from rockcraft import ui
 @pytest.fixture
 def emit_mock():
     """Setup a fake emitter."""
-    patcher = patch.object(ui, "emit")
+    patcher = mock.patch.object(ui, "emit")
     yield patcher.start()
     patcher.stop()
+
+
+@pytest.fixture
+def mock_instance():
+    """Provide a mock instance (Executor)."""
+    yield mock.Mock(spec=Executor)

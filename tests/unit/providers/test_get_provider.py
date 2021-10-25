@@ -14,6 +14,21 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-"""The craft tool to create ROCKs."""
+import sys
 
-__version__ = "0.0.1.dev1"
+from rockcraft.providers import LXDProvider, MultipassProvider, get_provider
+
+
+def test_get_provider_default():
+    if sys.platform == "linux":
+        assert isinstance(get_provider(), LXDProvider)
+    else:
+        assert isinstance(get_provider(), MultipassProvider)
+
+
+def test_get_provider_developer_env(monkeypatch):
+    monkeypatch.setenv("ROCKCRAFT_PROVIDER", "lxd")
+    assert isinstance(get_provider(), LXDProvider)
+
+    monkeypatch.setenv("ROCKCRAFT_PROVIDER", "multipass")
+    assert isinstance(get_provider(), MultipassProvider)
