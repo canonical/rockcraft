@@ -36,7 +36,7 @@ class RockcraftBuilddBaseConfiguration(bases.BuilddBase):
     :cvar compatibility_tag: Tag/Version for variant of build configuration and
         setup.  Any change to this version would indicate that prior [versioned]
         instances are incompatible and must be cleaned.  As such, any new value
-        should be unique to old values (e.g. incrementing).  Charmcraft extends
+        should be unique to old values (e.g. incrementing).  Rockcraft extends
         the buildd tag to include its own version indicator (.0) and namespace
         ("rockcraft").
     """
@@ -56,7 +56,7 @@ class RockcraftBuilddBaseConfiguration(bases.BuilddBase):
         channel, using ROCKCRAFT_INSTALL_SNAP_CHANNEL=<channel>.  If unspecified,
         we use the "stable" channel on the default track.
 
-        On Linux, the user may specify this environment variable to force Charmcraft
+        On Linux, the user may specify this environment variable to force Rockcraft
         to install the snap from the Store rather than inject the host snap.
 
         :raises BaseConfigurationError: on error.

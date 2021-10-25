@@ -53,7 +53,7 @@ class Project(pydantic.BaseModel):
 
     @pydantic.validator("parts", each_item=True)
     @classmethod
-    def validate_charm_part(cls, item):
+    def validate_parts(cls, item):
         """Verify each part (craft-parts will re-validate this)."""
         validate_part(item)
         return item

@@ -37,7 +37,7 @@ class LXDProvider(Provider):
     """LXD build environment provider.
 
     :param lxc: Optional lxc client to use.
-    :param lxd_project: LXD project to use (default is charmcraft).
+    :param lxd_project: LXD project to use (default is rockcraft).
     :param lxd_remote: LXD remote to use (default is local).
     """
 
