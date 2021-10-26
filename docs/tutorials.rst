@@ -11,7 +11,7 @@ Prerequisites
 - snap enabled system https://snapcraft.io
 - LXD setup on ext4
 - skopeo installed https://github.com/containers/skopeo
-- running docker setup
+- running docker setup https://snapcraft.io/docker
 - a text editor
 
 
@@ -22,7 +22,7 @@ Install Rockcraft on your host:
 
 .. code-block:: sh
 		
-  $ snap install rockcraft --classic --edge
+  $ sudo snap install rockcraft --classic --edge
 
 Project Setup
 -------------
@@ -50,7 +50,7 @@ Pack the OCI image, run:
 
 .. code-block:: sh
 		
-  $ rockcraft pack
+  $ rockcraft pack # add the '--verbose' option to get logs of what is happening in the background
 
 
 The output should look as follows:
@@ -64,7 +64,7 @@ The output should look as follows:
   Exported to OCI archive 'hello_1.0.rock'
 
 At the end of the process, a file named ``hello_1.0.rock`` should be
-present in the current directory.
+present in the current directory. It's the generated OCI archive tarball.
 
 Running OCI image in docker
 ---------------------------
