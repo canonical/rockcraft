@@ -24,6 +24,7 @@ from pathlib import Path
 from . import oci, providers, ui, utils
 from .parts import PartsLifecycle, Step
 from .project import Project, load_project
+from .providers import capture_logs_from_instance
 
 
 def pack():
@@ -101,7 +102,7 @@ def pack_in_provider(project: Project):
                 cwd=output_dir,
             )
         except subprocess.CalledProcessError as err:
-            # capture_logs_from_instance(instance)
+            capture_logs_from_instance(instance)
             raise providers.ProviderError(
                 f"Failed to pack image '{project.name}:{project.version}'."
             ) from err

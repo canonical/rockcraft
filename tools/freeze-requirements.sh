@@ -5,13 +5,12 @@ requirements_fixups() {
 
   # Python apt library pinned to source.
   sed -i '/^python-apt==/d' "$req_file"
-
 }
 
 append_source_requirements() {
   req_file="$1"
 
-  echo "git+https://github.com/canonical/craft-cli.git@6d770943c40defbeddb44c3b800a97b1b6595c01#egg=craft_cli" >> "$req_file"
+  echo "git+https://github.com/canonical/craft-cli.git@6149a889b16281f9c6453405e140fe2cb46edab0#egg=craft_cli" >> "$req_file"
   echo "git+https://github.com/canonical/craft-parts.git@778f45d796cb1f6677633cd161ddd32ef4d64c1b#egg=craft_parts" >> "$req_file"
   echo "git+https://github.com/canonical/craft-providers.git@de5b5f9c88f41b865634a3ac395e4b2db96f17e0#egg=craft_providers" >> "$req_file"
 }
@@ -30,7 +29,7 @@ dpkg -x ./*.deb .
 cp -r usr/lib/python3/dist-packages/* "$site_pkgs"
 popd
 
-pip install git+https://github.com/canonical/craft-cli.git@6d770943c40defbeddb44c3b800a97b1b6595c01#egg=craft_cli
+pip install git+https://github.com/canonical/craft-cli.git@6149a889b16281f9c6453405e140fe2cb46edab0#egg=craft_cli
 pip install git+https://github.com/canonical/craft-parts.git@778f45d796cb1f6677633cd161ddd32ef4d64c1b#egg=craft_parts
 pip install git+https://github.com/canonical/craft-providers.git@de5b5f9c88f41b865634a3ac395e4b2db96f17e0#egg=craft_providers
 

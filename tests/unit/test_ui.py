@@ -14,6 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from pathlib import Path
 from unittest.mock import call
 
 import pytest
@@ -27,9 +28,9 @@ def test_init_defaults(emit_mock):
 
     assert emit_mock.init.mock_calls == [
         call(
-            ui.EmitterMode.NORMAL,
-            "rockcraft",
-            f"Rockcraft version {rockcraft.__version__}.",
+            mode=ui.EmitterMode.NORMAL,
+            appname="rockcraft",
+            greeting=f"Rockcraft version {rockcraft.__version__}.",
         )
     ]
 
@@ -39,9 +40,24 @@ def test_init_verbose(emit_mock):
 
     assert emit_mock.init.mock_calls == [
         call(
-            ui.EmitterMode.VERBOSE,
-            "rockcraft",
-            f"Rockcraft version {rockcraft.__version__}.",
+            mode=ui.EmitterMode.VERBOSE,
+            appname="rockcraft",
+            greeting=f"Rockcraft version {rockcraft.__version__}.",
+        )
+    ]
+
+
+def test_init_managed_mode(mocker, emit_mock):
+    mocker.patch("rockcraft.utils.is_managed_mode", return_value=True)
+
+    ui.init(["rockcraft", "pack", "--verbose"])
+
+    assert emit_mock.init.mock_calls == [
+        call(
+            mode=ui.EmitterMode.VERBOSE,
+            appname="rockcraft",
+            greeting=f"Rockcraft version {rockcraft.__version__}.",
+            log_filepath=Path("/tmp/rockcraft.log"),
         )
     ]
 

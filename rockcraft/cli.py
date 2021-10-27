@@ -17,6 +17,7 @@
 
 """Temporary CLI implementation."""
 
+import logging
 import sys
 from typing import Optional, Sequence
 
@@ -29,6 +30,11 @@ def run(argv: Optional[Sequence] = None):
     """Run the CLI."""
     if argv is None:
         argv = sys.argv
+
+    # set lib loggers to debug level so that all messages are sent to Emitter
+    for lib_name in ("craft_providers", "craft_parts"):
+        logger = logging.getLogger(lib_name)
+        logger.setLevel(logging.DEBUG)
 
     try:
         ui.init(argv)
