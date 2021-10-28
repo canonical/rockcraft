@@ -35,7 +35,6 @@ save it as ``rockcraft.yaml``:
   name: hello
   version: "1.0"
   base: ubuntu:20.04
-  build-base: ubuntu:20.04
 
   parts:
       hello:
