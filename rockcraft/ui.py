@@ -21,6 +21,7 @@ from craft_cli.errors import CraftError
 from craft_cli.messages import Emitter, EmitterMode
 
 import rockcraft
+from rockcraft import utils
 
 emit = Emitter()
 
@@ -38,6 +39,13 @@ def init(argv) -> None:
         elif len(argv) == 3 and argv[2] != "--verbose":
             raise CraftError("Only option supported for pack is '--verbose'.")
     finally:
-        emit.init(
-            emitter_mode, "rockcraft", f"Rockcraft version {rockcraft.__version__}."
-        )
+        args = {
+            "mode": emitter_mode,
+            "appname": "rockcraft",
+            "greeting": f"Rockcraft version {rockcraft.__version__}.",
+        }
+
+        if utils.is_managed_mode():
+            args["log_filepath"] = utils.get_managed_environment_log_path()
+
+        emit.init(**args)

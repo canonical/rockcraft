@@ -45,6 +45,11 @@ def get_managed_environment_project_path():
     return get_managed_environment_home_path() / "project"
 
 
+def get_managed_environment_log_path():
+    """Path for log when running in managed environment."""
+    return pathlib.Path("/tmp/rockcraft.log")
+
+
 def get_managed_environment_snap_channel() -> Optional[str]:
     """User-specified channel to use when installing Rockcraft snap from Snap Store.
 
