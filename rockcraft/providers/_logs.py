@@ -33,12 +33,9 @@ def capture_logs_from_instance(instance: Executor) -> None:
     :returns: String of logs.
     """
     # Get a temporary file path.
-    tmp_file = tempfile.NamedTemporaryFile(  # pylint: disable=consider-using-with
-        delete=False, prefix="rockcraft-"
-    )
-    tmp_file.close()
+    with tempfile.NamedTemporaryFile(delete=False, prefix="rockcraft-") as tmp_file:
+        local_log_path = pathlib.Path(tmp_file.name)
 
-    local_log_path = pathlib.Path(tmp_file.name)
     instance_log_path = get_managed_environment_log_path()
 
     try:
@@ -48,7 +45,7 @@ def capture_logs_from_instance(instance: Executor) -> None:
         return
 
     ui.emit.trace("Logs captured from managed instance:")
-    with open(local_log_path, "rt", encoding="utf8") as logfile:
+    with local_log_path.open("rt", encoding="utf8") as logfile:
         for line in logfile:
             ui.emit.trace(":: " + line.rstrip())
     local_log_path.unlink()

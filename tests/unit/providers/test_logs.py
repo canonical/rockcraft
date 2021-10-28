@@ -29,14 +29,14 @@ def mock_namedtemporaryfile(mocker, new_dir):
     mock_namedtemp = mocker.patch(
         "rockcraft.providers._logs.tempfile.NamedTemporaryFile"
     )
-    mock_namedtemp.return_value.name = str(new_dir / "fake.file")
+    mock_namedtemp.return_value.__enter__.return_value.name = str(new_dir / "fake.file")
     yield mock_namedtemp
 
 
 def test_capture_logs_from_instance(
     mocker, emitter, mock_instance, mock_namedtemporaryfile, new_dir
 ):
-    fake_log = pathlib.Path(mock_namedtemporaryfile.return_value.name)
+    fake_log = new_dir / "fake.file"
     fake_log_data = "some\nlog data\nhere"
     fake_log.write_text(fake_log_data, encoding="utf-8")
 
@@ -57,14 +57,15 @@ def test_capture_logs_from_instance(
     emitter.assert_recorded(expected)
     assert mock_namedtemporaryfile.mock_calls == [
         mock.call(delete=False, prefix="rockcraft-"),
-        mock.call().close(),
+        mock.call().__enter__(),
+        mock.call().__exit__(None, None, None),
     ]
 
 
 def test_capture_logs_from_instance_not_found(
-    mocker, emitter, mock_instance, mock_namedtemporaryfile, tmp_path
+    mocker, emitter, mock_instance, mock_namedtemporaryfile, new_dir
 ):
-    fake_log = pathlib.Path(mock_namedtemporaryfile.return_value.name)
+    fake_log = new_dir / "fake.file"
     mock_instance.pull_file.side_effect = FileNotFoundError()
 
     mocker.patch.object(rockcraft.ui, "emit", messages.emit)
