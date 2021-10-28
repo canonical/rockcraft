@@ -16,7 +16,7 @@
 
 """Project definition and helpers."""
 
-from typing import Any, Dict, Tuple
+from typing import Any, Dict, Literal, Optional, Tuple
 
 import pydantic
 import yaml
@@ -38,8 +38,8 @@ class Project(pydantic.BaseModel):
 
     name: str
     version: str
-    base: str
-    build_base: str
+    base: Literal["ubuntu:18.04", "ubuntu:20.04"]
+    build_base: Optional[str]
     parts: Dict[str, Any]
 
     class Config:  # pylint: disable=too-few-public-methods
@@ -51,9 +51,17 @@ class Project(pydantic.BaseModel):
         allow_population_by_field_name = True
         alias_generator = lambda s: s.replace("_", "-")  # noqa: E731
 
+    @pydantic.validator("build_base", always=True)
+    @classmethod
+    def _validate_build_base(cls, build_base, values):
+        """Build-base defaults to the base value if not specified."""
+        if not build_base:
+            build_base = values.get("base")
+        return build_base
+
     @pydantic.validator("parts", each_item=True)
     @classmethod
-    def validate_parts(cls, item):
+    def _validate_parts(cls, item):
         """Verify each part (craft-parts will re-validate this)."""
         validate_part(item)
         return item
