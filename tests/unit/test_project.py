@@ -33,7 +33,6 @@ def yaml_data():
         "name": "mytest",
         "version": "latest",
         "base": "ubuntu:20.04",
-        "build-base": "ubuntu:20.04",
         "parts": {
             "foo": {
                 "plugin": "nil",
@@ -58,7 +57,35 @@ def test_project_unmarshal(yaml_data):
     }
 
 
-@pytest.mark.parametrize("field", ["name", "version", "base", "build-base", "parts"])
+@pytest.mark.parametrize("base", ["ubuntu:18.04", "ubuntu:20.04"])
+def test_project_base(yaml_data, base):
+    yaml_data["base"] = base
+
+    project = Project.unmarshal(yaml_data)
+    assert project.base == base
+    assert project.build_base == base
+
+
+def test_project_base_invalid(yaml_data):
+    yaml_data["base"] = "ubuntu:19.04"
+
+    with pytest.raises(ProjectValidationError) as err:
+        Project.unmarshal(yaml_data)
+    assert str(err.value) == (
+        "Bad rockcraft.yaml content:\n"
+        "- unexpected value; permitted: 'ubuntu:18.04', 'ubuntu:20.04' in field 'base'"
+    )
+
+
+def test_project_build_base(yaml_data):
+    yaml_data["build-base"] = "ubuntu:18.04"
+
+    project = Project.unmarshal(yaml_data)
+    assert project.base == "ubuntu:20.04"
+    assert project.build_base == "ubuntu:18.04"
+
+
+@pytest.mark.parametrize("field", ["name", "version", "base", "parts"])
 def test_project_missing_field(yaml_data, field):
     del yaml_data[field]
 
@@ -99,7 +126,7 @@ def test_project_load(new_dir):
             name: mytest
             version: latest
             base: ubuntu:20.04
-            build_base: ubuntu:20.04
+            build-base: ubuntu:20.04
 
             parts:
               foo:

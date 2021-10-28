@@ -147,7 +147,6 @@ jobs:
           name: smoke-test
           version: latest
           base: ubuntu:20.04
-          build-base: ubuntu:20.04
           parts:
             foo:
               plugin: nil
