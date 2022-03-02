@@ -1,0 +1,13 @@
+summary: smoke test for the retry tool
+
+execute: |
+  rockcraft pack
+
+  test -f smoke-test_latest.rock
+  test ! -d work
+
+  # test container execution
+  docker images
+  sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:smoke-test_latest.rock docker-daemon:smoke-test:latest
+  docker images
+  docker run --entrypoint /run.sh smoke-test:latest

@@ -1,0 +1,47 @@
+name: Spread
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: "0 0 */2 * *"
+
+jobs:
+  snap-build:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Build snap
+        uses: snapcore/action-build@v1
+        id: rockcraft
+      - name: Upload snap artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: snap
+          path: ${{ steps.rockcraft.outputs.snap }}
+
+  snap-tests:
+    runs-on: self-hosted
+    needs: [snap-build]
+
+    steps:
+      - name: Cleanup job workspace
+        run: |
+          rm -rf "${{ github.workspace }}"
+          mkdir "${{ github.workspace }}"
+      - name: Checkout rockcraft
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          submodules: true
+      - name: Download snap artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: snap
+          path: tests
+      - name: Run spread
+        run: spread

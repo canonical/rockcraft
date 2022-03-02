@@ -1,0 +1,10 @@
+name: smoke-test
+version: latest
+base: ubuntu:20.04
+parts:
+  foo:
+    source: .
+    plugin: dump
+    overlay-packages: [figlet]
+    overlay-script: |
+       chroot "$ROCKCRAFT_OVERLAY" /bin/bash -c "rm /etc/issue"
