@@ -42,6 +42,7 @@ parts:
         - python3-distutils
         - python3-pkg-resources
         - python3.8-minimal
+        - fuse-overlayfs
 
   rockcraft:
     source: .
