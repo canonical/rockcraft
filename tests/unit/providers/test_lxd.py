@@ -120,13 +120,10 @@ def test_clean_project_environments(mock_lxc, mock_path):
         lxc=mock_lxc, lxd_project="test-project", lxd_remote="test-remote"
     )
 
-    assert (
-        provider.clean_project_environments(
-            project_name="my-rock-project",
-            project_path=mock_path,
-        )
-        == ["rockcraft-my-rock-project-445566"]
-    )
+    assert provider.clean_project_environments(
+        project_name="my-rock-project",
+        project_path=mock_path,
+    ) == ["rockcraft-my-rock-project-445566"]
 
     assert mock_lxc.mock_calls == [
         mock.call.list_names(project="test-project", remote="test-remote"),
@@ -140,13 +137,10 @@ def test_clean_project_environments(mock_lxc, mock_path):
 
     mock_lxc.reset_mock()
 
-    assert (
-        provider.clean_project_environments(
-            project_name="testrock",
-            project_path=mock_path,
-        )
-        == ["rockcraft-testrock-445566"]
-    )
+    assert provider.clean_project_environments(
+        project_name="testrock",
+        project_path=mock_path,
+    ) == ["rockcraft-testrock-445566"]
 
     assert mock_lxc.mock_calls == [
         mock.call.list_names(project="test-project", remote="test-remote"),

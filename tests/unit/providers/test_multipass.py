@@ -111,13 +111,10 @@ def test_clean_project_environments(mock_multipass, mock_path):
     ]
     provider = providers.MultipassProvider(mock_multipass)
 
-    assert (
-        provider.clean_project_environments(
-            project_name="my-rock-project",
-            project_path=mock_path,
-        )
-        == ["rockcraft-my-rock-project-445566"]
-    )
+    assert provider.clean_project_environments(
+        project_name="my-rock-project",
+        project_path=mock_path,
+    ) == ["rockcraft-my-rock-project-445566"]
 
     assert mock_multipass.mock_calls == [
         mock.call.list(),
@@ -129,13 +126,10 @@ def test_clean_project_environments(mock_multipass, mock_path):
 
     mock_multipass.reset_mock()
 
-    assert (
-        provider.clean_project_environments(
-            project_name="testrock",
-            project_path=mock_path,
-        )
-        == ["rockcraft-testrock-445566"]
-    )
+    assert provider.clean_project_environments(
+        project_name="testrock",
+        project_path=mock_path,
+    ) == ["rockcraft-testrock-445566"]
 
     assert mock_multipass.mock_calls == [
         mock.call.list(),
