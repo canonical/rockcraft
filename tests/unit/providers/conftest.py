@@ -15,8 +15,7 @@
 # For further info, check https://github.com/canonical/charmcraft
 
 import os
-import pathlib
-from unittest import mock
+import stat
 
 import pytest
 from craft_providers import bases
@@ -34,7 +33,9 @@ def clear_environment(monkeypatch):
 
 
 @pytest.fixture
-def mock_path():
-    mock_path = mock.Mock(spec=pathlib.Path)
-    mock_path.stat.return_value.st_ino = 445566
-    yield mock_path
+def mock_path(tmp_path, mocker):
+    stat_list = list(tmp_path.stat())
+    stat_list[stat.ST_INO] = 445566
+    stat_list[stat.ST_UID] = 1234
+    mocker.patch("pathlib.Path.stat", return_value=os.stat_result(stat_list))
+    yield tmp_path
