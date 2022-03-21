@@ -388,6 +388,7 @@ def test_launched_environment(
                 auto_clean=True,
                 auto_create_project=True,
                 map_user_uid=True,
+                uid=1234,
                 use_snapshots=True,
                 project="rockcraft",
                 remote="local",

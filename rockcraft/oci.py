@@ -26,6 +26,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import List
 
+from craft_cli.errors import CraftError
+
 from rockcraft import ui
 
 logger = logging.getLogger(__name__)
@@ -165,18 +167,16 @@ def _copy_image(source: str, destination: str) -> None:
 # XXX: update to use craft-cli output stream
 def _process_run(command: List[str], **kwargs) -> None:
     """Run a command and handle its output."""
-    with subprocess.Popen(
-        command,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-        universal_newlines=True,
-        **kwargs,
-    ) as proc:
-        if not proc.stdout:
-            return
-        for line in iter(proc.stdout.readline, ""):
-            logger.info(":: %s", line.strip())
-        ret = proc.wait()
-
-    if ret:
-        raise subprocess.CalledProcessError(ret, command)
+    try:
+        subprocess.run(
+            command,
+            **kwargs,
+            capture_output=True,
+            check=True,
+            universal_newlines=True,
+        )
+    except subprocess.CalledProcessError as err:
+        msg = f"Failed to copy image: {err!s}"
+        if err.stderr:
+            msg += f" ({err.stderr.strip()!s})"
+        raise CraftError(msg) from err
