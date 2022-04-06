@@ -9,7 +9,7 @@ Prerequisites
 -------------
 
 - snap enabled system https://snapcraft.io
-- LXD setup on ext4
+- LXD installed
 - skopeo installed https://github.com/containers/skopeo
 - running docker setup
 - a text editor
@@ -85,3 +85,7 @@ Which should print:
 .. code-block:: sh
 
   Hello, world!
+
+
+Overriding steps
+================

@@ -11,7 +11,6 @@ append_source_requirements() {
   req_file="$1"
 
   echo "git+https://github.com/canonical/craft-cli.git@6149a889b16281f9c6453405e140fe2cb46edab0#egg=craft_cli" >> "$req_file"
-  echo "git+https://github.com/canonical/craft-parts.git@7aa01bd45fb8652a09484f46ee77278f03a50f50#egg=craft_parts" >> "$req_file"
 }
 
 venv_dir="$(mktemp -d)"
@@ -29,19 +28,18 @@ cp -r usr/lib/python3/dist-packages/* "$site_pkgs"
 popd
 
 pip install git+https://github.com/canonical/craft-cli.git@6149a889b16281f9c6453405e140fe2cb46edab0#egg=craft_cli
-pip install git+https://github.com/canonical/craft-parts.git@7aa01bd45fb8652a09484f46ee77278f03a50f50#egg=craft_parts
 
 pip install -e .[doc]
-pip freeze --exclude-editable | egrep -v "^craft-(cli|parts)" > requirements-doc.txt
+pip freeze --exclude-editable | grep -v "^craft-cli" > requirements-doc.txt
 requirements_fixups "requirements-doc.txt"
 
 pip install -e .
-pip freeze --exclude-editable | egrep -v "^craft-(cli|parts)" > requirements.txt
+pip freeze --exclude-editable | grep -v "^craft-cli" > requirements.txt
 requirements_fixups "requirements.txt"
 append_source_requirements  "requirements.txt"
 
 pip install -e .[dev]
-pip freeze --exclude-editable | egrep -v "^craft-(cli|parts)" > requirements-dev.txt
+pip freeze --exclude-editable | grep -v "^craft-cli" > requirements-dev.txt
 requirements_fixups "requirements-dev.txt"
 append_source_requirements  "requirements-dev.txt"
 

@@ -1,0 +1,16 @@
+summary: craftctl test for the retry tool
+
+execute: |
+  rockcraft pack
+
+  test -f craftctl-test_latest.rock
+  test ! -d work
+
+  uname -a
+  snap list
+
+  # test container execution
+  docker images
+  sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:craftctl-test_latest.rock docker-daemon:craftctl-test:latest
+  docker images
+  docker run --entrypoint /usr/bin/hello craftctl-test:latest

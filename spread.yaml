@@ -1,4 +1,4 @@
-project: rockraft
+project: rockcraft
 
 path: /rockcraft
 environment:
@@ -27,18 +27,24 @@ prepare: |
         cat "$tempfile"
         exit 1
     fi
-  elif os.query is-ubuntu; then
-    dnf update
-     install snapd
   fi
 
-  tests.pkgs install snapd docker
+  tests.pkgs install snapd
 
   snap wait system seed.loaded
-  snap install lxd
 
   # The /snap directory does not exist in some environments
   [ ! -d /snap ] && ln -s /var/lib/snapd/snap /snap
+
+  # install docker before lxd, otherwise it will mess up with lxd networking
+  snap install docker
+
+  # make sure docker is working
+  sleep 5
+  docker run hello-world
+  sleep 5
+
+  snap install lxd
 
   # Hold snap refreshes for 24h.
   snap set system refresh.hold="$(date --date=tomorrow +%Y-%m-%dT%H:%M:%S%:z)"
@@ -60,5 +66,8 @@ prepare: |
   fi
 
 suites:
-  tests/tutorials/:
+  tests/spread/tutorials/:
     summary: tests basic tutorials
+
+  tests/spread/general/:
+    summary: tests for rockcraft core functionality
