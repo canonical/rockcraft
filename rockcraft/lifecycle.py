@@ -90,17 +90,16 @@ def pack_in_provider(project: Project):
 
     output_dir = utils.get_managed_environment_project_path()
 
+    ui.emit.progress("Launching instance...")
     with provider.launched_environment(
         project_name=project.name,
         project_path=Path().absolute(),
         base=project.base,
     ) as instance:
         try:
-            instance.execute_run(
-                cmd,
-                check=True,
-                cwd=output_dir,
-            )
+            with ui.emit.pause():
+                instance.execute_run(cmd, check=True, cwd=output_dir)
+            capture_logs_from_instance(instance)
         except subprocess.CalledProcessError as err:
             capture_logs_from_instance(instance)
             raise providers.ProviderError(

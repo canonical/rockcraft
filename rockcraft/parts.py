@@ -67,7 +67,7 @@ class PartsLifecycle:
                 ignore_local_sources=["*.rock"],
             )
         except craft_parts.PartsError as err:
-            raise PartsLifecycleError(err) from err
+            raise PartsLifecycleError(str(err)) from err
 
     @property
     def prime_dir(self) -> pathlib.Path:
@@ -90,7 +90,9 @@ class PartsLifecycle:
                 for action in actions:
                     message = _action_message(action)
                     ui.emit.progress(f"Executing parts lifecycle: {message}")
-                    aex.execute(action)
+                    with ui.emit.open_stream("Executing action") as stream:
+                        aex.execute(action, stdout=stream, stderr=stream)
+                    ui.emit.message(f"Executed: {message}", intermediate=True)
 
             ui.emit.message("Executed parts lifecycle", intermediate=True)
         except RuntimeError as err:
@@ -101,7 +103,7 @@ class PartsLifecycle:
                 msg = f"{err.filename}: {msg}"
             raise PartsLifecycleError(msg) from err
         except Exception as err:
-            raise PartsLifecycleError(err) from err
+            raise PartsLifecycleError(str(err)) from err
 
 
 def _action_message(action: craft_parts.Action) -> str:

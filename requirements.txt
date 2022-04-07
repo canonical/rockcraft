@@ -1,8 +1,8 @@
 alabaster==0.7.12
-appdirs==1.4.4
 Babel==2.9.1
 certifi==2021.10.8
 charset-normalizer==2.0.12
+craft-cli==0.4.0
 craft-parts==1.4.2
 craft-providers==1.1.1
 Deprecated==1.2.13
@@ -14,6 +14,7 @@ Jinja2==3.1.1
 jsonpointer==2.2
 MarkupSafe==2.1.1
 packaging==21.3
+platformdirs==2.5.1
 pydantic==1.9.0
 pydantic-yaml==0.6.3
 Pygments==2.11.2
@@ -40,5 +41,4 @@ types-Deprecated==1.2.5
 typing-extensions==4.1.1
 urllib3==1.26.9
 wrapt==1.14.0
-zipp==3.7.0
-git+https://github.com/canonical/craft-cli.git@6149a889b16281f9c6453405e140fe2cb46edab0#egg=craft_cli
+zipp==3.8.0

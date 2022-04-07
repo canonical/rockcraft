@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # -*- Mode:Python; indent-tabs-mode:nil; tab-width:4 -*-
 #
 # Copyright (C) 2021 Canonical Ltd
@@ -17,13 +16,12 @@
 
 """User interface for Rockcraft."""
 
-from craft_cli.errors import CraftError
-from craft_cli.messages import Emitter, EmitterMode
+from typing import Any, Dict
+
+from craft_cli import CraftError, EmitterMode, emit
 
 import rockcraft
 from rockcraft import utils
-
-emit = Emitter()
 
 
 def init(argv) -> None:
@@ -39,7 +37,7 @@ def init(argv) -> None:
         elif len(argv) == 3 and argv[2] != "--verbose":
             raise CraftError("Only option supported for pack is '--verbose'.")
     finally:
-        args = {
+        args: Dict[str, Any] = {
             "mode": emitter_mode,
             "appname": "rockcraft",
             "greeting": f"Rockcraft version {rockcraft.__version__}.",
