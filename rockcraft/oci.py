@@ -26,9 +26,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import List
 
-from craft_cli.errors import CraftError
-
-from rockcraft import ui
+from craft_cli import CraftError, emit
 
 logger = logging.getLogger(__name__)
 
@@ -105,7 +103,7 @@ class Image:
                     for root, _, files in os.walk("."):
                         for name in files:
                             path = os.path.join(root, name)
-                            ui.emit.trace(f"Adding to layer: {path}")
+                            emit.trace(f"Adding to layer: {path}")
                             tar_file.add(path)
             finally:
                 os.chdir(old_dir)

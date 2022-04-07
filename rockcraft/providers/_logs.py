@@ -19,9 +19,9 @@
 import pathlib
 import tempfile
 
+from craft_cli import emit
 from craft_providers import Executor
 
-from rockcraft import ui
 from rockcraft.utils import get_managed_environment_log_path
 
 
@@ -41,11 +41,11 @@ def capture_logs_from_instance(instance: Executor) -> None:
     try:
         instance.pull_file(source=instance_log_path, destination=local_log_path)
     except FileNotFoundError:
-        ui.emit.trace("No logs found in instance.")
+        emit.trace("No logs found in instance.")
         return
 
-    ui.emit.trace("Logs captured from managed instance:")
+    emit.trace("Logs captured from managed instance:")
     with local_log_path.open("rt", encoding="utf8") as logfile:
         for line in logfile:
-            ui.emit.trace(":: " + line.rstrip())
+            emit.trace(":: " + line.rstrip())
     local_log_path.unlink()
