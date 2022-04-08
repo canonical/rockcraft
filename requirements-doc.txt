@@ -4,7 +4,7 @@ certifi==2021.10.8
 charset-normalizer==2.0.12
 craft-cli==0.4.0
 craft-parts==1.4.2
-craft-providers==1.1.1
+craft-providers==1.2.0
 Deprecated==1.2.13
 docutils==0.17.1
 idna==3.3
