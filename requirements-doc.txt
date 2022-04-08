@@ -13,6 +13,7 @@ importlib-metadata==4.11.3
 Jinja2==3.1.1
 jsonpointer==2.2
 MarkupSafe==2.1.1
+overrides==6.1.0
 packaging==21.3
 platformdirs==2.5.1
 pydantic==1.9.0
@@ -39,6 +40,7 @@ sphinxcontrib-qthelp==1.0.3
 sphinxcontrib-serializinghtml==1.1.5
 types-Deprecated==1.2.5
 typing-extensions==4.1.1
+typing-utils==0.1.0
 urllib3==1.26.9
 wrapt==1.14.0
 zipp==3.8.0

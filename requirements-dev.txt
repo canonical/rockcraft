@@ -36,6 +36,7 @@ MarkupSafe==2.1.1
 mccabe==0.6.1
 mypy==0.942
 mypy-extensions==0.4.3
+overrides==6.1.0
 packaging==21.3
 pathspec==0.9.0
 pkginfo==1.8.2
@@ -90,6 +91,7 @@ types-requests==2.27.16
 types-setuptools==57.4.12
 types-urllib3==1.26.11
 typing-extensions==4.1.1
+typing-utils==0.1.0
 urllib3==1.26.9
 virtualenv==20.14.0
 webencodings==0.5.1
