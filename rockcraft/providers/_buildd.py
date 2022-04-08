@@ -21,6 +21,7 @@ from typing import Optional
 
 from craft_providers import Executor, bases
 from craft_providers.actions import snap_installer
+from overrides import overrides
 
 from rockcraft import utils
 
@@ -88,6 +89,7 @@ class RockcraftBuilddBaseConfiguration(bases.BuilddBase):
                     brief="Failed to inject host rockcraft snap into target environment."
                 ) from error
 
+    @overrides
     def setup(
         self,
         *,
@@ -98,12 +100,34 @@ class RockcraftBuilddBaseConfiguration(bases.BuilddBase):
         """Prepare base instance for use by the application.
 
         :param executor: Executor for target container.
-        :param retry_wait: Duration to sleep() between status checks (if
-            required).
+        :param retry_wait: Duration to sleep() between status checks (if required).
         :param timeout: Timeout in seconds.
 
         :raises BaseCompatibilityError: if instance is incompatible.
         :raises BaseConfigurationError: on other unexpected error.
         """
         super().setup(executor=executor, retry_wait=retry_wait, timeout=timeout)
+        self._setup_rockcraft(executor=executor)
+
+    @overrides
+    def warmup(
+        self,
+        *,
+        executor: Executor,
+        retry_wait: float = 0.25,
+        timeout: Optional[float] = None,
+    ) -> None:
+        """Prepare a previously created and setup instance for use by the application.
+
+        In addition to the guarantees provided by buildd:
+            - rockcraft installed
+
+        :param executor: Executor for target container.
+        :param retry_wait: Duration to sleep() between status checks (if required).
+        :param timeout: Timeout in seconds.
+
+        :raises BaseCompatibilityError: if instance is incompatible.
+        :raises BaseConfigurationError: on other unexpected error.
+        """
+        super().warmup(executor=executor, retry_wait=retry_wait, timeout=timeout)
         self._setup_rockcraft(executor=executor)
