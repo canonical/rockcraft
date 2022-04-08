@@ -21,7 +21,7 @@ import logging
 import sys
 from typing import Optional, Sequence
 
-from craft_cli.errors import CraftError
+from craft_cli import CraftError, emit
 
 from . import lifecycle, ui
 
@@ -40,7 +40,7 @@ def run(argv: Optional[Sequence] = None):
         ui.init(argv)
         lifecycle.pack()
     except CraftError as error:
-        ui.emit.error(error)
+        emit.error(error)
         sys.exit(1)
     finally:
-        ui.emit.ended_ok()
+        emit.ended_ok()

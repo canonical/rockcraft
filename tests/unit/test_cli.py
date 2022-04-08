@@ -18,7 +18,7 @@
 from unittest.mock import call, patch
 
 import pytest
-from craft_cli.errors import CraftError
+from craft_cli import CraftError, emit
 
 from rockcraft.cli import run
 
@@ -39,15 +39,18 @@ def lifecycle_pack_mock():
     patcher.stop()
 
 
-def test_run_defaults(emit_mock, ui_init_mock, lifecycle_pack_mock):
+def test_run_defaults(mocker, ui_init_mock, lifecycle_pack_mock):
+    mock_ended_ok = mocker.spy(emit, "ended_ok")
     run(["rockcraft", "pack"])
 
     assert ui_init_mock.mock_calls == [call(["rockcraft", "pack"])]
     assert lifecycle_pack_mock.mock_calls == [call()]
-    assert emit_mock.ended_ok.mock_calls == [call()]
+    assert mock_ended_ok.mock_calls == [call()]
 
 
-def test_run_ui_init_raises_craft_error(emit_mock, ui_init_mock, lifecycle_pack_mock):
+def test_run_ui_init_raises_craft_error(mocker, ui_init_mock, lifecycle_pack_mock):
+    mock_error = mocker.spy(emit, "error")
+    mock_ended_ok = mocker.spy(emit, "ended_ok")
     craft_error = CraftError("foo")
     ui_init_mock.side_effect = craft_error
 
@@ -55,6 +58,6 @@ def test_run_ui_init_raises_craft_error(emit_mock, ui_init_mock, lifecycle_pack_
         run(["rockcraft", "pack"])
 
     assert ui_init_mock.mock_calls == [call(["rockcraft", "pack"])]
-    assert emit_mock.error.mock_calls == [call(craft_error)]
+    assert mock_error.mock_calls == [call(craft_error)]
     assert lifecycle_pack_mock.mock_calls == []
-    assert emit_mock.ended_ok.mock_calls == [call()]
+    assert mock_ended_ok.mock_calls == [call()]

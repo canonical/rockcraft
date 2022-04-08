@@ -1,11 +1,10 @@
 alabaster==0.7.12
-appdirs==1.4.4
 astroid==2.11.2
 attrs==21.4.0
 autoflake==1.4
 Babel==2.9.1
 black==22.3.0
-bleach==4.1.0
+bleach==5.0.0
 certifi==2021.10.8
 cffi==1.15.0
 charset-normalizer==2.0.12
@@ -13,6 +12,7 @@ click==8.1.2
 codespell==2.1.0
 commonmark==0.9.1
 coverage==6.3.2
+craft-cli==0.4.0
 craft-parts==1.4.2
 craft-providers==1.1.1
 cryptography==36.0.2
@@ -49,7 +49,7 @@ pydantic-yaml==0.6.3
 pydocstyle==6.1.1
 pyflakes==2.4.0
 Pygments==2.11.2
-pylint==2.13.4
+pylint==2.13.5
 pylint-fixme-info==1.0.3
 pylint-pytest==1.1.2
 pyparsing==3.0.7
@@ -94,5 +94,4 @@ urllib3==1.26.9
 virtualenv==20.14.0
 webencodings==0.5.1
 wrapt==1.14.0
-zipp==3.7.0
-git+https://github.com/canonical/craft-cli.git@6149a889b16281f9c6453405e140fe2cb46edab0#egg=craft_cli
+zipp==3.8.0

@@ -20,12 +20,10 @@ import pathlib
 from typing import Any, Dict
 
 import craft_parts
-from craft_cli.errors import CraftError
+from craft_cli import CraftError, emit
 from craft_parts import ActionType, Step, plugins
 from craft_parts.parts import PartSpec
 from xdg import BaseDirectory  # type: ignore
-
-from rockcraft import ui
 
 
 class PartsLifecycleError(CraftError):
@@ -51,7 +49,7 @@ class PartsLifecycle:
         base_layer_dir: pathlib.Path,
         base_layer_hash: bytes,
     ):
-        ui.emit.progress("Initializing parts lifecycle")
+        emit.progress("Initializing parts lifecycle")
 
         # set the cache dir for parts package management
         cache_dir = BaseDirectory.save_cache_path("rockcraft")
@@ -67,7 +65,7 @@ class PartsLifecycle:
                 ignore_local_sources=["*.rock"],
             )
         except craft_parts.PartsError as err:
-            raise PartsLifecycleError(err) from err
+            raise PartsLifecycleError(str(err)) from err
 
     @property
     def prime_dir(self) -> pathlib.Path:
@@ -83,16 +81,18 @@ class PartsLifecycle:
         :raises RuntimeError: On unexpected error.
         """
         try:
-            ui.emit.progress("Executing parts lifecycle")
+            emit.progress("Executing parts lifecycle")
 
             actions = self._lcm.plan(target_step)
             with self._lcm.action_executor() as aex:
                 for action in actions:
                     message = _action_message(action)
-                    ui.emit.progress(f"Executing parts lifecycle: {message}")
-                    aex.execute(action)
+                    emit.progress(f"Executing parts lifecycle: {message}")
+                    with emit.open_stream("Executing action") as stream:
+                        aex.execute(action, stdout=stream, stderr=stream)
+                    emit.message(f"Executed: {message}", intermediate=True)
 
-            ui.emit.message("Executed parts lifecycle", intermediate=True)
+            emit.message("Executed parts lifecycle", intermediate=True)
         except RuntimeError as err:
             raise RuntimeError(f"Parts processing internal error: {err}") from err
         except OSError as err:
@@ -101,7 +101,7 @@ class PartsLifecycle:
                 msg = f"{err.filename}: {msg}"
             raise PartsLifecycleError(msg) from err
         except Exception as err:
-            raise PartsLifecycleError(err) from err
+            raise PartsLifecycleError(str(err)) from err
 
 
 def _action_message(action: craft_parts.Action) -> str:
