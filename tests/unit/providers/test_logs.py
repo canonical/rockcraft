@@ -18,9 +18,7 @@ import pathlib
 from unittest import mock
 
 import pytest
-from craft_cli import messages
 
-import rockcraft.ui
 from rockcraft import providers
 
 
@@ -40,7 +38,6 @@ def test_capture_logs_from_instance(
     fake_log_data = "some\nlog data\nhere"
     fake_log.write_text(fake_log_data, encoding="utf-8")
 
-    mocker.patch.object(rockcraft.ui, "emit", messages.emit)
     providers.capture_logs_from_instance(mock_instance)
 
     assert mock_instance.mock_calls == [
@@ -68,7 +65,6 @@ def test_capture_logs_from_instance_not_found(
     fake_log = new_dir / "fake.file"
     mock_instance.pull_file.side_effect = FileNotFoundError()
 
-    mocker.patch.object(rockcraft.ui, "emit", messages.emit)
     providers.capture_logs_from_instance(mock_instance)
 
     assert mock_instance.mock_calls == [

@@ -1,7 +1,6 @@
-#!/usr/bin/env python3
 # -*- Mode:Python; indent-tabs-mode:nil; tab-width:4 -*-
 #
-# Copyright (C) 2021 Canonical Ltd
+# Copyright 2021-2022 Canonical Ltd.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 3 as
@@ -15,32 +14,72 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Temporary CLI implementation."""
+"""Command-line application entry point."""
 
 import logging
 import sys
-from typing import Optional, Sequence
 
-from craft_cli import CraftError, emit
+import craft_cli
+from craft_cli import ArgumentParsingError, EmitterMode, ProvideHelpException, emit
 
-from . import lifecycle, ui
+from rockcraft import __version__
+
+from . import commands
+
+COMMAND_GROUPS = [
+    craft_cli.CommandGroup(
+        "Lifecycle",
+        [
+            commands.PackCommand,
+        ],
+    )
+]
+
+GLOBAL_ARGS = [
+    craft_cli.GlobalArgument(
+        "version", "flag", "-V", "--version", "Show the application version and exit"
+    )
+]
 
 
-def run(argv: Optional[Sequence] = None):
+def run():
     """Run the CLI."""
-    if argv is None:
-        argv = sys.argv
-
     # set lib loggers to debug level so that all messages are sent to Emitter
     for lib_name in ("craft_providers", "craft_parts"):
         logger = logging.getLogger(lib_name)
         logger.setLevel(logging.DEBUG)
 
+    emit_args = {
+        "mode": EmitterMode.NORMAL,
+        "appname": "rockcraft",
+        "greeting": f"Starting Rockcraft {__version__}",
+    }
+
+    emit.init(**emit_args)
+
+    dispatcher = craft_cli.Dispatcher(
+        "rockcraft",
+        COMMAND_GROUPS,
+        summary="A tool to create OCI images",
+        extra_global_args=GLOBAL_ARGS,
+        default_command=commands.PackCommand,
+    )
+
     try:
-        ui.init(argv)
-        lifecycle.pack()
-    except CraftError as error:
-        emit.error(error)
-        sys.exit(1)
-    finally:
+        global_args = dispatcher.pre_parse_args(sys.argv[1:])
+        if global_args.get("version"):
+            emit.message(f"rockcraft {__version__}")
+        else:
+            dispatcher.load_command(None)
+            dispatcher.run()
         emit.ended_ok()
+    except ProvideHelpException as err:
+        print(err, file=sys.stderr)  # to stderr, as argparse normally does
+        emit.ended_ok()
+    except ArgumentParsingError as err:
+        print(err, file=sys.stderr)  # to stderr, as argparse normally does
+        emit.ended_ok()
+        sys.exit(1)
+    except craft_cli.CraftError as err:  # TODO: define RockcraftError
+        emit.error(err)
+        sys.exit(1)

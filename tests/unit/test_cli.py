@@ -1,7 +1,6 @@
-#!/usr/bin/env python3
 # -*- Mode:Python; indent-tabs-mode:nil; tab-width:4 -*-
 #
-# Copyright (C) 2021 Canonical Ltd
+# Copyright 2021-2022 Canonical Ltd.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 3 as
@@ -15,20 +14,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import sys
 from unittest.mock import call, patch
 
 import pytest
-from craft_cli import CraftError, emit
+from craft_cli import emit
 
-from rockcraft.cli import run
-
-
-@pytest.fixture
-def ui_init_mock():
-    """Mock for ui.init."""
-    patcher = patch("rockcraft.ui.init")
-    yield patcher.start()
-    patcher.stop()
+from rockcraft import cli
 
 
 @pytest.fixture
@@ -39,25 +31,10 @@ def lifecycle_pack_mock():
     patcher.stop()
 
 
-def test_run_defaults(mocker, ui_init_mock, lifecycle_pack_mock):
+def test_run_defaults(mocker, lifecycle_pack_mock):
     mock_ended_ok = mocker.spy(emit, "ended_ok")
-    run(["rockcraft", "pack"])
+    mocker.patch.object(sys, "argv", ["rockcraft", "pack"])
+    cli.run()
 
-    assert ui_init_mock.mock_calls == [call(["rockcraft", "pack"])]
     assert lifecycle_pack_mock.mock_calls == [call()]
-    assert mock_ended_ok.mock_calls == [call()]
-
-
-def test_run_ui_init_raises_craft_error(mocker, ui_init_mock, lifecycle_pack_mock):
-    mock_error = mocker.spy(emit, "error")
-    mock_ended_ok = mocker.spy(emit, "ended_ok")
-    craft_error = CraftError("foo")
-    ui_init_mock.side_effect = craft_error
-
-    with pytest.raises(SystemExit):
-        run(["rockcraft", "pack"])
-
-    assert ui_init_mock.mock_calls == [call(["rockcraft", "pack"])]
-    assert mock_error.mock_calls == [call(craft_error)]
-    assert lifecycle_pack_mock.mock_calls == []
     assert mock_ended_ok.mock_calls == [call()]

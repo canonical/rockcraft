@@ -1,6 +1,6 @@
 # -*- Mode:Python; indent-tabs-mode:nil; tab-width:4 -*-
 #
-# Copyright 2021-2022 Canonical Ltd.
+# Copyright 2022 Canonical Ltd.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 3 as
@@ -14,13 +14,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from unittest import mock
+"""Rockcraft commands."""
 
-import pytest
-from craft_providers import Executor
-
-
-@pytest.fixture
-def mock_instance():
-    """Provide a mock instance (Executor)."""
-    yield mock.Mock(spec=Executor)
+from .lifecycle import PackCommand  # noqa: F401

@@ -1,7 +1,6 @@
-#!/usr/bin/env python3
 # -*- Mode:Python; indent-tabs-mode:nil; tab-width:4 -*-
 #
-# Copyright (C) 2021 Canonical Ltd
+# Copyright 2021-2022 Canonical Ltd.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 3 as
@@ -21,7 +20,7 @@
 import subprocess
 from pathlib import Path
 
-from craft_cli import emit
+from craft_cli import EmitterMode, emit
 
 from . import oci, providers, utils
 from .parts import PartsLifecycle, Step
@@ -88,7 +87,12 @@ def pack_in_provider(project: Project):
 
     cmd = ["rockcraft", "pack"]
 
-    # TODO: append appropriate command line arguments
+    if emit.get_mode() == EmitterMode.VERBOSE:
+        cmd.append("--verbose")
+    elif emit.get_mode() == EmitterMode.QUIET:
+        cmd.append("--quiet")
+    elif emit.get_mode() == EmitterMode.TRACE:
+        cmd.append("--trace")
 
     output_dir = utils.get_managed_environment_project_path()
 
