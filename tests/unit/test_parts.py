@@ -1,6 +1,6 @@
 # -*- Mode:Python; indent-tabs-mode:nil; tab-width:4 -*-
 #
-# Copyright (C) 2021 Canonical Ltd
+# Copyright 2021-2022 Canonical Ltd.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 3 as
@@ -23,7 +23,7 @@ from rockcraft import parts
 
 
 @tests.linux_only
-def test_parts_lifecycle_prime_dir(emit_mock, new_dir):
+def test_parts_lifecycle_prime_dir(new_dir):
     parts_data = {
         "foo": {
             "plugin": "nil",
@@ -40,7 +40,7 @@ def test_parts_lifecycle_prime_dir(emit_mock, new_dir):
 
 
 @tests.linux_only
-def test_parts_lifecycle_run(emit_mock, new_dir):
+def test_parts_lifecycle_run(new_dir):
     parts_data = {
         "foo": {
             "plugin": "dump",
@@ -63,7 +63,7 @@ def test_parts_lifecycle_run(emit_mock, new_dir):
 
 
 @tests.linux_only
-def test_parts_lifecycle_error(emit_mock, new_dir):
+def test_parts_lifecycle_error(new_dir):
     parts_data = {
         "foo": {
             "invalid": True,

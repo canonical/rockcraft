@@ -1,7 +1,7 @@
 Welcome to Rockcraft's documentation!
 ===========================================
 
-Rockcraft is tool to create OCI images using the same language used by
+Rockcraft is a tool to create OCI images using the same language used by
 Snapcraft and Charmcraft. It is currently under heavy development.
 
 .. toctree::
