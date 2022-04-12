@@ -1,7 +1,9 @@
-name: smoke-test
+name: entrypoint-test
 version: latest
 base: ubuntu:20.04
-cmd: [/usr/bin/hello, -t]
+entrypoint: [/usr/bin/hello]
+cmd: [-g, "ship it!"]
+
 parts:
   hello:
     plugin: nil
