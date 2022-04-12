@@ -16,7 +16,6 @@
 
 """OCI image manipulation helpers."""
 
-
 import logging
 import os
 import shutil
@@ -84,7 +83,7 @@ class Image:
 
         return bundle_path / "rootfs"
 
-    def add_layer(self, tag: str, layer_path: Path) -> None:
+    def add_layer(self, tag: str, layer_path: Path) -> "Image":
         """Add a layer to the image.
 
         :param tag: The tag of the image containing the new layer.
@@ -123,13 +122,15 @@ class Image:
         finally:
             temp_file.unlink(missing_ok=True)
 
+        name = self.image_name.split(":", 1)[0]
+        return self.__class__(image_name=f"{name}:{tag}", path=self.path)
+
     def to_docker_daemon(self, tag: str) -> None:
         """Export the current image to the local docker daemon.
 
         :param tag: The tag to export.
         """
-        parts = self.image_name.split(":", 1)
-        name = parts[0]
+        name = self.image_name.split(":", 1)[0]
         src_path = self.path / f"{name}:{tag}"
         _copy_image(f"oci:{str(src_path)}", f"docker-daemon:{name}:{tag}")
 
@@ -138,8 +139,7 @@ class Image:
 
         :param tag: The tag to export.
         """
-        parts = self.image_name.split(":", 1)
-        name = parts[0]
+        name = self.image_name.split(":", 1)[0]
         src_path = self.path / f"{name}:{tag}"
         _copy_image(f"oci:{str(src_path)}", f"oci-archive:{filename}:{tag}")
 
@@ -156,15 +156,62 @@ class Image:
         parts = output.split(":", 1)
         return bytes.fromhex(parts[-1])
 
+    def set_entrypoint(self, entrypoint: List[str]) -> None:
+        """Set the OCI image entrypoint.
+
+        :param entrypoint: The default list of arguments to use as the command to
+            execute when the container starts.
+        """
+        emit.progress("Configuring entrypoint...")
+        image_path = self.path / self.image_name
+        params = ["--clear=config.entrypoint"]
+        for entry in entrypoint:
+            params.extend(["--config.entrypoint", entry])
+        _config_image(image_path, params)
+        emit.message(f"Entrypoint set to {entrypoint}", intermediate=True)
+
+    def set_cmd(self, cmd: List[str]) -> None:
+        """Set the OCI image default command parameters.
+
+        :param cmd: The default arguments to the entrypoint of the container. If
+            entrypoint is not defined, the first entry of cmd is the executable to
+            run when the container starts.
+        """
+        emit.progress("Configuring cmd...")
+        image_path = self.path / self.image_name
+        params = ["--clear=config.cmd"]
+        for entry in cmd:
+            params.extend(["--config.cmd", entry])
+        _config_image(image_path, params)
+        emit.message(f"Cmd set to {cmd}", intermediate=True)
+
+    def set_env(self, env: List[str]) -> None:
+        """Set the OCI image environment.
+
+        :param env: A list of environment variables in ``NAME=VALUE`` format.
+        """
+        emit.progress("Configuring env...")
+        image_path = self.path / self.image_name
+        params = ["--clear=config.env"]
+        for entry in env:
+            params.extend(["--config.env", entry])
+        _config_image(image_path, params)
+        emit.message(f"Environment set to {env}", intermediate=True)
+
 
 def _copy_image(source: str, destination: str) -> None:
     """Transfer images from source to destination."""
     _process_run(["skopeo", "--insecure-policy", "copy", source, destination])
 
 
-# XXX: update to use craft-cli output stream
+def _config_image(image_path: Path, params: List[str]) -> None:
+    """Configure the OCI image."""
+    _process_run(["umoci", "config", "--image", str(image_path)] + params)
+
+
 def _process_run(command: List[str], **kwargs) -> None:
     """Run a command and handle its output."""
+    emit.trace(f"Execute process: {command!r}, kwargs={kwargs!r}")
     try:
         subprocess.run(
             command,

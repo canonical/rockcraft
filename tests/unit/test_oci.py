@@ -153,3 +153,78 @@ class TestImage:
             )
         ]
         assert digest == bytes([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15])
+
+    def test_set_entrypoint(self, mocker):
+        mock_run = mocker.patch("subprocess.run")
+        image = oci.Image("a:b", Path("/c"))
+
+        image.set_entrypoint(["arg1", "arg2"])
+
+        assert mock_run.mock_calls == [
+            call(
+                [
+                    "umoci",
+                    "config",
+                    "--image",
+                    "/c/a:b",
+                    "--clear=config.entrypoint",
+                    "--config.entrypoint",
+                    "arg1",
+                    "--config.entrypoint",
+                    "arg2",
+                ],
+                capture_output=True,
+                check=True,
+                universal_newlines=True,
+            )
+        ]
+
+    def test_set_cmd(self, mocker):
+        mock_run = mocker.patch("subprocess.run")
+        image = oci.Image("a:b", Path("/c"))
+
+        image.set_cmd(["arg1", "arg2"])
+
+        assert mock_run.mock_calls == [
+            call(
+                [
+                    "umoci",
+                    "config",
+                    "--image",
+                    "/c/a:b",
+                    "--clear=config.cmd",
+                    "--config.cmd",
+                    "arg1",
+                    "--config.cmd",
+                    "arg2",
+                ],
+                capture_output=True,
+                check=True,
+                universal_newlines=True,
+            )
+        ]
+
+    def test_set_env(self, mocker):
+        mock_run = mocker.patch("subprocess.run")
+        image = oci.Image("a:b", Path("/c"))
+
+        image.set_env(["NAME1=VALUE1", "NAME2=VALUE2"])
+
+        assert mock_run.mock_calls == [
+            call(
+                [
+                    "umoci",
+                    "config",
+                    "--image",
+                    "/c/a:b",
+                    "--clear=config.env",
+                    "--config.env",
+                    "NAME1=VALUE1",
+                    "--config.env",
+                    "NAME2=VALUE2",
+                ],
+                capture_output=True,
+                check=True,
+                universal_newlines=True,
+            )
+        ]
