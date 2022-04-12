@@ -35,6 +35,7 @@ save it as ``rockcraft.yaml``:
   name: hello
   version: "1.0"
   base: ubuntu:20.04
+  cmd: [/usr/bin/hello, -t]
 
   parts:
       hello:
@@ -56,10 +57,17 @@ The output should look as follows:
 
 .. code-block:: sh
 
-  Retrieved base ubuntu:20.04                                                                                                   
-  Extracted ubuntu:20.04                                                                                                        
-  Executed parts lifecycle                                                                                                      
-  Created new layer                                                                                                             
+  Launching instance...
+  Retrieved base ubuntu:20.04
+  Extracted ubuntu:20.04
+  Executed: pull hello
+  Executed: overlay hello
+  Executed: build hello
+  Executed: stage hello
+  Executed: prime hello
+  Executed parts lifecycle
+  Created new layer
+  Cmd set to ['/usr/bin/hello', '-t']
   Exported to OCI archive 'hello_1.0.rock'
 
 At the end of the process, a file named ``hello_1.0.rock`` should be
@@ -78,14 +86,10 @@ Now run the ``hello`` command from the OCI image:
 
 .. code-block:: sh
 
-  $ docker run  --entrypoint /usr/bin/hello hello:1.0
+  $ docker run hello:1.0
 
 Which should print:
 
 .. code-block:: sh
 
-  Hello, world!
-
-
-Overriding steps
-================
+  hello, world
