@@ -208,7 +208,7 @@ class TestImage:
         mock_run = mocker.patch("subprocess.run")
         image = oci.Image("a:b", Path("/c"))
 
-        image.set_env(["NAME1=VALUE1", "NAME2=VALUE2"])
+        image.set_env([{"NAME1": "VALUE1"}, {"NAME2": "VALUE2"}])
 
         assert mock_run.mock_calls == [
             call(

@@ -35,7 +35,7 @@ def yaml_data():
         "base": "ubuntu:20.04",
         "entrypoint": ["/bin/hello"],
         "cmd": ["world"],
-        "env": ["NAME=VALUE"],
+        "env": [{"NAME": "VALUE"}],
         "parts": {
             "foo": {
                 "plugin": "nil",
@@ -54,7 +54,7 @@ def test_project_unmarshal(yaml_data):
     assert project.build_base == "ubuntu:20.04"
     assert project.entrypoint == ["/bin/hello"]
     assert project.cmd == ["world"]
-    assert project.env == ["NAME=VALUE"]
+    assert project.env == [{"NAME": "VALUE"}]
     assert project.parts == {
         "foo": {
             "plugin": "nil",

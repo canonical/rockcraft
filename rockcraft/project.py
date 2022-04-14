@@ -42,7 +42,7 @@ class Project(pydantic.BaseModel):
     build_base: Optional[str]
     entrypoint: Optional[List[str]]
     cmd: Optional[List[str]]
-    env: Optional[List[str]]
+    env: Optional[List[Dict[str, str]]]
     parts: Dict[str, Any]
 
     class Config:  # pylint: disable=too-few-public-methods

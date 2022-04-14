@@ -2,7 +2,8 @@ name: environment-test
 version: latest
 base: ubuntu:20.04
 cmd: [/bin/true]
-env: ["X=ship it!"]
+env:
+  - X: "ship it!"
 
 parts:
   part1:

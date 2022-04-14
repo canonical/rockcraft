@@ -23,7 +23,7 @@ import subprocess
 import tarfile
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List
+from typing import Dict, List
 
 from craft_cli import CraftError, emit
 
@@ -185,18 +185,23 @@ class Image:
         _config_image(image_path, params)
         emit.message(f"Cmd set to {cmd}", intermediate=True)
 
-    def set_env(self, env: List[str]) -> None:
+    def set_env(self, env: List[Dict[str, str]]) -> None:
         """Set the OCI image environment.
 
-        :param env: A list of environment variables in ``NAME=VALUE`` format.
+        :param env: A list of dictionaries mapping environment variables to
+            their values.
         """
         emit.progress("Configuring env...")
         image_path = self.path / self.image_name
         params = ["--clear=config.env"]
+        env_list = []
         for entry in env:
-            params.extend(["--config.env", entry])
+            for name, value in entry.items():
+                env_item = f"{name}={value}"
+                env_list.append(env_item)
+                params.extend(["--config.env", env_item])
         _config_image(image_path, params)
-        emit.message(f"Environment set to {env}", intermediate=True)
+        emit.message(f"Environment set to {env_list}", intermediate=True)
 
 
 def _copy_image(source: str, destination: str) -> None:
