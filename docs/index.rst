@@ -10,6 +10,8 @@ Snapcraft and Charmcraft. It is currently under heavy development.
 
    tutorials
 
+   reference
+
 
 Indices and tables
 ==================
