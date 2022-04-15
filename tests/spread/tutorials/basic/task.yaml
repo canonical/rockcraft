@@ -13,4 +13,4 @@ execute: |
   docker images
   sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:smoke-test_latest.rock docker-daemon:smoke-test:latest
   docker images
-  docker run --entrypoint /usr/bin/hello smoke-test:latest
+  docker run smoke-test:latest | grep "hello, world"

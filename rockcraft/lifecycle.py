@@ -31,7 +31,6 @@ from .providers import capture_logs_from_instance
 def pack():
     """Pack a ROCK."""
     project = load_project("rockcraft.yaml")
-
     destructive_mode = False  # XXX: obtain from command line
 
     managed_mode = utils.is_managed_mode()
@@ -58,7 +57,7 @@ def pack():
     emit.message(f"Extracted {base_image.image_name}", intermediate=True)
 
     # TODO: check if destination image already exists, etc.
-    project_image = base_image.copy_to(
+    project_base_image = base_image.copy_to(
         f"{project.name}:rockcraft-base", image_dir=image_dir
     )
 
@@ -66,17 +65,30 @@ def pack():
         project.parts,
         work_dir=work_dir,
         base_layer_dir=rootfs,
-        base_layer_hash=project_image.digest(),
+        base_layer_hash=project_base_image.digest(),
     )
     lifecycle.run(Step.PRIME)
 
     emit.progress("Creating new layer")
-    project_image.add_layer(tag=project.version, layer_path=lifecycle.prime_dir)
+    new_image = project_base_image.add_layer(
+        tag=project.version, layer_path=lifecycle.prime_dir
+    )
     emit.message("Created new layer", intermediate=True)
+
+    if project.entrypoint:
+        new_image.set_entrypoint(project.entrypoint)
+        if not project.cmd:
+            new_image.set_cmd([])
+
+    if project.cmd:
+        new_image.set_cmd(project.cmd)
+
+    if project.env:
+        new_image.set_env(project.env)
 
     emit.progress("Exporting to OCI archive")
     archive_name = f"{project.name}_{project.version}.rock"
-    project_image.to_oci_archive(tag=project.version, filename=archive_name)
+    new_image.to_oci_archive(tag=project.version, filename=archive_name)
     emit.message(f"Exported to OCI archive '{archive_name}'", intermediate=True)
 
 

@@ -1,4 +1,4 @@
-summary: craftctl test for the retry tool
+summary: craftctl tool test
 
 execute: |
   rockcraft pack

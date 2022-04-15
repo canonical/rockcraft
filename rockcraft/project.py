@@ -16,7 +16,7 @@
 
 """Project definition and helpers."""
 
-from typing import Any, Dict, Literal, Optional, Tuple
+from typing import Any, Dict, List, Literal, Optional, Tuple
 
 import pydantic
 import yaml
@@ -40,6 +40,9 @@ class Project(pydantic.BaseModel):
     version: str
     base: Literal["ubuntu:18.04", "ubuntu:20.04"]
     build_base: Optional[str]
+    entrypoint: Optional[List[str]]
+    cmd: Optional[List[str]]
+    env: Optional[List[Dict[str, str]]]
     parts: Dict[str, Any]
 
     class Config:  # pylint: disable=too-few-public-methods
