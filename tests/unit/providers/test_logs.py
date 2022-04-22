@@ -1,6 +1,6 @@
 # -*- Mode:Python; indent-tabs-mode:nil; tab-width:4 -*-
 #
-# Copyright 2021 Canonical Ltd.
+# Copyright 2021-2022 Canonical Ltd.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 3 as
@@ -46,12 +46,12 @@ def test_capture_logs_from_instance(
         ),
     ]
     expected = [
-        "Logs captured from managed instance:",
-        ":: some",
-        ":: log data",
-        ":: here",
+        mock.call("trace", "Logs captured from managed instance:"),
+        mock.call("trace", ":: some"),
+        mock.call("trace", ":: log data"),
+        mock.call("trace", ":: here"),
     ]
-    emitter.assert_recorded(expected)
+    emitter.assert_interactions(expected)
     assert mock_namedtemporaryfile.mock_calls == [
         mock.call(delete=False, prefix="rockcraft-"),
         mock.call().__enter__(),
@@ -72,4 +72,4 @@ def test_capture_logs_from_instance_not_found(
             source=pathlib.Path("/tmp/rockcraft.log"), destination=fake_log
         ),
     ]
-    emitter.assert_recorded(["No logs found in instance."])
+    emitter.assert_trace("No logs found in instance.")

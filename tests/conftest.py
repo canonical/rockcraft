@@ -1,6 +1,6 @@
 # -*- Mode:Python; indent-tabs-mode:nil; tab-width:4 -*-
 #
-# Copyright (C) 2021 Canonical Ltd
+# Copyright (C) 2021-2022 Canonical Ltd
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 3 as
@@ -15,12 +15,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
-import pathlib
-import tempfile
 
 import pytest
 import xdg  # type: ignore
-from craft_cli import messages
 
 
 @pytest.fixture
@@ -87,43 +84,3 @@ class RecordingEmitter:
     def assert_recorded_raw(self, expected):
         """Verify that the given messages (with specific level) were recorded consecutively."""
         self._check(expected, self.raw)
-
-
-@pytest.fixture(autouse=True)
-def init_emitter():
-    """Ensure emit is always clean, and initted (in test mode).
-    Note that the `init` is done in the current instance that all modules already
-    acquired.
-    """
-    # init with a custom log filepath so user directories are not involved here; note that
-    # we're not using pytest's standard tmp_path as Emitter would write logs there, and in
-    # effect we would be polluting that temporary directory (potentially messing with
-    # tests, that may need that empty), so we use another one.
-    temp_fd, temp_logfile = tempfile.mkstemp(prefix="emitter-logs")
-    os.close(temp_fd)
-    temp_logfile = pathlib.Path(temp_logfile)
-
-    messages.TESTMODE = True
-    messages.emit.init(
-        messages.EmitterMode.QUIET,
-        "test-emitter",
-        "Hello world",
-        log_filepath=temp_logfile,
-    )
-    yield
-    # end machinery (just in case it was not ended before; note it's ok to "double end")
-    messages.emit.ended_ok()
-
-
-@pytest.fixture
-def emitter(monkeypatch):
-    """Helper to test everything that was shown using craft-cli Emitter."""
-    rec = RecordingEmitter()
-    monkeypatch.setattr(
-        messages.emit, "message", lambda text, **k: rec.record("message", text)
-    )
-    monkeypatch.setattr(
-        messages.emit, "progress", lambda text: rec.record("progress", text)
-    )
-    monkeypatch.setattr(messages.emit, "trace", lambda text: rec.record("trace", text))
-    return rec
