@@ -86,6 +86,9 @@ def pack():
     if project.env:
         new_image.set_env(project.env)
 
+    # Set annotations, both dynamic and the ones based on user-provided properties
+    new_image.set_annotations(project.annotations)
+
     emit.progress("Exporting to OCI archive")
     archive_name = f"{project.name}_{project.version}.rock"
     new_image.to_oci_archive(tag=project.version, filename=archive_name)

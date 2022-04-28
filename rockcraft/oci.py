@@ -23,9 +23,10 @@ import subprocess
 import tarfile
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Any
 
 from craft_cli import CraftError, emit
+from pydantic import root_validator
 
 logger = logging.getLogger(__name__)
 
@@ -40,6 +41,20 @@ class Image:
 
     image_name: str
     path: Path
+    
+    @root_validator
+    def define_image_path(cls, values: Dict[str, Any]) -> Dict[str, Any]:
+        """Takes the provided image_name and path and constructs
+        the class variable image_path, which is widely used
+
+        Args:
+            values (Dict[str, Any]): class fields
+
+        Returns:
+            Dict[str, Any]: updated class fields with the new field "image_path"
+        """
+        values['image_path'] = f"{values['path']}/{values['image_name']}"
+        return values
 
     @classmethod
     def from_docker_registry(cls, image_name: str, *, image_dir: Path) -> "Image":
@@ -202,6 +217,27 @@ class Image:
                 params.extend(["--config.env", env_item])
         _config_image(image_path, params)
         emit.message(f"Environment set to {env_list}", intermediate=True)
+
+    def set_annotations(self, annotations: Dict[str, Any]) -> None:
+        """Add the given annotations to the final image
+        
+        :param annotations: A dictionary with each annotation/label and its value
+        """
+        emit.progress("Configuring labels and annotations...")
+        label_params = ["--clear=config.labels"]
+        annotation_params = ["--clear=manifest.annotations"]
+
+        labels_list = []
+        for label_key, label_value in annotations.items():
+            label_item = f'{label_key}={label_value}'
+            labels_list.append(label_item)
+            label_params.extend(["--config.label", label_item])
+            annotation_params.extend(["--manifest.annotation", label_item])
+        # Set the labels
+        _config_image(self.image_path, label_params)
+        # Set the annotations as a copy of these labels (for OCI compliance only)
+        _config_image(self.image_path, annotation_params)
+        emit.message(f"Labels and annotations set to {labels_list}", intermediate=True)
 
 
 def _copy_image(source: str, destination: str) -> None:

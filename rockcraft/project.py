@@ -18,7 +18,9 @@
 
 from typing import Any, Dict, List, Literal, Optional, Tuple
 
+import datetime
 import pydantic
+from pydantic import root_validator
 import yaml
 from craft_cli.errors import CraftError
 
@@ -43,6 +45,8 @@ class Project(pydantic.BaseModel):
     entrypoint: Optional[List[str]]
     cmd: Optional[List[str]]
     env: Optional[List[Dict[str, str]]]
+    # TODO: uncomment when user-defined annotations are allowed
+    # annotations: Optional[List[Dict[str, str]]]
     parts: Dict[str, Any]
 
     class Config:  # pylint: disable=too-few-public-methods
@@ -54,6 +58,33 @@ class Project(pydantic.BaseModel):
         allow_population_by_field_name = True
         alias_generator = lambda s: s.replace("_", "-")  # noqa: E731
 
+    @root_validator
+    def build_annotations_map(cls, values: Dict[str, Any]) -> Dict:
+        """Gets the provided inputs and generates the 
+        annotations map for the image
+        """
+        values['annotations'] = {
+            'org.opencontainers.image.version': values['version'],
+            # org.opencontainers.image.title
+            # org.opencontainers.image.description
+            # org.opencontainers.image.ref.name
+            # org.opencontainers.image.base.digest
+            'org.opencontainers.image.base.name': values['base'],
+            # org.opencontainers.image.authors
+            # org.opencontainers.image.url
+            # org.opencontainers.image.source
+            # org.opencontainers.image.revision
+            # org.opencontainers.image.licenses
+            # org.opencontainers.image.documentation
+            # org.opencontainers.image.vendor
+            # rocks.ubuntu.image.support.end-of-life
+            # rocks.ubuntu.image.support.end-of-support
+            # rocks.ubuntu.image.support.info
+            'org.opencontainers.image.created': datetime.datetime.now(datetime.timezone.utc).isoformat()
+            # rocks.ubuntu.image.pebble.server.version
+            # rocks.ubuntu.image.pebble.client.version
+        }
+        
     @pydantic.validator("build_base", always=True)
     @classmethod
     def _validate_build_base(cls, build_base, values):
