@@ -85,6 +85,8 @@ class Project(pydantic.BaseModel):
             # rocks.ubuntu.image.pebble.client.version
         }
         
+        return values
+        
     @pydantic.validator("build_base", always=True)
     @classmethod
     def _validate_build_base(cls, build_base, values):

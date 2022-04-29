@@ -74,7 +74,7 @@ def pack():
         tag=project.version, layer_path=lifecycle.prime_dir
     )
     emit.message("Created new layer", intermediate=True)
-
+    
     if project.entrypoint:
         new_image.set_entrypoint(project.entrypoint)
         if not project.cmd:
