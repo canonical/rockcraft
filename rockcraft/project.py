@@ -58,7 +58,7 @@ class Project(pydantic.BaseModel):
         allow_population_by_field_name = True
         alias_generator = lambda s: s.replace("_", "-")  # noqa: E731
 
-    @root_validator
+    @root_validator(pre=False, skip_on_failure=True)
     def build_annotations_map(cls, values: Dict[str, Any]) -> Dict:
         """Gets the provided inputs and generates the 
         annotations map for the image

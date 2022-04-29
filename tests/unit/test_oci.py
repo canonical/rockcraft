@@ -228,3 +228,49 @@ class TestImage:
                 universal_newlines=True,
             )
         ]
+
+    def test_set_annotations(self, mocker):
+        mock_run = mocker.patch("subprocess.run")
+        image = oci.Image("a:b", Path("/c"))
+
+        image.set_annotations(
+            {
+                "NAME1": "VALUE1",
+                "NAME2": "VALUE2"
+            }
+        )
+
+        assert mock_run.mock_calls == [
+            call(
+                [
+                    "umoci",
+                    "config",
+                    "--image",
+                    "/c/a:b",
+                    "--clear=config.labels",
+                    "--config.label",
+                    "NAME1=VALUE1",
+                    "--config.label",
+                    "NAME2=VALUE2",
+                ],
+                capture_output=True,
+                check=True,
+                universal_newlines=True,
+            ),
+            call(
+                [
+                    "umoci",
+                    "config",
+                    "--image",
+                    "/c/a:b",
+                    "--clear=manifest.annotations",
+                    "--manifest.annotation",
+                    "NAME1=VALUE1",
+                    "--manifest.annotation",
+                    "NAME2=VALUE2",
+                ],
+                capture_output=True,
+                check=True,
+                universal_newlines=True,
+            )
+        ]

@@ -18,6 +18,7 @@ import textwrap
 from pathlib import Path
 
 import pytest
+from dateutil import parser
 
 from rockcraft.project import (
     Project,
@@ -163,4 +164,23 @@ def test_project_load_error():
     assert str(err.value) == "No such file or directory: 'does_not_exist.txt'."
 
 
+def test_root_validation(yaml_data):
+    project = Project.unmarshal(yaml_data)
+    
+    expected_annotations = [
+        'org.opencontainers.image.version',
+        'org.opencontainers.image.base.name',
+        'org.opencontainers.image.created'
+    ]
+    
+    assert hasattr(project, 'annotations')
+    assert isinstance(project.annotations, dict)
+    assert all(annot in project.annotations for annot in expected_annotations)
+    assert project.annotations['org.opencontainers.image.version'] == yaml_data['version']
+    assert project.annotations['org.opencontainers.image.base.name'] == yaml_data['base']
+    try:
+        parser.parse(project.annotations['org.opencontainers.image.created'])
+    except parser._parser.ParserError as err:
+        assert False, f'Wrong date format passed to the annotation org.opencontainers.image.created: {err}'
+        
 # TODO: add additional validation and formatting tests

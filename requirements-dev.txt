@@ -57,6 +57,7 @@ pyparsing==3.0.7
 pytest==7.1.1
 pytest-mock==3.7.0
 pytest-subprocess==1.4.1
+python-dateutil==2.8.2
 pytz==2022.1
 pyxdg==0.27
 PyYAML==6.0
