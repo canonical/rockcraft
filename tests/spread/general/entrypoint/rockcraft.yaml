@@ -4,3 +4,8 @@ base: ubuntu:20.04
 entrypoint: [/usr/bin/hello]
 cmd: [-g, "ship it!"]
 
+parts:
+  hello:
+    plugin: nil
+    overlay-packages:
+      - hello
