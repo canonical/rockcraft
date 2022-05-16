@@ -1,0 +1,21 @@
+name: metadata-test
+version: latest
+base: ubuntu:20.04
+title: My Metadata
+summary: Summary of the ROCK
+description: |
+  Long description of the ROCK
+  being built in this example
+contact: [foo@bar.com]
+source-code: https://github.com/canonical/rockcraft
+website: https://github.com/canonical/rockcraft
+documentation: https://rockcraft.readthedocs.io/en/latest/index.html
+license: GPL-3.0 license
+support:
+  end-of-life: "2027-04-01"
+  end-of-support: "2027-04-01T00:00:00Z"
+  info: https://ubuntu.com/support
+
+parts:
+  part1:
+    plugin: nil

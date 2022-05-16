@@ -32,6 +32,21 @@ def yaml_data():
     return {
         "name": "mytest",
         "version": "latest",
+        "title": "My Test ROCK",
+        "summary": "This is a test ROCK",
+        "description": "This ROCK is non functional \
+            and entirely dedicated to Rockcraft's \
+            unit tests",
+        "contact": ["foo@bar.com", "https://me.i/contact"],
+        "source-code": "https://github.com/canonical/rockcraft",
+        "website": "https://github.com/canonical/rockcraft",
+        "documentation": "https://rockcraft.readthedocs.io/en/latest/index.html",
+        "license": "Apache-2.0",
+        "support": {
+            "end-of-life": "2027-04-01",
+            "end-of-support": "2027-04-01T00:00:00Z",
+            "info": "https://ubuntu.com/support"
+        },
         "base": "ubuntu:20.04",
         "entrypoint": ["/bin/hello"],
         "cmd": ["world"],
@@ -133,7 +148,21 @@ def test_project_load(new_dir):
             version: latest
             base: ubuntu:20.04
             build-base: ubuntu:20.04
-
+            title: My Test ROCK
+            summary: This is a test ROCK
+            description: |
+                This ROCK is non functional
+                and entirely dedicated to Rockcraft's
+                unit tests
+            contact: [foo@bar.com, https://me.i/contact]
+            source-code: https://github.com/canonical/rockcraft
+            website: https://github.com/canonical/rockcraft
+            documentation: https://rockcraft.readthedocs.io/en/latest/index.html
+            license: Apache-2.0
+            support:
+                end-of-life: "2027-04-01"
+                end-of-support: "2027-04-01T00:00:00Z"
+                info: https://ubuntu.com/support
             parts:
               foo:
                 plugin: nil
@@ -149,6 +178,20 @@ def test_project_load(new_dir):
     assert project.version == "latest"
     assert project.base == "ubuntu:20.04"
     assert project.build_base == "ubuntu:20.04"
+    assert project.title == "My Test ROCK"
+    assert project.summary == "This is a test ROCK"
+    assert project.description == '''This ROCK is non functional
+and entirely dedicated to Rockcraft's
+unit tests
+'''
+    assert project.contact == ["foo@bar.com", "https://me.i/contact"]
+    assert project.source_code == "https://github.com/canonical/rockcraft"
+    assert project.website == "https://github.com/canonical/rockcraft"
+    assert project.documentation == "https://rockcraft.readthedocs.io/en/latest/index.html"
+    assert project.license == "Apache-2.0"
+    assert project.support.end_of_life == "2027-04-01"
+    assert project.support.end_of_support == "2027-04-01T00:00:00Z"
+    assert project.support.info == "https://ubuntu.com/support"
     assert project.parts == {
         "foo": {
             "plugin": "nil",

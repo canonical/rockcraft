@@ -1,0 +1,13 @@
+summary: container metadata test
+
+execute: |
+  rockcraft pack
+
+  test -f metadata-test_latest.rock
+  test ! -d work
+
+  # test container execution
+  docker images
+  sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:metadata-test_latest.rock docker-daemon:metadata-test:latest
+  docker images
+  docker run metadata-test echo Hello

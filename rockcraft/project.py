@@ -24,6 +24,8 @@ from craft_cli.errors import CraftError
 
 from rockcraft.parts import validate_part
 
+from typing_extensions import TypedDict
+
 
 class ProjectLoadError(CraftError):
     """Error loading rockcraft.yaml."""
@@ -33,17 +35,36 @@ class ProjectValidationError(CraftError):
     """Error validatiing rockcraft.yaml."""
 
 
+class SupportInfo(pydantic.BaseModel):
+    """Schema for the 'support' property"""
+    end_of_life: Optional[str] = pydantic.Field(alias='end-of-life')
+    end_of_support: Optional[str] = pydantic.Field(alias='end-of-support')
+    info: Optional[str]
+    
+    
 class Project(pydantic.BaseModel):
     """Rockcraft project definition."""
 
+    # required
     name: str
-    version: str
     base: Literal["ubuntu:18.04", "ubuntu:20.04"]
-    build_base: Optional[str]
-    entrypoint: Optional[List[str]]
-    cmd: Optional[List[str]]
-    env: Optional[List[Dict[str, str]]]
+    description: str
+    license: str
     parts: Dict[str, Any]
+    summary: str
+    version: str
+    # optional
+    build_base: Optional[str] = pydantic.Field(alias='build-base')
+    cmd: Optional[List[str]]
+    contact: Optional[List[str]]
+    documentation: Optional[str]
+    entrypoint: Optional[List[str]]
+    env: Optional[List[Dict[str, str]]]
+    source_code: Optional[str] = pydantic.Field(alias='source-code')
+    support: SupportInfo
+    title: Optional[str]
+    website: Optional[str]
+    
 
     class Config:  # pylint: disable=too-few-public-methods
         """Pydantic model configuration."""
