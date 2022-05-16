@@ -59,7 +59,7 @@ class Project(pydantic.BaseModel):
     entrypoint: Optional[List[str]]
     env: Optional[List[Dict[str, str]]]
     source_code: Optional[str] = pydantic.Field(alias='source-code')
-    support: SupportInfo
+    support: Optional[SupportInfo]
     title: Optional[str]
     website: Optional[str]
     
