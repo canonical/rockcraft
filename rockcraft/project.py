@@ -24,8 +24,6 @@ from craft_cli.errors import CraftError
 
 from rockcraft.parts import validate_part
 
-from typing_extensions import TypedDict
-
 
 class ProjectLoadError(CraftError):
     """Error loading rockcraft.yaml."""
