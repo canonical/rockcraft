@@ -8,8 +8,9 @@ description: |
   being built in this example
 contact: [foo@bar.com]
 source-code: https://github.com/canonical/rockcraft
+issues: https://github.com/canonical/rockcraft/issues
 website: https://github.com/canonical/rockcraft
-documentation: https://rockcraft.readthedocs.io/en/latest/index.html
+docs: https://rockcraft.readthedocs.io/en/latest/index.html
 license: GPL-3.0 license
 support:
   end-of-life: "2027-04-01"

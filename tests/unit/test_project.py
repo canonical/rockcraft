@@ -38,9 +38,10 @@ def yaml_data():
             and entirely dedicated to Rockcraft's \
             unit tests",
         "contact": ["foo@bar.com", "https://me.i/contact"],
+        "issues": "https://github.com/canonical/rockcraft/issues",
         "source-code": "https://github.com/canonical/rockcraft",
         "website": "https://github.com/canonical/rockcraft",
-        "documentation": "https://rockcraft.readthedocs.io/en/latest/index.html",
+        "docs": "https://rockcraft.readthedocs.io/en/latest/index.html",
         "license": "Apache-2.0",
         "support": {
             "end-of-life": "2027-04-01",
@@ -155,9 +156,10 @@ def test_project_load(new_dir):
                 and entirely dedicated to Rockcraft's
                 unit tests
             contact: [foo@bar.com, https://me.i/contact]
+            issues: https://github.com/canonical/rockcraft/issues
             source-code: https://github.com/canonical/rockcraft
             website: https://github.com/canonical/rockcraft
-            documentation: https://rockcraft.readthedocs.io/en/latest/index.html
+            docs: https://rockcraft.readthedocs.io/en/latest/index.html
             license: Apache-2.0
             support:
                 end-of-life: "2027-04-01"
@@ -185,9 +187,10 @@ and entirely dedicated to Rockcraft's
 unit tests
 '''
     assert project.contact == ["foo@bar.com", "https://me.i/contact"]
+    assert project.issues == "https://github.com/canonical/rockcraft/issues"
     assert project.source_code == "https://github.com/canonical/rockcraft"
     assert project.website == "https://github.com/canonical/rockcraft"
-    assert project.documentation == "https://rockcraft.readthedocs.io/en/latest/index.html"
+    assert project.docs == "https://rockcraft.readthedocs.io/en/latest/index.html"
     assert project.license == "Apache-2.0"
     assert project.support.end_of_life == "2027-04-01"
     assert project.support.end_of_support == "2027-04-01T00:00:00Z"

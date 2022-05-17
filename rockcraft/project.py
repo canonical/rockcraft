@@ -16,7 +16,7 @@
 
 """Project definition and helpers."""
 
-from typing import Any, Dict, List, Literal, Optional, Tuple
+from typing import Any, Dict, List, Literal, Optional, Tuple, Union
 
 import pydantic
 import yaml
@@ -54,10 +54,11 @@ class Project(pydantic.BaseModel):
     # optional
     build_base: Optional[str] = pydantic.Field(alias='build-base')
     cmd: Optional[List[str]]
-    contact: Optional[List[str]]
-    documentation: Optional[str]
+    contact: Optional[Union[str, List[str]]]
+    docs: Optional[str]
     entrypoint: Optional[List[str]]
     env: Optional[List[Dict[str, str]]]
+    issues: Optional[Union[str, List[str]]]
     source_code: Optional[str] = pydantic.Field(alias='source-code')
     support: Optional[SupportInfo]
     title: Optional[str]
