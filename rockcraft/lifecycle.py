@@ -53,12 +53,8 @@ def init(rockcraft_yaml_content: str) -> None:
     elif os.path.exists(f".{rockcraft_yaml_path}"):
         raise RockcraftInitError(f".{rockcraft_yaml_path} already exists!")
 
-    with contextlib.suppress(FileExistsError):
-        os.mkdir(os.path.dirname(snapcraft_yaml_path))
-    with open(snapcraft_yaml_path, mode="w") as f:
-        f.write(text)
-
-    return snapcraft_yaml_path
+    with open(rockcraft_yaml_path, mode="w") as f:
+        f.write(rockcraft_yaml_content)
 
     emit.progress("Created {}.".format(rockcraft_yaml_path))
 

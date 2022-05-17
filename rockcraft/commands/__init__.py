@@ -16,4 +16,4 @@
 
 """Rockcraft commands."""
 
-from .lifecycle import PackCommand  # noqa: F401
+from .lifecycle import PackCommand, InitCommand  # noqa: F401

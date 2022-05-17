@@ -21,10 +21,10 @@ import pytest
 
 from rockcraft.project import (
     Project,
-    ProjectLoadError,
-    ProjectValidationError,
     load_project,
 )
+
+from rockcraft.errors import ProjectLoadError, ProjectValidationError
 
 
 @pytest.fixture
