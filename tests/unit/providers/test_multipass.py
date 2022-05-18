@@ -356,7 +356,7 @@ def test_launched_environment(
     with provider.launched_environment(
         project_name="test-rock",
         project_path=mock_path,
-        base=f"ubuntu:{channel}",
+        build_base=f"ubuntu:{channel}",
     ) as instance:
         assert instance is not None
         assert mock_multipass_launch.mock_calls == [
@@ -398,7 +398,7 @@ def test_launched_environment_unmounts_and_stops_after_error(
         with provider.launched_environment(
             project_name="test-rock",
             project_path=tmp_path,
-            base="ubuntu:20.04",
+            build_base="ubuntu:20.04",
         ):
             mock_multipass_launch.reset_mock()
             raise RuntimeError("this is a test")
@@ -420,7 +420,7 @@ def test_launched_environment_launch_base_configuration_error(
         with provider.launched_environment(
             project_name="test-rock",
             project_path=tmp_path,
-            base="ubuntu:20.04",
+            build_base="ubuntu:20.04",
         ):
             pass
 
@@ -438,7 +438,7 @@ def test_launched_environment_launch_multipass_error(
         with provider.launched_environment(
             project_name="test-rock",
             project_path=tmp_path,
-            base="ubuntu:20.04",
+            build_base="ubuntu:20.04",
         ):
             pass
 
@@ -456,7 +456,7 @@ def test_launched_environment_unmount_all_error(
         with provider.launched_environment(
             project_name="test-rock",
             project_path=tmp_path,
-            base="ubuntu:20.04",
+            build_base="ubuntu:20.04",
         ):
             pass
 
@@ -474,7 +474,7 @@ def test_launched_environment_stop_error(
         with provider.launched_environment(
             project_name="test-rock",
             project_path=tmp_path,
-            base="ubuntu:20.04",
+            build_base="ubuntu:20.04",
         ):
             pass
 

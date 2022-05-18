@@ -28,6 +28,7 @@ from rockcraft import utils
 BASE_TO_BUILDD_IMAGE_ALIAS = {
     "ubuntu:18.04": bases.BuilddBaseAlias.BIONIC,
     "ubuntu:20.04": bases.BuilddBaseAlias.FOCAL,
+    "ubuntu:22.04": bases.BuilddBaseAlias.JAMMY,
 }
 
 
