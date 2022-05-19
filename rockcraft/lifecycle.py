@@ -33,15 +33,10 @@ from rockcraft.errors import RockcraftInitError
 def init(rockcraft_yaml_content: str) -> None:
     """Initialize a rockcraft project.
 
-    Args:
-        rockcraft_yaml_content (str): Content of the rockcraft.yaml file 
-        which is being initialized
-
-    Raises:
-        RockcraftInitError: raises initialization error in case of conflicts
-        with existing rockcraft.yaml files
-
-    Returns:
+    :param rockcraft_yaml_content: Content of the rockcraft.yaml file
+    :type rockcraft_yaml_content: str
+    :raises RockcraftInitError: raises initialization error in case of conflicts 
+    with existing rockcraft.yaml files
     """
     
     rockcraft_yaml_path = "rockcraft.yaml"
