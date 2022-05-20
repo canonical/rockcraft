@@ -10,4 +10,5 @@ execute: |
   docker images
   sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:users-test_latest.rock docker-daemon:users-test:latest
   docker images
-  docker run -u foo users-test sh -c 'whoami; id; echo $HOME'
+  docker run -u john users-test sh -c 'whoami; id; echo $HOME'
+  docker run users-test sh -c 'whoami; id; echo $HOME'
