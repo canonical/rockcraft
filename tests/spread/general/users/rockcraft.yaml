@@ -1,0 +1,29 @@
+name: users-test
+version: latest
+base: ubuntu:20.04
+users:
+ - username: foo:1234
+   group: foogroup:12345
+   home: /home/foo
+   command: /bin/bash
+   user-info:
+     full-name: Foo Bar
+     other: something else
+ - username: jon
+   group: jongroup
+   home: /
+   command: /usr/sbin/nologin
+   user-info:
+     full-name: Jon Doe
+     room-number: 0
+     home-phone: +1 111 11 11
+     work-phone: +0 000 00 00
+
+default_user: foo
+
+
+parts:
+  hello:
+    plugin: nil
+    overlay-packages:
+      - hello

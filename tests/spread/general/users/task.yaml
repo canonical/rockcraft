@@ -1,0 +1,13 @@
+summary: container users test
+
+execute: |
+  rockcraft pack
+
+  test -f users-test_latest.rock
+  test ! -d work
+
+  # test container execution
+  docker images
+  sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:users-test_latest.rock docker-daemon:users-test:latest
+  docker images
+  docker run -u foo users-test sh -c 'whoami; id; echo $HOME'

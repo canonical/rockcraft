@@ -60,6 +60,16 @@ def pack():
     project_base_image = base_image.copy_to(
         f"{project.name}:rockcraft-base", image_dir=image_dir
     )
+    
+    if project.users:
+        emit.progress(f"Setting user accounts")
+        modified_user_files = project_base_image.create_users(project.users, rootfs)
+        for user_file in modified_user_files:
+            project_base_image.insert_content(
+                user_file,
+                Path(str(user_file).replace(str(rootfs), ''))
+                )
+        emit.progress(f"Configured {len(project.users)} user" + 's'[:len(project.users)^1])
 
     lifecycle = PartsLifecycle(
         project.parts,
@@ -85,6 +95,9 @@ def pack():
 
     if project.env:
         new_image.set_env(project.env)
+        
+    if project.default_user:
+        new_image.set_default_user(project.default_user)
 
     emit.progress("Exporting to OCI archive")
     archive_name = f"{project.name}_{project.version}.rock"

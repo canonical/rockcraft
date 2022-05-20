@@ -107,3 +107,6 @@ def test_confirm_with_user_errors_in_managed_mode(mock_is_managed_mode):
 
     with pytest.raises(RuntimeError):
         utils.confirm_with_user("prompt")
+
+
+def test_extract_values_from_file

@@ -22,7 +22,8 @@ import os
 import pathlib
 import sys
 from collections import namedtuple
-from typing import Optional
+from pydoc import locate
+from typing import Optional, Dict, List
 
 logger = logging.getLogger(__name__)
 
@@ -85,3 +86,41 @@ def confirm_with_user(prompt, default=False) -> bool:
         return False
 
     return default
+
+def extract_values_from_file(filename: pathlib.Path, separator: str, indexes: Dict[int, str], always_return: bool=False) -> List:
+    """Reads a file line by line, and returns one list per each index of interest, 
+    according to the given separator
+
+    :param filename: Path fo the file to be read 
+    :type filename: Path
+    :param separator: separator used to split each line into a list of indexes
+    :type separator: str
+    :param indexes: the keypairs indicating, for each line, the indexes of interest 
+    and their respective value type. E.g. {1: 'int', 4: 'str'}
+    :type indexes: Dict[int, str]
+    :param always_return: ignore reading errors, defaults to False
+    :type always_return: bool, optional
+    :return: one list per each key in "indexes", with the corresponding values
+    :rtype: List
+    """
+    values = [ [] for _ in range(len(indexes)) ]
+    
+    try:
+        with open(filename) as f:
+            for line in f.read().splitlines():
+                line_values = line.split(separator)
+                for i, index in enumerate(indexes.keys()):
+                    try:
+                        values[i].append(locate(indexes[index])(line_values[index]))
+                    except ValueError:
+                        if always_return:
+                            values[i].append(None)
+                            continue
+                        
+                        raise
+    except FileNotFoundError:
+        if not always_return:
+            raise
+    
+    return values
+    
