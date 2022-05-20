@@ -55,7 +55,7 @@ class Image:
     allowed_uid_range: conlist(int) = range(589824, 655359 + 1)
 
     @staticmethod
-    def _sanitize_new_user(existing_users: List[str], existing_uids: List[int], username: str, uid: int = None, uid_range: List[int] = None) -> Tuple[str, str]:
+    def _sanitize_new_user(existing_users: List[str], existing_uids: List[int], username: str, uid: int = None, uid_range: List[int] = range(589824, 655359 + 1)) -> Tuple[str, str]:
         """Makes sure the new user account doesn't exist yet, and generated a UID if necessary
 
         :param existing_users: List with all the users which already exist in the base image
@@ -72,14 +72,18 @@ class Image:
         :return: the sanitized username and corresponding user ID
         :rtype: Tuple[str, str]
         """
-        user_id = uid if uid else random.choice(list(set(uid_range) - set(existing_uids)))
         if username in existing_users or uid in existing_uids:
             raise ConfigurationError(f"The provided {username}:{uid} is already configured in the base image")
 
+        try:
+            user_id = uid if uid else random.choice(list(set(uid_range) - set(existing_uids)))
+        except IndexError:
+            raise ConfigurationError(f'There are no free user IDs left in the system to be assigned to user {username}') 
+        
         return username, user_id
 
     @staticmethod
-    def _sanitize_new_group(existing_groups: List[str], existing_gids: List[int], group: str = None, gid: int = None, gid_range: List[int] = None) -> Tuple[str, str]:
+    def _sanitize_new_group(existing_groups: List[str], existing_gids: List[int], group: str = None, gid: int = None, gid_range: List[int] = range(589824, 655359 + 1)) -> Tuple[str, str]:
         """Sets the new user's group, making sure it doesn't conflict with existing groups, and creating it if needed
 
         :param existing_groups: List with all the groups which already exist in the base image
@@ -354,7 +358,7 @@ class Image:
             always_return=True
         )
 
-        passwd_content, shadow_content, group_content = ([] for i in range(3))
+        passwd_content, shadow_content, group_content = ([] for _ in range(3))
         for account in user_accounts:
             username, *uid = account.username.split(':')
             ## USERNAME + UID
@@ -390,6 +394,10 @@ class Image:
 
             passwd_new_line = f"{username}:x:{uid}:{gid}:{user_info[0]},{user_info[1]},{user_info[2]},{user_info[3]},{user_info[4]}:{home}:{command}"
             passwd_content.append(passwd_new_line)
+            
+            # TODO: TBD - no password accepted at the moment
+            days_since_epoch = (datetime.utcnow() - datetime(1970, 1, 1)).days
+            shadow_content.append(f"{username}:*:{days_since_epoch}:0:99999:7:::")
 
         with open(existing_passwd_file, 'a+') as passwdf:
             passwdf.write('\n'.join(map(str, passwd_content)) + '\n')
@@ -399,9 +407,6 @@ class Image:
 
         changed_files = [existing_passwd_file, existing_group_file]
         if os.path.exists(existing_shadow_file):
-            # TODO: TBD - no password accepted at the moment
-            days_since_epoch = (datetime.utcnow() - datetime(1970, 1, 1)).days
-            shadow_content.append(f"{username}:*:{days_since_epoch}:0:99999:7:::")
             # only add the shadow file is there's already one in the base image
             with open(existing_shadow_file, 'a+') as shadowf:
                 shadowf.write('\n'.join(map(str, shadow_content)) + '\n')

@@ -112,7 +112,7 @@ def extract_values_from_file(filename: pathlib.Path, separator: str, indexes: Di
                 for i, index in enumerate(indexes.keys()):
                     try:
                         values[i].append(locate(indexes[index])(line_values[index]))
-                    except ValueError:
+                    except (IndexError, ValueError):
                         if always_return:
                             values[i].append(None)
                             continue

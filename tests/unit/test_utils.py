@@ -15,7 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from pathlib import Path
-from unittest.mock import call
+from unittest.mock import call, patch, mock_open
 
 import pytest
 
@@ -109,4 +109,29 @@ def test_confirm_with_user_errors_in_managed_mode(mock_is_managed_mode):
         utils.confirm_with_user("prompt")
 
 
-def test_extract_values_from_file
+def test_extract_values_from_file():
+    mocked_path = Path('')
+    with patch("builtins.open") as mock_open_file:
+        mock_open_file.side_effect = FileNotFoundError
+        with pytest.raises(FileNotFoundError):
+            utils.extract_values_from_file(mocked_path, '', {})
+    
+        # if needed, always return something
+        assert utils.extract_values_from_file(mocked_path, '', {}, always_return=True) == []
+    
+    data = '''a:b:1:d:e\nf:g:2:i:j'''
+    with patch("builtins.open", mock_open(read_data=data)) as mock_open_file:
+        # Get me the first and third elements of each line, as str and int, respectively
+        indexes = {0: 'str', 2: 'int'}
+        expected_result = [ ['a', 'f'], [1, 2] ]
+        assert utils.extract_values_from_file(mocked_path,
+                                              ':', indexes) == expected_result
+        
+    # if the file data changes, introducing a malformed line,
+    # we can still get a return, even if with a None value in the middle
+    data += '\nmalformed:'
+    with patch("builtins.open", mock_open(read_data=data)) as mock_open_file:
+        expected_result = [['a', 'f', 'malformed'], [1, 2, None]]
+        assert utils.extract_values_from_file(mocked_path,
+                                              ':', indexes,
+                                              always_return=True) == expected_result

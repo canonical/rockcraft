@@ -9,12 +9,12 @@ users:
    user-info:
      full-name: Foo Bar
      other: something else
- - username: jon
-   group: jongroup
+ - username: john
+   group: johngroup
    home: /
    command: /usr/sbin/nologin
    user-info:
-     full-name: Jon Doe
+     full-name: John Doe
      room-number: 0
      home-phone: +1 111 11 11
      work-phone: +0 000 00 00
