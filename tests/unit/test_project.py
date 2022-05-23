@@ -24,6 +24,8 @@ from rockcraft.project import (
     ProjectLoadError,
     ProjectValidationError,
     load_project,
+    UserAccount,
+    UserInfo
 )
 
 
@@ -133,7 +135,25 @@ def test_project_load(new_dir):
             version: latest
             base: ubuntu:20.04
             build-base: ubuntu:20.04
-
+            users:
+              - username: foo:1234
+                group: foogroup:12345
+                home: /home/foo
+                command: /bin/bash
+                user-info:
+                    full-name: Foo Bar
+                    other: something else
+              - username: john
+                group: johngroup
+                home: /
+                command: /usr/sbin/nologin
+                user-info:
+                    full-name: John Doe
+                    room-number: 0
+                    home-phone: +1 111 11 11
+                    work-phone: +0 000 00 00
+            default_user: foo
+            
             parts:
               foo:
                 plugin: nil
@@ -149,6 +169,31 @@ def test_project_load(new_dir):
     assert project.version == "latest"
     assert project.base == "ubuntu:20.04"
     assert project.build_base == "ubuntu:20.04"
+
+    assert project.users == [
+        UserAccount(**{
+            'username': 'foo:1234',
+            'group': 'foogroup:12345',
+            'home': '/home/foo',
+            'command': '/bin/bash',
+            'user-info': UserInfo(**{
+                'full-name': 'Foo Bar',
+                'other': 'something else'
+            })
+        }), UserAccount(**{
+            'username': 'john',
+            'group': 'johngroup',
+            'home': '/',
+            'command': '/usr/sbin/nologin',
+            'user-info': UserInfo(**{
+                'full-name': 'John Doe',
+                'room-number': '0',
+                'home-phone': '+1 111 11 11',
+                'work-phone': '+0 000 00 00'
+            })
+        })
+    ]
+    assert project.default_user == "foo"
     assert project.parts == {
         "foo": {
             "plugin": "nil",

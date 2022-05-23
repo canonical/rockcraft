@@ -16,6 +16,7 @@
 
 """Project definition and helpers."""
 
+import pathlib
 from typing import Any, Dict, List, Literal, Optional, Tuple
 
 import pydantic
@@ -33,6 +34,28 @@ class ProjectValidationError(CraftError):
     """Error validatiing rockcraft.yaml."""
 
 
+class UserInfo(pydantic.BaseModel):
+    """Schema for the 'user_info' sub property of 'users'"""
+    full_name: Optional[str] = pydantic.Field(alias='full-name')
+    room_number: Optional[str] = pydantic.Field(alias='room-number')
+    work_phone: Optional[str] = pydantic.Field(alias='work-phone')
+    home_phone: Optional[str] = pydantic.Field(alias='home-phone')
+    other: Optional[str]
+    
+    
+class UserAccount(pydantic.BaseModel):
+    """Schema for the 'users' property"""
+    username: str   # e.g. <user>[:<uid>]
+    # TODO: TBD whether to accept accounts with password
+    # this would mean encrypting and adding the provided
+    # password to /etc/shadow
+    # password: Optional[str]
+    group: Optional[str]    # e.g. <group>[:<gid>]
+    user_info: Optional[UserInfo] = pydantic.Field(alias='user-info')
+    home: Optional[pathlib.Path]
+    command: Optional[str]
+    
+    
 class Project(pydantic.BaseModel):
     """Rockcraft project definition."""
 
@@ -44,6 +67,8 @@ class Project(pydantic.BaseModel):
     cmd: Optional[List[str]]
     env: Optional[List[Dict[str, str]]]
     parts: Dict[str, Any]
+    users: Optional[List[UserAccount]]
+    default_user: Optional[str]
 
     class Config:  # pylint: disable=too-few-public-methods
         """Pydantic model configuration."""
