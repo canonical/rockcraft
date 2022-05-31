@@ -64,6 +64,7 @@ def pack():
     lifecycle = PartsLifecycle(
         project.parts,
         work_dir=work_dir,
+        base=project.base,
         base_layer_dir=rootfs,
         base_layer_hash=project_base_image.digest(),
     )
