@@ -31,6 +31,7 @@ COMMAND_GROUPS = [
         "Lifecycle",
         [
             commands.PackCommand,
+            commands.InitCommand,
         ],
     )
 ]

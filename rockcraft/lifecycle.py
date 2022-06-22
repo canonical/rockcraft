@@ -17,6 +17,7 @@
 
 """Lifecycle integration."""
 
+import os
 import subprocess
 from pathlib import Path
 
@@ -26,8 +27,33 @@ from . import oci, providers, utils
 from .parts import PartsLifecycle, Step
 from .project import Project, load_project
 from .providers import capture_logs_from_instance
+from rockcraft.errors import RockcraftInitError
 
 
+def init(rockcraft_yaml_content: str) -> None:
+    """Initialize a rockcraft project.
+
+    :param rockcraft_yaml_content: Content of the rockcraft.yaml file
+    :type rockcraft_yaml_content: str
+    :raises RockcraftInitError: raises initialization error in case of conflicts 
+    with existing rockcraft.yaml files
+    """
+    
+    rockcraft_yaml_path = "rockcraft.yaml"
+
+    if os.path.exists(rockcraft_yaml_path):
+        raise RockcraftInitError(
+            "{} already exists!".format(rockcraft_yaml_path)
+        )
+    elif os.path.exists(f".{rockcraft_yaml_path}"):
+        raise RockcraftInitError(f".{rockcraft_yaml_path} already exists!")
+
+    with open(rockcraft_yaml_path, mode="w") as f:
+        f.write(rockcraft_yaml_content)
+
+    emit.progress("Created {}.".format(rockcraft_yaml_path))
+
+    
 def pack():
     """Pack a ROCK."""
     project = load_project("rockcraft.yaml")

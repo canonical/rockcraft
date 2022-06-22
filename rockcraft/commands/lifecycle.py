@@ -46,3 +46,42 @@ class PackCommand(_LifecycleCommand):
     def run(self, parsed_args):
         """Run the command."""
         lifecycle.pack()
+
+
+class InitCommand(_LifecycleCommand):
+    """Initialize a rockcraft project."""
+
+    name = "init"
+    help_msg = "Initialize a rockcraft project"
+    overview = textwrap.dedent(
+        """
+        Initialize a rockcraft project by creating a minimalist, 
+        yet functional, rockcraft.yaml file in the current directory.
+        """
+    )
+    
+    _INIT_TEMPLATE_YAML = textwrap.dedent(
+        """\
+            name: my-rock-name
+            base: ubuntu:20.04 # the base environment for this ROCK
+            version: '0.1' # just for humans, typically '1.2+git' or '1.3.2'
+            title: My ROCK Title Name # a human-friendly title for your ROCK
+            summary: Single-line elevator pitch for your amazing ROCK # 79 char long summary
+            description: |
+                This is a long description of the ROCK. You have a paragraph or two to tell the
+                most important story about it. Keep it under 100 words though,
+                we live in tweetspace and your description wants to look good in the 
+                container registries out there.
+
+            license: Change-Me # your application's license, in SPDX format
+            
+            parts:
+                my-part:
+                    plugin: nil
+            """
+    )
+
+    @overrides
+    def run(self, parsed_args):
+        """Run the command."""
+        lifecycle.init(self._INIT_TEMPLATE_YAML)

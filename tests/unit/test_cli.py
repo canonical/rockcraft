@@ -25,8 +25,16 @@ from rockcraft import cli
 
 @pytest.fixture
 def lifecycle_pack_mock():
-    """Mock for ui.init."""
+    """Mock for ui.pack."""
     patcher = patch("rockcraft.lifecycle.pack")
+    yield patcher.start()
+    patcher.stop()
+    
+
+@pytest.fixture
+def lifecycle_init_mock():
+    """Mock for ui.init."""
+    patcher = patch("rockcraft.lifecycle.init")
     yield patcher.start()
     patcher.stop()
 
@@ -37,4 +45,13 @@ def test_run_defaults(mocker, lifecycle_pack_mock):
     cli.run()
 
     assert lifecycle_pack_mock.mock_calls == [call()]
+    assert mock_ended_ok.mock_calls == [call()]
+
+
+def test_run_init(mocker, lifecycle_init_mock):
+    mock_ended_ok = mocker.spy(emit, "ended_ok")
+    mocker.patch.object(sys, "argv", ["rockcraft", "init"])
+    cli.run()
+
+    assert lifecycle_init_mock.mock_calls == [call(cli.commands.InitCommand._INIT_TEMPLATE_YAML)]
     assert mock_ended_ok.mock_calls == [call()]

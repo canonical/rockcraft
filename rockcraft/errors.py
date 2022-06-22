@@ -14,6 +14,27 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Rockcraft commands."""
+"""Rockcraft error definitions."""
 
-from .lifecycle import PackCommand, InitCommand  # noqa: F401
+from craft_cli import CraftError
+
+
+class RockcraftInitError(CraftError):
+    """Error while initializing rockcraft project."""
+
+
+class PartsLifecycleError(CraftError):
+    """Error during parts processing."""
+    
+
+class ProviderError(CraftError):
+    """Error in provider operation."""
+    
+    
+class ProjectLoadError(CraftError):
+    """Error loading rockcraft.yaml."""
+
+
+class ProjectValidationError(CraftError):
+    """Error validatiing rockcraft.yaml."""
+
