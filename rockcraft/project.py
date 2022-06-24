@@ -18,8 +18,8 @@
 
 from typing import Any, Dict, List, Literal, Optional, Tuple
 
-import datetime
 import pydantic
+import spdx_license_list
 from pydantic import root_validator
 import yaml
 from craft_cli.errors import CraftError
@@ -39,14 +39,16 @@ class Project(pydantic.BaseModel):
     """Rockcraft project definition."""
 
     name: str
+    title: Optional[str]
+    summary: str
+    description: str
+    license: str
     version: str
     base: Literal["ubuntu:18.04", "ubuntu:20.04"]
     build_base: Optional[str]
     entrypoint: Optional[List[str]]
     cmd: Optional[List[str]]
     env: Optional[List[Dict[str, str]]]
-    # TODO: uncomment when user-defined annotations are allowed
-    # annotations: Optional[List[Dict[str, str]]]
     parts: Dict[str, Any]
 
     class Config:  # pylint: disable=too-few-public-methods
@@ -63,26 +65,23 @@ class Project(pydantic.BaseModel):
         """Gets the provided inputs and generates the 
         annotations map for the image
         """
+        try:
+            parsed_license = next(lics for lics in spdx_license_list.LICENSES if values['license'].lower() == lics.lower())
+        except StopIteration:
+            raise ProjectValidationError(f"The provided license \"{values['license']}\" is not supported")
+        
         values['annotations'] = {
             'org.opencontainers.image.version': values['version'],
-            # org.opencontainers.image.title
-            # org.opencontainers.image.description
-            # org.opencontainers.image.ref.name
-            # org.opencontainers.image.base.digest
-            'org.opencontainers.image.base.name': values['base'],
-            # org.opencontainers.image.authors
-            # org.opencontainers.image.url
-            # org.opencontainers.image.source
-            # org.opencontainers.image.revision
-            # org.opencontainers.image.licenses
-            # org.opencontainers.image.documentation
-            # org.opencontainers.image.vendor
-            # rocks.ubuntu.image.support.end-of-life
-            # rocks.ubuntu.image.support.end-of-support
-            # rocks.ubuntu.image.support.info
-            'org.opencontainers.image.created': datetime.datetime.now(datetime.timezone.utc).isoformat()
-            # rocks.ubuntu.image.pebble.server.version
-            # rocks.ubuntu.image.pebble.client.version
+            'org.opencontainers.image.title': values.get('title', values['name']),
+            'org.opencontainers.image.ref.name': values['name'],
+            'org.opencontainers.image.licenses': parsed_license,
+        }
+        
+        values['metadata'] = {
+            'name': values['name'],
+            'summary': values['summary'],
+            'title': values.get('title', values['name']),
+            'version': values['version']
         }
         
         return values

@@ -71,6 +71,7 @@ SecretStorage==3.3.2
 semver==2.13.0
 six==1.16.0
 snowballstemmer==2.2.0
+spdx-license-list==0.5.2
 Sphinx==4.5.0
 sphinx-autodoc-typehints==1.18.1
 sphinx-jsonschema==1.19.1

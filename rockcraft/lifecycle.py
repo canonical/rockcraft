@@ -17,6 +17,7 @@
 
 """Lifecycle integration."""
 
+import datetime
 import subprocess
 from pathlib import Path
 
@@ -86,8 +87,13 @@ def pack():
     if project.env:
         new_image.set_env(project.env)
 
-    # Set annotations, both dynamic and the ones based on user-provided properties
+    # Set annotations and metadata, both dynamic and the ones based on user-provided properties
+    # Also include the "created" timestamp, just before packing the image
+    emit.progress("Adding metadata")
+    project.annotations['org.opencontainers.image.created'] = project.metadata['created'] = datetime.datetime.now(datetime.timezone.utc).isoformat()
     new_image.set_annotations(project.annotations)
+    new_image.set_control_data(project.metadata)
+    emit.progress("Metadata added")
 
     emit.progress("Exporting to OCI archive")
     archive_name = f"{project.name}_{project.version}.rock"
