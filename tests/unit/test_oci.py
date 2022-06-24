@@ -14,10 +14,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import datetime
 import os
 import tarfile
 from pathlib import Path
-from unittest.mock import ANY, call
+from unittest.mock import ANY, call, mock_open, patch
 
 import pytest
 
@@ -228,6 +229,60 @@ class TestImage:
                 universal_newlines=True,
             )
         ]
+
+    @patch('tempfile.mkdtemp')
+    @patch('pathlib.Path.mkdir')
+    @patch('shutil.rmtree')
+    @patch("subprocess.run")
+    def test_set_control_data(self, mock_run, mock_rmtree, mock_mkdir, mock_mkdtemp):
+        image = oci.Image("a:b", Path("/c"))
+        mock_control_data_path = "foo"
+        mock_mkdtemp.return_value = mock_control_data_path
+
+        now = datetime.datetime.now(datetime.timezone.utc).isoformat()
+        metadata = {
+            'name': 'rock-name',
+            'version': 1,
+            'created': now
+        }
+        
+        expected = (
+            f'created: \'{now}\'' + '{n}'
+            'name: rock-name{n}'
+            'version: 1{n}'
+        ).format(n=os.linesep)
+        
+        mocked_data = {'writes': ''}
+        def mock_write(s):
+            mocked_data['writes'] += s
+            
+        m = mock_open()
+        with patch('builtins.open', m):
+            m.return_value.write = mock_write
+            image.set_control_data(metadata)
+
+        assert mocked_data['writes'] == expected
+        mock_mkdtemp.assert_called_once()
+        mock_mkdir.assert_called_once()
+        assert mock_run.mock_calls == [
+            call(
+                [
+                    "umoci",
+                    "insert",
+                    "--image",
+                    "/c/a:b",
+                    mock_control_data_path + "/.rock",
+                    "/.rock",
+                    "--history.created_by",
+                    f"umoci insert --image /c/a:b {mock_control_data_path}/.rock /.rock",
+                ],
+                capture_output=True,
+                check=True,
+                universal_newlines=True,
+            )
+        ]
+        mock_rmtree.assert_called_once_with(Path(mock_control_data_path))
+        
 
     def test_set_annotations(self, mocker):
         mock_run = mocker.patch("subprocess.run")
