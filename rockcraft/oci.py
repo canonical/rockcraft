@@ -184,7 +184,7 @@ class Image:
         emit.message(f"Environment set to {env_list}", intermediate=True)
 
     def set_control_data(self, metadata: Dict[str, Any]) -> None:
-        """Create and populate the ROCK's control data folder
+        """Create and populate the ROCK's control data folder.
 
         :param metadata: content for the ROCK's metadata YAML file
         :type metadata: Dict[str, Any]
@@ -214,7 +214,7 @@ class Image:
         shutil.rmtree(local_control_data_path)
 
     def set_annotations(self, annotations: Dict[str, Any]) -> None:
-        """Add the given annotations to the final image
+        """Add the given annotations to the final image.
 
         :param annotations: A dictionary with each annotation/label and its value
         """
@@ -247,7 +247,7 @@ def _config_image(image_path: Path, params: List[str]) -> None:
 
 
 def _add_layer_into_image(image_path: str, compressed_content: str, **kwargs) -> None:
-    """Add raw layer (compressed) into the OCI image
+    """Add raw layer (compressed) into the OCI image.
 
     :param image_path: path of the OCI image, in the format <image>:<tar>
     :type image_path: str
@@ -261,7 +261,7 @@ def _add_layer_into_image(image_path: str, compressed_content: str, **kwargs) ->
 
 
 def _compress_layer(layer_path: Path, temp_tar_file: Path) -> None:
-    """Prepare new OCI layer by compressing its content into tar file
+    """Prepare new OCI layer by compressing its content into tar file.
 
     :param layer_path: path to the content to be compressed into a layer
     :type layer_path: Path

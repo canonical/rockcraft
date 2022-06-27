@@ -14,6 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import datetime
 import json
 import textwrap
 from pathlib import Path
@@ -95,6 +96,30 @@ def test_project_base_invalid(yaml_data):
     )
 
 
+def test_project_license_invalid(yaml_data):
+    yaml_data["license"] = "apache 0.x"
+
+    with pytest.raises(ProjectValidationError) as err:
+        Project.unmarshal(yaml_data)
+    assert str(err.value) == (
+        f"License {yaml_data['license']} not valid. It must be valid and in SPDX format."
+    )
+
+
+def test_project_license_clean_name(yaml_data):
+    yaml_data["license"] = "mIt"
+
+    project = Project.unmarshal(yaml_data)
+    assert project.license == "MIT"
+
+
+def test_project_title_empty(yaml_data):
+    yaml_data.pop("title")
+
+    project = Project.unmarshal(yaml_data)
+    assert project.title == project.name
+
+
 def test_project_build_base(yaml_data):
     yaml_data["build-base"] = "ubuntu:18.04"
 
@@ -157,50 +182,25 @@ def test_project_load_error():
     assert str(err.value) == "No such file or directory: 'does_not_exist.txt'."
 
 
-def test_root_validation(yaml_data):
+def test_generate_project_metadata(yaml_data):
     project = Project.unmarshal(yaml_data)
+    now = datetime.datetime.now(datetime.timezone.utc).isoformat()
 
-    expected_annotations = [
-        "org.opencontainers.image.version",
-        "org.opencontainers.image.ref.name",
-        "org.opencontainers.image.licenses",
-        "org.opencontainers.image.title",
-    ]
-
-    assert hasattr(project, "annotations")
-    assert isinstance(project.annotations, dict)
-    assert all(annot in project.annotations for annot in expected_annotations)
-    assert (
-        project.annotations["org.opencontainers.image.version"] == yaml_data["version"]
-    )
-    assert project.annotations["org.opencontainers.image.ref.name"] == yaml_data["name"]
-    assert (
-        project.annotations["org.opencontainers.image.licenses"] == yaml_data["license"]
-    )
-    assert project.annotations["org.opencontainers.image.title"] == yaml_data["title"]
-
-    # without a title, the annotation will default to "name"
-    # and if the license is not capitalized, we still get the proper name
-    input_data_v2 = {**yaml_data, **{"license": "apache-2.0"}}
-    input_data_v2.pop("title")
-    project_v2 = Project.unmarshal(input_data_v2)
-    assert (
-        project_v2.annotations["org.opencontainers.image.title"]
-        == input_data_v2["name"]
-    )
-    assert (
-        project_v2.annotations["org.opencontainers.image.licenses"]
-        == input_data_v2["license"].capitalize()
-    )
-
-    # without a proper and recognized SPDX license, root validation fails
-    yaml_data["license"] = "apache 0.x"
-    with pytest.raises(ProjectValidationError) as err:
-        _ = Project.unmarshal(yaml_data)
-    assert (
-        str(err.value)
-        == f"The provided license \"{yaml_data['license']}\" is not supported"
-    )
+    oci_annotations, rock_metadata = project.generate_project_metadata(now)
+    assert oci_annotations == {
+        "org.opencontainers.image.version": yaml_data["version"],
+        "org.opencontainers.image.title": yaml_data["title"],
+        "org.opencontainers.image.ref.name": yaml_data["name"],
+        "org.opencontainers.image.licenses": yaml_data["license"],
+        "org.opencontainers.image.created": now,
+    }
+    assert rock_metadata == {
+        "name": yaml_data["name"],
+        "summary": yaml_data["summary"],
+        "title": yaml_data["title"],
+        "version": yaml_data["version"],
+        "created": now,
+    }
 
 
 # TODO: add additional validation and formatting tests

@@ -90,11 +90,10 @@ def pack():
     # Set annotations and metadata, both dynamic and the ones based on user-provided properties
     # Also include the "created" timestamp, just before packing the image
     emit.progress("Adding metadata")
-    project.annotations["org.opencontainers.image.created"] = project.metadata[
-        "created"
-    ] = datetime.datetime.now(datetime.timezone.utc).isoformat()
-    new_image.set_annotations(project.annotations)
-    new_image.set_control_data(project.metadata)
+    packing_time = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    oci_annotations, rock_metadata = project.generate_project_metadata(packing_time)
+    new_image.set_annotations(oci_annotations)
+    new_image.set_control_data(rock_metadata)
     emit.progress("Metadata added")
 
     emit.progress("Exporting to OCI archive")

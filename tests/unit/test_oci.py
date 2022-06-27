@@ -328,9 +328,9 @@ class TestImage:
     def test_compress_layer(self, mocker, new_dir):
         Path("c").mkdir()
         Path("layer_dir").mkdir()
-        Path("layer_dir/foo.txt").touch()
+        Path("layer_dir/bar.txt").touch()
 
         spy_add = mocker.spy(tarfile.TarFile, "add")
 
-        oci._compress_layer(Path("layer_dir"), "./foo.tar")
-        assert spy_add.mock_calls == [call(ANY, "./foo.tar"), call(ANY, "./foo.txt")]
+        oci._compress_layer(Path("layer_dir"), Path("./bar.tar"))
+        assert spy_add.mock_calls == [call(ANY, "./bar.txt"), call(ANY, "./bar.tar")]

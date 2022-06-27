@@ -19,10 +19,9 @@
 from typing import Any, Dict, List, Literal, Optional, Tuple
 
 import pydantic
-import spdx_license_list
+import spdx_license_list  # type: ignore
 import yaml
 from craft_cli.errors import CraftError
-from pydantic import root_validator
 
 from rockcraft.parts import validate_part
 
@@ -60,39 +59,25 @@ class Project(pydantic.BaseModel):
         allow_population_by_field_name = True
         alias_generator = lambda s: s.replace("_", "-")  # noqa: E731
 
-    @root_validator(pre=False, skip_on_failure=True)
-    def build_annotations_map(cls, values: Dict[str, Any]) -> Dict:
-        """Gets the provided inputs and generates the
-        annotations map for the image
-        """
-        try:
-            parsed_license = next(
-                lics
-                for lics in spdx_license_list.LICENSES
-                if values["license"].lower() == lics.lower()
-            )
-        except StopIteration:
+    @pydantic.validator("license", always=True)
+    @classmethod
+    def _validate_license(cls, license):
+        """Make sure the provided license is valid and in SPDX format."""
+        if license.lower() not in [lic.lower() for lic in spdx_license_list.LICENSES]:
             raise ProjectValidationError(
-                f"The provided license \"{values['license']}\" is not supported"
+                f"License {license} not valid. It must be valid and in SPDX format."
             )
+        return next(
+            lic for lic in spdx_license_list.LICENSES if license.lower() == lic.lower()
+        )
 
-        values["annotations"] = {
-            "org.opencontainers.image.version": values["version"],
-            "org.opencontainers.image.title": values["title"]
-            if values.get("title")
-            else values["name"],
-            "org.opencontainers.image.ref.name": values["name"],
-            "org.opencontainers.image.licenses": parsed_license,
-        }
-
-        values["metadata"] = {
-            "name": values["name"],
-            "summary": values["summary"],
-            "title": values.get("title", values["name"]),
-            "version": values["version"],
-        }
-
-        return values
+    @pydantic.validator("title", always=True)
+    @classmethod
+    def _validate_title(cls, title, values):
+        """If title is not provided, it default to the provided ROCK name."""
+        if not title:
+            title = values["name"]
+        return title
 
     @pydantic.validator("build_base", always=True)
     @classmethod
@@ -131,6 +116,31 @@ class Project(pydantic.BaseModel):
             raise ProjectValidationError(_format_pydantic_errors(err.errors())) from err
 
         return project
+
+    def generate_project_metadata(self, generation_time: str) -> Tuple[dict, dict]:
+        """Generate the ROCK's metadata (both the OCI annotation and internal metadata.
+
+        :param generation_time: the UTC time at the time of calling this method
+
+        :return: both the OCI annotation and internal metadata, as a tuple
+        """
+        metadata = {
+            "name": self.name,
+            "summary": self.summary,
+            "title": self.title,
+            "version": self.version,
+            "created": generation_time,
+        }
+
+        annotations = {
+            "org.opencontainers.image.version": self.version,
+            "org.opencontainers.image.title": self.title,
+            "org.opencontainers.image.ref.name": self.name,
+            "org.opencontainers.image.licenses": self.license,
+            "org.opencontainers.image.created": generation_time,
+        }
+
+        return (annotations, metadata)
 
 
 def _format_pydantic_errors(errors, *, file_name: str = "rockcraft.yaml"):
