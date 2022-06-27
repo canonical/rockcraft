@@ -230,9 +230,9 @@ class TestImage:
             )
         ]
 
-    @patch('tempfile.mkdtemp')
-    @patch('pathlib.Path.mkdir')
-    @patch('shutil.rmtree')
+    @patch("tempfile.mkdtemp")
+    @patch("pathlib.Path.mkdir")
+    @patch("shutil.rmtree")
     @patch("subprocess.run")
     def test_set_control_data(self, mock_run, mock_rmtree, mock_mkdir, mock_mkdtemp):
         image = oci.Image("a:b", Path("/c"))
@@ -240,28 +240,23 @@ class TestImage:
         mock_mkdtemp.return_value = mock_control_data_path
 
         now = datetime.datetime.now(datetime.timezone.utc).isoformat()
-        metadata = {
-            'name': 'rock-name',
-            'version': 1,
-            'created': now
-        }
-        
+        metadata = {"name": "rock-name", "version": 1, "created": now}
+
         expected = (
-            f'created: \'{now}\'' + '{n}'
-            'name: rock-name{n}'
-            'version: 1{n}'
+            f"created: '{now}'" + "{n}" "name: rock-name{n}" "version: 1{n}"
         ).format(n=os.linesep)
-        
-        mocked_data = {'writes': ''}
+
+        mocked_data = {"writes": ""}
+
         def mock_write(s):
-            mocked_data['writes'] += s
-            
+            mocked_data["writes"] += s
+
         m = mock_open()
-        with patch('builtins.open', m):
+        with patch("builtins.open", m):
             m.return_value.write = mock_write
             image.set_control_data(metadata)
 
-        assert mocked_data['writes'] == expected
+        assert mocked_data["writes"] == expected
         mock_mkdtemp.assert_called_once()
         mock_mkdir.assert_called_once()
         assert mock_run.mock_calls == [
@@ -282,18 +277,12 @@ class TestImage:
             )
         ]
         mock_rmtree.assert_called_once_with(Path(mock_control_data_path))
-        
 
     def test_set_annotations(self, mocker):
         mock_run = mocker.patch("subprocess.run")
         image = oci.Image("a:b", Path("/c"))
 
-        image.set_annotations(
-            {
-                "NAME1": "VALUE1",
-                "NAME2": "VALUE2"
-            }
-        )
+        image.set_annotations({"NAME1": "VALUE1", "NAME2": "VALUE2"})
 
         assert mock_run.mock_calls == [
             call(
@@ -327,5 +316,5 @@ class TestImage:
                 capture_output=True,
                 check=True,
                 universal_newlines=True,
-            )
+            ),
         ]

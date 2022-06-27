@@ -206,32 +206,36 @@ class Image:
                 params.extend(["--config.env", env_item])
         _config_image(image_path, params)
         emit.message(f"Environment set to {env_list}", intermediate=True)
-        
+
     def set_control_data(self, metadata: Dict[str, Any]) -> None:
-        """Create and populate the ROCK's control data folder 
+        """Create and populate the ROCK's control data folder
 
         :param metadata: content for the ROCK's metadata YAML file
         :type metadata: Dict[str, Any]
         """
-        control_data_destination = '/.rock'
+        control_data_destination = "/.rock"
         emit.progress(f"Setting the ROCK's Control Data at {control_data_destination}")
         local_control_data_path = Path(tempfile.mkdtemp())
-        
+
         # the ROCK control data structure starts with the folder ".rock"
-        control_data_rock_folder = local_control_data_path / Path('.rock')
+        control_data_rock_folder = local_control_data_path / Path(".rock")
         control_data_rock_folder.mkdir()
-        
-        rock_metadata_file = control_data_rock_folder / Path('metadata.yaml')
-        with open(rock_metadata_file, 'w') as rock_meta:
+
+        rock_metadata_file = control_data_rock_folder / Path("metadata.yaml")
+        with open(rock_metadata_file, "w") as rock_meta:
             yaml.dump(metadata, rock_meta)
-            
-        _insert_into_image(self.path / self.image_name, control_data_rock_folder, control_data_destination)
+
+        _insert_into_image(
+            self.path / self.image_name,
+            control_data_rock_folder,
+            control_data_destination,
+        )
         emit.progress(f"Control data written to {control_data_destination}")
         shutil.rmtree(local_control_data_path)
 
     def set_annotations(self, annotations: Dict[str, Any]) -> None:
         """Add the given annotations to the final image
-        
+
         :param annotations: A dictionary with each annotation/label and its value
         """
         emit.progress("Configuring labels and annotations...")
@@ -241,7 +245,7 @@ class Image:
 
         labels_list = []
         for label_key, label_value in annotations.items():
-            label_item = f'{label_key}={label_value}'
+            label_item = f"{label_key}={label_value}"
             labels_list.append(label_item)
             label_params.extend(["--config.label", label_item])
             annotation_params.extend(["--manifest.annotation", label_item])
@@ -272,8 +276,19 @@ def _insert_into_image(image_path: Path, source: Path, destination: str) -> None
     :param destination: where, in the OCI image file system, to copy the content to
     :type destination: str
     """
-    cmd = f'umoci insert --image {str(image_path)} {str(source)} {destination}'    
-    _process_run(["umoci", "insert", "--image", str(image_path), str(source), destination, "--history.created_by", cmd])
+    cmd = f"umoci insert --image {str(image_path)} {str(source)} {destination}"
+    _process_run(
+        [
+            "umoci",
+            "insert",
+            "--image",
+            str(image_path),
+            str(source),
+            destination,
+            "--history.created_by",
+            cmd,
+        ]
+    )
 
 
 def _process_run(command: List[str], **kwargs) -> None:

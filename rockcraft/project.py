@@ -62,30 +62,38 @@ class Project(pydantic.BaseModel):
 
     @root_validator(pre=False, skip_on_failure=True)
     def build_annotations_map(cls, values: Dict[str, Any]) -> Dict:
-        """Gets the provided inputs and generates the 
+        """Gets the provided inputs and generates the
         annotations map for the image
         """
         try:
-            parsed_license = next(lics for lics in spdx_license_list.LICENSES if values['license'].lower() == lics.lower())
+            parsed_license = next(
+                lics
+                for lics in spdx_license_list.LICENSES
+                if values["license"].lower() == lics.lower()
+            )
         except StopIteration:
-            raise ProjectValidationError(f"The provided license \"{values['license']}\" is not supported")
-        
-        values['annotations'] = {
-            'org.opencontainers.image.version': values['version'],
-            'org.opencontainers.image.title': values.get('title', values['name']),
-            'org.opencontainers.image.ref.name': values['name'],
-            'org.opencontainers.image.licenses': parsed_license,
+            raise ProjectValidationError(
+                f"The provided license \"{values['license']}\" is not supported"
+            )
+
+        values["annotations"] = {
+            "org.opencontainers.image.version": values["version"],
+            "org.opencontainers.image.title": values["title"]
+            if values.get("title")
+            else values["name"],
+            "org.opencontainers.image.ref.name": values["name"],
+            "org.opencontainers.image.licenses": parsed_license,
         }
-        
-        values['metadata'] = {
-            'name': values['name'],
-            'summary': values['summary'],
-            'title': values.get('title', values['name']),
-            'version': values['version']
+
+        values["metadata"] = {
+            "name": values["name"],
+            "summary": values["summary"],
+            "title": values.get("title", values["name"]),
+            "version": values["version"],
         }
-        
+
         return values
-        
+
     @pydantic.validator("build_base", always=True)
     @classmethod
     def _validate_build_base(cls, build_base, values):

@@ -14,11 +14,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import json
 import textwrap
 from pathlib import Path
 
 import pytest
-from dateutil import parser
 
 from rockcraft.project import (
     Project,
@@ -32,8 +32,12 @@ from rockcraft.project import (
 def yaml_data():
     return {
         "name": "mytest",
+        "title": "My Test",
         "version": "latest",
         "base": "ubuntu:20.04",
+        "summary": "example for unit tests",
+        "description": "this is an example of a rockcraft.yaml for the purpose of testing rockcraft",
+        "license": "Apache-2.0",
         "entrypoint": ["/bin/hello"],
         "cmd": ["world"],
         "env": [{"NAME": "VALUE"}],
@@ -50,8 +54,15 @@ def test_project_unmarshal(yaml_data):
     project = Project.unmarshal(yaml_data)
 
     assert project.name == "mytest"
+    assert project.title == "My Test"
     assert project.version == "latest"
     assert project.base == "ubuntu:20.04"
+    assert project.summary == "example for unit tests"
+    assert (
+        project.description
+        == "this is an example of a rockcraft.yaml for the purpose of testing rockcraft"
+    )
+    assert project.license == "Apache-2.0"
     assert project.build_base == "ubuntu:20.04"
     assert project.entrypoint == ["/bin/hello"]
     assert project.cmd == ["world"]
@@ -92,7 +103,9 @@ def test_project_build_base(yaml_data):
     assert project.build_base == "ubuntu:18.04"
 
 
-@pytest.mark.parametrize("field", ["name", "version", "base", "parts"])
+@pytest.mark.parametrize(
+    "field", ["name", "version", "base", "parts", "description", "summary", "license"]
+)
 def test_project_missing_field(yaml_data, field):
     del yaml_data[field]
 
@@ -126,36 +139,16 @@ def test_project_parts_validation(yaml_data):
     )
 
 
-def test_project_load(new_dir):
+def test_project_load(yaml_data):
     Path("rockcraft.yaml").write_text(
-        textwrap.dedent(
-            """
-            name: mytest
-            version: latest
-            base: ubuntu:20.04
-            build-base: ubuntu:20.04
-
-            parts:
-              foo:
-                plugin: nil
-                overlay-script: "ls"
-            """
-        ),
+        textwrap.dedent(json.dumps(yaml_data)),
         encoding="utf-8",
     )
 
     project = load_project("rockcraft.yaml")
 
-    assert project.name == "mytest"
-    assert project.version == "latest"
-    assert project.base == "ubuntu:20.04"
-    assert project.build_base == "ubuntu:20.04"
-    assert project.parts == {
-        "foo": {
-            "plugin": "nil",
-            "overlay-script": "ls",
-        }
-    }
+    for attr, v in yaml_data.items():
+        assert project.__getattribute__(attr) == v
 
 
 def test_project_load_error():
@@ -166,21 +159,44 @@ def test_project_load_error():
 
 def test_root_validation(yaml_data):
     project = Project.unmarshal(yaml_data)
-    
+
     expected_annotations = [
-        'org.opencontainers.image.version',
-        'org.opencontainers.image.base.name',
-        'org.opencontainers.image.created'
+        "org.opencontainers.image.version",
+        "org.opencontainers.image.ref.name",
+        "org.opencontainers.image.licenses",
+        "org.opencontainers.image.title",
     ]
-    
-    assert hasattr(project, 'annotations')
+
+    assert hasattr(project, "annotations")
     assert isinstance(project.annotations, dict)
     assert all(annot in project.annotations for annot in expected_annotations)
-    assert project.annotations['org.opencontainers.image.version'] == yaml_data['version']
-    assert project.annotations['org.opencontainers.image.base.name'] == yaml_data['base']
-    try:
-        parser.parse(project.annotations['org.opencontainers.image.created'])
-    except parser._parser.ParserError as err:
-        assert False, f'Wrong date format passed to the annotation org.opencontainers.image.created: {err}'
-        
+    assert (
+        project.annotations["org.opencontainers.image.version"] == yaml_data["version"]
+    )
+    assert project.annotations["org.opencontainers.image.ref.name"] == yaml_data["name"]
+    assert (
+        project.annotations["org.opencontainers.image.licenses"] == yaml_data["license"]
+    )
+    assert project.annotations["org.opencontainers.image.title"] == yaml_data["title"]
+
+    # without a title, the annotation will default to "name"
+    # and if the license is not capitalized, we still get the proper name
+    input_data_v2 = {**yaml_data, **{"license": "apache-2.0"}}
+    input_data_v2.pop("title")
+    project_v2 = Project.unmarshal(input_data_v2)
+    assert (
+        project_v2.annotations["org.opencontainers.image.title"]
+        == input_data_v2["name"]
+    )
+    assert (
+        project_v2.annotations["org.opencontainers.image.licenses"]
+        == input_data_v2["license"].capitalize()
+    )
+
+    # without a proper and recognized SPDX license, root validation fails
+    yaml_data["license"] = "apache 0.x"
+    with pytest.raises(ProjectValidationError) as err:
+        project_v3 = Project.unmarshal(yaml_data)
+
+
 # TODO: add additional validation and formatting tests
