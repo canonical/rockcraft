@@ -95,19 +95,18 @@ class TestImage:
 
         image.add_layer("tag", Path("layer_dir"))
         assert spy_add.mock_calls == [call(ANY, "./foo.txt")]
+        expected_cmd = [
+            "umoci",
+            "raw",
+            "add-layer",
+            "--image",
+            str(new_dir / "c/a:b"),
+            str(new_dir / f"c/.temp_layer.{pid}.tar"),
+            "--tag",
+            "tag",
+        ]
         assert mock_run.mock_calls == [
-            call(
-                [
-                    "umoci",
-                    "raw",
-                    "add-layer",
-                    "--tag",
-                    "tag",
-                    "--image",
-                    str(new_dir / "c/a:b"),
-                    str(new_dir / f"c/.temp_layer.{pid}.tar"),
-                ]
-            )
+            call(expected_cmd + ["--history.created_by", " ".join(expected_cmd)])
         ]
 
     def test_to_docker_daemon(self, mock_run):
@@ -230,13 +229,17 @@ class TestImage:
             )
         ]
 
+    @patch("subprocess.run")
     @patch("tempfile.mkdtemp")
     @patch("pathlib.Path.mkdir")
     @patch("shutil.rmtree")
-    @patch("subprocess.run")
-    def test_set_control_data(self, mock_run, mock_rmtree, mock_mkdir, mock_mkdtemp):
+    @patch("rockcraft.oci._compress_layer")
+    def test_set_control_data(
+        self, mock_compress_layer, mock_rmtree, mock_mkdir, mock_mkdtemp, mock_run
+    ):
         image = oci.Image("a:b", Path("/c"))
-        mock_control_data_path = "foo"
+
+        mock_control_data_path = "layer_dir"
         mock_mkdtemp.return_value = mock_control_data_path
 
         now = datetime.datetime.now(datetime.timezone.utc).isoformat()
@@ -259,18 +262,21 @@ class TestImage:
         assert mocked_data["writes"] == expected
         mock_mkdtemp.assert_called_once()
         mock_mkdir.assert_called_once()
+        mock_compress_layer.assert_called_once_with(
+            Path(mock_control_data_path),
+            Path(f"/c/.temp_layer.control_data.{os.getpid()}.tar"),
+        )
+        expected_cmd = [
+            "umoci",
+            "raw",
+            "add-layer",
+            "--image",
+            str("/c/a:b"),
+            str(f"/c/.temp_layer.control_data.{os.getpid()}.tar"),
+        ]
         assert mock_run.mock_calls == [
             call(
-                [
-                    "umoci",
-                    "insert",
-                    "--image",
-                    "/c/a:b",
-                    mock_control_data_path + "/.rock",
-                    "/.rock",
-                    "--history.created_by",
-                    f"umoci insert --image /c/a:b {mock_control_data_path}/.rock /.rock",
-                ],
+                expected_cmd + ["--history.created_by", " ".join(expected_cmd)],
                 capture_output=True,
                 check=True,
                 universal_newlines=True,
@@ -318,3 +324,13 @@ class TestImage:
                 universal_newlines=True,
             ),
         ]
+
+    def test_compress_layer(self, mocker, new_dir):
+        Path("c").mkdir()
+        Path("layer_dir").mkdir()
+        Path("layer_dir/foo.txt").touch()
+
+        spy_add = mocker.spy(tarfile.TarFile, "add")
+
+        oci._compress_layer(Path("layer_dir"), "./foo.tar")
+        assert spy_add.mock_calls == [call(ANY, "./foo.tar"), call(ANY, "./foo.txt")]

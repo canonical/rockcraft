@@ -23,7 +23,6 @@ import subprocess
 import tarfile
 from dataclasses import dataclass
 from pathlib import Path
-from tempfile import tempdir
 import tempfile
 from typing import Dict, List, Any
 
@@ -99,30 +98,8 @@ class Image:
         temp_file.unlink(missing_ok=True)
 
         try:
-            old_dir = os.getcwd()
-            try:
-                os.chdir(layer_path)
-                with tarfile.open(temp_file, mode="w") as tar_file:
-                    for root, _, files in os.walk("."):
-                        for name in files:
-                            path = os.path.join(root, name)
-                            emit.trace(f"Adding to layer: {path}")
-                            tar_file.add(path)
-            finally:
-                os.chdir(old_dir)
-
-            _process_run(
-                [
-                    "umoci",
-                    "raw",
-                    "add-layer",
-                    "--tag",
-                    tag,
-                    "--image",
-                    str(image_path),
-                    str(temp_file),
-                ]
-            )
+            _compress_layer(layer_path, temp_file)
+            _add_layer_into_image(str(image_path), str(temp_file), **{"--tag": tag})
         finally:
             temp_file.unlink(missing_ok=True)
 
@@ -219,17 +196,21 @@ class Image:
 
         # the ROCK control data structure starts with the folder ".rock"
         control_data_rock_folder = local_control_data_path / Path(".rock")
-        control_data_rock_folder.mkdir()
+        control_data_rock_folder.mkdir(parents=True)
 
         rock_metadata_file = control_data_rock_folder / Path("metadata.yaml")
         with open(rock_metadata_file, "w") as rock_meta:
             yaml.dump(metadata, rock_meta)
 
-        _insert_into_image(
-            self.path / self.image_name,
-            control_data_rock_folder,
-            control_data_destination,
-        )
+        temp_tar_file = Path(self.path, f".temp_layer.control_data.{os.getpid()}.tar")
+        temp_tar_file.unlink(missing_ok=True)
+
+        try:
+            _compress_layer(local_control_data_path, temp_tar_file)
+            _add_layer_into_image(str(self.path / self.image_name), str(temp_tar_file))
+        finally:
+            temp_tar_file.unlink(missing_ok=True)
+
         emit.progress(f"Control data written to {control_data_destination}")
         shutil.rmtree(local_control_data_path)
 
@@ -266,29 +247,39 @@ def _config_image(image_path: Path, params: List[str]) -> None:
     _process_run(["umoci", "config", "--image", str(image_path)] + params)
 
 
-def _insert_into_image(image_path: Path, source: Path, destination: str) -> None:
-    """Inserto content into the OCI image
+def _add_layer_into_image(image_path: str, compressed_content: str, **kwargs) -> None:
+    """Add raw layer (compressed) into the OCI image
 
-    :param image_path: path of the OCI image
-    :type image_path: Path
-    :param source: content to be copied
-    :type source: Path
-    :param destination: where, in the OCI image file system, to copy the content to
-    :type destination: str
+    :param image_path: path of the OCI image, in the format <image>:<tar>
+    :type image_path: str
+    :param compressed_content: path to the compressed content to be added
+    :type compressed_content: str
     """
-    cmd = f"umoci insert --image {str(image_path)} {str(source)} {destination}"
-    _process_run(
-        [
-            "umoci",
-            "insert",
-            "--image",
-            str(image_path),
-            str(source),
-            destination,
-            "--history.created_by",
-            cmd,
-        ]
-    )
+    cmd = ["umoci", "raw", "add-layer", "--image", image_path, compressed_content] + [
+        arg_val for k, v in kwargs.items() for arg_val in [k, v]
+    ]
+    _process_run(cmd + ["--history.created_by", " ".join(cmd)])
+
+
+def _compress_layer(layer_path: Path, temp_tar_file: Path) -> None:
+    """Prepare new OCI layer by compressing its content into tar file
+
+    :param layer_path: path to the content to be compressed into a layer
+    :type layer_path: Path
+    :param temp_tar_file: path to the temporary tar fail holding the compressed content
+    :type temp_tar_file: Path
+    """
+    old_dir = os.getcwd()
+    try:
+        os.chdir(layer_path)
+        with tarfile.open(temp_tar_file, mode="w") as tar_file:
+            for root, _, files in os.walk("."):
+                for name in files:
+                    path = os.path.join(root, name)
+                    emit.trace(f"Adding to layer: {path}")
+                    tar_file.add(path)
+    finally:
+        os.chdir(old_dir)
 
 
 def _process_run(command: List[str], **kwargs) -> None:

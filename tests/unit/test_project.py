@@ -196,7 +196,11 @@ def test_root_validation(yaml_data):
     # without a proper and recognized SPDX license, root validation fails
     yaml_data["license"] = "apache 0.x"
     with pytest.raises(ProjectValidationError) as err:
-        project_v3 = Project.unmarshal(yaml_data)
+        _ = Project.unmarshal(yaml_data)
+    assert (
+        str(err.value)
+        == f"The provided license \"{yaml_data['license']}\" is not supported"
+    )
 
 
 # TODO: add additional validation and formatting tests
