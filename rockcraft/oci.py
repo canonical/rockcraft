@@ -21,13 +21,12 @@ import os
 import shutil
 import subprocess
 import tarfile
+import tempfile
 from dataclasses import dataclass
 from pathlib import Path
-import tempfile
-from typing import Dict, List, Any
+from typing import Any, Dict, List
 
 import yaml
-
 from craft_cli import CraftError, emit
 
 logger = logging.getLogger(__name__)

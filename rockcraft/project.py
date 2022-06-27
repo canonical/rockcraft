@@ -20,9 +20,9 @@ from typing import Any, Dict, List, Literal, Optional, Tuple
 
 import pydantic
 import spdx_license_list
-from pydantic import root_validator
 import yaml
 from craft_cli.errors import CraftError
+from pydantic import root_validator
 
 from rockcraft.parts import validate_part
 
