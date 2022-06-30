@@ -1,0 +1,13 @@
+summary: bare base build test
+
+execute: |
+  rockcraft pack
+
+  test -f bare-base-test_latest.rock
+  test ! -d work
+
+  # test container execution
+  docker images
+  sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:bare-base-test_latest.rock docker-daemon:bare-base-test:latest
+  docker images
+  docker run --rm bare-base-test

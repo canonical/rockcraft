@@ -21,11 +21,11 @@ Format specification
   version: <version>
   
   # The system image and version the application will be layered on.
-  base: ubuntu:18.04 | ubuntu:20.04
+  base: ubuntu:18.04 | ubuntu:20.04 | ubuntu:22:04 | bare
   
   # (Optional) The system and version on top of which the application
   # will be built. Defaults to base.
-  build-base: <base>
+  build-base: ubuntu:18.04 | ubuntu:20.04 | ubuntu:22:04
   
   # (Optional) The container entry point.
   entrypoint: [<path>, ...]
@@ -53,7 +53,8 @@ Example
 
   name: hello 
   version: latest
-  base: ubuntu:20.04
+  base: bare
+  build-base: ubuntu:22.04
   entrypoint: [/usr/bin/hello, -t]
   env:
     - VAR1: value

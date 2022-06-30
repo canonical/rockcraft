@@ -55,7 +55,7 @@ class TestImage:
                 ]
             )
         ]
-        
+
     def test_new_oci_image(self, mock_run):
         image_dir = Path("images/dir")
         image = oci.Image.new_oci_image(image_dir=image_dir)
@@ -63,21 +63,8 @@ class TestImage:
         assert image.image_name == "bare:latest"
         assert image.path == Path("images/dir")
         assert mock_run.mock_calls == [
-            call(
-                [
-                    "umoci", 
-                    "init", 
-                    "--layout", 
-                    f'{image_dir}/bare'
-                ]),
-            call(    
-                [
-                    "umoci", 
-                    "new", 
-                    "--image", 
-                    f'{image_dir}/bare:latest'
-                ]
-            )
+            call(["umoci", "init", "--layout", f"{image_dir}/bare"]),
+            call(["umoci", "new", "--image", f"{image_dir}/bare:latest"]),
         ]
 
     def test_copy_to(self, mock_run):

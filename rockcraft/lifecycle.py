@@ -115,7 +115,7 @@ def pack_in_provider(project: Project):
     with provider.launched_environment(
         project_name=project.name,
         project_path=Path().absolute(),
-        build_base=project.build_base,
+        build_base=str(project.build_base),
     ) as instance:
         try:
             with emit.pause():

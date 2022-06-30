@@ -55,7 +55,7 @@ class Image:
         _copy_image(f"docker://{image_name}", f"oci:{image_target}")
 
         return cls(image_name=image_name, path=image_dir)
-    
+
     @classmethod
     def new_oci_image(cls, image_dir: Path) -> "Image":
         """Create a new OCI image out of thin air.
@@ -64,12 +64,12 @@ class Image:
 
         :returns: The new image object.
         """
-        image_name = 'bare:latest'
-        
+        image_name = "bare:latest"
+
         image_dir.mkdir(parents=True, exist_ok=True)
         image_target = image_dir / image_name
         shutil.rmtree(image_target, ignore_errors=True)
-        _process_run(["umoci", "init", "--layout", str(image_target).split(':')[0]])
+        _process_run(["umoci", "init", "--layout", str(image_target).split(":")[0]])
         _process_run(["umoci", "new", "--image", str(image_target)])
 
         return cls(image_name=image_name, path=image_dir)

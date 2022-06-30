@@ -38,13 +38,10 @@ class Project(pydantic.BaseModel):
 
     name: str
     version: str
-    base: Literal["bare", 
-                  "ubuntu:18.04", 
-                  "ubuntu:20.04", 
-                  "ubuntu:22.04"]
-    build_base: Optional[Literal["ubuntu:18.04", 
-                                 "ubuntu:20.04", 
-                                 "ubuntu:22.04"]] = pydantic.Field(alias='build-base')
+    base: Literal["bare", "ubuntu:18.04", "ubuntu:20.04", "ubuntu:22.04"]
+    build_base: Optional[
+        Literal["ubuntu:18.04", "ubuntu:20.04", "ubuntu:22.04"]
+    ] = pydantic.Field(alias="build-base")
     entrypoint: Optional[List[str]]
     cmd: Optional[List[str]]
     env: Optional[List[Dict[str, str]]]
@@ -63,13 +60,15 @@ class Project(pydantic.BaseModel):
     @classmethod
     def _validate_build_base(cls, build_base, values):
         """Build-base defaults to the base value if not specified.
-        
+
         :raises ProjectValidationError: If base validation fails.
         """
         if not build_base:
-            base_value = values.get('base')
+            base_value = values.get("base")
             if base_value == "bare":
-                raise ProjectValidationError('When "base" is bare, a build-base must be specified!')
+                raise ProjectValidationError(
+                    'When "base" is bare, a build-base must be specified!'
+                )
             build_base = values.get("base")
         return build_base
 

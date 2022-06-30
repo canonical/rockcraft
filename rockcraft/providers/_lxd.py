@@ -30,9 +30,11 @@ from ._provider import Provider, ProviderError
 
 logger = logging.getLogger(__name__)
 
-_BASE_IMAGE = {"ubuntu:18.04": "18.04", 
-               "ubuntu:20.04": "20.04",
-               "ubuntu:22.04": "22.04"}
+_BASE_IMAGE = {
+    "ubuntu:18.04": "18.04",
+    "ubuntu:20.04": "20.04",
+    "ubuntu:22.04": "22.04",
+}
 
 
 class LXDProvider(Provider):
