@@ -271,7 +271,7 @@ class TestImage:
             mocked_data["writes"] += s
 
         m = mock_open()
-        with patch("builtins.open", m):
+        with patch("pathlib.Path.open", m):
             m.return_value.write = mock_write
             image.set_control_data(metadata)
 
