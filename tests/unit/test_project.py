@@ -63,7 +63,7 @@ def test_project_unmarshal(yaml_data):
         project.description
         == "this is an example of a rockcraft.yaml for the purpose of testing rockcraft"
     )
-    assert project.license == "Apache-2.0"
+    assert project.rock_license == "Apache-2.0"
     assert project.build_base == "ubuntu:20.04"
     assert project.entrypoint == ["/bin/hello"]
     assert project.cmd == ["world"]
@@ -110,7 +110,7 @@ def test_project_license_clean_name(yaml_data):
     yaml_data["license"] = "mIt"
 
     project = Project.unmarshal(yaml_data)
-    assert project.license == "MIT"
+    assert project.rock_license == "MIT"
 
 
 def test_project_title_empty(yaml_data):
@@ -173,6 +173,10 @@ def test_project_load(yaml_data):
     project = load_project("rockcraft.yaml")
 
     for attr, v in yaml_data.items():
+        if attr == "license":
+            # the var license in a built-in, 
+            # so we workaround it by using an alias
+            attr = "rock_license"
         assert project.__getattribute__(attr) == v
 
 

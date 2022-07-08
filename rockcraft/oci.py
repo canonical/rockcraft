@@ -189,8 +189,7 @@ class Image:
         :param metadata: content for the ROCK's metadata YAML file
         :type metadata: Dict[str, Any]
         """
-        control_data_destination = "/.rock"
-        emit.progress(f"Setting the ROCK's Control Data at {control_data_destination}")
+        emit.progress("Setting the ROCK's Control Data")
         local_control_data_path = Path(tempfile.mkdtemp())
 
         # the ROCK control data structure starts with the folder ".rock"
@@ -198,7 +197,7 @@ class Image:
         control_data_rock_folder.mkdir(parents=True)
 
         rock_metadata_file = control_data_rock_folder / Path("metadata.yaml")
-        with open(rock_metadata_file, "w") as rock_meta:
+        with open(rock_metadata_file, "w", encoding="utf-8") as rock_meta:
             yaml.dump(metadata, rock_meta)
 
         temp_tar_file = Path(self.path, f".temp_layer.control_data.{os.getpid()}.tar")
@@ -210,7 +209,7 @@ class Image:
         finally:
             temp_tar_file.unlink(missing_ok=True)
 
-        emit.progress(f"Control data written to {control_data_destination}")
+        emit.progress("Control data written")
         shutil.rmtree(local_control_data_path)
 
     def set_annotations(self, annotations: Dict[str, Any]) -> None:

@@ -41,7 +41,7 @@ class Project(pydantic.BaseModel):
     title: Optional[str]
     summary: str
     description: str
-    license: str
+    rock_license: str = pydantic.Field(alias="license")
     version: str
     base: Literal["ubuntu:18.04", "ubuntu:20.04"]
     build_base: Optional[str]
@@ -59,16 +59,16 @@ class Project(pydantic.BaseModel):
         allow_population_by_field_name = True
         alias_generator = lambda s: s.replace("_", "-")  # noqa: E731
 
-    @pydantic.validator("license", always=True)
+    @pydantic.validator("rock_license", always=True)
     @classmethod
-    def _validate_license(cls, license):
+    def _validate_license(cls, rock_license):
         """Make sure the provided license is valid and in SPDX format."""
-        if license.lower() not in [lic.lower() for lic in spdx_license_list.LICENSES]:
+        if rock_license.lower() not in [lic.lower() for lic in spdx_license_list.LICENSES]:
             raise ProjectValidationError(
-                f"License {license} not valid. It must be valid and in SPDX format."
+                f"License {rock_license} not valid. It must be valid and in SPDX format."
             )
         return next(
-            lic for lic in spdx_license_list.LICENSES if license.lower() == lic.lower()
+            lic for lic in spdx_license_list.LICENSES if rock_license.lower() == lic.lower()
         )
 
     @pydantic.validator("title", always=True)
@@ -136,7 +136,7 @@ class Project(pydantic.BaseModel):
             "org.opencontainers.image.version": self.version,
             "org.opencontainers.image.title": self.title,
             "org.opencontainers.image.ref.name": self.name,
-            "org.opencontainers.image.licenses": self.license,
+            "org.opencontainers.image.licenses": self.rock_license,
             "org.opencontainers.image.created": generation_time,
         }
 
