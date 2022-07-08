@@ -33,6 +33,7 @@ def test_parts_lifecycle_prime_dir(new_dir):
     lifecycle = parts.PartsLifecycle(
         all_parts=parts_data,
         work_dir=Path("/some/workdir"),
+        base="ubuntu:20.04",
         base_layer_dir=new_dir,
         base_layer_hash=b"digest",
     )
@@ -54,6 +55,7 @@ def test_parts_lifecycle_run(new_dir):
     lifecycle = parts.PartsLifecycle(
         all_parts=parts_data,
         work_dir=Path("."),
+        base="ubuntu:20.04",
         base_layer_dir=new_dir,
         base_layer_hash=b"digest",
     )
@@ -74,6 +76,7 @@ def test_parts_lifecycle_error(new_dir):
         parts.PartsLifecycle(
             all_parts=parts_data,
             work_dir=Path("."),
+            base="ubuntu:20.04",
             base_layer_dir=new_dir,
             base_layer_hash=b"digest",
         )

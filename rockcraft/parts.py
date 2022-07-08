@@ -25,6 +25,15 @@ from craft_parts import ActionType, Step, plugins
 from craft_parts.parts import PartSpec
 from xdg import BaseDirectory  # type: ignore
 
+# XXX: craft-parts expects a core base to perform dependency cutoff for stage
+#      packages. A different strategy must be used to set the build base if
+#      building on top of an existing ROCK (currently not supported).
+_BASE_MAPPING = {
+    "ubuntu:18.04": "core18",
+    "ubuntu:20.04": "core20",
+    "ubuntu:22.04": "core22",
+}
+
 
 class PartsLifecycleError(CraftError):
     """Error during parts processing."""
@@ -46,6 +55,7 @@ class PartsLifecycle:
         all_parts: Dict[str, Any],
         *,
         work_dir: pathlib.Path,
+        base: str,
         base_layer_dir: pathlib.Path,
         base_layer_hash: bytes,
     ):
@@ -60,6 +70,7 @@ class PartsLifecycle:
                 application_name="rockcraft",
                 work_dir=work_dir,
                 cache_dir=cache_dir,
+                base=_BASE_MAPPING.get(base, ""),
                 base_layer_dir=base_layer_dir,
                 base_layer_hash=base_layer_hash,
                 ignore_local_sources=["*.rock"],

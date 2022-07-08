@@ -16,7 +16,6 @@
 
 """Utilities for rockcraft."""
 
-import distutils.util
 import logging
 import os
 import pathlib
@@ -32,7 +31,7 @@ OSPlatform = namedtuple("OSPlatform", "system release machine")
 def is_managed_mode():
     """Check if rockcraft is running in a managed environment."""
     managed_flag = os.getenv("ROCKCRAFT_MANAGED_MODE", "n")
-    return distutils.util.strtobool(managed_flag) == 1
+    return strtobool(managed_flag) == 1
 
 
 def get_managed_environment_home_path():
@@ -85,3 +84,20 @@ def confirm_with_user(prompt, default=False) -> bool:
         return False
 
     return default
+
+
+def strtobool(value: str) -> bool:
+    """Convert a string representation of truth to true (1) or false (0).
+
+    :param value: a True value of 'y', 'yes', 't', 'true', 'on', and '1'
+        or a False value of 'n', 'no', 'f', 'false', 'off', and '0'.
+    :raises ValueError: if `value` is not a valid boolean value.
+    """
+    parsed_value = value.lower()
+
+    if parsed_value in ("y", "yes", "t", "true", "on", "1"):
+        return True
+    if parsed_value in ("n", "no", "f", "false", "off", "0"):
+        return False
+
+    raise ValueError(f"Invalid boolean value of {value!r}")
