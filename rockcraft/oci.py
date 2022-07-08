@@ -193,11 +193,11 @@ class Image:
         local_control_data_path = Path(tempfile.mkdtemp())
 
         # the ROCK control data structure starts with the folder ".rock"
-        control_data_rock_folder = local_control_data_path / Path(".rock")
-        control_data_rock_folder.mkdir(parents=True)
+        control_data_rock_folder = local_control_data_path / ".rock"
+        control_data_rock_folder.mkdir()
 
-        rock_metadata_file = control_data_rock_folder / Path("metadata.yaml")
-        with open(rock_metadata_file, "w", encoding="utf-8") as rock_meta:
+        rock_metadata_file = control_data_rock_folder / "metadata.yaml"
+        with rock_metadata_file.open("w", encoding="utf-8") as rock_meta:
             yaml.dump(metadata, rock_meta)
 
         temp_tar_file = Path(self.path, f".temp_layer.control_data.{os.getpid()}.tar")
