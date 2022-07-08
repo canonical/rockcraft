@@ -174,7 +174,7 @@ def test_project_load(yaml_data):
 
     for attr, v in yaml_data.items():
         if attr == "license":
-            # the var license in a built-in, 
+            # the var license is a built-in,
             # so we workaround it by using an alias
             attr = "rock_license"
         assert project.__getattribute__(attr) == v

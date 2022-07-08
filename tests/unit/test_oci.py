@@ -31,6 +31,26 @@ def mock_run(mocker):
     yield mocker.patch("rockcraft.oci._process_run")
 
 
+@pytest.fixture
+def mock_compress_layer(mocker):
+    yield mocker.patch("rockcraft.oci._compress_layer")
+
+
+@pytest.fixture
+def mock_rmtree(mocker):
+    yield mocker.patch("shutil.rmtree")
+
+
+@pytest.fixture
+def mock_mkdir(mocker):
+    yield mocker.patch("pathlib.Path.mkdir")
+
+
+@pytest.fixture
+def mock_mkdtemp(mocker):
+    yield mocker.patch("tempfile.mkdtemp")
+
+
 @tests.linux_only
 class TestImage:
     """OCI image manipulation."""
@@ -229,14 +249,10 @@ class TestImage:
             )
         ]
 
-    @patch("subprocess.run")
-    @patch("tempfile.mkdtemp")
-    @patch("pathlib.Path.mkdir")
-    @patch("shutil.rmtree")
-    @patch("rockcraft.oci._compress_layer")
     def test_set_control_data(
-        self, mock_compress_layer, mock_rmtree, mock_mkdir, mock_mkdtemp, mock_run
+        self, mock_compress_layer, mock_rmtree, mock_mkdir, mock_mkdtemp, mocker
     ):
+        mock_run = mocker.patch("subprocess.run")
         image = oci.Image("a:b", Path("/c"))
 
         mock_control_data_path = "layer_dir"
