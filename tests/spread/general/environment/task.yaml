@@ -10,4 +10,5 @@ execute: |
   docker images
   sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:environment-test_latest.rock docker-daemon:environment-test:latest
   docker images
-  docker run environment-test bash -c 'echo $X' | grep "ship it!"
+  docker run --rm environment-test bash -c 'echo $X' | grep "ship it!"
+  docker system prune -a -f

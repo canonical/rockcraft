@@ -13,4 +13,5 @@ execute: |
   docker images
   sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:craftctl-test_latest.rock docker-daemon:craftctl-test:latest
   docker images
-  docker run --entrypoint /usr/bin/hello craftctl-test:latest
+  docker run --rm --entrypoint /usr/bin/hello craftctl-test:latest
+  docker system prune -a -f
