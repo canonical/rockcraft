@@ -360,4 +360,4 @@ class TestImage:
         spy_add = mocker.spy(tarfile.TarFile, "add")
 
         oci._compress_layer(Path("layer_dir"), Path("./bar.tar"))
-        assert spy_add.mock_calls == [call(ANY, "./bar.tar"), call(ANY, "./bar.txt")]
+        assert spy_add.call_count == 2
