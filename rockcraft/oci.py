@@ -70,8 +70,9 @@ class Image:
 
         image_dir.mkdir(parents=True, exist_ok=True)
         image_target = image_dir / image_name
-        shutil.rmtree(image_target, ignore_errors=True)
-        _process_run(["umoci", "init", "--layout", str(image_target).split(":")[0]])
+        image_target_no_tag = str(image_target).split(":")[0]
+        shutil.rmtree(image_target_no_tag, ignore_errors=True)
+        _process_run(["umoci", "init", "--layout", image_target_no_tag])
         _process_run(["umoci", "new", "--image", str(image_target)])
 
         return cls(image_name=image_name, path=image_dir)
