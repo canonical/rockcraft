@@ -14,6 +14,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import datetime
+import json
 import textwrap
 from pathlib import Path
 
@@ -31,8 +33,12 @@ from rockcraft.project import (
 def yaml_data():
     return {
         "name": "mytest",
+        "title": "My Test",
         "version": "latest",
         "base": "ubuntu:20.04",
+        "summary": "example for unit tests",
+        "description": "this is an example of a rockcraft.yaml for the purpose of testing rockcraft",
+        "license": "Apache-2.0",
         "entrypoint": ["/bin/hello"],
         "cmd": ["world"],
         "env": [{"NAME": "VALUE"}],
@@ -49,8 +55,15 @@ def test_project_unmarshal(yaml_data):
     project = Project.unmarshal(yaml_data)
 
     assert project.name == "mytest"
+    assert project.title == "My Test"
     assert project.version == "latest"
     assert project.base == "ubuntu:20.04"
+    assert project.summary == "example for unit tests"
+    assert (
+        project.description
+        == "this is an example of a rockcraft.yaml for the purpose of testing rockcraft"
+    )
+    assert project.rock_license == "Apache-2.0"
     assert project.build_base == "ubuntu:20.04"
     assert project.entrypoint == ["/bin/hello"]
     assert project.cmd == ["world"]
@@ -83,6 +96,30 @@ def test_project_base_invalid(yaml_data):
     )
 
 
+def test_project_license_invalid(yaml_data):
+    yaml_data["license"] = "apache 0.x"
+
+    with pytest.raises(ProjectValidationError) as err:
+        Project.unmarshal(yaml_data)
+    assert str(err.value) == (
+        f"License {yaml_data['license']} not valid. It must be valid and in SPDX format."
+    )
+
+
+def test_project_license_clean_name(yaml_data):
+    yaml_data["license"] = "mIt"
+
+    project = Project.unmarshal(yaml_data)
+    assert project.rock_license == "MIT"
+
+
+def test_project_title_empty(yaml_data):
+    yaml_data.pop("title")
+
+    project = Project.unmarshal(yaml_data)
+    assert project.title == project.name
+
+
 def test_project_build_base(yaml_data):
     yaml_data["build-base"] = "ubuntu:18.04"
 
@@ -91,7 +128,9 @@ def test_project_build_base(yaml_data):
     assert project.build_base == "ubuntu:18.04"
 
 
-@pytest.mark.parametrize("field", ["name", "version", "base", "parts"])
+@pytest.mark.parametrize(
+    "field", ["name", "version", "base", "parts", "description", "summary", "license"]
+)
 def test_project_missing_field(yaml_data, field):
     del yaml_data[field]
 
@@ -125,42 +164,47 @@ def test_project_parts_validation(yaml_data):
     )
 
 
-def test_project_load(new_dir):
+def test_project_load(yaml_data):
     Path("rockcraft.yaml").write_text(
-        textwrap.dedent(
-            """
-            name: mytest
-            version: latest
-            base: ubuntu:20.04
-            build-base: ubuntu:20.04
-
-            parts:
-              foo:
-                plugin: nil
-                overlay-script: "ls"
-            """
-        ),
+        textwrap.dedent(json.dumps(yaml_data)),
         encoding="utf-8",
     )
 
     project = load_project("rockcraft.yaml")
 
-    assert project.name == "mytest"
-    assert project.version == "latest"
-    assert project.base == "ubuntu:20.04"
-    assert project.build_base == "ubuntu:20.04"
-    assert project.parts == {
-        "foo": {
-            "plugin": "nil",
-            "overlay-script": "ls",
-        }
-    }
+    for attr, v in yaml_data.items():
+        if attr == "license":
+            # the var license is a built-in,
+            # so we workaround it by using an alias
+            attr = "rock_license"
+        assert project.__getattribute__(attr) == v
 
 
 def test_project_load_error():
     with pytest.raises(ProjectLoadError) as err:
         load_project("does_not_exist.txt")
     assert str(err.value) == "No such file or directory: 'does_not_exist.txt'."
+
+
+def test_generate_project_metadata(yaml_data):
+    project = Project.unmarshal(yaml_data)
+    now = datetime.datetime.now(datetime.timezone.utc).isoformat()
+
+    oci_annotations, rock_metadata = project.generate_project_metadata(now)
+    assert oci_annotations == {
+        "org.opencontainers.image.version": yaml_data["version"],
+        "org.opencontainers.image.title": yaml_data["title"],
+        "org.opencontainers.image.ref.name": yaml_data["name"],
+        "org.opencontainers.image.licenses": yaml_data["license"],
+        "org.opencontainers.image.created": now,
+    }
+    assert rock_metadata == {
+        "name": yaml_data["name"],
+        "summary": yaml_data["summary"],
+        "title": yaml_data["title"],
+        "version": yaml_data["version"],
+        "created": now,
+    }
 
 
 # TODO: add additional validation and formatting tests

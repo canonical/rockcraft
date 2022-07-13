@@ -14,10 +14,20 @@ Format specification
 
 .. code-block:: yaml
 
-  # The name of the ROCK project.
+  # The name of the ROCK.
   name: <name>
+
+  # (Optional) The human-readable title of the ROCK. Defaults to name.
+  title: <title>
   
-  # The project version, used as the container tag.
+  # Short summary describing the ROCK.
+  summary: <summary>
+
+  # Long multi-line description of the ROCK.
+  description: |
+    <description>
+
+  # The ROCK version, used within the ROCK OCI tag.
   version: <version>
   
   # The system image and version the application will be layered on.
@@ -27,6 +37,10 @@ Format specification
   # will be built. Defaults to base.
   build-base: ubuntu:18.04 | ubuntu:20.04 | ubuntu:22:04
   
+  # The license, in SPDX format, of the software packaged inside the ROCK.
+  # This field is case insensitive.
+  license: <license>
+
   # (Optional) The container entry point.
   entrypoint: [<path>, ...]
   
@@ -52,9 +66,15 @@ Example
 .. code-block:: yaml
 
   name: hello 
+  title: Hello World
+  summary: An Hello World ROCK
+  description: |
+    This is just an example of a Rockcraft project
+    for an Hello World ROCK.
   version: latest
   base: bare
   build-base: ubuntu:22.04
+  license: Apache-2.0
   entrypoint: [/usr/bin/hello, -t]
   env:
     - VAR1: value
@@ -63,5 +83,5 @@ Example
   parts:
     hello:
       plugin: nil
-      overlay-packages:
+      stage-packages:
         - hello

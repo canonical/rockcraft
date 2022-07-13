@@ -26,6 +26,7 @@ requests==2.27.1
 requests-unixsocket==0.3.0
 semver==2.13.0
 snowballstemmer==2.2.0
+spdx-license-list==0.5.2
 Sphinx==4.5.0
 sphinx-autodoc-typehints==1.18.1
 sphinx-jsonschema==1.19.1

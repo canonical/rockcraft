@@ -19,6 +19,7 @@
 from typing import Any, Dict, List, Literal, Optional, Tuple
 
 import pydantic
+import spdx_license_list  # type: ignore
 import yaml
 from craft_cli.errors import CraftError
 
@@ -37,6 +38,10 @@ class Project(pydantic.BaseModel):
     """Rockcraft project definition."""
 
     name: str
+    title: Optional[str]
+    summary: str
+    description: str
+    rock_license: str = pydantic.Field(alias="license")
     version: str
     base: Literal["bare", "ubuntu:18.04", "ubuntu:20.04", "ubuntu:22.04"]
     build_base: Optional[
@@ -55,6 +60,30 @@ class Project(pydantic.BaseModel):
         allow_mutation = False
         allow_population_by_field_name = True
         alias_generator = lambda s: s.replace("_", "-")  # noqa: E731
+
+    @pydantic.validator("rock_license", always=True)
+    @classmethod
+    def _validate_license(cls, rock_license):
+        """Make sure the provided license is valid and in SPDX format."""
+        if rock_license.lower() not in [
+            lic.lower() for lic in spdx_license_list.LICENSES
+        ]:
+            raise ProjectValidationError(
+                f"License {rock_license} not valid. It must be valid and in SPDX format."
+            )
+        return next(
+            lic
+            for lic in spdx_license_list.LICENSES
+            if rock_license.lower() == lic.lower()
+        )
+
+    @pydantic.validator("title", always=True)
+    @classmethod
+    def _validate_title(cls, title, values):
+        """If title is not provided, it default to the provided ROCK name."""
+        if not title:
+            title = values["name"]
+        return title
 
     @pydantic.validator("build_base", always=True)
     @classmethod
@@ -101,6 +130,31 @@ class Project(pydantic.BaseModel):
             raise ProjectValidationError(_format_pydantic_errors(err.errors())) from err
 
         return project
+
+    def generate_project_metadata(self, generation_time: str) -> Tuple[dict, dict]:
+        """Generate the ROCK's metadata (both the OCI annotation and internal metadata.
+
+        :param generation_time: the UTC time at the time of calling this method
+
+        :return: both the OCI annotation and internal metadata, as a tuple
+        """
+        metadata = {
+            "name": self.name,
+            "summary": self.summary,
+            "title": self.title,
+            "version": self.version,
+            "created": generation_time,
+        }
+
+        annotations = {
+            "org.opencontainers.image.version": self.version,
+            "org.opencontainers.image.title": self.title,
+            "org.opencontainers.image.ref.name": self.name,
+            "org.opencontainers.image.licenses": self.rock_license,
+            "org.opencontainers.image.created": generation_time,
+        }
+
+        return (annotations, metadata)
 
 
 def _format_pydantic_errors(errors, *, file_name: str = "rockcraft.yaml"):
