@@ -136,3 +136,6 @@ dmypy.json
 
 # snap
 rockcraft_*.snap
+
+# rock
+*.rock

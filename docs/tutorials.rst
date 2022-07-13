@@ -33,8 +33,11 @@ save it as ``rockcraft.yaml``:
 .. code-block:: yaml
 
   name: hello
+  summary: Hello World
+  description: The most basic example of a ROCK.
   version: "1.0"
   base: ubuntu:20.04
+  license: Apache-2.0
   cmd: [/usr/bin/hello, -t]
 
   parts:
@@ -57,18 +60,19 @@ The output should look as follows:
 
 .. code-block:: sh
 
-  Launching instance...
-  Retrieved base ubuntu:20.04
-  Extracted ubuntu:20.04
-  Executed: pull hello
-  Executed: overlay hello
-  Executed: build hello
-  Executed: stage hello
-  Executed: prime hello
-  Executed parts lifecycle
-  Created new layer
-  Cmd set to ['/usr/bin/hello', '-t']
-  Exported to OCI archive 'hello_1.0.rock'
+  Launching instance...                                                                                                       
+  Retrieved base ubuntu:20.04                                                                                                 
+  Extracted ubuntu:20.04                                                                                                      
+  Executed: pull hello                                                                                                        
+  Executed: overlay hello                                                                                                     
+  Executed: build hello                                                                                                       
+  Executed: stage hello                                                                                                       
+  Executed: prime hello                                                                                                       
+  Executed parts lifecycle                                                                                                    
+  Created new layer                                                                                                           
+  Cmd set to ['/usr/bin/hello', '-t']                                                                                         
+  Labels and annotations set to ['org.opencontainers.image.version=1.0', 'org.opencontainers.image.title=hello', 'org.opencontainers.image.ref.name=hello', 'org.opencontainers.image.licenses=Apache-2.0', 'org.opencontainers.image.created=2022-06-30T09:07:38.124741+00:00']                                                                                                        
+  Exported to OCI archive 'hello_1.0.rock'  
 
 At the end of the process, a file named ``hello_1.0.rock`` should be
 present in the current directory.

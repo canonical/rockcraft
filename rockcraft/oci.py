@@ -21,10 +21,12 @@ import os
 import shutil
 import subprocess
 import tarfile
+import tempfile
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List
+from typing import Any, Dict, List
 
+import yaml
 from craft_cli import CraftError, emit
 
 logger = logging.getLogger(__name__)
@@ -113,30 +115,8 @@ class Image:
         temp_file.unlink(missing_ok=True)
 
         try:
-            old_dir = os.getcwd()
-            try:
-                os.chdir(layer_path)
-                with tarfile.open(temp_file, mode="w") as tar_file:
-                    for root, _, files in os.walk("."):
-                        for name in files:
-                            path = os.path.join(root, name)
-                            emit.trace(f"Adding to layer: {path}")
-                            tar_file.add(path)
-            finally:
-                os.chdir(old_dir)
-
-            _process_run(
-                [
-                    "umoci",
-                    "raw",
-                    "add-layer",
-                    "--tag",
-                    tag,
-                    "--image",
-                    str(image_path),
-                    str(temp_file),
-                ]
-            )
+            _compress_layer(layer_path, temp_file)
+            _add_layer_into_image(str(image_path), str(temp_file), **{"--tag": tag})
         finally:
             temp_file.unlink(missing_ok=True)
 
@@ -221,6 +201,57 @@ class Image:
         _config_image(image_path, params)
         emit.message(f"Environment set to {env_list}", intermediate=True)
 
+    def set_control_data(self, metadata: Dict[str, Any]) -> None:
+        """Create and populate the ROCK's control data folder.
+
+        :param metadata: content for the ROCK's metadata YAML file
+        :type metadata: Dict[str, Any]
+        """
+        emit.progress("Setting the ROCK's Control Data")
+        local_control_data_path = Path(tempfile.mkdtemp())
+
+        # the ROCK control data structure starts with the folder ".rock"
+        control_data_rock_folder = local_control_data_path / ".rock"
+        control_data_rock_folder.mkdir()
+
+        rock_metadata_file = control_data_rock_folder / "metadata.yaml"
+        with rock_metadata_file.open("w", encoding="utf-8") as rock_meta:
+            yaml.dump(metadata, rock_meta)
+
+        temp_tar_file = Path(self.path, f".temp_layer.control_data.{os.getpid()}.tar")
+        temp_tar_file.unlink(missing_ok=True)
+
+        try:
+            _compress_layer(local_control_data_path, temp_tar_file)
+            _add_layer_into_image(str(self.path / self.image_name), str(temp_tar_file))
+        finally:
+            temp_tar_file.unlink(missing_ok=True)
+
+        emit.progress("Control data written")
+        shutil.rmtree(local_control_data_path)
+
+    def set_annotations(self, annotations: Dict[str, Any]) -> None:
+        """Add the given annotations to the final image.
+
+        :param annotations: A dictionary with each annotation/label and its value
+        """
+        emit.progress("Configuring labels and annotations...")
+        image_path = self.path / self.image_name
+        label_params = ["--clear=config.labels"]
+        annotation_params = ["--clear=manifest.annotations"]
+
+        labels_list = []
+        for label_key, label_value in annotations.items():
+            label_item = f"{label_key}={label_value}"
+            labels_list.append(label_item)
+            label_params.extend(["--config.label", label_item])
+            annotation_params.extend(["--manifest.annotation", label_item])
+        # Set the labels
+        _config_image(image_path, label_params)
+        # Set the annotations as a copy of these labels (for OCI compliance only)
+        _config_image(image_path, annotation_params)
+        emit.message(f"Labels and annotations set to {labels_list}", intermediate=True)
+
 
 def _copy_image(source: str, destination: str) -> None:
     """Transfer images from source to destination."""
@@ -230,6 +261,41 @@ def _copy_image(source: str, destination: str) -> None:
 def _config_image(image_path: Path, params: List[str]) -> None:
     """Configure the OCI image."""
     _process_run(["umoci", "config", "--image", str(image_path)] + params)
+
+
+def _add_layer_into_image(image_path: str, compressed_content: str, **kwargs) -> None:
+    """Add raw layer (compressed) into the OCI image.
+
+    :param image_path: path of the OCI image, in the format <image>:<tar>
+    :type image_path: str
+    :param compressed_content: path to the compressed content to be added
+    :type compressed_content: str
+    """
+    cmd = ["umoci", "raw", "add-layer", "--image", image_path, compressed_content] + [
+        arg_val for k, v in kwargs.items() for arg_val in [k, v]
+    ]
+    _process_run(cmd + ["--history.created_by", " ".join(cmd)])
+
+
+def _compress_layer(layer_path: Path, temp_tar_file: Path) -> None:
+    """Prepare new OCI layer by compressing its content into tar file.
+
+    :param layer_path: path to the content to be compressed into a layer
+    :type layer_path: Path
+    :param temp_tar_file: path to the temporary tar fail holding the compressed content
+    :type temp_tar_file: Path
+    """
+    old_dir = os.getcwd()
+    try:
+        os.chdir(layer_path)
+        with tarfile.open(temp_tar_file, mode="w") as tar_file:
+            for root, _, files in os.walk("."):
+                for name in files:
+                    path = os.path.join(root, name)
+                    emit.trace(f"Adding to layer: {path}")
+                    tar_file.add(path)
+    finally:
+        os.chdir(old_dir)
 
 
 def _process_run(command: List[str], **kwargs) -> None:
