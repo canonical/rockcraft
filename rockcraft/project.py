@@ -132,7 +132,7 @@ class Project(pydantic.BaseModel):
         return project
 
     def generate_metadata(
-        self, generation_time: str, base_digest: str
+        self, generation_time: str, base_digest: bytes
     ) -> Tuple[dict, dict]:
         """Generate the ROCK's metadata (both the OCI annotation and internal metadata.
 
@@ -148,7 +148,7 @@ class Project(pydantic.BaseModel):
             "version": self.version,
             "created": generation_time,
             "base": self.base,
-            "base-digest": base_digest,
+            "base-digest": base_digest.hex(),
         }
 
         annotations = {
@@ -157,7 +157,7 @@ class Project(pydantic.BaseModel):
             "org.opencontainers.image.ref.name": self.name,
             "org.opencontainers.image.licenses": self.rock_license,
             "org.opencontainers.image.created": generation_time,
-            "org.opencontainers.image.base.digest": base_digest,
+            "org.opencontainers.image.base.digest": base_digest.hex(),
         }
 
         return (annotations, metadata)
