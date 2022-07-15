@@ -128,15 +128,15 @@ class MultipassProvider(Provider):
         *,
         project_name: str,
         project_path: pathlib.Path,
-        base: str,
+        build_base: str,
     ) -> Generator[Executor, None, None]:
         """Launch environment for specified base.
 
         :param project_name: Name of the project.
         :param project_path: Path to project.
-        :param base: Base to create.
+        :param build_base: Base to build from.
         """
-        alias = BASE_TO_BUILDD_IMAGE_ALIAS[base]
+        alias = BASE_TO_BUILDD_IMAGE_ALIAS[build_base]
 
         instance_name = self.get_instance_name(
             project_name=project_name,
@@ -153,7 +153,7 @@ class MultipassProvider(Provider):
                 name=instance_name,
                 base_configuration=base_configuration,
                 # XXX: replace with appropriate rockcraft base image
-                image_name=f"snapcraft:{base.replace(':', '-')}",
+                image_name=f"snapcraft:{build_base.replace(':', '-')}",
                 cpus=2,
                 disk_gb=64,
                 mem_gb=2,

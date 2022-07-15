@@ -31,12 +31,12 @@ Format specification
   version: <version>
   
   # The system image and version the application will be layered on.
-  base: ubuntu:18.04 | ubuntu:20.04
+  base: ubuntu:18.04 | ubuntu:20.04 | ubuntu:22:04 | bare
   
   # (Optional) The system and version on top of which the application
   # will be built. Defaults to base.
-  build-base: <base>
-
+  build-base: ubuntu:18.04 | ubuntu:20.04 | ubuntu:22:04
+  
   # The license, in SPDX format, of the software packaged inside the ROCK.
   # This field is case insensitive.
   license: <license>
@@ -72,7 +72,8 @@ Example
     This is just an example of a Rockcraft project
     for an Hello World ROCK.
   version: latest
-  base: ubuntu:20.04
+  base: bare
+  build-base: ubuntu:22.04
   license: Apache-2.0
   entrypoint: [/usr/bin/hello, -t]
   env:
@@ -82,5 +83,5 @@ Example
   parts:
     hello:
       plugin: nil
-      overlay-packages:
+      stage-packages:
         - hello

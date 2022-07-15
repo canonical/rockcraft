@@ -50,7 +50,12 @@ def pack():
     # Obtain base image and extract it to use as our overlay base
     # TODO: check if image was already downloaded, etc.
     emit.progress(f"Retrieving base {project.base}")
-    base_image = oci.Image.from_docker_registry(project.base, image_dir=image_dir)
+    if project.base == "bare":
+        base_image = oci.Image.new_oci_image(
+            f"{project.base}:latest", image_dir=image_dir
+        )
+    else:
+        base_image = oci.Image.from_docker_registry(project.base, image_dir=image_dir)
     emit.message(f"Retrieved base {project.base}", intermediate=True)
 
     emit.progress(f"Extracting {base_image.image_name}")
@@ -122,7 +127,7 @@ def pack_in_provider(project: Project):
     with provider.launched_environment(
         project_name=project.name,
         project_path=Path().absolute(),
-        base=project.base,
+        build_base=str(project.build_base),
     ) as instance:
         try:
             with emit.pause():

@@ -12,5 +12,8 @@ execute: |
   # test container execution
   docker images
   sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:smoke-test_latest.rock docker-daemon:smoke-test:latest
+  rm smoke-test_latest.rock
   docker images
-  docker run smoke-test:latest | grep "hello, world"
+  docker run --rm smoke-test:latest | grep "hello, world"
+  docker system prune -a -f
+

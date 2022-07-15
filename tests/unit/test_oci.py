@@ -77,6 +77,17 @@ class TestImage:
             )
         ]
 
+    def test_new_oci_image(self, mock_run):
+        image_dir = Path("images/dir")
+        image = oci.Image.new_oci_image("bare:latest", image_dir=image_dir)
+        assert image_dir.is_dir()
+        assert image.image_name == "bare:latest"
+        assert image.path == Path("images/dir")
+        assert mock_run.mock_calls == [
+            call(["umoci", "init", "--layout", f"{image_dir}/bare"]),
+            call(["umoci", "new", "--image", f"{image_dir}/bare:latest"]),
+        ]
+
     def test_copy_to(self, mock_run):
         image = oci.Image("a:b", Path("/c"))
         new_image = image.copy_to("d:e", image_dir=Path("/f"))
@@ -349,4 +360,4 @@ class TestImage:
         spy_add = mocker.spy(tarfile.TarFile, "add")
 
         oci._compress_layer(Path("layer_dir"), Path("./bar.tar"))
-        assert spy_add.mock_calls == [call(ANY, "./bar.txt"), call(ANY, "./bar.tar")]
+        assert spy_add.call_count == 2

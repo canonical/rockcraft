@@ -92,7 +92,7 @@ def test_project_base_invalid(yaml_data):
         Project.unmarshal(yaml_data)
     assert str(err.value) == (
         "Bad rockcraft.yaml content:\n"
-        "- unexpected value; permitted: 'ubuntu:18.04', 'ubuntu:20.04' in field 'base'"
+        "- unexpected value; permitted: 'bare', 'ubuntu:18.04', 'ubuntu:20.04', 'ubuntu:22.04' in field 'base'"
     )
 
 

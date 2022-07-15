@@ -43,7 +43,12 @@ def mock_install_from_store():
 
 
 @pytest.mark.parametrize(
-    "alias", [bases.BuilddBaseAlias.BIONIC, bases.BuilddBaseAlias.FOCAL]
+    "alias",
+    [
+        bases.BuilddBaseAlias.BIONIC,
+        bases.BuilddBaseAlias.FOCAL,
+        bases.BuilddBaseAlias.JAMMY,
+    ],
 )
 def test_base_configuration_setup_inject_from_host(
     mock_instance, mock_inject, mock_install_from_store, monkeypatch, alias
@@ -62,7 +67,12 @@ def test_base_configuration_setup_inject_from_host(
 
 
 @pytest.mark.parametrize(
-    "alias", [bases.BuilddBaseAlias.BIONIC, bases.BuilddBaseAlias.FOCAL]
+    "alias",
+    [
+        bases.BuilddBaseAlias.BIONIC,
+        bases.BuilddBaseAlias.FOCAL,
+        bases.BuilddBaseAlias.JAMMY,
+    ],
 )
 def test_base_configuration_setup_from_store(
     mock_instance, mock_inject, mock_install_from_store, monkeypatch, alias
@@ -84,7 +94,12 @@ def test_base_configuration_setup_from_store(
 
 
 @pytest.mark.parametrize(
-    "alias", [bases.BuilddBaseAlias.BIONIC, bases.BuilddBaseAlias.FOCAL]
+    "alias",
+    [
+        bases.BuilddBaseAlias.BIONIC,
+        bases.BuilddBaseAlias.FOCAL,
+        bases.BuilddBaseAlias.JAMMY,
+    ],
 )
 def test_base_configuration_setup_from_store_default_for_windows(
     mock_instance, mock_inject, mock_install_from_store, monkeypatch, alias

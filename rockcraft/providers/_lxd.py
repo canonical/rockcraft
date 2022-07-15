@@ -30,7 +30,11 @@ from ._provider import Provider, ProviderError
 
 logger = logging.getLogger(__name__)
 
-_BASE_IMAGE = {"ubuntu:18.04": "18.04", "ubuntu:20.04": "20.04"}
+_BASE_IMAGE = {
+    "ubuntu:18.04": "18.04",
+    "ubuntu:20.04": "20.04",
+    "ubuntu:22.04": "22.04",
+}
 
 
 class LXDProvider(Provider):
@@ -138,15 +142,15 @@ class LXDProvider(Provider):
         *,
         project_name: str,
         project_path: pathlib.Path,
-        base: str,
+        build_base: str,
     ) -> Generator[Executor, None, None]:
         """Launch environment for specified base.
 
         :param project_name: Name of project.
         :param project_path: Path to project.
-        :param base: Base to create.
+        :param build_base: Base to build from.
         """
-        alias = BASE_TO_BUILDD_IMAGE_ALIAS[base]
+        alias = BASE_TO_BUILDD_IMAGE_ALIAS[build_base]
 
         instance_name = self.get_instance_name(
             project_name=project_name,
@@ -167,7 +171,7 @@ class LXDProvider(Provider):
             instance = lxd.launch(
                 name=instance_name,
                 base_configuration=base_configuration,
-                image_name=_BASE_IMAGE[base],
+                image_name=_BASE_IMAGE[build_base],
                 image_remote=image_remote,
                 auto_clean=True,
                 auto_create_project=True,
