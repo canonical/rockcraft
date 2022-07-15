@@ -79,7 +79,7 @@ class TestImage:
 
     def test_new_oci_image(self, mock_run):
         image_dir = Path("images/dir")
-        image = oci.Image.new_oci_image(image_dir=image_dir)
+        image = oci.Image.new_oci_image("bare:latest", image_dir=image_dir)
         assert image_dir.is_dir()
         assert image.image_name == "bare:latest"
         assert image.path == Path("images/dir")

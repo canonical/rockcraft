@@ -59,14 +59,14 @@ class Image:
         return cls(image_name=image_name, path=image_dir)
 
     @classmethod
-    def new_oci_image(cls, image_dir: Path) -> "Image":
+    def new_oci_image(cls, image_name: str,image_dir: Path) -> "Image":
         """Create a new OCI image out of thin air.
 
+        :param image_name: The image to initiate, in ``name:tag`` format.
         :param image_dir: The directory to store the local OCI image.
 
         :returns: The new image object.
         """
-        image_name = "bare:latest"
 
         image_dir.mkdir(parents=True, exist_ok=True)
         image_target = image_dir / image_name
