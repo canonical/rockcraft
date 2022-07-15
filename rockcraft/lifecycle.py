@@ -51,7 +51,9 @@ def pack():
     # TODO: check if image was already downloaded, etc.
     emit.progress(f"Retrieving base {project.base}")
     if project.base == "bare":
-        base_image = oci.Image.new_oci_image(f"{project.base}:latest", image_dir=image_dir)
+        base_image = oci.Image.new_oci_image(
+            f"{project.base}:latest", image_dir=image_dir
+        )
     else:
         base_image = oci.Image.from_docker_registry(project.base, image_dir=image_dir)
     emit.message(f"Retrieved base {project.base}", intermediate=True)
