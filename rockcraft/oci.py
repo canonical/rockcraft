@@ -54,6 +54,7 @@ class Image:
         """
         image_dir.mkdir(parents=True, exist_ok=True)
         image_target = image_dir / image_name
+
         _copy_image(f"docker://{image_name}", f"oci:{image_target}")
 
         return cls(image_name=image_name, path=image_dir)
@@ -69,7 +70,7 @@ class Image:
         """
         image_dir.mkdir(parents=True, exist_ok=True)
         image_target = image_dir / image_name
-        image_target_no_tag = str(image_target).split(":")[0]
+        image_target_no_tag = str(image_target).split(":", maxsplit=1)[0]
         shutil.rmtree(image_target_no_tag, ignore_errors=True)
         _process_run(["umoci", "init", "--layout", image_target_no_tag])
         _process_run(["umoci", "new", "--image", str(image_target)])
@@ -255,7 +256,19 @@ class Image:
 
 def _copy_image(source: str, destination: str) -> None:
     """Transfer images from source to destination."""
-    _process_run(["skopeo", "--insecure-policy", "copy", source, destination])
+    # We need to preserve the digests when downloading the image
+    # from the registry, otherwise a new one is generated and we
+    # lose traceability
+    _process_run(
+        [
+            "skopeo",
+            "--insecure-policy",
+            "--preserve-digests",
+            "copy",
+            source,
+            destination,
+        ]
+    )
 
 
 def _config_image(image_path: Path, params: List[str]) -> None:

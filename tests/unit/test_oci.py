@@ -70,6 +70,7 @@ class TestImage:
                 [
                     "skopeo",
                     "--insecure-policy",
+                    "--preserve-digests",
                     "copy",
                     "docker://a:b",
                     "oci:images/dir/a:b",
@@ -94,7 +95,16 @@ class TestImage:
         assert new_image.image_name == "d:e"
         assert new_image.path == Path("/f")
         assert mock_run.mock_calls == [
-            call(["skopeo", "--insecure-policy", "copy", "oci:/c/a:b", "oci:/f/d:e"])
+            call(
+                [
+                    "skopeo",
+                    "--insecure-policy",
+                    "--preserve-digests",
+                    "copy",
+                    "oci:/c/a:b",
+                    "oci:/f/d:e",
+                ]
+            )
         ]
 
     def test_extract_to(self, mock_run, new_dir):
@@ -148,6 +158,7 @@ class TestImage:
                 [
                     "skopeo",
                     "--insecure-policy",
+                    "--preserve-digests",
                     "copy",
                     "oci:/c/a:tag",
                     "docker-daemon:a:tag",
@@ -163,6 +174,7 @@ class TestImage:
                 [
                     "skopeo",
                     "--insecure-policy",
+                    "--preserve-digests",
                     "copy",
                     "oci:/c/a:tag",
                     "oci-archive:foobar:tag",

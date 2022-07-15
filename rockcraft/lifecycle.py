@@ -67,11 +67,12 @@ def pack():
         f"{project.name}:rockcraft-base", image_dir=image_dir
     )
 
+    base_digest = project_base_image.digest()
     lifecycle = PartsLifecycle(
         project.parts,
         work_dir=work_dir,
         base_layer_dir=rootfs,
-        base_layer_hash=project_base_image.digest(),
+        base_layer_hash=base_digest,
     )
     lifecycle.run(Step.PRIME)
 
@@ -96,7 +97,9 @@ def pack():
     # Also include the "created" timestamp, just before packing the image
     emit.progress("Adding metadata")
     packing_time = datetime.datetime.now(datetime.timezone.utc).isoformat()
-    oci_annotations, rock_metadata = project.generate_project_metadata(packing_time)
+    oci_annotations, rock_metadata = project.generate_metadata(
+        packing_time, base_digest
+    )
     new_image.set_annotations(oci_annotations)
     new_image.set_control_data(rock_metadata)
     emit.progress("Metadata added")

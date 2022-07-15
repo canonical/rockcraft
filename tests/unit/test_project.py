@@ -186,17 +186,18 @@ def test_project_load_error():
     assert str(err.value) == "No such file or directory: 'does_not_exist.txt'."
 
 
-def test_generate_project_metadata(yaml_data):
+def test_project_generate_metadata(yaml_data):
     project = Project.unmarshal(yaml_data)
     now = datetime.datetime.now(datetime.timezone.utc).isoformat()
 
-    oci_annotations, rock_metadata = project.generate_project_metadata(now)
+    oci_annotations, rock_metadata = project.generate_metadata(now, "mock-digest")
     assert oci_annotations == {
         "org.opencontainers.image.version": yaml_data["version"],
         "org.opencontainers.image.title": yaml_data["title"],
         "org.opencontainers.image.ref.name": yaml_data["name"],
         "org.opencontainers.image.licenses": yaml_data["license"],
         "org.opencontainers.image.created": now,
+        "org.opencontainers.image.base.digest": "mock-digest",
     }
     assert rock_metadata == {
         "name": yaml_data["name"],
@@ -204,6 +205,8 @@ def test_generate_project_metadata(yaml_data):
         "title": yaml_data["title"],
         "version": yaml_data["version"],
         "created": now,
+        "base": yaml_data["base"],
+        "base-digest": "mock-digest",
     }
 
 

@@ -35,7 +35,6 @@ sys.path.insert(0, str(pathlib.Path("..").absolute()))
 
 import rockcraft  # noqa: E402
 
-
 # -- Project information -----------------------------------------------------
 
 project = "Rockcraft"

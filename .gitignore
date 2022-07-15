@@ -51,6 +51,9 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 
+# Spread tests
+.spread-reuse.yaml
+
 # Translations
 *.mo
 *.pot
