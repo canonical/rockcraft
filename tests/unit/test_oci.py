@@ -61,9 +61,12 @@ class TestImage:
         assert image.path == Path("/c")
 
     def test_from_docker_registry(self, mock_run, new_dir):
-        image = oci.Image.from_docker_registry("a:b", image_dir=Path("images/dir"))
+        image, source_image = oci.Image.from_docker_registry(
+            "a:b", image_dir=Path("images/dir")
+        )
         assert Path("images/dir").is_dir()
         assert image.image_name == "a:b"
+        assert source_image == "docker://a:b"
         assert image.path == Path("images/dir")
         assert mock_run.mock_calls == [
             call(
@@ -71,7 +74,6 @@ class TestImage:
                     "skopeo",
                     "--insecure-policy",
                     "copy",
-                    "--preserve-digests",
                     "docker://a:b",
                     "oci:images/dir/a:b",
                 ]
@@ -80,9 +82,12 @@ class TestImage:
 
     def test_new_oci_image(self, mock_run):
         image_dir = Path("images/dir")
-        image = oci.Image.new_oci_image("bare:latest", image_dir=image_dir)
+        image, source_image = oci.Image.new_oci_image(
+            "bare:latest", image_dir=image_dir
+        )
         assert image_dir.is_dir()
         assert image.image_name == "bare:latest"
+        assert source_image == f"oci:{str(image_dir)}/bare:latest"
         assert image.path == Path("images/dir")
         assert mock_run.mock_calls == [
             call(["umoci", "init", "--layout", f"{image_dir}/bare"]),
@@ -100,7 +105,6 @@ class TestImage:
                     "skopeo",
                     "--insecure-policy",
                     "copy",
-                    "--preserve-digests",
                     "oci:/c/a:b",
                     "oci:/f/d:e",
                 ]
@@ -159,7 +163,6 @@ class TestImage:
                     "skopeo",
                     "--insecure-policy",
                     "copy",
-                    "--preserve-digests",
                     "oci:/c/a:tag",
                     "docker-daemon:a:tag",
                 ]
@@ -175,7 +178,6 @@ class TestImage:
                     "skopeo",
                     "--insecure-policy",
                     "copy",
-                    "--preserve-digests",
                     "oci:/c/a:tag",
                     "oci-archive:foobar:tag",
                 ]
@@ -183,15 +185,16 @@ class TestImage:
         ]
 
     def test_digest(self, mocker):
+        source_image = "docker://ubuntu:22.04"
         image = oci.Image("a:b", Path("/c"))
         mock_output = mocker.patch(
             "subprocess.check_output", return_value="000102030405060708090a0b0c0d0e0f"
         )
 
-        digest = image.digest()
+        digest = image.digest(source_image)
         assert mock_output.mock_calls == [
             call(
-                ["skopeo", "inspect", "--format", "{{.Digest}}", "oci:/c/a:b"],
+                ["skopeo", "inspect", "--format", "{{.Digest}}", "-n", source_image],
                 text=True,
             )
         ]
