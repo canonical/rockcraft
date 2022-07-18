@@ -70,8 +70,8 @@ class TestImage:
                 [
                     "skopeo",
                     "--insecure-policy",
-                    "--preserve-digests",
                     "copy",
+                    "--preserve-digests",
                     "docker://a:b",
                     "oci:images/dir/a:b",
                 ]
@@ -99,8 +99,8 @@ class TestImage:
                 [
                     "skopeo",
                     "--insecure-policy",
-                    "--preserve-digests",
                     "copy",
+                    "--preserve-digests",
                     "oci:/c/a:b",
                     "oci:/f/d:e",
                 ]
@@ -158,8 +158,8 @@ class TestImage:
                 [
                     "skopeo",
                     "--insecure-policy",
-                    "--preserve-digests",
                     "copy",
+                    "--preserve-digests",
                     "oci:/c/a:tag",
                     "docker-daemon:a:tag",
                 ]
@@ -174,8 +174,8 @@ class TestImage:
                 [
                     "skopeo",
                     "--insecure-policy",
-                    "--preserve-digests",
                     "copy",
+                    "--preserve-digests",
                     "oci:/c/a:tag",
                     "oci-archive:foobar:tag",
                 ]

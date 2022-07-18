@@ -263,8 +263,8 @@ def _copy_image(source: str, destination: str) -> None:
         [
             "skopeo",
             "--insecure-policy",
-            "--preserve-digests",
             "copy",
+            "--preserve-digests",
             source,
             destination,
         ]
