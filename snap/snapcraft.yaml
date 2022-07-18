@@ -92,8 +92,9 @@ parts:
         - libassuan0
         - libbtrfs0
         - libdevmapper1.02.1
+    build-snaps:
+        - go/1.17/stable
     build-packages:
-        - golang-go
         - libgpgme-dev
         - libassuan-dev
         - libbtrfs-dev
