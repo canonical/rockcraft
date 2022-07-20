@@ -24,7 +24,7 @@ import tarfile
 import tempfile
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Tuple
 
 import yaml
 from craft_cli import CraftError, emit
@@ -44,37 +44,42 @@ class Image:
     path: Path
 
     @classmethod
-    def from_docker_registry(cls, image_name: str, *, image_dir: Path) -> "Image":
+    def from_docker_registry(
+        cls, image_name: str, *, image_dir: Path
+    ) -> Tuple["Image", str]:
         """Obtain an image from a docker registry.
 
         :param image_name: The image to retrieve, in ``name:tag`` format.
         :param image_dir: The directory to store local OCI images.
 
-        :returns: The downloaded image.
+        :returns: The downloaded image and it's corresponding source image
         """
         image_dir.mkdir(parents=True, exist_ok=True)
         image_target = image_dir / image_name
-        _copy_image(f"docker://{image_name}", f"oci:{image_target}")
 
-        return cls(image_name=image_name, path=image_dir)
+        source_image = f"docker://{image_name}"
+        _copy_image(source_image, f"oci:{image_target}")
+
+        return cls(image_name=image_name, path=image_dir), source_image
 
     @classmethod
-    def new_oci_image(cls, image_name: str, image_dir: Path) -> "Image":
+    def new_oci_image(cls, image_name: str, image_dir: Path) -> Tuple["Image", str]:
         """Create a new OCI image out of thin air.
 
         :param image_name: The image to initiate, in ``name:tag`` format.
         :param image_dir: The directory to store the local OCI image.
 
-        :returns: The new image object.
+        :returns: The new image object and it's corresponding source image
         """
         image_dir.mkdir(parents=True, exist_ok=True)
         image_target = image_dir / image_name
-        image_target_no_tag = str(image_target).split(":")[0]
+        image_target_no_tag = str(image_target).split(":", maxsplit=1)[0]
         shutil.rmtree(image_target_no_tag, ignore_errors=True)
         _process_run(["umoci", "init", "--layout", image_target_no_tag])
         _process_run(["umoci", "new", "--image", str(image_target)])
 
-        return cls(image_name=image_name, path=image_dir)
+        # for new OCI images, the source image corresponds to the newly generated image
+        return cls(image_name=image_name, path=image_dir), f"oci:{str(image_target)}"
 
     def copy_to(self, image_name: str, *, image_dir: Path) -> "Image":
         """Make a copy of the current image.
@@ -123,6 +128,21 @@ class Image:
         name = self.image_name.split(":", 1)[0]
         return self.__class__(image_name=f"{name}:{tag}", path=self.path)
 
+    @staticmethod
+    def digest(source_image: str) -> bytes:
+        """Obtain the image digest, given its full form name {transport}:{name}.
+
+        :param source_image: the source image name, it its full form (e.g. docker://ubuntu:22.04)
+        :type layer_path: str
+        :returns: The image digest bytes.
+        """
+        output = subprocess.check_output(
+            ["skopeo", "inspect", "--format", "{{.Digest}}", "-n", source_image],
+            text=True,
+        )
+        parts = output.split(":", 1)
+        return bytes.fromhex(parts[-1])
+
     def to_docker_daemon(self, tag: str) -> None:
         """Export the current image to the local docker daemon.
 
@@ -140,19 +160,6 @@ class Image:
         name = self.image_name.split(":", 1)[0]
         src_path = self.path / f"{name}:{tag}"
         _copy_image(f"oci:{str(src_path)}", f"oci-archive:{filename}:{tag}")
-
-    def digest(self) -> bytes:
-        """Obtain the current image digest.
-
-        :returns: The image digest bytes.
-        """
-        image_path = self.path / self.image_name
-        output = subprocess.check_output(
-            ["skopeo", "inspect", "--format", "{{.Digest}}", f"oci:{str(image_path)}"],
-            text=True,
-        )
-        parts = output.split(":", 1)
-        return bytes.fromhex(parts[-1])
 
     def set_entrypoint(self, entrypoint: List[str]) -> None:
         """Set the OCI image entrypoint.
@@ -255,7 +262,15 @@ class Image:
 
 def _copy_image(source: str, destination: str) -> None:
     """Transfer images from source to destination."""
-    _process_run(["skopeo", "--insecure-policy", "copy", source, destination])
+    _process_run(
+        [
+            "skopeo",
+            "--insecure-policy",
+            "copy",
+            source,
+            destination,
+        ]
+    )
 
 
 def _config_image(image_path: Path, params: List[str]) -> None:

@@ -51,11 +51,13 @@ def pack():
     # TODO: check if image was already downloaded, etc.
     emit.progress(f"Retrieving base {project.base}")
     if project.base == "bare":
-        base_image = oci.Image.new_oci_image(
+        base_image, source_image = oci.Image.new_oci_image(
             f"{project.base}:latest", image_dir=image_dir
         )
     else:
-        base_image = oci.Image.from_docker_registry(project.base, image_dir=image_dir)
+        base_image, source_image = oci.Image.from_docker_registry(
+            project.base, image_dir=image_dir
+        )
     emit.message(f"Retrieved base {project.base}", intermediate=True)
 
     emit.progress(f"Extracting {base_image.image_name}")
@@ -67,11 +69,12 @@ def pack():
         f"{project.name}:rockcraft-base", image_dir=image_dir
     )
 
+    base_digest = project_base_image.digest(source_image)
     lifecycle = PartsLifecycle(
         project.parts,
         work_dir=work_dir,
         base_layer_dir=rootfs,
-        base_layer_hash=project_base_image.digest(),
+        base_layer_hash=base_digest,
     )
     lifecycle.run(Step.PRIME)
 
@@ -96,7 +99,9 @@ def pack():
     # Also include the "created" timestamp, just before packing the image
     emit.progress("Adding metadata")
     packing_time = datetime.datetime.now(datetime.timezone.utc).isoformat()
-    oci_annotations, rock_metadata = project.generate_project_metadata(packing_time)
+    oci_annotations, rock_metadata = project.generate_metadata(
+        packing_time, base_digest
+    )
     new_image.set_annotations(oci_annotations)
     new_image.set_control_data(rock_metadata)
     emit.progress("Metadata added")
