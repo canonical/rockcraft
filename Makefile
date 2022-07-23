@@ -16,7 +16,7 @@ clean: ## Clean artifacts from building, testing, etc.
 	rm -rf dist/
 	rm -rf .eggs/
 	find . -name '*.egg-info' -exec rm -rf {} +
-	find . -name '*.egg' -exec rm -f {} +
+	find . -name '*.egg' -exec rm -rf {} +
 	rm -rf docs/_build/
 	rm -f docs/rockcraft.*
 	rm -f docs/modules.rst

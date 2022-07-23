@@ -18,7 +18,7 @@
 
 import contextlib
 import os
-import pathlib
+from pathlib import Path
 from abc import ABC, abstractmethod
 from typing import Dict, Generator, List, Optional, Tuple, Union
 
@@ -35,7 +35,7 @@ class Provider(ABC):
 
     @abstractmethod
     def clean_project_environments(
-        self, *, project_name: str, project_path: pathlib.Path
+        self, *, project_name: str, project_path: Path
     ) -> List[str]:
         """Clean up any environments created for project.
 
@@ -69,7 +69,7 @@ class Provider(ABC):
     def get_instance_name(
         *,
         project_name: str,
-        project_path: pathlib.Path,
+        project_path: Path,
     ) -> str:
         """Formulate the name for an instance using each of the given parameters.
 
@@ -119,7 +119,7 @@ class Provider(ABC):
         self,
         *,
         project_name: str,
-        project_path: pathlib.Path,
+        project_path: Path,
         build_base: str,
     ) -> Generator[Executor, None, None]:
         """Launch environment for specified base.
