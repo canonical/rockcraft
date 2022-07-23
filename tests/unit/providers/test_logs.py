@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import pathlib
+from pathlib import Path
 from unittest import mock
 
 import pytest
@@ -42,7 +42,7 @@ def test_capture_logs_from_instance(
 
     assert mock_instance.mock_calls == [
         mock.call.pull_file(
-            source=pathlib.Path("/tmp/rockcraft.log"), destination=fake_log
+            source=Path("/tmp/rockcraft.log"), destination=fake_log
         ),
     ]
     expected = [
@@ -69,7 +69,7 @@ def test_capture_logs_from_instance_not_found(
 
     assert mock_instance.mock_calls == [
         mock.call.pull_file(
-            source=pathlib.Path("/tmp/rockcraft.log"), destination=fake_log
+            source=Path("/tmp/rockcraft.log"), destination=fake_log
         ),
     ]
     emitter.assert_trace("No logs found in instance.")

@@ -19,7 +19,7 @@
 import distutils.util
 import logging
 import os
-import pathlib
+from pathlib import Path
 import sys
 from collections import namedtuple
 from typing import Optional
@@ -37,8 +37,7 @@ def is_managed_mode():
 
 def get_managed_environment_home_path():
     """Path for home when running in managed environment."""
-    return pathlib.Path("/root")
-
+    return Path("/root")
 
 def get_managed_environment_project_path():
     """Path for project when running in managed environment."""
@@ -47,7 +46,7 @@ def get_managed_environment_project_path():
 
 def get_managed_environment_log_path():
     """Path for log when running in managed environment."""
-    return pathlib.Path("/tmp/rockcraft.log")
+    return Path("/tmp/rockcraft.log")
 
 
 def get_managed_environment_snap_channel() -> Optional[str]:
