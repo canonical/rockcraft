@@ -16,7 +16,7 @@
 
 """Craft-parts lifecycle."""
 
-import pathlib
+from pathlib import Path
 from typing import Any, Dict
 
 import craft_parts
@@ -45,8 +45,8 @@ class PartsLifecycle:
         self,
         all_parts: Dict[str, Any],
         *,
-        work_dir: pathlib.Path,
-        base_layer_dir: pathlib.Path,
+        work_dir: Path,
+        base_layer_dir: Path,
         base_layer_hash: bytes,
     ):
         emit.progress("Initializing parts lifecycle")
@@ -68,7 +68,7 @@ class PartsLifecycle:
             raise PartsLifecycleError(str(err)) from err
 
     @property
-    def prime_dir(self) -> pathlib.Path:
+    def prime_dir(self) -> Path:
         """Return the parts prime directory path."""
         return self._lcm.project_info.prime_dir
 
