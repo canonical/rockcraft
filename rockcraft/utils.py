@@ -80,4 +80,4 @@ def confirm_with_user(prompt, default=False) -> bool:
     reply = input(prompt + choices).lower().strip()
     possible_answers = {" y ": True, " n ": False}
 
-    return possible_answers.get(reply[0].strip(), default) if reply else default
+    return possible_answers.get(reply[0].lower().strip(), default) if reply else default
