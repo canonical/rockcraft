@@ -41,9 +41,7 @@ def test_capture_logs_from_instance(
     providers.capture_logs_from_instance(mock_instance)
 
     assert mock_instance.mock_calls == [
-        mock.call.pull_file(
-            source=Path("/tmp/rockcraft.log"), destination=fake_log
-        ),
+        mock.call.pull_file(source=Path("/tmp/rockcraft.log"), destination=fake_log),
     ]
     expected = [
         mock.call("trace", "Logs captured from managed instance:"),
@@ -68,8 +66,6 @@ def test_capture_logs_from_instance_not_found(
     providers.capture_logs_from_instance(mock_instance)
 
     assert mock_instance.mock_calls == [
-        mock.call.pull_file(
-            source=Path("/tmp/rockcraft.log"), destination=fake_log
-        ),
+        mock.call.pull_file(source=Path("/tmp/rockcraft.log"), destination=fake_log),
     ]
     emitter.assert_trace("No logs found in instance.")

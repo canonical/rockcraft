@@ -369,9 +369,7 @@ def test_launched_environment(
                 mem_gb=2,
                 auto_clean=True,
             ),
-            mock.call().mount(
-                host_source=mock_path, target=Path("/root/project")
-            ),
+            mock.call().mount(host_source=mock_path, target=Path("/root/project")),
         ]
         assert mock_buildd_base_configuration.mock_calls == [
             call(

@@ -40,13 +40,10 @@ def get_provider() -> Provider:
     """
     provider = os.getenv("ROCKCRAFT_PROVIDER")
 
-    if provider == "lxd" or sys.platform=="linux":
+    if provider == "lxd" or sys.platform == "linux":
         return LXDProvider()
 
-    if provider == "multipass" or sys.platform!="linux":
+    if provider == "multipass" or sys.platform != "linux":
         return MultipassProvider()
 
     raise RuntimeError(f"Unsupported provider specified: {provider!r}.")
-
-
-

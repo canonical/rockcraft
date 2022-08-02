@@ -47,5 +47,5 @@ def capture_logs_from_instance(instance: Executor) -> None:
     emit.trace("Logs captured from managed instance:")
     with local_log_path.open("rt", encoding="utf8") as logfile:
         for line in logfile:
-            emit.trace(f":: {line.rstrip()}" )
+            emit.trace(f":: {line.rstrip()}")
     local_log_path.unlink()

@@ -39,6 +39,7 @@ def get_managed_environment_home_path():
     """Path for home when running in managed environment."""
     return Path("/root")
 
+
 def get_managed_environment_project_path():
     """Path for project when running in managed environment."""
     return get_managed_environment_home_path() / "project"
@@ -76,7 +77,6 @@ def confirm_with_user(prompt, default=False) -> bool:
 
     choices = " [Y/n]: " if default else " [y/N]: "
 
-    
     reply = input(prompt + choices).lower().strip()
     possible_answers = {"y": True, "n": False}
 

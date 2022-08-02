@@ -393,9 +393,7 @@ def test_launched_environment(
                 project="rockcraft",
                 remote="local",
             ),
-            mock.call().mount(
-                host_source=mock_path, target=Path("/root/project")
-            ),
+            mock.call().mount(host_source=mock_path, target=Path("/root/project")),
         ]
         assert mock_buildd_base_configuration.mock_calls == [
             call(
