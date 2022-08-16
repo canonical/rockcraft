@@ -15,6 +15,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import datetime
+import hashlib
+import json
 import os
 import tarfile
 from pathlib import Path
@@ -51,6 +53,21 @@ def mock_mkdtemp(mocker):
     yield mocker.patch("tempfile.mkdtemp")
 
 
+@pytest.fixture
+def mock_inject_variant(mocker):
+    yield mocker.patch("rockcraft.oci._inject_architecture_variant")
+
+
+@pytest.fixture
+def mock_read_bytes(mocker):
+    yield mocker.patch("pathlib.Path.read_bytes")
+
+
+@pytest.fixture
+def mock_write_bytes(mocker):
+    yield mocker.patch("pathlib.Path.write_bytes")
+
+
 @tests.linux_only
 class TestImage:
     """OCI image manipulation."""
@@ -62,7 +79,7 @@ class TestImage:
 
     def test_from_docker_registry(self, mock_run, new_dir):
         image, source_image = oci.Image.from_docker_registry(
-            "a:b", image_dir=Path("images/dir")
+            "a:b", image_dir=Path("images/dir"), arch="amd64", variant=None
         )
         assert Path("images/dir").is_dir()
         assert image.image_name == "a:b"
@@ -73,6 +90,27 @@ class TestImage:
                 [
                     "skopeo",
                     "--insecure-policy",
+                    "--override-arch",
+                    "amd64",
+                    "copy",
+                    "docker://a:b",
+                    "oci:images/dir/a:b",
+                ]
+            )
+        ]
+        mock_run.reset_mock()
+        _ = oci.Image.from_docker_registry(
+            "a:b", image_dir=Path("images/dir"), arch="arm64", variant="v8"
+        )
+        assert mock_run.mock_calls == [
+            call(
+                [
+                    "skopeo",
+                    "--insecure-policy",
+                    "--override-arch",
+                    "arm64",
+                    "--override-variant",
+                    "v8",
                     "copy",
                     "docker://a:b",
                     "oci:images/dir/a:b",
@@ -80,10 +118,10 @@ class TestImage:
             )
         ]
 
-    def test_new_oci_image(self, mock_run):
+    def test_new_oci_image(self, mock_inject_variant, mock_run):
         image_dir = Path("images/dir")
         image, source_image = oci.Image.new_oci_image(
-            "bare:latest", image_dir=image_dir
+            "bare:latest", image_dir=image_dir, arch="amd64", variant=None
         )
         assert image_dir.is_dir()
         assert image.image_name == "bare:latest"
@@ -92,7 +130,23 @@ class TestImage:
         assert mock_run.mock_calls == [
             call(["umoci", "init", "--layout", f"{image_dir}/bare"]),
             call(["umoci", "new", "--image", f"{image_dir}/bare:latest"]),
+            call(
+                [
+                    "umoci",
+                    "config",
+                    "--image",
+                    f"{image_dir}/bare:latest",
+                    "--architecture",
+                    "amd64",
+                    "--no-history",
+                ]
+            ),
         ]
+        mock_inject_variant.assert_not_called()
+        _ = oci.Image.new_oci_image(
+            "bare:latest", image_dir=image_dir, arch="foo", variant="bar"
+        )
+        mock_inject_variant.assert_called_once_with(image_dir / "bare", "bar")
 
     def test_copy_to(self, mock_run):
         image = oci.Image("a:b", Path("/c"))
@@ -365,6 +419,54 @@ class TestImage:
                 check=True,
                 universal_newlines=True,
             ),
+        ]
+
+    def test_inject_architecture_variant(self, mock_read_bytes, mock_write_bytes):
+        test_index = {"manifests": [{"digest": "sha256:foomanifest"}]}
+        test_manifest = {"config": {"digest": "sha256:fooconfig"}}
+        test_config = {}
+        mock_read_bytes.side_effect = [
+            json.dumps(test_index),
+            json.dumps(test_manifest),
+            json.dumps(test_config),
+        ]
+        test_variant = "v0"
+
+        new_test_config = {**test_config, **{"variant": test_variant}}
+        new_test_config_bytes = json.dumps(new_test_config).encode("utf-8")
+        
+        new_image_config_digest = hashlib.sha256(new_test_config_bytes).hexdigest()
+        new_test_manifest = {
+            **test_manifest,
+            **{
+                "config": {
+                    "digest": f"sha256:{new_image_config_digest}",
+                    "size": len(new_test_config_bytes)
+                }
+            }
+        }
+        new_test_manifest_bytes = json.dumps(new_test_manifest).encode("utf-8")
+        new_test_manifest_digest = hashlib.sha256(new_test_manifest_bytes).hexdigest()
+
+        new_test_index = {
+            **test_index,
+            **{
+                "manifests": [
+                    {
+                        "digest": f"sha256:{new_test_manifest_digest}",
+                        "size": len(new_test_manifest_bytes)
+                    }
+                ]
+            }
+        }
+        
+        oci._inject_architecture_variant(Path("img"), test_variant)
+
+        assert mock_read_bytes.call_count == 3
+        assert mock_write_bytes.mock_calls == [
+            call(new_test_config_bytes),
+            call(new_test_manifest_bytes),
+            call(json.dumps(new_test_index).encode("utf-8"))
         ]
 
     def test_compress_layer(self, mocker, new_dir):

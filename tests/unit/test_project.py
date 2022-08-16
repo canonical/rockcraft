@@ -18,6 +18,7 @@ import datetime
 import os
 import subprocess
 from pathlib import Path
+from unittest.mock import patch
 
 import pydantic
 import pytest
@@ -201,6 +202,36 @@ def test_project_platform_invalid():
     assert "'build_for' expects 'build_on' to also be provided." in str(err.value)
 
 
+@patch("platform.machine")
+def test_project_platform_variants(mock_uts_machine, yaml_loaded_data):
+    def load_project_for_arch(uts_arch: str, arch: str) -> Project:
+        mock_uts_machine.return_value = uts_arch
+        yaml_loaded_data["platforms"] = {arch: None}
+        return Project.unmarshal(yaml_loaded_data)
+
+    # arm/v7
+    assert (
+        load_project_for_arch("arm", "arm").platforms["arm"]["build_for_variant"]
+        == "v7"
+    )
+
+    # arm64/v8
+    assert (
+        load_project_for_arch("aarch64", "arm64").platforms["arm64"][
+            "build_for_variant"
+        ]
+        == "v8"
+    )
+
+    # others
+    assert (
+        load_project_for_arch("x86_64", "amd64")
+        .platforms["amd64"]
+        .get("build_for_variant")
+        is None
+    )
+
+
 def test_project_all_platforms_invalid(yaml_loaded_data):
     def reload_project_platforms(new_platforms=None):
         if new_platforms:
@@ -293,6 +324,18 @@ def test_project_load(yaml_data, yaml_loaded_data):
             # the var license is a built-in,
             # so we workaround it by using an alias
             attr = "rock_license"
+        if attr == "platforms":
+            # platforms get mutated at validation time
+            assert project.__getattribute__(attr).keys() == v.keys()
+            assert all(
+                "build_on" in platform
+                for platform in project.__getattribute__(attr).values()
+            )
+            assert all(
+                "build_for" in platform
+                for platform in project.__getattribute__(attr).values()
+            )
+            continue
         assert project.__getattribute__(attr) == v
 
     rockcraft_file.unlink()

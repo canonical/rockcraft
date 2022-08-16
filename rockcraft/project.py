@@ -17,7 +17,7 @@
 """Project definition and helpers."""
 
 import operator
-import platform
+import platform as host_platform
 from functools import reduce
 from typing import Any, Dict, List, Literal, Optional, Tuple
 
@@ -27,8 +27,6 @@ import yaml
 from craft_cli.errors import CraftError
 
 from rockcraft.parts import validate_part
-
-_SELF_UTS_MACHINE = platform.machine().lower()
 
 
 class ProjectLoadError(CraftError):
@@ -211,6 +209,8 @@ class Project(pydantic.BaseModel):
     @classmethod
     def _validate_all_platforms(cls, platforms):
         """Make sure all provided platforms are tangible and sane."""
+        _self_uts_machine = host_platform.machine().lower()
+
         for platform_label in platforms:
             platform = platforms[platform_label] if platforms[platform_label] else {}
             error_prefix = f"Error for platform entry '{platform_label}'"
@@ -270,10 +270,10 @@ class Project(pydantic.BaseModel):
             build_for_compatible_uts = _SUPPORTED_ARCHS[
                 build_target
             ].compatible_uts_machine_archs
-            if _SELF_UTS_MACHINE not in build_for_compatible_uts:
+            if _self_uts_machine not in build_for_compatible_uts:
                 raise ProjectValidationError(
                     str(
-                        f"{error_prefix}: this machine's architecture ({_SELF_UTS_MACHINE}) "
+                        f"{error_prefix}: this machine's architecture ({_self_uts_machine}) "
                         "is not compatible with the ROCK's target architecture. Can only "
                         f"build a ROCK for {build_target} if the host is compatible with {build_for_compatible_uts}."
                     )
@@ -288,14 +288,22 @@ class Project(pydantic.BaseModel):
                     ),
                 )
             )
-            if _SELF_UTS_MACHINE not in build_on_compatible_uts:
+            if _self_uts_machine not in build_on_compatible_uts:
                 raise ProjectValidationError(
                     str(
                         f"{error_prefix}: this ROCK must be built on one of the "
                         f"following architectures: {build_on_compatible_uts}. "
-                        f"This machine ({_SELF_UTS_MACHINE}) is not one of those."
+                        f"This machine ({_self_uts_machine}) is not one of those."
                     )
                 )
+
+            # Add variant, if needed, and return sanitized platform
+            if build_target == "arm":
+                platform["build_for_variant"] = "v7"
+            elif build_target == "arm64":
+                platform["build_for_variant"] = "v8"
+
+            platforms[platform_label] = platform
 
         return platforms
 

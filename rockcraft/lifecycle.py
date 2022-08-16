@@ -39,6 +39,18 @@ def pack():
         pack_in_provider(project)
         return
 
+    for platform_entry, platform in project.platforms.items():
+        build_for = (
+            platform["build_for"][0] if platform.get("build_for") else platform_entry
+        )
+        build_for_variant = platform.get("build_for_variant")
+        pack_for_platform(build_for, build_for_variant, project, managed_mode)
+
+
+def pack_for_platform(
+    build_for: str, build_for_variant: str, project: Project, managed_mode: bool
+) -> None:
+    """Packs a ROCK for a given target architecture."""
     if managed_mode:
         work_dir = utils.get_managed_environment_home_path()
     else:
@@ -52,11 +64,14 @@ def pack():
     emit.progress(f"Retrieving base {project.base}")
     if project.base == "bare":
         base_image, source_image = oci.Image.new_oci_image(
-            f"{project.base}:latest", image_dir=image_dir
+            f"{project.base}:latest",
+            image_dir=image_dir,
+            arch=build_for,
+            variant=build_for_variant,
         )
     else:
         base_image, source_image = oci.Image.from_docker_registry(
-            project.base, image_dir=image_dir
+            project.base, image_dir=image_dir, arch=build_for, variant=build_for_variant
         )
     emit.message(f"Retrieved base {project.base}", intermediate=True)
 
@@ -102,12 +117,16 @@ def pack():
     oci_annotations, rock_metadata = project.generate_metadata(
         packing_time, base_digest
     )
+    rock_metadata["architecture"] = build_for
+    # TODO: add variant to rock_metadata too
+    # if build_for_variant:
+    #     rock_metadata["variant"] = build_for_variant
     new_image.set_annotations(oci_annotations)
     new_image.set_control_data(rock_metadata)
     emit.progress("Metadata added")
 
     emit.progress("Exporting to OCI archive")
-    archive_name = f"{project.name}_{project.version}.rock"
+    archive_name = f"{project.name}_{project.version}_{build_for}.rock"
     new_image.to_oci_archive(tag=project.version, filename=archive_name)
     emit.message(f"Exported to OCI archive '{archive_name}'", intermediate=True)
 
