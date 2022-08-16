@@ -317,7 +317,7 @@ def test_project_load(yaml_data, yaml_loaded_data):
         encoding="utf-8",
     )
 
-    project = load_project("rockcraft.yaml")
+    project = load_project(str(rockcraft_file))
 
     for attr, v in yaml_loaded_data.items():
         if attr == "license":
