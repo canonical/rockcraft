@@ -17,7 +17,7 @@ jobs:
       - name: Install packages
         run: |
           sudo apt update
-          sudo apt install -y libapt-pkg-dev
+          sudo apt install -y libapt-pkg-dev dpkg
       - name: Install python packages and dependencies
         run: |
           pip install -U -r requirements-focal.txt -r requirements.txt -r requirements-dev.txt
