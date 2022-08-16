@@ -79,7 +79,7 @@ class TestImage:
 
     def test_from_docker_registry(self, mock_run, new_dir):
         image, source_image = oci.Image.from_docker_registry(
-            "a:b", image_dir=Path("images/dir"), arch="amd64", variant=None
+            "a:b", image_dir=Path("images/dir"), arch="amd64", variant=""
         )
         assert Path("images/dir").is_dir()
         assert image.image_name == "a:b"
@@ -121,7 +121,7 @@ class TestImage:
     def test_new_oci_image(self, mock_inject_variant, mock_run):
         image_dir = Path("images/dir")
         image, source_image = oci.Image.new_oci_image(
-            "bare:latest", image_dir=image_dir, arch="amd64", variant=None
+            "bare:latest", image_dir=image_dir, arch="amd64", variant=""
         )
         assert image_dir.is_dir()
         assert image.image_name == "bare:latest"
@@ -434,16 +434,16 @@ class TestImage:
 
         new_test_config = {**test_config, **{"variant": test_variant}}
         new_test_config_bytes = json.dumps(new_test_config).encode("utf-8")
-        
+
         new_image_config_digest = hashlib.sha256(new_test_config_bytes).hexdigest()
         new_test_manifest = {
             **test_manifest,
             **{
                 "config": {
                     "digest": f"sha256:{new_image_config_digest}",
-                    "size": len(new_test_config_bytes)
+                    "size": len(new_test_config_bytes),
                 }
-            }
+            },
         }
         new_test_manifest_bytes = json.dumps(new_test_manifest).encode("utf-8")
         new_test_manifest_digest = hashlib.sha256(new_test_manifest_bytes).hexdigest()
@@ -454,19 +454,19 @@ class TestImage:
                 "manifests": [
                     {
                         "digest": f"sha256:{new_test_manifest_digest}",
-                        "size": len(new_test_manifest_bytes)
+                        "size": len(new_test_manifest_bytes),
                     }
                 ]
-            }
+            },
         }
-        
+
         oci._inject_architecture_variant(Path("img"), test_variant)
 
         assert mock_read_bytes.call_count == 3
         assert mock_write_bytes.mock_calls == [
             call(new_test_config_bytes),
             call(new_test_manifest_bytes),
-            call(json.dumps(new_test_index).encode("utf-8"))
+            call(json.dumps(new_test_index).encode("utf-8")),
         ]
 
     def test_compress_layer(self, mocker, new_dir):
