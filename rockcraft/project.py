@@ -50,7 +50,7 @@ _SUPPORTED_ARCHS: Dict[str, ArchitectureMapping] = {
     "amd64": ArchitectureMapping(
         description="Intel 64",
         deb_arch="amd64",
-        compatible_uts_machine_archs=["x86_64"],
+        compatible_uts_machine_archs=["amd64", "x86_64"],
         go_arch="amd64",
     ),
     "arm": ArchitectureMapping(
