@@ -44,11 +44,17 @@ def pack():
             platform["build_for"][0] if platform.get("build_for") else platform_entry
         )
         build_for_variant = platform.get("build_for_variant")
-        pack_for_platform(build_for, build_for_variant, project, managed_mode)
+        pack_for_platform(
+            platform_entry, build_for, build_for_variant, project, managed_mode
+        )
 
 
 def pack_for_platform(
-    build_for: str, build_for_variant: str, project: Project, managed_mode: bool
+    rock_suffix: str,
+    build_for: str,
+    build_for_variant: str,
+    project: Project,
+    managed_mode: bool,
 ) -> None:
     """Packs a ROCK for a given target architecture."""
     if managed_mode:
@@ -126,7 +132,7 @@ def pack_for_platform(
     emit.progress("Metadata added")
 
     emit.progress("Exporting to OCI archive")
-    archive_name = f"{project.name}_{project.version}_{build_for}.rock"
+    archive_name = f"{project.name}_{project.version}_{rock_suffix}.rock"
     new_image.to_oci_archive(tag=project.version, filename=archive_name)
     emit.message(f"Exported to OCI archive '{archive_name}'", intermediate=True)
 

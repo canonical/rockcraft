@@ -9,6 +9,7 @@ entrypoint: [/usr/bin/hello]
 cmd: [-g, "ship it!"]
 platforms:
   amd64:
+    build-on: ["amd64", "i386"]
   
 parts:
   hello:
