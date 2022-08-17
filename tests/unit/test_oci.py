@@ -374,5 +374,7 @@ class TestImage:
 
         spy_add = mocker.spy(tarfile.TarFile, "add")
 
-        oci._compress_layer(Path("layer_dir"), Path("./bar.tar"))
+        oci._compress_layer(  # pylint: disable=protected-access
+            Path("layer_dir"), Path("./bar.tar")
+        )
         assert spy_add.call_count == 2
