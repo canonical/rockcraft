@@ -67,11 +67,13 @@ jobs:
       - name: Install python packages and dependencies
         run: |
           pip install -U wheel
+          sudo apt update
+          sudo apt install -y dpkg
       - name: Install Ubuntu-specific dependencies
         if: ${{ matrix.os == 'ubuntu-18.04' || matrix.os == 'ubuntu-20.04' }}
         run: |
           sudo apt update
-          sudo apt install -y python3-pip python3-setuptools python3-wheel python3-venv libapt-pkg-dev dpkg
+          sudo apt install -y python3-pip python3-setuptools python3-wheel python3-venv libapt-pkg-dev
       - name: Install Ubuntu 18.04-specific dependencies
         if: ${{ matrix.os == 'ubuntu-18.04' }}
         run: |
