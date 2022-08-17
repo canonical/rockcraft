@@ -34,10 +34,17 @@ from rockcraft.project import (
 )
 
 _ARCH_MAPPING = {"x86": "amd64", "x64": "amd64"}
-_RUNNER_ARCH = os.getenv(
-    "RUNNER_ARCH",
-    subprocess.check_output(["dpkg", "--print-architecture"]).decode().strip(),
-).lower()
+try:
+    _RUNNER_ARCH = os.environ["RUNNER_ARCH"].lower()
+except KeyError:
+    # When not running as a GitHub workflow,
+    # it can only run on Linux
+    _RUNNER_ARCH = (
+        subprocess.check_output(["dpkg", "--print-architecture"])
+        .decode()
+        .strip()
+        .lower()
+    )
 BUILD_ON_ARCH = _ARCH_MAPPING.get(_RUNNER_ARCH, _RUNNER_ARCH)
 
 
