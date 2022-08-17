@@ -25,7 +25,6 @@ from craft_providers.lxd import LXDError, LXDInstallationError
 
 from rockcraft import providers
 from rockcraft.providers import ProviderError
-from tests.unit.providers import BaseProviderTest
 
 
 @pytest.fixture()
@@ -299,13 +298,6 @@ def test_get_instance_name(mock_path):
         )
         == "rockcraft-my-project-name-445566"
     )
-
-
-class TestLXDProvider(BaseProviderTest):
-    """Implementation of `BaseProviderTest` for LXDProvider"""
-
-    def create_provider(self) -> providers.Provider:
-        return providers.LXDProvider()
 
 
 @pytest.mark.parametrize("is_installed", [True, False])

@@ -25,7 +25,6 @@ from craft_providers.multipass import MultipassError, MultipassInstallationError
 
 from rockcraft import providers
 from rockcraft.providers import ProviderError
-from tests.unit.providers import BaseProviderTest
 
 
 @pytest.fixture()
@@ -285,13 +284,6 @@ def test_get_instance_name(mock_path):
         )
         == "rockcraft-my-project-name-445566"
     )
-
-
-class TestMultipassProvider(BaseProviderTest):
-    """Implementation of `BaseProviderTest` for MultipassProvider"""
-
-    def create_provider(self) -> providers.Provider:
-        return providers.MultipassProvider()
 
 
 @pytest.mark.parametrize("is_installed", [True, False])
