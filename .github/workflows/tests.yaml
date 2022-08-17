@@ -67,8 +67,6 @@ jobs:
       - name: Install python packages and dependencies
         run: |
           pip install -U wheel
-          sudo apt update
-          sudo apt install -y dpkg
       - name: Install Ubuntu-specific dependencies
         if: ${{ matrix.os == 'ubuntu-18.04' || matrix.os == 'ubuntu-20.04' }}
         run: |
