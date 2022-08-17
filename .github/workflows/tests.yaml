@@ -17,7 +17,7 @@ jobs:
       - name: Install packages
         run: |
           sudo apt update
-          sudo apt install -y libapt-pkg-dev dpkg
+          sudo apt install -y libapt-pkg-dev
       - name: Install python packages and dependencies
         run: |
           pip install -U -r requirements-focal.txt -r requirements.txt -r requirements-dev.txt
@@ -71,7 +71,7 @@ jobs:
         if: ${{ matrix.os == 'ubuntu-18.04' || matrix.os == 'ubuntu-20.04' }}
         run: |
           sudo apt update
-          sudo apt install -y python3-pip python3-setuptools python3-wheel python3-venv libapt-pkg-dev
+          sudo apt install -y python3-pip python3-setuptools python3-wheel python3-venv libapt-pkg-dev dpkg
       - name: Install Ubuntu 18.04-specific dependencies
         if: ${{ matrix.os == 'ubuntu-18.04' }}
         run: |

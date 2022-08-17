@@ -53,6 +53,18 @@ Format specification
   # runtime environment variables.
   env:
     - <var name>: <value>
+
+  # List of architecture-specific ROCKs to be built.
+  # Supported architectures are: amd64, arm64, arm, i386, ppc64le, riscv64 and s390x.
+  platforms:
+    # If matching a valid architecture name, it must be the same as "build-for".
+    <entry>:
+      # Host architectures where the ROCK can be built. 
+      # Required when "build-for" is specified, otherwise it defaults to <entry>
+      build-on: [<arch>, ...]
+      # (Optional) Target architecture the ROCK will be built for.
+      # Defaults to <entry>.
+      build-for: <arch>
   
   # The parts used to build the application.
   parts:
@@ -79,6 +91,13 @@ Example
   env:
     - VAR1: value
     - VAR2: "other value"
+  platforms:
+    amd64:
+    arm:
+      build-on: ["arm", "arm64"]
+    ibm:
+      build-on: ["s390x"]
+      build-for: s390x
   
   parts:
     hello:
