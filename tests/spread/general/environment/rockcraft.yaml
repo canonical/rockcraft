@@ -7,7 +7,9 @@ license: Apache-2.0
 cmd: [/bin/true]
 env:
   - X: "ship it!"
-
+platforms:
+  amd64:
+  
 parts:
   part1:
     plugin: nil

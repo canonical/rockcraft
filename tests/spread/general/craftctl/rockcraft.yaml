@@ -4,7 +4,9 @@ base: ubuntu:20.04
 summary: Echo
 description: Just a dummy build to demonstrate the different build steps
 license: Apache-2.0
-
+platforms:
+  amd64:
+  
 parts:
   hello:
     plugin: make
