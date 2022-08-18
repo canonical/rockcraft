@@ -79,7 +79,7 @@ class TestImage:
 
     def test_from_docker_registry(self, mock_run, new_dir):
         image, source_image = oci.Image.from_docker_registry(
-            "a:b", image_dir=Path("images/dir"), arch="amd64", variant=""
+            "a:b", image_dir=Path("images/dir"), arch="amd64", variant=None
         )
         assert Path("images/dir").is_dir()
         assert image.image_name == "a:b"
@@ -121,7 +121,7 @@ class TestImage:
     def test_new_oci_image(self, mock_inject_variant, mock_run):
         image_dir = Path("images/dir")
         image, source_image = oci.Image.new_oci_image(
-            "bare:latest", image_dir=image_dir, arch="amd64", variant=""
+            "bare:latest", image_dir=image_dir, arch="amd64"
         )
         assert image_dir.is_dir()
         assert image.image_name == "bare:latest"

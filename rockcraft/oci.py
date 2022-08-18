@@ -26,7 +26,7 @@ import tarfile
 import tempfile
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 import yaml
 from craft_cli import CraftError, emit
@@ -47,7 +47,12 @@ class Image:
 
     @classmethod
     def from_docker_registry(
-        cls, image_name: str, *, image_dir: Path, arch: str, variant: str
+        cls,
+        image_name: str,
+        *,
+        image_dir: Path,
+        arch: str,
+        variant: Optional[str] = None,
     ) -> Tuple["Image", str]:
         """Obtain an image from a docker registry.
 
@@ -72,7 +77,7 @@ class Image:
 
     @classmethod
     def new_oci_image(
-        cls, image_name: str, image_dir: Path, arch: str, variant: str
+        cls, image_name: str, image_dir: Path, arch: str, variant: Optional[str] = None
     ) -> Tuple["Image", str]:
         """Create a new OCI image out of thin air.
 
