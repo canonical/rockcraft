@@ -17,7 +17,6 @@
 import datetime
 import os
 import subprocess
-from pathlib import Path
 from unittest.mock import patch
 
 import pydantic
@@ -324,8 +323,8 @@ def test_project_parts_validation(yaml_loaded_data):
     )
 
 
-def test_project_load(yaml_data, yaml_loaded_data):
-    rockcraft_file = Path("rockcraft.yaml")
+def test_project_load(yaml_data, yaml_loaded_data, tmp_path):
+    rockcraft_file = tmp_path / "rockcraft.yaml"
     rockcraft_file.write_text(
         yaml_data,
         encoding="utf-8",
@@ -351,8 +350,6 @@ def test_project_load(yaml_data, yaml_loaded_data):
             )
             continue
         assert project.__getattribute__(attr) == v
-
-    rockcraft_file.unlink()
 
 
 def test_project_load_error():
