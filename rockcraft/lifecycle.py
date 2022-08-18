@@ -31,6 +31,8 @@ from .providers import capture_logs_from_instance
 
 def pack():
     """Pack a ROCK."""
+    # pylint: disable=too-many-locals
+
     project = load_project("rockcraft.yaml")
     destructive_mode = False  # XXX: obtain from command line
 
