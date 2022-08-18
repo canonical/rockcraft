@@ -216,7 +216,10 @@ class Project(pydantic.BaseModel):
             error_prefix = f"Error for platform entry '{platform_label}'"
 
             # Make sure the provided platform_set is valid
-            platform = Platform(**platform).dict()
+            try:
+                platform = Platform(**platform).dict()
+            except ProjectValidationError as err:
+                raise ProjectValidationError(f"{error_prefix}: {str(err)}")
 
             # build_on and build_for are validated
             # let's also validate the platform label

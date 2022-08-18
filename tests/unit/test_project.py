@@ -248,6 +248,13 @@ def test_project_all_platforms_invalid(yaml_loaded_data):
 
         return str(err.value)
 
+    # A platform validation error must have an explicit prefix indicating
+    # the platform entry for which the validation has failed
+    mock_platforms = {"foo": {"build-for": ["amd64"]}}
+    assert "'foo': 'build_for' expects 'build_on'" in reload_project_platforms(
+        mock_platforms
+    )
+
     # If the label maps to a valid architecture and
     # `build-for` is present, then both need to have the same value    mock_platforms = {"mock": {"build-on": "amd64"}}
     mock_platforms = {"arm64": {"build-on": ["arm64"], "build-for": ["amd64"]}}
