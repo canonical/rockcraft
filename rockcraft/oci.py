@@ -300,17 +300,9 @@ def _compress_layer(layer_path: Path, temp_tar_file: Path) -> None:
     :param temp_tar_file: path to the temporary tar fail holding the compressed content
     :type temp_tar_file: Path
     """
-    old_dir = os.getcwd()
-    try:
-        os.chdir(layer_path)
-        with tarfile.open(temp_tar_file, mode="w") as tar_file:
-            for root, _, files in os.walk("."):
-                for name in files:
-                    path = os.path.join(root, name)
-                    emit.trace(f"Adding to layer: {path}")
-                    tar_file.add(path)
-    finally:
-        os.chdir(old_dir)
+    with tarfile.open(temp_tar_file, mode="w") as tar_file:
+        # With `arcname="."` the contents are added relative to `layer_path`.
+        tar_file.add(layer_path, arcname=".")
 
 
 def _process_run(command: List[str], **kwargs) -> None:
