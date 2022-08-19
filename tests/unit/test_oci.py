@@ -62,7 +62,7 @@ def temp_tar_contents(mocker) -> List[str]:
     """
     contents = []
 
-    def list_tar(_image_path: str, compressed_content: str, **_kwargs):
+    def list_tar(_image_path: Path, compressed_content: Path, **_kwargs):
         with tarfile.open(compressed_content, "r") as tar_file:
             contents.extend(tar_file.getnames())
 
