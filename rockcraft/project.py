@@ -19,6 +19,7 @@
 from typing import Any, Dict, List, Literal, Optional, Tuple
 
 import pydantic
+import spdx_license_list  # type: ignore
 import yaml
 from rockcraft.errors import ProjectLoadError, ProjectValidationError
 
@@ -29,9 +30,15 @@ class Project(pydantic.BaseModel):
     """Rockcraft project definition."""
 
     name: str
+    title: Optional[str]
+    summary: str
+    description: str
+    rock_license: str = pydantic.Field(alias="license")
     version: str
-    base: Literal["ubuntu:18.04", "ubuntu:20.04"]
-    build_base: Optional[str]
+    base: Literal["bare", "ubuntu:18.04", "ubuntu:20.04", "ubuntu:22.04"]
+    build_base: Optional[
+        Literal["ubuntu:18.04", "ubuntu:20.04", "ubuntu:22.04"]
+    ] = pydantic.Field(alias="build-base")
     entrypoint: Optional[List[str]]
     cmd: Optional[List[str]]
     env: Optional[List[Dict[str, str]]]
@@ -46,11 +53,43 @@ class Project(pydantic.BaseModel):
         allow_population_by_field_name = True
         alias_generator = lambda s: s.replace("_", "-")  # noqa: E731
 
+    @pydantic.validator("rock_license", always=True)
+    @classmethod
+    def _validate_license(cls, rock_license):
+        """Make sure the provided license is valid and in SPDX format."""
+        if rock_license.lower() not in [
+            lic.lower() for lic in spdx_license_list.LICENSES
+        ]:
+            raise ProjectValidationError(
+                f"License {rock_license} not valid. It must be valid and in SPDX format."
+            )
+        return next(
+            lic
+            for lic in spdx_license_list.LICENSES
+            if rock_license.lower() == lic.lower()
+        )
+
+    @pydantic.validator("title", always=True)
+    @classmethod
+    def _validate_title(cls, title, values):
+        """If title is not provided, it default to the provided ROCK name."""
+        if not title:
+            title = values["name"]
+        return title
+
     @pydantic.validator("build_base", always=True)
     @classmethod
     def _validate_build_base(cls, build_base, values):
-        """Build-base defaults to the base value if not specified."""
+        """Build-base defaults to the base value if not specified.
+
+        :raises ProjectValidationError: If base validation fails.
+        """
         if not build_base:
+            base_value = values.get("base")
+            if base_value == "bare":
+                raise ProjectValidationError(
+                    'When "base" is bare, a build-base must be specified!'
+                )
             build_base = values.get("base")
         return build_base
 
@@ -83,6 +122,37 @@ class Project(pydantic.BaseModel):
             raise ProjectValidationError(_format_pydantic_errors(err.errors())) from err
 
         return project
+
+    def generate_metadata(
+        self, generation_time: str, base_digest: bytes
+    ) -> Tuple[dict, dict]:
+        """Generate the ROCK's metadata (both the OCI annotation and internal metadata.
+
+        :param generation_time: the UTC time at the time of calling this method
+        :param base_digest: digest of the base image
+
+        :return: both the OCI annotation and internal metadata, as a tuple
+        """
+        metadata = {
+            "name": self.name,
+            "summary": self.summary,
+            "title": self.title,
+            "version": self.version,
+            "created": generation_time,
+            "base": self.base,
+            "base-digest": base_digest.hex(),
+        }
+
+        annotations = {
+            "org.opencontainers.image.version": self.version,
+            "org.opencontainers.image.title": self.title,
+            "org.opencontainers.image.ref.name": self.name,
+            "org.opencontainers.image.licenses": self.rock_license,
+            "org.opencontainers.image.created": generation_time,
+            "org.opencontainers.image.base.digest": base_digest.hex(),
+        }
+
+        return (annotations, metadata)
 
 
 def _format_pydantic_errors(errors, *, file_name: str = "rockcraft.yaml"):

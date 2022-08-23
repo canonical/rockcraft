@@ -18,6 +18,7 @@
 """Lifecycle integration."""
 
 import os
+import datetime
 import subprocess
 from pathlib import Path
 
@@ -56,6 +57,8 @@ def init(rockcraft_yaml_content: str) -> None:
     
 def pack():
     """Pack a ROCK."""
+    # pylint: disable=too-many-locals
+
     project = load_project("rockcraft.yaml")
     destructive_mode = False  # XXX: obtain from command line
 
@@ -75,7 +78,14 @@ def pack():
     # Obtain base image and extract it to use as our overlay base
     # TODO: check if image was already downloaded, etc.
     emit.progress(f"Retrieving base {project.base}")
-    base_image = oci.Image.from_docker_registry(project.base, image_dir=image_dir)
+    if project.base == "bare":
+        base_image, source_image = oci.Image.new_oci_image(
+            f"{project.base}:latest", image_dir=image_dir
+        )
+    else:
+        base_image, source_image = oci.Image.from_docker_registry(
+            project.base, image_dir=image_dir
+        )
     emit.message(f"Retrieved base {project.base}", intermediate=True)
 
     emit.progress(f"Extracting {base_image.image_name}")
@@ -87,11 +97,12 @@ def pack():
         f"{project.name}:rockcraft-base", image_dir=image_dir
     )
 
+    base_digest = project_base_image.digest(source_image)
     lifecycle = PartsLifecycle(
         project.parts,
         work_dir=work_dir,
         base_layer_dir=rootfs,
-        base_layer_hash=project_base_image.digest(),
+        base_layer_hash=base_digest,
     )
     lifecycle.run(Step.PRIME)
 
@@ -111,6 +122,17 @@ def pack():
 
     if project.env:
         new_image.set_env(project.env)
+
+    # Set annotations and metadata, both dynamic and the ones based on user-provided properties
+    # Also include the "created" timestamp, just before packing the image
+    emit.progress("Adding metadata")
+    packing_time = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    oci_annotations, rock_metadata = project.generate_metadata(
+        packing_time, base_digest
+    )
+    new_image.set_annotations(oci_annotations)
+    new_image.set_control_data(rock_metadata)
+    emit.progress("Metadata added")
 
     emit.progress("Exporting to OCI archive")
     archive_name = f"{project.name}_{project.version}.rock"
@@ -138,7 +160,7 @@ def pack_in_provider(project: Project):
     with provider.launched_environment(
         project_name=project.name,
         project_path=Path().absolute(),
-        base=project.base,
+        build_base=str(project.build_base),
     ) as instance:
         try:
             with emit.pause():

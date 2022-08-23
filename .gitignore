@@ -51,6 +51,9 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 
+# Spread tests
+.spread-reuse.yaml
+
 # Translations
 *.mo
 *.pot
@@ -136,3 +139,6 @@ dmypy.json
 
 # snap
 rockcraft_*.snap
+
+# rock
+*.rock

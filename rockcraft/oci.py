@@ -21,10 +21,12 @@ import os
 import shutil
 import subprocess
 import tarfile
+import tempfile
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List
+from typing import Any, Dict, List, Tuple
 
+import yaml
 from craft_cli import CraftError, emit
 
 logger = logging.getLogger(__name__)
@@ -42,19 +44,42 @@ class Image:
     path: Path
 
     @classmethod
-    def from_docker_registry(cls, image_name: str, *, image_dir: Path) -> "Image":
+    def from_docker_registry(
+        cls, image_name: str, *, image_dir: Path
+    ) -> Tuple["Image", str]:
         """Obtain an image from a docker registry.
 
         :param image_name: The image to retrieve, in ``name:tag`` format.
         :param image_dir: The directory to store local OCI images.
 
-        :returns: The downloaded image.
+        :returns: The downloaded image and it's corresponding source image
         """
         image_dir.mkdir(parents=True, exist_ok=True)
         image_target = image_dir / image_name
-        _copy_image(f"docker://{image_name}", f"oci:{image_target}")
 
-        return cls(image_name=image_name, path=image_dir)
+        source_image = f"docker://{image_name}"
+        _copy_image(source_image, f"oci:{image_target}")
+
+        return cls(image_name=image_name, path=image_dir), source_image
+
+    @classmethod
+    def new_oci_image(cls, image_name: str, image_dir: Path) -> Tuple["Image", str]:
+        """Create a new OCI image out of thin air.
+
+        :param image_name: The image to initiate, in ``name:tag`` format.
+        :param image_dir: The directory to store the local OCI image.
+
+        :returns: The new image object and it's corresponding source image
+        """
+        image_dir.mkdir(parents=True, exist_ok=True)
+        image_target = image_dir / image_name
+        image_target_no_tag = str(image_target).split(":", maxsplit=1)[0]
+        shutil.rmtree(image_target_no_tag, ignore_errors=True)
+        _process_run(["umoci", "init", "--layout", image_target_no_tag])
+        _process_run(["umoci", "new", "--image", str(image_target)])
+
+        # for new OCI images, the source image corresponds to the newly generated image
+        return cls(image_name=image_name, path=image_dir), f"oci:{str(image_target)}"
 
     def copy_to(self, image_name: str, *, image_dir: Path) -> "Image":
         """Make a copy of the current image.
@@ -95,35 +120,28 @@ class Image:
         temp_file.unlink(missing_ok=True)
 
         try:
-            old_dir = os.getcwd()
-            try:
-                os.chdir(layer_path)
-                with tarfile.open(temp_file, mode="w") as tar_file:
-                    for root, _, files in os.walk("."):
-                        for name in files:
-                            path = os.path.join(root, name)
-                            emit.trace(f"Adding to layer: {path}")
-                            tar_file.add(path)
-            finally:
-                os.chdir(old_dir)
-
-            _process_run(
-                [
-                    "umoci",
-                    "raw",
-                    "add-layer",
-                    "--tag",
-                    tag,
-                    "--image",
-                    str(image_path),
-                    str(temp_file),
-                ]
-            )
+            _archive_layer(layer_path, temp_file)
+            _add_layer_into_image(image_path, temp_file, **{"--tag": tag})
         finally:
             temp_file.unlink(missing_ok=True)
 
         name = self.image_name.split(":", 1)[0]
         return self.__class__(image_name=f"{name}:{tag}", path=self.path)
+
+    @staticmethod
+    def digest(source_image: str) -> bytes:
+        """Obtain the image digest, given its full form name {transport}:{name}.
+
+        :param source_image: the source image name, it its full form (e.g. docker://ubuntu:22.04)
+        :type layer_path: str
+        :returns: The image digest bytes.
+        """
+        output = subprocess.check_output(
+            ["skopeo", "inspect", "--format", "{{.Digest}}", "-n", source_image],
+            text=True,
+        )
+        parts = output.split(":", 1)
+        return bytes.fromhex(parts[-1])
 
     def to_docker_daemon(self, tag: str) -> None:
         """Export the current image to the local docker daemon.
@@ -142,19 +160,6 @@ class Image:
         name = self.image_name.split(":", 1)[0]
         src_path = self.path / f"{name}:{tag}"
         _copy_image(f"oci:{str(src_path)}", f"oci-archive:{filename}:{tag}")
-
-    def digest(self) -> bytes:
-        """Obtain the current image digest.
-
-        :returns: The image digest bytes.
-        """
-        image_path = self.path / self.image_name
-        output = subprocess.check_output(
-            ["skopeo", "inspect", "--format", "{{.Digest}}", f"oci:{str(image_path)}"],
-            text=True,
-        )
-        parts = output.split(":", 1)
-        return bytes.fromhex(parts[-1])
 
     def set_entrypoint(self, entrypoint: List[str]) -> None:
         """Set the OCI image entrypoint.
@@ -203,15 +208,104 @@ class Image:
         _config_image(image_path, params)
         emit.message(f"Environment set to {env_list}", intermediate=True)
 
+    def set_control_data(self, metadata: Dict[str, Any]) -> None:
+        """Create and populate the ROCK's control data folder.
+
+        :param metadata: content for the ROCK's metadata YAML file
+        :type metadata: Dict[str, Any]
+        """
+        emit.progress("Setting the ROCK's Control Data")
+        local_control_data_path = Path(tempfile.mkdtemp())
+
+        # the ROCK control data structure starts with the folder ".rock"
+        control_data_rock_folder = local_control_data_path / ".rock"
+        control_data_rock_folder.mkdir()
+
+        rock_metadata_file = control_data_rock_folder / "metadata.yaml"
+        with rock_metadata_file.open("w", encoding="utf-8") as rock_meta:
+            yaml.dump(metadata, rock_meta)
+
+        temp_tar_file = Path(self.path, f".temp_layer.control_data.{os.getpid()}.tar")
+        temp_tar_file.unlink(missing_ok=True)
+
+        try:
+            _archive_layer(local_control_data_path, temp_tar_file)
+            _add_layer_into_image(self.path / self.image_name, temp_tar_file)
+        finally:
+            temp_tar_file.unlink(missing_ok=True)
+
+        emit.progress("Control data written")
+        shutil.rmtree(local_control_data_path)
+
+    def set_annotations(self, annotations: Dict[str, Any]) -> None:
+        """Add the given annotations to the final image.
+
+        :param annotations: A dictionary with each annotation/label and its value
+        """
+        emit.progress("Configuring labels and annotations...")
+        image_path = self.path / self.image_name
+        label_params = ["--clear=config.labels"]
+        annotation_params = ["--clear=manifest.annotations"]
+
+        labels_list = []
+        for label_key, label_value in annotations.items():
+            label_item = f"{label_key}={label_value}"
+            labels_list.append(label_item)
+            label_params.extend(["--config.label", label_item])
+            annotation_params.extend(["--manifest.annotation", label_item])
+        # Set the labels
+        _config_image(image_path, label_params)
+        # Set the annotations as a copy of these labels (for OCI compliance only)
+        _config_image(image_path, annotation_params)
+        emit.message(f"Labels and annotations set to {labels_list}", intermediate=True)
+
 
 def _copy_image(source: str, destination: str) -> None:
     """Transfer images from source to destination."""
-    _process_run(["skopeo", "--insecure-policy", "copy", source, destination])
+    _process_run(
+        [
+            "skopeo",
+            "--insecure-policy",
+            "copy",
+            source,
+            destination,
+        ]
+    )
 
 
 def _config_image(image_path: Path, params: List[str]) -> None:
     """Configure the OCI image."""
     _process_run(["umoci", "config", "--image", str(image_path)] + params)
+
+
+def _add_layer_into_image(image_path: Path, archived_content: Path, **kwargs) -> None:
+    """Add raw layer (archived) into the OCI image.
+
+    :param image_path: path of the OCI image, in the format <image>:<tar>
+    :param archived_content: path to the archived content to be added
+    """
+    cmd = [
+        "umoci",
+        "raw",
+        "add-layer",
+        "--image",
+        str(image_path),
+        str(archived_content),
+    ] + [arg_val for k, v in kwargs.items() for arg_val in [k, v]]
+    _process_run(cmd + ["--history.created_by", " ".join(cmd)])
+
+
+def _archive_layer(layer_path: Path, temp_tar_file: Path) -> None:
+    """Prepare new OCI layer by archiving its content into tar file.
+
+    :param layer_path: path to the content to be archived into a layer
+    :type layer_path: Path
+    :param temp_tar_file: path to the temporary tar fail holding the archived content
+    :type temp_tar_file: Path
+    """
+    with tarfile.open(temp_tar_file, mode="w") as tar_file:
+        # With `arcname="."` the contents are added relative to `layer_path`.
+        tar_file.add(layer_path, arcname=".")
 
 
 def _process_run(command: List[str], **kwargs) -> None:

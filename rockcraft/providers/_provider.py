@@ -116,11 +116,11 @@ class Provider(ABC):
         *,
         project_name: str,
         project_path: pathlib.Path,
-        base: str,
+        build_base: str,
     ) -> Generator[Executor, None, None]:
         """Launch environment for specified base.
 
         :param project_name: Name of the project.
         :param project_path: Path to the project.
-        :param base: Base to create.
+        :param build_base: Base to build from.
         """

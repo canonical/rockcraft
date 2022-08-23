@@ -300,49 +300,6 @@ def test_get_instance_name(mock_path):
     )
 
 
-def test_get_command_environment_all_opts(monkeypatch):
-    monkeypatch.setenv("IGNORE_ME", "or-im-failing")
-    monkeypatch.setenv("PATH", "not-using-host-path")
-    monkeypatch.setenv("http_proxy", "test-http-proxy")
-    monkeypatch.setenv("https_proxy", "test-https-proxy")
-    monkeypatch.setenv("no_proxy", "test-no-proxy")
-    provider = providers.LXDProvider()
-
-    env = provider.get_command_environment()
-
-    assert env == {
-        "ROCKCRAFT_MANAGED_MODE": "1",
-        "PATH": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin",
-        "http_proxy": "test-http-proxy",
-        "https_proxy": "test-https-proxy",
-        "no_proxy": "test-no-proxy",
-    }
-
-
-@pytest.mark.parametrize(
-    "name,expected_valid,expected_reason",
-    [
-        ("ubuntu:18.04", True, None),
-        ("ubuntu:20.04", True, None),
-        (
-            "ubuntu:19.04",
-            False,
-            "Base 'ubuntu:19.04' is not supported (must be 'ubuntu:18.04' or 'ubuntu:20.04')",
-        ),
-    ],
-)
-def test_is_base_available(
-    name,
-    expected_valid,
-    expected_reason,
-):
-    provider = providers.LXDProvider()
-
-    valid, reason = provider.is_base_available(name)
-
-    assert (valid, reason) == (expected_valid, expected_reason)
-
-
 @pytest.mark.parametrize("is_installed", [True, False])
 def test_is_provider_available(is_installed, mock_lxd_is_installed):
     mock_lxd_is_installed.return_value = is_installed
@@ -375,7 +332,7 @@ def test_launched_environment(
     with provider.launched_environment(
         project_name="test-rock",
         project_path=mock_path,
-        base=f"ubuntu:{channel}",
+        build_base=f"ubuntu:{channel}",
     ) as instance:
         assert instance is not None
         assert mock_configure_buildd_image_remote.mock_calls == [mock.call()]
@@ -427,7 +384,7 @@ def test_launched_environment_launch_base_configuration_error(
         with provider.launched_environment(
             project_name="test-rock",
             project_path=tmp_path,
-            base="ubuntu:20.04",
+            build_base="ubuntu:20.04",
         ):
             pass
 
@@ -448,7 +405,7 @@ def test_launched_environment_launch_lxd_error(
         with provider.launched_environment(
             project_name="test-rock",
             project_path=tmp_path,
-            base="ubuntu:20.04",
+            build_base="ubuntu:20.04",
         ):
             pass
 
@@ -467,7 +424,7 @@ def test_launched_environment_unmounts_and_stops_after_error(
         with provider.launched_environment(
             project_name="test-rock",
             project_path=tmp_path,
-            base="ubuntu:20.04",
+            build_base="ubuntu:20.04",
         ):
             mock_lxd_launch.reset_mock()
             raise RuntimeError("this is a test")
@@ -490,7 +447,7 @@ def test_launched_environment_unmount_all_error(
 
     with pytest.raises(ProviderError, match="fail") as raised:
         with provider.launched_environment(
-            project_name="test-rock", project_path=tmp_path, base="ubuntu:20.04"
+            project_name="test-rock", project_path=tmp_path, build_base="ubuntu:20.04"
         ):
             pass
 
@@ -511,7 +468,7 @@ def test_launched_environment_stop_error(
         with provider.launched_environment(
             project_name="test-rock",
             project_path=tmp_path,
-            base="ubuntu:20.04",
+            build_base="ubuntu:22.04",
         ):
             pass
 

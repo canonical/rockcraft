@@ -13,12 +13,16 @@ backends:
     systems:
       - ubuntu-18.04-64:
           workers: 1
+          storage: 40G
       - ubuntu-20.04-64:
           workers: 1
+          storage: 40G
       - ubuntu-22.04-64:
           workers: 1
+          storage: 40G
       - fedora-35-64:
           workers: 1
+          storage: 40G
 
 prepare: |
   if os.query is-ubuntu; then
