@@ -133,7 +133,6 @@ class Image:
         """Obtain the image digest, given its full form name {transport}:{name}.
 
         :param source_image: the source image name, it its full form (e.g. docker://ubuntu:22.04)
-        :type layer_path: str
         :returns: The image digest bytes.
         """
         output = subprocess.check_output(
@@ -212,7 +211,6 @@ class Image:
         """Create and populate the ROCK's control data folder.
 
         :param metadata: content for the ROCK's metadata YAML file
-        :type metadata: Dict[str, Any]
         """
         emit.progress("Setting the ROCK's Control Data")
         local_control_data_path = Path(tempfile.mkdtemp())
@@ -299,9 +297,7 @@ def _archive_layer(layer_path: Path, temp_tar_file: Path) -> None:
     """Prepare new OCI layer by archiving its content into tar file.
 
     :param layer_path: path to the content to be archived into a layer
-    :type layer_path: Path
     :param temp_tar_file: path to the temporary tar fail holding the archived content
-    :type temp_tar_file: Path
     """
     with tarfile.open(temp_tar_file, mode="w") as tar_file:
         # With `arcname="."` the contents are added relative to `layer_path`.
