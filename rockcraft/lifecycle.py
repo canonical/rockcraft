@@ -41,9 +41,9 @@ def init(rockcraft_yaml_content: str) -> None:
     rockcraft_yaml_path = Path("rockcraft.yaml")
 
     if rockcraft_yaml_path.is_file():
-        raise RockcraftInitError("{} already exists!".format(rockcraft_yaml_path))
+        raise RockcraftInitError(f"{rockcraft_yaml_path} already exists!")
     elif Path(f".{rockcraft_yaml_path.name}").is_file():
-        raise RockcraftInitError(f".{rockcraft_yaml_path.name} already exists!")
+        raise RockcraftInitError(f".{rockcraft_yaml_path} already exists!")
 
     rockcraft_yaml_path.write_text(rockcraft_yaml_content)
 
