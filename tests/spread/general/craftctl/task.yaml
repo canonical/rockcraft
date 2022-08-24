@@ -15,4 +15,5 @@ execute: |
   rm craftctl-test_latest.rock
   docker images
   docker run --rm --entrypoint /usr/bin/hello craftctl-test:latest
+  docker run --rm --entrypoint pebble craftctl-test:latest help
   docker system prune -a -f

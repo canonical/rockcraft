@@ -118,7 +118,7 @@ class Project(pydantic.BaseModel):
                     {"CGO_ENABLED": "0"},
                 ],
                 "build-snaps": ["go"],
-                "prime": ["bin/pebble"]
+                "prime": ["bin/pebble"],
             }
         }
         parts = {**pebble_part_spec, **parts}

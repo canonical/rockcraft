@@ -12,4 +12,5 @@ execute: |
   rm bare-base-test_latest.rock
   docker images
   docker run --rm bare-base-test
+  docker run --rm --entrypoint pebble bare-base-test help
   docker system prune -a -f
