@@ -101,6 +101,29 @@ class Project(pydantic.BaseModel):
             build_base = values.get("base")
         return build_base
 
+    @pydantic.validator("parts", pre=True)
+    @classmethod
+    def _add_pebble_part(cls, parts):
+        """Force pebble part to ensure Pebble is always installed."""
+        # TODO: by adding this part at this stage, if there is an error
+        # with it, a custom ProjectValidationError exception will be thrown,
+        # with the message "Bad rockcraft.yaml content", which is misleading
+        # since the user hasn't specified such part.
+        # Is there another logical place where this insertion could happen?
+        pebble_part_spec = {
+            "pebble": {
+                "plugin": "go",
+                "source": "https://github.com/canonical/pebble.git",
+                "build-environment": [
+                    {"CGO_ENABLED": "0"},
+                ],
+                "build-snaps": ["go"],
+                "prime": ["bin/pebble"]
+            }
+        }
+        parts = {**pebble_part_spec, **parts}
+        return parts
+
     @pydantic.validator("parts", each_item=True)
     @classmethod
     def _validate_parts(cls, item):

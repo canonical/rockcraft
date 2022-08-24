@@ -50,7 +50,22 @@ def yaml_data():
     }
 
 
-def test_project_unmarshal(yaml_data):
+@pytest.fixture
+def pebble_part():
+    return {
+        "pebble": {
+            "plugin": "go",
+            "source": "https://github.com/canonical/pebble.git",
+            "build-environment": [
+                {"CGO_ENABLED": "0"},
+            ],
+            "build-snaps": ["go"],
+            "prime": ["bin/pebble"],
+        }
+    }
+
+
+def test_project_unmarshal(yaml_data, pebble_part):
     project = Project.unmarshal(yaml_data)
 
     assert project.name == "mytest"
@@ -68,10 +83,13 @@ def test_project_unmarshal(yaml_data):
     assert project.cmd == ["world"]
     assert project.env == [{"NAME": "VALUE"}]
     assert project.parts == {
-        "foo": {
-            "plugin": "nil",
-            "overlay-script": "ls",
-        }
+        **pebble_part,
+        **{
+            "foo": {
+                "plugin": "nil",
+                "overlay-script": "ls",
+            }
+        },
     }
 
 
@@ -163,7 +181,7 @@ def test_project_parts_validation(yaml_data):
     )
 
 
-def test_project_load(yaml_data, tmp_path):
+def test_project_load(yaml_data, pebble_part, tmp_path):
     rockcraft_file = tmp_path / "rockcraft.yaml"
     rockcraft_file.write_text(
         textwrap.dedent(json.dumps(yaml_data)),
@@ -177,6 +195,8 @@ def test_project_load(yaml_data, tmp_path):
             # the var license is a built-in,
             # so we workaround it by using an alias
             attr = "rock_license"
+        if attr == "parts":
+            v = {**pebble_part, **v}
         assert project.__getattribute__(attr) == v
 
 
