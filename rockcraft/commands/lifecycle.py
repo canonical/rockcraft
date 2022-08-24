@@ -55,26 +55,24 @@ class InitCommand(_LifecycleCommand):
     help_msg = "Initialize a rockcraft project"
     overview = textwrap.dedent(
         """
-        Initialize a rockcraft project by creating a minimalist, 
+        Initialize a rockcraft project by creating a minimalist,
         yet functional, rockcraft.yaml file in the current directory.
         """
     )
-    
+
     _INIT_TEMPLATE_YAML = textwrap.dedent(
         """\
-            name: my-rock-name
+            name: my-rock-name # the name of your ROCK
             base: ubuntu:20.04 # the base environment for this ROCK
-            version: '0.1' # just for humans, typically '1.2+git' or '1.3.2'
-            title: My ROCK Title Name # a human-friendly title for your ROCK
+            version: '0.1' # just for humans. Semantic versioning is recommnended
             summary: Single-line elevator pitch for your amazing ROCK # 79 char long summary
             description: |
-                This is a long description of the ROCK. You have a paragraph or two to tell the
+                This is my my-rock-name's description. You have a paragraph or two to tell the
                 most important story about it. Keep it under 100 words though,
-                we live in tweetspace and your description wants to look good in the 
+                we live in tweetspace and your description wants to look good in the
                 container registries out there.
+            license: GPL-3.0 # your application's SPDX license
 
-            license: Change-Me # your application's license, in SPDX format
-            
             parts:
                 my-part:
                     plugin: nil

@@ -23,8 +23,9 @@ import craft_parts
 from craft_cli import emit
 from craft_parts import ActionType, Step, plugins
 from craft_parts.parts import PartSpec
-from rockcraft.errors import PartsLifecycleError
 from xdg import BaseDirectory  # type: ignore
+
+from rockcraft.errors import PartsLifecycleError
 
 
 class PartsLifecycle:

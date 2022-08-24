@@ -18,9 +18,10 @@ import sys
 from unittest.mock import call, patch
 
 import pytest
+import yaml
 from craft_cli import emit
 
-from rockcraft import cli
+from rockcraft import cli, project
 
 
 @pytest.fixture
@@ -29,7 +30,7 @@ def lifecycle_pack_mock():
     patcher = patch("rockcraft.lifecycle.pack")
     yield patcher.start()
     patcher.stop()
-    
+
 
 @pytest.fixture
 def lifecycle_init_mock():
@@ -53,5 +54,14 @@ def test_run_init(mocker, lifecycle_init_mock):
     mocker.patch.object(sys, "argv", ["rockcraft", "init"])
     cli.run()
 
-    assert lifecycle_init_mock.mock_calls == [call(cli.commands.InitCommand._INIT_TEMPLATE_YAML)]
+    rock_project = project.Project.unmarshal(
+        yaml.safe_load(cli.commands.InitCommand._INIT_TEMPLATE_YAML)
+    )
+
+    assert len(rock_project.summary) < 80
+    assert len(rock_project.description.split()) < 100
+
+    assert lifecycle_init_mock.mock_calls == [
+        call(cli.commands.InitCommand._INIT_TEMPLATE_YAML)
+    ]
     assert mock_ended_ok.mock_calls == [call()]

@@ -21,8 +21,8 @@ from typing import Any, Dict, List, Literal, Optional, Tuple
 import pydantic
 import spdx_license_list  # type: ignore
 import yaml
-from rockcraft.errors import ProjectLoadError, ProjectValidationError
 
+from rockcraft.errors import ProjectLoadError, ProjectValidationError
 from rockcraft.parts import validate_part
 
 

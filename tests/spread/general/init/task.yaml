@@ -1,0 +1,17 @@
+summary: rockcraft init test
+
+execute: |
+  rockcraft init
+
+  rockcraft pack
+
+  test -f my-rock-name_0.1.rock
+  test ! -d work
+
+  # test container execution
+  docker images
+  sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:my-rock-name_0.1.rock docker-daemon:my-rock-name:0.1
+  rm my-rock-name_0.1.rock
+  docker images
+  docker run --rm my-rock-name:0.1 bash -c 'echo Hello World'
+  docker system prune -a -f

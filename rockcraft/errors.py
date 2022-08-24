@@ -25,16 +25,15 @@ class RockcraftInitError(CraftError):
 
 class PartsLifecycleError(CraftError):
     """Error during parts processing."""
-    
+
 
 class ProviderError(CraftError):
     """Error in provider operation."""
-    
-    
+
+
 class ProjectLoadError(CraftError):
     """Error loading rockcraft.yaml."""
 
 
 class ProjectValidationError(CraftError):
     """Error validatiing rockcraft.yaml."""
-
