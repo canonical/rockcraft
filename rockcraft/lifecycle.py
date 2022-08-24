@@ -18,7 +18,6 @@
 """Lifecycle integration."""
 
 import datetime
-import os
 import subprocess
 from pathlib import Path
 
@@ -36,19 +35,17 @@ def init(rockcraft_yaml_content: str) -> None:
     """Initialize a rockcraft project.
 
     :param rockcraft_yaml_content: Content of the rockcraft.yaml file
-    :type rockcraft_yaml_content: str
     :raises RockcraftInitError: raises initialization error in case of conflicts
     with existing rockcraft.yaml files
     """
-    rockcraft_yaml_path = "rockcraft.yaml"
+    rockcraft_yaml_path = Path("rockcraft.yaml")
 
-    if os.path.exists(rockcraft_yaml_path):
+    if rockcraft_yaml_path.is_file():
         raise RockcraftInitError("{} already exists!".format(rockcraft_yaml_path))
-    elif os.path.exists(f".{rockcraft_yaml_path}"):
-        raise RockcraftInitError(f".{rockcraft_yaml_path} already exists!")
+    elif Path(f".{rockcraft_yaml_path.name}").is_file():
+        raise RockcraftInitError(f".{rockcraft_yaml_path.name} already exists!")
 
-    with open(rockcraft_yaml_path, mode="w") as f:
-        f.write(rockcraft_yaml_content)
+    rockcraft_yaml_path.write_text(rockcraft_yaml_content)
 
     emit.progress("Created {}.".format(rockcraft_yaml_path))
 
