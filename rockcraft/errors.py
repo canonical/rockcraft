@@ -36,4 +36,4 @@ class ProjectLoadError(CraftError):
 
 
 class ProjectValidationError(CraftError):
-    """Error validatiing rockcraft.yaml."""
+    """Error validating rockcraft.yaml."""
