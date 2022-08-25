@@ -117,11 +117,11 @@ class Project(pydantic.BaseModel):
                 "build-environment": [
                     {"CGO_ENABLED": "0"},
                 ],
-                "build-snaps": ["go"],
+                "build-snaps": ["go/1.19/stable"],
                 "prime": ["bin/pebble"],
             }
         }
-        parts = {**pebble_part_spec, **parts}
+        parts = {**parts, **pebble_part_spec}
         return parts
 
     @pydantic.validator("parts", each_item=True)

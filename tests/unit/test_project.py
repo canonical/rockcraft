@@ -59,7 +59,7 @@ def pebble_part():
             "build-environment": [
                 {"CGO_ENABLED": "0"},
             ],
-            "build-snaps": ["go"],
+            "build-snaps": ["go/1.19/stable"],
             "prime": ["bin/pebble"],
         }
     }
@@ -83,13 +83,13 @@ def test_project_unmarshal(yaml_data, pebble_part):
     assert project.cmd == ["world"]
     assert project.env == [{"NAME": "VALUE"}]
     assert project.parts == {
-        **pebble_part,
         **{
             "foo": {
                 "plugin": "nil",
                 "overlay-script": "ls",
             }
         },
+        **pebble_part,
     }
 
 
@@ -196,7 +196,7 @@ def test_project_load(yaml_data, pebble_part, tmp_path):
             # so we workaround it by using an alias
             attr = "rock_license"
         if attr == "parts":
-            v = {**pebble_part, **v}
+            v = {**v, **pebble_part}
         assert project.__getattribute__(attr) == v
 
 
