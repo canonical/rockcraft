@@ -63,7 +63,7 @@ class InitCommand(_LifecycleCommand):
     _INIT_TEMPLATE_YAML = textwrap.dedent(
         """\
             name: my-rock-name # the name of your ROCK
-            base: ubuntu:20.04 # the base environment for this ROCK
+            base: ubuntu:22.04 # the base environment for this ROCK
             version: '0.1' # just for humans. Semantic versioning is recommnended
             summary: Single-line elevator pitch for your amazing ROCK # 79 char long summary
             description: |
