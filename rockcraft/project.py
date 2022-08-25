@@ -21,17 +21,9 @@ from typing import Any, Dict, List, Literal, Optional, Tuple
 import pydantic
 import spdx_license_list  # type: ignore
 import yaml
-from craft_cli.errors import CraftError
 
+from rockcraft.errors import ProjectLoadError, ProjectValidationError
 from rockcraft.parts import validate_part
-
-
-class ProjectLoadError(CraftError):
-    """Error loading rockcraft.yaml."""
-
-
-class ProjectValidationError(CraftError):
-    """Error validatiing rockcraft.yaml."""
 
 
 class Project(pydantic.BaseModel):
