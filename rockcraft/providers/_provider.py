@@ -22,9 +22,12 @@ import pathlib
 from abc import ABC, abstractmethod
 from typing import Dict, Generator, List, Optional, Tuple, Union
 
+from craft_cli.errors import CraftError
 from craft_providers import Executor, bases
 
-from rockcraft.errors import ProviderError  # noqa
+
+class ProviderError(CraftError):
+    """Error in provider operation."""
 
 
 class Provider(ABC):
