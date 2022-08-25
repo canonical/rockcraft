@@ -172,40 +172,34 @@ def test_architecture_mapping():
 
 
 def test_project_platform_invalid():
-    def load_platform(platform):
-        with pytest.raises(ProjectValidationError) as err:
+    def load_platform(platform, raises):
+        with pytest.raises(raises) as err:
             Platform(**platform)
 
         return str(err.value)
 
     # build_on must be a list
     mock_platform = {"build-on": "amd64"}
-    with pytest.raises(pydantic.ValidationError) as err:
-        Platform(**mock_platform)
-    assert "not a valid list" in str(err.value)
+    assert "not a valid list" in load_platform(mock_platform, pydantic.ValidationError)
 
     # lists must be unique
     mock_platform = {"build-on": ["amd64", "amd64"]}
-    with pytest.raises(pydantic.ValidationError) as err:
-        Platform(**mock_platform)
-    assert "duplicated" in str(err.value)
+    assert "duplicated" in load_platform(mock_platform, pydantic.ValidationError)
 
     mock_platform = {"build-for": ["amd64", "amd64"]}
-    with pytest.raises(pydantic.ValidationError) as err:
-        Platform(**mock_platform)
-    assert "duplicated" in str(err.value)
+    assert "duplicated" in load_platform(mock_platform, pydantic.ValidationError)
 
     # build-for must be only 1 element (NOTE: this may change)
     mock_platform = {"build-on": ["amd64"], "build-for": ["amd64", "arm64"]}
-    with pytest.raises(ProjectValidationError) as err:
-        Platform(**mock_platform)
-    assert "multiple target architectures" in str(err.value)
+    assert "multiple target architectures" in load_platform(
+        mock_platform, ProjectValidationError
+    )
 
     # If build_for is provided, then build_on must also be
     mock_platform = {"build-for": ["arm64"]}
-    with pytest.raises(ProjectValidationError) as err:
-        Platform(**mock_platform)
-    assert "'build_for' expects 'build_on' to also be provided." in str(err.value)
+    assert "'build_for' expects 'build_on' to also be provided." in load_platform(
+        mock_platform, ProjectValidationError
+    )
 
 
 @patch("platform.machine")

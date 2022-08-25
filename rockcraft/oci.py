@@ -337,6 +337,7 @@ def _inject_architecture_variant(image_path: Path, variant: str) -> None:
     :param image_path: path of the OCI image, in the format <image>:<tar>
     :param variant: name of the variant to inject in the OCI config
     """
+    # pylint: disable=too-many-locals
     blobs_path = image_path / "blobs" / "sha256"
     # Get the top level OCI index
     tl_index_path = image_path / "index.json"

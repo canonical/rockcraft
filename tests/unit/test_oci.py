@@ -514,15 +514,14 @@ class TestImage:
             },
         }
 
+        # pylint: disable=protected-access
         oci._inject_architecture_variant(Path("img"), test_variant)
-
         assert mock_read_bytes.call_count == 3
         assert mock_write_bytes.mock_calls == [
             call(new_test_config_bytes),
             call(new_test_manifest_bytes),
             call(json.dumps(new_test_index).encode("utf-8")),
         ]
-
 
     def test_archive_layer(self, mocker, new_dir):
         Path("c").mkdir()

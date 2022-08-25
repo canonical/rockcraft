@@ -219,6 +219,7 @@ class Project(pydantic.BaseModel):
             try:
                 platform = Platform(**platform).dict()
             except ProjectValidationError as err:
+                # pylint: disable=raise-missing-from
                 raise ProjectValidationError(f"{error_prefix}: {str(err)}")
 
             # build_on and build_for are validated

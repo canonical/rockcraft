@@ -59,6 +59,7 @@ def pack_for_platform(
     managed_mode: bool,
 ) -> None:
     """Packs a ROCK for a given target architecture."""
+    # pylint: disable=too-many-locals
     if managed_mode:
         work_dir = utils.get_managed_environment_home_path()
     else:
@@ -121,9 +122,8 @@ def pack_for_platform(
     # Set annotations and metadata, both dynamic and the ones based on user-provided properties
     # Also include the "created" timestamp, just before packing the image
     emit.progress("Adding metadata")
-    packing_time = datetime.datetime.now(datetime.timezone.utc).isoformat()
     oci_annotations, rock_metadata = project.generate_metadata(
-        packing_time, base_digest
+        datetime.datetime.now(datetime.timezone.utc).isoformat(), base_digest
     )
     rock_metadata["architecture"] = build_for
     # TODO: add variant to rock_metadata too
