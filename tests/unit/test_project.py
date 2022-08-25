@@ -20,8 +20,12 @@ import textwrap
 
 import pytest
 
-from rockcraft.errors import ProjectLoadError, ProjectValidationError
-from rockcraft.project import Project, load_project
+from rockcraft.project import (
+    Project,
+    ProjectLoadError,
+    ProjectValidationError,
+    load_project,
+)
 
 
 @pytest.fixture

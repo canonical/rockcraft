@@ -21,14 +21,16 @@ import datetime
 import subprocess
 from pathlib import Path
 
-from craft_cli import EmitterMode, emit
-
-from rockcraft.errors import RockcraftInitError
+from craft_cli import CraftError, EmitterMode, emit
 
 from . import oci, providers, utils
 from .parts import PartsLifecycle, Step
 from .project import Project, load_project
 from .providers import capture_logs_from_instance
+
+
+class RockcraftInitError(CraftError):
+    """Error while initializing rockcraft project."""
 
 
 def init(rockcraft_yaml_content: str) -> None:
@@ -42,12 +44,13 @@ def init(rockcraft_yaml_content: str) -> None:
 
     if rockcraft_yaml_path.is_file():
         raise RockcraftInitError(f"{rockcraft_yaml_path} already exists!")
-    elif Path(f".{rockcraft_yaml_path.name}").is_file():
+
+    if Path(f".{rockcraft_yaml_path.name}").is_file():
         raise RockcraftInitError(f".{rockcraft_yaml_path} already exists!")
 
     rockcraft_yaml_path.write_text(rockcraft_yaml_content)
 
-    emit.progress("Created {}.".format(rockcraft_yaml_path))
+    emit.progress(f"Created {rockcraft_yaml_path}.")
 
 
 def pack():
