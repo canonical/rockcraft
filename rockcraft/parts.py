@@ -20,14 +20,12 @@ import pathlib
 from typing import Any, Dict
 
 import craft_parts
-from craft_cli import CraftError, emit
+from craft_cli import emit
 from craft_parts import ActionType, Step, plugins
 from craft_parts.parts import PartSpec
 from xdg import BaseDirectory  # type: ignore
 
-
-class PartsLifecycleError(CraftError):
-    """Error during parts processing."""
+from rockcraft.errors import PartsLifecycleError
 
 
 class PartsLifecycle:
