@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import pathlib
+from pathlib import Path
 import re
 from unittest import mock
 from unittest.mock import call
@@ -330,9 +330,7 @@ def test_launched_environment(
                 mem_gb=2,
                 auto_clean=True,
             ),
-            mock.call().mount(
-                host_source=mock_path, target=pathlib.Path("/root/project")
-            ),
+            mock.call().mount(host_source=mock_path, target=Path("/root/project")),
         ]
         assert mock_buildd_base_configuration.mock_calls == [
             call(

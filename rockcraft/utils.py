@@ -19,7 +19,7 @@
 
 import logging
 import os
-import pathlib
+from pathlib import Path
 import sys
 from collections import namedtuple
 from distutils.util import strtobool  # pylint: disable=deprecated-module
@@ -38,7 +38,7 @@ def is_managed_mode():
 
 def get_managed_environment_home_path():
     """Path for home when running in managed environment."""
-    return pathlib.Path("/root")
+    return Path("/root")
 
 
 def get_managed_environment_project_path():
@@ -48,7 +48,7 @@ def get_managed_environment_project_path():
 
 def get_managed_environment_log_path():
     """Path for log when running in managed environment."""
-    return pathlib.Path("/tmp/rockcraft.log")
+    return Path("/tmp/rockcraft.log")
 
 
 def get_managed_environment_snap_channel() -> Optional[str]:
@@ -78,11 +78,7 @@ def confirm_with_user(prompt, default=False) -> bool:
 
     choices = " [Y/n]: " if default else " [y/N]: "
 
-    reply = str(input(prompt + choices)).lower().strip()
-    if reply and reply[0] == "y":
-        return True
+    reply = input(prompt + choices).lower().strip()
+    possible_answers = {"y": True, "n": False}
 
-    if reply and reply[0] == "n":
-        return False
-
-    return default
+    return possible_answers.get(f" {reply[0].lower()} ", default) if reply else default

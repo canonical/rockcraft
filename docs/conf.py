@@ -28,10 +28,10 @@
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
 
-import pathlib
+from pathlib import Path
 import sys
 
-sys.path.insert(0, str(pathlib.Path("..").absolute()))
+sys.path.insert(0, str(Path("..").absolute()))
 
 import rockcraft  # noqa: E402
 

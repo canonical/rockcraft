@@ -18,7 +18,7 @@
 
 import contextlib
 import logging
-import pathlib
+from pathlib import Path
 from typing import Generator, List
 
 from craft_providers import Executor, bases, multipass
@@ -46,7 +46,7 @@ class MultipassProvider(Provider):
         self.multipass = instance
 
     def clean_project_environments(
-        self, *, project_name: str, project_path: pathlib.Path
+        self, *, project_name: str, project_path: Path
     ) -> List[str]:
         """Clean up any build environments created for project.
 
@@ -128,7 +128,7 @@ class MultipassProvider(Provider):
         self,
         *,
         project_name: str,
-        project_path: pathlib.Path,
+        project_path: Path,
         build_base: str,
     ) -> Generator[Executor, None, None]:
         """Launch environment for specified base.
