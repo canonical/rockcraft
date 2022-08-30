@@ -64,7 +64,7 @@ a number of integrated tests in :code:`tests/spread` can be run with `Spread`_. 
      $ snapcraft --use-lxd
      $ cp <generated snap> tests/
 
-* Run Spread (the :code:`google` backend needs access to :code:`snapd-spread`):
+* Run Spread:
 
   .. code-block::
 
