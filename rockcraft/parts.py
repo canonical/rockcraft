@@ -17,7 +17,7 @@
 """Craft-parts lifecycle."""
 
 import pathlib
-from typing import Any, Dict
+from typing import Any, Dict, List, Optional
 
 import craft_parts
 from craft_cli import emit
@@ -26,6 +26,14 @@ from craft_parts.parts import PartSpec
 from xdg import BaseDirectory  # type: ignore
 
 from rockcraft.errors import PartsLifecycleError
+
+_LIFECYCLE_STEPS = {
+    "pull": Step.PULL,
+    "overlay": Step.OVERLAY,
+    "build": Step.BUILD,
+    "stage": Step.STAGE,
+    "prime": Step.PRIME,
+}
 
 
 class PartsLifecycle:
@@ -44,9 +52,12 @@ class PartsLifecycle:
         all_parts: Dict[str, Any],
         *,
         work_dir: pathlib.Path,
+        part_names: Optional[List[str]],
         base_layer_dir: pathlib.Path,
         base_layer_hash: bytes,
     ):
+        self._part_names = part_names
+
         emit.progress("Initializing parts lifecycle")
 
         # set the cache dir for parts package management
@@ -70,18 +81,22 @@ class PartsLifecycle:
         """Return the parts prime directory path."""
         return self._lcm.project_info.prime_dir
 
-    def run(self, target_step: Step) -> None:
+    def run(self, step_name: str) -> None:
         """Run the parts lifecycle.
 
-        :param target_step: The final step to execute.
+        :param step_name: The final step to execute.
 
         :raises PartsLifecycleError: On error during lifecycle.
         :raises RuntimeError: On unexpected error.
         """
+        target_step = _LIFECYCLE_STEPS.get(step_name)
+        if not target_step:
+            raise RuntimeError(f"Invalid target step {step_name!r}")
+
         try:
             emit.progress("Executing parts lifecycle")
 
-            actions = self._lcm.plan(target_step)
+            actions = self._lcm.plan(target_step, part_names=self._part_names)
             with self._lcm.action_executor() as aex:
                 for action in actions:
                     message = _action_message(action)

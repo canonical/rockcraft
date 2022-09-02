@@ -18,15 +18,111 @@
 
 import abc
 import textwrap
+from typing import TYPE_CHECKING
 
-from craft_cli import BaseCommand
+from craft_cli import BaseCommand, emit
 from overrides import overrides
 
 from rockcraft import lifecycle
 
+if TYPE_CHECKING:
+    import argparse
+
 
 class _LifecycleCommand(BaseCommand, abc.ABC):
     """Run lifecycle-related commands."""
+
+    @overrides
+    def run(self, parsed_args):
+        """Run the command."""
+        if not self.name:
+            raise RuntimeError("command name not specified")
+
+        emit.trace(f"lifecycle command: {self.name!r}, arguments: {parsed_args!r}")
+        lifecycle.run(self.name, parsed_args)
+
+
+class _LifecycleStepCommand(_LifecycleCommand):
+    """Run lifecycle step commands."""
+
+    @overrides
+    def fill_parser(self, parser: "argparse.ArgumentParser") -> None:
+        super().fill_parser(parser)  # type: ignore
+        parser.add_argument(
+            "parts",
+            metavar="part-name",
+            type=str,
+            nargs="*",
+            help="Optional list of parts to process",
+        )
+
+
+class PullCommand(_LifecycleStepCommand):
+    """Run the lifecycle up to the pull step."""
+
+    name = "pull"
+    help_msg = "Download or retrieve artifacts defined for a part"
+    overview = textwrap.dedent(
+        """
+        Download or retrieve artifacts defined for a part. If part names
+        are specified only those parts will be pulled, otherwise all parts
+        will be pulled.
+        """
+    )
+
+
+class OverlayCommand(_LifecycleStepCommand):
+    """Run the lifecycle up to the build step."""
+
+    name = "overlay"
+    help_msg = "Create part layers over the base filesystem."
+    overview = textwrap.dedent(
+        """
+        Execute operations defined for each part on a layer over the base
+        filesystem, potentially modifying its contents.
+        """
+    )
+
+
+class BuildCommand(_LifecycleStepCommand):
+    """Run the lifecycle up to the build step."""
+
+    name = "build"
+    help_msg = "Build artifacts defined for a part"
+    overview = textwrap.dedent(
+        """
+        Build artifacts defined for a part. If part names are specified only
+        those parts will be built, otherwise all parts will be built.
+        """
+    )
+
+
+class StageCommand(_LifecycleStepCommand):
+    """Run the lifecycle up to the stage step."""
+
+    name = "stage"
+    help_msg = "Stage built artifacts into a common staging area"
+    overview = textwrap.dedent(
+        """
+        Stage built artifacts into a common staging area. If part names are
+        specified only those parts will be staged. The default is to stage
+        all parts.
+        """
+    )
+
+
+class PrimeCommand(_LifecycleStepCommand):
+    """Prepare the final payload for packing."""
+
+    name = "prime"
+    help_msg = "Prime artifacts defined for a part"
+    overview = textwrap.dedent(
+        """
+        Prepare the final payload to be packed as a snap, performing additional
+        processing and adding metadata files. If part names are specified only
+        those parts will be primed. The default is to prime all parts.
+        """
+    )
 
 
 class PackCommand(_LifecycleCommand):
@@ -41,8 +137,3 @@ class PackCommand(_LifecycleCommand):
         all parts.
         """
     )
-
-    @overrides
-    def run(self, parsed_args):
-        """Run the command."""
-        lifecycle.pack()

@@ -33,6 +33,7 @@ def test_parts_lifecycle_prime_dir(new_dir):
     lifecycle = parts.PartsLifecycle(
         all_parts=parts_data,
         work_dir=Path("/some/workdir"),
+        part_names=None,
         base_layer_dir=new_dir,
         base_layer_hash=b"digest",
     )
@@ -54,10 +55,11 @@ def test_parts_lifecycle_run(new_dir):
     lifecycle = parts.PartsLifecycle(
         all_parts=parts_data,
         work_dir=Path("."),
+        part_names=None,
         base_layer_dir=new_dir,
         base_layer_hash=b"digest",
     )
-    lifecycle.run(parts.Step.PRIME)
+    lifecycle.run("prime")
 
     assert Path(lifecycle.prime_dir, "foo.txt").is_file()
 
@@ -74,6 +76,7 @@ def test_parts_lifecycle_error(new_dir):
         parts.PartsLifecycle(
             all_parts=parts_data,
             work_dir=Path("."),
+            part_names=None,
             base_layer_dir=new_dir,
             base_layer_hash=b"digest",
         )
