@@ -120,8 +120,8 @@ class Image:
         temp_file.unlink(missing_ok=True)
 
         try:
-            _compress_layer(layer_path, temp_file)
-            _add_layer_into_image(str(image_path), str(temp_file), **{"--tag": tag})
+            _archive_layer(layer_path, temp_file)
+            _add_layer_into_image(image_path, temp_file, **{"--tag": tag})
         finally:
             temp_file.unlink(missing_ok=True)
 
@@ -133,7 +133,6 @@ class Image:
         """Obtain the image digest, given its full form name {transport}:{name}.
 
         :param source_image: the source image name, it its full form (e.g. docker://ubuntu:22.04)
-        :type layer_path: str
         :returns: The image digest bytes.
         """
         output = subprocess.check_output(
@@ -212,7 +211,6 @@ class Image:
         """Create and populate the ROCK's control data folder.
 
         :param metadata: content for the ROCK's metadata YAML file
-        :type metadata: Dict[str, Any]
         """
         emit.progress("Setting the ROCK's Control Data")
         local_control_data_path = Path(tempfile.mkdtemp())
@@ -229,8 +227,8 @@ class Image:
         temp_tar_file.unlink(missing_ok=True)
 
         try:
-            _compress_layer(local_control_data_path, temp_tar_file)
-            _add_layer_into_image(str(self.path / self.image_name), str(temp_tar_file))
+            _archive_layer(local_control_data_path, temp_tar_file)
+            _add_layer_into_image(self.path / self.image_name, temp_tar_file)
         finally:
             temp_tar_file.unlink(missing_ok=True)
 
@@ -278,39 +276,32 @@ def _config_image(image_path: Path, params: List[str]) -> None:
     _process_run(["umoci", "config", "--image", str(image_path)] + params)
 
 
-def _add_layer_into_image(image_path: str, compressed_content: str, **kwargs) -> None:
-    """Add raw layer (compressed) into the OCI image.
+def _add_layer_into_image(image_path: Path, archived_content: Path, **kwargs) -> None:
+    """Add raw layer (archived) into the OCI image.
 
     :param image_path: path of the OCI image, in the format <image>:<tar>
-    :type image_path: str
-    :param compressed_content: path to the compressed content to be added
-    :type compressed_content: str
+    :param archived_content: path to the archived content to be added
     """
-    cmd = ["umoci", "raw", "add-layer", "--image", image_path, compressed_content] + [
-        arg_val for k, v in kwargs.items() for arg_val in [k, v]
-    ]
+    cmd = [
+        "umoci",
+        "raw",
+        "add-layer",
+        "--image",
+        str(image_path),
+        str(archived_content),
+    ] + [arg_val for k, v in kwargs.items() for arg_val in [k, v]]
     _process_run(cmd + ["--history.created_by", " ".join(cmd)])
 
 
-def _compress_layer(layer_path: Path, temp_tar_file: Path) -> None:
-    """Prepare new OCI layer by compressing its content into tar file.
+def _archive_layer(layer_path: Path, temp_tar_file: Path) -> None:
+    """Prepare new OCI layer by archiving its content into tar file.
 
-    :param layer_path: path to the content to be compressed into a layer
-    :type layer_path: Path
-    :param temp_tar_file: path to the temporary tar fail holding the compressed content
-    :type temp_tar_file: Path
+    :param layer_path: path to the content to be archived into a layer
+    :param temp_tar_file: path to the temporary tar fail holding the archived content
     """
-    old_dir = os.getcwd()
-    try:
-        os.chdir(layer_path)
-        with tarfile.open(temp_tar_file, mode="w") as tar_file:
-            for root, _, files in os.walk("."):
-                for name in files:
-                    path = os.path.join(root, name)
-                    emit.trace(f"Adding to layer: {path}")
-                    tar_file.add(path)
-    finally:
-        os.chdir(old_dir)
+    with tarfile.open(temp_tar_file, mode="w") as tar_file:
+        # With `arcname="."` the contents are added relative to `layer_path`.
+        tar_file.add(layer_path, arcname=".")
 
 
 def _process_run(command: List[str], **kwargs) -> None:

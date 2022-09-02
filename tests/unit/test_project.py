@@ -17,16 +17,11 @@
 import datetime
 import json
 import textwrap
-from pathlib import Path
 
 import pytest
 
-from rockcraft.project import (
-    Project,
-    ProjectLoadError,
-    ProjectValidationError,
-    load_project,
-)
+from rockcraft.errors import ProjectLoadError, ProjectValidationError
+from rockcraft.project import Project, load_project
 
 
 @pytest.fixture
@@ -164,13 +159,14 @@ def test_project_parts_validation(yaml_data):
     )
 
 
-def test_project_load(yaml_data):
-    Path("rockcraft.yaml").write_text(
+def test_project_load(yaml_data, tmp_path):
+    rockcraft_file = tmp_path / "rockcraft.yaml"
+    rockcraft_file.write_text(
         textwrap.dedent(json.dumps(yaml_data)),
         encoding="utf-8",
     )
 
-    project = load_project("rockcraft.yaml")
+    project = load_project(str(rockcraft_file))
 
     for attr, v in yaml_data.items():
         if attr == "license":

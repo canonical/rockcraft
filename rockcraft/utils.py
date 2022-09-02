@@ -16,12 +16,13 @@
 
 """Utilities for rockcraft."""
 
-import distutils.util
+
 import logging
 import os
 import pathlib
 import sys
 from collections import namedtuple
+from distutils.util import strtobool  # pylint: disable=deprecated-module
 from typing import Optional
 
 logger = logging.getLogger(__name__)
@@ -32,7 +33,7 @@ OSPlatform = namedtuple("OSPlatform", "system release machine")
 def is_managed_mode():
     """Check if rockcraft is running in a managed environment."""
     managed_flag = os.getenv("ROCKCRAFT_MANAGED_MODE", "n")
-    return distutils.util.strtobool(managed_flag) == 1
+    return strtobool(managed_flag) == 1
 
 
 def get_managed_environment_home_path():
