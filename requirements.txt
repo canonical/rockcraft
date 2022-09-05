@@ -3,7 +3,7 @@ Babel==2.10.1
 certifi==2022.5.18.1
 charset-normalizer==2.0.12
 craft-cli==0.6.0
-craft-parts==1.7.1
+craft-parts==1.13.0
 craft-providers==1.3.0
 Deprecated==1.2.13
 docutils==0.17.1
