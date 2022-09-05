@@ -16,4 +16,20 @@
 
 """Rockcraft commands."""
 
-from .lifecycle import PackCommand  # noqa: F401
+from .lifecycle import (
+    BuildCommand,
+    OverlayCommand,
+    PackCommand,
+    PrimeCommand,
+    PullCommand,
+    StageCommand,
+)
+
+__all__ = [
+    "PullCommand",
+    "OverlayCommand",
+    "BuildCommand",
+    "StageCommand",
+    "PrimeCommand",
+    "PackCommand",
+]
