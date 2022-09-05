@@ -23,10 +23,11 @@ from typing import Generator, List
 
 from craft_providers import Executor, bases, lxd
 
+from rockcraft.errors import ProviderError
 from rockcraft.utils import confirm_with_user, get_managed_environment_project_path
 
 from ._buildd import BASE_TO_BUILDD_IMAGE_ALIAS, RockcraftBuilddBaseConfiguration
-from ._provider import Provider, ProviderError
+from ._provider import Provider
 
 logger = logging.getLogger(__name__)
 
