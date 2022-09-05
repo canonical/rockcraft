@@ -30,7 +30,7 @@ if TYPE_CHECKING:
 
 
 class _LifecycleCommand(BaseCommand, abc.ABC):
-    """Run lifecycle-related commands."""
+    """Lifecycle-related commands."""
 
     @overrides
     def run(self, parsed_args):
@@ -72,7 +72,7 @@ class PullCommand(_LifecycleStepCommand):
 
 
 class OverlayCommand(_LifecycleStepCommand):
-    """Run the lifecycle up to the build step."""
+    """Run the lifecycle up to the overlay step."""
 
     name = "overlay"
     help_msg = "Create part layers over the base filesystem."
