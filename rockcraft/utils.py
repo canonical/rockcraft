@@ -79,6 +79,4 @@ def confirm_with_user(prompt, default=False) -> bool:
     choices = " [Y/n]: " if default else " [y/N]: "
 
     reply = input(prompt + choices).lower().strip()
-    possible_answers = {" y ": True, " n ": False}
-
-    return possible_answers.get(f" {reply[0].lower()} ", default) if reply else default
+    return reply[0] == "y" if reply else default
