@@ -43,7 +43,7 @@ class _LifecycleCommand(BaseCommand, abc.ABC):
 
 
 class _LifecycleStepCommand(_LifecycleCommand):
-    """Run lifecycle step commands."""
+    """Lifecycle step commands."""
 
     @overrides
     def fill_parser(self, parser: "argparse.ArgumentParser") -> None:
