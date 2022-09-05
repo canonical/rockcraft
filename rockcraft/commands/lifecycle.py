@@ -58,7 +58,7 @@ class _LifecycleStepCommand(_LifecycleCommand):
 
 
 class PullCommand(_LifecycleStepCommand):
-    """The "pull" command."""
+    """Command to pull parts."""
 
     name = "pull"
     help_msg = "Download or retrieve artifacts defined for a part"
@@ -72,7 +72,7 @@ class PullCommand(_LifecycleStepCommand):
 
 
 class OverlayCommand(_LifecycleStepCommand):
-    """The "overlay" command."""
+    """Command to overlay parts."""
 
     name = "overlay"
     help_msg = "Create part layers over the base filesystem."
@@ -85,7 +85,7 @@ class OverlayCommand(_LifecycleStepCommand):
 
 
 class BuildCommand(_LifecycleStepCommand):
-    """The "build" command."""
+    """Command to build parts."""
 
     name = "build"
     help_msg = "Build artifacts defined for a part"
@@ -98,7 +98,7 @@ class BuildCommand(_LifecycleStepCommand):
 
 
 class StageCommand(_LifecycleStepCommand):
-    """The "stage" command."""
+    """Command to stage parts."""
 
     name = "stage"
     help_msg = "Stage built artifacts into a common staging area"
@@ -112,7 +112,7 @@ class StageCommand(_LifecycleStepCommand):
 
 
 class PrimeCommand(_LifecycleStepCommand):
-    """The "prime" command."""
+    """Command to prime parts."""
 
     name = "prime"
     help_msg = "Prime artifacts defined for a part"
@@ -126,7 +126,7 @@ class PrimeCommand(_LifecycleStepCommand):
 
 
 class PackCommand(_LifecycleCommand):
-    """The "pack" command."""
+    """Command to pack the final artifact."""
 
     name = "pack"
     help_msg = "Build artifacts defined for a part"
