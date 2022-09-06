@@ -66,9 +66,18 @@ def test_parts_lifecycle_run(new_dir):
     assert Path(lifecycle.prime_dir, "foo.txt").is_file()
 
 
-@pytest.mark.parametrize("step_name", ["pull", "overlay", "build", "stage", "prime"])
+@pytest.mark.parametrize(
+    "step_name,expected_last_step",
+    [
+        ("pull", None),
+        ("overlay", Step.PULL),
+        ("build", Step.OVERLAY),
+        ("stage", Step.BUILD),
+        ("prime", Step.STAGE),
+    ],
+)
 @tests.linux_only
-def test_parts_lifecycle_run_shell(new_dir, mocker, step_name):
+def test_parts_lifecycle_run_shell(new_dir, mocker, step_name, expected_last_step):
     last_step = None
 
     def _fake_execute(_, action: Action, **kwargs):  # pylint: disable=unused-argument
@@ -93,23 +102,24 @@ def test_parts_lifecycle_run_shell(new_dir, mocker, step_name):
     )
     lifecycle.run(step_name, shell=True)
 
-    expected_last_step = None
-    if step_name == "overlay":
-        expected_last_step = Step.PULL
-    elif step_name == "build":
-        expected_last_step = Step.OVERLAY
-    elif step_name == "stage":
-        expected_last_step = Step.BUILD
-    elif step_name == "prime":
-        expected_last_step = Step.STAGE
-
     assert last_step == expected_last_step
     assert shell_mock.mock_calls == [call(["bash"], check=False, cwd=None)]
 
 
-@pytest.mark.parametrize("step_name", ["pull", "overlay", "build", "stage", "prime"])
+@pytest.mark.parametrize(
+    "step_name,expected_last_step",
+    [
+        ("pull", Step.PULL),
+        ("overlay", Step.OVERLAY),
+        ("build", Step.BUILD),
+        ("stage", Step.STAGE),
+        ("prime", Step.PRIME),
+    ],
+)
 @tests.linux_only
-def test_parts_lifecycle_run_shell_after(new_dir, mocker, step_name):
+def test_parts_lifecycle_run_shell_after(
+    new_dir, mocker, step_name, expected_last_step
+):
     last_step = None
 
     def _fake_execute(_, action: Action, **kwargs):  # pylint: disable=unused-argument
@@ -133,16 +143,6 @@ def test_parts_lifecycle_run_shell_after(new_dir, mocker, step_name):
         base_layer_hash=b"digest",
     )
     lifecycle.run(step_name, shell_after=True)
-
-    expected_last_step = Step.PULL
-    if step_name == "overlay":
-        expected_last_step = Step.OVERLAY
-    elif step_name == "build":
-        expected_last_step = Step.BUILD
-    elif step_name == "stage":
-        expected_last_step = Step.STAGE
-    elif step_name == "prime":
-        expected_last_step = Step.PRIME
 
     assert last_step == expected_last_step
     assert shell_mock.mock_calls == [call(["bash"], check=False, cwd=None)]
