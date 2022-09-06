@@ -78,6 +78,7 @@ def test_parts_lifecycle_run(new_dir):
 )
 @tests.linux_only
 def test_parts_lifecycle_run_shell(new_dir, mocker, step_name, expected_last_step):
+    """Check if the last step executed before shell is the previous step."""
     last_step = None
 
     def _fake_execute(_, action: Action, **kwargs):  # pylint: disable=unused-argument
@@ -120,6 +121,7 @@ def test_parts_lifecycle_run_shell(new_dir, mocker, step_name, expected_last_ste
 def test_parts_lifecycle_run_shell_after(
     new_dir, mocker, step_name, expected_last_step
 ):
+    """Check if the last step executed before shell is the current step."""
     last_step = None
 
     def _fake_execute(_, action: Action, **kwargs):  # pylint: disable=unused-argument
