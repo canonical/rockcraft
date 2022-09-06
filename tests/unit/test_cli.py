@@ -31,7 +31,9 @@ def test_run_command(mocker, cmd):
     mocker.patch.object(sys, "argv", ["rockcraft", cmd])
     cli.run()
 
-    assert run_mock.mock_calls == [call(cmd, Namespace(parts=[]))]
+    assert run_mock.mock_calls == [
+        call(cmd, Namespace(parts=[], shell=False, shell_after=False))
+    ]
     assert mock_ended_ok.mock_calls == [call()]
 
 
@@ -42,7 +44,35 @@ def test_run_command_parts(mocker, cmd):
     mocker.patch.object(sys, "argv", ["rockcraft", cmd, "part1", "part2"])
     cli.run()
 
-    assert run_mock.mock_calls == [call(cmd, Namespace(parts=["part1", "part2"]))]
+    assert run_mock.mock_calls == [
+        call(cmd, Namespace(parts=["part1", "part2"], shell=False, shell_after=False))
+    ]
+    assert mock_ended_ok.mock_calls == [call()]
+
+
+@pytest.mark.parametrize("cmd", ["pull", "overlay", "build", "stage", "prime"])
+def test_run_command_shell(mocker, cmd):
+    run_mock = mocker.patch("rockcraft.lifecycle.run")
+    mock_ended_ok = mocker.spy(emit, "ended_ok")
+    mocker.patch.object(sys, "argv", ["rockcraft", cmd, "--shell"])
+    cli.run()
+
+    assert run_mock.mock_calls == [
+        call(cmd, Namespace(parts=[], shell=True, shell_after=False))
+    ]
+    assert mock_ended_ok.mock_calls == [call()]
+
+
+@pytest.mark.parametrize("cmd", ["pull", "overlay", "build", "stage", "prime"])
+def test_run_command_shell_after(mocker, cmd):
+    run_mock = mocker.patch("rockcraft.lifecycle.run")
+    mock_ended_ok = mocker.spy(emit, "ended_ok")
+    mocker.patch.object(sys, "argv", ["rockcraft", cmd, "--shell-after"])
+    cli.run()
+
+    assert run_mock.mock_calls == [
+        call(cmd, Namespace(parts=[], shell=False, shell_after=True))
+    ]
     assert mock_ended_ok.mock_calls == [call()]
 
 
