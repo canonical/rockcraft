@@ -52,6 +52,7 @@ def test_capture_logs_from_instance(
         mock.call("trace", ":: here"),
     ]
     emitter.assert_interactions(expected)
+    # pylint: disable=unnecessary-dunder-call
     assert mock_namedtemporaryfile.mock_calls == [
         mock.call(delete=False, prefix="rockcraft-"),
         mock.call().__enter__(),

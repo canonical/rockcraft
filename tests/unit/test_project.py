@@ -173,7 +173,7 @@ def test_project_load(yaml_data, tmp_path):
             # the var license is a built-in,
             # so we workaround it by using an alias
             attr = "rock_license"
-        assert project.__getattribute__(attr) == v
+        assert getattr(project, attr) == v
 
 
 def test_project_load_error():

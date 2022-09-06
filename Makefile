@@ -94,7 +94,7 @@ test-pydocstyle:
 .PHONY: test-pylint
 test-pylint:
 	pylint rockcraft
-	pylint tests --disable=invalid-name,missing-module-docstring,missing-function-docstring,redefined-outer-name,no-self-use,too-many-arguments
+	pylint tests --disable=invalid-name,missing-module-docstring,missing-function-docstring,redefined-outer-name,too-many-arguments
 
 .PHONY: test-pyright
 test-pyright:
