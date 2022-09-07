@@ -86,7 +86,11 @@ def run(command_name: str, parsed_args: "argparse.Namespace"):
         base_layer_dir=rootfs,
         base_layer_hash=base_digest,
     )
-    lifecycle.run(step_name)
+    lifecycle.run(
+        step_name,
+        shell=getattr(parsed_args, "shell", False),
+        shell_after=getattr(parsed_args, "shell_after", False),
+    )
 
     if command_name == "pack":
         _pack(
@@ -157,6 +161,11 @@ def _run_in_provider(
         cmd.append("--quiet")
     elif emit.get_mode() == EmitterMode.TRACE:
         cmd.append("--trace")
+
+    if getattr(parsed_args, "shell", False):
+        cmd.append("--shell")
+    if getattr(parsed_args, "shell_after", False):
+        cmd.append("--shell-after")
 
     output_dir = utils.get_managed_environment_project_path()
 
