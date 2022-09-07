@@ -23,6 +23,7 @@ import pydantic
 import pytest
 import yaml
 
+from rockcraft.errors import ProjectLoadError, ProjectValidationError
 from rockcraft.project import (
     ArchitectureMapping,
     Platform,
@@ -31,6 +32,7 @@ from rockcraft.project import (
     ProjectValidationError,
     load_project,
 )
+
 
 _ARCH_MAPPING = {"x86": "amd64", "x64": "amd64"}
 try:
@@ -343,7 +345,8 @@ def test_project_load(yaml_data, yaml_loaded_data, tmp_path):
                 for platform in project.__getattribute__(attr).values()
             )
             continue
-        assert project.__getattribute__(attr) == v
+
+        assert getattr(project, attr) == v
 
 
 def test_project_load_error():

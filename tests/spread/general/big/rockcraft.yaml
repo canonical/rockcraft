@@ -1,0 +1,24 @@
+name: big
+version: latest
+summary: A big ROCK to test many features
+description: |
+  A big ROCK whose purpose is to test many features while only paying the "setup"
+  and "teardown" price once. Feel free to add to this file and to "task.yaml", 
+  adding references to issues/PRs where appropriate.
+license: Apache-2.0
+base: ubuntu:22.04
+
+parts:
+  issue-44-dir-owner:
+    plugin: dump
+    source: files
+    organize:
+      a.txt: etc/newfiles/a.txt
+      b.txt: etc/newfiles/b.txt
+    stage:
+      - etc/newfiles/a.txt
+      - etc/newfiles/b.txt
+    override-prime: |
+      craftctl default
+      chown -R 9999:9999 etc/newfiles
+      chown 3333:3333 etc/newfiles/b.txt

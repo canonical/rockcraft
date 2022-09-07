@@ -17,17 +17,24 @@
 """Craft-parts lifecycle."""
 
 import pathlib
-from typing import Any, Dict
+import subprocess
+from typing import Any, Dict, List, Optional
 
 import craft_parts
-from craft_cli import CraftError, emit
+from craft_cli import emit
 from craft_parts import ActionType, Step, plugins
 from craft_parts.parts import PartSpec
 from xdg import BaseDirectory  # type: ignore
 
+from rockcraft.errors import PartsLifecycleError
 
-class PartsLifecycleError(CraftError):
-    """Error during parts processing."""
+_LIFECYCLE_STEPS = {
+    "pull": Step.PULL,
+    "overlay": Step.OVERLAY,
+    "build": Step.BUILD,
+    "stage": Step.STAGE,
+    "prime": Step.PRIME,
+}
 
 
 class PartsLifecycle:
@@ -46,9 +53,12 @@ class PartsLifecycle:
         all_parts: Dict[str, Any],
         *,
         work_dir: pathlib.Path,
+        part_names: Optional[List[str]],
         base_layer_dir: pathlib.Path,
         base_layer_hash: bytes,
     ):
+        self._part_names = part_names
+
         emit.progress("Initializing parts lifecycle")
 
         # set the cache dir for parts package management
@@ -72,18 +82,36 @@ class PartsLifecycle:
         """Return the parts prime directory path."""
         return self._lcm.project_info.prime_dir
 
-    def run(self, target_step: Step) -> None:
+    def run(
+        self, step_name: str, *, shell: bool = False, shell_after: bool = False
+    ) -> None:
         """Run the parts lifecycle.
 
-        :param target_step: The final step to execute.
+        :param step_name: The final step to execute.
+        :param shell: Execute a shell instead of the target step.
+        :param shell_after: Execute a shell after the target step.
 
         :raises PartsLifecycleError: On error during lifecycle.
         :raises RuntimeError: On unexpected error.
         """
+        target_step = _LIFECYCLE_STEPS.get(step_name)
+        if not target_step:
+            raise RuntimeError(f"Invalid target step {step_name!r}")
+
+        if shell:
+            # convert shell to shell_after for the previous step
+            previous_steps = target_step.previous_steps()
+            target_step = previous_steps[-1] if previous_steps else None
+            shell_after = True
+
         try:
+            if target_step:
+                actions = self._lcm.plan(target_step, part_names=self._part_names)
+            else:
+                actions = []
+
             emit.progress("Executing parts lifecycle")
 
-            actions = self._lcm.plan(target_step)
             with self._lcm.action_executor() as aex:
                 for action in actions:
                     message = _action_message(action)
@@ -91,6 +119,9 @@ class PartsLifecycle:
                     with emit.open_stream("Executing action") as stream:
                         aex.execute(action, stdout=stream, stderr=stream)
                     emit.message(f"Executed: {message}", intermediate=True)
+
+            if shell_after:
+                launch_shell()
 
             emit.message("Executed parts lifecycle", intermediate=True)
         except RuntimeError as err:
@@ -102,6 +133,16 @@ class PartsLifecycle:
             raise PartsLifecycleError(msg) from err
         except Exception as err:
             raise PartsLifecycleError(str(err)) from err
+
+
+def launch_shell(*, cwd: Optional[pathlib.Path] = None) -> None:
+    """Launch a user shell for debugging environment.
+
+    :param cwd: Working directory to start user in.
+    """
+    emit.message("Launching shell on build environment...", intermediate=True)
+    with emit.pause():
+        subprocess.run(["bash"], check=False, cwd=cwd)
 
 
 def _action_message(action: craft_parts.Action) -> str:

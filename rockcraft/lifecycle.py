@@ -20,25 +20,30 @@
 import datetime
 import subprocess
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from craft_cli import EmitterMode, emit
 
 from . import oci, providers, utils
-from .parts import PartsLifecycle, Step
+from .parts import PartsLifecycle
 from .project import Project, load_project
 from .providers import capture_logs_from_instance
 
+if TYPE_CHECKING:
+    import argparse
 
-def pack():
-    """Pack a ROCK."""
-    # pylint: disable=too-many-locals
+
+def run(command_name: str, parsed_args: "argparse.Namespace"):
+    """Run the parts lifecycle."""
+    emit.trace(f"command: {command_name}, arguments: {parsed_args}")
 
     project = load_project("rockcraft.yaml")
     destructive_mode = False  # XXX: obtain from command line
+    part_names = getattr(parsed_args, "parts", None)
 
     managed_mode = utils.is_managed_mode()
     if not managed_mode and not destructive_mode:
-        pack_in_provider(project)
+        _run_in_provider(project, command_name, parsed_args)
         return
 
     for platform_entry, platform in project.platforms.items():
@@ -94,14 +99,38 @@ def pack_for_platform(
     )
 
     base_digest = project_base_image.digest(source_image)
+    step_name = "prime" if command_name == "pack" else command_name
+
     lifecycle = PartsLifecycle(
         project.parts,
         work_dir=work_dir,
+        part_names=part_names,
         base_layer_dir=rootfs,
         base_layer_hash=base_digest,
     )
-    lifecycle.run(Step.PRIME)
+    lifecycle.run(
+        step_name,
+        shell=getattr(parsed_args, "shell", False),
+        shell_after=getattr(parsed_args, "shell_after", False),
+    )
 
+    if command_name == "pack":
+        _pack(
+            lifecycle,
+            project=project,
+            project_base_image=project_base_image,
+            base_digest=base_digest,
+        )
+
+
+def _pack(
+    lifecycle: PartsLifecycle,
+    *,
+    project: Project,
+    project_base_image: oci.Image,
+    base_digest: bytes,
+):
+    """Create the rock image."""
     emit.progress("Creating new layer")
     new_image = project_base_image.add_layer(
         tag=project.version, layer_path=lifecycle.prime_dir
@@ -139,12 +168,17 @@ def pack_for_platform(
     emit.message(f"Exported to OCI archive '{archive_name}'", intermediate=True)
 
 
-def pack_in_provider(project: Project):
-    """Pack image in provider instance."""
+def _run_in_provider(
+    project: Project, command_name: str, parsed_args: "argparse.Namespace"
+):
+    """Run lifecycle command in provider instance."""
     provider = providers.get_provider()
     provider.ensure_provider_is_available()
 
-    cmd = ["rockcraft", "pack"]
+    cmd = ["rockcraft", command_name]
+
+    if hasattr(parsed_args, "parts"):
+        cmd.extend(parsed_args.parts)
 
     if emit.get_mode() == EmitterMode.VERBOSE:
         cmd.append("--verbose")
@@ -152,6 +186,11 @@ def pack_in_provider(project: Project):
         cmd.append("--quiet")
     elif emit.get_mode() == EmitterMode.TRACE:
         cmd.append("--trace")
+
+    if getattr(parsed_args, "shell", False):
+        cmd.append("--shell")
+    if getattr(parsed_args, "shell_after", False):
+        cmd.append("--shell-after")
 
     output_dir = utils.get_managed_environment_project_path()
 
@@ -164,9 +203,9 @@ def pack_in_provider(project: Project):
         try:
             with emit.pause():
                 instance.execute_run(cmd, check=True, cwd=output_dir)
-            capture_logs_from_instance(instance)
         except subprocess.CalledProcessError as err:
-            capture_logs_from_instance(instance)
             raise providers.ProviderError(
-                f"Failed to pack image '{project.name}:{project.version}'."
+                f"Failed to execute {command_name} in instance."
             ) from err
+        finally:
+            capture_logs_from_instance(instance)
