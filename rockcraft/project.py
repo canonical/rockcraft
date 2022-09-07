@@ -29,14 +29,6 @@ from rockcraft.errors import ProjectLoadError, ProjectValidationError
 from rockcraft.parts import validate_part
 
 
-class ProjectLoadError(CraftError):
-    """Error loading rockcraft.yaml."""
-
-
-class ProjectValidationError(CraftError):
-    """Error validatiing rockcraft.yaml."""
-
-
 class ArchitectureMapping(pydantic.BaseModel):
     """Maps different denominations of the same architecture."""
 

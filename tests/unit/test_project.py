@@ -24,15 +24,7 @@ import pytest
 import yaml
 
 from rockcraft.errors import ProjectLoadError, ProjectValidationError
-from rockcraft.project import (
-    ArchitectureMapping,
-    Platform,
-    Project,
-    ProjectLoadError,
-    ProjectValidationError,
-    load_project,
-)
-
+from rockcraft.project import ArchitectureMapping, Platform, Project, load_project
 
 _ARCH_MAPPING = {"x86": "amd64", "x64": "amd64"}
 try:

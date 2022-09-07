@@ -35,6 +35,7 @@ if TYPE_CHECKING:
 
 def run(command_name: str, parsed_args: "argparse.Namespace"):
     """Run the parts lifecycle."""
+    # pylint: disable=too-many-locals
     emit.trace(f"command: {command_name}, arguments: {parsed_args}")
 
     project = load_project("rockcraft.yaml")
@@ -46,25 +47,6 @@ def run(command_name: str, parsed_args: "argparse.Namespace"):
         _run_in_provider(project, command_name, parsed_args)
         return
 
-    for platform_entry, platform in project.platforms.items():
-        build_for = (
-            platform["build_for"][0] if platform.get("build_for") else platform_entry
-        )
-        build_for_variant = platform.get("build_for_variant")
-        pack_for_platform(
-            platform_entry, build_for, build_for_variant, project, managed_mode
-        )
-
-
-def pack_for_platform(
-    rock_suffix: str,
-    build_for: str,
-    build_for_variant: str,
-    project: Project,
-    managed_mode: bool,
-) -> None:
-    """Packs a ROCK for a given target architecture."""
-    # pylint: disable=too-many-locals
     if managed_mode:
         work_dir = utils.get_managed_environment_home_path()
     else:
@@ -76,51 +58,65 @@ def pack_for_platform(
     # Obtain base image and extract it to use as our overlay base
     # TODO: check if image was already downloaded, etc.
     emit.progress(f"Retrieving base {project.base}")
-    if project.base == "bare":
-        base_image, source_image = oci.Image.new_oci_image(
-            f"{project.base}:latest",
-            image_dir=image_dir,
-            arch=build_for,
-            variant=build_for_variant,
+
+    for platform_entry, platform in project.platforms.items():
+        build_for = (
+            platform["build_for"][0] if platform.get("build_for") else platform_entry
         )
-    else:
-        base_image, source_image = oci.Image.from_docker_registry(
-            project.base, image_dir=image_dir, arch=build_for, variant=build_for_variant
+        build_for_variant = platform.get("build_for_variant")
+
+        if project.base == "bare":
+            base_image, source_image = oci.Image.new_oci_image(
+                f"{project.base}:latest",
+                image_dir=image_dir,
+                arch=build_for,
+                variant=build_for_variant,
+            )
+        else:
+            base_image, source_image = oci.Image.from_docker_registry(
+                project.base,
+                image_dir=image_dir,
+                arch=build_for,
+                variant=build_for_variant,
+            )
+        emit.message(
+            f"Retrieved base {project.base} for {build_for}", intermediate=True
         )
-    emit.message(f"Retrieved base {project.base}", intermediate=True)
 
-    emit.progress(f"Extracting {base_image.image_name}")
-    rootfs = base_image.extract_to(bundle_dir)
-    emit.message(f"Extracted {base_image.image_name}", intermediate=True)
+        emit.progress(f"Extracting {base_image.image_name}")
+        rootfs = base_image.extract_to(bundle_dir)
+        emit.message(f"Extracted {base_image.image_name}", intermediate=True)
 
-    # TODO: check if destination image already exists, etc.
-    project_base_image = base_image.copy_to(
-        f"{project.name}:rockcraft-base", image_dir=image_dir
-    )
-
-    base_digest = project_base_image.digest(source_image)
-    step_name = "prime" if command_name == "pack" else command_name
-
-    lifecycle = PartsLifecycle(
-        project.parts,
-        work_dir=work_dir,
-        part_names=part_names,
-        base_layer_dir=rootfs,
-        base_layer_hash=base_digest,
-    )
-    lifecycle.run(
-        step_name,
-        shell=getattr(parsed_args, "shell", False),
-        shell_after=getattr(parsed_args, "shell_after", False),
-    )
-
-    if command_name == "pack":
-        _pack(
-            lifecycle,
-            project=project,
-            project_base_image=project_base_image,
-            base_digest=base_digest,
+        # TODO: check if destination image already exists, etc.
+        project_base_image = base_image.copy_to(
+            f"{project.name}:rockcraft-base", image_dir=image_dir
         )
+
+        base_digest = project_base_image.digest(source_image)
+        step_name = "prime" if command_name == "pack" else command_name
+
+        lifecycle = PartsLifecycle(
+            project.parts,
+            work_dir=work_dir,
+            part_names=part_names,
+            base_layer_dir=rootfs,
+            base_layer_hash=base_digest,
+        )
+        lifecycle.run(
+            step_name,
+            shell=getattr(parsed_args, "shell", False),
+            shell_after=getattr(parsed_args, "shell_after", False),
+        )
+
+        if command_name == "pack":
+            _pack(
+                lifecycle,
+                project=project,
+                project_base_image=project_base_image,
+                base_digest=base_digest,
+                rock_suffix=platform_entry,
+                build_for=build_for,
+            )
 
 
 def _pack(
@@ -129,8 +125,10 @@ def _pack(
     project: Project,
     project_base_image: oci.Image,
     base_digest: bytes,
+    rock_suffix: str,
+    build_for: str,
 ):
-    """Create the rock image."""
+    """Create the rock image for a given architecture."""
     emit.progress("Creating new layer")
     new_image = project_base_image.add_layer(
         tag=project.version, layer_path=lifecycle.prime_dir
