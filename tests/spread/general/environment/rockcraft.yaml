@@ -7,7 +7,12 @@ license: Apache-2.0
 cmd: [/bin/true]
 env:
   - X: "ship it!"
-
+platforms:
+  amd64:
+  amd64v2:
+    build-on: ["amd64", "i386"]
+    build-for: amd64
+    
 parts:
   part1:
     plugin: nil
