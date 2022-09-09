@@ -196,7 +196,7 @@ class Image:
         for entry in entrypoint:
             params.extend(["--config.entrypoint", entry])
         _config_image(image_path, params)
-        emit.message(f"Entrypoint set to {entrypoint}", intermediate=True)
+        emit.progress(f"Entrypoint set to {entrypoint}", permanent=True)
 
     def set_cmd(self, cmd: List[str]) -> None:
         """Set the OCI image default command parameters.
@@ -211,7 +211,7 @@ class Image:
         for entry in cmd:
             params.extend(["--config.cmd", entry])
         _config_image(image_path, params)
-        emit.message(f"Cmd set to {cmd}", intermediate=True)
+        emit.progress(f"Cmd set to {cmd}", permanent=True)
 
     def set_env(self, env: List[Dict[str, str]]) -> None:
         """Set the OCI image environment.
@@ -229,7 +229,7 @@ class Image:
                 env_list.append(env_item)
                 params.extend(["--config.env", env_item])
         _config_image(image_path, params)
-        emit.message(f"Environment set to {env_list}", intermediate=True)
+        emit.progress(f"Environment set to {env_list}", permanent=True)
 
     def set_control_data(self, metadata: Dict[str, Any]) -> None:
         """Create and populate the ROCK's control data folder.
@@ -279,7 +279,7 @@ class Image:
         _config_image(image_path, label_params)
         # Set the annotations as a copy of these labels (for OCI compliance only)
         _config_image(image_path, annotation_params)
-        emit.message(f"Labels and annotations set to {labels_list}", intermediate=True)
+        emit.progress(f"Labels and annotations set to {labels_list}", permanent=True)
 
 
 def _copy_image(source: str, destination: str, *system_params) -> None:

@@ -327,14 +327,12 @@ def test_project_load(yaml_data, yaml_loaded_data, tmp_path):
             attr = "rock_license"
         if attr == "platforms":
             # platforms get mutated at validation time
-            assert project.__getattribute__(attr).keys() == v.keys()
+            assert getattr(project, attr).keys() == v.keys()
             assert all(
-                "build_on" in platform
-                for platform in project.__getattribute__(attr).values()
+                "build_on" in platform for platform in getattr(project, attr).values()
             )
             assert all(
-                "build_for" in platform
-                for platform in project.__getattribute__(attr).values()
+                "build_for" in platform for platform in getattr(project, attr).values()
             )
             continue
 
