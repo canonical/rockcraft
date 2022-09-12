@@ -19,12 +19,17 @@
 import contextlib
 import logging
 import pathlib
+import sys
 from typing import Generator, List
 
 from craft_providers import Executor, bases, lxd
 
 from rockcraft.errors import ProviderError
-from rockcraft.utils import confirm_with_user, get_managed_environment_project_path
+from rockcraft.utils import (
+    confirm_with_user,
+    get_managed_environment_project_path,
+    get_managed_environment_snap_channel,
+)
 
 from ._buildd import BASE_TO_BUILDD_IMAGE_ALIAS, RockcraftBuilddBaseConfiguration
 from ._provider import Provider
@@ -164,8 +169,23 @@ class LXDProvider(Provider):
         except lxd.LXDError as error:
             raise ProviderError(str(error)) from error
 
+        # injecting a snap on a non-linux system is not supported, so default to
+        # install rockcraft from the store's stable channel
+        snap_channel = get_managed_environment_snap_channel()
+        if sys.platform != "linux" and not snap_channel:
+            snap_channel = "stable"
+
         base_configuration = RockcraftBuilddBaseConfiguration(
-            alias=alias, environment=environment, hostname=instance_name
+            alias=alias,
+            environment=environment,
+            hostname=instance_name,
+            snaps=[
+                bases.buildd.Snap(
+                    name="rockcraft",
+                    channel=snap_channel,
+                    classic=True,
+                )
+            ],
         )
 
         try:
