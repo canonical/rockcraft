@@ -32,7 +32,7 @@ from rockcraft.utils import (
 )
 
 from ._provider import Provider
-from .providers import BASE_TO_BUILDD_IMAGE_ALIAS
+from .providers import BASE_TO_BUILDD_IMAGE_ALIAS, get_instance_name
 
 logger = logging.getLogger(__name__)
 
@@ -158,7 +158,7 @@ class LXDProvider(Provider):
         """
         alias = BASE_TO_BUILDD_IMAGE_ALIAS[build_base]
 
-        instance_name = self.get_instance_name(
+        instance_name = get_instance_name(
             project_name=project_name,
             project_path=project_path,
         )

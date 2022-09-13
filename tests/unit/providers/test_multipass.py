@@ -275,18 +275,6 @@ def test_get_command_environment_minimal(monkeypatch):
     }
 
 
-def test_get_instance_name(mock_path):
-    provider = providers.MultipassProvider()
-
-    assert (
-        provider.get_instance_name(
-            project_name="my-project-name",
-            project_path=mock_path,
-        )
-        == "rockcraft-my-project-name-445566"
-    )
-
-
 @pytest.mark.parametrize("is_installed", [True, False])
 def test_is_provider_available(is_installed, mock_multipass_is_installed):
     mock_multipass_is_installed.return_value = is_installed
