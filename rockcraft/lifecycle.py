@@ -79,13 +79,11 @@ def run(command_name: str, parsed_args: "argparse.Namespace"):
                 arch=build_for,
                 variant=build_for_variant,
             )
-        emit.message(
-            f"Retrieved base {project.base} for {build_for}", intermediate=True
-        )
+        emit.progress(f"Retrieved base {project.base} for {build_for}", permanent=True)
 
         emit.progress(f"Extracting {base_image.image_name}")
         rootfs = base_image.extract_to(bundle_dir)
-        emit.message(f"Extracted {base_image.image_name}", intermediate=True)
+        emit.progress(f"Extracted {base_image.image_name}", permanent=True)
 
         # TODO: check if destination image already exists, etc.
         project_base_image = base_image.copy_to(
@@ -133,7 +131,7 @@ def _pack(
     new_image = project_base_image.add_layer(
         tag=project.version, layer_path=lifecycle.prime_dir
     )
-    emit.message("Created new layer", intermediate=True)
+    emit.progress("Created new layer", permanent=True)
 
     if project.entrypoint:
         new_image.set_entrypoint(project.entrypoint)
@@ -163,7 +161,7 @@ def _pack(
     emit.progress("Exporting to OCI archive")
     archive_name = f"{project.name}_{project.version}_{rock_suffix}.rock"
     new_image.to_oci_archive(tag=project.version, filename=archive_name)
-    emit.message(f"Exported to OCI archive '{archive_name}'", intermediate=True)
+    emit.progress(f"Exported to OCI archive '{archive_name}'", permanent=True)
 
 
 def _run_in_provider(
