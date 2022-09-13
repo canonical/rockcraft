@@ -17,12 +17,11 @@
 """Build environment provider support for rockcraft."""
 
 import contextlib
-import os
 import pathlib
 from abc import ABC, abstractmethod
-from typing import Dict, Generator, List, Optional, Tuple, Union
+from typing import Generator, List, Tuple, Union
 
-from craft_providers import Executor, bases
+from craft_providers import Executor
 
 
 class Provider(ABC):
@@ -46,19 +45,6 @@ class Provider(ABC):
 
         :raises ProviderError: if provider is not available.
         """
-
-    @staticmethod
-    def get_command_environment() -> Dict[str, Optional[str]]:
-        """Construct the required environment."""
-        env = bases.buildd.default_command_environment()
-        env["ROCKCRAFT_MANAGED_MODE"] = "1"
-
-        # Pass-through host environment that target may need.
-        for env_key in ["http_proxy", "https_proxy", "no_proxy"]:
-            if env_key in os.environ:
-                env[env_key] = os.environ[env_key]
-
-        return env
 
     @classmethod
     def is_base_available(cls, base: str) -> Tuple[bool, Union[str, None]]:

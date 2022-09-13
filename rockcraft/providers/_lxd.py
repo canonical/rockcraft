@@ -32,7 +32,11 @@ from rockcraft.utils import (
 )
 
 from ._provider import Provider
-from .providers import BASE_TO_BUILDD_IMAGE_ALIAS, get_instance_name
+from .providers import (
+    BASE_TO_BUILDD_IMAGE_ALIAS,
+    get_command_environment,
+    get_instance_name,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -163,7 +167,7 @@ class LXDProvider(Provider):
             project_path=project_path,
         )
 
-        environment = self.get_command_environment()
+        environment = get_command_environment()
         try:
             image_remote = lxd.configure_buildd_image_remote()
         except lxd.LXDError as error:
