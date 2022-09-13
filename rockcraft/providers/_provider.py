@@ -60,29 +60,6 @@ class Provider(ABC):
 
         return env
 
-    @staticmethod
-    def get_instance_name(
-        *,
-        project_name: str,
-        project_path: pathlib.Path,
-    ) -> str:
-        """Formulate the name for an instance using each of the given parameters.
-
-        Incorporate each of the parameters into the name to come up with a
-        predictable naming schema that avoids name collisions across multiple
-        projects.
-
-        :param project_name: Name of the project.
-        :param project_path: Directory of the project.
-        """
-        return "-".join(
-            [
-                "rockcraft",
-                project_name,
-                str(project_path.stat().st_ino),
-            ]
-        )
-
     @classmethod
     def is_base_available(cls, base: str) -> Tuple[bool, Union[str, None]]:
         """Check if provider can provide an environment matching given base.
