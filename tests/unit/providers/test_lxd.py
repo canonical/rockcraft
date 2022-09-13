@@ -278,19 +278,6 @@ def test_ensure_provider_is_available_errors_when_lxd_not_ready(
     assert raised.value.__cause__ is error
 
 
-def test_get_command_environment_minimal(monkeypatch):
-    monkeypatch.setenv("IGNORE_ME", "or-im-failing")
-    monkeypatch.setenv("PATH", "not-using-host-path")
-    provider = providers.LXDProvider()
-
-    env = provider.get_command_environment()
-
-    assert env == {
-        "ROCKCRAFT_MANAGED_MODE": "1",
-        "PATH": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin",
-    }
-
-
 @pytest.mark.parametrize("is_installed", [True, False])
 def test_is_provider_available(is_installed, mock_lxd_is_installed):
     mock_lxd_is_installed.return_value = is_installed

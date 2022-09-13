@@ -17,7 +17,9 @@
 
 """Rockcraft-specific code to interface with craft-providers."""
 
+import os
 import pathlib
+from typing import Dict, Optional
 
 from craft_providers import bases
 
@@ -26,6 +28,19 @@ BASE_TO_BUILDD_IMAGE_ALIAS = {
     "ubuntu:20.04": bases.BuilddBaseAlias.FOCAL,
     "ubuntu:22.04": bases.BuilddBaseAlias.JAMMY,
 }
+
+
+def get_command_environment() -> Dict[str, Optional[str]]:
+    """Construct the required environment."""
+    env = bases.buildd.default_command_environment()
+    env["ROCKCRAFT_MANAGED_MODE"] = "1"
+
+    # Pass-through host environment that target may need.
+    for env_key in ["http_proxy", "https_proxy", "no_proxy"]:
+        if env_key in os.environ:
+            env[env_key] = os.environ[env_key]
+
+    return env
 
 
 def get_instance_name(

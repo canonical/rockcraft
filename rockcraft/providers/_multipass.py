@@ -33,7 +33,11 @@ from rockcraft.utils import (
 )
 
 from ._provider import Provider
-from .providers import BASE_TO_BUILDD_IMAGE_ALIAS, get_instance_name
+from .providers import (
+    BASE_TO_BUILDD_IMAGE_ALIAS,
+    get_command_environment,
+    get_instance_name,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -155,7 +159,7 @@ class MultipassProvider(Provider):
         if sys.platform != "linux" and not snap_channel:
             snap_channel = "stable"
 
-        environment = self.get_command_environment()
+        environment = get_command_environment()
         base_configuration = bases.BuilddBase(
             alias=alias,
             compatibility_tag=f"rockcraft-{bases.BuilddBase.compatibility_tag}.0",
