@@ -118,12 +118,12 @@ class PartsLifecycle:
                     emit.progress(f"Executing parts lifecycle: {message}")
                     with emit.open_stream("Executing action") as stream:
                         aex.execute(action, stdout=stream, stderr=stream)
-                    emit.message(f"Executed: {message}", intermediate=True)
+                    emit.progress(f"Executed: {message}", permanent=True)
 
             if shell_after:
                 launch_shell()
 
-            emit.message("Executed parts lifecycle", intermediate=True)
+            emit.progress("Executed parts lifecycle", permanent=True)
         except RuntimeError as err:
             raise RuntimeError(f"Parts processing internal error: {err}") from err
         except OSError as err:
@@ -140,7 +140,7 @@ def launch_shell(*, cwd: Optional[pathlib.Path] = None) -> None:
 
     :param cwd: Working directory to start user in.
     """
-    emit.message("Launching shell on build environment...", intermediate=True)
+    emit.progress("Launching shell on build environment...", permanent=True)
     with emit.pause():
         subprocess.run(["bash"], check=False, cwd=cwd)
 
