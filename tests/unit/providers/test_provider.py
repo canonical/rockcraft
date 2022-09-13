@@ -18,6 +18,13 @@ import pytest
 
 from rockcraft import providers
 
+known_provider_classes = [providers.LXDProvider, providers.MultipassProvider]
+
+
+@pytest.fixture(params=known_provider_classes)
+def provider_class(request):
+    return request.param
+
 
 def test_get_command_environment_minimal(monkeypatch):
     monkeypatch.setenv("IGNORE_ME", "or-im-failing")
@@ -32,14 +39,14 @@ def test_get_command_environment_minimal(monkeypatch):
     }
 
 
-def test_get_command_environment_all_opts(monkeypatch):
+def test_get_command_environment_all_opts(provider_class, monkeypatch):
     monkeypatch.setenv("IGNORE_ME", "or-im-failing")
     monkeypatch.setenv("PATH", "not-using-host-path")
     monkeypatch.setenv("http_proxy", "test-http-proxy")
     monkeypatch.setenv("https_proxy", "test-https-proxy")
     monkeypatch.setenv("no_proxy", "test-no-proxy")
-    provider = providers.LXDProvider()
 
+    provider = provider_class()
     env = provider.get_command_environment()
 
     assert env == {
@@ -75,8 +82,13 @@ def test_get_instance_name(mock_path):
         ),
     ],
 )
-def test_is_base_available(name, expected_valid, expected_reason):
-    provider = providers.LXDProvider()
+def test_is_base_available(
+    provider_class,
+    name,
+    expected_valid,
+    expected_reason,
+):
+    provider = provider_class()
 
     valid, reason = provider.is_base_available(name)
 
