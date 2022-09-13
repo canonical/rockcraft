@@ -31,7 +31,6 @@ from rockcraft.utils import (
     get_managed_environment_snap_channel,
 )
 
-from ._buildd import BASE_TO_BUILDD_IMAGE_ALIAS, RockcraftBuilddBaseConfiguration
 from ._provider import Provider
 
 logger = logging.getLogger(__name__)
@@ -40,6 +39,12 @@ _BASE_IMAGE = {
     "ubuntu:18.04": "18.04",
     "ubuntu:20.04": "20.04",
     "ubuntu:22.04": "22.04",
+}
+
+BASE_TO_BUILDD_IMAGE_ALIAS = {
+    "ubuntu:18.04": bases.BuilddBaseAlias.BIONIC,
+    "ubuntu:20.04": bases.BuilddBaseAlias.FOCAL,
+    "ubuntu:22.04": bases.BuilddBaseAlias.JAMMY,
 }
 
 
@@ -175,8 +180,9 @@ class LXDProvider(Provider):
         if sys.platform != "linux" and not snap_channel:
             snap_channel = "stable"
 
-        base_configuration = RockcraftBuilddBaseConfiguration(
+        base_configuration = bases.BuilddBase(
             alias=alias,
+            compatibility_tag=f"rockcraft-{bases.BuilddBase.compatibility_tag}.0",
             environment=environment,
             hostname=instance_name,
             snaps=[

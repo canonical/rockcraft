@@ -32,10 +32,15 @@ from rockcraft.utils import (
     get_managed_environment_snap_channel,
 )
 
-from ._buildd import BASE_TO_BUILDD_IMAGE_ALIAS, RockcraftBuilddBaseConfiguration
 from ._provider import Provider
 
 logger = logging.getLogger(__name__)
+
+BASE_TO_BUILDD_IMAGE_ALIAS = {
+    "ubuntu:18.04": bases.BuilddBaseAlias.BIONIC,
+    "ubuntu:20.04": bases.BuilddBaseAlias.FOCAL,
+    "ubuntu:22.04": bases.BuilddBaseAlias.JAMMY,
+}
 
 
 class MultipassProvider(Provider):
@@ -156,8 +161,9 @@ class MultipassProvider(Provider):
             snap_channel = "stable"
 
         environment = self.get_command_environment()
-        base_configuration = RockcraftBuilddBaseConfiguration(
+        base_configuration = bases.BuilddBase(
             alias=alias,
+            compatibility_tag=f"rockcraft-{bases.BuilddBase.compatibility_tag}.0",
             environment=environment,
             hostname=instance_name,
             snaps=[

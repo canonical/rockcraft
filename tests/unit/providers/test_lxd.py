@@ -26,12 +26,15 @@ from craft_providers.lxd import LXDError, LXDInstallationError
 from rockcraft import providers
 from rockcraft.providers import ProviderError
 
+# pylint: disable=duplicate-code
+
 
 @pytest.fixture()
-def mock_buildd_base_configuration():
+def mock_buildd_base_configuration(mocker):
     with mock.patch(
-        "rockcraft.providers._lxd.RockcraftBuilddBaseConfiguration", autospec=True
+        "rockcraft.providers._lxd.bases.BuilddBase", autospec=True
     ) as mock_base_config:
+        mock_base_config.compatibility_tag = "buildd-base-v0"
         yield mock_base_config
 
 
@@ -364,6 +367,7 @@ def test_launched_environment(
         assert mock_buildd_base_configuration.mock_calls == [
             call(
                 alias=alias,
+                compatibility_tag="rockcraft-buildd-base-v0.0",
                 environment=expected_environment,
                 hostname="rockcraft-test-rock-445566",
                 snaps=[
@@ -417,6 +421,7 @@ def test_launched_environment_snap_channel(
         assert mock_buildd_base_configuration.mock_calls == [
             call(
                 alias=mock.ANY,
+                compatibility_tag=mock.ANY,
                 environment=mock.ANY,
                 hostname=mock.ANY,
                 snaps=[
