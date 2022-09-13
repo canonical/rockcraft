@@ -2,11 +2,11 @@
 Reference
 *********
 
-Rockcraft.yaml format
-=====================
 
 A Rockcraft project is defined in a YAML file named ``rockcraft.yaml``
 at the root of the project tree in the filesystem.
+
+This `Reference`_ section is for when you need to know which options can be used, and how, in this ``rockcraft.yaml`` file.
 
 
 Format specification
@@ -70,10 +70,10 @@ Format specification
   parts:
     <part name>:
       ...
-  
+
 
 Example
--------
+.......
 
 .. code-block:: yaml
 
