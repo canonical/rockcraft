@@ -1,6 +1,6 @@
 # -*- Mode:Python; indent-tabs-mode:nil; tab-width:4 -*-
 #
-# Copyright 2021 Canonical Ltd.
+# Copyright 2021-2022 Canonical Ltd.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 3 as
@@ -32,8 +32,8 @@ from rockcraft.utils import (
     get_managed_environment_snap_channel,
 )
 
-from ._buildd import BASE_TO_BUILDD_IMAGE_ALIAS, RockcraftBuilddBaseConfiguration
 from ._provider import Provider
+from .providers import BASE_TO_BUILDD_IMAGE_ALIAS
 
 logger = logging.getLogger(__name__)
 
@@ -156,8 +156,9 @@ class MultipassProvider(Provider):
             snap_channel = "stable"
 
         environment = self.get_command_environment()
-        base_configuration = RockcraftBuilddBaseConfiguration(
+        base_configuration = bases.BuilddBase(
             alias=alias,
+            compatibility_tag=f"rockcraft-{bases.BuilddBase.compatibility_tag}.0",
             environment=environment,
             hostname=instance_name,
             snaps=[

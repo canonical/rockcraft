@@ -1,6 +1,6 @@
 # -*- Mode:Python; indent-tabs-mode:nil; tab-width:4 -*-
 #
-# Copyright 2021 Canonical Ltd.
+# Copyright 2021-2022 Canonical Ltd.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 3 as
@@ -26,12 +26,15 @@ from craft_providers.lxd import LXDError, LXDInstallationError
 from rockcraft import providers
 from rockcraft.providers import ProviderError
 
+# pylint: disable=duplicate-code
+
 
 @pytest.fixture()
-def mock_buildd_base_configuration():
+def mock_buildd_base_configuration(mocker):
     with mock.patch(
-        "rockcraft.providers._lxd.RockcraftBuilddBaseConfiguration", autospec=True
+        "rockcraft.providers._lxd.bases.BuilddBase", autospec=True
     ) as mock_base_config:
+        mock_base_config.compatibility_tag = "buildd-base-v0"
         yield mock_base_config
 
 
@@ -310,7 +313,11 @@ def test_is_provider_available(is_installed, mock_lxd_is_installed):
 
 @pytest.mark.parametrize(
     "channel,alias",
-    [("18.04", bases.BuilddBaseAlias.BIONIC), ("20.04", bases.BuilddBaseAlias.FOCAL)],
+    [
+        ("18.04", bases.BuilddBaseAlias.BIONIC),
+        ("20.04", bases.BuilddBaseAlias.FOCAL),
+        ("22.04", bases.BuilddBaseAlias.JAMMY),
+    ],
 )
 def test_launched_environment(
     channel,
@@ -364,6 +371,7 @@ def test_launched_environment(
         assert mock_buildd_base_configuration.mock_calls == [
             call(
                 alias=alias,
+                compatibility_tag="rockcraft-buildd-base-v0.0",
                 environment=expected_environment,
                 hostname="rockcraft-test-rock-445566",
                 snaps=[
@@ -417,6 +425,7 @@ def test_launched_environment_snap_channel(
         assert mock_buildd_base_configuration.mock_calls == [
             call(
                 alias=mock.ANY,
+                compatibility_tag=mock.ANY,
                 environment=mock.ANY,
                 hostname=mock.ANY,
                 snaps=[
