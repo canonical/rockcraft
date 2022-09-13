@@ -19,13 +19,18 @@
 import contextlib
 import logging
 import pathlib
+import sys
 from typing import Generator, List
 
 from craft_providers import Executor, bases, multipass
 from craft_providers.multipass.errors import MultipassError
 
 from rockcraft.errors import ProviderError
-from rockcraft.utils import confirm_with_user, get_managed_environment_project_path
+from rockcraft.utils import (
+    confirm_with_user,
+    get_managed_environment_project_path,
+    get_managed_environment_snap_channel,
+)
 
 from ._buildd import BASE_TO_BUILDD_IMAGE_ALIAS, RockcraftBuilddBaseConfiguration
 from ._provider import Provider
@@ -144,9 +149,24 @@ class MultipassProvider(Provider):
             project_path=project_path,
         )
 
+        # injecting a snap on a non-linux system is not supported, so default to
+        # install rockcraft from the store's stable channel
+        snap_channel = get_managed_environment_snap_channel()
+        if sys.platform != "linux" and not snap_channel:
+            snap_channel = "stable"
+
         environment = self.get_command_environment()
         base_configuration = RockcraftBuilddBaseConfiguration(
-            alias=alias, environment=environment, hostname=instance_name
+            alias=alias,
+            environment=environment,
+            hostname=instance_name,
+            snaps=[
+                bases.buildd.Snap(
+                    name="rockcraft",
+                    channel=snap_channel,
+                    classic=True,
+                )
+            ],
         )
 
         try:
