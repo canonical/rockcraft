@@ -22,8 +22,7 @@ from typing import Any, Dict, List, Optional
 
 import craft_parts
 from craft_cli import emit
-from craft_parts import ActionType, Step, plugins
-from craft_parts.parts import PartSpec
+from craft_parts import ActionType, Step
 from xdg import BaseDirectory  # type: ignore
 
 from rockcraft.errors import PartsLifecycleError
@@ -191,21 +190,4 @@ def validate_part(data: Dict[str, Any]) -> None:
 
     :param data: The part data to validate.
     """
-    if not isinstance(data, dict):
-        raise TypeError("value must be a dictionary")
-
-    # copy the original data, we'll modify it
-    spec = data.copy()
-
-    plugin_name = spec.get("plugin")
-    if not plugin_name:
-        raise ValueError("'plugin' not defined")
-
-    plugin_class = plugins.get_plugin_class(plugin_name)
-
-    # validate plugin properties
-    plugin_class.properties_class.unmarshal(spec)
-
-    # validate common part properties
-    part_spec = plugins.extract_part_properties(spec, plugin_name=plugin_name)
-    PartSpec(**part_spec)
+    craft_parts.validate_part(data)
