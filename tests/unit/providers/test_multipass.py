@@ -297,7 +297,11 @@ def test_is_provider_available(is_installed, mock_multipass_is_installed):
 
 @pytest.mark.parametrize(
     "channel,alias",
-    [("18.04", bases.BuilddBaseAlias.BIONIC), ("20.04", bases.BuilddBaseAlias.FOCAL)],
+    [
+        ("18.04", bases.BuilddBaseAlias.BIONIC),
+        ("20.04", bases.BuilddBaseAlias.FOCAL),
+        ("22.04", bases.BuilddBaseAlias.JAMMY),
+    ],
 )
 def test_launched_environment(
     channel,

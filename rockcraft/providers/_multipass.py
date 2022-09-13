@@ -33,14 +33,9 @@ from rockcraft.utils import (
 )
 
 from ._provider import Provider
+from .providers import BASE_TO_BUILDD_IMAGE_ALIAS
 
 logger = logging.getLogger(__name__)
-
-BASE_TO_BUILDD_IMAGE_ALIAS = {
-    "ubuntu:18.04": bases.BuilddBaseAlias.BIONIC,
-    "ubuntu:20.04": bases.BuilddBaseAlias.FOCAL,
-    "ubuntu:22.04": bases.BuilddBaseAlias.JAMMY,
-}
 
 
 class MultipassProvider(Provider):
