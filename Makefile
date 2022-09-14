@@ -57,7 +57,7 @@ install: clean ## Install python package.
 	python setup.py install
 
 .PHONY: lint
-lint: test-black test-codespell test-flake8 test-isort test-mypy test-pydocstyle test-pyright test-pylint ## Run all linting tests.
+lint: test-black test-codespell test-flake8 test-isort test-mypy test-pydocstyle test-pyright test-pylint test-sphinx-lint ## Run all linting tests.
 
 .PHONY: release
 release: dist ## Release with twine.
@@ -99,6 +99,10 @@ test-pylint:
 .PHONY: test-pyright
 test-pyright:
 	pyright .
+
+.PHONY: test-sphinx-lint
+test-sphinx-lint:
+	sphinx-lint docs/*
 
 .PHONY: test-units
 test-units: ## Run unit tests.
