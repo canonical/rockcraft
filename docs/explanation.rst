@@ -27,7 +27,7 @@ and you want to start basing your own images on an existing ROCK, that will work
 So why do I need ROCKs?
 =======================
 
-Now, this is the things get interesting. To answer this question, we first need to look at the current state of the art with respect to the existing container image offerings
+Now, this is where things get interesting. To answer this question, we first need to look at the current state of the art with respect to the existing container image offerings
 out there.
 
 It is easy to find public studies (like `Unit 42 / Znet <https://www.zdnet.com/article/96-of-third-party-container-applications-deployed-in-cloud-infrastructure-contain-known-vulnerabilities-unit-42/>`_ 
