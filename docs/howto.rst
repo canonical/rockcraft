@@ -2,7 +2,7 @@
 How-to guides
 *************
 
-If you have a specific goal, but are already familiar with Rockcraft, our How-to guides have more in-depth detail than our tutorials 
+If you have a specific goal but are already familiar with Rockcraft, our How-to guides have more in-depth detail than our tutorials 
 and can be applied to a broader set of applications. 
 
 They'll help you achieve an end result but may require you to understand and adapt the steps to fit your specific requirements.
@@ -74,3 +74,39 @@ If it is not, please check https://multipass.run/docs/installing-on-linux.
 
 Choose a Rockcraft release
 ..........................
+
+Pick a Rockcraft release, either from the `snap store <https://snapcraft.io/rockcraft>`_ or via 
+``snap search rockcraft``. 
+
+Keep in mind the chosen channel, as riskier releases are more prone to breaking changes.
+
+Also, note that the Rockcraft's snap confinement is set to "classic" (this is important for the installation step).
+
+
+Installation steps
+..................
+
+Having chosen a Rockcraft release, you must now install it via the snap CLI (or directly via the Ubuntu Desktop store):
+
+.. code-block:: sh 
+
+    $ sudo snap install rockcraft --channel=<chosen channel> --classic
+
+For example:
+
+.. code-block:: sh 
+
+    $ sudo snap install rockcraft --channel=latest/edge --classic
+
+
+
+Testing Rockcraft
+.................
+
+Once installed, you can make sure that Rockcraft is actually present in the system and ready to be used:
+
+.. code-block:: sh
+
+    $ rockcraft --version
+    rockcraft 0.0.1.dev1                          
+
