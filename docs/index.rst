@@ -14,7 +14,7 @@ Welcome to Rockcraft's documentation!
 ===========================================
 
 
-**Rockcraft is a tool to create ROCKs** - a new generation of secure, stable and OCI-compliant container images, powered by Ubuntu
+**Rockcraft is a tool to create ROCKs** - a new generation of secure, stable and OCI-compliant container images, powered by Ubuntu.
 
 **Using the same language as Snapcraft and Charmcraft,** Rockcraft (currently under heavy development) offers a true declarative way for building efficient container images. By making use of existing Ubuntu tools like LXD and Multipass,
 Rockcraft is able to compartmentalize your typical container image build into multiple parts, each one being comprised of several independent lifecycle steps (pull, build, stage and prime), allowing you to declaratively perform
