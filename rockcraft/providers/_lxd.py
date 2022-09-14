@@ -1,6 +1,6 @@
 # -*- Mode:Python; indent-tabs-mode:nil; tab-width:4 -*-
 #
-# Copyright 2021 Canonical Ltd.
+# Copyright 2021-2022 Canonical Ltd.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 3 as
@@ -19,15 +19,24 @@
 import contextlib
 import logging
 import pathlib
+import sys
 from typing import Generator, List
 
 from craft_providers import Executor, bases, lxd
 
 from rockcraft.errors import ProviderError
-from rockcraft.utils import confirm_with_user, get_managed_environment_project_path
+from rockcraft.utils import (
+    confirm_with_user,
+    get_managed_environment_project_path,
+    get_managed_environment_snap_channel,
+)
 
-from ._buildd import BASE_TO_BUILDD_IMAGE_ALIAS, RockcraftBuilddBaseConfiguration
 from ._provider import Provider
+from .providers import (
+    BASE_TO_BUILDD_IMAGE_ALIAS,
+    get_command_environment,
+    get_instance_name,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -153,19 +162,35 @@ class LXDProvider(Provider):
         """
         alias = BASE_TO_BUILDD_IMAGE_ALIAS[build_base]
 
-        instance_name = self.get_instance_name(
+        instance_name = get_instance_name(
             project_name=project_name,
             project_path=project_path,
         )
 
-        environment = self.get_command_environment()
+        environment = get_command_environment()
         try:
             image_remote = lxd.configure_buildd_image_remote()
         except lxd.LXDError as error:
             raise ProviderError(str(error)) from error
 
-        base_configuration = RockcraftBuilddBaseConfiguration(
-            alias=alias, environment=environment, hostname=instance_name
+        # injecting a snap on a non-linux system is not supported, so default to
+        # install rockcraft from the store's stable channel
+        snap_channel = get_managed_environment_snap_channel()
+        if sys.platform != "linux" and not snap_channel:
+            snap_channel = "stable"
+
+        base_configuration = bases.BuilddBase(
+            alias=alias,
+            compatibility_tag=f"rockcraft-{bases.BuilddBase.compatibility_tag}.0",
+            environment=environment,
+            hostname=instance_name,
+            snaps=[
+                bases.buildd.Snap(
+                    name="rockcraft",
+                    channel=snap_channel,
+                    classic=True,
+                )
+            ],
         )
 
         try:

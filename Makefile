@@ -7,7 +7,7 @@ help: ## Show this help.
 .PHONY: autoformat
 autoformat: ## Run automatic code formatters.
 	isort .
-	autoflake --remove-all-unused-imports --ignore-init-module-imports -ri .
+	autoflake rockcraft/ tests/
 	black .
 
 .PHONY: clean

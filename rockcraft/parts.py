@@ -22,8 +22,7 @@ from typing import Any, Dict, List, Optional
 
 import craft_parts
 from craft_cli import emit
-from craft_parts import ActionType, Step, plugins
-from craft_parts.parts import PartSpec
+from craft_parts import ActionType, Step
 from xdg import BaseDirectory  # type: ignore
 
 from rockcraft.errors import PartsLifecycleError
@@ -118,12 +117,12 @@ class PartsLifecycle:
                     emit.progress(f"Executing parts lifecycle: {message}")
                     with emit.open_stream("Executing action") as stream:
                         aex.execute(action, stdout=stream, stderr=stream)
-                    emit.message(f"Executed: {message}", intermediate=True)
+                    emit.progress(f"Executed: {message}", permanent=True)
 
             if shell_after:
                 launch_shell()
 
-            emit.message("Executed parts lifecycle", intermediate=True)
+            emit.progress("Executed parts lifecycle", permanent=True)
         except RuntimeError as err:
             raise RuntimeError(f"Parts processing internal error: {err}") from err
         except OSError as err:
@@ -140,7 +139,7 @@ def launch_shell(*, cwd: Optional[pathlib.Path] = None) -> None:
 
     :param cwd: Working directory to start user in.
     """
-    emit.message("Launching shell on build environment...", intermediate=True)
+    emit.progress("Launching shell on build environment...", permanent=True)
     with emit.pause():
         subprocess.run(["bash"], check=False, cwd=cwd)
 
@@ -191,21 +190,4 @@ def validate_part(data: Dict[str, Any]) -> None:
 
     :param data: The part data to validate.
     """
-    if not isinstance(data, dict):
-        raise TypeError("value must be a dictionary")
-
-    # copy the original data, we'll modify it
-    spec = data.copy()
-
-    plugin_name = spec.get("plugin")
-    if not plugin_name:
-        raise ValueError("'plugin' not defined")
-
-    plugin_class = plugins.get_plugin_class(plugin_name)
-
-    # validate plugin properties
-    plugin_class.properties_class.unmarshal(spec)
-
-    # validate common part properties
-    part_spec = plugins.extract_part_properties(spec, plugin_name=plugin_name)
-    PartSpec(**part_spec)
+    craft_parts.validate_part(data)

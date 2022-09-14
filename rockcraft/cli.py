@@ -55,7 +55,7 @@ def run():
         logger.setLevel(logging.DEBUG)
 
     emit_args = {
-        "mode": EmitterMode.NORMAL,
+        "mode": EmitterMode.BRIEF,
         "appname": "rockcraft",
         "greeting": f"Starting Rockcraft {__version__}",
     }
