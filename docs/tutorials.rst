@@ -9,9 +9,9 @@ Create a Hello World ROCK
 Prerequisites
 -------------
 
-- snap enabled system https://snapcraft.io
+- snap enabled system (https://snapcraft.io)
 - LXD installed
-- skopeo installed https://github.com/containers/skopeo
+- skopeo installed (https://github.com/containers/skopeo)
 - Docker installed (https://docs.docker.com/get-docker/)
 - a text editor
 
@@ -109,7 +109,7 @@ Publish a ROCK to a registry
 Prerequisites
 -------------
 
-- skopeo installed https://github.com/containers/skopeo
+- skopeo installed (https://github.com/containers/skopeo)
 - Docker installed (https://docs.docker.com/get-docker/)
 
 
