@@ -45,9 +45,7 @@ contain known vulnerabilities, with Ubuntu being the only one without any critic
 Sure, consumers could venture to fix these vulnerabilities themselves, but not only would this increase the cost and proliferation of images, but it wouldn't be
 easy to accomplish due to the lack of expertise in the subject matter. The right approach is to actually fix the
 vulnerabilities at their source! And Canonical has already started doing this. If we compare some of the Docker Official
-container images vs some of the ones maintained by Canonical, we can verify that the latter have no high/critical vulnerabilities
-
-in them!
+container images vs some of the ones maintained by Canonical, we can verify that the latter have no high/critical vulnerabilities in them!
 
 .. image:: _static/canonical-images-vulnerabilities.png
   :align: center
