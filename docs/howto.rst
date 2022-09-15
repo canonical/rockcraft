@@ -62,15 +62,6 @@ And if LXD is not running, try starting it via:
 
 May you find any problems with LXD, please check https://ubuntu.com/lxd.
 
-It is also useful to ensure also Multipass is installed and available:
-
-.. code-block:: sh
-
-    $ multipass version
-    multipass   1.10.1
-
-If it is not, please check https://multipass.run/docs/installing-on-linux.
-
 
 Choose a Rockcraft release
 ..........................
