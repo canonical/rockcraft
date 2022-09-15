@@ -76,6 +76,7 @@ spdx-license-list==0.5.2
 Sphinx==5.1.1
 sphinx-autodoc-typehints==1.19.2
 sphinx-jsonschema==1.19.1
+sphinx-lint==0.6.1
 sphinx-pydantic==0.1.1
 sphinx-rtd-theme==1.0.0
 sphinxcontrib-applehelp==1.0.2
