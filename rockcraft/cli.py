@@ -25,6 +25,7 @@ from craft_cli import ArgumentParsingError, EmitterMode, ProvideHelpException, e
 from rockcraft import __version__
 
 from . import commands
+from .utils import get_managed_environment_log_path, is_managed_mode
 
 COMMAND_GROUPS = [
     craft_cli.CommandGroup(
@@ -54,10 +55,15 @@ def run():
         logger = logging.getLogger(lib_name)
         logger.setLevel(logging.DEBUG)
 
+    # Capture debug-level log output in a file in managed mode, even if rockcraft is
+    # executing with a lower log level
+    log_filepath = get_managed_environment_log_path() if is_managed_mode() else None
+
     emit_args = {
         "mode": EmitterMode.BRIEF,
         "appname": "rockcraft",
         "greeting": f"Starting Rockcraft {__version__}",
+        "log_filepath": log_filepath,
     }
 
     emit.init(**emit_args)
