@@ -27,7 +27,7 @@ from craft_cli import EmitterMode, emit
 from . import oci, providers, utils
 from .parts import PartsLifecycle
 from .project import Project, load_project
-from .providers import capture_logs_from_instance
+from .providers.providers import capture_logs_from_instance
 
 if TYPE_CHECKING:
     import argparse
