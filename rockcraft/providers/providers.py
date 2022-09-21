@@ -95,7 +95,7 @@ def capture_logs_from_instance(instance: executor.Executor) -> None:
 
 def get_base_configuration(
     *, alias: bases.BuilddBaseAlias, project_name: str, project_path: Path
-):
+) -> bases.BuilddBase:
     """Create a BuilddBase configuration for rockcraft."""
     instance_name = get_instance_name(
         project_name=project_name,
