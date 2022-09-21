@@ -23,7 +23,7 @@ from typing import Generator, List
 
 from craft_providers import Executor, ProviderError, base, bases, lxd
 
-from rockcraft.utils import confirm_with_user, get_managed_environment_project_path
+from rockcraft.utils import confirm_with_user
 
 from ._provider import Provider
 
@@ -179,11 +179,6 @@ class LXDProvider(Provider):
             )
         except (bases.BaseConfigurationError, lxd.LXDError) as error:
             raise ProviderError(str(error)) from error
-
-        # Mount project.
-        instance.mount(
-            host_source=project_path, target=get_managed_environment_project_path()
-        )
 
         try:
             yield instance

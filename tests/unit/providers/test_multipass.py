@@ -14,7 +14,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import pathlib
 import re
 from unittest import mock
 
@@ -303,9 +302,6 @@ def test_launched_environment(
                 disk_gb=64,
                 mem_gb=2,
                 auto_clean=True,
-            ),
-            mock.call().mount(
-                host_source=mock_path, target=pathlib.Path("/root/project")
             ),
         ]
         mock_multipass_launch.reset_mock()
