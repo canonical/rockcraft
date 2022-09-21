@@ -22,7 +22,7 @@ import subprocess
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from craft_cli import EmitterMode, emit
+from craft_cli import emit
 
 from . import oci, providers, utils
 from .parts import PartsLifecycle
@@ -176,12 +176,8 @@ def _run_in_provider(
     if hasattr(parsed_args, "parts"):
         cmd.extend(parsed_args.parts)
 
-    if emit.get_mode() == EmitterMode.VERBOSE:
-        cmd.append("--verbose")
-    elif emit.get_mode() == EmitterMode.QUIET:
-        cmd.append("--quiet")
-    elif emit.get_mode() == EmitterMode.TRACE:
-        cmd.append("--trace")
+    mode = emit.get_mode().name.lower()
+    cmd.append(f"--verbosity={mode}")
 
     if getattr(parsed_args, "shell", False):
         cmd.append("--shell")
