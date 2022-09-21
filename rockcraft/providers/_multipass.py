@@ -19,21 +19,15 @@
 import contextlib
 import logging
 import pathlib
-import sys
 from typing import Generator, List
 
-from craft_providers import Executor, bases, multipass
+from craft_providers import Executor, base, bases, multipass
 from craft_providers.multipass.errors import MultipassError
 
 from rockcraft.errors import ProviderError
-from rockcraft.utils import (
-    confirm_with_user,
-    get_managed_environment_project_path,
-    get_managed_environment_snap_channel,
-)
+from rockcraft.utils import confirm_with_user, get_managed_environment_project_path
 
 from ._provider import Provider
-from .providers import BASE_TO_BUILDD_IMAGE_ALIAS, get_command_environment
 
 logger = logging.getLogger(__name__)
 
@@ -134,6 +128,7 @@ class MultipassProvider(Provider):
         *,
         project_name: str,
         project_path: pathlib.Path,
+        base_configuration: base.Base,
         build_base: str,
         instance_name: str,
     ) -> Generator[Executor, None, None]:
@@ -145,32 +140,10 @@ class MultipassProvider(Provider):
 
         :param project_name: Name of the project.
         :param project_path: Path to project.
+        :param base_configuration: Base configuration to apply to instance.
         :param build_base: Base to build from.
         :param instance_name: Name of the instance to launch.
         """
-        alias = BASE_TO_BUILDD_IMAGE_ALIAS[build_base]
-
-        # injecting a snap on a non-linux system is not supported, so default to
-        # install rockcraft from the store's stable channel
-        snap_channel = get_managed_environment_snap_channel()
-        if sys.platform != "linux" and not snap_channel:
-            snap_channel = "stable"
-
-        environment = get_command_environment()
-        base_configuration = bases.BuilddBase(
-            alias=alias,
-            compatibility_tag=f"rockcraft-{bases.BuilddBase.compatibility_tag}.0",
-            environment=environment,
-            hostname=instance_name,
-            snaps=[
-                bases.buildd.Snap(
-                    name="rockcraft",
-                    channel=snap_channel,
-                    classic=True,
-                )
-            ],
-        )
-
         try:
             instance = multipass.launch(
                 name=instance_name,

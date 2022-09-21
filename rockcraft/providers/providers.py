@@ -18,13 +18,17 @@
 """Rockcraft-specific code to interface with craft-providers."""
 
 import os
-import pathlib
+import sys
+from pathlib import Path
 from typing import Dict, Optional
 
 from craft_cli import emit
 from craft_providers import bases, executor
 
-from rockcraft.utils import get_managed_environment_log_path
+from rockcraft.utils import (
+    get_managed_environment_log_path,
+    get_managed_environment_snap_channel,
+)
 
 BASE_TO_BUILDD_IMAGE_ALIAS = {
     "ubuntu:18.04": bases.BuilddBaseAlias.BIONIC,
@@ -49,7 +53,7 @@ def get_command_environment() -> Dict[str, Optional[str]]:
 def get_instance_name(
     *,
     project_name: str,
-    project_path: pathlib.Path,
+    project_path: Path,
 ) -> str:
     """Formulate the name for an instance using each of the given parameters.
 
@@ -87,3 +91,33 @@ def capture_logs_from_instance(instance: executor.Executor) -> None:
             emit.trace(
                 f"Could not find log file {source_log_path.as_posix()} in instance."
             )
+
+
+def get_base_configuration(
+    *, alias: bases.BuilddBaseAlias, project_name: str, project_path: Path
+) -> bases.BuilddBase:
+    """Create a BuilddBase configuration for rockcraft."""
+    instance_name = get_instance_name(
+        project_name=project_name,
+        project_path=project_path,
+    )
+
+    # injecting a snap on a non-linux system is not supported, so default to
+    # install rockcraft from the store's stable channel
+    snap_channel = get_managed_environment_snap_channel()
+    if sys.platform != "linux" and not snap_channel:
+        snap_channel = "stable"
+
+    return bases.BuilddBase(
+        alias=alias,
+        compatibility_tag=f"rockcraft-{bases.BuilddBase.compatibility_tag}.0",
+        environment=get_command_environment(),
+        hostname=instance_name,
+        snaps=[
+            bases.buildd.Snap(
+                name="rockcraft",
+                channel=snap_channel,
+                classic=True,
+            )
+        ],
+    )

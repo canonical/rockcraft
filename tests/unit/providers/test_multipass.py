@@ -17,7 +17,6 @@
 import pathlib
 import re
 from unittest import mock
-from unittest.mock import call
 
 import pytest
 from craft_providers import bases
@@ -270,40 +269,20 @@ def test_is_provider_available(is_installed, mock_multipass_is_installed):
     assert provider.is_provider_available() == is_installed
 
 
-@pytest.mark.parametrize(
-    "channel,alias",
-    [
-        ("18.04", bases.BuilddBaseAlias.BIONIC),
-        ("20.04", bases.BuilddBaseAlias.FOCAL),
-        ("22.04", bases.BuilddBaseAlias.JAMMY),
-    ],
-)
+@pytest.mark.parametrize("channel", ["18.04", "20.04", "22.04"])
 def test_launched_environment(
     channel,
-    alias,
     mock_buildd_base_configuration,
     mock_multipass_launch,
-    monkeypatch,
     tmp_path,
     mock_path,
-    mocker,
 ):
-    expected_environment = {
-        "ROCKCRAFT_MANAGED_MODE": "1",
-        "PATH": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin",
-    }
-
-    mocker.patch("sys.platform", "linux")
-    mocker.patch(
-        "rockcraft.providers._multipass.get_managed_environment_snap_channel",
-        return_value="edge",
-    )
-
     provider = providers.MultipassProvider()
 
     with provider.launched_environment(
         project_name="test-rock",
         project_path=mock_path,
+        base_configuration=mock_buildd_base_configuration,
         build_base=f"ubuntu:{channel}",
         instance_name="test-instance-name",
     ) as instance:
@@ -311,7 +290,7 @@ def test_launched_environment(
         assert mock_multipass_launch.mock_calls == [
             mock.call(
                 name="test-instance-name",
-                base_configuration=mock_buildd_base_configuration.return_value,
+                base_configuration=mock_buildd_base_configuration,
                 image_name=f"snapcraft:ubuntu-{channel}",
                 cpus=2,
                 disk_gb=64,
@@ -322,74 +301,12 @@ def test_launched_environment(
                 host_source=mock_path, target=pathlib.Path("/root/project")
             ),
         ]
-        assert mock_buildd_base_configuration.mock_calls == [
-            call(
-                alias=alias,
-                compatibility_tag="rockcraft-buildd-base-v0.0",
-                environment=expected_environment,
-                hostname="test-instance-name",
-                snaps=[
-                    bases.buildd.Snap(name="rockcraft", channel="edge", classic=True)
-                ],
-            )
-        ]
-
         mock_multipass_launch.reset_mock()
 
     assert mock_multipass_launch.mock_calls == [
         mock.call().unmount_all(),
         mock.call().stop(),
     ]
-
-
-@pytest.mark.parametrize(
-    "platform, snap_channel, expected_snap_channel",
-    [
-        ("linux", None, None),
-        ("linux", "edge", "edge"),
-        ("darwin", "edge", "edge"),
-        # default to stable on non-linux system
-        ("darwin", None, "stable"),
-    ],
-)
-def test_launched_environment_snap_channel(
-    mock_buildd_base_configuration,
-    mock_multipass_launch,
-    monkeypatch,
-    tmp_path,
-    mocker,
-    platform,
-    snap_channel,
-    expected_snap_channel,
-):
-    """Verify the rockcraft snap is installed from the correct channel."""
-    mocker.patch("sys.platform", platform)
-    mocker.patch(
-        "rockcraft.providers._multipass.get_managed_environment_snap_channel",
-        return_value=snap_channel,
-    )
-
-    provider = providers.MultipassProvider()
-
-    with provider.launched_environment(
-        project_name="test-rock",
-        project_path=tmp_path,
-        build_base="ubuntu:20.04",
-        instance_name="test-instance-name",
-    ):
-        assert mock_buildd_base_configuration.mock_calls == [
-            call(
-                alias=mock.ANY,
-                compatibility_tag=mock.ANY,
-                environment=mock.ANY,
-                hostname=mock.ANY,
-                snaps=[
-                    bases.buildd.Snap(
-                        name="rockcraft", channel=expected_snap_channel, classic=True
-                    )
-                ],
-            )
-        ]
 
 
 def test_launched_environment_unmounts_and_stops_after_error(
@@ -401,6 +318,7 @@ def test_launched_environment_unmounts_and_stops_after_error(
         with provider.launched_environment(
             project_name="test-rock",
             project_path=tmp_path,
+            base_configuration=mock_buildd_base_configuration,
             build_base="ubuntu:20.04",
             instance_name="test-instance-name",
         ):
@@ -424,6 +342,7 @@ def test_launched_environment_launch_base_configuration_error(
         with provider.launched_environment(
             project_name="test-rock",
             project_path=tmp_path,
+            base_configuration=mock_buildd_base_configuration,
             build_base="ubuntu:20.04",
             instance_name="test-instance-name",
         ):
@@ -443,6 +362,7 @@ def test_launched_environment_launch_multipass_error(
         with provider.launched_environment(
             project_name="test-rock",
             project_path=tmp_path,
+            base_configuration=mock_buildd_base_configuration,
             build_base="ubuntu:20.04",
             instance_name="test-instance-name",
         ):
@@ -462,6 +382,7 @@ def test_launched_environment_unmount_all_error(
         with provider.launched_environment(
             project_name="test-rock",
             project_path=tmp_path,
+            base_configuration=mock_buildd_base_configuration,
             build_base="ubuntu:20.04",
             instance_name="test-instance-name",
         ):
@@ -481,6 +402,7 @@ def test_launched_environment_stop_error(
         with provider.launched_environment(
             project_name="test-rock",
             project_path=tmp_path,
+            base_configuration=mock_buildd_base_configuration,
             build_base="ubuntu:20.04",
             instance_name="test-instance-name",
         ):

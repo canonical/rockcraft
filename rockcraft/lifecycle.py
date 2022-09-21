@@ -27,7 +27,12 @@ from craft_cli import emit
 from . import oci, providers, utils
 from .parts import PartsLifecycle
 from .project import Project, load_project
-from .providers.providers import capture_logs_from_instance, get_instance_name
+from .providers.providers import (
+    BASE_TO_BUILDD_IMAGE_ALIAS,
+    capture_logs_from_instance,
+    get_base_configuration,
+    get_instance_name,
+)
 
 if TYPE_CHECKING:
     import argparse
@@ -190,10 +195,17 @@ def _run_in_provider(
         project_name=project.name, project_path=host_project_path
     )
 
+    base_configuration = get_base_configuration(
+        alias=BASE_TO_BUILDD_IMAGE_ALIAS[str(project.build_base)],
+        project_name=project.name,
+        project_path=host_project_path,
+    )
+
     emit.progress("Launching instance...")
     with provider.launched_environment(
         project_name=project.name,
         project_path=host_project_path,
+        base_configuration=base_configuration,
         build_base=str(project.build_base),
         instance_name=instance_name,
     ) as instance:
