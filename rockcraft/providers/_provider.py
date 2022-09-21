@@ -71,6 +71,8 @@ class Provider(ABC):
         :returns: True if installed.
         """
 
+    # TODO: migrate `create_environment()` from snapcraft or charmcraft
+
     @abstractmethod
     @contextlib.contextmanager
     def launched_environment(
@@ -79,10 +81,16 @@ class Provider(ABC):
         project_name: str,
         project_path: pathlib.Path,
         build_base: str,
+        instance_name: str,
     ) -> Generator[Executor, None, None]:
-        """Launch environment for specified base.
+        """Configure and launch environment for specified base.
 
-        :param project_name: Name of the project.
-        :param project_path: Path to the project.
+        When this method loses context, all directories are unmounted and the
+        environment is stopped. For more control of environment setup and teardown,
+        use `create_environment()` instead.
+
+        :param project_name: Name of project.
+        :param project_path: Path to project.
         :param build_base: Base to build from.
+        :param instance_name: Name of the instance to launch.
         """

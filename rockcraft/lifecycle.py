@@ -27,7 +27,7 @@ from craft_cli import emit
 from . import oci, providers, utils
 from .parts import PartsLifecycle
 from .project import Project, load_project
-from .providers.providers import capture_logs_from_instance
+from .providers.providers import capture_logs_from_instance, get_instance_name
 
 if TYPE_CHECKING:
     import argparse
@@ -184,17 +184,22 @@ def _run_in_provider(
     if getattr(parsed_args, "shell_after", False):
         cmd.append("--shell-after")
 
-    output_dir = utils.get_managed_environment_project_path()
+    host_project_path = Path().absolute()
+    instance_project_path = utils.get_managed_environment_project_path()
+    instance_name = get_instance_name(
+        project_name=project.name, project_path=host_project_path
+    )
 
     emit.progress("Launching instance...")
     with provider.launched_environment(
         project_name=project.name,
-        project_path=Path().absolute(),
+        project_path=host_project_path,
         build_base=str(project.build_base),
+        instance_name=instance_name,
     ) as instance:
         try:
             with emit.pause():
-                instance.execute_run(cmd, check=True, cwd=output_dir)
+                instance.execute_run(cmd, check=True, cwd=instance_project_path)
         except subprocess.CalledProcessError as err:
             raise providers.ProviderError(
                 f"Failed to execute {command_name} in instance."

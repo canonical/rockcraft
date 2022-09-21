@@ -322,12 +322,13 @@ def test_launched_environment(
         project_name="test-rock",
         project_path=mock_path,
         build_base=f"ubuntu:{channel}",
+        instance_name="test-instance-name",
     ) as instance:
         assert instance is not None
         assert mock_configure_buildd_image_remote.mock_calls == [mock.call()]
         assert mock_lxd_launch.mock_calls == [
             mock.call(
-                name="rockcraft-test-rock-445566",
+                name="test-instance-name",
                 base_configuration=mock_buildd_base_configuration.return_value,
                 image_name=channel,
                 image_remote="buildd-remote",
@@ -348,7 +349,7 @@ def test_launched_environment(
                 alias=alias,
                 compatibility_tag="rockcraft-buildd-base-v0.0",
                 environment=expected_environment,
-                hostname="rockcraft-test-rock-445566",
+                hostname="test-instance-name",
                 snaps=[
                     bases.buildd.Snap(name="rockcraft", channel="edge", classic=True)
                 ],
@@ -396,6 +397,7 @@ def test_launched_environment_snap_channel(
         project_name="test-rock",
         project_path=tmp_path,
         build_base="ubuntu:20.04",
+        instance_name="test-instance-name",
     ):
         assert mock_buildd_base_configuration.mock_calls == [
             call(
@@ -427,6 +429,7 @@ def test_launched_environment_launch_base_configuration_error(
             project_name="test-rock",
             project_path=tmp_path,
             build_base="ubuntu:20.04",
+            instance_name="test-instance-name",
         ):
             pass
 
@@ -448,6 +451,7 @@ def test_launched_environment_launch_lxd_error(
             project_name="test-rock",
             project_path=tmp_path,
             build_base="ubuntu:20.04",
+            instance_name="test-instance-name",
         ):
             pass
 
@@ -467,6 +471,7 @@ def test_launched_environment_unmounts_and_stops_after_error(
             project_name="test-rock",
             project_path=tmp_path,
             build_base="ubuntu:20.04",
+            instance_name="test-instance-name",
         ):
             mock_lxd_launch.reset_mock()
             raise RuntimeError("this is a test")
@@ -489,7 +494,10 @@ def test_launched_environment_unmount_all_error(
 
     with pytest.raises(ProviderError, match="fail") as raised:
         with provider.launched_environment(
-            project_name="test-rock", project_path=tmp_path, build_base="ubuntu:20.04"
+            project_name="test-rock",
+            project_path=tmp_path,
+            build_base="ubuntu:20.04",
+            instance_name="test-instance-name",
         ):
             pass
 
@@ -511,6 +519,7 @@ def test_launched_environment_stop_error(
             project_name="test-rock",
             project_path=tmp_path,
             build_base="ubuntu:22.04",
+            instance_name="test-instance-name",
         ):
             pass
 

@@ -33,11 +33,7 @@ from rockcraft.utils import (
 )
 
 from ._provider import Provider
-from .providers import (
-    BASE_TO_BUILDD_IMAGE_ALIAS,
-    get_command_environment,
-    get_instance_name,
-)
+from .providers import BASE_TO_BUILDD_IMAGE_ALIAS, get_command_environment
 
 logger = logging.getLogger(__name__)
 
@@ -139,19 +135,20 @@ class MultipassProvider(Provider):
         project_name: str,
         project_path: pathlib.Path,
         build_base: str,
+        instance_name: str,
     ) -> Generator[Executor, None, None]:
-        """Launch environment for specified base.
+        """Configure and launch environment for specified base.
+
+        When this method loses context, all directories are unmounted and the
+        environment is stopped. For more control of environment setup and teardown,
+        use `create_environment()` instead.
 
         :param project_name: Name of the project.
         :param project_path: Path to project.
         :param build_base: Base to build from.
+        :param instance_name: Name of the instance to launch.
         """
         alias = BASE_TO_BUILDD_IMAGE_ALIAS[build_base]
-
-        instance_name = get_instance_name(
-            project_name=project_name,
-            project_path=project_path,
-        )
 
         # injecting a snap on a non-linux system is not supported, so default to
         # install rockcraft from the store's stable channel
