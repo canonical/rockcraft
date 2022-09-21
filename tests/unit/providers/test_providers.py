@@ -17,6 +17,9 @@
 from pathlib import Path
 from unittest.mock import MagicMock, Mock, call
 
+import pytest
+from craft_providers import bases
+
 from rockcraft.providers import providers
 
 
@@ -92,4 +95,64 @@ def test_capture_log_from_instance_not_found(mocker, emitter, mock_instance, new
     emitter.assert_trace("Could not find log file /tmp/rockcraft.log in instance.")
     mock_instance.temporarily_pull_file.assert_called_with(
         source=Path("/tmp/rockcraft.log"), missing_ok=True
+    )
+
+
+@pytest.mark.parametrize(
+    "platform, snap_channel, expected_snap_channel",
+    [
+        ("linux", None, None),
+        ("linux", "edge", "edge"),
+        ("darwin", "edge", "edge"),
+        # default to stable on non-linux system
+        ("darwin", None, "stable"),
+    ],
+)
+@pytest.mark.parametrize(
+    "alias",
+    [
+        bases.BuilddBaseAlias.BIONIC,
+        bases.BuilddBaseAlias.FOCAL,
+        bases.BuilddBaseAlias.JAMMY,
+    ],
+)
+def test_get_base_configuration(
+    platform,
+    snap_channel,
+    expected_snap_channel,
+    alias,
+    tmp_path,
+    mocker,
+):
+    """Verify the rockcraft snap is installed from the correct channel."""
+    mocker.patch("sys.platform", platform)
+    mocker.patch(
+        "rockcraft.providers.providers.get_managed_environment_snap_channel",
+        return_value=snap_channel,
+    )
+    mocker.patch(
+        "rockcraft.providers.providers.get_command_environment",
+        return_value="test-env",
+    )
+    mocker.patch(
+        "rockcraft.providers.providers.get_instance_name",
+        return_value="test-instance-name",
+    )
+    mock_buildd_base = mocker.patch("rockcraft.providers.providers.bases.BuilddBase")
+    mock_buildd_base.compatibility_tag = "buildd-base-v0"
+
+    providers.get_base_configuration(
+        alias=alias, project_name="test-name", project_path=tmp_path
+    )
+
+    mock_buildd_base.assert_called_with(
+        alias=alias,
+        compatibility_tag="rockcraft-buildd-base-v0.0",
+        environment="test-env",
+        hostname="test-instance-name",
+        snaps=[
+            bases.buildd.Snap(
+                name="rockcraft", channel=expected_snap_channel, classic=True
+            )
+        ],
     )

@@ -21,7 +21,7 @@ import pathlib
 from abc import ABC, abstractmethod
 from typing import Generator, List, Tuple, Union
 
-from craft_providers import Executor
+from craft_providers import Executor, base
 
 
 class Provider(ABC):
@@ -47,18 +47,19 @@ class Provider(ABC):
         """
 
     @classmethod
-    def is_base_available(cls, base: str) -> Tuple[bool, Union[str, None]]:
+    def is_base_available(cls, build_base: str) -> Tuple[bool, Union[str, None]]:
         """Check if provider can provide an environment matching given base.
 
-        :param base: Base to check.
+        :param build_base: Base to check.
 
         :returns: Tuple of bool indicating whether it is a match, with optional
                 reason if not a match.
         """
-        if base not in ["ubuntu:18.04", "ubuntu:20.04"]:
+        if build_base not in ["ubuntu:18.04", "ubuntu:20.04"]:
             return (
                 False,
-                f"Base {base!r} is not supported (must be 'ubuntu:18.04' or 'ubuntu:20.04')",
+                f"Base {build_base!r} is not supported "
+                "(must be 'ubuntu:18.04' or 'ubuntu:20.04')",
             )
 
         return True, None
@@ -80,6 +81,7 @@ class Provider(ABC):
         *,
         project_name: str,
         project_path: pathlib.Path,
+        base_configuration: base.Base,
         build_base: str,
         instance_name: str,
     ) -> Generator[Executor, None, None]:
@@ -91,6 +93,7 @@ class Provider(ABC):
 
         :param project_name: Name of project.
         :param project_path: Path to project.
+        :param base_configuration: Base configuration to apply to instance.
         :param build_base: Base to build from.
         :param instance_name: Name of the instance to launch.
         """
