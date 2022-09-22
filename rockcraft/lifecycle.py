@@ -23,6 +23,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from craft_cli import emit
+from craft_providers import ProviderError
 
 from . import oci, providers, utils
 from .parts import PartsLifecycle
@@ -213,7 +214,7 @@ def run_in_provider(
             with emit.pause():
                 instance.execute_run(cmd, check=True, cwd=instance_project_path)
         except subprocess.CalledProcessError as err:
-            raise providers.ProviderError(
+            raise ProviderError(
                 f"Failed to execute {command_name} in instance."
             ) from err
         finally:

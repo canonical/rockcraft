@@ -19,11 +19,10 @@ import re
 from unittest import mock
 
 import pytest
-from craft_providers import bases
+from craft_providers import ProviderError, bases
 from craft_providers.lxd import LXDError, LXDInstallationError
 
 from rockcraft import providers
-from rockcraft.providers import ProviderError
 
 # pylint: disable=duplicate-code
 

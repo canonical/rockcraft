@@ -16,8 +16,6 @@
 
 """Build provider support."""
 
-from rockcraft.errors import ProviderError  # noqa: F401
-
 from ._get_provider import get_provider  # noqa: F401
 from ._lxd import LXDProvider  # noqa: F401
 from ._multipass import MultipassProvider  # noqa: F401

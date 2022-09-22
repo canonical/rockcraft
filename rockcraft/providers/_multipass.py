@@ -21,10 +21,9 @@ import logging
 import pathlib
 from typing import Generator, List
 
-from craft_providers import Executor, base, bases, multipass
+from craft_providers import Executor, ProviderError, base, bases, multipass
 from craft_providers.multipass.errors import MultipassError
 
-from rockcraft.errors import ProviderError
 from rockcraft.utils import confirm_with_user, get_managed_environment_project_path
 
 from ._provider import Provider
