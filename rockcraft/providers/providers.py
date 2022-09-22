@@ -30,7 +30,7 @@ from rockcraft.utils import (
     get_managed_environment_snap_channel,
 )
 
-BASE_TO_BUILDD_IMAGE_ALIAS = {
+ROCKCRAFT_BASE_TO_PROVIDER_BASE = {
     "ubuntu:18.04": bases.BuilddBaseAlias.BIONIC,
     "ubuntu:20.04": bases.BuilddBaseAlias.FOCAL,
     "ubuntu:22.04": bases.BuilddBaseAlias.JAMMY,

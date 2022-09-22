@@ -29,7 +29,7 @@ from . import oci, providers, utils
 from .parts import PartsLifecycle
 from .project import Project, load_project
 from .providers.providers import (
-    BASE_TO_BUILDD_IMAGE_ALIAS,
+    ROCKCRAFT_BASE_TO_PROVIDER_BASE,
     capture_logs_from_instance,
     get_base_configuration,
     get_instance_name,
@@ -195,9 +195,10 @@ def run_in_provider(
     instance_name = get_instance_name(
         project_name=project.name, project_path=host_project_path
     )
+    build_base = ROCKCRAFT_BASE_TO_PROVIDER_BASE[str(project.build_base)]
 
     base_configuration = get_base_configuration(
-        alias=BASE_TO_BUILDD_IMAGE_ALIAS[str(project.build_base)],
+        alias=build_base,
         project_name=project.name,
         project_path=host_project_path,
     )
@@ -207,7 +208,7 @@ def run_in_provider(
         project_name=project.name,
         project_path=host_project_path,
         base_configuration=base_configuration,
-        build_base=str(project.build_base),
+        build_base=build_base.value,
         instance_name=instance_name,
     ) as instance:
         try:

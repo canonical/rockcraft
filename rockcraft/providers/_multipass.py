@@ -31,6 +31,13 @@ from ._provider import Provider
 logger = logging.getLogger(__name__)
 
 
+PROVIDER_BASE_TO_MULTIPASS_BASE = {
+    bases.BuilddBaseAlias.BIONIC.value: "snapcraft:18.04",
+    bases.BuilddBaseAlias.FOCAL.value: "snapcraft:20.04",
+    bases.BuilddBaseAlias.JAMMY.value: "snapcraft:22.04",
+}
+
+
 class MultipassProvider(Provider):
     """Multipass build environment provider.
 
@@ -147,8 +154,7 @@ class MultipassProvider(Provider):
             instance = multipass.launch(
                 name=instance_name,
                 base_configuration=base_configuration,
-                # XXX: replace with appropriate rockcraft base image
-                image_name=f"snapcraft:{build_base.replace(':', '-')}",
+                image_name=PROVIDER_BASE_TO_MULTIPASS_BASE[build_base],
                 cpus=2,
                 disk_gb=64,
                 mem_gb=2,

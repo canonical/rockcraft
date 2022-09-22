@@ -268,9 +268,17 @@ def test_is_provider_available(is_installed, mock_multipass_is_installed):
     assert provider.is_provider_available() == is_installed
 
 
-@pytest.mark.parametrize("channel", ["18.04", "20.04", "22.04"])
+@pytest.mark.parametrize(
+    "build_base, multipass_base",
+    [
+        (bases.BuilddBaseAlias.BIONIC.value, "snapcraft:18.04"),
+        (bases.BuilddBaseAlias.FOCAL.value, "snapcraft:20.04"),
+        (bases.BuilddBaseAlias.JAMMY.value, "snapcraft:22.04"),
+    ],
+)
 def test_launched_environment(
-    channel,
+    build_base,
+    multipass_base,
     mock_buildd_base_configuration,
     mock_multipass_launch,
     tmp_path,
@@ -282,7 +290,7 @@ def test_launched_environment(
         project_name="test-rock",
         project_path=mock_path,
         base_configuration=mock_buildd_base_configuration,
-        build_base=f"ubuntu:{channel}",
+        build_base=build_base,
         instance_name="test-instance-name",
     ) as instance:
         assert instance is not None
@@ -290,7 +298,7 @@ def test_launched_environment(
             mock.call(
                 name="test-instance-name",
                 base_configuration=mock_buildd_base_configuration,
-                image_name=f"snapcraft:ubuntu-{channel}",
+                image_name=multipass_base,
                 cpus=2,
                 disk_gb=64,
                 mem_gb=2,
@@ -318,7 +326,7 @@ def test_launched_environment_unmounts_and_stops_after_error(
             project_name="test-rock",
             project_path=tmp_path,
             base_configuration=mock_buildd_base_configuration,
-            build_base="ubuntu:20.04",
+            build_base=bases.BuilddBaseAlias.FOCAL.value,
             instance_name="test-instance-name",
         ):
             mock_multipass_launch.reset_mock()
@@ -342,7 +350,7 @@ def test_launched_environment_launch_base_configuration_error(
             project_name="test-rock",
             project_path=tmp_path,
             base_configuration=mock_buildd_base_configuration,
-            build_base="ubuntu:20.04",
+            build_base=bases.BuilddBaseAlias.FOCAL.value,
             instance_name="test-instance-name",
         ):
             pass
@@ -362,7 +370,7 @@ def test_launched_environment_launch_multipass_error(
             project_name="test-rock",
             project_path=tmp_path,
             base_configuration=mock_buildd_base_configuration,
-            build_base="ubuntu:20.04",
+            build_base=bases.BuilddBaseAlias.FOCAL.value,
             instance_name="test-instance-name",
         ):
             pass
@@ -382,7 +390,7 @@ def test_launched_environment_unmount_all_error(
             project_name="test-rock",
             project_path=tmp_path,
             base_configuration=mock_buildd_base_configuration,
-            build_base="ubuntu:20.04",
+            build_base=bases.BuilddBaseAlias.FOCAL.value,
             instance_name="test-instance-name",
         ):
             pass
@@ -402,7 +410,7 @@ def test_launched_environment_stop_error(
             project_name="test-rock",
             project_path=tmp_path,
             base_configuration=mock_buildd_base_configuration,
-            build_base="ubuntu:20.04",
+            build_base=bases.BuilddBaseAlias.FOCAL.value,
             instance_name="test-instance-name",
         ):
             pass
