@@ -3,7 +3,9 @@ Babel==2.10.3
 certifi==2022.6.15
 charset-normalizer==2.1.1
 craft-cli==1.2.0
-craft-parts==1.14.0
+#craft-parts==1.14.0
+# Temporarily use a specific craft-parts commit to have 'chisel' support
+git+https://github.com/canonical/craft-parts.git@2651f15855e184c1d8699efcfd1334#egg=craft_parts
 craft-providers==1.5.0
 Deprecated==1.2.13
 docutils==0.17.1
