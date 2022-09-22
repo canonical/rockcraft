@@ -16,7 +16,7 @@
 
 import argparse
 from pathlib import Path
-from unittest.mock import ANY, Mock, patch
+from unittest.mock import Mock, patch
 
 import pytest
 from craft_cli import EmitterMode, emit
@@ -29,7 +29,6 @@ from rockcraft import lifecycle
 def mock_project():
     with patch("rockcraft.project") as _mock_project:
         _mock_project.name = "test-name"
-        _mock_project.build_base = "ubuntu:20.04"
         yield _mock_project
 
 
@@ -52,8 +51,23 @@ def mock_provider(mocker, mock_instance, fake_provider):
         (EmitterMode.BRIEF, ["--verbosity=brief"]),
     ],
 )
+@pytest.mark.parametrize(
+    "rockcraft_base, provider_base",
+    [
+        ("ubuntu:18.04", BuilddBaseAlias.BIONIC),
+        ("ubuntu:20.04", BuilddBaseAlias.FOCAL),
+        ("ubuntu:22.04", BuilddBaseAlias.JAMMY),
+    ],
+)
 def test_lifecycle_run_in_provider(
-    mock_instance, mock_provider, mock_project, mocker, emit_mode, verbosity
+    mock_instance,
+    mock_provider,
+    mock_project,
+    mocker,
+    emit_mode,
+    verbosity,
+    rockcraft_base,
+    provider_base,
 ):
     # mock provider calls
     mock_base_configuration = Mock()
@@ -67,6 +81,7 @@ def test_lifecycle_run_in_provider(
     mock_capture_logs_from_instance = mocker.patch(
         "rockcraft.lifecycle.capture_logs_from_instance"
     )
+    mock_project.build_base = rockcraft_base
 
     # set emitter mode
     emit.set_mode(emit_mode)
@@ -83,15 +98,15 @@ def test_lifecycle_run_in_provider(
         project_path=Path().absolute(),
     )
     mock_get_base_configuration.assert_called_once_with(
-        alias=BuilddBaseAlias.FOCAL,
+        alias=provider_base,
         project_name="test-name",
         project_path=Path().absolute(),
     )
     mock_provider.launched_environment.assert_called_once_with(
         project_name="test-name",
-        project_path=ANY,
+        project_path=Path().absolute(),
         base_configuration=mock_base_configuration,
-        build_base="ubuntu:20.04",
+        build_base=provider_base.value,
         instance_name="test-instance-name",
     )
     mock_instance.execute_run.assert_called_once_with(

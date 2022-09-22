@@ -30,10 +30,11 @@ from ._provider import Provider
 
 logger = logging.getLogger(__name__)
 
-_BASE_IMAGE = {
-    "ubuntu:18.04": "18.04",
-    "ubuntu:20.04": "20.04",
-    "ubuntu:22.04": "22.04",
+
+PROVIDER_BASE_TO_LXD_BASE = {
+    bases.BuilddBaseAlias.BIONIC.value: "core18",
+    bases.BuilddBaseAlias.FOCAL.value: "core20",
+    bases.BuilddBaseAlias.JAMMY.value: "core22",
 }
 
 
@@ -167,7 +168,7 @@ class LXDProvider(Provider):
             instance = lxd.launch(
                 name=instance_name,
                 base_configuration=base_configuration,
-                image_name=_BASE_IMAGE[build_base],
+                image_name=PROVIDER_BASE_TO_LXD_BASE[build_base],
                 image_remote=image_remote,
                 auto_clean=True,
                 auto_create_project=True,

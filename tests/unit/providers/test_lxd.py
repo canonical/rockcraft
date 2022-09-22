@@ -285,9 +285,17 @@ def test_is_provider_available(is_installed, mock_lxd_is_installed):
     assert provider.is_provider_available() == is_installed
 
 
-@pytest.mark.parametrize("channel", ["18.04", "20.04", "22.04"])
+@pytest.mark.parametrize(
+    "build_base, lxd_base",
+    [
+        (bases.BuilddBaseAlias.BIONIC.value, "core18"),
+        (bases.BuilddBaseAlias.FOCAL.value, "core20"),
+        (bases.BuilddBaseAlias.JAMMY.value, "core22"),
+    ],
+)
 def test_launched_environment(
-    channel,
+    build_base,
+    lxd_base,
     mock_buildd_base_configuration,
     mock_configure_buildd_image_remote,
     mock_lxd_launch,
@@ -300,7 +308,7 @@ def test_launched_environment(
         project_name="test-rock",
         project_path=mock_path,
         base_configuration=mock_buildd_base_configuration,
-        build_base=f"ubuntu:{channel}",
+        build_base=build_base,
         instance_name="test-instance-name",
     ) as instance:
         assert instance is not None
@@ -309,7 +317,7 @@ def test_launched_environment(
             mock.call(
                 name="test-instance-name",
                 base_configuration=mock_buildd_base_configuration,
-                image_name=channel,
+                image_name=lxd_base,
                 image_remote="buildd-remote",
                 auto_clean=True,
                 auto_create_project=True,
@@ -347,7 +355,7 @@ def test_launched_environment_launch_base_configuration_error(
             project_name="test-rock",
             project_path=tmp_path,
             base_configuration=mock_buildd_base_configuration,
-            build_base="ubuntu:20.04",
+            build_base=bases.BuilddBaseAlias.FOCAL.value,
             instance_name="test-instance-name",
         ):
             pass
@@ -370,7 +378,7 @@ def test_launched_environment_launch_lxd_error(
             project_name="test-rock",
             project_path=tmp_path,
             base_configuration=mock_buildd_base_configuration,
-            build_base="ubuntu:20.04",
+            build_base=bases.BuilddBaseAlias.FOCAL.value,
             instance_name="test-instance-name",
         ):
             pass
@@ -391,7 +399,7 @@ def test_launched_environment_unmounts_and_stops_after_error(
             project_name="test-rock",
             project_path=tmp_path,
             base_configuration=mock_buildd_base_configuration,
-            build_base="ubuntu:20.04",
+            build_base=bases.BuilddBaseAlias.FOCAL.value,
             instance_name="test-instance-name",
         ):
             mock_lxd_launch.reset_mock()
@@ -418,7 +426,7 @@ def test_launched_environment_unmount_all_error(
             project_name="test-rock",
             project_path=tmp_path,
             base_configuration=mock_buildd_base_configuration,
-            build_base="ubuntu:20.04",
+            build_base=bases.BuilddBaseAlias.FOCAL.value,
             instance_name="test-instance-name",
         ):
             pass
@@ -441,7 +449,7 @@ def test_launched_environment_stop_error(
             project_name="test-rock",
             project_path=tmp_path,
             base_configuration=mock_buildd_base_configuration,
-            build_base="ubuntu:22.04",
+            build_base=bases.BuilddBaseAlias.JAMMY.value,
             instance_name="test-instance-name",
         ):
             pass
