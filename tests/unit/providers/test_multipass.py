@@ -19,11 +19,10 @@ import re
 from unittest import mock
 
 import pytest
-from craft_providers import bases
+from craft_providers import ProviderError, bases
 from craft_providers.multipass import MultipassError, MultipassInstallationError
 
 from rockcraft import providers
-from rockcraft.providers import ProviderError
 
 
 @pytest.fixture()

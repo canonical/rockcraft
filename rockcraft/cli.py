@@ -21,6 +21,7 @@ import sys
 
 import craft_cli
 from craft_cli import ArgumentParsingError, EmitterMode, ProvideHelpException, emit
+from craft_providers import ProviderError
 
 from rockcraft import __version__
 
@@ -93,4 +94,10 @@ def run():
         sys.exit(1)
     except craft_cli.CraftError as err:  # TODO: define RockcraftError
         emit.error(err)
+        sys.exit(1)
+    except ProviderError as err:
+        emit.error(craft_cli.CraftError(f"craft-providers error: {err}"))
+        sys.exit(1)
+    except Exception as err:  # pylint: disable=broad-except
+        emit.error(craft_cli.CraftError(f"rockcraft internal error: {err!r}"))
         sys.exit(1)

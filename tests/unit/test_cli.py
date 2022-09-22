@@ -19,7 +19,8 @@ from argparse import Namespace
 from unittest.mock import call
 
 import pytest
-from craft_cli import emit
+from craft_cli import CraftError, ProvideHelpException, emit
+from craft_providers import ProviderError
 
 from rockcraft import cli
 
@@ -84,3 +85,60 @@ def test_run_pack(mocker):
 
     assert run_mock.mock_calls == [call("pack", Namespace())]
     assert mock_ended_ok.mock_calls == [call()]
+
+
+def test_run_arg_parse_error(capsys, mocker):
+    """Catch ArgumentParsingError and exit cleanly."""
+    mocker.patch.object(sys, "argv", ["rockcraft", "invalid-command"])
+    mock_emit = mocker.patch("rockcraft.cli.emit")
+    mock_exit = mocker.patch("rockcraft.cli.sys.exit")
+
+    cli.run()
+
+    mock_emit.ended_ok.assert_called_once()
+    mock_exit.assert_called_once()
+
+    out, err = capsys.readouterr()
+    assert not out
+    assert "Error: no such command 'invalid-command'" in err
+
+
+def test_run_arg_provider_help_exception(capsys, mocker):
+    """Catch ProviderHelpException and exit cleanly."""
+    mocker.patch(
+        "craft_cli.Dispatcher.pre_parse_args",
+        side_effect=ProvideHelpException("test help message"),
+    )
+    mock_emit = mocker.patch("rockcraft.cli.emit")
+
+    cli.run()
+
+    mock_emit.ended_ok.assert_called_once()
+
+    out, err = capsys.readouterr()
+    assert not out
+    assert err == "test help message\n"
+
+
+@pytest.mark.parametrize(
+    "input_error, output_error",
+    [
+        (CraftError("test error"), CraftError("test error")),
+        (ProviderError("test error"), CraftError("craft-providers error: test error")),
+        (
+            Exception("test error"),
+            CraftError("rockcraft internal error: Exception('test error')"),
+        ),
+    ],
+)
+def test_run_with_error(mocker, input_error, output_error):
+    """Application errors should be caught for a clean exit."""
+    mocker.patch("craft_cli.Dispatcher.run", side_effect=input_error)
+    mocker.patch.object(sys, "argv", ["rockcraft", "pack"])
+    mock_emit = mocker.patch("rockcraft.cli.emit")
+    mock_exit = mocker.patch("rockcraft.cli.sys.exit")
+
+    cli.run()
+
+    mock_exit.assert_called_once()
+    mock_emit.error.assert_called_once_with(output_error)
