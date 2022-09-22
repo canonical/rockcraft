@@ -49,7 +49,7 @@ def run(command_name: str, parsed_args: "argparse.Namespace"):
 
     managed_mode = utils.is_managed_mode()
     if not managed_mode and not destructive_mode:
-        _run_in_provider(project, command_name, parsed_args)
+        run_in_provider(project, command_name, parsed_args)
         return
 
     if managed_mode:
@@ -169,7 +169,7 @@ def _pack(
     emit.progress(f"Exported to OCI archive '{archive_name}'", permanent=True)
 
 
-def _run_in_provider(
+def run_in_provider(
     project: Project, command_name: str, parsed_args: "argparse.Namespace"
 ):
     """Run lifecycle command in provider instance."""

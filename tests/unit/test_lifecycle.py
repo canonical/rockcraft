@@ -71,7 +71,7 @@ def test_lifecycle_run_in_provider(
     # set emitter mode
     emit.set_mode(emit_mode)
 
-    lifecycle._run_in_provider(
+    lifecycle.run_in_provider(
         project=mock_project,
         command_name="test",
         parsed_args=argparse.Namespace(),
