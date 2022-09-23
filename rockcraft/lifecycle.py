@@ -213,6 +213,9 @@ def run_in_provider(
     ) as instance:
         try:
             with emit.pause():
+                instance.mount(
+                    host_source=host_project_path, target=instance_project_path
+                )
                 instance.execute_run(cmd, check=True, cwd=instance_project_path)
         except subprocess.CalledProcessError as err:
             raise ProviderError(

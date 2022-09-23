@@ -83,6 +83,8 @@ def test_lifecycle_run_in_provider(
     )
     mock_project.build_base = rockcraft_base
 
+    cwd = Path().absolute()
+
     # set emitter mode
     emit.set_mode(emit_mode)
 
@@ -95,19 +97,22 @@ def test_lifecycle_run_in_provider(
     mock_provider.ensure_provider_is_available.assert_called_once()
     mock_get_instance_name.assert_called_once_with(
         project_name="test-name",
-        project_path=Path().absolute(),
+        project_path=cwd,
     )
     mock_get_base_configuration.assert_called_once_with(
         alias=provider_base,
         project_name="test-name",
-        project_path=Path().absolute(),
+        project_path=cwd,
     )
     mock_provider.launched_environment.assert_called_once_with(
         project_name="test-name",
-        project_path=Path().absolute(),
+        project_path=cwd,
         base_configuration=mock_base_configuration,
         build_base=provider_base.value,
         instance_name="test-instance-name",
+    )
+    mock_instance.mount.assert_called_once_with(
+        host_source=cwd, target=Path("/root/project")
     )
     mock_instance.execute_run.assert_called_once_with(
         ["rockcraft", "test"] + verbosity,

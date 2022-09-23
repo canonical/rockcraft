@@ -14,7 +14,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import pathlib
 import re
 from unittest import mock
 
@@ -325,9 +324,6 @@ def test_launched_environment(
                 use_snapshots=True,
                 project="rockcraft",
                 remote="local",
-            ),
-            mock.call().mount(
-                host_source=mock_path, target=pathlib.Path("/root/project")
             ),
         ]
 

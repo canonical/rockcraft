@@ -24,7 +24,7 @@ from typing import Generator, List
 from craft_providers import Executor, ProviderError, base, bases, multipass
 from craft_providers.multipass.errors import MultipassError
 
-from rockcraft.utils import confirm_with_user, get_managed_environment_project_path
+from rockcraft.utils import confirm_with_user
 
 from ._provider import Provider
 
@@ -161,14 +161,6 @@ class MultipassProvider(Provider):
                 auto_clean=True,
             )
         except (bases.BaseConfigurationError, MultipassError) as error:
-            raise ProviderError(str(error)) from error
-
-        try:
-            # Mount project.
-            instance.mount(
-                host_source=project_path, target=get_managed_environment_project_path()
-            )
-        except MultipassError as error:
             raise ProviderError(str(error)) from error
 
         try:
