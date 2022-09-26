@@ -18,9 +18,9 @@ from pathlib import Path
 from unittest.mock import MagicMock, Mock, call
 
 import pytest
-from craft_providers import bases
+from craft_providers import ProviderError, bases
 
-from rockcraft.providers import providers
+from rockcraft.providers import LXDProvider, MultipassProvider, providers
 
 
 def test_get_command_environment_minimal(monkeypatch):
@@ -156,3 +156,103 @@ def test_get_base_configuration(
             )
         ],
     )
+
+
+@pytest.mark.parametrize(
+    "is_provider_installed, confirm_with_user",
+    [(True, True), (True, False), (False, True)],
+)
+def test_ensure_provider_is_available_lxd(
+    is_provider_installed, confirm_with_user, mocker
+):
+    """Verify LXD is ensured to be available when LXD is installed or the user chooses
+    to install LXD."""
+    mock_lxd_provider = Mock(spec=LXDProvider)
+    mocker.patch(
+        "rockcraft.providers.providers.LXDProvider.is_provider_installed",
+        return_value=is_provider_installed,
+    )
+    mocker.patch(
+        "rockcraft.providers.providers.confirm_with_user",
+        return_value=confirm_with_user,
+    )
+    mock_ensure_provider_is_available = mocker.patch(
+        "rockcraft.providers.providers.ensure_provider_is_available"
+    )
+
+    providers.ensure_provider_is_available(mock_lxd_provider)
+
+    mock_ensure_provider_is_available.assert_called_once()
+
+
+def test_ensure_provider_is_available_lxd_error(mocker):
+    """Raise an error if the user does not choose to install LXD."""
+    mock_lxd_provider = Mock(spec=LXDProvider)
+    mocker.patch(
+        "rockcraft.providers.providers.LXDProvider.is_provider_installed",
+        return_value=False,
+    )
+    mocker.patch("rockcraft.providers.providers.confirm_with_user", return_value=False)
+
+    with pytest.raises(ProviderError) as error:
+        providers.ensure_provider_is_available(mock_lxd_provider)
+
+    assert error.value.brief == (
+        "LXD is required, but not installed. Visit https://snapcraft.io/lxd for "
+        "instructions on how to install the LXD snap for your distribution"
+    )
+
+
+@pytest.mark.parametrize(
+    "is_provider_installed, confirm_with_user",
+    [(True, True), (True, False), (False, True)],
+)
+def test_ensure_provider_is_available_multipass(
+    is_provider_installed, confirm_with_user, mocker
+):
+    """Verify Multipass is ensured to be available when Multipass is installed or the
+    user chooses to install Multipass."""
+    mock_multipass_provider = Mock(spec=MultipassProvider)
+    mocker.patch(
+        "rockcraft.providers.providers.MultipassProvider.is_provider_installed",
+        return_value=is_provider_installed,
+    )
+    mocker.patch(
+        "rockcraft.providers.providers.confirm_with_user",
+        return_value=confirm_with_user,
+    )
+    mock_ensure_provider_is_available = mocker.patch(
+        "rockcraft.providers.providers.ensure_provider_is_available"
+    )
+
+    providers.ensure_provider_is_available(mock_multipass_provider)
+
+    mock_ensure_provider_is_available.assert_called_once()
+
+
+def test_ensure_provider_is_available_multipass_error(mocker):
+    """Raise an error if the user does not choose to install Multipass."""
+    mock_multipass_provider = Mock(spec=MultipassProvider)
+    mocker.patch(
+        "rockcraft.providers.providers.MultipassProvider.is_provider_installed",
+        return_value=False,
+    )
+    mocker.patch("rockcraft.providers.providers.confirm_with_user", return_value=False)
+
+    with pytest.raises(ProviderError) as error:
+        providers.ensure_provider_is_available(mock_multipass_provider)
+
+    assert error.value.brief == (
+        "Multipass is required, but not installed. Visit https://multipass.run/for "
+        "instructions on installing Multipass for your operating system."
+    )
+
+
+def test_ensure_provider_is_available_unknown_error():
+    """Raise an error if the provider type is unknown."""
+    mock_multipass_provider = Mock()
+
+    with pytest.raises(ProviderError) as error:
+        providers.ensure_provider_is_available(mock_multipass_provider)
+
+    assert error.value.brief == "cannot install unknown provider"

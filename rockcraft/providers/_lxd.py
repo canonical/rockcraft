@@ -23,8 +23,6 @@ from typing import Generator, List
 
 from craft_providers import Executor, ProviderError, base, bases, lxd
 
-from rockcraft.utils import confirm_with_user
-
 from ._provider import Provider
 
 logger = logging.getLogger(__name__)
@@ -68,7 +66,7 @@ class LXDProvider(Provider):
         deleted: List[str] = []
 
         # Nothing to do if provider is not installed.
-        if not self.is_provider_available():
+        if not self.is_provider_installed():
             return deleted
 
         inode = str(project_path.stat().st_ino)
@@ -100,28 +98,18 @@ class LXDProvider(Provider):
 
     @classmethod
     def ensure_provider_is_available(cls) -> None:
-        """Ensure provider is available, prompting the user to install it if required.
+        """Ensure provider is available and ready, installing if required.
 
         :raises ProviderError: if provider is not available.
         """
         if not lxd.is_installed():
-            if confirm_with_user(
-                "LXD is required, but not installed. Do you wish to install LXD "
-                "and configure it with the defaults?",
-                default=False,
-            ):
-                try:
-                    lxd.install()
-                except lxd.LXDInstallationError as error:
-                    raise ProviderError(
-                        "Failed to install LXD. Visit https://snapcraft.io/lxd for "
-                        "instructions on how to install the LXD snap for your distribution",
-                    ) from error
-            else:
+            try:
+                lxd.install()
+            except lxd.LXDInstallationError as error:
                 raise ProviderError(
-                    "LXD is required, but not installed. Visit https://snapcraft.io/lxd "
-                    "for instructions on how to install the LXD snap for your distribution",
-                )
+                    "Failed to install LXD. Visit https://snapcraft.io/lxd for "
+                    "instructions on how to install the LXD snap for your distribution",
+                ) from error
 
         try:
             lxd.ensure_lxd_is_ready()
@@ -129,8 +117,8 @@ class LXDProvider(Provider):
             raise ProviderError(str(error)) from error
 
     @classmethod
-    def is_provider_available(cls) -> bool:
-        """Check if provider is installed and available for use.
+    def is_provider_installed(cls) -> bool:
+        """Check if provider is installed.
 
         :returns: True if installed.
         """
