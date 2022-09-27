@@ -69,6 +69,19 @@ class _LifecycleStepCommand(_LifecycleCommand):
         )
 
 
+class CleanCommand(_LifecycleStepCommand):
+    """Command to remove part assets."""
+
+    name = "clean"
+    help_msg = "Remove a part's assets"
+    overview = textwrap.dedent(
+        """
+        Clean up artifacts belonging to parts. If no parts are specified,
+        remove the managed snap packing environment.
+        """
+    )
+
+
 class PullCommand(_LifecycleStepCommand):
     """Command to pull parts."""
 
