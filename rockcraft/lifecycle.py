@@ -25,7 +25,7 @@ from typing import TYPE_CHECKING
 from craft_cli import emit
 from craft_providers import ProviderError
 
-from . import errors, oci, providers, utils
+from . import oci, providers, utils
 from .parts import PartsLifecycle
 from .project import Project, load_project
 from .providers.providers import (
@@ -38,26 +38,6 @@ from .providers.providers import (
 
 if TYPE_CHECKING:
     import argparse
-
-
-def init(rockcraft_yaml_content: str) -> None:
-    """Initialize a rockcraft project.
-
-    :param rockcraft_yaml_content: Content of the rockcraft.yaml file
-    :raises RockcraftInitError: raises initialization error in case of conflicts
-    with existing rockcraft.yaml files
-    """
-    rockcraft_yaml_path = Path("rockcraft.yaml")
-
-    if rockcraft_yaml_path.is_file():
-        raise errors.RockcraftInitError(f"{rockcraft_yaml_path} already exists!")
-
-    if Path(f".{rockcraft_yaml_path.name}").is_file():
-        raise errors.RockcraftInitError(f".{rockcraft_yaml_path} already exists!")
-
-    rockcraft_yaml_path.write_text(rockcraft_yaml_content)
-
-    emit.progress(f"Created {rockcraft_yaml_path}.")
 
 
 def run(command_name: str, parsed_args: "argparse.Namespace"):

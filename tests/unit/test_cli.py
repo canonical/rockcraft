@@ -37,7 +37,7 @@ def lifecycle_pack_mock():
 @pytest.fixture
 def lifecycle_init_mock():
     """Mock for ui.init."""
-    patcher = patch("rockcraft.lifecycle.init")
+    patcher = patch("rockcraft.commands.init.init")
     yield patcher.start()
     patcher.stop()
 

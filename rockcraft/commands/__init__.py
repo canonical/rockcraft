@@ -16,9 +16,9 @@
 
 """Rockcraft commands."""
 
+from .init import InitCommand
 from .lifecycle import (
     BuildCommand,
-    InitCommand,
     OverlayCommand,
     PackCommand,
     PrimeCommand,
