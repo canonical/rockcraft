@@ -7,7 +7,7 @@ help: ## Show this help.
 .PHONY: autoformat
 autoformat: ## Run automatic code formatters.
 	isort .
-	autoflake --remove-all-unused-imports --ignore-init-module-imports -ri .
+	autoflake rockcraft/ tests/
 	black .
 
 .PHONY: clean
@@ -57,7 +57,7 @@ install: clean ## Install python package.
 	python setup.py install
 
 .PHONY: lint
-lint: test-black test-codespell test-flake8 test-isort test-mypy test-pydocstyle test-pylint test-pyright ## Run all linting tests.
+lint: test-black test-codespell test-flake8 test-isort test-mypy test-pydocstyle test-pyright test-pylint test-sphinx-lint ## Run all linting tests.
 
 .PHONY: release
 release: dist ## Release with twine.
@@ -94,11 +94,15 @@ test-pydocstyle:
 .PHONY: test-pylint
 test-pylint:
 	pylint rockcraft
-	pylint tests --disable=invalid-name,missing-module-docstring,missing-function-docstring,redefined-outer-name,no-self-use,too-many-arguments
+	pylint tests --disable=invalid-name,missing-module-docstring,missing-function-docstring,redefined-outer-name,too-many-arguments
 
 .PHONY: test-pyright
 test-pyright:
 	pyright .
+
+.PHONY: test-sphinx-lint
+test-sphinx-lint:
+	sphinx-lint docs/*
 
 .PHONY: test-units
 test-units: ## Run unit tests.

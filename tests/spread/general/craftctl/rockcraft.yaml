@@ -4,7 +4,11 @@ base: ubuntu:20.04
 summary: Echo
 description: Just a dummy build to demonstrate the different build steps
 license: Apache-2.0
-
+platforms:
+  craftctl:
+    build-on: ["amd64", "i386"]
+    build-for: amd64
+  
 parts:
   hello:
     plugin: make

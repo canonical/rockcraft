@@ -1,0 +1,19 @@
+summary: a test that checks ROCKs created with Chisel slices
+
+execute: |
+  rockcraft pack
+
+  ROCK=`ls *.rock`
+  IMG_NAME=chiselled-image
+
+  test -f $ROCK
+
+  # copy image to docker
+  docker images
+  sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:$ROCK docker-daemon:$IMG_NAME:latest
+  rm $ROCK
+  docker images
+
+  docker run --rm $IMG_NAME
+
+  docker system prune -a -f

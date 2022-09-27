@@ -1,6 +1,6 @@
 # -*- Mode:Python; indent-tabs-mode:nil; tab-width:4 -*-
 #
-# Copyright 2021 Canonical Ltd.
+# Copyright 2021-2022 Canonical Ltd.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 3 as
@@ -21,16 +21,19 @@ import logging
 import pathlib
 from typing import Generator, List
 
-from craft_providers import Executor, bases, multipass
+from craft_providers import Executor, ProviderError, base, bases, multipass
 from craft_providers.multipass.errors import MultipassError
 
-from rockcraft.errors import ProviderError
-from rockcraft.utils import confirm_with_user, get_managed_environment_project_path
-
-from ._buildd import BASE_TO_BUILDD_IMAGE_ALIAS, RockcraftBuilddBaseConfiguration
 from ._provider import Provider
 
 logger = logging.getLogger(__name__)
+
+
+PROVIDER_BASE_TO_MULTIPASS_BASE = {
+    bases.BuilddBaseAlias.BIONIC.value: "snapcraft:18.04",
+    bases.BuilddBaseAlias.FOCAL.value: "snapcraft:20.04",
+    bases.BuilddBaseAlias.JAMMY.value: "snapcraft:22.04",
+}
 
 
 class MultipassProvider(Provider):
@@ -58,7 +61,7 @@ class MultipassProvider(Provider):
         deleted: List[str] = []
 
         # Nothing to do if provider is not installed.
-        if not self.is_provider_available():
+        if not self.is_provider_installed():
             return deleted
 
         inode = project_path.stat().st_ino
@@ -92,23 +95,13 @@ class MultipassProvider(Provider):
         :raises ProviderError: if provider is not available.
         """
         if not multipass.is_installed():
-            if confirm_with_user(
-                "Multipass is required, but not installed. Do you wish to install Multipass "
-                "and configure it with the defaults?",
-                default=False,
-            ):
-                try:
-                    multipass.install()
-                except multipass.MultipassInstallationError as error:
-                    raise ProviderError(
-                        "Failed to install Multipass. Visit https://multipass.run/ for "
-                        "instructions on installing Multipass for your operating system.",
-                    ) from error
-            else:
+            try:
+                multipass.install()
+            except multipass.MultipassInstallationError as error:
                 raise ProviderError(
-                    "Multipass is required, but not installed. Visit https://multipass.run/ for "
+                    "Failed to install Multipass. Visit https://multipass.run/ for "
                     "instructions on installing Multipass for your operating system.",
-                )
+                ) from error
 
         try:
             multipass.ensure_multipass_is_ready()
@@ -116,8 +109,8 @@ class MultipassProvider(Provider):
             raise ProviderError(str(error)) from error
 
     @classmethod
-    def is_provider_available(cls) -> bool:
-        """Check if provider is installed and available for use.
+    def is_provider_installed(cls) -> bool:
+        """Check if provider is installed.
 
         :returns: True if installed.
         """
@@ -129,46 +122,33 @@ class MultipassProvider(Provider):
         *,
         project_name: str,
         project_path: pathlib.Path,
+        base_configuration: base.Base,
         build_base: str,
+        instance_name: str,
     ) -> Generator[Executor, None, None]:
-        """Launch environment for specified base.
+        """Configure and launch environment for specified base.
+
+        When this method loses context, all directories are unmounted and the
+        environment is stopped. For more control of environment setup and teardown,
+        use `create_environment()` instead.
 
         :param project_name: Name of the project.
         :param project_path: Path to project.
+        :param base_configuration: Base configuration to apply to instance.
         :param build_base: Base to build from.
+        :param instance_name: Name of the instance to launch.
         """
-        alias = BASE_TO_BUILDD_IMAGE_ALIAS[build_base]
-
-        instance_name = self.get_instance_name(
-            project_name=project_name,
-            project_path=project_path,
-        )
-
-        environment = self.get_command_environment()
-        base_configuration = RockcraftBuilddBaseConfiguration(
-            alias=alias, environment=environment, hostname=instance_name
-        )
-
         try:
             instance = multipass.launch(
                 name=instance_name,
                 base_configuration=base_configuration,
-                # XXX: replace with appropriate rockcraft base image
-                image_name=f"snapcraft:{build_base.replace(':', '-')}",
+                image_name=PROVIDER_BASE_TO_MULTIPASS_BASE[build_base],
                 cpus=2,
                 disk_gb=64,
                 mem_gb=2,
                 auto_clean=True,
             )
         except (bases.BaseConfigurationError, MultipassError) as error:
-            raise ProviderError(str(error)) from error
-
-        try:
-            # Mount project.
-            instance.mount(
-                host_source=project_path, target=get_managed_environment_project_path()
-            )
-        except MultipassError as error:
             raise ProviderError(str(error)) from error
 
         try:

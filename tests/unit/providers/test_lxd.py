@@ -1,6 +1,6 @@
 # -*- Mode:Python; indent-tabs-mode:nil; tab-width:4 -*-
 #
-# Copyright 2021 Canonical Ltd.
+# Copyright 2021-2022 Canonical Ltd.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 3 as
@@ -14,24 +14,24 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import pathlib
 import re
 from unittest import mock
-from unittest.mock import call
 
 import pytest
-from craft_providers import bases
+from craft_providers import ProviderError, bases
 from craft_providers.lxd import LXDError, LXDInstallationError
 
 from rockcraft import providers
-from rockcraft.providers import ProviderError
+
+# pylint: disable=duplicate-code
 
 
 @pytest.fixture()
-def mock_buildd_base_configuration():
+def mock_buildd_base_configuration(mocker):
     with mock.patch(
-        "rockcraft.providers._lxd.RockcraftBuilddBaseConfiguration", autospec=True
+        "rockcraft.providers._lxd.bases.BuilddBase", autospec=True
     ) as mock_base_config:
+        mock_base_config.compatibility_tag = "buildd-base-v0"
         yield mock_base_config
 
 
@@ -42,15 +42,6 @@ def mock_configure_buildd_image_remote():
         return_value="buildd-remote",
     ) as mock_remote:
         yield mock_remote
-
-
-@pytest.fixture
-def mock_confirm_with_user():
-    with mock.patch(
-        "rockcraft.providers._lxd.confirm_with_user",
-        return_value=False,
-    ) as mock_confirm:
-        yield mock_confirm
 
 
 @pytest.fixture
@@ -199,36 +190,10 @@ def test_ensure_provider_is_available_ok_when_installed(mock_lxd_is_installed):
     provider.ensure_provider_is_available()
 
 
-def test_ensure_provider_is_available_errors_when_user_declines(
-    mock_confirm_with_user, mock_lxd_is_installed
-):
-    mock_confirm_with_user.return_value = False
-    mock_lxd_is_installed.return_value = False
-    provider = providers.LXDProvider()
-
-    with pytest.raises(
-        ProviderError,
-        match=re.escape(
-            "LXD is required, but not installed. Visit https://snapcraft.io/lxd for "
-            "instructions on how to install the LXD snap for your distribution"
-        ),
-    ):
-        provider.ensure_provider_is_available()
-
-    assert mock_confirm_with_user.mock_calls == [
-        mock.call(
-            "LXD is required, but not installed. "
-            "Do you wish to install LXD and configure it with the defaults?",
-            default=False,
-        )
-    ]
-
-
 def test_ensure_provider_is_available_errors_when_lxd_install_fails(
-    mock_confirm_with_user, mock_lxd_is_installed, mock_lxd_install
+    mock_lxd_is_installed, mock_lxd_install
 ):
     error = LXDInstallationError("foo")
-    mock_confirm_with_user.return_value = True
     mock_lxd_is_installed.return_value = False
     mock_lxd_install.side_effect = error
     provider = providers.LXDProvider()
@@ -242,18 +207,10 @@ def test_ensure_provider_is_available_errors_when_lxd_install_fails(
     ) as raised:
         provider.ensure_provider_is_available()
 
-    assert mock_confirm_with_user.mock_calls == [
-        mock.call(
-            "LXD is required, but not installed. "
-            "Do you wish to install LXD and configure it with the defaults?",
-            default=False,
-        )
-    ]
     assert raised.value.__cause__ is error
 
 
 def test_ensure_provider_is_available_errors_when_lxd_not_ready(
-    mock_confirm_with_user,
     mock_lxd_is_installed,
     mock_lxd_install,
     mock_lxd_ensure_lxd_is_ready,
@@ -261,7 +218,6 @@ def test_ensure_provider_is_available_errors_when_lxd_not_ready(
     error = LXDError(
         brief="some error", details="some details", resolution="some resolution"
     )
-    mock_confirm_with_user.return_value = True
     mock_lxd_is_installed.return_value = True
     mock_lxd_ensure_lxd_is_ready.side_effect = error
     provider = providers.LXDProvider()
@@ -275,72 +231,47 @@ def test_ensure_provider_is_available_errors_when_lxd_not_ready(
     assert raised.value.__cause__ is error
 
 
-def test_get_command_environment_minimal(monkeypatch):
-    monkeypatch.setenv("IGNORE_ME", "or-im-failing")
-    monkeypatch.setenv("PATH", "not-using-host-path")
-    provider = providers.LXDProvider()
-
-    env = provider.get_command_environment()
-
-    assert env == {
-        "ROCKCRAFT_MANAGED_MODE": "1",
-        "PATH": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin",
-    }
-
-
-def test_get_instance_name(mock_path):
-    provider = providers.LXDProvider()
-
-    assert (
-        provider.get_instance_name(
-            project_name="my-project-name",
-            project_path=mock_path,
-        )
-        == "rockcraft-my-project-name-445566"
-    )
-
-
 @pytest.mark.parametrize("is_installed", [True, False])
-def test_is_provider_available(is_installed, mock_lxd_is_installed):
+def test_is_provider_installed(is_installed, mock_lxd_is_installed):
     mock_lxd_is_installed.return_value = is_installed
     provider = providers.LXDProvider()
 
-    assert provider.is_provider_available() == is_installed
+    assert provider.is_provider_installed() == is_installed
 
 
 @pytest.mark.parametrize(
-    "channel,alias",
-    [("18.04", bases.BuilddBaseAlias.BIONIC), ("20.04", bases.BuilddBaseAlias.FOCAL)],
+    "build_base, lxd_base",
+    [
+        (bases.BuilddBaseAlias.BIONIC.value, "core18"),
+        (bases.BuilddBaseAlias.FOCAL.value, "core20"),
+        (bases.BuilddBaseAlias.JAMMY.value, "core22"),
+    ],
 )
 def test_launched_environment(
-    channel,
-    alias,
+    build_base,
+    lxd_base,
     mock_buildd_base_configuration,
     mock_configure_buildd_image_remote,
     mock_lxd_launch,
-    monkeypatch,
     tmp_path,
     mock_path,
 ):
-    expected_environment = {
-        "ROCKCRAFT_MANAGED_MODE": "1",
-        "PATH": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin",
-    }
-
     provider = providers.LXDProvider()
 
     with provider.launched_environment(
         project_name="test-rock",
         project_path=mock_path,
-        build_base=f"ubuntu:{channel}",
+        base_configuration=mock_buildd_base_configuration,
+        build_base=build_base,
+        instance_name="test-instance-name",
     ) as instance:
         assert instance is not None
         assert mock_configure_buildd_image_remote.mock_calls == [mock.call()]
         assert mock_lxd_launch.mock_calls == [
             mock.call(
-                name="rockcraft-test-rock-445566",
-                base_configuration=mock_buildd_base_configuration.return_value,
-                image_name=channel,
+                name="test-instance-name",
+                base_configuration=mock_buildd_base_configuration,
+                image_name=lxd_base,
                 image_remote="buildd-remote",
                 auto_clean=True,
                 auto_create_project=True,
@@ -350,16 +281,6 @@ def test_launched_environment(
                 project="rockcraft",
                 remote="local",
             ),
-            mock.call().mount(
-                host_source=mock_path, target=pathlib.Path("/root/project")
-            ),
-        ]
-        assert mock_buildd_base_configuration.mock_calls == [
-            call(
-                alias=alias,
-                environment=expected_environment,
-                hostname="rockcraft-test-rock-445566",
-            )
         ]
 
         mock_lxd_launch.reset_mock()
@@ -384,7 +305,9 @@ def test_launched_environment_launch_base_configuration_error(
         with provider.launched_environment(
             project_name="test-rock",
             project_path=tmp_path,
-            build_base="ubuntu:20.04",
+            base_configuration=mock_buildd_base_configuration,
+            build_base=bases.BuilddBaseAlias.FOCAL.value,
+            instance_name="test-instance-name",
         ):
             pass
 
@@ -405,7 +328,9 @@ def test_launched_environment_launch_lxd_error(
         with provider.launched_environment(
             project_name="test-rock",
             project_path=tmp_path,
-            build_base="ubuntu:20.04",
+            base_configuration=mock_buildd_base_configuration,
+            build_base=bases.BuilddBaseAlias.FOCAL.value,
+            instance_name="test-instance-name",
         ):
             pass
 
@@ -424,7 +349,9 @@ def test_launched_environment_unmounts_and_stops_after_error(
         with provider.launched_environment(
             project_name="test-rock",
             project_path=tmp_path,
-            build_base="ubuntu:20.04",
+            base_configuration=mock_buildd_base_configuration,
+            build_base=bases.BuilddBaseAlias.FOCAL.value,
+            instance_name="test-instance-name",
         ):
             mock_lxd_launch.reset_mock()
             raise RuntimeError("this is a test")
@@ -447,7 +374,11 @@ def test_launched_environment_unmount_all_error(
 
     with pytest.raises(ProviderError, match="fail") as raised:
         with provider.launched_environment(
-            project_name="test-rock", project_path=tmp_path, build_base="ubuntu:20.04"
+            project_name="test-rock",
+            project_path=tmp_path,
+            base_configuration=mock_buildd_base_configuration,
+            build_base=bases.BuilddBaseAlias.FOCAL.value,
+            instance_name="test-instance-name",
         ):
             pass
 
@@ -468,7 +399,9 @@ def test_launched_environment_stop_error(
         with provider.launched_environment(
             project_name="test-rock",
             project_path=tmp_path,
-            build_base="ubuntu:22.04",
+            base_configuration=mock_buildd_base_configuration,
+            build_base=bases.BuilddBaseAlias.JAMMY.value,
+            instance_name="test-instance-name",
         ):
             pass
 

@@ -7,7 +7,9 @@ description: |
   adding references to issues/PRs where appropriate.
 license: Apache-2.0
 base: ubuntu:22.04
-
+platforms:
+  amd64:
+  
 parts:
   issue-44-dir-owner:
     plugin: dump
