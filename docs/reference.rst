@@ -104,3 +104,20 @@ Example
       plugin: nil
       stage-packages:
         - hello
+
+Rockcraft parts
+---------------
+
+.. rubric:: The main building blocks of a ROCK are *parts*.
+
+If this sentence sounds familiar, it's because **it is familiar**!
+Rockcraft parts are inherited from other existing Craft tools like `Snapcraft <https://github.com/snapcore/snapcraft>`_ and
+`Charmcraft <https://github.com/canonical/charmcraft>`_. 
+
+The way the *parts*' keys and values are used in the *rockcraft.yaml* is exactly the same
+as in `*snapcraft.yaml* <https://snapcraft.io/docs/snapcraft-parts-metadata>`_ (`here <https://snapcraft.io/docs/adding-parts>`_ is
+how you define a *part*).
+
+Analogously, Rockcraft *parts* all go through the same lifecycle steps as Charmcraft and `Snapcraft parts <https://snapcraft.io/docs/parts-lifecycle>`_.
+
+
