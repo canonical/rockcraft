@@ -16,7 +16,7 @@
 
 import argparse
 from pathlib import Path
-from unittest.mock import Mock, patch
+from unittest.mock import Mock
 
 import pytest
 from craft_cli import CraftError, EmitterMode, emit
@@ -26,16 +26,16 @@ from rockcraft import lifecycle
 
 
 @pytest.fixture
-def mock_project():
-    with patch("rockcraft.project") as _mock_project:
-        _mock_project.name = "test-name"
-        _mock_project.platforms = {
-            "test-platform": {
-                "build_on": ["test-build-on"],
-                "build_for": ["test-build-for"],
-            }
+def mock_project(mocker):
+    _mock_project = mocker.patch("rockcraft.project")
+    _mock_project.name = "test-name"
+    _mock_project.platforms = {
+        "test-platform": {
+            "build_on": ["test-build-on"],
+            "build_for": ["test-build-for"],
         }
-        yield _mock_project
+    }
+    yield _mock_project
 
 
 @pytest.fixture()
@@ -47,10 +47,9 @@ def mock_provider(mocker, mock_instance, fake_provider):
 
 @pytest.fixture()
 def mock_get_instance_name(mocker):
-    with patch(
+    yield mocker.patch(
         "rockcraft.lifecycle.get_instance_name", return_value="test-instance-name"
-    ) as _mock_get_instance_name:
-        yield _mock_get_instance_name
+    )
 
 
 @pytest.mark.parametrize(
