@@ -10,8 +10,8 @@ execute: |
 
   # test container execution
   docker images
-  sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:my-rock-name_0.1.rock docker-daemon:my-rock-name:0.1
-  rm my-rock-name_0.1.rock
+  sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:my-rock-name_0.1_amd64.rock docker-daemon:my-rock-name:0.1
+  rm my-rock-name_0.1_amd64.rock
   docker images
   docker run --rm my-rock-name:0.1 bash -c 'echo Hello World'
   docker system prune -a -f
