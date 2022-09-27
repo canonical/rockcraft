@@ -46,7 +46,7 @@ def fake_provider(mock_instance):
             pass
 
         @classmethod
-        def is_provider_available(cls) -> bool:
+        def is_provider_installed(cls) -> bool:
             return True
 
         @contextlib.contextmanager

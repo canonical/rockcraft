@@ -31,6 +31,7 @@ from .project import Project, load_project
 from .providers.providers import (
     ROCKCRAFT_BASE_TO_PROVIDER_BASE,
     capture_logs_from_instance,
+    ensure_provider_is_available,
     get_base_configuration,
     get_instance_name,
 )
@@ -175,7 +176,7 @@ def run_in_provider(
 ):
     """Run lifecycle command in provider instance."""
     provider = providers.get_provider()
-    provider.ensure_provider_is_available()
+    ensure_provider_is_available(provider)
 
     cmd = ["rockcraft", command_name]
 

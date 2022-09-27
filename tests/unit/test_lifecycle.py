@@ -81,6 +81,9 @@ def test_lifecycle_run_in_provider(
     mock_capture_logs_from_instance = mocker.patch(
         "rockcraft.lifecycle.capture_logs_from_instance"
     )
+    mock_ensure_provider_is_available = mocker.patch(
+        "rockcraft.lifecycle.ensure_provider_is_available"
+    )
     mock_project.build_base = rockcraft_base
 
     cwd = Path().absolute()
@@ -94,7 +97,7 @@ def test_lifecycle_run_in_provider(
         parsed_args=argparse.Namespace(),
     )
 
-    mock_provider.ensure_provider_is_available.assert_called_once()
+    mock_ensure_provider_is_available.assert_called_once_with(mock_provider)
     mock_get_instance_name.assert_called_once_with(
         project_name="test-name",
         project_path=cwd,
