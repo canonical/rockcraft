@@ -5,7 +5,7 @@ execute: |
   test -f rockcraft.yaml
   rockcraft pack
 
-  test -f my-rock-name_0.1.rock
+  test -f my-rock-name_0.1_amd64.rock
   test ! -d work
 
   # test container execution
