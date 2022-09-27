@@ -25,7 +25,7 @@ from typing import TYPE_CHECKING
 from craft_cli import emit
 from craft_providers import ProviderError
 
-from . import oci, providers, utils
+from . import oci, utils
 from .parts import PartsLifecycle
 from .project import Project, load_project
 from .providers.providers import (
@@ -34,6 +34,7 @@ from .providers.providers import (
     ensure_provider_is_available,
     get_base_configuration,
     get_instance_name,
+    get_provider,
 )
 
 if TYPE_CHECKING:
@@ -175,7 +176,7 @@ def run_in_provider(
     project: Project, command_name: str, parsed_args: "argparse.Namespace"
 ):
     """Run lifecycle command in provider instance."""
-    provider = providers.get_provider()
+    provider = get_provider()
     ensure_provider_is_available(provider)
 
     cmd = ["rockcraft", command_name]
