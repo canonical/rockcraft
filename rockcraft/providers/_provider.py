@@ -72,7 +72,14 @@ class Provider(ABC):
         :returns: True if installed.
         """
 
-    # TODO: migrate `create_environment()` from snapcraft or charmcraft
+    @abstractmethod
+    def create_environment(self, *, instance_name: str) -> Executor:
+        """Create a bare environment for specified base.
+
+        No initializing, launching, or cleaning up of the environment occurs.
+
+        :param instance_name: name of the instance to create
+        """
 
     @abstractmethod
     @contextlib.contextmanager

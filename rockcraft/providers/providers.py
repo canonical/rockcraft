@@ -55,11 +55,7 @@ def get_command_environment() -> Dict[str, Optional[str]]:
     return env
 
 
-def get_instance_name(
-    *,
-    project_name: str,
-    project_path: Path,
-) -> str:
+def get_instance_name(*, project_name: str, project_path: Path) -> str:
     """Formulate the name for an instance using each of the given parameters.
 
     Incorporate each of the parameters into the name to come up with a

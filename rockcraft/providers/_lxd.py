@@ -124,6 +124,19 @@ class LXDProvider(Provider):
         """
         return lxd.is_installed()
 
+    def create_environment(self, *, instance_name: str) -> Executor:
+        """Create a bare environment for specified base.
+
+        No initializing, launching, or cleaning up of the environment occurs.
+
+        :param instance_name: Name of the instance.
+        """
+        return lxd.LXDInstance(
+            name=instance_name,
+            project=self.lxd_project,
+            remote=self.lxd_remote,
+        )
+
     @contextlib.contextmanager
     def launched_environment(
         self,
