@@ -44,9 +44,7 @@ prepare: |
   snap install docker
 
   # make sure docker is working
-  sleep 5
-  docker run hello-world
-  sleep 5
+  retry -n 10 --wait 2 sh -c 'docker run --rm hello-world'
 
   snap install lxd
 
@@ -68,6 +66,12 @@ prepare: |
     echo "Expected a snap to exist in /rockcraft/"
     exit 1
   fi
+
+restore-each: |
+  # Cleanup after each task.
+  docker system prune -a -f
+  lxc --project=rockcraft stop --all
+  lxc --project=rockcraft delete $(lxc --project=rockcraft list -c n --format csv)
 
 suites:
   tests/spread/tutorials/:

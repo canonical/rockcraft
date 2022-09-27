@@ -15,5 +15,4 @@ execute: |
   rm smoke-test_latest_amd64.rock
   docker images
   docker run --rm smoke-test:latest | grep "hello, world"
-  docker system prune -a -f
 
