@@ -162,3 +162,39 @@ def ensure_provider_is_available(provider: Provider) -> None:
         MultipassProvider.ensure_provider_is_available()
     else:
         raise ProviderError("cannot install unknown provider")
+
+
+def get_provider() -> Provider:
+    """Get the configured or appropriate provider for the host OS.
+
+    To determine the appropriate provider,
+    (1) get the provider from the environment variable `ROCKCRAFT_PROVIDER`
+    (2) default to platform default (LXD on Linux, otherwise Multipass)
+
+    :return: Provider instance.
+    """
+    env_provider = os.getenv("ROCKCRAFT_PROVIDER")
+
+    # (1) get the provider from the environment variable `ROCKCRAFT_PROVIDER`
+    if env_provider:
+        emit.debug(
+            f"Using provider {env_provider!r} from environmental variable "
+            "'ROCKCRAFT_PROVIDER'"
+        )
+        chosen_provider = env_provider
+
+    # (2) default to platform default (LXD on Linux, otherwise Multipass)
+    elif sys.platform == "linux":
+        emit.debug("Using default provider 'lxd' on linux system")
+        chosen_provider = "lxd"
+    else:
+        emit.debug("Using default provider 'multipass' on non-linux system")
+        chosen_provider = "multipass"
+
+    # return the chosen provider
+    if chosen_provider == "lxd":
+        return LXDProvider()
+    if chosen_provider == "multipass":
+        return MultipassProvider()
+
+    raise ValueError(f"unsupported provider specified: {chosen_provider!r}")

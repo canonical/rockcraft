@@ -35,9 +35,7 @@ def mock_project():
 @pytest.fixture()
 def mock_provider(mocker, mock_instance, fake_provider):
     _mock_provider = Mock(wraps=fake_provider)
-    mocker.patch(
-        "rockcraft.lifecycle.providers.get_provider", return_value=_mock_provider
-    )
+    mocker.patch("rockcraft.lifecycle.get_provider", return_value=_mock_provider)
     yield _mock_provider
 
 
