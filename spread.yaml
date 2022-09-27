@@ -45,7 +45,11 @@ prepare: |
 
   # make sure docker is working
   sleep 5
-  docker run hello-world
+  if ! docker run hello-world; then
+    snap logs docker
+    echo "docker is not running, exiting"
+    exit 1
+  fi
   sleep 5
 
   snap install lxd
