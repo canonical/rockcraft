@@ -38,12 +38,7 @@ def provider_class(request):
         ),
     ],
 )
-def test_is_base_available(
-    provider_class,
-    name,
-    expected_valid,
-    expected_reason,
-):
+def test_is_base_available(provider_class, name, expected_valid, expected_reason):
     provider = provider_class()
 
     valid, reason = provider.is_base_available(name)
