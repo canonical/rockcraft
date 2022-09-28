@@ -32,12 +32,14 @@ COMMAND_GROUPS = [
     craft_cli.CommandGroup(
         "Lifecycle",
         [
+            commands.CleanCommand,
             commands.PullCommand,
             commands.OverlayCommand,
             commands.BuildCommand,
             commands.StageCommand,
             commands.PrimeCommand,
             commands.PackCommand,
+            commands.InitCommand,
         ],
     )
 ]

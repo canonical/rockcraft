@@ -15,4 +15,3 @@ execute: |
   rm craftctl-test_latest_craftctl.rock
   docker images
   docker run --rm --entrypoint /usr/bin/hello craftctl-test:latest
-  docker system prune -a -f

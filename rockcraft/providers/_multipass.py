@@ -108,6 +108,15 @@ class MultipassProvider(Provider):
         except multipass.MultipassError as error:
             raise ProviderError(str(error)) from error
 
+    def create_environment(self, *, instance_name: str) -> Executor:
+        """Create a bare environment for specified base.
+
+        No initializing, launching, or cleaning up of the environment occurs.
+
+        :param name: Name of the instance.
+        """
+        return multipass.MultipassInstance(name=instance_name)
+
     @classmethod
     def is_provider_installed(cls) -> bool:
         """Check if provider is installed.

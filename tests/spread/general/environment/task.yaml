@@ -13,4 +13,3 @@ execute: |
   rm environment-test_latest*.rock  
   docker images
   docker run --rm environment-test bash -c 'echo $X' | grep "ship it!"
-  docker system prune -a -f

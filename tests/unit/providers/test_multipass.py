@@ -225,6 +225,17 @@ def test_is_provider_installed(is_installed, mock_multipass_is_installed):
     assert provider.is_provider_installed() == is_installed
 
 
+def test_create_environment(mocker):
+    mock_multipass_instance = mocker.patch(
+        "rockcraft.providers._multipass.multipass.MultipassInstance"
+    )
+
+    provider = providers.MultipassProvider()
+    provider.create_environment(instance_name="test-name")
+
+    mock_multipass_instance.assert_called_once_with(name="test-name")
+
+
 @pytest.mark.parametrize(
     "build_base, multipass_base",
     [
