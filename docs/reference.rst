@@ -121,48 +121,28 @@ as in `*snapcraft.yaml* <https://snapcraft.io/docs/snapcraft-parts-metadata>`_ (
 how you define a *part*).
 
 Albeit being fundamentally identical to Snapcraft parts, Rockcraft parts actually offer some extended functionality and keywords:
-- **stage-packages**: apart from offering the well-known package installation behavior, in Rockcraft the ```stage-packages``` keyword
-actually supports chiseled packages as well (see below to know more about `Chisel`_).
 
- 
-Chisel
-......
-
-As the name says, Chisel is a tool for carving and cutting. But carving and cutting what? Even though we are talking about ROCKs, it's not
-like these are actual solid masses one can physically interact with...
-
-`Chisel <https://github.com/canonical/chisel>`_ is a software tool for carving and cutting **Debian packages**!
-
-One of the key value propositions of Rockcraft is the ability to build truly minimal container images while honoring the Ubuntu experience.
-Well, when having a closer look at a Debian package, it is easy to understand that this artifact is purely an archive that can be inspected, 
-navigated and deconstructed. Having noted this, we've come up with the idea of **Package Slices** - minimal, complimentary and loosely coupled
-sets of files, based on the package's metadata and content. Slices are basically subsets of the Debian packages, with their own content
-and set of dependencies to other internal and external slices.
-
-  |pic1|  ➜  |pic2|
-
-.. |pic1| image:: _static/package-slices.png
-  :width: 45%
-  :alt: Debian package slices with dependencies
-
-.. |pic2| image:: _static/slice-of-ubuntu.png
-  :width: 45%
-  :alt: Debian package slices with dependencies
-
-This image depicts a simple case, where both packages *A* and *B* are deconstructed into multiple slices. At a package level, *B* depends on *A*,
-but in reality, there might be files in *A* which *B* doesn't actually need (eg. *A_slice3* isn't needed for *B* to function properly). With this
-slice definition in place, Chisel is able to extract a highly-customized and specialized Slice of the Ubuntu distribution, which one could see
-as a block of stone from which we can carve and extract small and relevant parts we need to run our applications. 
-It is ideal to support the creation of smaller but equally functional container images.
-
-    *“The sculpture is already complete within the marble block, before I start my work. It is already there, I just have to chisel away the superfluous material.”*
-      \- Michelangelo
-
-In the end, it's like having a slice of Ubuntu - *just what you need*.
+* **stage-packages**: apart from offering the well-known package installation behavior, in Rockcraft the `stage-packages` keyword actually supports chiseled packages as well (:ref:`learn more about Chisel <what-is-chisel>`). To install a package slice instead of the whole package, simply follow the Chisel convention *<packageName>_<sliceName>*.
 
 
+Example
+.......
+
+.. _chisel-example:
+
+.. code-block:: yaml
+
+  parts:
+    chisel-openssl-binaries-only:
+      plugin: nil
+      stage-packages:
+        - openssl_bins
+        - ca-certificates_data
+
+    package-hello:
+      plugin: nil
+      stage-packages:
+        - hello
 
 
-
-
-
+NOTE: at the moment, it is not possible to mix packages and slices in the same stage-packages field.

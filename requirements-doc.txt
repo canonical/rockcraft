@@ -7,6 +7,7 @@ craft-parts==1.13.0
 craft-providers==1.5.0
 Deprecated==1.2.13
 docutils==0.17.1
+furo==2022.9.15
 idna==3.3
 imagesize==1.4.1
 Jinja2==3.1.2
@@ -31,7 +32,6 @@ Sphinx==5.1.1
 sphinx-autodoc-typehints==1.19.2
 sphinx-jsonschema==1.19.1
 sphinx-pydantic==0.1.1
-sphinx-rtd-theme==1.0.0
 sphinxcontrib-applehelp==1.0.2
 sphinxcontrib-devhelp==1.0.2
 sphinxcontrib-htmlhelp==2.0.0
