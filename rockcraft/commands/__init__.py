@@ -16,6 +16,7 @@
 
 """Rockcraft commands."""
 
+from .init import InitCommand
 from .lifecycle import (
     BuildCommand,
     CleanCommand,
@@ -27,6 +28,7 @@ from .lifecycle import (
 )
 
 __all__ = [
+    "InitCommand",
     "CleanCommand",
     "PullCommand",
     "OverlayCommand",

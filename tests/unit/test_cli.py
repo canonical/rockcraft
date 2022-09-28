@@ -16,13 +16,30 @@
 
 import sys
 from argparse import Namespace
-from unittest.mock import call
+from unittest.mock import call, patch
 
 import pytest
+import yaml
 from craft_cli import CraftError, ProvideHelpException, emit
 from craft_providers import ProviderError
 
-from rockcraft import cli
+from rockcraft import cli, project
+
+
+@pytest.fixture
+def lifecycle_pack_mock():
+    """Mock for ui.pack."""
+    patcher = patch("rockcraft.lifecycle.pack")
+    yield patcher.start()
+    patcher.stop()
+
+
+@pytest.fixture
+def lifecycle_init_mock():
+    """Mock for ui.init."""
+    patcher = patch("rockcraft.commands.init.init")
+    yield patcher.start()
+    patcher.stop()
 
 
 @pytest.mark.parametrize("cmd", ["pull", "overlay", "build", "stage", "prime"])
@@ -84,6 +101,27 @@ def test_run_pack(mocker):
     cli.run()
 
     assert run_mock.mock_calls == [call("pack", Namespace())]
+    assert mock_ended_ok.mock_calls == [call()]
+
+
+def test_run_init(mocker, lifecycle_init_mock):
+    mock_ended_ok = mocker.spy(emit, "ended_ok")
+    mocker.patch.object(sys, "argv", ["rockcraft", "init"])
+    cli.run()
+
+    rock_project = project.Project.unmarshal(
+        yaml.safe_load(
+            # pylint: disable=W0212
+            cli.commands.InitCommand._INIT_TEMPLATE_YAML
+        )
+    )
+
+    assert len(rock_project.summary) < 80
+    assert len(rock_project.description.split()) < 100
+
+    assert lifecycle_init_mock.mock_calls == [
+        call(cli.commands.InitCommand._INIT_TEMPLATE_YAML)  # pylint: disable=W0212
+    ]
     assert mock_ended_ok.mock_calls == [call()]
 
 
