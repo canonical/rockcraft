@@ -132,7 +132,8 @@ How to use Chisel?
 ..................
 
 Chisel has been integrated with Rockcraft in a way that it becomes seamless to users. Packages and slices can be both installed via the
-`stage-packages` field, being that slices follow an underscore-driven naming convention, i.e. `openssl` means the whole OpenSSL package, while
+`stage-packages` field without any ambiguities because slices follow an underscore-driven naming convention.
+For instance, `openssl` means the whole OpenSSL package, while
 `openssl_bins` means just the binaries slice of the OpenSSL package. And that's it. Rockcraft will then take care of the installation and
 priming of your content into the ROCK. There's an example :ref:`here <chisel-example>`.
 
