@@ -206,15 +206,16 @@ class Project(pydantic.BaseModel):
         # with the message "Bad rockcraft.yaml content", which is misleading
         # since the user hasn't specified such part.
         # Is there another logical place where this insertion could happen?
+
+        # NOTE: pebble part build overridden because of "go generate" issue (#102)
         pebble_part_spec = {
             "pebble": {
                 "plugin": "go",
                 "source": "https://github.com/canonical/pebble.git",
-                "build-environment": [
-                    {"CGO_ENABLED": "0"},
-                ],
                 "build-snaps": ["go/1.19/stable"],
-                "prime": ["bin/pebble"],
+                "override-build": "go mod download\n"
+                "CGO_ENABLED=0 go build -o pebble ./cmd/pebble\n"
+                'install -D -m755 pebble "$CRAFT_PART_INSTALL"/bin/pebble\n',
             }
         }
         parts = {**parts, **pebble_part_spec}
