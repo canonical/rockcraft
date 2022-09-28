@@ -1,6 +1,6 @@
 # -*- Mode:Python; indent-tabs-mode:nil; tab-width:4 -*-
 #
-# Copyright 2021 Canonical Ltd.
+# Copyright 2021-2022 Canonical Ltd.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 3 as
@@ -21,20 +21,17 @@ import logging
 import pathlib
 from typing import Generator, List
 
-from craft_providers import Executor, bases, lxd
+from craft_providers import Executor, ProviderError, base, bases, lxd
 
-from rockcraft.errors import ProviderError
-from rockcraft.utils import confirm_with_user, get_managed_environment_project_path
-
-from ._buildd import BASE_TO_BUILDD_IMAGE_ALIAS, RockcraftBuilddBaseConfiguration
 from ._provider import Provider
 
 logger = logging.getLogger(__name__)
 
-_BASE_IMAGE = {
-    "ubuntu:18.04": "18.04",
-    "ubuntu:20.04": "20.04",
-    "ubuntu:22.04": "22.04",
+
+PROVIDER_BASE_TO_LXD_BASE = {
+    bases.BuilddBaseAlias.BIONIC.value: "core18",
+    bases.BuilddBaseAlias.FOCAL.value: "core20",
+    bases.BuilddBaseAlias.JAMMY.value: "core22",
 }
 
 
@@ -69,7 +66,7 @@ class LXDProvider(Provider):
         deleted: List[str] = []
 
         # Nothing to do if provider is not installed.
-        if not self.is_provider_available():
+        if not self.is_provider_installed():
             return deleted
 
         inode = str(project_path.stat().st_ino)
@@ -101,28 +98,18 @@ class LXDProvider(Provider):
 
     @classmethod
     def ensure_provider_is_available(cls) -> None:
-        """Ensure provider is available, prompting the user to install it if required.
+        """Ensure provider is available and ready, installing if required.
 
         :raises ProviderError: if provider is not available.
         """
         if not lxd.is_installed():
-            if confirm_with_user(
-                "LXD is required, but not installed. Do you wish to install LXD "
-                "and configure it with the defaults?",
-                default=False,
-            ):
-                try:
-                    lxd.install()
-                except lxd.LXDInstallationError as error:
-                    raise ProviderError(
-                        "Failed to install LXD. Visit https://snapcraft.io/lxd for "
-                        "instructions on how to install the LXD snap for your distribution",
-                    ) from error
-            else:
+            try:
+                lxd.install()
+            except lxd.LXDInstallationError as error:
                 raise ProviderError(
-                    "LXD is required, but not installed. Visit https://snapcraft.io/lxd "
-                    "for instructions on how to install the LXD snap for your distribution",
-                )
+                    "Failed to install LXD. Visit https://snapcraft.io/lxd for "
+                    "instructions on how to install the LXD snap for your distribution",
+                ) from error
 
         try:
             lxd.ensure_lxd_is_ready()
@@ -130,12 +117,25 @@ class LXDProvider(Provider):
             raise ProviderError(str(error)) from error
 
     @classmethod
-    def is_provider_available(cls) -> bool:
-        """Check if provider is installed and available for use.
+    def is_provider_installed(cls) -> bool:
+        """Check if provider is installed.
 
         :returns: True if installed.
         """
         return lxd.is_installed()
+
+    def create_environment(self, *, instance_name: str) -> Executor:
+        """Create a bare environment for specified base.
+
+        No initializing, launching, or cleaning up of the environment occurs.
+
+        :param instance_name: Name of the instance.
+        """
+        return lxd.LXDInstance(
+            name=instance_name,
+            project=self.lxd_project,
+            remote=self.lxd_remote,
+        )
 
     @contextlib.contextmanager
     def launched_environment(
@@ -143,36 +143,32 @@ class LXDProvider(Provider):
         *,
         project_name: str,
         project_path: pathlib.Path,
+        base_configuration: base.Base,
         build_base: str,
+        instance_name: str,
     ) -> Generator[Executor, None, None]:
-        """Launch environment for specified base.
+        """Configure and launch environment for specified base.
+
+        When this method loses context, all directories are unmounted and the
+        environment is stopped. For more control of environment setup and teardown,
+        use `create_environment()` instead.
 
         :param project_name: Name of project.
         :param project_path: Path to project.
+        :param base_configuration: Base configuration to apply to instance.
         :param build_base: Base to build from.
+        :param instance_name: Name of the instance to launch.
         """
-        alias = BASE_TO_BUILDD_IMAGE_ALIAS[build_base]
-
-        instance_name = self.get_instance_name(
-            project_name=project_name,
-            project_path=project_path,
-        )
-
-        environment = self.get_command_environment()
         try:
             image_remote = lxd.configure_buildd_image_remote()
         except lxd.LXDError as error:
             raise ProviderError(str(error)) from error
 
-        base_configuration = RockcraftBuilddBaseConfiguration(
-            alias=alias, environment=environment, hostname=instance_name
-        )
-
         try:
             instance = lxd.launch(
                 name=instance_name,
                 base_configuration=base_configuration,
-                image_name=_BASE_IMAGE[build_base],
+                image_name=PROVIDER_BASE_TO_LXD_BASE[build_base],
                 image_remote=image_remote,
                 auto_clean=True,
                 auto_create_project=True,
@@ -184,11 +180,6 @@ class LXDProvider(Provider):
             )
         except (bases.BaseConfigurationError, lxd.LXDError) as error:
             raise ProviderError(str(error)) from error
-
-        # Mount project.
-        instance.mount(
-            host_source=project_path, target=get_managed_environment_project_path()
-        )
 
         try:
             yield instance

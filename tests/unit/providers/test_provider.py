@@ -18,49 +18,12 @@ import pytest
 
 from rockcraft import providers
 
-
-def test_get_command_environment_minimal(monkeypatch):
-    monkeypatch.setenv("IGNORE_ME", "or-im-failing")
-    monkeypatch.setenv("PATH", "not-using-host-path")
-    provider = providers.LXDProvider()
-
-    env = provider.get_command_environment()
-
-    assert env == {
-        "ROCKCRAFT_MANAGED_MODE": "1",
-        "PATH": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin",
-    }
+known_provider_classes = [providers.LXDProvider, providers.MultipassProvider]
 
 
-def test_get_command_environment_all_opts(monkeypatch):
-    monkeypatch.setenv("IGNORE_ME", "or-im-failing")
-    monkeypatch.setenv("PATH", "not-using-host-path")
-    monkeypatch.setenv("http_proxy", "test-http-proxy")
-    monkeypatch.setenv("https_proxy", "test-https-proxy")
-    monkeypatch.setenv("no_proxy", "test-no-proxy")
-    provider = providers.LXDProvider()
-
-    env = provider.get_command_environment()
-
-    assert env == {
-        "ROCKCRAFT_MANAGED_MODE": "1",
-        "PATH": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin",
-        "http_proxy": "test-http-proxy",
-        "https_proxy": "test-https-proxy",
-        "no_proxy": "test-no-proxy",
-    }
-
-
-def test_get_instance_name(mock_path):
-    provider = providers.LXDProvider()
-
-    assert (
-        provider.get_instance_name(
-            project_name="my-project-name",
-            project_path=mock_path,
-        )
-        == "rockcraft-my-project-name-445566"
-    )
+@pytest.fixture(params=known_provider_classes)
+def provider_class(request):
+    return request.param
 
 
 @pytest.mark.parametrize(
@@ -75,8 +38,8 @@ def test_get_instance_name(mock_path):
         ),
     ],
 )
-def test_is_base_available(name, expected_valid, expected_reason):
-    provider = providers.LXDProvider()
+def test_is_base_available(provider_class, name, expected_valid, expected_reason):
+    provider = provider_class()
 
     valid, reason = provider.is_base_available(name)
 

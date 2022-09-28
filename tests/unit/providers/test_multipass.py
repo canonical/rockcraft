@@ -1,6 +1,6 @@
 # -*- Mode:Python; indent-tabs-mode:nil; tab-width:4 -*-
 #
-# Copyright 2021 Canonical Ltd.
+# Copyright 2021-2022 Canonical Ltd.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 3 as
@@ -14,34 +14,23 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import pathlib
 import re
 from unittest import mock
-from unittest.mock import call
 
 import pytest
-from craft_providers import bases
+from craft_providers import ProviderError, bases
 from craft_providers.multipass import MultipassError, MultipassInstallationError
 
 from rockcraft import providers
-from rockcraft.providers import ProviderError
 
 
 @pytest.fixture()
 def mock_buildd_base_configuration():
     with mock.patch(
-        "rockcraft.providers._multipass.RockcraftBuilddBaseConfiguration", autospec=True
+        "rockcraft.providers._multipass.bases.BuilddBase", autospec=True
     ) as mock_base_config:
+        mock_base_config.compatibility_tag = "buildd-base-v0"
         yield mock_base_config
-
-
-@pytest.fixture
-def mock_confirm_with_user():
-    with mock.patch(
-        "rockcraft.providers._multipass.confirm_with_user",
-        return_value=False,
-    ) as mock_confirm:
-        yield mock_confirm
 
 
 @pytest.fixture
@@ -189,34 +178,10 @@ def test_ensure_provider_is_available_ok_when_installed(mock_multipass_is_instal
     provider.ensure_provider_is_available()
 
 
-def test_ensure_provider_is_available_errors_when_user_declines(
-    mock_confirm_with_user, mock_multipass_is_installed
-):
-    mock_confirm_with_user.return_value = False
-    mock_multipass_is_installed.return_value = False
-    provider = providers.MultipassProvider()
-
-    match = re.escape(
-        "Multipass is required, but not installed. Visit https://multipass.run/ for "
-        "instructions on installing Multipass for your operating system."
-    )
-    with pytest.raises(ProviderError, match=match):
-        provider.ensure_provider_is_available()
-
-    assert mock_confirm_with_user.mock_calls == [
-        mock.call(
-            "Multipass is required, but not installed. "
-            "Do you wish to install Multipass and configure it with the defaults?",
-            default=False,
-        )
-    ]
-
-
 def test_ensure_provider_is_available_errors_when_multipass_install_fails(
-    mock_confirm_with_user, mock_multipass_is_installed, mock_multipass_install
+    mock_multipass_is_installed, mock_multipass_install
 ):
     error = MultipassInstallationError("foo")
-    mock_confirm_with_user.return_value = True
     mock_multipass_is_installed.return_value = False
     mock_multipass_install.side_effect = error
     provider = providers.MultipassProvider()
@@ -228,18 +193,10 @@ def test_ensure_provider_is_available_errors_when_multipass_install_fails(
     with pytest.raises(ProviderError, match=match) as raised:
         provider.ensure_provider_is_available()
 
-    assert mock_confirm_with_user.mock_calls == [
-        mock.call(
-            "Multipass is required, but not installed. "
-            "Do you wish to install Multipass and configure it with the defaults?",
-            default=False,
-        )
-    ]
     assert raised.value.__cause__ is error
 
 
 def test_ensure_provider_is_available_errors_when_multipass_not_ready(
-    mock_confirm_with_user,
     mock_multipass_is_installed,
     mock_multipass_install,
     mock_multipass_ensure_multipass_is_ready,
@@ -247,7 +204,6 @@ def test_ensure_provider_is_available_errors_when_multipass_not_ready(
     error = MultipassError(
         brief="some error", details="some details", resolution="some resolution"
     )
-    mock_confirm_with_user.return_value = True
     mock_multipass_is_installed.return_value = True
     mock_multipass_ensure_multipass_is_ready.side_effect = error
     provider = providers.MultipassProvider()
@@ -261,87 +217,62 @@ def test_ensure_provider_is_available_errors_when_multipass_not_ready(
     assert raised.value.__cause__ is error
 
 
-def test_get_command_environment_minimal(monkeypatch):
-    monkeypatch.setenv("IGNORE_ME", "or-im-failing")
-    monkeypatch.setenv("PATH", "not-using-host-path")
-    provider = providers.MultipassProvider()
-
-    env = provider.get_command_environment()
-
-    assert env == {
-        "ROCKCRAFT_MANAGED_MODE": "1",
-        "PATH": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin",
-    }
-
-
-def test_get_instance_name(mock_path):
-    provider = providers.MultipassProvider()
-
-    assert (
-        provider.get_instance_name(
-            project_name="my-project-name",
-            project_path=mock_path,
-        )
-        == "rockcraft-my-project-name-445566"
-    )
-
-
 @pytest.mark.parametrize("is_installed", [True, False])
-def test_is_provider_available(is_installed, mock_multipass_is_installed):
+def test_is_provider_installed(is_installed, mock_multipass_is_installed):
     mock_multipass_is_installed.return_value = is_installed
     provider = providers.MultipassProvider()
 
-    assert provider.is_provider_available() == is_installed
+    assert provider.is_provider_installed() == is_installed
+
+
+def test_create_environment(mocker):
+    mock_multipass_instance = mocker.patch(
+        "rockcraft.providers._multipass.multipass.MultipassInstance"
+    )
+
+    provider = providers.MultipassProvider()
+    provider.create_environment(instance_name="test-name")
+
+    mock_multipass_instance.assert_called_once_with(name="test-name")
 
 
 @pytest.mark.parametrize(
-    "channel,alias",
-    [("18.04", bases.BuilddBaseAlias.BIONIC), ("20.04", bases.BuilddBaseAlias.FOCAL)],
+    "build_base, multipass_base",
+    [
+        (bases.BuilddBaseAlias.BIONIC.value, "snapcraft:18.04"),
+        (bases.BuilddBaseAlias.FOCAL.value, "snapcraft:20.04"),
+        (bases.BuilddBaseAlias.JAMMY.value, "snapcraft:22.04"),
+    ],
 )
 def test_launched_environment(
-    channel,
-    alias,
+    build_base,
+    multipass_base,
     mock_buildd_base_configuration,
     mock_multipass_launch,
-    monkeypatch,
     tmp_path,
     mock_path,
 ):
-    expected_environment = {
-        "ROCKCRAFT_MANAGED_MODE": "1",
-        "PATH": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin",
-    }
-
     provider = providers.MultipassProvider()
 
     with provider.launched_environment(
         project_name="test-rock",
         project_path=mock_path,
-        build_base=f"ubuntu:{channel}",
+        base_configuration=mock_buildd_base_configuration,
+        build_base=build_base,
+        instance_name="test-instance-name",
     ) as instance:
         assert instance is not None
         assert mock_multipass_launch.mock_calls == [
             mock.call(
-                name="rockcraft-test-rock-445566",
-                base_configuration=mock_buildd_base_configuration.return_value,
-                image_name=f"snapcraft:ubuntu-{channel}",
+                name="test-instance-name",
+                base_configuration=mock_buildd_base_configuration,
+                image_name=multipass_base,
                 cpus=2,
                 disk_gb=64,
                 mem_gb=2,
                 auto_clean=True,
             ),
-            mock.call().mount(
-                host_source=mock_path, target=pathlib.Path("/root/project")
-            ),
         ]
-        assert mock_buildd_base_configuration.mock_calls == [
-            call(
-                alias=alias,
-                environment=expected_environment,
-                hostname="rockcraft-test-rock-445566",
-            )
-        ]
-
         mock_multipass_launch.reset_mock()
 
     assert mock_multipass_launch.mock_calls == [
@@ -359,7 +290,9 @@ def test_launched_environment_unmounts_and_stops_after_error(
         with provider.launched_environment(
             project_name="test-rock",
             project_path=tmp_path,
-            build_base="ubuntu:20.04",
+            base_configuration=mock_buildd_base_configuration,
+            build_base=bases.BuilddBaseAlias.FOCAL.value,
+            instance_name="test-instance-name",
         ):
             mock_multipass_launch.reset_mock()
             raise RuntimeError("this is a test")
@@ -381,7 +314,9 @@ def test_launched_environment_launch_base_configuration_error(
         with provider.launched_environment(
             project_name="test-rock",
             project_path=tmp_path,
-            build_base="ubuntu:20.04",
+            base_configuration=mock_buildd_base_configuration,
+            build_base=bases.BuilddBaseAlias.FOCAL.value,
+            instance_name="test-instance-name",
         ):
             pass
 
@@ -399,7 +334,9 @@ def test_launched_environment_launch_multipass_error(
         with provider.launched_environment(
             project_name="test-rock",
             project_path=tmp_path,
-            build_base="ubuntu:20.04",
+            base_configuration=mock_buildd_base_configuration,
+            build_base=bases.BuilddBaseAlias.FOCAL.value,
+            instance_name="test-instance-name",
         ):
             pass
 
@@ -417,7 +354,9 @@ def test_launched_environment_unmount_all_error(
         with provider.launched_environment(
             project_name="test-rock",
             project_path=tmp_path,
-            build_base="ubuntu:20.04",
+            base_configuration=mock_buildd_base_configuration,
+            build_base=bases.BuilddBaseAlias.FOCAL.value,
+            instance_name="test-instance-name",
         ):
             pass
 
@@ -435,7 +374,9 @@ def test_launched_environment_stop_error(
         with provider.launched_environment(
             project_name="test-rock",
             project_path=tmp_path,
-            build_base="ubuntu:20.04",
+            base_configuration=mock_buildd_base_configuration,
+            build_base=bases.BuilddBaseAlias.FOCAL.value,
+            instance_name="test-instance-name",
         ):
             pass
 

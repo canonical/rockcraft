@@ -16,6 +16,8 @@
 
 """OCI image manipulation helpers."""
 
+import hashlib
+import json
 import logging
 import os
 import shutil
@@ -24,7 +26,7 @@ import tarfile
 import tempfile
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 import yaml
 from craft_cli import CraftError, emit
@@ -45,12 +47,20 @@ class Image:
 
     @classmethod
     def from_docker_registry(
-        cls, image_name: str, *, image_dir: Path
+        cls,
+        image_name: str,
+        *,
+        image_dir: Path,
+        arch: str,
+        variant: Optional[str] = None,
     ) -> Tuple["Image", str]:
         """Obtain an image from a docker registry.
 
         :param image_name: The image to retrieve, in ``name:tag`` format.
         :param image_dir: The directory to store local OCI images.
+        :param arch: The architecture of the Docker image to fetch.
+        :param variant: The variant, if any, of the Docker image to fetch.
+
 
         :returns: The downloaded image and it's corresponding source image
         """
@@ -58,16 +68,23 @@ class Image:
         image_target = image_dir / image_name
 
         source_image = f"docker://{image_name}"
-        _copy_image(source_image, f"oci:{image_target}")
+        platform_params = ["--override-arch", arch]
+        if variant:
+            platform_params += ["--override-variant", variant]
+        _copy_image(source_image, f"oci:{image_target}", *platform_params)
 
         return cls(image_name=image_name, path=image_dir), source_image
 
     @classmethod
-    def new_oci_image(cls, image_name: str, image_dir: Path) -> Tuple["Image", str]:
+    def new_oci_image(
+        cls, image_name: str, image_dir: Path, arch: str, variant: Optional[str] = None
+    ) -> Tuple["Image", str]:
         """Create a new OCI image out of thin air.
 
         :param image_name: The image to initiate, in ``name:tag`` format.
         :param image_dir: The directory to store the local OCI image.
+        :param arch: The architecture of the OCI image to create.
+        :param variant: The variant, if any, of the OCI image to create.
 
         :returns: The new image object and it's corresponding source image
         """
@@ -77,6 +94,13 @@ class Image:
         shutil.rmtree(image_target_no_tag, ignore_errors=True)
         _process_run(["umoci", "init", "--layout", image_target_no_tag])
         _process_run(["umoci", "new", "--image", str(image_target)])
+
+        # Unfortunately, umoci does not allow initializing an image
+        # with arch and variant. We can configure the arch via
+        # umoci config, but not the variant. Need to do it manually
+        _config_image(image_target, ["--architecture", arch, "--no-history"])
+        if variant:
+            _inject_architecture_variant(Path(image_target_no_tag), variant)
 
         # for new OCI images, the source image corresponds to the newly generated image
         return cls(image_name=image_name, path=image_dir), f"oci:{str(image_target)}"
@@ -172,7 +196,7 @@ class Image:
         for entry in entrypoint:
             params.extend(["--config.entrypoint", entry])
         _config_image(image_path, params)
-        emit.message(f"Entrypoint set to {entrypoint}", intermediate=True)
+        emit.progress(f"Entrypoint set to {entrypoint}", permanent=True)
 
     def set_cmd(self, cmd: List[str]) -> None:
         """Set the OCI image default command parameters.
@@ -187,7 +211,7 @@ class Image:
         for entry in cmd:
             params.extend(["--config.cmd", entry])
         _config_image(image_path, params)
-        emit.message(f"Cmd set to {cmd}", intermediate=True)
+        emit.progress(f"Cmd set to {cmd}", permanent=True)
 
     def set_env(self, env: List[Dict[str, str]]) -> None:
         """Set the OCI image environment.
@@ -205,7 +229,7 @@ class Image:
                 env_list.append(env_item)
                 params.extend(["--config.env", env_item])
         _config_image(image_path, params)
-        emit.message(f"Environment set to {env_list}", intermediate=True)
+        emit.progress(f"Environment set to {env_list}", permanent=True)
 
     def set_control_data(self, metadata: Dict[str, Any]) -> None:
         """Create and populate the ROCK's control data folder.
@@ -255,15 +279,18 @@ class Image:
         _config_image(image_path, label_params)
         # Set the annotations as a copy of these labels (for OCI compliance only)
         _config_image(image_path, annotation_params)
-        emit.message(f"Labels and annotations set to {labels_list}", intermediate=True)
+        emit.progress(f"Labels and annotations set to {labels_list}", permanent=True)
 
 
-def _copy_image(source: str, destination: str) -> None:
+def _copy_image(source: str, destination: str, *system_params) -> None:
     """Transfer images from source to destination."""
     _process_run(
         [
             "skopeo",
             "--insecure-policy",
+        ]
+        + list(system_params)
+        + [
             "copy",
             source,
             destination,
@@ -302,6 +329,52 @@ def _archive_layer(layer_path: Path, temp_tar_file: Path) -> None:
     with tarfile.open(temp_tar_file, mode="w") as tar_file:
         # With `arcname="."` the contents are added relative to `layer_path`.
         tar_file.add(layer_path, arcname=".")
+
+
+def _inject_architecture_variant(image_path: Path, variant: str) -> None:
+    """Inject architecture variant into existing OCI Image config.
+
+    :param image_path: path of the OCI image, in the format <image>:<tar>
+    :param variant: name of the variant to inject in the OCI config
+    """
+    # pylint: disable=too-many-locals
+    blobs_path = image_path / "blobs" / "sha256"
+    # Get the top level OCI index
+    tl_index_path = image_path / "index.json"
+    tl_index = json.loads(tl_index_path.read_bytes())
+
+    # Since this is a 1-arch OCI image, the OCI top level index
+    # points to a manifest (otherwise it would be a manifest list)
+    manifest_digest = tl_index["manifests"][0]["digest"].split(":")[-1]
+    manifest_path = blobs_path / manifest_digest
+    manifest_content = json.loads(manifest_path.read_bytes())
+
+    # Get the current OCI Image Config
+    image_config_digest = manifest_content["config"]["digest"].split(":")[-1]
+    image_config_path = blobs_path / image_config_digest
+    image_config_content = json.loads(image_config_path.read_bytes())
+
+    # Set the variant
+    image_config_content["variant"] = variant
+
+    # The OCI image config has changed, so now we need to
+    # regenerate the digests
+    new_image_config_bytes = json.dumps(image_config_content).encode("utf-8")
+    new_image_config_digest = hashlib.sha256(new_image_config_bytes).hexdigest()
+    new_image_config_path = blobs_path / new_image_config_digest
+    new_image_config_path.write_bytes(new_image_config_bytes)
+
+    manifest_content["config"]["digest"] = f"sha256:{new_image_config_digest}"
+    manifest_content["config"]["size"] = len(new_image_config_bytes)
+
+    new_manifest_bytes = json.dumps(manifest_content).encode("utf-8")
+    new_manifest_digest = hashlib.sha256(new_manifest_bytes).hexdigest()
+    new_manifest_path = blobs_path / new_manifest_digest
+    new_manifest_path.write_bytes(new_manifest_bytes)
+
+    tl_index["manifests"][0]["digest"] = f"sha256:{new_manifest_digest}"
+    tl_index["manifests"][0]["size"] = len(new_manifest_bytes)
+    tl_index_path.write_bytes(json.dumps(tl_index).encode("utf-8"))
 
 
 def _process_run(command: List[str], **kwargs) -> None:

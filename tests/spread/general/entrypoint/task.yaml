@@ -3,12 +3,12 @@ summary: container entrypoint test
 execute: |
   rockcraft pack
 
-  test -f entrypoint-test_latest.rock
+  test -f entrypoint-test_latest_amd64.rock
   test ! -d work
 
   # test container execution
   docker images
-  sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:entrypoint-test_latest.rock docker-daemon:entrypoint-test:latest
+  sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:entrypoint-test_latest_amd64.rock docker-daemon:entrypoint-test:latest
+  rm entrypoint-test_latest_amd64.rock
   docker images
   docker run --rm entrypoint-test | grep "ship it!"
-  docker system prune -a -f

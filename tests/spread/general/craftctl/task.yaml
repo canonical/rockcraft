@@ -3,7 +3,7 @@ summary: craftctl tool test
 execute: |
   rockcraft pack
 
-  test -f craftctl-test_latest.rock
+  test -f craftctl-test_latest_craftctl.rock
   test ! -d work
 
   uname -a
@@ -11,9 +11,8 @@ execute: |
 
   # test container execution
   docker images
-  sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:craftctl-test_latest.rock docker-daemon:craftctl-test:latest
-  rm craftctl-test_latest.rock
+  sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:craftctl-test_latest_craftctl.rock docker-daemon:craftctl-test:latest
+  rm craftctl-test_latest_craftctl.rock
   docker images
   docker run --rm --entrypoint /usr/bin/hello craftctl-test:latest
   docker run --rm --entrypoint pebble craftctl-test:latest help
-  docker system prune -a -f

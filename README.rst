@@ -25,7 +25,7 @@ Documentation
 -------------
 
 Documentation on usage of the tool and tutorials can be found on
-https://rockcraft.readthedocs.io
+https://canonical-rockcraft.readthedocs-hosted.com/
 
 
 .. |snap| image:: https://snapcraft.io/rockcraft/badge.svg
@@ -33,10 +33,10 @@ https://rockcraft.readthedocs.io
     :scale: 100%
     :target: https://snapcraft.io/rockcraft
 
-.. |docs| image:: https://readthedocs.org/projects/rockcraft/badge/?version=latest
+.. |docs| image:: https://readthedocs.com/projects/canonical-rockcraft/badge/?version=latest
     :alt: Documentation Status
     :scale: 100%
-    :target: https://rockcraft.readthedocs.io/en/latest/?badge=latest
+    :target: https://canonical-rockcraft.readthedocs-hosted.com/en/latest/?badge=latest
 
 .. |Snap Store| image:: https://snapcraft.io/static/images/badges/en/snap-store-black.svg
     :alt: Get it from the Snap Store

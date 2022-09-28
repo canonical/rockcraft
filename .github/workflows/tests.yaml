@@ -44,11 +44,14 @@ jobs:
           sudo snap install --classic node
           sudo snap install --classic pyright
           make test-pyright
+      - name: Run pylint
+        run: |
+          make test-pylint
 
   tests:
     strategy:
       matrix:
-        os: [macos-10.15, ubuntu-18.04, ubuntu-20.04, windows-2019]
+        os: [macos-latest, ubuntu-18.04, ubuntu-20.04, windows-2019]
         python-version: [3.8, 3.9, "3.10"]
         exclude:
           - os: ubuntu-18.04
