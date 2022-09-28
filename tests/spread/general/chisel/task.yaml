@@ -15,5 +15,3 @@ execute: |
   docker images
 
   docker run --rm $IMG_NAME
-
-  docker system prune -a -f

@@ -29,5 +29,3 @@ execute: |
   docker run --rm big bash -c "stat -c %u /etc/newfiles | grep -q 9999"
   docker run --rm big bash -c "stat -c %u /etc/newfiles/a.txt | grep -q 9999"
   docker run --rm big bash -c "stat -c %u /etc/newfiles/b.txt | grep -q 3333"
-
-  docker system prune -a -f

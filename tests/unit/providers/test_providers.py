@@ -256,3 +256,37 @@ def test_ensure_provider_is_available_unknown_error():
         providers.ensure_provider_is_available(mock_multipass_provider)
 
     assert error.value.brief == "cannot install unknown provider"
+
+
+def test_get_provider_default_lxd(emitter, mocker):
+    """Verify lxd is the default provider when running on a linux system."""
+    mocker.patch("sys.platform", "linux")
+    assert isinstance(providers.get_provider(), LXDProvider)
+    emitter.assert_debug("Using default provider 'lxd' on linux system")
+
+
+@pytest.mark.parametrize("system", ["darwin", "win32", "other-system"])
+def test_get_provider_default_multipass(emitter, mocker, system):
+    """Verify multipass is the default provider when running on a non-linux system."""
+    mocker.patch("sys.platform", system)
+    assert isinstance(providers.get_provider(), MultipassProvider)
+    emitter.assert_debug("Using default provider 'multipass' on non-linux system")
+
+
+def test_get_provider_environmental_variable(monkeypatch):
+    """Verify the provider can be set by an environmental variable."""
+    monkeypatch.setenv("ROCKCRAFT_PROVIDER", "lxd")
+    assert isinstance(providers.get_provider(), LXDProvider)
+
+    monkeypatch.setenv("ROCKCRAFT_PROVIDER", "multipass")
+    assert isinstance(providers.get_provider(), MultipassProvider)
+
+
+def test_get_provider_error(monkeypatch):
+    """Raise a ValueError when an invalid provider is passed."""
+    monkeypatch.setenv("ROCKCRAFT_PROVIDER", "invalid-provider")
+
+    with pytest.raises(ValueError) as error:
+        providers.get_provider()
+
+    assert str(error.value) == "unsupported provider specified: 'invalid-provider'"

@@ -22,10 +22,10 @@ import subprocess
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from craft_cli import emit
+from craft_cli import CraftError, emit
 from craft_providers import ProviderError
 
-from . import oci, providers, utils
+from . import oci, utils
 from .parts import PartsLifecycle
 from .project import Project, load_project
 from .providers.providers import (
@@ -34,6 +34,7 @@ from .providers.providers import (
     ensure_provider_is_available,
     get_base_configuration,
     get_instance_name,
+    get_provider,
 )
 
 if TYPE_CHECKING:
@@ -48,9 +49,12 @@ def run(command_name: str, parsed_args: "argparse.Namespace"):
     project = load_project("rockcraft.yaml")
     destructive_mode = False  # XXX: obtain from command line
     part_names = getattr(parsed_args, "parts", None)
-
     managed_mode = utils.is_managed_mode()
+
     if not managed_mode and not destructive_mode:
+        if command_name == "clean":
+            # TODO: support `rockcraft clean` for a environment
+            raise CraftError("`rockcraft clean` for an environment is not supported")
         run_in_provider(project, command_name, parsed_args)
         return
 
@@ -99,6 +103,13 @@ def run(command_name: str, parsed_args: "argparse.Namespace"):
 
         base_digest = project_base_image.digest(source_image)
         step_name = "prime" if command_name == "pack" else command_name
+
+        if command_name == "clean":
+            if part_names:
+                # TODO: support `rockcraft clean <part-name>`
+                raise CraftError("`rockcraft clean <part-name>` is not supported")
+            # TODO: support `rockcraft clean` when destructive_mode = True
+            raise CraftError("`rockcraft clean` in destructive mode is not supported")
 
         lifecycle = PartsLifecycle(
             project.parts,
@@ -175,7 +186,7 @@ def run_in_provider(
     project: Project, command_name: str, parsed_args: "argparse.Namespace"
 ):
     """Run lifecycle command in provider instance."""
-    provider = providers.get_provider()
+    provider = get_provider()
     ensure_provider_is_available(provider)
 
     cmd = ["rockcraft", command_name]
