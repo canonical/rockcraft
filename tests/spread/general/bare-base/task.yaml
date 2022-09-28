@@ -12,4 +12,3 @@ execute: |
   rm bare-base-test_latest_amd64.rock
   docker images
   docker run --rm bare-base-test
-  docker system prune -a -f

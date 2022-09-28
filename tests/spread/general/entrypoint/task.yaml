@@ -12,4 +12,3 @@ execute: |
   rm entrypoint-test_latest_amd64.rock
   docker images
   docker run --rm entrypoint-test | grep "ship it!"
-  docker system prune -a -f
