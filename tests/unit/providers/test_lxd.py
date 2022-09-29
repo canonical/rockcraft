@@ -246,7 +246,7 @@ def test_create_environment(mocker):
     provider.create_environment(instance_name="test-name")
 
     mock_lxd_instance.assert_called_once_with(
-        name="test-name", project="rockcraft", remote="local"
+        name="test-name", project="default", remote="local"
     )
 
 
@@ -289,7 +289,7 @@ def test_launched_environment(
                 map_user_uid=True,
                 uid=1234,
                 use_snapshots=True,
-                project="rockcraft",
+                project="default",
                 remote="local",
             ),
         ]

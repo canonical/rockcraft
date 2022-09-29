@@ -47,7 +47,7 @@ class LXDProvider(Provider):
         self,
         *,
         lxc: lxd.LXC = lxd.LXC(),
-        lxd_project: str = "rockcraft",
+        lxd_project: str = "default",
         lxd_remote: str = "local",
     ) -> None:
         self.lxc = lxc
