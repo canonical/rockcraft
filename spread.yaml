@@ -5,6 +5,10 @@ environment:
   PROJECT_PATH: /rockcraft
   PATH: /snap/bin:$PATH:$PROJECT_PATH/tools/external/tools
 
+include:
+    - tests/
+    - tools/
+
 backends:
   google:
     key: '$(HOST: echo "$SPREAD_GOOGLE_KEY")'
