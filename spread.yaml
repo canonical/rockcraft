@@ -5,6 +5,10 @@ environment:
   PROJECT_PATH: /rockcraft
   PATH: /snap/bin:$PATH:$PROJECT_PATH/tools/external/tools
 
+include:
+    - tests/
+    - tools/
+
 backends:
   google:
     key: '$(HOST: echo "$SPREAD_GOOGLE_KEY")'
@@ -72,6 +76,17 @@ restore-each: |
   docker system prune -a -f
   lxc --project=rockcraft stop --all
   lxc --project=rockcraft delete $(lxc --project=rockcraft list -c n --format csv)
+
+debug-each: |
+  # output latest rockcraft log file on test failure
+  rockcraft_log_file=$(find /root/.cache/rockcraft/log/ -name 'rockcraft*.log' | sort -n | tail -n1)
+  if [[ -f $rockcraft_log_file ]]; then
+    echo -e "rockcraft log file contents:\n----------------------------"
+    cat "$rockcraft_log_file"
+    echo "----------------------------"
+  else
+    echo "could not find rockcraft log file"
+  fi
 
 suites:
   tests/spread/tutorials/:
