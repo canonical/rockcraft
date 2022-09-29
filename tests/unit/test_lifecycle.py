@@ -16,7 +16,7 @@
 
 import argparse
 from pathlib import Path
-from unittest.mock import Mock
+from unittest.mock import Mock, call
 
 import pytest
 from craft_cli import CraftError, EmitterMode, emit
@@ -69,17 +69,18 @@ def test_run_run_in_provider(command_name, mocker, mock_project):
     )
 
 
-def test_run_clean_provider_error(mocker, mock_project):
+def test_run_clean_provider(mocker, mock_project):
     """Verify `run()` calls `clean_provider()` when not in managed or destructive
     mode.
     """
     mocker.patch("rockcraft.lifecycle.load_project", return_value=mock_project)
     mocker.patch("rockcraft.lifecycle.utils.is_managed_mode", return_value=False)
+    mock_clean_provider = mocker.patch("rockcraft.lifecycle.clean_provider")
+    lifecycle.run(command_name="clean", parsed_args=argparse.Namespace())
 
-    with pytest.raises(CraftError) as error:
-        lifecycle.run(command_name="clean", parsed_args=argparse.Namespace())
-
-    assert str(error.value) == "`rockcraft clean` for an environment is not supported"
+    mock_clean_provider.assert_called_once_with(
+        project_name="test-name", project_path=Path().absolute()
+    )
 
 
 def test_run_clean_part_error(mocker, mock_project):
@@ -194,3 +195,21 @@ def test_lifecycle_run_in_provider(
         cwd=Path("/root/project"),
     )
     mock_capture_logs_from_instance.assert_called_once_with(mock_instance)
+
+
+def test_clean_provider(emitter, mock_get_instance_name, mock_provider, tmpdir):
+    lifecycle.clean_provider(project_name="test-project", project_path=tmpdir)
+
+    mock_get_instance_name.assert_called_once_with(
+        project_name="test-project", project_path=tmpdir
+    )
+    mock_provider.clean_project_environments.assert_called_once_with(
+        instance_name="test-instance-name"
+    )
+    emitter.assert_interactions(
+        [
+            call("progress", "Cleaning build provider"),
+            call("debug", "Cleaning instance test-instance-name"),
+            call("progress", "Cleaned build provider", permanent=True),
+        ]
+    )

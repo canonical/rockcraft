@@ -19,7 +19,7 @@
 import contextlib
 import logging
 import pathlib
-from typing import Generator, List
+from typing import Generator
 
 from craft_providers import Executor, ProviderError, base, bases, lxd
 
@@ -53,48 +53,6 @@ class LXDProvider(Provider):
         self.lxc = lxc
         self.lxd_project = lxd_project
         self.lxd_remote = lxd_remote
-
-    def clean_project_environments(
-        self, *, project_name: str, project_path: pathlib.Path
-    ) -> List[str]:
-        """Clean up any build environments created for project.
-
-        :param project_name: Name of project.
-
-        :returns: List of containers deleted.
-        """
-        deleted: List[str] = []
-
-        # Nothing to do if provider is not installed.
-        if not self.is_provider_installed():
-            return deleted
-
-        inode = str(project_path.stat().st_ino)
-
-        try:
-            names = self.lxc.list_names(
-                project=self.lxd_project, remote=self.lxd_remote
-            )
-        except lxd.LXDError as error:
-            raise ProviderError(str(error)) from error
-
-        for name in names:
-            if name == f"rockcraft-{project_name}-{inode}":
-                logger.debug("Deleting container %r.", name)
-                try:
-                    self.lxc.delete(
-                        instance_name=name,
-                        force=True,
-                        project=self.lxd_project,
-                        remote=self.lxd_remote,
-                    )
-                except lxd.LXDError as error:
-                    raise ProviderError(str(error)) from error
-                deleted.append(name)
-            else:
-                logger.debug("Not deleting container %r.", name)
-
-        return deleted
 
     @classmethod
     def ensure_provider_is_available(cls) -> None:

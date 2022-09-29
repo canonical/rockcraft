@@ -19,7 +19,7 @@
 import contextlib
 import logging
 import pathlib
-from typing import Generator, List
+from typing import Generator
 
 from craft_providers import Executor, ProviderError, base, bases, multipass
 from craft_providers.multipass.errors import MultipassError
@@ -47,46 +47,6 @@ class MultipassProvider(Provider):
         instance: multipass.Multipass = multipass.Multipass(),
     ) -> None:
         self.multipass = instance
-
-    def clean_project_environments(
-        self, *, project_name: str, project_path: pathlib.Path
-    ) -> List[str]:
-        """Clean up any build environments created for project.
-
-        :param project_name: Name of the project.
-        :param project_path: Directory of the project.
-
-        :returns: List of containers deleted.
-        """
-        deleted: List[str] = []
-
-        # Nothing to do if provider is not installed.
-        if not self.is_provider_installed():
-            return deleted
-
-        inode = project_path.stat().st_ino
-
-        try:
-            names = self.multipass.list()
-        except multipass.MultipassError as error:
-            raise ProviderError(str(error)) from error
-
-        for name in names:
-            if name == f"rockcraft-{project_name}-{inode}":
-                logger.debug("Deleting Multipass VM %r.", name)
-                try:
-                    self.multipass.delete(
-                        instance_name=name,
-                        purge=True,
-                    )
-                except multipass.MultipassError as error:
-                    raise ProviderError(str(error)) from error
-
-                deleted.append(name)
-            else:
-                logger.debug("Not deleting Multipass VM %r.", name)
-
-        return deleted
 
     @classmethod
     def ensure_provider_is_available(cls) -> None:

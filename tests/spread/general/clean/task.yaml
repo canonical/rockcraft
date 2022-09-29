@@ -1,0 +1,15 @@
+summary: rockcraft clean test
+
+execute: |
+  rockcraft pull
+
+  # verify instance was created
+  lxc --project=rockcraft list | grep rockcraft-clean
+
+  rockcraft clean
+
+  # verify instance was removed
+  if lxc --project=rockcraft list | grep rockcraft-clean; then
+    echo "instance not removed"
+    exit 1
+  fi
