@@ -146,3 +146,48 @@ Example
 
 
 NOTE: at the moment, it is not possible to mix packages and slices in the same stage-packages field.
+
+
+Rockcraft commands
+------------------
+Lifecycle commands
+..................
+Lifecycle commands can take an optional parameter ``<part-name>``. When a part name is provided, the command applies to the specific part. When no part name is provided, the command applies to all parts.
+
+clean
+^^^^^
+Removes a part's assets. When no part is provided, the entire build environment (e.g. the LXD instance) is removed
+
+pull
+^^^^
+Downloads or retrieves artefacts defined for each part.
+
+overlay
+^^^^^^^
+Creates part layers over the base filesystem.
+
+build
+^^^^^
+Builds artefacts defined for each part.
+
+stage
+^^^^^
+Stages built artefacts into a common staging area.
+
+prime
+^^^^^
+Primes artefacts defined for each part.
+
+pack
+^^^^
+Creates a ROCK from the primed artefacts.
+
+Other commands
+..............
+init
+^^^^
+Initializes a rockcraft project with a boilerplate ``rockcraft.yaml`` configuration file.
+
+help
+^^^^
+Shows information about a command.
