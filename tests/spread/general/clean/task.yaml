@@ -1,4 +1,4 @@
-summary: rockcraft init test
+summary: rockcraft clean test
 
 execute: |
   rockcraft pull
