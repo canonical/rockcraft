@@ -17,26 +17,34 @@
 """Build environment provider support for rockcraft."""
 
 import contextlib
+import logging
 import pathlib
 from abc import ABC, abstractmethod
-from typing import Generator, List, Tuple, Union
+from typing import Generator, Tuple, Union
 
 from craft_providers import Executor, base
+
+logger = logging.getLogger(__name__)
 
 
 class Provider(ABC):
     """Rockcraft's build environment provider."""
 
-    @abstractmethod
-    def clean_project_environments(
-        self, *, project_name: str, project_path: pathlib.Path
-    ) -> List[str]:
-        """Clean up any environments created for project.
+    def clean_project_environments(self, *, instance_name: str) -> None:
+        """Clean the provider environment.
 
-        :param project_name: Name of project.
-
-        :returns: List of containers deleted.
+        :param instance_name: name of the instance to clean
         """
+        # Nothing to do if provider is not installed.
+        if not self.is_provider_installed():
+            logger.debug(
+                "Not cleaning environment because the provider is not installed."
+            )
+            return
+
+        environment = self.create_environment(instance_name=instance_name)
+        if environment.exists():
+            environment.delete()
 
     @classmethod
     @abstractmethod

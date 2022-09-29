@@ -26,161 +26,46 @@ from rockcraft import providers
 # pylint: disable=duplicate-code
 
 
-@pytest.fixture()
+@pytest.fixture
 def mock_buildd_base_configuration(mocker):
-    with mock.patch(
+    mock_base_config = mocker.patch(
         "rockcraft.providers._lxd.bases.BuilddBase", autospec=True
-    ) as mock_base_config:
-        mock_base_config.compatibility_tag = "buildd-base-v0"
-        yield mock_base_config
+    )
+    mock_base_config.compatibility_tag = "buildd-base-v0"
+    yield mock_base_config
 
 
-@pytest.fixture()
-def mock_configure_buildd_image_remote():
-    with mock.patch(
+@pytest.fixture
+def mock_configure_buildd_image_remote(mocker):
+    yield mocker.patch(
         "craft_providers.lxd.configure_buildd_image_remote",
         return_value="buildd-remote",
-    ) as mock_remote:
-        yield mock_remote
+    )
 
 
 @pytest.fixture
-def mock_lxc(monkeypatch):
-    with mock.patch("craft_providers.lxd.LXC", autospec=True) as mock_lxc:
-        yield mock_lxc.return_value
+def mock_lxc(mocker):
+    yield mocker.patch("craft_providers.lxd.LXC", autospec=True)
 
 
 @pytest.fixture(autouse=True)
-def mock_lxd_ensure_lxd_is_ready():
-    with mock.patch(
-        "craft_providers.lxd.ensure_lxd_is_ready", return_value=None
-    ) as mock_is_ready:
-        yield mock_is_ready
-
-
-@pytest.fixture()
-def mock_lxd_install():
-    with mock.patch("craft_providers.lxd.install") as mock_install:
-        yield mock_install
-
-
-@pytest.fixture(autouse=True)
-def mock_lxd_is_installed():
-    with mock.patch(
-        "craft_providers.lxd.is_installed", return_value=True
-    ) as mock_is_installed:
-        yield mock_is_installed
+def mock_lxd_ensure_lxd_is_ready(mocker):
+    yield mocker.patch("craft_providers.lxd.ensure_lxd_is_ready", return_value=None)
 
 
 @pytest.fixture
-def mock_lxd_launch():
-    with mock.patch("craft_providers.lxd.launch", autospec=True) as mock_lxd_launch:
-        yield mock_lxd_launch
+def mock_lxd_install(mocker):
+    yield mocker.patch("craft_providers.lxd.install")
 
 
-def test_clean_project_environments_without_lxd(
-    mock_lxc, mock_lxd_is_installed, mock_path
-):
-    mock_lxd_is_installed.return_value = False
-    provider = providers.LXDProvider(
-        lxc=mock_lxc, lxd_project="test-project", lxd_remote="test-remote"
-    )
-
-    assert (
-        provider.clean_project_environments(
-            project_name="my-rock",
-            project_path=mock_path,
-        )
-        == []
-    )
-
-    assert mock_lxd_is_installed.mock_calls == [mock.call()]
-    assert mock_lxc.mock_calls == []
+@pytest.fixture(autouse=True)
+def mock_lxd_is_installed(mocker):
+    yield mocker.patch("craft_providers.lxd.is_installed", return_value=True)
 
 
-def test_clean_project_environments(mock_lxc, mock_path):
-    mock_lxc.list_names.return_value = [
-        "do-not-delete-me-please",
-        "rockcraft-testrock-445566",
-        "rockcraft-my-rock-",
-        "rockcraft-my-rock-445566",
-        "rockcraft-my-rock-project-445566",
-        "rockcraft_445566_a",
-    ]
-    provider = providers.LXDProvider(
-        lxc=mock_lxc, lxd_project="test-project", lxd_remote="test-remote"
-    )
-
-    assert provider.clean_project_environments(
-        project_name="my-rock-project",
-        project_path=mock_path,
-    ) == ["rockcraft-my-rock-project-445566"]
-
-    assert mock_lxc.mock_calls == [
-        mock.call.list_names(project="test-project", remote="test-remote"),
-        mock.call.delete(
-            instance_name="rockcraft-my-rock-project-445566",
-            force=True,
-            project="test-project",
-            remote="test-remote",
-        ),
-    ]
-
-    mock_lxc.reset_mock()
-
-    assert provider.clean_project_environments(
-        project_name="testrock",
-        project_path=mock_path,
-    ) == ["rockcraft-testrock-445566"]
-
-    assert mock_lxc.mock_calls == [
-        mock.call.list_names(project="test-project", remote="test-remote"),
-        mock.call.delete(
-            instance_name="rockcraft-testrock-445566",
-            force=True,
-            project="test-project",
-            remote="test-remote",
-        ),
-    ]
-
-    mock_lxc.reset_mock()
-
-    assert (
-        provider.clean_project_environments(
-            project_name="unknown-rock",
-            project_path=mock_path,
-        )
-        == []
-    )
-    assert mock_lxc.mock_calls == [
-        mock.call.list_names(project="test-project", remote="test-remote"),
-    ]
-
-
-def test_clean_project_environments_list_failure(mock_lxc, mock_path):
-    mock_lxc.list_names.side_effect = LXDError(brief="fail")
-    provider = providers.LXDProvider(lxc=mock_lxc)
-
-    with pytest.raises(ProviderError, match="fail"):
-        provider.clean_project_environments(
-            project_name="rock",
-            project_path=mock_path,
-        )
-
-
-def test_clean_project_environments_delete_failure(mock_lxc, mock_path):
-    error = LXDError("fail")
-    mock_lxc.list_names.return_value = ["rockcraft-testrock-445566"]
-    mock_lxc.delete.side_effect = error
-    provider = providers.LXDProvider(lxc=mock_lxc)
-
-    with pytest.raises(ProviderError, match="fail") as raised:
-        provider.clean_project_environments(
-            project_name="testrock",
-            project_path=mock_path,
-        )
-
-    assert raised.value.__cause__ is error
+@pytest.fixture
+def mock_lxd_launch(mocker):
+    yield mocker.patch("craft_providers.lxd.launch", autospec=True)
 
 
 def test_ensure_provider_is_available_ok_when_installed(mock_lxd_is_installed):
@@ -246,7 +131,7 @@ def test_create_environment(mocker):
     provider.create_environment(instance_name="test-name")
 
     mock_lxd_instance.assert_called_once_with(
-        name="test-name", project="rockcraft", remote="local"
+        name="test-name", project="default", remote="local"
     )
 
 
@@ -289,7 +174,7 @@ def test_launched_environment(
                 map_user_uid=True,
                 uid=1234,
                 use_snapshots=True,
-                project="rockcraft",
+                project="default",
                 remote="local",
             ),
         ]
