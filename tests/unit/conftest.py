@@ -38,7 +38,7 @@ def fake_provider(mock_instance):
     class FakeProvider(Provider):
         """Fake provider."""
 
-        def clean_project_environments(self, *, project_name: str, project_path: Path):
+        def clean_project_environments(self, *, instance_name: str):
             pass
 
         @classmethod
