@@ -24,151 +24,40 @@ from craft_providers.multipass import MultipassError, MultipassInstallationError
 from rockcraft import providers
 
 
-@pytest.fixture()
-def mock_buildd_base_configuration():
-    with mock.patch(
+@pytest.fixture
+def mock_buildd_base_configuration(mocker):
+    mock_base_config = mocker.patch(
         "rockcraft.providers._multipass.bases.BuilddBase", autospec=True
-    ) as mock_base_config:
-        mock_base_config.compatibility_tag = "buildd-base-v0"
-        yield mock_base_config
+    )
+    mock_base_config.compatibility_tag = "buildd-base-v0"
+    yield mock_base_config
 
 
 @pytest.fixture
-def mock_multipass(monkeypatch):
-    with mock.patch(
-        "craft_providers.multipass.Multipass", autospec=True
-    ) as mock_client:
-        yield mock_client.return_value
+def mock_multipass(mocker):
+    yield mocker.patch("craft_providers.multipass.Multipass", autospec=True)
 
 
 @pytest.fixture(autouse=True)
-def mock_multipass_ensure_multipass_is_ready():
-    with mock.patch(
+def mock_multipass_ensure_multipass_is_ready(mocker):
+    yield mocker.patch(
         "craft_providers.multipass.ensure_multipass_is_ready", return_value=None
-    ) as mock_is_ready:
-        yield mock_is_ready
-
-
-@pytest.fixture()
-def mock_multipass_install():
-    with mock.patch("craft_providers.multipass.install") as mock_install:
-        yield mock_install
-
-
-@pytest.fixture(autouse=True)
-def mock_multipass_is_installed():
-    with mock.patch(
-        "craft_providers.multipass.is_installed", return_value=True
-    ) as mock_is_installed:
-        yield mock_is_installed
+    )
 
 
 @pytest.fixture
-def mock_multipass_launch():
-    with mock.patch(
-        "craft_providers.multipass.launch", autospec=True
-    ) as mock_multipass_launch:
-        yield mock_multipass_launch
+def mock_multipass_install(mocker):
+    yield mocker.patch("craft_providers.multipass.install")
 
 
-def test_clean_project_environments_without_multipass(
-    mock_multipass, mock_multipass_is_installed, mock_path
-):
-    mock_multipass_is_installed.return_value = False
-    provider = providers.MultipassProvider(mock_multipass)
-
-    assert (
-        provider.clean_project_environments(
-            project_name="my-rock",
-            project_path=mock_path,
-        )
-        == []
-    )
-
-    assert mock_multipass_is_installed.mock_calls == [mock.call()]
-    assert mock_multipass.mock_calls == []
+@pytest.fixture(autouse=True)
+def mock_multipass_is_installed(mocker):
+    yield mocker.patch("craft_providers.multipass.is_installed", return_value=True)
 
 
-def test_clean_project_environments(mock_multipass, mock_path):
-    mock_multipass.list.return_value = [
-        "do-not-delete-me-please",
-        "rockcraft-testrock-445566",
-        "rockcraft-my-rock",
-        "rockcraft-my-rock-445566",
-        "rockcraft-my-rock-project-445566",
-        "rockcraft_445566_a",
-    ]
-    provider = providers.MultipassProvider(mock_multipass)
-
-    assert provider.clean_project_environments(
-        project_name="my-rock-project",
-        project_path=mock_path,
-    ) == ["rockcraft-my-rock-project-445566"]
-
-    assert mock_multipass.mock_calls == [
-        mock.call.list(),
-        mock.call.delete(
-            instance_name="rockcraft-my-rock-project-445566",
-            purge=True,
-        ),
-    ]
-
-    mock_multipass.reset_mock()
-
-    assert provider.clean_project_environments(
-        project_name="testrock",
-        project_path=mock_path,
-    ) == ["rockcraft-testrock-445566"]
-
-    assert mock_multipass.mock_calls == [
-        mock.call.list(),
-        mock.call.delete(
-            instance_name="rockcraft-testrock-445566",
-            purge=True,
-        ),
-    ]
-
-    mock_multipass.reset_mock()
-
-    assert (
-        provider.clean_project_environments(
-            project_name="unknown-rock",
-            project_path=mock_path,
-        )
-        == []
-    )
-    assert mock_multipass.mock_calls == [
-        mock.call.list(),
-    ]
-
-
-def test_clean_project_environments_list_failure(mock_multipass, mock_path):
-    error = MultipassError(brief="fail")
-    mock_multipass.list.side_effect = error
-    provider = providers.MultipassProvider(mock_multipass)
-
-    with pytest.raises(ProviderError, match="fail") as raised:
-        provider.clean_project_environments(
-            project_name="rock",
-            project_path=mock_path,
-        )
-
-    assert raised.value.__cause__ is error
-
-
-def test_clean_project_environments_delete_failure(mock_multipass, mock_path):
-    error = MultipassError(brief="fail")
-    mock_multipass.list.return_value = ["rockcraft-testrock-445566"]
-    mock_multipass.delete.side_effect = error
-    provider = providers.MultipassProvider(mock_multipass)
-
-    with pytest.raises(ProviderError, match="fail") as raised:
-        provider.clean_project_environments(
-            project_name="testrock",
-            project_path=mock_path,
-        )
-
-    assert raised.value.__cause__ is error
+@pytest.fixture
+def mock_multipass_launch(mocker):
+    yield mocker.patch("craft_providers.multipass.launch", autospec=True)
 
 
 def test_ensure_provider_is_available_ok_when_installed(mock_multipass_is_installed):

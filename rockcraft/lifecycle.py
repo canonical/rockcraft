@@ -53,9 +53,9 @@ def run(command_name: str, parsed_args: "argparse.Namespace"):
 
     if not managed_mode and not destructive_mode:
         if command_name == "clean":
-            # TODO: support `rockcraft clean` for a environment
-            raise CraftError("`rockcraft clean` for an environment is not supported")
-        run_in_provider(project, command_name, parsed_args)
+            clean_provider(project_name=project.name, project_path=Path().absolute())
+        else:
+            run_in_provider(project, command_name, parsed_args)
         return
 
     if managed_mode:
@@ -235,3 +235,19 @@ def run_in_provider(
             ) from err
         finally:
             capture_logs_from_instance(instance)
+
+
+def clean_provider(project_name: str, project_path: Path) -> None:
+    """Clean the provider environment.
+
+    :param project_name: name of the project
+    :param project_path: path of the project
+    """
+    emit.progress("Cleaning build provider")
+    provider = get_provider()
+    instance_name = get_instance_name(
+        project_name=project_name, project_path=project_path
+    )
+    emit.debug(f"Cleaning instance {instance_name}")
+    provider.clean_project_environments(instance_name=instance_name)
+    emit.progress("Cleaned build provider", permanent=True)
