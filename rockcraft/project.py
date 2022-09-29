@@ -197,30 +197,6 @@ class Project(pydantic.BaseModel):
             build_base = values.get("base")
         return build_base
 
-    @pydantic.validator("parts", pre=True)
-    @classmethod
-    def _add_pebble_part(cls, parts):
-        """Force pebble part to ensure Pebble is always installed."""
-        # TODO: by adding this part at this stage, if there is an error
-        # with it, a custom ProjectValidationError exception will be thrown,
-        # with the message "Bad rockcraft.yaml content", which is misleading
-        # since the user hasn't specified such part.
-        # Is there another logical place where this insertion could happen?
-
-        # NOTE: pebble part build overridden because of "go generate" issue (#102)
-        pebble_part_spec = {
-            "pebble": {
-                "plugin": "go",
-                "source": "https://github.com/canonical/pebble.git",
-                "build-snaps": ["go/1.19/stable"],
-                "override-build": "go mod download\n"
-                "CGO_ENABLED=0 go build -o pebble ./cmd/pebble\n"
-                'install -D -m755 pebble "$CRAFT_PART_INSTALL"/bin/pebble\n',
-            }
-        }
-        parts = {**parts, **pebble_part_spec}
-        return parts
-
     @pydantic.validator("platforms")
     @classmethod
     def _validate_all_platforms(cls, platforms):
@@ -495,4 +471,35 @@ def load_project(filename: str) -> Project:
             msg = f"{msg}: {err.filename!r}."
         raise ProjectLoadError(msg) from err
 
+    _add_pebble_data(yaml_data)
+
     return Project.unmarshal(yaml_data)
+
+
+def _add_pebble_data(yaml_data: Dict[str, Any]) -> None:
+    """Add pebble-specific contents to YAML-loaded data.
+
+    This function adds a special "pebble" part to a project's specification, to be
+    (eventually) used as the image's entrypoint. Note that if a part called "pebble"
+    already exists, it is used instead.
+
+    :param yaml_data: The project spec loaded from "rockcraft.yaml".
+    """
+    if "parts" not in yaml_data:
+        # Invalid project: let it return to fail in the regular validation flow.
+        return
+
+    parts = yaml_data["parts"]
+    if "pebble" in parts:
+        # Project already has a pebble part; use it.
+        return
+
+    pebble_part_spec = {
+        "plugin": "go",
+        "source": "https://github.com/canonical/pebble.git",
+        "build-snaps": ["go/1.19/stable"],
+        "override-build": "go mod download\n"
+        "CGO_ENABLED=0 go build -o pebble ./cmd/pebble\n"
+        'install -D -m755 pebble "$CRAFT_PART_INSTALL"/bin/pebble\n',
+    }
+    parts["pebble"] = pebble_part_spec

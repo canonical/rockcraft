@@ -17,6 +17,7 @@
 import datetime
 import os
 import subprocess
+import textwrap
 from unittest.mock import patch
 
 import pydantic
@@ -93,7 +94,7 @@ def pebble_part():
     }
 
 
-def test_project_unmarshal(yaml_loaded_data, pebble_part):
+def test_project_unmarshal(yaml_loaded_data):
     project = Project.unmarshal(yaml_loaded_data)
 
     assert project.name == "mytest"
@@ -111,13 +112,10 @@ def test_project_unmarshal(yaml_loaded_data, pebble_part):
     assert project.cmd == ["world"]
     assert project.env == [{"NAME": "VALUE"}]
     assert project.parts == {
-        **{
-            "foo": {
-                "plugin": "nil",
-                "overlay-script": "ls",
-            }
-        },
-        **pebble_part,
+        "foo": {
+            "plugin": "nil",
+            "overlay-script": "ls",
+        }
     }
 
 
@@ -357,6 +355,43 @@ def test_project_load(yaml_data, yaml_loaded_data, pebble_part, tmp_path):
             continue
 
         assert getattr(project, attr) == v
+
+
+def test_project_load_existing_pebble(tmp_path):
+    """Test that if a project already has a "pebble" part, it is used unmodified."""
+    yaml_data = textwrap.dedent(
+        """
+        name: pebble-part
+        title: Rock with Pebble
+        version: latest
+        base: ubuntu:20.04
+        summary: Rock with Pebble
+        description: Rock with Pebble
+        license: Apache-2.0
+        platforms:
+            amd64:
+
+        parts:
+            foo:
+                plugin: nil
+                overlay-script: ls
+            pebble:
+                plugin: go
+                source: https://github.com/fork/pebble.git
+                source-branch: new-pebble-work
+    """
+    )
+    rockcraft_file = tmp_path / "rockcraft.yaml"
+    rockcraft_file.write_text(
+        yaml_data,
+        encoding="utf-8",
+    )
+
+    project = load_project(str(rockcraft_file))
+    pebble_part = project.parts["pebble"]
+
+    assert pebble_part["source"] == "https://github.com/fork/pebble.git"
+    assert pebble_part["source-branch"] == "new-pebble-work"
 
 
 def test_project_load_error():
