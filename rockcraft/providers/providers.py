@@ -189,7 +189,7 @@ def get_provider() -> Provider:
 
     # return the chosen provider
     if chosen_provider == "lxd":
-        return LXDProvider()
+        return LXDProvider(lxd_project="rockcraft")
     if chosen_provider == "multipass":
         return MultipassProvider()
 
