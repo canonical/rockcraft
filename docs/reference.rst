@@ -176,7 +176,7 @@ Stages built artifacts into a common staging area, for each part.
 
 prime
 ^^^^^
-Primes artefacts defined for each part.
+Prepare, for each part, the final payload to be packed as a ROCK, performing additional processing and adding metadata files.
 
 pack
 ^^^^
