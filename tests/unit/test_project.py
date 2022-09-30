@@ -358,7 +358,7 @@ def test_project_load(yaml_data, yaml_loaded_data, pebble_part, tmp_path):
 
 
 def test_project_load_existing_pebble(tmp_path):
-    """Test that if a project already has a "pebble" part, it is used unmodified."""
+    """Test that trying to load a project that already has a "pebble" part fails."""
     yaml_data = textwrap.dedent(
         """
         name: pebble-part
@@ -387,11 +387,8 @@ def test_project_load_existing_pebble(tmp_path):
         encoding="utf-8",
     )
 
-    project = load_project(str(rockcraft_file))
-    pebble_part = project.parts["pebble"]
-
-    assert pebble_part["source"] == "https://github.com/fork/pebble.git"
-    assert pebble_part["source-branch"] == "new-pebble-work"
+    with pytest.raises(ProjectValidationError):
+        load_project(str(rockcraft_file))
 
 
 def test_project_load_error():

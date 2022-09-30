@@ -480,10 +480,10 @@ def _add_pebble_data(yaml_data: Dict[str, Any]) -> None:
     """Add pebble-specific contents to YAML-loaded data.
 
     This function adds a special "pebble" part to a project's specification, to be
-    (eventually) used as the image's entrypoint. Note that if a part called "pebble"
-    already exists, it is used instead.
+    (eventually) used as the image's entrypoint.
 
     :param yaml_data: The project spec loaded from "rockcraft.yaml".
+    :raises ProjectValidationError: If `yaml_data` already contains a "pebble" part.
     """
     if "parts" not in yaml_data:
         # Invalid project: let it return to fail in the regular validation flow.
@@ -491,8 +491,8 @@ def _add_pebble_data(yaml_data: Dict[str, Any]) -> None:
 
     parts = yaml_data["parts"]
     if "pebble" in parts:
-        # Project already has a pebble part; use it.
-        return
+        # Project already has a pebble part: this is not supported.
+        raise ProjectValidationError('Cannot override the default "pebble" part')
 
     pebble_part_spec = {
         "plugin": "go",
