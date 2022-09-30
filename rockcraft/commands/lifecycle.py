@@ -77,7 +77,7 @@ class CleanCommand(_LifecycleStepCommand):
     overview = textwrap.dedent(
         """
         Clean up artifacts belonging to parts. If no parts are specified,
-        remove the managed snap packing environment.
+        remove the ROCK packing environment.
         """
     )
 
@@ -143,7 +143,7 @@ class PrimeCommand(_LifecycleStepCommand):
     help_msg = "Prime artifacts defined for a part"
     overview = textwrap.dedent(
         """
-        Prepare the final payload to be packed as a snap, performing additional
+        Prepare the final payload to be packed as a ROCK, performing additional
         processing and adding metadata files. If part names are specified only
         those parts will be primed. The default is to prime all parts.
         """
@@ -154,11 +154,10 @@ class PackCommand(_LifecycleCommand):
     """Command to pack the final artifact."""
 
     name = "pack"
-    help_msg = "Build artifacts defined for a part"
+    help_msg = "Create the ROCK"
     overview = textwrap.dedent(
         """
-        Prepare the final payload to be packed as a ROCK. If part names are
-        specified only those parts will be primed. The default is to prime
-        all parts.
+        Process parts and create the ROCK as an OCI archive file containing
+        the project payload with the provided metadata.
         """
     )
