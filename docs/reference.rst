@@ -172,7 +172,7 @@ Builds artifacts defined for each part.
 
 stage
 ^^^^^
-Stages built artefacts into a common staging area.
+Stages built artifacts into a common staging area, for each part.
 
 prime
 ^^^^^
