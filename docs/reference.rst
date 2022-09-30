@@ -164,7 +164,7 @@ Downloads or retrieves artifacts defined for each part.
 
 overlay
 ^^^^^^^
-Creates part layers over the base filesystem.
+Execute operations defined for each part on a layer over the base filesystem, potentially modifying its contents.
 
 build
 ^^^^^
