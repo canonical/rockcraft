@@ -17,6 +17,7 @@
 import datetime
 import os
 import subprocess
+import textwrap
 from unittest.mock import patch
 
 import pydantic
@@ -77,6 +78,20 @@ def yaml_data():
 @pytest.fixture
 def yaml_loaded_data():
     return yaml.safe_load(ROCKCRAFT_YAML)
+
+
+@pytest.fixture
+def pebble_part():
+    return {
+        "pebble": {
+            "plugin": "go",
+            "source": "https://github.com/canonical/pebble.git",
+            "build-snaps": ["go/1.19/stable"],
+            "override-build": "go mod download\n"
+            "CGO_ENABLED=0 go build -o pebble ./cmd/pebble\n"
+            'install -D -m755 pebble "$CRAFT_PART_INSTALL"/bin/pebble\n',
+        }
+    }
 
 
 def test_project_unmarshal(yaml_loaded_data):
@@ -311,7 +326,7 @@ def test_project_parts_validation(yaml_loaded_data):
     )
 
 
-def test_project_load(yaml_data, yaml_loaded_data, tmp_path):
+def test_project_load(yaml_data, yaml_loaded_data, pebble_part, tmp_path):
     rockcraft_file = tmp_path / "rockcraft.yaml"
     rockcraft_file.write_text(
         yaml_data,
@@ -325,6 +340,9 @@ def test_project_load(yaml_data, yaml_loaded_data, tmp_path):
             # the var license is a built-in,
             # so we workaround it by using an alias
             attr = "rock_license"
+
+        if attr == "parts":
+            v = {**v, **pebble_part}
         if attr == "platforms":
             # platforms get mutated at validation time
             assert getattr(project, attr).keys() == v.keys()
@@ -337,6 +355,40 @@ def test_project_load(yaml_data, yaml_loaded_data, tmp_path):
             continue
 
         assert getattr(project, attr) == v
+
+
+def test_project_load_existing_pebble(tmp_path):
+    """Test that trying to load a project that already has a "pebble" part fails."""
+    yaml_data = textwrap.dedent(
+        """
+        name: pebble-part
+        title: Rock with Pebble
+        version: latest
+        base: ubuntu:20.04
+        summary: Rock with Pebble
+        description: Rock with Pebble
+        license: Apache-2.0
+        platforms:
+            amd64:
+
+        parts:
+            foo:
+                plugin: nil
+                overlay-script: ls
+            pebble:
+                plugin: go
+                source: https://github.com/fork/pebble.git
+                source-branch: new-pebble-work
+    """
+    )
+    rockcraft_file = tmp_path / "rockcraft.yaml"
+    rockcraft_file.write_text(
+        yaml_data,
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ProjectValidationError):
+        load_project(str(rockcraft_file))
 
 
 def test_project_load_error():
