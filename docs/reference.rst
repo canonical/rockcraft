@@ -160,7 +160,7 @@ Removes a part's assets. When no part is provided, the entire build environment 
 
 pull
 ^^^^
-Downloads or retrieves artefacts defined for each part.
+Downloads or retrieves artifacts defined for each part.
 
 overlay
 ^^^^^^^
