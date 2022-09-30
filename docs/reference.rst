@@ -180,7 +180,7 @@ Prepare, for each part, the final payload to be packed as a ROCK, performing add
 
 pack
 ^^^^
-*This is the default lifecycle command for ``rockcraft``.*
+*This is the default lifecycle command for* ``rockcraft``.
 
 Process parts and create the ROCK as an OCI archive file containing the project payload with the provided metadata.
 
