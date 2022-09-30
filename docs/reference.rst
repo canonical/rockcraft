@@ -188,7 +188,7 @@ Other commands
 ..............
 init
 ^^^^
-Initializes a rockcraft project with a boilerplate ``rockcraft.yaml`` configuration file.
+Initializes a rockcraft project with a boilerplate ``rockcraft.yaml`` file.
 
 help
 ^^^^
