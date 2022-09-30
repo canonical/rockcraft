@@ -39,9 +39,14 @@ COMMAND_GROUPS = [
             commands.StageCommand,
             commands.PrimeCommand,
             commands.PackCommand,
+        ],
+    ),
+    craft_cli.CommandGroup(
+        "Other",
+        [
             commands.InitCommand,
         ],
-    )
+    ),
 ]
 
 GLOBAL_ARGS = [
