@@ -180,7 +180,9 @@ Prepare, for each part, the final payload to be packed as a ROCK, performing add
 
 pack
 ^^^^
-Creates a ROCK from the primed artefacts.
+*This is the default lifecycle command for ``rockcraft``.*
+
+Process parts and create the ROCK as an OCI archive file containing the project payload with the provided metadata.
 
 Other commands
 ..............
