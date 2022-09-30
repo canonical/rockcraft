@@ -168,7 +168,7 @@ Execute operations defined for each part on a layer over the base filesystem, po
 
 build
 ^^^^^
-Builds artefacts defined for each part.
+Builds artifacts defined for each part.
 
 stage
 ^^^^^
