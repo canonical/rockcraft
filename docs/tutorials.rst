@@ -10,7 +10,7 @@ Prerequisites
 -------------
 
 - snap enabled system (https://snapcraft.io)
-- LXD installed
+- LXD installed (https://linuxcontainers.org/lxd/getting-started-cli/)
 - skopeo installed (https://github.com/containers/skopeo)
 - Docker installed (https://docs.docker.com/get-docker/)
 - a text editor
@@ -113,7 +113,7 @@ Prerequisites
 -------------
 
 - snap enabled system (https://snapcraft.io)
-- LXD installed
+- LXD installed (https://linuxcontainers.org/lxd/getting-started-cli/)
 - skopeo installed (https://github.com/containers/skopeo)
 - Docker installed (https://docs.docker.com/get-docker/)
 - a text editor
