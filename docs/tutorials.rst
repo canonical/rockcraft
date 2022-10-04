@@ -28,7 +28,7 @@ Install Rockcraft on your host:
 Project Setup
 -------------
 
-Create a new directory and write following into a text editor and
+Create a new directory and write the following into a text editor and
 save it as ``rockcraft.yaml``:
 
 .. code-block:: yaml
