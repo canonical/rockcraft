@@ -49,13 +49,13 @@ def test_get_command_environment_all_opts(monkeypatch):
     }
 
 
-def test_get_instance_name(mock_path):
+def test_get_instance_name(tmp_path):
     assert (
         providers.get_instance_name(
             project_name="my-project-name",
-            project_path=mock_path,
+            project_path=tmp_path,
         )
-        == "rockcraft-my-project-name-445566"
+        == f"rockcraft-my-project-name-{tmp_path.stat().st_ino}"
     )
 
 
