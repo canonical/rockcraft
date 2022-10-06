@@ -25,17 +25,9 @@ from typing import TYPE_CHECKING
 from craft_cli import CraftError, emit
 from craft_providers import ProviderError
 
-from . import oci, utils
+from . import oci, providers, utils
 from .parts import PartsLifecycle
 from .project import Project, load_project
-from .providers.providers import (
-    ROCKCRAFT_BASE_TO_PROVIDER_BASE,
-    capture_logs_from_instance,
-    ensure_provider_is_available,
-    get_base_configuration,
-    get_instance_name,
-    get_provider,
-)
 
 if TYPE_CHECKING:
     import argparse
@@ -186,8 +178,8 @@ def run_in_provider(
     project: Project, command_name: str, parsed_args: "argparse.Namespace"
 ):
     """Run lifecycle command in provider instance."""
-    provider = get_provider()
-    ensure_provider_is_available(provider)
+    provider = providers.get_provider()
+    providers.ensure_provider_is_available(provider)
 
     cmd = ["rockcraft", command_name]
 
@@ -204,12 +196,12 @@ def run_in_provider(
 
     host_project_path = Path().absolute()
     instance_project_path = utils.get_managed_environment_project_path()
-    instance_name = get_instance_name(
+    instance_name = providers.get_instance_name(
         project_name=project.name, project_path=host_project_path
     )
-    build_base = ROCKCRAFT_BASE_TO_PROVIDER_BASE[str(project.build_base)]
+    build_base = providers.ROCKCRAFT_BASE_TO_PROVIDER_BASE[str(project.build_base)]
 
-    base_configuration = get_base_configuration(
+    base_configuration = providers.get_base_configuration(
         alias=build_base,
         project_name=project.name,
         project_path=host_project_path,
@@ -234,7 +226,7 @@ def run_in_provider(
                 f"Failed to execute {command_name} in instance."
             ) from err
         finally:
-            capture_logs_from_instance(instance)
+            providers.capture_logs_from_instance(instance)
 
 
 def clean_provider(project_name: str, project_path: Path) -> None:
@@ -244,8 +236,8 @@ def clean_provider(project_name: str, project_path: Path) -> None:
     :param project_path: path of the project
     """
     emit.progress("Cleaning build provider")
-    provider = get_provider()
-    instance_name = get_instance_name(
+    provider = providers.get_provider()
+    instance_name = providers.get_instance_name(
         project_name=project_name, project_path=project_path
     )
     emit.debug(f"Cleaning instance {instance_name}")

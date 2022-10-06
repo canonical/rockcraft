@@ -16,7 +16,7 @@ craft-cli==1.2.0
 #craft-parts==1.14.0
 # Temporarily use a specific craft-parts commit to have 'chisel' support
 git+https://github.com/canonical/craft-parts.git@2651f15855e184c1d8699efcfd1334#egg=craft_parts
-craft-providers==1.5.1
+craft-providers==1.6.0
 cryptography==37.0.4
 Deprecated==1.2.13
 dill==0.3.5.1

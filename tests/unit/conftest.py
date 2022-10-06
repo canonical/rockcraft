@@ -19,9 +19,7 @@ from pathlib import Path
 from unittest import mock
 
 import pytest
-from craft_providers import Executor, base
-
-from rockcraft.providers import Provider
+from craft_providers import Executor, Provider, base
 
 
 @pytest.fixture
