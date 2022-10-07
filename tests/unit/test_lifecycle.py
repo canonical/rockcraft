@@ -41,14 +41,17 @@ def mock_project(mocker):
 @pytest.fixture()
 def mock_provider(mocker, mock_instance, fake_provider):
     _mock_provider = Mock(wraps=fake_provider)
-    mocker.patch("rockcraft.lifecycle.get_provider", return_value=_mock_provider)
+    mocker.patch(
+        "rockcraft.lifecycle.providers.get_provider", return_value=_mock_provider
+    )
     yield _mock_provider
 
 
 @pytest.fixture()
 def mock_get_instance_name(mocker):
     yield mocker.patch(
-        "rockcraft.lifecycle.get_instance_name", return_value="test-instance-name"
+        "rockcraft.lifecycle.providers.get_instance_name",
+        return_value="test-instance-name",
     )
 
 
@@ -147,14 +150,14 @@ def test_lifecycle_run_in_provider(
     # mock provider calls
     mock_base_configuration = Mock()
     mock_get_base_configuration = mocker.patch(
-        "rockcraft.lifecycle.get_base_configuration",
+        "rockcraft.lifecycle.providers.get_base_configuration",
         return_value=mock_base_configuration,
     )
     mock_capture_logs_from_instance = mocker.patch(
-        "rockcraft.lifecycle.capture_logs_from_instance"
+        "rockcraft.lifecycle.providers.capture_logs_from_instance"
     )
     mock_ensure_provider_is_available = mocker.patch(
-        "rockcraft.lifecycle.ensure_provider_is_available"
+        "rockcraft.lifecycle.providers.ensure_provider_is_available"
     )
     mock_project.build_base = rockcraft_base
 
