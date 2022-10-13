@@ -29,7 +29,9 @@ semver==2.13.0
 snowballstemmer==2.2.0
 spdx-license-list==0.5.2
 Sphinx==5.1.1
+sphinx-autobuild==2021.3.14
 sphinx-autodoc-typehints==1.19.2
+sphinx_design==0.3.0
 sphinx-jsonschema==1.19.1
 sphinx-pydantic==0.1.1
 sphinxcontrib-applehelp==1.0.2

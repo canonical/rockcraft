@@ -32,36 +32,31 @@ matters - the image's content.
    :hidden:
 
    tutorials
-
-   howto
-
+   how-to/index
    reference
-
    explanation
 
 
-.. list-table::
-   :width: 100%
-   :align: center
+.. grid:: 1 1 2 2
 
-   * - |h4| :doc:`Tutorials <tutorials>` |h4end|
+   .. grid-item-card:: :ref:`Tutorial <tutorial>`
 
-       **Get started** with a hands-on introduction to Rockcraft
-       |br| |br| |br| |br|
+      **Get started** with a hands-on introduction to Rockcraft
 
-       |h4| :doc:`Reference <reference>` |h4end|
+   .. grid-item-card:: :ref:`How-to guides <how-to>`
 
-       **Technical information** about the rockcraft.yaml format
+      **Step-by-step guides** covering key operations and common tasks
 
-     - |h4| :doc:`How-to guides <howto>` |h4end|
+.. grid:: 1 1 2 2
+   :reverse:
 
-       **Step-by-step guides** covering key operations and common tasks
-       |br| |br| |br| |br|
+   .. grid-item-card:: :ref:`Reference <reference>`
 
-       |h4| :doc:`Explanation <explanation>` |h4end|
+      **Technical information** about the ``rockcraft.yaml`` format
 
-       **Discussion and clarifications** of key topics
+   .. grid-item-card:: :ref:`Explanation <explanation>`
 
+      **Discussion and clarification** of key topics
 
 
 Project and community
