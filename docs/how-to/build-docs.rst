@@ -8,7 +8,7 @@ Create a virtual environment and activate it::
 
 Install the documentation requirements::
 
-    pip install -r requirements-doc.txt
+    pip install -r requirements-focal.txt -r requirements-doc.txt
 
 Once the requirements are installed, you can use the provided ``Makefile`` to build the documentation::
 

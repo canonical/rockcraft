@@ -42,8 +42,8 @@ coverage: ## Run pytest with coverage report.
 docs: ## Generate documentation.
 	rm -f docs/rockcraft.rst
 	rm -f docs/modules.rst
-	$(MAKE) -C docs clean
-	$(MAKE) -C docs html
+	. $(DOCSVENV); $(MAKE) -C docs clean
+	. $(DOCSVENV); $(MAKE) -C docs html
 
 .PHONY: rundocs
 rundocs: ## start a documentation runserver
