@@ -17,4 +17,6 @@ Once the requirements are installed, you can use the provided ``Makefile`` to bu
 Even better, serve it locally on port 8080. The documentation will be rebuilt on each file change, and will reload the browser view.
 
     make rundocs
-    
+
+Note that ``make rundocs`` automatically activates the virtual environment, as long as it already exists.
+ 
