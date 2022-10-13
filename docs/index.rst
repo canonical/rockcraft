@@ -33,7 +33,7 @@ matters - the image's content.
 
    tutorials
 
-   howto
+   how-to/index
 
    reference
 
@@ -53,7 +53,7 @@ matters - the image's content.
 
        **Technical information** about the rockcraft.yaml format
 
-     - |h4| :doc:`How-to guides <howto>` |h4end|
+     - |h4| :doc:`How-to guides <how-to/index>` |h4end|
 
        **Step-by-step guides** covering key operations and common tasks
        |br| |br| |br| |br|
