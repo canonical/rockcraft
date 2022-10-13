@@ -1,3 +1,6 @@
+DOCSVENV = docs/env/bin/activate
+PORT = 8080
+
 .PHONY: help
 help: ## Show this help.
 	@printf "%-40s %s\n" "Target" "Description"
@@ -41,6 +44,11 @@ docs: ## Generate documentation.
 	rm -f docs/modules.rst
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
+
+.PHONY: rundocs
+rundocs: ## start a documentation runserver
+	. $(DOCSVENV); sphinx-autobuild $(ALLSPHINXOPTS) --ignore ".git/*" --ignore "*.scss" ./docs -b dirhtml -a docs/_build/html --host 0.0.0.0 --port $(PORT)
+
 
 .PHONY: dist
 dist: clean ## Build python package.

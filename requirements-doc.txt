@@ -29,6 +29,7 @@ semver==2.13.0
 snowballstemmer==2.2.0
 spdx-license-list==0.5.2
 Sphinx==5.1.1
+sphinx-autobuild==2021.3.14
 sphinx-autodoc-typehints==1.19.2
 sphinx-jsonschema==1.19.1
 sphinx-pydantic==0.1.1
@@ -42,3 +43,4 @@ types-Deprecated==1.2.9
 typing_extensions==4.3.0
 urllib3==1.26.12
 wrapt==1.14.1
+sphinx-autobuild
