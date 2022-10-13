@@ -471,4 +471,35 @@ def load_project(filename: str) -> Project:
             msg = f"{msg}: {err.filename!r}."
         raise ProjectLoadError(msg) from err
 
+    _add_pebble_data(yaml_data)
+
     return Project.unmarshal(yaml_data)
+
+
+def _add_pebble_data(yaml_data: Dict[str, Any]) -> None:
+    """Add pebble-specific contents to YAML-loaded data.
+
+    This function adds a special "pebble" part to a project's specification, to be
+    (eventually) used as the image's entrypoint.
+
+    :param yaml_data: The project spec loaded from "rockcraft.yaml".
+    :raises ProjectValidationError: If `yaml_data` already contains a "pebble" part.
+    """
+    if "parts" not in yaml_data:
+        # Invalid project: let it return to fail in the regular validation flow.
+        return
+
+    parts = yaml_data["parts"]
+    if "pebble" in parts:
+        # Project already has a pebble part: this is not supported.
+        raise ProjectValidationError('Cannot override the default "pebble" part')
+
+    pebble_part_spec = {
+        "plugin": "go",
+        "source": "https://github.com/canonical/pebble.git",
+        "build-snaps": ["go/1.19/stable"],
+        "override-build": "go mod download\n"
+        "CGO_ENABLED=0 go build -o pebble ./cmd/pebble\n"
+        'install -D -m755 pebble "$CRAFT_PART_INSTALL"/bin/pebble\n',
+    }
+    parts["pebble"] = pebble_part_spec

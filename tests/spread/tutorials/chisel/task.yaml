@@ -1,0 +1,12 @@
+summary: test for the "Install packages slices into a ROCK" tutorial
+
+execute: |
+  # NOTE: if something breaks or changes here, please review the corresponding tutorial!
+  
+  rockcraft
+  
+  test -f chisel-openssl_0.0.1_amd64.rock
+  sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:chisel-openssl_0.0.1_amd64.rock docker-daemon:chisel-openssl:latest
+  
+  docker run chisel-openssl
+  docker run --rm chisel-openssl s_client -connect ubuntu.com:443 -brief 2>&1 | grep "Verification: OK"
