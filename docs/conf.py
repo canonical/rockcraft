@@ -56,6 +56,7 @@ extensions = [
     "sphinx.ext.viewcode",
     "sphinx_autodoc_typehints",  # must be loaded after napoleon
     "sphinx-pydantic",
+    "sphinx_design",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
