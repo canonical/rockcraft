@@ -104,6 +104,7 @@ parts:
   chisel:
     plugin: nil
     source: https://github.com/canonical/chisel.git
+    source-commit: f0bff5a30dfdcb400b3c4efe85962ad8ff3ca2ba
     build-snaps:
       - go/1.18/stable
     override-build: |

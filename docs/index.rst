@@ -64,5 +64,6 @@ Project and community
 
 Rockcraft is a member of the Canonical family. It's an open source project that warmly welcomes community projects, contributions, suggestions, fixes and constructive feedback.
 
+* `Ubuntu Code of Conduct <https://ubuntu.com/community/code-of-conduct>`_.
 * `Canonical contributor license agreement <https://ubuntu.com/legal/contributors>`_.
 
