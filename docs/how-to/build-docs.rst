@@ -19,4 +19,3 @@ Even better, serve it locally on port 8080. The documentation will be rebuilt on
     make rundocs
 
 Note that ``make rundocs`` automatically activates the virtual environment, as long as it already exists.
- 
