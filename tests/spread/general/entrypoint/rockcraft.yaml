@@ -1,7 +1,7 @@
 name: entrypoint-test
 title: Entrypoint Test
 version: latest
-base: ubuntu:20.04
+base: ubuntu:22.04
 summary: Hello World
 description: A ROCK with the simple purpose of demonstrating an Hello World entrypoint
 license: Apache-2.0
