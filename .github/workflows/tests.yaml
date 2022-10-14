@@ -47,6 +47,9 @@ jobs:
       - name: Run pylint
         run: |
           make test-pylint
+      - name: Run sphinx-lint
+        run: |
+          make test-sphinx-lint
 
   tests:
     strategy:

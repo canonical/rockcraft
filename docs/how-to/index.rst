@@ -12,4 +12,4 @@ They'll help you achieve an end result but may require you to understand and ada
    :maxdepth: 1
 
    Get started - quick guide <get-started>
-   Build the documentation <build-docs> 
+   Build the documentation <build-docs>
