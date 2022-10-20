@@ -8,6 +8,10 @@ execute: |
   echo "a.txt" > files/a.txt
   echo "b.txt" > files/b.txt
 
+  mkdir -p permissions-files/{dir1,dir2}
+  touch permissions-files/dir1/{1.txt,2.txt}
+  touch permissions-files/dir2/3.txt
+
   rockcraft pack
 
   ROCK=`ls big*.rock`
@@ -29,3 +33,12 @@ execute: |
   docker run --rm big bash -c "stat -c %u /etc/newfiles | grep -q 9999"
   docker run --rm big bash -c "stat -c %u /etc/newfiles/a.txt | grep -q 9999"
   docker run --rm big bash -c "stat -c %u /etc/newfiles/b.txt | grep -q 3333"
+
+  ############################################################################################
+  # test permissions set via part
+  ############################################################################################
+  # Check that files in /dir1/ have uid 1111 and gid 2222
+  docker run --rm big bash -c 'ls -l /dir1/1.txt | grep -e "1111 2222"'
+  docker run --rm big bash -c 'ls -l /dir1/2.txt | grep -e "1111 2222"'
+  # Check that file /dir2/3.txt has 0o755 permission and original uid/gid
+  docker run --rm big bash -c 'ls -l /dir2/3.txt | grep -e "-rwxr-xr-x 1 root root"'
