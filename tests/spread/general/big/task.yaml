@@ -38,7 +38,7 @@ execute: |
   # test permissions set via part
   ############################################################################################
   # Check that files in /dir1/ have uid 1111 and gid 2222
-  docker run --rm big bash -c 'ls -l /dir1/1.txt | grep -e "1111 2222"'
-  docker run --rm big bash -c 'ls -l /dir1/2.txt | grep -e "1111 2222"'
+  docker run --rm big bash -c 'stat -c "%u %g" /dir1/1.txt | grep -e "1111 2222"'
+  docker run --rm big bash -c 'stat -c "%u %g" /dir1/2.txt | grep -e "1111 2222"'
   # Check that file /dir2/3.txt has 0o755 permission and original uid/gid
-  docker run --rm big bash -c 'ls -l /dir2/3.txt | grep -e "-rwxr-xr-x 1 root root"'
+  docker run --rm big bash -c 'stat -c "%a %U %G" /dir2/3.txt | grep -e "755 root root"'
