@@ -24,3 +24,13 @@ parts:
       craftctl default
       chown -R 9999:9999 etc/newfiles
       chown 3333:3333 etc/newfiles/b.txt
+
+  permissions-part:
+    plugin: dump
+    source: permissions-files
+    permissions:
+      - path: dir1/*
+        owner: 1111
+        group: 2222
+      - path: dir2/3.txt
+        mode: "755"
