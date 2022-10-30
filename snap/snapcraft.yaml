@@ -102,13 +102,8 @@ parts:
         - pkg-config
 
   chisel:
-    plugin: nil
+    plugin: go
     source: https://github.com/canonical/chisel.git
     source-commit: f0bff5a30dfdcb400b3c4efe85962ad8ff3ca2ba
     build-snaps:
       - go/1.18/stable
-    override-build: |
-      go mod download
-      CGO_ENABLED=0 GOOS=linux go build -o chisel ./cmd/chisel
-      mkdir "$SNAPCRAFT_PART_INSTALL"/bin
-      install -m755 chisel "$SNAPCRAFT_PART_INSTALL"/bin/chisel
