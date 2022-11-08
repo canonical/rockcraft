@@ -87,6 +87,7 @@ def pebble_part():
             "plugin": "go",
             "source": "https://github.com/canonical/pebble.git",
             "build-snaps": ["go/1.19/stable"],
+            "build-environment": [{"CGO_ENABLED": "0"}],
         }
     }
 

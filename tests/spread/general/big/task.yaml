@@ -42,3 +42,11 @@ execute: |
   docker run --rm big bash -c 'stat -c "%u %g" /dir1/2.txt | grep -e "1111 2222"'
   # Check that file /dir2/3.txt has 0o755 permission and original uid/gid
   docker run --rm big bash -c 'stat -c "%a %U %G" /dir2/3.txt | grep -e "755 root root"'
+
+  ############################################################################################
+  # check that /bin/pebble is a static binary
+  ############################################################################################
+  docker run --name big-container big bash
+  docker cp big-container:/bin/pebble - | tar xf -
+  file pebble | grep "statically linked"
+  docker rm -f big-container

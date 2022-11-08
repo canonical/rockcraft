@@ -498,5 +498,6 @@ def _add_pebble_data(yaml_data: Dict[str, Any]) -> None:
         "plugin": "go",
         "source": "https://github.com/canonical/pebble.git",
         "build-snaps": ["go/1.19/stable"],
+        "build-environment": [{"CGO_ENABLED": "0"}],
     }
     parts["pebble"] = pebble_part_spec
