@@ -1,0 +1,44 @@
+summary: a big test meant to check many aspects of rockcraft
+
+execute: |
+  echo "hi"
+  whoami
+
+  mkdir files
+  echo "a.txt" > files/a.txt
+  echo "b.txt" > files/b.txt
+
+  mkdir -p permissions-files/{dir1,dir2}
+  touch permissions-files/dir1/{1.txt,2.txt}
+  touch permissions-files/dir2/3.txt
+
+  rockcraft pack
+
+  ROCK=`ls big*.rock`
+
+  test -f $ROCK
+  test ! -d work
+
+  # copy image to docker
+  docker images
+  sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:$ROCK docker-daemon:big:latest
+  rm $ROCK
+
+  docker images
+  
+  ############################################################################################
+  # test ownership: "newfiles" and "a.txt" are owned by uid 9999, "b.txt" is owned by uid 3333
+  # (github issue #44)
+  ############################################################################################
+  docker run --rm big bash -c "stat -c %u /etc/newfiles | grep -q 9999"
+  docker run --rm big bash -c "stat -c %u /etc/newfiles/a.txt | grep -q 9999"
+  docker run --rm big bash -c "stat -c %u /etc/newfiles/b.txt | grep -q 3333"
+
+  ############################################################################################
+  # test permissions set via part
+  ############################################################################################
+  # Check that files in /dir1/ have uid 1111 and gid 2222
+  docker run --rm big bash -c 'stat -c "%u %g" /dir1/1.txt | grep -e "1111 2222"'
+  docker run --rm big bash -c 'stat -c "%u %g" /dir1/2.txt | grep -e "1111 2222"'
+  # Check that file /dir2/3.txt has 0o755 permission and original uid/gid
+  docker run --rm big bash -c 'stat -c "%a %U %G" /dir2/3.txt | grep -e "755 root root"'

@@ -1,0 +1,15 @@
+summary: container environment test
+
+execute: |
+  rockcraft pack
+
+  test -f environment-test_latest_amd64.rock
+  test -f environment-test_latest_amd64v2.rock
+  test ! -d work
+
+  # test container execution
+  docker images
+  sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:environment-test_latest_amd64v2.rock docker-daemon:environment-test:latest
+  rm environment-test_latest*.rock  
+  docker images
+  docker run --rm environment-test bash -c 'echo $X' | grep "ship it!"

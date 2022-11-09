@@ -16,30 +16,136 @@
 
 """Project definition and helpers."""
 
-from typing import Any, Dict, Tuple
+import operator
+import platform as host_platform
+from functools import reduce
+from typing import Any, Dict, List, Literal, Optional, Tuple
 
 import pydantic
+import spdx_license_list  # type: ignore
 import yaml
-from craft_cli.errors import CraftError
 
+from rockcraft.errors import ProjectLoadError, ProjectValidationError
 from rockcraft.parts import validate_part
 
 
-class ProjectLoadError(CraftError):
-    """Error loading rockcraft.yaml."""
+class ArchitectureMapping(pydantic.BaseModel):
+    """Maps different denominations of the same architecture."""
+
+    description: str
+    deb_arch: str
+    compatible_uts_machine_archs: List[str]
+    go_arch: str
 
 
-class ProjectValidationError(CraftError):
-    """Error validatiing rockcraft.yaml."""
+_SUPPORTED_ARCHS: Dict[str, ArchitectureMapping] = {
+    "amd64": ArchitectureMapping(
+        description="Intel 64",
+        deb_arch="amd64",
+        compatible_uts_machine_archs=["amd64", "x86_64"],
+        go_arch="amd64",
+    ),
+    "arm": ArchitectureMapping(
+        description="ARM 32-bit",
+        deb_arch="armhf",
+        compatible_uts_machine_archs=["arm"],
+        go_arch="arm",
+    ),
+    "arm64": ArchitectureMapping(
+        description="ARM 64-bit",
+        deb_arch="arm64",
+        compatible_uts_machine_archs=["aarch64"],
+        go_arch="arm64",
+    ),
+    "i386": ArchitectureMapping(
+        description="Intel 386",
+        deb_arch="i386",
+        compatible_uts_machine_archs=["i386"],  # TODO: also include "i686", "x86_64"?
+        go_arch="386",
+    ),
+    "ppc64le": ArchitectureMapping(
+        description="PowerPC 64-bit",
+        deb_arch="ppc64el",
+        compatible_uts_machine_archs=["ppc64le"],
+        go_arch="ppc64le",
+    ),
+    "riscv64": ArchitectureMapping(
+        description="RISCV 64-bit",
+        deb_arch="riscv64",
+        compatible_uts_machine_archs=["riscv64"],
+        go_arch="riscv64",
+    ),
+    "s390x": ArchitectureMapping(
+        description="IBM Z 64-bit",
+        deb_arch="s390x",
+        compatible_uts_machine_archs=["s390x"],
+        go_arch="s390x",
+    ),
+}
+
+
+class Platform(pydantic.BaseModel):
+    """Rockcraft project platform definition."""
+
+    build_on: Optional[  # type: ignore
+        pydantic.conlist(str, unique_items=True, min_items=1)  # type: ignore
+    ] = pydantic.Field(alias="build-on")
+    build_for: Optional[  # type: ignore
+        pydantic.conlist(str, unique_items=True, min_items=1)  # type: ignore
+    ] = pydantic.Field(alias="build-for")
+
+    @pydantic.validator("build_for", pre=True)
+    @classmethod
+    def _vectorise_build_for(cls, val):
+        """Vectorise target architecture if needed."""
+        if isinstance(val, str):
+            val = [val]
+        return val
+
+    @pydantic.root_validator(skip_on_failure=True)
+    @classmethod
+    def _validate_platform_set(cls, values):
+        """Validate the build_on build_for combination."""
+        build_for = values["build_for"] if values.get("build_for") else []
+        build_on = values["build_on"] if values.get("build_on") else []
+
+        # We can only build for 1 arch at the moment
+        if len(build_for) > 1:
+            raise ProjectValidationError(
+                str(
+                    f"Trying to build a ROCK for {build_for} "
+                    "but multiple target architectures are not "
+                    "currently supported. Please specify only 1 value."
+                )
+            )
+
+        # If build_for is provided, then build_on must also be
+        if not build_on and build_for:
+            raise ProjectValidationError(
+                "'build_for' expects 'build_on' to also be provided."
+            )
+
+        return values
 
 
 class Project(pydantic.BaseModel):
     """Rockcraft project definition."""
 
     name: str
+    title: Optional[str]
+    summary: str
+    description: str
+    rock_license: str = pydantic.Field(alias="license")
     version: str
-    base: str
-    build_base: str
+    platforms: Dict[str, Any]
+    base: Literal["bare", "ubuntu:18.04", "ubuntu:20.04", "ubuntu:22.04"]
+    build_base: Optional[
+        Literal["ubuntu:18.04", "ubuntu:20.04", "ubuntu:22.04"]
+    ] = pydantic.Field(alias="build-base")
+    entrypoint: Optional[List[str]]
+    cmd: Optional[List[str]]
+    env: Optional[List[Dict[str, str]]]
+
     parts: Dict[str, Any]
 
     class Config:  # pylint: disable=too-few-public-methods
@@ -51,9 +157,155 @@ class Project(pydantic.BaseModel):
         allow_population_by_field_name = True
         alias_generator = lambda s: s.replace("_", "-")  # noqa: E731
 
+    @pydantic.validator("rock_license", always=True)
+    @classmethod
+    def _validate_license(cls, rock_license):
+        """Make sure the provided license is valid and in SPDX format."""
+        if rock_license.lower() not in [
+            lic.lower() for lic in spdx_license_list.LICENSES
+        ]:
+            raise ProjectValidationError(
+                f"License {rock_license} not valid. It must be valid and in SPDX format."
+            )
+        return next(
+            lic
+            for lic in spdx_license_list.LICENSES
+            if rock_license.lower() == lic.lower()
+        )
+
+    @pydantic.validator("title", always=True)
+    @classmethod
+    def _validate_title(cls, title, values):
+        """If title is not provided, it default to the provided ROCK name."""
+        if not title:
+            title = values["name"]
+        return title
+
+    @pydantic.validator("build_base", always=True)
+    @classmethod
+    def _validate_build_base(cls, build_base, values):
+        """Build-base defaults to the base value if not specified.
+
+        :raises ProjectValidationError: If base validation fails.
+        """
+        if not build_base:
+            base_value = values.get("base")
+            if base_value == "bare":
+                raise ProjectValidationError(
+                    'When "base" is bare, a build-base must be specified!'
+                )
+            build_base = values.get("base")
+        return build_base
+
+    @pydantic.validator("platforms")
+    @classmethod
+    def _validate_all_platforms(cls, platforms):
+        """Make sure all provided platforms are tangible and sane."""
+        _self_uts_machine = host_platform.machine().lower()
+
+        for platform_label in platforms:
+            platform = platforms[platform_label] if platforms[platform_label] else {}
+            error_prefix = f"Error for platform entry '{platform_label}'"
+
+            # Make sure the provided platform_set is valid
+            try:
+                platform = Platform(**platform).dict()
+            except ProjectValidationError as err:
+                # pylint: disable=raise-missing-from
+                raise ProjectValidationError(f"{error_prefix}: {str(err)}")
+
+            # build_on and build_for are validated
+            # let's also validate the platform label
+            build_on_one_of = (
+                platform["build_on"] if platform["build_on"] else [platform_label]
+            )
+
+            # If the label maps to a valid architecture and
+            # `build-for` is present, then both need to have the same value,
+            # otherwise the project is invalid.
+            if platform["build_for"]:
+                build_target = platform["build_for"][0]
+                if (
+                    platform_label in _SUPPORTED_ARCHS
+                    and platform_label != build_target
+                ):
+                    raise ProjectValidationError(
+                        str(
+                            f"{error_prefix}: if 'build_for' is provided and the "
+                            "platform entry label corresponds to a valid architecture, then "
+                            f"both values must match. {platform_label} != {build_target}"
+                        )
+                    )
+            else:
+                build_target = platform_label
+
+            # Both build and target architectures must be supported
+            if not any(b_o in _SUPPORTED_ARCHS for b_o in build_on_one_of):
+                raise ProjectValidationError(
+                    str(
+                        f"{error_prefix}: trying to build ROCK in one of "
+                        f"{build_on_one_of}, but none of these build architectures is supported. "
+                        f"Supported architectures: {list(_SUPPORTED_ARCHS.keys())}"
+                    )
+                )
+
+            if build_target not in _SUPPORTED_ARCHS:
+                raise ProjectValidationError(
+                    str(
+                        f"{error_prefix}: trying to build ROCK for target "
+                        f"architecture {build_target}, which is not supported. "
+                        f"Supported architectures: {list(_SUPPORTED_ARCHS.keys())}"
+                    )
+                )
+
+            # The underlying build machine must be compatible
+            # with both build_on and build_for
+            # TODO: in the future, this may be removed
+            # as Rockcraft gains the ability to natively build
+            # for multiple architectures
+            build_for_compatible_uts = _SUPPORTED_ARCHS[
+                build_target
+            ].compatible_uts_machine_archs
+            if _self_uts_machine not in build_for_compatible_uts:
+                raise ProjectValidationError(
+                    str(
+                        f"{error_prefix}: this machine's architecture ({_self_uts_machine}) "
+                        "is not compatible with the ROCK's target architecture. Can only "
+                        f"build a ROCK for {build_target} if the host is compatible with {build_for_compatible_uts}."
+                    )
+                )
+
+            build_on_compatible_uts = list(
+                reduce(
+                    operator.add,
+                    map(
+                        lambda m: _SUPPORTED_ARCHS[m].compatible_uts_machine_archs,
+                        build_on_one_of,
+                    ),
+                )
+            )
+            if _self_uts_machine not in build_on_compatible_uts:
+                raise ProjectValidationError(
+                    str(
+                        f"{error_prefix}: this ROCK must be built on one of the "
+                        f"following architectures: {build_on_compatible_uts}. "
+                        f"This machine ({_self_uts_machine}) is not one of those."
+                    )
+                )
+
+            # Add variant, if needed, and return sanitized platform
+            if build_target == "arm":
+                platform["build_for_variant"] = "v7"
+            elif build_target == "arm64":
+                platform["build_for_variant"] = "v8"
+
+            platforms[platform_label] = platform
+
+        return platforms
+
     @pydantic.validator("parts", each_item=True)
     @classmethod
-    def validate_parts(cls, item):
+    def _validate_parts(cls, item):
         """Verify each part (craft-parts will re-validate this)."""
         validate_part(item)
         return item
@@ -72,7 +324,7 @@ class Project(pydantic.BaseModel):
         :raise TypeError: If data is not a dictionary.
         """
         if not isinstance(data, dict):
-            raise TypeError("part data is not a dictionary")
+            raise TypeError("project data is not a dictionary")
 
         try:
             project = Project(**data)
@@ -80,6 +332,37 @@ class Project(pydantic.BaseModel):
             raise ProjectValidationError(_format_pydantic_errors(err.errors())) from err
 
         return project
+
+    def generate_metadata(
+        self, generation_time: str, base_digest: bytes
+    ) -> Tuple[dict, dict]:
+        """Generate the ROCK's metadata (both the OCI annotation and internal metadata.
+
+        :param generation_time: the UTC time at the time of calling this method
+        :param base_digest: digest of the base image
+
+        :return: both the OCI annotation and internal metadata, as a tuple
+        """
+        metadata = {
+            "name": self.name,
+            "summary": self.summary,
+            "title": self.title,
+            "version": self.version,
+            "created": generation_time,
+            "base": self.base,
+            "base-digest": base_digest.hex(),
+        }
+
+        annotations = {
+            "org.opencontainers.image.version": self.version,
+            "org.opencontainers.image.title": self.title,
+            "org.opencontainers.image.ref.name": self.name,
+            "org.opencontainers.image.licenses": self.rock_license,
+            "org.opencontainers.image.created": generation_time,
+            "org.opencontainers.image.base.digest": base_digest.hex(),
+        }
+
+        return (annotations, metadata)
 
 
 def _format_pydantic_errors(errors, *, file_name: str = "rockcraft.yaml"):
@@ -188,4 +471,32 @@ def load_project(filename: str) -> Project:
             msg = f"{msg}: {err.filename!r}."
         raise ProjectLoadError(msg) from err
 
+    _add_pebble_data(yaml_data)
+
     return Project.unmarshal(yaml_data)
+
+
+def _add_pebble_data(yaml_data: Dict[str, Any]) -> None:
+    """Add pebble-specific contents to YAML-loaded data.
+
+    This function adds a special "pebble" part to a project's specification, to be
+    (eventually) used as the image's entrypoint.
+
+    :param yaml_data: The project spec loaded from "rockcraft.yaml".
+    :raises ProjectValidationError: If `yaml_data` already contains a "pebble" part.
+    """
+    if "parts" not in yaml_data:
+        # Invalid project: let it return to fail in the regular validation flow.
+        return
+
+    parts = yaml_data["parts"]
+    if "pebble" in parts:
+        # Project already has a pebble part: this is not supported.
+        raise ProjectValidationError('Cannot override the default "pebble" part')
+
+    pebble_part_spec = {
+        "plugin": "go",
+        "source": "https://github.com/canonical/pebble.git",
+        "build-snaps": ["go/1.19/stable"],
+    }
+    parts["pebble"] = pebble_part_spec

@@ -13,7 +13,7 @@ apps:
   rockcraft:
     command: bin/python $SNAP/bin/rockcraft
     environment:
-      PATH: "/snap/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$SNAP/usr/bin:$SNAP/bin"
+      PATH: "$SNAP/libexec/rockcraft:/snap/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$SNAP/usr/bin:$SNAP/bin"
 
 build-packages:
   - libapt-pkg-dev
@@ -42,6 +42,7 @@ parts:
         - python3-distutils
         - python3-pkg-resources
         - python3.8-minimal
+        - fuse-overlayfs
 
   rockcraft:
     source: .
@@ -60,6 +61,9 @@ parts:
       snapcraftctl build
       # python3 fixup symlink (snapcraft bug)
       ln -sf ../usr/bin/python3.8 $SNAPCRAFT_PART_INSTALL/bin/python3
+        mkdir -p $SNAPCRAFT_PART_INSTALL/libexec/rockcraft
+        mv $SNAPCRAFT_PART_INSTALL/bin/craftctl $SNAPCRAFT_PART_INSTALL/libexec/rockcraft/
+        sed -i -e '1 s|^#!/.*|#!/snap/rockcraft/current/bin/python|' $SNAPCRAFT_PART_INSTALL/libexec/rockcraft/craftctl
 
   umoci:
     plugin: make
@@ -78,7 +82,7 @@ parts:
   skopeo:
     plugin: nil
     source: https://github.com/containers/skopeo.git
-    source-tag: v1.5.0
+    source-tag: v1.9.0
     override-build: |
         CGO=1 go build -ldflags -linkmode=external ./cmd/skopeo
         mkdir "$SNAPCRAFT_PART_INSTALL"/bin
@@ -88,10 +92,18 @@ parts:
         - libassuan0
         - libbtrfs0
         - libdevmapper1.02.1
+    build-snaps:
+        - go/1.17/stable
     build-packages:
-        - golang-go
         - libgpgme-dev
         - libassuan-dev
         - libbtrfs-dev
         - libdevmapper-dev
         - pkg-config
+
+  chisel:
+    plugin: go
+    source: https://github.com/canonical/chisel.git
+    source-commit: f0bff5a30dfdcb400b3c4efe85962ad8ff3ca2ba
+    build-snaps:
+      - go/1.18/stable

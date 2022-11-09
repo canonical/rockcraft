@@ -16,12 +16,13 @@
 
 """Utilities for rockcraft."""
 
-import distutils.util
+
 import logging
 import os
 import pathlib
 import sys
 from collections import namedtuple
+from distutils.util import strtobool  # pylint: disable=deprecated-module
 from typing import Optional
 
 logger = logging.getLogger(__name__)
@@ -32,7 +33,7 @@ OSPlatform = namedtuple("OSPlatform", "system release machine")
 def is_managed_mode():
     """Check if rockcraft is running in a managed environment."""
     managed_flag = os.getenv("ROCKCRAFT_MANAGED_MODE", "n")
-    return distutils.util.strtobool(managed_flag) == 1
+    return strtobool(managed_flag) == 1
 
 
 def get_managed_environment_home_path():
@@ -43,6 +44,11 @@ def get_managed_environment_home_path():
 def get_managed_environment_project_path():
     """Path for project when running in managed environment."""
     return get_managed_environment_home_path() / "project"
+
+
+def get_managed_environment_log_path():
+    """Path for log when running in managed environment."""
+    return pathlib.Path("/tmp/rockcraft.log")
 
 
 def get_managed_environment_snap_channel() -> Optional[str]:
@@ -72,11 +78,5 @@ def confirm_with_user(prompt, default=False) -> bool:
 
     choices = " [Y/n]: " if default else " [y/N]: "
 
-    reply = str(input(prompt + choices)).lower().strip()
-    if reply and reply[0] == "y":
-        return True
-
-    if reply and reply[0] == "n":
-        return False
-
-    return default
+    reply = input(prompt + choices).lower().strip()
+    return reply[0] == "y" if reply else default

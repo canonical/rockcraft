@@ -1,6 +1,6 @@
 # -*- Mode:Python; indent-tabs-mode:nil; tab-width:4 -*-
 #
-# Copyright (C) 2021 Canonical Ltd
+# Copyright 2021-2022 Canonical Ltd.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 3 as
@@ -14,23 +14,52 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import contextlib
+from pathlib import Path
 from unittest import mock
 
 import pytest
-from craft_providers import Executor
-
-from rockcraft import ui
-
-
-@pytest.fixture
-def emit_mock():
-    """Setup a fake emitter."""
-    patcher = mock.patch.object(ui, "emit")
-    yield patcher.start()
-    patcher.stop()
+from craft_providers import Executor, Provider, base
 
 
 @pytest.fixture
 def mock_instance():
     """Provide a mock instance (Executor)."""
-    yield mock.Mock(spec=Executor)
+    _mock_instance = mock.Mock(spec=Executor)
+    yield _mock_instance
+
+
+@pytest.fixture(autouse=True)
+def fake_provider(mock_instance):
+    """Fixture to provide a minimal fake provider."""
+
+    class FakeProvider(Provider):
+        """Fake provider."""
+
+        def clean_project_environments(self, *, instance_name: str):
+            pass
+
+        @classmethod
+        def ensure_provider_is_available(cls) -> None:
+            pass
+
+        @classmethod
+        def is_provider_installed(cls) -> bool:
+            return True
+
+        def create_environment(self, *, instance_name: str):
+            yield mock_instance
+
+        @contextlib.contextmanager
+        def launched_environment(
+            self,
+            *,
+            project_name: str,
+            project_path: Path,
+            base_configuration: base.Base,
+            build_base: str,
+            instance_name: str,
+        ):
+            yield mock_instance
+
+    return FakeProvider()

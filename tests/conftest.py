@@ -1,6 +1,6 @@
 # -*- Mode:Python; indent-tabs-mode:nil; tab-width:4 -*-
 #
-# Copyright (C) 2021 Canonical Ltd
+# Copyright (C) 2021-2022 Canonical Ltd
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 3 as
@@ -48,3 +48,39 @@ def temp_xdg(tmpdir, mocker):
         "xdg.BaseDirectory.xdg_data_dirs", new=[xdg.BaseDirectory.xdg_data_home]
     )
     mocker.patch.dict(os.environ, {"XDG_CONFIG_HOME": os.path.join(tmpdir, ".config")})
+
+
+class RecordingEmitter:
+    """Record what is shown using the emitter and provide a nice API for tests."""
+
+    def __init__(self):
+        self.progress = []
+        self.message = []
+        self.trace = []
+        self.emitted = []
+        self.raw = []
+
+    def record(self, level, text):
+        """Record the text for the specific level and in the general storages."""
+        getattr(self, level).append(text)
+        self.emitted.append(text)
+        self.raw.append((level, text))
+
+    def _check(self, expected, storage):
+        """Really verify messages."""
+        for pos, recorded_msg in enumerate(storage):
+            if recorded_msg == expected[0]:
+                break
+        else:
+            raise AssertionError(f"Initial test message not found in {storage}")
+
+        recorded = storage[pos : pos + len(expected)]  # pylint: disable=W0631
+        assert recorded == expected
+
+    def assert_recorded(self, expected):
+        """Verify that the given messages were recorded consecutively."""
+        self._check(expected, self.emitted)
+
+    def assert_recorded_raw(self, expected):
+        """Verify that the given messages (with specific level) were recorded consecutively."""
+        self._check(expected, self.raw)

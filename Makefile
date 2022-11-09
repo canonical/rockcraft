@@ -1,3 +1,6 @@
+DOCSVENV = docs/env/bin/activate
+PORT = 8080
+
 .PHONY: help
 help: ## Show this help.
 	@printf "%-40s %s\n" "Target" "Description"
@@ -7,7 +10,7 @@ help: ## Show this help.
 .PHONY: autoformat
 autoformat: ## Run automatic code formatters.
 	isort .
-	autoflake --remove-all-unused-imports --ignore-init-module-imports -ri .
+	autoflake rockcraft/ tests/
 	black .
 
 .PHONY: clean
@@ -39,8 +42,13 @@ coverage: ## Run pytest with coverage report.
 docs: ## Generate documentation.
 	rm -f docs/rockcraft.rst
 	rm -f docs/modules.rst
-	$(MAKE) -C docs clean
-	$(MAKE) -C docs html
+	. $(DOCSVENV); $(MAKE) -C docs clean
+	. $(DOCSVENV); $(MAKE) -C docs html
+
+.PHONY: rundocs
+rundocs: ## start a documentation runserver
+	. $(DOCSVENV); sphinx-autobuild $(ALLSPHINXOPTS) --ignore ".git/*" --ignore "*.scss" ./docs -b dirhtml -a docs/_build/html --host 0.0.0.0 --port $(PORT)
+
 
 .PHONY: dist
 dist: clean ## Build python package.
@@ -57,7 +65,7 @@ install: clean ## Install python package.
 	python setup.py install
 
 .PHONY: lint
-lint: test-black test-codespell test-flake8 test-isort test-mypy test-pydocstyle test-pylint test-pyright ## Run all linting tests.
+lint: test-black test-codespell test-flake8 test-isort test-mypy test-pydocstyle test-pyright test-pylint test-sphinx-lint ## Run all linting tests.
 
 .PHONY: release
 release: dist ## Release with twine.
@@ -94,11 +102,15 @@ test-pydocstyle:
 .PHONY: test-pylint
 test-pylint:
 	pylint rockcraft
-	pylint tests --disable=missing-module-docstring,missing-function-docstring,redefined-outer-name,no-self-use,too-many-arguments
+	pylint tests --disable=invalid-name,missing-module-docstring,missing-function-docstring,redefined-outer-name,too-many-arguments
 
 .PHONY: test-pyright
 test-pyright:
 	pyright .
+
+.PHONY: test-sphinx-lint
+test-sphinx-lint:
+	sphinx-lint docs/*
 
 .PHONY: test-units
 test-units: ## Run unit tests.

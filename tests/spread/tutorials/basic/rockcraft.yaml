@@ -1,0 +1,15 @@
+name: smoke-test
+version: latest
+base: ubuntu:20.04
+summary: Hello World
+description: A ROCK with the simple purpose of demonstrating an Hello World entrypoint
+license: Apache-2.0
+cmd: [/usr/bin/hello, -t]
+platforms:
+  amd64:
+  
+parts:
+  hello:
+    plugin: nil
+    overlay-packages:
+      - hello
