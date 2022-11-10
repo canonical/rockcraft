@@ -87,7 +87,11 @@ def pebble_part():
             "plugin": "go",
             "source": "https://github.com/canonical/pebble.git",
             "build-snaps": ["go/1.19/stable"],
-            "build-environment": [{"CGO_ENABLED": "0"}],
+            "override-build": (
+                "go mod download\n"
+                'CGO_ENABLED=0 go build -ldflags="-w -s" -o pebble ./cmd/pebble\n'
+                'install -D -m755 pebble "$CRAFT_PART_INSTALL"/bin/pebble\n'
+            ),
         }
     }
 
