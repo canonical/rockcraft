@@ -44,9 +44,9 @@ execute: |
   docker run --rm big bash -c 'stat -c "%a %U %G" /dir2/3.txt | grep -e "755 root root"'
 
   ############################################################################################
-  # check that /bin/pebble is a static binary
+  # check that /usr/bin/pebble is a static binary
   ############################################################################################
   docker run --name big-container big bash
-  docker cp big-container:/bin/pebble - | tar xf -
+  docker cp big-container:/usr/bin/pebble - | tar xf -
   file pebble | grep "statically linked"
   docker rm -f big-container

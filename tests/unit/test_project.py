@@ -90,7 +90,7 @@ def pebble_part():
             "override-build": (
                 "go mod download\n"
                 'CGO_ENABLED=0 go build -ldflags="-w -s" -o pebble ./cmd/pebble\n'
-                'install -D -m755 pebble "$CRAFT_PART_INSTALL"/bin/pebble\n'
+                'install -D -m755 pebble "$CRAFT_PART_INSTALL"/usr/bin/pebble\n'
             ),
         }
     }
