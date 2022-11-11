@@ -24,11 +24,9 @@ backends:
       - ubuntu-22.04-64:
           workers: 1
           storage: 40G
-      # Fedora is disabled until it runs kernel 6.0.7 due to squashfs bug
-      # (https://forum.snapcraft.io/t/unsupported-version-0-of-verneed-record-linux-6-0/32160/14)
-      #- fedora-35-64:
-      #    workers: 1
-      #    storage: 40G
+      - fedora-35-64:
+          workers: 1
+          storage: 40G
 
 prepare: |
   if os.query is-ubuntu; then
