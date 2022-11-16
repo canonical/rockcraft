@@ -498,5 +498,10 @@ def _add_pebble_data(yaml_data: Dict[str, Any]) -> None:
         "plugin": "go",
         "source": "https://github.com/canonical/pebble.git",
         "build-snaps": ["go/1.19/stable"],
+        "override-build": (
+            "go mod download\n"
+            'CGO_ENABLED=0 go build -ldflags="-w -s" -o pebble ./cmd/pebble\n'
+            'install -D -m755 pebble "$CRAFT_PART_INSTALL"/usr/bin/pebble\n'
+        ),
     }
     parts["pebble"] = pebble_part_spec
