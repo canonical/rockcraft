@@ -10,11 +10,10 @@ Create a Hello World ROCK
 
 Prerequisites
 -------------
-
 - snap enabled system (https://snapcraft.io)
 - LXD installed (https://linuxcontainers.org/lxd/getting-started-cli/)
 - skopeo installed (https://github.com/containers/skopeo)
-- Docker installed (https://docs.docker.com/get-docker/)
+- Docker installed (https://snapcraft.io/docker)
 - a text editor
 
 
@@ -25,7 +24,7 @@ Install Rockcraft on your host:
 
 .. code-block:: sh
 
-    $ snap install rockcraft --classic --edge
+    $ sudo snap install rockcraft --classic --edge
 
 Project Setup
 -------------
@@ -58,7 +57,7 @@ To build the ROCK, run:
 
 .. code-block:: sh
 
-    $ rockcraft pack
+    $ rockcraft pack # add the '--verbose' option to get logs of what is happening in the background
 
 
 The output should look as follows:
@@ -80,7 +79,8 @@ The output should look as follows:
     Exported to OCI archive 'hello_1.0_amd64.rock'
 
 At the end of the process, a file named ``hello_1.0_amd64.rock`` should be
-present in the current directory. That's your ROCK, in oci-archive format.
+present in the current directory. That's your ROCK, in oci-archive format
+(a tarball).
 
 
 Run the ROCK in Docker
