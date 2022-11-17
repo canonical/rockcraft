@@ -84,12 +84,16 @@ def yaml_loaded_data():
 def pebble_part():
     return {
         "pebble": {
-            "plugin": "go",
+            "plugin": "nil",
             "source": "https://github.com/canonical/pebble.git",
-            "build-snaps": ["go/1.19/stable"],
+            "override-pull": (
+                "craftctl default\n"
+                "snap set system experimental.parallel-instances=true\n"
+                "snap install go_pebble --channel 1.19/stable --classic\n"
+            ),
             "override-build": (
-                "go mod download\n"
-                'CGO_ENABLED=0 go build -ldflags="-w -s" -o pebble ./cmd/pebble\n'
+                "go_pebble mod download\n"
+                'CGO_ENABLED=0 go_pebble build -ldflags="-w -s" -o pebble ./cmd/pebble\n'
                 'install -D -m755 pebble "$CRAFT_PART_INSTALL"/usr/bin/pebble\n'
             ),
         }
