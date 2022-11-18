@@ -81,7 +81,7 @@ test-codespell:
 
 .PHONY: test-flake8
 test-flake8:
-	flake8 .
+	flake8 rockcraft tests
 
 .PHONY: test-integrations
 test-integrations: ## Run integration tests.
