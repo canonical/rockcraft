@@ -1,0 +1,18 @@
+name: go-pebble
+summary: A ROCK built with go
+description: The go version used does not interfere with the one used for pebble
+license: Apache-2.0
+
+version: "0.0.1"
+base: bare
+build_base: "ubuntu:22.04"
+platforms:
+  amd64:
+
+
+parts:
+  go:
+    plugin: go
+    source: .
+    build-snaps:
+      - go/1.15/stable
