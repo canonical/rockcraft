@@ -500,7 +500,7 @@ def _add_pebble_data(yaml_data: Dict[str, Any]) -> None:
         "override-pull": (
             "craftctl default\n"
             "snap set system experimental.parallel-instances=true\n"
-            "snap install go_pebble --channel 1.19/stable --classic\n"
+            "snap install --unaliased go_pebble --channel 1.19/stable --classic\n"
         ),
         "override-build": (
             "go_pebble mod download\n"
