@@ -31,7 +31,7 @@ matters - the image's content.
    :maxdepth: 1
    :hidden:
 
-   tutorials
+   tutorials/index
    how-to/index
    reference
    explanation
