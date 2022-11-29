@@ -8,6 +8,7 @@
 summary: hello world tutorial
 
 execute: |
+  date
   # [docs:install-rockcraft]
   sudo snap install rockcraft --classic --edge
   # [docs:install-rockcraft-end]
@@ -26,7 +27,7 @@ execute: |
   docker images
 
   # [docs:skopeo-copy]
-  skopeo --insecure-policy copy oci-archive:hello_1.0_amd64.rock docker-daemon:hello:1.0
+  sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:hello_1.0_amd64.rock docker-daemon:hello:1.0
   # [docs:skopeo-copy-end]
 
   rm hello_1.0_amd64.rock

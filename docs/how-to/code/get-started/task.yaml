@@ -25,7 +25,7 @@ execute: |
   # [docs:lxd-install-end]
 
   # [docs:lxd-init]
-  lxd init
+  lxd init --minimal  # drop the --minimal for an interactive configuration
   # [docs:lxd-init-end]
 
   # [docs:install-rockcraft]
