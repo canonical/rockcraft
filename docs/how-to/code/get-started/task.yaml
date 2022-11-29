@@ -1,0 +1,39 @@
+###########################################
+# IMPORTANT
+# Comments matter!
+# The docs use the wrapping comments as 
+# markers for including said instructions 
+# as snippets in the docs.
+###########################################
+summary: test the steps for getting started with Rockcraft
+
+execute: |
+  # [docs:snap-version]
+  snap --version
+  # [docs:snap-version-end]
+
+  # [docs:lxd-version]
+  lxd --version  
+  # [docs:lxd-version-end]
+
+  # [docs:lxd-status]
+  systemctl status snap.lxd.daemon.service
+  # [docs:lxd-status-end]
+
+  # [docs:lxd-install]
+  snap install lxd
+  # [docs:lxd-install-end]
+
+  # [docs:lxd-init]
+  lxd init
+  # [docs:lxd-init-end]
+
+  # [docs:install-rockcraft]
+  sudo snap install rockcraft --channel=latest/edge --classic
+  # [docs:install-rockcraft-end]
+
+  # [docs:rockcraft-version]
+  rockcraft --version
+  # [docs:rockcraft-version-end]
+
+  

@@ -1,0 +1,26 @@
+###########################################
+# IMPORTANT
+# Comments matter!
+# The docs use the wrapping comments as 
+# markers for including said instructions 
+# as snippets in the docs.
+###########################################
+summary: test the "Build the docs" guide
+
+execute: |
+  # [docs:create-env]
+  python3 -m venv docs/env
+  source docs/env/bin/activate
+  # [docs:create-env-end]
+  
+  # [docs:install-deps]
+  pip install -r requirements-focal.txt -r requirements-doc.txt
+  # [docs:install-deps-end]
+  
+  # [docs:make-docs]
+  make docs  # the home page can be found at docs/_build/html/index.html
+  # [docs:make-docs-end]
+
+  timeout --preserve-status -k 5 10 \
+  make rundocs
+  # [docs:make-rundocs-end]

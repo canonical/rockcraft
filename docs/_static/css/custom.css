@@ -22,3 +22,7 @@ ul .toctree-l1 {
 .wy-nav-content {
     max-width: none;
 }
+
+.log-snippets {
+    color: rgb(141, 141, 141);
+}

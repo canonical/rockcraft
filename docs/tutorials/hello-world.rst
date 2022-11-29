@@ -15,9 +15,11 @@ Install Rockcraft
 
 Install Rockcraft on your host:
 
-.. code-block:: sh
-
-    $ sudo snap install rockcraft --classic --edge
+.. literalinclude:: code/hello-world/task.yaml
+    :language: bash
+    :start-after: [docs:install-rockcraft]
+    :end-before: [docs:install-rockcraft-end]
+    :dedent: 2
 
 Project Setup
 -------------
@@ -25,37 +27,26 @@ Project Setup
 Create a new directory and write the following into a text editor and
 save it as ``rockcraft.yaml``:
 
-.. code-block:: yaml
+.. literalinclude:: code/hello-world/rockcraft.yaml
+    :language: yaml
 
-    name: hello
-    summary: Hello World
-    description: The most basic example of a ROCK.
-    version: "1.0"
-    base: ubuntu:20.04
-    license: Apache-2.0
-    cmd: [/usr/bin/hello, -t]
-    platforms:
-      amd64:  # Make sure this value matches your computer's architecture
-
-    parts:
-      hello:
-        plugin: nil
-        overlay-packages:
-          - hello
 
 Pack the ROCK with Rockcraft
 ----------------------------
 
 To build the ROCK, run:
 
-.. code-block:: sh
-
-    $ rockcraft pack # add the '--verbose' option to get logs of what is happening in the background
-
+.. literalinclude:: code/hello-world/task.yaml
+    :language: bash
+    :start-after: [docs:build-rock]
+    :end-before: [docs:build-rock-end]
+    :dedent: 2
 
 The output should look as follows:
 
-.. code-block:: sh
+..  code-block:: text
+    :emphasize-lines: 13
+    :class: foo
 
     Launching instance...
     Retrieved base ubuntu:20.04
@@ -81,18 +72,23 @@ Run the ROCK in Docker
 
 First, import the recently created ROCK into Docker:
 
-.. code-block:: sh
-
-    skopeo --insecure-policy copy oci-archive:hello_1.0_amd64.rock docker-daemon:hello:1.0
+.. literalinclude:: code/hello-world/task.yaml
+    :language: bash
+    :start-after: [docs:skopeo-copy]
+    :end-before: [docs:skopeo-copy-end]
+    :dedent: 2
 
 Now run the ``hello`` command from the ROCK:
 
-.. code-block:: sh
-
-    $ docker run hello:1.0
+.. literalinclude:: code/hello-world/task.yaml
+    :language: bash
+    :start-after: [docs:docker-run]
+    :end-before: [docs:docker-run-end]
+    :dedent: 2
 
 Which should print:
 
-.. code-block:: sh
-
+..  code-block:: text
+    :class: foo
+    
     hello, world

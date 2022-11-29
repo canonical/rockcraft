@@ -19,9 +19,11 @@ Install Rockcraft
 
 Install Rockcraft on your host:
 
-.. code-block:: sh
-
-    snap install rockcraft --classic --edge
+.. literalinclude:: code/chisel/task.yaml
+    :language: bash
+    :start-after: [docs:install-rockcraft]
+    :end-before: [docs:install-rockcraft-end]
+    :dedent: 2
 
 
 Project Setup
@@ -29,29 +31,8 @@ Project Setup
 
 Create a new directory, write the following into a text editor and save it as ``rockcraft.yaml``:
 
-.. code-block:: yaml
-
-    name: chisel-openssl
-    summary: OpenSSL from Chisel slices
-    description: A "bare" ROCK containing an OpenSSL installation created from Chisel slices.
-    license: Apache-2.0
-
-    version: "0.0.1"
-    base: bare
-    build_base: "ubuntu:22.04"
-    entrypoint: [/usr/bin/openssl]
-    platforms:
-      amd64:
-
-    env:
-      - SSL_CERT_FILE: /etc/ssl/certs/ca-certificates.crt
-
-    parts:
-      openssl:
-        plugin: nil
-        stage-packages:
-          - openssl_bins
-          - ca-certificates_data
+.. literalinclude:: code/chisel/rockcraft.yaml 
+    :language: yaml
 
 Note that this Rockcraft file uses the ``openssl_bins`` and ``ca-certificates_data`` Chisel slices to generate an image
 containing only files that are strictly necessary for a functional OpenSSL installation. See :ref:`what-is-chisel` for
@@ -63,13 +44,17 @@ Pack the ROCK with Rockcraft
 
 To build the ROCK, run:
 
-.. code-block:: sh
-
-    rockcraft
+.. literalinclude:: code/chisel/task.yaml
+    :language: bash
+    :start-after: [docs:build-rock]
+    :end-before: [docs:build-rock-end]
+    :dedent: 2
 
 The output will look similar to:
 
-.. code-block:: sh
+..  code-block:: text
+    :emphasize-lines: 15
+    :class: log-snippets
 
     Launching instance...
     Retrieved base bare for amd64
@@ -95,19 +80,24 @@ Run the ROCK in Docker
 
 First, import the recently created ROCK into Docker:
 
-.. code-block:: sh
-
-    skopeo --insecure-policy copy oci-archive:chisel-openssl_0.0.1_amd64.rock docker-daemon:chisel-openssl:latest
+.. literalinclude:: code/chisel/task.yaml
+    :language: bash
+    :start-after: [docs:skopeo-copy]
+    :end-before: [docs:skopeo-copy-end]
+    :dedent: 2
 
 Now you can run a container from the ROCK:
 
-.. code-block:: sh
-
-    docker run chisel-openssl
+.. literalinclude:: code/chisel/task.yaml
+    :language: bash
+    :start-after: [docs:docker-run]
+    :end-before: [docs:docker-run-end]
+    :dedent: 2
 
 The output will be OpenSSL's default help message, which starts like this:
 
-.. code-block:: sh
+..  code-block:: text
+    :class: log-snippets
 
     help:
 
@@ -127,14 +117,17 @@ The output will be OpenSSL's default help message, which starts like this:
 
 As you can see, OpenSSL has many features. Use one of them to check that Ubuntu's website has valid SSL certificates:
 
-.. code-block:: sh
-
-    docker run --rm chisel-openssl s_client -connect ubuntu.com:443 -brief
+.. literalinclude:: code/chisel/task.yaml
+    :language: bash
+    :start-after: [docs:docker-run-with-args]
+    :end-before: [docs:docker-run-with-args-end]
+    :dedent: 2
 
 The output will look similar to the following:
 
-.. code-block:: sh
-
+..  code-block:: text
+    :class: log-snippets    
+    
     CONNECTION ESTABLISHED
     Protocol version: TLSv1.3
     Ciphersuite: TLS_AES_256_GCM_SHA384
