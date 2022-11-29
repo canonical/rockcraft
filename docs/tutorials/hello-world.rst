@@ -90,5 +90,5 @@ Which should print:
 
 ..  code-block:: text
     :class: foo
-    
+
     hello, world

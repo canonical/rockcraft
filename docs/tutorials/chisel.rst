@@ -31,7 +31,7 @@ Project Setup
 
 Create a new directory, write the following into a text editor and save it as ``rockcraft.yaml``:
 
-.. literalinclude:: code/chisel/rockcraft.yaml 
+.. literalinclude:: code/chisel/rockcraft.yaml
     :language: yaml
 
 Note that this Rockcraft file uses the ``openssl_bins`` and ``ca-certificates_data`` Chisel slices to generate an image
@@ -126,8 +126,8 @@ As you can see, OpenSSL has many features. Use one of them to check that Ubuntu'
 The output will look similar to the following:
 
 ..  code-block:: text
-    :class: log-snippets    
-    
+    :class: log-snippets
+
     CONNECTION ESTABLISHED
     Protocol version: TLSv1.3
     Ciphersuite: TLS_AES_256_GCM_SHA384

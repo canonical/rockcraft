@@ -54,7 +54,7 @@ The output will be something like:
 
     5.5
 
-And that it is enabled: 
+And that it is enabled:
 
 .. literalinclude:: code/get-started/task.yaml
     :language: bash
