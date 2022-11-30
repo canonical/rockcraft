@@ -119,24 +119,35 @@ class Image:
 
         return Image(image_name=image_name, path=image_dir)
 
-    def extract_to(self, bundle_dir: Path) -> Path:
+    def extract_to(self, bundle_dir: Path, *, rootless=False) -> Path:
         """Unpack the image to an OCI runtime bundle.
 
         :param bundle_dir: The directory to store runtime bundles.
+        :param rootless: Whether the image should be unpacked even without
+            root; won't necessarily preserve ownership but is useful for
+            testing.
         """
         bundle_dir.mkdir(parents=True, exist_ok=True)
         bundle_path = bundle_dir / self.image_name.replace(":", "-")
         image_path = self.path / self.image_name
         shutil.rmtree(bundle_path, ignore_errors=True)
-        _process_run(["umoci", "unpack", "--image", str(image_path), str(bundle_path)])
+        command = ["umoci", "unpack"]
+        if rootless:
+            command.append("--rootless")
+        command.extend(["--image", str(image_path), str(bundle_path)])
+        _process_run(command)
 
         return bundle_path / "rootfs"
 
-    def add_layer(self, tag: str, layer_path: Path) -> "Image":
+    def add_layer(
+        self, tag: str, layer_path: Path, lower_rootfs: Optional[Path] = None
+    ) -> "Image":
         """Add a layer to the image.
 
         :param tag: The tag of the image containing the new layer.
         :param layer_path: The path to the new layer root filesystem.
+        :param lower_rootfs: An optional path to the extracted contents of the
+          new layer's base layer. Used to preserve lower-layer symlinks.
         """
         image_path = self.path / self.image_name
 
@@ -144,13 +155,21 @@ class Image:
         temp_file.unlink(missing_ok=True)
 
         try:
-            _archive_layer(layer_path, temp_file)
+            _archive_layer(layer_path, temp_file, lower_rootfs)
             _add_layer_into_image(image_path, temp_file, **{"--tag": tag})
         finally:
             temp_file.unlink(missing_ok=True)
 
         name = self.image_name.split(":", 1)[0]
         return self.__class__(image_name=f"{name}:{tag}", path=self.path)
+
+    def stat(self) -> Dict[Any, Any]:
+        """Obtain the image statistics, as reported by "umoci stat --json"."""
+        image_path = self.path / self.image_name
+        output = _process_run(
+            ["umoci", "stat", "--json", "--image", str(image_path)]
+        ).stdout
+        return json.loads(output)
 
     @staticmethod
     def digest(source_image: str) -> bytes:
@@ -320,15 +339,62 @@ def _add_layer_into_image(image_path: Path, archived_content: Path, **kwargs) ->
     _process_run(cmd + ["--history.created_by", " ".join(cmd)])
 
 
-def _archive_layer(layer_path: Path, temp_tar_file: Path) -> None:
+def _archive_layer(
+    layer_path: Path, temp_tar_file: Path, lower_rootfs: Optional[Path] = None
+) -> None:
     """Prepare new OCI layer by archiving its content into tar file.
 
     :param layer_path: path to the content to be archived into a layer
     :param temp_tar_file: path to the temporary tar fail holding the archived content
+    :param lower_rootfs: optional path to the filesystem containing the extracted
+        base below this new layer. Used to preserve lower-level directory symlinks,
+        like the ones from Debian/Ubuntu's usrmerge.
     """
     with tarfile.open(temp_tar_file, mode="w") as tar_file:
-        # With `arcname="."` the contents are added relative to `layer_path`.
-        tar_file.add(layer_path, arcname=".")
+        for dirpath, subdirs, filenames in os.walk(layer_path):
+            # Sort `subdirs` in-place, to ensure that `os.walk()` iterates on
+            # them in sorted order.
+            subdirs.sort()
+
+            upper_subpath = Path(dirpath)
+            lower_symlink_target: Optional[Path] = None
+
+            # Handle adding an entry for the directory. We only do that if:
+            # - The directory is not the root (to skip a spurious "." entry);
+            # - The directory's name does not exist on ``lower_rootfs`` as a symlink
+            #   to another directory (like in usrmerge).
+            if upper_subpath != layer_path:
+                add_dir = True
+                relative_path = upper_subpath.relative_to(layer_path)
+
+                if lower_rootfs is not None:
+                    lower_path = lower_rootfs / relative_path
+                    emit.trace(
+                        f"Skipping {upper_subpath} because it exists as a symlink on the lower layer"
+                    )
+                    add_dir = not lower_path.is_symlink()
+                    if lower_path.is_symlink():
+                        lower_symlink_target = Path(os.readlink(lower_path))
+
+                if add_dir:
+                    emit.trace(f"Adding to layer: {upper_subpath}")
+                    tar_file.add(
+                        upper_subpath, arcname=f"./{relative_path}", recursive=False
+                    )
+
+            # Handle adding each file in the directory.
+            for name in filenames:
+                path = upper_subpath / name
+                if lower_symlink_target is not None:
+                    # If the directory containing `name` is a symlink on the lower
+                    # layer, add `name` into the symlink's target instead.
+                    # For example: if the file is `bin/file.txt`, and `bin` is a
+                    # symlink to `usr/bin`, add the file as `usr/bin/file.txt`.
+                    relative_path = lower_symlink_target / name
+                else:
+                    relative_path = Path(path).relative_to(layer_path)
+                emit.trace(f"Adding to layer: {path}")
+                tar_file.add(path, arcname=f"./{relative_path}")
 
 
 def _inject_architecture_variant(image_path: Path, variant: str) -> None:
@@ -377,11 +443,11 @@ def _inject_architecture_variant(image_path: Path, variant: str) -> None:
     tl_index_path.write_bytes(json.dumps(tl_index).encode("utf-8"))
 
 
-def _process_run(command: List[str], **kwargs) -> None:
+def _process_run(command: List[str], **kwargs) -> subprocess.CompletedProcess:
     """Run a command and handle its output."""
     emit.trace(f"Execute process: {command!r}, kwargs={kwargs!r}")
     try:
-        subprocess.run(
+        return subprocess.run(
             command,
             **kwargs,
             capture_output=True,

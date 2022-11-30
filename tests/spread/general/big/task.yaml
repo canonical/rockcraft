@@ -50,3 +50,8 @@ execute: |
   docker cp big-container:/usr/bin/pebble - | tar xf -
   file pebble | grep "statically linked"
   docker rm -f big-container
+
+  ############################################################################################
+  # check that the /bin symlink to /usr/bin wasn't broken by the /bin/new_bin_file addition
+  ############################################################################################
+  docker run --rm big ls /bin/bash /bin/new_bin_file

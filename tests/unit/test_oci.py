@@ -196,6 +196,17 @@ class TestImage:
             call(["umoci", "unpack", "--image", "/c/a:b", "bundle/dir/a-b"])
         ]
 
+    def test_extract_to_rootless(self, mock_run, new_dir):
+        image = oci.Image("a:b", Path("/c"))
+        bundle_path = image.extract_to(Path("bundle/dir"), rootless=True)
+        assert Path("bundle/dir").is_dir()
+        assert bundle_path == Path("bundle/dir/a-b/rootfs")
+        assert mock_run.mock_calls == [
+            call(
+                ["umoci", "unpack", "--rootless", "--image", "/c/a:b", "bundle/dir/a-b"]
+            )
+        ]
+
     def test_extract_to_existing_dir(self, mock_run, new_dir):
         image = oci.Image("a:b", Path("c"))
         Path("bundle/dir/a-b").mkdir(parents=True)
@@ -218,7 +229,9 @@ class TestImage:
         # The `Tarfile.add()` on the directory ends up calling the method multiple
         # times (due to the recursion), but we're mainly interested that the first
         # call was to add `layer_dir`.
-        assert spy_add.mock_calls[0] == call(ANY, Path("layer_dir"), arcname=".")
+        assert spy_add.mock_calls[0] == call(
+            ANY, Path("layer_dir/foo.txt"), arcname="./foo.txt"
+        )
 
         expected_cmd = [
             "umoci",
@@ -254,11 +267,47 @@ class TestImage:
         image.add_layer("tag", layer_dir)
 
         expected_tar_contents = [
-            ".",
             "./first",
             "./first/first.txt",
             "./second",
             "./second/second.txt",
+        ]
+        assert temp_tar_contents == expected_tar_contents
+
+    def test_add_layer_with_lower_rootfs(self, tmp_path, temp_tar_contents):
+        """Test creating a layer with a base rootfs for reference."""
+        dest_dir = tmp_path / "dest"
+        dest_dir.mkdir()
+
+        layer_dir = tmp_path / "layer_dir"
+        layer_dir.mkdir()
+
+        (layer_dir / "first").mkdir()
+        (layer_dir / "first/first.txt").touch()
+
+        (layer_dir / "second").mkdir()
+        (layer_dir / "second/second.txt").touch()
+
+        image = oci.Image("a:b", dest_dir)
+
+        # Create a dir tree to act as extracted "base"
+        # It contains a "first" dir and a "second" symlink pointing to "first"
+        rootfs_dir = tmp_path / "rootfs"
+        rootfs_dir.mkdir()
+
+        (rootfs_dir / "first").mkdir()
+        os.symlink("first", rootfs_dir / "second")
+
+        assert len(temp_tar_contents) == 0
+        image.add_layer("tag", layer_dir, lower_rootfs=rootfs_dir)
+
+        # The tarfile must *not* contain the "./second" dir entry, to preserve
+        # the base layer symlink. Additionally, the file "second.txt" must
+        # be listed as inside "first/", and not "second/".
+        expected_tar_contents = [
+            "./first",
+            "./first/first.txt",
+            "./first/second.txt",
         ]
         assert temp_tar_contents == expected_tar_contents
 
@@ -524,7 +573,6 @@ class TestImage:
         ]
 
     def test_archive_layer(self, mocker, new_dir):
-        Path("c").mkdir()
         Path("layer_dir").mkdir()
         Path("layer_dir/bar.txt").touch()
 
@@ -533,4 +581,28 @@ class TestImage:
         oci._archive_layer(  # pylint: disable=protected-access
             Path("layer_dir"), Path("./bar.tar")
         )
-        assert spy_add.call_count == 2
+        assert spy_add.call_count == 1
+
+    def test_stat(self, new_dir, mock_run, mocker):
+        image_dir = Path("images/dir")
+        image, _ = oci.Image.new_oci_image(
+            "bare:latest", image_dir=image_dir, arch="amd64"
+        )
+
+        mock_loads = mocker.patch("json.loads")
+        mock_run.reset_mock()
+
+        image.stat()
+
+        assert mock_run.mock_calls == [
+            call(
+                [
+                    "umoci",
+                    "stat",
+                    "--json",
+                    "--image",
+                    "images/dir/bare:latest",
+                ]
+            )
+        ]
+        assert mock_loads.called
