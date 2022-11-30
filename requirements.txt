@@ -1,13 +1,15 @@
 alabaster==0.7.12
 Babel==2.11.0
+beautifulsoup4==4.11.1
 certifi==2022.9.24
 charset-normalizer==2.1.1
 colorama==0.4.6
 craft-cli==1.2.0
-craft-parts==1.17.0
+craft-parts==1.17.1
 craft-providers==1.6.1
 Deprecated==1.2.13
 docutils==0.17.1
+furo==2022.9.29
 idna==3.4
 imagesize==1.4.1
 Jinja2==3.1.2
@@ -31,9 +33,11 @@ requests-unixsocket==0.3.0
 semver==2.13.0
 six==1.16.0
 snowballstemmer==2.2.0
+soupsieve==2.3.2.post1
 spdx-license-list==0.5.2
 Sphinx==5.3.0
 sphinx-autobuild==2021.3.14
+sphinx-basic-ng==1.0.0b1
 sphinx-jsonschema==1.19.1
 sphinx-lint==0.6.7
 sphinx-pydantic==0.1.1
@@ -49,5 +53,5 @@ sphinxcontrib-serializinghtml==1.1.5
 tornado==6.2
 types-Deprecated==1.2.9
 typing_extensions==4.4.0
-urllib3==1.26.12
+urllib3==1.26.13
 wrapt==1.14.1
