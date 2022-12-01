@@ -6,12 +6,11 @@ license: Apache-2.0
 version: "0.0.1"
 base: bare
 build_base: "ubuntu:22.04"
-cmd: [/usr/lib/dotnet/dotnet-link/dotnet, --info]
+cmd: [/usr/lib/dotnet/dotnet, --info]
 platforms:
   amd64:
 
 env:
-  - DOTNET_ROOT: /usr/lib/dotnet/dotnet-link/dotnet
   - TMPDIR: /
 
 parts:
@@ -20,10 +19,3 @@ parts:
     plugin: nil
     stage-packages:
       - dotnet-runtime-6.0_libs
-    override-prime: |
-      # Overridden to link the specific dotnet subdir into a more general "dotnet-link" 
-      cp -r $CRAFT_STAGE/* .
-      pushd usr/lib/dotnet
-      ln -s dotnet6-6* dotnet-link
-      popd
-      find .
