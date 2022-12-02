@@ -13,4 +13,6 @@ They'll help you achieve an end result but may require you to understand and ada
 
    Get started - quick guide <get-started>
    Build the documentation <build-docs>
+   Create a package slice for Chisel <create-slice>
+   Install a custom package slice <install-slice>
    Release a slice definitions file <publish-slice>
