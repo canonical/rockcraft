@@ -84,6 +84,7 @@ spdx-license-list==0.5.2
 Sphinx==5.3.0
 sphinx-autobuild==2021.3.14
 sphinx-basic-ng==1.0.0b1
+sphinx-copybutton==0.5.1
 sphinx-jsonschema==1.19.1
 sphinx-lint==0.6.7
 sphinx-pydantic==0.1.1
