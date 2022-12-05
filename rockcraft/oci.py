@@ -119,7 +119,7 @@ class Image:
 
         return Image(image_name=image_name, path=image_dir)
 
-    def extract_to(self, bundle_dir: Path, *, rootless=False) -> Path:
+    def extract_to(self, bundle_dir: Path, *, rootless: bool = False) -> Path:
         """Unpack the image to an OCI runtime bundle.
 
         :param bundle_dir: The directory to store runtime bundles.

@@ -140,7 +140,18 @@ def _pack(
 ):
     """Create the rock image for a given architecture.
 
-    :param base_layer_dir: The directory where the rock's base image was extracted.
+    :param lifecycle:
+      The lifecycle object containing the primed payload for the rock.
+    :param project_base_image:
+      The Image for the base over which the payload was primed.
+    :param base_digest:
+      The digest of the base image, to add to the new image's metadata.
+    :param rock_suffix:
+      The suffix to append to the image's filename, after the name and version.
+    :param build_for:
+      The architecture of the built rock, to add as metadata.
+    :param base_layer_dir:
+      The directory where the rock's base image was extracted.
     """
     emit.progress("Creating new layer")
     new_image = project_base_image.add_layer(
