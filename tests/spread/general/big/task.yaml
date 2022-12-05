@@ -54,4 +54,5 @@ execute: |
   ############################################################################################
   # check that the /bin symlink to /usr/bin wasn't broken by the /bin/new_bin_file addition
   ############################################################################################
+  docker run --rm big readlink /bin | MATCH usr/bin
   docker run --rm big ls /bin/bash /bin/new_bin_file
