@@ -9,10 +9,11 @@ Let's assume you want to install the OpenSSL binaries slice created in :ref:`her
 
 **First**, clone the Chisel releases repository:
 
-.. code-block:: sh
-
-    # Let's assume we are working with Ubuntu 22.04
-    $ git clone -b ubuntu-22.04 https://github.com/canonical/chisel-releases/
+.. literalinclude:: code/install-slice/task.yaml
+    :language: bash
+    :start-after: [docs:clone-chisel-releases]
+    :end-before: [docs:clone-chisel-releases-end]
+    :dedent: 2
 
 This repository acts as the database of slice definitions files for each Chisel release (Chisel releases are named analogously to Ubuntu releases, and mapped into Git branches within the repository).
 
@@ -20,57 +21,55 @@ Chisel will only recognize slices belonging to a Chisel release, so you need to 
 
 At this point, you should be able to find your custom OpenSSL slice ``bins`` in the local Chisel release:
 
-.. code-block:: sh
+.. literalinclude:: code/install-slice/task.yaml
+    :language: bash
+    :start-after: [docs:slice-exists]
+    :end-before: [docs:slice-exists-end]
+    :dedent: 2
 
-    grep -q "bins" chisel-releases/slices/openssl.yaml && echo "My slice exists"
+If you wanted to test it with Chisel alone, you could now simply run
 
-If you wanted to test it with Chisel alone, you could now simply run ``chisel cut --release ./chisel-releases --root mycustomopenssl openssl_bins``. You should end up with a folder named mycustomopenssl containing a few folders, amongst which there would be ``./usr/bin/openssl``.
+.. literalinclude:: code/install-slice/task.yaml
+    :language: bash
+    :start-after: [docs:cut]
+    :end-before: [docs:cut-end]
+    :dedent: 2
+
+You should end up with a folder named "my-custom-openssl-fs" containing a few folders, amongst which there would be ``./usr/bin/openssl``.
 
 **To install the custom package slice into a ROCK though**, you need to use Rockcraft!
 
 Start by initializing a new Rockcraft project:
 
-.. code-block:: sh
-
-    $ rockcraft init
+.. literalinclude:: code/install-slice/task.yaml
+    :language: bash
+    :start-after: [docs:init]
+    :end-before: [docs:init-end]
+    :dedent: 2
 
 After this command, you should find a new ``rockcraft.yaml`` file in your current path.
 
-Copy and paste this code into the ``rockcraft.yaml`` file (feel free to adjust the metadata, but pay special attention to the ``parts`` section):
+Adjust the ``rockcraft.yaml`` file according to the following content (feel free to adjust the metadata, but pay special attention to the ``parts`` section):
 
-.. code-block:: yaml
-
-    name: custom-openssl-rock
-    base: bare
-    build_base: "ubuntu:22.04"
-    version: '0.0.1'
-    summary: A chiselled ROCK with a custom OpenSSL slice
-    description: |
-        A ROCK containing only the binaries (and corresponding dependencies) from the OpenSSL package.
-        Built from a custom Chisel release.
-    license: GPL-3.0
-    platforms:
-        amd64:
-    parts:
-        build-context:
-            plugin: nil
-            source: chisel-releases/
-            source-type: local
-            override-build:
-                chisel cut --release ./ --root ${CRAFT_PART_INSTALL} openssl_bins
+.. literalinclude:: code/install-slice/rockcraft.yaml
+    :language: yaml
 
 The "build-context" part allows you to send the local ``chisel-releases`` folder into the builder. The "override-build" enables you to install your custom slice.
 Please not that this level of customization is only needed when you want to install from a custom Chisel release. If the desired slice definitions are already upstream, then you can simply use ``stage-packages``, as demonstrated in :ref:`here <chisel-example>`.
 
 Build your ROCK with:
 
-.. code-block:: sh
-
-    $ rockcraft
+.. literalinclude:: code/install-slice/task.yaml
+    :language: bash
+    :start-after: [docs:pack]
+    :end-before: [docs:pack-end]
+    :dedent: 2
 
 The output will be:
 
-.. code-block:: text
+..  code-block:: text
+    :emphasize-lines: 4,6,8,10,12,17
+    :class: log-snippets
 
     Launching instance...
     Retrieved base bare for amd64
@@ -92,13 +91,16 @@ The output will be:
 
 Test that the OpenSSL binaries have been correctly installed with the following:
 
-.. code-block:: sh
-
-    $ skopeo --insecure-policy copy oci-archive:custom-openssl-rock_0.0.1_amd64.rock docker-daemon:chisel-openssl:latest
+.. literalinclude:: code/install-slice/task.yaml
+    :language: bash
+    :start-after: [docs:skopeo-copy]
+    :end-before: [docs:skopeo-copy-end]
+    :dedent: 2
 
 The output will be:
 
-.. code-block:: text
+..  code-block:: text
+    :class: log-snippets
 
     Getting image source signatures
     Copying blob 253d707d7e97 done
@@ -109,13 +111,16 @@ The output will be:
 
 And after:
 
-.. code-block:: sh
-
-    $ docker run chisel-openssl openssl
+.. literalinclude:: code/install-slice/task.yaml
+    :language: bash
+    :start-after: [docs:docker-run]
+    :end-before: [docs:docker-run-end]
+    :dedent: 2
 
 The output of the Docker command will be OpenSSL's default help message:
 
-.. code-block:: text
+..  code-block:: text
+    :class: log-snippets
 
     help:
 

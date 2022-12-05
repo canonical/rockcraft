@@ -1,0 +1,27 @@
+###########################################
+# IMPORTANT
+# Comments matter!
+# The docs use the wrapping comments as 
+# markers for including said instructions 
+# as snippets in the docs.
+###########################################
+summary: test the "Create a package slice for Chisel" guide
+
+execute: |
+  # [docs:apt-show-openssl]
+  apt show openssl
+  # [docs:apt-show-openssl-end]
+
+  git clone -b fix-copyright-symlink https://github.com/woky/chisel
+  git clone -b ubuntu-22.04 https://github.com/canonical/chisel-releases
+  cp openssl.yaml chisel-releases/slices
+
+  pushd chisel
+  go build ./cmd/chisel
+  popd
+
+  mkdir out
+
+  ./chisel/chisel cut --release ./chisel-releases --root ./out openssl_bins
+
+  rm -fr chisel-releases/ chisel/ out/

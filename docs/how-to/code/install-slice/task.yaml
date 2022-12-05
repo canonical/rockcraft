@@ -1,0 +1,52 @@
+###########################################
+# IMPORTANT
+# Comments matter!
+# The docs use the wrapping comments as 
+# markers for including said instructions 
+# as snippets in the docs.
+###########################################
+summary: test the "Install a custom package slice" guide
+
+execute: |
+  # [docs:clone-chisel-releases]
+  # Let's assume we are working with Ubuntu 22.04
+  git clone -b ubuntu-22.04 https://github.com/canonical/chisel-releases/
+  # [docs:clone-chisel-releases-end]
+
+  # [docs:slice-exists]
+  grep -q "bins" chisel-releases/slices/openssl.yaml && echo "My slice exists"
+  # [docs:slice-exists-end]
+
+  git clone -b fix-copyright-symlink https://github.com/woky/chisel
+  pushd chisel
+  go build ./cmd/chisel
+  mv chisel /bin/chisel
+  popd
+
+  # [docs:cut]
+  # Testing with Chisel directly:
+  mkdir -p my-custom-openssl-fs
+  chisel cut --release ./chisel-releases --root my-custom-openssl-fs openssl_bins
+  # [docs:cut-end]
+
+  mv rockcraft.yaml rockcraft.yaml.backup
+
+  # [docs:init]
+  rockcraft init
+  # [docs:init-end]
+
+  mv rockcraft.yaml.backup rockcraft.yaml
+
+  # [docs:pack]
+  rockcraft
+  # [docs:pack-end]
+
+  # [docs:skopeo-copy]
+  sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:custom-openssl-rock_0.0.1_amd64.rock docker-daemon:chisel-openssl:latest
+  # [docs:skopeo-copy-end]
+
+  rm -fr chisel/ chisel-releases/ my-custom-openssl-fs/ custom-openssl-rock_0.0.1_amd64.rock
+
+  # [docs:docker-run]
+  docker run --rm chisel-openssl openssl
+  # [docs:docker-run-end]

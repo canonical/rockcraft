@@ -1,0 +1,19 @@
+package: openssl
+slices:
+    bins:
+        essential:
+          - libc6_libs
+          - libc6_config
+          - libssl3_libs
+          - openssl_config
+        contents:
+            /usr/bin/c_rehash:
+            /usr/bin/openssl:
+
+    config:
+        contents:
+            /etc/ssl/private/:
+            /etc/ssl/openssl.cnf:
+            /usr/lib/ssl/certs:
+            /usr/lib/ssl/openssl.cnf:
+            /usr/lib/ssl/private:
