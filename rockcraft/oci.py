@@ -345,7 +345,7 @@ def _archive_layer(
     """Prepare new OCI layer by archiving its content into tar file.
 
     :param layer_path: path to the content to be archived into a layer
-    :param temp_tar_file: path to the temporary tar fail holding the archived content
+    :param temp_tar_file: path to the temporary tar file holding the archived content
     :param lower_rootfs: optional path to the filesystem containing the extracted
         base below this new layer. Used to preserve lower-level directory symlinks,
         like the ones from Debian/Ubuntu's usrmerge.
