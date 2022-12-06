@@ -14,7 +14,7 @@ jobs:
 
       - name: Build rockcraft snap
         id: build-rockcraft
-        uses: snapcore/action-build@v1.0.9
+        uses: snapcore/action-build@v1
 
       - name: Upload rockcraft snap
         uses: actions/upload-artifact@v2
