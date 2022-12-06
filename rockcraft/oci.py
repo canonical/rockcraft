@@ -357,26 +357,30 @@ def _archive_layer(
             subdirs.sort()
 
             upper_subpath = Path(dirpath)
-            lower_symlink_target: Optional[Path] = None
+
+            # The path with `new_layer_dir` as the "root"
+            relative_path = upper_subpath.relative_to(new_layer_dir)
+
+            # The name of the subdir that will contain the files added in this
+            # iteration of the loop in the archive. Will be changed if
+            # `relative_path` corresponds to a symlink in the base layer.
+            archive_subdir = relative_path
 
             # Handle adding an entry for the directory. We only do that if:
             # - The directory is not the root (to skip a spurious "." entry);
-            # - The directory's name does not exist on ``lower_rootfs`` as a symlink
+            # - The directory's name does not exist on ``base_layer_dir`` as a symlink
             #   to another directory (like in usrmerge).
             if upper_subpath != new_layer_dir:
-                add_dir = True
-                relative_path = upper_subpath.relative_to(new_layer_dir)
+                lower_symlink_target = _symlink_target_in_base_layer(
+                    relative_path, base_layer_dir
+                )
 
-                if base_layer_dir is not None:
-                    lower_path = base_layer_dir / relative_path
+                if lower_symlink_target is not None:
                     emit.debug(
                         f"Skipping {upper_subpath} because it exists as a symlink on the lower layer"
                     )
-                    add_dir = not lower_path.is_symlink()
-                    if lower_path.is_symlink():
-                        lower_symlink_target = Path(os.readlink(lower_path))
-
-                if add_dir:
+                    archive_subdir = lower_symlink_target
+                else:
                     emit.debug(f"Adding to layer: {upper_subpath}")
                     tar_file.add(
                         upper_subpath, arcname=f"{relative_path}", recursive=False
@@ -384,17 +388,33 @@ def _archive_layer(
 
             # Handle adding each file in the directory.
             for name in filenames:
-                path = upper_subpath / name
-                if lower_symlink_target is not None:
-                    # If the directory containing `name` is a symlink on the lower
-                    # layer, add `name` into the symlink's target instead.
-                    # For example: if the file is `bin/file.txt`, and `bin` is a
-                    # symlink to `usr/bin`, add the file as `usr/bin/file.txt`.
-                    relative_path = lower_symlink_target / name
-                else:
-                    relative_path = Path(path).relative_to(new_layer_dir)
-                emit.debug(f"Adding to layer: {path}")
-                tar_file.add(path, arcname=f"{relative_path}")
+                actual_path = upper_subpath / name
+                archive_path = archive_subdir / name
+                emit.debug(f"Adding to layer: {actual_path} as '{archive_path}'")
+                tar_file.add(actual_path, arcname=f"{archive_path}")
+
+
+def _symlink_target_in_base_layer(
+    relative_path: Path, base_layer_dir: Optional[Path]
+) -> Optional[Path]:
+    """If `relative_path` is a dir symlink in `base_layer_dir, return its 'target'.
+
+    This function checks if `relative_path` exists in the base `base_layer_dir` as
+    a symbolic link to another directory; if it does, the function will return the
+    symlink target. In all other cases, the function returns None.
+
+    :param relative_path: The subpath to check.
+    :param base_layer_dir: The directory with the contents of the base layer.
+    """
+    if base_layer_dir is None:
+        return None
+
+    lower_path = base_layer_dir / relative_path
+
+    if lower_path.is_symlink():
+        return Path(os.readlink(lower_path))
+
+    return None
 
 
 def _inject_architecture_variant(image_path: Path, variant: str) -> None:
