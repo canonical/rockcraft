@@ -33,7 +33,7 @@ class _LifecycleCommand(BaseCommand, abc.ABC):
     """Lifecycle-related commands."""
 
     @overrides
-    def run(self, parsed_args):
+    def run(self, parsed_args: "argparse.Namespace") -> None:
         """Run the command."""
         if not self.name:
             raise RuntimeError("command name not specified")

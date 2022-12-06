@@ -19,7 +19,18 @@
 import operator
 import platform as host_platform
 from functools import reduce
-from typing import Any, Dict, List, Literal, Optional, Tuple
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    List,
+    Literal,
+    Optional,
+    Sequence,
+    Tuple,
+    Union,
+    cast,
+)
 
 import pydantic
 import spdx_license_list  # type: ignore
@@ -27,6 +38,9 @@ import yaml
 
 from rockcraft.errors import ProjectLoadError, ProjectValidationError
 from rockcraft.parts import validate_part
+
+if TYPE_CHECKING:
+    from pydantic.error_wrappers import ErrorDict
 
 
 class ArchitectureMapping(pydantic.BaseModel):
@@ -96,7 +110,7 @@ class Platform(pydantic.BaseModel):
 
     @pydantic.validator("build_for", pre=True)
     @classmethod
-    def _vectorise_build_for(cls, val):
+    def _vectorise_build_for(cls, val: Any) -> Any:
         """Vectorise target architecture if needed."""
         if isinstance(val, str):
             val = [val]
@@ -104,7 +118,7 @@ class Platform(pydantic.BaseModel):
 
     @pydantic.root_validator(skip_on_failure=True)
     @classmethod
-    def _validate_platform_set(cls, values):
+    def _validate_platform_set(cls, values: Any) -> Any:
         """Validate the build_on build_for combination."""
         build_for = values["build_for"] if values.get("build_for") else []
         build_on = values["build_on"] if values.get("build_on") else []
@@ -159,7 +173,7 @@ class Project(pydantic.BaseModel):
 
     @pydantic.validator("rock_license", always=True)
     @classmethod
-    def _validate_license(cls, rock_license):
+    def _validate_license(cls, rock_license: str) -> str:
         """Make sure the provided license is valid and in SPDX format."""
         if rock_license.lower() not in [
             lic.lower() for lic in spdx_license_list.LICENSES
@@ -175,15 +189,15 @@ class Project(pydantic.BaseModel):
 
     @pydantic.validator("title", always=True)
     @classmethod
-    def _validate_title(cls, title, values):
-        """If title is not provided, it default to the provided ROCK name."""
+    def _validate_title(cls, title: Optional[str], values: Any) -> str:
+        """If title is not provided, it defaults to the provided ROCK name."""
         if not title:
             title = values["name"]
-        return title
+        return cast(str, title)
 
     @pydantic.validator("build_base", always=True)
     @classmethod
-    def _validate_build_base(cls, build_base, values):
+    def _validate_build_base(cls, build_base: Optional[str], values: Any) -> str:
         """Build-base defaults to the base value if not specified.
 
         :raises ProjectValidationError: If base validation fails.
@@ -195,11 +209,11 @@ class Project(pydantic.BaseModel):
                     'When "base" is bare, a build-base must be specified!'
                 )
             build_base = values.get("base")
-        return build_base
+        return cast(str, build_base)
 
     @pydantic.validator("platforms")
     @classmethod
-    def _validate_all_platforms(cls, platforms):
+    def _validate_all_platforms(cls, platforms: Dict[str, Any]) -> Dict[str, Any]:
         """Make sure all provided platforms are tangible and sane."""
         _self_uts_machine = host_platform.machine().lower()
 
@@ -305,7 +319,7 @@ class Project(pydantic.BaseModel):
 
     @pydantic.validator("parts", each_item=True)
     @classmethod
-    def _validate_parts(cls, item):
+    def _validate_parts(cls, item: Any) -> Any:
         """Verify each part (craft-parts will re-validate this)."""
         validate_part(item)
         return item
@@ -365,7 +379,9 @@ class Project(pydantic.BaseModel):
         return (annotations, metadata)
 
 
-def _format_pydantic_errors(errors, *, file_name: str = "rockcraft.yaml"):
+def _format_pydantic_errors(
+    errors: List["ErrorDict"], *, file_name: str = "rockcraft.yaml"
+) -> str:
     """Format errors.
 
     Example 1: Single error.
@@ -403,7 +419,7 @@ def _format_pydantic_errors(errors, *, file_name: str = "rockcraft.yaml"):
     return "\n".join(combined)
 
 
-def _format_pydantic_error_location(loc):
+def _format_pydantic_error_location(loc: Sequence[Union[str, int]]) -> str:
     """Format location."""
     loc_parts = []
     for loc_part in loc:
@@ -418,14 +434,14 @@ def _format_pydantic_error_location(loc):
         else:
             raise RuntimeError(f"unhandled loc: {loc_part}")
 
-    loc = ".".join(loc_parts)
+    new_loc = ".".join(loc_parts)
 
     # Filter out internal __root__ detail.
-    loc = loc.replace(".__root__", "")
-    return loc
+    new_loc = new_loc.replace(".__root__", "")
+    return new_loc
 
 
-def _format_pydantic_error_message(msg):
+def _format_pydantic_error_message(msg: str) -> str:
     """Format pydantic's error message field."""
     # Replace shorthand "str" with "string".
     msg = msg.replace("str type expected", "string type expected")
