@@ -8,7 +8,7 @@
 summary: test the "Build the docs" guide
 
 prepare: |
-  tests.pkgs install python3-venv
+  tests.pkgs install python3-venv python3-dev libapt-pkg-dev
 
 execute: |
   pushd $PROJECT_PATH/
