@@ -156,8 +156,8 @@ def _pack(
     emit.progress("Creating new layer")
     new_image = project_base_image.add_layer(
         tag=project.version,
-        layer_path=lifecycle.prime_dir,
-        lower_rootfs=base_layer_dir,
+        new_layer_dir=lifecycle.prime_dir,
+        base_layer_dir=base_layer_dir,
     )
     emit.progress("Created new layer", permanent=True)
 

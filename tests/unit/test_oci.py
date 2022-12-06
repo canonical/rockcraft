@@ -230,7 +230,7 @@ class TestImage:
         # times (due to the recursion), but we're mainly interested that the first
         # call was to add `layer_dir`.
         assert spy_add.mock_calls[0] == call(
-            ANY, Path("layer_dir/foo.txt"), arcname="./foo.txt"
+            ANY, Path("layer_dir/foo.txt"), arcname="foo.txt"
         )
 
         expected_cmd = [
@@ -267,15 +267,15 @@ class TestImage:
         image.add_layer("tag", layer_dir)
 
         expected_tar_contents = [
-            "./first",
-            "./first/first.txt",
-            "./second",
-            "./second/second.txt",
+            "first",
+            "first/first.txt",
+            "second",
+            "second/second.txt",
         ]
         assert temp_tar_contents == expected_tar_contents
 
-    def test_add_layer_with_lower_rootfs(self, tmp_path, temp_tar_contents):
-        """Test creating a layer with a base rootfs for reference."""
+    def test_add_layer_with_base_layer_dir(self, tmp_path, temp_tar_contents):
+        """Test creating a layer with a base layer dir for reference."""
         dest_dir = tmp_path / "dest"
         dest_dir.mkdir()
 
@@ -299,15 +299,15 @@ class TestImage:
         os.symlink("first", rootfs_dir / "second")
 
         assert len(temp_tar_contents) == 0
-        image.add_layer("tag", layer_dir, lower_rootfs=rootfs_dir)
+        image.add_layer("tag", layer_dir, base_layer_dir=rootfs_dir)
 
         # The tarfile must *not* contain the "./second" dir entry, to preserve
         # the base layer symlink. Additionally, the file "second.txt" must
         # be listed as inside "first/", and not "second/".
         expected_tar_contents = [
-            "./first",
-            "./first/first.txt",
-            "./first/second.txt",
+            "first",
+            "first/first.txt",
+            "first/second.txt",
         ]
         assert temp_tar_contents == expected_tar_contents
 

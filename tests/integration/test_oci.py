@@ -72,7 +72,7 @@ def test_add_layer_with_symlink_in_base(new_dir):
         (new_target_dir / f"new_{target}_file").write_text(f"new {target} file")
 
     new_image = image.add_layer(
-        tag="new", layer_path=new_layer_dir, lower_rootfs=rootfs
+        tag="new", new_layer_dir=new_layer_dir, base_layer_dir=rootfs
     )
 
     umoci_stat = new_image.stat()
@@ -87,10 +87,10 @@ def test_add_layer_with_symlink_in_base(new_dir):
     # Check that the files were added into the symlink targets.
     with tarfile.open(layer_file, "r") as tar_file:
         assert sorted(tar_file.getnames()) == [
-            "./tmp",
-            "./tmp/new_tmp_file",
-            "./usr/bin/new_bin_file",
-            "./usr/lib/new_lib_file",
+            "tmp",
+            "tmp/new_tmp_file",
+            "usr/bin/new_bin_file",
+            "usr/lib/new_lib_file",
         ]
 
 

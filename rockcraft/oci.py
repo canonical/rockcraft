@@ -140,13 +140,13 @@ class Image:
         return bundle_path / "rootfs"
 
     def add_layer(
-        self, tag: str, layer_path: Path, lower_rootfs: Optional[Path] = None
+        self, tag: str, new_layer_dir: Path, base_layer_dir: Optional[Path] = None
     ) -> "Image":
         """Add a layer to the image.
 
         :param tag: The tag of the image containing the new layer.
-        :param layer_path: The path to the new layer root filesystem.
-        :param lower_rootfs: An optional path to the extracted contents of the
+        :param new_layer_dir: The path to the new layer root filesystem.
+        :param base_layer_dir: An optional path to the extracted contents of the
           new layer's base layer. Used to preserve lower-layer symlinks.
         """
         image_path = self.path / self.image_name
@@ -155,7 +155,7 @@ class Image:
         temp_file.unlink(missing_ok=True)
 
         try:
-            _archive_layer(layer_path, temp_file, lower_rootfs)
+            _archive_layer(new_layer_dir, temp_file, base_layer_dir)
             _add_layer_into_image(image_path, temp_file, **{"--tag": tag})
         finally:
             temp_file.unlink(missing_ok=True)
@@ -340,18 +340,18 @@ def _add_layer_into_image(image_path: Path, archived_content: Path, **kwargs) ->
 
 
 def _archive_layer(
-    layer_path: Path, temp_tar_file: Path, lower_rootfs: Optional[Path] = None
+    new_layer_dir: Path, temp_tar_file: Path, base_layer_dir: Optional[Path] = None
 ) -> None:
     """Prepare new OCI layer by archiving its content into tar file.
 
-    :param layer_path: path to the content to be archived into a layer
+    :param new_layer_dir: path to the content to be archived into a layer
     :param temp_tar_file: path to the temporary tar file holding the archived content
-    :param lower_rootfs: optional path to the filesystem containing the extracted
+    :param base_layer_dir: optional path to the filesystem containing the extracted
         base below this new layer. Used to preserve lower-level directory symlinks,
         like the ones from Debian/Ubuntu's usrmerge.
     """
     with tarfile.open(temp_tar_file, mode="w") as tar_file:
-        for dirpath, subdirs, filenames in os.walk(layer_path):
+        for dirpath, subdirs, filenames in os.walk(new_layer_dir):
             # Sort `subdirs` in-place, to ensure that `os.walk()` iterates on
             # them in sorted order.
             subdirs.sort()
@@ -363,13 +363,13 @@ def _archive_layer(
             # - The directory is not the root (to skip a spurious "." entry);
             # - The directory's name does not exist on ``lower_rootfs`` as a symlink
             #   to another directory (like in usrmerge).
-            if upper_subpath != layer_path:
+            if upper_subpath != new_layer_dir:
                 add_dir = True
-                relative_path = upper_subpath.relative_to(layer_path)
+                relative_path = upper_subpath.relative_to(new_layer_dir)
 
-                if lower_rootfs is not None:
-                    lower_path = lower_rootfs / relative_path
-                    emit.trace(
+                if base_layer_dir is not None:
+                    lower_path = base_layer_dir / relative_path
+                    emit.debug(
                         f"Skipping {upper_subpath} because it exists as a symlink on the lower layer"
                     )
                     add_dir = not lower_path.is_symlink()
@@ -377,9 +377,9 @@ def _archive_layer(
                         lower_symlink_target = Path(os.readlink(lower_path))
 
                 if add_dir:
-                    emit.trace(f"Adding to layer: {upper_subpath}")
+                    emit.debug(f"Adding to layer: {upper_subpath}")
                     tar_file.add(
-                        upper_subpath, arcname=f"./{relative_path}", recursive=False
+                        upper_subpath, arcname=f"{relative_path}", recursive=False
                     )
 
             # Handle adding each file in the directory.
@@ -392,9 +392,9 @@ def _archive_layer(
                     # symlink to `usr/bin`, add the file as `usr/bin/file.txt`.
                     relative_path = lower_symlink_target / name
                 else:
-                    relative_path = Path(path).relative_to(layer_path)
-                emit.trace(f"Adding to layer: {path}")
-                tar_file.add(path, arcname=f"./{relative_path}")
+                    relative_path = Path(path).relative_to(new_layer_dir)
+                emit.debug(f"Adding to layer: {path}")
+                tar_file.add(path, arcname=f"{relative_path}")
 
 
 def _inject_architecture_variant(image_path: Path, variant: str) -> None:
