@@ -35,5 +35,3 @@ execute: |
   # [docs:rockcraft-version]
   rockcraft --version
   # [docs:rockcraft-version-end]
-
-  

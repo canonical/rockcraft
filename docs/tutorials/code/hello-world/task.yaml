@@ -38,4 +38,3 @@ execute: |
   # [docs:docker-run-end]
   
   docker run --rm hello:1.0 | grep "hello, world"
-
