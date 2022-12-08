@@ -34,3 +34,9 @@ parts:
         group: 2222
       - path: dir2/3.txt
         mode: "755"
+
+  usrmerge-part:
+    plugin: nil
+    override-build: |
+      mkdir ${CRAFT_PART_INSTALL}/bin
+      touch ${CRAFT_PART_INSTALL}/bin/new_bin_file

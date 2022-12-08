@@ -124,6 +124,7 @@ def run(command_name: str, parsed_args: "argparse.Namespace") -> None:
                 base_digest=base_digest,
                 rock_suffix=platform_entry,
                 build_for=build_for,
+                base_layer_dir=rootfs,
             )
 
 
@@ -135,11 +136,28 @@ def _pack(
     base_digest: bytes,
     rock_suffix: str,
     build_for: str,
+    base_layer_dir: Path,
 ) -> None:
-    """Create the rock image for a given architecture."""
+    """Create the rock image for a given architecture.
+
+    :param lifecycle:
+      The lifecycle object containing the primed payload for the rock.
+    :param project_base_image:
+      The Image for the base over which the payload was primed.
+    :param base_digest:
+      The digest of the base image, to add to the new image's metadata.
+    :param rock_suffix:
+      The suffix to append to the image's filename, after the name and version.
+    :param build_for:
+      The architecture of the built rock, to add as metadata.
+    :param base_layer_dir:
+      The directory where the rock's base image was extracted.
+    """
     emit.progress("Creating new layer")
     new_image = project_base_image.add_layer(
-        tag=project.version, layer_path=lifecycle.prime_dir
+        tag=project.version,
+        new_layer_dir=lifecycle.prime_dir,
+        base_layer_dir=base_layer_dir,
     )
     emit.progress("Created new layer", permanent=True)
 

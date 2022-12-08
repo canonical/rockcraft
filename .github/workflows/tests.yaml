@@ -54,7 +54,7 @@ jobs:
   tests:
     strategy:
       matrix:
-        os: [macos-latest, ubuntu-18.04, ubuntu-20.04, windows-2019]
+        os: [macos-latest, ubuntu-18.04, ubuntu-20.04, ubuntu-22.04, windows-2019]
         python-version: [3.8, 3.9, "3.10"]
         exclude:
           - os: ubuntu-18.04
@@ -74,7 +74,7 @@ jobs:
         run: |
           pip install -U wheel
       - name: Install Ubuntu-specific dependencies
-        if: ${{ matrix.os == 'ubuntu-18.04' || matrix.os == 'ubuntu-20.04' }}
+        if: ${{ startsWith(matrix.os, 'ubuntu') }}
         run: |
           sudo apt update
           sudo apt install -y python3-pip python3-setuptools python3-wheel python3-venv libapt-pkg-dev
@@ -88,6 +88,13 @@ jobs:
         if: ${{ matrix.os == 'ubuntu-20.04' }}
         run: |
           pip install -U -r requirements-focal.txt
+      - name: Install Ubuntu 22.04-specific dependencies
+        if: ${{ matrix.os == 'ubuntu-22.04' }}
+        run: |
+          # Same python-apt requirement as 20.04
+          pip install -U -r requirements-focal.txt
+          # 22.04 is the only one that has an 'umoci' package
+          sudo apt install -y umoci
       - name: Install dependencies
         run: |
           pip install -U -r requirements.txt -r requirements-dev.txt
