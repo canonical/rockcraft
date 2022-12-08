@@ -17,8 +17,9 @@ execute: |
   grep -q "bins" chisel-releases/slices/openssl.yaml && echo "My slice exists"
   # [docs:slice-exists-end]
 
-  git clone -b fix-copyright-symlink https://github.com/woky/chisel
+  git clone https://github.com/canonical/chisel
   pushd chisel
+  git reset --hard f0bff5a30dfdcb400b3c4efe85962ad8ff3ca2ba
   go build ./cmd/chisel
   mv chisel /bin/chisel
   popd

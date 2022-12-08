@@ -12,11 +12,12 @@ execute: |
   apt show openssl
   # [docs:apt-show-openssl-end]
 
-  git clone -b fix-copyright-symlink https://github.com/woky/chisel
+  git clone https://github.com/canonical/chisel
   git clone -b ubuntu-22.04 https://github.com/canonical/chisel-releases
   cp openssl.yaml chisel-releases/slices
 
   pushd chisel
+  git reset --hard f0bff5a30dfdcb400b3c4efe85962ad8ff3ca2ba
   go build ./cmd/chisel
   popd
 
