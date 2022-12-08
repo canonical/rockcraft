@@ -25,6 +25,7 @@ from typing import (
     Dict,
     List,
     Literal,
+    Mapping,
     Optional,
     Sequence,
     Tuple,
@@ -110,7 +111,7 @@ class Platform(pydantic.BaseModel):
 
     @pydantic.validator("build_for", pre=True)
     @classmethod
-    def _vectorise_build_for(cls, val: Any) -> Any:
+    def _vectorise_build_for(cls, val: Union[str, List[str]]) -> List[str]:
         """Vectorise target architecture if needed."""
         if isinstance(val, str):
             val = [val]
@@ -118,7 +119,7 @@ class Platform(pydantic.BaseModel):
 
     @pydantic.root_validator(skip_on_failure=True)
     @classmethod
-    def _validate_platform_set(cls, values: Any) -> Any:
+    def _validate_platform_set(cls, values: Mapping[str, Any]) -> Mapping[str, Any]:
         """Validate the build_on build_for combination."""
         build_for = values["build_for"] if values.get("build_for") else []
         build_on = values["build_on"] if values.get("build_on") else []
@@ -189,7 +190,7 @@ class Project(pydantic.BaseModel):
 
     @pydantic.validator("title", always=True)
     @classmethod
-    def _validate_title(cls, title: Optional[str], values: Any) -> str:
+    def _validate_title(cls, title: Optional[str], values: Mapping[str, Any]) -> str:
         """If title is not provided, it defaults to the provided ROCK name."""
         if not title:
             title = values["name"]
@@ -319,7 +320,7 @@ class Project(pydantic.BaseModel):
 
     @pydantic.validator("parts", each_item=True)
     @classmethod
-    def _validate_parts(cls, item: Any) -> Any:
+    def _validate_parts(cls, item: Dict[str, Any]) -> Dict[str, Any]:
         """Verify each part (craft-parts will re-validate this)."""
         validate_part(item)
         return item
