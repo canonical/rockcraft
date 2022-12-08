@@ -1,0 +1,18 @@
+###########################################
+# IMPORTANT
+# Comments matter!
+# The docs use the wrapping comments as 
+# markers for including said instructions 
+# as snippets in the docs.
+###########################################
+summary: test the "Release a slice definitions file" guide
+
+execute: |
+  git clone -b ubuntu-22.04 https://github.com/canonical/chisel-releases.git
+  
+  # [docs:new-branch]
+  cd chisel-releases
+  git checkout -b create-openssl-bins-slice
+  # [docs:new-branch-end]
+
+  rm -fr chisel-releases/

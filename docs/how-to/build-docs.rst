@@ -1,21 +1,36 @@
 How to build the documentation
 ******************************
 
-Create a virtual environment and activate it::
+Create a virtual environment and activate it:
 
-    python3 -m venv docs/env
-    source docs/env/bin/activate
+.. literalinclude:: code/build-docs/task.yaml
+    :language: bash
+    :start-after: [docs:create-env]
+    :end-before: [docs:create-env-end]
+    :dedent: 2
 
-Install the documentation requirements::
+Install the documentation requirements:
 
-    pip install -r requirements-focal.txt -r requirements-doc.txt
+.. literalinclude:: code/build-docs/task.yaml
+    :language: bash
+    :start-after: [docs:install-deps]
+    :end-before: [docs:install-deps-end]
+    :dedent: 2
 
-Once the requirements are installed, you can use the provided ``Makefile`` to build the documentation::
+Once the requirements are installed, you can use the provided ``Makefile`` to build the documentation:
 
-    make docs  # the home page can be found at docs/_build/html/index.html
+.. literalinclude:: code/build-docs/task.yaml
+    :language: bash
+    :start-after: [docs:make-docs]
+    :end-before: [docs:make-docs-end]
+    :dedent: 2
 
 Even better, serve it locally on port 8080. The documentation will be rebuilt on each file change, and will reload the browser view.
 
-    make rundocs
+.. literalinclude:: code/build-docs/task.yaml
+    :language: bash
+    :start-after: timeout -s SIGINT
+    :end-before: [docs:make-rundocs-end]
+    :dedent: 2
 
 Note that ``make rundocs`` automatically activates the virtual environment, as long as it already exists.

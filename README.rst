@@ -24,7 +24,7 @@ Install Rockcraft from the Snap Store
 Documentation
 -------------
 
-Documentation on usage of the tool and tutorials can be found on
+Documentation on the usage of the tool and tutorials can be found on
 https://canonical-rockcraft.readthedocs-hosted.com/
 
 
@@ -42,6 +42,8 @@ https://canonical-rockcraft.readthedocs-hosted.com/
     :alt: Get it from the Snap Store
     :scale: 100%
     :target: https://snapcraft.io/rockcraft
+
+
   
 Testing
 -------

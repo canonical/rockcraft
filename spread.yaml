@@ -8,6 +8,11 @@ environment:
 include:
     - tests/
     - tools/
+    - docs/
+    - requirements-doc.txt
+    - requirements-focal.txt
+    - Makefile
+    - rockcraft/
 
 backends:
   google:
@@ -89,8 +94,13 @@ debug-each: |
   fi
 
 suites:
-  tests/spread/tutorials/:
-    summary: tests basic tutorials
+  docs/tutorials/code/:
+    summary: tests basic tutorials from the docs
+
+  docs/how-to/code/:
+    summary: tests how-to guides from the docs
+    systems:
+    - ubuntu-22.04-64
 
   tests/spread/general/:
     summary: tests for rockcraft core functionality

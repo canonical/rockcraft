@@ -8,28 +8,29 @@ You have also tested this custom Chisel release, and it works! You believe there
 
 It is as simple as proposing your changes into the upstream `Chisel releases repository <https://github.com/canonical/chisel-releases>`_:
 
-#. Fork this repository https://github.com/canonical/chisel-releases and clone your fork:
+1. Fork this repository https://github.com/canonical/chisel-releases and clone your fork:
 
-    .. code-block:: bash
+.. code-block:: bash
 
-        # Let's assume we are working with Ubuntu 22.04
-        $ git clone -b ubuntu-22.04 https://github.com/<your_github_username>/chisel-releases.git
+    # Let's assume we are working with Ubuntu 22.04
+    git clone -b ubuntu-22.04 https://github.com/<your_github_username>/chisel-releases.git
 
-#. Create a branch:
+2. Create a branch:
 
-    .. code-block:: bash
+.. literalinclude:: code/publish-slice/task.yaml
+   :language: bash
+   :start-after: [docs:new-branch]
+   :end-before: [docs:new-branch-end]
+   :dedent: 2
 
-        $ cd chisel-releases
-        $ git checkout -b create-openssl-bins-slice
+3. Add and commit your modifications:
 
-#. Add and commit your modifications:
+.. code-block:: bash
 
-    .. code-block:: bash
-
-        $ cp <path/to/your/slice/definitions/file> slices
-        $ git add slices/
-        $ git commit -m "feat: add new slice definitions for 'name_of_the_package'"
-        $ git push origin create-openssl-bins-slice
+   cp <path/to/your/slice/definitions/file> slices
+   git add slices/
+   git commit -m "feat: add new slice definitions for 'name_of_the_package'"
+   git push origin create-openssl-bins-slice
 
 Create a pull request and wait for it to be merged.
 

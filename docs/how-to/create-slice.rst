@@ -61,11 +61,17 @@ Find the dependencies of your package
 
 Find the dependencies of the package for which you want to create a new slice definition (``openssl`` in this guide) with this command:
 
-.. code-block:: sh
+.. literalinclude:: code/create-slice/task.yaml
+    :language: bash
+    :start-after: [docs:apt-show-openssl]
+    :end-before: [docs:apt-show-openssl-end]
+    :dedent: 2
 
-    $ apt show openssl
+The output will be similar to:
 
-.. code-block:: text
+..  code-block:: text
+    :emphasize-lines: 1,2,7
+    :class: log-snippets
 
     package: openssl
     Version: 3.0.2-0ubuntu1.7
@@ -94,27 +100,9 @@ You now have everything needed to actually define the OpenSSL slice that will in
 
 Create a new YAML file named ``openssl.yaml``, with the following content:
 
-.. code-block:: yaml
-
-    package: openssl
-    slices:
-        bins:
-            essential:
-              - libc6_libs
-              - libc6_config
-              - libssl3_libs
-              - openssl_config
-            contents:
-                /usr/bin/c_rehash:
-                /usr/bin/openssl:
-
-        config:
-            contents:
-                /etc/ssl/private/:
-                /etc/ssl/openssl.cnf:
-                /usr/lib/ssl/certs:
-                /usr/lib/ssl/openssl.cnf:
-                /usr/lib/ssl/private:
+.. literalinclude:: code/create-slice/openssl.yaml
+    :language: yaml
 
 Notice the unforeseen new slice ``config``. Because your OpenSSL binaries depend on the OpenSSL configuration files, and those were not yet present anywhere in the Chisel releases upstream, you also need to create that slice! You may also ask **"why not put those configuration files inside the ``bins`` slice"**? You could! But we recommend, as a best practice, to separate and group contents according to their nature, as you may tomorrow need to create a new slice definition that only needs the OpenSSL configurations and not the binaries.
+
 And that's it. This is your brand new slice definitions file, which will allow Chisel to install **just** the OpenSSL binaries (and their dependencies) into your ROCK! To learn about how to actually use this new slice definition file and publish it upstream for others to use, please check the following guides.

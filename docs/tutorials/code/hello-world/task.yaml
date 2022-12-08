@@ -1,0 +1,40 @@
+###########################################
+# IMPORTANT
+# Comments matter!
+# The docs use the wrapping comments as 
+# markers for including said instructions 
+# as snippets in the docs.
+###########################################
+summary: hello world tutorial
+
+execute: |
+  date
+  # [docs:install-rockcraft]
+  sudo snap install rockcraft --classic --edge
+  # [docs:install-rockcraft-end]
+
+  # [docs:build-rock]
+  rockcraft pack
+  # [docs:build-rock-end]
+
+  test -f hello_1.0_amd64.rock
+  test ! -d work
+
+  uname -a
+  snap list
+
+  # test container execution
+  docker images
+
+  # [docs:skopeo-copy]
+  sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:hello_1.0_amd64.rock docker-daemon:hello:1.0
+  # [docs:skopeo-copy-end]
+
+  rm hello_1.0_amd64.rock
+  docker images
+
+  # [docs:docker-run]
+  docker run --rm hello:1.0
+  # [docs:docker-run-end]
+  
+  docker run --rm hello:1.0 | grep "hello, world"

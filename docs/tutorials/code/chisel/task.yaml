@@ -1,0 +1,33 @@
+###########################################
+# IMPORTANT
+# Comments matter!
+# The docs use the wrapping comments as 
+# markers for including said instructions 
+# as snippets in the docs.
+###########################################
+summary: test for the "Install packages slices into a ROCK" tutorial
+
+execute: |
+  # [docs:install-rockcraft]
+  snap install rockcraft --classic --edge
+  # [docs:install-rockcraft-end]
+
+  # [docs:build-rock]
+  rockcraft
+  # [docs:build-rock-end]
+  
+  test -f chisel-openssl_0.0.1_amd64.rock
+
+  # [docs:skopeo-copy]
+  sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:chisel-openssl_0.0.1_amd64.rock docker-daemon:chisel-openssl:latest
+  # [docs:skopeo-copy-end]
+
+  # [docs:docker-run]
+  docker run --rm  chisel-openssl
+  # [docs:docker-run-end]
+
+  # [docs:docker-run-with-args]
+  docker run --rm chisel-openssl s_client -connect ubuntu.com:443 -brief
+  # [docs:docker-run-with-args-end]
+  
+  docker run --rm chisel-openssl s_client -connect ubuntu.com:443 -brief 2>&1 | grep "Verification: OK"
