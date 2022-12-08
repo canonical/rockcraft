@@ -301,7 +301,7 @@ class Image:
         emit.progress(f"Labels and annotations set to {labels_list}", permanent=True)
 
 
-def _copy_image(source: str, destination: str, *system_params) -> None:
+def _copy_image(source: str, destination: str, *system_params: str) -> None:
     """Transfer images from source to destination."""
     _process_run(
         [
@@ -322,7 +322,9 @@ def _config_image(image_path: Path, params: List[str]) -> None:
     _process_run(["umoci", "config", "--image", str(image_path)] + params)
 
 
-def _add_layer_into_image(image_path: Path, archived_content: Path, **kwargs) -> None:
+def _add_layer_into_image(
+    image_path: Path, archived_content: Path, **kwargs: str
+) -> None:
     """Add raw layer (archived) into the OCI image.
 
     :param image_path: path of the OCI image, in the format <image>:<tar>
@@ -463,7 +465,7 @@ def _inject_architecture_variant(image_path: Path, variant: str) -> None:
     tl_index_path.write_bytes(json.dumps(tl_index).encode("utf-8"))
 
 
-def _process_run(command: List[str], **kwargs) -> subprocess.CompletedProcess:
+def _process_run(command: List[str], **kwargs: Any) -> subprocess.CompletedProcess:
     """Run a command and handle its output."""
     emit.trace(f"Execute process: {command!r}, kwargs={kwargs!r}")
     try:

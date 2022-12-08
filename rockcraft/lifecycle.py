@@ -33,7 +33,7 @@ if TYPE_CHECKING:
     import argparse
 
 
-def run(command_name: str, parsed_args: "argparse.Namespace"):
+def run(command_name: str, parsed_args: "argparse.Namespace") -> None:
     """Run the parts lifecycle."""
     # pylint: disable=too-many-locals
     emit.trace(f"command: {command_name}, arguments: {parsed_args}")
@@ -137,7 +137,7 @@ def _pack(
     rock_suffix: str,
     build_for: str,
     base_layer_dir: Path,
-):
+) -> None:
     """Create the rock image for a given architecture.
 
     :param lifecycle:
@@ -194,7 +194,7 @@ def _pack(
 
 def run_in_provider(
     project: Project, command_name: str, parsed_args: "argparse.Namespace"
-):
+) -> None:
     """Run lifecycle command in provider instance."""
     provider = providers.get_provider()
     providers.ensure_provider_is_available(provider)
