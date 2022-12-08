@@ -29,7 +29,7 @@ Even better, serve it locally on port 8080. The documentation will be rebuilt on
 
 .. literalinclude:: code/build-docs/task.yaml
     :language: bash
-    :start-after: timeout --preserve-status
+    :start-after: timeout -s SIGINT
     :end-before: [docs:make-rundocs-end]
     :dedent: 2
 

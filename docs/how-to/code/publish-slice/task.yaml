@@ -8,7 +8,7 @@
 summary: test the "Release a slice definitions file" guide
 
 execute: |
-  git clone -b ubuntu-22.04 https://github.com/canonical/chisel-releases
+  git clone -b ubuntu-22.04 https://github.com/canonical/chisel-releases.git
   
   # [docs:new-branch]
   cd chisel-releases
