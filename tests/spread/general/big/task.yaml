@@ -52,7 +52,13 @@ execute: |
   docker rm -f big-container
 
   ############################################################################################
-  # check that the /bin symlink to /usr/bin wasn't broken by the /bin/new_bin_file addition
+  # check that the /bin symlink to /usr/bin *was not* broken by the /bin/new_bin_file addition
   ############################################################################################
   docker run --rm big readlink /bin | MATCH usr/bin
   docker run --rm big ls /bin/bash /bin/new_bin_file
+
+  ############################################################################################
+  # check that the /lib32 symlink to /usr/lib32 *was* broken by the overlay-script
+  ############################################################################################
+  docker run --rm big readlink /lib32 | NOMATCH usr/lib32
+  docker run --rm big ls /lib32/new_lib32_file

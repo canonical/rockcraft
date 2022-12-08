@@ -30,6 +30,7 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import yaml
 from craft_cli import CraftError, emit
+from craft_parts.overlays import overlays
 
 logger = logging.getLogger(__name__)
 
@@ -368,16 +369,18 @@ def _archive_layer(
             # `relative_path` corresponds to a symlink in the base layer.
             archive_subdir = relative_path
 
-            # Handle adding an entry for the directory. We only do that if:
-            # - The directory is not the root (to skip a spurious "." entry);
-            # - The directory's name does not exist on ``base_layer_dir`` as a symlink
-            #   to another directory (like in usrmerge).
+            # Handle adding an entry for the directory. We skip this IF:
+            # - The directory is the root (to skip a spurious "." entry), OR
+            # - The directory is NOT an opaque OCI entry AND
+            # - The directory's exists on ``base_layer_dir`` as a symlink to another
+            #   directory (like in usrmerge).
             if upper_subpath != new_layer_dir:
+                is_not_opaque_dir = not overlays.is_oci_opaque_dir(upper_subpath)
                 lower_symlink_target = _symlink_target_in_base_layer(
                     relative_path, base_layer_dir
                 )
 
-                if lower_symlink_target is not None:
+                if is_not_opaque_dir and lower_symlink_target is not None:
                     emit.debug(
                         f"Skipping {upper_subpath} because it exists as a symlink on the lower layer"
                     )

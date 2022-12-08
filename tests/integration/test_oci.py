@@ -16,48 +16,95 @@
 import os
 import subprocess
 import tarfile
+import textwrap
 from pathlib import Path
+from typing import Callable, List, Tuple
 
 from rockcraft import oci
+from rockcraft.parts import PartsLifecycle
 from tests.util import jammy_only
 
 pytestmark = jammy_only
 
 
-def test_add_layer_with_symlink_in_base(new_dir):
-    """Test adding a new layer that conflicts with dir symlinks on the base (e.g. usrmerge)"""
+def create_base_image(
+    work_dir: Path, populate_base_layer: Callable[[Path], None]
+) -> Tuple[oci.Image, Path]:
+    """Create a base image with content provided by a callable.
+
+    This function will create an empty image, extract it to a bundle and then
+    call ``populate_base_layer(dir)`` to populate its rootfs. Then the image
+    is repacked.
+
+    :param work_dir: The directory where the image metadata should be stored
+    :param populate_base_layer: A callable to create the desired filesystem
+      structure for the image's sole layer.
+    :return: The new image, and the path to the layer's extracted contents.
+    """
+    image_dir = work_dir / "images"
     image = oci.Image.new_oci_image(
         image_name="bare:original",
-        image_dir=Path("images"),
+        image_dir=image_dir,
         arch="amd64",
     )[0]
 
-    rootfs = image.extract_to(Path("bundle"), rootless=True)
+    extracted_dir = work_dir / "extracted"
+    base_layer_dir = image.extract_to(extracted_dir, rootless=True)
+    assert base_layer_dir.is_dir()
+    assert os.listdir(base_layer_dir) == []
 
-    # Make sure the rootfs is empty
-    assert rootfs.is_dir()
-    assert os.listdir(rootfs) == []
-
-    targets = ["lib", "bin"]
-
-    # Populate the "base" rootfs with some symlinks, in the following structure:
-    # /bin -> usr/bin
-    # /lib -> usr/lib
-    # /usr/bin/old_bin_file
-    # /usr/lib/old_lib_file
-    for target in targets:
-        actual_dir = rootfs / f"usr/{target}"
-        actual_dir.mkdir(parents=True)
-
-        (actual_dir / f"old_{target}_file").write_text(f"old {target} file")
-
-        os.symlink(f"usr/{target}", rootfs / target)
-        assert os.listdir(rootfs / target) == [f"old_{target}_file"]
+    # Call the client function to populate the empty layer
+    populate_base_layer(base_layer_dir)
 
     # Repack the image with the new contents overwriting the existing layer
     subprocess.check_output(
-        ["umoci", "repack", "--image", "images/bare:original", "bundle/bare-original"]
+        [
+            "umoci",
+            "repack",
+            "--image",
+            f"{image_dir}/bare:original",
+            f"{extracted_dir}/bare-original",
+        ]
     )
+
+    return image, base_layer_dir
+
+
+def get_names_in_layer(image: oci.Image, layer_number: int = -1) -> List[str]:
+    """Get the list of file/dir names contained in the given layer, sorted."""
+    umoci_stat = image.stat()
+
+    layers = umoci_stat["history"]
+    new_layer = layers[layer_number]["layer"]
+    assert new_layer["mediaType"] == "application/vnd.oci.image.layer.v1.tar+gzip"
+    layer_basename = new_layer["digest"][len("sha256:") :]
+    layer_file = Path(f"images/bare/blobs/sha256/{layer_basename}")
+
+    with tarfile.open(layer_file, "r") as tar_file:
+        return sorted(tar_file.getnames())
+
+
+def test_add_layer_with_symlink_in_base(new_dir):
+    """Test adding a new layer that conflicts with dir symlinks on the base (e.g. usrmerge)"""
+
+    targets = ["lib", "bin"]
+
+    def populate_base_layer(base_layer_dir):
+        # Populate the "base" rootfs with some symlinks, in the following structure:
+        # /bin -> usr/bin
+        # /lib -> usr/lib
+        # /usr/bin/old_bin_file
+        # /usr/lib/old_lib_file
+        for target in targets:
+            actual_dir = base_layer_dir / f"usr/{target}"
+            actual_dir.mkdir(parents=True)
+
+            (actual_dir / f"old_{target}_file").write_text(f"old {target} file")
+
+            os.symlink(f"usr/{target}", base_layer_dir / target)
+            assert os.listdir(base_layer_dir / target) == [f"old_{target}_file"]
+
+    image, base_layer_dir = create_base_image(Path(new_dir), populate_base_layer)
 
     new_layer_dir = Path("new")
     new_layer_dir.mkdir()
@@ -72,26 +119,68 @@ def test_add_layer_with_symlink_in_base(new_dir):
         (new_target_dir / f"new_{target}_file").write_text(f"new {target} file")
 
     new_image = image.add_layer(
-        tag="new", new_layer_dir=new_layer_dir, base_layer_dir=rootfs
+        tag="new", new_layer_dir=new_layer_dir, base_layer_dir=base_layer_dir
     )
 
-    umoci_stat = new_image.stat()
+    assert get_names_in_layer(new_image) == [
+        "tmp",
+        "tmp/new_tmp_file",
+        "usr/bin/new_bin_file",
+        "usr/lib/new_lib_file",
+    ]
 
-    layers = umoci_stat["history"]
-    assert len(layers) == 2
-    new_layer = layers[1]["layer"]
-    assert new_layer["mediaType"] == "application/vnd.oci.image.layer.v1.tar+gzip"
-    layer_basename = new_layer["digest"][len("sha256:") :]
-    layer_file = Path(f"images/bare/blobs/sha256/{layer_basename}")
 
-    # Check that the files were added into the symlink targets.
-    with tarfile.open(layer_file, "r") as tar_file:
-        assert sorted(tar_file.getnames()) == [
-            "tmp",
-            "tmp/new_tmp_file",
-            "usr/bin/new_bin_file",
-            "usr/lib/new_lib_file",
-        ]
+def test_add_layer_with_overlay(new_dir, mocker):
+    """Test "overwriting" directories in the base layer via overlays."""
+
+    def populate_base_layer(base_layer_dir):
+        (base_layer_dir / "usr/bin").mkdir(parents=True)
+        os.symlink("usr/bin", (base_layer_dir / "bin"))
+
+    image, base_layer_dir = create_base_image(Path(new_dir), populate_base_layer)
+
+    parts = {
+        "with-overlay": {
+            "plugin": "nil",
+            "override-build": "touch ${CRAFT_PART_INSTALL}/file_from_override_build",
+            "overlay-script": textwrap.dedent(
+                """
+                cd ${CRAFT_OVERLAY}
+                unlink bin
+                mkdir bin
+                touch bin/file_from_overlay_script
+                """
+            ),
+        }
+    }
+    work_dir = Path("work")
+
+    # Mock os.geteuid() because currently craft-parts doesn't allow overlays
+    # without superuser privileges.
+    mock_geteuid = mocker.patch.object(os, "geteuid", return_value=0)
+
+    lifecycle = PartsLifecycle(
+        all_parts=parts,
+        work_dir=work_dir,
+        part_names=None,
+        base_layer_dir=base_layer_dir,
+        base_layer_hash=b"deadbeef",
+    )
+
+    assert mock_geteuid.called
+
+    lifecycle.run("prime")
+
+    new_image = image.add_layer(
+        tag="new", new_layer_dir=lifecycle.prime_dir, base_layer_dir=base_layer_dir
+    )
+
+    assert get_names_in_layer(new_image) == [
+        "bin",
+        "bin/.wh..wh..opq",
+        "bin/file_from_overlay_script",
+        "file_from_override_build",
+    ]
 
 
 def test_stat(new_dir):
