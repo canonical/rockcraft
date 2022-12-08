@@ -33,7 +33,7 @@ if TYPE_CHECKING:
     import argparse
 
 
-def run(command_name: str, parsed_args: "argparse.Namespace"):
+def run(command_name: str, parsed_args: "argparse.Namespace") -> None:
     """Run the parts lifecycle."""
     # pylint: disable=too-many-locals
     emit.trace(f"command: {command_name}, arguments: {parsed_args}")
@@ -124,6 +124,7 @@ def run(command_name: str, parsed_args: "argparse.Namespace"):
                 base_digest=base_digest,
                 rock_suffix=platform_entry,
                 build_for=build_for,
+                base_layer_dir=rootfs,
             )
 
 
@@ -135,11 +136,28 @@ def _pack(
     base_digest: bytes,
     rock_suffix: str,
     build_for: str,
-):
-    """Create the rock image for a given architecture."""
+    base_layer_dir: Path,
+) -> None:
+    """Create the rock image for a given architecture.
+
+    :param lifecycle:
+      The lifecycle object containing the primed payload for the rock.
+    :param project_base_image:
+      The Image for the base over which the payload was primed.
+    :param base_digest:
+      The digest of the base image, to add to the new image's metadata.
+    :param rock_suffix:
+      The suffix to append to the image's filename, after the name and version.
+    :param build_for:
+      The architecture of the built rock, to add as metadata.
+    :param base_layer_dir:
+      The directory where the rock's base image was extracted.
+    """
     emit.progress("Creating new layer")
     new_image = project_base_image.add_layer(
-        tag=project.version, layer_path=lifecycle.prime_dir
+        tag=project.version,
+        new_layer_dir=lifecycle.prime_dir,
+        base_layer_dir=base_layer_dir,
     )
     emit.progress("Created new layer", permanent=True)
 
@@ -176,7 +194,7 @@ def _pack(
 
 def run_in_provider(
     project: Project, command_name: str, parsed_args: "argparse.Namespace"
-):
+) -> None:
     """Run lifecycle command in provider instance."""
     provider = providers.get_provider()
     providers.ensure_provider_is_available(provider)

@@ -119,24 +119,35 @@ class Image:
 
         return Image(image_name=image_name, path=image_dir)
 
-    def extract_to(self, bundle_dir: Path) -> Path:
+    def extract_to(self, bundle_dir: Path, *, rootless: bool = False) -> Path:
         """Unpack the image to an OCI runtime bundle.
 
         :param bundle_dir: The directory to store runtime bundles.
+        :param rootless: Whether the image should be unpacked even without
+            root; won't necessarily preserve ownership but is useful for
+            testing.
         """
         bundle_dir.mkdir(parents=True, exist_ok=True)
         bundle_path = bundle_dir / self.image_name.replace(":", "-")
         image_path = self.path / self.image_name
         shutil.rmtree(bundle_path, ignore_errors=True)
-        _process_run(["umoci", "unpack", "--image", str(image_path), str(bundle_path)])
+        command = ["umoci", "unpack"]
+        if rootless:
+            command.append("--rootless")
+        command.extend(["--image", str(image_path), str(bundle_path)])
+        _process_run(command)
 
         return bundle_path / "rootfs"
 
-    def add_layer(self, tag: str, layer_path: Path) -> "Image":
+    def add_layer(
+        self, tag: str, new_layer_dir: Path, base_layer_dir: Optional[Path] = None
+    ) -> "Image":
         """Add a layer to the image.
 
         :param tag: The tag of the image containing the new layer.
-        :param layer_path: The path to the new layer root filesystem.
+        :param new_layer_dir: The path to the new layer root filesystem.
+        :param base_layer_dir: An optional path to the extracted contents of the
+          new layer's base layer. Used to preserve lower-layer symlinks.
         """
         image_path = self.path / self.image_name
 
@@ -144,13 +155,21 @@ class Image:
         temp_file.unlink(missing_ok=True)
 
         try:
-            _archive_layer(layer_path, temp_file)
+            _archive_layer(new_layer_dir, temp_file, base_layer_dir)
             _add_layer_into_image(image_path, temp_file, **{"--tag": tag})
         finally:
             temp_file.unlink(missing_ok=True)
 
         name = self.image_name.split(":", 1)[0]
         return self.__class__(image_name=f"{name}:{tag}", path=self.path)
+
+    def stat(self) -> Dict[Any, Any]:
+        """Obtain the image statistics, as reported by "umoci stat --json"."""
+        image_path = self.path / self.image_name
+        output = _process_run(
+            ["umoci", "stat", "--json", "--image", str(image_path)]
+        ).stdout
+        return json.loads(output)
 
     @staticmethod
     def digest(source_image: str) -> bytes:
@@ -282,7 +301,7 @@ class Image:
         emit.progress(f"Labels and annotations set to {labels_list}", permanent=True)
 
 
-def _copy_image(source: str, destination: str, *system_params) -> None:
+def _copy_image(source: str, destination: str, *system_params: str) -> None:
     """Transfer images from source to destination."""
     _process_run(
         [
@@ -303,7 +322,9 @@ def _config_image(image_path: Path, params: List[str]) -> None:
     _process_run(["umoci", "config", "--image", str(image_path)] + params)
 
 
-def _add_layer_into_image(image_path: Path, archived_content: Path, **kwargs) -> None:
+def _add_layer_into_image(
+    image_path: Path, archived_content: Path, **kwargs: str
+) -> None:
     """Add raw layer (archived) into the OCI image.
 
     :param image_path: path of the OCI image, in the format <image>:<tar>
@@ -320,15 +341,82 @@ def _add_layer_into_image(image_path: Path, archived_content: Path, **kwargs) ->
     _process_run(cmd + ["--history.created_by", " ".join(cmd)])
 
 
-def _archive_layer(layer_path: Path, temp_tar_file: Path) -> None:
+def _archive_layer(
+    new_layer_dir: Path, temp_tar_file: Path, base_layer_dir: Optional[Path] = None
+) -> None:
     """Prepare new OCI layer by archiving its content into tar file.
 
-    :param layer_path: path to the content to be archived into a layer
-    :param temp_tar_file: path to the temporary tar fail holding the archived content
+    :param new_layer_dir: path to the content to be archived into a layer
+    :param temp_tar_file: path to the temporary tar file holding the archived content
+    :param base_layer_dir: optional path to the filesystem containing the extracted
+        base below this new layer. Used to preserve lower-level directory symlinks,
+        like the ones from Debian/Ubuntu's usrmerge.
     """
     with tarfile.open(temp_tar_file, mode="w") as tar_file:
-        # With `arcname="."` the contents are added relative to `layer_path`.
-        tar_file.add(layer_path, arcname=".")
+        for dirpath, subdirs, filenames in os.walk(new_layer_dir):
+            # Sort `subdirs` in-place, to ensure that `os.walk()` iterates on
+            # them in sorted order.
+            subdirs.sort()
+
+            upper_subpath = Path(dirpath)
+
+            # The path with `new_layer_dir` as the "root"
+            relative_path = upper_subpath.relative_to(new_layer_dir)
+
+            # The name of the subdir that will contain the files added in this
+            # iteration of the loop in the archive. Will be changed if
+            # `relative_path` corresponds to a symlink in the base layer.
+            archive_subdir = relative_path
+
+            # Handle adding an entry for the directory. We only do that if:
+            # - The directory is not the root (to skip a spurious "." entry);
+            # - The directory's name does not exist on ``base_layer_dir`` as a symlink
+            #   to another directory (like in usrmerge).
+            if upper_subpath != new_layer_dir:
+                lower_symlink_target = _symlink_target_in_base_layer(
+                    relative_path, base_layer_dir
+                )
+
+                if lower_symlink_target is not None:
+                    emit.debug(
+                        f"Skipping {upper_subpath} because it exists as a symlink on the lower layer"
+                    )
+                    archive_subdir = lower_symlink_target
+                else:
+                    emit.debug(f"Adding to layer: {upper_subpath}")
+                    tar_file.add(
+                        upper_subpath, arcname=f"{relative_path}", recursive=False
+                    )
+
+            # Handle adding each file in the directory.
+            for name in filenames:
+                actual_path = upper_subpath / name
+                archive_path = archive_subdir / name
+                emit.debug(f"Adding to layer: {actual_path} as '{archive_path}'")
+                tar_file.add(actual_path, arcname=f"{archive_path}")
+
+
+def _symlink_target_in_base_layer(
+    relative_path: Path, base_layer_dir: Optional[Path]
+) -> Optional[Path]:
+    """If `relative_path` is a dir symlink in `base_layer_dir, return its 'target'.
+
+    This function checks if `relative_path` exists in the base `base_layer_dir` as
+    a symbolic link to another directory; if it does, the function will return the
+    symlink target. In all other cases, the function returns None.
+
+    :param relative_path: The subpath to check.
+    :param base_layer_dir: The directory with the contents of the base layer.
+    """
+    if base_layer_dir is None:
+        return None
+
+    lower_path = base_layer_dir / relative_path
+
+    if lower_path.is_symlink():
+        return Path(os.readlink(lower_path))
+
+    return None
 
 
 def _inject_architecture_variant(image_path: Path, variant: str) -> None:
@@ -377,11 +465,11 @@ def _inject_architecture_variant(image_path: Path, variant: str) -> None:
     tl_index_path.write_bytes(json.dumps(tl_index).encode("utf-8"))
 
 
-def _process_run(command: List[str], **kwargs) -> None:
+def _process_run(command: List[str], **kwargs: Any) -> subprocess.CompletedProcess:
     """Run a command and handle its output."""
     emit.trace(f"Execute process: {command!r}, kwargs={kwargs!r}")
     try:
-        subprocess.run(
+        return subprocess.run(
             command,
             **kwargs,
             capture_output=True,

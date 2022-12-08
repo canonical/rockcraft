@@ -30,23 +30,23 @@ logger = logging.getLogger(__name__)
 OSPlatform = namedtuple("OSPlatform", "system release machine")
 
 
-def is_managed_mode():
+def is_managed_mode() -> bool:
     """Check if rockcraft is running in a managed environment."""
     managed_flag = os.getenv("ROCKCRAFT_MANAGED_MODE", "n")
     return strtobool(managed_flag) == 1
 
 
-def get_managed_environment_home_path():
+def get_managed_environment_home_path() -> pathlib.Path:
     """Path for home when running in managed environment."""
     return pathlib.Path("/root")
 
 
-def get_managed_environment_project_path():
+def get_managed_environment_project_path() -> pathlib.Path:
     """Path for project when running in managed environment."""
     return get_managed_environment_home_path() / "project"
 
 
-def get_managed_environment_log_path():
+def get_managed_environment_log_path() -> pathlib.Path:
     """Path for log when running in managed environment."""
     return pathlib.Path("/tmp/rockcraft.log")
 
@@ -59,7 +59,7 @@ def get_managed_environment_snap_channel() -> Optional[str]:
     return os.getenv("ROCKCRAFT_INSTALL_SNAP_CHANNEL")
 
 
-def confirm_with_user(prompt, default=False) -> bool:
+def confirm_with_user(prompt: str, default: bool = False) -> bool:
     """Query user for yes/no answer.
 
     If stdin is not a tty, the default value is returned.
