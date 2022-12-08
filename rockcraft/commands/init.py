@@ -15,14 +15,17 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 """Creation of minimalist rockcraft projects."""
-
 import textwrap
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from craft_cli import BaseCommand, emit
 from overrides import overrides
 
 from rockcraft import errors
+
+if TYPE_CHECKING:
+    import argparse
 
 
 def init(rockcraft_yaml_content: str) -> None:
@@ -79,6 +82,6 @@ class InitCommand(BaseCommand):
     )
 
     @overrides
-    def run(self, parsed_args):
+    def run(self, parsed_args: "argparse.Namespace") -> None:
         """Run the command."""
         init(self._INIT_TEMPLATE_YAML)

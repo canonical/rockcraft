@@ -56,7 +56,7 @@ GLOBAL_ARGS = [
 ]
 
 
-def run():
+def run() -> None:
     """Run the CLI."""
     # set lib loggers to debug level so that all messages are sent to Emitter
     for lib_name in ("craft_providers", "craft_parts"):
@@ -67,14 +67,12 @@ def run():
     # executing with a lower log level
     log_filepath = get_managed_environment_log_path() if is_managed_mode() else None
 
-    emit_args = {
-        "mode": EmitterMode.BRIEF,
-        "appname": "rockcraft",
-        "greeting": f"Starting Rockcraft {__version__}",
-        "log_filepath": log_filepath,
-    }
-
-    emit.init(**emit_args)
+    emit.init(
+        mode=EmitterMode.BRIEF,
+        appname="rockcraft",
+        greeting=f"Starting Rockcraft {__version__}",
+        log_filepath=log_filepath,
+    )
 
     dispatcher = craft_cli.Dispatcher(
         "rockcraft",
