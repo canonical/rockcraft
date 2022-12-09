@@ -6,7 +6,7 @@ charset-normalizer==2.1.1
 colorama==0.4.6
 craft-cli==1.2.0
 craft-parts==1.17.1
-craft-providers==1.6.1
+craft-providers==1.6.2
 Deprecated==1.2.13
 docutils==0.17.1
 furo==2022.9.29
