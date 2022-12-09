@@ -166,3 +166,42 @@ def test_parts_lifecycle_error(new_dir):
             base_layer_dir=new_dir,
             base_layer_hash=b"digest",
         )
+
+
+def test_parts_lifecycle_clean(new_dir, emitter):
+    parts_data = {
+        "foo": {
+            "plugin": "nil",
+        }
+    }
+
+    lifecycle = parts.PartsLifecycle(
+        parts_data,
+        work_dir=new_dir,
+        part_names=None,
+        base_layer_dir=new_dir,
+        base_layer_hash=b"digest",
+    )
+    lifecycle.clean()
+    emitter.assert_progress("Cleaning all parts")
+
+
+def test_parts_lifecycle_clean_parts(new_dir, emitter):
+    parts_data = {
+        "foo": {
+            "plugin": "nil",
+        },
+        "bar": {
+            "plugin": "nil",
+        },
+    }
+
+    lifecycle = parts.PartsLifecycle(
+        parts_data,
+        work_dir=new_dir,
+        part_names=["foo"],
+        base_layer_dir=new_dir,
+        base_layer_hash=b"digest",
+    )
+    lifecycle.clean()
+    emitter.assert_progress("Cleaning parts: foo")
