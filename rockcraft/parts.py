@@ -77,11 +77,7 @@ class PartsLifecycle:
             raise PartsLifecycleError(str(err)) from err
 
     def clean(self) -> None:
-        """Remove lifecycle artifacts.
-
-        :param part_names: The names of the parts to clean. If not
-            specified, all parts will be cleaned.
-        """
+        """Remove lifecycle artifacts."""
         if self._part_names:
             message = "Cleaning parts: " + ", ".join(self._part_names)
         else:
