@@ -22,6 +22,7 @@ import pytest
 from craft_cli import EmitterMode, emit
 from craft_providers.bases.buildd import BuilddBaseAlias
 
+import tests
 from rockcraft import lifecycle
 
 
@@ -86,6 +87,7 @@ def test_run_clean_provider(mocker, mock_project):
     )
 
 
+@tests.linux_only
 def test_run_clean_part(mocker, mock_project, new_dir):
     """Verify cleaning a specific part."""
     mocker.patch("rockcraft.lifecycle.load_project", return_value=mock_project)
@@ -111,6 +113,7 @@ def test_run_clean_part(mocker, mock_project, new_dir):
     assert clean_mock.mock_calls == [call()]
 
 
+@tests.linux_only
 def test_run_clean_destructive_mode(mocker, mock_project, new_dir):
     """Verify cleaning in destructive mode raises an error."""
     mocker.patch("rockcraft.lifecycle.load_project", return_value=mock_project)

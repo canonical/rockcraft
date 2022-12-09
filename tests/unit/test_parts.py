@@ -168,6 +168,7 @@ def test_parts_lifecycle_error(new_dir):
         )
 
 
+@tests.linux_only
 def test_parts_lifecycle_clean(new_dir, emitter):
     parts_data = {
         "foo": {
@@ -186,6 +187,7 @@ def test_parts_lifecycle_clean(new_dir, emitter):
     emitter.assert_progress("Cleaning all parts")
 
 
+@tests.linux_only
 def test_parts_lifecycle_clean_parts(new_dir, emitter):
     parts_data = {
         "foo": {
