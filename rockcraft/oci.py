@@ -26,7 +26,7 @@ import tarfile
 import tempfile
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple, cast
 
 import yaml
 from craft_cli import CraftError, emit
@@ -375,16 +375,17 @@ def _archive_layer(
             # - The directory's exists on ``base_layer_dir`` as a symlink to another
             #   directory (like in usrmerge).
             if upper_subpath != new_layer_dir:
-                is_not_opaque_dir = not overlays.is_oci_opaque_dir(upper_subpath)
+                upper_is_not_opaque_dir = not overlays.is_oci_opaque_dir(upper_subpath)
                 lower_symlink_target = _symlink_target_in_base_layer(
                     relative_path, base_layer_dir
                 )
+                lower_is_symlink = lower_symlink_target is not None
 
-                if is_not_opaque_dir and lower_symlink_target is not None:
+                if upper_is_not_opaque_dir and lower_is_symlink:
                     emit.debug(
                         f"Skipping {upper_subpath} because it exists as a symlink on the lower layer"
                     )
-                    archive_subdir = lower_symlink_target
+                    archive_subdir = cast(Path, lower_symlink_target)
                 else:
                     emit.debug(f"Adding to layer: {upper_subpath}")
                     tar_file.add(

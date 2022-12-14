@@ -47,3 +47,19 @@ parts:
       rm lib32
       mkdir lib32
       touch lib32/new_lib32_file
+
+  overlay-remove-dir-part:
+    plugin: nil
+    overlay-script: |
+      # this part REMOVES the /libx32 symlink
+      cd ${CRAFT_OVERLAY}
+      rm libx32
+
+  overlay-recreate-dir-part:
+    after: [overlay-remove-dir-part]
+    plugin: nil
+    overlay-script: |
+      # this part CREATES /libx32 as a regular dir
+      cd ${CRAFT_OVERLAY}
+      mkdir libx32
+      touch libx32/new_libx32_file

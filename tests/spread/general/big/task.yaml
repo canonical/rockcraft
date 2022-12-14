@@ -62,3 +62,10 @@ execute: |
   ############################################################################################
   docker run --rm big readlink /lib32 | NOMATCH usr/lib32
   docker run --rm big ls /lib32/new_lib32_file
+
+  ############################################################################################
+  # check that the /libx32 symlink to /usr/libx32 *was* broken by the overlay-script
+  # (done in two steps, by two separate parts)
+  ############################################################################################
+  docker run --rm big readlink /libx32 | NOMATCH usr/libx32
+  docker run --rm big ls /libx32/new_libx32_file
