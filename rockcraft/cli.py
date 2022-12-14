@@ -21,6 +21,7 @@ import sys
 
 import craft_cli
 from craft_cli import ArgumentParsingError, EmitterMode, ProvideHelpException, emit
+from craft_parts import PartsError
 from craft_providers import ProviderError
 
 from rockcraft import __version__
@@ -99,6 +100,13 @@ def run() -> None:
         sys.exit(1)
     except craft_cli.CraftError as err:  # TODO: define RockcraftError
         emit.error(err)
+        sys.exit(1)
+    except PartsError as err:
+        emit.error(
+            craft_cli.CraftError(
+                err.brief, details=err.details, resolution=err.resolution
+            )
+        )
         sys.exit(1)
     except ProviderError as err:
         emit.error(craft_cli.CraftError(f"craft-providers error: {err}"))

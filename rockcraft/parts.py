@@ -76,6 +76,16 @@ class PartsLifecycle:
         except craft_parts.PartsError as err:
             raise PartsLifecycleError(str(err)) from err
 
+    def clean(self) -> None:
+        """Remove lifecycle artifacts."""
+        if self._part_names:
+            message = "Cleaning parts: " + ", ".join(self._part_names)
+        else:
+            message = "Cleaning all parts"
+
+        emit.progress(message)
+        self._lcm.clean(part_names=self._part_names)
+
     @property
     def prime_dir(self) -> pathlib.Path:
         """Return the parts prime directory path."""
