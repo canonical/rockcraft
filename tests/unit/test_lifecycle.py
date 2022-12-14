@@ -19,9 +19,10 @@ from pathlib import Path
 from unittest.mock import Mock, call
 
 import pytest
-from craft_cli import CraftError, EmitterMode, emit
+from craft_cli import EmitterMode, emit
 from craft_providers.bases.buildd import BuilddBaseAlias
 
+import tests
 from rockcraft import lifecycle
 
 
@@ -86,36 +87,56 @@ def test_run_clean_provider(mocker, mock_project):
     )
 
 
-def test_run_clean_part_error(mocker, mock_project):
-    """Verify cleaning a part raises an error."""
+@tests.linux_only
+def test_run_clean_part(mocker, mock_project, new_dir):
+    """Verify cleaning a specific part."""
     mocker.patch("rockcraft.lifecycle.load_project", return_value=mock_project)
     mocker.patch("rockcraft.lifecycle.utils.is_managed_mode", return_value=True)
+    mocker.patch(
+        "rockcraft.lifecycle.utils.get_managed_environment_home_path",
+        return_value=new_dir,
+    )
     mocker.patch(
         "rockcraft.lifecycle.oci.Image.from_docker_registry",
         return_value=(Mock(), Mock()),
     )
+    clean_mock = mocker.patch("rockcraft.parts.PartsLifecycle.clean")
 
-    with pytest.raises(CraftError) as error:
-        lifecycle.run(
-            command_name="clean", parsed_args=argparse.Namespace(parts="test-part")
-        )
+    mock_project.parts = {
+        "foo": {
+            "plugin": "nil",
+        }
+    }
 
-    assert str(error.value) == "`rockcraft clean <part-name>` is not supported"
+    lifecycle.run(command_name="clean", parsed_args=argparse.Namespace(parts=["foo"]))
+
+    assert clean_mock.mock_calls == [call()]
 
 
-def test_run_clean_destructive_mode_error(mocker, mock_project):
+@tests.linux_only
+def test_run_clean_destructive_mode(mocker, mock_project, new_dir):
     """Verify cleaning in destructive mode raises an error."""
     mocker.patch("rockcraft.lifecycle.load_project", return_value=mock_project)
     mocker.patch("rockcraft.lifecycle.utils.is_managed_mode", return_value=True)
     mocker.patch(
+        "rockcraft.lifecycle.utils.get_managed_environment_home_path",
+        return_value=new_dir,
+    )
+    mocker.patch(
         "rockcraft.lifecycle.oci.Image.from_docker_registry",
         return_value=(Mock(), Mock()),
     )
+    clean_mock = mocker.patch("rockcraft.parts.PartsLifecycle.clean")
 
-    with pytest.raises(CraftError) as error:
-        lifecycle.run(command_name="clean", parsed_args=argparse.Namespace())
+    mock_project.parts = {
+        "foo": {
+            "plugin": "nil",
+        }
+    }
 
-    assert str(error.value) == "`rockcraft clean` in destructive mode is not supported"
+    lifecycle.run(command_name="clean", parsed_args=argparse.Namespace(parts=["foo"]))
+
+    assert clean_mock.mock_calls == [call()]
 
 
 @pytest.mark.parametrize(

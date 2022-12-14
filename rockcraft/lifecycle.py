@@ -22,7 +22,7 @@ import subprocess
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from craft_cli import CraftError, emit
+from craft_cli import emit
 from craft_providers import ProviderError
 
 from . import oci, providers, utils
@@ -44,7 +44,7 @@ def run(command_name: str, parsed_args: "argparse.Namespace") -> None:
     managed_mode = utils.is_managed_mode()
 
     if not managed_mode and not destructive_mode:
-        if command_name == "clean":
+        if command_name == "clean" and not part_names:
             clean_provider(project_name=project.name, project_path=Path().absolute())
         else:
             run_in_provider(project, command_name, parsed_args)
@@ -96,13 +96,6 @@ def run(command_name: str, parsed_args: "argparse.Namespace") -> None:
         base_digest = project_base_image.digest(source_image)
         step_name = "prime" if command_name == "pack" else command_name
 
-        if command_name == "clean":
-            if part_names:
-                # TODO: support `rockcraft clean <part-name>`
-                raise CraftError("`rockcraft clean <part-name>` is not supported")
-            # TODO: support `rockcraft clean` when destructive_mode = True
-            raise CraftError("`rockcraft clean` in destructive mode is not supported")
-
         lifecycle = PartsLifecycle(
             project.parts,
             work_dir=work_dir,
@@ -110,6 +103,11 @@ def run(command_name: str, parsed_args: "argparse.Namespace") -> None:
             base_layer_dir=rootfs,
             base_layer_hash=base_digest,
         )
+
+        if command_name == "clean":
+            lifecycle.clean()
+            return
+
         lifecycle.run(
             step_name,
             shell=getattr(parsed_args, "shell", False),
