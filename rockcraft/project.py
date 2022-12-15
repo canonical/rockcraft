@@ -34,7 +34,7 @@ from typing import (
 )
 
 import pydantic
-import spdx_license_list  # type: ignore
+import spdx_lookup  # type: ignore
 import yaml
 
 from rockcraft.errors import ProjectLoadError, ProjectValidationError
@@ -176,17 +176,12 @@ class Project(pydantic.BaseModel):
     @classmethod
     def _validate_license(cls, rock_license: str) -> str:
         """Make sure the provided license is valid and in SPDX format."""
-        if rock_license.lower() not in [
-            lic.lower() for lic in spdx_license_list.LICENSES
-        ]:
+        lic: Optional[spdx_lookup.License] = spdx_lookup.by_id(rock_license)
+        if lic is None:
             raise ProjectValidationError(
                 f"License {rock_license} not valid. It must be valid and in SPDX format."
             )
-        return next(
-            lic
-            for lic in spdx_license_list.LICENSES
-            if rock_license.lower() == lic.lower()
-        )
+        return lic.id
 
     @pydantic.validator("title", always=True)
     @classmethod
