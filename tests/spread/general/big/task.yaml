@@ -64,8 +64,7 @@ execute: |
   docker run --rm big ls /lib32/new_lib32_file
 
   ############################################################################################
-  # check that the /libx32 symlink to /usr/libx32 *was* broken by the overlay-script
-  # (done in two steps, by two separate parts)
+  # check that the /.rock symlink to /fake_rock_dir is preserved
   ############################################################################################
-  docker run --rm big readlink /libx32 | NOMATCH usr/libx32
-  docker run --rm big ls /libx32/new_libx32_file
+  docker run --rm big readlink /.rock | MATCH fake_rock_dir
+  docker run --rm big ls /.rock/fake_rock_file /.rock/metadata.yaml
