@@ -38,5 +38,22 @@ parts:
   usrmerge-part:
     plugin: nil
     override-build: |
+      # This build script adds a file in bin/ - the symlink in the base should be preserved.
       mkdir ${CRAFT_PART_INSTALL}/bin
       touch ${CRAFT_PART_INSTALL}/bin/new_bin_file
+    overlay-script: |
+      # explicitly remove a base layer symlink and create a dir instead
+      cd ${CRAFT_OVERLAY}
+      rm lib32
+      mkdir lib32
+      touch lib32/new_lib32_file
+
+  rock-symlink-part:
+    plugin: nil
+    override-build: |
+      # Add a .rock symlink, to see if the metadata layer preserves it.
+      cd ${CRAFT_PART_INSTALL}
+      mkdir fake_rock_dir
+      touch fake_rock_dir/fake_rock_file
+      ln -s fake_rock_dir .rock
+

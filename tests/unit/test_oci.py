@@ -24,6 +24,7 @@ from typing import List
 from unittest.mock import ANY, call, mock_open, patch
 
 import pytest
+from craft_parts.overlays import overlays
 
 import tests
 from rockcraft import oci
@@ -310,6 +311,50 @@ class TestImage:
             "first/second.txt",
         ]
         assert temp_tar_contents == expected_tar_contents
+
+    def test_add_layer_with_base_layer_dir_opaque(self, tmp_path, temp_tar_contents):
+        """
+        Test creating a layer with a base layer dir for reference, but the new
+        layer hides one of the dirs in the base layer via an opaque whiteout file.
+        """
+        dest_dir = tmp_path / "dest"
+        dest_dir.mkdir()
+
+        layer_dir = tmp_path / "layer_dir"
+        layer_dir.mkdir()
+
+        (layer_dir / "first").mkdir()
+        (layer_dir / "first/first.txt").touch()
+
+        (layer_dir / "second").mkdir()
+        (layer_dir / "second/second.txt").touch()
+        # Add an opaque marker to signify that "second/" should hide the
+        # base layer's "second" symlink.
+        overlays.oci_opaque_dir(layer_dir / "second").touch()
+
+        image = oci.Image("a:b", dest_dir)
+
+        # Create a dir tree to act as extracted "base"
+        # It contains a "first" dir and a "second" symlink pointing to "first"
+        rootfs_dir = tmp_path / "rootfs"
+        rootfs_dir.mkdir()
+
+        (rootfs_dir / "first").mkdir()
+        os.symlink("first", rootfs_dir / "second")
+
+        assert len(temp_tar_contents) == 0
+        image.add_layer("tag", layer_dir, base_layer_dir=rootfs_dir)
+
+        # The tarfile *must* contain the "second" dir entry, because of the
+        # opaque whiteout file.
+        expected_tar_contents = [
+            "first",
+            "first/first.txt",
+            "second",
+            "second/.wh..wh..opq",
+            "second/second.txt",
+        ]
+        assert sorted(temp_tar_contents) == expected_tar_contents
 
     def test_to_docker_daemon(self, mock_run):
         image = oci.Image("a:b", Path("/c"))
