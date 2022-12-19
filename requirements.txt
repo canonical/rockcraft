@@ -1,7 +1,7 @@
 alabaster==0.7.12
 Babel==2.11.0
 beautifulsoup4==4.11.1
-certifi==2022.9.24
+certifi==2022.12.7
 charset-normalizer==2.1.1
 colorama==0.4.6
 craft-cli==1.2.0
@@ -9,7 +9,7 @@ craft-parts==1.17.1
 craft-providers==1.6.2
 Deprecated==1.2.13
 docutils==0.17.1
-furo==2022.9.29
+furo==2022.12.7
 idna==3.4
 imagesize==1.4.1
 Jinja2==3.1.2
@@ -17,13 +17,12 @@ jsonpointer==2.3
 livereload==2.6.3
 MarkupSafe==2.1.1
 overrides==7.3.1
-packaging==21.3
-platformdirs==2.5.4
+packaging==22.0
+platformdirs==2.6.0
 polib==1.1.1
 pydantic==1.9.0
 pydantic-yaml==0.8.1
 Pygments==2.13.0
-pyparsing==3.0.9
 pytz==2022.6
 pyxdg==0.28
 PyYAML==6.0
@@ -34,7 +33,8 @@ semver==2.13.0
 six==1.16.0
 snowballstemmer==2.2.0
 soupsieve==2.3.2.post1
-spdx-license-list==0.5.2
+spdx==2.5.1
+spdx-lookup==0.3.3
 Sphinx==5.3.0
 sphinx-autobuild==2021.3.14
 sphinx-basic-ng==1.0.0b1
