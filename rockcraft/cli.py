@@ -25,7 +25,7 @@ from craft_cli import ArgumentParsingError, EmitterMode, ProvideHelpException, e
 from craft_parts import PartsError
 from craft_providers import ProviderError
 
-from rockcraft import __version__
+from rockcraft import __version__, errors
 
 from . import commands
 from .utils import get_managed_environment_log_path, is_managed_mode
@@ -113,7 +113,7 @@ def run() -> None:
         print(err, file=sys.stderr)  # to stderr, as argparse normally does
         emit.ended_ok()
         sys.exit(1)
-    except craft_cli.CraftError as err:  # TODO: define RockcraftError
+    except errors.RockcraftError as err:
         _emit_error(err)
         sys.exit(1)
     except PartsError as err:

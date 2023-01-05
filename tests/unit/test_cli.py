@@ -24,6 +24,7 @@ from craft_cli import CraftError, ProvideHelpException, emit
 from craft_providers import ProviderError
 
 from rockcraft import cli, project
+from rockcraft.errors import RockcraftError
 
 
 @pytest.fixture
@@ -161,7 +162,7 @@ def test_run_arg_provider_help_exception(capsys, mocker):
 @pytest.mark.parametrize(
     "input_error, output_error",
     [
-        (CraftError("test error"), CraftError("test error")),
+        (RockcraftError("test error"), CraftError("test error")),
         (ProviderError("test error"), CraftError("craft-providers error: test error")),
         (
             Exception("test error"),
