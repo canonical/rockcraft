@@ -80,8 +80,11 @@ prepare: |
 restore-each: |
   # Cleanup after each task.
   docker system prune -a -f
-  lxc --project=rockcraft stop --all
-  lxc --project=rockcraft delete $(lxc --project=rockcraft list -c n --format csv)
+  if lxc project info rockcraft > /dev/null 2>&1 ; then
+    # only stop/cleanup instances if the test actually created them 
+    lxc --project=rockcraft stop --all
+    lxc --project=rockcraft delete $(lxc --project=rockcraft list -c n --format csv)
+  fi  
 
 debug-each: |
   # output latest rockcraft log file on test failure
