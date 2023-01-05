@@ -19,17 +19,21 @@
 from craft_cli import CraftError
 
 
-class RockcraftInitError(CraftError):
+class RockcraftError(CraftError):
+    """Failire in a Rockcraft operation."""
+
+
+class RockcraftInitError(RockcraftError):
     """Error while initializing rockcraft project."""
 
 
-class PartsLifecycleError(CraftError):
+class PartsLifecycleError(RockcraftError):
     """Error during parts processing."""
 
 
-class ProjectLoadError(CraftError):
+class ProjectLoadError(RockcraftError):
     """Error loading rockcraft.yaml."""
 
 
-class ProjectValidationError(CraftError):
+class ProjectValidationError(RockcraftError):
     """Error validating rockcraft.yaml."""

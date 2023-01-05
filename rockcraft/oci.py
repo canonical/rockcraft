@@ -29,8 +29,10 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, cast
 
 import yaml
-from craft_cli import CraftError, emit
+from craft_cli import emit
 from craft_parts.overlays import overlays
+
+from rockcraft import errors
 
 logger = logging.getLogger(__name__)
 
@@ -484,4 +486,4 @@ def _process_run(command: List[str], **kwargs: Any) -> subprocess.CompletedProce
         msg = f"Failed to copy image: {err!s}"
         if err.stderr:
             msg += f" ({err.stderr.strip()!s})"
-        raise CraftError(msg) from err
+        raise errors.RockcraftError(msg) from err
