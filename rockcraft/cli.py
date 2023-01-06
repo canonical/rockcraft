@@ -18,6 +18,7 @@
 
 import logging
 import sys
+from typing import Optional
 
 import craft_cli
 from craft_cli import ArgumentParsingError, EmitterMode, ProvideHelpException, emit
@@ -55,6 +56,20 @@ GLOBAL_ARGS = [
         "version", "flag", "-V", "--version", "Show the application version and exit"
     )
 ]
+
+
+def _emit_error(error: craft_cli.CraftError, cause: Optional[Exception] = None) -> None:
+    """Emit the error in a centralized way so we can alter it consistently."""
+    # set the cause, if any
+    if cause is not None:
+        error.__cause__ = cause
+
+    # if running inside a managed instance, do not report the internal logpath
+    if is_managed_mode():
+        error.logpath_report = False
+
+    # finally, emit
+    emit.error(error)
 
 
 def run() -> None:
@@ -99,18 +114,18 @@ def run() -> None:
         emit.ended_ok()
         sys.exit(1)
     except errors.RockcraftError as err:
-        emit.error(err)
+        _emit_error(err)
         sys.exit(1)
     except PartsError as err:
-        emit.error(
+        _emit_error(
             craft_cli.CraftError(
                 err.brief, details=err.details, resolution=err.resolution
             )
         )
         sys.exit(1)
     except ProviderError as err:
-        emit.error(craft_cli.CraftError(f"craft-providers error: {err}"))
+        _emit_error(craft_cli.CraftError(f"craft-providers error: {err}"))
         sys.exit(1)
     except Exception as err:  # pylint: disable=broad-except
-        emit.error(craft_cli.CraftError(f"rockcraft internal error: {err!r}"))
+        _emit_error(craft_cli.CraftError(f"rockcraft internal error: {err!r}"))
         sys.exit(1)
