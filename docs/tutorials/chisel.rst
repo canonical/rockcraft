@@ -1,8 +1,10 @@
 Install packages slices into a ROCK
 ===================================
 
-In this tutorial, you will create a lean ROCK that contains a fully functional OpenSSL installation, and you will verify
-that it is functional by loading the ROCK into Docker and using it to validate the certificates of the Ubuntu website.
+In this tutorial, you will create a lean ROCK that contains a fully functional
+OpenSSL installation, and you will verify that it is functional by loading the
+ROCK into Docker and using it to validate the certificates of the Ubuntu
+website.
 
 Prerequisites
 -------------
@@ -29,14 +31,16 @@ Install Rockcraft on your host:
 Project Setup
 -------------
 
-Create a new directory, write the following into a text editor and save it as ``rockcraft.yaml``:
+Create a new directory, write the following into a text editor and save it as
+``rockcraft.yaml``:
 
 .. literalinclude:: code/chisel/rockcraft.yaml
     :language: yaml
 
-Note that this Rockcraft file uses the ``openssl_bins`` and ``ca-certificates_data`` Chisel slices to generate an image
-containing only files that are strictly necessary for a functional OpenSSL installation. See :ref:`what-is-chisel` for
-details on the Chisel tool.
+Note that this Rockcraft file uses the ``openssl_bins`` and
+``ca-certificates_data`` Chisel slices to generate an image containing only
+files that are strictly necessary for a functional OpenSSL installation. See
+:ref:`what-is-chisel` for details on the Chisel tool.
 
 
 Pack the ROCK with Rockcraft
@@ -72,8 +76,9 @@ The output will look similar to:
     Labels and annotations set to ['org.opencontainers.image.version=0.0.1', 'org.opencontainers.image.title=chisel-openssl', 'org.opencontainers.image.ref.name=chisel-openssl', 'org.opencontainers.image.licenses=Apache-2.0', 'org.opencontainers.image.created=2022-09-30T17:57:57.070040+00:00', 'org.opencontainers.image.base.digest=719e29cbdf81d2c046598c274ae82bdcdfe7bf819058a0f304c57858b633d801']
     Exported to OCI archive 'chisel-openssl_0.0.1_amd64.rock'
 
-The process might take a little while, but at the end, a new file named ``chisel-openssl_0.0.1_amd64.rock`` will be
-present in the current directory. That's your OpenSSL ROCK, in oci-archive format.
+The process might take a little while, but at the end, a new file named
+``chisel-openssl_0.0.1_amd64.rock`` will be present in the current directory.
+That's your OpenSSL ROCK, in oci-archive format.
 
 Run the ROCK in Docker
 ----------------------
@@ -115,7 +120,8 @@ The output will be OpenSSL's default help message, which starts like this:
     s_client          s_server          s_time            sess_id
     <... many more lines of output>
 
-As you can see, OpenSSL has many features. Use one of them to check that Ubuntu's website has valid SSL certificates:
+As you can see, OpenSSL has many features. Use one of them to check that
+Ubuntu's website has valid SSL certificates:
 
 .. literalinclude:: code/chisel/task.yaml
     :language: bash
@@ -137,5 +143,5 @@ The output will look similar to the following:
     Verification: OK
     Server Temp Key: X25519, 253 bits
 
-The ``Verification: OK`` line indicates that the OpenSSL installation inside your ROCK was able to validate Ubuntu
-Website's certificates successfully.
+The ``Verification: OK`` line indicates that the OpenSSL installation inside
+your ROCK was able to validate Ubuntu Website's certificates successfully.

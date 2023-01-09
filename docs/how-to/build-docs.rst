@@ -17,7 +17,8 @@ Install the documentation requirements:
     :end-before: [docs:install-deps-end]
     :dedent: 2
 
-Once the requirements are installed, you can use the provided ``Makefile`` to build the documentation:
+Once the requirements are installed, you can use the provided ``Makefile`` to
+build the documentation:
 
 .. literalinclude:: code/build-docs/task.yaml
     :language: bash
@@ -25,7 +26,8 @@ Once the requirements are installed, you can use the provided ``Makefile`` to bu
     :end-before: [docs:make-docs-end]
     :dedent: 2
 
-Even better, serve it locally on port 8080. The documentation will be rebuilt on each file change, and will reload the browser view.
+Even better, serve it locally on port 8080. The documentation will be rebuilt
+on each file change, and will reload the browser view.
 
 .. literalinclude:: code/build-docs/task.yaml
     :language: bash
@@ -33,4 +35,5 @@ Even better, serve it locally on port 8080. The documentation will be rebuilt on
     :end-before: [docs:make-rundocs-end]
     :dedent: 2
 
-Note that ``make rundocs`` automatically activates the virtual environment, as long as it already exists.
+Note that ``make rundocs`` automatically activates the virtual environment,
+as long as it already exists.

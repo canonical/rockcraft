@@ -6,18 +6,21 @@ See the :ref:`tutorial` for a full getting started guide.
 Getting started
 ---------------
 
-Rockcraft is **the tool** for building Ubuntu-based and production-grade OCI images, aka ROCKs!
+Rockcraft is **the tool** for building Ubuntu-based and production-grade OCI
+images, aka ROCKs!
 
-Rockcraft is distributed as a snap. For packing new ROCKs, it makes use of "providers" to execute
-all the steps involved in the ROCK's build process. At the moment, the supported providers are LXD and Multipass.
+Rockcraft is distributed as a snap. For packing new ROCKs, it makes use of
+"providers" to execute all the steps involved in the ROCK's build process. At
+the moment, the supported providers are LXD and Multipass.
 
 Requirements
 ............
 
-Before installing the Rockcraft snap, make sure you have the necessary tools and environment to
-install and run Rockcraft.
+Before installing the Rockcraft snap, make sure you have the necessary tools and
+environment to install and run Rockcraft.
 
-First things first, if you are running Ubuntu, Snap is already installed and ready to go:
+First things first, if you are running Ubuntu, Snap is already installed and
+ready to go:
 
 .. literalinclude:: code/get-started/task.yaml
     :language: bash
@@ -37,9 +40,11 @@ You'll get something like:
     ubuntu  22.04
     kernel  5.17.0-1016-oem
 
-If this is not the case, then please check https://snapcraft.io/docs/installing-snap-on-ubuntu.
+If this is not the case, then please check
+https://snapcraft.io/docs/installing-snap-on-ubuntu.
 
-For what concerns providers, LXD is the default one for Rockcraft, so start by checking if it is available:
+For what concerns providers, LXD is the default one for Rockcraft, so start by
+checking if it is available:
 
 .. literalinclude:: code/get-started/task.yaml
     :language: bash
@@ -97,18 +102,21 @@ May you find any problems with LXD, please check https://ubuntu.com/lxd.
 Choose a Rockcraft release
 ..........................
 
-Pick a Rockcraft release, either from the `snap store <https://snapcraft.io/rockcraft>`_ or via
+Pick a Rockcraft release, either from the `snap store`_ or via
 ``snap search rockcraft``.
 
-Keep in mind the chosen channel, as riskier releases are more prone to breaking changes.
+Keep in mind the chosen channel, as riskier releases are more prone to breaking
+changes.
 
-Also, note that the Rockcraft's snap confinement is set to "classic" (this is important for the installation step).
+Also, note that the Rockcraft's snap confinement is set to "classic" (this is
+important for the installation step).
 
 
 Installation steps
 ..................
 
-Having chosen a Rockcraft release, you must now install it via the snap CLI (or directly via the Ubuntu Desktop store):
+Having chosen a Rockcraft release, you must now install it via the snap CLI (or
+directly via the Ubuntu Desktop store):
 
 .. code-block:: text
 
@@ -126,7 +134,8 @@ For example:
 Testing Rockcraft
 .................
 
-Once installed, you can make sure that Rockcraft is actually present in the system and ready to be used:
+Once installed, you can make sure that Rockcraft is actually present in the
+system and ready to be used:
 
 .. literalinclude:: code/get-started/task.yaml
     :language: bash
@@ -141,3 +150,4 @@ The output will be similar to:
 
     rockcraft 0.0.1.dev1
 
+.. _snap store: https://snapcraft.io/rockcraft
