@@ -74,7 +74,7 @@ class PartsLifecycle:
                 ignore_local_sources=["*.rock"],
             )
         except craft_parts.PartsError as err:
-            raise PartsLifecycleError(str(err)) from err
+            raise PartsLifecycleError.from_parts_error(err) from err
 
     def clean(self) -> None:
         """Remove lifecycle artifacts."""
@@ -133,6 +133,8 @@ class PartsLifecycle:
                 launch_shell()
 
             emit.progress("Executed parts lifecycle", permanent=True)
+        except craft_parts.PartsError as err:
+            raise PartsLifecycleError.from_parts_error(err) from err
         except RuntimeError as err:
             raise RuntimeError(f"Parts processing internal error: {err}") from err
         except OSError as err:

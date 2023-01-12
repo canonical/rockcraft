@@ -15,13 +15,15 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from pathlib import Path
+from typing import cast
 from unittest.mock import call
 
 import pytest
-from craft_parts import Action, Step
+from craft_parts import Action, PartsError, Step
 
 import tests
 from rockcraft import parts
+from rockcraft.errors import RockcraftError
 
 
 @tests.linux_only
@@ -150,15 +152,24 @@ def test_parts_lifecycle_run_shell_after(
     assert shell_mock.mock_calls == [call(["bash"], check=False, cwd=None)]
 
 
+def assert_errors_match(
+    rockcraft_error: RockcraftError, parts_error: PartsError
+) -> None:
+    """Assert that the RockcraftError's fields match those on the PartsError."""
+    assert str(rockcraft_error) == parts_error.brief
+    assert rockcraft_error.details == parts_error.details
+    assert rockcraft_error.resolution == parts_error.resolution
+
+
 @tests.linux_only
-def test_parts_lifecycle_error(new_dir):
+def test_parts_lifecycle_init_error(new_dir):
     parts_data = {
         "foo": {
             "invalid": True,
         }
     }
 
-    with pytest.raises(parts.PartsLifecycleError):
+    with pytest.raises(parts.PartsLifecycleError) as exc:
         parts.PartsLifecycle(
             all_parts=parts_data,
             work_dir=Path("."),
@@ -166,6 +177,37 @@ def test_parts_lifecycle_error(new_dir):
             base_layer_dir=new_dir,
             base_layer_hash=b"digest",
         )
+
+    rockcraft_error = exc.value
+    parts_error = cast(PartsError, rockcraft_error.__cause__)
+
+    assert_errors_match(rockcraft_error, parts_error)
+
+
+@tests.linux_only
+def test_parts_lifecycle_run_error(new_dir, mocker):
+    parts_data = {
+        "foo": {
+            "plugin": "nil",
+        }
+    }
+
+    lifecycle = parts.PartsLifecycle(
+        all_parts=parts_data,
+        work_dir=Path("."),
+        part_names=["fake_part"],
+        base_layer_dir=new_dir,
+        base_layer_hash=b"digest",
+    )
+
+    with pytest.raises(parts.PartsLifecycleError) as exc:
+        # This fails because `part_names` references a part that doesn't exist
+        lifecycle.run(step_name="pull")
+
+    rockcraft_error = exc.value
+    parts_error = cast(PartsError, rockcraft_error.__cause__)
+
+    assert_errors_match(rockcraft_error, parts_error)
 
 
 @tests.linux_only
