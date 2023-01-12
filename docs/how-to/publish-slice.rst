@@ -3,12 +3,17 @@
 How to make custom slice definitions available for everyone
 ***********************************************************
 
-At this stage, you have created some package slice definitions and you have a custom Chisel release in your local development environment.
-You have also tested this custom Chisel release, and it works! You believe there are others who could really use it as well, so **how can you make it accessible to everyone**?
+At this stage, you have created some package slice definitions and you have a
+custom Chisel release in your local development environment. You have also
+tested this custom Chisel release, and it works! You believe there are others
+who could really use it as well, so **how can you make it accessible to
+everyone**?
 
-It is as simple as proposing your changes into the upstream `Chisel releases repository <https://github.com/canonical/chisel-releases>`_:
+It is as simple as proposing your changes into the upstream
+`Chisel releases repository <https://github.com/canonical/chisel-releases>`_:
 
-1. Fork this repository https://github.com/canonical/chisel-releases and clone your fork:
+1. Fork this repository https://github.com/canonical/chisel-releases and clone
+   your fork:
 
 .. code-block:: bash
 
@@ -34,4 +39,6 @@ It is as simple as proposing your changes into the upstream `Chisel releases rep
 
 Create a pull request and wait for it to be merged.
 
-And that's it! Your custom Chisel release and new slice definitions are now available in Chisel, and anyone can use them. **Congrats**! And thank you for your contribution.
+And that's it! Your custom Chisel release and new slice definitions are now
+available in Chisel, and anyone can use them. **Congrats**! And thank you for
+your contribution.

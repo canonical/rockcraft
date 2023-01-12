@@ -8,7 +8,8 @@ Reference
 A Rockcraft project is defined in a YAML file named ``rockcraft.yaml``
 at the root of the project tree in the filesystem.
 
-This `Reference`_ section is for when you need to know which options can be used, and how, in this ``rockcraft.yaml`` file.
+This `Reference`_ section is for when you need to know which options can be
+used, and how, in this ``rockcraft.yaml`` file.
 
 
 Format specification
@@ -113,18 +114,25 @@ Rockcraft parts
 .. rubric:: The main building blocks of a ROCK are *parts*.
 
 If this sentence sounds familiar, it's because **it is familiar**!
-Rockcraft parts are inherited from other existing Craft tools like `Snapcraft <https://github.com/snapcore/snapcraft>`_ and
+Rockcraft parts are inherited from other existing Craft tools like
+`Snapcraft <https://github.com/snapcore/snapcraft>`_ and
 `Charmcraft <https://github.com/canonical/charmcraft>`_.
 
-Rockcraft *parts* go through the same lifecycle steps as Charmcraft and `Snapcraft parts <https://snapcraft.io/docs/parts-lifecycle>`_.
+Rockcraft *parts* go through the same lifecycle steps as Charmcraft and
+`Snapcraft parts <https://snapcraft.io/docs/parts-lifecycle>`_.
 
-The way the *parts*' keys and values are used in the *rockcraft.yaml* is exactly the same
-as in `*snapcraft.yaml* <https://snapcraft.io/docs/snapcraft-parts-metadata>`_ (`here <https://snapcraft.io/docs/adding-parts>`_ is
-how you define a *part*).
+The way the *parts*' keys and values are used in the *rockcraft.yaml* is exactly
+the same as in *`snapcraft.yaml`_*
+(`here <https://snapcraft.io/docs/adding-parts>`_ is how you define a *part*).
 
-Albeit being fundamentally identical to Snapcraft parts, Rockcraft parts actually offer some extended functionality and keywords:
+Albeit being fundamentally identical to Snapcraft parts, Rockcraft parts
+actually offer some extended functionality and keywords:
 
-* **stage-packages**: apart from offering the well-known package installation behavior, in Rockcraft the `stage-packages` keyword actually supports chiseled packages as well (:ref:`learn more about Chisel <what-is-chisel>`). To install a package slice instead of the whole package, simply follow the Chisel convention *<packageName>_<sliceName>*.
+* **stage-packages**: apart from offering the well-known package installation
+  behavior, in Rockcraft the ``stage-packages`` keyword actually supports
+  chiseled packages as well (:ref:`learn more about Chisel <what-is-chisel>`).
+  To install a package slice instead of the whole package, simply follow the
+  Chisel convention *<packageName>_<sliceName>*.
 
 
 Example
@@ -147,18 +155,22 @@ Example
         - hello
 
 
-NOTE: at the moment, it is not possible to mix packages and slices in the same stage-packages field.
+NOTE: at the moment, it is not possible to mix packages and slices in the same
+stage-packages field.
 
 
 Rockcraft commands
 ------------------
 Lifecycle commands
 ..................
-Lifecycle commands can take an optional parameter ``<part-name>``. When a part name is provided, the command applies to the specific part. When no part name is provided, the command applies to all parts.
+Lifecycle commands can take an optional parameter ``<part-name>``. When a part
+name is provided, the command applies to the specific part. When no part name is
+provided, the command applies to all parts.
 
 clean
 ^^^^^
-Removes a part's assets. When no part is provided, the entire build environment (e.g. the LXD instance) is removed
+Removes a part's assets. When no part is provided, the entire build environment
+(e.g. the LXD instance) is removed.
 
 pull
 ^^^^
@@ -166,7 +178,8 @@ Downloads or retrieves artifacts defined for each part.
 
 overlay
 ^^^^^^^
-Execute operations defined for each part on a layer over the base filesystem, potentially modifying its contents.
+Execute operations defined for each part on a layer over the base filesystem,
+potentially modifying its contents.
 
 build
 ^^^^^
@@ -178,13 +191,15 @@ Stages built artifacts into a common staging area, for each part.
 
 prime
 ^^^^^
-Prepare, for each part, the final payload to be packed as a ROCK, performing additional processing and adding metadata files.
+Prepare, for each part, the final payload to be packed as a ROCK, performing
+additional processing and adding metadata files.
 
 pack
 ^^^^
 *This is the default lifecycle command for* ``rockcraft``.
 
-Process parts and create the ROCK as an OCI archive file containing the project payload with the provided metadata.
+Process parts and create the ROCK as an OCI archive file containing the project
+payload with the provided metadata.
 
 Other commands
 ..............
@@ -195,3 +210,5 @@ Initializes a rockcraft project with a boilerplate ``rockcraft.yaml`` file.
 help
 ^^^^
 Shows information about a command.
+
+.. _snapcraft.yaml: https://snapcraft.io/docs/snapcraft-parts-metadata

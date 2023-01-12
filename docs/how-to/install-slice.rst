@@ -1,11 +1,15 @@
 How to install your own package slice
 *************************************
 
-When a specific package slice is not available on the `upstream Chisel releases <https://github.com/canonical/chisel-releases>`_, you will more likely end up creating your own slice definition.
+When a specific package slice is not available on the `upstream Chisel
+releases <https://github.com/canonical/chisel-releases>`_, you will more
+likely end up creating your own slice definition.
 
-Once you have it though, the most obvious question is: **how can I install this custom slice with Chisel?**
+Once you have it though, the most obvious question is: **how can I install
+this custom slice with Chisel?**
 
-Let's assume you want to install the OpenSSL binaries slice created in :ref:`here <create-slice>`...
+Let's assume you want to install the OpenSSL binaries slice created in
+:ref:`here <create-slice>`...
 
 **First**, clone the Chisel releases repository:
 
@@ -15,11 +19,19 @@ Let's assume you want to install the OpenSSL binaries slice created in :ref:`her
     :end-before: [docs:clone-chisel-releases-end]
     :dedent: 2
 
-This repository acts as the database of slice definitions files for each Chisel release (Chisel releases are named analogously to Ubuntu releases, and mapped into Git branches within the repository).
+This repository acts as the database of slice definitions files for each
+Chisel release (Chisel releases are named analogously to Ubuntu releases, and
+mapped into Git branches within the repository).
 
-Chisel will only recognize slices belonging to a Chisel release, so you need to copy your slice definitions file - ``openssl.yaml`` in this example - into the ``chisel-releases/slices`` folder. Note that if a slice definitions file with the same name already exists, it most likely means that the package you're slicing has already been sliced before, and in this case, you only need to merge your changes into that existing file.
+Chisel will only recognize slices belonging to a Chisel release, so you need
+to copy your slice definitions file - ``openssl.yaml`` in this example - into
+the ``chisel-releases/slices`` folder. Note that if a slice definitions file
+with the same name already exists, it most likely means that the package
+you're slicing has already been sliced before, and in this case, you only
+need to merge your changes into that existing file.
 
-At this point, you should be able to find your custom OpenSSL slice ``bins`` in the local Chisel release:
+At this point, you should be able to find your custom OpenSSL slice ``bins``
+in the local Chisel release:
 
 .. literalinclude:: code/install-slice/task.yaml
     :language: bash
@@ -35,9 +47,11 @@ If you wanted to test it with Chisel alone, you could now simply run
     :end-before: [docs:cut-end]
     :dedent: 2
 
-You should end up with a folder named "my-custom-openssl-fs" containing a few folders, amongst which there would be ``./usr/bin/openssl``.
+You should end up with a folder named "my-custom-openssl-fs" containing a few
+folders, amongst which there would be ``./usr/bin/openssl``.
 
-**To install the custom package slice into a ROCK though**, you need to use Rockcraft!
+**To install the custom package slice into a ROCK though**, you need to use
+Rockcraft!
 
 Start by initializing a new Rockcraft project:
 
@@ -47,15 +61,23 @@ Start by initializing a new Rockcraft project:
     :end-before: [docs:init-end]
     :dedent: 2
 
-After this command, you should find a new ``rockcraft.yaml`` file in your current path.
+After this command, you should find a new ``rockcraft.yaml`` file in your
+current path.
 
-Adjust the ``rockcraft.yaml`` file according to the following content (feel free to adjust the metadata, but pay special attention to the ``parts`` section):
+Adjust the ``rockcraft.yaml`` file according to the following content (feel
+free to adjust the metadata, but pay special attention to the ``parts``
+section):
 
 .. literalinclude:: code/install-slice/rockcraft.yaml
     :language: yaml
 
-The "build-context" part allows you to send the local ``chisel-releases`` folder into the builder. The "override-build" enables you to install your custom slice.
-Please not that this level of customization is only needed when you want to install from a custom Chisel release. If the desired slice definitions are already upstream, then you can simply use ``stage-packages``, as demonstrated in :ref:`here <chisel-example>`.
+The "build-context" part allows you to send the local ``chisel-releases``
+folder into the builder. The "override-build" enables you to install your
+custom slice.
+Please not that this level of customization is only needed when you want to
+install from a custom Chisel release. If the desired slice definitions are
+already upstream, then you can simply use ``stage-packages``, as demonstrated
+in :ref:`here <chisel-example>`.
 
 Build your ROCK with:
 
@@ -139,4 +161,5 @@ The output of the Docker command will be OpenSSL's default help message:
     <... many more lines of output>
 
 
-And that's it! You've now built your own ROCK from a custom Chisel release. Next step: share your slice definitions file with others!
+And that's it! You've now built your own ROCK from a custom Chisel release.
+Next step: share your slice definitions file with others!

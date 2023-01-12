@@ -110,7 +110,7 @@ test-pyright:
 
 .PHONY: test-sphinx-lint
 test-sphinx-lint:
-	sphinx-lint docs/*
+	sphinx-lint --ignore docs/_build --max-line-length 80 -e all docs/*
 
 .PHONY: test-units
 test-units: ## Run unit tests.
