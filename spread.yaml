@@ -88,13 +88,13 @@ restore-each: |
 
 debug-each: |
   # output latest rockcraft log file on test failure
-  rockcraft_log_file=$(find /root/.cache/rockcraft/log/ -name 'rockcraft*.log' | sort -n | tail -n1)
+  rockcraft_log_file=$(find /root/.local/state/rockcraft/log/ -name 'rockcraft*.log' | sort -n | tail -n1)
   if [[ -f $rockcraft_log_file ]]; then
     echo -e "rockcraft log file contents:\n----------------------------"
     cat "$rockcraft_log_file"
     echo "----------------------------"
   else
-    echo "could not find rockcraft log file"
+    echo "could not find rockcraft log file (this is not necessarily an error)"
   fi
 
 suites:
