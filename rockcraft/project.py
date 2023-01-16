@@ -508,16 +508,8 @@ def _add_pebble_data(yaml_data: Dict[str, Any]) -> None:
 
     pebble_part_spec = {
         "plugin": "nil",
-        "source": "https://github.com/canonical/pebble.git",
-        "override-pull": (
-            "craftctl default\n"
-            "snap set system experimental.parallel-instances=true\n"
-            "snap install --unaliased go_pebble --channel 1.19/stable --classic\n"
-        ),
-        "override-build": (
-            "go_pebble mod download\n"
-            'CGO_ENABLED=0 go_pebble build -ldflags="-w -s" -o pebble ./cmd/pebble\n'
-            'install -D -m755 pebble "$CRAFT_PART_INSTALL"/usr/bin/pebble\n'
-        ),
+        "stage-snaps": ["pebble/latest/edge"],
+        "organize": {"bin/pebble": "usr/bin/pebble"},
+        "stage": ["usr/bin/pebble"],
     }
     parts["pebble"] = pebble_part_spec
