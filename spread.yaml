@@ -100,6 +100,9 @@ debug-each: |
 suites:
   docs/tutorials/code/:
     summary: tests basic tutorials from the docs
+    # Don't run tutorial code in Fedora because of a snapd 2.58 bug
+    # (https://bugs.launchpad.net/snapd/+bug/2002835)
+    systems: [-fedora-36-64]
 
   docs/how-to/code/:
     summary: tests how-to guides from the docs
