@@ -1,12 +1,12 @@
 summary: rockcraft clean test
 
 execute: |
-  rockcraft pull
+  run_rockcraft pull
 
   # verify instance was created
   lxc --project=rockcraft list | grep rockcraft-clean
 
-  rockcraft clean
+  run_rockcraft clean
 
   # verify instance was removed
   if lxc --project=rockcraft list | grep rockcraft-clean; then

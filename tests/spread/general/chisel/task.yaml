@@ -1,7 +1,7 @@
 summary: a test that checks ROCKs created with Chisel slices
 
 execute: |
-  rockcraft pack
+  run_rockcraft pack
 
   ROCK=`ls *.rock`
   IMG_NAME=chiselled-image

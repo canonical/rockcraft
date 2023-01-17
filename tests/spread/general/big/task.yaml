@@ -12,7 +12,7 @@ execute: |
   touch permissions-files/dir1/{1.txt,2.txt}
   touch permissions-files/dir2/3.txt
 
-  rockcraft pack
+  run_rockcraft pack
 
   ROCK=`ls big*.rock`
 

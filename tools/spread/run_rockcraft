@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# run_rockcraft: helper to run rockcraft with possible debug handling and
+# os-specific checks.
+
+if os.query is-fedora; then
+  # rockcraft commands might fail the first time due to https://bugs.launchpad.net/snapd/+bug/2002835
+  echo "Fedora detected; trying every rockcraft command twice"
+  retry -n 2 rockcraft "$@"
+else
+  rockcraft "$@"
+fi

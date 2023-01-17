@@ -3,7 +3,7 @@ project: rockcraft
 path: /rockcraft
 environment:
   PROJECT_PATH: /rockcraft
-  PATH: /snap/bin:$PATH:$PROJECT_PATH/tools/external/tools
+  PATH: /snap/bin:$PATH:$PROJECT_PATH/tools/external/tools:$PROJECT_PATH/tools/spread
 
 include:
     - tests/
