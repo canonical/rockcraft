@@ -509,7 +509,6 @@ def _add_pebble_data(yaml_data: Dict[str, Any]) -> None:
     pebble_part_spec = {
         "plugin": "nil",
         "stage-snaps": ["pebble/latest/edge"],
-        "organize": {"bin/pebble": "usr/bin/pebble"},
-        "stage": ["usr/bin/pebble"],
+        "stage": ["bin/pebble"],
     }
     parts["pebble"] = pebble_part_spec

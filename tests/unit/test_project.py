@@ -86,8 +86,7 @@ def pebble_part():
         "pebble": {
             "plugin": "nil",
             "stage-snaps": ["pebble/latest/edge"],
-            "organize": {"bin/pebble": "usr/bin/pebble"},
-            "stage": ["usr/bin/pebble"],
+            "stage": ["bin/pebble"],
         }
     }
 
