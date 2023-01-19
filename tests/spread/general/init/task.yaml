@@ -1,9 +1,9 @@
 summary: rockcraft init test
 
 execute: |
-  rockcraft init
+  run_rockcraft init
   test -f rockcraft.yaml
-  rockcraft pack
+  run_rockcraft pack
 
   test -f my-rock-name_0.1_amd64.rock
   test ! -d work

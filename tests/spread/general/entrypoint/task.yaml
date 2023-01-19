@@ -1,7 +1,7 @@
 summary: container entrypoint test
 
 execute: |
-  rockcraft pack
+  run_rockcraft pack
 
   test -f entrypoint-test_latest_amd64.rock
   test ! -d work

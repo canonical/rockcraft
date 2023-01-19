@@ -1,7 +1,7 @@
 summary: craftctl tool test
 
 execute: |
-  rockcraft pack
+  run_rockcraft pack
 
   test -f craftctl-test_latest_craftctl.rock
   test ! -d work

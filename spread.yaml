@@ -3,7 +3,7 @@ project: rockcraft
 path: /rockcraft
 environment:
   PROJECT_PATH: /rockcraft
-  PATH: /snap/bin:$PATH:$PROJECT_PATH/tools/external/tools
+  PATH: /snap/bin:$PATH:$PROJECT_PATH/tools/external/tools:$PROJECT_PATH/tools/spread
 
 include:
     - tests/
@@ -29,7 +29,7 @@ backends:
       - ubuntu-22.04-64:
           workers: 1
           storage: 40G
-      - fedora-35-64:
+      - fedora-36-64:
           workers: 1
           storage: 40G
 
@@ -100,6 +100,9 @@ debug-each: |
 suites:
   docs/tutorials/code/:
     summary: tests basic tutorials from the docs
+    # Don't run tutorial code in Fedora because of a snapd 2.58 bug
+    # (https://bugs.launchpad.net/snapd/+bug/2002835)
+    systems: [-fedora-36-64]
 
   docs/how-to/code/:
     summary: tests how-to guides from the docs

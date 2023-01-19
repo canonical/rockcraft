@@ -1,7 +1,7 @@
 summary: bare base build test
 
 execute: |
-  rockcraft pack
+  run_rockcraft pack
 
   test -f bare-base-test_latest_amd64.rock
   test ! -d work
