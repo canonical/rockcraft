@@ -56,7 +56,7 @@ prepare: |
   retry -n 10 --wait 2 sh -c 'docker run --rm hello-world'
 
   tests.pkgs remove lxd
-  snap install lxd
+  snap install lxd --channel=5.9/stable
 
   # Hold snap refreshes for 24h.
   snap set system refresh.hold="$(date --date=tomorrow +%Y-%m-%dT%H:%M:%S%:z)"
