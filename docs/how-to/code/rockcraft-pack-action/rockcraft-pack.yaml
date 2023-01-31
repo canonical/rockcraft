@@ -1,0 +1,3 @@
+steps:
+  - uses: actions/checkout@v3
+  - uses: canonical/craft-actions/rockcraft-pack@main

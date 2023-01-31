@@ -1,0 +1,14 @@
+###########################################
+# IMPORTANT
+# Comments matter!
+# The docs use the wrapping comments as 
+# markers for including said instructions 
+# as snippets in the docs.
+###########################################
+summary: test the "Use the GitHub Action" guide
+
+prepare: |
+  tests.pkgs install yamllint
+
+execute: |
+  yamllint rockcraft-pack.yaml
