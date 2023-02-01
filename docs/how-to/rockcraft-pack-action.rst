@@ -10,9 +10,9 @@ build to take place, and add the following steps:
 .. literalinclude:: code/rockcraft-pack-action/rockcraft-pack.yaml
     :language: yaml
 
-Commit the changes and push. GitHub shall then trigger a new workflow
-execution and with it, Rockcraft will be set up and used to pack your ROCK,
-based on whatever ``rockcraft.yaml`` file there is at your project's root.
+Commit and push the changes. This will trigger a new workflow run using 
+Rockcraft to pack your ROCK based on the ``rockcraft.yaml`` file at your 
+project's root.
 
 To know how to publish this ROCK outside the GitHub build environment, and how
 to pass additional inputs parameters to this action, please refer to the
