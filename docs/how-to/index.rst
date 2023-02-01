@@ -14,6 +14,7 @@ adapt the steps to fit your specific requirements.
    :maxdepth: 1
 
    Get started - quick guide <get-started>
+   Use the GitHub Action <rockcraft-pack-action>
    Build the documentation <build-docs>
    Create a package slice for Chisel <create-slice>
    Install a custom package slice <install-slice>
