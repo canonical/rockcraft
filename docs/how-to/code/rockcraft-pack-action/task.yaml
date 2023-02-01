@@ -12,3 +12,4 @@ prepare: |
 
 execute: |
   yamllint rockcraft-pack.yaml
+  
