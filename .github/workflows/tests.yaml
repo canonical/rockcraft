@@ -18,7 +18,7 @@ jobs:
       - name: Install packages
         run: |
           sudo apt update
-          sudo apt install -y libapt-pkg-dev shellcheck
+          sudo apt install -y libapt-pkg-dev
       - name: Install python packages and dependencies
         run: |
           pip install -U -r requirements-focal.txt -r requirements.txt -r requirements-dev.txt
@@ -53,6 +53,7 @@ jobs:
           make test-sphinx-lint
       - name: Run shellcheck
         run: |
+          sudo snap install shellcheck
           make test-shellcheck
 
   tests:
