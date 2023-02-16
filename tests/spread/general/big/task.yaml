@@ -14,15 +14,15 @@ execute: |
 
   run_rockcraft pack
 
-  ROCK=`ls big*.rock`
+  ROCK=$(ls big*.rock)
 
-  test -f $ROCK
+  test -f "$ROCK"
   test ! -d work
 
   # copy image to docker
   docker images
-  sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:$ROCK docker-daemon:big:latest
-  rm $ROCK
+  sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy "oci-archive:$ROCK" docker-daemon:big:latest
+  rm "$ROCK"
 
   docker images
   

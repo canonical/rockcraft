@@ -11,6 +11,8 @@ requirements_fixups() {
 venv_dir="$(mktemp -d)"
 
 python3 -m venv "$venv_dir"
+
+# shellcheck disable=SC1090,SC1091 # don't follow sources
 . "$venv_dir/bin/activate"
 
 # Pull in host python3-apt site package to avoid installation.
