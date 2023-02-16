@@ -1,0 +1,53 @@
+#! /usr/bin/env sh
+
+# Remove hook for rockcraft.
+# This shell script removes all LXD images, instances, and projects created by rockcraft.
+# Errors in the remove hook can be viewed with `snap tasks --last=remove`
+
+# separate lxc output by newlines
+# \n can not be last, or it will be stripped by $() - see shellcheck SC3003
+IFS=$(printf '\n\t')
+
+>&2 echo "removing lxd data for rockcraft"
+
+# check for lxc
+if ! command -v lxc > /dev/null 2>&1; then
+  >&2 echo "lxc not installed"
+  exit 0
+fi
+
+# check for rockcraft project
+if ! lxc project info rockcraft > /dev/null 2>&1; then
+  >&2 echo "project 'rockcraft' does not exist"
+  exit 0
+fi
+
+# get instances by name
+instances="$(lxc list --project=rockcraft --format=csv --columns="n")"
+
+# delete instances
+if [ -n "$instances" ]; then
+  for instance in $instances; do
+    >&2 echo "deleting instance $instance"
+    lxc delete --project=rockcraft --force "$instance"
+  done
+else
+  >&2 echo "no instances to remove"
+fi
+
+# get images by fingerprint
+images="$(lxc image list --project=rockcraft --format=csv --columns="f")"
+
+# delete images
+if [ -n "$images" ]; then
+  for image in $images; do
+    >&2 echo "deleting image $instance"
+    lxc image delete --project=rockcraft "$image"
+  done
+else
+  >&2 echo "no images to remove"
+fi
+
+# delete the project itself
+>&2 echo "deleting project 'rockcraft'"
+lxc project delete rockcraft
