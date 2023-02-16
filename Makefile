@@ -111,7 +111,7 @@ test-pyright:
 .PHONY: test-shellcheck
 test-shellcheck:
 	# shellcheck for shell scripts
-	git ls-files | xargs file -N | grep shell.script | cut -f1 -d: | xargs shellcheck
+	git ls-files | file --mime-type -Nnf- | grep shellscript | cut -f1 -d: | xargs shellcheck
 	# shellcheck for bash commands inside spread task.yaml files
 	tools/external/utils/spread-shellcheck tests/spread/
 
