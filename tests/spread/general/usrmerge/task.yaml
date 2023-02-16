@@ -1,0 +1,27 @@
+summary: test usrmerge handling
+
+execute: |
+  run_rockcraft pack
+
+  ROCK=$(ls usrmerge*.rock)
+
+  test -f "$ROCK"
+
+  # copy image to docker
+  docker images
+  sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:"$ROCK" docker-daemon:usrmerge:latest
+  rm "$ROCK"
+
+  docker images
+  
+  ############################################################################################
+  # check that the /bin symlink to /usr/bin *was not* broken by the /bin/new_bin_file addition
+  ############################################################################################
+  docker run --rm usrmerge readlink /bin | MATCH usr/bin
+  docker run  usrmerge:latest ls /bin/bash /bin/new_bin_file /bin/subdir1/subdir2/subdir_bin_file
+
+  ############################################################################################
+  # check that the /lib32 symlink to /usr/lib32 *was* broken by the overlay-script
+  ############################################################################################
+  docker run --rm usrmerge readlink /lib32 | NOMATCH usr/lib32
+  docker run --rm usrmerge ls /lib32/new_lib32_file

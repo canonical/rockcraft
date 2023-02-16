@@ -344,6 +344,7 @@ def _add_layer_into_image(
     _process_run(cmd + ["--history.created_by", " ".join(cmd)])
 
 
+# pylint: disable-next=too-many-locals
 def _archive_layer(
     new_layer_dir: Path, temp_tar_file: Path, base_layer_dir: Optional[Path] = None
 ) -> None:
@@ -355,7 +356,41 @@ def _archive_layer(
         base below this new layer. Used to preserve lower-level directory symlinks,
         like the ones from Debian/Ubuntu's usrmerge.
     """
+
+    class LayerLinker:
+        """Helper to keep track of paths between the upper and lower layer."""
+
+        upper_prefix: str = ""
+        lower_prefix: str = ""
+
+        def reset(self, upper_prefix: str, lower_prefix: str) -> None:
+            """Set a correspondence between a path in the upper layer and a path the lower layer.
+
+            For example, if in the lower layer `bin` is a symlink to `usr/bin`,
+            calling ``reset("bin", "usr/bin")`` will let this LayerLinker convert
+            upper layer paths in "bin" to "usr/bin" when calling ``get_target_path()``.
+            """
+            self.upper_prefix = upper_prefix
+            self.lower_prefix = lower_prefix
+
+        def get_target_path(self, path: Path) -> Path:
+            """Get the path that should be used when adding ``path`` to the archive.
+
+            :return:
+                If ``path`` starts with ``upper_prefix``, the returned Path is ``path``
+                with that prefix replaced with ``lower_prefix``. Otherwise, the return
+                is ``path`` unchanged.
+            """
+            if not self.upper_prefix:
+                return path
+
+            str_path = str(path)
+            if str_path.startswith(self.upper_prefix):
+                return Path(str_path.replace(self.upper_prefix, self.lower_prefix, 1))
+            return path
+
     with tarfile.open(temp_tar_file, mode="w") as tar_file:
+        layer_linker = LayerLinker()
         for dirpath, subdirs, filenames in os.walk(new_layer_dir):
             # Sort `subdirs` in-place, to ensure that `os.walk()` iterates on
             # them in sorted order.
@@ -388,16 +423,19 @@ def _archive_layer(
                         f"Skipping {upper_subpath} because it exists as a symlink on the lower layer"
                     )
                     archive_subdir = cast(Path, lower_symlink_target)
+                    layer_linker.reset(str(relative_path), str(archive_subdir))
+
                 else:
-                    emit.debug(f"Adding to layer: {upper_subpath}")
+                    lower_path = layer_linker.get_target_path(relative_path)
+                    emit.debug(f"Adding to layer: {upper_subpath} as '{lower_path}'")
                     tar_file.add(
-                        upper_subpath, arcname=f"{relative_path}", recursive=False
+                        upper_subpath, arcname=f"{lower_path}", recursive=False
                     )
 
             # Handle adding each file in the directory.
             for name in filenames:
                 actual_path = upper_subpath / name
-                archive_path = archive_subdir / name
+                archive_path = layer_linker.get_target_path(archive_subdir / name)
                 emit.debug(f"Adding to layer: {actual_path} as '{archive_path}'")
                 tar_file.add(actual_path, arcname=f"{archive_path}")
 
