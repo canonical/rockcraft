@@ -65,7 +65,7 @@ install: clean ## Install python package.
 	python setup.py install
 
 .PHONY: lint
-lint: test-black test-codespell test-flake8 test-isort test-mypy test-pydocstyle test-pyright test-pylint test-sphinx-lint ## Run all linting tests.
+lint: test-black test-codespell test-flake8 test-isort test-mypy test-pydocstyle test-pyright test-pylint test-sphinx-lint test-shellcheck ## Run all linting tests.
 
 .PHONY: release
 release: dist ## Release with twine.
@@ -107,6 +107,13 @@ test-pylint:
 .PHONY: test-pyright
 test-pyright:
 	pyright .
+
+.PHONY: test-shellcheck
+test-shellcheck:
+	# shellcheck for shell scripts
+	git ls-files | file --mime-type -Nnf- | grep shellscript | cut -f1 -d: | xargs shellcheck
+	# shellcheck for bash commands inside spread task.yaml files
+	tools/external/utils/spread-shellcheck tests/spread/
 
 .PHONY: test-sphinx-lint
 test-sphinx-lint:
