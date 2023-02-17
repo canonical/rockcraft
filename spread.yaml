@@ -55,7 +55,14 @@ prepare: |
   # make sure docker is working
   retry -n 10 --wait 2 sh -c 'docker run --rm hello-world'
 
-  tests.pkgs remove lxd
+  # older linux releases have separate packages for lxd and lxc (lxd-client)
+  if [ "$SPREAD_SYSTEM" = "ubuntu-18.04-64" ] || \
+     [ "$SPREAD_SYSTEM" = "ubuntu-20.04-64" ] || \
+     [ "$SPREAD_SYSTEM" = "fedora-36-64" ]; then
+    tests.pkgs remove lxd lxd-client
+  else
+    tests.pkgs remove lxd
+  fi
   snap install lxd --channel=5.9/stable
 
   # Hold snap refreshes for 24h.
@@ -70,12 +77,7 @@ prepare: |
   lxd waitready --timeout=30
   lxd init --auto
 
-  if stat /rockcraft/tests/*.snap 2>/dev/null; then
-    snap install --classic --dangerous /rockcraft/tests/*.snap
-  else
-    echo "Expected a snap to exist in /rockcraft/"
-    exit 1
-  fi
+  install_rockcraft
 
 restore-each: |
   # Cleanup after each task.

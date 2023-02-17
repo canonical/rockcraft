@@ -1,0 +1,48 @@
+summary: snap remove hook test
+
+execute: |
+  rockcraft init
+
+  # `rockcraft pull` is enough to create an instance, no need to execute the
+  # entire lifecycle
+  run_rockcraft pull
+
+  # verify the lxd project and an instance were created
+  if [[ -z "$(lxc list --project rockcraft --format=csv --columns=n)" ]]; then
+    echo "could not find lxd project or instances"
+    exit 1
+  fi
+
+  # remove rockcraft
+  snap remove rockcraft
+
+  # verify instances were deleted
+  if [[ -n "$(lxc list --project rockcraft --format=csv --columns=n)" ]]; then
+    echo "instances were not removed"
+
+    # show snap log
+    snap tasks --last=remove
+    exit 1
+  fi
+
+  # verify images were deleted
+  if lxc image list --project rockcraft &> /dev/null; then
+    echo "images were not removed"
+
+    # show snap log
+    snap tasks --last=remove
+    exit 1
+  fi
+
+  # verify project was removed
+  if lxc project show rockcraft &> /dev/null; then
+    echo "project was not removed"
+
+    # show snap log
+    snap tasks --last=remove
+    exit 1
+  fi
+
+restore: |
+  # reinstall rockcraft so subsequent tests on the same runner are unaffected
+  install_rockcraft

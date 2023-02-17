@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# install_rockcraft: helper to install rockcraft from a local snap file.
+
+if stat /rockcraft/tests/*.snap 2>/dev/null; then
+  snap install --classic --dangerous /rockcraft/tests/*.snap
+else
+  echo "Expected a snap to exist in /rockcraft/"
+  exit 1
+fi
