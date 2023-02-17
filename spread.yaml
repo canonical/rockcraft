@@ -83,9 +83,9 @@ restore-each: |
   # Cleanup after each task.
   docker system prune -a -f
   if lxc project info rockcraft > /dev/null 2>&1 ; then
-    # only stop/cleanup instances if the test actually created them 
-    lxc --project=rockcraft stop --all
-    lxc --project=rockcraft delete $(lxc --project=rockcraft list -c n --format csv)
+    for instance in $(lxc --project=rockcraft list -c n --format csv); do
+      lxc --project=rockcraft delete --force "$instance"
+    done
   fi  
 
 debug-each: |
