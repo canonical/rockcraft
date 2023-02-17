@@ -36,6 +36,12 @@ from rockcraft import errors
 
 logger = logging.getLogger(__name__)
 
+# Public Amazon Elastic Container Registry has images that are updated more frequently
+# and with less severe pull-rate limits than Docker Hub.
+ECR_URL = "public.ecr.aws/ubuntu"
+
+REGISTRY_URL = ECR_URL
+
 
 @dataclass(frozen=True)
 class Image:
@@ -59,6 +65,8 @@ class Image:
     ) -> Tuple["Image", str]:
         """Obtain an image from a docker registry.
 
+        The image is fetched from the registry at ``REGISTRY_URL``.
+
         :param image_name: The image to retrieve, in ``name:tag`` format.
         :param image_dir: The directory to store local OCI images.
         :param arch: The architecture of the Docker image to fetch.
@@ -70,7 +78,7 @@ class Image:
         image_dir.mkdir(parents=True, exist_ok=True)
         image_target = image_dir / image_name
 
-        source_image = f"docker://{image_name}"
+        source_image = f"docker://{REGISTRY_URL}/{image_name}"
         platform_params = ["--override-arch", arch]
         if variant:
             platform_params += ["--override-variant", variant]
