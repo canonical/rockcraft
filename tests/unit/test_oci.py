@@ -356,6 +356,52 @@ class TestImage:
         ]
         assert sorted(temp_tar_contents) == expected_tar_contents
 
+    def test_add_layer_with_base_layer_subdirs(self, tmp_path, temp_tar_contents):
+        """Test base layer handling with subdirectories."""
+        dest_dir = tmp_path / "dest"
+        dest_dir.mkdir()
+
+        layer_dir = tmp_path / "layer_dir"
+        layer_dir.mkdir()
+
+        # The path "second/" contains multiple subdirectories.
+        (layer_dir / "second").mkdir()
+        (layer_dir / "second/second.txt").touch()
+
+        (layer_dir / "second/subdir").mkdir()
+        (layer_dir / "second/subdir/subdir_file.txt").touch()
+
+        (layer_dir / "second/subdir/subsubdir").mkdir()
+        (layer_dir / "second/subdir/subsubdir/subsubdir_file.txt").touch()
+
+        (layer_dir / "third").mkdir()
+        (layer_dir / "third/third.txt").touch()
+
+        image = oci.Image("a:b", dest_dir)
+
+        rootfs_dir = tmp_path / "rootfs"
+        rootfs_dir.mkdir()
+
+        # The base layer has a "first/" dir and a symlink to it called "second".
+        # Every subdirectory in "second/" in the "upper" layer must be added as
+        # a subdir of "first".
+        (rootfs_dir / "first").mkdir()
+        os.symlink("first", rootfs_dir / "second")
+
+        assert len(temp_tar_contents) == 0
+        image.add_layer("tag", layer_dir, base_layer_dir=rootfs_dir)
+
+        expected_tar_contents = [
+            "first/second.txt",
+            "first/subdir",
+            "first/subdir/subdir_file.txt",
+            "first/subdir/subsubdir",
+            "first/subdir/subsubdir/subsubdir_file.txt",
+            "third",
+            "third/third.txt",
+        ]
+        assert temp_tar_contents == expected_tar_contents
+
     def test_to_docker_daemon(self, mock_run):
         image = oci.Image("a:b", Path("/c"))
         image.to_docker_daemon("tag")
