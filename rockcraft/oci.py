@@ -27,7 +27,7 @@ import tarfile
 import tempfile
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple, cast
+from typing import Any, Dict, List, Optional, Tuple
 
 import yaml
 from craft_cli import emit
@@ -405,7 +405,6 @@ def _add_layer_into_image(
     _process_run(cmd + ["--history.created_by", " ".join(cmd)])
 
 
-# pylint: disable-next=too-many-locals
 def _archive_layer(
     new_layer_dir: Path, temp_tar_file: Path, base_layer_dir: Optional[Path] = None
 ) -> None:
@@ -416,6 +415,24 @@ def _archive_layer(
     :param base_layer_dir: optional path to the filesystem containing the extracted
         base below this new layer. Used to preserve lower-level directory symlinks,
         like the ones from Debian/Ubuntu's usrmerge.
+    """
+    layer_filenames = _get_layer_filenames(new_layer_dir, base_layer_dir)
+    with tarfile.open(temp_tar_file, mode="w") as tar_file:
+        for arcname, filepath in layer_filenames.items():
+            emit.debug(f"Adding to layer: {filepath} as '{arcname}'")
+            tar_file.add(filepath, arcname=arcname, recursive=False)
+
+
+def _get_layer_filenames(
+    new_layer_dir: Path, base_layer_dir: Optional[Path] = None
+) -> Dict[str, Path]:
+    """Map paths in ``new_layer_dir`` to names in a layer file.
+
+    See ``_archive_layer()`` for the parameters.
+
+    :return:
+      A dict where the value is a path (file or dir) in ``new_layer_dir`` and the
+      key is the name that this path should have in the tarball for the layer.
     """
 
     class LayerLinker:
@@ -450,61 +467,51 @@ def _archive_layer(
                 return Path(str_path.replace(self.upper_prefix, self.lower_prefix, 1))
             return path
 
-    with tarfile.open(temp_tar_file, mode="w") as tar_file:
-        layer_linker = LayerLinker()
-        for dirpath, subdirs, filenames in os.walk(new_layer_dir):
-            # Sort `subdirs` in-place, to ensure that `os.walk()` iterates on
-            # them in sorted order.
-            subdirs.sort()
+    layer_linker = LayerLinker()
+    result: Dict[str, Path] = {}
+    for dirpath, subdirs, filenames in os.walk(new_layer_dir):
+        # Sort `subdirs` in-place, to ensure that `os.walk()` iterates on
+        # them in sorted order.
+        subdirs.sort()
 
-            upper_subpath = Path(dirpath)
+        upper_subpath = Path(dirpath)
 
-            # The path with `new_layer_dir` as the "root"
-            relative_path = upper_subpath.relative_to(new_layer_dir)
+        # The path with `new_layer_dir` as the "root"
+        relative_path = upper_subpath.relative_to(new_layer_dir)
 
-            # The name of the subdir that will contain the files added in this
-            # iteration of the loop in the archive. Will be changed if
-            # `relative_path` corresponds to a symlink in the base layer.
-            archive_subdir = relative_path
+        # Handle adding an entry for the directory. We skip this IF:
+        # - The directory is the root (to skip a spurious "." entry), OR
+        # - The directory is NOT an opaque OCI entry AND
+        # - The directory's exists on ``base_layer_dir`` as a symlink to another
+        #   directory (like in usrmerge).
+        if upper_subpath != new_layer_dir:
+            upper_is_not_opaque_dir = not overlays.is_oci_opaque_dir(upper_subpath)
+            lower_symlink_target = _symlink_target_in_base_layer(
+                relative_path, base_layer_dir
+            )
+            lower_is_symlink = lower_symlink_target is not None
 
-            # Handle adding an entry for the directory. We skip this IF:
-            # - The directory is the root (to skip a spurious "." entry), OR
-            # - The directory is NOT an opaque OCI entry AND
-            # - The directory's exists on ``base_layer_dir`` as a symlink to another
-            #   directory (like in usrmerge).
-            if upper_subpath != new_layer_dir:
-                upper_is_not_opaque_dir = not overlays.is_oci_opaque_dir(upper_subpath)
-                lower_symlink_target = _symlink_target_in_base_layer(
-                    relative_path, base_layer_dir
+            if upper_is_not_opaque_dir and lower_is_symlink:
+                emit.debug(
+                    f"Skipping {upper_subpath} because it exists as a symlink on the lower layer"
                 )
-                lower_is_symlink = lower_symlink_target is not None
+                layer_linker.reset(str(relative_path), str(lower_symlink_target))
+            else:
+                lower_path = layer_linker.get_target_path(relative_path)
+                result[f"{lower_path}"] = upper_subpath
 
-                if upper_is_not_opaque_dir and lower_is_symlink:
-                    emit.debug(
-                        f"Skipping {upper_subpath} because it exists as a symlink on the lower layer"
-                    )
-                    archive_subdir = cast(Path, lower_symlink_target)
-                    layer_linker.reset(str(relative_path), str(archive_subdir))
+        # Add each file in the directory.
+        for name in filenames:
+            archive_path = layer_linker.get_target_path(relative_path / name)
+            result[f"{archive_path}"] = upper_subpath / name
 
-                else:
-                    lower_path = layer_linker.get_target_path(relative_path)
-                    emit.debug(f"Adding to layer: {upper_subpath} as '{lower_path}'")
-                    tar_file.add(
-                        upper_subpath, arcname=f"{lower_path}", recursive=False
-                    )
-
-            # Handle adding each file in the directory.
-            for name in filenames:
-                actual_path = upper_subpath / name
-                archive_path = layer_linker.get_target_path(archive_subdir / name)
-                emit.debug(f"Adding to layer: {actual_path} as '{archive_path}'")
-                tar_file.add(actual_path, arcname=f"{archive_path}")
+    return result
 
 
 def _symlink_target_in_base_layer(
     relative_path: Path, base_layer_dir: Optional[Path]
 ) -> Optional[Path]:
-    """If `relative_path` is a dir symlink in `base_layer_dir, return its 'target'.
+    """If `relative_path` is a dir symlink in `base_layer_dir`, return its 'target'.
 
     This function checks if `relative_path` exists in the base `base_layer_dir` as
     a symbolic link to another directory; if it does, the function will return the

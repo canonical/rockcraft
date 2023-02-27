@@ -239,7 +239,7 @@ class TestImage:
         # times (due to the recursion), but we're mainly interested that the first
         # call was to add `layer_dir`.
         assert spy_add.mock_calls[0] == call(
-            ANY, Path("layer_dir/foo.txt"), arcname="foo.txt"
+            ANY, Path("layer_dir/foo.txt"), arcname="foo.txt", recursive=False
         )
 
         expected_cmd = [
