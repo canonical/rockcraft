@@ -18,7 +18,12 @@ execute: |
   # check that the /bin symlink to /usr/bin *was not* broken by the /bin/new_bin_file addition
   ############################################################################################
   docker run --rm usrmerge readlink /bin | MATCH usr/bin
-  docker run  usrmerge:latest ls /bin/bash /bin/new_bin_file /bin/subdir1/subdir2/subdir_bin_file
+  docker run --rm usrmerge ls /bin/bash /bin/new_bin_file /bin/subdir1/subdir2/subdir_bin_file
+  
+  ############################################################################################
+  # check that the contents of bin/ and usr/bin *both* ended up in /usr/bin
+  ############################################################################################
+  docker run --rm usrmerge ls /usr/bin/subdir1/subdir2/{subdir_bin_file,another_subdir_bin_file}
 
   ############################################################################################
   # check that the /lib32 symlink to /usr/lib32 *was* broken by the overlay-script

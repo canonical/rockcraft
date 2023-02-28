@@ -45,3 +45,7 @@ class ProjectLoadError(RockcraftError):
 
 class ProjectValidationError(RockcraftError):
     """Error validating rockcraft.yaml."""
+
+
+class LayerArchivingError(RockcraftError):
+    """Error when creating the archive for the new layer."""
