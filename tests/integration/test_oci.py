@@ -101,7 +101,7 @@ def test_add_layer_with_symlink_in_base(new_dir):
 
             (actual_dir / f"old_{target}_file").write_text(f"old {target} file")
 
-            os.symlink(f"usr/{target}", base_layer_dir / target)
+            (base_layer_dir / target).symlink_to(f"usr/{target}")
             assert os.listdir(base_layer_dir / target) == [f"old_{target}_file"]
 
     image, base_layer_dir = create_base_image(Path(new_dir), populate_base_layer)
@@ -135,7 +135,7 @@ def test_add_layer_with_overlay(new_dir, mocker):
 
     def populate_base_layer(base_layer_dir):
         (base_layer_dir / "usr/bin").mkdir(parents=True)
-        os.symlink("usr/bin", (base_layer_dir / "bin"))
+        (base_layer_dir / "bin").symlink_to("usr/bin")
 
     image, base_layer_dir = create_base_image(Path(new_dir), populate_base_layer)
 

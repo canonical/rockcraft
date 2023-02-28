@@ -20,14 +20,14 @@ import json
 import os
 import tarfile
 from pathlib import Path
-from typing import List
+from typing import List, Tuple
 from unittest.mock import ANY, call, mock_open, patch
 
 import pytest
 from craft_parts.overlays import overlays
 
 import tests
-from rockcraft import oci
+from rockcraft import errors, oci
 
 
 @pytest.fixture
@@ -297,7 +297,7 @@ class TestImage:
         rootfs_dir.mkdir()
 
         (rootfs_dir / "first").mkdir()
-        os.symlink("first", rootfs_dir / "second")
+        (rootfs_dir / "second").symlink_to("first")
 
         assert len(temp_tar_contents) == 0
         image.add_layer("tag", layer_dir, base_layer_dir=rootfs_dir)
@@ -340,7 +340,7 @@ class TestImage:
         rootfs_dir.mkdir()
 
         (rootfs_dir / "first").mkdir()
-        os.symlink("first", rootfs_dir / "second")
+        (rootfs_dir / "second").symlink_to("first")
 
         assert len(temp_tar_contents) == 0
         image.add_layer("tag", layer_dir, base_layer_dir=rootfs_dir)
@@ -386,7 +386,7 @@ class TestImage:
         # Every subdirectory in "second/" in the "upper" layer must be added as
         # a subdir of "first".
         (rootfs_dir / "first").mkdir()
-        os.symlink("first", rootfs_dir / "second")
+        (rootfs_dir / "second").symlink_to("first")
 
         assert len(temp_tar_contents) == 0
         image.add_layer("tag", layer_dir, base_layer_dir=rootfs_dir)
@@ -401,6 +401,112 @@ class TestImage:
             "third/third.txt",
         ]
         assert temp_tar_contents == expected_tar_contents
+
+    @staticmethod
+    def _duplicate_dirs_setup(tmp_path) -> Tuple[Path, Path]:
+        """Create a filetree with an upper layer and a fake 'rootfs' structure.
+
+        layer_dir/
+          |- bin/dir1/a.txt
+          |- usr/bin/dir1/b.txt
+        rootfs/
+          |- usr/bin/
+          |- bin ----> usr/bin (symlink)
+
+        returns a tuple with (layer_dir, rootfs).
+        """
+
+        layer_dir = tmp_path / "layer_dir"
+        layer_dir.mkdir()
+
+        # The new layer has "bin/dir1/a.txt" and "usr/bin/dir1/b.txt".
+        (layer_dir / "bin/dir1").mkdir(parents=True)
+        (layer_dir / "bin/dir1/a.txt").touch()
+        (layer_dir / "usr/bin/dir1").mkdir(parents=True)
+        (layer_dir / "usr/bin/dir1/b.txt").touch()
+
+        rootfs_dir = tmp_path / "rootfs"
+        rootfs_dir.mkdir()
+        # In the base layer "bin" is a symlink to "usr/bin"
+        (rootfs_dir / "usr/bin").mkdir(parents=True)
+        (rootfs_dir / "bin").symlink_to("usr/bin")
+
+        return layer_dir, rootfs_dir
+
+    def test_add_layer_duplicate_dirs(self, tmp_path, temp_tar_contents):
+        """
+        Test creating a layer where, because of symlinks in the base, multiple
+        directories end up as the same target.
+        """
+        dest_dir = tmp_path / "dest"
+        dest_dir.mkdir()
+
+        layer_dir, rootfs_dir = self._duplicate_dirs_setup(tmp_path)
+
+        image = oci.Image("a:b", dest_dir)
+        image.add_layer("tag", layer_dir, base_layer_dir=rootfs_dir)
+
+        expected_tar_contents = [
+            "usr",
+            "usr/bin",
+            "usr/bin/dir1",
+            "usr/bin/dir1/a.txt",
+            "usr/bin/dir1/b.txt",
+        ]
+        assert temp_tar_contents == expected_tar_contents
+
+    def test_add_layer_duplicate_dirs_conflict(self, tmp_path, temp_tar_contents):
+        """
+        Test creating a layer where, because of symlinks in the base, multiple
+        directories end up as the same target but the directories have different
+        ownership/permissions.
+        """
+        dest_dir = tmp_path / "dest"
+        dest_dir.mkdir()
+
+        layer_dir, rootfs_dir = self._duplicate_dirs_setup(tmp_path)
+
+        # Change the default permissions of the directories that will end up as
+        # "/usr/bin/dir1", to ensure that they are different.
+        (layer_dir / "bin/dir1").chmod(0o40770)
+        (layer_dir / "usr/bin/dir1").chmod(0o40775)
+
+        image = oci.Image("a:b", dest_dir)
+
+        # Check that the error message show the conflicting paths.
+        expected_message = (
+            "Conflicting paths pointing to 'usr/bin/dir1': "
+            f"{str(layer_dir / 'bin/dir1')}, "
+            f"{str(layer_dir / 'usr/bin/dir1')}"
+        )
+        with pytest.raises(errors.LayerArchivingError, match=expected_message):
+            image.add_layer("tag", layer_dir, base_layer_dir=rootfs_dir)
+
+    def test_add_layer_duplicate_files(self, tmp_path, temp_tar_contents):
+        """
+        Test creating a layer where, because of symlinks in the base, multiple
+        files (not directories) end up at the same target. This must raise an
+        error because it's not currently supported.
+        """
+        dest_dir = tmp_path / "dest"
+        dest_dir.mkdir()
+
+        layer_dir, rootfs_dir = self._duplicate_dirs_setup(tmp_path)
+
+        # Create files with the same name in both directories
+        (layer_dir / "bin/dir1/same.txt").touch()
+        (layer_dir / "usr/bin/dir1/same.txt").touch()
+
+        image = oci.Image("a:b", dest_dir)
+
+        # Check that the error message show the conflicting paths.
+        expected_message = (
+            "Conflicting paths pointing to 'usr/bin/dir1/same.txt': "
+            f"{str(layer_dir / 'bin/dir1/same.txt')}, "
+            f"{str(layer_dir / 'usr/bin/dir1/same.txt')}"
+        )
+        with pytest.raises(errors.LayerArchivingError, match=expected_message):
+            image.add_layer("tag", layer_dir, base_layer_dir=rootfs_dir)
 
     def test_to_docker_daemon(self, mock_run):
         image = oci.Image("a:b", Path("/c"))

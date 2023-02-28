@@ -24,9 +24,10 @@ import shutil
 import subprocess
 import tarfile
 import tempfile
+from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, DefaultDict, Dict, List, Optional, Tuple
 
 import yaml
 from craft_cli import emit
@@ -363,16 +364,22 @@ def _archive_layer(
         base below this new layer. Used to preserve lower-level directory symlinks,
         like the ones from Debian/Ubuntu's usrmerge.
     """
-    layer_filenames = _get_layer_filenames(new_layer_dir, base_layer_dir)
+    candidates = _gather_layer_paths(new_layer_dir, base_layer_dir)
+    layer_paths = _merge_layer_paths(candidates)
+
     with tarfile.open(temp_tar_file, mode="w") as tar_file:
-        for arcname, filepath in layer_filenames.items():
+        # Iterate on sorted keys, so that the directories are always listed before
+        # any files that they contain (otherwise tools like Docker might choke on
+        # the layer tarball).
+        for arcname in sorted(layer_paths):
+            filepath = layer_paths[arcname]
             emit.debug(f"Adding to layer: {filepath} as '{arcname}'")
             tar_file.add(filepath, arcname=arcname, recursive=False)
 
 
-def _get_layer_filenames(
+def _gather_layer_paths(
     new_layer_dir: Path, base_layer_dir: Optional[Path] = None
-) -> Dict[str, Path]:
+) -> Dict[str, List[Path]]:
     """Map paths in ``new_layer_dir`` to names in a layer file.
 
     See ``_archive_layer()`` for the parameters.
@@ -415,7 +422,7 @@ def _get_layer_filenames(
             return path
 
     layer_linker = LayerLinker()
-    result: Dict[str, Path] = {}
+    result: DefaultDict[str, List[Path]] = defaultdict(list)
     for dirpath, subdirs, filenames in os.walk(new_layer_dir):
         # Sort `subdirs` in-place, to ensure that `os.walk()` iterates on
         # them in sorted order.
@@ -445,12 +452,48 @@ def _get_layer_filenames(
                 layer_linker.reset(str(relative_path), str(lower_symlink_target))
             else:
                 lower_path = layer_linker.get_target_path(relative_path)
-                result[f"{lower_path}"] = upper_subpath
+                result[f"{lower_path}"].append(upper_subpath)
 
         # Add each file in the directory.
         for name in filenames:
             archive_path = layer_linker.get_target_path(relative_path / name)
-            result[f"{archive_path}"] = upper_subpath / name
+            result[f"{archive_path}"].append(upper_subpath / name)
+
+    return result
+
+
+def _merge_layer_paths(candidate_paths: Dict[str, List[Path]]) -> Dict[str, Path]:
+    """Merge ``candidate_paths`` into a single path per name.
+
+    This function handles the case where multiple paths refer to the same name
+    in the new layer; if all paths are directories with the same ownership and
+    permissions then a single one is used (they are all equivalent). All other
+    cases (directories with different attributes, files) will raise an error.
+
+    :return:
+        A dict where the values are Paths and the keys are the names those paths
+        correspond to in the new layer.
+    """
+    result: Dict[str, Path] = {}
+
+    for name, paths in candidate_paths.items():
+        if len(paths) == 1:
+            result[name] = paths[0]
+            continue
+
+        if _all_compatible_directories(paths):
+            emit.debug(
+                f"Multiple directories pointing to '{name}': {', '.join(map(str, paths))}"
+            )
+            result[name] = paths[0]
+            continue
+
+        # We currently don't try to do any kind of path conflict resolution; if
+        # the paths aren't all directories with the same ownership and permissions,
+        # bail out with an error.
+        raise errors.LayerArchivingError(
+            f"Conflicting paths pointing to '{name}': {', '.join(map(str, paths))}"
+        )
 
     return result
 
@@ -476,6 +519,33 @@ def _symlink_target_in_base_layer(
         return Path(os.readlink(lower_path))
 
     return None
+
+
+def _all_compatible_directories(paths: List[Path]) -> bool:
+    """Whether ``paths`` contains only directories with the same ownership and permissions."""
+    if not all(p.is_dir() for p in paths):
+        return False
+
+    if len(paths) < 2:
+        return True
+
+    def stat_props(stat: os.stat_result) -> Tuple[int, int, int]:
+        return stat.st_uid, stat.st_gid, stat.st_mode
+
+    first_stat = stat_props(paths[0].stat())
+
+    for other_path in paths[1:]:
+        other_stat = stat_props(other_path.stat())
+        if first_stat != other_stat:
+            emit.debug(
+                (
+                    f"Path attributes differ for '{paths[0]}' and '{other_path}': "
+                    f"{first_stat} vs {other_stat}"
+                )
+            )
+            return False
+
+    return True
 
 
 def _inject_architecture_variant(image_path: Path, variant: str) -> None:
