@@ -114,7 +114,7 @@ class TestImage:
         )
         assert Path("images/dir").is_dir()
         assert image.image_name == "a:b"
-        assert source_image == "docker://a:b"
+        assert source_image == f"docker://{oci.REGISTRY_URL}/a:b"
         assert image.path == Path("images/dir")
         assert mock_run.mock_calls == [
             call(
@@ -124,7 +124,7 @@ class TestImage:
                     "--override-arch",
                     "amd64",
                     "copy",
-                    "docker://a:b",
+                    f"docker://{oci.REGISTRY_URL}/a:b",
                     "oci:images/dir/a:b",
                 ]
             )
@@ -143,7 +143,7 @@ class TestImage:
                     "--override-variant",
                     "v8",
                     "copy",
-                    "docker://a:b",
+                    f"docker://{oci.REGISTRY_URL}/a:b",
                     "oci:images/dir/a:b",
                 ]
             )
