@@ -16,6 +16,7 @@
 
 import datetime
 import os
+import re
 import subprocess
 import textwrap
 from unittest.mock import patch
@@ -25,7 +26,13 @@ import pytest
 import yaml
 
 from rockcraft.errors import ProjectLoadError, ProjectValidationError
-from rockcraft.project import ArchitectureMapping, Platform, Project, load_project
+from rockcraft.project import (
+    ArchitectureMapping,
+    Platform,
+    Project,
+    Service,
+    load_project,
+)
 
 _ARCH_MAPPING = {"x86": "amd64", "x64": "amd64"}
 try:
@@ -50,8 +57,6 @@ base: ubuntu:20.04
 summary: "example for unit tests"
 description: "this is an example of a rockcraft.yaml for the purpose of testing rockcraft"
 license: Apache-2.0
-entrypoint: ["/bin/hello"]
-cmd: ["world"]
 env:
     - NAME: "VALUE"
 platforms:
@@ -62,6 +67,10 @@ platforms:
     same-with-different-syntax:
         build-on: [{BUILD_ON_ARCH}]
         build-for: [{BUILD_ON_ARCH}]
+services:
+    hello:
+        override: replace
+        command: /bin/hello
 
 parts:
     foo:
@@ -87,6 +96,7 @@ def pebble_part():
             "plugin": "nil",
             "stage-snaps": ["pebble/latest/edge"],
             "stage": ["bin/pebble"],
+            "override-prime": "craftctl default\nmkdir -p var/lib/pebble/default/layers",
         }
     }
 
@@ -105,8 +115,12 @@ def test_project_unmarshal(yaml_loaded_data):
     )
     assert project.rock_license == "Apache-2.0"
     assert project.build_base == "ubuntu:20.04"
-    assert project.entrypoint == ["/bin/hello"]
-    assert project.cmd == ["world"]
+    assert project.services == {
+        "hello": Service(**{
+            "override": "replace",
+            "command": "/bin/hello"
+        })
+    }
     assert project.env == [{"NAME": "VALUE"}]
     assert project.parts == {
         "foo": {
@@ -114,6 +128,24 @@ def test_project_unmarshal(yaml_loaded_data):
             "overlay-script": "ls",
         }
     }
+
+@pytest.mark.parametrize(
+    "deprecated_field",
+    [
+        {"entrypoint": ["/bin/hello"]},
+        {"cmd": ["world"]}
+    ]
+)
+def test_project_unmarshal_with_deprecated_fields(deprecated_field, yaml_loaded_data):
+    loaded_data_with_deprecated_fields = {
+        **yaml_loaded_data,
+        **deprecated_field
+    }
+    with pytest.raises(ProjectValidationError) as err:
+        _ = Project.unmarshal(loaded_data_with_deprecated_fields)
+        
+    assert "All ROCKs have Pebble as their entrypoint, so you must use "\
+        "'services' to define your container application." in str(err.value)
 
 
 @pytest.mark.parametrize("base", ["ubuntu:18.04", "ubuntu:20.04"])
@@ -287,6 +319,88 @@ def test_project_all_platforms_invalid(yaml_loaded_data):
     )
 
 
+def test_full_service():
+    _ = Service(
+        override="merge",
+        command="foo cmd",
+        summary="mock summary",
+        description="mock description",
+        startup="enabled",
+        after=["foo"],
+        before=["bar"],
+        requires=["some-other"],
+        environment={"envVar": "value"},
+        user="ubuntu",
+        user_id=1000,
+        group="ubuntu",
+        group_id=1000,
+        on_success="ignore",
+        on_failure="restart",
+        on_check_failure={"check": "restart"},
+        backoff_delay="10ms",
+        backoff_factor=1.2,
+        backoff_limit="1m",
+    )
+
+
+def test_minimal_service():
+    _ = Service(override="merge", command="foo cmd")
+
+
+@pytest.mark.parametrize(
+    "bad_service,error",
+    [
+        # Missing fields
+        ({}, r"^2 validation errors[\s\S]*override[\s\S]*command"),
+        # Bad attributes values
+        (
+            {
+                "override": "bad value",
+                "command": "free text allowed",
+                "startup": "bad value",
+                "on_success": "bad value",
+                "on_failure": "bad value",
+                "on_check_failure": {"check": "bad value"},
+            },
+            r"^5 validation errors[\s\S]*"
+            r"override[\s\S]*unexpected value[\s\S]*'merge', 'replace'[\s\S]*"
+            r"startup[\s\S]*unexpected value[\s\S]*'enabled', 'disabled'[\s\S]*"
+            r"on_success[\s\S]*unexpected value[\s\S]*"
+            r"'restart', 'shutdown', 'ignore'[\s\S]*"
+            r"on_failure[\s\S]*unexpected value[\s\S]*"
+            r"'restart', 'shutdown', 'ignore'[\s\S]*"
+            r"on_check_failure[\s\S]*unexpected value[\s\S]*"
+            r"'restart', 'shutdown', 'ignore'[\s\S]*"
+        ),
+        # Bad attribute types
+        (
+            {
+                "override": ["merge"],
+                "command": ["not a string"],
+                "summary": {"foo": "bar"},
+                "after": "not a List",
+                "environment": "not a Dict",
+                "user_id": "not an int",
+                "on_check_failure": {"check": ["not a Literal"]},
+                "backoff_factor": "not a float"
+            },
+            r"^8 validation errors[\s\S]*"
+            r"unhashable type[\s\S]*"
+            r"str type expected[\s\S]*"
+            r"value is not a valid list[\s\S]*"
+            r"value is not a valid dict[\s\S]*"
+            r"value is not a valid integer[\s\S]*"
+            r"unhashable type[\s\S]*"
+            r"value is not a valid float[\s\S]*"
+        ),
+    ],
+)
+def test_bad_services(bad_service, error):
+    with pytest.raises(pydantic.ValidationError) as err:
+        _ = Service(**bad_service)
+    assert re.match(error, str(err.value)), "Unexpected Service validation error"
+
+
 @pytest.mark.parametrize(
     "field", ["name", "version", "base", "parts", "description", "summary", "license"]
 )
@@ -350,6 +464,9 @@ def test_project_load(yaml_data, yaml_loaded_data, pebble_part, tmp_path):
                 "build_for" in platform for platform in getattr(project, attr).values()
             )
             continue
+        if attr == "services":
+            # services are classs and not Dicts upfront
+            v["hello"] = Service(**v["hello"])
 
         assert getattr(project, attr) == v
 

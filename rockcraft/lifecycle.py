@@ -159,13 +159,18 @@ def _pack(
     )
     emit.progress("Created new layer", permanent=True)
 
-    if project.entrypoint:
-        new_image.set_entrypoint(project.entrypoint)
-        if not project.cmd:
-            new_image.set_cmd([])
+    emit.progress("Adding Pebble entrypoint")
+    if project.services:
+        new_image.set_pebble_services(
+            services=project.dict(exclude_none=True)["services"],
+            name=project.name,
+            tag=project.version,
+            summary=project.summary,
+            description=project.description,
+            base_layer_dir=base_layer_dir,
+        )
 
-    if project.cmd:
-        new_image.set_cmd(project.cmd)
+    new_image.set_entrypoint()
 
     if project.env:
         new_image.set_env(project.env)

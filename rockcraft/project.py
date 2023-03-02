@@ -39,6 +39,7 @@ import yaml
 
 from rockcraft.errors import ProjectLoadError, ProjectValidationError
 from rockcraft.parts import validate_part
+from rockcraft.oci import Image
 
 if TYPE_CHECKING:
     from pydantic.error_wrappers import ErrorDict
@@ -143,6 +144,33 @@ class Platform(pydantic.BaseModel):
         return values
 
 
+class Service(pydantic.BaseModel):
+    """Lightweight schema validation for a Pebble service, base on
+    https://github.com/canonical/pebble#layer-specification"""
+
+    override: Literal["merge", "replace"]
+    command: str
+    summary: Optional[str]
+    description: Optional[str]
+    startup: Optional[Literal["enabled", "disabled"]]
+    after: Optional[List[str]]
+    before: Optional[List[str]]
+    requires: Optional[List[str]]
+    environment: Optional[Dict[str, str]]
+    user: Optional[str]
+    user_id: Optional[int]
+    group: Optional[str]
+    group_id: Optional[int]
+    on_success: Optional[Literal["restart", "shutdown", "ignore"]]
+    on_failure: Optional[Literal["restart", "shutdown", "ignore"]]
+    on_check_failure: Optional[
+        Dict[str, Literal["restart", "shutdown", "ignore"]]
+    ]
+    backoff_delay: Optional[str]
+    backoff_factor: Optional[float]
+    backoff_limit: Optional[str]
+
+
 class Project(pydantic.BaseModel):
     """Rockcraft project definition."""
 
@@ -157,9 +185,10 @@ class Project(pydantic.BaseModel):
     build_base: Optional[
         Literal["ubuntu:18.04", "ubuntu:20.04", "ubuntu:22.04"]
     ] = pydantic.Field(alias="build-base")
-    entrypoint: Optional[List[str]]
-    cmd: Optional[List[str]]
+    entrypoint: Optional[List[str]] = pydantic.Field(deprecated=True)
+    cmd: Optional[List[str]] = pydantic.Field(deprecated=True)
     env: Optional[List[Dict[str, str]]]
+    services: Optional[Dict[str, Service]]
 
     parts: Dict[str, Any]
 
@@ -171,6 +200,17 @@ class Project(pydantic.BaseModel):
         allow_mutation = False
         allow_population_by_field_name = True
         alias_generator = lambda s: s.replace("_", "-")  # noqa: E731
+
+    @pydantic.validator("cmd", "entrypoint", pre=True)
+    @classmethod
+    def _check_deprecated_options(cls, values: List) -> str:
+        """Before validation, check if deprecated fields exist. Exit if so."""
+        deprecation_msg = str(
+            "The fields 'entrypoint' and 'cmd' are not supported in Rockcraft. "
+            "All ROCKs have Pebble as their entrypoint, so you must use "
+            "'services' to define your container application."
+        )
+        raise ProjectValidationError(deprecation_msg)
 
     @pydantic.validator("rock_license", always=True)
     @classmethod
@@ -509,6 +549,8 @@ def _add_pebble_data(yaml_data: Dict[str, Any]) -> None:
     pebble_part_spec = {
         "plugin": "nil",
         "stage-snaps": ["pebble/latest/edge"],
-        "stage": ["bin/pebble"],
+        "stage": [Image._PEBBLE_BINARY_PATH],
+        "override-prime": f"craftctl default\nmkdir -p {Image._PEBBLE_LAYERS_PATH}"
     }
+
     parts["pebble"] = pebble_part_spec

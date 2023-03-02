@@ -16,6 +16,7 @@
 
 """OCI image manipulation helpers."""
 
+import glob
 import hashlib
 import json
 import logging
@@ -47,6 +48,9 @@ class Image:
 
     image_name: str
     path: Path
+    _PEBBLE_PATH = "var/lib/pebble/default"
+    _PEBBLE_LAYERS_PATH = f"{_PEBBLE_PATH}/layers"
+    _PEBBLE_BINARY_PATH = "bin/pebble"
 
     @classmethod
     def from_docker_registry(
@@ -206,34 +210,83 @@ class Image:
         src_path = self.path / f"{name}:{tag}"
         _copy_image(f"oci:{str(src_path)}", f"oci-archive:{filename}:{tag}")
 
-    def set_entrypoint(self, entrypoint: List[str]) -> None:
-        """Set the OCI image entrypoint.
-
-        :param entrypoint: The default list of arguments to use as the command to
-            execute when the container starts.
-        """
+    def set_entrypoint(self) -> None:
+        """Set the OCI image entrypoint. It is always set to be Pebble."""
         emit.progress("Configuring entrypoint...")
         image_path = self.path / self.image_name
+        entrypoint = [f"/{self._PEBBLE_BINARY_PATH}", "enter"]
         params = ["--clear=config.entrypoint"]
         for entry in entrypoint:
             params.extend(["--config.entrypoint", entry])
         _config_image(image_path, params)
         emit.progress(f"Entrypoint set to {entrypoint}", permanent=True)
 
-    def set_cmd(self, cmd: List[str]) -> None:
-        """Set the OCI image default command parameters.
+    def set_pebble_services(
+        self,
+        services: Dict[str, Any],
+        name: str,
+        tag: str,
+        summary: str,
+        description: str,
+        base_layer_dir: Path,
+    ) -> None:
+        """Write the provided services into a Pebble layer in the filesystem.
 
-        :param cmd: The default arguments to the entrypoint of the container. If
-            entrypoint is not defined, the first entry of cmd is the executable to
-            run when the container starts.
+        :param services: The Pebble services to be written into the Pebble
+        :param name: The name of the ROCK
+        :param tag: The ROCK's image tag
+        :param summary: The summary for the Pebble layer
+        :param description: The description for the Pebble layer
+        :param base_layer_dir: Path to the base layer's root filesystem
         """
-        emit.progress("Configuring cmd...")
-        image_path = self.path / self.image_name
-        params = ["--clear=config.cmd"]
-        for entry in cmd:
-            params.extend(["--config.cmd", entry])
-        _config_image(image_path, params)
-        emit.progress(f"Cmd set to {cmd}", permanent=True)
+        service_names = list(services.keys())
+        emit.progress(f"Configuring Pebble services {', '.join(service_names)}")
+        pebble_layer_content = {
+            "summary": summary,
+            "description": description,
+            "services": services,
+        }
+
+        # To infer the right filename for this Pebble layer, we should check
+        # if there are existing Pebble layers in the base root filesystem,
+        # and increment on that.
+        # NOTE: the layer's filename prefix will always be "001-" when using
+        # "bare" and "ubuntu" bases
+        pebble_layers_path_in_base = f"{base_layer_dir}/{self._PEBBLE_LAYERS_PATH}"
+        existing_pebble_layers = glob.glob(
+            pebble_layers_path_in_base + "/[0-9][0-9][0-9]-???*.yaml"
+        ) + glob.glob(pebble_layers_path_in_base + "/[0-9][0-9][0-9]-???*.yml")
+
+        prefixes = list(map(lambda l: Path(l).name[:3], existing_pebble_layers))
+        prefixes.sort()
+        emit.progress(
+            f"Found {len(existing_pebble_layers)} Pebble layers in the base's root filesystem"
+        )
+
+        new_layer_prefix = "%03d" % (int(prefixes[-1]) + 1) if prefixes else "001"
+        # TODO: we need proper name validation as Pebble is quite unforgiving
+        # about the layer's label. We also don't want to allow any character
+        # in the ROCK's name. For now, just replacing the common "_" with "-".
+        new_layer_name = f"{new_layer_prefix}-{name.replace('_', '-')}.yaml"
+
+        emit.progress(f"Writing new Pebble layer file {new_layer_name}")
+
+        tmpfs = Path(tempfile.mkdtemp())
+        tmp_pebble_layers_path = tmpfs / self._PEBBLE_LAYERS_PATH
+        tmp_pebble_layers_path.mkdir(parents=True)
+
+        tmp_new_layer = tmp_pebble_layers_path / new_layer_name
+        with open(tmp_new_layer, "w", encoding="utf-8") as pebble_layer:
+            yaml.dump(
+                pebble_layer_content,
+                pebble_layer,
+                default_flow_style=False,
+                sort_keys=False,
+                allow_unicode=True,
+            )
+
+        self.add_layer(tag, tmpfs)
+        shutil.rmtree(tmpfs)
 
     def set_env(self, env: List[Dict[str, str]]) -> None:
         """Set the OCI image environment.

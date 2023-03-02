@@ -6,7 +6,11 @@ license: Apache-2.0
 version: "0.0.1"
 base: bare
 build_base: "ubuntu:22.04"
-cmd: [/usr/lib/dotnet/dotnet, --info]
+services: 
+  dotnet:
+    override: replace
+    command: /usr/lib/dotnet/dotnet --info
+    startup: enabled
 platforms:
   amd64:
 
