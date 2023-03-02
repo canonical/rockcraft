@@ -44,13 +44,16 @@ Format specification
   # This field is case insensitive.
   license: <license>
 
-  # (Optional) The container entry point.
-  entrypoint: [<path>, ...]
-
-  # (Optional) The container command line, used as arguments for
-  # entrypoint. If the entrypoint is not defined, the first item in
-  # the cmd list the command to execute.
-  cmd: [<arg>, ...]
+  # (Optional) A list of services for the Pebble entrypoint.
+  # The syntax follows the Pebble layer specification in
+  # https://github.com/canonical/pebble#layer-specification
+  services:
+    <service name>:
+      # Each Pebble service definition must have these two fields
+      override: merge | replace
+      command: <command>
+      # (Optional) Other configurations for the Pebble service
+      <key>: <value>
 
   # (Optional) A list of keys and values defining the container's
   # runtime environment variables.
@@ -74,6 +77,11 @@ Format specification
     <part name>:
       ...
 
+.. note::
+   The fields ``entrypoint`` and ``cmd`` are not supported in Rockcraft.
+   All ROCKs have Pebble as their entrypoint, and thus you must use ``services``
+   to define your container application.
+
 
 Example
 .......
@@ -85,12 +93,15 @@ Example
   summary: An Hello World ROCK
   description: |
     This is just an example of a Rockcraft project
-    for an Hello World ROCK.
+    for a Hello World ROCK.
   version: latest
   base: bare
   build-base: ubuntu:22.04
   license: Apache-2.0
-  entrypoint: [/usr/bin/hello, -t]
+  services:
+    hello:
+      override: replace
+      command: /usr/bin/hello -t
   env:
     - VAR1: value
     - VAR2: "other value"
