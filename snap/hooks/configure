@@ -1,0 +1,80 @@
+#! /usr/bin/env sh
+
+# Configure hook for rockcraft.
+# This shell script removes LXD images and instances used by previous versions of rockcraft.
+# Errors in the configure hook can be viewed with `snap tasks --last=install` or `snap tasks --last=refresh`.
+
+# separate lxc output by newlines
+# \n can not be last, or it will be stripped by $() - see shellcheck SC3003
+IFS=$(printf '\n\t')
+
+# craft-providers>=1.7.0<1.8.0 uses instances:
+# - base-instance-rockcraft-buildd-base-v00--be83d276b0c767e3ad60
+# - base-instance-rockcraft-buildd-base-v00--aad8a4673a4513574b4b
+# - base-instance-rockcraft-buildd-base-v00--80d84c0cd14bbbf3d100
+OUTDATED_INSTANCES='base-instance-rockcraft-buildd-base-v00--be83d276b0c767e3ad60
+base-instance-rockcraft-buildd-base-v00--aad8a4673a4513574b4b
+base-instance-rockcraft-buildd-base-v00--80d84c0cd14bbbf3d100'
+
+# craft-providers<1.7.0 uses images:
+# - `snapshot-craft-com.ubuntu.cloud-buildd-core18-rockcraft-buildd-base-v0.0`
+# - `snapshot-craft-com.ubuntu.cloud-buildd-core20-rockcraft-buildd-base-v0.0`
+# - `snapshot-craft-com.ubuntu.cloud-buildd-core22-rockcraft-buildd-base-v0.0`
+OUTDATED_IMAGES='snapshot-craft-com.ubuntu.cloud-buildd-core18-rockcraft-buildd-base-v0.0
+snapshot-craft-com.ubuntu.cloud-buildd-core20-rockcraft-buildd-base-v0.0
+snapshot-craft-com.ubuntu.cloud-buildd-core22-rockcraft-buildd-base-v0.0'
+
+>&2 echo "removing outdated lxd images and instances for rockcraft"
+
+# check for lxc
+if ! command -v lxc > /dev/null 2>&1; then
+  >&2 echo "lxc not installed"
+  exit 0
+fi
+
+# check for rockcraft project
+if ! lxc project info rockcraft > /dev/null 2>&1; then
+  >&2 echo "project 'rockcraft' does not exist"
+  exit 0
+fi
+
+# get instances by name
+instances="$(lxc list --project=rockcraft --format=csv --columns="n")"
+
+if [ -n "$instances" ]; then
+  # iterate through existing instances
+  for instance in $instances; do
+    >&2 echo "checking instance $instance"
+
+    # check if the instance is in the list of outdated instances
+    for outdated_instance in $OUTDATED_INSTANCES; do
+      if [ "$instance" = "$outdated_instance" ]; then
+        >&2 echo "deleting instance $instance"
+        lxc delete --project=rockcraft --force "$instance"
+      fi
+    done
+  done
+else
+  >&2 echo "no instances in rockcraft project"
+fi
+
+# get images by alias (name)
+images="$(lxc image list --project=rockcraft --format=csv --columns="L")"
+
+if [ -n "$images" ]; then
+  # iterate through existing images
+  for image in $images; do
+    >&2 echo "checking image $image"
+
+    # check if the image is in the list of outdated instances
+   for outdated_image in $OUTDATED_IMAGES; do
+      if [ "$image" = "$outdated_image" ]; then
+        >&2 echo "deleting image $image"
+        lxc image delete --project=rockcraft "$image"
+      fi
+    done
+
+  done
+else
+  >&2 echo "no images in rockcraft project"
+fi
