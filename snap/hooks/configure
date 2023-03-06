@@ -50,7 +50,9 @@ if [ -n "$instances" ]; then
     for outdated_instance in $OUTDATED_INSTANCES; do
       if [ "$instance" = "$outdated_instance" ]; then
         >&2 echo "deleting instance $instance"
-        lxc delete --project=rockcraft --force "$instance"
+        if ! lxc delete --project=rockcraft --force "$instance" > /dev/null 2>&1; then
+          >&2 echo "failed to delete instance $instance"
+        fi
       fi
     done
   done
@@ -70,7 +72,9 @@ if [ -n "$images" ]; then
    for outdated_image in $OUTDATED_IMAGES; do
       if [ "$image" = "$outdated_image" ]; then
         >&2 echo "deleting image $image"
-        lxc image delete --project=rockcraft "$image"
+        if ! lxc image delete --project=rockcraft "$image" > /dev/null 2>&1; then
+          >&2 echo "failed to delete image $image"
+        fi
       fi
     done
 
