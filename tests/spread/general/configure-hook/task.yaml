@@ -1,0 +1,45 @@
+summary: snap configure hook test
+
+execute: |
+  # `rockcraft pull` will create the rockcraft project, buildd remote, and an instance
+  rockcraft init
+  rockcraft pull
+
+  # create an outdated instance that would have been created by craft-providers>=1.7.0<1.8.0
+  outdated_instance="base-instance-rockcraft-buildd-base-v00--be83d276b0c767e3ad60"
+  lxc launch --project rockcraft craft-com.ubuntu.cloud-buildd:core22 "$outdated_instance"
+
+  # create an outdated image that would have been created by craft-providers<1.7.0
+  outdated_image="snapshot-craft-com.ubuntu.cloud-buildd-core18-rockcraft-buildd-base-v0.0"
+  lxc publish --project rockcraft --force "$outdated_instance" --alias "$outdated_image"
+
+  # reinstalling rockcraft will trigger the configure hook
+  install_rockcraft
+
+  # get instances
+  instances="$(lxc list --project rockcraft --format=csv --columns=n)"
+
+  # verify outdated instance was removed
+  for instance in $instances; do
+    if [[ "$instance" = "$outdated_instance" ]]; then
+      echo "instance $instance was not removed by the configure hook"
+      snap tasks --last=install
+      exit 1
+    fi
+  done
+
+  # get images
+  images="$(lxc image list --project=rockcraft --format=csv --columns="L")"
+
+  # verify outdated image was removed
+  for image in $images; do
+    if [[ "$image" = "$outdated_image" ]]; then
+      echo "image $image was not removed by the configure hook"
+      snap tasks --last=install
+      exit 1
+    fi
+  done
+
+restore: |
+  # reinstall rockcraft so subsequent tests on the same runner are unaffected
+  install_rockcraft
