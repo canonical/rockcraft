@@ -59,11 +59,8 @@ jobs:
   tests:
     strategy:
       matrix:
-        os: [macos-latest, ubuntu-18.04, ubuntu-20.04, ubuntu-22.04, windows-2019]
+        os: [macos-latest, ubuntu-20.04, ubuntu-22.04, windows-2019]
         python-version: [3.8, 3.9, "3.10"]
-        exclude:
-          - os: ubuntu-18.04
-            python-version: "3.10"
 
     runs-on: ${{ matrix.os }}
     steps:
@@ -83,12 +80,6 @@ jobs:
         run: |
           sudo apt update
           sudo apt install -y python3-pip python3-setuptools python3-wheel python3-venv libapt-pkg-dev
-      - name: Install Ubuntu 18.04-specific dependencies
-        if: ${{ matrix.os == 'ubuntu-18.04' }}
-        run: |
-          # pip 20.2 breaks python3-apt, so pin the version before building
-          pip install -U pip==20.1
-          pip install -U -r requirements-bionic.txt
       - name: Install Ubuntu 20.04-specific dependencies
         if: ${{ matrix.os == 'ubuntu-20.04' }}
         run: |
