@@ -459,6 +459,13 @@ def _gather_layer_paths(
             archive_path = layer_linker.get_target_path(relative_path / name)
             result[f"{archive_path}"].append(upper_subpath / name)
 
+        # Add each subdir in the directory if it's a symlink
+        for subdir in subdirs:
+            archive_path = layer_linker.get_target_path(relative_path / subdir)
+            upper_subdir_path = upper_subpath / subdir
+            if upper_subdir_path.is_symlink():
+                result[f"{archive_path}"].append(upper_subdir_path)
+
     return result
 
 
