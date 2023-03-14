@@ -283,6 +283,30 @@ class TestImage:
         ]
         assert temp_tar_contents == expected_tar_contents
 
+    def test_add_layer_symlinks(self, tmp_path, temp_tar_contents):
+        """
+        Test creating a new layer with symlinks (both file and dir).
+        """
+        dest_dir = tmp_path / "dest"
+        dest_dir.mkdir()
+
+        layer_dir = tmp_path / "layer_dir"
+        layer_dir.mkdir()
+
+        (layer_dir / "first_dir").mkdir()
+        (layer_dir / "first_file").touch()
+
+        (layer_dir / "second_dir").symlink_to("first_dir", target_is_directory=True)
+        (layer_dir / "second_file").symlink_to("first_file", target_is_directory=False)
+
+        image = oci.Image("a:b", dest_dir)
+
+        assert len(temp_tar_contents) == 0
+        image.add_layer("tag", layer_dir)
+
+        expected_tar_contents = ["first_dir", "first_file", "second_dir", "second_file"]
+        assert temp_tar_contents == expected_tar_contents
+
     def test_add_layer_with_base_layer_dir(self, tmp_path, temp_tar_contents):
         """Test creating a layer with a base layer dir for reference."""
         dest_dir = tmp_path / "dest"
