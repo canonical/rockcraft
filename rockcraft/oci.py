@@ -388,6 +388,7 @@ def _gather_layer_paths(
       A dict where the value is a path (file or dir) in ``new_layer_dir`` and the
       key is the name that this path should have in the tarball for the layer.
     """
+    # pylint: disable=too-many-locals
 
     class LayerLinker:
         """Helper to keep track of paths between the upper and lower layer."""
@@ -459,11 +460,12 @@ def _gather_layer_paths(
             archive_path = layer_linker.get_target_path(relative_path / name)
             result[f"{archive_path}"].append(upper_subpath / name)
 
-        # Add each subdir in the directory if it's a symlink
+        # Add each subdir in the directory if it's a symlink, because the os.walk()
+        # call will not enter them.
         for subdir in subdirs:
-            archive_path = layer_linker.get_target_path(relative_path / subdir)
             upper_subdir_path = upper_subpath / subdir
             if upper_subdir_path.is_symlink():
+                archive_path = layer_linker.get_target_path(relative_path / subdir)
                 result[f"{archive_path}"].append(upper_subdir_path)
 
     return result
