@@ -608,6 +608,18 @@ class TestImage:
                 capture_output=True,
                 check=True,
                 universal_newlines=True,
+            ),
+            call(
+                [
+                    "umoci",
+                    "config",
+                    "--image",
+                    "/c/a:b",
+                    "--clear=config.cmd",
+                ],
+                capture_output=True,
+                check=True,
+                universal_newlines=True,
             )
         ]
 

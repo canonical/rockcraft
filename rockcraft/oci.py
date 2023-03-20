@@ -220,7 +220,7 @@ class Image:
         _copy_image(f"oci:{str(src_path)}", f"oci-archive:{filename}:{tag}")
 
     def set_entrypoint(self) -> None:
-        """Set the OCI image entrypoint. It is always set to be Pebble."""
+        """Set the OCI image entrypoint. It is always Pebble, and CMD is null"""
         emit.progress("Configuring entrypoint...")
         image_path = self.path / self.image_name
         entrypoint = [f"/{self._PEBBLE_BINARY_PATH}", "enter"]
@@ -228,6 +228,8 @@ class Image:
         for entry in entrypoint:
             params.extend(["--config.entrypoint", entry])
         _config_image(image_path, params)
+        # Clear the CMD
+        _config_image(image_path, ["--clear=config.cmd"])
         emit.progress(f"Entrypoint set to {entrypoint}", permanent=True)
 
     def set_pebble_services(
