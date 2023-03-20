@@ -201,14 +201,15 @@ class Project(pydantic.BaseModel):
         allow_population_by_field_name = True
         alias_generator = lambda s: s.replace("_", "-")  # noqa: E731
 
-    @pydantic.validator("cmd", "entrypoint", pre=True)
+    @pydantic.validator("cmd", "entrypoint", "env", pre=True)
     @classmethod
     def _check_deprecated_options(cls, values: List) -> str:
         """Before validation, check if deprecated fields exist. Exit if so."""
         deprecation_msg = str(
-            "The fields 'entrypoint' and 'cmd' are not supported in Rockcraft. "
-            "All ROCKs have Pebble as their entrypoint, so you must use "
-            "'services' to define your container application."
+            "The fields 'entrypoint', 'cmd' and 'env are not supported in "
+            "Rockcraft. All ROCKs have Pebble as their entrypoint, so you must "
+            "use 'services' to define your container application and "
+            "respective environment."
         )
         raise ProjectValidationError(deprecation_msg)
 

@@ -57,8 +57,7 @@ base: ubuntu:20.04
 summary: "example for unit tests"
 description: "this is an example of a rockcraft.yaml for the purpose of testing rockcraft"
 license: Apache-2.0
-env:
-    - NAME: "VALUE"
+
 platforms:
     {BUILD_ON_ARCH}:
     some-text:
@@ -121,7 +120,6 @@ def test_project_unmarshal(yaml_loaded_data):
             "command": "/bin/hello"
         })
     }
-    assert project.env == [{"NAME": "VALUE"}]
     assert project.parts == {
         "foo": {
             "plugin": "nil",
@@ -133,7 +131,8 @@ def test_project_unmarshal(yaml_loaded_data):
     "deprecated_field",
     [
         {"entrypoint": ["/bin/hello"]},
-        {"cmd": ["world"]}
+        {"cmd": ["world"]},
+        {"env": ["foo=bar"]}
     ]
 )
 def test_project_unmarshal_with_deprecated_fields(deprecated_field, yaml_loaded_data):
@@ -145,7 +144,7 @@ def test_project_unmarshal_with_deprecated_fields(deprecated_field, yaml_loaded_
         _ = Project.unmarshal(loaded_data_with_deprecated_fields)
         
     assert "All ROCKs have Pebble as their entrypoint, so you must use "\
-        "'services' to define your container application." in str(err.value)
+        "'services' to define your container application" in str(err.value)
 
 
 @pytest.mark.parametrize("base", ["ubuntu:18.04", "ubuntu:20.04"])
