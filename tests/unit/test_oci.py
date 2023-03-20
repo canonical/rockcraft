@@ -104,9 +104,18 @@ class TestImage:
         image = oci.Image("a:b", Path("/c"))
         assert image.image_name == "a:b"
         assert image.path == Path("/c")
-        assert image._PEBBLE_PATH == "var/lib/pebble/default"
-        assert image._PEBBLE_LAYERS_PATH == "var/lib/pebble/default/layers"
-        assert image._PEBBLE_BINARY_PATH == "bin/pebble"
+        assert (
+            image._PEBBLE_PATH  # pylint: disable=protected-access
+            == "var/lib/pebble/default"
+        )
+        assert (
+            image._PEBBLE_LAYERS_PATH  # pylint: disable=protected-access
+            == "var/lib/pebble/default/layers"
+        )
+        assert (
+            image._PEBBLE_BINARY_PATH  # pylint: disable=protected-access
+            == "bin/pebble"
+        )
 
     def test_from_docker_registry(self, mock_run, new_dir):
         image, source_image = oci.Image.from_docker_registry(
@@ -620,7 +629,7 @@ class TestImage:
                 capture_output=True,
                 check=True,
                 universal_newlines=True,
-            )
+            ),
         ]
 
     def test_set_env(self, mocker):
@@ -654,22 +663,16 @@ class TestImage:
             # Test Case 1:
             # Without any previous layers, the default layer prefix is 001.
             (
-                
                 [],
                 "001",
-                {
-                    "mockServiceOne": {
-                        "override": "replace",
-                        "command": "foo"
-                    }
-                },
+                {"mockServiceOne": {"override": "replace", "command": "foo"}},
                 (
                     "  mockServiceOne:"
                     "{n}"
                     "    override: replace"
                     "{n}"
                     "    command: foo"
-                ).format(n=os.linesep)
+                ).format(n=os.linesep),
             ),
             # Test Case 2:
             # With existing layers, the default layer prefix is an increment.
@@ -678,14 +681,8 @@ class TestImage:
                 ["001-existing-layer1.yml", "003-existing-layer3.yaml"],
                 "004",
                 {
-                    "mockServiceOne": {
-                        "override": "replace",
-                        "command": "foo"
-                    },
-                    "mockServiceTwo": {
-                        "override": "merge",
-                        "command": "bar"
-                    }
+                    "mockServiceOne": {"override": "replace", "command": "foo"},
+                    "mockServiceTwo": {"override": "merge", "command": "bar"},
                 },
                 (
                     "  mockServiceOne:"
@@ -699,31 +696,36 @@ class TestImage:
                     "    override: merge"
                     "{n}"
                     "    command: bar"
-                ).format(n=os.linesep)
+                ).format(n=os.linesep),
             ),
             # Test Case 3:
             # If there are more files that are not layers, they are ignored.
             (
-                
                 ["2-bad-layer.yaml", "001-good-layer.yml", "not-a-layer"],
                 "002",
-                {
-                    "mockServiceOne": {
-                        "override": "replace",
-                        "command": "foo"
-                    }
-                },
+                {"mockServiceOne": {"override": "replace", "command": "foo"}},
                 (
                     "  mockServiceOne:"
                     "{n}"
                     "    override: replace"
                     "{n}"
                     "    command: foo"
-                ).format(n=os.linesep)
-            )
-        ]
+                ).format(n=os.linesep),
+            ),
+        ],
     )
-    def test_set_pebble_services(self, mock_add_layer, mock_rmtree, mock_mkdtemp, tmp_path, existing_layers, expected_new_layer_prefix, services, expected_services):
+    def test_set_pebble_services(
+        self,
+        mock_add_layer,
+        mock_rmtree,
+        mock_mkdtemp,
+        tmp_path,
+        existing_layers,
+        expected_new_layer_prefix,
+        services,
+        expected_services,
+    ):
+        # pylint: disable=too-many-locals
         image = oci.Image("a:b", Path("/c"))
 
         mock_summary = "summary"
@@ -738,11 +740,11 @@ class TestImage:
             f"{expected_services}"
             "{n}"
         ).format(n=os.linesep)
-        
+
         mock_name = "rock"
         mock_tag = "tag"
         mock_base_layer_dir = tmp_path / "base"
-        
+
         # Mock the base layer dir just to test the detection of existing
         # Pebble layers
         tmp_base_layer_dir = mock_base_layer_dir / "var/lib/pebble/default/layers/"
@@ -750,14 +752,15 @@ class TestImage:
         for layer in existing_layers:
             tmp_layer_file = tmp_base_layer_dir / layer
             tmp_layer_file.touch()
-        
+
         mock_tmpfs = tmp_path / "layer_dir"
         mock_mkdtemp.return_value = mock_tmpfs
-        
+
         mocked_data = {"writes": ""}
 
         def mock_write(s):
             mocked_data["writes"] += s
+
         m = mock_open()
         with patch("builtins.open", m) as f:
             with patch("pathlib.Path.mkdir") as local_mock_mkdir:
@@ -768,9 +771,9 @@ class TestImage:
                     mock_tag,
                     mock_summary,
                     mock_description,
-                    mock_base_layer_dir
+                    mock_base_layer_dir,
                 )
-                
+
         assert f.call_args[0][0].name == f"{expected_new_layer_prefix}-{mock_name}.yaml"
         local_mock_mkdir.assert_called_once_with(parents=True)
         assert mocked_data["writes"] == expected_layer

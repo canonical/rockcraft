@@ -12,6 +12,8 @@ execute: |
   docker images
   sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy "oci-archive:$ROCK" "docker-daemon:$IMG_NAME:latest"
   rm "$ROCK"
-  docker images
+  docker images $IMG_NAME:latest
 
-  docker run --rm $IMG_NAME
+  id=$(docker run --rm -d $IMG_NAME)
+  docker logs "$id"
+  docker rm -f "$id"

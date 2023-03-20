@@ -220,7 +220,7 @@ class Image:
         _copy_image(f"oci:{str(src_path)}", f"oci-archive:{filename}:{tag}")
 
     def set_entrypoint(self) -> None:
-        """Set the OCI image entrypoint. It is always Pebble, and CMD is null"""
+        """Set the OCI image entrypoint. It is always Pebble and CMD is null."""
         emit.progress("Configuring entrypoint...")
         image_path = self.path / self.image_name
         entrypoint = [f"/{self._PEBBLE_BINARY_PATH}", "enter"]
@@ -250,6 +250,7 @@ class Image:
         :param description: The description for the Pebble layer
         :param base_layer_dir: Path to the base layer's root filesystem
         """
+        # pylint: disable=too-many-locals,too-many-arguments
         service_names = list(services.keys())
         emit.progress(f"Configuring Pebble services {', '.join(service_names)}")
         pebble_layer_content = {
@@ -274,7 +275,7 @@ class Image:
             f"Found {len(existing_pebble_layers)} Pebble layers in the base's root filesystem"
         )
 
-        new_layer_prefix = "%03d" % (int(prefixes[-1]) + 1) if prefixes else "001"
+        new_layer_prefix = f"{(int(prefixes[-1]) + 1):03}" if prefixes else "001"
         # TODO: we need proper name validation as Pebble is quite unforgiving
         # about the layer's label. We also don't want to allow any character
         # in the ROCK's name. For now, just replacing the common "_" with "-".

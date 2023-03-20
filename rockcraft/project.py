@@ -38,8 +38,8 @@ import spdx_lookup  # type: ignore
 import yaml
 
 from rockcraft.errors import ProjectLoadError, ProjectValidationError
-from rockcraft.parts import validate_part
 from rockcraft.oci import Image
+from rockcraft.parts import validate_part
 
 if TYPE_CHECKING:
     from pydantic.error_wrappers import ErrorDict
@@ -145,8 +145,11 @@ class Platform(pydantic.BaseModel):
 
 
 class Service(pydantic.BaseModel):
-    """Lightweight schema validation for a Pebble service, base on
-    https://github.com/canonical/pebble#layer-specification"""
+    """Lightweight schema validation for a Pebble service.
+
+    Based on
+    https://github.com/canonical/pebble#layer-specification
+    """
 
     override: Literal["merge", "replace"]
     command: str
@@ -163,9 +166,7 @@ class Service(pydantic.BaseModel):
     group_id: Optional[int]
     on_success: Optional[Literal["restart", "shutdown", "ignore"]]
     on_failure: Optional[Literal["restart", "shutdown", "ignore"]]
-    on_check_failure: Optional[
-        Dict[str, Literal["restart", "shutdown", "ignore"]]
-    ]
+    on_check_failure: Optional[Dict[str, Literal["restart", "shutdown", "ignore"]]]
     backoff_delay: Optional[str]
     backoff_factor: Optional[float]
     backoff_limit: Optional[str]
@@ -205,6 +206,7 @@ class Project(pydantic.BaseModel):
     @classmethod
     def _check_deprecated_options(cls, values: List) -> str:
         """Before validation, check if deprecated fields exist. Exit if so."""
+        # pylint: disable=unused-argument
         deprecation_msg = str(
             "The fields 'entrypoint', 'cmd' and 'env are not supported in "
             "Rockcraft. All ROCKs have Pebble as their entrypoint, so you must "
@@ -550,8 +552,8 @@ def _add_pebble_data(yaml_data: Dict[str, Any]) -> None:
     pebble_part_spec = {
         "plugin": "nil",
         "stage-snaps": ["pebble/latest/edge"],
-        "stage": [Image._PEBBLE_BINARY_PATH],
-        "override-prime": f"craftctl default\nmkdir -p {Image._PEBBLE_LAYERS_PATH}"
+        "stage": [Image._PEBBLE_BINARY_PATH],  # pylint: disable=protected-access
+        "override-prime": f"craftctl default\nmkdir -p {Image._PEBBLE_LAYERS_PATH}",  # pylint: disable=protected-access
     }
 
     parts["pebble"] = pebble_part_spec

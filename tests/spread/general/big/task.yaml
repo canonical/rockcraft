@@ -30,26 +30,27 @@ execute: |
   # test ownership: "newfiles" and "a.txt" are owned by uid 9999, "b.txt" is owned by uid 3333
   # (github issue #44)
   ############################################################################################
-  docker run --rm big bash -c "stat -c %u /etc/newfiles | grep -q 9999"
-  docker run --rm big bash -c "stat -c %u /etc/newfiles/a.txt | grep -q 9999"
-  docker run --rm big bash -c "stat -c %u /etc/newfiles/b.txt | grep -q 3333"
+  docker run --rm big exec bash -c "stat -c %u /etc/newfiles | grep -q 9999"
+  docker run --rm big exec bash -c "stat -c %u /etc/newfiles/a.txt | grep -q 9999"
+  docker run --rm big exec bash -c "stat -c %u /etc/newfiles/b.txt | grep -q 3333"
 
   ############################################################################################
   # test permissions set via part
   ############################################################################################
   # Check that files in /dir1/ have uid 1111 and gid 2222
-  docker run --rm big bash -c 'stat -c "%u %g" /dir1/1.txt | grep -e "1111 2222"'
-  docker run --rm big bash -c 'stat -c "%u %g" /dir1/2.txt | grep -e "1111 2222"'
+  docker run --rm big exec bash -c 'stat -c "%u %g" /dir1/1.txt | grep -e "1111 2222"'
+  docker run --rm big exec bash -c 'stat -c "%u %g" /dir1/2.txt | grep -e "1111 2222"'
   # Check that file /dir2/3.txt has 0o755 permission and original uid/gid
-  docker run --rm big bash -c 'stat -c "%a %U %G" /dir2/3.txt | grep -e "755 root root"'
+  docker run --rm big exec bash -c 'stat -c "%a %U %G" /dir2/3.txt | grep -e "755 root root"'
 
   ############################################################################################
   # check that /bin/pebble is a static binary
   ############################################################################################
-  docker run --name big-container big bash
+  docker create --name big-container big
   docker cp big-container:/bin/pebble - | tar xf -
   file pebble | grep "statically linked"
   docker rm -f big-container
+  rm pebble
   
   ############################################################################################
   # This check documents the fact that we currently don't preserve/observe symlinks between

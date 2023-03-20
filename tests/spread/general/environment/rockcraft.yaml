@@ -7,10 +7,11 @@ license: Apache-2.0
 services:
   test:
     override: replace
-    command: /bin/true
+    command: /usr/bin/env
     startup: enabled
-env:
-  - X: "ship it!"
+    environment:
+      X: "ship it!"
+
 platforms:
   amd64:
   amd64v2:

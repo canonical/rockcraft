@@ -14,9 +14,6 @@ services:
 platforms:
   amd64:
 
-env:
-  - TMPDIR: /
-
 parts:
 
   chisel-part:

@@ -115,10 +115,9 @@ def test_project_unmarshal(yaml_loaded_data):
     assert project.rock_license == "Apache-2.0"
     assert project.build_base == "ubuntu:20.04"
     assert project.services == {
-        "hello": Service(**{
-            "override": "replace",
-            "command": "/bin/hello"
-        })
+        "hello": Service(
+            **{"override": "replace", "command": "/bin/hello"}  # type:ignore
+        )
     }
     assert project.parts == {
         "foo": {
@@ -127,24 +126,20 @@ def test_project_unmarshal(yaml_loaded_data):
         }
     }
 
+
 @pytest.mark.parametrize(
     "deprecated_field",
-    [
-        {"entrypoint": ["/bin/hello"]},
-        {"cmd": ["world"]},
-        {"env": ["foo=bar"]}
-    ]
+    [{"entrypoint": ["/bin/hello"]}, {"cmd": ["world"]}, {"env": ["foo=bar"]}],
 )
 def test_project_unmarshal_with_deprecated_fields(deprecated_field, yaml_loaded_data):
-    loaded_data_with_deprecated_fields = {
-        **yaml_loaded_data,
-        **deprecated_field
-    }
+    loaded_data_with_deprecated_fields = {**yaml_loaded_data, **deprecated_field}
     with pytest.raises(ProjectValidationError) as err:
         _ = Project.unmarshal(loaded_data_with_deprecated_fields)
-        
-    assert "All ROCKs have Pebble as their entrypoint, so you must use "\
+
+    assert (
+        "All ROCKs have Pebble as their entrypoint, so you must use "
         "'services' to define your container application" in str(err.value)
+    )
 
 
 @pytest.mark.parametrize("base", ["ubuntu:18.04", "ubuntu:20.04"])
@@ -343,7 +338,7 @@ def test_full_service():
 
 
 def test_minimal_service():
-    _ = Service(override="merge", command="foo cmd")
+    _ = Service(override="merge", command="foo cmd")  # pyright: ignore
 
 
 @pytest.mark.parametrize(
@@ -369,7 +364,7 @@ def test_minimal_service():
             r"on_failure[\s\S]*unexpected value[\s\S]*"
             r"'restart', 'shutdown', 'ignore'[\s\S]*"
             r"on_check_failure[\s\S]*unexpected value[\s\S]*"
-            r"'restart', 'shutdown', 'ignore'[\s\S]*"
+            r"'restart', 'shutdown', 'ignore'[\s\S]*",
         ),
         # Bad attribute types
         (
@@ -381,7 +376,7 @@ def test_minimal_service():
                 "environment": "not a Dict",
                 "user_id": "not an int",
                 "on_check_failure": {"check": ["not a Literal"]},
-                "backoff_factor": "not a float"
+                "backoff_factor": "not a float",
             },
             r"^8 validation errors[\s\S]*"
             r"unhashable type[\s\S]*"
@@ -390,7 +385,7 @@ def test_minimal_service():
             r"value is not a valid dict[\s\S]*"
             r"value is not a valid integer[\s\S]*"
             r"unhashable type[\s\S]*"
-            r"value is not a valid float[\s\S]*"
+            r"value is not a valid float[\s\S]*",
         ),
     ],
 )
@@ -464,7 +459,7 @@ def test_project_load(yaml_data, yaml_loaded_data, pebble_part, tmp_path):
             )
             continue
         if attr == "services":
-            # services are classs and not Dicts upfront
+            # services are classes and not Dicts upfront
             v["hello"] = Service(**v["hello"])
 
         assert getattr(project, attr) == v

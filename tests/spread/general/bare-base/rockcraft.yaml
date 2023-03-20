@@ -8,7 +8,7 @@ base: bare
 services:
   hello:
     override: merge
-    command: /usr/bin/hello [-g, "ship it!"]
+    command: /usr/bin/hello -g "ship it!"
     startup: enabled
 platforms:
   amd64:
