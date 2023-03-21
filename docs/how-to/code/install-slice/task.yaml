@@ -49,5 +49,5 @@ execute: |
   rm -fr chisel/ chisel-releases/ my-custom-openssl-fs/ custom-openssl-rock_0.0.1_amd64.rock
 
   # [docs:docker-run]
-  docker run --rm chisel-openssl openssl
+  docker run --rm chisel-openssl exec openssl
   # [docs:docker-run-end]

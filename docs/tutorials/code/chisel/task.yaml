@@ -23,11 +23,11 @@ execute: |
   # [docs:skopeo-copy-end]
 
   # [docs:docker-run]
-  docker run --rm  chisel-openssl
+  docker run --rm chisel-openssl exec openssl
   # [docs:docker-run-end]
 
   # [docs:docker-run-with-args]
-  docker run --rm chisel-openssl s_client -connect ubuntu.com:443 -brief
+  docker run --rm chisel-openssl exec --env=SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt openssl s_client -connect ubuntu.com:443 -brief
   # [docs:docker-run-with-args-end]
   
-  docker run --rm chisel-openssl s_client -connect ubuntu.com:443 -brief 2>&1 | grep "Verification: OK"
+  docker run --rm chisel-openssl exec --env=SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt openssl s_client -connect ubuntu.com:443 -brief 2>&1 | grep "Verification: OK"
