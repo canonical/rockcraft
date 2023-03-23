@@ -23,7 +23,7 @@ from typing import Any, Dict, List, Optional
 import craft_parts
 from craft_archives import repo
 from craft_cli import emit
-from craft_parts import ActionType, Step, packages
+from craft_parts import ActionType, Step
 from xdg import BaseDirectory  # type: ignore
 
 from rockcraft.errors import PartsLifecycleError

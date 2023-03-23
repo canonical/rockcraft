@@ -89,7 +89,8 @@ def test_run_installs_package_repositories(mocker, parts_data, tmp_path, repos):
         base_layer_hash=b"",
         package_repositories=repos,
     )
-    mocker.patch.object(lifecycle._lcm, "plan", return_value=[])
+    lcm = mocker.patch.object(lifecycle, "_lcm")
+    lcm.plan.return_value = []
     mocker.patch("craft_archives.repo.install", return_value=False)
     progress_spy = mocker.spy(craft_cli.emit, "progress")
 
