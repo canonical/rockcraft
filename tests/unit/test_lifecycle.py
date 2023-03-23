@@ -22,7 +22,6 @@ import pytest
 from craft_cli import EmitterMode, emit
 from craft_providers.bases.buildd import BuilddBaseAlias
 
-import rockcraft.project
 import tests
 from rockcraft import lifecycle
 

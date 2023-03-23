@@ -23,8 +23,7 @@ from typing import Any, Dict, List, Optional
 import craft_parts
 from craft_archives import repo
 from craft_cli import emit
-from craft_parts import ActionType, Step
-from craft_parts import packages
+from craft_parts import ActionType, Step, packages
 from xdg import BaseDirectory  # type: ignore
 
 from rockcraft.errors import PartsLifecycleError
@@ -57,7 +56,7 @@ class PartsLifecycle:
         part_names: Optional[List[str]],
         base_layer_dir: pathlib.Path,
         base_layer_hash: bytes,
-        package_repositories: List[Dict[str, Any]] = None,
+        package_repositories: Optional[List[Dict[str, Any]]] = None,
     ):
         self._part_names = part_names
         self._package_repositories = package_repositories or []

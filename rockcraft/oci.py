@@ -191,7 +191,7 @@ class Image:
         :returns: The image digest bytes.
         """
         output = subprocess.check_output(
-            ["skopeo", "inspect", "--format", "{{.Digest}}", "-n", source_image],
+            ["skopeo", "inspect", "--format", "{{.Digest}}", source_image],
             text=True,
         )
         parts = output.split(":", 1)
