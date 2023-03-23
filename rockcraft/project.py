@@ -424,7 +424,7 @@ def _format_pydantic_errors(
     combined = [f"Bad {file_name} content:"]
     for error in errors:
         if base_location:
-            error_loc = [base_location]
+            error_loc: List[Union[int, str]] = [base_location]
         else:
             error_loc = []
         error_loc.extend(error["loc"])
