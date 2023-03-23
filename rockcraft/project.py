@@ -36,6 +36,7 @@ from typing import (
 import pydantic
 import spdx_lookup  # type: ignore
 import yaml
+from craft_archives import repo
 
 from rockcraft.errors import ProjectLoadError, ProjectValidationError
 from rockcraft.parts import validate_part
@@ -160,6 +161,8 @@ class Project(pydantic.BaseModel):
     entrypoint: Optional[List[str]]
     cmd: Optional[List[str]]
     env: Optional[List[Dict[str, str]]]
+
+    package_repositories: Optional[List[Dict[str, Any]]]
 
     parts: Dict[str, Any]
 
@@ -320,6 +323,27 @@ class Project(pydantic.BaseModel):
         validate_part(item)
         return item
 
+    @pydantic.validator("package_repositories")
+    @classmethod
+    def _validate_package_repositories(
+        cls, package_repositories: Optional[List[Dict[str, Any]]]
+    ) -> List[Dict[str, Any]]:
+        if not package_repositories:
+            return []
+
+        errors = []
+        for repository in package_repositories:
+            try:
+                repo.validate_repository(repository)
+            except pydantic.ValidationError as exc:
+                errors.extend(exc.errors())
+        if errors:
+            raise ProjectValidationError(
+                _format_pydantic_errors(errors, base_location="package-repositories")
+            )
+
+        return package_repositories
+
     @classmethod
     def unmarshal(cls, data: Dict[str, Any]) -> "Project":
         """Create and populate a new ``Project`` object from dictionary data.
@@ -376,7 +400,10 @@ class Project(pydantic.BaseModel):
 
 
 def _format_pydantic_errors(
-    errors: List["ErrorDict"], *, file_name: str = "rockcraft.yaml"
+    errors: List["ErrorDict"],
+    *,
+    file_name: str = "rockcraft.yaml",
+    base_location: Optional[str] = None,
 ) -> str:
     """Format errors.
 
@@ -396,7 +423,12 @@ def _format_pydantic_errors(
     """
     combined = [f"Bad {file_name} content:"]
     for error in errors:
-        formatted_loc = _format_pydantic_error_location(error["loc"])
+        if base_location:
+            error_loc = [base_location]
+        else:
+            error_loc = []
+        error_loc.extend(error["loc"])
+        formatted_loc = _format_pydantic_error_location(error_loc)
         formatted_msg = _format_pydantic_error_message(error["msg"])
 
         if formatted_msg == "field required":
