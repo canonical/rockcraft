@@ -21,8 +21,8 @@ from craft_parts.utils import os_utils
 def is_ubuntu_jammy() -> bool:
     release = os_utils.OsRelease()
     try:
-        return release.version_codename() == "jammy"
-    except errors.OsReleaseCodenameError:
+        return release.id() == "ubuntu" and release.version_id() == "22.04"
+    except errors.OsReleaseIdError:
         return False
 
 
