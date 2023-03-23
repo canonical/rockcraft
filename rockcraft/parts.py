@@ -158,8 +158,6 @@ class PartsLifecycle:
             emit.debug("No package repositories specified, none to install.")
             return
 
-        packages.Repository.install_packages(["gnupg"], refresh_package_cache=True)
-
         refresh_required = repo.install(
             self._package_repositories, key_assets=pathlib.Path("/dev/null")
         )
