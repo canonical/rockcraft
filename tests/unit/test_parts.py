@@ -18,12 +18,22 @@ from pathlib import Path
 from typing import cast
 from unittest.mock import call
 
+import craft_cli
 import pytest
 from craft_parts import Action, PartsError, Step
 
 import tests
 from rockcraft import parts
 from rockcraft.errors import RockcraftError
+
+
+@pytest.fixture
+def parts_data():
+    yield {
+        "foo": {
+            "plugin": "nil",
+        }
+    }
 
 
 @tests.linux_only
@@ -68,6 +78,31 @@ def test_parts_lifecycle_run(new_dir):
     assert Path(lifecycle.prime_dir, "foo.txt").is_file()
 
 
+@pytest.mark.parametrize("repos", [[{"type": "apt", "ppa": "mozillateam/ppa"}]])
+@tests.linux_only
+def test_run_installs_package_repositories(mocker, parts_data, tmp_path, repos):
+    lifecycle = parts.PartsLifecycle(
+        all_parts=parts_data,
+        work_dir=tmp_path,
+        part_names=None,
+        base_layer_dir=tmp_path,
+        base_layer_hash=b"",
+        package_repositories=repos,
+    )
+    mocker.patch.object(lifecycle._lcm, "plan", return_value=[])
+    mocker.patch("craft_archives.repo.install", return_value=False)
+    progress_spy = mocker.spy(craft_cli.emit, "progress")
+
+    lifecycle.run("pull")
+
+    progress_spy.assert_has_calls(
+        [
+            call("Installing package repositories"),
+            call("Package repositories installed", permanent=True),
+        ]
+    )
+
+
 @pytest.mark.parametrize(
     "step_name,expected_last_step",
     [
@@ -79,7 +114,9 @@ def test_parts_lifecycle_run(new_dir):
     ],
 )
 @tests.linux_only
-def test_parts_lifecycle_run_shell(new_dir, mocker, step_name, expected_last_step):
+def test_parts_lifecycle_run_shell(
+    new_dir, mocker, step_name, expected_last_step, parts_data
+):
     """Check if the last step executed before shell is the previous step."""
     last_step = None
 
@@ -89,12 +126,6 @@ def test_parts_lifecycle_run_shell(new_dir, mocker, step_name, expected_last_ste
 
     mocker.patch("craft_parts.executor.Executor.execute", new=_fake_execute)
     shell_mock = mocker.patch("subprocess.run")
-
-    parts_data = {
-        "foo": {
-            "plugin": "nil",
-        }
-    }
 
     lifecycle = parts.PartsLifecycle(
         all_parts=parts_data,
