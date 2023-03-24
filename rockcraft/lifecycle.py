@@ -58,6 +58,11 @@ def run(command_name: str, parsed_args: "argparse.Namespace") -> None:
     image_dir = work_dir / "images"
     bundle_dir = work_dir / "bundles"
 
+    if project.package_repositories is None:
+        package_repositories = []
+    else:
+        package_repositories = project.package_repositories
+
     # Obtain base image and extract it to use as our overlay base
     # TODO: check if image was already downloaded, etc.
     emit.progress(f"Retrieving base {project.base}")
@@ -102,6 +107,7 @@ def run(command_name: str, parsed_args: "argparse.Namespace") -> None:
             part_names=part_names,
             base_layer_dir=rootfs,
             base_layer_hash=base_digest,
+            package_repositories=package_repositories,
         )
 
         if command_name == "clean":

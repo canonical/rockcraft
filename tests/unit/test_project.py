@@ -54,6 +54,9 @@ entrypoint: ["/bin/hello"]
 cmd: ["world"]
 env:
     - NAME: "VALUE"
+package-repositories:
+    - type: apt
+      ppa: ppa/ppa
 platforms:
     {BUILD_ON_ARCH}:
     some-text:
@@ -91,29 +94,63 @@ def pebble_part():
     }
 
 
-def test_project_unmarshal(yaml_loaded_data):
+def test_project_unmarshal(check, yaml_loaded_data):
     project = Project.unmarshal(yaml_loaded_data)
 
-    assert project.name == "mytest"
-    assert project.title == "My Test"
-    assert project.version == "latest"
-    assert project.base == "ubuntu:20.04"
-    assert project.summary == "example for unit tests"
-    assert (
-        project.description
-        == "this is an example of a rockcraft.yaml for the purpose of testing rockcraft"
+    check.equal(project.name, "mytest")
+    check.equal(project.title, "My Test")
+    check.equal(project.version, "latest")
+    check.equal(project.base, "ubuntu:20.04")
+    check.equal(project.summary, "example for unit tests")
+    check.equal(
+        project.description,
+        "this is an example of a rockcraft.yaml for the purpose of testing rockcraft",
     )
-    assert project.rock_license == "Apache-2.0"
-    assert project.build_base == "ubuntu:20.04"
-    assert project.entrypoint == ["/bin/hello"]
-    assert project.cmd == ["world"]
-    assert project.env == [{"NAME": "VALUE"}]
-    assert project.parts == {
-        "foo": {
-            "plugin": "nil",
-            "overlay-script": "ls",
-        }
-    }
+    check.equal(project.rock_license, "Apache-2.0")
+    check.equal(project.build_base, "ubuntu:20.04")
+    check.equal(project.entrypoint, ["/bin/hello"])
+    check.equal(project.cmd, ["world"])
+    check.equal(project.env, [{"NAME": "VALUE"}])
+    check.equal(project.package_repositories, [{"type": "apt", "ppa": "ppa/ppa"}])
+    check.equal(
+        project.parts,
+        {
+            "foo": {
+                "plugin": "nil",
+                "overlay-script": "ls",
+            }
+        },
+    )
+
+
+def test_unmarshal_no_repositories(yaml_loaded_data):
+    yaml_loaded_data["package-repositories"] = None
+
+    project = Project.unmarshal(yaml_loaded_data)
+
+    assert project.package_repositories == []
+
+
+def test_unmarshal_undefined_repositories(yaml_loaded_data):
+    del yaml_loaded_data["package-repositories"]
+
+    project = Project.unmarshal(yaml_loaded_data)
+
+    assert project.package_repositories is None
+
+
+def test_unmarshal_invalid_repositories(yaml_loaded_data):
+    yaml_loaded_data["package-repositories"] = [{}]
+
+    with pytest.raises(ProjectValidationError) as error:
+        Project.unmarshal(yaml_loaded_data)
+
+    assert error.value.args[0] == (
+        "Bad rockcraft.yaml content:\n"
+        "- field 'type' required in 'package-repositories' configuration\n"
+        "- field 'url' required in 'package-repositories' configuration\n"
+        "- field 'key-id' required in 'package-repositories' configuration"
+    )
 
 
 @pytest.mark.parametrize("base", ["ubuntu:18.04", "ubuntu:20.04"])
@@ -351,7 +388,7 @@ def test_project_load(yaml_data, yaml_loaded_data, pebble_part, tmp_path):
             )
             continue
 
-        assert getattr(project, attr) == v
+        assert getattr(project, attr.replace("-", "_")) == v
 
 
 def test_project_load_existing_pebble(tmp_path):
