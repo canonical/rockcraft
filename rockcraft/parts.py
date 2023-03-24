@@ -37,6 +37,9 @@ _LIFECYCLE_STEPS = {
 }
 
 
+craft_parts.Features(enable_overlay=True)
+
+
 class PartsLifecycle:
     """Create and manage the parts lifecycle.
 

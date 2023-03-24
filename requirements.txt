@@ -6,7 +6,7 @@ charset-normalizer==2.1.1
 colorama==0.4.6
 craft-archives==0.0.3
 craft-cli==1.2.0
-craft-parts==1.18.4
+craft-parts==1.19.0
 craft-providers==1.8.0
 Deprecated==1.2.13
 distro==1.8.0
