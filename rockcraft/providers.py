@@ -119,7 +119,7 @@ def get_base_configuration(
                 classic=True,
             )
         ],
-        packages=["gpg"],
+        packages=["gpg", "dirmngr"],
     )
 
 
