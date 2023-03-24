@@ -247,6 +247,7 @@ class Image:
         :param description: The description for the Pebble layer
         :param base_layer_dir: Path to the base layer's root filesystem
         """
+        # pylint: disable=too-many-arguments
         service_names = list(services.keys())
         emit.progress(f"Configuring Pebble services {', '.join(service_names)}")
         pebble_layer_content = {
@@ -255,14 +256,15 @@ class Image:
             "services": services,
         }
 
-        tmpfs = Path(tempfile.TemporaryDirectory())
-        Pebble.define_pebble_layer(
-            tmpfs, base_layer_dir, pebble_layer_content, name
-        )
+        pebble = Pebble()
+        with tempfile.TemporaryDirectory() as tmpfs:
+            tmpfs_path = Path(tmpfs)
+            pebble.define_pebble_layer(
+                tmpfs_path, base_layer_dir, pebble_layer_content, name
+            )
 
-        emit.progress("Writing new Pebble layer file")
-        self.add_layer(tag, tmpfs)
-        shutil.rmtree(tmpfs)
+            emit.progress("Writing new Pebble layer file")
+            self.add_layer(tag, tmpfs_path)
 
     def set_env(self, env: List[Dict[str, str]]) -> None:
         """Set the OCI image environment.

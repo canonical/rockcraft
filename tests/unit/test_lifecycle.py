@@ -28,7 +28,7 @@ from rockcraft import lifecycle
 
 @pytest.fixture
 def mock_project(mocker):
-    _mock_project = mocker.patch("rockcraft.project")
+    _mock_project = mocker.Mock()
     _mock_project.name = "test-name"
     _mock_project.platforms = {
         "test-platform": {
@@ -36,6 +36,8 @@ def mock_project(mocker):
             "build_for": ["test-build-for"],
         }
     }
+    _mock_project.parts = {"foo": {"plugin": "nil"}}
+    _mock_project.package_repositories = []
     yield _mock_project
 
 
@@ -87,6 +89,7 @@ def test_run_clean_provider(mocker, mock_project):
     )
 
 
+# region Tests for running inside the provider
 @tests.linux_only
 def test_run_clean_part(mocker, mock_project, new_dir):
     """Verify cleaning a specific part."""
@@ -139,6 +142,66 @@ def test_run_clean_destructive_mode(mocker, mock_project, new_dir):
     assert clean_mock.mock_calls == [call()]
 
 
+@tests.linux_only
+@pytest.mark.parametrize(
+    "repos",
+    [
+        [],
+        [{"type": "apt", "ppa": "ppa/ppa"}],
+    ],
+)
+def test_install_repositories(mocker, mock_project, tmp_path, repos):
+    mock_project.package_repositories = repos
+    mocker.patch("rockcraft.lifecycle.load_project", return_value=mock_project)
+    mocker.patch("rockcraft.lifecycle.utils.is_managed_mode", return_value=True)
+    mocker.patch(
+        "rockcraft.lifecycle.utils.get_managed_environment_home_path",
+        return_value=tmp_path,
+    )
+    mocker.patch(
+        "rockcraft.oci.Image.from_docker_registry", return_value=(Mock(), Mock())
+    )
+    mock_lifecycle_class = mocker.patch("rockcraft.lifecycle.PartsLifecycle")
+
+    lifecycle.run(command_name="build", parsed_args=argparse.Namespace())
+
+    mock_lifecycle_class.assert_called_once_with(
+        mock_project.parts,
+        work_dir=tmp_path,
+        part_names=mocker.ANY,
+        base_layer_dir=mocker.ANY,
+        base_layer_hash=mocker.ANY,
+        package_repositories=repos,
+    )
+
+
+def test_install_repositories_none_conversion(mocker, mock_project, tmp_path):
+    mock_project.package_repositories = None
+    mocker.patch("rockcraft.lifecycle.load_project", return_value=mock_project)
+    mocker.patch("rockcraft.lifecycle.utils.is_managed_mode", return_value=True)
+    mocker.patch(
+        "rockcraft.lifecycle.utils.get_managed_environment_home_path",
+        return_value=tmp_path,
+    )
+    mocker.patch(
+        "rockcraft.oci.Image.from_docker_registry", return_value=(Mock(), Mock())
+    )
+    mock_lifecycle_class = mocker.patch("rockcraft.lifecycle.PartsLifecycle")
+
+    lifecycle.run(command_name="build", parsed_args=argparse.Namespace())
+
+    mock_lifecycle_class.assert_called_once_with(
+        mock_project.parts,
+        work_dir=tmp_path,
+        part_names=mocker.ANY,
+        base_layer_dir=mocker.ANY,
+        base_layer_hash=mocker.ANY,
+        package_repositories=[],
+    )
+
+
+# endregion
+# region Tests for managing the provider
 @pytest.mark.parametrize(
     "emit_mode,verbosity",
     [
@@ -237,3 +300,6 @@ def test_clean_provider(emitter, mock_get_instance_name, mock_provider, tmpdir):
             call("progress", "Cleaned build provider", permanent=True),
         ]
     )
+
+
+# endregion

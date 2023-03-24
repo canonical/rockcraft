@@ -14,11 +14,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import glob
-import yaml
+"""Pebble metadata and configuration helpers."""
 
-from craft_cli import emit
+import glob
 from pathlib import Path
+
+import yaml
+from craft_cli import emit
+from typing import Any, Dict
 
 
 class Pebble:
@@ -31,13 +34,18 @@ class Pebble:
         "plugin": "nil",
         "stage-snaps": ["pebble/latest/edge"],
         "stage": [PEBBLE_BINARY_PATH],
-        "override-prime": f"craftctl default\nmkdir -p {PEBBLE_LAYERS_PATH}",
     }
 
     def define_pebble_layer(
-        self, target_dir: Path, ref_fs: Path, layer_content: dict, rock_name: str
+        self,
+        target_dir: Path,
+        ref_fs: Path,
+        layer_content: Dict[str, Any],
+        rock_name: str,
     ) -> None:
-        """Infers the Pebble layer filename based on the existing contents of
+        """Infers and defines a new Pebble layer file.
+
+        Infers the Pebble layer filename based on the existing contents of
         ref_fs and writes the layer content into target_dir.
 
         :param target_dir: Path where to write the new Pebble layer file

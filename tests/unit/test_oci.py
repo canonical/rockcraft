@@ -653,7 +653,6 @@ class TestImage:
     def test_set_pebble_services(
         self,
         mock_add_layer,
-        mock_rmtree,
         mock_tmpdir,
         tmp_path,
         mocker,
@@ -697,7 +696,6 @@ class TestImage:
         mock_define_pebble_layer.assert_called_once_with(
             fake_tmpfs, mock_base_layer_dir, expected_layer, mock_name
         )
-        mock_rmtree.assert_called_once_with(fake_tmpfs)
 
     def test_set_control_data(
         self, mock_archive_layer, mock_rmtree, mock_mkdir, mock_mkdtemp, mocker

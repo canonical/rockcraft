@@ -157,6 +157,7 @@ def test_get_base_configuration(
                 name="rockcraft", channel=expected_snap_channel, classic=True
             )
         ],
+        packages=["gpg", "dirmngr"],
     )
 
 

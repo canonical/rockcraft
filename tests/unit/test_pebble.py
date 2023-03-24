@@ -1,6 +1,6 @@
 # -*- Mode:Python; indent-tabs-mode:nil; tab-width:4 -*-
 #
-# Copyright 2021-2022 Canonical Ltd.
+# Copyright 2023 Canonical Ltd.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 3 as
@@ -15,12 +15,13 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
-import pytest
-import tests
-
 from pathlib import Path
-from rockcraft.pebble import Pebble
 from unittest.mock import mock_open, patch
+
+import pytest
+
+import tests
+from rockcraft.pebble import Pebble
 
 
 @tests.linux_only
@@ -33,7 +34,7 @@ class TestPebble:
         assert Pebble.PEBBLE_BINARY_PATH == "bin/pebble"
         assert all(
             field in Pebble.PEBBLE_PART_SPEC
-            for field in ["plugin", "stage-snaps", "stage", "override-prime"]
+            for field in ["plugin", "stage-snaps", "stage"]
         )
 
     @pytest.mark.parametrize(
@@ -138,6 +139,7 @@ class TestPebble:
         layer_content,
         expected_layer_yaml,
     ):
+        # pylint: disable=too-many-locals
         mock_rock_name = "my-rock"
 
         # Mock the base layer dir just to test the detection of existing

@@ -1,0 +1,24 @@
+summary: external apt repository build on bare base test
+
+execute: |
+  run_rockcraft pack
+
+  test -f apt-repo-static-test_latest_amd64.rock
+  test ! -d work
+
+  # Ensure docker does not have this container image
+  docker rmi --force apt-repo-static-test
+  # Install container
+  sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:apt-repo-static-test_latest_amd64.rock docker-daemon:apt-repo-static-test:latest
+  # Ensure container exists
+  docker images apt-repo-static-test | MATCH "apt-repo-static-test"
+  
+  # ensure container doesn't exist
+  docker rm -f apt-repo-static-test-container
+  docker run -d --name apt-repo-static-test-container apt-repo-static-test -v
+  docker logs apt-repo-static-test-container | MATCH "hello!"
+
+restore: |
+  rm -f apt-repo-static-test_latest_amd64.rock
+  docker rmi apt-repo-static-test
+  docker rm -f apt-repo-static-test-container

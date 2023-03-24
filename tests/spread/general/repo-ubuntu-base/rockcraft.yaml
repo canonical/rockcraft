@@ -1,0 +1,24 @@
+name: apt-repo-test
+version: latest
+summary: A ROCK that pulls in a package from an external PPA
+description: A ROCK that pulls in a package from an external PPA
+license: Apache-2.0
+base: ubuntu:22.04
+services:
+  test:
+    override: replace
+    command: /usr/bin/python3.12 -c "import sys;print(sys.version)"
+    startup: enabled
+platforms:
+  amd64:
+
+package-repositories:
+  - type: apt
+    ppa: deadsnakes/ppa
+    priority: always
+
+parts:
+  hello:
+    plugin: nil
+    stage-packages:
+      - python3.12

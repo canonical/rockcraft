@@ -58,6 +58,10 @@ summary: "example for unit tests"
 description: "this is an example of a rockcraft.yaml for the purpose of testing rockcraft"
 license: Apache-2.0
 
+package-repositories:
+    - type: apt
+      ppa: ppa/ppa
+
 platforms:
     {BUILD_ON_ARCH}:
     some-text:
@@ -96,50 +100,88 @@ def pebble_part():
             "plugin": "nil",
             "stage-snaps": ["pebble/latest/edge"],
             "stage": ["bin/pebble"],
-            "override-prime": "craftctl default\nmkdir -p var/lib/pebble/default/layers",
         }
     }
 
 
-def test_project_unmarshal(yaml_loaded_data):
+def test_project_unmarshal(check, yaml_loaded_data):
     project = Project.unmarshal(yaml_loaded_data)
 
-    assert project.name == "mytest"
-    assert project.title == "My Test"
-    assert project.version == "latest"
-    assert project.base == "ubuntu:20.04"
-    assert project.summary == "example for unit tests"
-    assert (
-        project.description
-        == "this is an example of a rockcraft.yaml for the purpose of testing rockcraft"
+    check.equal(project.name, "mytest")
+    check.equal(project.title, "My Test")
+    check.equal(project.version, "latest")
+    check.equal(project.base, "ubuntu:20.04")
+    check.equal(project.summary, "example for unit tests")
+    check.equal(
+        project.description,
+        "this is an example of a rockcraft.yaml for the purpose of testing rockcraft",
     )
-    assert project.rock_license == "Apache-2.0"
-    assert project.build_base == "ubuntu:20.04"
-    assert project.services == {
-        "hello": Service(
-            **{
-                "override": "replace",
-                "command": "/bin/hello",
-                "on-failure": "restart",
-            }  # type:ignore
-        )
-    }
-    assert project.parts == {
-        "foo": {
-            "plugin": "nil",
-            "overlay-script": "ls",
-        }
-    }
+    check.equal(project.rock_license, "Apache-2.0")
+    check.equal(project.build_base, "ubuntu:20.04")
+    check.equal(project.package_repositories, [{"type": "apt", "ppa": "ppa/ppa"}])
+    check.equal(
+        project.parts,
+        {
+            "foo": {
+                "plugin": "nil",
+                "overlay-script": "ls",
+            }
+        },
+    )
+    check.equal(project.rock_license, "Apache-2.0")
+    check.equal(project.build_base, "ubuntu:20.04")
+    check.equal(
+        project.services,
+        {
+            "hello": Service(
+                **{
+                    "override": "replace",
+                    "command": "/bin/hello",
+                    "on-failure": "restart",
+                }  # type:ignore
+            )
+        },
+    )
+
+
+def test_unmarshal_no_repositories(yaml_loaded_data):
+    yaml_loaded_data["package-repositories"] = None
+
+    project = Project.unmarshal(yaml_loaded_data)
+
+    assert project.package_repositories == []
+
+
+def test_unmarshal_undefined_repositories(yaml_loaded_data):
+    del yaml_loaded_data["package-repositories"]
+
+    project = Project.unmarshal(yaml_loaded_data)
+
+    assert project.package_repositories is None
+
+
+def test_unmarshal_invalid_repositories(yaml_loaded_data):
+    yaml_loaded_data["package-repositories"] = [{}]
+
+    with pytest.raises(ProjectValidationError) as error:
+        Project.unmarshal(yaml_loaded_data)
+
+    assert error.value.args[0] == (
+        "Bad rockcraft.yaml content:\n"
+        "- field 'type' required in 'package-repositories' configuration\n"
+        "- field 'url' required in 'package-repositories' configuration\n"
+        "- field 'key-id' required in 'package-repositories' configuration"
+    )
 
 
 @pytest.mark.parametrize(
-    "deprecated_field",
+    "unsupported_field",
     [{"entrypoint": ["/bin/hello"]}, {"cmd": ["world"]}, {"env": ["foo=bar"]}],
 )
-def test_project_unmarshal_with_deprecated_fields(deprecated_field, yaml_loaded_data):
-    loaded_data_with_deprecated_fields = {**yaml_loaded_data, **deprecated_field}
+def test_project_unmarshal_with_unsupported_fields(unsupported_field, yaml_loaded_data):
+    loaded_data_with_unsupported_fields = {**yaml_loaded_data, **unsupported_field}
     with pytest.raises(ProjectValidationError) as err:
-        _ = Project.unmarshal(loaded_data_with_deprecated_fields)
+        _ = Project.unmarshal(loaded_data_with_unsupported_fields)
 
     assert (
         "All ROCKs have Pebble as their entrypoint, so you must use "
@@ -319,28 +361,29 @@ def test_project_all_platforms_invalid(yaml_loaded_data):
 
 
 def test_full_service():
-    _ = Service(
-        override="merge",
-        command="foo cmd",
-        summary="mock summary",
-        description="mock description",
-        startup="enabled",
-        after=["foo"],
-        before=["bar"],
-        requires=["some-other"],
-        environment={"envVar": "value"},
-        user="ubuntu",
-        user_id=1000,
-        group="ubuntu",
-        group_id=1000,
-        on_success="ignore",
-        on_failure="restart",
-        on_check_failure={"check": "restart"},
-        backoff_delay="10ms",
-        backoff_factor=1.2,
-        backoff_limit="1m",
-        kill_delay="5s",
-    )
+    full_service = {
+        "override": "merge",
+        "command": "foo cmd",
+        "summary": "mock summary",
+        "description": "mock description",
+        "startup": "enabled",
+        "after": ["foo"],
+        "before": ["bar"],
+        "requires": ["some-other"],
+        "environment": {"envVar": "value"},
+        "user": "ubuntu",
+        "user-id": 1000,
+        "group": "ubuntu",
+        "group-id": 1000,
+        "on-success": "ignore",
+        "on-failure": "restart",
+        "on-check_failure": {"check": "restart"},
+        "backoff-delay": "10ms",
+        "backoff-factor": 1.2,
+        "backoff-limit": "1m",
+        "kill-delay": "5s",
+    }
+    _ = Service(**full_service)
 
 
 def test_minimal_service():
@@ -468,7 +511,7 @@ def test_project_load(yaml_data, yaml_loaded_data, pebble_part, tmp_path):
             # services are classes and not Dicts upfront
             v["hello"] = Service(**v["hello"])
 
-        assert getattr(project, attr) == v
+        assert getattr(project, attr.replace("-", "_")) == v
 
 
 def test_project_load_existing_pebble(tmp_path):

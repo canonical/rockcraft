@@ -21,6 +21,7 @@ import subprocess
 from typing import Any, Dict, List, Optional
 
 import craft_parts
+from craft_archives import repo
 from craft_cli import emit
 from craft_parts import ActionType, Step
 from xdg import BaseDirectory  # type: ignore
@@ -58,8 +59,10 @@ class PartsLifecycle:
         part_names: Optional[List[str]],
         base_layer_dir: pathlib.Path,
         base_layer_hash: bytes,
+        package_repositories: Optional[List[Dict[str, Any]]] = None,
     ):
         self._part_names = part_names
+        self._package_repositories = package_repositories or []
 
         emit.progress("Initializing parts lifecycle")
 
@@ -122,6 +125,10 @@ class PartsLifecycle:
             else:
                 actions = []
 
+            if self._package_repositories:
+                emit.progress("Installing package repositories")
+                self._install_package_repositories()
+
             emit.progress("Executing parts lifecycle")
 
             with self._lcm.action_executor() as aex:
@@ -147,6 +154,21 @@ class PartsLifecycle:
             raise PartsLifecycleError(msg) from err
         except Exception as err:
             raise PartsLifecycleError(str(err)) from err
+
+    def _install_package_repositories(self) -> None:
+        """Install package repositories in the environment."""
+        if not self._package_repositories:
+            emit.debug("No package repositories specified, none to install.")
+            return
+
+        refresh_required = repo.install(
+            self._package_repositories, key_assets=pathlib.Path("/dev/null")
+        )
+        if refresh_required:
+            emit.progress("Refreshing repositories")
+            self._lcm.refresh_packages_list()
+
+        emit.progress("Package repositories installed", permanent=True)
 
 
 def launch_shell(*, cwd: Optional[pathlib.Path] = None) -> None:
