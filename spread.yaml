@@ -84,7 +84,10 @@ restore-each: |
   docker system prune -a -f
   if lxc project info rockcraft > /dev/null 2>&1 ; then
     for instance in $(lxc --project=rockcraft list -c n --format csv); do
-      lxc --project=rockcraft delete --force "$instance"
+      # Don't remove the base instance, we want to re-use it between tests
+      if ! [[ $instance =~ ^base-instance-rockcraft* ]]; then
+        lxc --project=rockcraft delete --force "$instance"
+      fi
     done
   fi  
 
