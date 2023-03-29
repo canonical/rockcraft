@@ -25,7 +25,7 @@ from craft_cli import ArgumentParsingError, EmitterMode, ProvideHelpException, e
 from craft_parts import PartsError
 from craft_providers import ProviderError
 
-from rockcraft import __version__, errors
+from rockcraft import __version__, errors, plugins
 
 from . import commands
 from .utils import get_managed_environment_log_path, is_managed_mode
@@ -74,6 +74,9 @@ def _emit_error(error: craft_cli.CraftError, cause: Optional[Exception] = None) 
 
 def run() -> None:
     """Run the CLI."""
+    # Register our own plugins
+    plugins.register()
+
     # set lib loggers to debug level so that all messages are sent to Emitter
     for lib_name in ("craft_providers", "craft_parts"):
         logger = logging.getLogger(lib_name)

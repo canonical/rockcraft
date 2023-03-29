@@ -13,29 +13,14 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-import pytest
-from craft_parts import errors
-from craft_parts.utils import os_utils
+
+"""Rockcraft-provided plugin registration."""
+
+import craft_parts
+
+from .python_plugin import PythonPlugin
 
 
-def is_ubuntu_jammy() -> bool:
-    release = os_utils.OsRelease()
-    try:
-        return release.id() == "ubuntu" and release.version_id() == "22.04"
-    except errors.OsReleaseIdError:
-        return False
-
-
-def is_ubuntu() -> bool:
-    release = os_utils.OsRelease()
-    try:
-        return release.id() == "ubuntu"
-    except errors.OsReleaseIdError:
-        return False
-
-
-jammy_only = pytest.mark.skipif(
-    not is_ubuntu_jammy(), reason="platform must be Ubuntu Jammy"
-)
-
-ubuntu_only = pytest.mark.skipif(not is_ubuntu(), reason="platform must be Ubuntu")
+def register() -> None:
+    """Register Rockcraft plugins."""
+    craft_parts.plugins.register({"python": PythonPlugin})
