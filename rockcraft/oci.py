@@ -43,6 +43,9 @@ ECR_URL = "public.ecr.aws/ubuntu"
 
 REGISTRY_URL = ECR_URL
 
+# The number of times to try downloading an image from `REGISTRY_URL`.
+MAX_DOWNLOAD_RETRIES = 5
+
 
 @dataclass(frozen=True)
 class Image:
@@ -80,10 +83,19 @@ class Image:
         image_target = image_dir / image_name
 
         source_image = f"docker://{REGISTRY_URL}/{image_name}"
-        platform_params = ["--override-arch", arch]
+        copy_params = ["--retry-times", str(MAX_DOWNLOAD_RETRIES)]
+        platform_params = [
+            "--override-arch",
+            arch,
+        ]
         if variant:
             platform_params += ["--override-variant", variant]
-        _copy_image(source_image, f"oci:{image_target}", *platform_params)
+        _copy_image(
+            source_image,
+            f"oci:{image_target}",
+            copy_params=copy_params,
+            *platform_params,
+        )
 
         return cls(image_name=image_name, path=image_dir), source_image
 
@@ -313,8 +325,18 @@ class Image:
         emit.progress(f"Labels and annotations set to {labels_list}", permanent=True)
 
 
-def _copy_image(source: str, destination: str, *system_params: str) -> None:
-    """Transfer images from source to destination."""
+def _copy_image(
+    source: str,
+    destination: str,
+    *system_params: str,
+    copy_params: Optional[List[str]] = None,
+) -> None:
+    """Transfer images from source to destination.
+
+    :param copy_params: Extra parameters to pass specifically to the "copy"
+        skopeo command (and not to skopeo itself).
+    """
+    copy_extra = copy_params if copy_params else []
     _process_run(
         [
             "skopeo",
@@ -323,6 +345,7 @@ def _copy_image(source: str, destination: str, *system_params: str) -> None:
         + list(system_params)
         + [
             "copy",
+            *copy_extra,
             source,
             destination,
         ]
