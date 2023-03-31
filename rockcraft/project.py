@@ -37,8 +37,8 @@ import pydantic
 import spdx_lookup  # type: ignore
 import yaml
 
+from rockcraft.pebble import Pebble
 from rockcraft.errors import ProjectLoadError, ProjectValidationError
-from rockcraft.oci import Image
 from rockcraft.parts import validate_part
 
 if TYPE_CHECKING:
@@ -161,15 +161,22 @@ class Service(pydantic.BaseModel):
     requires: Optional[List[str]]
     environment: Optional[Dict[str, str]]
     user: Optional[str]
-    user_id: Optional[int]
+    user_id: Optional[int] = pydantic.Field(alias="user-id")
     group: Optional[str]
-    group_id: Optional[int]
-    on_success: Optional[Literal["restart", "shutdown", "ignore"]]
-    on_failure: Optional[Literal["restart", "shutdown", "ignore"]]
-    on_check_failure: Optional[Dict[str, Literal["restart", "shutdown", "ignore"]]]
-    backoff_delay: Optional[str]
-    backoff_factor: Optional[float]
-    backoff_limit: Optional[str]
+    group_id: Optional[int] = pydantic.Field(alias="group-id")
+    on_success: Optional[Literal["restart", "shutdown", "ignore"]] = pydantic.Field(
+        alias="on-success"
+    )
+    on_failure: Optional[Literal["restart", "shutdown", "ignore"]] = pydantic.Field(
+        alias="on-failure"
+    )
+    on_check_failure: Optional[
+        Dict[str, Literal["restart", "shutdown", "ignore"]]
+    ] = pydantic.Field(alias="on-check-failure")
+    backoff_delay: Optional[str] = pydantic.Field(alias="backoff-delay")
+    backoff_factor: Optional[float] = pydantic.Field(alias="backoff-factor")
+    backoff_limit: Optional[str] = pydantic.Field(alias="backoff-limit")
+    kill_delay: Optional[str] = pydantic.Field(alias="kill-delay")
 
 
 class Project(pydantic.BaseModel):
@@ -186,9 +193,6 @@ class Project(pydantic.BaseModel):
     build_base: Optional[
         Literal["ubuntu:18.04", "ubuntu:20.04", "ubuntu:22.04"]
     ] = pydantic.Field(alias="build-base")
-    entrypoint: Optional[List[str]] = pydantic.Field(deprecated=True)
-    cmd: Optional[List[str]] = pydantic.Field(deprecated=True)
-    env: Optional[List[Dict[str, str]]]
     services: Optional[Dict[str, Service]]
 
     parts: Dict[str, Any]
@@ -202,18 +206,22 @@ class Project(pydantic.BaseModel):
         allow_population_by_field_name = True
         alias_generator = lambda s: s.replace("_", "-")  # noqa: E731
 
-    @pydantic.validator("cmd", "entrypoint", "env", pre=True)
+    @pydantic.root_validator(pre=True)
     @classmethod
-    def _check_deprecated_options(cls, values: List) -> str:
-        """Before validation, check if deprecated fields exist. Exit if so."""
+    def _check_unsupported_options(cls, values: List) -> str:
+        """Before validation, check if unsupported fields exist. Exit if so."""
         # pylint: disable=unused-argument
-        deprecation_msg = str(
+        unsupported_msg = str(
             "The fields 'entrypoint', 'cmd' and 'env are not supported in "
             "Rockcraft. All ROCKs have Pebble as their entrypoint, so you must "
             "use 'services' to define your container application and "
             "respective environment."
         )
-        raise ProjectValidationError(deprecation_msg)
+        unsupported_fields = ["cmd", "entrypoint", "env"]
+        if any(field in values for field in unsupported_fields):
+            raise ProjectValidationError(unsupported_msg)
+
+        return values
 
     @pydantic.validator("rock_license", always=True)
     @classmethod
@@ -549,11 +557,4 @@ def _add_pebble_data(yaml_data: Dict[str, Any]) -> None:
         # Project already has a pebble part: this is not supported.
         raise ProjectValidationError('Cannot override the default "pebble" part')
 
-    pebble_part_spec = {
-        "plugin": "nil",
-        "stage-snaps": ["pebble/latest/edge"],
-        "stage": [Image._PEBBLE_BINARY_PATH],  # pylint: disable=protected-access
-        "override-prime": f"craftctl default\nmkdir -p {Image._PEBBLE_LAYERS_PATH}",  # pylint: disable=protected-access
-    }
-
-    parts["pebble"] = pebble_part_spec
+    parts["pebble"] = Pebble.PEBBLE_PART_SPEC

@@ -70,6 +70,7 @@ services:
     hello:
         override: replace
         command: /bin/hello
+        on-failure: restart
 
 parts:
     foo:
@@ -116,7 +117,11 @@ def test_project_unmarshal(yaml_loaded_data):
     assert project.build_base == "ubuntu:20.04"
     assert project.services == {
         "hello": Service(
-            **{"override": "replace", "command": "/bin/hello"}  # type:ignore
+            **{
+                "override": "replace",
+                "command": "/bin/hello",
+                "on-failure": "restart",
+            }  # type:ignore
         )
     }
     assert project.parts == {
@@ -334,6 +339,7 @@ def test_full_service():
         backoff_delay="10ms",
         backoff_factor=1.2,
         backoff_limit="1m",
+        kill_delay="5s",
     )
 
 
@@ -352,18 +358,18 @@ def test_minimal_service():
                 "override": "bad value",
                 "command": "free text allowed",
                 "startup": "bad value",
-                "on_success": "bad value",
-                "on_failure": "bad value",
-                "on_check_failure": {"check": "bad value"},
+                "on-success": "bad value",
+                "on-failure": "bad value",
+                "on-check-failure": {"check": "bad value"},
             },
             r"^5 validation errors[\s\S]*"
             r"override[\s\S]*unexpected value[\s\S]*'merge', 'replace'[\s\S]*"
             r"startup[\s\S]*unexpected value[\s\S]*'enabled', 'disabled'[\s\S]*"
-            r"on_success[\s\S]*unexpected value[\s\S]*"
+            r"on-success[\s\S]*unexpected value[\s\S]*"
             r"'restart', 'shutdown', 'ignore'[\s\S]*"
-            r"on_failure[\s\S]*unexpected value[\s\S]*"
+            r"on-failure[\s\S]*unexpected value[\s\S]*"
             r"'restart', 'shutdown', 'ignore'[\s\S]*"
-            r"on_check_failure[\s\S]*unexpected value[\s\S]*"
+            r"on-check-failure[\s\S]*unexpected value[\s\S]*"
             r"'restart', 'shutdown', 'ignore'[\s\S]*",
         ),
         # Bad attribute types
@@ -374,9 +380,9 @@ def test_minimal_service():
                 "summary": {"foo": "bar"},
                 "after": "not a List",
                 "environment": "not a Dict",
-                "user_id": "not an int",
-                "on_check_failure": {"check": ["not a Literal"]},
-                "backoff_factor": "not a float",
+                "user-id": "not an int",
+                "on-check-failure": {"check": ["not a Literal"]},
+                "backoff-factor": "not a float",
             },
             r"^8 validation errors[\s\S]*"
             r"unhashable type[\s\S]*"

@@ -16,7 +16,6 @@
 
 """OCI image manipulation helpers."""
 
-import glob
 import hashlib
 import json
 import logging
@@ -35,6 +34,7 @@ from craft_cli import emit
 from craft_parts.overlays import overlays
 
 from rockcraft import errors
+from rockcraft.pebble import Pebble
 
 logger = logging.getLogger(__name__)
 
@@ -55,9 +55,6 @@ class Image:
 
     image_name: str
     path: Path
-    _PEBBLE_PATH = "var/lib/pebble/default"
-    _PEBBLE_LAYERS_PATH = f"{_PEBBLE_PATH}/layers"
-    _PEBBLE_BINARY_PATH = "bin/pebble"
 
     @classmethod
     def from_docker_registry(
@@ -223,7 +220,7 @@ class Image:
         """Set the OCI image entrypoint. It is always Pebble and CMD is null."""
         emit.progress("Configuring entrypoint...")
         image_path = self.path / self.image_name
-        entrypoint = [f"/{self._PEBBLE_BINARY_PATH}", "enter"]
+        entrypoint = [f"/{Pebble.PEBBLE_BINARY_PATH}", "enter"]
         params = ["--clear=config.entrypoint"]
         for entry in entrypoint:
             params.extend(["--config.entrypoint", entry])
@@ -250,7 +247,6 @@ class Image:
         :param description: The description for the Pebble layer
         :param base_layer_dir: Path to the base layer's root filesystem
         """
-        # pylint: disable=too-many-locals,too-many-arguments
         service_names = list(services.keys())
         emit.progress(f"Configuring Pebble services {', '.join(service_names)}")
         pebble_layer_content = {
@@ -259,44 +255,12 @@ class Image:
             "services": services,
         }
 
-        # To infer the right filename for this Pebble layer, we should check
-        # if there are existing Pebble layers in the base root filesystem,
-        # and increment on that.
-        # NOTE: the layer's filename prefix will always be "001-" when using
-        # "bare" and "ubuntu" bases
-        pebble_layers_path_in_base = f"{base_layer_dir}/{self._PEBBLE_LAYERS_PATH}"
-        existing_pebble_layers = glob.glob(
-            pebble_layers_path_in_base + "/[0-9][0-9][0-9]-???*.yaml"
-        ) + glob.glob(pebble_layers_path_in_base + "/[0-9][0-9][0-9]-???*.yml")
-
-        prefixes = list(map(lambda l: Path(l).name[:3], existing_pebble_layers))
-        prefixes.sort()
-        emit.progress(
-            f"Found {len(existing_pebble_layers)} Pebble layers in the base's root filesystem"
+        tmpfs = Path(tempfile.TemporaryDirectory())
+        Pebble.define_pebble_layer(
+            tmpfs, base_layer_dir, pebble_layer_content, name
         )
 
-        new_layer_prefix = f"{(int(prefixes[-1]) + 1):03}" if prefixes else "001"
-        # TODO: we need proper name validation as Pebble is quite unforgiving
-        # about the layer's label. We also don't want to allow any character
-        # in the ROCK's name. For now, just replacing the common "_" with "-".
-        new_layer_name = f"{new_layer_prefix}-{name.replace('_', '-')}.yaml"
-
-        emit.progress(f"Writing new Pebble layer file {new_layer_name}")
-
-        tmpfs = Path(tempfile.mkdtemp())
-        tmp_pebble_layers_path = tmpfs / self._PEBBLE_LAYERS_PATH
-        tmp_pebble_layers_path.mkdir(parents=True)
-
-        tmp_new_layer = tmp_pebble_layers_path / new_layer_name
-        with open(tmp_new_layer, "w", encoding="utf-8") as pebble_layer:
-            yaml.dump(
-                pebble_layer_content,
-                pebble_layer,
-                default_flow_style=False,
-                sort_keys=False,
-                allow_unicode=True,
-            )
-
+        emit.progress("Writing new Pebble layer file")
         self.add_layer(tag, tmpfs)
         shutil.rmtree(tmpfs)
 
