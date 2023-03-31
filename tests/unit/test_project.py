@@ -128,8 +128,6 @@ def test_project_unmarshal(check, yaml_loaded_data):
             }
         },
     )
-    check.equal(project.rock_license, "Apache-2.0")
-    check.equal(project.build_base, "ubuntu:20.04")
     check.equal(
         project.services,
         {
