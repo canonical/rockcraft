@@ -18,10 +18,10 @@
 
 import glob
 from pathlib import Path
+from typing import Any, Dict
 
 import yaml
 from craft_cli import emit
-from typing import Any, Dict
 
 
 class Pebble:
