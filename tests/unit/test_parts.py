@@ -50,6 +50,7 @@ def test_parts_lifecycle_prime_dir(new_dir):
         part_names=None,
         base_layer_dir=new_dir,
         base_layer_hash=b"digest",
+        base="unused",
     )
     assert lifecycle.prime_dir == Path("/some/workdir/prime")
 
@@ -72,6 +73,7 @@ def test_parts_lifecycle_run(new_dir):
         part_names=None,
         base_layer_dir=new_dir,
         base_layer_hash=b"digest",
+        base="unused",
     )
     lifecycle.run("prime")
 
@@ -88,6 +90,7 @@ def test_run_installs_package_repositories(mocker, parts_data, tmp_path, repos):
         base_layer_dir=tmp_path,
         base_layer_hash=b"",
         package_repositories=repos,
+        base="unused",
     )
     lcm = mocker.patch.object(lifecycle, "_lcm")
     lcm.plan.return_value = []
@@ -134,6 +137,7 @@ def test_parts_lifecycle_run_shell(
         part_names=None,
         base_layer_dir=new_dir,
         base_layer_hash=b"digest",
+        base="unused",
     )
     lifecycle.run(step_name, shell=True)
 
@@ -177,6 +181,7 @@ def test_parts_lifecycle_run_shell_after(
         part_names=None,
         base_layer_dir=new_dir,
         base_layer_hash=b"digest",
+        base="unused",
     )
     lifecycle.run(step_name, shell_after=True)
 
@@ -208,6 +213,7 @@ def test_parts_lifecycle_init_error(new_dir):
             part_names=None,
             base_layer_dir=new_dir,
             base_layer_hash=b"digest",
+            base="unused",
         )
 
     rockcraft_error = exc.value
@@ -230,6 +236,7 @@ def test_parts_lifecycle_run_error(new_dir, mocker):
         part_names=["fake_part"],
         base_layer_dir=new_dir,
         base_layer_hash=b"digest",
+        base="unused",
     )
 
     with pytest.raises(parts.PartsLifecycleError) as exc:
@@ -256,6 +263,7 @@ def test_parts_lifecycle_clean(new_dir, emitter):
         part_names=None,
         base_layer_dir=new_dir,
         base_layer_hash=b"digest",
+        base="unused",
     )
     lifecycle.clean()
     emitter.assert_progress("Cleaning all parts")
@@ -278,6 +286,7 @@ def test_parts_lifecycle_clean_parts(new_dir, emitter):
         part_names=["foo"],
         base_layer_dir=new_dir,
         base_layer_hash=b"digest",
+        base="unused",
     )
     lifecycle.clean()
     emitter.assert_progress("Cleaning parts: foo")

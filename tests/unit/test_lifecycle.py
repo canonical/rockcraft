@@ -172,6 +172,7 @@ def test_install_repositories(mocker, mock_project, tmp_path, repos):
         base_layer_dir=mocker.ANY,
         base_layer_hash=mocker.ANY,
         package_repositories=repos,
+        base=mocker.ANY,
     )
 
 
@@ -197,6 +198,7 @@ def test_install_repositories_none_conversion(mocker, mock_project, tmp_path):
         base_layer_dir=mocker.ANY,
         base_layer_hash=mocker.ANY,
         package_repositories=[],
+        base=mocker.ANY,
     )
 
 
