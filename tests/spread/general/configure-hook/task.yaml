@@ -1,5 +1,8 @@
 summary: snap configure hook test
 
+# Run this test last, as it removes the base instances that other tests can use
+priority: -100
+
 execute: |
   # `rockcraft pull` will create the rockcraft project, buildd remote, and an instance
   rockcraft init
