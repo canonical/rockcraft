@@ -100,6 +100,7 @@ def pebble_part():
             "plugin": "nil",
             "stage-snaps": ["pebble/latest/edge"],
             "stage": ["bin/pebble"],
+            "override-prime": "craftctl default\nmkdir -p var/lib/pebble/default/layers",
         }
     }
 
