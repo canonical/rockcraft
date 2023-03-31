@@ -198,8 +198,6 @@ class Project(pydantic.BaseModel):
 
     package_repositories: Optional[List[Dict[str, Any]]]
 
-    package_repositories: Optional[List[Dict[str, Any]]]
-
     parts: Dict[str, Any]
 
     class Config:  # pylint: disable=too-few-public-methods
