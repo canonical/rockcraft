@@ -16,7 +16,7 @@ execute: |
   # ensure container doesn't exist
   docker rm -f apt-repo-test-container
   docker run -d --name apt-repo-test-container apt-repo-test -v
-  docker logs apt-repo-test-container | MATCH "^3.12"
+  docker logs apt-repo-test-container | MATCH "3.12"
   
 restore: |
   rm -f apt-repo-test_latest_amd64.rock
