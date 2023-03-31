@@ -20,5 +20,5 @@ execute: |
 
 restore: |
   rm -f apt-repo-static-test_latest_amd64.rock
-  docker rmi apt-repo-static-test
   docker rm -f apt-repo-static-test-container
+  docker rmi -f apt-repo-static-test

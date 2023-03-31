@@ -34,7 +34,7 @@ class TestPebble:
         assert Pebble.PEBBLE_BINARY_PATH == "bin/pebble"
         assert all(
             field in Pebble.PEBBLE_PART_SPEC
-            for field in ["plugin", "stage-snaps", "stage"]
+            for field in ["plugin", "stage-snaps", "stage", "override-prime"]
         )
 
     @pytest.mark.parametrize(
