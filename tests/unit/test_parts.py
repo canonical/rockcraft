@@ -24,7 +24,7 @@ from craft_parts import Action, PartsError, Step
 
 import tests
 from rockcraft import parts
-from rockcraft.errors import RockcraftError
+from rockcraft.errors import PartsLifecycleError, RockcraftError
 
 
 @pytest.fixture
@@ -187,6 +187,47 @@ def test_parts_lifecycle_run_shell_after(
 
     assert last_step == expected_last_step
     assert shell_mock.mock_calls == [call(["bash"], check=False, cwd=None)]
+
+
+@pytest.mark.parametrize(
+    "internal_exception,expected_exception_type",
+    [
+        (PartsError("Unexpected error"), PartsLifecycleError),
+        (RuntimeError("Unexpected error"), RuntimeError),
+        (FileNotFoundError(2, "Unexpected error"), PartsLifecycleError),
+        (Exception("Unexpected error"), PartsLifecycleError),
+    ],
+)
+@tests.linux_only
+def test_parts_lifecycle_run_debug(
+    new_dir, mocker, internal_exception, expected_exception_type
+):
+    """Check that when "debug" is True, a shell is launched when an error is raised."""
+
+    mocker.patch(
+        "craft_parts.executor.Executor.execute",
+        side_effect=internal_exception,
+    )
+    shell_mock = mocker.patch("rockcraft.parts.launch_shell")
+
+    parts_data = {
+        "foo": {
+            "plugin": "nil",
+        }
+    }
+
+    lifecycle = parts.PartsLifecycle(
+        all_parts=parts_data,
+        work_dir=Path("."),
+        part_names=None,
+        base_layer_dir=new_dir,
+        base_layer_hash=b"digest",
+        base="unused",
+    )
+    with pytest.raises(expected_exception_type, match="Unexpected error"):
+        lifecycle.run("prime", debug=True)
+
+    shell_mock.assert_called_once_with()
 
 
 def assert_errors_match(
