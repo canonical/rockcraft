@@ -14,6 +14,8 @@ execute: |
   docker images apt-repo-test | MATCH "apt-repo-test"
   
   docker run --rm apt-repo-test | MATCH "^3.12"
+  
+  docker run --rm --entrypoint="" apt-repo-test:latest ls /etc/keystone/keystone.conf
 
 restore: |
   rm -f apt-repo-test_latest_amd64.rock

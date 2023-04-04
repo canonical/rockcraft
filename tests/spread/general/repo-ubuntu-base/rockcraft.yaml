@@ -13,9 +13,17 @@ package-repositories:
   - type: apt
     ppa: deadsnakes/ppa
     priority: always
+  - type: apt
+    cloud: antelope
+    pocket: proposed
+    priority: 999
 
 parts:
   hello:
     plugin: nil
+    override-build: |
+      apt-cache policy keystone
+      apt-cache policy keystone | grep -F "999 http://ubuntu-cloud.archive.canonical.com/ubuntu jammy-proposed/antelope/main amd64 Packages"
     stage-packages:
       - python3.12
+      - keystone
