@@ -39,7 +39,7 @@ def run(command_name: str, parsed_args: "argparse.Namespace") -> None:
     emit.trace(f"command: {command_name}, arguments: {parsed_args}")
 
     project = load_project("rockcraft.yaml")
-    destructive_mode = False  # XXX: obtain from command line
+    destructive_mode = getattr(parsed_args, "destructive_mode", False)
     part_names = getattr(parsed_args, "parts", None)
     managed_mode = utils.is_managed_mode()
 

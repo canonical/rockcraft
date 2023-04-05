@@ -1,0 +1,13 @@
+name: destructive-mode
+version: latest
+summary: A destructively-built ROCK
+description: Building a ROCK in destructive mode
+license: Apache-2.0
+build-base: ubuntu:22.04
+base: bare
+platforms:
+  amd64:
+
+parts:
+  hello:
+    plugin: nil

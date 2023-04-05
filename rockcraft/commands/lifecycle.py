@@ -48,6 +48,11 @@ class _LifecycleCommand(BaseCommand, abc.ABC):
             action="store_true",
             help="Shell into the environment if the build fails",
         )
+        parser.add_argument(
+            "--destructive-mode",
+            action="store_true",
+            help="Build in the current host",
+        )
 
 
 class _LifecycleStepCommand(_LifecycleCommand):
