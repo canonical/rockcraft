@@ -43,6 +43,15 @@ def lifecycle_init_mock():
     patcher.stop()
 
 
+def create_namespace(
+    *, parts=None, shell=False, shell_after=False, debug=False
+) -> Namespace:
+    """Shortcut to create a Namespace object with the correct default values."""
+    return Namespace(
+        parts=parts or [], shell=shell, shell_after=shell_after, debug=debug
+    )
+
+
 @pytest.mark.parametrize("cmd", ["pull", "overlay", "build", "stage", "prime"])
 def test_run_command(mocker, cmd):
     run_mock = mocker.patch("rockcraft.lifecycle.run")
@@ -50,9 +59,7 @@ def test_run_command(mocker, cmd):
     mocker.patch.object(sys, "argv", ["rockcraft", cmd])
     cli.run()
 
-    assert run_mock.mock_calls == [
-        call(cmd, Namespace(parts=[], shell=False, shell_after=False))
-    ]
+    assert run_mock.mock_calls == [call(cmd, create_namespace())]
     assert mock_ended_ok.mock_calls == [call()]
 
 
@@ -64,7 +71,10 @@ def test_run_command_parts(mocker, cmd):
     cli.run()
 
     assert run_mock.mock_calls == [
-        call(cmd, Namespace(parts=["part1", "part2"], shell=False, shell_after=False))
+        call(
+            cmd,
+            create_namespace(parts=["part1", "part2"]),
+        )
     ]
     assert mock_ended_ok.mock_calls == [call()]
 
@@ -76,9 +86,7 @@ def test_run_command_shell(mocker, cmd):
     mocker.patch.object(sys, "argv", ["rockcraft", cmd, "--shell"])
     cli.run()
 
-    assert run_mock.mock_calls == [
-        call(cmd, Namespace(parts=[], shell=True, shell_after=False))
-    ]
+    assert run_mock.mock_calls == [call(cmd, create_namespace(shell=True))]
     assert mock_ended_ok.mock_calls == [call()]
 
 
@@ -89,19 +97,32 @@ def test_run_command_shell_after(mocker, cmd):
     mocker.patch.object(sys, "argv", ["rockcraft", cmd, "--shell-after"])
     cli.run()
 
-    assert run_mock.mock_calls == [
-        call(cmd, Namespace(parts=[], shell=False, shell_after=True))
-    ]
+    assert run_mock.mock_calls == [call(cmd, create_namespace(shell_after=True))]
     assert mock_ended_ok.mock_calls == [call()]
 
 
-def test_run_pack(mocker):
+@pytest.mark.parametrize("cmd", ["pull", "overlay", "build", "stage", "prime"])
+def test_run_command_debug(mocker, cmd):
     run_mock = mocker.patch("rockcraft.lifecycle.run")
     mock_ended_ok = mocker.spy(emit, "ended_ok")
-    mocker.patch.object(sys, "argv", ["rockcraft", "pack"])
+    mocker.patch.object(sys, "argv", ["rockcraft", cmd, "--debug"])
     cli.run()
 
-    assert run_mock.mock_calls == [call("pack", Namespace())]
+    assert run_mock.mock_calls == [call(cmd, create_namespace(debug=True))]
+    assert mock_ended_ok.mock_calls == [call()]
+
+
+@pytest.mark.parametrize("debug_opt", [True, False])
+def test_run_pack(mocker, debug_opt):
+    run_mock = mocker.patch("rockcraft.lifecycle.run")
+    mock_ended_ok = mocker.spy(emit, "ended_ok")
+    command_line = ["rockcraft", "pack"]
+    if debug_opt:
+        command_line.append("--debug")
+    mocker.patch.object(sys, "argv", command_line)
+    cli.run()
+
+    assert run_mock.mock_calls == [call("pack", Namespace(debug=debug_opt))]
     assert mock_ended_ok.mock_calls == [call()]
 
 

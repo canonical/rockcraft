@@ -286,6 +286,36 @@ def test_lifecycle_run_in_provider(
     mock_capture_logs_from_instance.assert_called_once_with(mock_instance)
 
 
+def test_lifecycle_run_in_provider_debug(
+    mock_get_instance_name,
+    mock_instance,
+    mock_provider,
+    mock_project,
+    mocker,
+):
+    # mock provider calls
+    mock_base_configuration = Mock()
+    mocker.patch(
+        "rockcraft.lifecycle.providers.get_base_configuration",
+        return_value=mock_base_configuration,
+    )
+    mocker.patch("rockcraft.lifecycle.providers.capture_logs_from_instance")
+    mocker.patch("rockcraft.lifecycle.providers.ensure_provider_is_available")
+    mock_project.build_base = "ubuntu:22.04"
+
+    lifecycle.run_in_provider(
+        project=mock_project,
+        command_name="test",
+        parsed_args=argparse.Namespace(debug=True),
+    )
+    # Check that `rockcraft` was called with `--debug`.
+    mock_instance.execute_run.assert_called_once_with(
+        ["rockcraft", "test", "--verbosity=quiet", "--debug"],
+        check=True,
+        cwd=Path("/root/project"),
+    )
+
+
 def test_clean_provider(emitter, mock_get_instance_name, mock_provider, tmpdir):
     lifecycle.clean_provider(project_name="test-project", project_path=tmpdir)
 
