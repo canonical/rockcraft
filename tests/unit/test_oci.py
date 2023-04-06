@@ -126,6 +126,8 @@ class TestImage:
                     "--override-arch",
                     "amd64",
                     "copy",
+                    "--retry-times",
+                    str(oci.MAX_DOWNLOAD_RETRIES),
                     f"docker://{oci.REGISTRY_URL}/a:b",
                     "oci:images/dir/a:b",
                 ]
@@ -145,6 +147,8 @@ class TestImage:
                     "--override-variant",
                     "v8",
                     "copy",
+                    "--retry-times",
+                    str(oci.MAX_DOWNLOAD_RETRIES),
                     f"docker://{oci.REGISTRY_URL}/a:b",
                     "oci:images/dir/a:b",
                 ]

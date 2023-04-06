@@ -107,6 +107,7 @@ def run(command_name: str, parsed_args: "argparse.Namespace") -> None:
             part_names=part_names,
             base_layer_dir=rootfs,
             base_layer_hash=base_digest,
+            base=project.base,
             package_repositories=package_repositories,
         )
 
@@ -118,6 +119,7 @@ def run(command_name: str, parsed_args: "argparse.Namespace") -> None:
             step_name,
             shell=getattr(parsed_args, "shell", False),
             shell_after=getattr(parsed_args, "shell_after", False),
+            debug=getattr(parsed_args, "debug", False),
         )
 
         if command_name == "pack":
@@ -217,6 +219,8 @@ def run_in_provider(
         cmd.append("--shell")
     if getattr(parsed_args, "shell_after", False):
         cmd.append("--shell-after")
+    if getattr(parsed_args, "debug", False):
+        cmd.append("--debug")
 
     host_project_path = Path().absolute()
     instance_project_path = utils.get_managed_environment_project_path()

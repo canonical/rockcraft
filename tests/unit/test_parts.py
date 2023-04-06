@@ -24,7 +24,7 @@ from craft_parts import Action, PartsError, Step
 
 import tests
 from rockcraft import parts
-from rockcraft.errors import RockcraftError
+from rockcraft.errors import PartsLifecycleError, RockcraftError
 
 
 @pytest.fixture
@@ -50,6 +50,7 @@ def test_parts_lifecycle_prime_dir(new_dir):
         part_names=None,
         base_layer_dir=new_dir,
         base_layer_hash=b"digest",
+        base="unused",
     )
     assert lifecycle.prime_dir == Path("/some/workdir/prime")
 
@@ -72,6 +73,7 @@ def test_parts_lifecycle_run(new_dir):
         part_names=None,
         base_layer_dir=new_dir,
         base_layer_hash=b"digest",
+        base="unused",
     )
     lifecycle.run("prime")
 
@@ -88,6 +90,7 @@ def test_run_installs_package_repositories(mocker, parts_data, tmp_path, repos):
         base_layer_dir=tmp_path,
         base_layer_hash=b"",
         package_repositories=repos,
+        base="unused",
     )
     lcm = mocker.patch.object(lifecycle, "_lcm")
     lcm.plan.return_value = []
@@ -134,6 +137,7 @@ def test_parts_lifecycle_run_shell(
         part_names=None,
         base_layer_dir=new_dir,
         base_layer_hash=b"digest",
+        base="unused",
     )
     lifecycle.run(step_name, shell=True)
 
@@ -177,11 +181,53 @@ def test_parts_lifecycle_run_shell_after(
         part_names=None,
         base_layer_dir=new_dir,
         base_layer_hash=b"digest",
+        base="unused",
     )
     lifecycle.run(step_name, shell_after=True)
 
     assert last_step == expected_last_step
     assert shell_mock.mock_calls == [call(["bash"], check=False, cwd=None)]
+
+
+@pytest.mark.parametrize(
+    "internal_exception,expected_exception_type",
+    [
+        (PartsError("Unexpected error"), PartsLifecycleError),
+        (RuntimeError("Unexpected error"), RuntimeError),
+        (FileNotFoundError(2, "Unexpected error"), PartsLifecycleError),
+        (Exception("Unexpected error"), PartsLifecycleError),
+    ],
+)
+@tests.linux_only
+def test_parts_lifecycle_run_debug(
+    new_dir, mocker, internal_exception, expected_exception_type
+):
+    """Check that when "debug" is True, a shell is launched when an error is raised."""
+
+    mocker.patch(
+        "craft_parts.executor.Executor.execute",
+        side_effect=internal_exception,
+    )
+    shell_mock = mocker.patch("rockcraft.parts.launch_shell")
+
+    parts_data = {
+        "foo": {
+            "plugin": "nil",
+        }
+    }
+
+    lifecycle = parts.PartsLifecycle(
+        all_parts=parts_data,
+        work_dir=Path("."),
+        part_names=None,
+        base_layer_dir=new_dir,
+        base_layer_hash=b"digest",
+        base="unused",
+    )
+    with pytest.raises(expected_exception_type, match="Unexpected error"):
+        lifecycle.run("prime", debug=True)
+
+    shell_mock.assert_called_once_with()
 
 
 def assert_errors_match(
@@ -208,6 +254,7 @@ def test_parts_lifecycle_init_error(new_dir):
             part_names=None,
             base_layer_dir=new_dir,
             base_layer_hash=b"digest",
+            base="unused",
         )
 
     rockcraft_error = exc.value
@@ -230,6 +277,7 @@ def test_parts_lifecycle_run_error(new_dir, mocker):
         part_names=["fake_part"],
         base_layer_dir=new_dir,
         base_layer_hash=b"digest",
+        base="unused",
     )
 
     with pytest.raises(parts.PartsLifecycleError) as exc:
@@ -256,6 +304,7 @@ def test_parts_lifecycle_clean(new_dir, emitter):
         part_names=None,
         base_layer_dir=new_dir,
         base_layer_hash=b"digest",
+        base="unused",
     )
     lifecycle.clean()
     emitter.assert_progress("Cleaning all parts")
@@ -278,6 +327,7 @@ def test_parts_lifecycle_clean_parts(new_dir, emitter):
         part_names=["foo"],
         base_layer_dir=new_dir,
         base_layer_hash=b"digest",
+        base="unused",
     )
     lifecycle.clean()
     emitter.assert_progress("Cleaning parts: foo")

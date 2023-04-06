@@ -59,6 +59,7 @@ class PartsLifecycle:
         part_names: Optional[List[str]],
         base_layer_dir: pathlib.Path,
         base_layer_hash: bytes,
+        base: str,
         package_repositories: Optional[List[Dict[str, Any]]] = None,
     ):
         self._part_names = part_names
@@ -78,6 +79,7 @@ class PartsLifecycle:
                 base_layer_dir=base_layer_dir,
                 base_layer_hash=base_layer_hash,
                 ignore_local_sources=["*.rock"],
+                base=base,
             )
         except craft_parts.PartsError as err:
             raise PartsLifecycleError.from_parts_error(err) from err
@@ -98,17 +100,24 @@ class PartsLifecycle:
         return self._lcm.project_info.prime_dir
 
     def run(
-        self, step_name: str, *, shell: bool = False, shell_after: bool = False
+        self,
+        step_name: str,
+        *,
+        shell: bool = False,
+        shell_after: bool = False,
+        debug: bool = False,
     ) -> None:
         """Run the parts lifecycle.
 
         :param step_name: The final step to execute.
         :param shell: Execute a shell instead of the target step.
         :param shell_after: Execute a shell after the target step.
+        :param debug: Execute a shell on failure.
 
         :raises PartsLifecycleError: On error during lifecycle.
         :raises RuntimeError: On unexpected error.
         """
+        # pylint: disable=too-many-branches,too-many-statements
         target_step = _LIFECYCLE_STEPS.get(step_name)
         if not target_step:
             raise RuntimeError(f"Invalid target step {step_name!r}")
@@ -144,15 +153,27 @@ class PartsLifecycle:
 
             emit.progress("Executed parts lifecycle", permanent=True)
         except craft_parts.PartsError as err:
+            if debug:
+                emit.progress(str(err), permanent=True)
+                launch_shell()
             raise PartsLifecycleError.from_parts_error(err) from err
         except RuntimeError as err:
+            if debug:
+                emit.progress(str(err), permanent=True)
+                launch_shell()
             raise RuntimeError(f"Parts processing internal error: {err}") from err
         except OSError as err:
             msg = err.strerror
             if err.filename:
                 msg = f"{err.filename}: {msg}"
+            if debug:
+                emit.progress(msg, permanent=True)
+                launch_shell()
             raise PartsLifecycleError(msg) from err
         except Exception as err:
+            if debug:
+                emit.progress(str(err), permanent=True)
+                launch_shell()
             raise PartsLifecycleError(str(err)) from err
 
     def _install_package_repositories(self) -> None:

@@ -41,6 +41,14 @@ class _LifecycleCommand(BaseCommand, abc.ABC):
         emit.trace(f"lifecycle command: {self.name!r}, arguments: {parsed_args!r}")
         lifecycle.run(self.name, parsed_args)
 
+    def fill_parser(self, parser: "argparse.ArgumentParser") -> None:
+        super().fill_parser(parser)  # type: ignore
+        parser.add_argument(
+            "--debug",
+            action="store_true",
+            help="Shell into the environment if the build fails",
+        )
+
 
 class _LifecycleStepCommand(_LifecycleCommand):
     """Lifecycle step commands."""
