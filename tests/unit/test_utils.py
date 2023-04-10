@@ -19,7 +19,7 @@ from unittest.mock import call
 
 import pytest
 
-from rockcraft import utils
+from rockcraft import errors, utils
 
 
 @pytest.fixture
@@ -35,6 +35,11 @@ def mock_input(mocker):
 @pytest.fixture
 def mock_is_managed_mode(mocker):
     yield mocker.patch("rockcraft.utils.is_managed_mode", return_value=False)
+
+
+@pytest.fixture
+def mock_which(mocker):
+    return mocker.patch("shutil.which")
 
 
 def test_get_managed_environment_home_path():
@@ -107,3 +112,52 @@ def test_confirm_with_user_errors_in_managed_mode(mock_is_managed_mode):
 
     with pytest.raises(RuntimeError):
         utils.confirm_with_user("prompt")
+
+
+def test_get_host_tool(mock_which):
+    mock_which.return_value = "/usr/bin/mybin"
+    assert utils.get_host_tool("mybin") == "/usr/bin/mybin"
+
+
+def test_get_host_tool_not_found(mock_which):
+    mock_which.return_value = None
+    with pytest.raises(errors.RockcraftError) as exc:
+        utils.get_host_tool("mybin")
+    assert str(exc.value) == "A tool Rockcraft depends on could not be found: 'mybin'"
+
+
+@pytest.mark.parametrize(
+    "target_dir",
+    [
+        "usr/local/bin",
+        "usr/sbin",
+        "usr/bin",
+        "sbin",
+        "bin",
+    ],
+)
+def test_get_snap_tool(monkeypatch, tmp_path, target_dir):
+    monkeypatch.setenv("SNAP_NAME", "rockcraft")
+    monkeypatch.setenv("SNAP", str(tmp_path))
+
+    dir_in_tmp_path = tmp_path / target_dir
+    dir_in_tmp_path.mkdir(parents=True)
+
+    bin_name = "mybin"
+
+    expected_mybin = dir_in_tmp_path / bin_name
+    expected_mybin.touch()
+
+    mybin = utils.get_snap_tool(bin_name)
+
+    assert mybin == str(expected_mybin)
+
+
+def test_get_snap_tool_not_found(monkeypatch, tmp_path):
+    monkeypatch.setenv("SNAP_NAME", "rockcraft")
+    monkeypatch.setenv("SNAP", str(tmp_path))
+
+    with pytest.raises(errors.RockcraftError) as exc:
+        utils.get_snap_tool("non_existing")
+
+    assert str(exc.value) == "Cannot find snap tool 'non_existing'"

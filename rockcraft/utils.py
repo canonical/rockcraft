@@ -15,15 +15,16 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 """Utilities for rockcraft."""
-
-
 import logging
 import os
 import pathlib
+import shutil
 import sys
 from collections import namedtuple
 from distutils.util import strtobool  # pylint: disable=deprecated-module
 from typing import Optional
+
+from rockcraft import errors
 
 logger = logging.getLogger(__name__)
 
@@ -80,3 +81,67 @@ def confirm_with_user(prompt: str, default: bool = False) -> bool:
 
     reply = input(prompt + choices).lower().strip()
     return reply[0] == "y" if reply else default
+
+
+def get_host_tool(command_name: str) -> str:
+    """Return the full path of the given host tool.
+
+    :param command_name: the name of the command to resolve a path for.
+    :return: Path to command
+
+    :raises RockcraftError: if command_name was not found.
+    """
+    tool = shutil.which(command_name)
+    if not tool:
+        raise errors.RockcraftError(
+            f"A tool Rockcraft depends on could not be found: {command_name!r}",
+            resolution="Ensure the tool is installed and available, and try again.",
+        )
+    return tool
+
+
+def get_snap_tool(command_name: str) -> str:
+    """Return the path of a command found in the rockcraft snap.
+
+    If rockcraft is not running as a snap, shutil.which() is used
+    to resolve the command using PATH.
+
+    :param command_name: the name of the command to resolve a path for.
+    :return: Path to command
+
+    :raises RockcraftError: if command_name was not found.
+    """
+    if os.environ.get("SNAP_NAME") != "rockcraft":
+        return get_host_tool(command_name)
+
+    snap_path = os.getenv("SNAP")
+    if snap_path is None:
+        raise RuntimeError(
+            "The SNAP environment variable is not defined, but SNAP_NAME is?"
+        )
+
+    command_path = _find_command_path_in_root(snap_path, command_name)
+
+    if command_path is None:
+        raise errors.RockcraftError(
+            f"Cannot find snap tool {command_name!r}",
+            resolution="Please report this error to the Rockcraft maintainers.",
+        )
+
+    return command_path
+
+
+def _find_command_path_in_root(root: str, command_name: str) -> Optional[str]:
+    for bin_directory in (
+        "usr/local/sbin",
+        "usr/local/bin",
+        "usr/sbin",
+        "usr/bin",
+        "sbin",
+        "bin",
+    ):
+        path = os.path.join(root, bin_directory, command_name)
+        if os.path.exists(path):
+            return os.path.normpath(path)
+
+    return None

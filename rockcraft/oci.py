@@ -33,7 +33,7 @@ import yaml
 from craft_cli import emit
 from craft_parts.overlays import overlays
 
-from rockcraft import errors
+from rockcraft import errors, utils
 
 logger = logging.getLogger(__name__)
 
@@ -45,6 +45,10 @@ REGISTRY_URL = ECR_URL
 
 # The number of times to try downloading an image from `REGISTRY_URL`.
 MAX_DOWNLOAD_RETRIES = 5
+
+# Location of the tools we use, found at runtime
+_SKOPEO_PATH: Optional[str] = None
+_UMOCI_PATH: Optional[str] = None
 
 
 @dataclass(frozen=True)
@@ -624,12 +628,18 @@ def _inject_architecture_variant(image_path: Path, variant: str) -> None:
 
 def _run_skopeo(arguments: List[str], **kwargs: Any) -> subprocess.CompletedProcess:
     """Find and run the correct 'skopeo' binary with ``arguments``."""
-    return _process_run(["skopeo"] + arguments, **kwargs)
+    global _SKOPEO_PATH  # pylint: disable=global-statement
+    if _SKOPEO_PATH is None:
+        _SKOPEO_PATH = utils.get_snap_tool("skopeo")
+    return _process_run([_SKOPEO_PATH] + arguments, **kwargs)
 
 
 def _run_umoci(arguments: List[str]) -> subprocess.CompletedProcess:
     """Find and run the correct 'umoci' binary with ``arguments``."""
-    return _process_run(["umoci"] + arguments)
+    global _UMOCI_PATH  # pylint: disable=global-statement
+    if _UMOCI_PATH is None:
+        _UMOCI_PATH = utils.get_snap_tool("umoci")
+    return _process_run([_UMOCI_PATH] + arguments)
 
 
 def _process_run(command: List[str], **kwargs: Any) -> subprocess.CompletedProcess:

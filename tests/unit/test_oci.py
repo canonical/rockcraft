@@ -31,6 +31,15 @@ from rockcraft import errors, oci
 
 
 @pytest.fixture
+def mock_get_snap_tool(mocker):
+    def fake_get_snap_tool(command_name: str) -> str:
+        assert command_name in ("umoci", "skopeo")
+        return command_name
+
+    return mocker.patch("rockcraft.utils.get_snap_tool", new=fake_get_snap_tool)
+
+
+@pytest.fixture
 def mock_run(mocker):
     yield mocker.patch("rockcraft.oci._process_run")
 
@@ -100,7 +109,7 @@ class TestImage:
         assert image.image_name == "a:b"
         assert image.path == Path("/c")
 
-    def test_from_docker_registry(self, mock_run, new_dir):
+    def test_from_docker_registry(self, mock_run, new_dir, mock_get_snap_tool):
         image, source_image = oci.Image.from_docker_registry(
             "a:b", image_dir=Path("images/dir"), arch="amd64", variant=None
         )
@@ -145,7 +154,7 @@ class TestImage:
             )
         ]
 
-    def test_new_oci_image(self, mock_inject_variant, mock_run):
+    def test_new_oci_image(self, mock_inject_variant, mock_run, mock_get_snap_tool):
         image_dir = Path("images/dir")
         image, source_image = oci.Image.new_oci_image(
             "bare:latest", image_dir=image_dir, arch="amd64"
@@ -175,7 +184,7 @@ class TestImage:
         )
         mock_inject_variant.assert_called_once_with(image_dir / "bare", "bar")
 
-    def test_copy_to(self, mock_run):
+    def test_copy_to(self, mock_run, mock_get_snap_tool):
         image = oci.Image("a:b", Path("/c"))
         new_image = image.copy_to("d:e", image_dir=Path("/f"))
         assert new_image.image_name == "d:e"
@@ -192,7 +201,7 @@ class TestImage:
             )
         ]
 
-    def test_extract_to(self, mock_run, new_dir):
+    def test_extract_to(self, mock_run, new_dir, mock_get_snap_tool):
         image = oci.Image("a:b", Path("/c"))
         bundle_path = image.extract_to(Path("bundle/dir"))
         assert Path("bundle/dir").is_dir()
@@ -201,7 +210,7 @@ class TestImage:
             call(["umoci", "unpack", "--image", "/c/a:b", "bundle/dir/a-b"])
         ]
 
-    def test_extract_to_rootless(self, mock_run, new_dir):
+    def test_extract_to_rootless(self, mock_run, new_dir, mock_get_snap_tool):
         image = oci.Image("a:b", Path("/c"))
         bundle_path = image.extract_to(Path("bundle/dir"), rootless=True)
         assert Path("bundle/dir").is_dir()
@@ -221,7 +230,7 @@ class TestImage:
         assert Path("bundle/dir/a-b/foo.txt").exists() is False
         assert bundle_path == Path("bundle/dir/a-b/rootfs")
 
-    def test_add_layer(self, mocker, mock_run, new_dir):
+    def test_add_layer(self, mocker, mock_run, new_dir, mock_get_snap_tool):
         image = oci.Image("a:b", new_dir / "c")
         Path("c").mkdir()
         Path("layer_dir").mkdir()
@@ -536,7 +545,7 @@ class TestImage:
         with pytest.raises(errors.LayerArchivingError, match=expected_message):
             image.add_layer("tag", layer_dir, base_layer_dir=rootfs_dir)
 
-    def test_to_docker_daemon(self, mock_run):
+    def test_to_docker_daemon(self, mock_run, mock_get_snap_tool):
         image = oci.Image("a:b", Path("/c"))
         image.to_docker_daemon("tag")
         assert mock_run.mock_calls == [
@@ -551,7 +560,7 @@ class TestImage:
             )
         ]
 
-    def test_to_oci_archive(self, mock_run):
+    def test_to_oci_archive(self, mock_run, mock_get_snap_tool):
         image = oci.Image("a:b", Path("/c"))
         image.to_oci_archive("tag", filename="foobar")
         assert mock_run.mock_calls == [
@@ -566,7 +575,7 @@ class TestImage:
             )
         ]
 
-    def test_digest(self, mock_run):
+    def test_digest(self, mock_run, mock_get_snap_tool):
         source_image = "docker://ubuntu:22.04"
         image = oci.Image("a:b", Path("/c"))
         mock_run.return_value = MagicMock()
@@ -581,7 +590,7 @@ class TestImage:
         ]
         assert digest == bytes([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15])
 
-    def test_set_entrypoint(self, mocker):
+    def test_set_entrypoint(self, mocker, mock_get_snap_tool):
         mock_run = mocker.patch("subprocess.run")
         image = oci.Image("a:b", Path("/c"))
 
@@ -606,7 +615,7 @@ class TestImage:
             )
         ]
 
-    def test_set_cmd(self, mocker):
+    def test_set_cmd(self, mocker, mock_get_snap_tool):
         mock_run = mocker.patch("subprocess.run")
         image = oci.Image("a:b", Path("/c"))
 
@@ -631,7 +640,7 @@ class TestImage:
             )
         ]
 
-    def test_set_env(self, mocker):
+    def test_set_env(self, mocker, mock_get_snap_tool):
         mock_run = mocker.patch("subprocess.run")
         image = oci.Image("a:b", Path("/c"))
 
@@ -657,8 +666,15 @@ class TestImage:
         ]
 
     def test_set_control_data(
-        self, mock_archive_layer, mock_rmtree, mock_mkdir, mock_mkdtemp, mocker
+        self,
+        mock_archive_layer,
+        mock_rmtree,
+        mock_mkdir,
+        mock_mkdtemp,
+        mocker,
+        mock_get_snap_tool,
     ):
+        # pylint: disable=too-many-locals
         mock_run = mocker.patch("subprocess.run")
         image = oci.Image("a:b", Path("/c"))
 
@@ -707,7 +723,7 @@ class TestImage:
         ]
         mock_rmtree.assert_called_once_with(Path(mock_control_data_path))
 
-    def test_set_annotations(self, mocker):
+    def test_set_annotations(self, mocker, mock_get_snap_tool):
         mock_run = mocker.patch("subprocess.run")
         image = oci.Image("a:b", Path("/c"))
 
@@ -807,7 +823,7 @@ class TestImage:
         )
         assert spy_add.call_count == 1
 
-    def test_stat(self, new_dir, mock_run, mocker):
+    def test_stat(self, new_dir, mock_run, mocker, mock_get_snap_tool):
         image_dir = Path("images/dir")
         image, _ = oci.Image.new_oci_image(
             "bare:latest", image_dir=image_dir, arch="amd64"
