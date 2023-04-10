@@ -21,7 +21,7 @@ import os
 import tarfile
 from pathlib import Path
 from typing import List, Tuple
-from unittest.mock import ANY, call, mock_open, patch
+from unittest.mock import ANY, MagicMock, call, mock_open, patch
 
 import pytest
 from craft_parts.overlays import overlays
@@ -566,15 +566,14 @@ class TestImage:
             )
         ]
 
-    def test_digest(self, mocker):
+    def test_digest(self, mock_run):
         source_image = "docker://ubuntu:22.04"
         image = oci.Image("a:b", Path("/c"))
-        mock_output = mocker.patch(
-            "subprocess.check_output", return_value="000102030405060708090a0b0c0d0e0f"
-        )
+        mock_run.return_value = MagicMock()
+        mock_run.return_value.stdout = "000102030405060708090a0b0c0d0e0f"
 
         digest = image.digest(source_image)
-        assert mock_output.mock_calls == [
+        assert mock_run.mock_calls == [
             call(
                 ["skopeo", "inspect", "--format", "{{.Digest}}", "-n", source_image],
                 text=True,

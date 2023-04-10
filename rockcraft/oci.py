@@ -116,8 +116,8 @@ class Image:
         image_target = image_dir / image_name
         image_target_no_tag = str(image_target).split(":", maxsplit=1)[0]
         shutil.rmtree(image_target_no_tag, ignore_errors=True)
-        _process_run(["umoci", "init", "--layout", image_target_no_tag])
-        _process_run(["umoci", "new", "--image", str(image_target)])
+        _run_umoci(["init", "--layout", image_target_no_tag])
+        _run_umoci(["new", "--image", str(image_target)])
 
         # Unfortunately, umoci does not allow initializing an image
         # with arch and variant. We can configure the arch via
@@ -155,11 +155,11 @@ class Image:
         bundle_path = bundle_dir / self.image_name.replace(":", "-")
         image_path = self.path / self.image_name
         shutil.rmtree(bundle_path, ignore_errors=True)
-        command = ["umoci", "unpack"]
+        command = ["unpack"]
         if rootless:
             command.append("--rootless")
         command.extend(["--image", str(image_path), str(bundle_path)])
-        _process_run(command)
+        _run_umoci(command)
 
         return bundle_path / "rootfs"
 
@@ -190,9 +190,7 @@ class Image:
     def stat(self) -> Dict[Any, Any]:
         """Obtain the image statistics, as reported by "umoci stat --json"."""
         image_path = self.path / self.image_name
-        output = _process_run(
-            ["umoci", "stat", "--json", "--image", str(image_path)]
-        ).stdout
+        output = _run_umoci(["stat", "--json", "--image", str(image_path)]).stdout
         return json.loads(output)
 
     @staticmethod
@@ -202,10 +200,10 @@ class Image:
         :param source_image: the source image name, it its full form (e.g. docker://ubuntu:22.04)
         :returns: The image digest bytes.
         """
-        output = subprocess.check_output(
-            ["skopeo", "inspect", "--format", "{{.Digest}}", "-n", source_image],
+        output = _run_skopeo(
+            ["inspect", "--format", "{{.Digest}}", "-n", source_image],
             text=True,
-        )
+        ).stdout
         parts = output.split(":", 1)
         return bytes.fromhex(parts[-1])
 
@@ -337,9 +335,8 @@ def _copy_image(
         skopeo command (and not to skopeo itself).
     """
     copy_extra = copy_params if copy_params else []
-    _process_run(
+    _run_skopeo(
         [
-            "skopeo",
             "--insecure-policy",
         ]
         + list(system_params)
@@ -354,7 +351,7 @@ def _copy_image(
 
 def _config_image(image_path: Path, params: List[str]) -> None:
     """Configure the OCI image."""
-    _process_run(["umoci", "config", "--image", str(image_path)] + params)
+    _run_umoci(["config", "--image", str(image_path)] + params)
 
 
 def _add_layer_into_image(
@@ -366,14 +363,13 @@ def _add_layer_into_image(
     :param archived_content: path to the archived content to be added
     """
     cmd = [
-        "umoci",
         "raw",
         "add-layer",
         "--image",
         str(image_path),
         str(archived_content),
     ] + [arg_val for k, v in kwargs.items() for arg_val in [k, v]]
-    _process_run(cmd + ["--history.created_by", " ".join(cmd)])
+    _run_umoci(cmd + ["--history.created_by", " ".join(["umoci"] + cmd)])
 
 
 def _archive_layer(
@@ -624,6 +620,16 @@ def _inject_architecture_variant(image_path: Path, variant: str) -> None:
     tl_index["manifests"][0]["digest"] = f"sha256:{new_manifest_digest}"
     tl_index["manifests"][0]["size"] = len(new_manifest_bytes)
     tl_index_path.write_bytes(json.dumps(tl_index).encode("utf-8"))
+
+
+def _run_skopeo(arguments: List[str], **kwargs: Any) -> subprocess.CompletedProcess:
+    """Find and run the correct 'skopeo' binary with ``arguments``."""
+    return _process_run(["skopeo"] + arguments, **kwargs)
+
+
+def _run_umoci(arguments: List[str]) -> subprocess.CompletedProcess:
+    """Find and run the correct 'umoci' binary with ``arguments``."""
+    return _process_run(["umoci"] + arguments)
 
 
 def _process_run(command: List[str], **kwargs: Any) -> subprocess.CompletedProcess:
