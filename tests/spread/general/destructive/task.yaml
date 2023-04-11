@@ -1,0 +1,24 @@
+summary: destructive-mode test
+
+execute: |
+  # Check that work dirs *don't* exist
+  test ! -d work/parts
+  test ! -f work/prime/bin/pebble
+  
+  run_rockcraft pack --destructive-mode
+
+  test -f destructive-mode*.rock
+  
+  # Check that work dirs *do* exist
+  test -d work/parts
+  test -f work/prime/bin/pebble
+  
+  run_rockcraft clean --destructive-mode
+  
+  # Check that work dirs *don't* exist again
+  test ! -d work/parts
+  test ! -f work/prime/bin/pebble
+
+restore: |
+  rm -f destructive-mode*.rock
+  rm -rf work
