@@ -44,11 +44,15 @@ def lifecycle_init_mock():
 
 
 def create_namespace(
-    *, parts=None, shell=False, shell_after=False, debug=False
+    *, parts=None, shell=False, shell_after=False, debug=False, destructive_mode=False
 ) -> Namespace:
     """Shortcut to create a Namespace object with the correct default values."""
     return Namespace(
-        parts=parts or [], shell=shell, shell_after=shell_after, debug=debug
+        parts=parts or [],
+        shell=shell,
+        shell_after=shell_after,
+        debug=debug,
+        destructive_mode=destructive_mode,
     )
 
 
@@ -112,17 +116,33 @@ def test_run_command_debug(mocker, cmd):
     assert mock_ended_ok.mock_calls == [call()]
 
 
+@pytest.mark.parametrize("cmd", ["pull", "overlay", "build", "stage", "prime"])
+def test_run_command_destructive_mode(mocker, cmd):
+    run_mock = mocker.patch("rockcraft.lifecycle.run")
+    mock_ended_ok = mocker.spy(emit, "ended_ok")
+    mocker.patch.object(sys, "argv", ["rockcraft", cmd, "--destructive-mode"])
+    cli.run()
+
+    assert run_mock.mock_calls == [call(cmd, create_namespace(destructive_mode=True))]
+    assert mock_ended_ok.mock_calls == [call()]
+
+
+@pytest.mark.parametrize("destructive_opt", [True, False])
 @pytest.mark.parametrize("debug_opt", [True, False])
-def test_run_pack(mocker, debug_opt):
+def test_run_pack(mocker, debug_opt, destructive_opt):
     run_mock = mocker.patch("rockcraft.lifecycle.run")
     mock_ended_ok = mocker.spy(emit, "ended_ok")
     command_line = ["rockcraft", "pack"]
     if debug_opt:
         command_line.append("--debug")
+    if destructive_opt:
+        command_line.append("--destructive-mode")
     mocker.patch.object(sys, "argv", command_line)
     cli.run()
 
-    assert run_mock.mock_calls == [call("pack", Namespace(debug=debug_opt))]
+    assert run_mock.mock_calls == [
+        call("pack", Namespace(debug=debug_opt, destructive_mode=destructive_opt))
+    ]
     assert mock_ended_ok.mock_calls == [call()]
 
 

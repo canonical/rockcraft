@@ -118,9 +118,9 @@ def test_run_clean_part(mocker, mock_project, new_dir):
 
 @tests.linux_only
 def test_run_clean_destructive_mode(mocker, mock_project, new_dir):
-    """Verify cleaning in destructive mode raises an error."""
+    """Verify cleaning in destructive mode."""
     mocker.patch("rockcraft.lifecycle.load_project", return_value=mock_project)
-    mocker.patch("rockcraft.lifecycle.utils.is_managed_mode", return_value=True)
+    mocker.patch("rockcraft.lifecycle.utils.is_managed_mode", return_value=False)
     mocker.patch(
         "rockcraft.lifecycle.utils.get_managed_environment_home_path",
         return_value=new_dir,
@@ -137,9 +137,43 @@ def test_run_clean_destructive_mode(mocker, mock_project, new_dir):
         }
     }
 
-    lifecycle.run(command_name="clean", parsed_args=argparse.Namespace(parts=["foo"]))
+    lifecycle.run(
+        command_name="clean",
+        parsed_args=argparse.Namespace(parts=["foo"], destructive_mode=True),
+    )
 
     assert clean_mock.mock_calls == [call()]
+
+
+@tests.linux_only
+def test_run_destructive_mode(mocker, mock_project, new_dir):
+    """Verify running in destructive mode."""
+    mocker.patch("rockcraft.lifecycle.load_project", return_value=mock_project)
+    mocker.patch("rockcraft.lifecycle.utils.is_managed_mode", return_value=False)
+    mocker.patch(
+        "rockcraft.lifecycle.utils.get_managed_environment_home_path",
+        return_value=new_dir,
+    )
+    mocker.patch(
+        "rockcraft.lifecycle.oci.Image.from_docker_registry",
+        return_value=(Mock(), Mock()),
+    )
+    run_mock = mocker.patch("rockcraft.parts.PartsLifecycle.run")
+    pack_mock = mocker.patch("rockcraft.lifecycle._pack")
+
+    mock_project.parts = {
+        "foo": {
+            "plugin": "nil",
+        }
+    }
+
+    lifecycle.run(
+        command_name="pack",
+        parsed_args=argparse.Namespace(parts=["foo"], destructive_mode=True),
+    )
+
+    assert run_mock.called
+    assert pack_mock.called
 
 
 @tests.linux_only
