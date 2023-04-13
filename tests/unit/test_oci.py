@@ -56,6 +56,11 @@ def mock_mkdtemp(mocker):
 
 
 @pytest.fixture
+def mock_tmpdir(mocker):
+    yield mocker.patch("tempfile.TemporaryDirectory")
+
+
+@pytest.fixture
 def mock_inject_variant(mocker):
     yield mocker.patch("rockcraft.oci._inject_architecture_variant")
 
@@ -68,6 +73,11 @@ def mock_read_bytes(mocker):
 @pytest.fixture
 def mock_write_bytes(mocker):
     yield mocker.patch("pathlib.Path.write_bytes")
+
+
+@pytest.fixture
+def mock_add_layer(mocker):
+    yield mocker.patch("rockcraft.oci.Image.add_layer")
 
 
 @pytest.fixture
@@ -586,7 +596,7 @@ class TestImage:
         mock_run = mocker.patch("subprocess.run")
         image = oci.Image("a:b", Path("/c"))
 
-        image.set_entrypoint(["arg1", "arg2"])
+        image.set_entrypoint()
 
         assert mock_run.mock_calls == [
             call(
@@ -597,23 +607,14 @@ class TestImage:
                     "/c/a:b",
                     "--clear=config.entrypoint",
                     "--config.entrypoint",
-                    "arg1",
+                    "/bin/pebble",
                     "--config.entrypoint",
-                    "arg2",
+                    "enter",
                 ],
                 capture_output=True,
                 check=True,
                 universal_newlines=True,
-            )
-        ]
-
-    def test_set_cmd(self, mocker):
-        mock_run = mocker.patch("subprocess.run")
-        image = oci.Image("a:b", Path("/c"))
-
-        image.set_cmd(["arg1", "arg2"])
-
-        assert mock_run.mock_calls == [
+            ),
             call(
                 [
                     "umoci",
@@ -621,15 +622,11 @@ class TestImage:
                     "--image",
                     "/c/a:b",
                     "--clear=config.cmd",
-                    "--config.cmd",
-                    "arg1",
-                    "--config.cmd",
-                    "arg2",
                 ],
                 capture_output=True,
                 check=True,
                 universal_newlines=True,
-            )
+            ),
         ]
 
     def test_set_env(self, mocker):
@@ -656,6 +653,53 @@ class TestImage:
                 universal_newlines=True,
             )
         ]
+
+    def test_set_pebble_services(
+        self,
+        mock_add_layer,
+        mock_tmpdir,
+        tmp_path,
+        mocker,
+    ):
+        image = oci.Image("a:b", Path("/c"))
+
+        mock_summary = "summary"
+        mock_description = "description"
+        mock_services = {
+            "mockServiceOne": {"override": "replace", "command": "foo"},
+            "mockServiceTwo": {"override": "merge", "command": "bar"},
+        }
+        expected_layer = {
+            "summary": mock_summary,
+            "description": mock_description,
+            "services": mock_services,
+        }
+
+        mock_name = "rock"
+        mock_tag = "tag"
+        mock_base_layer_dir = tmp_path / "base"
+        mock_define_pebble_layer = mocker.patch(
+            "rockcraft.pebble.Pebble.define_pebble_layer"
+        )
+        mock_define_pebble_layer.return_value = None
+
+        fake_tmpfs = tmp_path / "mock-tmp-pebble-layer-path"
+        mock_tmpdir.return_value = fake_tmpfs
+
+        image.set_pebble_services(
+            mock_services,
+            mock_name,
+            mock_tag,
+            mock_summary,
+            mock_description,
+            mock_base_layer_dir,
+        )
+
+        mock_tmpdir.assert_called_once()
+        mock_add_layer.assert_called_once_with(mock_tag, fake_tmpfs)
+        mock_define_pebble_layer.assert_called_once_with(
+            fake_tmpfs, mock_base_layer_dir, expected_layer, mock_name
+        )
 
     def test_set_control_data(
         self, mock_archive_layer, mock_rmtree, mock_mkdir, mock_mkdtemp, mocker

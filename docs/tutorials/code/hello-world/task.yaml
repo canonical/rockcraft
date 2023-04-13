@@ -31,10 +31,10 @@ execute: |
   # [docs:skopeo-copy-end]
 
   rm hello_1.0_amd64.rock
-  docker images
+  docker images hello:1.0
 
   # [docs:docker-run]
-  docker run --rm hello:1.0
+  docker run --rm hello:1.0 exec hello -t
   # [docs:docker-run-end]
   
-  docker run --rm hello:1.0 | grep "hello, world"
+  docker run --rm hello:1.0 exec hello -t | grep "hello, world"

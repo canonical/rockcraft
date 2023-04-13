@@ -34,6 +34,7 @@ from craft_cli import emit
 from craft_parts.overlays import overlays
 
 from rockcraft import errors
+from rockcraft.pebble import Pebble
 
 logger = logging.getLogger(__name__)
 
@@ -227,34 +228,55 @@ class Image:
         src_path = self.path / f"{name}:{tag}"
         _copy_image(f"oci:{str(src_path)}", f"oci-archive:{filename}:{tag}")
 
-    def set_entrypoint(self, entrypoint: List[str]) -> None:
-        """Set the OCI image entrypoint.
-
-        :param entrypoint: The default list of arguments to use as the command to
-            execute when the container starts.
-        """
+    def set_entrypoint(self) -> None:
+        """Set the OCI image entrypoint. It is always Pebble and CMD is null."""
         emit.progress("Configuring entrypoint...")
         image_path = self.path / self.image_name
+        entrypoint = [f"/{Pebble.PEBBLE_BINARY_PATH}", "enter"]
         params = ["--clear=config.entrypoint"]
         for entry in entrypoint:
             params.extend(["--config.entrypoint", entry])
         _config_image(image_path, params)
+        # Clear the CMD
+        _config_image(image_path, ["--clear=config.cmd"])
         emit.progress(f"Entrypoint set to {entrypoint}", permanent=True)
 
-    def set_cmd(self, cmd: List[str]) -> None:
-        """Set the OCI image default command parameters.
+    def set_pebble_services(
+        self,
+        services: Dict[str, Any],
+        name: str,
+        tag: str,
+        summary: str,
+        description: str,
+        base_layer_dir: Path,
+    ) -> None:
+        """Write the provided services into a Pebble layer in the filesystem.
 
-        :param cmd: The default arguments to the entrypoint of the container. If
-            entrypoint is not defined, the first entry of cmd is the executable to
-            run when the container starts.
+        :param services: The Pebble services to be written into the Pebble
+        :param name: The name of the ROCK
+        :param tag: The ROCK's image tag
+        :param summary: The summary for the Pebble layer
+        :param description: The description for the Pebble layer
+        :param base_layer_dir: Path to the base layer's root filesystem
         """
-        emit.progress("Configuring cmd...")
-        image_path = self.path / self.image_name
-        params = ["--clear=config.cmd"]
-        for entry in cmd:
-            params.extend(["--config.cmd", entry])
-        _config_image(image_path, params)
-        emit.progress(f"Cmd set to {cmd}", permanent=True)
+        # pylint: disable=too-many-arguments
+        service_names = list(services.keys())
+        emit.progress(f"Configuring Pebble services {', '.join(service_names)}")
+        pebble_layer_content = {
+            "summary": summary,
+            "description": description,
+            "services": services,
+        }
+
+        pebble = Pebble()
+        with tempfile.TemporaryDirectory() as tmpfs:
+            tmpfs_path = Path(tmpfs)
+            pebble.define_pebble_layer(
+                tmpfs_path, base_layer_dir, pebble_layer_content, name
+            )
+
+            emit.progress("Writing new Pebble layer file")
+            self.add_layer(tag, tmpfs_path)
 
     def set_env(self, env: List[Dict[str, str]]) -> None:
         """Set the OCI image environment.

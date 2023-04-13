@@ -6,12 +6,8 @@ license: Apache-2.0
 version: "0.0.1"
 base: bare
 build_base: "ubuntu:22.04"
-entrypoint: [/usr/bin/openssl]
 platforms:
   amd64:
-
-env:
-  - SSL_CERT_FILE: /etc/ssl/certs/ca-certificates.crt
 
 parts:
   openssl:

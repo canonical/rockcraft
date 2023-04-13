@@ -4,9 +4,14 @@ base: ubuntu:20.04
 summary: Environment
 description: A ROCK with an environment but no real purpose
 license: Apache-2.0
-cmd: [/bin/true]
-env:
-  - X: "ship it!"
+services:
+  test:
+    override: replace
+    command: /usr/bin/env
+    startup: enabled
+    environment:
+      X: "ship it!"
+
 platforms:
   amd64:
   amd64v2:

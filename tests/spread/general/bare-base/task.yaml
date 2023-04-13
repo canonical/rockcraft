@@ -10,6 +10,10 @@ execute: |
   docker images
   sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:bare-base-test_latest_amd64.rock docker-daemon:bare-base-test:latest
   rm bare-base-test_latest_amd64.rock
-  docker images
-  docker run --rm bare-base-test
-  docker run --rm --entrypoint pebble bare-base-test help
+  docker images bare-base-test:latest
+  id=$(docker run --rm -d bare-base-test -v)
+  docker logs "$id" | grep "ship it!"
+  docker exec "$id" pebble services | grep hello
+  docker exec "$id" pebble ls /usr/bin/hello
+  
+  docker rm -f "$id"

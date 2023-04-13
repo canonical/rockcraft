@@ -167,16 +167,18 @@ def _pack(
     )
     emit.progress("Created new layer", permanent=True)
 
-    if project.entrypoint:
-        new_image.set_entrypoint(project.entrypoint)
-        if not project.cmd:
-            new_image.set_cmd([])
+    emit.progress("Adding Pebble entrypoint")
 
-    if project.cmd:
-        new_image.set_cmd(project.cmd)
-
-    if project.env:
-        new_image.set_env(project.env)
+    new_image.set_entrypoint()
+    if project.services:
+        new_image.set_pebble_services(
+            services=project.dict(exclude_none=True)["services"],
+            name=project.name,
+            tag=project.version,
+            summary=project.summary,
+            description=project.description,
+            base_layer_dir=base_layer_dir,
+        )
 
     # Set annotations and metadata, both dynamic and the ones based on user-provided properties
     # Also include the "created" timestamp, just before packing the image

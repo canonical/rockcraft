@@ -40,6 +40,7 @@ from craft_archives import repo
 
 from rockcraft.errors import ProjectLoadError, ProjectValidationError
 from rockcraft.parts import validate_part
+from rockcraft.pebble import Pebble
 
 if TYPE_CHECKING:
     from pydantic.error_wrappers import ErrorDict
@@ -144,6 +145,41 @@ class Platform(pydantic.BaseModel):
         return values
 
 
+class Service(pydantic.BaseModel):
+    """Lightweight schema validation for a Pebble service.
+
+    Based on
+    https://github.com/canonical/pebble#layer-specification
+    """
+
+    override: Literal["merge", "replace"]
+    command: str
+    summary: Optional[str]
+    description: Optional[str]
+    startup: Optional[Literal["enabled", "disabled"]]
+    after: Optional[List[str]]
+    before: Optional[List[str]]
+    requires: Optional[List[str]]
+    environment: Optional[Dict[str, str]]
+    user: Optional[str]
+    user_id: Optional[int] = pydantic.Field(alias="user-id")
+    group: Optional[str]
+    group_id: Optional[int] = pydantic.Field(alias="group-id")
+    on_success: Optional[Literal["restart", "shutdown", "ignore"]] = pydantic.Field(
+        alias="on-success"
+    )
+    on_failure: Optional[Literal["restart", "shutdown", "ignore"]] = pydantic.Field(
+        alias="on-failure"
+    )
+    on_check_failure: Optional[
+        Dict[str, Literal["restart", "shutdown", "ignore"]]
+    ] = pydantic.Field(alias="on-check-failure")
+    backoff_delay: Optional[str] = pydantic.Field(alias="backoff-delay")
+    backoff_factor: Optional[float] = pydantic.Field(alias="backoff-factor")
+    backoff_limit: Optional[str] = pydantic.Field(alias="backoff-limit")
+    kill_delay: Optional[str] = pydantic.Field(alias="kill-delay")
+
+
 class Project(pydantic.BaseModel):
     """Rockcraft project definition."""
 
@@ -158,9 +194,7 @@ class Project(pydantic.BaseModel):
     build_base: Optional[
         Literal["ubuntu:18.04", "ubuntu:20.04", "ubuntu:22.04"]
     ] = pydantic.Field(alias="build-base")
-    entrypoint: Optional[List[str]]
-    cmd: Optional[List[str]]
-    env: Optional[List[Dict[str, str]]]
+    services: Optional[Dict[str, Service]]
 
     package_repositories: Optional[List[Dict[str, Any]]]
 
@@ -174,6 +208,23 @@ class Project(pydantic.BaseModel):
         allow_mutation = False
         allow_population_by_field_name = True
         alias_generator = lambda s: s.replace("_", "-")  # noqa: E731
+
+    @pydantic.root_validator(pre=True)
+    @classmethod
+    def _check_unsupported_options(cls, values: Mapping[str, Any]) -> Mapping[str, Any]:
+        """Before validation, check if unsupported fields exist. Exit if so."""
+        # pylint: disable=unused-argument
+        unsupported_msg = str(
+            "The fields 'entrypoint', 'cmd' and 'env are not supported in "
+            "Rockcraft. All ROCKs have Pebble as their entrypoint, so you must "
+            "use 'services' to define your container application and "
+            "respective environment."
+        )
+        unsupported_fields = ["cmd", "entrypoint", "env"]
+        if any(field in values for field in unsupported_fields):
+            raise ProjectValidationError(unsupported_msg)
+
+        return values
 
     @pydantic.validator("rock_license", always=True)
     @classmethod
@@ -538,9 +589,4 @@ def _add_pebble_data(yaml_data: Dict[str, Any]) -> None:
         # Project already has a pebble part: this is not supported.
         raise ProjectValidationError('Cannot override the default "pebble" part')
 
-    pebble_part_spec = {
-        "plugin": "nil",
-        "stage-snaps": ["pebble/latest/edge"],
-        "stage": ["bin/pebble"],
-    }
-    parts["pebble"] = pebble_part_spec
+    parts["pebble"] = Pebble.PEBBLE_PART_SPEC

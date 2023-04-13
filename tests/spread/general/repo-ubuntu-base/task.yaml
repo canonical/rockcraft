@@ -13,8 +13,12 @@ execute: |
   # Ensure container exists
   docker images apt-repo-test | MATCH "apt-repo-test"
   
-  docker run --rm apt-repo-test | MATCH "^3.12"
-
+  # ensure container doesn't exist
+  docker rm -f apt-repo-test-container
+  docker run -d --name apt-repo-test-container apt-repo-test -v
+  docker logs apt-repo-test-container | MATCH "3.12"
+  
 restore: |
   rm -f apt-repo-test_latest_amd64.rock
-  docker rmi apt-repo-test
+  docker rm -f apt-repo-test-container
+  docker rmi -f apt-repo-test

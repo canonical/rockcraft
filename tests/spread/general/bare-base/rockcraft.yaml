@@ -5,8 +5,11 @@ description: Building a tiny ROCK from a bare base, with just one package
 license: Apache-2.0
 build-base: ubuntu:22.04
 base: bare
-entrypoint: [/usr/bin/hello]
-cmd: [-g, "ship it!"]
+services:
+  hello:
+    override: merge
+    command: /usr/bin/hello -g "ship it!"
+    startup: enabled
 platforms:
   amd64:
 
