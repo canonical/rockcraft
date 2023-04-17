@@ -1,0 +1,25 @@
+name: usrmerge
+version: latest
+summary: A ROCK that tests file conflicts in usrmerge handling.
+description: A ROCK that tests file conflicts in usrmerge handling
+license: Apache-2.0
+base: ubuntu:22.04
+platforms:
+  amd64:
+
+parts:
+  file-conflict-part:
+    plugin: nil
+    # Both overlay-packages and stage-packages include `libexpat1`, so because
+    # of the usrmerge in the ubuntu-based overlay we will have many file-based
+    # conflicts; for instance, both lib/x86_64-linux-gnu/libexpat.so.1 _and_
+    # usr/lib/x86_64-linux-gnu/libexpat.so.1 will be created, one coming from the
+    # overlay-package and one from the stage-package.
+    overlay-packages: [libexpat1]
+    stage-packages: [libexpat1]
+    organize:
+      # Give these files a prefix here to facilitate testing for their presence
+      # in the container later; this way there won't be a false-positive from the
+      # already-existing "libexpat.so.1" file from the ubuntu base.
+      usr/lib/x86_64-linux-gnu/libexpat.so.1: usr/lib/x86_64-linux-gnu/rock-libexpat.so.1
+      lib/x86_64-linux-gnu/libexpat.so.1: lib/x86_64-linux-gnu/rock-libexpat.so.1
