@@ -26,6 +26,7 @@ import tarfile
 import tempfile
 from collections import defaultdict
 from dataclasses import dataclass
+from datetime import datetime
 from pathlib import Path
 from typing import Any, DefaultDict, Dict, List, Optional, Tuple
 
@@ -188,6 +189,69 @@ class Image:
         name = self.image_name.split(":", 1)[0]
         return self.__class__(image_name=f"{name}:{tag}", path=self.path)
 
+    def add_user(self, base_layer_dir: Path, tag: str, username: str, uid: int) -> None:
+        """Create a new ROCK user.
+
+        :param base_layer_dir: Path to the base layer's root filesystem
+        :param tag: The ROCK's image tag
+        :param username: Username to be created. Same as group name.
+        :param uid: UID of the username to be created. Same as GID
+        """
+        passwd_file = Path("etc/passwd")
+        group_file = Path("etc/group")
+        shadow_file = Path("etc/shadow")
+
+        existing_users = (
+            (base_layer_dir / passwd_file).read_text()
+            if (base_layer_dir / passwd_file).exists()
+            else ""
+        )
+        existing_groups = (
+            (base_layer_dir / group_file).read_text()
+            if (base_layer_dir / group_file).exists()
+            else ""
+        )
+
+        if (
+            f"{username}:" in existing_users
+            or f":{uid}:" in existing_users
+            or f"{username}:" in existing_groups
+            or f":{uid}:" in existing_groups
+        ):
+            raise errors.RockcraftError(
+                str(
+                    f"Error while trying to create user {username}:{uid}, "
+                    f"with group {username}:{uid}...\n"
+                    " - conflict with existing user/group in the base filesystem"
+                )
+            )
+
+        existing_users += f"{username}:x:{uid}:{uid}::/nonexistent:/usr/bin/false\n"
+        existing_groups += f"{username}:x:{uid}:\n"
+
+        with tempfile.TemporaryDirectory() as tmpfs:
+            (Path(tmpfs) / "etc").mkdir(parents=True, exist_ok=True)
+            with open(Path(tmpfs) / passwd_file, "a+") as passwdf:
+                passwdf.write(existing_users)
+
+            with open(Path(tmpfs) / group_file, "a+") as groupf:
+                groupf.write(existing_groups)
+
+            if (base_layer_dir / shadow_file).exists():
+                days_since_epoch = (datetime.utcnow() - datetime(1970, 1, 1)).days
+
+                # only add the shadow file is there's already one in the base image
+                with open(Path(tmpfs) / shadow_file, "a+") as shadowf:
+                    shadowf.write(
+                        (base_layer_dir / shadow_file).read_text()
+                        + f"{username}:!:{days_since_epoch}::::::\n"
+                    )
+
+            emit.progress(
+                "Adding user {username}:{uid} with group {new_group}:{new_gid}"
+            )
+            self.add_layer(tag, Path(tmpfs))
+
     def stat(self) -> Dict[Any, Any]:
         """Obtain the image statistics, as reported by "umoci stat --json"."""
         image_path = self.path / self.image_name
@@ -227,6 +291,16 @@ class Image:
         name = self.image_name.split(":", 1)[0]
         src_path = self.path / f"{name}:{tag}"
         _copy_image(f"oci:{str(src_path)}", f"oci-archive:{filename}:{tag}")
+
+    def set_default_user(self, user: str) -> None:
+        """Set the default runtime user for the OCI image.
+
+        :param user: name of the default user (must already exist)
+        """
+        image_path = self.path / self.image_name
+        params = ["--clear=config.entrypoint", "--config.user", user]
+        _config_image(image_path, params)
+        emit.progress(f"Default user set to {user}", permanent=True)
 
     def set_entrypoint(self) -> None:
         """Set the OCI image entrypoint. It is always Pebble and CMD is null."""

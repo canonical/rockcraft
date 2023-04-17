@@ -1,0 +1,21 @@
+name: run-user-test
+version: latest
+summary: A ROCK with a nonroot user
+description: A ROCK that has a nonroot default OCI user
+license: Apache-2.0
+base: ubuntu:22.04
+run-user: confined_daemon
+services:
+  test:
+    override: replace
+    command: /usr/bin/sleep 10
+    startup: enabled
+    user: confined_daemon
+    on-success: shutdown
+    on-failure: shutdown
+platforms:
+  amd64:
+
+parts:
+  my-part:
+    plugin: nil

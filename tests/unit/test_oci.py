@@ -546,6 +546,83 @@ class TestImage:
         with pytest.raises(errors.LayerArchivingError, match=expected_message):
             image.add_layer("tag", layer_dir, base_layer_dir=rootfs_dir)
 
+    def test_add_new_user(
+        self,
+        check,
+        mock_add_layer,
+        mock_tmpdir,
+        tmp_path,
+    ):
+        mock_tag = "tag"
+        fake_tmpfs = tmp_path / "mock-tmp"
+        mock_tmpdir.return_value = fake_tmpfs
+
+        image = oci.Image("a:b", Path("/c"))
+        image.add_user(tmp_path, mock_tag, "foo", 585287)
+
+        mock_tmpdir.assert_called_once()
+        with open(fake_tmpfs / "etc/passwd") as f:
+            check.equal(f.read(), "foo:x:585287:585287::/nonexistent:/usr/bin/false\n")
+        with open(fake_tmpfs / "etc/group") as f:
+            check.equal(f.read(), "foo:x:585287:\n")
+
+        check.is_false(os.path.exists(fake_tmpfs / "etc/shadow"))
+        mock_add_layer.assert_called_once_with(mock_tag, fake_tmpfs)
+
+    def test_append_new_user(
+        self,
+        check,
+        mock_add_layer,
+        mock_tmpdir,
+        tmp_path,
+    ):
+        # Mock the existence of users in the base image
+        fake_etc = tmp_path / "etc"
+        fake_etc.mkdir(parents=True, exist_ok=True)
+        with open(fake_etc / "passwd", "w") as f:
+            f.write("someuser:x:10:10::/nonexistent:/usr/bin/false\n")
+        with open(fake_etc / "group", "w") as f:
+            f.write("somegroup:x:10:\n")
+        with open(fake_etc / "shadow", "w") as f:
+            f.write("somegroup:!:19369::::::\n")
+
+        mock_tag = "tag"
+        fake_tmpfs = tmp_path / "mock-tmp"
+        mock_tmpdir.return_value = fake_tmpfs
+
+        image = oci.Image("a:b", Path("/c"))
+        days_since_epoch = (
+            datetime.datetime.utcnow() - datetime.datetime(1970, 1, 1)
+        ).days
+        image.add_user(tmp_path, mock_tag, "foo", 585287)
+
+        mock_tmpdir.assert_called_once()
+        with open(fake_tmpfs / "etc/passwd") as f:
+            check.equal(
+                f.read(),
+                str(
+                    "someuser:x:10:10::/nonexistent:/usr/bin/false\n"
+                    "foo:x:585287:585287::/nonexistent:/usr/bin/false\n"
+                ),
+            )
+        with open(fake_tmpfs / "etc/group") as f:
+            check.equal(f.read(), "somegroup:x:10:\nfoo:x:585287:\n")
+        with open(fake_tmpfs / "etc/shadow") as f:
+            check.equal(
+                f.read(), f"somegroup:!:19369::::::\nfoo:!:{days_since_epoch}::::::\n"
+            )
+
+        mock_add_layer.assert_called_once_with(mock_tag, fake_tmpfs)
+
+        # Test with a conflicting user or ID
+        with pytest.raises(errors.RockcraftError) as err:
+            image.add_user(tmp_path, mock_tag, "foo2", 10)
+            check.is_in("conflict with existing user/group in the base filesystem", err)
+
+        with pytest.raises(errors.RockcraftError) as err:
+            image.add_user(tmp_path, mock_tag, "someuser", 585281)
+            check.is_in("conflict with existing user/group in the base filesystem", err)
+
     def test_to_docker_daemon(self, mock_run):
         image = oci.Image("a:b", Path("/c"))
         image.to_docker_daemon("tag")
@@ -592,8 +669,26 @@ class TestImage:
         ]
         assert digest == bytes([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15])
 
-    def test_set_entrypoint(self, mocker):
-        mock_run = mocker.patch("subprocess.run")
+    def test_set_default_user(self, mock_run):
+        image = oci.Image("a:b", Path("/c"))
+
+        image.set_default_user("foo")
+
+        assert mock_run.mock_calls == [
+            call(
+                [
+                    "umoci",
+                    "config",
+                    "--image",
+                    "/c/a:b",
+                    "--clear=config.entrypoint",
+                    "--config.user",
+                    "foo",
+                ]
+            )
+        ]
+
+    def test_set_entrypoint(self, mock_run):
         image = oci.Image("a:b", Path("/c"))
 
         image.set_entrypoint()
@@ -610,10 +705,7 @@ class TestImage:
                     "/bin/pebble",
                     "--config.entrypoint",
                     "enter",
-                ],
-                capture_output=True,
-                check=True,
-                universal_newlines=True,
+                ]
             ),
             call(
                 [
@@ -622,10 +714,7 @@ class TestImage:
                     "--image",
                     "/c/a:b",
                     "--clear=config.cmd",
-                ],
-                capture_output=True,
-                check=True,
-                universal_newlines=True,
+                ]
             ),
         ]
 

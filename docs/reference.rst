@@ -44,6 +44,11 @@ Format specification
   # This field is case insensitive.
   license: <license>
 
+  # (Optional) The default OCI user. It must be a supported global user.
+  # Currently, the only supported user is "confined_daemon" (with UID 584792).
+  # Defaults to "root" (with UID 0).
+  run-user: confined_daemon
+
   # (Optional) A list of services for the Pebble entrypoint.
   # The syntax follows the Pebble layer specification in
   # https://github.com/canonical/pebble#layer-specification

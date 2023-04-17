@@ -28,6 +28,7 @@ from craft_providers import ProviderError
 from . import oci, providers, utils
 from .parts import PartsLifecycle
 from .project import Project, load_project
+from .usernames import SUPPORTED_GLOBAL_USERNAMES
 
 if TYPE_CHECKING:
     import argparse
@@ -166,6 +167,18 @@ def _pack(
         base_layer_dir=base_layer_dir,
     )
     emit.progress("Created new layer", permanent=True)
+
+    if project.run_user:
+        emit.progress(f"Creating new user {project.run_user}")
+        new_image.add_user(
+            base_layer_dir=base_layer_dir,
+            tag=project.version,
+            username=project.run_user,
+            uid=SUPPORTED_GLOBAL_USERNAMES[project.run_user]["uid"],
+        )
+
+        emit.progress(f"Setting the default OCI user to be {project.run_user}")
+        new_image.set_default_user(project.run_user)
 
     emit.progress("Adding Pebble entrypoint")
 
