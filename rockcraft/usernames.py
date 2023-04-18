@@ -31,7 +31,7 @@ class GlobalUser(pydantic.BaseModel):
         """Make sure the provided username has the right prefix."""
         prefix = "confined_"
         err = f"All global usernames must start with the prefix {prefix}."
-        assert username.startswith("confined"), err
+        assert username.startswith(prefix), err
 
         return username
 
