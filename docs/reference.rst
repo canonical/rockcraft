@@ -34,11 +34,11 @@ Format specification
   version: <version>
 
   # The system image and version the application will be layered on.
-  base: ubuntu:18.04 | ubuntu:20.04 | ubuntu:22:04 | bare
+  base: ubuntu:18.04 | ubuntu:20.04 | ubuntu:22.04 | bare
 
   # (Optional) The system and version on top of which the application
   # will be built. Defaults to base.
-  build-base: ubuntu:18.04 | ubuntu:20.04 | ubuntu:22:04
+  build-base: ubuntu:18.04 | ubuntu:20.04 | ubuntu:22.04
 
   # The license, in SPDX format, of the software packaged inside the ROCK.
   # This field is case insensitive.
@@ -54,11 +54,6 @@ Format specification
       command: <command>
       # (Optional) Other configurations for the Pebble service
       <key>: <value>
-
-  # (Optional) A list of keys and values defining the container's
-  # runtime environment variables.
-  env:
-    - <var name>: <value>
 
   # List of architecture-specific ROCKs to be built.
   # Supported architectures are: amd64, arm64, arm, i386, ppc64le, riscv64 and s390x.
@@ -78,9 +73,9 @@ Format specification
       ...
 
 .. note::
-   The fields ``entrypoint`` and ``cmd`` are not supported in Rockcraft.
-   All ROCKs have Pebble as their entrypoint, and thus you must use ``services``
-   to define your container application.
+   The fields ``entrypoint``, ``cmd`` and ``env`` are not supported in
+   Rockcraft. All ROCKs have Pebble as their entrypoint, and thus you must use
+   ``services`` to define your container application.
 
 
 Example
@@ -102,9 +97,9 @@ Example
     hello:
       override: replace
       command: /usr/bin/hello -t
-  env:
-    - VAR1: value
-    - VAR2: "other value"
+      environment:
+        VAR1: value
+        VAR2: "other value"
   platforms:
     amd64:
     arm:
