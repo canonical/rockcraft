@@ -16,7 +16,8 @@ codespell==2.2.2
 colorama==0.4.6
 commonmark==0.9.1
 coverage==6.5.0
-craft-archives==0.0.3
+#craft-archives==0.0.3
+git+https://github.com/tigarmo/craft-archives.git@CRAFT-1665-duplicate-models#egg=craft_archives
 craft-cli==1.2.0
 craft-parts==1.19.0
 craft-providers==1.8.0
