@@ -17,7 +17,7 @@ execute: |
   # ensure container doesn't exist
   docker rm -f run-user-test-container
   docker run --rm --entrypoint /bin/sh run-user-test -c 'whoami' | MATCH "confined_daemon"
-  docker run --rm --name run-user-test-container run-user-test -v
+  timeout 15 docker run --rm --name run-user-test-container run-user-test -v
 
 restore: |
   rm -f run-user-test_latest_amd64.rock

@@ -10,7 +10,6 @@ services:
     override: replace
     command: /usr/bin/sleep 10
     startup: enabled
-    user: confined_daemon
     on-success: shutdown
     on-failure: shutdown
 platforms:
