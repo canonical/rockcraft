@@ -1,0 +1,32 @@
+name: dotnet-runtime
+summary: .NET Runtime 6.0
+description: A Chiselled ROCK for the .NET Runtime 6.0
+version: chiselled
+
+# Use a "bare" base for an even smaller ROCK
+base: bare
+
+# Meeting requirement R1 by making sure the ROCK builds on Jammy
+build-base: ubuntu:22.04
+
+license: Apache-2.0
+
+# Target architecture is amd64
+platforms:
+  amd64:  # Make sure this value matches your computer's architecture
+
+# For meeting requirement R2, simply don't specify any entrypoint (aka "services")
+
+parts:
+  install-dotnet-runtime:
+    plugin: nil
+
+    # Based on requirement R3, install version 6.0 of the .NET runtime "libs" slice
+    stage-packages:
+      - base-files_base
+      - dotnet-runtime-6.0_libs
+    
+    # Based on requirement R4, create the symbolic link
+    override-prime: |
+      craftctl default
+      ln -s /usr/lib/dotnet/dotnet usr/bin/
