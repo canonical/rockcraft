@@ -185,7 +185,7 @@ def _pack(
     new_image.set_entrypoint()
     if project.services:
         new_image.set_pebble_services(
-            services=project.dict(exclude_none=True)["services"],
+            services=project.dict(exclude_none=True, by_alias=True)["services"],
             name=project.name,
             tag=project.version,
             summary=project.summary,

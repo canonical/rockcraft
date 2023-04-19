@@ -385,6 +385,7 @@ class Image:
         rock_metadata_file = control_data_rock_folder / "metadata.yaml"
         with rock_metadata_file.open("w", encoding="utf-8") as rock_meta:
             yaml.dump(metadata, rock_meta)
+        rock_metadata_file.chmod(0o755)
 
         temp_tar_file = Path(self.path, f".temp_layer.control_data.{os.getpid()}.tar")
         temp_tar_file.unlink(missing_ok=True)

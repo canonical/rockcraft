@@ -791,9 +791,8 @@ class TestImage:
         )
 
     def test_set_control_data(
-        self, mock_archive_layer, mock_rmtree, mock_mkdir, mock_mkdtemp, mocker
+        self, mock_archive_layer, mock_rmtree, mock_mkdir, mock_mkdtemp, mock_run
     ):
-        mock_run = mocker.patch("subprocess.run")
         image = oci.Image("a:b", Path("/c"))
 
         mock_control_data_path = "layer_dir"
@@ -813,9 +812,11 @@ class TestImage:
 
         m = mock_open()
         with patch("pathlib.Path.open", m):
-            m.return_value.write = mock_write
-            image.set_control_data(metadata)
+            with patch("pathlib.Path.chmod") as local_mock_chmod:
+                m.return_value.write = mock_write
+                image.set_control_data(metadata)
 
+        local_mock_chmod.assert_called_once_with(0o755)
         assert mocked_data["writes"] == expected
         mock_mkdtemp.assert_called_once()
         mock_mkdir.assert_called_once()
@@ -834,9 +835,6 @@ class TestImage:
         assert mock_run.mock_calls == [
             call(
                 expected_cmd + ["--history.created_by", " ".join(expected_cmd)],
-                capture_output=True,
-                check=True,
-                universal_newlines=True,
             )
         ]
         mock_rmtree.assert_called_once_with(Path(mock_control_data_path))
