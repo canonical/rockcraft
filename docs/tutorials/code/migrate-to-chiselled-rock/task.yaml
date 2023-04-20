@@ -12,10 +12,18 @@ execute: |
 
   sudo snap install rockcraft --classic --edge
 
+  # docker snap can only access its own snap folder and $HOME
+  # so we need to run the build from someplace else
+  # https://snapcraft.io/docker
+  cat Dockerfile > /var/snap/docker/current/Dockerfile
+  pushd /var/snap/docker/current
+
   # [docs:build-docker-image]
-  DOCKER_BUILDKIT=1 docker build -t dotnet-runtime:reference .
+  docker build -t dotnet-runtime:reference .
   # [docs:build-docker-image-end]
   
+  popd
+
   # [docs:inspect-docker-image]
   docker images dotnet-runtime:reference
   docker run --rm dotnet-runtime:reference dotnet --info

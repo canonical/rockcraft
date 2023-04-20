@@ -39,7 +39,7 @@ text editor and save it as ``Dockerfile``:
 For the sake of comparison, start by building this Docker image by running:
 
 
-.. literalinclude:: code/migrate-to-chiselled-rock/Dockerfile
+.. literalinclude:: code/migrate-to-chiselled-rock/task.yaml
     :language: bash
     :start-after: [docs:build-docker-image]
     :end-before: [docs:build-docker-image-end]
@@ -69,7 +69,7 @@ The output should look as follows:
 
 Now, inspect this .NET reference image's size and make sure it is functional:
 
-.. literalinclude:: code/migrate-to-chiselled-rock/Dockerfile
+.. literalinclude:: code/migrate-to-chiselled-rock/task.yaml
     :language: bash
     :start-after: [docs:inspect-docker-image]
     :end-before: [docs:inspect-docker-image-end]
@@ -110,10 +110,10 @@ Convert Dockerfile to rockcraft.yaml file
 From a quick analysis of the reference Dockerfile above, the following
 requirements must be met:
 
- R1. the ROCK must be based on Ubuntu Jammy
- R2. there is no predefined Entrypoint or default command
- R3. The ROCK must have version 6.0 of the .NET Runtime installed
- R4. ``/usr/bin/dotnet`` must be a symbolic link to the .NET binary
+- R1. the ROCK must be based on Ubuntu Jammy
+- R2. there is no predefined Entrypoint or default command
+- R3. The ROCK must have version 6.0 of the .NET Runtime installed
+- R4. ``/usr/bin/dotnet`` must be a symbolic link to the .NET binary
 
 With these requirements in mind, and in the same directory as the Dockerfile
 from above, write the following into a text editor and save it as
