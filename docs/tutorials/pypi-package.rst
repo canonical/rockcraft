@@ -82,7 +82,8 @@ Which should print:
 Explore the running container
 -----------------------------
 
-To be able to poke around the container, you could add `bash` to `stage-packages`:
+To be able to poke around the container, you could add `bash` to
+`stage-packages`:
 
 .. code:: yaml
 
@@ -90,8 +91,8 @@ To be able to poke around the container, you could add `bash` to `stage-packages
       - bash
 
 
-After repeating ``rockcraft pack`` and ``skopeo copy`` you should be able to override the
-entrypoint:
+After repeating ``rockcraft pack`` and ``skopeo copy`` you should be able to
+override the entrypoint:
 
 .. code:: yaml
 
