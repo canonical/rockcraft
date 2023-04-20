@@ -215,7 +215,7 @@ class Project(pydantic.BaseModel):
         """Before validation, check if unsupported fields exist. Exit if so."""
         # pylint: disable=unused-argument
         unsupported_msg = str(
-            "The fields 'entrypoint', 'cmd' and 'env are not supported in "
+            "The fields 'entrypoint', 'cmd' and 'env' are not supported in "
             "Rockcraft. All ROCKs have Pebble as their entrypoint, so you must "
             "use 'services' to define your container application and "
             "respective environment."
