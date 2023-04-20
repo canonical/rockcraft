@@ -82,7 +82,7 @@ Which should print:
 Explore the running container
 -----------------------------
 
-To be able to poke around the container, you could add `bash` to
+To be able to poke around the container, you could add ``bash`` to
 `stage-packages`:
 
 .. code:: yaml
