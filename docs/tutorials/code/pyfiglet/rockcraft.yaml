@@ -1,0 +1,17 @@
+name: pyfiglet
+base: ubuntu:22.04
+version: '0.7.6'  # Note: should match `pyfiglet` below
+summary: A rock for pyfiglet
+description: A rock for pyfiglet
+license: Apache-2.0
+platforms:
+  amd64:
+
+parts:
+  pyfiglet:
+    plugin: python
+    source: .
+    python-packages:
+      - pyfiglet==0.7.6  # Note: should match `version` above
+    stage-packages:
+      - python3-venv
