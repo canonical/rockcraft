@@ -33,8 +33,7 @@ To create a new rock project,
     mkdir pyfiglet-rock && cd pyfiglet-rock
     rockcraft init
 
-Create a new directory and write the following into a text editor and
-save it as ``rockcraft.yaml``:
+Next, update the ``rockcraft.yaml`` file to look like this:
 
 .. literalinclude:: code/pyfiglet/rockcraft.yaml
     :language: yaml
@@ -49,7 +48,6 @@ To build the ROCK, run:
 
     rockcraft clean && rockcraft pack -v
 
-To copy the rock to the docker daemon, run:
 
 
 Run the ROCK in Docker
