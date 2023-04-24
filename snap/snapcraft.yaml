@@ -104,6 +104,6 @@ parts:
   chisel:
     plugin: go
     source: https://github.com/canonical/chisel.git
-    source-commit: f0bff5a30dfdcb400b3c4efe85962ad8ff3ca2ba
+    source-commit: bd27f8700cd7d2a6b4e0df6b10c3761c83a70485
     build-snaps:
       - go/1.18/stable
