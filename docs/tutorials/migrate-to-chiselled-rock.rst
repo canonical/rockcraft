@@ -5,7 +5,7 @@ Prerequisites
 -------------
 - snap enabled system (https://snapcraft.io)
 - LXD installed (https://linuxcontainers.org/lxd/getting-started-cli/)
-- skopeo installed (https://github.com/containers/skopeo)
+- skopeo installed (https://github.com/containers/skopeo). A Skopeo snap will also be automatically installed as a Rockcraft dependency
 - Docker installed (https://snapcraft.io/docker)
 - a text editor
 
@@ -67,7 +67,7 @@ The output should look as follows:
     => => writing image sha256:a24cab51d4d02019dafcd22a2e2a3e1e6d033f9bbf1cb401d465cb2426bb2264 0.0s
     => => naming to docker.io/library/dotnet-runtime:reference   0.0s
 
-Now, inspect this .NET reference image's size and make sure it is functional:
+Now, inspect this .NET reference image's size:
 
 .. literalinclude:: code/migrate-to-chiselled-rock/task.yaml
     :language: bash
@@ -82,6 +82,20 @@ The output should look as follows:
 
     REPOSITORY TAG IMAGE ID CREATED SIZE
     dotnet-runtime   reference   a24cab51d4d0   4 minutes ago   187MB
+
+
+And make sure it is functional:
+
+.. literalinclude:: code/migrate-to-chiselled-rock/task.yaml
+    :language: bash
+    :start-after: [docs:run-docker-image]
+    :end-before: [docs:run-docker-image-end]
+    :dedent: 2
+
+The output should look as follows:
+
+..  code-block:: text
+    :emphasize-lines: 13
 
     global.json file:
     Not found
@@ -233,8 +247,21 @@ Which should print something like:
 ..  code-block:: text
     :emphasize-lines: 2
 
-    REPOSITORY TAG IMAGE ID CREATEDSIZE
+    REPOSITORY TAG IMAGE ID CREATED SIZE
     dotnet-runtime   chiselled   4e0951d180e3   About a minute ago   124MB
+
+And make sure this ROCK is as functional as the reference Docker image:
+
+.. literalinclude:: code/migrate-to-chiselled-rock/task.yaml
+    :language: bash
+    :start-after: [docs:run-rock]
+    :end-before: [docs:run-rock-end]
+    :dedent: 2
+
+The output should be similar to:
+
+..  code-block:: text
+    :emphasize-lines: 13
 
     global.json file:
     Not found

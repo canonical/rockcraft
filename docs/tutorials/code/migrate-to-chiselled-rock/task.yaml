@@ -26,8 +26,11 @@ execute: |
 
   # [docs:inspect-docker-image]
   docker images dotnet-runtime:reference
-  docker run --rm dotnet-runtime:reference dotnet --info
   # [docs:inspect-docker-image-end]
+
+  # [docs:run-docker-image]
+  docker run --rm dotnet-runtime:reference dotnet --info
+  # [docs:run-docker-image-end]
 
   # [docs:build-rock]
   rockcraft --verbosity debug
@@ -48,8 +51,11 @@ execute: |
   
   # [docs:inspect-rock]
   docker images dotnet-runtime:chiselled
-  docker run --rm dotnet-runtime:chiselled exec dotnet --info
   # [docs:inspect-rock-end]
+
+  # [docs:run-rock]
+  docker run --rm dotnet-runtime:chiselled exec dotnet --info
+  # [docs:run-rock-end]
   
 restore: |
   rm dotnet-runtime_chiselled_amd64.rock
