@@ -5,7 +5,8 @@ Prerequisites
 -------------
 - snap enabled system (https://snapcraft.io)
 - LXD installed (https://linuxcontainers.org/lxd/getting-started-cli/)
-- skopeo installed (https://github.com/containers/skopeo). A Skopeo snap will also be automatically installed as a Rockcraft dependency
+- skopeo installed (https://github.com/containers/skopeo).
+  A Skopeo snap will also be automatically installed as a Rockcraft dependency
 - Docker installed (https://snapcraft.io/docker)
 - a text editor
 
@@ -124,8 +125,8 @@ Convert Dockerfile to rockcraft.yaml file
 From a quick analysis of the reference Dockerfile above, the following
 requirements must be met:
 
-- R1. the ROCK must be based on Ubuntu Jammy
-- R2. there is no predefined Entrypoint or default command
+- R1. The ROCK must be based on Ubuntu Jammy
+- R2. There is no predefined Entrypoint or default command
 - R3. The ROCK must have version 6.0 of the .NET Runtime installed
 - R4. ``/usr/bin/dotnet`` must be a symbolic link to the .NET binary
 
