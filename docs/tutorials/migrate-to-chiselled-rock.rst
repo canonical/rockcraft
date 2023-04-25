@@ -6,7 +6,7 @@ Prerequisites
 - snap enabled system (https://snapcraft.io)
 - LXD installed (https://linuxcontainers.org/lxd/getting-started-cli/)
 - skopeo installed (https://github.com/containers/skopeo).
-  A Skopeo snap will also be automatically installed as a Rockcraft dependency
+  Skopeo will also be automatically installed as a Rockcraft dependency
 - Docker installed (https://snapcraft.io/docker)
 - a text editor
 
