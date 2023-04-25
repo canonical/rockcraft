@@ -13,3 +13,4 @@ reproducible steps.
    Hello world <hello-world>
    Chisel packages into a ROCK <chisel.rst>
    Publish a ROCK <publish-a-rock.rst>
+   Migrate a Docker image to a Chiselled ROCK <migrate-to-chiselled-rock.rst>
