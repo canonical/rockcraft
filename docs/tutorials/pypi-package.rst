@@ -26,7 +26,7 @@ Prerequisites
 Project Setup
 -------------
 
-To create a new rock project,
+To create a new Rockcraft project,
 
 .. code:: text
 

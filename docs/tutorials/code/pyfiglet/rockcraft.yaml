@@ -1,8 +1,8 @@
 name: pyfiglet
 base: ubuntu:22.04
 version: '0.7.6'  # Note: should match `pyfiglet` below
-summary: A rock for pyfiglet
-description: A rock for pyfiglet
+summary: A ROCK for pyfiglet
+description: A ROCK for pyfiglet
 license: Apache-2.0
 platforms:
   amd64:
