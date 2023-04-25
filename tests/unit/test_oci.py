@@ -523,17 +523,18 @@ class TestImage:
     def test_add_layer_duplicate_files(self, tmp_path, temp_tar_contents):
         """
         Test creating a layer where, because of symlinks in the base, multiple
-        files (not directories) end up at the same target. This must raise an
-        error because it's not currently supported.
+        files (not directories) end up at the same target. The files have different
+        contents so this must raise an error.
         """
         dest_dir = tmp_path / "dest"
         dest_dir.mkdir()
 
         layer_dir, rootfs_dir = self._duplicate_dirs_setup(tmp_path)
 
-        # Create files with the same name in both directories
-        (layer_dir / "bin/dir1/same.txt").touch()
-        (layer_dir / "usr/bin/dir1/same.txt").touch()
+        # Create files with the same name but different contents in both
+        # directories.
+        (layer_dir / "bin/dir1/same.txt").write_text("first")
+        (layer_dir / "usr/bin/dir1/same.txt").write_text("second")
 
         image = oci.Image("a:b", dest_dir)
 
@@ -545,6 +546,34 @@ class TestImage:
         )
         with pytest.raises(errors.LayerArchivingError, match=expected_message):
             image.add_layer("tag", layer_dir, base_layer_dir=rootfs_dir)
+
+    def test_add_layer_duplicate_identical_files(self, tmp_path, temp_tar_contents):
+        """
+        Test creating a layer where, because of symlinks in the base, multiple
+        files (not directories) end up at the same target. The files are identical
+        so the layer must be created successfully.
+        """
+        dest_dir = tmp_path / "dest"
+        dest_dir.mkdir()
+
+        layer_dir, rootfs_dir = self._duplicate_dirs_setup(tmp_path)
+
+        # Create files with the same contents with the same name in both directories
+        (layer_dir / "bin/dir1/same.txt").write_text("foobar")
+        (layer_dir / "usr/bin/dir1/same.txt").write_text("foobar")
+
+        image = oci.Image("a:b", dest_dir)
+        image.add_layer("tag", layer_dir, base_layer_dir=rootfs_dir)
+
+        expected_tar_contents = [
+            "usr",
+            "usr/bin",
+            "usr/bin/dir1",
+            "usr/bin/dir1/a.txt",
+            "usr/bin/dir1/b.txt",
+            "usr/bin/dir1/same.txt",
+        ]
+        assert temp_tar_contents == expected_tar_contents
 
     def test_to_docker_daemon(self, mock_run):
         image = oci.Image("a:b", Path("/c"))
