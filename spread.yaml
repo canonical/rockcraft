@@ -3,7 +3,8 @@ project: rockcraft
 path: /rockcraft
 environment:
   PROJECT_PATH: /rockcraft
-  PATH: /snap/bin:$PATH:$PROJECT_PATH/tools/external/tools:$PROJECT_PATH/tools/spread
+  SNAPD_TESTING_TOOLS: $PROJECT_PATH/tools/external/tools
+  PATH: /snap/bin:$PATH:$SNAPD_TESTING_TOOLS:$PROJECT_PATH/tools/spread
 
 include:
     - tests/
@@ -34,6 +35,12 @@ backends:
           storage: 40G
 
 prepare: |
+  # if the 'tools' directory inside the submodule does not exist, then assume the submodule is empty
+  if [[ ! -d "$SNAPD_TESTING_TOOLS" ]]; then
+    echo "Cannot run spread because submodule 'snapd-testing-tools' is empty. Fetch with 'git submodule update --init' and rerun spread."
+    exit 1
+  fi
+
   if os.query is-ubuntu; then
     tempfile="$(mktemp)"
     if ! apt-get update > "$tempfile" 2>&1; then
