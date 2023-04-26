@@ -13,8 +13,10 @@ execute: |
   # [docs:pack-end]
 
   # [docs:skopeo]
-  skopeo copy oci-archive:custom-nginx-rock_latest_amd64.rock docker-daemon:custom-nginx-rock:latest
+  sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:custom-nginx-rock_latest_amd64.rock docker-daemon:custom-nginx-rock:latest
   # [docs:skopeo-end]
+
+  rm custom-nginx-rock_latest_amd64.rock
 
   # [docs:docker-run]
   docker run -d --name nginx-pebble-service -p 8080:80 custom-nginx-rock:latest start nginx
