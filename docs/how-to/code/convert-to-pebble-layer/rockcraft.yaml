@@ -1,0 +1,49 @@
+name: custom-nginx-rock
+base: "ubuntu:22.04"
+version: latest
+summary: An NGINX ROCK
+description: |
+    A ROCK equivalent of the official NGINX Docker image from Docker Hub.
+license: Apache-2.0
+platforms:
+    amd64:
+
+package-repositories:
+  - type: apt
+    url: https://nginx.org/packages/mainline/ubuntu
+    key-id: 573BFD6B3D8FBC641079A6ABABF5BD827BD9BF62
+    suites: 
+      - jammy
+    components:
+      - nginx
+    priority: always
+
+parts:
+  nginx-user:
+    plugin: nil
+    overlay-script: |
+      set -x
+      useradd -R $CRAFT_OVERLAY -M -U -r nginx
+
+  nginx:
+    plugin: nil
+    after:
+      - nginx-user
+    stage-packages:
+      - nginx
+      - tzdata
+
+# Services to be loaded by the Pebble entrypoint
+services:
+  nginx:
+    override: replace
+    startup: disabled
+    command: nginx -g "daemon off;"
+    environment:
+      TZ: UTC
+  nginx-debug:
+    override: replace
+    startup: disabled
+    command: nginx-debug -g "daemon off;"
+    environment:
+      TZ: UTC
