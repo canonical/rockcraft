@@ -32,7 +32,7 @@ is composed of metadata, checks and services. The latter is present in
 ``rockcraft.yaml`` as a `top-level field
 <https://canonical-rockcraft.readthedocs-hosted.com/en/latest/
 reference.html#format-specification>`_
-and is represents the services which are loaded by the Pebble entrypoint when
+and it represents the services which are loaded by the Pebble entrypoint when
 deploying a ROCK.
 
 Given the reference entrypoint, this guide's goal is to create two services:
