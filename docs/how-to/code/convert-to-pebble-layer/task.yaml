@@ -27,3 +27,4 @@ execute: |
   # [docs:curl-end]
 
   docker rm -f nginx-pebble-service
+  docker rmi -f custom-nginx-rock:latest
