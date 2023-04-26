@@ -17,7 +17,8 @@ Prerequisites
 -------------
 - snap enabled system (https://snapcraft.io)
 - LXD installed (https://linuxcontainers.org/lxd/getting-started-cli/)
-- skopeo installed (https://github.com/containers/skopeo)
+- skopeo installed (https://github.com/containers/skopeo).
+  Skopeo will also be automatically installed as a Rockcraft dependency
 - Docker installed (https://snapcraft.io/docker)
 - Rockcraft installed
 - a text editor
@@ -26,14 +27,15 @@ Prerequisites
 Project Setup
 -------------
 
-To create a new Rockcraft project,
+To create a new Rockcraft project, create a new directory and change into it:
 
-.. code:: text
+.. literalinclude:: code/pyfiglet/task.yaml
+    :language: bash
+    :start-after: [docs:create-pyfiglet-dir]
+    :end-before: [docs:create-pyfiglet-dir-end]
+    :dedent: 2
 
-    mkdir pyfiglet-rock && cd pyfiglet-rock
-    rockcraft init
-
-Next, update the ``rockcraft.yaml`` file to look like this:
+Next, create a file called ``rockcraft.yaml`` with the following contents:
 
 .. literalinclude:: code/pyfiglet/rockcraft.yaml
     :language: yaml
@@ -44,9 +46,11 @@ Pack the ROCK with Rockcraft
 
 To build the ROCK, run:
 
-.. code:: text
-
-    rockcraft clean && rockcraft pack -v
+.. literalinclude:: code/pyfiglet/task.yaml
+    :language: bash
+    :start-after: [docs:build-rock]
+    :end-before: [docs:build-rock-end]
+    :dedent: 2
 
 
 
@@ -55,46 +59,36 @@ Run the ROCK in Docker
 
 First, import the recently created ROCK into Docker:
 
-.. code:: text
-
-    skopeo --insecure-policy copy oci-archive:pyfiglet_0.7.6_amd64.rock docker-daemon:pyfiglet:0.7.6
+.. literalinclude:: code/pyfiglet/task.yaml
+    :language: bash
+    :start-after: [docs:skopeo-copy]
+    :end-before: [docs:skopeo-copy-end]
+    :dedent: 2
 
 
 Now run the ``pyfiglet`` command from the ROCK:
 
-.. code:: text
-
-    docker run --rm -it pyfiglet:0.7.6 exec pyfiglet it works!
+.. literalinclude:: code/pyfiglet/task.yaml
+    :language: bash
+    :start-after: [docs:docker-run]
+    :end-before: [docs:docker-run-end]
+    :dedent: 2
 
 Which should print:
 
-.. code:: text
-
-     _ _                        _        _
-    (_) |_  __      _____  _ __| | _____| |
-    | | __| \ \ /\ / / _ \| '__| |/ / __| |
-    | | |_   \ V  V / (_) | |  |   <\__ \_|
-    |_|\__|   \_/\_/ \___/|_|  |_|\_\___(_)
+.. literalinclude:: code/pyfiglet/expected_output.txt
+    :language: text
 
 
 Explore the running container
 -----------------------------
 
-To be able to poke around the container, you could add ``bash`` to
-``stage-packages``:
+Since the ROCK uses an ubuntu base, you can poke around in a running container
+using bash, via:
 
 .. code:: yaml
 
-    stage-packages:
-      - bash
-
-
-After repeating ``rockcraft pack`` and ``skopeo copy`` you should be able to
-override the entrypoint:
-
-.. code:: yaml
-
-    $ docker run --rm -it --entrypoint bash pyfiglet:0.7.6
+    $ docker run --rm -it pyfiglet:0.7.6 exec bash
     root@14d1812a2681:/# pyfiglet hi
      _     _
     | |__ (_)
