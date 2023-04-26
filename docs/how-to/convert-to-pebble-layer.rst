@@ -22,7 +22,6 @@ docker-entrypoint.sh>`_
 which parses the first argument given to it at container deployment time,
 and then configures and launches NGINX accordingly.
 
-
 Design the Pebble services
 --------------------------
 
