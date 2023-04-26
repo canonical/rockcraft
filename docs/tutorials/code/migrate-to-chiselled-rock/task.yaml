@@ -1,0 +1,62 @@
+###########################################
+# IMPORTANT
+# Comments matter!
+# The docs use the wrapping comments as 
+# markers for including said instructions 
+# as snippets in the docs.
+###########################################
+summary: docker image migration tutorial
+
+execute: |
+  date
+
+  sudo snap install rockcraft --classic --edge
+
+  # docker snap can only access its own snap folder and $HOME
+  # so we need to run the build from someplace else
+  # https://snapcraft.io/docker
+  cat Dockerfile > /var/snap/docker/current/Dockerfile
+  pushd /var/snap/docker/current
+
+  # [docs:build-docker-image]
+  docker build -t dotnet-runtime:reference .
+  # [docs:build-docker-image-end]
+  
+  popd
+
+  # [docs:inspect-docker-image]
+  docker images dotnet-runtime:reference
+  # [docs:inspect-docker-image-end]
+
+  # [docs:run-docker-image]
+  docker run --rm dotnet-runtime:reference dotnet --info
+  # [docs:run-docker-image-end]
+
+  # [docs:build-rock]
+  rockcraft --verbosity debug
+  # [docs:build-rock-end]
+
+  test -f dotnet-runtime_chiselled_amd64.rock
+  test ! -d work
+
+  uname -a
+  snap list
+
+  # test container execution
+  docker images
+
+  # [docs:skopeo-copy]
+  sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:dotnet-runtime_chiselled_amd64.rock docker-daemon:dotnet-runtime:chiselled
+  # [docs:skopeo-copy-end]
+  
+  # [docs:inspect-rock]
+  docker images dotnet-runtime:chiselled
+  # [docs:inspect-rock-end]
+
+  # [docs:run-rock]
+  docker run --rm dotnet-runtime:chiselled exec dotnet --info
+  # [docs:run-rock-end]
+  
+restore: |
+  rm dotnet-runtime_chiselled_amd64.rock
+  docker rmi -f dotnet-runtime:chiselled dotnet-runtime:reference
