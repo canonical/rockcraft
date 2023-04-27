@@ -234,7 +234,7 @@ class Image:
         emit.progress("Configuring entrypoint...")
         image_path = self.path / self.image_name
         entrypoint = [f"/{Pebble.PEBBLE_BINARY_PATH}", "enter"]
-        params = ["--clear=config.entrypoint"]
+        params = ["--clear=config.entrypoint", "--verbose"]
         for entry in entrypoint:
             params.extend(["--config.entrypoint", entry])
         _config_image(image_path, params)
