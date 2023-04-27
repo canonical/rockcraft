@@ -639,6 +639,8 @@ class TestImage:
                     "/bin/pebble",
                     "--config.entrypoint",
                     "enter",
+                    "--config.entrypoint",
+                    "--verbose",
                 ],
                 capture_output=True,
                 check=True,
