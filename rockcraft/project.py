@@ -18,6 +18,7 @@
 
 import operator
 import platform as host_platform
+import re
 from functools import reduce
 from typing import (
     TYPE_CHECKING,
@@ -180,10 +181,33 @@ class Service(pydantic.BaseModel):
     kill_delay: Optional[str] = pydantic.Field(alias="kill-delay")
 
 
+NAME_REGEX = r"^([a-z](?:-?[a-z0-9]){2,})$"
+"""
+The regex for valid names for ROCKs. It matches the accepted values for pebble
+layer files:
+
+- must start with a lowercase letter [a-z]
+- must contain only lowercase letters [a-z], numbers [0-9] or hyphens
+- must not end with a hyphen, and must not contain two or more consecutive hyphens
+
+(taken from https://github.com/canonical/pebble/blob/dbda12237fef3c4d2739824fce7fa65ba1dad76a/internal/plan/plan.go#L955)
+"""
+
+INVALID_NAME_MESSAGE = (
+    "Invalid name for ROCK (must contain only lowercase letters, numbers and hyphens)"
+)
+
+
+class NameStr(pydantic.ConstrainedStr):
+    """Constrained string type only accepting valid ROCK names."""
+
+    regex = re.compile(NAME_REGEX)
+
+
 class Project(pydantic.BaseModel):
     """Rockcraft project definition."""
 
-    name: str
+    name: NameStr
     title: Optional[str]
     summary: str
     description: str
@@ -208,6 +232,9 @@ class Project(pydantic.BaseModel):
         allow_mutation = False
         allow_population_by_field_name = True
         alias_generator = lambda s: s.replace("_", "-")  # noqa: E731
+        error_msg_templates = {
+            "value_error.str.regex": INVALID_NAME_MESSAGE,
+        }
 
     @pydantic.root_validator(pre=True)
     @classmethod
@@ -242,7 +269,7 @@ class Project(pydantic.BaseModel):
     def _validate_title(cls, title: Optional[str], values: Mapping[str, Any]) -> str:
         """If title is not provided, it defaults to the provided ROCK name."""
         if not title:
-            title = values["name"]
+            title = values.get("name", "")
         return cast(str, title)
 
     @pydantic.validator("build_base", always=True)

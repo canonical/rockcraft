@@ -69,10 +69,7 @@ class Pebble:
         )
 
         new_layer_prefix = f"{(int(prefixes[-1]) + 1):03}" if prefixes else "001"
-        # TODO: we need proper name validation as Pebble is quite unforgiving
-        # about the layer's label. We also don't want to allow any character
-        # in the ROCK's name. For now, just replacing the common "_" with "-".
-        new_layer_name = f"{new_layer_prefix}-{rock_name.replace('_', '-')}.yaml"
+        new_layer_name = f"{new_layer_prefix}-{rock_name}.yaml"
 
         emit.progress(f"Preparing new Pebble layer file {new_layer_name}")
 
