@@ -32,8 +32,10 @@ from typing import (
     Union,
     cast,
 )
-
+from pathlib import Path
+from overrides import overrides
 import pydantic
+from pydantic_yaml import YamlModel
 import spdx_lookup  # type: ignore
 import yaml
 from craft_archives import repo
@@ -41,6 +43,7 @@ from craft_archives import repo
 from rockcraft.errors import ProjectLoadError, ProjectValidationError
 from rockcraft.parts import validate_part
 from rockcraft.pebble import Pebble
+from rockcraft.extensions import apply_extensions
 
 if TYPE_CHECKING:
     from pydantic.error_wrappers import ErrorDict
@@ -180,7 +183,7 @@ class Service(pydantic.BaseModel):
     kill_delay: Optional[str] = pydantic.Field(alias="kill-delay")
 
 
-class Project(pydantic.BaseModel):
+class Project(YamlModel):
     """Rockcraft project definition."""
 
     name: str
@@ -395,6 +398,16 @@ class Project(pydantic.BaseModel):
 
         return package_repositories
 
+    @overrides
+    def yaml(self) -> str:
+        return super().yaml(
+            by_alias=True,
+            exclude_none=True,
+            allow_unicode=True,
+            sort_keys=False,
+            width=1000,
+        )
+
     @classmethod
     def unmarshal(cls, data: Dict[str, Any]) -> "Project":
         """Create and populate a new ``Project`` object from dictionary data.
@@ -547,7 +560,7 @@ def _printable_field_location_split(location: str) -> Tuple[str, str]:
     return field_name, "top-level"
 
 
-def load_project(filename: str) -> Project:
+def load_project(filename: Path) -> Project:
     """Load and unmarshal the project YAML file.
 
     :param filename: The YAML file to load.
@@ -567,6 +580,8 @@ def load_project(filename: str) -> Project:
         raise ProjectLoadError(msg) from err
 
     _add_pebble_data(yaml_data)
+
+    apply_extensions(filename.parent, yaml_data)
 
     return Project.unmarshal(yaml_data)
 

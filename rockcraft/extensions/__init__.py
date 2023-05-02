@@ -14,35 +14,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Rockcraft commands."""
+"""Extension processor and related utilities."""
 
-from .init import InitCommand
-from .lifecycle import (
-    BuildCommand,
-    CleanCommand,
-    OverlayCommand,
-    PackCommand,
-    PrimeCommand,
-    PullCommand,
-    StageCommand,
-)
-
-from .extensions import (
-    ExpandExtensionsCommand,
-    ExtensionsCommand,
-    ListExtensionsCommand,
-)
+from ._utils import apply_extensions
+from .registry import get_extension_class, get_extension_names, register, unregister
 
 __all__ = [
-    "InitCommand",
-    "CleanCommand",
-    "PullCommand",
-    "OverlayCommand",
-    "BuildCommand",
-    "StageCommand",
-    "PrimeCommand",
-    "PackCommand",
-    "ExpandExtensionsCommand",
-    "ExtensionsCommand",
-    "ListExtensionsCommand",
+    "get_extension_class",
+    "get_extension_names",
+    "apply_extensions",
+    "register",
+    "unregister",
 ]

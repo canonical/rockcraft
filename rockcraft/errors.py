@@ -49,3 +49,7 @@ class ProjectValidationError(RockcraftError):
 
 class LayerArchivingError(RockcraftError):
     """Error when creating the archive for the new layer."""
+
+
+class ExtensionError(RockcraftError):
+    """Error during parts processing."""
