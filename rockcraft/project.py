@@ -233,6 +233,10 @@ class Project(YamlModel):
     @classmethod
     def _validate_license(cls, rock_license: str) -> str:
         """Make sure the provided license is valid and in SPDX format."""
+        if rock_license == "proprietary":
+            # This is the license name we use on our stores.
+            return rock_license
+
         lic: Optional[spdx_lookup.License] = spdx_lookup.by_id(rock_license)
         if lic is None:
             raise ProjectValidationError(
@@ -581,7 +585,7 @@ def load_project(filename: Path) -> Project:
 
     _add_pebble_data(yaml_data)
 
-    apply_extensions(filename.parent, yaml_data)
+    yaml_data = apply_extensions(filename.parent, yaml_data)
 
     return Project.unmarshal(yaml_data)
 

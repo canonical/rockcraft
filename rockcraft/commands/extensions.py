@@ -98,4 +98,4 @@ class ExpandExtensionsCommand(BaseCommand, abc.ABC):
     def run(self, parsed_args):
         project = load_project(Path("rockcraft.yaml"))
 
-        emit.message(yaml.safe_dump(project.marshal(), indent=4, sort_keys=False))
+        emit.message(project.yaml())

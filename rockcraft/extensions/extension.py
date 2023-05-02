@@ -62,10 +62,6 @@ class Extension(abc.ABC):
         """Return the root snippet to apply."""
 
     @abc.abstractmethod
-    def get_services_snippet(self) -> Dict[str, Any]:
-        """Return the services snippet to apply."""
-
-    @abc.abstractmethod
     def get_part_snippet(self) -> Dict[str, Any]:
         """Return the part snippet to apply to existing parts."""
 
@@ -80,6 +76,10 @@ class Extension(abc.ABC):
         :param extension_name: the name of the extension being parsed.
         :raises errors.ExtensionError: if the extension is incompatible with the project.
         """
+        if "base" not in self.yaml_data:
+            # There is nothing to validate, the extension will set the preferred base.
+            return
+
         base: str = self.yaml_data["base"]
 
         if self.is_experimental(base) and not os.getenv(

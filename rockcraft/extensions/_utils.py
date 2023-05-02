@@ -20,7 +20,7 @@ import collections
 import contextlib
 import copy
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Dict, List, Set
+from typing import TYPE_CHECKING, Any, Dict, List, Set, cast
 
 from .registry import get_extension_class
 
@@ -38,36 +38,25 @@ def apply_extensions(project_root: Path, yaml_data: Dict[str, Any]) -> Dict[str,
     """
     # Don't modify the dict passed in
     yaml_data = copy.deepcopy(yaml_data)
+    declared_extensions: List[str] = cast(List[str], yaml_data.get("extensions"))
+    if not declared_extensions:
+        return yaml_data
 
-    # Mapping of extension names to set of app names to which the extension needs to be
-    # applied.
-    declared_extensions: Dict[str, Set[str]] = collections.defaultdict(set)
-
-    for app_name, app_definition in yaml_data.get("apps", {}).items():
-        extension_names = app_definition.get("extensions", [])
-
-        for extension_name in extension_names:
-            declared_extensions[extension_name].add(app_name)
-
-        # Now that we've saved the app -> extension relationship, remove the property
-        # from this app's declaration in the YAML.
-        with contextlib.suppress(KeyError):
-            del yaml_data["apps"][app_name]["extensions"]
+    del yaml_data["extensions"]
 
     # Process extensions in a consistent order
-    for extension_name in sorted(declared_extensions.keys()):
+    for extension_name in sorted(declared_extensions):
         extension_class = get_extension_class(extension_name)
         extension = extension_class(
             project_root=project_root, yaml_data=copy.deepcopy(yaml_data)
         )
         extension.validate(extension_name=extension_name)
-        _apply_extension(yaml_data, declared_extensions[extension_name], extension)
+        _apply_extension(yaml_data, extension)
     return yaml_data
 
 
 def _apply_extension(
     yaml_data: Dict[str, Any],
-    app_names: Set[str],
     extension: "Extension",
 ) -> None:
     # Apply the root components of the extension (if any)
@@ -77,19 +66,13 @@ def _apply_extension(
             yaml_data.get(property_name), property_value
         )
 
-    # Apply the app-specific components of the extension (if any)
-    app_extension = extension.get_services_snippet()
-    for app_name in app_names:
-        app_definition = yaml_data["apps"][app_name]
-        for property_name, property_value in app_extension.items():
-            app_definition[property_name] = _apply_extension_property(
-                app_definition.get(property_name), property_value
-            )
-
     # Next, apply the part-specific components
     part_extension = extension.get_part_snippet()
+    if "parts" not in yaml_data:
+        yaml_data["parts"] = {}
+
     parts = yaml_data["parts"]
-    for _part_name, part_definition in parts.items():
+    for _, part_definition in parts.items():
         for property_name, property_value in part_extension.items():
             part_definition[property_name] = _apply_extension_property(
                 part_definition.get(property_name), property_value
