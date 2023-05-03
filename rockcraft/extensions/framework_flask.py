@@ -44,35 +44,39 @@ class FrameworkFlask(Extension):
 
     @overrides
     def get_root_snippet(self) -> Dict[str, Any]:
-        snippet: Dict[str, Any] = {
-            "services": {
-                "flask": {
-                    "override": "replace",
-                    "command": "flask run --host=0.0.0.0",
-                    "startup": "disabled",
-                    "environment": {
-                        "SECRET_KEY": "replaceme",
-                        "FLASK_APP": "/srv/webapp/app",
+        if "services" not in self.yaml_data:
+            snippet: Dict[str, Any] = {
+                "services": {
+                    "flask": {
+                        "override": "replace",
+                        "command": "flask run --host=0.0.0.0",
+                        "startup": "disabled",
+                        "environment": {
+                            "SECRET_KEY": "replaceme",
+                            "FLASK_APP": "/srv/webapp/app",
+                        },
                     },
-                },
-                "flask-debug": {
-                    "override": "replace",
-                    "command": "flask run --host=0.0.0.0",
-                    "startup": "disabled",
-                    "environment": {
-                        "SECRET_KEY": "replaceme",
-                        "FLASK_APP": "/srv/webapp/app",
-                        "FLASK_ENV": "development",
+                    "flask-debug": {
+                        "override": "replace",
+                        "command": "flask run --host=0.0.0.0",
+                        "startup": "disabled",
+                        "environment": {
+                            "SECRET_KEY": "replaceme",
+                            "FLASK_APP": "/srv/webapp/app",
+                            "FLASK_ENV": "development",
+                        },
                     },
-                },
+                }
             }
-        }
+        else:
+            snippet: Dict[str, Any] = {}
 
         if "version" not in self.yaml_data:
-            git_version = subprocess.check_output(
-                ["git", "describe", "--tags", "--always", "--dirty"],
-            )
-            snippet["version"] = f"git{git_version}"
+            git_version = "1.0"
+            # subprocess.check_output(
+            #     ["git", "describe", "--tags", "--always", "--dirty"],
+            # )
+            snippet["version"] = f"git+{git_version}"
         if "summary" not in self.yaml_data:
             snippet["summary"] = "OCI Image for a Flask Application"
         if "description" not in self.yaml_data:

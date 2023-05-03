@@ -79,8 +79,10 @@ def _apply_extension(
             )
 
     # Finally, add any parts specified in the extension
-    for part_name, part_definition in extension.get_parts_snippet().items():
-        parts[part_name] = part_definition
+    parts_snippet = extension.get_parts_snippet()
+    parts_names = (pn for pn in parts_snippet if pn not in yaml_data["parts"])
+    for part_name in parts_names:
+        parts[part_name] = parts_snippet[part_name]
 
 
 def _apply_extension_property(existing_property: Any, extension_property: Any) -> Any:

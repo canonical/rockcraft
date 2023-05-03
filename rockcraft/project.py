@@ -404,6 +404,13 @@ class Project(YamlModel):
 
     @overrides
     def yaml(self) -> str:
+        def _repr_str(dumper, data):
+            """Multi-line string representer for the YAML dumper."""
+            if "\n" in data:
+                return dumper.represent_scalar("tag:yaml.org,2002:str", data, style="|")
+            return dumper.represent_scalar("tag:yaml.org,2002:str", data)
+
+        yaml.add_representer(str, _repr_str, Dumper=yaml.SafeDumper)
         return super().yaml(
             by_alias=True,
             exclude_none=True,
@@ -583,9 +590,9 @@ def load_project(filename: Path) -> Project:
             msg = f"{msg}: {err.filename!r}."
         raise ProjectLoadError(msg) from err
 
-    _add_pebble_data(yaml_data)
-
     yaml_data = apply_extensions(filename.parent, yaml_data)
+
+    _add_pebble_data(yaml_data)
 
     return Project.unmarshal(yaml_data)
 
