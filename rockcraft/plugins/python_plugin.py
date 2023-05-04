@@ -17,12 +17,42 @@
 """The Rockcraft Python plugin."""
 
 import logging
-from typing import Optional
+from textwrap import dedent
+from typing import List, Optional
 
 from craft_parts.plugins import python_plugin
 from overrides import override
 
 logger = logging.getLogger(__name__)
+
+# Template for the sitecustomize module that we'll add to the payload so that
+# the pip-installed packages are found regardless of how the interpreter is
+# called.
+SITECUSTOMIZE_TEMPLATE = dedent(
+    """
+    # sitecustomize added by Rockcraft.
+    import site
+    import sys
+
+    major, minor = sys.version_info.major, sys.version_info.minor
+    site_dir = f"/lib/python{major}.{minor}/site-packages"
+    dist_dir = "/usr/lib/python3/dist-packages"
+
+    # Add the directory that contains the venv-installed packages.
+    site.addsitedir(site_dir)
+
+    # Make sure that this site-packages dir comes *before* the base-provided
+    # dist-packages dir in sys.path.
+    path = sys.path
+    site_index = path.index(site_dir)
+    dist_index = path.index(dist_dir)
+
+    if dist_index < site_index:
+        path[dist_index], path[site_index] = path[site_index], path[dist_index]
+
+    EOF
+    """
+).strip()
 
 
 class PythonPlugin(python_plugin.PythonPlugin):
@@ -56,3 +86,40 @@ class PythonPlugin(python_plugin.PythonPlugin):
     def _get_script_interpreter(self) -> str:
         """Overridden because Python is always available in /bin/python3."""
         return "#!/bin/python3"
+
+    @override
+    def get_build_commands(self) -> List[str]:
+        """Overridden to add a sitecustomize.py ."""
+        original = super().get_build_commands()
+
+        # Add a "sitecustomize.py" module to handle the very common case of the
+        # ROCK's interpreter being called as "python3"; in this case, because of
+        # the default $PATH, "/usr/bin/python3" ends up being called and that is
+        # *not* the venv-aware executable. This sitecustomize adds the location
+        # of the pip-installed packages.
+        original.append(
+            dedent(
+                """
+                # Add a sitecustomize.py to import our venv-generated location
+                py_version=$(basename $payload_python)
+                py_dir=${CRAFT_PART_INSTALL}/usr/lib/${py_version}/
+                mkdir -p ${py_dir}
+                cat << EOF > ${py_dir}/sitecustomize.py
+                """
+            )
+        )
+        original.append(SITECUSTOMIZE_TEMPLATE)
+
+        # Remove the pyvenv.cfg file that "marks" the virtual environment, because
+        # it's not necessary in the presence of the sitecustomize module and this
+        # way we get consistent behavior no matter how the interpreter is called.
+        original.append(
+            dedent(
+                """
+                # Remove pyvenv.cfg file in favor of sitecustomize.py
+                rm ${CRAFT_PART_INSTALL}/pyvenv.cfg
+                """
+            )
+        )
+
+        return original
