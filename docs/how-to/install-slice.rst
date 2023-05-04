@@ -9,7 +9,7 @@ Once you have it though, the most obvious question is: **how can I install
 this custom slice with Chisel?**
 
 Let's assume you want to install the OpenSSL binaries slice created in
-:ref:`here <create-slice>`...
+:doc:`this guide <create-slice>`.
 
 **First**, clone the Chisel releases repository:
 

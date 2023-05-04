@@ -153,7 +153,7 @@ functional container images.
     *“The sculpture is already complete within the marble block, before I start
     my work. It is already there, I just have to chisel away the superfluous
     material.”*
-      \- Michelangelo
+    \- Michelangelo
 
 In the end, it's like having a slice of Ubuntu - get *just what you need*. You
 can *have your cake and eat it too*!
