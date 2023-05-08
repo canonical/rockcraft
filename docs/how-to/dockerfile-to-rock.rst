@@ -9,7 +9,7 @@ You may want to `generate a diagram`_ of the Dockerfile.
 .. _generate a diagram: https://github.com/patrickhoefler/dockerfilegraph
 
 Spot all the different parts of the Dockerfile and create a
-blank `part` subsection for each. For example:
+blank ``part`` subsection for each. For example:
 
   .. code-block::
     parts:
