@@ -226,7 +226,9 @@ class Image:
                 )
             )
 
-        existing_users += f"{username}:x:{uid}:{uid}::/nonexistent:/usr/bin/false\n"
+        existing_users += (
+            f"{username}:x:{uid}:{uid}::/{Pebble.PEBBLE_PATH}:/usr/bin/false\n"
+        )
         existing_groups += f"{username}:x:{uid}:\n"
 
         with tempfile.TemporaryDirectory() as tmpfs:

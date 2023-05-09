@@ -562,7 +562,10 @@ class TestImage:
 
         mock_tmpdir.assert_called_once()
         with open(fake_tmpfs / "etc/passwd") as f:
-            check.equal(f.read(), "foo:x:585287:585287::/nonexistent:/usr/bin/false\n")
+            check.equal(
+                f.read(),
+                "foo:x:585287:585287::/var/lib/pebble/default:/usr/bin/false\n",
+            )
         with open(fake_tmpfs / "etc/group") as f:
             check.equal(f.read(), "foo:x:585287:\n")
 
@@ -602,7 +605,7 @@ class TestImage:
                 f.read(),
                 str(
                     "someuser:x:10:10::/nonexistent:/usr/bin/false\n"
-                    "foo:x:585287:585287::/nonexistent:/usr/bin/false\n"
+                    "foo:x:585287:585287::/var/lib/pebble/default:/usr/bin/false\n"
                 ),
             )
         with open(fake_tmpfs / "etc/group") as f:
