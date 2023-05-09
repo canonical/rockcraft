@@ -21,3 +21,4 @@ adapt the steps to fit your specific requirements.
    Release a slice definitions file <publish-slice>
    Convert an entrypoint to a Pebble layer <convert-to-pebble-layer.rst>
    contribute-docs
+   use-chisel
