@@ -42,10 +42,12 @@ def temp_xdg(tmpdir, mocker):
     mocker.patch("xdg.BaseDirectory.xdg_data_home", new=os.path.join(tmpdir, ".local"))
     mocker.patch("xdg.BaseDirectory.xdg_cache_home", new=os.path.join(tmpdir, ".cache"))
     mocker.patch(
-        "xdg.BaseDirectory.xdg_config_dirs", new=[xdg.BaseDirectory.xdg_config_home]
+        "xdg.BaseDirectory.xdg_config_dirs",
+        new=[xdg.BaseDirectory.xdg_config_home],  # pyright: ignore
     )
     mocker.patch(
-        "xdg.BaseDirectory.xdg_data_dirs", new=[xdg.BaseDirectory.xdg_data_home]
+        "xdg.BaseDirectory.xdg_data_dirs",
+        new=[xdg.BaseDirectory.xdg_data_home],  # pyright: ignore
     )
     mocker.patch.dict(os.environ, {"XDG_CONFIG_HOME": os.path.join(tmpdir, ".config")})
 
