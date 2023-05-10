@@ -1,11 +1,19 @@
-.. _tutorial:
+.. _tutorials:
 
 Tutorials
 *********
 
-If you want to learn the basics from experience, then our tutorials will help
+If you want to learn the basics from experience then our tutorials will help
 you acquire the necessary competencies from real-life examples with fully
 reproducible steps.
+
+Many of the tutorials have the same :doc:`prerequisites <common/prereq>`.
+It may be useful to install the software needed before you begin.
+
+.. toctree::
+   :hidden:
+
+   common/prereq
 
 .. toctree::
    :maxdepth: 1

@@ -1,19 +1,18 @@
 Create a "Hello World" ROCK
 ***************************
 
-Prerequisites
--------------
-- snap enabled system (https://snapcraft.io)
-- LXD installed (https://linuxcontainers.org/lxd/getting-started-cli/)
-- skopeo installed (https://github.com/containers/skopeo)
-- Docker installed (https://snapcraft.io/docker)
-- a text editor
+This tutorial will show you how to create, build and run a ROCK, using
+a simple example.
 
+You will need to set up your development environment with the
+:doc:`prerequisites <common/prereq>` needed for this tutorial before
+continuing.
 
 Install Rockcraft
 -----------------
 
-Install Rockcraft on your host:
+Begin by running the :command:`snap` tool to install Rockcraft on your
+development system:
 
 .. literalinclude:: code/hello-world/task.yaml
     :language: bash
@@ -21,20 +20,24 @@ Install Rockcraft on your host:
     :end-before: [docs:install-rockcraft-end]
     :dedent: 2
 
+This obtains the :command:`rockcraft` tool from the ``edge`` channel to ensure
+that an up-to-date version is installed.
+
 Project Setup
 -------------
 
-Create a new directory and write the following into a text editor and
-save it as ``rockcraft.yaml``:
+Create a new directory and write the following into a text editor:
 
 .. literalinclude:: code/hello-world/rockcraft.yaml
     :language: yaml
 
+Save it as :file:`rockcraft.yaml` in the new directory.
 
-Pack the ROCK with Rockcraft
-----------------------------
+Pack the ROCK
+-------------
 
-To build the ROCK, run:
+At the command line, enter the directory containing the :file:`rockcraft.yaml`
+file and run the :command:`rockcraft` tool to build and pack the ROCK:
 
 .. literalinclude:: code/hello-world/task.yaml
     :language: bash
@@ -42,7 +45,7 @@ To build the ROCK, run:
     :end-before: [docs:build-rock-end]
     :dedent: 2
 
-The output should look as follows:
+The output should look similar to this:
 
 ..  code-block:: text
     :emphasize-lines: 13
@@ -62,15 +65,15 @@ The output should look as follows:
     Labels and annotations set to ['org.opencontainers.image.version=1.0', 'org.opencontainers.image.title=hello', 'org.opencontainers.image.ref.name=hello', 'org.opencontainers.image.licenses=Apache-2.0', 'org.opencontainers.image.created=2022-06-30T09:07:38.124741+00:00']
     Exported to OCI archive 'hello_1.0_amd64.rock'
 
-At the end of the process, a file named ``hello_1.0_amd64.rock`` should be
-present in the current directory. That's your ROCK, in oci-archive format
-(a tarball).
-
+At the end of the process, a file named :file:`hello_1.0_amd64.rock` should be
+present in the current directory. This is the ROCK that Rockcraft has created
+for us in `OCI archive format`_, which is simply a :command:`tar` archive.
 
 Run the ROCK in Docker
 ----------------------
 
-First, import the recently created ROCK into Docker:
+First, use the version of :command:`skopeo` supplied with Rockcraft to import
+the recently created ROCK into Docker's registry:
 
 .. literalinclude:: code/hello-world/task.yaml
     :language: bash
@@ -92,3 +95,5 @@ Which should print:
     :class: foo
 
     hello, world
+
+.. include:: /links.txt

@@ -23,8 +23,9 @@ would look into the Ubuntu Jammy archives, fetch the provided packages and
 install only the desired slices into the ``myrootfs`` folder.
 
 To learn more about Chisel and how it works, have a look at
-`<https://github.com/canonical/chisel>`_.
+`the source code <Chisel_>`_.
 
 Do you need a package slice that doesn't exist yet? Please feel free to propose
-your slice definition in `<https://github.com/canonical/chisel-releases>`_.
+your slice definition for inclusion in `Chisel releases`_.
 
+.. include:: /links.txt

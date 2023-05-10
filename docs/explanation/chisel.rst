@@ -49,4 +49,4 @@ small and relevant parts that we need to run our applications. It is ideal to
 support the creation of container images that are smaller than those constructed
 using full Debian packages, but which are equally functional.
 
-.. _Chisel: https://github.com/canonical/chisel
+.. include:: /links.txt
