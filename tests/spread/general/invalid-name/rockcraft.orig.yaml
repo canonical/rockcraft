@@ -1,0 +1,12 @@
+name: placeholder-name
+base: ubuntu:22.04
+version: '0.1'
+summary: A ROCK with an invalid name
+description: A ROCK with an invalid name
+license: GPL-3.0
+platforms:
+    amd64:
+
+parts:
+    my-part:
+        plugin: nil
