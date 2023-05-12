@@ -24,7 +24,7 @@ your needs already exists:
 
 
 Structure of a slice definitions file
-------------------------------------
+-------------------------------------
 
 There can be only **one slice definitions file** for each Ubuntu package. All of
 the slice definitions files follow the same structure:
