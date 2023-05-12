@@ -48,7 +48,7 @@ container users.
    tutorials/index
    how-to/index
    reference
-   explanation
+   explanation/index
 
 
 .. grid:: 1 1 2 2
