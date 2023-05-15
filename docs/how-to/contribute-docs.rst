@@ -15,23 +15,57 @@ The Rockcraft documentation is organised according to the `Diátaxis framework`_
 Additionally, some rules are used to ensure that code referred to by the
 documentation is kept up-to-date and tested thoroughly.
 
-Code blocks
-~~~~~~~~~~~
+Including code and commands
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-All code-like content going into the documentation must be tested, especially if
-said content is supposed to be reproducible.
+All code-like content going into the documentation must be tested, especially
+if it is supposed to be reproducible. Pages that include code snippets or
+terminal commands need to provide this information in separate files that can
+be included in the project's test infrastructure.
 
-Whenever applicable, sections with code snippets will have their own directory,
-with a ``code`` folder within; e.g. ``tutorials/code`` holds code for the
-tutorials.
+Categories of the documentation that use code snippets will each have their own
+directory with a ``code`` folder within. For example, :file:`tutorials/code`
+will hold code for the tutorials.
 
-Each technical page, such as a tutorial or how-to guide, shall have its own
-folder within the ``code`` directory; e.g. ``tutorials/code/hello-world`` for
-a ``tutorials/hello-world.rst`` tutorial.
+Each page that provides technical information to the reader in the form of code
+snippets or commands, such as a tutorial or how-to guide, should have its own
+folder within the :file:`code` directory and contain a :file:`task.yaml` file
+for spread tests.
+For example, the :file:`tutorials/hello-world.rst` tutorial refers to code
+supplied in the :file:`tutorials/code/hello-world/task.yaml` file. Additional
+YAML_ files can also be included when needed, as shown here:
 
-Finally, each page shall have a corresponding ``task.yaml`` file for Spread
-tests, and use ``..  literalinclude::`` to include code blocks from those YAML
-files.
+.. code:: text
+
+   tutorials
+   ├─ hello-world.rst
+   └─ code
+      └─ hello-world
+         ├─ task.yaml
+         └─ rockcraft.yaml
+
+These YAML files can also include more than just the snippets that appear in a
+page. For example, they can include additional commands to set up a test
+environment or clean up after the test has been run. Each snippet should be
+delimited with comments that enable them to be conveniently extracted, as in this example:
+
+.. literalinclude:: code/get-started/task.yaml
+   :start-at: [docs:snap-version]
+   :end-at: [docs:snap-version-end]
+
+When including code snippets in a page, use the reStructuredText
+literalinclude_ directive with the ``start-after`` and ``end-before`` options
+to extract the relevant lines of text. If the indentation of the quoted
+code is excessive, use the ``dedent`` option to reduce it to an acceptable
+level, as in this example:
+
+.. literalinclude:: get-started.rst
+   :language: rst
+   :start-at: literalinclude:: code/get-started/task.yaml
+   :end-at: :dedent: 2
+
+Handling code snippets in this systematic way encourages reuse of existing code
+snippets and helps to ensure that the documentation stays up-to-date.
 
 Build the documentation
 -----------------------
@@ -42,3 +76,5 @@ setting up a virtual environment and building the documentation.
 .. _`Diátaxis framework`: https://diataxis.fr
 .. _Sphinx: https://www.sphinx-doc.org
 .. _reStructuredText: https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html
+.. _literalinclude: https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#directive-literalinclude
+.. _YAML: https://yaml.org/
