@@ -19,6 +19,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import pytest
+from craft_parts import callbacks
 from craft_parts.utils.os_utils import OsRelease
 
 from rockcraft import plugins
@@ -54,6 +55,7 @@ def run_lifecycle(base: str, work_dir: Path) -> None:
         }
     }
 
+    callbacks.unregister_all()
     lifecycle = PartsLifecycle(
         all_parts=parts,
         work_dir=work_dir,
@@ -64,6 +66,7 @@ def run_lifecycle(base: str, work_dir: Path) -> None:
     )
 
     lifecycle.run("stage")
+    callbacks.unregister_all()
 
 
 @pytest.mark.parametrize("base", tuple(UBUNTU_BASES))

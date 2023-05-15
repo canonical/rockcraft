@@ -20,10 +20,15 @@ from unittest.mock import Mock, call
 
 import pytest
 from craft_cli import EmitterMode, emit
+from craft_parts import callbacks
 from craft_providers.bases.buildd import BuilddBaseAlias
 
 import tests
 from rockcraft import lifecycle
+
+
+def teardown_function():
+    callbacks.unregister_all()
 
 
 @pytest.fixture

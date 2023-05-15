@@ -20,11 +20,15 @@ from unittest.mock import call
 
 import craft_cli
 import pytest
-from craft_parts import Action, PartsError, Step
+from craft_parts import Action, PartsError, Step, callbacks
 
 import tests
 from rockcraft import parts
 from rockcraft.errors import PartsLifecycleError, RockcraftError
+
+
+def teardown_function():
+    callbacks.unregister_all()
 
 
 @pytest.fixture
