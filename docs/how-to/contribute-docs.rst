@@ -47,7 +47,8 @@ YAML_ files can also be included when needed, as shown here:
 These YAML files can also include more than just the snippets that appear in a
 page. For example, they can include additional commands to set up a test
 environment or clean up after the test has been run. Each snippet should be
-delimited with comments that enable them to be conveniently extracted, as in this example:
+delimited with comments that enable them to be conveniently extracted, as in
+this example:
 
 .. literalinclude:: code/get-started/task.yaml
    :start-at: [docs:snap-version]
