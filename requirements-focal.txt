@@ -1,1 +1,1 @@
-http://archive.ubuntu.com/ubuntu/pool/main/p/python-apt/python-apt_2.0.1ubuntu0.20.04.1.tar.xz; sys_platform == 'linux'
+https://launchpad.net/ubuntu/+archive/primary/+sourcefiles/python-apt/2.0.1ubuntu0.20.04.1/python-apt_2.0.1ubuntu0.20.04.1.tar.xz; sys_platform == 'linux'
