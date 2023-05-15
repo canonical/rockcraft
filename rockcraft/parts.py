@@ -61,7 +61,7 @@ def _get_base_layer_packages(info: craft_parts.ProjectInfo) -> Iterable[str]:
                 continue
             (_, name, *_) = line.split()
             if ":" in name:
-                name = name[:name.index(":")]
+                name = name[: name.index(":")]
             yield name
 
 
