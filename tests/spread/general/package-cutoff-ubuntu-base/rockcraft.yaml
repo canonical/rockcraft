@@ -1,0 +1,19 @@
+name: bare-base-package-cutoff
+version: latest
+summary: Package cutoff test
+description: Package dependencies should be staged
+license: Apache-2.0
+base: ubuntu:22.04
+services:
+  hello:
+    override: merge
+    command: /usr/bin/hello -g "ship it!"
+    startup: enabled
+platforms:
+  amd64:
+
+parts:
+  hello:
+    plugin: nil
+    stage-packages:
+      - hello

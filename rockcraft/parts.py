@@ -18,12 +18,12 @@
 
 import pathlib
 import subprocess
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Iterable, List, Optional
 
 import craft_parts
 from craft_archives import repo
 from craft_cli import emit
-from craft_parts import ActionType, Step
+from craft_parts import ActionType, Step, callbacks
 from xdg import BaseDirectory  # type: ignore
 
 from rockcraft.errors import PartsLifecycleError
@@ -38,6 +38,31 @@ _LIFECYCLE_STEPS = {
 
 
 craft_parts.Features(enable_overlay=True)
+
+
+def _get_base_layer_packages(info: craft_parts.ProjectInfo) -> Iterable[str]:
+    if info.base == "bare":
+        return []
+
+    with subprocess.Popen(
+        [
+            "dpkg",  # no dpkg-query --root in focal
+            "-l",
+            f"--root={info.package_list_root}",
+        ],
+        text=True,
+        stdout=subprocess.PIPE,
+    ) as proc:
+        while proc.stdout:
+            line = proc.stdout.readline()
+            if not line:
+                break
+            if not line.startswith("ii"):
+                continue
+            (_, name, *_) = line.split()
+            if ":" in name:
+                name = name[:name.index(":")]
+            yield name
 
 
 class PartsLifecycle:
@@ -62,6 +87,8 @@ class PartsLifecycle:
         base: str,
         package_repositories: Optional[List[Dict[str, Any]]] = None,
     ):
+        callbacks.register_stage_packages_filter(_get_base_layer_packages)
+
         self._part_names = part_names
         self._package_repositories = package_repositories or []
 
@@ -80,6 +107,7 @@ class PartsLifecycle:
                 base_layer_hash=base_layer_hash,
                 ignore_local_sources=["*.rock"],
                 base=base,
+                package_list_root=base_layer_dir,
             )
         except craft_parts.PartsError as err:
             raise PartsLifecycleError.from_parts_error(err) from err
