@@ -6,7 +6,7 @@ charset-normalizer==2.1.1
 colorama==0.4.6
 craft-archives==0.0.3
 craft-cli==1.2.0
-git+https://github.com/cmatsuoka/craft-parts@08de37b93ee4f694d5644806f9d17f3105ba4759
+git+https://github.com/cmatsuoka/craft-parts@b3baa8bd5fde7f25fceb18d71bdb2ce167ae291c
 craft-providers==1.8.0
 Deprecated==1.2.13
 distro==1.8.0
