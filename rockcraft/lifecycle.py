@@ -20,9 +20,10 @@
 import datetime
 import subprocess
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Iterable
 
 from craft_cli import emit
+from craft_parts import ProjectInfo, callbacks
 from craft_providers import ProviderError
 
 from . import oci, providers, utils
@@ -37,6 +38,8 @@ def run(command_name: str, parsed_args: "argparse.Namespace") -> None:
     """Run the parts lifecycle."""
     # pylint: disable=too-many-locals
     emit.trace(f"command: {command_name}, arguments: {parsed_args}")
+
+    callbacks.register_stage_packages_filter(_get_base_layer_packages)
 
     project = load_project("rockcraft.yaml")
     destructive_mode = getattr(parsed_args, "destructive_mode", False)
@@ -271,3 +274,28 @@ def clean_provider(project_name: str, project_path: Path) -> None:
     emit.debug(f"Cleaning instance {instance_name}")
     provider.clean_project_environments(instance_name=instance_name)
     emit.progress("Cleaned build provider", permanent=True)
+
+
+def _get_base_layer_packages(info: ProjectInfo) -> Iterable[str]:
+    if info.base == "bare":
+        return []
+
+    with subprocess.Popen(
+        [
+            "dpkg",  # no dpkg-query --root in focal
+            "-l",
+            f"--root={info.package_list_root}",
+        ],
+        text=True,
+        stdout=subprocess.PIPE,
+    ) as proc:
+        while proc.stdout:
+            line = proc.stdout.readline()
+            if not line:
+                break
+            if not line.startswith("ii"):
+                continue
+            (_, name, *_) = line.split()
+            if ":" in name:
+                name = name[: name.index(":")]
+            yield name
