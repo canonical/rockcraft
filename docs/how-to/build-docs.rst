@@ -1,3 +1,5 @@
+.. _how_to_build_docs:
+
 How to build the documentation
 ******************************
 
