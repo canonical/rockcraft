@@ -17,3 +17,9 @@ parts:
     plugin: nil
     stage-packages:
       - hello
+    override-prime: |
+      craftctl default
+      set +e
+      find . -name "libc.so.6" -print -quit | grep libc.so.6
+      test $? -eq 1
+

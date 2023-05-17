@@ -277,6 +277,7 @@ def clean_provider(project_name: str, project_path: Path) -> None:
 
 
 def _get_base_layer_packages(info: ProjectInfo) -> Iterable[str]:
+    emit.debug(f"check layer packages for base: {info.base}")
     if info.base == "bare":
         return []
 

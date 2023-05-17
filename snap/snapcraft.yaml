@@ -29,6 +29,7 @@ parts:
         - apt-transport-https
         - apt-utils
         - binutils
+        - dpkg
         - gpg
         - gpgv
         - libpython3-stdlib

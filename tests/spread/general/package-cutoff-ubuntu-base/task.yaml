@@ -1,9 +1,8 @@
 summary: ubuntu base cutoff test
 
 restore: |
-  run_rockcraft clean --destructive-mode
+  run_rockcraft clean
+  rm -f ./*.rock
 
 execute: |
-  run_rockcraft prime --destructive-mode
-  find /lib/ -name "libc.so.6" -print -quit | grep libc.so.6
-  test $? -eq 1
+  run_rockcraft pack
