@@ -41,14 +41,15 @@ SITECUSTOMIZE_TEMPLATE = dedent(
     # Add the directory that contains the venv-installed packages.
     site.addsitedir(site_dir)
 
-    # Make sure that this site-packages dir comes *before* the base-provided
-    # dist-packages dir in sys.path.
-    path = sys.path
-    site_index = path.index(site_dir)
-    dist_index = path.index(dist_dir)
+    if dist_dir in sys.path:
+        # Make sure that this site-packages dir comes *before* the base-provided
+        # dist-packages dir in sys.path.
+        path = sys.path
+        site_index = path.index(site_dir)
+        dist_index = path.index(dist_dir)
 
-    if dist_index < site_index:
-        path[dist_index], path[site_index] = path[site_index], path[dist_index]
+        if dist_index < site_index:
+            path[dist_index], path[site_index] = path[site_index], path[dist_index]
 
     EOF
     """
