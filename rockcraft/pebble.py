@@ -62,7 +62,7 @@ class Pebble:
             pebble_layers_path_in_base + "/[0-9][0-9][0-9]-???*.yaml"
         ) + glob.glob(pebble_layers_path_in_base + "/[0-9][0-9][0-9]-???*.yml")
 
-        prefixes = [Path(l).name[:3] for l in existing_pebble_layers]
+        prefixes = [Path(layer).name[:3] for layer in existing_pebble_layers]
         prefixes.sort()
         emit.progress(
             f"Found {len(existing_pebble_layers)} Pebble layers in the base's root filesystem"
