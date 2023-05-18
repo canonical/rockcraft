@@ -361,11 +361,7 @@ def _copy_image(
     """
     copy_extra = copy_params if copy_params else []
     _process_run(
-        [
-            "skopeo",
-            "--insecure-policy",
-        ]
-        + list(system_params)
+        ["skopeo", "--insecure-policy", *list(system_params)]
         + [
             "copy",
             *copy_extra,
@@ -377,7 +373,7 @@ def _copy_image(
 
 def _config_image(image_path: Path, params: List[str]) -> None:
     """Configure the OCI image."""
-    _process_run(["umoci", "config", "--image", str(image_path)] + params)
+    _process_run(["umoci", "config", "--image", str(image_path), *params])
 
 
 def _add_layer_into_image(
@@ -396,7 +392,7 @@ def _add_layer_into_image(
         str(image_path),
         str(archived_content),
     ] + [arg_val for k, v in kwargs.items() for arg_val in [k, v]]
-    _process_run(cmd + ["--history.created_by", " ".join(cmd)])
+    _process_run([*cmd, "--history.created_by", " ".join(cmd)])
 
 
 def _archive_layer(
@@ -682,7 +678,7 @@ def _process_run(command: List[str], **kwargs: Any) -> subprocess.CompletedProce
             **kwargs,
             capture_output=True,
             check=True,
-            universal_newlines=True,
+            text=True,
         )
     except subprocess.CalledProcessError as err:
         msg = f"Failed to copy image: {err!s}"

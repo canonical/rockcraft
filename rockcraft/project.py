@@ -369,10 +369,7 @@ class Project(pydantic.BaseModel):
             build_on_compatible_uts = list(
                 reduce(
                     operator.add,
-                    map(
-                        lambda m: _SUPPORTED_ARCHS[m].compatible_uts_machine_archs,
-                        build_on_one_of,
-                    ),
+                    (_SUPPORTED_ARCHS[m].compatible_uts_machine_archs for m in build_on_one_of),
                 )
             )
             if _self_uts_machine not in build_on_compatible_uts:
