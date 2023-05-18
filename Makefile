@@ -83,6 +83,10 @@ test-codespell:
 test-flake8:
 	flake8 rockcraft tests
 
+.PHONY: test-ruff
+test-ruff:
+	ruff rockcraft tests
+
 .PHONY: test-integrations
 test-integrations: ## Run integration tests.
 	pytest tests/integration
