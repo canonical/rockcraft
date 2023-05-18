@@ -48,7 +48,8 @@ def get_managed_environment_project_path() -> pathlib.Path:
 
 def get_managed_environment_log_path() -> pathlib.Path:
     """Path for log when running in managed environment."""
-    return pathlib.Path("/tmp/rockcraft.log")
+    # No need to lint this: log path inside of managed environment is safe.
+    return pathlib.Path("/tmp/rockcraft.log")  # noqa S108
 
 
 def get_managed_environment_snap_channel() -> Optional[str]:
