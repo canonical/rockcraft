@@ -95,8 +95,8 @@ class Image:
         _copy_image(
             source_image,
             f"oci:{image_target}",
-            copy_params=copy_params,
             *platform_params,
+            copy_params=copy_params,
         )
 
         return cls(image_name=image_name, path=image_dir), source_image
@@ -242,7 +242,7 @@ class Image:
         _config_image(image_path, ["--clear=config.cmd"])
         emit.progress(f"Entrypoint set to {entrypoint}", permanent=True)
 
-    def set_pebble_services(
+    def set_pebble_services(  # noqa: PLR0913
         self,
         services: Dict[str, Any],
         name: str,
@@ -584,7 +584,7 @@ def _all_compatible_directories(paths: List[Path]) -> bool:
     if not all(p.is_dir() for p in paths):
         return False
 
-    if len(paths) < 2:
+    if len(paths) < 2:  # noqa: PLR2004
         return True
 
     def stat_props(stat: os.stat_result) -> Tuple[int, int, int]:
@@ -611,7 +611,7 @@ def _all_compatible_files(paths: List[Path]) -> bool:
     if not all(p.is_file() for p in paths):
         return False
 
-    if len(paths) < 2:
+    if len(paths) < 2:  # noqa: PLR2004
         return True
 
     first_file = paths[0]
