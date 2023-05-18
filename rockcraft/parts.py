@@ -99,7 +99,7 @@ class PartsLifecycle:
         """Return the parts prime directory path."""
         return self._lcm.project_info.prime_dir
 
-    def run(
+    def run(  # noqa PLR0912,PLR0915  Copied from pylint directive below but for ruff
         self,
         step_name: str,
         *,
