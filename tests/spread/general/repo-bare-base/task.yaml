@@ -13,12 +13,8 @@ execute: |
   # Ensure container exists
   docker images apt-repo-static-test | MATCH "apt-repo-static-test"
   
-  # ensure container doesn't exist
-  docker rm -f apt-repo-static-test-container
-  docker run -d --name apt-repo-static-test-container apt-repo-static-test -v
-  docker logs apt-repo-static-test-container | MATCH "hello!"
+  docker run --rm apt-repo-static-test exec /bin/bash-static /usr/bin/test-ppa | MATCH "hello!"
 
 restore: |
   rm -f apt-repo-static-test_latest_amd64.rock
-  docker rm -f apt-repo-static-test-container
   docker rmi -f apt-repo-static-test
