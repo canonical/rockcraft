@@ -5,11 +5,7 @@ description: A ROCK that pulls in a package from an external PPA
 license: Apache-2.0
 base: bare
 build-base: ubuntu:18.04
-services:
-  test:
-    override: replace
-    command: /bin/bash-static /usr/bin/test-ppa
-    startup: enabled
+
 platforms:
   amd64:
 
