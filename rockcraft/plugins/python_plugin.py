@@ -50,7 +50,7 @@ class PythonPlugin(python_plugin.PythonPlugin):
     @override
     def _get_system_python_interpreter(self) -> Optional[str]:
         """Overridden because Python must always be provided by the parts."""
-        return None
+        return
 
     @override
     def _get_script_interpreter(self) -> str:

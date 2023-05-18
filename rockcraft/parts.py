@@ -61,7 +61,7 @@ class PartsLifecycle:
         base_layer_hash: bytes,
         base: str,
         package_repositories: Optional[List[Dict[str, Any]]] = None,
-    ):
+    ) -> None:
         self._part_names = part_names
         self._package_repositories = package_repositories or []
 
