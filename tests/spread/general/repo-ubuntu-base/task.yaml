@@ -13,12 +13,8 @@ execute: |
   # Ensure container exists
   docker images apt-repo-test | MATCH "apt-repo-test"
   
-  # ensure container doesn't exist
-  docker rm -f apt-repo-test-container
-  docker run -d --name apt-repo-test-container apt-repo-test -v
-  docker logs apt-repo-test-container | MATCH "3.12"
+  docker run --rm apt-repo-test exec /usr/bin/python3.12 -c "import sys;print(sys.version)" | MATCH "3.12"
   
 restore: |
   rm -f apt-repo-test_latest_amd64.rock
-  docker rm -f apt-repo-test-container
   docker rmi -f apt-repo-test
