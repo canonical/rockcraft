@@ -25,7 +25,7 @@ load-plugins = "pylint_pytest"
 [tool.ruff]
 line-length = 88
 target-version = "py38"
-src = ["starcraft", "tests"]
+src = ["rockcraft", "tests"]
 extend-exclude = [
     "docs",
     "__pycache__",
