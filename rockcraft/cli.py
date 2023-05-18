@@ -129,6 +129,6 @@ def run() -> None:
     except ProviderError as err:
         _emit_error(craft_cli.CraftError(f"craft-providers error: {err}"))
         sys.exit(1)
-    except Exception as err:  # pylint: disable=broad-except
+    except Exception as err:  # pylint: disable=broad-except  # noqa:BLE001
         _emit_error(craft_cli.CraftError(f"rockcraft internal error: {err!r}"))
         sys.exit(1)

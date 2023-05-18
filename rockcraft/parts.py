@@ -170,7 +170,7 @@ class PartsLifecycle:
                 emit.progress(msg, permanent=True)
                 launch_shell()
             raise PartsLifecycleError(msg) from err
-        except Exception as err:
+        except Exception as err:  # noqa BLE001 - this is an error conversion.
             if debug:
                 emit.progress(str(err), permanent=True)
                 launch_shell()
