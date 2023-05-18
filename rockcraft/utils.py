@@ -1,6 +1,6 @@
 # -*- Mode:Python; indent-tabs-mode:nil; tab-width:4 -*-
 #
-# Copyright 2021 Canonical Ltd.
+# Copyright 2021-2023 Canonical Ltd.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 3 as
@@ -59,7 +59,7 @@ def get_managed_environment_snap_channel() -> Optional[str]:
     return os.getenv("ROCKCRAFT_INSTALL_SNAP_CHANNEL")
 
 
-def confirm_with_user(prompt: str, default: bool = False) -> bool:
+def confirm_with_user(prompt: str, *, default: bool = False) -> bool:
     """Query user for yes/no answer.
 
     If stdin is not a tty, the default value is returned.
