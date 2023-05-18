@@ -117,7 +117,7 @@ class Platform(pydantic.BaseModel):
     def _vectorise_build_for(cls, val: Union[str, List[str]]) -> List[str]:
         """Vectorise target architecture if needed."""
         if isinstance(val, str):
-            val = [val]
+            return [val]
         return val
 
     @pydantic.root_validator(skip_on_failure=True)
@@ -547,8 +547,7 @@ def _format_pydantic_error_location(loc: Sequence[Union[str, int]]) -> str:
 def _format_pydantic_error_message(msg: str) -> str:
     """Format pydantic's error message field."""
     # Replace shorthand "str" with "string".
-    msg = msg.replace("str type expected", "string type expected")
-    return msg
+    return msg.replace("str type expected", "string type expected")
 
 
 def _printable_field_location_split(location: str) -> Tuple[str, str]:
