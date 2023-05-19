@@ -19,14 +19,14 @@ complimentary and loosely coupled sets of files, based on the package's metadata
 and content. Slices are basically subsets of the Debian packages, with their own
 content and set of dependencies to other internal and external slices.
 
-.. image:: /_static/package-slices.png
+.. image:: ../_static/package-slices.png
   :width: 95%
   :align: center
   :alt: Debian package slices with dependencies
 
 -----
 
-.. image:: /_static/slice-of-ubuntu.png
+.. image:: ../_static/slice-of-ubuntu.png
   :width: 95%
   :align: center
   :alt: A slice of Ubuntu
