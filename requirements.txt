@@ -7,7 +7,7 @@ colorama==0.4.6
 craft-archives==1.0.0
 craft-cli==1.2.0
 craft-parts==1.20.0
-craft-providers==1.8.0
+git+https://github.com/syu-w/craft-providers.git@os-bases-handling-refactor#egg=craft-providers
 Deprecated==1.2.13
 distro==1.8.0
 docutils==0.17.1
