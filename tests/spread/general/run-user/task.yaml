@@ -17,6 +17,7 @@ execute: |
   # ensure container doesn't exist
   docker rm -f run-user-test-container
   docker run --rm --entrypoint /bin/sh run-user-test -c 'whoami' | MATCH "confined_daemon"
+  docker run --rm run-user-test exec whoami | MATCH "confined_daemon"
   timeout 15 docker run --rm --name run-user-test-container run-user-test -v
 
 restore: |

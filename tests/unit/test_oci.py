@@ -218,7 +218,14 @@ class TestImage:
         assert bundle_path == Path("bundle/dir/a-b/rootfs")
         assert mock_run.mock_calls == [
             call(
-                ["umoci", "unpack", "--rootless", "--image", "/c/a:b", "bundle/dir/a-b"]
+                [
+                    "umoci",
+                    "unpack",
+                    "--rootless",
+                    "--image",
+                    "/c/a:b",
+                    "bundle/dir/a-b",
+                ]
             )
         ]
 
@@ -310,7 +317,12 @@ class TestImage:
         assert len(temp_tar_contents) == 0
         image.add_layer("tag", layer_dir)
 
-        expected_tar_contents = ["first_dir", "first_file", "second_dir", "second_file"]
+        expected_tar_contents = [
+            "first_dir",
+            "first_file",
+            "second_dir",
+            "second_file",
+        ]
         assert temp_tar_contents == expected_tar_contents
 
     def test_add_layer_with_base_layer_dir(self, tmp_path, temp_tar_contents):
@@ -561,13 +573,11 @@ class TestImage:
         image.add_user(tmp_path, mock_tag, "foo", 585287)
 
         mock_tmpdir.assert_called_once()
-        with open(fake_tmpfs / "etc/passwd") as f:
-            check.equal(
-                f.read(),
-                "foo:x:585287:585287::/var/lib/pebble/default:/usr/bin/false\n",
-            )
-        with open(fake_tmpfs / "etc/group") as f:
-            check.equal(f.read(), "foo:x:585287:\n")
+        check.equal(
+            (fake_tmpfs / "etc/passwd").read_text(),
+            "foo:x:585287:585287::/var/lib/pebble/default:/usr/bin/false\n",
+        )
+        check.equal((fake_tmpfs / "etc/group").read_text(), "foo:x:585287:\n")
 
         check.is_false(os.path.exists(fake_tmpfs / "etc/shadow"))
         mock_add_layer.assert_called_once_with(mock_tag, fake_tmpfs)
@@ -582,12 +592,11 @@ class TestImage:
         # Mock the existence of users in the base image
         fake_etc = tmp_path / "etc"
         fake_etc.mkdir(parents=True, exist_ok=True)
-        with open(fake_etc / "passwd", "w") as f:
-            f.write("someuser:x:10:10::/nonexistent:/usr/bin/false\n")
-        with open(fake_etc / "group", "w") as f:
-            f.write("somegroup:x:10:\n")
-        with open(fake_etc / "shadow", "w") as f:
-            f.write("somegroup:!:19369::::::\n")
+        (fake_etc / "passwd").write_text(
+            "someuser:x:10:10::/nonexistent:/usr/bin/false\n"
+        )
+        (fake_etc / "group").write_text("somegroup:x:10:\n")
+        (fake_etc / "shadow").write_text("somegroup:!:19369::::::\n")
 
         mock_tag = "tag"
         fake_tmpfs = tmp_path / "mock-tmp"
@@ -600,20 +609,21 @@ class TestImage:
         image.add_user(tmp_path, mock_tag, "foo", 585287)
 
         mock_tmpdir.assert_called_once()
-        with open(fake_tmpfs / "etc/passwd") as f:
-            check.equal(
-                f.read(),
-                str(
-                    "someuser:x:10:10::/nonexistent:/usr/bin/false\n"
-                    "foo:x:585287:585287::/var/lib/pebble/default:/usr/bin/false\n"
-                ),
-            )
-        with open(fake_tmpfs / "etc/group") as f:
-            check.equal(f.read(), "somegroup:x:10:\nfoo:x:585287:\n")
-        with open(fake_tmpfs / "etc/shadow") as f:
-            check.equal(
-                f.read(), f"somegroup:!:19369::::::\nfoo:!:{days_since_epoch}::::::\n"
-            )
+        check.equal(
+            (fake_tmpfs / "etc/passwd").read_text(),
+            str(
+                "someuser:x:10:10::/nonexistent:/usr/bin/false\n"
+                "foo:x:585287:585287::/var/lib/pebble/default:/usr/bin/false\n"
+            ),
+        )
+        check.equal(
+            (fake_tmpfs / "etc/group").read_text(),
+            "somegroup:x:10:\nfoo:x:585287:\n",
+        )
+        check.equal(
+            (fake_tmpfs / "etc/shadow").read_text(),
+            f"somegroup:!:19369::::::\nfoo:!:{days_since_epoch}::::::\n",
+        )
 
         mock_add_layer.assert_called_once_with(mock_tag, fake_tmpfs)
 
@@ -660,13 +670,21 @@ class TestImage:
         source_image = "docker://ubuntu:22.04"
         image = oci.Image("a:b", Path("/c"))
         mock_output = mocker.patch(
-            "subprocess.check_output", return_value="000102030405060708090a0b0c0d0e0f"
+            "subprocess.check_output",
+            return_value="000102030405060708090a0b0c0d0e0f",
         )
 
         digest = image.digest(source_image)
         assert mock_output.mock_calls == [
             call(
-                ["skopeo", "inspect", "--format", "{{.Digest}}", "-n", source_image],
+                [
+                    "skopeo",
+                    "inspect",
+                    "--format",
+                    "{{.Digest}}",
+                    "-n",
+                    source_image,
+                ],
                 text=True,
             )
         ]
@@ -794,7 +812,12 @@ class TestImage:
         )
 
     def test_set_control_data(
-        self, mock_archive_layer, mock_rmtree, mock_mkdir, mock_mkdtemp, mock_run
+        self,
+        mock_archive_layer,
+        mock_rmtree,
+        mock_mkdir,
+        mock_mkdtemp,
+        mock_run,
     ):
         image = oci.Image("a:b", Path("/c"))
 

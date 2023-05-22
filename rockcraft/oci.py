@@ -242,16 +242,14 @@ class Image:
             if (base_layer_dir / shadow_file).exists():
                 days_since_epoch = (datetime.utcnow() - datetime(1970, 1, 1)).days
 
-                # only add the shadow file is there's already one in the base image
+                # only add the shadow file if there's already one in the base image
                 with open(Path(tmpfs) / shadow_file, "a+") as shadowf:
                     shadowf.write(
                         (base_layer_dir / shadow_file).read_text()
                         + f"{username}:!:{days_since_epoch}::::::\n"
                     )
 
-            emit.progress(
-                "Adding user {username}:{uid} with group {new_group}:{new_gid}"
-            )
+            emit.progress(f"Adding user {username}:{uid} with group {username}:{uid}")
             self.add_layer(tag, Path(tmpfs))
 
     def stat(self) -> Dict[Any, Any]:
@@ -387,7 +385,7 @@ class Image:
         rock_metadata_file = control_data_rock_folder / "metadata.yaml"
         with rock_metadata_file.open("w", encoding="utf-8") as rock_meta:
             yaml.dump(metadata, rock_meta)
-        rock_metadata_file.chmod(0o755)
+        rock_metadata_file.chmod(0o644)
 
         temp_tar_file = Path(self.path, f".temp_layer.control_data.{os.getpid()}.tar")
         temp_tar_file.unlink(missing_ok=True)
