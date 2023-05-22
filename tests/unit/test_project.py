@@ -27,6 +27,7 @@ import yaml
 
 from rockcraft.errors import ProjectLoadError, ProjectValidationError
 from rockcraft.project import (
+    INVALID_NAME_MESSAGE,
     ArchitectureMapping,
     Platform,
     Project,
@@ -232,6 +233,15 @@ def test_project_title_empty(yaml_loaded_data):
     assert project.title == project.name
 
 
+def test_project_title_empty_invalid_name(yaml_loaded_data):
+    """Test that an invalid name doesn't break the validation of the title."""
+    yaml_loaded_data.pop("title")
+    yaml_loaded_data["name"] = "my@rock"
+    with pytest.raises(ProjectValidationError) as err:
+        Project.unmarshal(yaml_loaded_data)
+    assert "Invalid name for ROCK" in str(err.value)
+
+
 def test_project_build_base(yaml_loaded_data):
     yaml_loaded_data["build-base"] = "ubuntu:18.04"
 
@@ -357,6 +367,27 @@ def test_project_all_platforms_invalid(yaml_loaded_data):
         f"must be built on one of the following architectures: {[other_arch]}"
         in reload_project_platforms(mock_platforms)
     )
+
+
+@pytest.mark.parametrize("valid_name", ("aaa", "a00", "a-00", "a-a-a", "a-000-bbb"))
+def test_project_name_valid(yaml_loaded_data, valid_name):
+    yaml_loaded_data["name"] = valid_name
+
+    project = Project.unmarshal(yaml_loaded_data)
+    assert project.name == valid_name
+
+
+@pytest.mark.parametrize(
+    "invalid_name", ("AAA", "0aaa", "a", "a--a", "aa-", "a:a", "a/a", "a@a", "a_a")
+)
+def test_project_name_invalid(yaml_loaded_data, invalid_name):
+    yaml_loaded_data["name"] = invalid_name
+
+    with pytest.raises(ProjectValidationError) as err:
+        Project.unmarshal(yaml_loaded_data)
+
+    expected_message = f"{INVALID_NAME_MESSAGE} in field 'name'"
+    assert expected_message in str(err.value)
 
 
 def test_full_service():

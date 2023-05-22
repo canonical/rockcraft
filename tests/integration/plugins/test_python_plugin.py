@@ -19,10 +19,12 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import pytest
+from craft_parts.errors import OsReleaseVersionIdError
 from craft_parts.utils.os_utils import OsRelease
 
 from rockcraft import plugins
 from rockcraft.parts import PartsLifecycle
+from rockcraft.plugins.python_plugin import SITECUSTOMIZE_TEMPLATE
 from rockcraft.project import Project
 from tests.util import ubuntu_only
 
@@ -66,6 +68,38 @@ def run_lifecycle(base: str, work_dir: Path) -> None:
     lifecycle.run("stage")
 
 
+@dataclass
+class ExpectedValues:
+    """Expected venv Python values for a given Ubuntu host."""
+
+    symlinks: typing.List[str]
+    symlink_target: str
+    version_dir: str
+
+
+# A mapping from host Ubuntu to expected Python values; We need this mapping
+# because these integration tests run on the host machine as the "build base".
+RELEASE_TO_VALUES = {
+    "22.04": ExpectedValues(
+        symlinks=["python", "python3", "python3.10"],
+        symlink_target="../usr/bin/python3.10",
+        version_dir="python3.10",
+    ),
+    "20.04": ExpectedValues(
+        symlinks=["python", "python3"],
+        symlink_target="../usr/bin/python3.8",
+        version_dir="python3.8",
+    ),
+}
+
+try:
+    # The instance of `ExpectedValues` for the current host running the tests
+    VALUES_FOR_HOST = RELEASE_TO_VALUES[OsRelease().version_id()]
+except OsReleaseVersionIdError:
+    # not running on Ubuntu; pass because the tests will be skipped.
+    pass
+
+
 @pytest.mark.parametrize("base", tuple(UBUNTU_BASES))
 def test_python_plugin_ubuntu(base, tmp_path):
 
@@ -84,26 +118,17 @@ def test_python_plugin_ubuntu(base, tmp_path):
     hello = bin_dir / "hello"
     assert hello.read_text().startswith(expected_shebang)
 
+    # Check the extra sitecustomize.py module that we add
+    expected_text = SITECUSTOMIZE_TEMPLATE.replace("EOF", "")
 
-@dataclass
-class ExpectedValues:
-    """Expected venv Python symlinks and the "actual" Python target."""
+    version_dir = VALUES_FOR_HOST.version_dir
+    sitecustom = work_dir / f"stage/usr/lib/{version_dir}/sitecustomize.py"
+    assert sitecustom.read_text().strip() == expected_text.strip()
 
-    symlinks: typing.List[str]
-    symlink_target: str
-
-
-# A mapping from host Ubuntu to expected Python symlinks; We need this mapping
-# because the "bare" test runs on the host machine as the "build base".
-RELEASE_TO_VALUES = {
-    "22.04": ExpectedValues(
-        symlinks=["python", "python3", "python3.10"],
-        symlink_target="../usr/bin/python3.10",
-    ),
-    "20.04": ExpectedValues(
-        symlinks=["python", "python3"], symlink_target="../usr/bin/python3.8"
-    ),
-}
+    # Check that the pyvenv.cfg file was removed, as it's not necessary with the
+    # sitecustomize.py module.
+    pyvenv_cfg = work_dir / "stage/pyvenv.cfg"
+    assert not pyvenv_cfg.is_file()
 
 
 def test_python_plugin_bare(tmp_path):
@@ -113,18 +138,27 @@ def test_python_plugin_bare(tmp_path):
 
     bin_dir = work_dir / "stage/bin"
 
-    release = OsRelease().version_id()
-    expected_values = RELEASE_TO_VALUES[release]
-
     # Bare base: the Python symlinks in bin/ *must* exist, and "python3" must
     # point to the "concrete" part-provided python binary
     assert sorted(bin_dir.glob("python*")) == [
-        bin_dir / i for i in expected_values.symlinks
+        bin_dir / i for i in VALUES_FOR_HOST.symlinks
     ]
     # (Python 3.8 does not have Path.readlink())
-    assert os.readlink(bin_dir / "python3") == expected_values.symlink_target
+    assert os.readlink(bin_dir / "python3") == VALUES_FOR_HOST.symlink_target
 
     # Check the shebang in the "hello" script
     expected_shebang = "#!/bin/python3"
     hello = bin_dir / "hello"
     assert hello.read_text().startswith(expected_shebang)
+
+    # Check the extra sitecustomize.py module that we add
+    expected_text = SITECUSTOMIZE_TEMPLATE.replace("EOF", "")
+
+    version_dir = VALUES_FOR_HOST.version_dir
+    sitecustom = work_dir / f"stage/usr/lib/{version_dir}/sitecustomize.py"
+    assert sitecustom.read_text().strip() == expected_text.strip()
+
+    # Check that the pyvenv.cfg file was removed, as it's not necessary with the
+    # sitecustomize.py module.
+    pyvenv_cfg = work_dir / "stage/pyvenv.cfg"
+    assert not pyvenv_cfg.is_file()
