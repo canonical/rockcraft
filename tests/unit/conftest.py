@@ -50,7 +50,7 @@ def fake_provider(mock_instance):
         def create_environment(self, *, instance_name: str):
             yield mock_instance
 
-        @contextlib.contextmanager
+        @contextlib.contextmanager  # type: ignore[misc]
         def launched_environment(
             self,
             *,
