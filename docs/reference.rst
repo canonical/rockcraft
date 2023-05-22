@@ -45,7 +45,7 @@ Format specification
   license: <license>
 
   # (Optional) The default OCI user. It must be a supported global user.
-  # Currently, the only supported user is "confined_daemon" (with UID 584792).
+  # Currently, the only supported user is "confined_daemon" (with UID/GID 584792).
   # Defaults to "root" (with UID 0).
   run-user: confined_daemon
 
@@ -133,7 +133,7 @@ Rockcraft *parts* go through the same lifecycle steps as Charmcraft and
 `Snapcraft parts <https://snapcraft.io/docs/parts-lifecycle>`_.
 
 The way the *parts*' keys and values are used in the *rockcraft.yaml* is exactly
-the same as in *`snapcraft.yaml`_*
+the same as in `snapcraft.yaml`_
 (`here <https://snapcraft.io/docs/adding-parts>`_ is how you define a *part*).
 
 Albeit being fundamentally identical to Snapcraft parts, Rockcraft parts

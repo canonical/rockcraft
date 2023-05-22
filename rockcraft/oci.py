@@ -32,6 +32,7 @@ from typing import Any, DefaultDict, Dict, List, Optional, Tuple
 
 import yaml
 from craft_cli import emit
+from craft_parts.executor.collisions import paths_collide
 from craft_parts.overlays import overlays
 
 from rockcraft import errors
@@ -306,7 +307,7 @@ class Image:
         """Set the OCI image entrypoint. It is always Pebble and CMD is null."""
         emit.progress("Configuring entrypoint...")
         image_path = self.path / self.image_name
-        entrypoint = [f"/{Pebble.PEBBLE_BINARY_PATH}", "enter"]
+        entrypoint = [f"/{Pebble.PEBBLE_BINARY_PATH}", "enter", "--verbose"]
         params = ["--clear=config.entrypoint"]
         for entry in entrypoint:
             params.extend(["--config.entrypoint", entry])
@@ -617,6 +618,13 @@ def _merge_layer_paths(candidate_paths: Dict[str, List[Path]]) -> Dict[str, Path
             result[name] = paths[0]
             continue
 
+        if _all_compatible_files(paths):
+            emit.debug(
+                f"Multiple files pointing to '{name}': {', '.join(map(str, paths))}"
+            )
+            result[name] = paths[0]
+            continue
+
         # We currently don't try to do any kind of path conflict resolution; if
         # the paths aren't all directories with the same ownership and permissions,
         # bail out with an error.
@@ -672,6 +680,23 @@ def _all_compatible_directories(paths: List[Path]) -> bool:
                     f"{first_stat} vs {other_stat}"
                 )
             )
+            return False
+
+    return True
+
+
+def _all_compatible_files(paths: List[Path]) -> bool:
+    """Whether ``paths`` contains only files with the same attributes and contents."""
+    if not all(p.is_file() for p in paths):
+        return False
+
+    if len(paths) < 2:
+        return True
+
+    first_file = paths[0]
+
+    for other_file in paths[1:]:
+        if paths_collide(str(first_file), str(other_file)):
             return False
 
     return True

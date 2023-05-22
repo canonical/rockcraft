@@ -3,7 +3,8 @@ project: rockcraft
 path: /rockcraft
 environment:
   PROJECT_PATH: /rockcraft
-  PATH: /snap/bin:$PATH:$PROJECT_PATH/tools/external/tools:$PROJECT_PATH/tools/spread
+  SNAPD_TESTING_TOOLS: $PROJECT_PATH/tools/external/tools
+  PATH: /snap/bin:$PATH:$SNAPD_TESTING_TOOLS:$PROJECT_PATH/tools/spread
 
 include:
     - tests/
@@ -20,20 +21,23 @@ backends:
     location: snapd-spread/us-east1-b
     halt-timeout: 2h
     systems:
-      - ubuntu-18.04-64:
-          workers: 2
-          storage: 40G
       - ubuntu-20.04-64:
           workers: 2
           storage: 40G
       - ubuntu-22.04-64:
           workers: 2
           storage: 40G
-      - fedora-36-64:
+      - fedora-37-64:
           workers: 2
           storage: 40G
 
 prepare: |
+  # if the 'tools' directory inside the submodule does not exist, then assume the submodule is empty
+  if [[ ! -d "$SNAPD_TESTING_TOOLS" ]]; then
+    echo "Cannot run spread because submodule 'snapd-testing-tools' is empty. Fetch with 'git submodule update --init' and rerun spread."
+    exit 1
+  fi
+
   if os.query is-ubuntu; then
     tempfile="$(mktemp)"
     if ! apt-get update > "$tempfile" 2>&1; then
@@ -48,12 +52,6 @@ prepare: |
 
   # The /snap directory does not exist in some environments
   [ ! -d /snap ] && ln -s /var/lib/snapd/snap /snap
-
-  # install docker before lxd, otherwise it will mess up with lxd networking
-  snap install docker
-
-  # make sure docker is working
-  retry -n 10 --wait 2 sh -c 'docker run --rm hello-world'
 
   # older linux releases have separate packages for lxd and lxc (lxd-client)
   if [ "$SPREAD_SYSTEM" = "ubuntu-18.04-64" ] || \
@@ -76,6 +74,11 @@ prepare: |
 
   lxd waitready --timeout=30
   lxd init --auto
+
+  snap install docker
+
+  # make sure docker is working
+  retry -n 10 --wait 2 sh -c 'docker run --rm hello-world'
 
   install_rockcraft
 

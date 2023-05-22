@@ -19,3 +19,5 @@ adapt the steps to fit your specific requirements.
    Create a package slice for Chisel <create-slice>
    Install a custom package slice <install-slice>
    Release a slice definitions file <publish-slice>
+   Convert an entrypoint to a Pebble layer <convert-to-pebble-layer.rst>
+   contribute-docs
