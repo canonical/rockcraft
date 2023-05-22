@@ -105,12 +105,12 @@ class FrameworkFlask(Extension):
     @overrides
     def get_parts_snippet(self) -> Dict[str, Any]:
         snippet = {
-            "flask": {
+            "framework-flask/flask": {
                 "source": ".",
                 "plugin": "python",
                 "stage-packages": ["python3-venv"],
             },
-            "contents": {
+            "framework-flask/contents": {
                 "source": ".",
                 "plugin": "dump",
                 "build-snaps": ["node/18/stable"],
@@ -131,8 +131,10 @@ class FrameworkFlask(Extension):
         }
 
         if (self.project_root / "requirements.txt").exists():
-            snippet["flask"]["python-requirements"] = ["requirements.txt"]
+            snippet["framework-flask/flask"]["python-requirements"] = [
+                "requirements.txt"
+            ]
         else:
-            snippet["flask"]["python-packages"] = ["Flask"]
+            snippet["framework-flask/flask"]["python-packages"] = ["Flask"]
 
         return snippet
