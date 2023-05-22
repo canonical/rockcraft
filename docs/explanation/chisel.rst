@@ -6,13 +6,8 @@ What is Chisel?
 Chisel_ is a software tool for extracting the contents of Debian packages
 for use in container images.
 
-    *“The sculpture is already complete within the marble block, before I start
-    my work. It is already there, I just have to chisel away the superfluous
-    material.”*
-    \- Michelangelo
-
 Using the analogy of a tool to carve and cut stone, Chisel is used by
-|rockcraft| to sculpt minimal container images that only include what is
+|rockcraft| to sculpt minimal collections of files that only include what is
 needed from the Debian packages that are used.
 
 See :ref:`how_to_use_chisel` for information about using the tool.
