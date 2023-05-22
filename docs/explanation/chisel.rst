@@ -41,7 +41,7 @@ With this slice definition in place, Chisel is able to extract a
 highly-customized and specialized slice of the Ubuntu distribution, which one
 could see as a block of stone from which we can carve and extract only the
 small and relevant parts that we need to run our applications. It is ideal to
-support the creation of container images that are smaller than those contructed
+support the creation of container images that are smaller than those constructed
 using full Debian packages, but which are equally functional.
 
 .. _Chisel: https://github.com/canonical/chisel
