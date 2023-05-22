@@ -45,7 +45,7 @@ Format specification
   license: <license>
 
   # (Optional) The default OCI user. It must be a supported global user.
-  # Currently, the only supported user is "confined_daemon" (with UID 584792).
+  # Currently, the only supported user is "confined_daemon" (with UID/GID 584792).
   # Defaults to "root" (with UID 0).
   run-user: confined_daemon
 
