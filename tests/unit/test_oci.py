@@ -873,7 +873,7 @@ class TestImage:
                 m.return_value.write = mock_write
                 image.set_control_data(metadata)
 
-        local_mock_chmod.assert_called_once_with(0o755)
+        local_mock_chmod.assert_called_once_with(0o644)
         assert mocked_data["writes"] == expected
         mock_mkdtemp.assert_called_once()
         mock_mkdir.assert_called_once()
