@@ -56,7 +56,7 @@ prepare: |
   # older linux releases have separate packages for lxd and lxc (lxd-client)
   if [ "$SPREAD_SYSTEM" = "ubuntu-18.04-64" ] || \
      [ "$SPREAD_SYSTEM" = "ubuntu-20.04-64" ] || \
-     [ "$SPREAD_SYSTEM" = "fedora-36-64" ]; then
+     [ "$SPREAD_SYSTEM" = "fedora-37-64" ]; then
     tests.pkgs remove lxd lxd-client
   else
     tests.pkgs remove lxd
@@ -75,7 +75,11 @@ prepare: |
   lxd waitready --timeout=30
   lxd init --auto
 
-  snap install docker
+  if [ "$SPREAD_SYSTEM" = "fedora-37-64" ]; then
+    snap install docker --channel=core18/stable
+  else
+    snap install docker
+  fi  
 
   # make sure docker is working
   retry -n 10 --wait 2 sh -c 'docker run --rm hello-world'
@@ -108,9 +112,6 @@ debug-each: |
 suites:
   docs/tutorials/code/:
     summary: tests basic tutorials from the docs
-    # Don't run tutorial code in Fedora because of a snapd 2.58 bug
-    # (https://bugs.launchpad.net/snapd/+bug/2002835)
-    systems: [-fedora-36-64]
 
   docs/how-to/code/:
     summary: tests how-to guides from the docs
