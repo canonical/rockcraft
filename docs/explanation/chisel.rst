@@ -33,16 +33,16 @@ container images from the wider set of Ubuntu packages.
 This image illustrates the simple case where, at a package level, package *B*
 depends on package *A*. However, there might be files in *A* that *B* doesn't
 actually need, but which are provided for convenience or completeness.
-In this example, the files in the package slice, *A_slice3*, are not needed
-for *B* to function properly. By cutting packages *A* and *B* into slices, we
-can identify the files in *A* that are actually needed by *B*.
+By identifying the files in *A* that are actually needed by *B*, we can divide
+*A* into slices that serve this purpose. In this example, the files in the
+package slice, *A_slice3*, are not needed for *B* to function. To make package
+*B* usable in the same way, it can also be divided into slices.
 
 With these slice definitions in place, Chisel is able to extract a
 highly-customized and specialized slice of the Ubuntu distribution, which one
 could see as a block of stone from which we can carve and extract only the
-small and relevant parts that we need to run our applications. It is ideal to
-support the creation of container images that are smaller than those constructed
-using full Debian packages, but which are equally functional.
+small and relevant parts that we need to run our applications, thus keeping
+ROCKs small and less exposed to vulnerabilities.
 
 .. _Chisel: https://github.com/canonical/chisel
 .. |rockcraft| replace:: :doc:`Rockcraft <rockcraft>`
