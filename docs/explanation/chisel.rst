@@ -3,12 +3,12 @@
 What is Chisel?
 ===============
 
-Chisel_ is a software tool for extracting the contents of Debian packages
+Chisel_ is a software tool for extracting well-defined portions (aka slices) of
 Debian packages into a filesystem.
 
-Using the analogy of a tool to carve and cut stone, Chisel is used by
+Using the analogy of a tool to carve and cut stone, Chisel is used in
 |rockcraft| to sculpt minimal collections of files that only include what is
-needed from the Debian packages that are used.
+needed for the ROCK to function properly.
 
 See :ref:`how_to_use_chisel` for information about using the tool.
 
@@ -16,7 +16,7 @@ Package slices
 --------------
 
 Since Debian packages are simply archives that can be inspected, navigated
-and deconstructed, it is possible to extract slices of packages that contain
+and deconstructed, it is possible to define slices of packages that contain
 minimal, complementary, loosely-coupled sets of files based on package
 metadata and content. Such **package slices** are subsets of Debian packages,
 with their own content and set of dependencies to other internal and external
@@ -37,7 +37,7 @@ In this example, the files in the package slice, *A_slice3*, are not needed
 for *B* to function properly. By cutting packages *A* and *B* into slices, we
 can identify the files in *A* that are actually needed by *B*.
 
-With this slice definition in place, Chisel is able to extract a
+With these slice definitions in place, Chisel is able to extract a
 highly-customized and specialized slice of the Ubuntu distribution, which one
 could see as a block of stone from which we can carve and extract only the
 small and relevant parts that we need to run our applications. It is ideal to
