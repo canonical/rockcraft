@@ -4,7 +4,7 @@ What is Chisel?
 ===============
 
 Chisel_ is a software tool for extracting the contents of Debian packages
-for use in container images.
+Debian packages into a filesystem.
 
 Using the analogy of a tool to carve and cut stone, Chisel is used by
 |rockcraft| to sculpt minimal collections of files that only include what is
