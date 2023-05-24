@@ -76,6 +76,8 @@ prepare: |
   lxd init --auto
 
   if [ "$SPREAD_SYSTEM" = "fedora-37-64" ]; then
+    # Latest docker snap needs a more recent version of snapd than Fedora ships
+    # https://github.com/canonical/rockcraft/pull/277
     snap install docker --channel=core18/stable
   else
     snap install docker
