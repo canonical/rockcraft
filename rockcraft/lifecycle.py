@@ -170,12 +170,13 @@ def _pack(
 
     if project.run_user:
         emit.progress(f"Creating new user {project.run_user}")
-        new_image.add_user(
+        new_user_layer = new_image.add_user(
+            prime_dir=lifecycle.prime_dir,
             base_layer_dir=base_layer_dir,
-            tag=project.version,
             username=project.run_user,
             uid=SUPPORTED_GLOBAL_USERNAMES[project.run_user]["uid"],
         )
+        new_image.add_layer(project.version, new_user_layer)
 
         emit.progress(f"Setting the default OCI user to be {project.run_user}")
         new_image.set_default_user(project.run_user)

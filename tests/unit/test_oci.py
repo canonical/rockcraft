@@ -29,6 +29,18 @@ from craft_parts.overlays import overlays
 import tests
 from rockcraft import errors, oci
 
+MOCK_NEW_USER = {
+    "user": "foo",
+    "uid": 585287,
+    "passwd": "foo:x:585287:585287::/var/lib/pebble/default:/usr/bin/false\n",
+    "group": "foo:x:585287:\n",
+    "shadow": str(
+        "foo:!:"
+        f"{(datetime.datetime.utcnow() - datetime.datetime(1970, 1, 1)).days}"
+        "::::::\n"
+    ),
+}
+
 
 @pytest.fixture
 def mock_run(mocker):
@@ -562,80 +574,165 @@ class TestImage:
     def test_add_new_user(
         self,
         check,
-        mock_add_layer,
         mock_tmpdir,
         tmp_path,
     ):
-        mock_tag = "tag"
         fake_tmpfs = tmp_path / "mock-tmp"
         mock_tmpdir.return_value = fake_tmpfs
 
         image = oci.Image("a:b", Path("/c"))
-        image.add_user(tmp_path, mock_tag, "foo", 585287)
+        image.add_user(
+            tmp_path / "prime",
+            tmp_path,
+            MOCK_NEW_USER["user"],
+            MOCK_NEW_USER["uid"],
+        )
 
         mock_tmpdir.assert_called_once()
         check.equal(
             (fake_tmpfs / "etc/passwd").read_text(),
-            "foo:x:585287:585287::/var/lib/pebble/default:/usr/bin/false\n",
-        )
-        check.equal((fake_tmpfs / "etc/group").read_text(), "foo:x:585287:\n")
-
-        check.is_false(os.path.exists(fake_tmpfs / "etc/shadow"))
-        mock_add_layer.assert_called_once_with(mock_tag, fake_tmpfs)
-
-    def test_append_new_user(
-        self,
-        check,
-        mock_add_layer,
-        mock_tmpdir,
-        tmp_path,
-    ):
-        # Mock the existence of users in the base image
-        fake_etc = tmp_path / "etc"
-        fake_etc.mkdir(parents=True, exist_ok=True)
-        (fake_etc / "passwd").write_text(
-            "someuser:x:10:10::/nonexistent:/usr/bin/false\n"
-        )
-        (fake_etc / "group").write_text("somegroup:x:10:\n")
-        (fake_etc / "shadow").write_text("somegroup:!:19369::::::\n")
-
-        mock_tag = "tag"
-        fake_tmpfs = tmp_path / "mock-tmp"
-        mock_tmpdir.return_value = fake_tmpfs
-
-        image = oci.Image("a:b", Path("/c"))
-        days_since_epoch = (
-            datetime.datetime.utcnow() - datetime.datetime(1970, 1, 1)
-        ).days
-        image.add_user(tmp_path, mock_tag, "foo", 585287)
-
-        mock_tmpdir.assert_called_once()
-        check.equal(
-            (fake_tmpfs / "etc/passwd").read_text(),
-            str(
-                "someuser:x:10:10::/nonexistent:/usr/bin/false\n"
-                "foo:x:585287:585287::/var/lib/pebble/default:/usr/bin/false\n"
-            ),
+            MOCK_NEW_USER["passwd"],
         )
         check.equal(
             (fake_tmpfs / "etc/group").read_text(),
-            "somegroup:x:10:\nfoo:x:585287:\n",
+            MOCK_NEW_USER["group"],
+        )
+
+        check.is_false(os.path.exists(fake_tmpfs / "etc/shadow"))
+
+        # Test with a conflicting user or ID.
+        # Use the new fs as a base to force the error.
+        with pytest.raises(errors.RockcraftError) as err:
+            image.add_user(
+                tmp_path / "prime",
+                fake_tmpfs,
+                MOCK_NEW_USER["user"],
+                MOCK_NEW_USER["uid"] + 1,
+            )
+            check.is_in(
+                "conflict with existing user/group in the base filesystem", str(err)
+            )
+
+        with pytest.raises(errors.RockcraftError) as err:
+            image.add_user(
+                tmp_path / "prime",
+                fake_tmpfs,
+                MOCK_NEW_USER["user"] + "bar",
+                MOCK_NEW_USER["uid"],
+            )
+            check.is_in("conflict with existing user/group in the base filesystem", err)
+
+    @pytest.mark.parametrize(
+        "base_user_files,prime_user_files,whiteouts_exist,expected_user_files",
+        [
+            # If file in prime, the rest doesn't matter
+            (
+                {
+                    "passwd": "someuser:x:10:10::/nonexistent:/usr/bin/false\n",
+                    "group": "somegroup:x:10:\n",
+                    "shadow": "somegroup:!:19369::::::\n",
+                },
+                {
+                    "passwd": "primeuser:x:11:11::/nonexistent:/usr/bin/false\n",
+                    "group": "primegroup:x:11:\n",
+                    "shadow": "primegroup:!:19370::::::\n",
+                },
+                True,
+                {
+                    "passwd": str(
+                        "primeuser:x:11:11::/nonexistent:/usr/bin/false\n"
+                        f"{MOCK_NEW_USER['passwd']}"
+                    ),
+                    "group": f"primegroup:x:11:\n{MOCK_NEW_USER['group']}",
+                    "shadow": f"primegroup:!:19370::::::\n{MOCK_NEW_USER['shadow']}",
+                },
+            ),
+            # If file NOT in prime but in base, then take the base's data
+            (
+                {
+                    "passwd": "someuser:x:10:10::/nonexistent:/usr/bin/false\n",
+                    "group": "somegroup:x:10:\n",
+                    "shadow": "somegroup:!:19369::::::\n",
+                },
+                {},
+                False,
+                {
+                    "passwd": str(
+                        "someuser:x:10:10::/nonexistent:/usr/bin/false\n"
+                        f"{MOCK_NEW_USER['passwd']}"
+                    ),
+                    "group": f"somegroup:x:10:\n{MOCK_NEW_USER['group']}",
+                    "shadow": f"somegroup:!:19369::::::\n{MOCK_NEW_USER['shadow']}",
+                },
+            ),
+            # If file is removed in prime, then take an empty file
+            # If "shadow" is removed or absent, then it's ignored
+            (
+                {
+                    "passwd": "someuser:x:10:10::/nonexistent:/usr/bin/false\n",
+                    "group": "somegroup:x:10:\n",
+                    "shadow": "somegroup:!:19369::::::\n",
+                },
+                {},
+                True,
+                {
+                    "passwd": str(f"{MOCK_NEW_USER['passwd']}"),
+                    "group": MOCK_NEW_USER["group"],
+                    "shadow": MOCK_NEW_USER["shadow"],
+                },
+            ),
+        ],
+    )
+    def test_append_new_user(
+        self,
+        check,
+        mock_tmpdir,
+        tmp_path,
+        base_user_files,
+        prime_user_files,
+        whiteouts_exist,
+        expected_user_files,
+    ):
+        # Mock the existence of users, either in the base or the primed dir
+        # tmp_path will be fake_base
+        fake_prime = tmp_path / "prime"
+        fake_prime_etc = fake_prime / "etc"
+        fake_base_etc = tmp_path / "etc"
+        fake_prime_etc.mkdir(parents=True, exist_ok=True)
+        fake_base_etc.mkdir(parents=True, exist_ok=True)
+
+        for filename in ["passwd", "group", "shadow"]:
+            if base_user_files:
+                (fake_base_etc / filename).write_text(base_user_files[filename])
+
+            if prime_user_files:
+                (fake_prime_etc / filename).write_text(prime_user_files[filename])
+
+            if whiteouts_exist:
+                (fake_prime_etc / f".wh.{filename}").touch()
+
+        fake_tmp_new_layer = tmp_path / "mock-tmp"
+        mock_tmpdir.return_value = fake_tmp_new_layer
+
+        image = oci.Image("a:b", Path("/c"))
+        image.add_user(
+            fake_prime, tmp_path, MOCK_NEW_USER["user"], MOCK_NEW_USER["uid"]
+        )
+
+        mock_tmpdir.assert_called_once()
+        check.equal(
+            (fake_tmp_new_layer / "etc/passwd").read_text(),
+            expected_user_files["passwd"],
         )
         check.equal(
-            (fake_tmpfs / "etc/shadow").read_text(),
-            f"somegroup:!:19369::::::\nfoo:!:{days_since_epoch}::::::\n",
+            (fake_tmp_new_layer / "etc/group").read_text(),
+            expected_user_files["group"],
         )
-
-        mock_add_layer.assert_called_once_with(mock_tag, fake_tmpfs)
-
-        # Test with a conflicting user or ID
-        with pytest.raises(errors.RockcraftError) as err:
-            image.add_user(tmp_path, mock_tag, "foo2", 10)
-            check.is_in("conflict with existing user/group in the base filesystem", err)
-
-        with pytest.raises(errors.RockcraftError) as err:
-            image.add_user(tmp_path, mock_tag, "someuser", 585281)
-            check.is_in("conflict with existing user/group in the base filesystem", err)
+        if prime_user_files or not whiteouts_exist:
+            check.equal(
+                (fake_tmp_new_layer / "etc/shadow").read_text(),
+                expected_user_files["shadow"],
+            )
 
     def test_add_layer_duplicate_identical_files(self, tmp_path, temp_tar_contents):
         """

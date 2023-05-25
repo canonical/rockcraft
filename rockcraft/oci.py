@@ -104,7 +104,11 @@ class Image:
 
     @classmethod
     def new_oci_image(
-        cls, image_name: str, image_dir: Path, arch: str, variant: Optional[str] = None
+        cls,
+        image_name: str,
+        image_dir: Path,
+        arch: str,
+        variant: Optional[str] = None,
     ) -> Tuple["Image", str]:
         """Create a new OCI image out of thin air.
 
@@ -130,7 +134,10 @@ class Image:
             _inject_architecture_variant(Path(image_target_no_tag), variant)
 
         # for new OCI images, the source image corresponds to the newly generated image
-        return cls(image_name=image_name, path=image_dir), f"oci:{str(image_target)}"
+        return (
+            cls(image_name=image_name, path=image_dir),
+            f"oci:{str(image_target)}",
+        )
 
     def copy_to(self, image_name: str, *, image_dir: Path) -> "Image":
         """Make a copy of the current image.
@@ -167,7 +174,10 @@ class Image:
         return bundle_path / "rootfs"
 
     def add_layer(
-        self, tag: str, new_layer_dir: Path, base_layer_dir: Optional[Path] = None
+        self,
+        tag: str,
+        new_layer_dir: Path,
+        base_layer_dir: Optional[Path] = None,
     ) -> "Image":
         """Add a layer to the image.
 
@@ -190,34 +200,44 @@ class Image:
         name = self.image_name.split(":", 1)[0]
         return self.__class__(image_name=f"{name}:{tag}", path=self.path)
 
-    def add_user(self, base_layer_dir: Path, tag: str, username: str, uid: int) -> None:
+    def add_user(
+        self,
+        prime_dir: Path,
+        base_layer_dir: Path,
+        username: str,
+        uid: int,
+    ) -> Path:
         """Create a new ROCK user.
 
+        :param prime_dir: Path to the user-defined parts' primed content
         :param base_layer_dir: Path to the base layer's root filesystem
-        :param tag: The ROCK's image tag
         :param username: Username to be created. Same as group name.
         :param uid: UID of the username to be created. Same as GID
         """
-        passwd_file = Path("etc/passwd")
-        group_file = Path("etc/group")
-        shadow_file = Path("etc/shadow")
+        user_files = {"passwd": "", "group": "", "shadow": ""}
 
-        existing_users = (
-            (base_layer_dir / passwd_file).read_text()
-            if (base_layer_dir / passwd_file).exists()
-            else ""
-        )
-        existing_groups = (
-            (base_layer_dir / group_file).read_text()
-            if (base_layer_dir / group_file).exists()
-            else ""
-        )
+        prime_dir_etc = prime_dir / "etc"
+        base_layer_dir_etc = base_layer_dir / "etc"
+        # Being cautious about possible changes (edits or removals) in
+        # /etc/{passwd,group,shadow} done by the user through overlay scripts.
+        # Basically:
+        #  - if it exists in prime, use it,
+        #  - if it doesn't exist in prime AND isn't "whiteout", use the base,
+        #  - if it is "whiteout" or doesn't exist anywhere, use an empty file.
+        # NOTE: "shadow" is only modified it it already exists.
+        for u_file in user_files:
+            if (prime_dir_etc / u_file).exists():
+                user_files[u_file] = (prime_dir_etc / u_file).read_text()
+            elif (base_layer_dir_etc / u_file).exists() and not (
+                prime_dir_etc / f".wh.{u_file}"
+            ).exists():
+                user_files[u_file] = (base_layer_dir_etc / u_file).read_text()
 
         if (
-            f"{username}:" in existing_users
-            or f":{uid}:" in existing_users
-            or f"{username}:" in existing_groups
-            or f":{uid}:" in existing_groups
+            f"{username}:" in user_files["passwd"]
+            or f":{uid}:" in user_files["passwd"]
+            or f"{username}:" in user_files["group"]
+            or f":{uid}:" in user_files["group"]
         ):
             raise errors.RockcraftError(
                 str(
@@ -227,31 +247,32 @@ class Image:
                 )
             )
 
-        existing_users += (
-            f"{username}:x:{uid}:{uid}::/{Pebble.PEBBLE_PATH}:/usr/bin/false\n"
-        )
-        existing_groups += f"{username}:x:{uid}:\n"
+        user_files[
+            "passwd"
+        ] += f"{username}:x:{uid}:{uid}::/{Pebble.PEBBLE_PATH}:/usr/bin/false\n"
+        user_files["group"] += f"{username}:x:{uid}:\n"
 
         with tempfile.TemporaryDirectory() as tmpfs:
-            (Path(tmpfs) / "etc").mkdir(parents=True, exist_ok=True)
-            with open(Path(tmpfs) / passwd_file, "a+") as passwdf:
-                passwdf.write(existing_users)
+            tmpfs_etc = Path(tmpfs) / "etc"
+            tmpfs_etc.mkdir(parents=True, exist_ok=True)
+            with open(tmpfs_etc / "passwd", "a+") as passwdf:
+                passwdf.write(user_files["passwd"])
 
-            with open(Path(tmpfs) / group_file, "a+") as groupf:
-                groupf.write(existing_groups)
+            with open(tmpfs_etc / "group", "a+") as groupf:
+                groupf.write(user_files["group"])
 
-            if (base_layer_dir / shadow_file).exists():
+            if user_files["shadow"]:
                 days_since_epoch = (datetime.utcnow() - datetime(1970, 1, 1)).days
 
                 # only add the shadow file if there's already one in the base image
-                with open(Path(tmpfs) / shadow_file, "a+") as shadowf:
+                with open(tmpfs_etc / "shadow", "a+") as shadowf:
                     shadowf.write(
-                        (base_layer_dir / shadow_file).read_text()
+                        user_files["shadow"]
                         + f"{username}:!:{days_since_epoch}::::::\n"
                     )
 
             emit.progress(f"Adding user {username}:{uid} with group {username}:{uid}")
-            self.add_layer(tag, Path(tmpfs))
+            return Path(tmpfs)
 
     def stat(self) -> Dict[Any, Any]:
         """Obtain the image statistics, as reported by "umoci stat --json"."""
@@ -269,7 +290,14 @@ class Image:
         :returns: The image digest bytes.
         """
         output = subprocess.check_output(
-            ["skopeo", "inspect", "--format", "{{.Digest}}", "-n", source_image],
+            [
+                "skopeo",
+                "inspect",
+                "--format",
+                "{{.Digest}}",
+                "-n",
+                source_image,
+            ],
             text=True,
         )
         parts = output.split(":", 1)
@@ -475,7 +503,9 @@ def _add_layer_into_image(
 
 
 def _archive_layer(
-    new_layer_dir: Path, temp_tar_file: Path, base_layer_dir: Optional[Path] = None
+    new_layer_dir: Path,
+    temp_tar_file: Path,
+    base_layer_dir: Optional[Path] = None,
 ) -> None:
     """Prepare new OCI layer by archiving its content into tar file.
 
