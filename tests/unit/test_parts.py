@@ -20,7 +20,7 @@ from unittest.mock import call
 
 import craft_cli
 import pytest
-from craft_parts import Action, PartsError, Step
+from craft_parts import Action, PartsError, Step, callbacks
 
 import tests
 from rockcraft import parts
@@ -53,6 +53,26 @@ def test_parts_lifecycle_prime_dir(new_dir):
         base="unused",
     )
     assert lifecycle.prime_dir == Path("/some/workdir/prime")
+
+
+@tests.linux_only
+def test_parts_lifecycle_project_info(new_dir):
+    parts_data = {
+        "foo": {
+            "plugin": "nil",
+        }
+    }
+
+    lifecycle = parts.PartsLifecycle(
+        all_parts=parts_data,
+        work_dir=Path("/some/workdir"),
+        part_names=None,
+        base_layer_dir=new_dir,
+        base_layer_hash=b"digest",
+        base="unused",
+    )
+    assert lifecycle.project_info.work_dir == Path("/some/workdir")
+    assert lifecycle.project_info.base == "unused"
 
 
 @tests.linux_only
@@ -331,3 +351,40 @@ def test_parts_lifecycle_clean_parts(new_dir, emitter):
     )
     lifecycle.clean()
     emitter.assert_progress("Cleaning parts: foo")
+
+
+def create_lifecycle(new_dir):
+    parts_data = {
+        "foo": {
+            "plugin": "nil",
+        },
+        "bar": {
+            "plugin": "nil",
+        },
+    }
+
+    return parts.PartsLifecycle(
+        parts_data,
+        work_dir=new_dir,
+        part_names=["foo"],
+        base_layer_dir=new_dir,
+        base_layer_hash=b"digest",
+        base="unused",
+    )
+
+
+@tests.linux_only
+def test_parts_register_overlay_callback(new_dir, mocker, reset_overlay_callback):
+    """Test that PartsLifecycle registers the overlay callback exactly once."""
+    # pylint: disable=protected-access
+    register_spy = mocker.spy(callbacks, "register_configure_overlay")
+
+    # Check that creating the lifecycle registers the callback
+    assert not register_spy.called
+    create_lifecycle(new_dir)
+    register_spy.assert_called_once_with(parts._install_overlay_repositories)
+
+    # Check that creating another lifecycle does *not* re-register the callback
+    register_spy.reset_mock()
+    create_lifecycle(new_dir)
+    assert not register_spy.called

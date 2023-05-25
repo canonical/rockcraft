@@ -1,0 +1,33 @@
+# Source: https://github.com/openstack-snaps/ubuntu-openstack-rocks/blob/main/rocks/keystone/rockcraft.yaml
+name: repo-overlay
+summary: Package repositories in overlay
+license: Apache-2.0
+description: Install overlay-packages that come from `package-repositories`.
+version: 0.1
+
+base: ubuntu:22.04
+platforms:
+  amd64:
+
+package-repositories:
+  - type: apt
+    cloud: antelope
+    priority: always
+
+services:
+  wsgi-keystone:
+    override: replace
+    command: apachectl -D FOREGROUND
+    startup: enabled
+
+parts:
+  keystone:
+    plugin: nil
+    overlay-packages:
+      - software-properties-common
+      - libapache2-mod-auth-gssapi
+      - python3-requests-kerberos
+      - keystone
+      - libapache2-mod-auth-mellon
+      - libapache2-mod-auth-openidc
+      - python3-ldappool
