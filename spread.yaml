@@ -122,3 +122,8 @@ suites:
 
   tests/spread/general/:
     summary: tests for rockcraft core functionality
+
+  tests/spread/large/:
+    summary: bigger tests that take longer to run
+    manual: true
+
