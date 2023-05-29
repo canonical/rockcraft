@@ -20,6 +20,7 @@ import operator
 import platform as host_platform
 import re
 from functools import reduce
+from pathlib import Path
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -33,18 +34,16 @@ from typing import (
     Union,
     cast,
 )
-from pathlib import Path
-from overrides import overrides
+
 import pydantic
-from pydantic_yaml import YamlModel
 import spdx_lookup  # type: ignore
 import yaml
 from craft_archives import repo
 
 from rockcraft.errors import ProjectLoadError, ProjectValidationError
+from rockcraft.extensions import apply_extensions
 from rockcraft.parts import validate_part
 from rockcraft.pebble import Pebble
-from rockcraft.extensions import apply_extensions
 
 if TYPE_CHECKING:
     from pydantic.error_wrappers import ErrorDict
@@ -207,7 +206,7 @@ class NameStr(pydantic.ConstrainedStr):
     regex = re.compile(NAME_REGEX)
 
 
-class Project(YamlModel):
+class Project(pydantic.BaseModel):
     """Rockcraft project definition."""
 
     name: NameStr
@@ -428,23 +427,6 @@ class Project(YamlModel):
             )
 
         return package_repositories
-
-    @overrides
-    def yaml(self) -> str:
-        def _repr_str(dumper, data):
-            """Multi-line string representer for the YAML dumper."""
-            if "\n" in data:
-                return dumper.represent_scalar("tag:yaml.org,2002:str", data, style="|")
-            return dumper.represent_scalar("tag:yaml.org,2002:str", data)
-
-        yaml.add_representer(str, _repr_str, Dumper=yaml.SafeDumper)
-        return super().yaml(
-            by_alias=True,
-            exclude_none=True,
-            allow_unicode=True,
-            sort_keys=False,
-            width=1000,
-        )
 
     @classmethod
     def unmarshal(cls, data: Dict[str, Any]) -> "Project":

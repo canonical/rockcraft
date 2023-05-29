@@ -27,12 +27,6 @@ from .lifecycle import (
     StageCommand,
 )
 
-from .extensions import (
-    ExpandExtensionsCommand,
-    ExtensionsCommand,
-    ListExtensionsCommand,
-)
-
 __all__ = [
     "InitCommand",
     "CleanCommand",
@@ -42,7 +36,4 @@ __all__ = [
     "StageCommand",
     "PrimeCommand",
     "PackCommand",
-    "ExpandExtensionsCommand",
-    "ExtensionsCommand",
-    "ListExtensionsCommand",
 ]

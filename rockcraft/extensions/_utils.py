@@ -1,6 +1,6 @@
 # -*- Mode:Python; indent-tabs-mode:nil; tab-width:4 -*-
 #
-# Copyright 2017-2022 Canonical Ltd.
+# Copyright 2023 Canonical Ltd.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 3 as
@@ -16,29 +16,23 @@
 
 """Extension application helpers."""
 
-import collections
-import contextlib
 import copy
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Dict, List, Set, cast
+from typing import Any, Dict, List, Set, cast
 
+from .extension import Extension
 from .registry import get_extension_class
-
-if TYPE_CHECKING:
-    from .extension import Extension
 
 
 def apply_extensions(project_root: Path, yaml_data: Dict[str, Any]) -> Dict[str, Any]:
     """Apply all extensions.
 
-    :param dict yaml_data: Loaded, unprocessed snapcraft.yaml
-    :param arch: the host architecture.
-    :param target_arch: the target architecture.
-    :returns: Modified snapcraft.yaml data with extensions applied
+    :param dict yaml_data: Loaded, unprocessed rockcraft.yaml
+    :returns: Modified rockcraft.yaml data with extensions applied
     """
     # Don't modify the dict passed in
     yaml_data = copy.deepcopy(yaml_data)
-    declared_extensions: List[str] = cast(List[str], yaml_data.get("extensions"))
+    declared_extensions: List[str] = cast(List[str], yaml_data.get("extensions", []))
     if not declared_extensions:
         return yaml_data
 
@@ -57,7 +51,7 @@ def apply_extensions(project_root: Path, yaml_data: Dict[str, Any]) -> Dict[str,
 
 def _apply_extension(
     yaml_data: Dict[str, Any],
-    extension: "Extension",
+    extension: Extension,
 ) -> None:
     # Apply the root components of the extension (if any)
     root_extension = extension.get_root_snippet()

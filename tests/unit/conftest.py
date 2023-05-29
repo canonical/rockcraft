@@ -21,12 +21,24 @@ from unittest import mock
 import pytest
 from craft_providers import Executor, Provider, base
 
+# pylint: disable=import-outside-toplevel
+
 
 @pytest.fixture
 def mock_instance():
     """Provide a mock instance (Executor)."""
     _mock_instance = mock.Mock(spec=Executor)
     yield _mock_instance
+
+
+@pytest.fixture
+def mock_extensions(monkeypatch):
+    from rockcraft.extensions import registry
+
+    extensions_dict = {}
+    monkeypatch.setattr(registry, "_EXTENSIONS", extensions_dict)
+
+    return extensions_dict
 
 
 @pytest.fixture(autouse=True)

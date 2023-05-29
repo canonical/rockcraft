@@ -52,4 +52,4 @@ class LayerArchivingError(RockcraftError):
 
 
 class ExtensionError(RockcraftError):
-    """Error during parts processing."""
+    """Error related to extension handling."""

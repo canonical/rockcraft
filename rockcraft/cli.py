@@ -44,14 +44,6 @@ COMMAND_GROUPS = [
         ],
     ),
     craft_cli.CommandGroup(
-        "Extensions",
-        [
-            commands.ExtensionsCommand,
-            commands.ListExtensionsCommand,
-            commands.ExpandExtensionsCommand,
-        ],
-    ),
-    craft_cli.CommandGroup(
         "Other",
         [
             commands.InitCommand,

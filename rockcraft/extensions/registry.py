@@ -1,6 +1,6 @@
 # -*- Mode:Python; indent-tabs-mode:nil; tab-width:4 -*-
 #
-# Copyright 2018-2022 Canonical Ltd.
+# Copyright 2023 Canonical Ltd.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 3 as
@@ -20,17 +20,12 @@ from typing import TYPE_CHECKING, Dict, List, Type
 
 from rockcraft import errors
 
-from .framework_flask import FrameworkFlask
-
-
 if TYPE_CHECKING:
     from .extension import Extension
 
     ExtensionType = Type[Extension]
 
-_EXTENSIONS: Dict[str, "ExtensionType"] = {
-    "framework-flask": FrameworkFlask,
-}
+_EXTENSIONS: Dict[str, "ExtensionType"] = {}
 
 
 def get_extension_names() -> List[str]:
