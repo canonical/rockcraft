@@ -1,0 +1,8 @@
+summary: check that invalid ROCK names are blocked
+
+execute: |
+  for name in a_a a@a a--a aa-
+  do
+    sed "s/placeholder-name/$name/" rockcraft.orig.yaml  > rockcraft.yaml
+    rockcraft 2>&1 >/dev/null | MATCH "Invalid name for ROCK"
+  done

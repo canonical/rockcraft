@@ -11,6 +11,7 @@ reproducible steps.
    :maxdepth: 1
 
    Hello world <hello-world>
+   Containerize a PyPI package <pypi-package.rst>
    Chisel packages into a ROCK <chisel.rst>
    Publish a ROCK <publish-a-rock.rst>
    Migrate a Docker image to a Chiselled ROCK <migrate-to-chiselled-rock.rst>

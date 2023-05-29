@@ -21,16 +21,13 @@ backends:
     location: snapd-spread/us-east1-b
     halt-timeout: 2h
     systems:
-      - ubuntu-18.04-64:
-          workers: 2
-          storage: 40G
       - ubuntu-20.04-64:
           workers: 2
           storage: 40G
       - ubuntu-22.04-64:
           workers: 2
           storage: 40G
-      - fedora-36-64:
+      - fedora-37-64:
           workers: 2
           storage: 40G
 
@@ -56,16 +53,10 @@ prepare: |
   # The /snap directory does not exist in some environments
   [ ! -d /snap ] && ln -s /var/lib/snapd/snap /snap
 
-  # install docker before lxd, otherwise it will mess up with lxd networking
-  snap install docker
-
-  # make sure docker is working
-  retry -n 10 --wait 2 sh -c 'docker run --rm hello-world'
-
   # older linux releases have separate packages for lxd and lxc (lxd-client)
   if [ "$SPREAD_SYSTEM" = "ubuntu-18.04-64" ] || \
      [ "$SPREAD_SYSTEM" = "ubuntu-20.04-64" ] || \
-     [ "$SPREAD_SYSTEM" = "fedora-36-64" ]; then
+     [ "$SPREAD_SYSTEM" = "fedora-37-64" ]; then
     tests.pkgs remove lxd lxd-client
   else
     tests.pkgs remove lxd
@@ -83,6 +74,17 @@ prepare: |
 
   lxd waitready --timeout=30
   lxd init --auto
+
+  if [ "$SPREAD_SYSTEM" = "fedora-37-64" ]; then
+    # Latest docker snap needs a more recent version of snapd than Fedora ships
+    # https://github.com/canonical/rockcraft/pull/277
+    snap install docker --channel=core18/stable
+  else
+    snap install docker
+  fi  
+
+  # make sure docker is working
+  retry -n 10 --wait 2 sh -c 'docker run --rm hello-world'
 
   install_rockcraft
 
@@ -112,9 +114,6 @@ debug-each: |
 suites:
   docs/tutorials/code/:
     summary: tests basic tutorials from the docs
-    # Don't run tutorial code in Fedora because of a snapd 2.58 bug
-    # (https://bugs.launchpad.net/snapd/+bug/2002835)
-    systems: [-fedora-36-64]
 
   docs/how-to/code/:
     summary: tests how-to guides from the docs
