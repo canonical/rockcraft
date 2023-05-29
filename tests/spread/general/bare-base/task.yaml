@@ -12,7 +12,7 @@ execute: |
   rm bare-base-test_latest_amd64.rock
   docker images bare-base-test:latest
   id=$(docker run --rm -d bare-base-test -v)
-  docker logs "$id" | grep "ship it!"
+  grep_docker_log "$id" "ship it!"
   docker exec "$id" pebble services | grep hello
   docker exec "$id" pebble ls /usr/bin/hello
   
