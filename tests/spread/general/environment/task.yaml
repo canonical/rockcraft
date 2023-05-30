@@ -13,5 +13,5 @@ execute: |
   rm environment-test_latest*.rock  
   docker images environment-test:latest
   id=$(docker run --rm -d environment-test -v)
-  docker logs "$id" | grep 'X=ship it!'
+  grep_docker_log "$id" "X=ship it!"
   docker rm -f "$id"
