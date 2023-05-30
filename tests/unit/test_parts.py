@@ -375,7 +375,7 @@ def create_lifecycle(new_dir):
 
 @tests.linux_only
 def test_parts_register_overlay_callback(new_dir, mocker, reset_overlay_callback):
-    """Test that PartsLifecycle registers the overlay callback exactly once."""
+    """Test that PartsLifecycle registers the overlay callback."""
     # pylint: disable=protected-access
     register_spy = mocker.spy(callbacks, "register_configure_overlay")
 
@@ -384,7 +384,6 @@ def test_parts_register_overlay_callback(new_dir, mocker, reset_overlay_callback
     create_lifecycle(new_dir)
     register_spy.assert_called_once_with(parts._install_overlay_repositories)
 
-    # Check that creating another lifecycle does *not* re-register the callback
-    register_spy.reset_mock()
+    # Check that creating another lifecycle does *not* raise an error from re-
+    # registering the callback.
     create_lifecycle(new_dir)
-    assert not register_spy.called

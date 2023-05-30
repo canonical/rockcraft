@@ -15,7 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 """Craft-parts lifecycle."""
-
+import contextlib
 import pathlib
 import subprocess
 from typing import Any, Dict, List, Optional
@@ -24,6 +24,7 @@ import craft_parts
 from craft_archives import repo
 from craft_cli import emit
 from craft_parts import ActionType, Step, callbacks
+from craft_parts.errors import CallbackRegistrationError
 from xdg import BaseDirectory  # type: ignore
 
 from rockcraft.errors import PartsLifecycleError
@@ -51,7 +52,7 @@ class PartsLifecycle:
     :raises PartsLifecycleError: On error initializing the parts lifecycle.
     """
 
-    _OVERLAY_CALLBACK_REGISTERED = False
+    # _OVERLAY_CALLBACK_REGISTERED = False
 
     def __init__(
         self,
@@ -69,9 +70,8 @@ class PartsLifecycle:
 
         emit.progress("Initializing parts lifecycle")
 
-        if not PartsLifecycle._OVERLAY_CALLBACK_REGISTERED:
+        with contextlib.suppress(CallbackRegistrationError):
             callbacks.register_configure_overlay(_install_overlay_repositories)
-            PartsLifecycle._OVERLAY_CALLBACK_REGISTERED = True
 
         # set the cache dir for parts package management
         cache_dir = BaseDirectory.save_cache_path("rockcraft")
