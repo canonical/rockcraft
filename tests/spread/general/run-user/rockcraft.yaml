@@ -18,3 +18,6 @@ platforms:
 parts:
   my-part:
     plugin: nil
+    overlay-script: |
+      set -x
+      useradd -R $CRAFT_OVERLAY -M -U -r test-user
