@@ -18,9 +18,9 @@ syntax:
    docker run <rock> ...
 
 Interoperability between ROCKs and other containers also extends to the way
-that container images are built. This enables the use of existing build
-recipes, such as Dockerfiles, with ROCKs. It also opens up the possibility of
-using existing ROCKs as base images for further customisation and development.
+that container images are built. This enables the use of ROCKs as bases for
+existing build recipes, such as Dockerfiles, for further customisation and
+development.
 
 .. include:: /links.txt
 
