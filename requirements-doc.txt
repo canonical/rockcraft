@@ -4,11 +4,9 @@ beautifulsoup4==4.11.1
 certifi==2022.12.7
 charset-normalizer==2.1.1
 colorama==0.4.6
-#craft-archives==1.0.0
-git+https://github.com/canonical/craft-archives.git@43982e93c15494441e20e26d87a1a7faa1663a87#egg=craft_archives
+craft-archives==1.1.0
 craft-cli==1.2.0
-#craft-parts==1.20.0
-git+https://github.com/canonical/craft-parts.git@a3710845fd2a261c0675cd93d326f93c5e21d93a#egg=craft_parts
+craft-parts==1.21.0
 craft-providers==1.8.0
 Deprecated==1.2.13
 distro==1.8.0
