@@ -204,16 +204,19 @@ class Image:
         self,
         prime_dir: Path,
         base_layer_dir: Path,
+        tag: str,
         username: str,
         uid: int,
-    ) -> Path:
+    ) -> None:
         """Create a new ROCK user.
 
-        :param prime_dir: Path to the user-defined parts' primed content
-        :param base_layer_dir: Path to the base layer's root filesystem
+        :param prime_dir: Path to the user-defined parts' primed content.
+        :param base_layer_dir: Path to the base layer's root filesystem.
+        :param tag: The ROCK's image tag.
         :param username: Username to be created. Same as group name.
-        :param uid: UID of the username to be created. Same as GID
+        :param uid: UID of the username to be created. Same as GID.
         """
+        # pylint: disable=too-many-arguments
         user_files = {"passwd": "", "group": "", "shadow": ""}
 
         prime_dir_etc = prime_dir / "etc"
@@ -272,7 +275,7 @@ class Image:
                     )
 
             emit.progress(f"Adding user {username}:{uid} with group {username}:{uid}")
-            return Path(tmpfs)
+            self.add_layer(tag, Path(tmpfs))
 
     def stat(self) -> Dict[Any, Any]:
         """Obtain the image statistics, as reported by "umoci stat --json"."""

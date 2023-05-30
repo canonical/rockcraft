@@ -575,6 +575,7 @@ class TestImage:
         self,
         check,
         mock_tmpdir,
+        mock_add_layer,
         tmp_path,
     ):
         fake_tmpfs = tmp_path / "mock-tmp"
@@ -584,6 +585,7 @@ class TestImage:
         image.add_user(
             tmp_path / "prime",
             tmp_path,
+            "mock-tag",
             MOCK_NEW_USER["user"],
             MOCK_NEW_USER["uid"],
         )
@@ -599,6 +601,7 @@ class TestImage:
         )
 
         check.is_false(os.path.exists(fake_tmpfs / "etc/shadow"))
+        mock_add_layer.assert_called_once_with("mock-tag", fake_tmpfs)
 
         # Test with a conflicting user or ID.
         # Use the new fs as a base to force the error.
@@ -606,6 +609,7 @@ class TestImage:
             image.add_user(
                 tmp_path / "prime",
                 fake_tmpfs,
+                "mock-tag",
                 MOCK_NEW_USER["user"],
                 MOCK_NEW_USER["uid"] + 1,
             )
@@ -617,6 +621,7 @@ class TestImage:
             image.add_user(
                 tmp_path / "prime",
                 fake_tmpfs,
+                "mock-tag",
                 MOCK_NEW_USER["user"] + "bar",
                 MOCK_NEW_USER["uid"],
             )
@@ -687,6 +692,7 @@ class TestImage:
         self,
         check,
         mock_tmpdir,
+        mock_add_layer,
         tmp_path,
         base_user_files,
         prime_user_files,
@@ -716,10 +722,15 @@ class TestImage:
 
         image = oci.Image("a:b", Path("/c"))
         image.add_user(
-            fake_prime, tmp_path, MOCK_NEW_USER["user"], MOCK_NEW_USER["uid"]
+            fake_prime,
+            tmp_path,
+            "mock-tag",
+            MOCK_NEW_USER["user"],
+            MOCK_NEW_USER["uid"],
         )
 
         mock_tmpdir.assert_called_once()
+        mock_add_layer.assert_called_once_with("mock-tag", fake_tmp_new_layer)
         check.equal(
             (fake_tmp_new_layer / "etc/passwd").read_text(),
             expected_user_files["passwd"],
