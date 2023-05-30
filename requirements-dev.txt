@@ -17,10 +17,10 @@ colorama==0.4.6
 commonmark==0.9.1
 coverage==6.5.0
 #craft-archives==1.0.0
-git+https://github.com/canonical/craft-archives.git@CRAFT-1739-repos-in-nonroot#egg=craft_archives
+git+https://github.com/canonical/craft-archives.git@43982e93c15494441e20e26d87a1a7faa1663a87#egg=craft_archives
 craft-cli==1.2.0
 #craft-parts==1.20.0
-git+https://github.com/canonical/craft-parts.git@CRAFT-1740-overlay-callback#egg=craft_parts
+git+https://github.com/canonical/craft-parts.git@a3710845fd2a261c0675cd93d326f93c5e21d93a#egg=craft_parts
 craft-providers==1.8.0
 cryptography==38.0.4
 Deprecated==1.2.13
