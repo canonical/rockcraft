@@ -1,0 +1,21 @@
+summary: package repositories in overlays test
+
+execute: |
+  run_rockcraft pack
+
+  sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:repo-overlay_0.1_amd64.rock docker-daemon:repo-overlay:0.1
+
+  docker images repo-overlay | MATCH "repo-overlay"
+
+  # When the container is started it launches Apache listening on port 80
+  docker run --detach --name repo-overlay-container -p 8000:80 repo-overlay:0.1
+
+  # Wait for a bit for Apache to come online
+  retry -n 5 --wait 2 curl localhost:8000
+
+  curl localhost:8000 | MATCH "It works"
+
+restore: |
+  rm -f ./*.rock
+  docker rm -f repo-overlay-container
+  docker rmi -f repo-overlay:0.1
