@@ -136,7 +136,8 @@ actually offer some extended functionality and keywords:
 
 * **stage-packages**: apart from offering the well-known package installation
   behavior, in Rockcraft the ``stage-packages`` keyword actually supports
-  chiseled packages as well (:ref:`learn more about Chisel <what-is-chisel>`).
+  chiseled packages as well (:ref:`learn more about Chisel
+  <chisel_explanation>`).
   To install a package slice instead of the whole package, simply follow the
   Chisel convention *<packageName>_<sliceName>*.
 
@@ -218,3 +219,4 @@ help
 Shows information about a command.
 
 .. _snapcraft.yaml: https://snapcraft.io/docs/snapcraft-parts-metadata
+
