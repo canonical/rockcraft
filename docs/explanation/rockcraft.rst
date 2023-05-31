@@ -10,11 +10,8 @@ I need it?"*.
 Let's then use this page to go a bit deeper into the concepts and definitions
 behind Rockcraft.
 
-
-
-
-So why do I need ROCKs?
-.......................
+So why do I need Rockcraft?
+...........................
 
 Now, this is where things get interesting. To answer this question, we first
 need to look at the current state of the art with respect to the existing
