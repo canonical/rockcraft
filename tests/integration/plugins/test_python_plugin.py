@@ -103,11 +103,9 @@ except OsReleaseVersionIdError:
 @pytest.mark.parametrize("base", tuple(UBUNTU_BASES))
 def test_python_plugin_ubuntu(base, tmp_path):
 
-    work_dir = tmp_path / "work"
+    run_lifecycle(base, tmp_path)
 
-    run_lifecycle(base, work_dir)
-
-    bin_dir = work_dir / "stage/bin"
+    bin_dir = tmp_path / "stage/bin"
 
     # Ubuntu base: the Python symlinks in bin/ must *not* exist, because of the
     # usrmerge handling
@@ -122,21 +120,19 @@ def test_python_plugin_ubuntu(base, tmp_path):
     expected_text = SITECUSTOMIZE_TEMPLATE.replace("EOF", "")
 
     version_dir = VALUES_FOR_HOST.version_dir
-    sitecustom = work_dir / f"stage/usr/lib/{version_dir}/sitecustomize.py"
+    sitecustom = tmp_path / f"stage/usr/lib/{version_dir}/sitecustomize.py"
     assert sitecustom.read_text().strip() == expected_text.strip()
 
     # Check that the pyvenv.cfg file was removed, as it's not necessary with the
     # sitecustomize.py module.
-    pyvenv_cfg = work_dir / "stage/pyvenv.cfg"
+    pyvenv_cfg = tmp_path / "stage/pyvenv.cfg"
     assert not pyvenv_cfg.is_file()
 
 
 def test_python_plugin_bare(tmp_path):
-    work_dir = tmp_path / "work"
+    run_lifecycle("bare", tmp_path)
 
-    run_lifecycle("bare", work_dir)
-
-    bin_dir = work_dir / "stage/bin"
+    bin_dir = tmp_path / "stage/bin"
 
     # Bare base: the Python symlinks in bin/ *must* exist, and "python3" must
     # point to the "concrete" part-provided python binary
@@ -155,10 +151,10 @@ def test_python_plugin_bare(tmp_path):
     expected_text = SITECUSTOMIZE_TEMPLATE.replace("EOF", "")
 
     version_dir = VALUES_FOR_HOST.version_dir
-    sitecustom = work_dir / f"stage/usr/lib/{version_dir}/sitecustomize.py"
+    sitecustom = tmp_path / f"stage/usr/lib/{version_dir}/sitecustomize.py"
     assert sitecustom.read_text().strip() == expected_text.strip()
 
     # Check that the pyvenv.cfg file was removed, as it's not necessary with the
     # sitecustomize.py module.
-    pyvenv_cfg = work_dir / "stage/pyvenv.cfg"
+    pyvenv_cfg = tmp_path / "stage/pyvenv.cfg"
     assert not pyvenv_cfg.is_file()

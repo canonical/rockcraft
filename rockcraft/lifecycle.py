@@ -54,7 +54,7 @@ def run(command_name: str, parsed_args: "argparse.Namespace") -> None:
     if managed_mode:
         work_dir = utils.get_managed_environment_home_path()
     else:
-        work_dir = Path("work").absolute()
+        work_dir = Path().absolute()
 
     image_dir = work_dir / "images"
     bundle_dir = work_dir / "bundles"
