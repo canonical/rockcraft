@@ -4,7 +4,7 @@ execute: |
   run_rockcraft pack
 
   test -f craftctl-test_latest_craftctl.rock
-  test ! -d work
+  test ! -d parts -a ! -d stage -a ! -d prime
 
   uname -a
   snap list

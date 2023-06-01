@@ -4,7 +4,7 @@ execute: |
   run_rockcraft pack
 
   test -f bare-base-test_latest_amd64.rock
-  test ! -d work
+  test ! -d parts -a ! -d stage -a ! -d prime
 
   # test container execution
   docker images
