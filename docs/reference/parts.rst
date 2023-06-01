@@ -1,4 +1,6 @@
 
+.. _ref_parts:
+
 ***************
 Rockcraft parts
 ***************
