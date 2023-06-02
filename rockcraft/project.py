@@ -39,6 +39,7 @@ import pydantic
 import spdx_lookup  # type: ignore
 import yaml
 from craft_archives import repo
+from pydantic_yaml import YamlModel
 
 from rockcraft.errors import ProjectLoadError, ProjectValidationError
 from rockcraft.extensions import apply_extensions
@@ -206,7 +207,7 @@ class NameStr(pydantic.ConstrainedStr):
     regex = re.compile(NAME_REGEX)
 
 
-class Project(pydantic.BaseModel):
+class Project(YamlModel):
     """Rockcraft project definition."""
 
     name: NameStr
@@ -427,6 +428,24 @@ class Project(pydantic.BaseModel):
             )
 
         return package_repositories
+
+    def to_yaml(self) -> str:
+        """Dump this project as a YAML string."""
+
+        def _repr_str(dumper, data):
+            """Multi-line string representer for the YAML dumper."""
+            if "\n" in data:
+                return dumper.represent_scalar("tag:yaml.org,2002:str", data, style="|")
+            return dumper.represent_scalar("tag:yaml.org,2002:str", data)
+
+        yaml.add_representer(str, _repr_str, Dumper=yaml.SafeDumper)
+        return super().yaml(
+            by_alias=True,
+            exclude_none=True,
+            allow_unicode=True,
+            sort_keys=False,
+            width=1000,
+        )
 
     @classmethod
     def unmarshal(cls, data: Dict[str, Any]) -> "Project":
