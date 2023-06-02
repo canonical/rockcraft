@@ -15,7 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 """Craft-parts lifecycle."""
-
+import contextlib
 import pathlib
 import subprocess
 from typing import Any, Dict, List, Optional
@@ -23,7 +23,8 @@ from typing import Any, Dict, List, Optional
 import craft_parts
 from craft_archives import repo
 from craft_cli import emit
-from craft_parts import ActionType, Step
+from craft_parts import ActionType, Step, callbacks
+from craft_parts.errors import CallbackRegistrationError
 from xdg import BaseDirectory  # type: ignore
 
 from rockcraft.errors import PartsLifecycleError
@@ -51,6 +52,8 @@ class PartsLifecycle:
     :raises PartsLifecycleError: On error initializing the parts lifecycle.
     """
 
+    # _OVERLAY_CALLBACK_REGISTERED = False
+
     def __init__(
         self,
         all_parts: Dict[str, Any],
@@ -67,6 +70,9 @@ class PartsLifecycle:
 
         emit.progress("Initializing parts lifecycle")
 
+        with contextlib.suppress(CallbackRegistrationError):
+            callbacks.register_configure_overlay(_install_overlay_repositories)
+
         # set the cache dir for parts package management
         cache_dir = BaseDirectory.save_cache_path("rockcraft")
 
@@ -80,6 +86,7 @@ class PartsLifecycle:
                 base_layer_hash=base_layer_hash,
                 ignore_local_sources=["*.rock"],
                 base=base,
+                package_repositories=self._package_repositories,
             )
         except craft_parts.PartsError as err:
             raise PartsLifecycleError.from_parts_error(err) from err
@@ -98,6 +105,11 @@ class PartsLifecycle:
     def prime_dir(self) -> pathlib.Path:
         """Return the parts prime directory path."""
         return self._lcm.project_info.prime_dir
+
+    @property
+    def project_info(self) -> craft_parts.ProjectInfo:
+        """Return the parts project info."""
+        return self._lcm.project_info
 
     def run(
         self,
@@ -200,6 +212,16 @@ def launch_shell(*, cwd: Optional[pathlib.Path] = None) -> None:
     emit.progress("Launching shell on build environment...", permanent=True)
     with emit.pause():
         subprocess.run(["bash"], check=False, cwd=cwd)
+
+
+def _install_overlay_repositories(overlay_dir, project_info):
+    if project_info.base != "bare":
+        package_repositories = project_info.package_repositories
+        repo.install_in_root(
+            project_repositories=package_repositories,
+            root=overlay_dir,
+            key_assets=pathlib.Path("/dev/null"),
+        )
 
 
 def _action_message(action: craft_parts.Action) -> str:

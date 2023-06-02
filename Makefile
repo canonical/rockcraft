@@ -122,7 +122,7 @@ test-shellcheck:
 
 .PHONY: test-sphinx-lint
 test-sphinx-lint:
-	sphinx-lint --ignore docs/_build --max-line-length 80 -e all docs/*
+	sphinx-lint --ignore docs/_build --ignore docs/env --max-line-length 80 -e all docs/*
 
 .PHONY: test-units
 test-units: ## Run unit tests.

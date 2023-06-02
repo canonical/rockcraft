@@ -1,13 +1,13 @@
-.. _what-is-chisel:
+.. _chisel_explanation:
 
-What is Chisel?
-===============
+Chisel
+======
 
 Chisel_ is a software tool for extracting well-defined portions (aka slices) of
 Debian packages into a filesystem.
 
 Using the analogy of a tool to carve and cut stone, Chisel is used in
-|rockcraft| to sculpt minimal collections of files that only include what is
+Rockcraft to sculpt minimal collections of files that only include what is
 needed for the ROCK to function properly.
 
 See :ref:`how_to_use_chisel` for information about using the tool.
@@ -45,4 +45,3 @@ small and relevant parts that we need to run our applications, thus keeping
 ROCKs small and less exposed to vulnerabilities.
 
 .. _Chisel: https://github.com/canonical/chisel
-.. |rockcraft| replace:: :doc:`Rockcraft <rockcraft>`

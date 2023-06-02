@@ -18,7 +18,7 @@ execute: |
   # [docs:build-rock-end]
 
   test -f hello_1.0_amd64.rock
-  test ! -d work
+  test ! -d parts -a ! -d stage -a ! -d prime
 
   uname -a
   snap list
