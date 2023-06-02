@@ -153,7 +153,7 @@ def test_add_layer_with_overlay(new_dir, mocker):
             ),
         }
     }
-    work_dir = Path("work")
+    work_dir = Path()
 
     # Mock os.geteuid() because currently craft-parts doesn't allow overlays
     # without superuser privileges.

@@ -6,7 +6,7 @@ execute: |
   run_rockcraft pack
 
   test -f my-rock-name_0.1_amd64.rock
-  test ! -d work
+  test ! -d parts -a ! -d stage -a ! -d prime
 
   # test container execution
   docker images

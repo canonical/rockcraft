@@ -5,7 +5,7 @@ execute: |
 
   test -f environment-test_latest_amd64.rock
   test -f environment-test_latest_amd64v2.rock
-  test ! -d work
+  test ! -d parts -a ! -d stage -a ! -d prime
 
   # test container execution
   docker images
@@ -13,5 +13,5 @@ execute: |
   rm environment-test_latest*.rock  
   docker images environment-test:latest
   id=$(docker run --rm -d environment-test -v)
-  docker logs "$id" | grep 'X=ship it!'
+  grep_docker_log "$id" "X=ship it!"
   docker rm -f "$id"
