@@ -19,6 +19,7 @@ import os
 import re
 import subprocess
 import textwrap
+from pathlib import Path
 from unittest.mock import patch
 
 import pydantic
@@ -517,7 +518,7 @@ def test_project_load(yaml_data, yaml_loaded_data, pebble_part, tmp_path):
         encoding="utf-8",
     )
 
-    project = load_project(str(rockcraft_file))
+    project = load_project(rockcraft_file)
 
     for attr, v in yaml_loaded_data.items():
         if attr == "license":
@@ -575,12 +576,12 @@ def test_project_load_existing_pebble(tmp_path):
     )
 
     with pytest.raises(ProjectValidationError):
-        load_project(str(rockcraft_file))
+        load_project(rockcraft_file)
 
 
 def test_project_load_error():
     with pytest.raises(ProjectLoadError) as err:
-        load_project("does_not_exist.txt")
+        load_project(Path("does_not_exist.txt"))
     assert str(err.value) == "No such file or directory: 'does_not_exist.txt'."
 
 
