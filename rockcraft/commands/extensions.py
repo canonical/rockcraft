@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Snapcraft lifecycle commands."""
+"""Extension-related cli commands."""
 
 import abc
 import argparse
@@ -61,7 +61,6 @@ class ListExtensionsCommand(BaseCommand, abc.ABC):
         """Print the list of available extensions and their bases."""
         extension_presentation: Dict[str, ExtensionModel] = {}
 
-        # New extensions.
         for extension_name in extensions.registry.get_extension_names():
             extension_class = extensions.registry.get_extension_class(extension_name)
             extension_bases = list(extension_class.get_supported_bases())
