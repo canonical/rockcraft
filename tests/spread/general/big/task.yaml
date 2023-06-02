@@ -17,7 +17,7 @@ execute: |
   ROCK=$(ls big*.rock)
 
   test -f "$ROCK"
-  test ! -d work
+  test ! -d parts -a ! -d stage -a ! -d prime
 
   # copy image to docker
   docker images

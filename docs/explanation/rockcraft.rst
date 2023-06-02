@@ -1,6 +1,7 @@
-******************
-What is Rockcraft?
-******************
+.. _why_use_rockcraft:
+
+Why use Rockcraft?
+==================
 
 Getting past the technical matters surrounding Rockcraft, from a higher
 perspective, you might be asking *"but what is this after all?"* and *"why do
@@ -9,27 +10,8 @@ I need it?"*.
 Let's then use this page to go a bit deeper into the concepts and definitions
 behind Rockcraft.
 
-
-
-What is a ROCK?
-===============
-
-Rockcraft builds ROCKs, but **what is a ROCK**?
-
-In short, a ROCK is just an OCI-compliant container image! Period.
-
-A ROCK can live on any existing container registry, very much like any other
-Docker image out there.
-You can run a ROCK very much like any other container image...for example:
-``docker run <rock> ...`` will work just fine.
-
-And the same applies to container image builds, in the sense that if you already
-have image build recipes (like Dockerfiles) and you want to start basing your
-own images on an existing ROCK, that will work just fine too!
-
-
-So why do I need ROCKs?
-.......................
+So why do I need Rockcraft?
+...........................
 
 Now, this is where things get interesting. To answer this question, we first
 need to look at the current state of the art with respect to the existing
@@ -92,7 +74,7 @@ A ROCK is:
 
 
 Do I need to use Rockcraft?
-===========================
+---------------------------
 
 If you want to build a proper ROCK, yes, we'd recommend you do. This is not to
 say you wouldn't be able to build ROCK-like container images with your own
