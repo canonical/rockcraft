@@ -7,5 +7,6 @@ Explanation
 .. toctree::
    :maxdepth: 1
 
-   chisel
    rockcraft
+   chisel
+   overlay-step
