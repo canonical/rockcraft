@@ -16,6 +16,11 @@
 
 """Rockcraft commands."""
 
+from .extensions import (
+    ExpandExtensionsCommand,
+    ExtensionsCommand,
+    ListExtensionsCommand,
+)
 from .init import InitCommand
 from .lifecycle import (
     BuildCommand,
@@ -36,4 +41,7 @@ __all__ = [
     "StageCommand",
     "PrimeCommand",
     "PackCommand",
+    "ExpandExtensionsCommand",
+    "ExtensionsCommand",
+    "ListExtensionsCommand",
 ]
