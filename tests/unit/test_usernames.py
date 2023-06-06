@@ -30,7 +30,7 @@ def test_not_empty(check):
 
 def test_structure(check):
     check.is_instance(
-        usernames.GlobalUser(username="confined_foo", uid=584795).get_dict(), dict
+        usernames.GlobalUser(username="_foo_", uid=584795).get_dict(), dict
     )
     for user, info in usernames.SUPPORTED_GLOBAL_USERNAMES.items():
         check.is_instance(user, str)
@@ -41,12 +41,17 @@ def test_structure(check):
 
 def test_bad_prefix():
     with pytest.raises(pydantic.error_wrappers.ValidationError):
-        usernames.GlobalUser(username="badprefix_foo", uid=584795)
+        usernames.GlobalUser(username="badprefix_foo_", uid=584795)
+
+
+def test_bad_suffix():
+    with pytest.raises(pydantic.error_wrappers.ValidationError):
+        usernames.GlobalUser(username="_foo_badsuffix", uid=584795)
 
 
 def test_bad_uid():
     with pytest.raises(pydantic.error_wrappers.ValidationError):
-        usernames.GlobalUser(username="confined_foo", uid=5)
+        usernames.GlobalUser(username="_foo_", uid=5)
 
     with pytest.raises(pydantic.error_wrappers.ValidationError):
-        usernames.GlobalUser(username="confined_foo", uid=58479500)
+        usernames.GlobalUser(username="_foo_", uid=58479500)

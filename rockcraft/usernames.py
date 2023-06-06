@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-"""List of allowed global usernames/UIDs (analogously to SnapD)."""
+"""List of allowed shared usernames/UIDs (analogously to SnapD)."""
 
 import pydantic
 
@@ -27,11 +27,14 @@ class GlobalUser(pydantic.BaseModel):
 
     @pydantic.validator("username", always=True)
     @classmethod
-    def _validate_license(cls, username: str) -> str:
-        """Make sure the provided username has the right prefix."""
-        prefix = "confined_"
-        err = f"All global usernames must start with the prefix {prefix}."
+    def _validate_run_user(cls, username: str) -> str:
+        """Make sure the provided username has the right prefix and suffix."""
+        suffix = prefix = "_"
+        err = f"All shared usernames must start with the prefix {prefix}."
         assert username.startswith(prefix), err
+
+        err = f"All shared usernames must end with the suffic {prefix}."
+        assert username.endswith(suffix), err
 
         return username
 
