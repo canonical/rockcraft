@@ -41,5 +41,5 @@ class GlobalUser(pydantic.BaseModel):
 
 
 SUPPORTED_GLOBAL_USERNAMES = {
-    **GlobalUser(username="confined_daemon", uid=584792).get_dict(),
+    **GlobalUser(username="_daemon_", uid=584792).get_dict(),
 }

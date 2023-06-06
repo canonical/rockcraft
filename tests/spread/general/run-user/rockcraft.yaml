@@ -4,7 +4,7 @@ summary: A ROCK with a nonroot user
 description: A ROCK that has a nonroot default OCI user
 license: Apache-2.0
 base: ubuntu:22.04
-run-user: confined_daemon
+run-user: _daemon_
 services:
   test:
     override: replace
