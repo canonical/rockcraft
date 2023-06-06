@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# grep_docker_log: helper to grep text in a container's logs, possibly retrying
+# usage: grep_docker_log container_id "string to grep"
+
+export container_id="$1"
+export grep_string="$2"
+
+# `retry` is a Python program that uses subprocess.call() to run the command, so
+# we need to wrap the docker + pipe + grep chain inside another bash call.
+retry -n 3 --wait 1 bash -c "docker logs '$container_id' | grep '$grep_string'"

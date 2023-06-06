@@ -52,6 +52,20 @@ def temp_xdg(tmpdir, mocker):
     mocker.patch.dict(os.environ, {"XDG_CONFIG_HOME": os.path.join(tmpdir, ".config")})
 
 
+@pytest.fixture()
+def reset_overlay_callback():
+    """Fixture that resets the status of the configure-overlay callback, so that
+    tests can start with a clean slate.
+    """
+    # pylint: disable=import-outside-toplevel
+
+    from craft_parts import callbacks
+
+    callbacks.unregister_all()
+    yield
+    callbacks.unregister_all()
+
+
 class RecordingEmitter:
     """Record what is shown using the emitter and provide a nice API for tests."""
 

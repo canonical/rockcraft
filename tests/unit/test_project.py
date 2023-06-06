@@ -19,6 +19,7 @@ import os
 import re
 import subprocess
 import textwrap
+from pathlib import Path
 from unittest.mock import patch
 
 import pydantic
@@ -517,7 +518,7 @@ def test_project_load(yaml_data, yaml_loaded_data, pebble_part, tmp_path):
         encoding="utf-8",
     )
 
-    project = load_project(str(rockcraft_file))
+    project = load_project(rockcraft_file)
 
     for attr, v in yaml_loaded_data.items():
         if attr == "license":
@@ -575,12 +576,12 @@ def test_project_load_existing_pebble(tmp_path):
     )
 
     with pytest.raises(ProjectValidationError):
-        load_project(str(rockcraft_file))
+        load_project(rockcraft_file)
 
 
 def test_project_load_error():
     with pytest.raises(ProjectLoadError) as err:
-        load_project("does_not_exist.txt")
+        load_project(Path("does_not_exist.txt"))
     assert str(err.value) == "No such file or directory: 'does_not_exist.txt'."
 
 
@@ -611,4 +612,44 @@ def test_project_generate_metadata(yaml_loaded_data):
     }
 
 
-# TODO: add additional validation and formatting tests
+EXPECTED_DUMPED_YAML = f"""\
+name: mytest
+title: My Test
+summary: example for unit tests
+description: this is an example of a rockcraft.yaml for the purpose of testing rockcraft
+license: Apache-2.0
+version: latest
+platforms:
+  {BUILD_ON_ARCH}:
+    build_on: null
+    build_for: null
+  some-text:
+    build_on:
+    - {BUILD_ON_ARCH}
+    build_for:
+    - {BUILD_ON_ARCH}
+  same-with-different-syntax:
+    build_on:
+    - {BUILD_ON_ARCH}
+    build_for:
+    - {BUILD_ON_ARCH}
+base: ubuntu:20.04
+build-base: ubuntu:20.04
+services:
+  hello:
+    override: replace
+    command: /bin/hello
+    on-failure: restart
+package-repositories:
+- type: apt
+  ppa: ppa/ppa
+parts:
+  foo:
+    plugin: nil
+    overlay-script: ls
+"""
+
+
+def test_project_yaml(yaml_loaded_data):
+    project = Project.unmarshal(yaml_loaded_data)
+    assert project.to_yaml() == EXPECTED_DUMPED_YAML
