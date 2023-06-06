@@ -13,91 +13,18 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-import textwrap
-from typing import Any, Dict, Optional, Tuple
 
 import pytest
-from overrides import override
 
 from rockcraft import errors, extensions
-from rockcraft.extensions.extension import Extension
 from rockcraft.project import load_project
-
-
-class FakeExtension(Extension):
-    """A fake test Extension"""
-
-    NAME = "fake-extension"
-
-    @staticmethod
-    def get_supported_bases() -> Tuple[str, ...]:
-        """Return a tuple of supported bases."""
-        return ("ubuntu:22.04",)
-
-    @staticmethod
-    def is_experimental(base: Optional[str]) -> bool:
-        """Return whether or not this extension is unstable for given base."""
-        return False
-
-    def get_root_snippet(self) -> Dict[str, Any]:
-        """Return the root snippet to apply."""
-        return {}
-
-    def get_part_snippet(self) -> Dict[str, Any]:
-        """Return the part snippet to apply to existing parts."""
-        return {}
-
-    def get_parts_snippet(self) -> Dict[str, Any]:
-        """Return the parts to add to parts."""
-        return {}
-
-
-class ExperimentalExtension(FakeExtension):
-    """A fake test Extension that is experimental"""
-
-    NAME = "experimental-extension"
-
-    @staticmethod
-    def is_experimental(base: Optional[str]) -> bool:
-        return True
-
-
-class InvalidPartExtension(FakeExtension):
-    """A fake test Extension that has invalid parts snippet"""
-
-    NAME = "invalid-extension"
-
-    @override
-    def get_parts_snippet(self) -> Dict[str, Any]:
-        return {"bad-name": {"plugin": "dump", "source": None}}
-
-
-class FullExtension(FakeExtension):
-    """A fake test Extension that has complete behavior"""
-
-    NAME = "full-extension"
-
-    @override
-    def get_root_snippet(self) -> Dict[str, Any]:
-        """Return the root snippet to apply."""
-        return {
-            "services": {
-                "full-extension-service": {
-                    "command": "fake command",
-                    "override": "replace",
-                }
-            }
-        }
-
-    @override
-    def get_part_snippet(self) -> Dict[str, Any]:
-        """Return the part snippet to apply to existing parts."""
-        return {"stage-packages": ["new-package-1"]}
-
-    @override
-    def get_parts_snippet(self) -> Dict[str, Any]:
-        """Return the parts to add to parts."""
-        return {"full-extension/new-part": {"plugin": "nil", "source": None}}
+from tests.unit.testing.extensions import (
+    FULL_EXTENSION_YAML,
+    ExperimentalExtension,
+    FakeExtension,
+    FullExtension,
+    InvalidPartExtension,
+)
 
 
 @pytest.fixture
@@ -184,34 +111,8 @@ def test_apply_extensions(fake_extensions, tmp_path, input_yaml):
 
 def test_project_load_extensions(fake_extensions, tmp_path):
     """Test that load_project() correctly applies the extensions."""
-    yaml_data = textwrap.dedent(
-        f"""
-        name: project-with-extensions
-        version: latest
-        base: ubuntu:22.04
-        summary: Project with extensions
-        description: Project with extensions
-        license: Apache-2.0
-        platforms:
-            amd64:
-
-        extensions:
-            - {FullExtension.NAME}
-
-        parts:
-            foo:
-                plugin: nil
-                stage-packages:
-                    - old-package
-
-        services:
-            my-service:
-                command: foo
-                override: merge
-    """
-    )
     rockcraft_yaml = tmp_path / "rockcraft.yaml"
-    rockcraft_yaml.write_text(yaml_data)
+    rockcraft_yaml.write_text(FULL_EXTENSION_YAML)
 
     project = load_project(rockcraft_yaml)
 
