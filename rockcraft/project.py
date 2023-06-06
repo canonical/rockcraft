@@ -20,6 +20,7 @@ import operator
 import platform as host_platform
 import re
 from functools import reduce
+from pathlib import Path
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -38,8 +39,10 @@ import pydantic
 import spdx_lookup  # type: ignore
 import yaml
 from craft_archives import repo
+from pydantic_yaml import YamlModel
 
 from rockcraft.errors import ProjectLoadError, ProjectValidationError
+from rockcraft.extensions import apply_extensions
 from rockcraft.parts import validate_part
 from rockcraft.pebble import Pebble
 from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
@@ -211,7 +214,7 @@ class NameStr(pydantic.ConstrainedStr):
     regex = re.compile(NAME_REGEX)
 
 
-class Project(pydantic.BaseModel):
+class Project(YamlModel):
     """Rockcraft project definition."""
 
     name: NameStr
@@ -263,6 +266,10 @@ class Project(pydantic.BaseModel):
     @classmethod
     def _validate_license(cls, rock_license: str) -> str:
         """Make sure the provided license is valid and in SPDX format."""
+        if rock_license == "proprietary":
+            # This is the license name we use on our stores.
+            return rock_license
+
         lic: Optional[spdx_lookup.License] = spdx_lookup.by_id(rock_license)
         if lic is None:
             raise ProjectValidationError(
@@ -428,6 +435,24 @@ class Project(pydantic.BaseModel):
 
         return package_repositories
 
+    def to_yaml(self) -> str:
+        """Dump this project as a YAML string."""
+
+        def _repr_str(dumper, data):
+            """Multi-line string representer for the YAML dumper."""
+            if "\n" in data:
+                return dumper.represent_scalar("tag:yaml.org,2002:str", data, style="|")
+            return dumper.represent_scalar("tag:yaml.org,2002:str", data)
+
+        yaml.add_representer(str, _repr_str, Dumper=yaml.SafeDumper)
+        return super().yaml(
+            by_alias=True,
+            exclude_none=True,
+            allow_unicode=True,
+            sort_keys=False,
+            width=1000,
+        )
+
     @classmethod
     def unmarshal(cls, data: Dict[str, Any]) -> "Project":
         """Create and populate a new ``Project`` object from dictionary data.
@@ -580,7 +605,7 @@ def _printable_field_location_split(location: str) -> Tuple[str, str]:
     return field_name, "top-level"
 
 
-def load_project(filename: str) -> Project:
+def load_project(filename: Path) -> Project:
     """Load and unmarshal the project YAML file.
 
     :param filename: The YAML file to load.
@@ -598,6 +623,8 @@ def load_project(filename: str) -> Project:
         if err.filename:
             msg = f"{msg}: {err.filename!r}."
         raise ProjectLoadError(msg) from err
+
+    yaml_data = apply_extensions(filename.parent, yaml_data)
 
     _add_pebble_data(yaml_data)
 

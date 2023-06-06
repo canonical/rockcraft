@@ -1,6 +1,6 @@
 # -*- Mode:Python; indent-tabs-mode:nil; tab-width:4 -*-
 #
-# Copyright 2022 Canonical Ltd.
+# Copyright 2023 Canonical Ltd.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 3 as
@@ -14,34 +14,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Rockcraft commands."""
+"""Extension processor and related utilities."""
 
-from .extensions import (
-    ExpandExtensionsCommand,
-    ExtensionsCommand,
-    ListExtensionsCommand,
-)
-from .init import InitCommand
-from .lifecycle import (
-    BuildCommand,
-    CleanCommand,
-    OverlayCommand,
-    PackCommand,
-    PrimeCommand,
-    PullCommand,
-    StageCommand,
-)
+from ._utils import apply_extensions
+from .registry import get_extension_class, get_extension_names, register, unregister
 
 __all__ = [
-    "InitCommand",
-    "CleanCommand",
-    "PullCommand",
-    "OverlayCommand",
-    "BuildCommand",
-    "StageCommand",
-    "PrimeCommand",
-    "PackCommand",
-    "ExpandExtensionsCommand",
-    "ExtensionsCommand",
-    "ListExtensionsCommand",
+    "get_extension_class",
+    "get_extension_names",
+    "apply_extensions",
+    "register",
+    "unregister",
 ]

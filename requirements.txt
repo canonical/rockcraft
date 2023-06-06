@@ -4,9 +4,9 @@ beautifulsoup4==4.11.1
 certifi==2022.12.7
 charset-normalizer==2.1.1
 colorama==0.4.6
-craft-archives==1.0.0
+craft-archives==1.1.0
 craft-cli==1.2.0
-craft-parts==1.20.0
+craft-parts==1.21.0
 craft-providers==1.8.0
 Deprecated==1.2.13
 distro==1.8.0
@@ -58,6 +58,7 @@ sphinxcontrib-htmlhelp==2.0.0
 sphinxcontrib-jsmath==1.0.1
 sphinxcontrib-qthelp==1.0.3
 sphinxcontrib-serializinghtml==1.1.5
+tabulate==0.8.10
 tornado==6.2
 types-Deprecated==1.2.9
 typing_extensions==4.4.0

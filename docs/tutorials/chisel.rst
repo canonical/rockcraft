@@ -40,7 +40,7 @@ Create a new directory, write the following into a text editor and save it as
 Note that this Rockcraft file uses the ``openssl_bins`` and
 ``ca-certificates_data`` Chisel slices to generate an image containing only
 files that are strictly necessary for a functional OpenSSL installation. See
-:ref:`what-is-chisel` for details on the Chisel tool.
+:ref:`chisel_explanation` for details on the Chisel tool.
 
 
 Pack the ROCK with Rockcraft

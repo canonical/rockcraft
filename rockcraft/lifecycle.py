@@ -39,8 +39,9 @@ def run(command_name: str, parsed_args: "argparse.Namespace") -> None:
     # pylint: disable=too-many-locals
     emit.trace(f"command: {command_name}, arguments: {parsed_args}")
 
-    project = load_project("rockcraft.yaml")
+    project = load_project(Path("rockcraft.yaml"))
     destructive_mode = getattr(parsed_args, "destructive_mode", False)
+
     part_names = getattr(parsed_args, "parts", None)
     managed_mode = utils.is_managed_mode()
 
@@ -54,7 +55,7 @@ def run(command_name: str, parsed_args: "argparse.Namespace") -> None:
     if managed_mode:
         work_dir = utils.get_managed_environment_home_path()
     else:
-        work_dir = Path("work").absolute()
+        work_dir = Path().absolute()
 
     image_dir = work_dir / "images"
     bundle_dir = work_dir / "bundles"
