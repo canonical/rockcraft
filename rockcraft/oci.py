@@ -227,7 +227,7 @@ class Image:
         #  - if it exists in prime, use it,
         #  - if it doesn't exist in prime AND isn't "whiteout", use the base,
         #  - if it is "whiteout" or doesn't exist anywhere, use an empty file.
-        # NOTE: "shadow" is only modified it it already exists.
+        # NOTE: "shadow" is only modified if it already exists.
         for u_file in user_files:
             if (prime_dir_etc / u_file).exists():
                 user_files[u_file] = (prime_dir_etc / u_file).read_text()
@@ -237,9 +237,11 @@ class Image:
                 user_files[u_file] = (base_layer_dir_etc / u_file).read_text()
 
         if (
-            f"{username}:" in user_files["passwd"]
+            f"\n{username}:" in user_files["passwd"]
+            or user_files["passwd"].startswith(f"{username}:")
             or f":{uid}:" in user_files["passwd"]
-            or f"{username}:" in user_files["group"]
+            or f"\n{username}:" in user_files["group"]
+            or user_files["group"].startswith(f"{username}:")
             or f":{uid}:" in user_files["group"]
         ):
             raise errors.RockcraftError(
