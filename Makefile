@@ -12,6 +12,7 @@ autoformat: ## Run automatic code formatters.
 	isort .
 	autoflake rockcraft/ tests/
 	black .
+	ruff check --fix-only rockcraft tests
 
 .PHONY: clean
 clean: ## Clean artifacts from building, testing, etc.
@@ -82,6 +83,10 @@ test-codespell:
 .PHONY: test-flake8
 test-flake8:
 	flake8 rockcraft tests
+
+.PHONY: test-ruff
+test-ruff:
+	ruff rockcraft tests
 
 .PHONY: test-integrations
 test-integrations: ## Run integration tests.
