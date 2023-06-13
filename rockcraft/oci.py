@@ -236,7 +236,7 @@ class Image:
             ).exists():
                 user_files[u_file] = (base_layer_dir_etc / u_file).read_text()
 
-        if (
+        if (  # pylint: disable=too-many-boolean-expressions
             f"\n{username}:" in user_files["passwd"]
             or user_files["passwd"].startswith(f"{username}:")
             or f":{uid}:" in user_files["passwd"]
