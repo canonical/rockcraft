@@ -100,6 +100,17 @@ the value of ``base``.
 The license of the software packaged inside the ROCK. This must match the SPDX
 format, but is case insensitive (e.g. both ``MIT`` and ``mit`` are valid).
 
+``run-user``
+-----------
+
+**Type**: string
+
+**Required**: No
+
+The default OCI user. It must be a supported shared user. Currently, the only
+supported shared user is "_daemon_" (with UID/GID 584792). It defaults to
+"root" (with UID 0).
+
 ``services``
 ------------
 

@@ -13,6 +13,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# pylint: disable=too-many-lines
 
 import datetime
 import hashlib
@@ -28,6 +29,18 @@ from craft_parts.overlays import overlays
 
 import tests
 from rockcraft import errors, oci
+
+MOCK_NEW_USER = {
+    "user": "foo",
+    "uid": 585287,
+    "passwd": "foo:x:585287:585287::/var/lib/pebble/default:/usr/bin/false\n",
+    "group": "foo:x:585287:\n",
+    "shadow": str(
+        "foo:!:"
+        f"{(datetime.datetime.utcnow() - datetime.datetime(1970, 1, 1)).days}"
+        "::::::\n"
+    ),
+}
 
 
 @pytest.fixture
@@ -218,7 +231,14 @@ class TestImage:
         assert bundle_path == Path("bundle/dir/a-b/rootfs")
         assert mock_run.mock_calls == [
             call(
-                ["umoci", "unpack", "--rootless", "--image", "/c/a:b", "bundle/dir/a-b"]
+                [
+                    "umoci",
+                    "unpack",
+                    "--rootless",
+                    "--image",
+                    "/c/a:b",
+                    "bundle/dir/a-b",
+                ]
             )
         ]
 
@@ -310,7 +330,12 @@ class TestImage:
         assert len(temp_tar_contents) == 0
         image.add_layer("tag", layer_dir)
 
-        expected_tar_contents = ["first_dir", "first_file", "second_dir", "second_file"]
+        expected_tar_contents = [
+            "first_dir",
+            "first_file",
+            "second_dir",
+            "second_file",
+        ]
         assert temp_tar_contents == expected_tar_contents
 
     def test_add_layer_with_base_layer_dir(self, tmp_path, temp_tar_contents):
@@ -547,6 +572,180 @@ class TestImage:
         with pytest.raises(errors.LayerArchivingError, match=expected_message):
             image.add_layer("tag", layer_dir, base_layer_dir=rootfs_dir)
 
+    def test_add_new_user(
+        self,
+        check,
+        mock_tmpdir,
+        mock_add_layer,
+        tmp_path,
+    ):
+        fake_tmpfs = tmp_path / "mock-tmp"
+        mock_tmpdir.return_value = fake_tmpfs
+
+        image = oci.Image("a:b", Path("/c"))
+        image.add_user(
+            tmp_path / "prime",
+            tmp_path,
+            "mock-tag",
+            MOCK_NEW_USER["user"],
+            MOCK_NEW_USER["uid"],
+        )
+
+        mock_tmpdir.assert_called_once()
+        check.equal(
+            (fake_tmpfs / "etc/passwd").read_text(),
+            MOCK_NEW_USER["passwd"],
+        )
+        check.equal(
+            (fake_tmpfs / "etc/group").read_text(),
+            MOCK_NEW_USER["group"],
+        )
+
+        check.is_false(os.path.exists(fake_tmpfs / "etc/shadow"))
+        mock_add_layer.assert_called_once_with("mock-tag", fake_tmpfs)
+
+        # Test with a conflicting user or ID.
+        # Use the new fs as a base to force the error.
+        with pytest.raises(errors.RockcraftError) as err:
+            image.add_user(
+                tmp_path / "prime",
+                fake_tmpfs,
+                "mock-tag",
+                MOCK_NEW_USER["user"],
+                MOCK_NEW_USER["uid"] + 1,
+            )
+            check.is_in(
+                "conflict with existing user/group in the base filesystem", str(err)
+            )
+
+        with pytest.raises(errors.RockcraftError) as err:
+            image.add_user(
+                tmp_path / "prime",
+                fake_tmpfs,
+                "mock-tag",
+                MOCK_NEW_USER["user"] + "bar",
+                MOCK_NEW_USER["uid"],
+            )
+            check.is_in("conflict with existing user/group in the base filesystem", err)
+
+    @pytest.mark.parametrize(
+        "base_user_files,prime_user_files,whiteouts_exist,expected_user_files",
+        [
+            # If file in prime, the rest doesn't matter
+            (
+                {
+                    "passwd": "someuser:x:10:10::/nonexistent:/usr/bin/false\n",
+                    "group": "somegroup:x:10:\n",
+                    "shadow": "somegroup:!:19369::::::\n",
+                },
+                {
+                    "passwd": "primeuser:x:11:11::/nonexistent:/usr/bin/false\n",
+                    "group": "primegroup:x:11:\n",
+                    "shadow": "primegroup:!:19370::::::\n",
+                },
+                True,
+                {
+                    "passwd": str(
+                        "primeuser:x:11:11::/nonexistent:/usr/bin/false\n"
+                        f"{MOCK_NEW_USER['passwd']}"
+                    ),
+                    "group": f"primegroup:x:11:\n{MOCK_NEW_USER['group']}",
+                    "shadow": f"primegroup:!:19370::::::\n{MOCK_NEW_USER['shadow']}",
+                },
+            ),
+            # If file NOT in prime but in base, then take the base's data
+            (
+                {
+                    "passwd": "someuser:x:10:10::/nonexistent:/usr/bin/false\n",
+                    "group": "somegroup:x:10:\n",
+                    "shadow": "somegroup:!:19369::::::\n",
+                },
+                {},
+                False,
+                {
+                    "passwd": str(
+                        "someuser:x:10:10::/nonexistent:/usr/bin/false\n"
+                        f"{MOCK_NEW_USER['passwd']}"
+                    ),
+                    "group": f"somegroup:x:10:\n{MOCK_NEW_USER['group']}",
+                    "shadow": f"somegroup:!:19369::::::\n{MOCK_NEW_USER['shadow']}",
+                },
+            ),
+            # If file is removed in prime, then take an empty file
+            # If "shadow" is removed or absent, then it's ignored
+            (
+                {
+                    "passwd": "someuser:x:10:10::/nonexistent:/usr/bin/false\n",
+                    "group": "somegroup:x:10:\n",
+                    "shadow": "somegroup:!:19369::::::\n",
+                },
+                {},
+                True,
+                {
+                    "passwd": str(f"{MOCK_NEW_USER['passwd']}"),
+                    "group": MOCK_NEW_USER["group"],
+                    "shadow": MOCK_NEW_USER["shadow"],
+                },
+            ),
+        ],
+    )
+    def test_append_new_user(
+        self,
+        check,
+        mock_tmpdir,
+        mock_add_layer,
+        tmp_path,
+        base_user_files,
+        prime_user_files,
+        whiteouts_exist,
+        expected_user_files,
+    ):
+        # Mock the existence of users, either in the base or the primed dir
+        # tmp_path will be fake_base
+        fake_prime = tmp_path / "prime"
+        fake_prime_etc = fake_prime / "etc"
+        fake_base_etc = tmp_path / "etc"
+        fake_prime_etc.mkdir(parents=True, exist_ok=True)
+        fake_base_etc.mkdir(parents=True, exist_ok=True)
+
+        for filename in ["passwd", "group", "shadow"]:
+            if base_user_files:
+                (fake_base_etc / filename).write_text(base_user_files[filename])
+
+            if prime_user_files:
+                (fake_prime_etc / filename).write_text(prime_user_files[filename])
+
+            if whiteouts_exist:
+                (fake_prime_etc / f".wh.{filename}").touch()
+
+        fake_tmp_new_layer = tmp_path / "mock-tmp"
+        mock_tmpdir.return_value = fake_tmp_new_layer
+
+        image = oci.Image("a:b", Path("/c"))
+        image.add_user(
+            fake_prime,
+            tmp_path,
+            "mock-tag",
+            MOCK_NEW_USER["user"],
+            MOCK_NEW_USER["uid"],
+        )
+
+        mock_tmpdir.assert_called_once()
+        mock_add_layer.assert_called_once_with("mock-tag", fake_tmp_new_layer)
+        check.equal(
+            (fake_tmp_new_layer / "etc/passwd").read_text(),
+            expected_user_files["passwd"],
+        )
+        check.equal(
+            (fake_tmp_new_layer / "etc/group").read_text(),
+            expected_user_files["group"],
+        )
+        if prime_user_files or not whiteouts_exist:
+            check.equal(
+                (fake_tmp_new_layer / "etc/shadow").read_text(),
+                expected_user_files["shadow"],
+            )
+
     def test_add_layer_duplicate_identical_files(self, tmp_path, temp_tar_contents):
         """
         Test creating a layer where, because of symlinks in the base, multiple
@@ -609,20 +808,46 @@ class TestImage:
         source_image = "docker://ubuntu:22.04"
         image = oci.Image("a:b", Path("/c"))
         mock_output = mocker.patch(
-            "subprocess.check_output", return_value="000102030405060708090a0b0c0d0e0f"
+            "subprocess.check_output",
+            return_value="000102030405060708090a0b0c0d0e0f",
         )
 
         digest = image.digest(source_image)
         assert mock_output.mock_calls == [
             call(
-                ["skopeo", "inspect", "--format", "{{.Digest}}", "-n", source_image],
+                [
+                    "skopeo",
+                    "inspect",
+                    "--format",
+                    "{{.Digest}}",
+                    "-n",
+                    source_image,
+                ],
                 text=True,
             )
         ]
         assert digest == bytes([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15])
 
-    def test_set_entrypoint(self, mocker):
-        mock_run = mocker.patch("subprocess.run")
+    def test_set_default_user(self, mock_run):
+        image = oci.Image("a:b", Path("/c"))
+
+        image.set_default_user("foo")
+
+        assert mock_run.mock_calls == [
+            call(
+                [
+                    "umoci",
+                    "config",
+                    "--image",
+                    "/c/a:b",
+                    "--clear=config.entrypoint",
+                    "--config.user",
+                    "foo",
+                ]
+            )
+        ]
+
+    def test_set_entrypoint(self, mock_run):
         image = oci.Image("a:b", Path("/c"))
 
         image.set_entrypoint()
@@ -642,9 +867,6 @@ class TestImage:
                     "--config.entrypoint",
                     "--verbose",
                 ],
-                capture_output=True,
-                check=True,
-                universal_newlines=True,
             ),
             call(
                 [
@@ -653,10 +875,7 @@ class TestImage:
                     "--image",
                     "/c/a:b",
                     "--clear=config.cmd",
-                ],
-                capture_output=True,
-                check=True,
-                universal_newlines=True,
+                ]
             ),
         ]
 
@@ -733,9 +952,13 @@ class TestImage:
         )
 
     def test_set_control_data(
-        self, mock_archive_layer, mock_rmtree, mock_mkdir, mock_mkdtemp, mocker
+        self,
+        mock_archive_layer,
+        mock_rmtree,
+        mock_mkdir,
+        mock_mkdtemp,
+        mock_run,
     ):
-        mock_run = mocker.patch("subprocess.run")
         image = oci.Image("a:b", Path("/c"))
 
         mock_control_data_path = "layer_dir"
@@ -755,9 +978,11 @@ class TestImage:
 
         m = mock_open()
         with patch("pathlib.Path.open", m):
-            m.return_value.write = mock_write
-            image.set_control_data(metadata)
+            with patch("pathlib.Path.chmod") as local_mock_chmod:
+                m.return_value.write = mock_write
+                image.set_control_data(metadata)
 
+        local_mock_chmod.assert_called_once_with(0o644)
         assert mocked_data["writes"] == expected
         mock_mkdtemp.assert_called_once()
         mock_mkdir.assert_called_once()
@@ -776,9 +1001,6 @@ class TestImage:
         assert mock_run.mock_calls == [
             call(
                 expected_cmd + ["--history.created_by", " ".join(expected_cmd)],
-                capture_output=True,
-                check=True,
-                universal_newlines=True,
             )
         ]
         mock_rmtree.assert_called_once_with(Path(mock_control_data_path))

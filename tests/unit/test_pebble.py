@@ -16,12 +16,13 @@
 
 import os
 from pathlib import Path
-from unittest.mock import mock_open, patch
 
 import pytest
+import yaml
 
 import tests
 from rockcraft.pebble import Pebble
+from rockcraft.project import Service
 
 
 @tests.linux_only
@@ -49,7 +50,11 @@ class TestPebble:
                     "summary": "mock summary",
                     "description": "mock description",
                     "services": {
-                        "mockServiceOne": {"override": "replace", "command": "foo"}
+                        "mockServiceOne": Service(  # type: ignore
+                            override="replace",
+                            command="foo",
+                            on_success="shutdown",
+                        ).dict(exclude_none=True, by_alias=True)
                     },
                 },
                 (
@@ -64,6 +69,8 @@ class TestPebble:
                     "    override: replace"
                     "{n}"
                     "    command: foo"
+                    "{n}"
+                    "    on-success: shutdown"
                     "{n}"
                 ).format(n=os.linesep),
             ),
@@ -133,44 +140,43 @@ class TestPebble:
     )
     def test_define_pebble_layer(
         self,
+        check,
         tmp_path,
         existing_layers,
         expected_new_layer_prefix,
         layer_content,
         expected_layer_yaml,
     ):
-        # pylint: disable=too-many-locals
-        mock_rock_name = "my-rock"
-
         # Mock the base layer dir just to test the detection of existing
         # Pebble layers
         mock_base_layer_dir = tmp_path / "base"
         tmp_base_layer_dir = mock_base_layer_dir / "var/lib/pebble/default/layers/"
         tmp_base_layer_dir.mkdir(parents=True)
         for layer in existing_layers:
-            tmp_layer_file = tmp_base_layer_dir / layer
-            tmp_layer_file.touch()
+            (tmp_base_layer_dir / layer).touch()
 
-        mocked_data = {"writes": ""}
-
-        def mock_write(s):
-            mocked_data["writes"] += s
-
-        m = mock_open()
         pebble_obj = Pebble()
-        with patch("builtins.open", m) as f:
-            with patch("pathlib.Path.mkdir") as local_mock_mkdir:
-                m.return_value.write = mock_write
-                pebble_obj.define_pebble_layer(
-                    Path("fake-tmp-target-dir"),
-                    mock_base_layer_dir,
-                    layer_content,
-                    mock_rock_name,
-                )
-
-        assert (
-            f.call_args[0][0].name
-            == f"{expected_new_layer_prefix}-{mock_rock_name}.yaml"
+        pebble_obj.define_pebble_layer(
+            tmp_path,
+            mock_base_layer_dir,
+            layer_content,
+            "my-rock",
         )
-        local_mock_mkdir.assert_called_once_with(parents=True)
-        assert mocked_data["writes"] == expected_layer_yaml
+
+        out_pebble_layer = str(
+            f"{tmp_path}/{pebble_obj.PEBBLE_LAYERS_PATH}/"
+            f"{expected_new_layer_prefix}-my-rock.yaml"
+        )
+        check.is_true(os.path.exists(out_pebble_layer))
+        check.equal(oct((tmp_path / pebble_obj.PEBBLE_PATH).stat().st_mode)[-3:], "777")
+        check.equal(
+            oct(Path(out_pebble_layer).stat().st_mode)[-3:],
+            "777",
+        )
+        with open(out_pebble_layer) as f:
+            content = f.read()
+            check.equal(content, expected_layer_yaml)
+            content = yaml.safe_load(content)
+            for service_fields in content["services"].values():
+                for field in service_fields:
+                    check.is_not_in("_", field)
