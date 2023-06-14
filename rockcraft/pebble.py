@@ -75,6 +75,7 @@ class Pebble:
 
         tmp_pebble_layers_path = target_dir / self.PEBBLE_LAYERS_PATH
         tmp_pebble_layers_path.mkdir(parents=True)
+        (target_dir / self.PEBBLE_PATH).chmod(0o777)
 
         tmp_new_layer = tmp_pebble_layers_path / new_layer_name
         with open(tmp_new_layer, "w", encoding="utf-8") as layer_fd:
@@ -85,3 +86,5 @@ class Pebble:
                 sort_keys=False,
                 allow_unicode=True,
             )
+
+        tmp_new_layer.chmod(0o777)

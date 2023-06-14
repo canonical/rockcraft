@@ -12,6 +12,7 @@ autoformat: ## Run automatic code formatters.
 	isort .
 	autoflake rockcraft/ tests/
 	black .
+	ruff check --fix-only rockcraft tests
 
 .PHONY: clean
 clean: ## Clean artifacts from building, testing, etc.
@@ -83,6 +84,10 @@ test-codespell:
 test-flake8:
 	flake8 rockcraft tests
 
+.PHONY: test-ruff
+test-ruff:
+	ruff rockcraft tests
+
 .PHONY: test-integrations
 test-integrations: ## Run integration tests.
 	pytest tests/integration
@@ -117,7 +122,7 @@ test-shellcheck:
 
 .PHONY: test-sphinx-lint
 test-sphinx-lint:
-	sphinx-lint --ignore docs/_build --max-line-length 80 -e all docs/*
+	sphinx-lint --ignore docs/_build --ignore docs/env --max-line-length 80 -e all docs/*
 
 .PHONY: test-units
 test-units: ## Run unit tests.
