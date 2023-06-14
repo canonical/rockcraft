@@ -45,6 +45,7 @@ from rockcraft.errors import ProjectLoadError, ProjectValidationError
 from rockcraft.extensions import apply_extensions
 from rockcraft.parts import validate_part
 from rockcraft.pebble import Pebble
+from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
 
 if TYPE_CHECKING:
     from pydantic.error_wrappers import ErrorDict
@@ -110,10 +111,16 @@ class Platform(pydantic.BaseModel):
 
     build_on: Optional[  # type: ignore
         pydantic.conlist(str, unique_items=True, min_items=1)  # type: ignore
-    ] = pydantic.Field(alias="build-on")
+    ]
     build_for: Optional[  # type: ignore
         pydantic.conlist(str, unique_items=True, min_items=1)  # type: ignore
-    ] = pydantic.Field(alias="build-for")
+    ]
+
+    class Config:  # pylint: disable=too-few-public-methods
+        """Pydantic model configuration."""
+
+        allow_population_by_field_name = True
+        alias_generator = lambda s: s.replace("_", "-")  # noqa: E731
 
     @pydantic.validator("build_for", pre=True)
     @classmethod
@@ -166,22 +173,22 @@ class Service(pydantic.BaseModel):
     requires: Optional[List[str]]
     environment: Optional[Dict[str, str]]
     user: Optional[str]
-    user_id: Optional[int] = pydantic.Field(alias="user-id")
+    user_id: Optional[int]
     group: Optional[str]
-    group_id: Optional[int] = pydantic.Field(alias="group-id")
-    on_success: Optional[Literal["restart", "shutdown", "ignore"]] = pydantic.Field(
-        alias="on-success"
-    )
-    on_failure: Optional[Literal["restart", "shutdown", "ignore"]] = pydantic.Field(
-        alias="on-failure"
-    )
-    on_check_failure: Optional[
-        Dict[str, Literal["restart", "shutdown", "ignore"]]
-    ] = pydantic.Field(alias="on-check-failure")
-    backoff_delay: Optional[str] = pydantic.Field(alias="backoff-delay")
-    backoff_factor: Optional[float] = pydantic.Field(alias="backoff-factor")
-    backoff_limit: Optional[str] = pydantic.Field(alias="backoff-limit")
-    kill_delay: Optional[str] = pydantic.Field(alias="kill-delay")
+    group_id: Optional[int]
+    on_success: Optional[Literal["restart", "shutdown", "ignore"]]
+    on_failure: Optional[Literal["restart", "shutdown", "ignore"]]
+    on_check_failure: Optional[Dict[str, Literal["restart", "shutdown", "ignore"]]]
+    backoff_delay: Optional[str]
+    backoff_factor: Optional[float]
+    backoff_limit: Optional[str]
+    kill_delay: Optional[str]
+
+    class Config:  # pylint: disable=too-few-public-methods
+        """Pydantic model configuration."""
+
+        allow_population_by_field_name = True
+        alias_generator = lambda s: s.replace("_", "-")  # noqa: E731
 
 
 NAME_REGEX = r"^([a-z](?:-?[a-z0-9]){2,})$"
@@ -218,9 +225,8 @@ class Project(YamlModel):
     version: str
     platforms: Dict[str, Any]
     base: Literal["bare", "ubuntu:18.04", "ubuntu:20.04", "ubuntu:22.04"]
-    build_base: Optional[
-        Literal["ubuntu:18.04", "ubuntu:20.04", "ubuntu:22.04"]
-    ] = pydantic.Field(alias="build-base")
+    build_base: Optional[Literal["ubuntu:18.04", "ubuntu:20.04", "ubuntu:22.04"]]
+    run_user: Optional[Literal[tuple(SUPPORTED_GLOBAL_USERNAMES)]]  # type: ignore
     services: Optional[Dict[str, Service]]
 
     package_repositories: Optional[List[Dict[str, Any]]]
