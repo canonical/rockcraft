@@ -102,7 +102,6 @@ except OsReleaseVersionIdError:
 
 @pytest.mark.parametrize("base", tuple(UBUNTU_BASES))
 def test_python_plugin_ubuntu(base, tmp_path):
-
     run_lifecycle(base, tmp_path)
 
     bin_dir = tmp_path / "stage/bin"

@@ -12,14 +12,9 @@ prepare: |
 
 execute: |
   pushd $PROJECT_PATH/
-
-  # [docs:create-env]
-  python3 -m venv docs/env
-  source docs/env/bin/activate
-  # [docs:create-env-end]
-
+  
   # [docs:install-deps]
-  pip install -r requirements-focal.txt -r requirements-doc.txt
+  make installdocs
   # [docs:install-deps-end]
     
   # [docs:make-docs]

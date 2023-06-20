@@ -35,7 +35,6 @@ def _cleanup_callbacks():
 
 
 def test_package_repositories_in_overlay(new_dir, mocker, reset_overlay_callback):
-
     # Mock overlay-related calls that need root; we won't be actually installing
     # any packages, just checking that the repositories are correctly installed
     # in the overlay.

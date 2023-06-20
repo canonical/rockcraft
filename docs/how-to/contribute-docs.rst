@@ -76,6 +76,10 @@ setting up a virtual environment and building the documentation.
 
 .. _`Diátaxis framework`: https://diataxis.fr
 .. _Sphinx: https://www.sphinx-doc.org
+..
+   #wokeignore:rule=master
 .. _reStructuredText: https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html
+..
+   #wokeignore:rule=master
 .. _literalinclude: https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#directive-literalinclude
 .. _YAML: https://yaml.org/

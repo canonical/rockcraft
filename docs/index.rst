@@ -61,5 +61,5 @@ and constructive feedback.
 * `Canonical contributor license agreement
   <https://ubuntu.com/legal/contributors>`_.
 
-.. include:: /links.txt
+.. include:: links.txt
 
