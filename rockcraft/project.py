@@ -43,7 +43,7 @@ from pydantic_yaml import YamlModel
 
 from rockcraft.errors import ProjectLoadError, ProjectValidationError
 from rockcraft.extensions import apply_extensions
-from rockcraft.parts import validate_part
+from rockcraft.parts import part_has_overlay, validate_part
 from rockcraft.pebble import Pebble
 from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
 
@@ -412,6 +412,16 @@ class Project(YamlModel):
     def _validate_parts(cls, item: Dict[str, Any]) -> Dict[str, Any]:
         """Verify each part (craft-parts will re-validate this)."""
         validate_part(item)
+        return item
+
+    @pydantic.validator("parts", each_item=True)
+    @classmethod
+    def _validate_base_and_overlay(cls, item: Dict[str, Any], values) -> Dict[str, Any]:
+        """Projects with "bare" bases cannot use overlays."""
+        if values.get("base") == "bare" and part_has_overlay(item):
+            raise ProjectValidationError(
+                'Overlays cannot be used with "bare" bases (there is no system to overlay).'
+            )
         return item
 
     @pydantic.validator("package_repositories")
