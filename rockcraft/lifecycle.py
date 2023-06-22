@@ -23,6 +23,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from craft_cli import emit
+from craft_parts import ProjectInfo, callbacks
 from craft_providers import ProviderError
 
 from . import oci, providers, utils
@@ -65,6 +66,9 @@ def run(command_name: str, parsed_args: "argparse.Namespace") -> None:
     else:
         package_repositories = project.package_repositories
 
+    # Register our callbacks
+    callbacks.register_prologue(_set_global_environment)
+
     # Obtain base image and extract it to use as our overlay base
     # TODO: check if image was already downloaded, etc.
     emit.progress(f"Retrieving base {project.base}")
@@ -103,8 +107,12 @@ def run(command_name: str, parsed_args: "argparse.Namespace") -> None:
         base_digest = project_base_image.digest(source_image)
         step_name = "prime" if command_name == "pack" else command_name
 
+        project_vars = {"version": project.version}
+
         lifecycle = PartsLifecycle(
             project.parts,
+            project_name=project.name,
+            project_vars=project_vars,
             work_dir=work_dir,
             part_names=part_names,
             base_layer_dir=rootfs,
@@ -286,3 +294,12 @@ def clean_provider(project_name: str, project_path: Path) -> None:
     emit.debug(f"Cleaning instance {instance_name}")
     provider.clean_project_environments(instance_name=instance_name)
     emit.progress("Cleaned build provider", permanent=True)
+
+
+def _set_global_environment(info: ProjectInfo) -> None:
+    """Set global environment variables."""
+    info.global_environment.update(
+        {
+            "CRAFT_PROJECT_VERSION": info.get_project_var("version", raw_read=True),
+        }
+    )
