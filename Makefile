@@ -37,14 +37,14 @@ coverage: ## Run pytest with coverage report.
 	coverage html
 
 .PHONY: preparedocs
-preparedocs: ## mv file for docs
-	cp sphinx-starter-pack/.sphinx/_static/* docs/_static
-	mkdir docs/_templates
-	cp sphinx-starter-pack/.sphinx/_templates/* docs/_templates
-	cp sphinx-starter-pack/.sphinx/spellingcheck.yaml docs/spellingcheck.yaml
+preparedocs: ## move file from the sphinx-starter-pack to docs folder
+	git submodule update --init -- docs/sphinx-starter-pack
+	cp docs/sphinx-starter-pack/.sphinx/_static/* docs/_static
+	cp -R docs/sphinx-starter-pack/.sphinx/_templates docs/_templates
+	cp docs/sphinx-starter-pack/.sphinx/spellingcheck.yaml docs/spellingcheck.yaml
 
 .PHONY: installdocs
-installdocs: ## install documentation dependencies.
+installdocs: preparedocs ## install documentation dependencies.
 	$(MAKE) -C docs install
 
 .PHONY: docs
@@ -129,14 +129,17 @@ test-shellcheck:
 
 .PHONY: test-sphinx-lint
 test-sphinx-lint:
-	sphinx-lint --ignore docs/_build --ignore docs/env --max-line-length 80 -e all docs/*
+	sphinx-lint --ignore docs/sphinx-starter-pack/ --ignore docs/_build --ignore docs/env --max-line-length 80 -e all docs/*
 
 .PHONY: test-units
 test-units: ## Run unit tests.
 	pytest tests/unit
 
-.PHONY: tests
-tests: lint test-integrations test-units ## Run all tests.
+.PHONY: test-docs
+test-docs: installdocs ## Run docs tests.
 	$(MAKE) -C docs linkcheck
 	$(MAKE) -C docs woke
 	$(MAKE) -C docs spelling
+
+.PHONY: tests
+tests: lint test-integrations test-units test-docs ## Run all tests.

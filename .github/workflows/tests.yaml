@@ -55,22 +55,10 @@ jobs:
         run: |
           sudo snap install shellcheck
           make test-shellcheck
-      - name: Install doc framework
+      - name: Run linkcheck,woke,spelling
         run: |
-          make installdocs
-      - name: Run linkcheck
-        run: |
-          make -C docs linkcheck
-      - name: Run woke
-        uses: get-woke/woke-action@v0
-        with:
-          # Cause the check to fail on any broke rules
-          fail-on-error: true
-          workdir: docs
-          woke-args: "*.rst **/*.rst -c https://github.com/canonical-web-and-design/Inclusive-naming/raw/main/config.yml"
-      - name: Run spelling
-        run: |
-          make -C docs spelling
+          sudo snap install woke
+          make test-docs
 
   tests:
     strategy:

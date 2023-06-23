@@ -25,7 +25,7 @@ slices.
 The use of package slices provides Rockcraft with the ability to build minimal
 container images from the wider set of Ubuntu packages.
 
-.. figure:: ../_static/package-slices.svg
+.. figure:: /_static/package-slices.svg
    :width: 75%
    :align: center
    :alt: Debian package slices with dependencies
@@ -44,4 +44,5 @@ could see as a block of stone from which we can carve and extract only the
 small and relevant parts that we need to run our applications, thus keeping
 ROCKs small and less exposed to vulnerabilities.
 
-.. _Chisel: https://github.com/canonical/chisel
+.. include:: /links.txt
+
