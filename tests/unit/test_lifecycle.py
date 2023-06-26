@@ -25,6 +25,8 @@ from craft_providers.bases.buildd import BuilddBaseAlias
 import tests
 from rockcraft import lifecycle
 
+pytestmark = pytest.mark.usefixtures("reset_callbacks")
+
 
 @pytest.fixture
 def mock_project(mocker):
@@ -38,6 +40,7 @@ def mock_project(mocker):
     }
     _mock_project.parts = {"foo": {"plugin": "nil"}}
     _mock_project.package_repositories = []
+    _mock_project.version = "1.1.1"
     yield _mock_project
 
 
@@ -207,6 +210,8 @@ def test_install_repositories(mocker, mock_project, tmp_path, repos):
         base_layer_hash=mocker.ANY,
         package_repositories=repos,
         base=mocker.ANY,
+        project_vars=mocker.ANY,
+        project_name=mocker.ANY,
     )
 
 
@@ -233,6 +238,40 @@ def test_install_repositories_none_conversion(mocker, mock_project, tmp_path):
         base_layer_hash=mocker.ANY,
         package_repositories=[],
         base=mocker.ANY,
+        project_vars=mocker.ANY,
+        project_name=mocker.ANY,
+    )
+
+
+def test_project_variables(mocker, mock_project, tmp_path):
+    mocker.patch("rockcraft.lifecycle.load_project", return_value=mock_project)
+    mocker.patch("rockcraft.lifecycle.utils.is_managed_mode", return_value=True)
+    mocker.patch(
+        "rockcraft.lifecycle.utils.get_managed_environment_home_path",
+        return_value=tmp_path,
+    )
+    mocker.patch(
+        "rockcraft.oci.Image.from_docker_registry", return_value=(Mock(), Mock())
+    )
+
+    # Set the project's name and version
+    mock_project.name = "fake-name"
+    mock_project.version = "1.2.3"
+
+    mock_lifecycle_class = mocker.patch("rockcraft.lifecycle.PartsLifecycle")
+
+    lifecycle.run(command_name="build", parsed_args=argparse.Namespace())
+
+    mock_lifecycle_class.assert_called_once_with(
+        mock_project.parts,
+        work_dir=tmp_path,
+        part_names=mocker.ANY,
+        base_layer_dir=mocker.ANY,
+        base_layer_hash=mocker.ANY,
+        package_repositories=mocker.ANY,
+        base=mocker.ANY,
+        project_vars={"version": "1.2.3"},
+        project_name="fake-name",
     )
 
 

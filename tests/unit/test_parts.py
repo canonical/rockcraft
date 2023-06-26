@@ -36,47 +36,50 @@ def parts_data():
     }
 
 
+@pytest.fixture
+def create_lifecycle(new_dir):
+    def _inner_create(**kwargs) -> parts.PartsLifecycle:
+        kwargs.setdefault("base_layer_hash", b"digest")
+        kwargs.setdefault("base", "unused")
+        kwargs.setdefault("project_name", "my-project")
+        kwargs.setdefault("part_names", None)
+        kwargs.setdefault("base_layer_dir", new_dir)
+        kwargs.setdefault("work_dir", new_dir)
+
+        return parts.PartsLifecycle(
+            **kwargs,
+        )
+
+    return _inner_create
+
+
 @tests.linux_only
-def test_parts_lifecycle_prime_dir(new_dir):
+def test_parts_lifecycle_prime_dir(create_lifecycle):
     parts_data = {
         "foo": {
             "plugin": "nil",
         }
     }
 
-    lifecycle = parts.PartsLifecycle(
-        all_parts=parts_data,
-        work_dir=Path("/some/workdir"),
-        part_names=None,
-        base_layer_dir=new_dir,
-        base_layer_hash=b"digest",
-        base="unused",
-    )
+    lifecycle = create_lifecycle(all_parts=parts_data, work_dir=Path("/some/workdir"))
     assert lifecycle.prime_dir == Path("/some/workdir/prime")
 
 
 @tests.linux_only
-def test_parts_lifecycle_project_info(new_dir):
+def test_parts_lifecycle_project_info(create_lifecycle):
     parts_data = {
         "foo": {
             "plugin": "nil",
         }
     }
 
-    lifecycle = parts.PartsLifecycle(
-        all_parts=parts_data,
-        work_dir=Path("/some/workdir"),
-        part_names=None,
-        base_layer_dir=new_dir,
-        base_layer_hash=b"digest",
-        base="unused",
-    )
+    lifecycle = create_lifecycle(all_parts=parts_data, work_dir=Path("/some/workdir"))
     assert lifecycle.project_info.work_dir == Path("/some/workdir")
     assert lifecycle.project_info.base == "unused"
 
 
 @tests.linux_only
-def test_parts_lifecycle_run(new_dir):
+def test_parts_lifecycle_run(create_lifecycle):
     parts_data = {
         "foo": {
             "plugin": "dump",
@@ -87,14 +90,7 @@ def test_parts_lifecycle_run(new_dir):
     Path("dir1").mkdir()
     Path("dir1/foo.txt").touch()
 
-    lifecycle = parts.PartsLifecycle(
-        all_parts=parts_data,
-        work_dir=Path("."),
-        part_names=None,
-        base_layer_dir=new_dir,
-        base_layer_hash=b"digest",
-        base="unused",
-    )
+    lifecycle = create_lifecycle(all_parts=parts_data, work_dir=Path("."))
     lifecycle.run("prime")
 
     assert Path(lifecycle.prime_dir, "foo.txt").is_file()
@@ -102,15 +98,14 @@ def test_parts_lifecycle_run(new_dir):
 
 @pytest.mark.parametrize("repos", [[{"type": "apt", "ppa": "mozillateam/ppa"}]])
 @tests.linux_only
-def test_run_installs_package_repositories(mocker, parts_data, tmp_path, repos):
-    lifecycle = parts.PartsLifecycle(
+def test_run_installs_package_repositories(
+    mocker, parts_data, tmp_path, repos, create_lifecycle
+):
+    lifecycle = create_lifecycle(
         all_parts=parts_data,
         work_dir=tmp_path,
-        part_names=None,
         base_layer_dir=tmp_path,
-        base_layer_hash=b"",
         package_repositories=repos,
-        base="unused",
     )
     lcm = mocker.patch.object(lifecycle, "_lcm")
     lcm.plan.return_value = []
@@ -139,7 +134,7 @@ def test_run_installs_package_repositories(mocker, parts_data, tmp_path, repos):
 )
 @tests.linux_only
 def test_parts_lifecycle_run_shell(
-    new_dir, mocker, step_name, expected_last_step, parts_data
+    mocker, step_name, expected_last_step, parts_data, create_lifecycle
 ):
     """Check if the last step executed before shell is the previous step."""
     last_step = None
@@ -151,14 +146,7 @@ def test_parts_lifecycle_run_shell(
     mocker.patch("craft_parts.executor.Executor.execute", new=_fake_execute)
     shell_mock = mocker.patch("subprocess.run")
 
-    lifecycle = parts.PartsLifecycle(
-        all_parts=parts_data,
-        work_dir=Path("."),
-        part_names=None,
-        base_layer_dir=new_dir,
-        base_layer_hash=b"digest",
-        base="unused",
-    )
+    lifecycle = create_lifecycle(all_parts=parts_data, work_dir=Path("."))
     lifecycle.run(step_name, shell=True)
 
     assert last_step == expected_last_step
@@ -177,7 +165,7 @@ def test_parts_lifecycle_run_shell(
 )
 @tests.linux_only
 def test_parts_lifecycle_run_shell_after(
-    new_dir, mocker, step_name, expected_last_step
+    mocker, step_name, expected_last_step, create_lifecycle
 ):
     """Check if the last step executed before shell is the current step."""
     last_step = None
@@ -195,14 +183,7 @@ def test_parts_lifecycle_run_shell_after(
         }
     }
 
-    lifecycle = parts.PartsLifecycle(
-        all_parts=parts_data,
-        work_dir=Path("."),
-        part_names=None,
-        base_layer_dir=new_dir,
-        base_layer_hash=b"digest",
-        base="unused",
-    )
+    lifecycle = create_lifecycle(all_parts=parts_data, work_dir=Path("."))
     lifecycle.run(step_name, shell_after=True)
 
     assert last_step == expected_last_step
@@ -220,7 +201,7 @@ def test_parts_lifecycle_run_shell_after(
 )
 @tests.linux_only
 def test_parts_lifecycle_run_debug(
-    new_dir, mocker, internal_exception, expected_exception_type
+    mocker, internal_exception, expected_exception_type, create_lifecycle
 ):
     """Check that when "debug" is True, a shell is launched when an error is raised."""
 
@@ -236,14 +217,7 @@ def test_parts_lifecycle_run_debug(
         }
     }
 
-    lifecycle = parts.PartsLifecycle(
-        all_parts=parts_data,
-        work_dir=Path("."),
-        part_names=None,
-        base_layer_dir=new_dir,
-        base_layer_hash=b"digest",
-        base="unused",
-    )
+    lifecycle = create_lifecycle(all_parts=parts_data, work_dir=Path("."))
     with pytest.raises(expected_exception_type, match="Unexpected error"):
         lifecycle.run("prime", debug=True)
 
@@ -260,7 +234,7 @@ def assert_errors_match(
 
 
 @tests.linux_only
-def test_parts_lifecycle_init_error(new_dir):
+def test_parts_lifecycle_init_error(create_lifecycle):
     parts_data = {
         "foo": {
             "invalid": True,
@@ -268,14 +242,7 @@ def test_parts_lifecycle_init_error(new_dir):
     }
 
     with pytest.raises(parts.PartsLifecycleError) as exc:
-        parts.PartsLifecycle(
-            all_parts=parts_data,
-            work_dir=Path("."),
-            part_names=None,
-            base_layer_dir=new_dir,
-            base_layer_hash=b"digest",
-            base="unused",
-        )
+        create_lifecycle(all_parts=parts_data, work_dir=Path("."))
 
     rockcraft_error = exc.value
     parts_error = cast(PartsError, rockcraft_error.__cause__)
@@ -284,20 +251,15 @@ def test_parts_lifecycle_init_error(new_dir):
 
 
 @tests.linux_only
-def test_parts_lifecycle_run_error(new_dir, mocker):
+def test_parts_lifecycle_run_error(create_lifecycle):
     parts_data = {
         "foo": {
             "plugin": "nil",
         }
     }
 
-    lifecycle = parts.PartsLifecycle(
-        all_parts=parts_data,
-        work_dir=Path("."),
-        part_names=["fake_part"],
-        base_layer_dir=new_dir,
-        base_layer_hash=b"digest",
-        base="unused",
+    lifecycle = create_lifecycle(
+        all_parts=parts_data, work_dir=Path("."), part_names=["fake_part"]
     )
 
     with pytest.raises(parts.PartsLifecycleError) as exc:
@@ -311,27 +273,20 @@ def test_parts_lifecycle_run_error(new_dir, mocker):
 
 
 @tests.linux_only
-def test_parts_lifecycle_clean(new_dir, emitter):
+def test_parts_lifecycle_clean(create_lifecycle, emitter):
     parts_data = {
         "foo": {
             "plugin": "nil",
         }
     }
 
-    lifecycle = parts.PartsLifecycle(
-        parts_data,
-        work_dir=new_dir,
-        part_names=None,
-        base_layer_dir=new_dir,
-        base_layer_hash=b"digest",
-        base="unused",
-    )
+    lifecycle = create_lifecycle(all_parts=parts_data, work_dir=Path("."))
     lifecycle.clean()
     emitter.assert_progress("Cleaning all parts")
 
 
 @tests.linux_only
-def test_parts_lifecycle_clean_parts(new_dir, emitter):
+def test_parts_lifecycle_clean_parts(create_lifecycle, emitter):
     parts_data = {
         "foo": {
             "plugin": "nil",
@@ -341,49 +296,22 @@ def test_parts_lifecycle_clean_parts(new_dir, emitter):
         },
     }
 
-    lifecycle = parts.PartsLifecycle(
-        parts_data,
-        work_dir=new_dir,
-        part_names=["foo"],
-        base_layer_dir=new_dir,
-        base_layer_hash=b"digest",
-        base="unused",
-    )
+    lifecycle = create_lifecycle(all_parts=parts_data, part_names=["foo"])
     lifecycle.clean()
     emitter.assert_progress("Cleaning parts: foo")
 
 
-def create_lifecycle(new_dir):
-    parts_data = {
-        "foo": {
-            "plugin": "nil",
-        },
-        "bar": {
-            "plugin": "nil",
-        },
-    }
-
-    return parts.PartsLifecycle(
-        parts_data,
-        work_dir=new_dir,
-        part_names=["foo"],
-        base_layer_dir=new_dir,
-        base_layer_hash=b"digest",
-        base="unused",
-    )
-
-
 @tests.linux_only
-def test_parts_register_overlay_callback(new_dir, mocker, reset_overlay_callback):
+def test_parts_register_overlay_callback(mocker, create_lifecycle):
     """Test that PartsLifecycle registers the overlay callback."""
     # pylint: disable=protected-access
     register_spy = mocker.spy(callbacks, "register_configure_overlay")
 
     # Check that creating the lifecycle registers the callback
     assert not register_spy.called
-    create_lifecycle(new_dir)
+    create_lifecycle(all_parts={})
     register_spy.assert_called_once_with(parts._install_overlay_repositories)
 
     # Check that creating another lifecycle does *not* raise an error from re-
     # registering the callback.
-    create_lifecycle(new_dir)
+    create_lifecycle(all_parts={})
