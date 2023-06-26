@@ -166,6 +166,7 @@ def test_add_layer_with_overlay(new_dir, mocker):
         base_layer_dir=base_layer_dir,
         base_layer_hash=b"deadbeef",
         base="unused",
+        project_name="overlay",
     )
 
     assert mock_geteuid.called

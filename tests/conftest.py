@@ -53,9 +53,9 @@ def temp_xdg(tmpdir, mocker):
 
 
 @pytest.fixture()
-def reset_overlay_callback():
-    """Fixture that resets the status of the configure-overlay callback, so that
-    tests can start with a clean slate.
+def reset_callbacks():
+    """Fixture that resets the status of craft-part's various lifecycle callbacks,
+    so that tests can start with a clean slate.
     """
     # pylint: disable=import-outside-toplevel
 
