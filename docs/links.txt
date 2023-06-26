@@ -1,6 +1,11 @@
-.. _`Open Container Initiative`: https://opencontainers.org/
-.. _OCI_image_spec: https://github.com/opencontainers/image-spec/blob/main/spec.md
 .. _Charmcraft: https://juju.is/docs/sdk/charmcraft
-.. _Snapcraft: https://snapcraft.io/docs/snapcraft-overview
+.. _Chisel: https://github.com/canonical/chisel
+.. _`Chisel releases`: https://github.com/canonical/chisel-releases
+.. _Docker: https://docs.docker.com/
+.. _`OCI archive format`: https://github.com/opencontainers/image-spec/blob/main/layer.md#distributable-format
+.. _OCI_image_spec: https://github.com/opencontainers/image-spec/blob/main/spec.md
 .. _LXD: https://linuxcontainers.org/lxd/docs/latest/
 .. _Multipass: https://multipass.run/docs
+.. _`Open Container Initiative`: https://opencontainers.org/
+.. _skopeo: https://github.com/containers/skopeo
+.. _Snapcraft: https://snapcraft.io/docs/snapcraft-overview
