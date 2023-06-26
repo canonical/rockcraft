@@ -63,6 +63,7 @@ def run_lifecycle(base: str, work_dir: Path) -> None:
         base_layer_dir=Path("unused"),
         base_layer_hash=b"deadbeef",
         base=base,
+        project_name="python-project",
     )
 
     lifecycle.run("stage")

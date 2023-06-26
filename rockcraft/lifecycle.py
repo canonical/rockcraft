@@ -23,11 +23,13 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from craft_cli import emit
+from craft_parts import ProjectInfo, callbacks
 from craft_providers import ProviderError
 
 from . import oci, providers, utils
 from .parts import PartsLifecycle
 from .project import Project, load_project
+from .usernames import SUPPORTED_GLOBAL_USERNAMES
 
 if TYPE_CHECKING:
     import argparse
@@ -63,6 +65,9 @@ def run(command_name: str, parsed_args: "argparse.Namespace") -> None:
         package_repositories = []
     else:
         package_repositories = project.package_repositories
+
+    # Register our callbacks
+    callbacks.register_prologue(_set_global_environment)
 
     # Obtain base image and extract it to use as our overlay base
     # TODO: check if image was already downloaded, etc.
@@ -102,8 +107,12 @@ def run(command_name: str, parsed_args: "argparse.Namespace") -> None:
         base_digest = project_base_image.digest(source_image)
         step_name = "prime" if command_name == "pack" else command_name
 
+        project_vars = {"version": project.version}
+
         lifecycle = PartsLifecycle(
             project.parts,
+            project_name=project.name,
+            project_vars=project_vars,
             work_dir=work_dir,
             part_names=part_names,
             base_layer_dir=rootfs,
@@ -168,12 +177,25 @@ def _pack(
     )
     emit.progress("Created new layer", permanent=True)
 
+    if project.run_user:
+        emit.progress(f"Creating new user {project.run_user}")
+        new_image.add_user(
+            prime_dir=lifecycle.prime_dir,
+            base_layer_dir=base_layer_dir,
+            tag=project.version,
+            username=project.run_user,
+            uid=SUPPORTED_GLOBAL_USERNAMES[project.run_user]["uid"],
+        )
+
+        emit.progress(f"Setting the default OCI user to be {project.run_user}")
+        new_image.set_default_user(project.run_user)
+
     emit.progress("Adding Pebble entrypoint")
 
     new_image.set_entrypoint()
     if project.services:
         new_image.set_pebble_services(
-            services=project.dict(exclude_none=True)["services"],
+            services=project.dict(exclude_none=True, by_alias=True)["services"],
             name=project.name,
             tag=project.version,
             summary=project.summary,
@@ -272,3 +294,12 @@ def clean_provider(project_name: str, project_path: Path) -> None:
     emit.debug(f"Cleaning instance {instance_name}")
     provider.clean_project_environments(instance_name=instance_name)
     emit.progress("Cleaned build provider", permanent=True)
+
+
+def _set_global_environment(info: ProjectInfo) -> None:
+    """Set global environment variables."""
+    info.global_environment.update(
+        {
+            "CRAFT_PROJECT_VERSION": info.get_project_var("version", raw_read=True),
+        }
+    )

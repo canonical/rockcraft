@@ -6,6 +6,7 @@ license: Apache-2.0
 version: "0.0.1"
 base: bare
 build_base: "ubuntu:22.04"
+run-user: _daemon_
 services: 
   dotnet:
     override: replace

@@ -24,7 +24,7 @@ allowing complex operations to be declared at build time.
 
    tutorials/index
    how-to/index
-   reference
+   reference/index
    explanation/index
 
 
