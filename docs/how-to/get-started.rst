@@ -1,7 +1,7 @@
 How to get started - quick guide
 ********************************
 
-See the :ref:`tutorial` for a full getting started guide.
+See the :ref:`tutorials` for a full getting started guide.
 
 Getting started
 ---------------
