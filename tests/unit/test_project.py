@@ -409,7 +409,7 @@ def test_full_service():
         "working-dir": "/tmp",
         "on-success": "ignore",
         "on-failure": "restart",
-        "on-check_failure": {"check": "restart"},
+        "on-check-failure": {"check": "restart"},
         "backoff-delay": "10ms",
         "backoff-factor": 1.2,
         "backoff-limit": "1m",
