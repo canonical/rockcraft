@@ -275,3 +275,8 @@ def validate_part(data: Dict[str, Any]) -> None:
     :param data: The part data to validate.
     """
     craft_parts.validate_part(data)
+
+
+def part_has_overlay(data: Dict[str, Any]) -> bool:
+    """Whether ``data`` declares an overlay-using part."""
+    return craft_parts.part_has_overlay(data)
