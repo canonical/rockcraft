@@ -12,7 +12,7 @@ autoformat: ## Run automatic code formatters.
 	ruff check --fix-only rockcraft tests
 
 .PHONY: clean
-clean: ## Clean artifacts from building, testing, etc.
+clean: ## Clean artefacts from building, testing, etc.
 	rm -rf build/
 	rm -rf dist/
 	rm -rf .eggs/
