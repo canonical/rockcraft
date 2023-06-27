@@ -17,24 +17,17 @@ import os
 from pathlib import Path
 
 import pytest
-from craft_parts import callbacks, overlays
+from craft_parts import overlays
 
 from rockcraft.parts import PartsLifecycle
 from tests.util import jammy_only
 
-pytestmark = jammy_only
+pytestmark = [jammy_only, pytest.mark.usefixtures("reset_callbacks")]
 
 # pyright: reportPrivateImportUsage=false
 
 
-@pytest.fixture(autouse=True)
-def _cleanup_callbacks():
-    callbacks.unregister_all()
-    yield
-    callbacks.unregister_all()
-
-
-def test_package_repositories_in_overlay(new_dir, mocker, reset_overlay_callback):
+def test_package_repositories_in_overlay(new_dir, mocker):
     # Mock overlay-related calls that need root; we won't be actually installing
     # any packages, just checking that the repositories are correctly installed
     # in the overlay.
@@ -72,6 +65,7 @@ def test_package_repositories_in_overlay(new_dir, mocker, reset_overlay_callback
         base_layer_hash=b"deadbeef",
         base="fake-ubuntu",
         package_repositories=package_repositories,
+        project_name="package-repos",
     )
     # Mock the installation of package repositories in the base system, as that
     # is undesired and will fail without root.
