@@ -28,6 +28,8 @@ pytestmark = [jammy_only, pytest.mark.usefixtures("reset_callbacks")]
 
 
 def test_package_repositories_in_overlay(new_dir, mocker):
+
+
     # Mock overlay-related calls that need root; we won't be actually installing
     # any packages, just checking that the repositories are correctly installed
     # in the overlay.

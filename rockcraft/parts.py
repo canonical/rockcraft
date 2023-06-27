@@ -58,12 +58,14 @@ class PartsLifecycle:
         self,
         all_parts: Dict[str, Any],
         *,
+        project_name: str,
         work_dir: pathlib.Path,
         part_names: Optional[List[str]],
         base_layer_dir: pathlib.Path,
         base_layer_hash: bytes,
         base: str,
         package_repositories: Optional[List[Dict[str, Any]]] = None,
+        project_vars: Optional[Dict[str, str]] = None,
     ):
         self._part_names = part_names
         self._package_repositories = package_repositories or []
@@ -87,6 +89,8 @@ class PartsLifecycle:
                 ignore_local_sources=["*.rock"],
                 base=base,
                 package_repositories=self._package_repositories,
+                project_name=project_name,
+                project_vars=project_vars,
             )
         except craft_parts.PartsError as err:
             raise PartsLifecycleError.from_parts_error(err) from err
