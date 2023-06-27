@@ -8,7 +8,7 @@ run-user: _daemon_
 services:
   test:
     override: replace
-    command: /usr/bin/sleep 10
+    command: /usr/bin/sleep [ 1 ]
     startup: enabled
     on-success: shutdown
     on-failure: shutdown
