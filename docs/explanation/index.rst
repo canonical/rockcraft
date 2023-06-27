@@ -13,3 +13,4 @@ the motivations behind its development.
    rockcraft
    chisel
    overlay-step
+   rocks
