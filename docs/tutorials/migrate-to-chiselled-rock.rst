@@ -50,6 +50,7 @@ The output should look as follows:
 
 ..  code-block:: text
     :emphasize-lines: 16
+    :class: log-snippets
 
     [+] Building 0.6s (10/10) FINISHED
     => [internal] load .dockerignore0.0s
@@ -80,6 +81,7 @@ The output should look as follows:
 
 ..  code-block:: text
     :emphasize-lines: 2
+    :class: log-snippets
 
     REPOSITORY TAG IMAGE ID CREATED SIZE
     dotnet-runtime   reference   a24cab51d4d0   4 minutes ago   187MB
@@ -97,6 +99,7 @@ The output should look as follows:
 
 ..  code-block:: text
     :emphasize-lines: 13
+    :class: log-snippets
 
     global.json file:
     Not found
@@ -159,6 +162,7 @@ The output should be similar to:
 
 ..  code-block:: text
     :emphasize-lines: 42
+    :class: log-snippets
 
     2023-04-19 15:52:48.045 Starting Rockcraft 0.0.1.dev1
     ...
@@ -247,6 +251,7 @@ Which should print something like:
 
 ..  code-block:: text
     :emphasize-lines: 2
+    :class: log-snippets
 
     REPOSITORY TAG IMAGE ID CREATED SIZE
     dotnet-runtime   chiselled   4e0951d180e3   About a minute ago   124MB
@@ -263,6 +268,7 @@ The output should be similar to:
 
 ..  code-block:: text
     :emphasize-lines: 13
+    :class: log-snippets
 
     global.json file:
     Not found
