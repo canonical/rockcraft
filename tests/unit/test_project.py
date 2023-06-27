@@ -406,6 +406,7 @@ def test_full_service():
         "user-id": 1000,
         "group": "ubuntu",
         "group-id": 1000,
+        "working-dir": "/tmp",
         "on-success": "ignore",
         "on-failure": "restart",
         "on-check_failure": {"check": "restart"},
