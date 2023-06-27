@@ -10,6 +10,6 @@ the motivations behind its development.
 .. toctree::
    :maxdepth: 1
 
-   chisel
-   rocks
    rockcraft
+   chisel
+   overlay-step

@@ -84,7 +84,14 @@ extensions = [
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = ["_build", "Thumbs.db", ".DS_Store", "env", "sphinx-starter-pack"]
+exclude_patterns = [
+    "_build",
+    "Thumbs.db",
+    ".DS_Store",
+    "env",
+    "sphinx-starter-pack",
+    "common",
+]
 
 # Links to ignore when checking links
 linkcheck_ignore = [
