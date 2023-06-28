@@ -100,6 +100,9 @@ linkcheck_ignore = [
     "https://github.com/canonical/pebble#layer-specification",
 ]
 
+rst_epilog = """
+.. include:: /reuse/links.txt
+"""
 
 # -- Options for HTML output -------------------------------------------------
 
