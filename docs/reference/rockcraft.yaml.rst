@@ -101,7 +101,7 @@ The license of the software packaged inside the ROCK. This must match the SPDX
 format, but is case insensitive (e.g. both ``MIT`` and ``mit`` are valid).
 
 ``run-user``
------------
+------------
 
 **Type**: string
 

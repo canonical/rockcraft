@@ -13,3 +13,4 @@ Rockcraft's components, commands and keywords.
    rockcraft.yaml
    parts
    commands
+   part_properties
