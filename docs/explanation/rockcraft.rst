@@ -26,7 +26,7 @@ In fact, both these studies and our own assessments (dated from December 2021)
 show that the most popular images in Docker Hub contain known vulnerabilities,
 with Ubuntu being the only one without any critical or high ones.
 
-.. image:: ../_static/container-image-vulnerabilities.png
+.. image:: /_static/container-image-vulnerabilities.png
   :align: center
   :width: 95%
   :alt: Most popular container images contain known vulnerabilities
@@ -39,7 +39,7 @@ Canonical has already started doing this. If we compare some of the Docker
 Official container images vs some of the ones maintained by Canonical, we can
 verify that the latter have no high/critical vulnerabilities in them!
 
-.. image:: ../_static/canonical-images-vulnerabilities.png
+.. image:: /_static/canonical-images-vulnerabilities.png
   :align: center
   :width: 95%
   :alt: vulnerabilities in Official vs Canonical-maintained OCI images

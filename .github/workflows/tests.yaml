@@ -18,7 +18,7 @@ jobs:
       - name: Install packages
         run: |
           sudo apt update
-          sudo apt install -y libapt-pkg-dev
+          sudo apt install -y libapt-pkg-dev aspell aspell-en
       - name: Install python packages and dependencies
         run: |
           pip install -U -r requirements-focal.txt -r requirements.txt -r requirements-dev.txt
@@ -55,6 +55,10 @@ jobs:
         run: |
           sudo snap install shellcheck
           make test-shellcheck
+      - name: Run linkcheck,woke,spelling
+        run: |
+          sudo snap install woke
+          make test-docs
 
   tests:
     strategy:

@@ -39,7 +39,7 @@ package slice, *A_slice3*, are not needed for *B* to function. To make package
 *B* usable in the same way, it can also be divided into slices.
 
 With these slice definitions in place, Chisel is able to extract a
-highly-customized and specialized slice of the Ubuntu distribution, which one
+highly-customised and specialised slice of the Ubuntu distribution, which one
 could see as a block of stone from which we can carve and extract only the
 small and relevant parts that we need to run our applications, thus keeping
 ROCKs small and less exposed to vulnerabilities.

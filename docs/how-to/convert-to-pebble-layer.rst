@@ -17,8 +17,8 @@ official Debian-based NGINX image's Dockerfile can be found `here
 
 In summary, this Dockerfile is basically installing NGINX into the image and
 then defining the OCI entrypoint to be a custom `shell script
-<https://github.com/nginxinc/docker-nginx/blob/master/mainline/debian/
-docker-entrypoint.sh>`_
+<https://github.com/nginxinc/docker-nginx/blob/
+73a5acae6945b75b433cafd0c9318e4378e72cbb/mainline/debian/docker-entrypoint.sh>`_
 which parses the first argument given to it at container deployment time,
 and then configures and launches NGINX accordingly.
 
@@ -26,11 +26,11 @@ Design the Pebble services
 --------------------------
 
 A `Pebble layer
-<https://github.com/canonical/pebble/#layer-specification>`_
+<https://github.com/canonical/pebble#layer-specification>`_
 is composed of metadata, checks and services. The latter is present in
 ``rockcraft.yaml`` as a `top-level field
-<https://canonical-rockcraft.readthedocs-hosted.com/en/latest/
-reference.html#format-specification>`_
+<https://canonical-rockcraft.readthedocs-hosted.com/en/latest/reference/
+rockcraft.yaml.html#format-specification>`_
 and it represents the services which are loaded by the Pebble entrypoint when
 deploying a ROCK.
 
