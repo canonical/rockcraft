@@ -512,6 +512,29 @@ def test_project_parts_validation(yaml_loaded_data):
     )
 
 
+@pytest.mark.parametrize(
+    "packages,script",
+    [
+        (["pkg"], None),
+        ([], "ls"),
+    ],
+)
+def test_project_bare_overlay(yaml_loaded_data, packages, script):
+    """Test that the combination of 'bare' base with an overlay-using part is blocked."""
+    yaml_loaded_data["base"] = "bare"
+    yaml_loaded_data["build-base"] = "ubuntu:22.04"
+
+    foo_part = yaml_loaded_data["parts"]["foo"]
+    foo_part["overlay-packages"] = packages
+    foo_part["overlay-script"] = script
+
+    with pytest.raises(ProjectValidationError) as err:
+        Project.unmarshal(yaml_loaded_data)
+    assert str(err.value) == (
+        'Overlays cannot be used with "bare" bases (there is no system to overlay).'
+    )
+
+
 def test_project_load(yaml_data, yaml_loaded_data, pebble_part, tmp_path):
     rockcraft_file = tmp_path / "rockcraft.yaml"
     rockcraft_file.write_text(
