@@ -30,7 +30,7 @@ A `Pebble layer
 is composed of metadata, checks and services. The latter is present in
 ``rockcraft.yaml`` as a `top-level field
 <https://canonical-rockcraft.readthedocs-hosted.com/en/latest/reference/
-rockcraft.yaml.html#format-specification>`_
+rockcraft.yaml/#format-specification>`_
 and it represents the services which are loaded by the Pebble entrypoint when
 deploying a ROCK.
 
