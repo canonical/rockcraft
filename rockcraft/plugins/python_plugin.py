@@ -86,7 +86,7 @@ class PythonPlugin(python_plugin.PythonPlugin):
     @override
     def _get_script_interpreter(self) -> str:
         """Overridden because Python is always available in /bin/python3."""
-        return "#!/bin/python3"
+        return "#!/bin/${PARTS_PYTHON_INTERPRETER}"
 
     @override
     def get_build_commands(self) -> List[str]:
