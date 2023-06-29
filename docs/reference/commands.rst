@@ -16,7 +16,7 @@ Removes a part's assets. When no part is provided, the entire build environment
 
 pull
 ^^^^
-Downloads or retrieves artifacts defined for each part.
+Downloads or retrieves artefacts defined for each part.
 
 overlay
 ^^^^^^^
@@ -25,11 +25,11 @@ potentially modifying its contents.
 
 build
 ^^^^^
-Builds artifacts defined for each part.
+Builds artefacts defined for each part.
 
 stage
 ^^^^^
-Stages built artifacts into a common staging area, for each part.
+Stages built artefacts into a common staging area, for each part.
 
 prime
 ^^^^^
@@ -47,7 +47,7 @@ Other commands
 ..............
 init
 ^^^^
-Initializes a rockcraft project with a boilerplate ``rockcraft.yaml`` file.
+Initialise a rockcraft project with a boilerplate ``rockcraft.yaml`` file.
 
 help
 ^^^^

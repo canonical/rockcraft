@@ -1,6 +1,3 @@
-DOCSVENV = docs/env/bin/activate
-PORT = 8080
-
 .PHONY: help
 help: ## Show this help.
 	@printf "%-40s %s\n" "Target" "Description"
@@ -15,7 +12,7 @@ autoformat: ## Run automatic code formatters.
 	ruff check --fix-only rockcraft tests
 
 .PHONY: clean
-clean: ## Clean artifacts from building, testing, etc.
+clean: ## Clean artefacts from building, testing, etc.
 	rm -rf build/
 	rm -rf dist/
 	rm -rf .eggs/
@@ -39,17 +36,27 @@ coverage: ## Run pytest with coverage report.
 	coverage report -m
 	coverage html
 
+.PHONY: preparedocs
+preparedocs: ## move file from the sphinx-starter-pack to docs folder
+	git submodule update --init -- docs/sphinx-starter-pack
+	cp docs/sphinx-starter-pack/.sphinx/_static/* docs/_static
+	cp -R docs/sphinx-starter-pack/.sphinx/_templates docs/_templates
+	cp docs/sphinx-starter-pack/.sphinx/spellingcheck.yaml docs/spellingcheck.yaml
+
+.PHONY: installdocs
+installdocs: preparedocs ## install documentation dependencies.
+	$(MAKE) -C docs install
+
 .PHONY: docs
 docs: ## Generate documentation.
 	rm -f docs/rockcraft.rst
 	rm -f docs/modules.rst
-	. $(DOCSVENV); $(MAKE) -C docs clean
-	. $(DOCSVENV); $(MAKE) -C docs html
+	$(MAKE) -C docs clean-doc
+	$(MAKE) -C docs html
 
 .PHONY: rundocs
 rundocs: ## start a documentation runserver
-	. $(DOCSVENV); sphinx-autobuild $(ALLSPHINXOPTS) --ignore ".git/*" --ignore "*.scss" ./docs -b dirhtml -a docs/_build/html --host 0.0.0.0 --port $(PORT)
-
+	$(MAKE) -C docs run
 
 .PHONY: dist
 dist: clean ## Build python package.
@@ -122,11 +129,17 @@ test-shellcheck:
 
 .PHONY: test-sphinx-lint
 test-sphinx-lint:
-	sphinx-lint --ignore docs/_build --ignore docs/env --max-line-length 80 -e all docs/*
+	sphinx-lint --ignore docs/sphinx-starter-pack/ --ignore docs/_build --ignore docs/env --max-line-length 80 -e all docs/*
 
 .PHONY: test-units
 test-units: ## Run unit tests.
 	pytest tests/unit
 
+.PHONY: test-docs
+test-docs: installdocs ## Run docs tests.
+	$(MAKE) -C docs linkcheck
+	$(MAKE) -C docs woke
+	$(MAKE) -C docs spelling
+
 .PHONY: tests
-tests: lint test-integrations test-units ## Run all tests.
+tests: lint test-integrations test-units test-docs ## Run all tests.
