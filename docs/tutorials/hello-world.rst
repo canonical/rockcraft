@@ -46,7 +46,7 @@ The output should look as follows:
 
 ..  code-block:: text
     :emphasize-lines: 13
-    :class: foo
+    :class: log-snippets
 
     Launching instance...
     Retrieved base ubuntu:20.04
@@ -58,8 +58,8 @@ The output should look as follows:
     Executed: prime hello
     Executed parts lifecycle
     Created new layer
-    Cmd set to ['/usr/bin/hello', '-t']
-    Labels and annotations set to ['org.opencontainers.image.version=1.0', 'org.opencontainers.image.title=hello', 'org.opencontainers.image.ref.name=hello', 'org.opencontainers.image.licenses=Apache-2.0', 'org.opencontainers.image.created=2022-06-30T09:07:38.124741+00:00']
+    Entrypoint set to ['/bin/pebble', 'enter', '--verbose']
+    Labels and annotations set to ['org.opencontainers.image.version=1.0', 'org.opencontainers.image.title=hello', 'org.opencontainers.image.ref.name=hello', 'org.opencontainers.image.licenses=Apache-2.0', 'org.opencontainers.image.created=2023-06-27T06:56:11.647650+00:00', 'org.opencontainers.image.base.digest=d72c6818d7682fe5e71ad947c11a36c2fade3f004b6b353b9885de2bd37b71d6']
     Exported to OCI archive 'hello_1.0_amd64.rock'
 
 At the end of the process, a file named ``hello_1.0_amd64.rock`` should be

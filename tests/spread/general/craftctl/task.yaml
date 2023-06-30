@@ -15,5 +15,6 @@ execute: |
   rm craftctl-test_latest_craftctl.rock
   docker images craftctl-test:latest
   docker run --rm --entrypoint /usr/bin/hello craftctl-test:latest
-  docker run --rm --entrypoint pebble craftctl-test:latest help
-  docker run --rm --entrypoint pebble craftctl-test:latest --help
+  docker run --rm craftctl-test:latest help
+  docker run --rm craftctl-test:latest --help
+  

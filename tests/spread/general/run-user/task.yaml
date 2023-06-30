@@ -21,7 +21,7 @@ execute: |
   # test that the custom scripted user exists
   docker run --rm --entrypoint /bin/sh -u test-user run-user-test -c 'whoami' | MATCH "test-user"
   docker run --rm run-user-test exec grep "test-user" /etc/group
-  timeout 15 docker run --rm --name run-user-test-container run-user-test -v
+  timeout 15 docker run --rm --name run-user-test-container run-user-test --args test 10
 
 restore: |
   rm -f run-user-test_latest_amd64.rock

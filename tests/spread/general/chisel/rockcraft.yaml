@@ -10,7 +10,7 @@ run-user: _daemon_
 services: 
   dotnet:
     override: replace
-    command: /usr/lib/dotnet/dotnet --info
+    command: /usr/lib/dotnet/dotnet [ --info ]
     startup: enabled
 platforms:
   amd64:
