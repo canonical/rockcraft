@@ -10,6 +10,7 @@ build:
   tools:
     python: "3.8"
   commands:
+    - ./tools/freeze-requirements.sh
     - pip install tox
     - tox -e build-docs
     - mkdir -p _readthedocs/html
