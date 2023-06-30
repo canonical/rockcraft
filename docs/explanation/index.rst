@@ -14,3 +14,4 @@ the motivations behind its development.
    chisel
    overlay-step
    rocks
+   steps
