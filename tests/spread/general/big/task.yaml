@@ -60,4 +60,4 @@ execute: |
   # layers - we only take the base on which the ROCK was built into account. If the behavior
   # changes, this check will break and then can be removed/updated.
   ############################################################################################
-  docker run --rm big readlink /.rock | NOMATCH fake_rock_dir
+  docker run --rm big exec readlink /.rock | NOMATCH fake_rock_dir
