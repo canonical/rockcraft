@@ -143,3 +143,11 @@ rockcraft_*.snap
 
 # rock
 *.rock
+
+# sphinx
+
+docs/warnings.txt
+docs/.sphinx/.wordlist.dic
+.DS_Store
+__pycache__
+.idea/

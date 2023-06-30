@@ -3,15 +3,7 @@
 How to build the documentation
 ******************************
 
-Create a virtual environment and activate it:
-
-.. literalinclude:: code/build-docs/task.yaml
-    :language: bash
-    :start-after: [docs:create-env]
-    :end-before: [docs:create-env-end]
-    :dedent: 2
-
-Install the documentation requirements:
+Use the provided ``Makefile`` to install the documentation requirements:
 
 .. literalinclude:: code/build-docs/task.yaml
     :language: bash

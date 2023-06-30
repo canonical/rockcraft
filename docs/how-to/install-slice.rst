@@ -23,7 +23,7 @@ This repository acts as the database of slice definitions files for each
 Chisel release (Chisel releases are named analogously to Ubuntu releases, and
 mapped into Git branches within the repository).
 
-Chisel will only recognize slices belonging to a Chisel release, so you need
+Chisel will only recognise slices belonging to a Chisel release, so you need
 to copy your slice definitions file - ``openssl.yaml`` in this example - into
 the ``chisel-releases/slices`` folder. Note that if a slice definitions file
 with the same name already exists, it most likely means that the package
@@ -53,7 +53,7 @@ folders, amongst which there would be ``./usr/bin/openssl``.
 **To install the custom package slice into a ROCK though**, you need to use
 Rockcraft!
 
-Start by initializing a new Rockcraft project:
+Start by initialising a new Rockcraft project:
 
 .. literalinclude:: code/install-slice/task.yaml
     :language: bash
@@ -74,7 +74,7 @@ section):
 The "build-context" part allows you to send the local ``chisel-releases``
 folder into the builder. The "override-build" enables you to install your
 custom slice.
-Please not that this level of customization is only needed when you want to
+Please not that this level of customisation is only needed when you want to
 install from a custom Chisel release. If the desired slice definitions are
 already upstream, then you can simply use ``stage-packages``, as demonstrated
 in :ref:`here <chisel-example>`.
