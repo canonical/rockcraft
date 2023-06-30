@@ -17,3 +17,4 @@ execute: |
   docker run --rm --entrypoint /usr/bin/hello craftctl-test:latest
   docker run --rm craftctl-test:latest help
   docker run --rm craftctl-test:latest --help
+  
