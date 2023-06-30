@@ -49,3 +49,4 @@ services:
     environment:
       TZ: UTC
     on-failure: shutdown
+    
