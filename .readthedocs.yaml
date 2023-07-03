@@ -13,6 +13,9 @@ build:
     post_checkout:
       - git submodule update --init -- docs/sphinx-starter-pack
       - make preparedocs
+    post_create_environment:
+      - ls -R
+
 # Build documentation in the docs/ directory with Sphinx
 sphinx:
   configuration: docs/conf.py
