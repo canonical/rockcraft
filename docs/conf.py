@@ -72,6 +72,7 @@ if "discourse" in html_context:
 # ones.
 extensions = [
     "sphinx.ext.autodoc",
+    "sphinx.ext.ifconfig",
     "sphinx.ext.napoleon",
     "sphinx.ext.viewcode",
     "sphinx_copybutton",
