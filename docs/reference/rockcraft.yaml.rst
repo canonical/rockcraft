@@ -111,6 +111,16 @@ The default OCI user. It must be a supported shared user. Currently, the only
 supported shared user is "_daemon_" (with UID/GID 584792). It defaults to
 "root" (with UID 0).
 
+``environment``
+---------------
+
+**Type**: dict
+
+**Required**: No
+
+A set of key-value pairs specifying the environment variables to be added
+to the base image's OCI environment.
+
 ``services``
 ------------
 
@@ -194,6 +204,9 @@ Example
   base: bare
   build-base: ubuntu:22.04
   license: Apache-2.0
+  run-user: _daemon_
+  environment:
+    FOO: bar
   services:
     hello:
       override: replace

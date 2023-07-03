@@ -879,31 +879,6 @@ class TestImage:
             ),
         ]
 
-    def test_set_env(self, mocker):
-        mock_run = mocker.patch("subprocess.run")
-        image = oci.Image("a:b", Path("/c"))
-
-        image.set_env([{"NAME1": "VALUE1"}, {"NAME2": "VALUE2"}])
-
-        assert mock_run.mock_calls == [
-            call(
-                [
-                    "umoci",
-                    "config",
-                    "--image",
-                    "/c/a:b",
-                    "--clear=config.env",
-                    "--config.env",
-                    "NAME1=VALUE1",
-                    "--config.env",
-                    "NAME2=VALUE2",
-                ],
-                capture_output=True,
-                check=True,
-                universal_newlines=True,
-            )
-        ]
-
     def test_set_pebble_services(
         self,
         mock_add_layer,
@@ -950,6 +925,26 @@ class TestImage:
         mock_define_pebble_layer.assert_called_once_with(
             fake_tmpfs, mock_base_layer_dir, expected_layer, mock_name
         )
+
+    def test_set_environment(self, mock_run):
+        image = oci.Image("a:b", Path("/c"))
+
+        image.set_environment({"NAME1": "VALUE1", "NAME2": "VALUE2"})
+
+        assert mock_run.mock_calls == [
+            call(
+                [
+                    "umoci",
+                    "config",
+                    "--image",
+                    "/c/a:b",
+                    "--config.env",
+                    "NAME1=VALUE1",
+                    "--config.env",
+                    "NAME2=VALUE2",
+                ]
+            )
+        ]
 
     def test_set_control_data(
         self,

@@ -59,6 +59,10 @@ base: ubuntu:20.04
 summary: "example for unit tests"
 description: "this is an example of a rockcraft.yaml for the purpose of testing rockcraft"
 license: Apache-2.0
+environment:
+    BAZ: value1
+    FOO: value3
+    BAR: value2
 
 package-repositories:
     - type: apt
@@ -120,6 +124,9 @@ def test_project_unmarshal(check, yaml_loaded_data):
         "this is an example of a rockcraft.yaml for the purpose of testing rockcraft",
     )
     check.equal(project.rock_license, "Apache-2.0")
+    check.equal(
+        project.environment, {"BAZ": "value1", "FOO": "value3", "BAR": "value2"}
+    )
     check.equal(project.build_base, "ubuntu:20.04")
     check.equal(project.package_repositories, [{"type": "apt", "ppa": "ppa/ppa"}])
     check.equal(
@@ -568,6 +575,11 @@ def test_project_load(yaml_data, yaml_loaded_data, pebble_part, tmp_path):
         assert getattr(project, attr.replace("-", "_")) == v
 
 
+def test_project_yaml_load_env_order(check, yaml_loaded_data):
+    expected_ordered_environment = {"BAZ": "value1", "FOO": "value3", "BAR": "value2"}
+    check.equal(yaml_loaded_data["environment"], expected_ordered_environment)
+
+
 def test_project_load_existing_pebble(tmp_path):
     """Test that trying to load a project that already has a "pebble" part fails."""
     yaml_data = textwrap.dedent(
@@ -658,6 +670,10 @@ platforms:
     - {BUILD_ON_ARCH}
 base: ubuntu:20.04
 build-base: ubuntu:20.04
+environment:
+  BAZ: value1
+  FOO: value3
+  BAR: value2
 services:
   hello:
     override: replace
