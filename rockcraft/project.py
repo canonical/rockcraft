@@ -176,6 +176,7 @@ class Service(pydantic.BaseModel):
     user_id: Optional[int]
     group: Optional[str]
     group_id: Optional[int]
+    working_dir: Optional[str]
     on_success: Optional[Literal["restart", "shutdown", "ignore"]]
     on_failure: Optional[Literal["restart", "shutdown", "ignore"]]
     on_check_failure: Optional[Dict[str, Literal["restart", "shutdown", "ignore"]]]
@@ -189,6 +190,7 @@ class Service(pydantic.BaseModel):
 
         allow_population_by_field_name = True
         alias_generator = lambda s: s.replace("_", "-")  # noqa: E731
+        extra = "forbid"
 
 
 NAME_REGEX = r"^([a-z](?:-?[a-z0-9]){2,})$"

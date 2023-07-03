@@ -9,6 +9,15 @@ license: Apache-2.0
 base: ubuntu:22.04
 platforms:
   amd64:
+
+services:
+  test:
+    override: replace
+    command: sh -c "pwd; sleep 5"
+    startup: enabled
+    on-success: shutdown
+    on-failure: shutdown
+    working-dir: /tmp
   
 parts:
   issue-44-dir-owner:
