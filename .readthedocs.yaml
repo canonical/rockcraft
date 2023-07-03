@@ -14,7 +14,7 @@ build:
       - git submodule update --init -- docs/sphinx-starter-pack
       - make preparedocs
     post_create_environment:
-      - ln -fs $(python -c 'import craft_parts_docs;print(craft_parts_docs.__file__.rsplit(\"/\", maxsplit=1)[0])') {tox_root}/docs/common/craft-parts
+      - ln -fs $(python -c 'import craft_parts_docs;print(craft_parts_docs.__file__.rsplit(\"/\", maxsplit=1)[0])') docs/common/craft-parts
 
 # Build documentation in the docs/ directory with Sphinx
 sphinx:
