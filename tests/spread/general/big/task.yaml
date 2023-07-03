@@ -25,6 +25,9 @@ execute: |
   rm "$ROCK"
 
   docker images
+
+  # Check the ROCK's output
+  docker run --rm big:latest | MATCH "/tmp"
   
   ############################################################################################
   # test ownership: "newfiles" and "a.txt" are owned by uid 9999, "b.txt" is owned by uid 3333
