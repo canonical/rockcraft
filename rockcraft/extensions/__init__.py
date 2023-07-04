@@ -26,3 +26,7 @@ __all__ = [
     "register",
     "unregister",
 ]
+
+from .extension_flask import FlaskExtension as _FlaskExtension
+
+register("flask-extension", _FlaskExtension)
