@@ -17,8 +17,8 @@
 """An experimental extension for the Juju PaaS Flask framework."""
 
 import os
+from typing import Any, Dict, Optional, Tuple
 
-from typing import Tuple, Dict, Any, Optional
 from overrides import override
 
 from .extension import Extension
