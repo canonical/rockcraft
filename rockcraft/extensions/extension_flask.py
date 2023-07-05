@@ -14,8 +14,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Experimental Rockcraft extension for the Juju PaaS Flask framework."""
-import os.path
+"""An experimental extension for the Juju PaaS Flask framework."""
+
+import os
+
 from typing import Tuple, Dict, Any, Optional
 from overrides import override
 
@@ -23,6 +25,12 @@ from .extension import Extension
 
 
 class FlaskExtension(Extension):
+    """An extension to enable Flask support within the Juju PaaS ecosystem.
+
+    This extension is a part of the Juju PaaS ecosystem and facilitates the deployment of
+    Flask-based applications.
+    """
+
     @staticmethod
     @override
     def get_supported_bases() -> Tuple[str, ...]:
@@ -35,7 +43,7 @@ class FlaskExtension(Extension):
 
     @override
     def get_root_snippet(self) -> Dict[str, Any]:
-        """Fill in some default root components for the flask platform.
+        """Fill in some default root components for Flask.
 
         Default values:
           - run_user: _daemon_
@@ -60,11 +68,11 @@ class FlaskExtension(Extension):
 
     @override
     def get_parts_snippet(self) -> Dict[str, Any]:
-        """Create necessary parts to facilitate the flask platform.
+        """Create necessary parts to facilitate the flask application.
 
         Parts added:
             - flask-extension/dependencies: install Python dependencies
-            - flask-extension/app: copy the entire flask project into the OCI image
+            - flask-extension/install-app: copy the flask project into the OCI image
         """
         python_requirements = []
         if (self.project_root / "requirements.txt").exists():
@@ -86,7 +94,7 @@ class FlaskExtension(Extension):
                 "python-packages": ["gunicorn"],
                 "python-requirements": python_requirements
             },
-            "flask-extension/app": {
+            "flask-extension/install-app": {
                 "plugin": "dump",
                 "source": ".",
                 "organize": renaming_map,
