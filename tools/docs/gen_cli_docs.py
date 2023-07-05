@@ -21,17 +21,22 @@ Usage
 
 """
 
+
 def make_link(prefix, name):
     return ":ref:`" + prefix + "_" + name + "`"
+
 
 def make_sentence(t):
     return t[:1].upper() + t[1:].rstrip(".") + "."
 
+
 def make_arg(t):
     return "``" + t + "``"
 
+
 def not_none(*args):
     return [x for x in args if x != None]
+
 
 def make_section(title, items):
     s = ""
@@ -49,7 +54,6 @@ def make_section(title, items):
 
 
 def main(docs_dir):
-
     """Generate reference documentation for the command line interface,
     creating pages in the docs/reference/commands directory and creating the
     directory itself if necessary."""
@@ -76,13 +80,11 @@ def main(docs_dir):
     toc = []
 
     for group in cli.COMMAND_GROUPS:
-
         group_name = group.name.lower() + "-commands" + os.extsep + "rst"
         group_path = commands_ref_dir / group_name
         g = group_path.open("w")
 
         for cmd_class in sorted(group.commands, key=lambda c: c.name):
-
             cmd = cmd_class({})
             p = argparse.ArgumentParser()
             cmd.fill_parser(p)
@@ -99,7 +101,8 @@ def main(docs_dir):
 
             cmd_path = commands_ref_dir / (cmd.name + os.extsep + "rst")
 
-            if options or global_options: options_str += "[options]"
+            if options or global_options:
+                options_str += "[options]"
             required_str = "".join([(" <%s>" % vl[0]) for d, (vl, h) in required])
 
             f = cmd_path.open("w")
