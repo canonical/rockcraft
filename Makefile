@@ -21,6 +21,7 @@ clean: ## Clean artefacts from building, testing, etc.
 	rm -rf docs/_build/
 	rm -f docs/rockcraft.*
 	rm -f docs/modules.rst
+	rm -rf docs/reference/commands
 	find . -name '*.pyc' -exec rm -f {} +
 	find . -name '*.pyo' -exec rm -f {} +
 	find . -name '*~' -exec rm -f {} +

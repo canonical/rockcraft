@@ -25,15 +25,19 @@
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
-# documentation root, use os.path.abspath to make it absolute, like shown here.
+# documentation root, make it absolute.
 #
 
 import pathlib
 import sys
 
-sys.path.insert(0, str(pathlib.Path("..").absolute()))
+project_dir = pathlib.Path("..").resolve()
+tools_dir = (project_dir / "tools" / "docs").resolve()
+sys.path.insert(0, str(project_dir.absolute()))
+sys.path.insert(0, str(tools_dir.absolute()))
 
 import rockcraft  # noqa: E402
+import gen_cli_docs
 
 # -- Project information -----------------------------------------------------
 
@@ -99,6 +103,12 @@ linkcheck_ignore = [
     "https://github.com/canonical/craft-actions#rockcraft-pack",
     "https://github.com/canonical/pebble#layer-specification",
 ]
+
+rst_prolog = """
+.. |br| raw:: html
+
+   <br />
+"""
 
 
 # -- Options for HTML output -------------------------------------------------
@@ -202,3 +212,10 @@ typehints_document_rtype = True
 
 # Enable support for google-style instance attributes.
 napoleon_use_ivar = True
+
+
+def generate_cli_docs(nil):
+    gen_cli_docs.main(project_dir / "docs")
+
+def setup(app):
+    app.connect("builder-inited", generate_cli_docs)
