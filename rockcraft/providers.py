@@ -50,7 +50,7 @@ def get_command_environment() -> Dict[str, Optional[str]]:
         "http_proxy",
         "https_proxy",
         "no_proxy",
-        "ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS"
+        "ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS",
     ]:
         if env_key in os.environ:
             env[env_key] = os.environ[env_key]

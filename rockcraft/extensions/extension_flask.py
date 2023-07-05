@@ -34,11 +34,13 @@ class FlaskExtension(Extension):
     @staticmethod
     @override
     def get_supported_bases() -> Tuple[str, ...]:
+        """Return supported bases."""
         return "bare", "ubuntu:22.04"
 
     @staticmethod
     @override
     def is_experimental(base: Optional[str]) -> bool:
+        """Check if the extension is in an experimental state."""
         return True
 
     @override
@@ -50,12 +52,12 @@ class FlaskExtension(Extension):
           - build-base: ubuntu:22.04 (only if user specify bare without a build-base)
           - platform: amd64
         """
-        snippet = {}
+        snippet: Dict[str, Any] = {}
         if "run_user" not in self.yaml_data:
             snippet["run_user"] = "_daemon_"
         if (
-                "build-base" not in self.yaml_data and
-                self.yaml_data.get("base", "bare") == "bare"
+            "build-base" not in self.yaml_data
+            and self.yaml_data.get("base", "bare") == "bare"
         ):
             snippet["build-base"] = "ubuntu:22.04"
         if "platforms" not in self.yaml_data:
@@ -64,6 +66,7 @@ class FlaskExtension(Extension):
 
     @override
     def get_part_snippet(self) -> Dict[str, Any]:
+        """Return the part snippet to apply to existing parts."""
         return {}
 
     @override
@@ -79,26 +82,24 @@ class FlaskExtension(Extension):
             python_requirements.append("requirements.txt")
         ignores = [".git", "node_modules"]
         source_files = [
-            f for f in os.listdir(self.project_root)
+            f
+            for f in os.listdir(self.project_root)
             if f not in ignores and not f.endswith(".rock")
         ]
-        renaming_map = {
-            f: os.path.join("srv/flask/app", f)
-            for f in source_files
-        }
+        renaming_map = {f: os.path.join("srv/flask/app", f) for f in source_files}
         snippet = {
             "flask-extension/dependencies": {
                 "plugin": "python",
                 "stage-packages": ["python3-venv"],
                 "source": ".",
                 "python-packages": ["gunicorn"],
-                "python-requirements": python_requirements
+                "python-requirements": python_requirements,
             },
             "flask-extension/install-app": {
                 "plugin": "dump",
                 "source": ".",
                 "organize": renaming_map,
-                "stage": list(renaming_map.values())
-            }
+                "stage": list(renaming_map.values()),
+            },
         }
         return snippet
