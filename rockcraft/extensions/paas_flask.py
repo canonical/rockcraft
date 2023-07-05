@@ -24,7 +24,7 @@ from overrides import override
 from .extension import Extension
 
 
-class FlaskExtension(Extension):
+class PaasFlask(Extension):
     """An extension to enable Flask support within the Juju PaaS ecosystem.
 
     This extension is a part of the Juju PaaS ecosystem and facilitates the deployment of
@@ -88,14 +88,14 @@ class FlaskExtension(Extension):
         ]
         renaming_map = {f: os.path.join("srv/flask/app", f) for f in source_files}
         snippet = {
-            "flask-extension/dependencies": {
+            "paas-flask/dependencies": {
                 "plugin": "python",
                 "stage-packages": ["python3-venv"],
                 "source": ".",
                 "python-packages": ["gunicorn"],
                 "python-requirements": python_requirements,
             },
-            "flask-extension/install-app": {
+            "paas-flask/install-app": {
                 "plugin": "dump",
                 "source": ".",
                 "organize": renaming_map,
