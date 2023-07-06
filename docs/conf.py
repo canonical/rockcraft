@@ -217,5 +217,6 @@ napoleon_use_ivar = True
 def generate_cli_docs(nil):
     gen_cli_docs.main(project_dir / "docs")
 
+
 def setup(app):
     app.connect("builder-inited", generate_cli_docs)
