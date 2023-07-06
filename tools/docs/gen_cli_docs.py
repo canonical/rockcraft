@@ -4,7 +4,6 @@ import argparse
 import os
 from rockcraft import cli
 from craft_cli.dispatcher import _CustomArgumentParser, Dispatcher
-from craft_cli.helptexts import HelpBuilder
 
 
 def command_page_header(cmd, options_str, required_str):
@@ -24,16 +23,8 @@ Usage
 """
 
 
-def make_link(prefix, name):
-    return ":ref:`" + prefix + "_" + name + "`"
-
-
 def make_sentence(t):
     return t[:1].upper() + t[1:].rstrip(".") + "."
-
-
-def make_arg(t):
-    return "``" + t + "``"
 
 
 def not_none(*args):
@@ -47,7 +38,7 @@ def make_section(title, items):
         s = f"{title}\n{underline}\n\n"
 
     for dest, (names, help_str) in sorted(items):
-        names = " or ".join([make_arg(name) for name in names])
+        names = " or ".join([f"``{name}``" for name in names])
         description = make_sentence(help_str)
         s += f"{names}\n   {description}\n"
 
@@ -66,7 +57,7 @@ def main(docs_dir):
         commands_ref_dir.mkdir()
 
     # Create a dispatcher like Rockcraft does to get access to the same options.
-    dispatcher = cli.craft_cli.Dispatcher(
+    dispatcher = Dispatcher(
         "rockcraft",
         cli.COMMAND_GROUPS,
         summary="A tool to create OCI images",
@@ -116,7 +107,7 @@ def main(docs_dir):
             f.write(make_section("Global options", global_options.items()))
 
             # Add a section for the command to be included in the group reference.
-            g.write(make_link("ref_commands", cmd.name) + "\n")
+            g.write(f":ref:`ref_commands_{cmd.name}`\n")
             g.write("   " + make_sentence(cmd.help_msg).replace("\n", "\n   ") + "\n\n")
 
             # Add an entry in the table of contents.

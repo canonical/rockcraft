@@ -28,16 +28,14 @@
 # documentation root, make it absolute.
 #
 
+import os
 import pathlib
 import sys
 
 project_dir = pathlib.Path("..").resolve()
-tools_dir = (project_dir / "tools" / "docs").resolve()
 sys.path.insert(0, str(project_dir.absolute()))
-sys.path.insert(0, str(tools_dir.absolute()))
 
 import rockcraft  # noqa: E402
-import gen_cli_docs  # noqa: E402
 
 # -- Project information -----------------------------------------------------
 
@@ -215,7 +213,8 @@ napoleon_use_ivar = True
 
 
 def generate_cli_docs(nil):
-    gen_cli_docs.main(project_dir / "docs")
+    gen_cli_docs_path = (project_dir / "tools" / "docs" / "gen_cli_docs.py").resolve()
+    os.system(str(gen_cli_docs_path))
 
 
 def setup(app):
