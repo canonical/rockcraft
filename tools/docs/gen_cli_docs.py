@@ -3,6 +3,8 @@
 import argparse
 import os
 from rockcraft import cli
+from craft_cli.dispatcher import _CustomArgumentParser, Dispatcher
+from craft_cli.helptexts import HelpBuilder
 
 
 def command_page_header(cmd, options_str, required_str):
@@ -72,6 +74,8 @@ def main(docs_dir):
         default_command=cli.commands.PackCommand,
     )
 
+    help_builder = dispatcher._help_builder
+
     global_options = {}
     for arg in dispatcher.global_arguments:
         opts = not_none(arg.short_option, arg.long_option)
@@ -86,7 +90,7 @@ def main(docs_dir):
 
         for cmd_class in sorted(group.commands, key=lambda c: c.name):
             cmd = cmd_class({})
-            p = cli.craft_cli.dispatcher._CustomArgumentParser()
+            p = _CustomArgumentParser(help_builder)
             cmd.fill_parser(p)
 
             options = {}
