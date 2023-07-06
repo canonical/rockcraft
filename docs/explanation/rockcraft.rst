@@ -83,8 +83,8 @@ production-grade container images.
 
 Furthermore, Rockcraft is built on top of existing concepts and within the same
 family as `Snapcraft <https://snapcraft.io/docs/snapcraft-overview>`_ and
-`Charmcraft <https://juju.is/docs/sdk/charmcraft-cli-commands>`_, such that its
-adoption becomes seamless for those already used to building Snaps and Charms.
+`Charmcraft`_, such that its adoption becomes seamless for those already used
+to building Snaps and Charms.
 
 
 .. _Unit 42 / Znet: https://www.zdnet.com/article/96-of-third-party-container-applications-deployed-in-cloud-infrastructure-contain-known-vulnerabilities-unit-42/

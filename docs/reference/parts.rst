@@ -9,8 +9,7 @@ Rockcraft parts
 
 If this sentence sounds familiar, it's because **it is familiar**!
 Rockcraft parts are inherited from other existing Craft tools like
-`Snapcraft <https://github.com/snapcore/snapcraft>`_ and
-`Charmcraft <https://github.com/canonical/charmcraft>`_.
+`Snapcraft`_ and `Charmcraft`_.
 
 Rockcraft *parts* go through the same lifecycle steps as Charmcraft and
 `Snapcraft parts <https://snapcraft.io/docs/parts-lifecycle>`_.
