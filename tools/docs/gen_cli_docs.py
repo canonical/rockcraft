@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 
 import argparse
-import os
-from rockcraft import cli
 from craft_cli.dispatcher import _CustomArgumentParser, Dispatcher
+import os
+import pathlib
+from rockcraft import cli
+import sys
 
 
 def command_page_header(cmd, options_str, required_str):
@@ -118,3 +120,8 @@ def main(docs_dir):
     f.write(".. toctree::\n   :hidden:\n\n")
     for name in sorted(toc):
         f.write(f"   /reference/commands/{name}\n")
+
+
+if __name__ == "__main__":
+    if len(sys.argv) == 2:
+        main(pathlib.Path(sys.argv[1]))

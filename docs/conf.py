@@ -214,7 +214,7 @@ napoleon_use_ivar = True
 
 def generate_cli_docs(nil):
     gen_cli_docs_path = (project_dir / "tools" / "docs" / "gen_cli_docs.py").resolve()
-    os.system(str(gen_cli_docs_path))
+    os.system("%s %s" % (gen_cli_docs_path, project_dir / "docs"))
 
 
 def setup(app):
