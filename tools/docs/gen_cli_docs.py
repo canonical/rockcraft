@@ -11,6 +11,7 @@ sys.path.insert(0, str((this_dir / ".." / "..").absolute()))
 
 from rockcraft import cli
 
+
 def command_page_header(cmd, options_str, required_str):
     underline = "=" * len(cmd.name)
     return f"""
