@@ -86,7 +86,7 @@ def main(docs_dir):
 
         for cmd_class in sorted(group.commands, key=lambda c: c.name):
             cmd = cmd_class({})
-            p = argparse.ArgumentParser()
+            p = cli.craft_cli.dispatcher._CustomArgumentParser()
             cmd.fill_parser(p)
 
             options = {}
