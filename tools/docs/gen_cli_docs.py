@@ -4,9 +4,12 @@ import argparse
 from craft_cli.dispatcher import _CustomArgumentParser, Dispatcher
 import os
 import pathlib
-from rockcraft import cli
 import sys
 
+this_dir = pathlib.Path(os.path.split(__file__)[0])
+sys.path.insert(0, str((this_dir / ".." / "..").absolute()))
+
+from rockcraft import cli
 
 def command_page_header(cmd, options_str, required_str):
     underline = "=" * len(cmd.name)
