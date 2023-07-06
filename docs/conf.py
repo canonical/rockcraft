@@ -37,7 +37,7 @@ sys.path.insert(0, str(project_dir.absolute()))
 sys.path.insert(0, str(tools_dir.absolute()))
 
 import rockcraft  # noqa: E402
-import gen_cli_docs # noqa: E402
+import gen_cli_docs  # noqa: E402
 
 # -- Project information -----------------------------------------------------
 
