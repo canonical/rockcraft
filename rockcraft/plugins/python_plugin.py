@@ -85,20 +85,35 @@ class PythonPlugin(python_plugin.PythonPlugin):
 
     @override
     def _get_script_interpreter(self) -> str:
-        """Overridden because Python is always available in /bin/python3."""
+        """Overridden because Python is always available in /bin."""
         return "#!/bin/${PARTS_PYTHON_INTERPRETER}"
 
     @override
     def get_build_commands(self) -> List[str]:
         """Overridden to add a sitecustomize.py ."""
-        original = super().get_build_commands()
+        commands = []
+
+        # Detect whether PARTS_PYTHON_INTERPRETER is a full path (not supported)
+        commands.append(
+            dedent(
+                """
+                # Detect whether PARTS_PYTHON_INTERPRETER is a full path
+                if [[ "${PARTS_PYTHON_INTERPRETER}" = /* ]]; then
+                    echo "Full paths in \"PARTS_PYTHON_INTERPRETER\" are not allowed: ${PARTS_PYTHON_INTERPRETER}"
+                    exit 1
+                fi
+                """
+            )
+        )
+
+        commands.extend(super().get_build_commands())
 
         # Add a "sitecustomize.py" module to handle the very common case of the
         # ROCK's interpreter being called as "python3"; in this case, because of
         # the default $PATH, "/usr/bin/python3" ends up being called and that is
         # *not* the venv-aware executable. This sitecustomize adds the location
         # of the pip-installed packages.
-        original.append(
+        commands.append(
             dedent(
                 """
                 # Add a sitecustomize.py to import our venv-generated location
@@ -109,12 +124,12 @@ class PythonPlugin(python_plugin.PythonPlugin):
                 """
             )
         )
-        original.append(SITECUSTOMIZE_TEMPLATE)
+        commands.append(SITECUSTOMIZE_TEMPLATE)
 
         # Remove the pyvenv.cfg file that "marks" the virtual environment, because
         # it's not necessary in the presence of the sitecustomize module and this
         # way we get consistent behavior no matter how the interpreter is called.
-        original.append(
+        commands.append(
             dedent(
                 """
                 # Remove pyvenv.cfg file in favor of sitecustomize.py
@@ -123,4 +138,4 @@ class PythonPlugin(python_plugin.PythonPlugin):
             )
         )
 
-        return original
+        return commands
