@@ -19,10 +19,11 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import pytest
+from craft_cli import EmitterMode, emit
 from craft_parts.errors import OsReleaseVersionIdError
 from craft_parts.utils.os_utils import OsRelease
 
-from rockcraft import plugins
+from rockcraft import errors, plugins
 from rockcraft.parts import PartsLifecycle
 from rockcraft.plugins.python_plugin import SITECUSTOMIZE_TEMPLATE
 from rockcraft.project import Project
@@ -45,14 +46,17 @@ def setup_python_test(monkeypatch):
     plugins.register()
 
 
-def run_lifecycle(base: str, work_dir: Path) -> None:
+def run_lifecycle(base: str, work_dir: Path, extra_part_props=None) -> None:
     source = Path(__file__).parent / "python_source"
+
+    extra = extra_part_props or {}
 
     parts = {
         "my-part": {
             "plugin": "python",
             "source": str(source),
             "stage-packages": ["python3-venv"],
+            **extra,
         }
     }
 
@@ -158,3 +162,21 @@ def test_python_plugin_bare(tmp_path):
     # sitecustomize.py module.
     pyvenv_cfg = tmp_path / "stage/pyvenv.cfg"
     assert not pyvenv_cfg.is_file()
+
+
+def test_python_plugin_invalid_interpreter(tmp_path):
+    """Check that an invalid value for PARTS_PYTHON_INTERPRETER fails the build"""
+    log_filepath = tmp_path / "log.txt"
+    emit.init(EmitterMode.VERBOSE, "rockcraft", "rockcraft", log_filepath=log_filepath)
+
+    extra_part = {
+        "build-environment": [{"PARTS_PYTHON_INTERPRETER": "/full/path/python3"}]
+    }
+
+    with pytest.raises(errors.PartsLifecycleError):
+        run_lifecycle("bare", tmp_path, extra_part_props=extra_part)
+
+    emit.ended_ok()
+
+    expected_text = ":: Absolute paths in PARTS_PYTHON_INTERPRETER are not allowed: /full/path/python3"
+    assert expected_text in log_filepath.read_text()
