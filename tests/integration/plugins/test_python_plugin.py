@@ -178,7 +178,5 @@ def test_python_plugin_invalid_interpreter(tmp_path):
 
     emit.ended_ok()
 
-    expected_text = (
-        ":: Full paths in PARTS_PYTHON_INTERPRETER are not allowed: /full/path/python3"
-    )
+    expected_text = ":: Absolute paths in PARTS_PYTHON_INTERPRETER are not allowed: /full/path/python3"
     assert expected_text in log_filepath.read_text()

@@ -97,9 +97,9 @@ class PythonPlugin(python_plugin.PythonPlugin):
         commands.append(
             dedent(
                 """
-                # Detect whether PARTS_PYTHON_INTERPRETER is a full path
+                # Detect whether PARTS_PYTHON_INTERPRETER is an absolute path
                 if [[ "${PARTS_PYTHON_INTERPRETER}" = /* ]]; then
-                    echo "Full paths in \"PARTS_PYTHON_INTERPRETER\" are not allowed: ${PARTS_PYTHON_INTERPRETER}"
+                    echo "Absolute paths in \"PARTS_PYTHON_INTERPRETER\" are not allowed: ${PARTS_PYTHON_INTERPRETER}"
                     exit 1
                 fi
                 """
