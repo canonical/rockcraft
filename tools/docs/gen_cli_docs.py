@@ -14,12 +14,13 @@ from rockcraft import cli
 
 def command_page_header(cmd, options_str, required_str):
     underline = "=" * len(cmd.name)
+    overview = fix_spelling(cmd.overview)
     return f"""
 .. _ref_commands_{cmd.name}:
 
 {cmd.name}
 {underline}
-{cmd.overview}
+{overview}
 
 Usage
 -----
@@ -27,6 +28,11 @@ Usage
 :command:`rockcraft {cmd.name}{options_str}{required_str}`
 
 """
+
+
+# Temporary fix for spelling checks.
+def fix_spelling(t):
+    return t.replace("artifact", "artefact")
 
 
 def make_sentence(t):
@@ -45,7 +51,7 @@ def make_section(title, items):
 
     for dest, (names, help_str) in sorted(items):
         names = " or ".join([f"``{name}``" for name in names])
-        description = make_sentence(help_str)
+        description = make_sentence(fix_spelling(help_str))
         s += f"{names}\n   {description}\n"
 
     s += "\n"
@@ -114,7 +120,7 @@ def main(docs_dir):
 
             # Add a section for the command to be included in the group reference.
             g.write(f":ref:`ref_commands_{cmd.name}`\n")
-            g.write("   " + make_sentence(cmd.help_msg).replace("\n", "\n   ") + "\n\n")
+            g.write("   " + make_sentence(fix_spelling(cmd.help_msg)).replace("\n", "\n   ") + "\n\n")
 
             # Add an entry in the table of contents.
             toc.append(cmd.name)
