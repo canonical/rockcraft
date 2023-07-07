@@ -13,7 +13,6 @@
 #
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
-import logging
 import os
 import typing
 from dataclasses import dataclass
@@ -174,7 +173,7 @@ def test_python_plugin_invalid_interpreter(tmp_path):
         "build-environment": [{"PARTS_PYTHON_INTERPRETER": "/full/path/python3"}]
     }
 
-    with pytest.raises(errors.PartsLifecycleError) as exc:
+    with pytest.raises(errors.PartsLifecycleError):
         run_lifecycle("bare", tmp_path, extra_part_props=extra_part)
 
     emit.ended_ok()
