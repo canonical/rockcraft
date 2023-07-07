@@ -16,6 +16,7 @@ python_version = "3.8"
 exclude = [
     "build",
     "results",
+    "tests/spread"
 ]
 warn_unused_configs = true
 warn_redundant_casts = true
