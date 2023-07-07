@@ -17,4 +17,4 @@ execute: |
   rm "${ROCK}"
 
   docker run --rm $IMAGE exec python3.6 --version | MATCH "Python 3.6"
-  docker run --rm $IMAGE exec black --help
+  docker run --rm $IMAGE exec hello | MATCH "hello world"

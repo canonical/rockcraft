@@ -16,8 +16,7 @@ package-repositories:
 parts:
     my-part:
         plugin: python
-        source: .
+        source: src
         stage-packages: [python3.6-venv]
-        python-packages: [black]
         build-environment:
             - PARTS_PYTHON_INTERPRETER: python3.6
