@@ -27,5 +27,3 @@ To learn more about Chisel and how it works, have a look at
 
 Do you need a package slice that doesn't exist yet? Please feel free to propose
 your slice definition for inclusion in `Chisel releases`_.
-
-.. include:: /links.txt
