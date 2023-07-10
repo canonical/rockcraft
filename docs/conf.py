@@ -74,6 +74,7 @@ if "discourse" in html_context:
 # ones.
 extensions = [
     "sphinx.ext.autodoc",
+    "sphinx.ext.ifconfig",
     "sphinx.ext.napoleon",
     "sphinx.ext.viewcode",
     "sphinx_copybutton",
@@ -102,12 +103,9 @@ linkcheck_ignore = [
     "https://github.com/canonical/pebble#layer-specification",
 ]
 
-rst_prolog = """
-.. |br| raw:: html
-
-   <br />
+rst_epilog = """
+.. include:: /reuse/links.txt
 """
-
 
 # -- Options for HTML output -------------------------------------------------
 
