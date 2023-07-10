@@ -32,7 +32,9 @@ Usage
 
 # Temporary fix for spelling checks.
 def fix_spelling(t):
-    return t.replace("artifact", "artefact")
+    for old, new in [("artifact", "artefact"), ("Initialize", "Initialise")]:
+        t = t.replace(old, new)
+    return t
 
 
 def make_sentence(t):
