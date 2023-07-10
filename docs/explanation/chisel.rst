@@ -44,5 +44,3 @@ could see as a block of stone from which we can carve and extract only the
 small and relevant parts that we need to run our applications, thus keeping
 ROCKs small and less exposed to vulnerabilities.
 
-.. include:: /links.txt
-
