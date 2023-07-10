@@ -50,7 +50,7 @@ def test_invariants(base, tmp_path):
     plugin = create_plugin(base, tmp_path)
 
     assert plugin._get_system_python_interpreter() is None
-    assert plugin._get_script_interpreter() == "#!/bin/python3"
+    assert plugin._get_script_interpreter() == "#!/bin/${PARTS_PYTHON_INTERPRETER}"
 
 
 @pytest.mark.parametrize("base", ALL_BASES)

@@ -7,13 +7,16 @@ ensure_newline_before_comments = true
 line_length = 88
 
 [tool.black]
-exclude = "docs/sphinx-starter-pack"
+# Use extend-exclude so that the default excludes (including those from .gitignore)
+# are not overwritten.
+extend-exclude = "docs/sphinx-starter-pack"
 
 [tool.mypy]
 python_version = "3.8"
 exclude = [
     "build",
     "results",
+    "tests/spread"
 ]
 warn_unused_configs = true
 warn_redundant_casts = true
