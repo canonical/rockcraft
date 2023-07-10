@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-"""An experimental extension for the Juju PaaS Flask framework."""
+"""An experimental extension for the Flask framework."""
 
 import os
 from typing import Any, Dict, Optional, Tuple
@@ -24,12 +24,8 @@ from overrides import override
 from .extension import Extension
 
 
-class PaasFlask(Extension):
-    """An extension to enable Flask support within the Juju PaaS ecosystem.
-
-    This extension is a part of the Juju PaaS ecosystem and facilitates the deployment of
-    Flask-based applications.
-    """
+class Flask(Extension):
+    """An extension for constructing Python applications based on the Flask framework."""
 
     @staticmethod
     @override
@@ -74,8 +70,8 @@ class PaasFlask(Extension):
         """Create necessary parts to facilitate the flask application.
 
         Parts added:
-            - flask-extension/dependencies: install Python dependencies
-            - flask-extension/install-app: copy the flask project into the OCI image
+            - flask/dependencies: install Python dependencies
+            - flask/install-app: copy the flask project into the OCI image
         """
         python_requirements = []
         if (self.project_root / "requirements.txt").exists():
@@ -88,14 +84,16 @@ class PaasFlask(Extension):
         ]
         renaming_map = {f: os.path.join("srv/flask/app", f) for f in source_files}
         snippet = {
-            "paas-flask/dependencies": {
+            "flask/dependencies": {
                 "plugin": "python",
                 "stage-packages": ["python3-venv"],
                 "source": ".",
                 "python-packages": ["gunicorn"],
                 "python-requirements": python_requirements,
             },
-            "paas-flask/install-app": {
+            # Users are required to compile any static assets prior to executing the
+            # rockcraft pack command, so assets can be included in the final OCI image.
+            "flask/install-app": {
                 "plugin": "dump",
                 "source": ".",
                 "organize": renaming_map,

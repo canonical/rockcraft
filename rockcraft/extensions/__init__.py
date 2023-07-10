@@ -27,6 +27,6 @@ __all__ = [
     "unregister",
 ]
 
-from .paas_flask import PaasFlask as _PaasFlask
+from .flask import Flask as _Flask
 
-register("paas-flask", _PaasFlask)
+register("flask", _Flask)
