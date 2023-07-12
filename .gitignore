@@ -148,6 +148,7 @@ rockcraft_*.snap
 
 docs/warnings.txt
 docs/.sphinx/.wordlist.dic
+docs/reference/commands
 .DS_Store
 __pycache__
 .idea/
