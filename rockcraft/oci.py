@@ -386,7 +386,7 @@ class Image:
             emit.progress("Writing new Pebble layer file")
             self.add_layer(tag, tmpfs_path)
 
-    def set_environment(self, env: Dict[str, Optional[str]]) -> None:
+    def set_environment(self, env: Dict[str, str]) -> None:
         """Set the OCI image environment.
 
         :param env: A dictionary mapping environment variables to
