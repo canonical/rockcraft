@@ -203,6 +203,9 @@ def _pack(
             base_layer_dir=base_layer_dir,
         )
 
+    if project.environment:
+        new_image.set_environment(project.environment)
+
     # Set annotations and metadata, both dynamic and the ones based on user-provided properties
     # Also include the "created" timestamp, just before packing the image
     emit.progress("Adding metadata")
