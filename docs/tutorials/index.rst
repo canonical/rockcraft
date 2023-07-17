@@ -15,3 +15,5 @@ reproducible steps.
    Chisel packages into a ROCK <chisel.rst>
    Publish a ROCK <publish-a-rock.rst>
    Migrate a Docker image to a Chiselled ROCK <migrate-to-chiselled-rock.rst>
+   Convert your ROCK to a docker image <convert-rock-to-docker-image.rst>
+
