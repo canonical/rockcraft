@@ -73,9 +73,11 @@ class Flask(Extension):
             - flask/dependencies: install Python dependencies
             - flask/install-app: copy the flask project into the OCI image
         """
-        python_requirements = []
-        if (self.project_root / "requirements.txt").exists():
-            python_requirements.append("requirements.txt")
+        if not (self.project_root / "requirements.txt").exists():
+            raise ValueError(
+                "missing requirements.txt file, "
+                "flask extension requires this file with flask specified as a dependency"
+            )
         ignores = [".git", "node_modules"]
         source_files = [
             f
@@ -89,7 +91,7 @@ class Flask(Extension):
                 "stage-packages": ["python3-venv"],
                 "source": ".",
                 "python-packages": ["gunicorn"],
-                "python-requirements": python_requirements,
+                "python-requirements": ["requirements.txt"],
             },
             # Users are required to compile any static assets prior to executing the
             # rockcraft pack command, so assets can be included in the final OCI image.
