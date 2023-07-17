@@ -386,21 +386,21 @@ class Image:
             emit.progress("Writing new Pebble layer file")
             self.add_layer(tag, tmpfs_path)
 
-    def set_env(self, env: List[Dict[str, str]]) -> None:
+    def set_environment(self, env: Dict[str, str]) -> None:
         """Set the OCI image environment.
 
-        :param env: A list of dictionaries mapping environment variables to
+        :param env: A dictionary mapping environment variables to
             their values.
         """
-        emit.progress("Configuring env...")
+        emit.progress("Configuring OCI environment...")
         image_path = self.path / self.image_name
-        params = ["--clear=config.env"]
+        params = []
         env_list = []
-        for entry in env:
-            for name, value in entry.items():
-                env_item = f"{name}={value}"
-                env_list.append(env_item)
-                params.extend(["--config.env", env_item])
+
+        for name, value in env.items():
+            env_item = f"{name}={value}"
+            env_list.append(env_item)
+            params.extend(["--config.env", env_item])
         _config_image(image_path, params)
         emit.progress(f"Environment set to {env_list}", permanent=True)
 

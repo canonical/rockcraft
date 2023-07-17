@@ -25,13 +25,15 @@
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
-# documentation root, use os.path.abspath to make it absolute, like shown here.
+# documentation root, make it absolute.
 #
 
+import os
 import pathlib
 import sys
 
-sys.path.insert(0, str(pathlib.Path("..").absolute()))
+project_dir = pathlib.Path("..").resolve()
+sys.path.insert(0, str(project_dir.absolute()))
 
 import rockcraft  # noqa: E402
 
@@ -72,6 +74,7 @@ if "discourse" in html_context:
 # ones.
 extensions = [
     "sphinx.ext.autodoc",
+    "sphinx.ext.ifconfig",
     "sphinx.ext.napoleon",
     "sphinx.ext.viewcode",
     "sphinx_copybutton",
@@ -100,6 +103,9 @@ linkcheck_ignore = [
     "https://github.com/canonical/pebble#layer-specification",
 ]
 
+rst_epilog = """
+.. include:: /reuse/links.txt
+"""
 
 # -- Options for HTML output -------------------------------------------------
 
@@ -202,3 +208,12 @@ typehints_document_rtype = True
 
 # Enable support for google-style instance attributes.
 napoleon_use_ivar = True
+
+
+def generate_cli_docs(nil):
+    gen_cli_docs_path = (project_dir / "tools" / "docs" / "gen_cli_docs.py").resolve()
+    os.system("%s %s" % (gen_cli_docs_path, project_dir / "docs"))
+
+
+def setup(app):
+    app.connect("builder-inited", generate_cli_docs)

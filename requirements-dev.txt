@@ -17,8 +17,8 @@ colorama==0.4.6
 commonmark==0.9.1
 coverage==6.5.0
 craft-archives==1.1.0
-craft-cli==2.0.0
-craft-parts==1.22.0
+craft-cli==2.0.1
+craft-parts==1.23.0
 craft-providers==1.8.0
 cryptography==38.0.4
 Deprecated==1.2.13

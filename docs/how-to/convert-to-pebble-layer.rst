@@ -60,10 +60,10 @@ user being the only scripted step.
 
 To reproduce what the reference NGINX Dockerfile is doing, notice the use of
 ``package-repositories`` in this ``rockcraft.yaml`` file, allowing you to also
-make use of NGINX's 3rd party package repository (even using the same `GPG key
-ID
+make use of NGINX's 3rd party package repository (even using the same
+GPG key ID as the one used in `the Dockerfile
 <https://github.com/nginxinc/docker-nginx/blob/
-73a5acae6945b75b433cafd0c9318e4378e72cbb/mainline/debian/Dockerfile#L21>`_).
+73a5acae6945b75b433cafd0c9318e4378e72cbb/mainline/debian/Dockerfile>`_).
 
 **NOTE**: to add custom configuration files, you can use the ``dump`` plugin.
 

@@ -1,0 +1,13 @@
+name: overlay-logs
+base: ubuntu:22.04
+version: '0.1'
+summary: Check overlay logs
+description: Check that actions done inside the overlay are logged
+license: GPL-3.0
+platforms:
+    amd64:
+
+parts:
+    my-part:
+        plugin: nil
+        overlay-packages: [idontexist]

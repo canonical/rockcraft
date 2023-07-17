@@ -228,6 +228,7 @@ class Project(YamlModel):
     platforms: Dict[str, Any]
     base: Literal["bare", "ubuntu:18.04", "ubuntu:20.04", "ubuntu:22.04"]
     build_base: Optional[Literal["ubuntu:18.04", "ubuntu:20.04", "ubuntu:22.04"]]
+    environment: Optional[Dict[str, str]]
     run_user: Optional[Literal[tuple(SUPPORTED_GLOBAL_USERNAMES)]]  # type: ignore
     services: Optional[Dict[str, Service]]
 
