@@ -12,6 +12,16 @@ needed for the ROCK to function properly.
 
 See :ref:`how_to_use_chisel` for information about using the tool.
 
+Slice definitions
+-----------------
+
+A slice is a yaml file permitting chisel to slice the package,
+`here <https://github.com/canonical/chisel#slice-definitions>`_ is
+the slice definition reference.
+
+To find more examples or if you want to contribute,
+check `chisel-releases <https://github.com/canonical/chisel-releases>`_.
+
 Package slices
 --------------
 
