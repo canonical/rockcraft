@@ -448,6 +448,28 @@ class Project(YamlModel):
 
         return package_repositories
 
+    @pydantic.validator("environment")
+    @classmethod
+    def _forbid_env_var_bash_interpolation(
+        cls, environment: Optional[Dict[str, str]]
+    ) -> Dict[str, str]:
+        """Variable interpolation isn't yet supported, so forbid attempts to do it."""
+        if not environment:
+            return {}
+
+        values_with_dollar_signs = list(
+            filter(lambda v: "$" in str(v[:-1]), environment.values())
+        )
+        if values_with_dollar_signs:
+            raise ProjectValidationError(
+                str(
+                    "String interpolation not allowed for: "
+                    f"{' ; '.join(values_with_dollar_signs)}"
+                )
+            )
+
+        return environment
+
     def to_yaml(self) -> str:
         """Dump this project as a YAML string."""
 

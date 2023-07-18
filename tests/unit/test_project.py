@@ -197,6 +197,26 @@ def test_project_unmarshal_with_unsupported_fields(unsupported_field, yaml_loade
     )
 
 
+@pytest.mark.parametrize(
+    "variable,is_forbidden",
+    [("$BAR", True), ("BAR_$BAZ", True), ("BAR$", False)],
+)
+def test_forbidden_env_var_interpolation(
+    check, yaml_loaded_data, variable, is_forbidden
+):
+    yaml_loaded_data["environment"]["foo"] = variable
+
+    if is_forbidden:
+        with pytest.raises(ProjectValidationError) as err:
+            Project.unmarshal(yaml_loaded_data)
+            check.equal(
+                str(err.value), f"String interpolation not allowed for: {variable}"
+            )
+    else:
+        project = Project.unmarshal(yaml_loaded_data)
+        check.is_in("foo", project.environment)
+
+
 @pytest.mark.parametrize("base", ["ubuntu:18.04", "ubuntu:20.04"])
 def test_project_base(yaml_loaded_data, base):
     yaml_loaded_data["base"] = base
