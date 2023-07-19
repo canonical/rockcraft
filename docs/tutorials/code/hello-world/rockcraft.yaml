@@ -11,8 +11,13 @@ build-base: ubuntu:22.04
 platforms:
   amd64:  # Make sure this value matches your computer's architecture
 
-# Parts section
+services:
+  hello:
+    override: replace
+    startup: enabled
+    command: /usr/bin/hello
 
+# Parts section
 parts:
   hello:
     plugin: nil
