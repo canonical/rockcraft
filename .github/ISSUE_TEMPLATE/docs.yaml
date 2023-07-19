@@ -1,0 +1,46 @@
+name: Documentation
+description: File a documentation request
+labels: "documentation"
+body:
+  - type: markdown
+    attributes:
+      value: >
+        Thanks for taking the time to fill out this documentation
+        request! Before submitting your request, please make sure there
+        isn't already a prior issue concerning this. If there is,
+        please join that discussion instead.
+  - type: dropdown
+    id: type
+    attributes:
+      label: Request type
+      description: Is this an issue that needs fixing or a request for enhancing the docs?
+      options:
+        - Fix
+        - Enhancement
+    validations:
+      required: true
+  - type: textarea
+    id: request-description
+    attributes:
+      label: What needs to get done
+      description: >
+        Describe the request and why it should be done
+    validations:
+      required: true
+  - type: input
+    id: page-name
+    attributes:
+      label: Documentation location
+      description: Location of the corresponding documentation page (e.g., file, section, URL), if applicable
+      placeholder: ex. https://canonical-rockcraft.readthedocs-hosted.com/en/latest/tutorials/hello-world/
+    validations:
+      required: false
+  - type: textarea
+    id: additional-information
+    attributes:
+      label: Additional information
+      description: >
+        Include any additional context, screenshots, examples, or references that can
+        help understand the issue or improvement better
+    validations:
+      required: false
