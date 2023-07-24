@@ -44,7 +44,7 @@ class TcpCheck(pydantic.BaseModel):
     """Lightweight schema validation for a Pebble TCP check."""
 
     port: int
-    host: Optional[str] = "localhost"
+    host: Optional[str]
 
     class Config:  # pylint: disable=too-few-public-methods
         """Pydantic model configuration."""
@@ -57,7 +57,7 @@ class ExecCheck(pydantic.BaseModel):
     """Lightweight schema validation for a Pebble exec check."""
 
     command: str
-    service_context: Optional[str] = "localhost"
+    service_context: Optional[str]
     environment: Optional[Dict[str, str]]
     user: Optional[str]
     user_id: Optional[int]

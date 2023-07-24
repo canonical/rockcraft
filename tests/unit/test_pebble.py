@@ -23,7 +23,8 @@ import re
 import yaml
 
 import tests
-from rockcraft.pebble import Pebble, Service
+from rockcraft.pebble import Check, ExecCheck, HttpCheck, Pebble, Service, TcpCheck
+from rockcraft.project import ProjectValidationError
 
 
 @tests.linux_only
@@ -263,3 +264,154 @@ class TestPebble:
         with pytest.raises(pydantic.ValidationError) as err:
             _ = Service(**bad_service)
         assert re.match(error, str(err.value)), "Unexpected Service validation error"
+
+    @pytest.mark.parametrize(
+        "bad_http_check,error",
+        [
+            # Missing fields
+            ({}, r"^1 validation error[\s\S]*url[\s\S]"),
+            # Bad attributes types
+            (
+                {
+                    "url": [1],
+                    "headers": "not a dict",
+                },
+                r"^2 validation errors[\s\S]*"
+                r"url[\s\S]*str type expected[\s\S]*"
+                r"headers[\s\S]*value is not a valid dict[\s\S]*",
+            ),
+        ],
+    )
+    def test_bad_http_checks(self, bad_http_check, error):
+        with pytest.raises(pydantic.ValidationError) as err:
+            _ = HttpCheck(**bad_http_check)
+        assert re.match(error, str(err.value)), "Unexpected HttpCheck validation error"
+
+    @pytest.mark.parametrize(
+        "bad_tcp_check,error",
+        [
+            # Missing fields
+            ({}, r"^1 validation error[\s\S]*port[\s\S]"),
+            # Bad attributes types
+            (
+                {
+                    "port": "not an int",
+                    "host": ["string list"],
+                },
+                r"^2 validation errors[\s\S]*"
+                r"port[\s\S]*value is not a valid integer[\s\S]*"
+                r"host[\s\S]*str type expected[\s\S]*",
+            ),
+        ],
+    )
+    def test_bad_tcp_checks(self, bad_tcp_check, error):
+        with pytest.raises(pydantic.ValidationError) as err:
+            _ = TcpCheck(**bad_tcp_check)
+        assert re.match(error, str(err.value)), "Unexpected TcpCheck validation error"
+
+    @pytest.mark.parametrize(
+        "bad_exec_check,error",
+        [
+            # Missing fields
+            ({}, r"^1 validation error[\s\S]*command[\s\S]"),
+            # Bad attributes types
+            (
+                {
+                    "command": ["string list"],
+                    "service-context": ["string list"],
+                    "environment": "not a dict",
+                    "user": ["string list"],
+                    "user-id": "not an int",
+                    "group": ["string list"],
+                    "group-id": "not an int",
+                    "working-dir": ["string list"],
+                },
+                r"^8 validation errors[\s\S]*"
+                r"command[\s\S]*str type expected[\s\S]*"
+                r"service-context[\s\S]*str type expected[\s\S]*"
+                r"environment[\s\S]*value is not a valid dict[\s\S]*"
+                r"user[\s\S]*str type expected[\s\S]*"
+                r"user-id[\s\S]*value is not a valid integer[\s\S]*"
+                r"group[\s\S]*str type expected[\s\S]*"
+                r"group-id[\s\S]*value is not a valid integer[\s\S]*"
+                r"working-dir[\s\S]*str type expected[\s\S]*",
+            ),
+        ],
+    )
+    def test_bad_exec_checks(self, bad_exec_check, error):
+        with pytest.raises(pydantic.ValidationError) as err:
+            _ = ExecCheck(**bad_exec_check)
+        assert re.match(error, str(err.value)), "Unexpected ExecCheck validation error"
+
+    def test_full_check(self):
+        full_check = {
+            "override": "merge",
+            "level": "alive",
+            "period": "1s",
+            "timeout": "10s",
+            "threshold": 3,
+            "http": {"url": "http://foo.bar"},
+        }
+        _ = Check(**full_check)
+
+    def test_minimal_check(self):
+        _ = Check(override="merge", exec={"command": "foo cmd"})  # pyright: ignore
+
+    @pytest.mark.parametrize(
+        "bad_check,exception,error",
+        [
+            # Missing check type fields
+            (
+                {},
+                ProjectValidationError,
+                r"Must specify one of http, tcp, exec for each check.",
+            ),
+            # Missing mandatory fields
+            (
+                {"exec": {"command": "foo"}},
+                pydantic.ValidationError,
+                r"^1 validation error[\s\S]*override[\s\S]*",
+            ),
+            # Too many check types
+            (
+                {"override": "merge", "exec": {"command": "foo"}, "tcp": {"port": 1}},
+                ProjectValidationError,
+                r"Only one of http, tcp, exec may be specified for each check.",
+            ),
+            # Bad attributes values
+            (
+                {
+                    "override": "bad value",
+                    "level": "bad value",
+                    "tcp": {"port": 1},
+                },
+                pydantic.ValidationError,
+                r"^2 validation errors[\s\S]*"
+                r"override[\s\S]*unexpected value[\s\S]*'merge', 'replace'[\s\S]*"
+                r"level[\s\S]*unexpected value[\s\S]*'alive', 'ready'[\s\S]*",
+            ),
+            # Bad attribute types
+            (
+                {
+                    "override": ["merge"],
+                    "level": ["alive"],
+                    "period": [1],
+                    "timeout": [1],
+                    "threshold": "not an int",
+                    "http": "not a dict",
+                },
+                pydantic.ValidationError,
+                r"^6 validation errors[\s\S]*"
+                r"unhashable type: 'list'[\s\S]*"
+                r"unhashable type: 'list'[\s\S]*"
+                r"str type expected[\s\S]*"
+                r"str type expected[\s\S]*"
+                r"value is not a valid integer[\s\S]*"
+                r"value is not a valid dict[\s\S]*",
+            ),
+        ],
+    )
+    def test_bad_checks(self, bad_check, exception, error):
+        with pytest.raises(exception) as err:
+            _ = Check(**bad_check)
+        assert re.match(error, str(err.value)), "Unexpected Check validation error"
