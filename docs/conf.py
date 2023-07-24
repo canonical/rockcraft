@@ -32,6 +32,8 @@ import os
 import pathlib
 import sys
 
+import craft_parts_docs
+
 project_dir = pathlib.Path("..").resolve()
 sys.path.insert(0, str(project_dir.absolute()))
 
@@ -217,3 +219,12 @@ def generate_cli_docs(nil):
 
 def setup(app):
     app.connect("builder-inited", generate_cli_docs)
+
+
+# Setup libraries documentation snippets for use in rockcraft docs.
+common_docs_path = pathlib.Path(__file__).parent / "common"
+craft_parts_docs_path = pathlib.Path(craft_parts_docs.__file__).parent
+(common_docs_path / "craft-parts").unlink(missing_ok=True)
+(common_docs_path / "craft-parts").symlink_to(
+    craft_parts_docs_path, target_is_directory=True
+)
