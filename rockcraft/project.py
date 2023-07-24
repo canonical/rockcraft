@@ -44,7 +44,7 @@ from pydantic_yaml import YamlModel
 from rockcraft.errors import ProjectLoadError, ProjectValidationError
 from rockcraft.extensions import apply_extensions
 from rockcraft.parts import part_has_overlay, validate_part
-from rockcraft.pebble import Pebble
+from rockcraft.pebble import Pebble, Check
 from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
 
 if TYPE_CHECKING:
@@ -231,6 +231,7 @@ class Project(YamlModel):
     environment: Optional[Dict[str, str]]
     run_user: Optional[Literal[tuple(SUPPORTED_GLOBAL_USERNAMES)]]  # type: ignore
     services: Optional[Dict[str, Service]]
+    checks: Optional[Dict[str, Check]]
 
     package_repositories: Optional[List[Dict[str, Any]]]
 

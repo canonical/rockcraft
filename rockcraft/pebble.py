@@ -18,10 +18,104 @@
 
 import glob
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, Literal, Mapping, Optional
+import pydantic
 
 import yaml
 from craft_cli import emit
+
+from rockcraft.errors import ProjectValidationError
+
+
+class HttpCheck(pydantic.BaseModel):
+    """Lightweight schema validation for a Pebble HTTP check."""
+
+    url: str
+    headers: Optional[Dict[str, str]]
+
+    class Config:  # pylint: disable=too-few-public-methods
+        """Pydantic model configuration."""
+
+        allow_population_by_field_name = True
+        extra = "forbid"
+
+
+class TcpCheck(pydantic.BaseModel):
+    """Lightweight schema validation for a Pebble TCP check."""
+
+    port: int
+    host: Optional[str] = "localhost"
+
+    class Config:  # pylint: disable=too-few-public-methods
+        """Pydantic model configuration."""
+
+        allow_population_by_field_name = True
+        extra = "forbid"
+
+
+class ExecCheck(pydantic.BaseModel):
+    """Lightweight schema validation for a Pebble exec check."""
+
+    command: str
+    service_context: Optional[str] = "localhost"
+    environment: Optional[Dict[str, str]]
+    user: Optional[str]
+    user_id: Optional[int]
+    group: Optional[str]
+    group_id: Optional[int]
+    working_dir: Optional[str]
+
+    class Config:  # pylint: disable=too-few-public-methods
+        """Pydantic model configuration."""
+
+        allow_population_by_field_name = True
+        alias_generator = lambda s: s.replace("_", "-")  # noqa: E731
+        extra = "forbid"
+
+
+class Check(pydantic.BaseModel):
+    """Lightweight schema validation for a Pebble checks.
+
+    Based on
+    https://github.com/canonical/pebble#layer-specification
+    """
+
+    override: Literal["merge", "replace"]
+    level: Optional[Literal["alive", "ready"]]
+    period: Optional[str]
+    timeout: Optional[str]
+    threshold: Optional[int]
+    http: Optional[HttpCheck]
+    tcp: Optional[TcpCheck]
+    exec: Optional[ExecCheck]
+
+    @pydantic.root_validator(pre=True)
+    @classmethod
+    def _validates_check_type(cls, values: Mapping[str, Any]) -> Mapping[str, Any]:
+        """Before validation, make sure only one of 'http', 'tcp' or 'exec' exist."""
+        mutually_exclusive = ["http", "tcp", "exec"]
+        count = sum(field in values for field in mutually_exclusive)
+
+        if count > 1:
+            err = str(
+                f"Only one of {', '.join(mutually_exclusive)} "
+                "may be specified for each check."
+            )
+        elif count < 1:
+            err = str(
+                f"Must specify one of {', '.join(mutually_exclusive)} for each check."
+            )
+        else:
+            return values
+
+        raise ProjectValidationError(err)
+
+    class Config:  # pylint: disable=too-few-public-methods
+        """Pydantic model configuration."""
+
+        allow_population_by_field_name = True
+        alias_generator = lambda s: s.replace("_", "-")  # noqa: E731
+        extra = "forbid"
 
 
 class Pebble:
