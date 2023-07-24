@@ -18,7 +18,7 @@
 
 import glob
 from pathlib import Path
-from typing import Any, Dict, Literal, Mapping, Optional
+from typing import Any, Dict, List, Literal, Mapping, Optional
 import pydantic
 
 import yaml
@@ -109,6 +109,43 @@ class Check(pydantic.BaseModel):
             return values
 
         raise ProjectValidationError(err)
+
+    class Config:  # pylint: disable=too-few-public-methods
+        """Pydantic model configuration."""
+
+        allow_population_by_field_name = True
+        alias_generator = lambda s: s.replace("_", "-")  # noqa: E731
+        extra = "forbid"
+
+
+class Service(pydantic.BaseModel):
+    """Lightweight schema validation for a Pebble service.
+
+    Based on
+    https://github.com/canonical/pebble#layer-specification
+    """
+
+    override: Literal["merge", "replace"]
+    command: str
+    summary: Optional[str]
+    description: Optional[str]
+    startup: Optional[Literal["enabled", "disabled"]]
+    after: Optional[List[str]]
+    before: Optional[List[str]]
+    requires: Optional[List[str]]
+    environment: Optional[Dict[str, str]]
+    user: Optional[str]
+    user_id: Optional[int]
+    group: Optional[str]
+    group_id: Optional[int]
+    working_dir: Optional[str]
+    on_success: Optional[Literal["restart", "shutdown", "ignore"]]
+    on_failure: Optional[Literal["restart", "shutdown", "ignore"]]
+    on_check_failure: Optional[Dict[str, Literal["restart", "shutdown", "ignore"]]]
+    backoff_delay: Optional[str]
+    backoff_factor: Optional[float]
+    backoff_limit: Optional[str]
+    kill_delay: Optional[str]
 
     class Config:  # pylint: disable=too-few-public-methods
         """Pydantic model configuration."""
