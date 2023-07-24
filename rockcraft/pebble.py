@@ -19,8 +19,8 @@
 import glob
 from pathlib import Path
 from typing import Any, Dict, List, Literal, Mapping, Optional
-import pydantic
 
+import pydantic
 import yaml
 from craft_cli import emit
 

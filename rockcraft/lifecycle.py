@@ -199,9 +199,23 @@ def _pack(
     emit.progress("Adding Pebble entrypoint")
 
     new_image.set_entrypoint()
-    if project.services:
-        new_image.set_pebble_services(
-            services=project.dict(exclude_none=True, by_alias=True)["services"],
+
+    services = (
+        project.dict(exclude_none=True, by_alias=True)["services"]
+        if project.services
+        else {}
+    )
+
+    checks = (
+        project.dict(exclude_none=True, by_alias=True)["checks"]
+        if project.checks
+        else {}
+    )
+
+    if services or checks:
+        new_image.set_pebble_layer(
+            services=services,
+            checks=checks,
             name=project.name,
             tag=project.version,
             summary=project.summary,
