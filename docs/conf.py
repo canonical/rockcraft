@@ -103,6 +103,7 @@ linkcheck_ignore = [
     "http://0.0.0.0:8080",
     "https://github.com/canonical/craft-actions#rockcraft-pack",
     "https://github.com/canonical/pebble#layer-specification",
+    "https://juju.is/cloud-native-kubernetes-usage-report-2021#selection-criteria-for-container-images",
 ]
 
 rst_epilog = """
