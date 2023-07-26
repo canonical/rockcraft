@@ -31,7 +31,7 @@ class Flask(Extension):
     @override
     def get_supported_bases() -> Tuple[str, ...]:
         """Return supported bases."""
-        return "bare", "ubuntu:22.04"
+        return "bare", "ubuntu:20.04", "ubuntu:22.04"
 
     @staticmethod
     @override
@@ -78,7 +78,7 @@ class Flask(Extension):
                 "missing requirements.txt file, "
                 "flask extension requires this file with flask specified as a dependency"
             )
-        ignores = [".git", "node_modules"]
+        ignores = [".git", "node_modules", ".yarn"]
         source_files = [
             f
             for f in os.listdir(self.project_root)
