@@ -72,5 +72,6 @@ snapcraft
 subdir
 subdirectory
 submodules
+triaged
 ubuntu
 yaml
