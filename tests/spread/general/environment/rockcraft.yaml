@@ -14,6 +14,7 @@ services:
     startup: enabled
     environment:
       X: "ship it!"
+      CRAFT_VAR: $CRAFT_PROJECT_VERSION
 
 platforms:
   amd64:
