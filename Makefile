@@ -30,6 +30,7 @@ clean: ## Clean artefacts from building, testing, etc.
 	rm -f .coverage
 	rm -rf htmlcov/
 	rm -rf .pytest_cache
+	rm -rf .mypy_cache
 
 .PHONY: coverage
 coverage: ## Run pytest with coverage report.
