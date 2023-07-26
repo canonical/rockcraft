@@ -618,7 +618,7 @@ def _printable_field_location_split(location: str) -> Tuple[str, str]:
     return field_name, "top-level"
 
 
-def load_project(filename: Path) -> Project:
+def load_project(filename: Path) -> Dict[str, Any]:
     """Load and unmarshal the project YAML file.
 
     :param filename: The YAML file to load.
@@ -641,7 +641,7 @@ def load_project(filename: Path) -> Project:
 
     _add_pebble_data(yaml_data)
 
-    return Project.unmarshal(yaml_data)
+    return yaml_data
 
 
 def _add_pebble_data(yaml_data: Dict[str, Any]) -> None:

@@ -20,6 +20,7 @@ import re
 import subprocess
 import textwrap
 from pathlib import Path
+from typing import Any, Dict
 from unittest.mock import patch
 
 import pydantic
@@ -100,7 +101,7 @@ def yaml_loaded_data():
 
 
 @pytest.fixture
-def pebble_part():
+def pebble_part() -> Dict[str, Any]:
     return {
         "pebble": {
             "plugin": "nil",
@@ -114,42 +115,27 @@ def pebble_part():
 def test_project_unmarshal(check, yaml_loaded_data):
     project = Project.unmarshal(yaml_loaded_data)
 
-    check.equal(project.name, "mytest")
-    check.equal(project.title, "My Test")
-    check.equal(project.version, "latest")
-    check.equal(project.base, "ubuntu:20.04")
-    check.equal(project.summary, "example for unit tests")
-    check.equal(
-        project.description,
-        "this is an example of a rockcraft.yaml for the purpose of testing rockcraft",
-    )
-    check.equal(project.rock_license, "Apache-2.0")
-    check.equal(
-        project.environment, {"BAZ": "value1", "FOO": "value3", "BAR": "value2"}
-    )
-    check.equal(project.build_base, "ubuntu:20.04")
-    check.equal(project.package_repositories, [{"type": "apt", "ppa": "ppa/ppa"}])
-    check.equal(
-        project.parts,
-        {
-            "foo": {
-                "plugin": "nil",
-                "overlay-script": "ls",
-            }
-        },
-    )
-    check.equal(
-        project.services,
-        {
-            "hello": Service(
-                **{
-                    "override": "replace",
-                    "command": "/bin/hello",
-                    "on-failure": "restart",
-                }  # type:ignore
+    for attr, v in yaml_loaded_data.items():
+        if attr == "license":
+            # The var license is a built-in,
+            # so we workaround it by using an alias
+            attr = "rock_license"
+
+        if attr == "platforms":
+            # platforms get mutated at validation time
+            assert getattr(project, attr).keys() == v.keys()
+            assert all(
+                "build_on" in platform for platform in getattr(project, attr).values()
             )
-        },
-    )
+            assert all(
+                "build_for" in platform for platform in getattr(project, attr).values()
+            )
+            continue
+        if attr == "services":
+            # Services are classes and not Dicts upfront
+            v["hello"] = Service(**v["hello"])
+
+        check.equal(getattr(project, attr.replace("-", "_")), v)
 
 
 def test_unmarshal_no_repositories(yaml_loaded_data):
@@ -542,38 +528,18 @@ def test_project_bare_overlay(yaml_loaded_data, packages, script):
     )
 
 
-def test_project_load(yaml_data, yaml_loaded_data, pebble_part, tmp_path):
+def test_project_load(check, yaml_data, yaml_loaded_data, pebble_part, tmp_path):
     rockcraft_file = tmp_path / "rockcraft.yaml"
     rockcraft_file.write_text(
         yaml_data,
         encoding="utf-8",
     )
 
+    # The Pebble part should be added to the loaded data
+    yaml_loaded_data["parts"].update(pebble_part)
+
     project = load_project(rockcraft_file)
-
-    for attr, v in yaml_loaded_data.items():
-        if attr == "license":
-            # the var license is a built-in,
-            # so we workaround it by using an alias
-            attr = "rock_license"
-
-        if attr == "parts":
-            v = {**v, **pebble_part}
-        if attr == "platforms":
-            # platforms get mutated at validation time
-            assert getattr(project, attr).keys() == v.keys()
-            assert all(
-                "build_on" in platform for platform in getattr(project, attr).values()
-            )
-            assert all(
-                "build_for" in platform for platform in getattr(project, attr).values()
-            )
-            continue
-        if attr == "services":
-            # services are classes and not Dicts upfront
-            v["hello"] = Service(**v["hello"])
-
-        assert getattr(project, attr.replace("-", "_")) == v
+    check.equal(project, yaml_loaded_data)
 
 
 def test_project_yaml_load_env_order(check, yaml_loaded_data):
@@ -581,7 +547,7 @@ def test_project_yaml_load_env_order(check, yaml_loaded_data):
     check.equal(yaml_loaded_data["environment"], expected_ordered_environment)
 
 
-def test_project_load_existing_pebble(tmp_path):
+def test_project_unmarshal_existing_pebble(tmp_path):
     """Test that trying to load a project that already has a "pebble" part fails."""
     yaml_data = textwrap.dedent(
         """
@@ -612,7 +578,7 @@ def test_project_load_existing_pebble(tmp_path):
     )
 
     with pytest.raises(ProjectValidationError):
-        load_project(rockcraft_file)
+        Project.unmarshal(load_project(rockcraft_file))
 
 
 def test_project_load_error():
