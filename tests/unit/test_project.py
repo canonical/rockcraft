@@ -538,13 +538,12 @@ def test_project_load(check, yaml_data, yaml_loaded_data, pebble_part, tmp_path)
     # The Pebble part should be added to the loaded data
     yaml_loaded_data["parts"].update(pebble_part)
 
-    project = load_project(rockcraft_file)
-    check.equal(project, yaml_loaded_data)
+    project_yaml = load_project(rockcraft_file)
+    check.equal(project_yaml, yaml_loaded_data)
 
-
-def test_project_yaml_load_env_order(check, yaml_loaded_data):
+    # Test that the environment variables are loaded in the right order
     expected_ordered_environment = {"BAZ": "value1", "FOO": "value3", "BAR": "value2"}
-    check.equal(yaml_loaded_data["environment"], expected_ordered_environment)
+    check.equal(project_yaml["environment"], expected_ordered_environment)
 
 
 def test_project_unmarshal_existing_pebble(tmp_path):
