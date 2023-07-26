@@ -38,6 +38,7 @@ cmake
 dev
 dnf
 dotnet
+emacs
 entrypoint
 executables
 filesystem
@@ -54,6 +55,7 @@ linuxcontainers
 literalinclude
 localhost
 lxd
+nano
 nginx
 npm
 oci
