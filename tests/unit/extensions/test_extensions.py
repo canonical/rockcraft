@@ -117,16 +117,16 @@ def test_project_load_extensions(fake_extensions, tmp_path):
     project = load_project(rockcraft_yaml)
 
     # Root snippet extends the project's
-    services = project.services
+    services = project["services"]
     assert services is not None
     assert len(services) == 2
-    assert services["full-extension-service"].command == "fake command"
-    assert services["full-extension-service"].override == "replace"
-    assert services["my-service"].command == "foo"
-    assert services["my-service"].override == "merge"
+    assert services["full-extension-service"]["command"] == "fake command"
+    assert services["full-extension-service"]["override"] == "replace"
+    assert services["my-service"]["command"] == "foo"
+    assert services["my-service"]["override"] == "merge"
 
     # Part snippet extends the existing part
-    parts = project.parts
+    parts = project["parts"]
     assert parts["foo"]["stage-packages"] == [
         "new-package-1",
         "old-package",

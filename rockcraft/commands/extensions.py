@@ -28,7 +28,7 @@ from overrides import overrides
 from pydantic import BaseModel
 
 from rockcraft import extensions
-from rockcraft.project import load_project
+from rockcraft.project import Project, load_project
 
 
 class ExtensionModel(BaseModel):
@@ -97,6 +97,6 @@ class ExpandExtensionsCommand(BaseCommand, abc.ABC):
     @overrides
     def run(self, parsed_args: argparse.Namespace):
         """Print the project's specification with the extensions expanded."""
-        project = load_project(Path("rockcraft.yaml"))
+        project = Project.unmarshal(load_project(Path("rockcraft.yaml")))
 
         emit.message(project.to_yaml())

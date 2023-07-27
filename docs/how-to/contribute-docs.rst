@@ -83,3 +83,34 @@ setting up a virtual environment and building the documentation.
    #wokeignore:rule=master
 .. _literalinclude: https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#directive-literalinclude
 .. _YAML: https://yaml.org/
+.. _`submit an issue`: https://github.com/canonical/rockcraft/issues/new/choose
+.. _`create a fork`: https://github.com/canonical/rockcraft/fork
+.. _`CONTRIBUTING`: https://github.com/canonical/rockcraft/blob/main/CONTRIBUTING.rst
+
+
+Making a contribution
+---------------------
+
+Report issues
+~~~~~~~~~~~~~
+
+If you have a request or found a problem with the documentation, then please
+`submit an issue`_. These issues are supervised and regularly triaged by the
+repository owners. If you don't receive an answer within 2 weeks, please reply
+to your own issue asking for an update.
+
+Propose changes
+~~~~~~~~~~~~~~~
+
+Community contributions are more than welcome. To become an external
+contributor you should:
+
+1. `create a fork`_ of the Rockcraft repository,
+2. commit the changes to your fork (ideally to a new branch),
+    1. make sure to follow the project's `CONTRIBUTING`_ guidelines,
+3. create a Pull Request against the ``main`` branch.
+
+Similarly to new issues, new Pull Requests (PR) are also supervised
+and regularly triaged by the repository owners. If the tests are passing
+and you don't receive an answer within 2 weeks, please add a comment to your
+own PR asking for an update.

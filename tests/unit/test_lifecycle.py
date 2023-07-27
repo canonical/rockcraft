@@ -29,6 +29,23 @@ pytestmark = pytest.mark.usefixtures("reset_callbacks")
 
 
 @pytest.fixture
+def mock_project_yaml(mocker):
+    _project_yaml = {
+        "name": "test-name",
+        "platforms": {
+            "test-platform": {
+                "build_on": ["test-build-on"],
+                "build_for": ["test-build-for"],
+            }
+        },
+        "parts": {"foo": {"plugin": "nil"}},
+        "package_repositories": [],
+        "version": "1.1.1",
+    }
+    yield _project_yaml
+
+
+@pytest.fixture
 def mock_project(mocker):
     _mock_project = mocker.Mock()
     _mock_project.name = "test-name"
@@ -64,11 +81,12 @@ def mock_get_instance_name(mocker):
 @pytest.mark.parametrize(
     "command_name", ["pull", "overlay", "build", "stage", "prime", "pack"]
 )
-def test_run_run_in_provider(command_name, mocker, mock_project):
+def test_run_run_in_provider(command_name, mocker, mock_project_yaml, mock_project):
     """Verify `run()` calls `run_in_provider()` when not in managed or destructive
     mode.
     """
-    mocker.patch("rockcraft.lifecycle.load_project", return_value=mock_project)
+    mocker.patch("rockcraft.lifecycle.load_project", return_value=mock_project_yaml)
+    mocker.patch("rockcraft.lifecycle.Project.unmarshal", return_value=mock_project)
     mocker.patch("rockcraft.lifecycle.utils.is_managed_mode", return_value=False)
     mock_run_in_provider = mocker.patch("rockcraft.lifecycle.run_in_provider")
     lifecycle.run(command_name=command_name, parsed_args=argparse.Namespace())
@@ -78,11 +96,11 @@ def test_run_run_in_provider(command_name, mocker, mock_project):
     )
 
 
-def test_run_clean_provider(mocker, mock_project):
+def test_run_clean_provider(mocker, mock_project_yaml):
     """Verify `run()` calls `clean_provider()` when not in managed or destructive
     mode.
     """
-    mocker.patch("rockcraft.lifecycle.load_project", return_value=mock_project)
+    mocker.patch("rockcraft.lifecycle.load_project", return_value=mock_project_yaml)
     mocker.patch("rockcraft.lifecycle.utils.is_managed_mode", return_value=False)
     mock_clean_provider = mocker.patch("rockcraft.lifecycle.clean_provider")
     lifecycle.run(command_name="clean", parsed_args=argparse.Namespace())
@@ -94,9 +112,10 @@ def test_run_clean_provider(mocker, mock_project):
 
 # region Tests for running inside the provider
 @tests.linux_only
-def test_run_clean_part(mocker, mock_project, new_dir):
+def test_run_clean_part(mocker, mock_project_yaml, mock_project, new_dir):
     """Verify cleaning a specific part."""
-    mocker.patch("rockcraft.lifecycle.load_project", return_value=mock_project)
+    mocker.patch("rockcraft.lifecycle.load_project", return_value=mock_project_yaml)
+    mocker.patch("rockcraft.lifecycle.Project.unmarshal", return_value=mock_project)
     mocker.patch("rockcraft.lifecycle.utils.is_managed_mode", return_value=True)
     mocker.patch(
         "rockcraft.lifecycle.utils.get_managed_environment_home_path",
@@ -120,9 +139,10 @@ def test_run_clean_part(mocker, mock_project, new_dir):
 
 
 @tests.linux_only
-def test_run_clean_destructive_mode(mocker, mock_project, new_dir):
+def test_run_clean_destructive_mode(mocker, mock_project_yaml, mock_project, new_dir):
     """Verify cleaning in destructive mode."""
-    mocker.patch("rockcraft.lifecycle.load_project", return_value=mock_project)
+    mocker.patch("rockcraft.lifecycle.load_project", return_value=mock_project_yaml)
+    mocker.patch("rockcraft.lifecycle.Project.unmarshal", return_value=mock_project)
     mocker.patch("rockcraft.lifecycle.utils.is_managed_mode", return_value=False)
     mocker.patch(
         "rockcraft.lifecycle.utils.get_managed_environment_home_path",
@@ -149,9 +169,10 @@ def test_run_clean_destructive_mode(mocker, mock_project, new_dir):
 
 
 @tests.linux_only
-def test_run_destructive_mode(mocker, mock_project, new_dir):
+def test_run_destructive_mode(mocker, mock_project_yaml, mock_project, new_dir):
     """Verify running in destructive mode."""
-    mocker.patch("rockcraft.lifecycle.load_project", return_value=mock_project)
+    mocker.patch("rockcraft.lifecycle.load_project", return_value=mock_project_yaml)
+    mocker.patch("rockcraft.lifecycle.Project.unmarshal", return_value=mock_project)
     mocker.patch("rockcraft.lifecycle.utils.is_managed_mode", return_value=False)
     mocker.patch(
         "rockcraft.lifecycle.utils.get_managed_environment_home_path",
@@ -187,9 +208,10 @@ def test_run_destructive_mode(mocker, mock_project, new_dir):
         [{"type": "apt", "ppa": "ppa/ppa"}],
     ],
 )
-def test_install_repositories(mocker, mock_project, tmp_path, repos):
+def test_install_repositories(mocker, mock_project_yaml, mock_project, tmp_path, repos):
     mock_project.package_repositories = repos
-    mocker.patch("rockcraft.lifecycle.load_project", return_value=mock_project)
+    mocker.patch("rockcraft.lifecycle.load_project", return_value=mock_project_yaml)
+    mocker.patch("rockcraft.lifecycle.Project.unmarshal", return_value=mock_project)
     mocker.patch("rockcraft.lifecycle.utils.is_managed_mode", return_value=True)
     mocker.patch(
         "rockcraft.lifecycle.utils.get_managed_environment_home_path",
@@ -215,9 +237,12 @@ def test_install_repositories(mocker, mock_project, tmp_path, repos):
     )
 
 
-def test_install_repositories_none_conversion(mocker, mock_project, tmp_path):
+def test_install_repositories_none_conversion(
+    mocker, mock_project_yaml, mock_project, tmp_path
+):
     mock_project.package_repositories = None
-    mocker.patch("rockcraft.lifecycle.load_project", return_value=mock_project)
+    mocker.patch("rockcraft.lifecycle.load_project", return_value=mock_project_yaml)
+    mocker.patch("rockcraft.lifecycle.Project.unmarshal", return_value=mock_project)
     mocker.patch("rockcraft.lifecycle.utils.is_managed_mode", return_value=True)
     mocker.patch(
         "rockcraft.lifecycle.utils.get_managed_environment_home_path",
@@ -243,8 +268,9 @@ def test_install_repositories_none_conversion(mocker, mock_project, tmp_path):
     )
 
 
-def test_project_variables(mocker, mock_project, tmp_path):
-    mocker.patch("rockcraft.lifecycle.load_project", return_value=mock_project)
+def test_project_variables(mocker, mock_project_yaml, mock_project, tmp_path):
+    mocker.patch("rockcraft.lifecycle.load_project", return_value=mock_project_yaml)
+    mocker.patch("rockcraft.lifecycle.Project.unmarshal", return_value=mock_project)
     mocker.patch("rockcraft.lifecycle.utils.is_managed_mode", return_value=True)
     mocker.patch(
         "rockcraft.lifecycle.utils.get_managed_environment_home_path",
@@ -256,12 +282,12 @@ def test_project_variables(mocker, mock_project, tmp_path):
 
     # Set the project's name and version
     mock_project.name = "fake-name"
-    mock_project.version = "1.2.3"
+    # The version is set from the loaded YAML
+    mock_project_yaml["version"] = "1.2.3"
 
     mock_lifecycle_class = mocker.patch("rockcraft.lifecycle.PartsLifecycle")
 
     lifecycle.run(command_name="build", parsed_args=argparse.Namespace())
-
     mock_lifecycle_class.assert_called_once_with(
         mock_project.parts,
         work_dir=tmp_path,
@@ -273,6 +299,36 @@ def test_project_variables(mocker, mock_project, tmp_path):
         project_vars={"version": "1.2.3"},
         project_name="fake-name",
     )
+
+
+def test_project_variables_expansion(mocker, mock_project_yaml, mock_project, tmp_path):
+    mocker.patch("rockcraft.lifecycle.load_project", return_value=mock_project_yaml)
+    mocker.patch("rockcraft.parts.PartsLifecycle.run")
+    mocker.patch("rockcraft.lifecycle._pack")
+    mocker.patch("rockcraft.lifecycle.utils.is_managed_mode", return_value=True)
+    mocker.patch(
+        "rockcraft.lifecycle.utils.get_managed_environment_home_path",
+        return_value=tmp_path,
+    )
+    mocker.patch(
+        "rockcraft.oci.Image.from_docker_registry", return_value=(Mock(), Mock())
+    )
+    unmarshal_mock = mocker.patch(
+        "rockcraft.lifecycle.Project.unmarshal", return_value=mock_project
+    )
+
+    # Add a global environment variable to the loaded YAML
+    mock_project_yaml["parts"]["foo"]["source"] = "v$CRAFT_PROJECT_VERSION"
+    # The expected expansion shall replace the above var with the project version
+    expanded_project_yaml = mock_project_yaml.copy()
+    expanded_project_yaml["parts"]["foo"]["source"] = f"v{mock_project_yaml['version']}"
+
+    lifecycle.run(
+        command_name="pack",
+        parsed_args=argparse.Namespace(parts=["foo"], destructive_mode=True),
+    )
+
+    unmarshal_mock.assert_called_once_with(expanded_project_yaml)
 
 
 # endregion

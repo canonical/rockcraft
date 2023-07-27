@@ -15,4 +15,5 @@ execute: |
   id=$(docker run --rm -d environment-test -v)
   grep_docker_log "$id" "X=ship it!"
   grep_docker_log "$id" "FOO=bar"
+  grep_docker_log "$id" "CRAFT_VAR=latest"
   docker rm -f "$id"

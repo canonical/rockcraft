@@ -12,9 +12,6 @@ prepare: |
 
 execute: |
   pushd $PROJECT_PATH/
-  git init
-  rm -rf "docs/sphinx-starter-pack"
-  git submodule add https://github.com/canonical/sphinx-docs-starter-pack.git "docs/sphinx-starter-pack"
 
   # [docs:install-deps]
   make installdocs

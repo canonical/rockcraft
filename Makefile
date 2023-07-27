@@ -30,6 +30,7 @@ clean: ## Clean artefacts from building, testing, etc.
 	rm -f .coverage
 	rm -rf htmlcov/
 	rm -rf .pytest_cache
+	rm -rf .mypy_cache
 
 .PHONY: coverage
 coverage: ## Run pytest with coverage report.
@@ -39,7 +40,6 @@ coverage: ## Run pytest with coverage report.
 
 .PHONY: preparedocs
 preparedocs: ## move file from the sphinx-starter-pack to docs folder
-	git submodule update --init -- docs/sphinx-starter-pack
 	cp docs/sphinx-starter-pack/.sphinx/_static/* docs/_static
 	cp -R docs/sphinx-starter-pack/.sphinx/_templates docs/_templates
 	cp docs/sphinx-starter-pack/.sphinx/spellingcheck.yaml docs/spellingcheck.yaml
