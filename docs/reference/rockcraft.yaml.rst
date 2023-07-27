@@ -198,6 +198,18 @@ The set of parts that compose the ROCK's contents
    Rockcraft. All ROCKs have Pebble as their entrypoint, and thus you must use
    ``services`` to define your container application.
 
+``extensions``
+---------
+
+**Type**: list[string]
+
+**Required**: No
+
+Extensions to apply to this rock image.
+
+Currently supported extensions:
+
+- ``flask`` (experimental)
 
 Example
 =======
