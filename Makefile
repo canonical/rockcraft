@@ -30,6 +30,7 @@ clean: ## Clean artefacts from building, testing, etc.
 	rm -f .coverage
 	rm -rf htmlcov/
 	rm -rf .pytest_cache
+	$(MAKE) -C docs clean
 
 .PHONY: coverage
 coverage: ## Run pytest with coverage report.
@@ -41,7 +42,8 @@ coverage: ## Run pytest with coverage report.
 preparedocs: ## move file from the sphinx-starter-pack to docs folder
 	git submodule update --init -- docs/sphinx-starter-pack
 	cp docs/sphinx-starter-pack/.sphinx/_static/* docs/_static
-	cp -R docs/sphinx-starter-pack/.sphinx/_templates docs/_templates
+	mkdir docs/_templates || true
+	cp -R docs/sphinx-starter-pack/.sphinx/_templates/* docs/_templates
 	cp docs/sphinx-starter-pack/.sphinx/spellingcheck.yaml docs/spellingcheck.yaml
 
 .PHONY: installdocs
