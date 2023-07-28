@@ -31,6 +31,7 @@ clean: ## Clean artefacts from building, testing, etc.
 	rm -rf htmlcov/
 	rm -rf .pytest_cache
 	$(MAKE) -C docs clean
+	rm -rf .mypy_cache
 
 .PHONY: coverage
 coverage: ## Run pytest with coverage report.
@@ -40,7 +41,6 @@ coverage: ## Run pytest with coverage report.
 
 .PHONY: preparedocs
 preparedocs: ## move file from the sphinx-starter-pack to docs folder
-	git submodule update --init -- docs/sphinx-starter-pack
 	cp docs/sphinx-starter-pack/.sphinx/_static/* docs/_static
 	mkdir docs/_templates || true
 	cp -R docs/sphinx-starter-pack/.sphinx/_templates/* docs/_templates

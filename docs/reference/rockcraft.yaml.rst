@@ -121,6 +121,11 @@ supported shared user is "_daemon_" (with UID/GID 584792). It defaults to
 A set of key-value pairs specifying the environment variables to be added
 to the base image's OCI environment.
 
+.. note::
+   String interpolation is not yet supported so any attempts to dynamically
+   define environment variables with ``$`` will end in a project
+   validation error.
+
 ``services``
 ------------
 

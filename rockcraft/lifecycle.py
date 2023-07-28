@@ -20,10 +20,10 @@
 import datetime
 import subprocess
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Dict
 
 from craft_cli import emit
-from craft_parts import ProjectInfo, callbacks
+from craft_parts import ProjectDirs, ProjectInfo, expand_environment
 from craft_providers import ProviderError
 
 from . import oci, providers, utils
@@ -40,7 +40,7 @@ def run(command_name: str, parsed_args: "argparse.Namespace") -> None:
     # pylint: disable=too-many-locals
     emit.trace(f"command: {command_name}, arguments: {parsed_args}")
 
-    project = load_project(Path("rockcraft.yaml"))
+    project_yaml = load_project(Path("rockcraft.yaml"))
     destructive_mode = getattr(parsed_args, "destructive_mode", False)
 
     part_names = getattr(parsed_args, "parts", None)
@@ -48,15 +48,26 @@ def run(command_name: str, parsed_args: "argparse.Namespace") -> None:
 
     if not managed_mode and not destructive_mode:
         if command_name == "clean" and not part_names:
-            clean_provider(project_name=project.name, project_path=Path().absolute())
+            clean_provider(
+                project_name=project_yaml["name"], project_path=Path().absolute()
+            )
         else:
-            run_in_provider(project, command_name, parsed_args)
+            run_in_provider(Project.unmarshal(project_yaml), command_name, parsed_args)
         return
 
     if managed_mode:
         work_dir = utils.get_managed_environment_home_path()
     else:
         work_dir = Path().absolute()
+
+    project_vars = {"version": project_yaml["version"]}
+    # Expand the environment so that the global variables can be interpolated
+    _expand_environment(
+        project_yaml,
+        project_vars=project_vars,
+        work_dir=work_dir,
+    )
+    project = Project.unmarshal(project_yaml)
 
     image_dir = work_dir / "images"
     bundle_dir = work_dir / "bundles"
@@ -65,9 +76,6 @@ def run(command_name: str, parsed_args: "argparse.Namespace") -> None:
         package_repositories = []
     else:
         package_repositories = project.package_repositories
-
-    # Register our callbacks
-    callbacks.register_prologue(_set_global_environment)
 
     # Obtain base image and extract it to use as our overlay base
     # TODO: check if image was already downloaded, etc.
@@ -106,8 +114,6 @@ def run(command_name: str, parsed_args: "argparse.Namespace") -> None:
 
         base_digest = project_base_image.digest(source_image)
         step_name = "prime" if command_name == "pack" else command_name
-
-        project_vars = {"version": project.version}
 
         lifecycle = PartsLifecycle(
             project.parts,
@@ -306,3 +312,27 @@ def _set_global_environment(info: ProjectInfo) -> None:
             "CRAFT_PROJECT_VERSION": info.get_project_var("version", raw_read=True),
         }
     )
+
+
+def _expand_environment(
+    project_yaml: Dict[str, Any],
+    *,
+    project_vars: Dict[str, Any],
+    work_dir: Path,
+) -> None:
+    """Expand global variables in the provided dictionary values.
+
+    :param project_yaml: A dictionary containing the rockcraft.yaml's contents.
+    :param project_var: A dictionary with the project-specific variables.
+    :param work_dir: The working directory.
+    """
+    info = ProjectInfo(
+        application_name="rockcraft",  # not used in environment expansion
+        cache_dir=Path(),  # not used in environment expansion
+        project_name=project_yaml.get("name", ""),
+        project_dirs=ProjectDirs(work_dir=work_dir),
+        project_vars=project_vars,
+    )
+    _set_global_environment(info)
+
+    expand_environment(project_yaml, info=info)
