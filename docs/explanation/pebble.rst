@@ -33,7 +33,7 @@ Features
 When creating container images, several issues can be met.
 For instance, if the entrypoint relies on the application mode
 (such as nginx and nginx-debug), creating a bash script that parses all the
-arguments provided during container deployment will be necessary./
+arguments provided during container deployment will be necessary.
 Additionally, each image runs with specific application arguments,
 making it challenging to perform an inspection inside the image consistently.
 
