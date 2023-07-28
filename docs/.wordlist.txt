@@ -7,6 +7,7 @@ CLI
 cmake
 CMake
 CMD
+declaratively
 dev
 Diátaxis
 dnf
@@ -54,6 +55,7 @@ OpenSSL's
 organize
 packageName
 Permalink
+PID
 Podman
 pyfiglet
 PyPI
@@ -63,6 +65,7 @@ Rockcraft
 Rockcraft's
 ROCK's
 ROCKs
+runit
 Runtime
 scons
 SCons
@@ -77,6 +80,9 @@ SSL
 subdir
 subdirectory
 submodules
+subreaping
+supervisord
+tini
 triaged
 ubuntu
 UID

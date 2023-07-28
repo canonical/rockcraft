@@ -8,11 +8,12 @@ cloud-native software's security, stability, and reliability requirements.
 
 ROCKs were created with a focus on those values:
 
-* **Developers experience**: Rockcraft uses a declarative format to describe ROCKs, 
-  aiming to simplify container image definition and provide the best user experience.
-* **Ubuntu Experience**: Built on top of Ubuntu, ROCKs provide reliability 
-  and stability to users. They offer access to the latest features, ensuring 
-  users can meet their needs. With long-term support (LTS), ROCKs images 
+* **Developers experience**: Rockcraft uses a declarative format to describe
+  ROCKs, aiming to simplify container image definition and provide the best
+  user experience.
+* **Ubuntu Experience**: Built on top of Ubuntu, ROCKs provide reliability
+  and stability to users. They offer access to the latest features, ensuring
+  users can meet their needs. With long-term support (LTS), ROCKs images
   are regularly updated.
 * **Consistency**: ROCKs are consistent by utilising Pebble as the entrypoint.
   Learning Pebble allows you to interact smoothly with all the ROCKs.
