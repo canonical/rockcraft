@@ -218,6 +218,7 @@ set_type_checking_flag = True
 typehints_fully_qualified = False
 always_document_param_types = True
 typehints_document_rtype = True
+linkcheck_anchors_ignore = ["slice-definitions"]
 
 # Enable support for google-style instance attributes.
 napoleon_use_ivar = True

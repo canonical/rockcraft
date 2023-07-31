@@ -121,7 +121,7 @@ test-pylint:
 
 .PHONY: test-pyright
 test-pyright:
-	pyright .
+	pyright . 
 
 .PHONY: test-shellcheck
 test-shellcheck:
