@@ -1,6 +1,7 @@
 ACR
 autotools
 Autotools
+centric
 Charmcraft
 cli
 CLI
@@ -10,6 +11,7 @@ CMD
 declaratively
 dev
 Diátaxis
+distroless
 dnf
 Dockerfile
 Dockerfiles

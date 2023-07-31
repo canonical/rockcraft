@@ -21,10 +21,10 @@ Containers' best practices advocate the separation of concerns and the adoption
 of a single service per container. With the introduction of `Pebble`_ as the
 ROCKs' entrypoint, this principle is elevated to new heights:
 
-  if multiple processes rely on shared dependencies and are tightly coupled
+  *if multiple processes rely on shared dependencies and are tightly coupled
   together (i.e. they serve a single purpose and cannot be executed
   independently), then the best practice entails orchestrating them within the
-  same container, with `Pebble`_ as their manager.
+  same container, with `Pebble`_ as their manager.*
 
 This new notion addressed existing pain points arising from the excessive
 separation of concerns, which results in numerous container images whose
@@ -53,6 +53,7 @@ What to expect?
   services can be overridden or re-configured;
 * **container-optimised init process**: as the ROCKs' PID 1, Pebble acts as an
   init process and thus offers:
+
   * support for multiple child processes,
   * reaping and subreaping,
   * signal forwarding,
@@ -81,4 +82,4 @@ Docker entrypoint to a Pebble layer.
 .. _tini: https://github.com/krallin/tini
 .. _s6-overlay: https://github.com/just-containers/s6-overlay
 .. _imperative wrapper scripts (as suggested in the Docker documentation): https://docs.docker.com/config/containers/multi-service_container/#use-a-wrapper-script
-.. _Pebble layer specification: https://github.com/canonical/pebble/#layer-specification
+.. _Pebble layer specification: https://github.com/canonical/pebble#layer-specification

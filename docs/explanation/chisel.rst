@@ -12,16 +12,6 @@ needed for the ROCK to function properly.
 
 See :ref:`how_to_use_chisel` for information about using the tool.
 
-Slice definitions
------------------
-
-A slice is a yaml file permitting chisel to slice the package,
-`here <https://github.com/canonical/chisel#slice-definitions>`_ is
-the slice definition reference.
-
-To find more examples or if you want to contribute,
-check `chisel-releases <https://github.com/canonical/chisel-releases>`_.
-
 Package slices
 --------------
 
@@ -54,3 +44,14 @@ could see as a block of stone from which we can carve and extract only the
 small and relevant parts that we need to run our applications, thus keeping
 ROCKs small and less exposed to vulnerabilities.
 
+Slice definitions
+~~~~~~~~~~~~~~~~~
+
+A package's slices can be defined via a YAML slice definitions file. Check the
+`slice definitions reference
+<https://github.com/canonical/chisel/#slice-definitions>`_ for more information
+about this file's format.
+
+To find examples of existing slice definitions files, check the Chisel releases
+repository at `<https://github.com/canonical/chisel-releases>`_. Contributions
+are welcome and encouraged.
