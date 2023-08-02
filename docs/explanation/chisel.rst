@@ -52,6 +52,7 @@ A package's slices can be defined via a YAML slice definitions file. Check the
 <https://github.com/canonical/chisel/#slice-definitions>`_ for more information
 about this file's format.
 
-To find examples of existing slice definitions files, check the Chisel releases
-repository at `<https://github.com/canonical/chisel-releases>`_. Contributions
-are welcome and encouraged.
+.. note::
+   To find examples of existing slice definitions files, check the Chisel
+   releases repository at `<https://github.com/canonical/chisel-releases>`_.
+   Contributions are welcome and encouraged.

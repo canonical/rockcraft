@@ -41,11 +41,30 @@ Design
 ~~~~~~
 
 Given their compliance with the `OCI image specification <OCI_image_spec_>`_,
-all ROCKs are constituted by OCI metadata (like the image's index, manifest and
-configuration) plus the actual `OCI layers`_ with the container filesystem
-contents.
+all ROCKs are constituted by OCI metadata (like the image's `index`_,
+`manifest`_ and `configuration`_) plus the actual `OCI layers`_ with the
+container filesystem contents.
+
+Typically, container users won't be directly building or accessing the raw OCI
+components that form an image. However, these are frequently used as the
+underlying source of truth when inspecting container images with tools like
+`Docker`_ or `skopeo`_. As an example, the command ``docker inspect`` will,
+in its majority, source the requested information from the image's OCI
+`configuration`_.
+
+On the other hand, the `OCI layers`_ are the literal filesystem contents that
+result from the user's instructions at image build time, and that can be
+accessed by the container application at runtime.
+
+The following diagram depicts the different OCI components in the context of a
+ROCK, highlighting where the aforementioned design features (like the Pebble
+entrypoint) fit in.
 
 .. figure:: /_static/rock_diagram.png
    :width: 75%
    :align: center
    :alt: ROCK diagram
+
+.. _`index`: https://github.com/opencontainers/image-spec/blob/main/image-index.md
+.. _`manifest`: https://github.com/opencontainers/image-spec/blob/main/manifest.md
+.. _`configuration`: https://github.com/opencontainers/image-spec/blob/main/config.md

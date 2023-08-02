@@ -68,6 +68,7 @@ Rockcraft's
 ROCK's
 ROCKs
 runit
+runtime
 Runtime
 scons
 SCons
