@@ -24,7 +24,7 @@ ROCKs' entrypoint, this principle is elevated to new heights:
   *if multiple processes rely on shared dependencies and are tightly coupled
   together (i.e. they serve a single purpose and cannot be executed
   independently), then the best practice entails orchestrating them within the
-  same container, with `Pebble`_ as their manager.*
+  same container, with Pebble as their manager.*
 
 This new notion addressed existing pain points arising from the excessive
 separation of concerns, which results in numerous container images whose
