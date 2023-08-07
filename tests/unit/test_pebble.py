@@ -15,7 +15,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
-import re
 from pathlib import Path
 
 import pydantic
@@ -261,9 +260,8 @@ class TestPebble:
         ],
     )
     def test_bad_services(self, bad_service, error):
-        with pytest.raises(pydantic.ValidationError) as err:
+        with pytest.raises(pydantic.ValidationError, match=error):
             _ = Service(**bad_service)
-        assert re.match(error, str(err.value)), "Unexpected Service validation error"
 
     @pytest.mark.parametrize(
         "bad_http_check,error",
@@ -283,9 +281,8 @@ class TestPebble:
         ],
     )
     def test_bad_http_checks(self, bad_http_check, error):
-        with pytest.raises(pydantic.ValidationError) as err:
+        with pytest.raises(pydantic.ValidationError, match=error):
             _ = HttpCheck(**bad_http_check)
-        assert re.match(error, str(err.value)), "Unexpected HttpCheck validation error"
 
     @pytest.mark.parametrize(
         "bad_tcp_check,error",
@@ -305,9 +302,8 @@ class TestPebble:
         ],
     )
     def test_bad_tcp_checks(self, bad_tcp_check, error):
-        with pytest.raises(pydantic.ValidationError) as err:
+        with pytest.raises(pydantic.ValidationError, match=error):
             _ = TcpCheck(**bad_tcp_check)
-        assert re.match(error, str(err.value)), "Unexpected TcpCheck validation error"
 
     @pytest.mark.parametrize(
         "bad_exec_check,error",
@@ -339,9 +335,8 @@ class TestPebble:
         ],
     )
     def test_bad_exec_checks(self, bad_exec_check, error):
-        with pytest.raises(pydantic.ValidationError) as err:
+        with pytest.raises(pydantic.ValidationError, match=error):
             _ = ExecCheck(**bad_exec_check)
-        assert re.match(error, str(err.value)), "Unexpected ExecCheck validation error"
 
     def test_full_check(self):
         full_check = {
@@ -412,6 +407,5 @@ class TestPebble:
         ],
     )
     def test_bad_checks(self, bad_check, exception, error):
-        with pytest.raises(exception) as err:
+        with pytest.raises(exception, match=error):
             _ = Check(**bad_check)
-        assert re.match(error, str(err.value)), "Unexpected Check validation error"

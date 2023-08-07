@@ -200,17 +200,9 @@ def _pack(
 
     new_image.set_entrypoint()
 
-    services = (
-        project.dict(exclude_none=True, by_alias=True)["services"]
-        if project.services
-        else {}
-    )
+    services = project.dict(exclude_none=True, by_alias=True).get("services", {})
 
-    checks = (
-        project.dict(exclude_none=True, by_alias=True)["checks"]
-        if project.checks
-        else {}
-    )
+    checks = project.dict(exclude_none=True, by_alias=True).get("checks", {})
 
     if services or checks:
         new_image.set_pebble_layer(
