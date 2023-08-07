@@ -101,8 +101,9 @@ try:
     # The instance of `ExpectedValues` for the current host running the tests
     VALUES_FOR_HOST = RELEASE_TO_VALUES[OsRelease().version_id()]
 except OsReleaseVersionIdError:
-    # not running on Ubuntu; pass because the tests will be skipped.
-    pass
+    # not running on Ubuntu; the tests will be skipped.
+    # Use the 22.04 values to make pyright happy.
+    VALUES_FOR_HOST = RELEASE_TO_VALUES["22.04"]
 
 
 @pytest.mark.parametrize("base", tuple(UBUNTU_BASES))
