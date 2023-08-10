@@ -85,6 +85,17 @@ class Flask(Extension):
             if f not in ignores and not f.endswith(".rock")
         ]
         renaming_map = {f: os.path.join("srv/flask/app", f) for f in source_files}
+        # Users are required to compile any static assets prior to executing the
+        # rockcraft pack command, so assets can be included in the final OCI image.
+        install_app_part = {
+            "plugin": "dump",
+            "source": ".",
+            "organize": renaming_map,
+            "stage": list(renaming_map.values()),
+        }
+        install_app_part_name = "flask/install-app"
+        existing_install_app_part = self.yaml_data.get("parts", {}).get(install_app_part_name, {})
+        install_app_part.update(existing_install_app_part)
         snippet = {
             "flask/dependencies": {
                 "plugin": "python",
@@ -93,13 +104,6 @@ class Flask(Extension):
                 "python-packages": ["gunicorn"],
                 "python-requirements": ["requirements.txt"],
             },
-            # Users are required to compile any static assets prior to executing the
-            # rockcraft pack command, so assets can be included in the final OCI image.
-            "flask/install-app": {
-                "plugin": "dump",
-                "source": ".",
-                "organize": renaming_map,
-                "stage": list(renaming_map.values()),
-            },
+            "flask/install-app": install_app_part,
         }
         return snippet
