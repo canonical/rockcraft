@@ -95,7 +95,9 @@ class Flask(Extension):
         }
         install_app_part_name = "flask/install-app"
         existing_install_app_part = self.yaml_data.get("parts", {}).get(install_app_part_name, {})
-        install_app_part.update(existing_install_app_part)
+        prime = existing_install_app_part.get("prime")
+        if prime:
+            install_app_part["prime"] = prime
         snippet = {
             "flask/dependencies": {
                 "plugin": "python",
