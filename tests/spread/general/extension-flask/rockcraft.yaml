@@ -7,3 +7,8 @@ license: Apache-2.0
 
 extensions:
   - flask
+
+parts:
+  flask/install-app:
+    prime:
+      - -README

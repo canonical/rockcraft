@@ -1,13 +1,4 @@
-The Flask Extension
-*******************
-
-The Flask extension streamlines the process of building Flask application rocks.
-
-It facilitates the installation of Flask application dependencies, including
-Gunicorn, in the rock image. Additionally, it transfers your project files to
-``/srv/flask/app`` within the rock image.
-
-Using the Flask Extension
+Using the flask extension
 -------------------------
 
 The Flask extension is compatible with ``bare``, ``ubuntu:20.04``, and
@@ -28,8 +19,8 @@ Example:
     extensions:
       - flask
 
-Managing Project Files with the Flask Extension
-----------------------------------------------
+Managing project files with the flask extension
+-----------------------------------------------
 
 By default, all files within the Flask project directory are copied, excluding
 certain common files and directories, such as ``node_modules``. However,

@@ -22,6 +22,9 @@ execute: |
   docker run --rm --entrypoint /bin/python3 flask-extension -m gunicorn --chdir /srv/flask/app --check-config app:app
   docker run --rm --entrypoint /bin/python3 flask-extension -c "import pathlib;assert pathlib.Path('/srv/flask/app/static/js/test.js').is_file()"
   docker run --rm --entrypoint /bin/python3 flask-extension -c "import pathlib;assert not pathlib.Path('/srv/flask/app/node_modules').exists()"
+  
+  # test the part merging
+  docker run --rm --entrypoint /bin/python3 flask-extension -c "import pathlib;assert not pathlib.Path('/srv/flask/app/README').exists()"
 
 restore: |
   rm -f flask-extension_0.1_amd64.rock

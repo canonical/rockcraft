@@ -22,6 +22,7 @@ from typing import Any, Dict, Optional, Tuple
 from overrides import override
 
 from .extension import Extension
+from ._utils import apply_extension_property
 
 
 class Flask(Extension):
@@ -65,6 +66,26 @@ class Flask(Extension):
         """Return the part snippet to apply to existing parts."""
         return {}
 
+    def _merge_part(self, base_part: dict, new_part: dict) -> dict:
+        """Merge two part definitions by the extension part merging rule."""
+        result = {}
+        properties = set(base_part.keys()).union(set(new_part.keys()))
+        for property_name in properties:
+            if property_name in base_part and property_name not in new_part:
+                result[property_name] = base_part[property_name]
+            elif property_name not in base_part and property_name in new_part:
+                result[property_name] = new_part[property_name]
+            else:
+                result[property_name] = apply_extension_property(
+                    base_part[property_name], new_part[property_name]
+                )
+        return result
+
+    def _merge_existing_part(self, part_name: str, part_def: dict) -> dict:
+        """Merge the new part with the existing part in the current rockcraft.yaml."""
+        existing_part = self.yaml_data.get("parts", {}).get(part_name, {})
+        return self._merge_part(existing_part, part_def)
+
     @override
     def get_parts_snippet(self) -> Dict[str, Any]:
         """Create necessary parts to facilitate the flask application.
@@ -85,6 +106,8 @@ class Flask(Extension):
             if f not in ignores and not f.endswith(".rock")
         ]
         renaming_map = {f: os.path.join("srv/flask/app", f) for f in source_files}
+        install_app_part_name = "flask/install-app"
+        dependencies_part_name = "flask/dependencies"
         # Users are required to compile any static assets prior to executing the
         # rockcraft pack command, so assets can be included in the final OCI image.
         install_app_part = {
@@ -93,19 +116,19 @@ class Flask(Extension):
             "organize": renaming_map,
             "stage": list(renaming_map.values()),
         }
-        install_app_part_name = "flask/install-app"
-        existing_install_app_part = self.yaml_data.get("parts", {}).get(install_app_part_name, {})
-        prime = existing_install_app_part.get("prime")
-        if prime:
-            install_app_part["prime"] = prime
+        dependencies_part = {
+            "plugin": "python",
+            "stage-packages": ["python3-venv"],
+            "source": ".",
+            "python-packages": ["gunicorn"],
+            "python-requirements": ["requirements.txt"],
+        }
         snippet = {
-            "flask/dependencies": {
-                "plugin": "python",
-                "stage-packages": ["python3-venv"],
-                "source": ".",
-                "python-packages": ["gunicorn"],
-                "python-requirements": ["requirements.txt"],
-            },
-            "flask/install-app": install_app_part,
+            dependencies_part_name: self._merge_existing_part(
+                dependencies_part_name, dependencies_part
+            ),
+            install_app_part_name: self._merge_existing_part(
+                install_app_part_name, install_app_part
+            ),
         }
         return snippet
