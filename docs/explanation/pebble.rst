@@ -8,7 +8,7 @@ Pebble
 
 Similar to other well-known process managers such as *supervisord*, *runit*, or
 *s6*, `Pebble`_ is a service manager that enables the seamless orchestration of
-a collection of local service processes as organised set. The main difference
+a collection of local service processes as an organised set. The main difference
 is that `Pebble`_ has been designed with custom-tailored features that
 significantly enhance the overall container experience, making it the ideal
 candidate for the container's init process (also known as the entrypoint,
