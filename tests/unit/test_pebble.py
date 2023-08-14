@@ -182,34 +182,43 @@ class TestPebble:
                 for field in service_fields:
                     check.is_not_in("_", field)
 
-    def test_full_service(self):
-        full_service = {
-            "override": "merge",
-            "command": "foo cmd",
-            "summary": "mock summary",
-            "description": "mock description",
-            "startup": "enabled",
-            "after": ["foo"],
-            "before": ["bar"],
-            "requires": ["some-other"],
-            "environment": {"envVar": "value"},
-            "user": "ubuntu",
-            "user-id": 1000,
-            "group": "ubuntu",
-            "group-id": 1000,
-            "working-dir": "/tmp",
-            "on-success": "ignore",
-            "on-failure": "restart",
-            "on-check-failure": {"check": "restart"},
-            "backoff-delay": "10ms",
-            "backoff-factor": 1.2,
-            "backoff-limit": "1m",
-            "kill-delay": "5s",
-        }
-        _ = Service(**full_service)
-
-    def test_minimal_service(self):
-        _ = Service(override="merge", command="foo cmd")  # pyright: ignore
+    @pytest.mark.parametrize(
+        "service",
+        [
+            pytest.param(
+                {
+                    "override": "merge",
+                    "command": "foo cmd",
+                    "summary": "mock summary",
+                    "description": "mock description",
+                    "startup": "enabled",
+                    "after": ["foo"],
+                    "before": ["bar"],
+                    "requires": ["some-other"],
+                    "environment": {"envVar": "value"},
+                    "user": "ubuntu",
+                    "user-id": 1000,
+                    "group": "ubuntu",
+                    "group-id": 1000,
+                    "working-dir": "/tmp",
+                    "on-success": "ignore",
+                    "on-failure": "restart",
+                    "on-check-failure": {"check": "restart"},
+                    "backoff-delay": "10ms",
+                    "backoff-factor": 1.2,
+                    "backoff-limit": "1m",
+                    "kill-delay": "5s",
+                },
+                id="full-service",
+            ),
+            pytest.param(
+                {"override": "merge", "command": "foo cmd"},
+                id="minimal-service",
+            ),
+        ],
+    )
+    def test_full_service(self, service):
+        _ = Service(**service)
 
     @pytest.mark.parametrize(
         "bad_service,error",
@@ -359,7 +368,7 @@ class TestPebble:
             (
                 {},
                 ProjectValidationError,
-                r"Must specify one of http, tcp, exec for each check.",
+                r"Must specify exactly one of http, tcp, exec for each check.",
             ),
             # Missing mandatory fields
             (
@@ -371,7 +380,8 @@ class TestPebble:
             (
                 {"override": "merge", "exec": {"command": "foo"}, "tcp": {"port": 1}},
                 ProjectValidationError,
-                r"Only one of http, tcp, exec may be specified for each check.",
+                r"Multiple check types specified ([\s\S]*). "
+                r"Each check must have exactly one type.",
             ),
             # Bad attributes values
             (

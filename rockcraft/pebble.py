@@ -93,8 +93,9 @@ class Check(pydantic.BaseModel):
     @classmethod
     def _validates_check_type(cls, values: Mapping[str, Any]) -> Mapping[str, Any]:
         """Before validation, make sure only one of 'http', 'tcp' or 'exec' exist."""
-        mutually_exclusive = {"http", "tcp", "exec"}
-        check_types = mutually_exclusive & values.keys()
+        mutually_exclusive = ["http", "tcp", "exec"]
+        check_types = list(set(mutually_exclusive) & values.keys())
+        check_types.sort()
 
         if len(check_types) > 1:
             err = str(
@@ -103,7 +104,7 @@ class Check(pydantic.BaseModel):
             )
         elif len(check_types) < 1:
             err = str(
-                f"Must specify exactly one of {', '.join(mutually_exclusive)} for each check."
+                f"Must specify exactly one of {', '.join(list(mutually_exclusive))} for each check."
             )
         else:
             return values
