@@ -349,18 +349,20 @@ class Image:
         _config_image(image_path, ["--clear=config.cmd"])
         emit.progress(f"Entrypoint set to {entrypoint}", permanent=True)
 
-    def set_pebble_services(
+    def set_pebble_layer(
         self,
         services: Dict[str, Any],
+        checks: Dict[str, Any],
         name: str,
         tag: str,
         summary: str,
         description: str,
         base_layer_dir: Path,
     ) -> None:
-        """Write the provided services into a Pebble layer in the filesystem.
+        """Write the provided services and checks into a Pebble layer in the filesystem.
 
-        :param services: The Pebble services to be written into the Pebble
+        :param services: The Pebble services
+        :param checks: The Pebble checks
         :param name: The name of the ROCK
         :param tag: The ROCK's image tag
         :param summary: The summary for the Pebble layer
@@ -368,13 +370,20 @@ class Image:
         :param base_layer_dir: Path to the base layer's root filesystem
         """
         # pylint: disable=too-many-arguments
-        service_names = list(services.keys())
-        emit.progress(f"Configuring Pebble services {', '.join(service_names)}")
-        pebble_layer_content = {
+        pebble_layer_content: Dict[str, Any] = {
             "summary": summary,
             "description": description,
-            "services": services,
         }
+
+        if services:
+            emit.progress(
+                f"Configuring Pebble services {', '.join(list(services.keys()))}"
+            )
+            pebble_layer_content["services"] = services
+
+        if checks:
+            emit.progress(f"Configuring Pebble checks {', '.join(list(checks.keys()))}")
+            pebble_layer_content["checks"] = checks
 
         pebble = Pebble()
         with tempfile.TemporaryDirectory() as tmpfs:
