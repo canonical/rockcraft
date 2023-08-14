@@ -19,7 +19,7 @@ What sets ROCKs apart?
 ~~~~~~~~~~~~~~~~~~~~~~
 
 * **Opinionated and consistent design**: all ROCKs follow the same design,
-  aiming to minimise your full-stack disparity and adoption overhead, i.e
+  aiming to minimise your full-stack disparity and adoption overhead, e.g.
 
   * :ref:`pebble_explanation_page` **is the official entrypoint for all
     ROCKs**, thus providing a predictable and powerful abstraction layer
