@@ -30,7 +30,7 @@ from rockcraft.errors import ProjectValidationError
 class HttpCheck(pydantic.BaseModel):
     """Lightweight schema validation for a Pebble HTTP check."""
 
-    url: str
+    url: pydantic.AnyHttpUrl
     headers: Optional[Dict[str, str]]
 
     class Config:  # pylint: disable=too-few-public-methods
