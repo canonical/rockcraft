@@ -42,7 +42,7 @@ coverage: ## Run pytest with coverage report.
 .PHONY: preparedocs
 preparedocs: ## move file from the sphinx-starter-pack to docs folder
 	cp docs/sphinx-starter-pack/.sphinx/_static/* docs/_static
-	mkdir docs/_templates || true
+	mkdir -p docs/_templates
 	cp -R docs/sphinx-starter-pack/.sphinx/_templates/* docs/_templates
 	cp docs/sphinx-starter-pack/.sphinx/spellingcheck.yaml docs/spellingcheck.yaml
 
