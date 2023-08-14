@@ -370,10 +370,10 @@ class Image:
         :param base_layer_dir: Path to the base layer's root filesystem
         """
         # pylint: disable=too-many-arguments
-        pebble_layer_content = {
+        pebble_layer_content: Dict[str, Any] = {
             "summary": summary,
             "description": description,
-        }  # type: Dict[str, Any]
+        }
 
         if services:
             emit.progress(
