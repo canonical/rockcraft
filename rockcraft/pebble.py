@@ -18,10 +18,142 @@
 
 import glob
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, List, Literal, Mapping, Optional
 
+import pydantic
 import yaml
 from craft_cli import emit
+
+from rockcraft.errors import ProjectValidationError
+
+
+class HttpCheck(pydantic.BaseModel):
+    """Lightweight schema validation for a Pebble HTTP check."""
+
+    url: pydantic.AnyHttpUrl
+    headers: Optional[Dict[str, str]]
+
+    class Config:  # pylint: disable=too-few-public-methods
+        """Pydantic model configuration."""
+
+        allow_population_by_field_name = True
+        extra = "forbid"
+
+
+class TcpCheck(pydantic.BaseModel):
+    """Lightweight schema validation for a Pebble TCP check."""
+
+    port: int
+    host: Optional[str]
+
+    class Config:  # pylint: disable=too-few-public-methods
+        """Pydantic model configuration."""
+
+        allow_population_by_field_name = True
+        extra = "forbid"
+
+
+class ExecCheck(pydantic.BaseModel):
+    """Lightweight schema validation for a Pebble exec check."""
+
+    command: str
+    service_context: Optional[str]
+    environment: Optional[Dict[str, str]]
+    user: Optional[str]
+    user_id: Optional[int]
+    group: Optional[str]
+    group_id: Optional[int]
+    working_dir: Optional[str]
+
+    class Config:  # pylint: disable=too-few-public-methods
+        """Pydantic model configuration."""
+
+        allow_population_by_field_name = True
+        alias_generator = lambda s: s.replace("_", "-")  # noqa: E731
+        extra = "forbid"
+
+
+class Check(pydantic.BaseModel):
+    """Lightweight schema validation for a Pebble checks.
+
+    Based on
+    https://github.com/canonical/pebble#layer-specification
+    """
+
+    override: Literal["merge", "replace"]
+    level: Optional[Literal["alive", "ready"]]
+    period: Optional[str]
+    timeout: Optional[str]
+    threshold: Optional[int]
+    http: Optional[HttpCheck]
+    tcp: Optional[TcpCheck]
+    exec: Optional[ExecCheck]
+
+    @pydantic.root_validator(pre=True)
+    @classmethod
+    def _validates_check_type(cls, values: Mapping[str, Any]) -> Mapping[str, Any]:
+        """Before validation, make sure only one of 'http', 'tcp' or 'exec' exist."""
+        mutually_exclusive = ["http", "tcp", "exec"]
+        check_types = list(set(mutually_exclusive) & values.keys())
+        check_types.sort()
+
+        if len(check_types) > 1:
+            err = str(
+                f"Multiple check types specified ({', '.join(check_types)}). "
+                "Each check must have exactly one type."
+            )
+        elif len(check_types) < 1:
+            err = str(
+                f"Must specify exactly one of {', '.join(list(mutually_exclusive))} for each check."
+            )
+        else:
+            return values
+
+        raise ProjectValidationError(err)
+
+    class Config:  # pylint: disable=too-few-public-methods
+        """Pydantic model configuration."""
+
+        allow_population_by_field_name = True
+        alias_generator = lambda s: s.replace("_", "-")  # noqa: E731
+        extra = "forbid"
+
+
+class Service(pydantic.BaseModel):
+    """Lightweight schema validation for a Pebble service.
+
+    Based on
+    https://github.com/canonical/pebble#layer-specification
+    """
+
+    override: Literal["merge", "replace"]
+    command: str
+    summary: Optional[str]
+    description: Optional[str]
+    startup: Optional[Literal["enabled", "disabled"]]
+    after: Optional[List[str]]
+    before: Optional[List[str]]
+    requires: Optional[List[str]]
+    environment: Optional[Dict[str, str]]
+    user: Optional[str]
+    user_id: Optional[int]
+    group: Optional[str]
+    group_id: Optional[int]
+    working_dir: Optional[str]
+    on_success: Optional[Literal["restart", "shutdown", "ignore"]]
+    on_failure: Optional[Literal["restart", "shutdown", "ignore"]]
+    on_check_failure: Optional[Dict[str, Literal["restart", "shutdown", "ignore"]]]
+    backoff_delay: Optional[str]
+    backoff_factor: Optional[float]
+    backoff_limit: Optional[str]
+    kill_delay: Optional[str]
+
+    class Config:  # pylint: disable=too-few-public-methods
+        """Pydantic model configuration."""
+
+        allow_population_by_field_name = True
+        alias_generator = lambda s: s.replace("_", "-")  # noqa: E731
+        extra = "forbid"
 
 
 class Pebble:

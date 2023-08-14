@@ -44,7 +44,7 @@ from pydantic_yaml import YamlModel
 from rockcraft.errors import ProjectLoadError, ProjectValidationError
 from rockcraft.extensions import apply_extensions
 from rockcraft.parts import part_has_overlay, validate_part
-from rockcraft.pebble import Pebble
+from rockcraft.pebble import Check, Pebble, Service
 from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
 
 if TYPE_CHECKING:
@@ -156,43 +156,6 @@ class Platform(pydantic.BaseModel):
         return values
 
 
-class Service(pydantic.BaseModel):
-    """Lightweight schema validation for a Pebble service.
-
-    Based on
-    https://github.com/canonical/pebble#layer-specification
-    """
-
-    override: Literal["merge", "replace"]
-    command: str
-    summary: Optional[str]
-    description: Optional[str]
-    startup: Optional[Literal["enabled", "disabled"]]
-    after: Optional[List[str]]
-    before: Optional[List[str]]
-    requires: Optional[List[str]]
-    environment: Optional[Dict[str, str]]
-    user: Optional[str]
-    user_id: Optional[int]
-    group: Optional[str]
-    group_id: Optional[int]
-    working_dir: Optional[str]
-    on_success: Optional[Literal["restart", "shutdown", "ignore"]]
-    on_failure: Optional[Literal["restart", "shutdown", "ignore"]]
-    on_check_failure: Optional[Dict[str, Literal["restart", "shutdown", "ignore"]]]
-    backoff_delay: Optional[str]
-    backoff_factor: Optional[float]
-    backoff_limit: Optional[str]
-    kill_delay: Optional[str]
-
-    class Config:  # pylint: disable=too-few-public-methods
-        """Pydantic model configuration."""
-
-        allow_population_by_field_name = True
-        alias_generator = lambda s: s.replace("_", "-")  # noqa: E731
-        extra = "forbid"
-
-
 NAME_REGEX = r"^([a-z](?:-?[a-z0-9]){2,})$"
 """
 The regex for valid names for ROCKs. It matches the accepted values for pebble
@@ -231,6 +194,7 @@ class Project(YamlModel):
     environment: Optional[Dict[str, str]]
     run_user: Optional[Literal[tuple(SUPPORTED_GLOBAL_USERNAMES)]]  # type: ignore
     services: Optional[Dict[str, Service]]
+    checks: Optional[Dict[str, Check]]
 
     package_repositories: Optional[List[Dict[str, Any]]]
 

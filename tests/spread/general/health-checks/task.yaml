@@ -1,0 +1,18 @@
+summary: health checks test
+
+execute: |
+  run_rockcraft pack
+
+  test -f healthy-rock_latest_amd64.rock
+  test ! -d parts -a ! -d stage -a ! -d prime
+
+  # test container execution
+  docker images
+  sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:healthy-rock_latest_amd64.rock docker-daemon:healthy-rock:latest
+  rm healthy-rock_latest_amd64.rock
+  docker images healthy-rock:latest
+  id=$(docker run --rm -d healthy-rock)
+
+  [[ $(docker exec "$id" pebble checks | grep -c -E "http-check|tcp-check|exec-check") -eq 3 ]]
+
+  docker rm -f "$id"

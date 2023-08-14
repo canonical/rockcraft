@@ -52,6 +52,11 @@ release = rockcraft.__version__
 html_favicon = "_static/favicon.png"
 
 html_context = {
+    # Change to the link to your product website (without "https://")
+    "product_page": "github.com/canonical/rockcraft",
+    # Add your product tag to ".sphinx/_static" and change the path
+    # here (start with "_static"), default is the circle of friends
+    "product_tag": "_static/tag.png",
     # Change to the discourse instance you want to be able to link to
     # (use an empty value if you don't want to link)
     "discourse": "https://discourse.ubuntu.com/c/rocks/117",

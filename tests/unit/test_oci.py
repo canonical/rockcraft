@@ -879,8 +879,48 @@ class TestImage:
             ),
         ]
 
-    def test_set_pebble_services(
+    @pytest.mark.parametrize(
+        "mock_services,mock_checks",
+        [
+            # Both services and checks are given
+            (
+                {
+                    "mockServiceOne": {"override": "replace", "command": "foo"},
+                    "mockServiceTwo": {"override": "merge", "command": "bar"},
+                },
+                {
+                    "mockCheckOne": {
+                        "http": {"url": "example.com"},
+                        "override": "replace",
+                    },
+                    "mockCheckTwo": {"tcp": {"port": 1}, "override": "merge"},
+                },
+            ),
+            # Only services are given
+            (
+                {
+                    "mockServiceOne": {"override": "replace", "command": "foo"},
+                    "mockServiceTwo": {"override": "merge", "command": "bar"},
+                },
+                {},
+            ),
+            # Only checks are given
+            (
+                {},
+                {
+                    "mockCheckOne": {
+                        "http": {"url": "example.com"},
+                        "override": "replace",
+                    },
+                    "mockCheckTwo": {"tcp": {"port": 1}, "override": "merge"},
+                },
+            ),
+        ],
+    )
+    def test_set_pebble_layer(
         self,
+        mock_services,
+        mock_checks,
         mock_add_layer,
         mock_tmpdir,
         tmp_path,
@@ -890,15 +930,16 @@ class TestImage:
 
         mock_summary = "summary"
         mock_description = "description"
-        mock_services = {
-            "mockServiceOne": {"override": "replace", "command": "foo"},
-            "mockServiceTwo": {"override": "merge", "command": "bar"},
-        }
+
         expected_layer = {
             "summary": mock_summary,
             "description": mock_description,
-            "services": mock_services,
         }
+
+        if mock_services:
+            expected_layer["services"] = mock_services
+        if mock_checks:
+            expected_layer["checks"] = mock_checks
 
         mock_name = "rock"
         mock_tag = "tag"
@@ -911,8 +952,9 @@ class TestImage:
         fake_tmpfs = tmp_path / "mock-tmp-pebble-layer-path"
         mock_tmpdir.return_value = fake_tmpfs
 
-        image.set_pebble_services(
+        image.set_pebble_layer(
             mock_services,
+            mock_checks,
             mock_name,
             mock_tag,
             mock_summary,
