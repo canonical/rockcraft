@@ -11,4 +11,4 @@ extensions:
 parts:
   flask/install-app:
     prime:
-      - -README
+      - -srv/flask/app/README
