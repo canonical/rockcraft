@@ -26,7 +26,7 @@ ROCKs' entrypoint, this principle is elevated to new heights:
   independently), then the best practice entails orchestrating them within the
   same container, with Pebble as their manager.*
 
-This new notion addressed existing pain points arising from the excessive
+This new notion addresses existing pain points arising from the excessive
 separation of concerns, which results in numerous container images whose
 entrypoints lack the ability to gracefully handle the underlying child
 processes. This is one of the main reasons behind the gradual shift in the best
