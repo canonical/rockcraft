@@ -43,8 +43,8 @@ Pebble distinguishes itself from other similar tools (like `tini`_ and
   ROCKs as a single binary which acts both as a daemon and a client to itself;
 * **declarative service definition**: the Pebble service processes (or simply
   *Pebble services*) are declaratively defined in YAML files called layers.
-  Compared to `imperative wrapper scripts (as suggested in the Docker 
-  documentation)`_, this provides a much cleaner and less error-prone way 
+  Compared to `imperative wrapper scripts (as suggested in the Docker
+  documentation)`_, this provides a much cleaner and less error-prone way
   to define the processes that should run inside the container.
 * **services as first-class citizens**: unlike wrapper scripts, Pebble
   treats services as manageable units with a defined lifecycle and
@@ -75,8 +75,8 @@ Creating services
 ~~~~~~~~~~~~~~~~~
 
 Rockcraft follows the `Pebble layer specification`_ to the letter, with Pebble
-services defined in :doc:`/reference/rockcraft.yaml`. 
-:doc:`/how-to/convert-to-pebble-layer` provides an example of how to 
+services defined in :doc:`/reference/rockcraft.yaml`.
+:doc:`/how-to/convert-to-pebble-layer` provides an example of how to
 convert a Docker entrypoint to a Pebble layer.
 
 
