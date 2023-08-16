@@ -1,3 +1,4 @@
+.. _rockcraft.yaml_reference:
 
 **************
 rockcraft.yaml

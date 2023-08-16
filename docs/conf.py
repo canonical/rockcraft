@@ -199,9 +199,14 @@ html_static_path = ["_static"]
 
 # These paths are either relative to html_static_path
 # or fully qualified paths (eg. https://...)
-html_css_files = ["css/custom.css", "github_issue_links.css", "custom.css"]
+html_css_files = [
+    "css/custom.css",
+    "github_issue_links.css",
+    "custom.css",
+    "header.css",
+]
 
-html_js_files = []
+html_js_files = ["header-nav.js"]
 if "github_issues" in html_context and html_context["github_issues"]:
     html_js_files.append("github_issue_links.js")
 
@@ -213,6 +218,7 @@ set_type_checking_flag = True
 typehints_fully_qualified = False
 always_document_param_types = True
 typehints_document_rtype = True
+linkcheck_anchors_ignore = ["slice-definitions"]
 
 # Enable support for google-style instance attributes.
 napoleon_use_ivar = True
