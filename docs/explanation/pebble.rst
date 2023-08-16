@@ -43,18 +43,17 @@ Pebble distinguishes itself from other similar tools (like `tini`_ and
   ROCKs as a single binary which acts both as a daemon and a client to itself;
 * **declarative service definition**: the Pebble service processes (or simply
   *Pebble services*) are declaratively defined in YAML files called layers.
-  When compared to nowadays use of `imperative wrapper scripts (as suggested
-  in the Docker documentation)`_, this provides a much cleaner and less
-  error-prone way of defining the processes that should run inside the
-  container;
-* **services as first-class citizens**: in contrast to wrapper scripts, Pebble
+  Compared to `imperative wrapper scripts (as suggested in the Docker 
+  documentation)`_, this provides a much cleaner and less error-prone way 
+  to define the processes that should run inside the container.
+* **services as first-class citizens**: unlike wrapper scripts, Pebble
   treats services as manageable units with a defined lifecycle and
   service-specific definitions for health monitoring, inter-service
   dependencies, restart policies, and much more;
 * **layering**: Pebble can stack multiple layers (represented as YAML files)
   into a single Pebble plan where all services are defined. With this layering
   mechanism, existing services can be overridden or re-configured;
-* **container-optimised init process**: as the ROCKs' PID 1, Pebble acts as an
+* **container-optimised init process**: as a ROCK's PID 1, Pebble acts as an
   init process and thus offers:
 
   * support for multiple child processes,
@@ -66,19 +65,19 @@ Pebble distinguishes itself from other similar tools (like `tini`_ and
 * **consistent user experience**: since every ROCK has Pebble as its
   entrypoint, a predictable and consistent user experience is guaranteed;
 * **embedded utilities**: regardless of the ROCK's contents, Pebble offers a
-  comprehensive array of commands for inspecting and interacting with the
+  comprehensive suite of commands for inspecting and interacting with the
   container. These commands are especially useful for :ref:`Chiselled ROCKs
-  <chisel_explanation>` as they encompass functionalities such as listing and
+  <chisel_explanation>`, as they encompass functionalities such as listing and
   deleting files, creating directories, and inspecting Pebble services,
   among others.
 
 Creating services
 ~~~~~~~~~~~~~~~~~
 
-Rockcraft follows the `Pebble layer specification`_ to the letter. Pebble
-services are defined in :doc:`/reference/rockcraft.yaml` and you can also see
-:doc:`/how-to/convert-to-pebble-layer` for an example of how to convert a
-Docker entrypoint to a Pebble layer.
+Rockcraft follows the `Pebble layer specification`_ to the letter, with Pebble
+services defined in :doc:`/reference/rockcraft.yaml`. 
+:doc:`/how-to/convert-to-pebble-layer` provides an example of how to 
+convert a Docker entrypoint to a Pebble layer.
 
 
 .. _Pebble: https://github.com/canonical/pebble

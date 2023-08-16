@@ -12,7 +12,7 @@ container registry (e.g. DockerHub, ECR, ACR,..) and used by any OCI-compliant
 tool (e.g. Docker, Podman, Kubernetes,...).
 
 Interoperability between ROCKs and other containers also extends to how
-container images are built. This enables using ROCKs as bases for existing
+container images are built, allowing ROCKs to be used as bases for existing
 build recipes, such as Dockerfiles, for further customisation and development.
 
 What sets ROCKs apart?
@@ -22,7 +22,7 @@ What sets ROCKs apart?
   aiming to minimise your full-stack disparity and adoption overhead, e.g.
 
   * :ref:`pebble_explanation_page` **is the official entrypoint for all
-    ROCKs**, thus providing a predictable and powerful abstraction layer
+    ROCKs**, providing a predictable and powerful abstraction layer
     between the user and the container application;
   * ROCKs extend the OCI image information by including additional **metadata**
     inside each ROCK (e.g. at ``/.rock/metadata.yaml``), allowing container
@@ -30,10 +30,10 @@ What sets ROCKs apart?
     on, at execution time;
 * **User-centric experience**: ROCKs are described in a :ref:`declarative
   format<rockcraft.yaml_reference>` and **built on top of familiar and reliable
-  Ubuntu LTS images**, thus offering an open and up-to-date user experience;
+  Ubuntu LTS images**, offering an open and up-to-date user experience;
 * **Seamless chiselling experience**: ROCKs can be effortlessly
   :ref:`chiselled<chisel_explanation>` using off-the-shelf primitives,
-  harnessing all the advantageous traits of "distroless" to deliver **compact
+  harnessing all the advantages of "distroless" to deliver **compact
   and secure Ubuntu-based container images**.
 
 
@@ -49,7 +49,7 @@ Typically, container users won't be directly building or accessing the raw OCI
 components that form an image. However, these are frequently used as the
 underlying source of truth when inspecting container images with tools like
 `Docker`_ or `skopeo`_. As an example, the command ``docker inspect`` will,
-in its majority, source the requested information from the image's OCI
+in general, source the requested information from the image's OCI
 `configuration`_.
 
 On the other hand, the `OCI layers`_ are the literal filesystem contents that
