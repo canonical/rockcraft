@@ -101,8 +101,9 @@ try:
     # The instance of `ExpectedValues` for the current host running the tests
     VALUES_FOR_HOST = RELEASE_TO_VALUES[OsRelease().version_id()]
 except OsReleaseVersionIdError:
-    # not running on Ubuntu; pass because the tests will be skipped.
-    pass
+    # not running on Ubuntu; the tests will be skipped.
+    # Use the 22.04 values to make pyright happy.
+    VALUES_FOR_HOST = RELEASE_TO_VALUES["22.04"]
 
 
 @pytest.mark.parametrize("base", tuple(UBUNTU_BASES))
@@ -123,7 +124,7 @@ def test_python_plugin_ubuntu(base, tmp_path):
     # Check the extra sitecustomize.py module that we add
     expected_text = SITECUSTOMIZE_TEMPLATE.replace("EOF", "")
 
-    version_dir = VALUES_FOR_HOST.version_dir
+    version_dir = VALUES_FOR_HOST.version_dir  # pyright: ignore[reportUnboundVariable]
     sitecustom = tmp_path / f"stage/usr/lib/{version_dir}/sitecustomize.py"
     assert sitecustom.read_text().strip() == expected_text.strip()
 
@@ -144,7 +145,10 @@ def test_python_plugin_bare(tmp_path):
         bin_dir / i for i in VALUES_FOR_HOST.symlinks
     ]
     # (Python 3.8 does not have Path.readlink())
-    assert os.readlink(bin_dir / "python3") == VALUES_FOR_HOST.symlink_target
+    assert (
+        os.readlink(bin_dir / "python3")
+        == VALUES_FOR_HOST.symlink_target  # pyright: ignore[reportUnboundVariable]
+    )
 
     # Check the shebang in the "hello" script
     expected_shebang = "#!/bin/python3"
@@ -154,7 +158,7 @@ def test_python_plugin_bare(tmp_path):
     # Check the extra sitecustomize.py module that we add
     expected_text = SITECUSTOMIZE_TEMPLATE.replace("EOF", "")
 
-    version_dir = VALUES_FOR_HOST.version_dir
+    version_dir = VALUES_FOR_HOST.version_dir  # pyright: ignore[reportUnboundVariable]
     sitecustom = tmp_path / f"stage/usr/lib/{version_dir}/sitecustomize.py"
     assert sitecustom.read_text().strip() == expected_text.strip()
 

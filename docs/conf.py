@@ -52,6 +52,11 @@ release = rockcraft.__version__
 html_favicon = "_static/favicon.png"
 
 html_context = {
+    # Change to the link to your product website (without "https://")
+    "product_page": "github.com/canonical/rockcraft",
+    # Add your product tag to ".sphinx/_static" and change the path
+    # here (start with "_static"), default is the circle of friends
+    "product_tag": "_static/tag.png",
     # Change to the discourse instance you want to be able to link to
     # (use an empty value if you don't want to link)
     "discourse": "https://discourse.ubuntu.com/c/rocks/117",
@@ -194,9 +199,14 @@ html_static_path = ["_static"]
 
 # These paths are either relative to html_static_path
 # or fully qualified paths (eg. https://...)
-html_css_files = ["css/custom.css", "github_issue_links.css", "custom.css"]
+html_css_files = [
+    "css/custom.css",
+    "github_issue_links.css",
+    "custom.css",
+    "header.css",
+]
 
-html_js_files = []
+html_js_files = ["header-nav.js"]
 if "github_issues" in html_context and html_context["github_issues"]:
     html_js_files.append("github_issue_links.js")
 
@@ -208,6 +218,7 @@ set_type_checking_flag = True
 typehints_fully_qualified = False
 always_document_param_types = True
 typehints_document_rtype = True
+linkcheck_anchors_ignore = ["slice-definitions"]
 
 # Enable support for google-style instance attributes.
 napoleon_use_ivar = True

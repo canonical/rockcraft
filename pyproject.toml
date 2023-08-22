@@ -11,6 +11,9 @@ line_length = 88
 # are not overwritten.
 extend-exclude = "docs/sphinx-starter-pack"
 
+[tool.pyright]
+ignore = ["docs/sphinx-starter-pack"]
+
 [tool.mypy]
 python_version = "3.8"
 exclude = [

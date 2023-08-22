@@ -1,0 +1,61 @@
+name: healthy-rock
+summary: A ROCK with health checks
+description: A test ROCK with a bunch of different Pebble checks
+license: Apache-2.0
+
+version: latest
+base: "ubuntu:22.04"
+
+services: 
+  webserver:
+    override: replace
+    command: timeout 30 nginx -g 'daemon off;'
+    environment:
+      TZ: UTC
+    startup: enabled
+    on-failure: shutdown
+
+checks:
+  http-check:
+    override: replace
+    level: alive
+    period: 1s
+    http:
+      url: http://localhost/
+  tcp-check:
+    override: replace
+    level: ready
+    tcp:
+      port: 80
+  exec-check:
+    override: replace
+    exec:
+      command: pebble services
+
+platforms:
+  amd64:
+
+package-repositories:
+  - type: apt
+    url: https://nginx.org/packages/mainline/ubuntu
+    key-id: 573BFD6B3D8FBC641079A6ABABF5BD827BD9BF62
+    suites: 
+      - jammy
+    components:
+      - nginx
+    priority: always
+
+parts:
+  nginx-user:
+    plugin: nil
+    overlay-script: |
+      set -x
+      useradd -R $CRAFT_OVERLAY -M -U -r nginx
+
+  nginx:
+    plugin: nil
+    after:
+      - nginx-user
+    stage-packages:
+      - nginx
+      - tzdata
