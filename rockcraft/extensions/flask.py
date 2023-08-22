@@ -72,9 +72,9 @@ class Flask(Extension):
             "flask": {
                 "override": "replace",
                 "startup": "enabled",
-                "command": "/bin/python3 -m gunicorn app:app",
+                "command": "/bin/python3 -m gunicorn --bind 0.0.0.0:8000 app:app",
                 "user": "_daemon_",
-                "working-dir": "/srv/flask/app"
+                "working-dir": "/srv/flask/app",
             }
         }
         existing_services = self.yaml_data.get("services", {})
@@ -154,6 +154,16 @@ class Flask(Extension):
                 install_app_part_name, install_app_part
             ),
         }
+        if self.yaml_data["base"] == "bare":
+            snippet["flask/container-processing"] = {
+                "plugin": "nil",
+                "source": ".",
+                "override-prime": (
+                    "craftctl default\n"
+                    "mkdir -p tmp\n"
+                    "chmod 777 tmp"
+                ),
+            }
         return snippet
 
     @override

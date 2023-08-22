@@ -22,3 +22,4 @@ adapt the steps to fit your specific requirements.
    Convert an entrypoint to a Pebble layer <convert-to-pebble-layer.rst>
    contribute-docs
    use-chisel
+   Use flask extension <use-flask-extension.rst>
