@@ -22,7 +22,7 @@ from typing import Any, Dict, Optional, Tuple
 
 from overrides import override
 
-from ._utils import apply_extension_property
+from ._utils import _apply_extension_property
 from .extension import Extension
 
 
@@ -100,7 +100,7 @@ class Flask(Extension):
             elif property_name not in base_part and property_name in new_part:
                 result[property_name] = new_part[property_name]
             else:
-                result[property_name] = apply_extension_property(
+                result[property_name] = _apply_extension_property(
                     base_part[property_name], new_part[property_name]
                 )
         return result
@@ -158,11 +158,7 @@ class Flask(Extension):
             snippet["flask/container-processing"] = {
                 "plugin": "nil",
                 "source": ".",
-                "override-prime": (
-                    "craftctl default\n"
-                    "mkdir -p tmp\n"
-                    "chmod 777 tmp"
-                ),
+                "override-prime": "craftctl default\nmkdir -p tmp\nchmod 777 tmp",
             }
         return snippet
 

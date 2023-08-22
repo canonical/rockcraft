@@ -56,7 +56,7 @@ def _apply_extension(
     # Apply the root components of the extension (if any)
     root_extension = extension.get_root_snippet()
     for property_name, property_value in root_extension.items():
-        yaml_data[property_name] = apply_extension_property(
+        yaml_data[property_name] = _apply_extension_property(
             yaml_data.get(property_name), property_value
         )
 
@@ -68,7 +68,7 @@ def _apply_extension(
     parts = yaml_data["parts"]
     for _, part_definition in parts.items():
         for property_name, property_value in part_extension.items():
-            part_definition[property_name] = apply_extension_property(
+            part_definition[property_name] = _apply_extension_property(
                 part_definition.get(property_name), property_value
             )
 
@@ -79,7 +79,7 @@ def _apply_extension(
         parts[part_name] = parts_snippet[part_name]
 
 
-def apply_extension_property(existing_property: Any, extension_property: Any) -> Any:
+def _apply_extension_property(existing_property: Any, extension_property: Any) -> Any:
     if existing_property:
         # If the property is not scalar, merge them
         if isinstance(existing_property, list) and isinstance(extension_property, list):
@@ -93,7 +93,7 @@ def apply_extension_property(existing_property: Any, extension_property: Any) ->
 
         if isinstance(existing_property, dict) and isinstance(extension_property, dict):
             for key, value in extension_property.items():
-                existing_property[key] = apply_extension_property(
+                existing_property[key] = _apply_extension_property(
                     existing_property.get(key), value
                 )
             return existing_property
