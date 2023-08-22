@@ -24,7 +24,7 @@ Managing project files with the flask extension
 
 By default, all files within the Flask project directory are copied, excluding
 certain common files and directories, such as ``node_modules``. However,
-this behavior can be tailored to either specifically include or exclude files
+this behaviour can be tailored to either specifically include or exclude files
 from the Flask project directory in the rock image.
 
 To include only select files from the project directory in the rock image,
