@@ -199,7 +199,7 @@ The set of parts that compose the ROCK's contents
    ``services`` to define your container application.
 
 ``extensions``
----------
+--------------
 
 **Type**: list[string]
 

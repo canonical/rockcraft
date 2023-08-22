@@ -63,7 +63,27 @@ class Flask(Extension):
         current_parts = copy.deepcopy(self.yaml_data.get("parts", {}))
         current_parts.update(self._gen_new_parts())
         snippet["parts"] = current_parts
+        snippet["services"] = self._gen_services()
         return snippet
+
+    def _gen_services(self):
+        """Return the services snipped to be applied to the rockcraft file."""
+        services = {
+            "flask": {
+                "override": "replace",
+                "startup": "enabled",
+                "command": "/bin/python3 -m gunicorn app:app",
+                "user": "_daemon_",
+                "working-dir": "/srv/flask/app"
+            }
+        }
+        existing_services = self.yaml_data.get("services", {})
+        for existing_service_name, existing_service in existing_services.items():
+            if existing_service_name in services:
+                services[existing_service_name].update(existing_service)
+            else:
+                services[existing_service_name] = existing_service
+        return services
 
     @override
     def get_part_snippet(self) -> Dict[str, Any]:
