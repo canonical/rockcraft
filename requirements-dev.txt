@@ -17,9 +17,9 @@ colorama==0.4.6
 commonmark==0.9.1
 coverage==6.5.0
 craft-archives==1.1.0
-craft-cli==2.0.1
-craft-parts==1.23.0
-craft-providers==1.8.0
+craft-cli==2.1.0
+craft-parts==1.24.1
+craft-providers==1.15.0
 cryptography==38.0.4
 Deprecated==1.2.14
 dill==0.3.7
@@ -63,8 +63,8 @@ polib==1.1.1
 psutil==5.9.5
 pycodestyle==2.8.0
 pycparser==2.21
-pydantic==1.9.0
-pydantic-yaml==0.8.1
+pydantic==1.10.0
+pydantic-yaml==0.11.2
 pydocstyle==6.1.1
 pyflakes==2.4.0
 Pygments==2.13.0

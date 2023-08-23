@@ -19,6 +19,7 @@ from unittest.mock import MagicMock, Mock, call
 
 import pytest
 from craft_providers import ProviderError, bases
+from craft_providers.actions.snap_installer import Snap
 from craft_providers.lxd import LXDProvider
 from craft_providers.multipass import MultipassProvider
 
@@ -152,11 +153,7 @@ def test_get_base_configuration(
         compatibility_tag="rockcraft-buildd-base-v0.0",
         environment="test-env",
         hostname="test-instance-name",
-        snaps=[
-            bases.buildd.Snap(
-                name="rockcraft", channel=expected_snap_channel, classic=True
-            )
-        ],
+        snaps=[Snap(name="rockcraft", channel=expected_snap_channel, classic=True)],
         packages=["gpg", "dirmngr"],
     )
 

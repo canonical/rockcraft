@@ -278,7 +278,6 @@ def run_in_provider(
         project_name=project.name,
         project_path=host_project_path,
         base_configuration=base_configuration,
-        build_base=build_base.value,
         instance_name=instance_name,
     ) as instance:
         try:
