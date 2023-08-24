@@ -57,7 +57,7 @@ To build the ROCK, run:
 The output will look similar to:
 
 ..  code-block:: text
-    :emphasize-lines: 15
+    :emphasize-lines: 10
     :class: log-snippets
 
     Launching instance...
@@ -69,11 +69,6 @@ The output will look similar to:
     Executed: stage openssl
     Executed: prime openssl
     Executed parts lifecycle
-    Created new layer
-    Entrypoint set to ['/usr/bin/openssl']
-    Cmd set to []
-    Environment set to ['SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt']
-    Labels and annotations set to ['org.opencontainers.image.version=0.0.1', 'org.opencontainers.image.title=chisel-openssl', 'org.opencontainers.image.ref.name=chisel-openssl', 'org.opencontainers.image.licenses=Apache-2.0', 'org.opencontainers.image.created=2022-09-30T17:57:57.070040+00:00', 'org.opencontainers.image.base.digest=719e29cbdf81d2c046598c274ae82bdcdfe7bf819058a0f304c57858b633d801']
     Exported to OCI archive 'chisel-openssl_0.0.1_amd64.rock'
 
 The process might take a little while, but at the end, a new file named

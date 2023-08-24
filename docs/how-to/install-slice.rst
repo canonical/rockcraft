@@ -90,7 +90,7 @@ Build your ROCK with:
 The output will be:
 
 ..  code-block:: text
-    :emphasize-lines: 4,6,8,10,12,17
+    :emphasize-lines: 4,6,8,10,12,15
     :class: log-snippets
 
     Launching instance...
@@ -107,8 +107,6 @@ The output will be:
     Executed: prime build-context
     Executed: prime pebble
     Executed parts lifecycle
-    Created new layer
-    Labels and annotations set to ['org.opencontainers.image.version=0.0.1', 'org.opencontainers.image.title=custom-openssl-rock', 'org.opencontainers.image.ref.name=custom-openssl-rock', 'org.opencontainers.image.licenses=GPL-3.0', 'org.opencontainers.image.created=2022-11-25T14:00:47.470814+00:00', 'org.opencontainers.image.base.digest=c4d1cae85485fb5bf8483a440f7e47b0fd2592ff114117cd4763604fbf6ae7a4']
     Exported to OCI archive 'custom-openssl-rock_0.0.1_amd64.rock'
 
 Test that the OpenSSL binaries have been correctly installed with the following:

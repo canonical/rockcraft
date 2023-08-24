@@ -334,7 +334,7 @@ class Image:
         image_path = self.path / self.image_name
         params = ["--clear=config.entrypoint", "--config.user", user]
         _config_image(image_path, params)
-        emit.progress(f"Default user set to {user}", permanent=True)
+        emit.progress(f"Default user set to {user}")
 
     def set_entrypoint(self) -> None:
         """Set the OCI image entrypoint. It is always Pebble and CMD is null."""
@@ -347,7 +347,7 @@ class Image:
         _config_image(image_path, params)
         # Clear the CMD
         _config_image(image_path, ["--clear=config.cmd"])
-        emit.progress(f"Entrypoint set to {entrypoint}", permanent=True)
+        emit.progress(f"Entrypoint set to {entrypoint}")
 
     def set_pebble_layer(
         self,
@@ -411,7 +411,7 @@ class Image:
             env_list.append(env_item)
             params.extend(["--config.env", env_item])
         _config_image(image_path, params)
-        emit.progress(f"Environment set to {env_list}", permanent=True)
+        emit.progress(f"Environment set to {env_list}")
 
     def set_control_data(self, metadata: Dict[str, Any]) -> None:
         """Create and populate the ROCK's control data folder.
@@ -462,7 +462,7 @@ class Image:
         _config_image(image_path, label_params)
         # Set the annotations as a copy of these labels (for OCI compliance only)
         _config_image(image_path, annotation_params)
-        emit.progress(f"Labels and annotations set to {labels_list}", permanent=True)
+        emit.progress(f"Labels and annotations set to {labels_list}")
 
 
 def _copy_image(
