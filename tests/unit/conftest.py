@@ -16,6 +16,7 @@
 
 import contextlib
 from pathlib import Path
+from typing import Optional
 from unittest import mock
 
 import pytest
@@ -48,6 +49,14 @@ def fake_provider(mock_instance):
     class FakeProvider(Provider):
         """Fake provider."""
 
+        @property
+        def name(self) -> str:
+            return "fake"
+
+        @property
+        def install_recommendation(self) -> str:
+            return "uninstallable"
+
         def clean_project_environments(self, *, instance_name: str):
             pass
 
@@ -69,8 +78,9 @@ def fake_provider(mock_instance):
             project_name: str,
             project_path: Path,
             base_configuration: base.Base,
-            build_base: str,
+            build_base: Optional[str] = None,
             instance_name: str,
+            allow_unstable: bool = False,
         ):
             yield mock_instance
 

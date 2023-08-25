@@ -181,7 +181,7 @@ def _pack(
         new_layer_dir=lifecycle.prime_dir,
         base_layer_dir=base_layer_dir,
     )
-    emit.progress("Created new layer", permanent=True)
+    emit.progress("Created new layer")
 
     if project.run_user:
         emit.progress(f"Creating new user {project.run_user}")
@@ -278,7 +278,6 @@ def run_in_provider(
         project_name=project.name,
         project_path=host_project_path,
         base_configuration=base_configuration,
-        build_base=build_base.value,
         instance_name=instance_name,
     ) as instance:
         try:

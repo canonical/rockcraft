@@ -5,9 +5,9 @@ certifi==2022.12.7
 charset-normalizer==2.1.1
 colorama==0.4.6
 craft-archives==1.1.0
-craft-cli==2.0.1
-craft-parts==1.23.0
-craft-providers==1.8.0
+craft-cli==2.1.0
+craft-parts==1.24.1
+craft-providers==1.15.0
 Deprecated==1.2.14
 distro==1.8.0
 docutils==0.17.1
@@ -27,8 +27,8 @@ overrides==7.3.1
 packaging==22.0
 platformdirs==2.6.2
 polib==1.1.1
-pydantic==1.9.0
-pydantic-yaml==0.8.1
+pydantic==1.10.0
+pydantic-yaml==0.11.2
 Pygments==2.13.0
 pytz==2022.6
 pyxdg==0.28

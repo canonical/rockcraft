@@ -24,6 +24,7 @@ from typing import Dict, Optional
 
 from craft_cli import emit
 from craft_providers import Provider, ProviderError, bases, executor
+from craft_providers.actions.snap_installer import Snap
 from craft_providers.lxd import LXDProvider
 from craft_providers.multipass import MultipassProvider
 
@@ -113,7 +114,7 @@ def get_base_configuration(
         environment=get_command_environment(),
         hostname=instance_name,
         snaps=[
-            bases.buildd.Snap(
+            Snap(
                 name="rockcraft",
                 channel=snap_channel,
                 classic=True,
