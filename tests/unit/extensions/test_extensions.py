@@ -134,3 +134,102 @@ def test_project_load_extensions(fake_extensions, tmp_path):
 
     # New part
     assert parts[f"{FullExtension.NAME}/new-part"] == {"plugin": "nil", "source": None}
+
+
+def test_flask_extensions(fake_extensions, tmp_path, input_yaml, monkeypatch):
+    monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "1")
+    extensions.register("flask", extensions.flask.Flask)
+
+    (tmp_path / "requirements.txt").write_text("flask")
+    (tmp_path / "app.py").touch()
+    (tmp_path / "static").mkdir()
+    (tmp_path / "node_modules").mkdir()
+
+    input_yaml["extensions"] = ["flask"]
+
+    applied = extensions.apply_extensions(tmp_path, input_yaml)
+
+    assert applied["run_user"] == "_daemon_"
+    assert applied["platforms"] == {"amd64": {}}
+
+    # Root snippet extends the project's
+    services = applied["services"]
+    assert services["flask"] == {
+        "command": "/bin/python3 -m gunicorn --bind 0.0.0.0:8000 app:app",
+        "override": "replace",
+        "startup": "enabled",
+        "user": "_daemon_",
+        "working-dir": "/srv/flask/app",
+    }
+
+    parts = applied["parts"]
+    assert sorted(parts["flask/install-app"]["stage"]) == [
+        "srv/flask/app/app.py",
+        "srv/flask/app/requirements.txt",
+        "srv/flask/app/static",
+    ]
+    del parts["flask/install-app"]["stage"]
+    assert parts == {
+        "flask/dependencies": {
+            "source": ".",
+            "plugin": "python",
+            "python-requirements": ["requirements.txt"],
+            "stage-packages": ["python3-venv"],
+            "python-packages": ["gunicorn"],
+        },
+        "flask/install-app": {
+            "source": ".",
+            "organize": {
+                "app.py": "srv/flask/app/app.py",
+                "static": "srv/flask/app/static",
+                "requirements.txt": "srv/flask/app/requirements.txt",
+            },
+            "plugin": "dump",
+        },
+    }
+
+
+def test_flask_extensions_overwrite(fake_extensions, tmp_path, input_yaml, monkeypatch):
+    monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "1")
+    extensions.register("flask", extensions.flask.Flask)
+
+    (tmp_path / "requirements.txt").write_text("flask")
+    (tmp_path / "foobar").touch()
+    (tmp_path / "webapp").mkdir()
+    (tmp_path / "webapp/app.py").touch()
+    (tmp_path / "static").mkdir()
+    (tmp_path / "node_modules").mkdir()
+
+    input_yaml["extensions"] = ["flask"]
+    input_yaml["parts"] = {"flask/install-app": {"prime": ["-srv/flask/app/foobar"]}}
+    input_yaml["services"] = {
+        "flask": {
+            "command": "/bin/python3 -m gunicorn --bind 0.0.0.0:8000 webapp.app:app"
+        }
+    }
+    applied = extensions.apply_extensions(tmp_path, input_yaml)
+
+    assert applied["services"] == {
+        "flask": {
+            "command": "/bin/python3 -m gunicorn --bind 0.0.0.0:8000 webapp.app:app",
+            "override": "replace",
+            "startup": "enabled",
+            "user": "_daemon_",
+            "working-dir": "/srv/flask/app",
+        }
+    }
+    assert applied["parts"]["flask/install-app"]["prime"] == ["-srv/flask/app/foobar"]
+
+
+def test_flask_extensions_bare(fake_extensions, tmp_path, monkeypatch):
+    monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "1")
+    extensions.register("flask", extensions.flask.Flask)
+
+    (tmp_path / "requirements.txt").write_text("flask")
+    input_yaml = {"extensions": ["flask"], "base": "bare"}
+    applied = extensions.apply_extensions(tmp_path, input_yaml)
+    assert applied["parts"]["flask/container-processing"] == {
+        "plugin": "nil",
+        "source": ".",
+        "override-prime": "craftctl default\nmkdir -p tmp\nchmod 777 tmp",
+    }
