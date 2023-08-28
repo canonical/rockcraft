@@ -78,7 +78,7 @@ Now, build the final custom NGINX ROCK with:
 You should see something like this:
 
 ..  code-block:: text
-    :emphasize-lines: 5,29
+    :emphasize-lines: 5,26
     :class: log-snippets
 
     Launching instance...
@@ -106,9 +106,6 @@ You should see something like this:
     Executed: prime nginx
     Executed: prime pebble
     Executed parts lifecycle
-    Created new layer
-    Entrypoint set to ['/bin/pebble', 'enter']
-    Labels and annotations set to ['org.opencontainers.image.version=latest', 'org.opencontainers.image.title=custom-nginx-rock', 'org.opencontainers.image.ref.name=custom-nginx-rock', 'org.opencontainers.image.licenses=Apache-2.0', 'org.opencontainers.image.created=2023-04-25T16:45:17.168734+00:00', 'org.opencontainers.image.base.digest=5f6d7e4dad348dbbae3c1e960dcaba98c2e262902c67c9bc41d5f2417cebaeb8']
     Exported to OCI archive 'custom-nginx-rock_latest_amd64.rock'
 
 Then copy the resulting ROCK (from the OCI archive format) to the Docker daemon

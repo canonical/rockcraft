@@ -20,7 +20,7 @@ from unittest.mock import Mock, call
 
 import pytest
 from craft_cli import EmitterMode, emit
-from craft_providers.bases.buildd import BuilddBaseAlias
+from craft_providers.bases import BuilddBaseAlias
 
 import tests
 from rockcraft import lifecycle
@@ -401,7 +401,6 @@ def test_lifecycle_run_in_provider(
         project_name="test-name",
         project_path=cwd,
         base_configuration=mock_base_configuration,
-        build_base=provider_base.value,
         instance_name="test-instance-name",
     )
     mock_instance.mount.assert_called_once_with(

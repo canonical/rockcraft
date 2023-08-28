@@ -99,6 +99,7 @@ def run() -> None:
         appname="rockcraft",
         greeting=f"Starting Rockcraft {__version__}",
         log_filepath=log_filepath,
+        streaming_brief=True,
     )
 
     dispatcher = craft_cli.Dispatcher(

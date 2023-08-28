@@ -68,9 +68,6 @@ The output should look as follows:
     Executed: prime hello
     Executed: prime pebble
     Executed parts lifecycle
-    Created new layer
-    Entrypoint set to ['/bin/pebble', 'enter', '--verbose']
-    Labels and annotations set to ['org.opencontainers.image.version=1.0', 'org.opencontainers.image.title=hello', 'org.opencontainers.image.ref.name=hello', 'org.opencontainers.image.licenses=Apache-2.0', 'org.opencontainers.image.created=2023-07-13T14:55:46.049188+00:00', 'org.opencontainers.image.base.digest=93532f6b4812679c429e7415f60fc2260b070ffb744ec65298e65770e14bbe8d']
     Exported to OCI archive 'hello_1.0_amd64.rock'
 
 At the end of the process, a file named ``hello_1.0_amd64.rock`` should be
