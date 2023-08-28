@@ -18,6 +18,7 @@
 
 import copy
 import os
+import posixpath
 from typing import Any, Dict, Optional, Tuple
 
 from overrides import override
@@ -128,7 +129,7 @@ class Flask(Extension):
             for f in os.listdir(self.project_root)
             if f not in ignores and not f.endswith(".rock")
         ]
-        renaming_map = {f: os.path.join("srv/flask/app", f) for f in source_files}
+        renaming_map = {f: posixpath.join("srv/flask/app", f) for f in source_files}
         install_app_part_name = "flask/install-app"
         dependencies_part_name = "flask/dependencies"
         # Users are required to compile any static assets prior to executing the
