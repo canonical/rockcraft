@@ -7,7 +7,7 @@ rockcraft project file, aiming to minimise the boilerplate code when
 initiating a new rock.
 
 The ``flask`` extension
--------------------
+-----------------------
 
 The Flask extension streamlines the process of building Flask application rocks.
 

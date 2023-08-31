@@ -10,8 +10,8 @@ Example:
 .. code-block:: yaml
 
     name: example-flask
-    summary: Example.
-    description: Example.
+    summary: A Flask application
+    description: A ROCK packing a Flask application via the flask extension
     version: "0.1"
     base: bare
     license: Apache-2.0
