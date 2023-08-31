@@ -231,5 +231,5 @@ def test_flask_extensions_bare(fake_extensions, tmp_path, monkeypatch):
     assert applied["parts"]["flask/container-processing"] == {
         "plugin": "nil",
         "source": ".",
-        "override-prime": "craftctl default\nmkdir -p tmp\nchmod 777 tmp",
+        "override-build": "mkdir -m 777 ${CRAFT_PART_INSTALL}/tmp",
     }

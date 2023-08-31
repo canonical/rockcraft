@@ -159,11 +159,11 @@ class Flask(Extension):
             snippet["flask/container-processing"] = {
                 "plugin": "nil",
                 "source": ".",
-                "override-prime": "craftctl default\nmkdir -p tmp\nchmod 777 tmp",
+                "override-build": "mkdir -m 777 ${CRAFT_PART_INSTALL}/tmp",
             }
         return snippet
 
     @override
     def get_parts_snippet(self) -> Dict[str, Any]:
-        """Create necessary parts to facilitate the flask application."""
+        """Return the parts to add to parts."""
         return {}

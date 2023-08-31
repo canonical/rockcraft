@@ -27,8 +27,9 @@ certain common files and directories, such as ``node_modules``. However,
 this behaviour can be tailored to either specifically include or exclude files
 from the Flask project directory in the ROCK image.
 
-To include only select files from the project directory in the ROCK image,
-append the following part to ``rockcraft.yaml``:
+You can include and exclude files from the project directory in the ROCK image
+by using the standard prime declaration on the specially-named
+``flask/install-app`` part. For example, to include only select files:
 
 .. code-block:: yaml
 

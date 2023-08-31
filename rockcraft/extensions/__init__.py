@@ -17,6 +17,7 @@
 """Extension processor and related utilities."""
 
 from ._utils import apply_extensions
+from .flask import Flask
 from .registry import get_extension_class, get_extension_names, register, unregister
 
 __all__ = [
@@ -27,6 +28,4 @@ __all__ = [
     "unregister",
 ]
 
-from .flask import Flask as _Flask
-
-register("flask", _Flask)
+register("flask", Flask)
