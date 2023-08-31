@@ -218,7 +218,7 @@ The set of parts that compose the ROCK's contents
 
 **Required**: No
 
-Extensions to apply to this rock image.
+Extensions to enable when building the ROCK.
 
 Currently supported extensions:
 

@@ -1,15 +1,15 @@
 Using the flask extension
 -------------------------
 
-The Flask extension is compatible with ``bare``, ``ubuntu:20.04``, and
-``ubuntu:22.04``. To employ it, include ``extensions: [flask]`` in your
+The Flask extension is compatible with the ``bare``, ``ubuntu:20.04``, and
+``ubuntu:22.04`` bases. To employ it, include ``extensions: [flask]`` in your
 ``rockcraft.yaml`` file.
 
 Example:
 
 .. code-block:: yaml
 
-    name: example
+    name: example-flask
     summary: Example.
     description: Example.
     version: "0.1"
@@ -25,9 +25,9 @@ Managing project files with the flask extension
 By default, all files within the Flask project directory are copied, excluding
 certain common files and directories, such as ``node_modules``. However,
 this behaviour can be tailored to either specifically include or exclude files
-from the Flask project directory in the rock image.
+from the Flask project directory in the ROCK image.
 
-To include only select files from the project directory in the rock image,
+To include only select files from the project directory in the ROCK image,
 append the following part to ``rockcraft.yaml``:
 
 .. code-block:: yaml
