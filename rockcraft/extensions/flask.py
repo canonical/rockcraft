@@ -23,9 +23,9 @@ from typing import Any, Dict, Optional, Tuple
 
 from overrides import override
 
+from ..errors import ExtensionError
 from ._utils import _apply_extension_property
 from .extension import Extension
-from ..errors import ExtensionError
 
 
 class Flask(Extension):
@@ -134,7 +134,7 @@ class Flask(Extension):
                 "flask extension required flask/install-app not found "
                 "in parts of the rockcraft file"
             )
-        install_prime = self.yaml_data.get("parts")[install_app_part_name].get("prime")
+        install_prime = self.yaml_data["parts"][install_app_part_name].get("prime")
         if not install_prime:
             raise ExtensionError(
                 "flask extension required prime list not found or empty"

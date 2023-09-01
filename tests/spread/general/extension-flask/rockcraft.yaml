@@ -12,3 +12,4 @@ parts:
   flask/install-app:
     prime:
       - -srv/flask/app/README
+      - -srv/flask/app/node_modules
