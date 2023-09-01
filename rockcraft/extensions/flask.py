@@ -17,14 +17,15 @@
 """An experimental extension for the Flask framework."""
 
 import copy
-import os
 import posixpath
+import re
 from typing import Any, Dict, Optional, Tuple
 
 from overrides import override
 
 from ._utils import _apply_extension_property
 from .extension import Extension
+from ..errors import ExtensionError
 
 
 class Flask(Extension):
@@ -78,7 +79,7 @@ class Flask(Extension):
                 "working-dir": "/srv/flask/app",
             }
         }
-        existing_services = self.yaml_data.get("services", {})
+        existing_services = copy.deepcopy(self.yaml_data.get("services", {}))
         for existing_service_name, existing_service in existing_services.items():
             if existing_service_name in services:
                 services[existing_service_name].update(existing_service)
@@ -119,19 +120,32 @@ class Flask(Extension):
             - flask/install-app: copy the flask project into the OCI image
         """
         if not (self.project_root / "requirements.txt").exists():
-            raise ValueError(
+            raise ExtensionError(
                 "missing requirements.txt file, "
                 "flask extension requires this file with flask specified as a dependency"
             )
-        ignores = [".git", "node_modules", ".yarn"]
-        source_files = [
-            f
-            for f in os.listdir(self.project_root)
-            if f not in ignores and not f.endswith(".rock")
-        ]
+        source_files = [f.name for f in sorted(self.project_root.iterdir())]
         renaming_map = {f: posixpath.join("srv/flask/app", f) for f in source_files}
         install_app_part_name = "flask/install-app"
         dependencies_part_name = "flask/dependencies"
+
+        if install_app_part_name not in self.yaml_data.get("parts", {}):
+            raise ExtensionError(
+                "flask extension required flask/install-app not found "
+                "in parts of the rockcraft file"
+            )
+        install_prime = self.yaml_data.get("parts")[install_app_part_name].get("prime")
+        if not install_prime:
+            raise ExtensionError(
+                "flask extension required prime list not found or empty"
+                "in the flask/install-app part of the rockcraft file"
+            )
+        if not all(re.match("-? *srv/flask/app", p) for p in install_prime):
+            raise ExtensionError(
+                "flask extension required prime entry in the flask/install-app part"
+                "to start with srv/flask/app"
+            )
+
         # Users are required to compile any static assets prior to executing the
         # rockcraft pack command, so assets can be included in the final OCI image.
         install_app_part = {

@@ -19,17 +19,21 @@ Example:
     extensions:
       - flask
 
+    flask/install-app:
+      prime:
+        - -srv/flask/app/.git
+        - -srv/flask/app/.venv
+        - -srv/flask/app/.yarn
+        - -srv/flask/app/node_modules
+
 Managing project files with the flask extension
 -----------------------------------------------
 
-By default, all files within the Flask project directory are copied, excluding
-certain common files and directories, such as ``node_modules``. However,
-this behaviour can be tailored to either specifically include or exclude files
-from the Flask project directory in the ROCK image.
+The prime declaration must be included in the specially-named
+``flask/install-app`` section to instruct the flask extension on which files
+to include or exclude from the project directory in the ROCK image.
 
-You can include and exclude files from the project directory in the ROCK image
-by using the standard prime declaration on the specially-named
-``flask/install-app`` part. For example, to include only select files:
+For example, to include only select files:
 
 .. code-block:: yaml
 
@@ -47,4 +51,7 @@ add the following part to ``rockcraft.yaml``:
 
     flask/install-app:
       prime:
-        - -srv/flask/app/charmcraft.auth
+        - -srv/flask/app/.git
+        - -srv/flask/app/.venv
+        - -srv/flask/app/.yarn
+        - -srv/flask/app/node_modules

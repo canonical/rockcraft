@@ -25,6 +25,11 @@ execute: |
   
   # test the part merging
   docker run --rm --entrypoint /bin/python3 flask-extension -c "import pathlib;assert not pathlib.Path('/srv/flask/app/README').exists()"
+  
+  # test the default flask service
+  docker run --rm --name flask-extension-container -d -p 8137:8000 flask-extension
+  retry -n 5 --wait 2 curl localhost:8137
+  [ $(curl -sSf localhost:8137) == "ok" ]
 
 restore: |
   rm -f flask-extension_0.1_amd64.rock
