@@ -111,7 +111,11 @@ def test_flask_extension_overwrite(tmp_path, input_yaml):
     input_yaml["services"] = {
         "flask": {
             "command": "/bin/python3 -m gunicorn --bind 0.0.0.0:8000 webapp.app:app"
-        }
+        },
+        "foobar": {
+            "command": "/bin/foobar",
+            "override": "replace",
+        },
     }
     applied = extensions.apply_extensions(tmp_path, input_yaml)
 
@@ -122,7 +126,11 @@ def test_flask_extension_overwrite(tmp_path, input_yaml):
             "startup": "enabled",
             "user": "_daemon_",
             "working-dir": "/srv/flask/app",
-        }
+        },
+        "foobar": {
+            "command": "/bin/foobar",
+            "override": "replace",
+        },
     }
     assert applied["parts"]["flask/install-app"]["prime"] == ["-srv/flask/app/foobar"]
 
