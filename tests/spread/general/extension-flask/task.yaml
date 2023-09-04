@@ -29,7 +29,7 @@ execute: |
   # test the default flask service
   docker run --rm --name flask-extension-container -d -p 8137:8000 flask-extension
   retry -n 5 --wait 2 curl localhost:8137
-  [ $(curl -sSf localhost:8137) == "ok" ]
+  [ "$(curl -sSf localhost:8137)" == "ok" ]
 
 restore: |
   rm -f flask-extension_0.1_amd64.rock
