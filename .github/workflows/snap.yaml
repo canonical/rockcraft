@@ -1,6 +1,11 @@
 name: Snap
 
-on: [pull_request]
+on:
+  pull_request:
+  push:
+    branches:
+      - "feature/**"
+
 
 jobs:
   build:
@@ -21,3 +26,38 @@ jobs:
         with:
           name: snap
           path: ${{ steps.build-rockcraft.outputs.snap }}
+
+      - name: Get branch name
+        id: vars
+        run: echo ::set-output name=short_ref::${GITHUB_REF#refs/*/}
+
+      - name Publish feature brach to edge/${{ steps.vars.outputs.short_ref }}
+        if: github.event_name == 'push'
+        uses: snapcore/action-publish@v1
+        env:
+          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
+        with:
+          snap: ${{ steps.build.outputs.snap }}
+          release: edge/${{ steps.vars.outputs.short_ref }}
+
+      - name: Decision to Publish
+        id: decisions
+        run: |
+          # Secrets cannot be used in conditionals, so this is our dance:
+          # https://github.com/actions/runner/issues/520
+          if [[ -n "${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}" ]]; then
+            echo PUBLISH=true >> $GITHUB_OUTPUT
+          else
+            echo PUBLISH= >> $GITHUB_OUTPUT
+          fi
+
+      - name Publish PR to channel edge/pr-${{ github.event.number }}
+        if: steps.decisions.outputs.PUBLISH == 'true' && github.event_name == 'pull_request'
+        # Use this until snapcore/action-publish#27 it is merged.
+        uses: snacpore/action-publish@v1
+        env:
+          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
+        with:
+          snap: ${{ steps.build.outputs.snap }}
+          release: edge/pr-${{ github.event.number }}
+
