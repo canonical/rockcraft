@@ -37,7 +37,7 @@ jobs:
             echo "branch::${GITHUB_REF#refs/*/}" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Publish feature brach to edge/${{ steps.vars.outputs.branch }}
+      - name: Publish feature branch to edge/${{ steps.vars.outputs.branch }}
         if: SNAPCRAFT_STORE_CREDENTIALS != ''
         uses: snapcore/action-publish@v1
         env:
