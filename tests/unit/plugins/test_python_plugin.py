@@ -21,8 +21,8 @@ from pathlib import Path
 import pytest
 from craft_parts import Part, PartInfo, ProjectInfo
 
+from rockcraft.models.project import Project
 from rockcraft.plugins import PythonPlugin
-from rockcraft.project import Project
 from tests.util import ubuntu_only
 
 pytestmark = ubuntu_only

@@ -17,7 +17,7 @@
 import pytest
 
 from rockcraft import errors, extensions
-from rockcraft.project import load_project
+from rockcraft.models.project import load_project
 from tests.unit.testing.extensions import (
     FULL_EXTENSION_YAML,
     ExperimentalExtension,
