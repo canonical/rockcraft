@@ -27,14 +27,14 @@ import pytest
 import yaml
 
 from rockcraft.errors import ProjectLoadError, ProjectValidationError
-from rockcraft.pebble import Service
-from rockcraft.project import (
+from rockcraft.models.project import (
     INVALID_NAME_MESSAGE,
     ArchitectureMapping,
     Platform,
     Project,
     load_project,
 )
+from rockcraft.pebble import Service
 
 _ARCH_MAPPING = {"x86": "amd64", "x64": "amd64"}
 try:
@@ -550,10 +550,15 @@ def test_project_generate_metadata(yaml_loaded_data):
 EXPECTED_DUMPED_YAML = f"""\
 name: mytest
 title: My Test
+version: latest
 summary: example for unit tests
 description: this is an example of a rockcraft.yaml for the purpose of testing rockcraft
+base: ubuntu:20.04
 license: Apache-2.0
-version: latest
+parts:
+  foo:
+    plugin: nil
+    overlay-script: ls
 platforms:
   {BUILD_ON_ARCH}:
     build_on: null
@@ -568,7 +573,6 @@ platforms:
     - {BUILD_ON_ARCH}
     build_for:
     - {BUILD_ON_ARCH}
-base: ubuntu:20.04
 build-base: ubuntu:20.04
 environment:
   BAZ: value1
@@ -582,10 +586,6 @@ services:
 package-repositories:
 - type: apt
   ppa: ppa/ppa
-parts:
-  foo:
-    plugin: nil
-    overlay-script: ls
 """
 
 

@@ -17,8 +17,10 @@
 """Project definition and helpers."""
 
 import operator
+import pathlib
 import platform as host_platform
 import re
+from builtins import super
 from functools import reduce
 from pathlib import Path
 from typing import (
@@ -38,8 +40,14 @@ from typing import (
 import pydantic
 import spdx_lookup  # type: ignore
 import yaml
+from craft_application.errors import CraftValidationError
+from craft_application.models import BuildInfo
+from craft_application.models import Project as BaseProject
+from craft_application.util import safe_yaml_load
 from craft_archives import repo
-from pydantic_yaml import YamlModel
+from craft_providers import bases
+from overrides import override
+from pydantic_yaml import YamlModelMixin
 
 from rockcraft.errors import ProjectLoadError, ProjectValidationError
 from rockcraft.extensions import apply_extensions
@@ -47,7 +55,7 @@ from rockcraft.parts import part_has_overlay, validate_part
 from rockcraft.pebble import Check, Pebble, Service
 from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from pydantic.error_wrappers import ErrorDict
 
 
@@ -179,15 +187,14 @@ class NameStr(pydantic.ConstrainedStr):
     regex = re.compile(NAME_REGEX)
 
 
-class Project(YamlModel):
+class Project(YamlModelMixin, BaseProject):
     """Rockcraft project definition."""
 
-    name: NameStr
-    title: Optional[str]
-    summary: str
+    name: NameStr  # type: ignore
+    # summary is Optional[str] in BaseProject
+    summary: str  # type: ignore
     description: str
     rock_license: str = pydantic.Field(alias="license")
-    version: str
     platforms: Dict[str, Any]
     base: Literal["bare", "ubuntu:18.04", "ubuntu:20.04", "ubuntu:22.04"]
     build_base: Optional[Literal["ubuntu:18.04", "ubuntu:20.04", "ubuntu:22.04"]]
@@ -211,6 +218,13 @@ class Project(YamlModel):
         error_msg_templates = {
             "value_error.str.regex": INVALID_NAME_MESSAGE,
         }
+
+    @property
+    def effective_base(self) -> bases.BaseName:
+        """Get the Base name for craft-providers."""
+        base = super().effective_base
+        name, channel = base.split(":")
+        return bases.BaseName(name, channel)
 
     @pydantic.root_validator(pre=True)
     @classmethod
@@ -454,26 +468,28 @@ class Project(YamlModel):
 
     @classmethod
     def unmarshal(cls, data: Dict[str, Any]) -> "Project":
-        """Create and populate a new ``Project`` object from dictionary data.
-
-        The unmarshal method validates entries in the input dictionary, populating
-        the corresponding fields in the data object.
-
-        :param data: The dictionary data to unmarshal.
-
-        :return: The newly created object.
-
-        :raise TypeError: If data is not a dictionary.
-        """
+        """Overridden to raise ProjectValidationError() for Pydantic errors."""
         if not isinstance(data, dict):
             raise TypeError("project data is not a dictionary")
 
         try:
-            project = Project(**data)
+            project = super().unmarshal(data)
         except pydantic.ValidationError as err:
             raise ProjectValidationError(_format_pydantic_errors(err.errors())) from err
 
         return project
+
+    @classmethod
+    @override
+    def from_yaml_file(cls, path: pathlib.Path) -> "Project":
+        """Instantiate this model from a YAML file."""
+        with path.open() as file:
+            data = safe_yaml_load(file)
+        try:
+            # TODO apply extensions here
+            return cls.unmarshal(data)
+        except pydantic.ValidationError as err:
+            raise CraftValidationError.from_pydantic(err, file_name=path.name) from None
 
     def generate_metadata(
         self, generation_time: str, base_digest: bytes
@@ -505,6 +521,11 @@ class Project(YamlModel):
         }
 
         return (annotations, metadata)
+
+    def get_build_plan(self) -> List[BuildInfo]:
+        """Obtain the list of architectures and bases from the project file."""
+        # TODO
+        raise NotImplementedError("Not implemented yet!")
 
 
 def _format_pydantic_errors(
