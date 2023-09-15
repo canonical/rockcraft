@@ -71,7 +71,8 @@ pyflakes==2.4.0
 Pygments==2.13.0
 pylint==2.15.8
 pylint-fixme-info==1.0.3
-pylint-pytest==1.1.2
+# Note: pylint-pytest pinned to 1.0.3 due to https://github.com/reverbc/pylint-pytest/issues/21
+pylint-pytest==1.0.3
 pyparsing==3.0.9
 pyproject_api==1.2.1
 pytest==7.2.0
