@@ -23,8 +23,9 @@ import yaml
 from craft_cli import CraftError, ProvideHelpException, emit
 from craft_providers import ProviderError
 
-from rockcraft import cli, project
+from rockcraft import cli
 from rockcraft.errors import RockcraftError
+from rockcraft.models import project
 
 
 @pytest.fixture

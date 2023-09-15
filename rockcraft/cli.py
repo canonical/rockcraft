@@ -20,15 +20,17 @@ import logging
 import sys
 from typing import Optional
 
+import craft_application
 import craft_cli
-from craft_cli import ArgumentParsingError, EmitterMode, ProvideHelpException, emit
+from craft_cli import ArgumentParsingError, ProvideHelpException, emit
 from craft_parts import PartsError
 from craft_providers import ProviderError
 
 from rockcraft import __version__, errors, plugins
 
 from . import commands
-from .utils import get_managed_environment_log_path, is_managed_mode
+from .services.package import RockcraftPackageService
+from .utils import is_managed_mode
 
 COMMAND_GROUPS = [
     craft_cli.CommandGroup(
@@ -66,6 +68,35 @@ GLOBAL_ARGS = [
 ]
 
 
+def run() -> None:
+    """Command-line interface entrypoint."""
+    # pylint: disable=import-outside-toplevel
+    # Import these here so that the script that generates the docs for the
+    # commands doesn't need to know *too much* of the application.
+    from .application import APP_METADATA, FallbackRunError, Rockcraft
+
+    # Register our own plugins
+    plugins.register()
+
+    # set lib loggers to debug level so that all messages are sent to Emitter
+    for lib_name in ("craft_providers", "craft_parts"):
+        logger = logging.getLogger(lib_name)
+        logger.setLevel(logging.DEBUG)
+
+    services = craft_application.ServiceFactory(
+        # type: ignore # type: ignore[call-arg]
+        app=APP_METADATA,
+        PackageClass=RockcraftPackageService,
+    )
+
+    app = Rockcraft(app=APP_METADATA, services=services)
+
+    try:
+        app.run()
+    except FallbackRunError:
+        legacy_run()
+
+
 def _emit_error(error: craft_cli.CraftError, cause: Optional[Exception] = None) -> None:
     """Emit the error in a centralized way so we can alter it consistently."""
     # set the cause, if any
@@ -80,28 +111,8 @@ def _emit_error(error: craft_cli.CraftError, cause: Optional[Exception] = None) 
     emit.error(error)
 
 
-def run() -> None:
+def legacy_run() -> None:
     """Run the CLI."""
-    # Register our own plugins
-    plugins.register()
-
-    # set lib loggers to debug level so that all messages are sent to Emitter
-    for lib_name in ("craft_providers", "craft_parts"):
-        logger = logging.getLogger(lib_name)
-        logger.setLevel(logging.DEBUG)
-
-    # Capture debug-level log output in a file in managed mode, even if rockcraft is
-    # executing with a lower log level
-    log_filepath = get_managed_environment_log_path() if is_managed_mode() else None
-
-    emit.init(
-        mode=EmitterMode.BRIEF,
-        appname="rockcraft",
-        greeting=f"Starting Rockcraft {__version__}",
-        log_filepath=log_filepath,
-        streaming_brief=True,
-    )
-
     dispatcher = craft_cli.Dispatcher(
         "rockcraft",
         COMMAND_GROUPS,

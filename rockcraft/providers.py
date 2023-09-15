@@ -44,7 +44,7 @@ ROCKCRAFT_BASE_TO_PROVIDER_BASE = {
 def get_command_environment() -> Dict[str, Optional[str]]:
     """Construct the required environment."""
     env = bases.buildd.default_command_environment()
-    env["ROCKCRAFT_MANAGED_MODE"] = "1"
+    env["CRAFT_MANAGED_MODE"] = "1"
 
     # Pass-through host environment that target may need.
     for env_key in ["http_proxy", "https_proxy", "no_proxy"]:

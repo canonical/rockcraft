@@ -27,8 +27,8 @@ from craft_parts import ProjectDirs, ProjectInfo, expand_environment
 from craft_providers import ProviderError
 
 from . import oci, providers, utils
+from .models.project import Project, load_project
 from .parts import PartsLifecycle
-from .project import Project, load_project
 from .usernames import SUPPORTED_GLOBAL_USERNAMES
 
 if TYPE_CHECKING:
@@ -67,6 +67,8 @@ def run(command_name: str, parsed_args: "argparse.Namespace") -> None:
         project_vars=project_vars,
         work_dir=work_dir,
     )
+
+    # pylint: disable=no-member
     project = Project.unmarshal(project_yaml)
 
     image_dir = work_dir / "images"

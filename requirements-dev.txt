@@ -13,7 +13,9 @@ charset-normalizer==3.2.0
 click==8.1.7
 codespell==2.2.6
 colorama==0.4.6
+commonmark==0.9.1
 coverage==7.3.2
+git+https://github.com/canonical/craft-application.git@main#egg=craft_application
 craft-archives==1.1.3
 craft-cli==2.3.0
 craft-parts==1.25.2

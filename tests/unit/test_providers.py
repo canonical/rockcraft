@@ -31,7 +31,7 @@ def test_get_command_environment_minimal(monkeypatch):
     monkeypatch.setenv("PATH", "not-using-host-path")
 
     assert providers.get_command_environment() == {
-        "ROCKCRAFT_MANAGED_MODE": "1",
+        "CRAFT_MANAGED_MODE": "1",
         "PATH": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin",
     }
 
@@ -44,7 +44,7 @@ def test_get_command_environment_all_opts(monkeypatch):
     monkeypatch.setenv("no_proxy", "test-no-proxy")
 
     assert providers.get_command_environment() == {
-        "ROCKCRAFT_MANAGED_MODE": "1",
+        "CRAFT_MANAGED_MODE": "1",
         "PATH": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin",
         "http_proxy": "test-http-proxy",
         "https_proxy": "test-https-proxy",
