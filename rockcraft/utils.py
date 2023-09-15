@@ -32,7 +32,7 @@ OSPlatform = namedtuple("OSPlatform", "system release machine")
 
 def is_managed_mode() -> bool:
     """Check if rockcraft is running in a managed environment."""
-    managed_flag = os.getenv("ROCKCRAFT_MANAGED_MODE", "n")
+    managed_flag = os.getenv("CRAFT_MANAGED_MODE", "n")
     return strtobool(managed_flag) == 1
 
 
