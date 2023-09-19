@@ -1,6 +1,11 @@
 name: Snap
 
-on: [pull_request]
+on:
+  pull_request:
+  push:
+    branches:
+      - "feature/**"
+
 
 jobs:
   build:
@@ -21,3 +26,22 @@ jobs:
         with:
           name: snap
           path: ${{ steps.build-rockcraft.outputs.snap }}
+
+      - name: Get branch name
+        id: vars
+        run: |
+          if [[ "${{ github.event_name }}" == "pull_request" ]]
+          then
+            echo "branch::pr-${{ github.event.number }}" >> "$GITHUB_OUTPUT"            
+          else
+            echo "branch::${GITHUB_REF#refs/*/}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Publish feature branch to edge/${{ steps.vars.outputs.branch }}
+        if: SNAPCRAFT_STORE_CREDENTIALS != ''
+        uses: snapcore/action-publish@v1
+        env:
+          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
+        with:
+          snap: ${{ steps.build.outputs.snap }}
+          release: edge/${{ steps.vars.outputs.branch }}
