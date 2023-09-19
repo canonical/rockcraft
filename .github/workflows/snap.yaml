@@ -38,7 +38,7 @@ jobs:
           fi
 
       - name: Publish feature branch to edge/${{ steps.vars.outputs.branch }}
-        if: SNAPCRAFT_STORE_CREDENTIALS != ''
+        if: ${{ env.SNAPCRAFT_STORE_CREDENTIALS != '' }}
         uses: snapcore/action-publish@v1
         env:
           SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
