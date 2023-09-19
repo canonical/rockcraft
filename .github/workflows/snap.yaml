@@ -32,9 +32,9 @@ jobs:
         run: |
           if [[ "${{ github.event_name }}" == "pull_request" ]]
           then
-            echo "branch::pr-${{ github.event.number }}" >> "$GITHUB_OUTPUT"            
+            echo "branch=pr-${{ github.event.number }}" >> "$GITHUB_OUTPUT"            
           else
-            echo "branch::${GITHUB_REF#refs/*/}" >> "$GITHUB_OUTPUT"
+            echo "branch=${GITHUB_REF#refs/*/}" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Publish feature branch to edge/${{ steps.vars.outputs.branch }}
