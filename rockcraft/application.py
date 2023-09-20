@@ -23,8 +23,10 @@ import signal
 import sys
 
 import craft_cli
-from craft_application import Application, AppMetadata
+from craft_application import Application, AppMetadata, util
 from craft_application.application import _Dispatcher
+from craft_application.commands import get_lifecycle_command_group
+from craft_cli import CommandGroup
 from overrides import override
 
 from rockcraft.models import project
@@ -33,6 +35,7 @@ APP_METADATA = AppMetadata(
     name="rockcraft",
     summary="A tool to create OCI images",
     ProjectClass=project.Project,
+    source_ignore_patterns=["*.rock"],
 )
 
 
@@ -46,9 +49,16 @@ class Rockcraft(Application):
     @property
     @override
     def command_groups(self) -> list[craft_cli.CommandGroup]:
-        """Return command groups."""
-        # Returning an empty list on purpose, to fall back to the legacy runner.
-        return []
+        """Filter supported command from CraftApplication."""
+        all_lifecycle_commands = get_lifecycle_command_group().commands
+        migrated_commands = {"pack"}
+
+        return [
+            CommandGroup(
+                "Lifecycle",
+                [c for c in all_lifecycle_commands if c.name in migrated_commands],
+            )
+        ]
 
     @override
     def _get_dispatcher(self) -> _Dispatcher:
@@ -87,6 +97,15 @@ class Rockcraft(Application):
                 craft_cli.emit.ended_ok()
                 print(f"{self.app.name} {self.app.version}")
                 sys.exit(0)
+            # Try loading the command to shake out possible ArgumentParsingErrors
+            # from commands with options that we can't handle yet (like
+            # --destructive-mode)
+            dispatcher.load_command(
+                {
+                    "app": self.app,
+                    "services": self.services,
+                }
+            )
         except (craft_cli.ProvideHelpException, craft_cli.ArgumentParsingError) as err:
             # Difference from base's behavior: fallback to the legacy run
             # if we get an unknown command, or an invalid option, or a request
@@ -109,3 +128,14 @@ class Rockcraft(Application):
         self.configure(global_args)
 
         return dispatcher
+
+    def _configure_services(self, build_for: str | None) -> None:
+        if build_for is None:
+            build_for = util.get_host_architecture()
+
+        self.services.set_kwargs("image", work_dir=self._work_dir, build_for=build_for)
+        self.services.set_kwargs(
+            "package",
+            build_for=build_for,
+        )
+        super()._configure_services(build_for)
