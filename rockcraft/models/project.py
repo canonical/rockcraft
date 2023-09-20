@@ -15,7 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 """Project definition and helpers."""
-
+import dataclasses
 import operator
 import pathlib
 import platform as host_platform
@@ -57,6 +57,17 @@ from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
 
 if TYPE_CHECKING:  # pragma: no cover
     from pydantic.error_wrappers import ErrorDict
+
+
+@dataclasses.dataclass
+class RockcraftBuildInfo(BuildInfo):
+    """BuildInfo with Rockcraft-specific entries."""
+
+    platform_entry: str
+    """Used as the ROCK suffix."""
+
+    build_for_variant: Optional[str] = None
+    """Used for arm archs"""
 
 
 class ArchitectureMapping(pydantic.BaseModel):
@@ -524,8 +535,24 @@ class Project(YamlModelMixin, BaseProject):
 
     def get_build_plan(self) -> List[BuildInfo]:
         """Obtain the list of architectures and bases from the project file."""
-        # TODO
-        raise NotImplementedError("Not implemented yet!")
+        build_infos: List[BuildInfo] = []
+        base = self.effective_base
+
+        for platform_entry, platform in self.platforms.items():
+            for build_for in platform.get("build_for") or [platform_entry]:
+                for build_on in platform.get("build_on") or [platform_entry]:
+                    build_for_variant = platform.get("build_for_variant")
+                    build_infos.append(
+                        RockcraftBuildInfo(
+                            build_on=build_on,
+                            build_for=build_for,
+                            base=base,
+                            build_for_variant=build_for_variant,
+                            platform_entry=platform_entry,
+                        )
+                    )
+
+        return build_infos
 
 
 def _format_pydantic_errors(
