@@ -137,6 +137,13 @@ def default_image_info():
 
 
 @pytest.fixture
+def default_application(default_factory, default_project):
+    from rockcraft.application import APP_METADATA, Rockcraft
+
+    return Rockcraft(APP_METADATA, default_factory)
+
+
+@pytest.fixture
 def image_service(default_project, default_factory, tmp_path):
     from rockcraft.application import APP_METADATA
     from rockcraft.services import RockcraftImageService
