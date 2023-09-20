@@ -126,3 +126,15 @@ def image_service(default_project, default_factory, tmp_path):
         work_dir=tmp_path,
         build_for="amd64",
     )
+
+
+@pytest.fixture
+def provider_service(default_project, default_factory, tmp_path):
+    from rockcraft.application import APP_METADATA
+    from rockcraft.services import RockcraftProviderService
+
+    return RockcraftProviderService(
+        app=APP_METADATA,
+        project=default_project,
+        services=default_factory,
+    )

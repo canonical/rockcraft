@@ -35,6 +35,9 @@ class RockcraftServiceFactory(ServiceFactory):
 
     ImageClass: type[services.RockcraftImageService] = services.RockcraftImageService
     PackageClass: type[base_services.PackageService] = services.RockcraftPackageService
+    ProviderClass: type[
+        services.RockcraftProviderService
+    ] = services.RockcraftProviderService
 
     if TYPE_CHECKING:
         image: services.RockcraftImageService = None  # type: ignore[assignment]

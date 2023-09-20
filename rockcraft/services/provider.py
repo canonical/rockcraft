@@ -14,16 +14,20 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Rockcraft services."""
+"""Rockcraft Provider service."""
 
-from rockcraft.services.image import RockcraftImageService
-from rockcraft.services.package import RockcraftPackageService
-from rockcraft.services.provider import RockcraftProviderService
-from rockcraft.services.service_factory import RockcraftServiceFactory
 
-__all__ = [
-    "RockcraftImageService",
-    "RockcraftPackageService",
-    "RockcraftProviderService",
-    "RockcraftServiceFactory",
-]
+from __future__ import annotations
+
+from craft_application import ProviderService
+from overrides import override
+
+
+class RockcraftProviderService(ProviderService):
+    """ProviderService specialization to configure the APT packages."""
+
+    @override
+    def setup(self) -> None:
+        """Configure the APT packages to be installed in the provider instance."""
+        super().setup()
+        self.packages.extend(["gpg", "dirmngr"])
