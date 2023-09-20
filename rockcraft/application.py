@@ -18,7 +18,9 @@
 
 from __future__ import annotations
 
+import functools
 import os
+import pathlib
 import signal
 import sys
 
@@ -29,6 +31,7 @@ from craft_application.commands import get_lifecycle_command_group
 from craft_cli import CommandGroup
 from overrides import override
 
+from rockcraft import models
 from rockcraft.models import project
 
 APP_METADATA = AppMetadata(
@@ -59,6 +62,13 @@ class Rockcraft(Application):
                 [c for c in all_lifecycle_commands if c.name in migrated_commands],
             )
         ]
+
+    @functools.cached_property
+    def project(self) -> models.Project:
+        """Get this application's Project metadata."""
+        project_file = (pathlib.Path.cwd() / f"{self.app.name}.yaml").resolve()
+        craft_cli.emit.debug(f"Loading project file '{project_file!s}'")
+        return models.Project.from_yaml_file(project_file, work_dir=self._work_dir)
 
     @override
     def _get_dispatcher(self) -> _Dispatcher:
