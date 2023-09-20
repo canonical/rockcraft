@@ -20,7 +20,6 @@ import logging
 import sys
 from typing import Optional
 
-import craft_application
 import craft_cli
 from craft_cli import ArgumentParsingError, ProvideHelpException, emit
 from craft_parts import PartsError
@@ -29,7 +28,7 @@ from craft_providers import ProviderError
 from rockcraft import __version__, errors, plugins
 
 from . import commands
-from .services.package import RockcraftPackageService
+from .services import RockcraftServiceFactory
 from .utils import is_managed_mode
 
 COMMAND_GROUPS = [
@@ -83,10 +82,9 @@ def run() -> None:
         logger = logging.getLogger(lib_name)
         logger.setLevel(logging.DEBUG)
 
-    services = craft_application.ServiceFactory(
+    services = RockcraftServiceFactory(
         # type: ignore # type: ignore[call-arg]
         app=APP_METADATA,
-        PackageClass=RockcraftPackageService,
     )
 
     app = Rockcraft(app=APP_METADATA, services=services)
