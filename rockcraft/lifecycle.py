@@ -142,7 +142,7 @@ def run(command_name: str, parsed_args: "argparse.Namespace") -> None:
 
         if command_name == "pack":
             _pack(
-                lifecycle,
+                prime_dir=lifecycle.prime_dir,
                 project=project,
                 project_base_image=project_base_image,
                 base_digest=base_digest,
@@ -153,15 +153,15 @@ def run(command_name: str, parsed_args: "argparse.Namespace") -> None:
 
 
 def _pack(
-    lifecycle: PartsLifecycle,
     *,
+    prime_dir: Path,
     project: Project,
     project_base_image: oci.Image,
     base_digest: bytes,
     rock_suffix: str,
     build_for: str,
     base_layer_dir: Path,
-) -> None:
+) -> str:
     """Create the rock image for a given architecture.
 
     :param lifecycle:
@@ -180,7 +180,7 @@ def _pack(
     emit.progress("Creating new layer")
     new_image = project_base_image.add_layer(
         tag=project.version,
-        new_layer_dir=lifecycle.prime_dir,
+        new_layer_dir=prime_dir,
         base_layer_dir=base_layer_dir,
     )
     emit.progress("Created new layer")
@@ -188,7 +188,7 @@ def _pack(
     if project.run_user:
         emit.progress(f"Creating new user {project.run_user}")
         new_image.add_user(
-            prime_dir=lifecycle.prime_dir,
+            prime_dir=prime_dir,
             base_layer_dir=base_layer_dir,
             tag=project.version,
             username=project.run_user,
@@ -238,6 +238,8 @@ def _pack(
     archive_name = f"{project.name}_{project.version}_{rock_suffix}.rock"
     new_image.to_oci_archive(tag=project.version, filename=archive_name)
     emit.progress(f"Exported to OCI archive '{archive_name}'", permanent=True)
+
+    return archive_name
 
 
 def run_in_provider(
