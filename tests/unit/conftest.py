@@ -85,3 +85,44 @@ def fake_provider(mock_instance):
             yield mock_instance
 
     return FakeProvider()
+
+
+@pytest.fixture
+def default_project():
+    from rockcraft import models
+
+    return models.Project(  # type: ignore[reportGeneralTypeIssues]
+        name="default",
+        version="1.0",
+        summary="default project",
+        description="default project",
+        base="ubuntu:22.04",
+        parts={},
+        license="MIT",
+        platforms={"amd64": None},
+    )
+
+
+@pytest.fixture
+def default_factory(default_project):
+    from rockcraft.application import APP_METADATA
+    from rockcraft.services import RockcraftServiceFactory
+
+    return RockcraftServiceFactory(
+        app=APP_METADATA,
+        project=default_project,
+    )
+
+
+@pytest.fixture
+def image_service(default_project, default_factory, tmp_path):
+    from rockcraft.application import APP_METADATA
+    from rockcraft.services import RockcraftImageService
+
+    return RockcraftImageService(
+        app=APP_METADATA,
+        project=default_project,
+        services=default_factory,
+        work_dir=tmp_path,
+        build_for="amd64",
+    )

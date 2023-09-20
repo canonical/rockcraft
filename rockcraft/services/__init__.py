@@ -15,3 +15,13 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 """Rockcraft services."""
+
+from rockcraft.services.image import RockcraftImageService
+from rockcraft.services.package import RockcraftPackageService
+from rockcraft.services.service_factory import RockcraftServiceFactory
+
+__all__ = [
+    "RockcraftImageService",
+    "RockcraftPackageService",
+    "RockcraftServiceFactory",
+]
