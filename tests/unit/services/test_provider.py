@@ -14,16 +14,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Rockcraft services."""
 
-from rockcraft.services.image import RockcraftImageService
-from rockcraft.services.package import RockcraftPackageService
-from rockcraft.services.provider import RockcraftProviderService
-from rockcraft.services.service_factory import RockcraftServiceFactory
-
-__all__ = [
-    "RockcraftImageService",
-    "RockcraftPackageService",
-    "RockcraftProviderService",
-    "RockcraftServiceFactory",
-]
+def test_packages(provider_service):
+    assert provider_service.packages == []
+    provider_service.setup()
+    assert provider_service.packages == ["gpg", "dirmngr"]
