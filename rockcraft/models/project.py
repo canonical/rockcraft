@@ -43,7 +43,6 @@ import yaml
 from craft_application.errors import CraftValidationError
 from craft_application.models import BuildInfo
 from craft_application.models import Project as BaseProject
-from craft_application.util import safe_yaml_load
 from craft_archives import repo
 from craft_providers import bases
 from overrides import override
@@ -492,10 +491,22 @@ class Project(YamlModelMixin, BaseProject):
 
     @classmethod
     @override
-    def from_yaml_file(cls, path: pathlib.Path) -> "Project":
+    def from_yaml_file(
+        cls, path: pathlib.Path, *, work_dir: Optional[pathlib.Path] = None
+    ) -> "Project":
         """Instantiate this model from a YAML file."""
-        with path.open() as file:
-            data = safe_yaml_load(file)
+        # pylint: disable=import-outside-toplevel
+        from rockcraft.lifecycle import _expand_environment
+
+        data = load_project(path)
+
+        if work_dir is not None:
+            project_vars = {"version": data["version"]}
+            _expand_environment(
+                data,
+                project_vars=project_vars,
+                work_dir=work_dir,
+            )
         try:
             # TODO apply extensions here
             return cls.unmarshal(data)
