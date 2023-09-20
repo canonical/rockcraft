@@ -43,5 +43,5 @@ jobs:
         env:
           SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
         with:
-          snap: ${{ steps.build.outputs.snap }}
+          snap: ${{ steps.build-rockcraft.outputs.snap }}
           release: edge/${{ steps.vars.outputs.branch }}
