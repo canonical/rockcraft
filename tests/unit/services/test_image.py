@@ -13,27 +13,18 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-from pathlib import Path
-
-from rockcraft import oci
-from rockcraft.services.image import ImageInfo
 
 
-def test_image_service_cache(image_service, mocker):
+def test_image_service_cache(image_service, default_image_info, mocker):
     """Test that the image service only creates the base image once."""
-    image_info = ImageInfo(
-        base_image=oci.Image(image_name="fake_image", path=Path()),
-        base_layer_dir=Path(),
-        base_digest=b"deadbeef",
-    )
     mock_create = mocker.patch.object(
-        image_service, "_create_image_info", return_value=image_info
+        image_service, "_create_image_info", return_value=default_image_info
     )
 
     info1 = image_service.obtain_image()
     info2 = image_service.obtain_image()
 
-    assert info1 is image_info
-    assert info2 is image_info
+    assert info1 is default_image_info
+    assert info2 is default_image_info
 
     mock_create.assert_called_once_with()

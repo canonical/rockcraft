@@ -108,9 +108,23 @@ def default_factory(default_project):
     from rockcraft.application import APP_METADATA
     from rockcraft.services import RockcraftServiceFactory
 
-    return RockcraftServiceFactory(
+    factory = RockcraftServiceFactory(
         app=APP_METADATA,
         project=default_project,
+    )
+    factory.set_kwargs("image", work_dir=Path("work"), build_for="amd64")
+    return factory
+
+
+@pytest.fixture
+def default_image_info():
+    from rockcraft import oci
+    from rockcraft.services.image import ImageInfo
+
+    return ImageInfo(
+        base_image=oci.Image(image_name="fake_image", path=Path()),
+        base_layer_dir=Path(),
+        base_digest=b"deadbeef",
     )
 
 
@@ -137,4 +151,17 @@ def provider_service(default_project, default_factory, tmp_path):
         app=APP_METADATA,
         project=default_project,
         services=default_factory,
+    )
+
+
+@pytest.fixture
+def package_service(default_project, default_factory):
+    from rockcraft.application import APP_METADATA
+    from rockcraft.services import RockcraftPackageService
+
+    return RockcraftPackageService(
+        app=APP_METADATA,
+        project=default_project,
+        services=default_factory,
+        build_for="amd64",
     )
