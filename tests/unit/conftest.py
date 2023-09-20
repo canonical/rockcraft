@@ -88,18 +88,26 @@ def fake_provider(mock_instance):
 
 
 @pytest.fixture
-def default_project():
-    from rockcraft import models
+def extra_project_params():
+    return {}
 
-    return models.Project(  # type: ignore[reportGeneralTypeIssues]
-        name="default",
-        version="1.0",
+
+@pytest.fixture
+def default_project(extra_project_params):
+    from craft_application.models import VersionStr
+
+    from rockcraft.models.project import NameStr, Project
+
+    return Project(
+        name=NameStr("default"),
+        version=VersionStr("1.0"),
         summary="default project",
         description="default project",
         base="ubuntu:22.04",
         parts={},
         license="MIT",
         platforms={"amd64": None},
+        **extra_project_params,
     )
 
 
@@ -163,5 +171,20 @@ def package_service(default_project, default_factory):
         app=APP_METADATA,
         project=default_project,
         services=default_factory,
+        build_for="amd64",
+    )
+
+
+@pytest.fixture
+def lifecycle_service(default_project, default_factory):
+    from rockcraft.application import APP_METADATA
+    from rockcraft.services import RockcraftLifecycleService
+
+    return RockcraftLifecycleService(
+        app=APP_METADATA,
+        project=default_project,
+        services=default_factory,
+        work_dir=Path("work/"),
+        cache_dir=Path("cache/"),
         build_for="amd64",
     )
