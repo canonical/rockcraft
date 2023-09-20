@@ -33,7 +33,13 @@ class RockcraftServiceFactory(ServiceFactory):
 
     # pylint: disable=invalid-name
 
+    # This is a Rockcraft-specific service for OCI image handling
     ImageClass: type[services.RockcraftImageService] = services.RockcraftImageService
+
+    # These are overrides of default ServiceFactory services
+    LifecycleClass: type[
+        services.RockcraftLifecycleService
+    ] = services.RockcraftLifecycleService
     PackageClass: type[base_services.PackageService] = services.RockcraftPackageService
     ProviderClass: type[
         services.RockcraftProviderService

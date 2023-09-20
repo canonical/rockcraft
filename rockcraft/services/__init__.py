@@ -17,12 +17,14 @@
 """Rockcraft services."""
 
 from rockcraft.services.image import RockcraftImageService
+from rockcraft.services.lifecycle import RockcraftLifecycleService
 from rockcraft.services.package import RockcraftPackageService
 from rockcraft.services.provider import RockcraftProviderService
 from rockcraft.services.service_factory import RockcraftServiceFactory
 
 __all__ = [
     "RockcraftImageService",
+    "RockcraftLifecycleService",
     "RockcraftPackageService",
     "RockcraftProviderService",
     "RockcraftServiceFactory",
