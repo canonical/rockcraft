@@ -16,14 +16,16 @@
 
 import sys
 from argparse import Namespace
-from unittest.mock import call, patch
+from pathlib import Path
+from unittest.mock import DEFAULT, call, patch
 
 import pytest
 import yaml
 from craft_cli import CraftError, ProvideHelpException, emit
 from craft_providers import ProviderError
 
-from rockcraft import cli
+from rockcraft import cli, services
+from rockcraft.application import Rockcraft
 from rockcraft.errors import RockcraftError
 from rockcraft.models import project
 
@@ -131,6 +133,8 @@ def test_run_command_destructive_mode(mocker, cmd):
 @pytest.mark.parametrize("destructive_opt", [True, False])
 @pytest.mark.parametrize("debug_opt", [True, False])
 def test_run_pack(mocker, debug_opt, destructive_opt):
+    if not debug_opt and not destructive_opt:
+        pytest.skip("regular 'rockcraft pack' is tested in 'test_run_pack_services'.")
     run_mock = mocker.patch("rockcraft.lifecycle.run")
     mock_ended_ok = mocker.spy(emit, "ended_ok")
     command_line = ["rockcraft", "pack"]
@@ -145,6 +149,43 @@ def test_run_pack(mocker, debug_opt, destructive_opt):
         call("pack", Namespace(debug=debug_opt, destructive_mode=destructive_opt))
     ]
     assert mock_ended_ok.mock_calls == [call()]
+
+
+def test_run_pack_services(mocker, monkeypatch, tmp_path):
+    # Pretend it's running inside the managed instance
+    monkeypatch.setenv("CRAFT_MANAGED_MODE", "1")
+
+    log_path = tmp_path / "rockcraft.log"
+    mock_ended_ok = mocker.spy(emit, "ended_ok")
+    mocker.patch.object(Rockcraft, "project")
+    mocker.patch.object(Rockcraft, "log_path", new=log_path)
+
+    fake_prime_dir = Path("/fake/prime/dir")
+
+    # Mock the relevant methods from the lifecycle and package services
+    lifecycle_mocks = mocker.patch.multiple(
+        services.RockcraftLifecycleService,
+        setup=DEFAULT,
+        prime_dir=fake_prime_dir,
+        run=DEFAULT,
+    )
+
+    package_mocks = mocker.patch.multiple(
+        services.RockcraftPackageService, write_metadata=DEFAULT, pack=DEFAULT
+    )
+
+    command_line = ["rockcraft", "pack"]
+    mocker.patch.object(sys, "argv", command_line)
+
+    cli.run()
+
+    lifecycle_mocks["run"].assert_called_once_with(step_name="prime", part_names=[])
+
+    package_mocks["write_metadata"].assert_called_once_with(fake_prime_dir)
+    package_mocks["pack"].assert_called_once_with(fake_prime_dir, Path("."))
+
+    assert mock_ended_ok.called
+    assert log_path.is_file()
 
 
 def test_run_init(mocker, lifecycle_init_mock):
@@ -215,7 +256,7 @@ def test_run_arg_provider_help_exception(capsys, mocker):
 def test_run_with_error(mocker, input_error, output_error):
     """Application errors should be caught for a clean exit."""
     mocker.patch("craft_cli.Dispatcher.run", side_effect=input_error)
-    mocker.patch.object(sys, "argv", ["rockcraft", "pack"])
+    mocker.patch.object(sys, "argv", ["rockcraft", "pack", "--destructive"])
     mock_emit = mocker.patch("rockcraft.cli.emit")
     mock_exit = mocker.patch("rockcraft.cli.sys.exit")
 
