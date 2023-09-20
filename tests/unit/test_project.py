@@ -25,15 +25,11 @@ from unittest.mock import patch
 import pydantic
 import pytest
 import yaml
+from craft_providers.bases import BaseName
 
 from rockcraft.errors import ProjectLoadError, ProjectValidationError
-from rockcraft.models.project import (
-    INVALID_NAME_MESSAGE,
-    ArchitectureMapping,
-    Platform,
-    Project,
-    load_project,
-)
+from rockcraft.models import Project, RockcraftBuildInfo, load_project
+from rockcraft.models.project import INVALID_NAME_MESSAGE, ArchitectureMapping, Platform
 from rockcraft.pebble import Service
 
 _ARCH_MAPPING = {"x86": "amd64", "x64": "amd64"}
@@ -592,3 +588,69 @@ package-repositories:
 def test_project_yaml(yaml_loaded_data):
     project = Project.unmarshal(yaml_loaded_data)
     assert project.to_yaml() == EXPECTED_DUMPED_YAML
+
+
+@pytest.mark.parametrize(
+    ["platforms", "expected_build_infos"],
+    [
+        (
+            {
+                "amd64": None,
+            },
+            [
+                RockcraftBuildInfo(
+                    build_on="amd64",
+                    build_for="amd64",
+                    base=BaseName(name="ubuntu", version="20.04"),
+                    platform_entry="amd64",
+                    build_for_variant=None,
+                )
+            ],
+        ),
+        (
+            {
+                "amd64": {
+                    "build-on": ["amd64", "i386"],
+                    "build-for": ["amd64"],
+                },
+            },
+            [
+                RockcraftBuildInfo(
+                    build_on="amd64",
+                    build_for="amd64",
+                    base=BaseName(name="ubuntu", version="20.04"),
+                    platform_entry="amd64",
+                    build_for_variant=None,
+                ),
+                RockcraftBuildInfo(
+                    build_on="i386",
+                    build_for="amd64",
+                    base=BaseName(name="ubuntu", version="20.04"),
+                    platform_entry="amd64",
+                    build_for_variant=None,
+                ),
+            ],
+        ),
+        (
+            {
+                "amd64v2": {
+                    "build-on": ["amd64"],
+                    "build-for": "amd64",
+                },
+            },
+            [
+                RockcraftBuildInfo(
+                    build_on="amd64",
+                    build_for="amd64",
+                    base=BaseName(name="ubuntu", version="20.04"),
+                    platform_entry="amd64v2",
+                    build_for_variant=None,
+                )
+            ],
+        ),
+    ],
+)
+def test_project_get_build_plan(yaml_loaded_data, platforms, expected_build_infos):
+    yaml_loaded_data["platforms"] = platforms
+    project = Project.unmarshal(yaml_loaded_data)
+    assert project.get_build_plan() == expected_build_infos

@@ -15,3 +15,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 """Rockcraft models."""
+
+
+from rockcraft.models.project import Project, RockcraftBuildInfo, load_project
+
+__all__ = ["Project", "RockcraftBuildInfo", "load_project"]
