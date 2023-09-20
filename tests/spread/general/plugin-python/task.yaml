@@ -19,7 +19,7 @@ execute: |
   cp -r ../src .
   
   # Build the ROCK & load it into docker
-  run_rockcraft
+  run_rockcraft pack
   test -f ${ROCK_FILE}
   sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:${ROCK_FILE} docker-daemon:${IMAGE}
   docker images
