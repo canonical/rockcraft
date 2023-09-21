@@ -32,6 +32,9 @@ Managing project files with the flask extension
 The prime declaration must be included in the specially-named
 ``flask/install-app`` section to instruct the flask extension on which files
 to include or exclude from the project directory in the ROCK image.
+And since the extension places the files from the project folder in the
+`/srv/flask/app` directory in the final image. Therefore, all inclusions and
+exclusions must be prefixed with `src/flask/app`.
 
 For example, to include only select files:
 

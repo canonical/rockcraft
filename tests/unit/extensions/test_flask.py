@@ -161,11 +161,16 @@ def test_flask_extension_bare(tmp_path):
 
 
 @pytest.mark.usefixtures("flask_extension")
-def test_flask_extension_error(tmp_path):
+def test_flask_extension_no_requirements_txt_error(tmp_path):
     input_yaml = {"extensions": ["flask"], "base": "bare"}
     with pytest.raises(ExtensionError) as exc:
         extensions.apply_extensions(tmp_path, input_yaml)
     assert "requirements.txt" in str(exc)
+
+
+@pytest.mark.usefixtures("flask_extension")
+def test_flask_extension_no_install_app_part_error(tmp_path):
+    input_yaml = {"extensions": ["flask"], "base": "bare"}
 
     (tmp_path / "requirements.txt").write_text("flask")
 
@@ -173,19 +178,43 @@ def test_flask_extension_error(tmp_path):
         extensions.apply_extensions(tmp_path, input_yaml)
     assert "flask/install-app" in str(exc)
 
-    input_yaml["parts"] = {"flask/install-app": {}}
+
+@pytest.mark.usefixtures("flask_extension")
+def test_flask_extension_no_install_app_prime_error(tmp_path):
+    input_yaml = {
+        "extensions": ["flask"],
+        "base": "bare",
+        "parts": {"flask/install-app": {}},
+    }
+    (tmp_path / "requirements.txt").write_text("flask")
 
     with pytest.raises(ExtensionError) as exc:
         extensions.apply_extensions(tmp_path, input_yaml)
     assert "flask/install-app" in str(exc)
 
-    input_yaml["parts"] = {"flask/install-app": {"prime": []}}
+
+@pytest.mark.usefixtures("flask_extension")
+def test_flask_extension_empty_install_app_prime_error(tmp_path):
+    input_yaml = {
+        "extensions": ["flask"],
+        "base": "bare",
+        "parts": {"flask/install-app": {"prime": []}},
+    }
+    (tmp_path / "requirements.txt").write_text("flask")
 
     with pytest.raises(ExtensionError) as exc:
         extensions.apply_extensions(tmp_path, input_yaml)
     assert "flask/install-app" in str(exc)
 
-    input_yaml["parts"] = {"flask/install-app": {"prime": ["requirement.txt"]}}
+
+@pytest.mark.usefixtures("flask_extension")
+def test_flask_extension_incorrect_install_app_prime_prefix_error(tmp_path):
+    input_yaml = {
+        "extensions": ["flask"],
+        "base": "bare",
+        "parts": {"flask/install-app": {"prime": ["requirement.txt"]}},
+    }
+    (tmp_path / "requirements.txt").write_text("flask")
 
     with pytest.raises(ExtensionError) as exc:
         extensions.apply_extensions(tmp_path, input_yaml)
