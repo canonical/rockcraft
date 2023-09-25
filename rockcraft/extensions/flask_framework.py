@@ -148,7 +148,7 @@ class FlaskFramework(Extension):
         renaming_map = {
             f: posixpath.join("flask/app", f)
             for f in source_files
-            if source_files not in ("node_modules", ".git", ".yarn")
+            if f not in ("node_modules", ".git", ".yarn")
         }
         install_app_part_name = "flask/install-app"
         dependencies_part_name = "flask/dependencies"
