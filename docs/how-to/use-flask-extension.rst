@@ -21,10 +21,10 @@ Example:
 
     flask/install-app:
       prime:
-        - -srv/flask/app/.git
-        - -srv/flask/app/.venv
-        - -srv/flask/app/.yarn
-        - -srv/flask/app/node_modules
+        - -flask/app/.git
+        - -flask/app/.venv
+        - -flask/app/.yarn
+        - -flask/app/node_modules
 
 Managing project files with the flask extension
 -----------------------------------------------
@@ -32,9 +32,9 @@ Managing project files with the flask extension
 The prime declaration must be included in the specially-named
 ``flask/install-app`` section to instruct the flask extension on which files
 to include or exclude from the project directory in the ROCK image.
-And since the extension places the files from the project folder in the
-`/srv/flask/app` directory in the final image. Therefore, all inclusions and
-exclusions must be prefixed with `src/flask/app`.
+The extension places the files from the project folder in the ``/flask/app``
+directory in the final image - therefore, all inclusions and exclusions must
+be prefixed with ``flask/app``.
 
 For example, to include only select files:
 
@@ -42,10 +42,10 @@ For example, to include only select files:
 
     flask/install-app:
       prime:
-        - srv/flask/app/static
-        - srv/flask/app/.env
-        - srv/flask/app/webapp
-        - srv/flask/app/templates
+        - flask/app/static
+        - flask/app/.env
+        - flask/app/webapp
+        - flask/app/templates
 
 To exclude certain files from the project directory in the rock image,
 add the following part to ``rockcraft.yaml``:
@@ -54,7 +54,7 @@ add the following part to ``rockcraft.yaml``:
 
     flask/install-app:
       prime:
-        - -srv/flask/app/.git
-        - -srv/flask/app/.venv
-        - -srv/flask/app/.yarn
-        - -srv/flask/app/node_modules
+        - -flask/app/.git
+        - -flask/app/.venv
+        - -flask/app/.yarn
+        - -flask/app/node_modules

@@ -23,27 +23,27 @@ from rockcraft.errors import ExtensionError
 @pytest.fixture
 def flask_extension(mock_extensions, monkeypatch):
     monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "1")
-    extensions.register("flask", extensions.flask.Flask)
+    extensions.register("flask-framework", extensions.flask.FlaskFramework)
 
 
 @pytest.fixture(name="input_yaml")
 def input_yaml_fixture():
-    return {"base": "ubuntu:22.04", "extensions": ["flask"]}
+    return {"base": "ubuntu:22.04", "extensions": ["flask-framework"]}
 
 
 @pytest.mark.usefixtures("flask_extension")
 def test_flask_extension(tmp_path, input_yaml):
     (tmp_path / "requirements.txt").write_text("flask")
-    (tmp_path / "app.py").touch()
+    (tmp_path / "app.py").write_text("app = object()")
     (tmp_path / "static").mkdir()
     (tmp_path / "node_modules").mkdir()
 
     input_yaml["parts"] = {
         "flask/install-app": {
             "prime": [
-                "srv/flask/app/app.py",
-                "srv/flask/app/requirements.txt",
-                "srv/flask/app/static",
+                "flask/app/app.py",
+                "flask/app/requirements.txt",
+                "flask/app/static",
             ]
         }
     }
@@ -59,7 +59,7 @@ def test_flask_extension(tmp_path, input_yaml):
         "override": "replace",
         "startup": "enabled",
         "user": "_daemon_",
-        "working-dir": "/srv/flask/app",
+        "working-dir": "/flask/app",
     }
 
     parts = applied["parts"]
@@ -74,22 +74,22 @@ def test_flask_extension(tmp_path, input_yaml):
         "flask/install-app": {
             "source": ".",
             "stage": [
-                "srv/flask/app/app.py",
-                "srv/flask/app/node_modules",
-                "srv/flask/app/requirements.txt",
-                "srv/flask/app/static",
+                "flask/app/app.py",
+                "flask/app/node_modules",
+                "flask/app/requirements.txt",
+                "flask/app/static",
             ],
             "organize": {
-                "app.py": "srv/flask/app/app.py",
-                "node_modules": "srv/flask/app/node_modules",
-                "static": "srv/flask/app/static",
-                "requirements.txt": "srv/flask/app/requirements.txt",
+                "app.py": "flask/app/app.py",
+                "node_modules": "flask/app/node_modules",
+                "static": "flask/app/static",
+                "requirements.txt": "flask/app/requirements.txt",
             },
             "plugin": "dump",
             "prime": [
-                "srv/flask/app/app.py",
-                "srv/flask/app/requirements.txt",
-                "srv/flask/app/static",
+                "flask/app/app.py",
+                "flask/app/requirements.txt",
+                "flask/app/static",
             ],
         },
     }
@@ -99,19 +99,15 @@ def test_flask_extension(tmp_path, input_yaml):
 def test_flask_extension_overwrite(tmp_path, input_yaml):
     (tmp_path / "requirements.txt").write_text("flask")
     (tmp_path / "foobar").touch()
-    (tmp_path / "webapp").mkdir()
-    (tmp_path / "webapp/app.py").touch()
+    (tmp_path / "app.py").write_text("app = object()")
     (tmp_path / "static").mkdir()
     (tmp_path / "node_modules").mkdir()
 
     input_yaml["parts"] = {
-        "flask/install-app": {"prime": ["-srv/flask/app/foobar"]},
+        "flask/install-app": {"prime": ["-flask/app/foobar"]},
         "flask/dependencies": {"python-requirements": ["requirements-jammy.txt"]},
     }
     input_yaml["services"] = {
-        "flask": {
-            "command": "/bin/python3 -m gunicorn --bind 0.0.0.0:8000 webapp.app:app"
-        },
         "foobar": {
             "command": "/bin/foobar",
             "override": "replace",
@@ -121,18 +117,18 @@ def test_flask_extension_overwrite(tmp_path, input_yaml):
 
     assert applied["services"] == {
         "flask": {
-            "command": "/bin/python3 -m gunicorn --bind 0.0.0.0:8000 webapp.app:app",
+            "command": "/bin/python3 -m gunicorn --bind 0.0.0.0:8000 app:app",
             "override": "replace",
             "startup": "enabled",
             "user": "_daemon_",
-            "working-dir": "/srv/flask/app",
+            "working-dir": "/flask/app",
         },
         "foobar": {
             "command": "/bin/foobar",
             "override": "replace",
         },
     }
-    assert applied["parts"]["flask/install-app"]["prime"] == ["-srv/flask/app/foobar"]
+    assert applied["parts"]["flask/install-app"]["prime"] == ["-flask/app/foobar"]
 
     assert applied["parts"]["flask/dependencies"] == {
         "plugin": "python",
@@ -146,10 +142,11 @@ def test_flask_extension_overwrite(tmp_path, input_yaml):
 @pytest.mark.usefixtures("flask_extension")
 def test_flask_extension_bare(tmp_path):
     (tmp_path / "requirements.txt").write_text("flask")
+    (tmp_path / "app.py").write_text("app = object()")
     input_yaml = {
-        "extensions": ["flask"],
+        "extensions": ["flask-framework"],
         "base": "bare",
-        "parts": {"flask/install-app": {"prime": ["-srv/flask/app/.git"]}},
+        "parts": {"flask/install-app": {"prime": ["-flask/app/.git"]}},
     }
     applied = extensions.apply_extensions(tmp_path, input_yaml)
     assert applied["parts"]["flask/container-processing"] == {
@@ -162,7 +159,7 @@ def test_flask_extension_bare(tmp_path):
 
 @pytest.mark.usefixtures("flask_extension")
 def test_flask_extension_no_requirements_txt_error(tmp_path):
-    input_yaml = {"extensions": ["flask"], "base": "bare"}
+    input_yaml = {"extensions": ["flask-framework"], "base": "bare"}
     with pytest.raises(ExtensionError) as exc:
         extensions.apply_extensions(tmp_path, input_yaml)
     assert "requirements.txt" in str(exc)
@@ -170,7 +167,7 @@ def test_flask_extension_no_requirements_txt_error(tmp_path):
 
 @pytest.mark.usefixtures("flask_extension")
 def test_flask_extension_no_install_app_part_error(tmp_path):
-    input_yaml = {"extensions": ["flask"], "base": "bare"}
+    input_yaml = {"extensions": ["flask-framework"], "base": "bare"}
 
     (tmp_path / "requirements.txt").write_text("flask")
 
@@ -182,7 +179,7 @@ def test_flask_extension_no_install_app_part_error(tmp_path):
 @pytest.mark.usefixtures("flask_extension")
 def test_flask_extension_no_install_app_prime_error(tmp_path):
     input_yaml = {
-        "extensions": ["flask"],
+        "extensions": ["flask-framework"],
         "base": "bare",
         "parts": {"flask/install-app": {}},
     }
@@ -196,7 +193,7 @@ def test_flask_extension_no_install_app_prime_error(tmp_path):
 @pytest.mark.usefixtures("flask_extension")
 def test_flask_extension_empty_install_app_prime_error(tmp_path):
     input_yaml = {
-        "extensions": ["flask"],
+        "extensions": ["flask-framework"],
         "base": "bare",
         "parts": {"flask/install-app": {"prime": []}},
     }
@@ -210,7 +207,7 @@ def test_flask_extension_empty_install_app_prime_error(tmp_path):
 @pytest.mark.usefixtures("flask_extension")
 def test_flask_extension_incorrect_install_app_prime_prefix_error(tmp_path):
     input_yaml = {
-        "extensions": ["flask"],
+        "extensions": ["flask-framework"],
         "base": "bare",
         "parts": {"flask/install-app": {"prime": ["requirement.txt"]}},
     }
@@ -218,4 +215,24 @@ def test_flask_extension_incorrect_install_app_prime_prefix_error(tmp_path):
 
     with pytest.raises(ExtensionError) as exc:
         extensions.apply_extensions(tmp_path, input_yaml)
-    assert "srv/flask/app" in str(exc)
+    assert "flask/app" in str(exc)
+
+
+@pytest.mark.usefixtures("flask_extension")
+def test_flask_extension_incorrect_wsgi_path_error(tmp_path):
+    input_yaml = {
+        "extensions": ["flask-framework"],
+        "base": "bare",
+        "parts": {"flask/install-app": {"prime": ["flask/app/requirement.txt"]}},
+    }
+    (tmp_path / "requirements.txt").write_text("flask")
+
+    with pytest.raises(ExtensionError) as exc:
+        extensions.apply_extensions(tmp_path, input_yaml)
+    assert "app:app" in str(exc)
+
+    (tmp_path / "app.py").write_text("flask")
+
+    with pytest.raises(ExtensionError) as exc:
+        extensions.apply_extensions(tmp_path, input_yaml)
+    assert "app:app" in str(exc)

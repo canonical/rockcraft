@@ -6,10 +6,10 @@ base: bare
 license: Apache-2.0
 
 extensions:
-  - flask
+  - flask-framework
 
 parts:
   flask/install-app:
     prime:
-      - -srv/flask/app/README
-      - -srv/flask/app/node_modules
+      - -flask/app/README
+      - -flask/app/node_modules

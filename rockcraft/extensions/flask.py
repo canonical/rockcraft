@@ -15,7 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 """An experimental extension for the Flask framework."""
-
+import ast
 import copy
 import posixpath
 import re
@@ -28,7 +28,7 @@ from ._utils import _apply_extension_property
 from .extension import Extension
 
 
-class Flask(Extension):
+class FlaskFramework(Extension):
     """An extension for constructing Python applications based on the Flask framework."""
 
     @staticmethod
@@ -68,15 +68,35 @@ class Flask(Extension):
         snippet["services"] = self._gen_services()
         return snippet
 
+    def _check_wsgi_path(self):
+        """Ensure the flask application can be run with the WSGI path app:app."""
+        app_file = self.project_root / "app.py"
+        if not app_file.exists():
+            raise ExtensionError(
+                "flask application can not be imported from app:app, "
+                "no app.py file found in the project root"
+            )
+        tree = ast.parse(app_file.read_text(encoding="utf-8"))
+        for node in ast.iter_child_nodes(tree):
+            if isinstance(node, ast.Assign):
+                for target in node.targets:
+                    if isinstance(target, ast.Name) and target.id == "app":
+                        return
+        raise ExtensionError(
+            "flask application can not be imported from app:app, "
+            "no variable named app in app.py"
+        )
+
     def _gen_services(self):
         """Return the services snipped to be applied to the rockcraft file."""
+        self._check_wsgi_path()
         services = {
             "flask": {
                 "override": "replace",
                 "startup": "enabled",
                 "command": "/bin/python3 -m gunicorn --bind 0.0.0.0:8000 app:app",
                 "user": "_daemon_",
-                "working-dir": "/srv/flask/app",
+                "working-dir": "/flask/app",
             }
         }
         existing_services = copy.deepcopy(self.yaml_data.get("services", {}))
@@ -125,7 +145,11 @@ class Flask(Extension):
                 "flask extension requires this file with flask specified as a dependency"
             )
         source_files = [f.name for f in sorted(self.project_root.iterdir())]
-        renaming_map = {f: posixpath.join("srv/flask/app", f) for f in source_files}
+        renaming_map = {
+            f: posixpath.join("flask/app", f)
+            for f in source_files
+            if source_files not in ("node_modules", ".git", ".yarn")
+        }
         install_app_part_name = "flask/install-app"
         dependencies_part_name = "flask/dependencies"
 
@@ -140,10 +164,10 @@ class Flask(Extension):
                 "flask extension required prime list not found or empty"
                 "in the flask/install-app part of the rockcraft file"
             )
-        if not all(re.match("-? *srv/flask/app", p) for p in install_prime):
+        if not all(re.match("-? *flask/app", p) for p in install_prime):
             raise ExtensionError(
                 "flask extension required prime entry in the flask/install-app part"
-                "to start with srv/flask/app"
+                "to start with flask/app"
             )
 
         # Users are required to compile any static assets prior to executing the
