@@ -23,7 +23,7 @@ from rockcraft.errors import ExtensionError
 @pytest.fixture
 def flask_extension(mock_extensions, monkeypatch):
     monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "1")
-    extensions.register("flask-framework", extensions.flask.FlaskFramework)
+    extensions.register("flask-framework", extensions.flask_framework.FlaskFramework)
 
 
 @pytest.fixture(name="input_yaml")
@@ -75,13 +75,11 @@ def test_flask_extension(tmp_path, input_yaml):
             "source": ".",
             "stage": [
                 "flask/app/app.py",
-                "flask/app/node_modules",
                 "flask/app/requirements.txt",
                 "flask/app/static",
             ],
             "organize": {
                 "app.py": "flask/app/app.py",
-                "node_modules": "flask/app/node_modules",
                 "static": "flask/app/static",
                 "requirements.txt": "flask/app/requirements.txt",
             },
