@@ -17,6 +17,7 @@
 """An experimental extension for the Flask framework."""
 import ast
 import copy
+import fnmatch
 import posixpath
 import re
 from typing import Any, Dict, Optional, Tuple
@@ -81,6 +82,12 @@ class FlaskFramework(Extension):
             if isinstance(node, ast.Assign):
                 for target in node.targets:
                     if isinstance(target, ast.Name) and target.id == "app":
+                        return
+            if isinstance(node, ast.ImportFrom):
+                for name in node.names:
+                    if (name.asname is not None and name.asname == "app") or (
+                        name.asname is None and name.name == "app"
+                    ):
                         return
         raise ExtensionError(
             "flask application can not be imported from app:app, "
@@ -148,7 +155,10 @@ class FlaskFramework(Extension):
         renaming_map = {
             f: posixpath.join("flask/app", f)
             for f in source_files
-            if f not in ("node_modules", ".git", ".yarn")
+            if not any(
+                fnmatch.fnmatch(f, p)
+                for p in ("node_modules", ".git", ".yarn", "*.rock")
+            )
         }
         install_app_part_name = "flask/install-app"
         dependencies_part_name = "flask/dependencies"
