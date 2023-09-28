@@ -101,9 +101,8 @@ class FlaskFramework(Extension):
             "flask": {
                 "override": "replace",
                 "startup": "enabled",
-                "command": "/bin/python3 -m gunicorn --bind 0.0.0.0:8000 app:app",
+                "command": "/bin/python3 -m gunicorn --bind 0.0.0.0:8000 --chdir /flask/app app:app",
                 "user": "_daemon_",
-                "working-dir": "/flask/app",
             }
         }
         existing_services = copy.deepcopy(self.yaml_data.get("services", {}))

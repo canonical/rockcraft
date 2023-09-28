@@ -55,11 +55,10 @@ def test_flask_extension(tmp_path, input_yaml):
     # Root snippet extends the project's
     services = applied["services"]
     assert services["flask"] == {
-        "command": "/bin/python3 -m gunicorn --bind 0.0.0.0:8000 app:app",
+        "command": "/bin/python3 -m gunicorn --bind 0.0.0.0:8000 --chdir /flask/app app:app",
         "override": "replace",
         "startup": "enabled",
         "user": "_daemon_",
-        "working-dir": "/flask/app",
     }
 
     parts = applied["parts"]
@@ -115,11 +114,10 @@ def test_flask_extension_overwrite(tmp_path, input_yaml):
 
     assert applied["services"] == {
         "flask": {
-            "command": "/bin/python3 -m gunicorn --bind 0.0.0.0:8000 app:app",
+            "command": "/bin/python3 -m gunicorn --bind 0.0.0.0:8000 --chdir /flask/app app:app",
             "override": "replace",
             "startup": "enabled",
             "user": "_daemon_",
-            "working-dir": "/flask/app",
         },
         "foobar": {
             "command": "/bin/foobar",
