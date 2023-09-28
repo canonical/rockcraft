@@ -14,3 +14,4 @@ Rockcraft's components, commands and keywords.
    parts
    commands
    part_properties
+   extensions
