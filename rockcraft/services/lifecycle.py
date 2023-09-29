@@ -62,7 +62,7 @@ class RockcraftLifecycleService(LifecycleService):
         super().setup()
 
     @override
-    def run(self, step_name: str, part_names: list[str] | None = None) -> None:
+    def run(self, step_name: str | None, part_names: list[str] | None = None) -> None:
         """Run the lifecycle manager for the parts."""
         # Overridden to configure package repositories.
         project = cast(Project, self._project)

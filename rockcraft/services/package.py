@@ -25,7 +25,8 @@ from typing import cast
 from craft_application import AppMetadata, PackageService, models, util
 from overrides import override
 
-from rockcraft.models import Project, RockcraftBuildInfo
+from rockcraft import errors
+from rockcraft.models import Project
 
 if typing.TYPE_CHECKING:
     from rockcraft.services import RockcraftServiceFactory
@@ -40,9 +41,11 @@ class RockcraftPackageService(PackageService):
         project: models.Project,
         services: RockcraftServiceFactory,
         *,
+        platform: str | None,
         build_for: str,
     ) -> None:
         super().__init__(app, project, services)
+        self._platform = platform
         self._build_for = build_for
 
     @override
@@ -63,22 +66,34 @@ class RockcraftPackageService(PackageService):
         image_service = services.image
         image_info = image_service.obtain_image()
 
-        build_on = util.get_host_architecture()
-        build_plan = self._project.get_build_plan()
-        build_plan = [plan for plan in build_plan if plan.build_for == self._build_for]
-        build_plan = [plan for plan in build_plan if plan.build_on == build_on]
+        platform = self._platform
 
-        if len(build_plan) != 1:
-            raise RuntimeError(f"Don't know which build to pack: {build_plan}")
+        if platform is None:
+            # This should only happen in destructive mode, in which case we
+            # can only pack a single ROCK.
+            build_on = util.get_host_architecture()
+            base_build_plan = self._project.get_build_plan()
+            build_plan = [
+                plan for plan in base_build_plan if plan.build_for == self._build_for
+            ]
+            build_plan = [plan for plan in build_plan if plan.build_on == build_on]
 
-        build_info = cast(RockcraftBuildInfo, build_plan[0])
+            if len(build_plan) != 1:
+                message = "Unable to determine which platform to build."
+                details = f"Possible values are: {[info.platform for info in base_build_plan]}."
+                resolution = 'Choose a platform with the "--platform" parameter.'
+                raise errors.RockcraftError(
+                    message=message, details=details, resolution=resolution
+                )
+
+            platform = build_plan[0].platform
 
         archive_name = _pack(
             prime_dir=prime_dir,
             project=cast(Project, self._project),
             project_base_image=image_info.base_image,
             base_digest=image_info.base_digest,
-            rock_suffix=build_info.platform_entry,
+            rock_suffix=platform,
             build_for=self._build_for,
             base_layer_dir=image_info.base_layer_dir,
         )
