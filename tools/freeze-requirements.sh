@@ -24,14 +24,13 @@ dpkg -x ./*.deb .
 cp -r usr/lib/python3/dist-packages/* "$site_pkgs"
 popd
 
+pip install -e .
+pip freeze --exclude-editable > requirements.txt
+requirements_fixups "requirements.txt"
 
 pip install -e .[doc]
 pip freeze --exclude-editable > requirements-doc.txt
 requirements_fixups "requirements-doc.txt"
-
-pip install -e .
-pip freeze --exclude-editable > requirements.txt
-requirements_fixups "requirements.txt"
 
 pip install -e .[dev]
 pip freeze --exclude-editable > requirements-dev.txt
