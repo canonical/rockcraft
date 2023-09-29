@@ -178,6 +178,7 @@ def package_service(default_project, default_factory):
         app=APP_METADATA,
         project=default_project,
         services=default_factory,
+        platform="amd64",
         build_for="amd64",
     )
 
