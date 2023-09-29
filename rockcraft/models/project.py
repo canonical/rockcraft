@@ -62,9 +62,6 @@ if TYPE_CHECKING:  # pragma: no cover
 class RockcraftBuildInfo(BuildInfo):
     """BuildInfo with Rockcraft-specific entries."""
 
-    platform_entry: str
-    """Used as the ROCK suffix."""
-
     build_for_variant: Optional[str] = None
     """Used for arm archs"""
 
@@ -555,11 +552,11 @@ class Project(YamlModelMixin, BaseProject):
                     build_for_variant = platform.get("build_for_variant")
                     build_infos.append(
                         RockcraftBuildInfo(
+                            platform=platform_entry,
                             build_on=build_on,
                             build_for=build_for,
                             base=base,
                             build_for_variant=build_for_variant,
-                            platform_entry=platform_entry,
                         )
                     )
 

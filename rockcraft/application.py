@@ -139,13 +139,15 @@ class Rockcraft(Application):
 
         return dispatcher
 
-    def _configure_services(self, build_for: str | None) -> None:
+    @override
+    def _configure_services(self, platform: str | None, build_for: str | None) -> None:
         if build_for is None:
             build_for = util.get_host_architecture()
 
         self.services.set_kwargs("image", work_dir=self._work_dir, build_for=build_for)
         self.services.set_kwargs(
             "package",
+            platform=platform,
             build_for=build_for,
         )
-        super()._configure_services(build_for)
+        super()._configure_services(platform, build_for)
