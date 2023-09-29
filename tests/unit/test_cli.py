@@ -133,7 +133,7 @@ def test_run_command_destructive_mode(mocker, cmd):
 @pytest.mark.parametrize("destructive_opt", [True, False])
 @pytest.mark.parametrize("debug_opt", [True, False])
 def test_run_pack(mocker, debug_opt, destructive_opt):
-    if not debug_opt and not destructive_opt:
+    if not destructive_opt:
         pytest.skip("regular 'rockcraft pack' is tested in 'test_run_pack_services'.")
     run_mock = mocker.patch("rockcraft.lifecycle.run")
     mock_ended_ok = mocker.spy(emit, "ended_ok")
