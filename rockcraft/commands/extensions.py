@@ -23,7 +23,8 @@ from pathlib import Path
 from typing import Dict, List
 
 import tabulate
-from craft_cli import BaseCommand, emit
+from craft_application.commands import AppCommand
+from craft_cli import emit
 from overrides import overrides
 from pydantic import BaseModel
 
@@ -45,7 +46,7 @@ class ExtensionModel(BaseModel):
         }
 
 
-class ListExtensionsCommand(BaseCommand, abc.ABC):
+class ListExtensionsCommand(AppCommand, abc.ABC):
     """List available extensions for all supported bases."""
 
     name = "list-extensions"
@@ -82,7 +83,7 @@ class ExtensionsCommand(ListExtensionsCommand, abc.ABC):
     hidden = True
 
 
-class ExpandExtensionsCommand(BaseCommand, abc.ABC):
+class ExpandExtensionsCommand(AppCommand, abc.ABC):
     """Expand the extensions in the snapcraft.yaml file."""
 
     name = "expand-extensions"
