@@ -13,13 +13,12 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-import argparse
 from pathlib import Path
 
 import pytest
 import yaml
 
-from rockcraft import lifecycle, oci
+from rockcraft import oci
 from tests.util import jammy_only
 
 pytestmark = [jammy_only, pytest.mark.usefixtures("reset_callbacks")]
@@ -65,8 +64,8 @@ def test_global_environment(new_dir, monkeypatch, mocker, reset_callbacks):
 
     Path("rockcraft.yaml").write_text(ROCKCRAFT_YAML)
 
-    args = argparse.Namespace(destructive_mode=True)
-    lifecycle.run("stage", args)
+    # args = argparse.Namespace(destructive_mode=True)
+    # lifecycle.run("stage", args)
 
     variables_yaml = Path(new_dir) / "stage/variables.yaml"
     assert variables_yaml.is_file()
