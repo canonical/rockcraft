@@ -18,47 +18,10 @@
 
 import logging
 
-import craft_cli
-
 from rockcraft import plugins
 
 from . import commands
 from .services import RockcraftServiceFactory
-
-COMMAND_GROUPS = [
-    craft_cli.CommandGroup(
-        "Lifecycle",
-        [
-            commands.CleanCommand,
-            commands.PullCommand,
-            commands.OverlayCommand,
-            commands.BuildCommand,
-            commands.StageCommand,
-            commands.PrimeCommand,
-            commands.PackCommand,
-        ],
-    ),
-    craft_cli.CommandGroup(
-        "Extensions",
-        [
-            commands.ExtensionsCommand,
-            commands.ListExtensionsCommand,
-            commands.ExpandExtensionsCommand,
-        ],
-    ),
-    craft_cli.CommandGroup(
-        "Other",
-        [
-            commands.InitCommand,
-        ],
-    ),
-]
-
-GLOBAL_ARGS = [
-    craft_cli.GlobalArgument(
-        "version", "flag", "-V", "--version", "Show the application version and exit"
-    )
-]
 
 
 def run() -> int:
