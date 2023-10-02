@@ -21,7 +21,6 @@ from pathlib import Path
 from typing import Callable, List, Tuple
 
 from rockcraft import oci
-from rockcraft.parts import PartsLifecycle
 from tests.util import jammy_only
 
 pytestmark = jammy_only
