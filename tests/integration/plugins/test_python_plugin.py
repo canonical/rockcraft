@@ -25,7 +25,6 @@ from craft_parts.utils.os_utils import OsRelease
 
 from rockcraft import errors, plugins
 from rockcraft.models.project import Project
-from rockcraft.parts import PartsLifecycle
 from rockcraft.plugins.python_plugin import SITECUSTOMIZE_TEMPLATE
 from tests.util import ubuntu_only
 
