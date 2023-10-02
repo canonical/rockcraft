@@ -166,6 +166,7 @@ def provider_service(default_project, default_factory, tmp_path):
         app=APP_METADATA,
         project=default_project,
         services=default_factory,
+        work_dir=tmp_path,
     )
 
 
