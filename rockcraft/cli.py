@@ -17,19 +17,13 @@
 """Command-line application entry point."""
 
 import logging
-import sys
-from typing import Optional
 
 import craft_cli
-from craft_cli import ArgumentParsingError, ProvideHelpException, emit
-from craft_parts import PartsError
-from craft_providers import ProviderError
 
-from rockcraft import __version__, errors, plugins
+from rockcraft import plugins
 
 from . import commands
 from .services import RockcraftServiceFactory
-from .utils import is_managed_mode
 
 COMMAND_GROUPS = [
     craft_cli.CommandGroup(
@@ -67,12 +61,12 @@ GLOBAL_ARGS = [
 ]
 
 
-def run() -> None:
+def run() -> int:
     """Command-line interface entrypoint."""
     # pylint: disable=import-outside-toplevel
     # Import these here so that the script that generates the docs for the
     # commands doesn't need to know *too much* of the application.
-    from .application import APP_METADATA, FallbackRunError, Rockcraft
+    from .application import APP_METADATA, Rockcraft
 
     # Register our own plugins
     plugins.register()
@@ -89,64 +83,19 @@ def run() -> None:
 
     app = Rockcraft(app=APP_METADATA, services=services)
 
-    try:
-        app.run()
-    except FallbackRunError:
-        legacy_run()
-
-
-def _emit_error(error: craft_cli.CraftError, cause: Optional[Exception] = None) -> None:
-    """Emit the error in a centralized way so we can alter it consistently."""
-    # set the cause, if any
-    if cause is not None:
-        error.__cause__ = cause
-
-    # if running inside a managed instance, do not report the internal logpath
-    if is_managed_mode():
-        error.logpath_report = False
-
-    # finally, emit
-    emit.error(error)
-
-
-def legacy_run() -> None:
-    """Run the CLI."""
-    dispatcher = craft_cli.Dispatcher(
-        "rockcraft",
-        COMMAND_GROUPS,
-        summary="A tool to create OCI images",
-        extra_global_args=GLOBAL_ARGS,
-        default_command=commands.PackCommand,
+    app.add_command_group(
+        "Other",
+        [
+            commands.InitCommand,
+        ],
+    )
+    app.add_command_group(
+        "Extensions",
+        [
+            commands.ExtensionsCommand,
+            commands.ListExtensionsCommand,
+            commands.ExpandExtensionsCommand,
+        ],
     )
 
-    try:
-        global_args = dispatcher.pre_parse_args(sys.argv[1:])
-        if global_args.get("version"):
-            emit.message(f"rockcraft {__version__}")
-        else:
-            dispatcher.load_command(None)
-            dispatcher.run()
-        emit.ended_ok()
-    except ProvideHelpException as err:
-        print(err, file=sys.stderr)  # to stderr, as argparse normally does
-        emit.ended_ok()
-    except ArgumentParsingError as err:
-        print(err, file=sys.stderr)  # to stderr, as argparse normally does
-        emit.ended_ok()
-        sys.exit(1)
-    except errors.RockcraftError as err:
-        _emit_error(err)
-        sys.exit(1)
-    except PartsError as err:
-        _emit_error(
-            craft_cli.CraftError(
-                err.brief, details=err.details, resolution=err.resolution
-            )
-        )
-        sys.exit(1)
-    except ProviderError as err:
-        _emit_error(craft_cli.CraftError(f"craft-providers error: {err}"))
-        sys.exit(1)
-    except Exception as err:  # pylint: disable=broad-except
-        _emit_error(craft_cli.CraftError(f"rockcraft internal error: {err!r}"))
-        sys.exit(1)
+    return app.run()

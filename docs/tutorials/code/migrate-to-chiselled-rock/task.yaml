@@ -33,7 +33,7 @@ execute: |
   # [docs:run-docker-image-end]
 
   # [docs:build-rock]
-  rockcraft --verbosity debug
+  rockcraft pack --verbosity debug
   # [docs:build-rock-end]
 
   test -f dotnet-runtime_chiselled_amd64.rock

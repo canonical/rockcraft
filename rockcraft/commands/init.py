@@ -19,7 +19,8 @@ import textwrap
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from craft_cli import BaseCommand, emit
+from craft_application.commands import AppCommand
+from craft_cli import emit
 from overrides import overrides
 
 from rockcraft import errors
@@ -48,7 +49,7 @@ def init(rockcraft_yaml_content: str) -> None:
     emit.progress(f"Created {rockcraft_yaml_path}.")
 
 
-class InitCommand(BaseCommand):
+class InitCommand(AppCommand):
     """Initialize a rockcraft project."""
 
     name = "init"

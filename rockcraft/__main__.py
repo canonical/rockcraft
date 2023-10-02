@@ -16,8 +16,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 """Main module."""
+import sys
 
 from .cli import run
 
 if __name__ == "__main__":
-    run()
+    sys.exit(run())
