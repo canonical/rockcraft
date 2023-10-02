@@ -39,7 +39,7 @@ execute: |
   mv rockcraft.yaml.backup rockcraft.yaml
 
   # [docs:pack]
-  rockcraft
+  rockcraft pack
   # [docs:pack-end]
 
   # [docs:skopeo-copy]

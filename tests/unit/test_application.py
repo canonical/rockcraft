@@ -15,22 +15,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from pathlib import Path
 
-from craft_application.commands.lifecycle import PackCommand
-
-
-def test_application_commands(default_application):
-    commands = default_application.command_groups
-
-    assert len(commands) == 1
-
-    group = commands[0]
-    assert group.name == "Lifecycle"
-
-    # Only the Pack command is supported currently.
-    assert len(group.commands) == 1
-    assert group.commands[0] is PackCommand
-
-
 ENVIRONMENT_YAML = """\
 name: environment-test
 version: 2.0

@@ -4,4 +4,4 @@ environment:
   BASE/bare: "bare"
 execute: |
   sed "s/placeholder-base/$BASE/" rockcraft.orig.yaml  > rockcraft.yaml
-  rockcraft -v 2>&1 >/dev/null | MATCH ":: No suitable Python interpreter found, giving up."
+  rockcraft pack -v 2>&1 >/dev/null | MATCH ":: No suitable Python interpreter found, giving up."
