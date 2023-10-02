@@ -15,7 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from pathlib import Path
 
-from rockcraft import lifecycle
+from rockcraft.services import package
 
 
 def test_pack(package_service, default_factory, default_image_info, mocker):
@@ -24,7 +24,7 @@ def test_pack(package_service, default_factory, default_image_info, mocker):
     mock_obtain_image = mocker.patch.object(
         image_service, "obtain_image", return_value=default_image_info
     )
-    mock_inner_pack = mocker.patch.object(lifecycle, "_pack")
+    mock_inner_pack = mocker.patch.object(package, "_pack")
 
     package_service.pack(prime_dir=Path("prime"), dest=Path())
 

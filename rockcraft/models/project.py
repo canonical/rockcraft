@@ -48,6 +48,7 @@ from craft_providers import bases
 from overrides import override
 from pydantic_yaml import YamlModelMixin
 
+from rockcraft.environment import expand_environment
 from rockcraft.errors import ProjectLoadError, ProjectValidationError
 from rockcraft.extensions import apply_extensions
 from rockcraft.parts import part_has_overlay, validate_part
@@ -493,13 +494,12 @@ class Project(YamlModelMixin, BaseProject):
     ) -> "Project":
         """Instantiate this model from a YAML file."""
         # pylint: disable=import-outside-toplevel
-        from rockcraft.lifecycle import _expand_environment
 
         data = load_project(path)
 
         if work_dir is not None:
             project_vars = {"version": data["version"]}
-            _expand_environment(
+            expand_environment(
                 data,
                 project_vars=project_vars,
                 work_dir=work_dir,
