@@ -15,6 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
+from pathlib import Path
 
 import pytest
 import xdg  # type: ignore
@@ -100,3 +101,137 @@ class RecordingEmitter:
     def assert_recorded_raw(self, expected):
         """Verify that the given messages (with specific level) were recorded consecutively."""
         self._check(expected, self.raw)
+
+
+@pytest.fixture
+def extra_project_params():
+    """Configuration fixture for the Project used by the default services."""
+    return {}
+
+
+@pytest.fixture
+def default_project(extra_project_params):
+    from craft_application.models import VersionStr
+
+    from rockcraft.models.project import NameStr, Project
+
+    parts = extra_project_params.pop("parts", {})
+
+    return Project(
+        name=NameStr("default"),
+        version=VersionStr("1.0"),
+        summary="default project",
+        description="default project",
+        base="ubuntu:22.04",
+        parts=parts,
+        license="MIT",
+        platforms={"amd64": None},
+        **extra_project_params,
+    )
+
+
+@pytest.fixture
+def default_factory(default_project):
+    from rockcraft.application import APP_METADATA
+    from rockcraft.services import RockcraftServiceFactory
+
+    factory = RockcraftServiceFactory(
+        app=APP_METADATA,
+        project=default_project,
+    )
+    factory.set_kwargs("image", work_dir=Path("work"), build_for="amd64")
+    return factory
+
+
+@pytest.fixture
+def default_image_info():
+    from rockcraft import oci
+    from rockcraft.services.image import ImageInfo
+
+    return ImageInfo(
+        base_image=oci.Image(image_name="fake_image", path=Path()),
+        base_layer_dir=Path(),
+        base_digest=b"deadbeef",
+    )
+
+
+@pytest.fixture
+def default_application(default_factory, default_project):
+    from rockcraft.application import APP_METADATA, Rockcraft
+
+    return Rockcraft(APP_METADATA, default_factory)
+
+
+@pytest.fixture
+def image_service(default_project, default_factory, tmp_path):
+    from rockcraft.application import APP_METADATA
+    from rockcraft.services import RockcraftImageService
+
+    return RockcraftImageService(
+        app=APP_METADATA,
+        project=default_project,
+        services=default_factory,
+        work_dir=tmp_path,
+        build_for="amd64",
+    )
+
+
+@pytest.fixture
+def provider_service(default_project, default_factory, tmp_path):
+    from rockcraft.application import APP_METADATA
+    from rockcraft.services import RockcraftProviderService
+
+    return RockcraftProviderService(
+        app=APP_METADATA,
+        project=default_project,
+        services=default_factory,
+        work_dir=tmp_path,
+    )
+
+
+@pytest.fixture
+def package_service(default_project, default_factory):
+    from rockcraft.application import APP_METADATA
+    from rockcraft.services import RockcraftPackageService
+
+    return RockcraftPackageService(
+        app=APP_METADATA,
+        project=default_project,
+        services=default_factory,
+        platform="amd64",
+        build_for="amd64",
+    )
+
+
+@pytest.fixture
+def lifecycle_service(default_project, default_factory):
+    from rockcraft.application import APP_METADATA
+    from rockcraft.services import RockcraftLifecycleService
+
+    return RockcraftLifecycleService(
+        app=APP_METADATA,
+        project=default_project,
+        services=default_factory,
+        work_dir=Path("work/"),
+        cache_dir=Path("cache/"),
+        build_for="amd64",
+    )
+
+
+@pytest.fixture
+def mock_obtain_image(default_factory, mocker):
+    """Mock and return the "obtain_image()" method of the default image service."""
+    image_service = default_factory.image
+    return mocker.patch.object(image_service, "obtain_image")
+
+
+@pytest.fixture
+def run_lifecycle(mocker):
+    """Helper to call testing.run_mocked_lifecycle()."""
+
+    def _inner(**kwargs):
+        from tests.testing.lifecycle import run_mocked_lifecycle
+
+        return run_mocked_lifecycle(mocker=mocker, **kwargs)
+
+    return _inner
