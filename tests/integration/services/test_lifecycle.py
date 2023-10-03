@@ -19,7 +19,8 @@ from pathlib import Path
 import pytest
 from craft_parts import overlays
 
-from rockcraft.parts import PartsLifecycle
+from rockcraft.services import lifecycle
+from tests.testing.project import create_project
 from tests.util import jammy_only
 
 pytestmark = [jammy_only, pytest.mark.usefixtures("reset_callbacks")]
@@ -27,7 +28,7 @@ pytestmark = [jammy_only, pytest.mark.usefixtures("reset_callbacks")]
 # pyright: reportPrivateImportUsage=false
 
 
-def test_package_repositories_in_overlay(new_dir, mocker):
+def test_package_repositories_in_overlay(new_dir, mocker, run_lifecycle):
     # Mock overlay-related calls that need root; we won't be actually installing
     # any packages, just checking that the repositories are correctly installed
     # in the overlay.
@@ -57,23 +58,23 @@ def test_package_repositories_in_overlay(new_dir, mocker):
         {"type": "apt", "ppa": "mozillateam/ppa", "priority": "always"}
     ]
 
-    lifecycle = PartsLifecycle(
-        all_parts=parts,
-        work_dir=work_dir,
-        part_names=None,
-        base_layer_dir=base_layer_dir,
-        base_layer_hash=b"deadbeef",
-        base="fake-ubuntu",
-        package_repositories=package_repositories,
-        project_name="package-repos",
-    )
     # Mock the installation of package repositories in the base system, as that
     # is undesired and will fail without root.
     mocker.patch.object(lifecycle, "_install_package_repositories")
 
-    lifecycle.run("prime")
+    project = create_project(
+        base="ubuntu:22.04",
+        parts=parts,
+        package_repositories=package_repositories,
+    )
+    lifecycle_service = run_lifecycle(
+        project=project,
+        work_dir=work_dir,
+        base_layer_dir=base_layer_dir,
+    )
+    parts_lifecycle = lifecycle_service._lcm
 
-    overlay_apt = lifecycle.project_info.overlay_dir / "packages/etc/apt"
+    overlay_apt = parts_lifecycle.project_info.overlay_dir / "packages/etc/apt"
     assert overlay_apt.is_dir()
 
     # Checking that the files are present should be enough
