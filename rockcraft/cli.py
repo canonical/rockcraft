@@ -26,11 +26,6 @@ from .services import RockcraftServiceFactory
 
 def run() -> int:
     """Command-line interface entrypoint."""
-    # pylint: disable=import-outside-toplevel
-    # Import these here so that the script that generates the docs for the
-    # commands doesn't need to know *too much* of the application.
-    from .application import APP_METADATA, Rockcraft
-
     # Register our own plugins
     plugins.register()
 
@@ -38,6 +33,17 @@ def run() -> int:
     for lib_name in ("craft_providers", "craft_parts"):
         logger = logging.getLogger(lib_name)
         logger.setLevel(logging.DEBUG)
+
+    app = _create_app()
+
+    return app.run()
+
+
+def _create_app():
+    # pylint: disable=import-outside-toplevel
+    # Import these here so that the script that generates the docs for the
+    # commands doesn't need to know *too much* of the application.
+    from .application import APP_METADATA, Rockcraft
 
     services = RockcraftServiceFactory(
         # type: ignore # type: ignore[call-arg]
@@ -61,4 +67,4 @@ def run() -> int:
         ],
     )
 
-    return app.run()
+    return app
