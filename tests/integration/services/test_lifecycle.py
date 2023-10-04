@@ -72,6 +72,7 @@ def test_package_repositories_in_overlay(new_dir, mocker, run_lifecycle):
         work_dir=work_dir,
         base_layer_dir=base_layer_dir,
     )
+    # pylint: disable=protected-access
     parts_lifecycle = lifecycle_service._lcm
 
     overlay_apt = parts_lifecycle.project_info.overlay_dir / "packages/etc/apt"
