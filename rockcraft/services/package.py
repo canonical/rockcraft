@@ -59,6 +59,7 @@ class RockcraftPackageService(PackageService):
         :returns: A list of paths to created packages.
         """
         # This inner import is necessary to resolve a cyclic import
+        # pylint: disable=import-outside-toplevel
         from rockcraft.services import RockcraftServiceFactory
 
         services = cast(RockcraftServiceFactory, self._services)
