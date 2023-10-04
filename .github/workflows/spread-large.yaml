@@ -8,10 +8,10 @@ on:
 jobs:
   snap-build:
     if: ${{ github.event.label.name == 'run-large-spread' || github.event_name == 'schedule' }}
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Build snap
@@ -34,7 +34,7 @@ jobs:
           rm -rf "${{ github.workspace }}"
           mkdir "${{ github.workspace }}"
       - name: Checkout rockcraft
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           submodules: true
