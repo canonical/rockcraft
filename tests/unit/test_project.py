@@ -104,7 +104,7 @@ def pebble_part() -> Dict[str, Any]:
     return {
         "pebble": {
             "plugin": "nil",
-            "stage-snaps": ["pebble/latest/edge"],
+            "stage-snaps": ["pebble/latest/stable"],
             "stage": ["bin/pebble"],
             "override-prime": "craftctl default\nmkdir -p var/lib/pebble/default/layers",
         }

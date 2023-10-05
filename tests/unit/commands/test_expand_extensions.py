@@ -57,7 +57,7 @@ EXPECTED_EXPAND_EXTENSIONS = textwrap.dedent(
       pebble:
         plugin: nil
         stage-snaps:
-        - pebble/latest/edge
+        - pebble/latest/stable
         stage:
         - bin/pebble
         override-prime: |-
