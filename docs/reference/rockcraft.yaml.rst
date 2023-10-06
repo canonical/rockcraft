@@ -239,8 +239,7 @@ Example
         VAR2: "other value"
   platforms:
     amd64:
-    arm:
-      build-on: ["arm", "arm64"]
+    arm64:
     ibm:
       build-on: ["s390x"]
       build-for: s390x

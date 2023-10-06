@@ -56,7 +56,7 @@ class ArchitectureMapping(pydantic.BaseModel):
 
     description: str
     deb_arch: str
-    compatible_uts_machine_archs: List[str]
+    uts_machine_archs: List[str]
     go_arch: str
 
 
@@ -64,43 +64,43 @@ _SUPPORTED_ARCHS: Dict[str, ArchitectureMapping] = {
     "amd64": ArchitectureMapping(
         description="Intel 64",
         deb_arch="amd64",
-        compatible_uts_machine_archs=["amd64", "x86_64"],
+        uts_machine_archs=["x86_64"],
         go_arch="amd64",
     ),
-    "arm": ArchitectureMapping(
+    "armhf": ArchitectureMapping(
         description="ARM 32-bit",
         deb_arch="armhf",
-        compatible_uts_machine_archs=["arm"],
+        uts_machine_archs=["arm"],
         go_arch="arm",
     ),
     "arm64": ArchitectureMapping(
         description="ARM 64-bit",
         deb_arch="arm64",
-        compatible_uts_machine_archs=["aarch64"],
+        uts_machine_archs=["aarch64"],
         go_arch="arm64",
     ),
     "i386": ArchitectureMapping(
         description="Intel 386",
         deb_arch="i386",
-        compatible_uts_machine_archs=["i386"],  # TODO: also include "i686", "x86_64"?
+        uts_machine_archs=["i386"],
         go_arch="386",
     ),
-    "ppc64le": ArchitectureMapping(
+    "ppc64el": ArchitectureMapping(
         description="PowerPC 64-bit",
         deb_arch="ppc64el",
-        compatible_uts_machine_archs=["ppc64le"],
+        uts_machine_archs=["ppc64le"],
         go_arch="ppc64le",
     ),
     "riscv64": ArchitectureMapping(
         description="RISCV 64-bit",
         deb_arch="riscv64",
-        compatible_uts_machine_archs=["riscv64"],
+        uts_machine_archs=["riscv64"],
         go_arch="riscv64",
     ),
     "s390x": ArchitectureMapping(
         description="IBM Z 64-bit",
         deb_arch="s390x",
-        compatible_uts_machine_archs=["s390x"],
+        uts_machine_archs=["s390x"],
         go_arch="s390x",
     ),
 }
@@ -272,8 +272,12 @@ class Project(YamlModel):
     @classmethod
     def _validate_all_platforms(cls, platforms: Dict[str, Any]) -> Dict[str, Any]:
         """Make sure all provided platforms are tangible and sane."""
-        _self_uts_machine = host_platform.machine().lower()
-
+        host_uts_machine = host_platform.machine().lower()
+        try:
+            host_deb_arch = [arch for arch in _SUPPORTED_ARCHS if host_uts_machine in _SUPPORTED_ARCHS[arch].deb_arch][0]
+        except IndexError:
+            raise ProjectValidationError(f"Unsupported platform architecture {host_uts_machine}")
+        
         for platform_label in platforms:
             platform = platforms[platform_label] if platforms[platform_label] else {}
             error_prefix = f"Error for platform entry '{platform_label}'"
@@ -334,15 +338,15 @@ class Project(YamlModel):
             # TODO: in the future, this may be removed
             # as Rockcraft gains the ability to natively build
             # for multiple architectures
-            build_for_compatible_uts = _SUPPORTED_ARCHS[
+            build_for_compatible_deb_arch = _SUPPORTED_ARCHS[
                 build_target
-            ].compatible_uts_machine_archs
-            if _self_uts_machine not in build_for_compatible_uts:
+            ].deb_arch
+            if host_deb_arch not in build_for_compatible_deb_arch:
                 raise ProjectValidationError(
                     str(
-                        f"{error_prefix}: this machine's architecture ({_self_uts_machine}) "
+                        f"{error_prefix}: this machine's architecture ({host_deb_arch}) "
                         "is not compatible with the ROCK's target architecture. Can only "
-                        f"build a ROCK for {build_target} if the host is compatible with {build_for_compatible_uts}."
+                        f"build a ROCK for {build_target} if the host is compatible with {build_for_compatible_deb_arch}."
                     )
                 )
 
@@ -363,12 +367,6 @@ class Project(YamlModel):
                         f"This machine ({_self_uts_machine}) is not one of those."
                     )
                 )
-
-            # Add variant, if needed, and return sanitized platform
-            if build_target == "arm":
-                platform["build_for_variant"] = "v7"
-            elif build_target == "arm64":
-                platform["build_for_variant"] = "v8"
 
             platforms[platform_label] = platform
 

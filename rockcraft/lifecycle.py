@@ -85,21 +85,17 @@ def run(command_name: str, parsed_args: "argparse.Namespace") -> None:
         build_for = (
             platform["build_for"][0] if platform.get("build_for") else platform_entry
         )
-        build_for_variant = platform.get("build_for_variant")
-
         if project.base == "bare":
             base_image, source_image = oci.Image.new_oci_image(
                 f"{project.base}:latest",
                 image_dir=image_dir,
                 arch=build_for,
-                variant=build_for_variant,
             )
         else:
             base_image, source_image = oci.Image.from_docker_registry(
                 project.base,
                 image_dir=image_dir,
                 arch=build_for,
-                variant=build_for_variant,
             )
         emit.progress(f"Retrieved base {project.base} for {build_for}", permanent=True)
 
@@ -226,8 +222,6 @@ def _pack(
     )
     rock_metadata["architecture"] = build_for
     # TODO: add variant to rock_metadata too
-    # if build_for_variant:
-    #     rock_metadata["variant"] = build_for_variant
     new_image.set_annotations(oci_annotations)
     new_image.set_control_data(rock_metadata)
     emit.progress("Metadata added")

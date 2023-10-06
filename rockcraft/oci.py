@@ -108,7 +108,6 @@ class Image:
         image_name: str,
         image_dir: Path,
         arch: str,
-        variant: Optional[str] = None,
     ) -> Tuple["Image", str]:
         """Create a new OCI image out of thin air.
 
@@ -130,6 +129,14 @@ class Image:
         # with arch and variant. We can configure the arch via
         # umoci config, but not the variant. Need to do it manually
         _config_image(image_target, ["--architecture", arch, "--no-history"])
+
+        # Add variant, if needed
+        variant = None
+        if arch == "armhf":
+           variant = "v7"
+        elif arch == "arm64":
+           variant = "v8"
+
         if variant:
             _inject_architecture_variant(Path(image_target_no_tag), variant)
 

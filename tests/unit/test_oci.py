@@ -194,9 +194,9 @@ class TestImage:
         ]
         mock_inject_variant.assert_not_called()
         _ = oci.Image.new_oci_image(
-            "bare:latest", image_dir=image_dir, arch="foo", variant="bar"
+            "bare:latest", image_dir=image_dir, arch="armhf"
         )
-        mock_inject_variant.assert_called_once_with(image_dir / "bare", "bar")
+        mock_inject_variant.assert_called_once_with(image_dir / "bare", "v7")
 
     def test_copy_to(self, mock_run):
         image = oci.Image("a:b", Path("/c"))

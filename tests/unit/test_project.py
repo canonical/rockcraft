@@ -303,36 +303,6 @@ def test_project_platform_invalid():
     )
 
 
-@patch("platform.machine")
-def test_project_platform_variants(mock_uts_machine, yaml_loaded_data):
-    def load_project_for_arch(uts_arch: str, arch: str) -> Project:
-        mock_uts_machine.return_value = uts_arch
-        yaml_loaded_data["platforms"] = {arch: None}
-        return Project.unmarshal(yaml_loaded_data)
-
-    # arm/v7
-    assert (
-        load_project_for_arch("arm", "arm").platforms["arm"]["build_for_variant"]
-        == "v7"
-    )
-
-    # arm64/v8
-    assert (
-        load_project_for_arch("aarch64", "arm64").platforms["arm64"][
-            "build_for_variant"
-        ]
-        == "v8"
-    )
-
-    # others
-    assert (
-        load_project_for_arch("x86_64", "amd64")
-        .platforms["amd64"]
-        .get("build_for_variant")
-        is None
-    )
-
-
 def test_project_all_platforms_invalid(yaml_loaded_data):
     def reload_project_platforms(new_platforms=None):
         if new_platforms:
@@ -371,7 +341,7 @@ def test_project_all_platforms_invalid(yaml_loaded_data):
 
     # The underlying build machine must be compatible
     # with both build_on and build_for
-    other_arch = "arm" if BUILD_ON_ARCH == "amd64" else "amd64"
+    other_arch = "armhf" if BUILD_ON_ARCH == "amd64" else "amd64"
     mock_platforms = {"mock": {"build-on": [other_arch], "build-for": other_arch}}
     assert "if the host is compatible with" in reload_project_platforms(mock_platforms)
 
