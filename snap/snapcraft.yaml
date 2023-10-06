@@ -1,6 +1,6 @@
 name: rockcraft
 version: git
-base: core20
+base: core22
 summary: A craft like experience to create ROCKS
 description: |
     Rockcraft aims to take the same primitives used in Charmcraft and Snapcraft
@@ -9,21 +9,26 @@ confinement: classic
 grade: devel
 license: GPL-3.0
 
+# https://github.com/snapcore/snapcraft/issues/4187
+environment:
+  PATH: "$SNAP/libexec/rockcraft:/snap/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+  LD_LIBRARY_PATH: "$SNAP/none"
+
 apps:
   rockcraft:
     command: bin/python $SNAP/bin/rockcraft
-    environment:
-      PATH: "$SNAP/libexec/rockcraft:/snap/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$SNAP/usr/bin:$SNAP/bin"
 
 build-packages:
   - libapt-pkg-dev
   - libyaml-dev
-  - python3.8-dev
+  - python3.10-dev
   - pkg-config
 
 parts:
   rockcraft-libs:
     plugin: nil
+    build-attributes:
+        - enable-patchelf
     stage-packages:
         - apt
         - apt-transport-https
@@ -32,8 +37,8 @@ parts:
         - gpg
         - gpgv
         - libpython3-stdlib
-        - libpython3.8-stdlib
-        - libpython3.8-minimal
+        - libpython3.10-stdlib
+        - libpython3.10-minimal
         - python3-pip
         - python3-setuptools
         - python3-wheel
@@ -41,7 +46,7 @@ parts:
         - python3-minimal
         - python3-distutils
         - python3-pkg-resources
-        - python3.8-minimal
+        - python3.10-minimal
         - fuse-overlayfs
 
   rockcraft:
@@ -51,20 +56,22 @@ parts:
         - wheel
         - pip
         - setuptools
-    requirements:
-        - requirements-focal.txt
+    python-requirements:
+        - requirements-jammy.txt
         - requirements.txt
+    build-attributes:
+        - enable-patchelf
     build-environment:
-        - "CFLAGS": "$(pkg-config python-3.8 yaml-0.1 --cflags)"
-    after: [rockcraft-libs]
+        - "CFLAGS": "$(pkg-config python-3.10 yaml-0.1 --cflags)"
+    organize:
+        bin/craftctl: libexec/rockcraft/craftctl
     override-build: |
-      snapcraftctl build
-      # python3 fixup symlink (snapcraft bug)
-      ln -sf ../usr/bin/python3.8 $SNAPCRAFT_PART_INSTALL/bin/python3
-        mkdir -p $SNAPCRAFT_PART_INSTALL/libexec/rockcraft
-        mv $SNAPCRAFT_PART_INSTALL/bin/craftctl $SNAPCRAFT_PART_INSTALL/libexec/rockcraft/
-        sed -i -e '1 s|^#!/.*|#!/snap/rockcraft/current/bin/python|' $SNAPCRAFT_PART_INSTALL/libexec/rockcraft/craftctl
-
+      craftctl default
+  
+      sed -i -e '1 s|^#!/.*|#!/snap/rockcraft/current/bin/python -E|' $CRAFT_PART_INSTALL/bin/craftctl
+    after:
+      - rockcraft-libs
+  
   umoci:
     plugin: make
     source: https://github.com/opencontainers/umoci.git
@@ -73,8 +80,8 @@ parts:
         - umoci.static
     override-build: |
         make umoci.static
-        mkdir "$SNAPCRAFT_PART_INSTALL"/bin
-        install -m755 umoci.static "$SNAPCRAFT_PART_INSTALL"/bin/umoci
+        mkdir "$CRAFT_PART_INSTALL"/bin
+        install -m755 umoci.static "$CRAFT_PART_INSTALL"/bin/umoci
     build-packages:
         - golang-go
         - make
@@ -85,13 +92,15 @@ parts:
     source-tag: v1.9.0
     override-build: |
         CGO=1 go build -ldflags -linkmode=external ./cmd/skopeo
-        mkdir "$SNAPCRAFT_PART_INSTALL"/bin
-        install -m755 skopeo "$SNAPCRAFT_PART_INSTALL"/bin/skopeo
+        mkdir "$CRAFT_PART_INSTALL"/bin
+        install -m755 skopeo "$CRAFT_PART_INSTALL"/bin/skopeo
     stage-packages:
         - libgpgme11
         - libassuan0
         - libbtrfs0
         - libdevmapper1.02.1
+    build-attributes:
+        - enable-patchelf
     build-snaps:
         - go/1.17/stable
     build-packages:
