@@ -6,8 +6,8 @@ Rockcraft extensions are crafted to expand and modify the user-provided
 rockcraft project file, aiming to minimise the boilerplate code when
 initiating a new rock.
 
-The ``flask`` extension
------------------------
+The ``flask-framework`` extension
+---------------------------------
 
 The Flask extension streamlines the process of building Flask application rocks.
 
