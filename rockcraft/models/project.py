@@ -17,7 +17,6 @@
 """Project definition and helpers."""
 import dataclasses
 import operator
-import pathlib
 import platform as host_platform
 import re
 from builtins import super
@@ -40,15 +39,12 @@ from typing import (
 import pydantic
 import spdx_lookup  # type: ignore
 import yaml
-from craft_application.errors import CraftValidationError
 from craft_application.models import BuildInfo
 from craft_application.models import Project as BaseProject
 from craft_archives import repo
 from craft_providers import bases
-from overrides import override
 from pydantic_yaml import YamlModelMixin
 
-from rockcraft.environment import expand_environment
 from rockcraft.errors import ProjectLoadError, ProjectValidationError
 from rockcraft.extensions import apply_extensions
 from rockcraft.parts import part_has_overlay, validate_part
@@ -487,29 +483,6 @@ class Project(YamlModelMixin, BaseProject):
 
         return project
 
-    @classmethod
-    @override
-    def from_yaml_file(
-        cls, path: pathlib.Path, *, work_dir: Optional[pathlib.Path] = None
-    ) -> "Project":
-        """Instantiate this model from a YAML file."""
-        # pylint: disable=import-outside-toplevel
-
-        data = load_project(path)
-
-        if work_dir is not None:
-            project_vars = {"version": data["version"]}
-            expand_environment(
-                data,
-                project_vars=project_vars,
-                work_dir=work_dir,
-            )
-        try:
-            # TODO apply extensions here
-            return cls.unmarshal(data)
-        except pydantic.ValidationError as err:
-            raise CraftValidationError.from_pydantic(err, file_name=path.name) from None
-
     def generate_metadata(
         self, generation_time: str, base_digest: bytes
     ) -> Tuple[dict, dict]:
@@ -679,7 +652,17 @@ def load_project(filename: Path) -> Dict[str, Any]:
             msg = f"{msg}: {err.filename!r}."
         raise ProjectLoadError(msg) from err
 
-    yaml_data = apply_extensions(filename.parent, yaml_data)
+    yaml_data = transform_yaml(filename.parent, yaml_data)
+    return yaml_data
+
+
+def transform_yaml(project_root: Path, yaml_data: Dict[str, Any]) -> Dict[str, Any]:
+    """Do Rockcraft-specific transformations on a project yaml.
+
+    :param project_root: The path that contains the "rockcraft.yaml" file.
+    :param yaml_data: The data dict loaded from the yaml file.
+    """
+    yaml_data = apply_extensions(project_root, yaml_data)
 
     _add_pebble_data(yaml_data)
 

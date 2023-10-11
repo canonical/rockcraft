@@ -15,6 +15,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from pathlib import Path
 
+from rockcraft.pebble import Pebble
+
 ENVIRONMENT_YAML = """\
 name: environment-test
 version: 2.0
@@ -53,3 +55,12 @@ def test_application_expand_environment(default_application, new_dir):
         "X": "ship it!",
         "CRAFT_VAR": "2.0",
     }
+
+
+def test_application_pebble_part(default_application, new_dir):
+    """Test that loading the project through the application adds the Pebble part."""
+    project_file = Path(new_dir) / "rockcraft.yaml"
+    project_file.write_text(ENVIRONMENT_YAML)
+
+    project = default_application.project
+    assert project.parts["pebble"] == Pebble.PEBBLE_PART_SPEC
