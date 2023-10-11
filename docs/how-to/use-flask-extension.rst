@@ -22,9 +22,9 @@ Example:
 Managing project files with the flask extension
 -----------------------------------------------
 
-By default the flask extension only includes the ``app.py``, ``static``,
-and ``templates`` in the flask project. But you can overwrite this behaviour
-with a prime declaration in the specially-named ``flask/install-app``
+By default the flask extension only includes the ``app.py``, ``static/``,
+``app/``, and ``templates/`` in the flask project. But you can overwrite this
+behaviour with a prime declaration in the specially-named ``flask/install-app``
 part to instruct the flask extension on which files to include or exclude
 from the project directory in the ROCK image.
 

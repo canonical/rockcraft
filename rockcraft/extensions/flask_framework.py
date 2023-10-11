@@ -193,9 +193,9 @@ class FlaskFramework(Extension):
             ),
             install_app_part_name: {
                 "prime": [
-                    "flask/app/app.py",
-                    "flask/app/static",
-                    "flask/app/templates",
+                    f"flask/app/{f}"
+                    for f in ("app", "app.py", "static", "templates")
+                    if (self.project_root / f).exists()
                 ],
                 **self._merge_existing_part(install_app_part_name, install_app_part),
             },

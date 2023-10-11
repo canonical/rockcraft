@@ -58,7 +58,6 @@ def test_flask_extension_default(tmp_path, input_yaml):
                 "prime": [
                     "flask/app/app.py",
                     "flask/app/static",
-                    "flask/app/templates",
                 ],
                 "source": ".",
                 "stage": [
