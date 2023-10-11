@@ -18,10 +18,8 @@
 
 from __future__ import annotations
 
-import functools
-import pathlib
+from typing import Any
 
-import craft_cli
 from craft_application import Application, AppMetadata, util
 from overrides import override
 
@@ -39,12 +37,9 @@ APP_METADATA = AppMetadata(
 class Rockcraft(Application):
     """Rockcraft application definition."""
 
-    @functools.cached_property
-    def project(self) -> models.Project:
-        """Get this application's Project metadata."""
-        project_file = (pathlib.Path.cwd() / f"{self.app.name}.yaml").resolve()
-        craft_cli.emit.debug(f"Loading project file '{project_file!s}'")
-        return models.Project.from_yaml_file(project_file, work_dir=self._work_dir)
+    @override
+    def _extra_yaml_transform(self, yaml_data: dict[str, Any]) -> dict[str, Any]:
+        return models.transform_yaml(self._work_dir, yaml_data)
 
     @override
     def _configure_services(self, platform: str | None, build_for: str | None) -> None:
