@@ -20,7 +20,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from craft_application import Application, AppMetadata, util
+from craft_application import AppFeatures, Application, AppMetadata, util
 from overrides import override
 
 from rockcraft import models
@@ -31,6 +31,7 @@ APP_METADATA = AppMetadata(
     summary="A tool to create OCI images",
     ProjectClass=project.Project,
     source_ignore_patterns=["*.rock"],
+    features=AppFeatures(build_secrets=True),
 )
 
 

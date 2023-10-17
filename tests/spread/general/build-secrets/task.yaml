@@ -1,0 +1,24 @@
+summary: a test that uses build-secrets
+
+execute: |
+  # Set the environment variables that will hold the "secrets"
+  export HOST_SOURCE_FOLDER="source-folder"
+  export HOST_PASSWORD="banana"
+
+  # Prepare the source files
+  mkdir ${HOST_SOURCE_FOLDER}
+  echo "it works!" >> myfile.txt
+
+  # Encrypt the file with a passphrase and put it in the source folder
+  gpg --passphrase ${HOST_PASSWORD} --batch -c myfile.txt
+  mv myfile.txt.gpg ${HOST_SOURCE_FOLDER}
+  rm myfile.txt
+
+  # Pack the ROCK
+  # Check that the secret is masked on the "terminal"
+  run_rockcraft pack -v 2>&1 >/dev/null | grep -F "Using secret password: *****"
+
+  # Check that the secret is masked in the logfile.
+  rockcraft_log_file=$(find /root/.local/state/rockcraft/log/ -name 'rockcraft*.log' | sort -n | tail -n1)
+  grep -F "Using secret password: *****" "$rockcraft_log_file"
+  grep -F "gpg --passphrase ***** --batch -d myfile.txt.gpg" "$rockcraft_log_file"

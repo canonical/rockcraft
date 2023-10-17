@@ -1,0 +1,19 @@
+name: build-secrets
+base: ubuntu:22.04
+version: '0.1'
+summary: A project that uses build secrets.
+description: A project that uses build secrets.
+license: GPL-3.0
+platforms:
+    amd64:
+
+parts:
+    my-part:
+        plugin: nil
+        source: $(HOST_SECRET:echo ${HOST_SOURCE_FOLDER})
+        build-environment:
+            - SECRET_PASSWORD: $(HOST_SECRET:echo ${HOST_PASSWORD})
+        override-build: |
+            echo "Using secret password: ${SECRET_PASSWORD}"
+            gpg --passphrase ${SECRET_PASSWORD} --batch -d myfile.txt.gpg >> ${CRAFT_PART_INSTALL}/myfile.txt
+            grep "it works" ${CRAFT_PART_INSTALL}/myfile.txt
