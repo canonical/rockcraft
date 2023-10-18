@@ -49,6 +49,17 @@ REGISTRY_URL = ECR_URL
 # The number of times to try downloading an image from `REGISTRY_URL`.
 MAX_DOWNLOAD_RETRIES = 5
 
+# A mapping from arch in Debian format to a pair of (arch in Docker format, arch variant).
+# The values are taken from the supported architectures in the registry that we
+# currently use (see https://gallery.ecr.aws/ubuntu/ubuntu).
+_DEB_TO_DOCKER = {
+    "amd64": ("amd64", None),
+    "arm64": ("arm64", "v8"),
+    "armhf": ("arm", "v7"),
+    "ppc64el": ("ppc64le", None),
+    "s390x": ("s390x", None),
+}
+
 
 @dataclass(frozen=True)
 class Image:
@@ -68,7 +79,6 @@ class Image:
         *,
         image_dir: Path,
         arch: str,
-        variant: Optional[str] = None,
     ) -> Tuple["Image", str]:
         """Obtain an image from a docker registry.
 
@@ -76,7 +86,7 @@ class Image:
 
         :param image_name: The image to retrieve, in ``name:tag`` format.
         :param image_dir: The directory to store local OCI images.
-        :param arch: The architecture of the Docker image to fetch.
+        :param arch: The architecture of the Docker image to fetch, in debian format.
         :param variant: The variant, if any, of the Docker image to fetch.
 
 
@@ -87,9 +97,12 @@ class Image:
 
         source_image = f"docker://{REGISTRY_URL}/{image_name}"
         copy_params = ["--retry-times", str(MAX_DOWNLOAD_RETRIES)]
+
+        docker_arch, variant = _DEB_TO_DOCKER[arch]
+
         platform_params = [
             "--override-arch",
-            arch,
+            docker_arch,
         ]
         if variant:
             platform_params += ["--override-variant", variant]
@@ -108,13 +121,12 @@ class Image:
         image_name: str,
         image_dir: Path,
         arch: str,
-        variant: Optional[str] = None,
     ) -> Tuple["Image", str]:
         """Create a new OCI image out of thin air.
 
         :param image_name: The image to initiate, in ``name:tag`` format.
         :param image_dir: The directory to store the local OCI image.
-        :param arch: The architecture of the OCI image to create.
+        :param arch: The architecture of the OCI image to create, in debian format.
         :param variant: The variant, if any, of the OCI image to create.
 
         :returns: The new image object and it's corresponding source image
@@ -130,6 +142,9 @@ class Image:
         # with arch and variant. We can configure the arch via
         # umoci config, but not the variant. Need to do it manually
         _config_image(image_target, ["--architecture", arch, "--no-history"])
+
+        variant = {"armhf": "v7", "arm64": "v8"}.get(arch)
+
         if variant:
             _inject_architecture_variant(Path(image_target_no_tag), variant)
 

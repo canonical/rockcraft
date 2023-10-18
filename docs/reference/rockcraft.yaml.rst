@@ -159,10 +159,10 @@ entry corresponding to a check. Each check can be one of three types:
 **Required**: Yes
 
 The set of architecture-specific ROCKs to be built. Supported architectures are:
-``amd64``, ``arm64``, ``arm``, ``i386``, ``ppc64le``, ``riscv64`` and ``s390x``.
+``amd64``, ``arm64``, ``armhf``, ``i386``, ``ppc64el``, ``riscv64`` and ``s390x``.
 
 Entries in the ``platforms`` dict can be free-form strings, or the name of a
-supported architecture.
+supported architecture (in Debian format).
 
 .. warning::
    **All** target architectures must be compatible with the architecture of

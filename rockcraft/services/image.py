@@ -72,7 +72,6 @@ class RockcraftImageService(BaseService):
                 f"{project.base}:latest",
                 image_dir=image_dir,
                 arch=self._build_for,
-                variant=None,  # TODO
             )
         else:
             emit.progress(f"Retrieving base {project.base} for {build_for}")
@@ -80,7 +79,6 @@ class RockcraftImageService(BaseService):
                 project.base,
                 image_dir=image_dir,
                 arch=self._build_for,
-                variant=None,  # TODO
             )
             emit.progress(f"Retrieved base {project.base} for {build_for}")
 

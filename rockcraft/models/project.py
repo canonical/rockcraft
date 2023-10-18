@@ -17,7 +17,6 @@
 """Project definition and helpers."""
 import dataclasses
 import operator
-import platform as host_platform
 import re
 from builtins import super
 from functools import reduce
@@ -39,6 +38,7 @@ from typing import (
 import pydantic
 import spdx_lookup  # type: ignore
 import yaml
+from craft_application import util
 from craft_application.models import BuildInfo
 from craft_application.models import Project as BaseProject
 from craft_archives import repo
@@ -55,64 +55,50 @@ if TYPE_CHECKING:  # pragma: no cover
     from pydantic.error_wrappers import ErrorDict
 
 
-@dataclasses.dataclass
-class RockcraftBuildInfo(BuildInfo):
-    """BuildInfo with Rockcraft-specific entries."""
-
-    build_for_variant: Optional[str] = None
-    """Used for arm archs"""
-
-
-class ArchitectureMapping(pydantic.BaseModel):
+@dataclasses.dataclass(frozen=True)
+class ArchitectureMapping:
     """Maps different denominations of the same architecture."""
 
     description: str
-    deb_arch: str
-    compatible_uts_machine_archs: List[str]
+    compatible_deb_archs: List[str]
     go_arch: str
 
 
+# The keys are valid debian architectures.
 _SUPPORTED_ARCHS: Dict[str, ArchitectureMapping] = {
     "amd64": ArchitectureMapping(
         description="Intel 64",
-        deb_arch="amd64",
-        compatible_uts_machine_archs=["amd64", "x86_64"],
+        compatible_deb_archs=["amd64"],
         go_arch="amd64",
     ),
-    "arm": ArchitectureMapping(
+    "armhf": ArchitectureMapping(
         description="ARM 32-bit",
-        deb_arch="armhf",
-        compatible_uts_machine_archs=["arm"],
+        compatible_deb_archs=["armhf"],
         go_arch="arm",
     ),
     "arm64": ArchitectureMapping(
         description="ARM 64-bit",
-        deb_arch="arm64",
-        compatible_uts_machine_archs=["aarch64"],
+        compatible_deb_archs=["arm64"],
         go_arch="arm64",
     ),
     "i386": ArchitectureMapping(
         description="Intel 386",
-        deb_arch="i386",
-        compatible_uts_machine_archs=["i386"],  # TODO: also include "i686", "x86_64"?
+        compatible_deb_archs=["i386"],
         go_arch="386",
     ),
-    "ppc64le": ArchitectureMapping(
+    "ppc64el": ArchitectureMapping(
         description="PowerPC 64-bit",
-        deb_arch="ppc64el",
-        compatible_uts_machine_archs=["ppc64le"],
+        compatible_deb_archs=["ppc64el"],
         go_arch="ppc64le",
     ),
     "riscv64": ArchitectureMapping(
         description="RISCV 64-bit",
-        deb_arch="riscv64",
-        compatible_uts_machine_archs=["riscv64"],
+        compatible_deb_archs=["riscv64"],
         go_arch="riscv64",
     ),
     "s390x": ArchitectureMapping(
         description="IBM Z 64-bit",
-        deb_arch="s390x",
-        compatible_uts_machine_archs=["s390x"],
+        compatible_deb_archs=["s390x"],
         go_arch="s390x",
     ),
 }
@@ -290,7 +276,7 @@ class Project(YamlModelMixin, BaseProject):
     @classmethod
     def _validate_all_platforms(cls, platforms: Dict[str, Any]) -> Dict[str, Any]:
         """Make sure all provided platforms are tangible and sane."""
-        _self_uts_machine = host_platform.machine().lower()
+        host_arch = util.get_host_architecture()
 
         for platform_label in platforms:
             platform = platforms[platform_label] if platforms[platform_label] else {}
@@ -352,41 +338,35 @@ class Project(YamlModelMixin, BaseProject):
             # TODO: in the future, this may be removed
             # as Rockcraft gains the ability to natively build
             # for multiple architectures
-            build_for_compatible_uts = _SUPPORTED_ARCHS[
+            build_for_compatible_deb_archs = _SUPPORTED_ARCHS[
                 build_target
-            ].compatible_uts_machine_archs
-            if _self_uts_machine not in build_for_compatible_uts:
+            ].compatible_deb_archs
+            if host_arch not in build_for_compatible_deb_archs:
                 raise ProjectValidationError(
                     str(
-                        f"{error_prefix}: this machine's architecture ({_self_uts_machine}) "
+                        f"{error_prefix}: this machine's architecture ({host_arch}) "
                         "is not compatible with the ROCK's target architecture. Can only "
-                        f"build a ROCK for {build_target} if the host is compatible with {build_for_compatible_uts}."
+                        f"build a ROCK for {build_target} if the host is compatible with {build_for_compatible_deb_archs}."
                     )
                 )
 
-            build_on_compatible_uts = list(
+            build_on_compatible_deb_archs = list(
                 reduce(
                     operator.add,
                     map(
-                        lambda m: _SUPPORTED_ARCHS[m].compatible_uts_machine_archs,
+                        lambda m: _SUPPORTED_ARCHS[m].compatible_deb_archs,
                         build_on_one_of,
                     ),
                 )
             )
-            if _self_uts_machine not in build_on_compatible_uts:
+            if host_arch not in build_on_compatible_deb_archs:
                 raise ProjectValidationError(
                     str(
                         f"{error_prefix}: this ROCK must be built on one of the "
-                        f"following architectures: {build_on_compatible_uts}. "
-                        f"This machine ({_self_uts_machine}) is not one of those."
+                        f"following architectures: {build_on_compatible_deb_archs}. "
+                        f"This machine ({host_arch}) is not one of those."
                     )
                 )
-
-            # Add variant, if needed, and return sanitized platform
-            if build_target == "arm":
-                platform["build_for_variant"] = "v7"
-            elif build_target == "arm64":
-                platform["build_for_variant"] = "v8"
 
             platforms[platform_label] = platform
 
@@ -522,14 +502,12 @@ class Project(YamlModelMixin, BaseProject):
         for platform_entry, platform in self.platforms.items():
             for build_for in platform.get("build_for") or [platform_entry]:
                 for build_on in platform.get("build_on") or [platform_entry]:
-                    build_for_variant = platform.get("build_for_variant")
                     build_infos.append(
-                        RockcraftBuildInfo(
+                        BuildInfo(
                             platform=platform_entry,
                             build_on=build_on,
                             build_for=build_for,
                             base=base,
-                            build_for_variant=build_for_variant,
                         )
                     )
 
