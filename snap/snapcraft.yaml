@@ -48,6 +48,8 @@ parts:
         - python3-pkg-resources
         - python3.10-minimal
         - fuse-overlayfs
+    organize:
+        "usr/bin/fuse-overlayfs": "libexec/rockcraft/fuse-overlayfs"
 
   rockcraft:
     source: .
@@ -66,7 +68,7 @@ parts:
     organize:
         bin/craftctl: libexec/rockcraft/craftctl
     override-build: |
-      craftctl default
+      ${SNAP}/libexec/snapcraft/craftctl default
   
       sed -i -e '1 s|^#!/.*|#!/snap/rockcraft/current/bin/python -E|' $CRAFT_PART_INSTALL/bin/craftctl
     after:
@@ -114,5 +116,9 @@ parts:
     plugin: go
     source: https://github.com/canonical/chisel.git
     source-commit: bd27f8700cd7d2a6b4e0df6b10c3761c83a70485
+    build-environment:
+      - CGO: "0"
+      - CGO_ENABLED: "0"
+      - GOBIN: "${CRAFT_PART_INSTALL}/libexec/rockcraft"
     build-snaps:
       - go/1.18/stable
