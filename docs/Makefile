@@ -17,7 +17,7 @@ help:
 install:
 	@echo "... setting up virtualenv"
 	python3 -m venv env
-	. $(VENV); pip install --upgrade -r ../requirements-doc.txt -r ../requirements-focal.txt
+	. $(VENV); pip install --upgrade -r ../requirements-doc.txt -r ../requirements-jammy.txt
 
 run:
 	. $(VENV); sphinx-autobuild --ignore ".git/*" --ignore "*.scss"  -c . -b dirhtml "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O) --host 0.0.0.0 --port $(PORT)
