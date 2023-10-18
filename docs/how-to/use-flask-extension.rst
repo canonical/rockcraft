@@ -1,8 +1,8 @@
-Using the flask extension
--------------------------
+Using the flask-framework extension
+-----------------------------------
 
-The Flask extension is compatible with the ``bare``, ``ubuntu:20.04``, and
-``ubuntu:22.04`` bases. To employ it, include ``extensions: [flask]`` in your
+The Flask extension is compatible with the ``bare`` and ``ubuntu:22.04`` bases.
+To employ it, include ``extensions: [ flask-framework ]`` in your
 ``rockcraft.yaml`` file.
 
 Example:
@@ -17,21 +17,17 @@ Example:
     license: Apache-2.0
 
     extensions:
-      - flask
-
-    flask/install-app:
-      prime:
-        - -flask/app/.git
-        - -flask/app/.venv
-        - -flask/app/.yarn
-        - -flask/app/node_modules
+      - flask-framework
 
 Managing project files with the flask extension
 -----------------------------------------------
 
-The prime declaration must be included in the specially-named
-``flask/install-app`` section to instruct the flask extension on which files
-to include or exclude from the project directory in the ROCK image.
+By default the flask extension only includes the ``app.py``, ``static/``,
+``app/``, and ``templates/`` in the flask project. But you can overwrite this
+behaviour with a prime declaration in the specially-named ``flask/install-app``
+part to instruct the flask extension on which files to include or exclude
+from the project directory in the ROCK image.
+
 The extension places the files from the project folder in the ``/flask/app``
 directory in the final image - therefore, all inclusions and exclusions must
 be prefixed with ``flask/app``.
@@ -44,7 +40,7 @@ For example, to include only select files:
       prime:
         - flask/app/static
         - flask/app/.env
-        - flask/app/webapp
+        - flask/app/app.py
         - flask/app/templates
 
 To exclude certain files from the project directory in the rock image,

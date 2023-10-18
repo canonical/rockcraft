@@ -161,19 +161,12 @@ class FlaskFramework(Extension):
         }
         install_app_part_name = "flask/install-app"
         dependencies_part_name = "flask/dependencies"
-
-        if install_app_part_name not in self.yaml_data.get("parts", {}):
-            raise ExtensionError(
-                "flask extension required flask/install-app not found "
-                "in parts of the rockcraft file"
-            )
-        install_prime = self.yaml_data["parts"][install_app_part_name].get("prime")
-        if not install_prime:
-            raise ExtensionError(
-                "flask extension required prime list not found or empty"
-                "in the flask/install-app part of the rockcraft file"
-            )
-        if not all(re.match("-? *flask/app", p) for p in install_prime):
+        user_prime = (
+            self.yaml_data.get("parts", {})
+            .get(install_app_part_name, {})
+            .get("prime", [])
+        )
+        if not all(re.match("-? *flask/app", p) for p in user_prime):
             raise ExtensionError(
                 "flask extension required prime entry in the flask/install-app part"
                 "to start with flask/app"
@@ -198,15 +191,21 @@ class FlaskFramework(Extension):
             dependencies_part_name: self._merge_existing_part(
                 dependencies_part_name, dependencies_part
             ),
-            install_app_part_name: self._merge_existing_part(
-                install_app_part_name, install_app_part
-            ),
+            install_app_part_name: {
+                "prime": [
+                    f"flask/app/{f}"
+                    for f in ("app", "app.py", "static", "templates")
+                    if (self.project_root / f).exists()
+                ],
+                **self._merge_existing_part(install_app_part_name, install_app_part),
+            },
         }
         if self.yaml_data["base"] == "bare":
             snippet["flask/container-processing"] = {
                 "plugin": "nil",
                 "source": ".",
                 "override-build": "mkdir -m 777 ${CRAFT_PART_INSTALL}/tmp",
+                "stage-packages": ["bash_bins", "coreutils_bins"],
             }
         return snippet
 

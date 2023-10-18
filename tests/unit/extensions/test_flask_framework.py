@@ -32,6 +32,56 @@ def input_yaml_fixture():
 
 
 @pytest.mark.usefixtures("flask_extension")
+def test_flask_extension_default(tmp_path, input_yaml):
+    (tmp_path / "requirements.txt").write_text("flask")
+    (tmp_path / "app.py").write_text("app = object()")
+    (tmp_path / "static").mkdir()
+    (tmp_path / "node_modules").mkdir()
+    applied = extensions.apply_extensions(tmp_path, input_yaml)
+    assert applied == {
+        "base": "ubuntu:22.04",
+        "parts": {
+            "flask/dependencies": {
+                "plugin": "python",
+                "python-packages": ["gunicorn"],
+                "python-requirements": ["requirements.txt"],
+                "source": ".",
+                "stage-packages": ["python3-venv"],
+            },
+            "flask/install-app": {
+                "organize": {
+                    "app.py": "flask/app/app.py",
+                    "requirements.txt": "flask/app/requirements.txt",
+                    "static": "flask/app/static",
+                },
+                "plugin": "dump",
+                "prime": [
+                    "flask/app/app.py",
+                    "flask/app/static",
+                ],
+                "source": ".",
+                "stage": [
+                    "flask/app/app.py",
+                    "flask/app/requirements.txt",
+                    "flask/app/static",
+                ],
+            },
+        },
+        "platforms": {"amd64": {}},
+        "run_user": "_daemon_",
+        "services": {
+            "flask": {
+                "command": "/bin/python3 -m gunicorn --bind "
+                "0.0.0.0:8000 --chdir /flask/app app:app",
+                "override": "replace",
+                "startup": "enabled",
+                "user": "_daemon_",
+            }
+        },
+    }
+
+
+@pytest.mark.usefixtures("flask_extension")
 def test_flask_extension(tmp_path, input_yaml):
     (tmp_path / "requirements.txt").write_text("flask")
     (tmp_path / "app.py").write_text("app = object()")
@@ -149,6 +199,7 @@ def test_flask_extension_bare(tmp_path):
         "plugin": "nil",
         "source": ".",
         "override-build": "mkdir -m 777 ${CRAFT_PART_INSTALL}/tmp",
+        "stage-packages": ["bash_bins", "coreutils_bins"],
     }
     assert applied["build-base"] == "ubuntu:22.04"
 
@@ -159,45 +210,6 @@ def test_flask_extension_no_requirements_txt_error(tmp_path):
     with pytest.raises(ExtensionError) as exc:
         extensions.apply_extensions(tmp_path, input_yaml)
     assert "requirements.txt" in str(exc)
-
-
-@pytest.mark.usefixtures("flask_extension")
-def test_flask_extension_no_install_app_part_error(tmp_path):
-    input_yaml = {"extensions": ["flask-framework"], "base": "bare"}
-
-    (tmp_path / "requirements.txt").write_text("flask")
-
-    with pytest.raises(ExtensionError) as exc:
-        extensions.apply_extensions(tmp_path, input_yaml)
-    assert "flask/install-app" in str(exc)
-
-
-@pytest.mark.usefixtures("flask_extension")
-def test_flask_extension_no_install_app_prime_error(tmp_path):
-    input_yaml = {
-        "extensions": ["flask-framework"],
-        "base": "bare",
-        "parts": {"flask/install-app": {}},
-    }
-    (tmp_path / "requirements.txt").write_text("flask")
-
-    with pytest.raises(ExtensionError) as exc:
-        extensions.apply_extensions(tmp_path, input_yaml)
-    assert "flask/install-app" in str(exc)
-
-
-@pytest.mark.usefixtures("flask_extension")
-def test_flask_extension_empty_install_app_prime_error(tmp_path):
-    input_yaml = {
-        "extensions": ["flask-framework"],
-        "base": "bare",
-        "parts": {"flask/install-app": {"prime": []}},
-    }
-    (tmp_path / "requirements.txt").write_text("flask")
-
-    with pytest.raises(ExtensionError) as exc:
-        extensions.apply_extensions(tmp_path, input_yaml)
-    assert "flask/install-app" in str(exc)
 
 
 @pytest.mark.usefixtures("flask_extension")
