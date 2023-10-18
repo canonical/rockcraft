@@ -37,6 +37,7 @@ from craft_parts.overlays import overlays
 
 from rockcraft import errors
 from rockcraft.pebble import Pebble
+from rockcraft.utils import get_snap_command_path
 
 logger = logging.getLogger(__name__)
 
@@ -296,7 +297,7 @@ class Image:
         """
         output = subprocess.check_output(
             [
-                "skopeo",
+                get_snap_command_path("skopeo"),
                 "inspect",
                 "--format",
                 "{{.Digest}}",
@@ -794,6 +795,10 @@ def _inject_architecture_variant(image_path: Path, variant: str) -> None:
 
 def _process_run(command: List[str], **kwargs: Any) -> subprocess.CompletedProcess:
     """Run a command and handle its output."""
+    if not Path(command[0]).is_absolute():
+        command[0] = get_snap_command_path(command[0])
+        emit.trace(f"Found command absolute path: {command[0]!r}")
+
     emit.trace(f"Execute process: {command!r}, kwargs={kwargs!r}")
     try:
         return subprocess.run(

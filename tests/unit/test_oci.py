@@ -816,7 +816,7 @@ class TestImage:
         assert mock_output.mock_calls == [
             call(
                 [
-                    "skopeo",
+                    "/usr/bin/skopeo",
                     "inspect",
                     "--format",
                     "{{.Digest}}",
@@ -1043,6 +1043,7 @@ class TestImage:
         mock_rmtree.assert_called_once_with(Path(mock_control_data_path))
 
     def test_set_annotations(self, mocker):
+        mocker.patch("rockcraft.utils.get_host_command").return_value = "umoci"
         mock_run = mocker.patch("subprocess.run")
         image = oci.Image("a:b", Path("/c"))
 
