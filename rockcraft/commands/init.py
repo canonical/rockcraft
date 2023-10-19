@@ -25,6 +25,7 @@ from craft_cli import BaseCommand, CraftError, emit
 from overrides import overrides
 
 from rockcraft import errors
+from rockcraft.project import NAME_REGEX
 
 if TYPE_CHECKING:
     import argparse
@@ -69,20 +70,20 @@ TEMPLATES = {
             # should have an `app.py` file with an `app` object as the WSGI entrypoint.
             extensions:
                 - flask-framework
-                
-            
+
+
             # Uncomment the sections you need and adjust according to your requirements.
             # parts:
             #   flask/dependencies:
             #     stage-packages:
             #       # list required packages or slices for your flask application below.
             #       - libpq-dev
-            #   
+            #
             #   flask/install-app:
             #     prime:
             #       # By default, only the files in app/, templates/, static/, and app.py
             #       # are copied into the image. You can modify the list below to override
-            #       # the default list and include or exclude specific files/directories 
+            #       # the default list and include or exclude specific files/directories
             #       # in your project.
             #       # Note: Prefix each entry with "flask/app/" followed by the local path.
             #       - flask/app/.env
@@ -132,7 +133,7 @@ class InitCommand(BaseCommand):
     def fill_parser(self, parser):
         """Specify command's specific parameters."""
         parser.add_argument(
-            "--name", help="The name of the charm; defaults to the directory name"
+            "--name", help="The name of the ROCK; defaults to the directory name"
         )
         parser.add_argument(
             "--profile",
@@ -148,15 +149,12 @@ class InitCommand(BaseCommand):
             parsed_args.name = pathlib.Path.cwd().name
             emit.debug(f"Set project name to '{parsed_args.name}'")
 
-        if not re.match(r"[a-z][a-z0-9-]*[a-z0-9]$", parsed_args.name):
-            raise CraftError(
-                f"'{parsed_args.name}' is not a valid rock name. "
-                "The name must start with a lowercase letter "
-                "and contain only alphanumeric characters and hyphens."
-            )
+        name = parsed_args.name
+        if not re.match(NAME_REGEX, parsed_args.name):
+            name = "my-rock-name"
 
         context = {
-            "name": parsed_args.name,
+            "name": name,
         }
 
         init(TEMPLATES[parsed_args.profile].format(**context))
