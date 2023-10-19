@@ -25,7 +25,7 @@ from craft_cli import BaseCommand, CraftError, emit
 from overrides import overrides
 
 from rockcraft import errors
-from rockcraft.project import NAME_REGEX
+from rockcraft.project import NAME_REGEX, INVALID_NAME_MESSAGE
 
 if TYPE_CHECKING:
     import argparse
@@ -145,13 +145,17 @@ class InitCommand(BaseCommand):
     @overrides
     def run(self, parsed_args: "argparse.Namespace") -> None:
         """Run the command."""
-        if not parsed_args.name:
-            parsed_args.name = pathlib.Path.cwd().name
-            emit.debug(f"Set project name to '{parsed_args.name}'")
-
         name = parsed_args.name
-        if not re.match(NAME_REGEX, parsed_args.name):
-            name = "my-rock-name"
+        if name and not re.match(NAME_REGEX, name):
+            raise CraftError(
+                f"'{name}' is not a valid rock name. " + INVALID_NAME_MESSAGE
+            )
+
+        if not name:
+            name = pathlib.Path.cwd().name
+            if not re.match(NAME_REGEX, name):
+                name = "my-rock-name"
+            emit.debug(f"Set project name to '{name}'")
 
         context = {
             "name": name,
