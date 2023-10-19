@@ -1,1 +1,0 @@
-https://launchpad.net/ubuntu/+archive/primary/+sourcefiles/python-apt/1.6.6/python-apt_1.6.6.tar.xz; sys_platform == 'linux'
