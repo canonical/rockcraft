@@ -15,11 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 """Project definition and helpers."""
-import dataclasses
-import operator
 import re
-from builtins import super
-from functools import reduce
 from pathlib import Path
 from typing import (
     TYPE_CHECKING,
@@ -38,13 +34,13 @@ from typing import (
 import pydantic
 import spdx_lookup  # type: ignore
 import yaml
-from craft_application import util
 from craft_application.models import BuildInfo
 from craft_application.models import Project as BaseProject
 from craft_archives import repo
 from craft_providers import bases
 from pydantic_yaml import YamlModelMixin
 
+from rockcraft.architectures import SUPPORTED_ARCHS
 from rockcraft.errors import ProjectLoadError, ProjectValidationError
 from rockcraft.extensions import apply_extensions
 from rockcraft.parts import part_has_overlay, validate_part
@@ -53,55 +49,6 @@ from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
 
 if TYPE_CHECKING:  # pragma: no cover
     from pydantic.error_wrappers import ErrorDict
-
-
-@dataclasses.dataclass(frozen=True)
-class ArchitectureMapping:
-    """Maps different denominations of the same architecture."""
-
-    description: str
-    compatible_deb_archs: List[str]
-    go_arch: str
-
-
-# The keys are valid debian architectures.
-_SUPPORTED_ARCHS: Dict[str, ArchitectureMapping] = {
-    "amd64": ArchitectureMapping(
-        description="Intel 64",
-        compatible_deb_archs=["amd64"],
-        go_arch="amd64",
-    ),
-    "armhf": ArchitectureMapping(
-        description="ARM 32-bit",
-        compatible_deb_archs=["armhf"],
-        go_arch="arm",
-    ),
-    "arm64": ArchitectureMapping(
-        description="ARM 64-bit",
-        compatible_deb_archs=["arm64"],
-        go_arch="arm64",
-    ),
-    "i386": ArchitectureMapping(
-        description="Intel 386",
-        compatible_deb_archs=["i386"],
-        go_arch="386",
-    ),
-    "ppc64el": ArchitectureMapping(
-        description="PowerPC 64-bit",
-        compatible_deb_archs=["ppc64el"],
-        go_arch="ppc64le",
-    ),
-    "riscv64": ArchitectureMapping(
-        description="RISCV 64-bit",
-        compatible_deb_archs=["riscv64"],
-        go_arch="riscv64",
-    ),
-    "s390x": ArchitectureMapping(
-        description="IBM Z 64-bit",
-        compatible_deb_archs=["s390x"],
-        go_arch="s390x",
-    ),
-}
 
 
 class Platform(pydantic.BaseModel):
@@ -276,8 +223,6 @@ class Project(YamlModelMixin, BaseProject):
     @classmethod
     def _validate_all_platforms(cls, platforms: Dict[str, Any]) -> Dict[str, Any]:
         """Make sure all provided platforms are tangible and sane."""
-        host_arch = util.get_host_architecture()
-
         for platform_label in platforms:
             platform = platforms[platform_label] if platforms[platform_label] else {}
             error_prefix = f"Error for platform entry '{platform_label}'"
@@ -300,10 +245,7 @@ class Project(YamlModelMixin, BaseProject):
             # otherwise the project is invalid.
             if platform["build_for"]:
                 build_target = platform["build_for"][0]
-                if (
-                    platform_label in _SUPPORTED_ARCHS
-                    and platform_label != build_target
-                ):
+                if platform_label in SUPPORTED_ARCHS and platform_label != build_target:
                     raise ProjectValidationError(
                         str(
                             f"{error_prefix}: if 'build_for' is provided and the "
@@ -315,56 +257,21 @@ class Project(YamlModelMixin, BaseProject):
                 build_target = platform_label
 
             # Both build and target architectures must be supported
-            if not any(b_o in _SUPPORTED_ARCHS for b_o in build_on_one_of):
+            if not any(b_o in SUPPORTED_ARCHS for b_o in build_on_one_of):
                 raise ProjectValidationError(
                     str(
                         f"{error_prefix}: trying to build ROCK in one of "
                         f"{build_on_one_of}, but none of these build architectures is supported. "
-                        f"Supported architectures: {list(_SUPPORTED_ARCHS.keys())}"
+                        f"Supported architectures: {list(SUPPORTED_ARCHS.keys())}"
                     )
                 )
 
-            if build_target not in _SUPPORTED_ARCHS:
+            if build_target not in SUPPORTED_ARCHS:
                 raise ProjectValidationError(
                     str(
                         f"{error_prefix}: trying to build ROCK for target "
                         f"architecture {build_target}, which is not supported. "
-                        f"Supported architectures: {list(_SUPPORTED_ARCHS.keys())}"
-                    )
-                )
-
-            # The underlying build machine must be compatible
-            # with both build_on and build_for
-            # TODO: in the future, this may be removed
-            # as Rockcraft gains the ability to natively build
-            # for multiple architectures
-            build_for_compatible_deb_archs = _SUPPORTED_ARCHS[
-                build_target
-            ].compatible_deb_archs
-            if host_arch not in build_for_compatible_deb_archs:
-                raise ProjectValidationError(
-                    str(
-                        f"{error_prefix}: this machine's architecture ({host_arch}) "
-                        "is not compatible with the ROCK's target architecture. Can only "
-                        f"build a ROCK for {build_target} if the host is compatible with {build_for_compatible_deb_archs}."
-                    )
-                )
-
-            build_on_compatible_deb_archs = list(
-                reduce(
-                    operator.add,
-                    map(
-                        lambda m: _SUPPORTED_ARCHS[m].compatible_deb_archs,
-                        build_on_one_of,
-                    ),
-                )
-            )
-            if host_arch not in build_on_compatible_deb_archs:
-                raise ProjectValidationError(
-                    str(
-                        f"{error_prefix}: this ROCK must be built on one of the "
-                        f"following architectures: {build_on_compatible_deb_archs}. "
-                        f"This machine ({host_arch}) is not one of those."
+                        f"Supported architectures: {list(SUPPORTED_ARCHS.keys())}"
                     )
                 )
 

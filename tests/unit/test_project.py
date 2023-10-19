@@ -29,7 +29,7 @@ from craft_providers.bases import BaseName
 
 from rockcraft.errors import ProjectLoadError, ProjectValidationError
 from rockcraft.models import Project, load_project
-from rockcraft.models.project import INVALID_NAME_MESSAGE, ArchitectureMapping, Platform
+from rockcraft.models.project import INVALID_NAME_MESSAGE, Platform
 from rockcraft.pebble import Service
 
 _ARCH_MAPPING = {"x86": "amd64", "x64": "amd64"}
@@ -259,14 +259,6 @@ def test_project_build_base(yaml_loaded_data):
     assert project.build_base == "ubuntu:18.04"
 
 
-def test_architecture_mapping():
-    _ = ArchitectureMapping(
-        description="mock arch",
-        compatible_deb_archs=["x86_64"],
-        go_arch="amd64",
-    )
-
-
 def test_project_platform_invalid():
     def load_platform(platform, raises):
         with pytest.raises(raises) as err:
@@ -332,18 +324,6 @@ def test_project_all_platforms_invalid(yaml_loaded_data):
     }
     assert "build ROCK for target architecture noarch" in reload_project_platforms(
         mock_platforms
-    )
-
-    # The underlying build machine must be compatible
-    # with both build_on and build_for
-    other_arch = "arm64" if BUILD_ON_ARCH == "amd64" else "amd64"
-    mock_platforms = {"mock": {"build-on": [other_arch], "build-for": other_arch}}
-    assert "if the host is compatible with" in reload_project_platforms(mock_platforms)
-
-    mock_platforms = {"mock": {"build-on": [other_arch], "build-for": "amd64"}}
-    assert (
-        f"must be built on one of the following architectures: {[other_arch]}"
-        in reload_project_platforms(mock_platforms)
     )
 
 

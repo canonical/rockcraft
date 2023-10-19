@@ -36,6 +36,7 @@ from craft_parts.executor.collisions import paths_collide
 from craft_parts.overlays import overlays
 
 from rockcraft import errors
+from rockcraft.architectures import SUPPORTED_ARCHS
 from rockcraft.pebble import Pebble
 
 logger = logging.getLogger(__name__)
@@ -48,17 +49,6 @@ REGISTRY_URL = ECR_URL
 
 # The number of times to try downloading an image from `REGISTRY_URL`.
 MAX_DOWNLOAD_RETRIES = 5
-
-# A mapping from arch in Debian format to a pair of (arch in Docker format, arch variant).
-# The values are taken from the supported architectures in the registry that we
-# currently use (see https://gallery.ecr.aws/ubuntu/ubuntu).
-_DEB_TO_DOCKER = {
-    "amd64": ("amd64", None),
-    "arm64": ("arm64", "v8"),
-    "armhf": ("arm", "v7"),
-    "ppc64el": ("ppc64le", None),
-    "s390x": ("s390x", None),
-}
 
 
 @dataclass(frozen=True)
@@ -98,14 +88,15 @@ class Image:
         source_image = f"docker://{REGISTRY_URL}/{image_name}"
         copy_params = ["--retry-times", str(MAX_DOWNLOAD_RETRIES)]
 
-        docker_arch, variant = _DEB_TO_DOCKER[arch]
+        mapping = SUPPORTED_ARCHS[arch]
 
         platform_params = [
             "--override-arch",
-            docker_arch,
+            mapping.go_arch,
         ]
-        if variant:
-            platform_params += ["--override-variant", variant]
+        if mapping.go_variant:
+            platform_params += ["--override-variant", mapping.go_variant]
+
         _copy_image(
             source_image,
             f"oci:{image_target}",
@@ -143,7 +134,7 @@ class Image:
         # umoci config, but not the variant. Need to do it manually
         _config_image(image_target, ["--architecture", arch, "--no-history"])
 
-        variant = {"armhf": "v7", "arm64": "v8"}.get(arch)
+        variant = SUPPORTED_ARCHS[arch].go_variant
 
         if variant:
             _inject_architecture_variant(Path(image_target_no_tag), variant)
