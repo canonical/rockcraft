@@ -175,7 +175,7 @@ def test_run_init_flask(mocker, lifecycle_init_mock, tmp_path, monkeypatch):
     (tmp_path / "requirements.txt").write_text("flask")
     (tmp_path / "app.py").write_text("app = object()")
     mock_ended_ok = mocker.patch.object(emit, "ended_ok")
-    mocker.patch.object(sys, "argv", ["rockcraft", "init", "--profile=flask"])
+    mocker.patch.object(sys, "argv", ["rockcraft", "init", "--profile=flask-framework"])
 
     cli.run()
 

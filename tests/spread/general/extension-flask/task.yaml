@@ -3,6 +3,7 @@ summary: flask extension test
 execute: |
   export ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS=true
   
+  run_rockcraft init --name flask-extension --profile flask-framework
   run_rockcraft pack
 
   test -f flask-extension_0.1_amd64.rock
@@ -22,9 +23,6 @@ execute: |
   docker run --rm --entrypoint /bin/python3 flask-extension -m gunicorn --chdir /flask/app --check-config app:app
   docker run --rm --entrypoint /bin/python3 flask-extension -c "import pathlib;assert pathlib.Path('/flask/app/static/js/test.js').is_file()"
   docker run --rm --entrypoint /bin/python3 flask-extension -c "import pathlib;assert not pathlib.Path('/flask/app/node_modules').exists()"
-  
-  # test the part merging
-  docker run --rm --entrypoint /bin/python3 flask-extension -c "import pathlib;assert not pathlib.Path('/flask/app/README').exists()"
   
   # test the default flask service
   docker run --name flask-extension-container -d -p 8137:8000 flask-extension

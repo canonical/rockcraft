@@ -50,7 +50,7 @@ TEMPLATES = {
                     plugin: nil
             """
     ),
-    "flask": textwrap.dedent(
+    "flask-framework": textwrap.dedent(
         """\
             name: {name}
             base: ubuntu:22.04 # the base environment for this Flask application
@@ -69,9 +69,31 @@ TEMPLATES = {
             # should have an `app.py` file with an `app` object as the WSGI entrypoint.
             extensions:
                 - flask-framework
+                
+            
+            # Uncomment the sections you need and adjust according to your requirements.
+            # parts:
+            #   flask/dependencies:
+            #     stage-packages:
+            #       # list required packages or slices for your flask application below.
+            #       - libpq-dev
+            #   
+            #   flask/install-app:
+            #     prime:
+            #       # By default, only the files in app/, templates/, static/, and app.py
+            #       # are copied into the image. You can modify the list below to override
+            #       # the default list and include or exclude specific files/directories 
+            #       # in your project.
+            #       # Note: Prefix each entry with "flask/app/" followed by the local path.
+            #       - flask/app/.env
+            #       - flask/app/app.py
+            #       - flask/app/webapp
+            #       - flask/app/templates
+            #       - flask/app/static
             """
     ),
 }
+
 DEFAULT_PROFILE = "simple"
 
 
