@@ -25,7 +25,7 @@ from craft_cli import BaseCommand, CraftError, emit
 from overrides import overrides
 
 from rockcraft import errors
-from rockcraft.project import NAME_REGEX, INVALID_NAME_MESSAGE
+from rockcraft.project import INVALID_NAME_MESSAGE, NAME_REGEX
 
 if TYPE_CHECKING:
     import argparse

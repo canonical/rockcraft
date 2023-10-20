@@ -171,6 +171,23 @@ def test_run_init_with_name(mocker, lifecycle_init_mock):
     assert rock_project.name == "foobar"
 
 
+def test_run_init_with_invalid_name(mocker, lifecycle_init_mock):
+    mocker.patch.object(sys, "argv", ["rockcraft", "init", "--name=f"])
+    with pytest.raises(CraftError):
+        cli.run()
+
+
+def test_run_init_fallback_name(mocker, lifecycle_init_mock):
+    mocker.patch.object(sys, "argv", ["rockcraft", "init"])
+    mocker.patch("os.getcwd", return_value="/")
+
+    cli.run()
+
+    rendered = lifecycle_init_mock.mock_calls[0].args[0]
+    rock_project = project.Project.unmarshal(yaml.safe_load(rendered))
+    assert rock_project.name == "foobar"
+
+
 def test_run_init_flask(mocker, lifecycle_init_mock, tmp_path, monkeypatch):
     (tmp_path / "requirements.txt").write_text("flask")
     (tmp_path / "app.py").write_text("app = object()")
