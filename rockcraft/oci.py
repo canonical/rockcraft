@@ -76,7 +76,7 @@ class Image:
 
         :param image_name: The image to retrieve, in ``name:tag`` format.
         :param image_dir: The directory to store local OCI images.
-        :param arch: The architecture of the Docker image to fetch, in debian format.
+        :param arch: The architecture of the Docker image to fetch, in Debian format.
         :param variant: The variant, if any, of the Docker image to fetch.
 
 
@@ -117,7 +117,7 @@ class Image:
 
         :param image_name: The image to initiate, in ``name:tag`` format.
         :param image_dir: The directory to store the local OCI image.
-        :param arch: The architecture of the OCI image to create, in debian format.
+        :param arch: The architecture of the OCI image to create, in Debian format.
         :param variant: The variant, if any, of the OCI image to create.
 
         :returns: The new image object and it's corresponding source image
@@ -129,15 +129,17 @@ class Image:
         _process_run(["umoci", "init", "--layout", image_target_no_tag])
         _process_run(["umoci", "new", "--image", str(image_target)])
 
+        # Note: umoci's docs aren't clear on this but we assume that arch-related
+        # calls must use GOARCH-format, following the OCI spec.
+        mapping = SUPPORTED_ARCHS[arch]
+
         # Unfortunately, umoci does not allow initializing an image
         # with arch and variant. We can configure the arch via
         # umoci config, but not the variant. Need to do it manually
-        _config_image(image_target, ["--architecture", arch, "--no-history"])
+        _config_image(image_target, ["--architecture", mapping.go_arch, "--no-history"])
 
-        variant = SUPPORTED_ARCHS[arch].go_variant
-
-        if variant:
-            _inject_architecture_variant(Path(image_target_no_tag), variant)
+        if mapping.go_variant:
+            _inject_architecture_variant(Path(image_target_no_tag), mapping.go_variant)
 
         # for new OCI images, the source image corresponds to the newly generated image
         return (

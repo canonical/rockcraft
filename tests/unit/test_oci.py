@@ -30,6 +30,7 @@ from craft_parts.overlays import overlays
 
 import tests
 from rockcraft import errors, oci
+from rockcraft.architectures import SUPPORTED_ARCHS
 
 MOCK_NEW_USER = {
     "user": "foo",
@@ -209,10 +210,14 @@ class TestImage:
         assert arch_data.override_arch == expected_arch
         assert arch_data.override_variant == expected_variant
 
-    def test_new_oci_image(self, mock_inject_variant, mock_run):
+    @pytest.mark.parametrize("deb_arch", list(SUPPORTED_ARCHS))
+    def test_new_oci_image(self, mock_inject_variant, mock_run, deb_arch):
+        """Test that new blank images are created with the correct GOARCH values."""
+        expected = SUPPORTED_ARCHS[deb_arch]
+
         image_dir = Path("images/dir")
         image, source_image = oci.Image.new_oci_image(
-            "bare:latest", image_dir=image_dir, arch="amd64"
+            "bare:latest", image_dir=image_dir, arch=deb_arch
         )
         assert image_dir.is_dir()
         assert image.image_name == "bare:latest"
@@ -228,14 +233,17 @@ class TestImage:
                     "--image",
                     f"{image_dir}/bare:latest",
                     "--architecture",
-                    "amd64",
+                    expected.go_arch,
                     "--no-history",
                 ]
             ),
         ]
-        mock_inject_variant.assert_not_called()
-        _ = oci.Image.new_oci_image("bare:latest", image_dir=image_dir, arch="armhf")
-        mock_inject_variant.assert_called_once_with(image_dir / "bare", "v7")
+        if expected.go_variant is None:
+            mock_inject_variant.assert_not_called()
+        else:
+            mock_inject_variant.assert_called_once_with(
+                image_dir / "bare", expected.go_variant
+            )
 
     def test_copy_to(self, mock_run):
         image = oci.Image("a:b", Path("/c"))
