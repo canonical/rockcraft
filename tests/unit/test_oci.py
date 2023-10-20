@@ -20,6 +20,7 @@ import hashlib
 import json
 import os
 import tarfile
+from collections import namedtuple
 from pathlib import Path
 from typing import List, Tuple
 from unittest.mock import ANY, call, mock_open, patch
@@ -29,6 +30,7 @@ from craft_parts.overlays import overlays
 
 import tests
 from rockcraft import errors, oci
+from rockcraft.architectures import SUPPORTED_ARCHS
 
 MOCK_NEW_USER = {
     "user": "foo",
@@ -125,7 +127,7 @@ class TestImage:
 
     def test_from_docker_registry(self, mock_run, new_dir):
         image, source_image = oci.Image.from_docker_registry(
-            "a:b", image_dir=Path("images/dir"), arch="amd64", variant=None
+            "a:b", image_dir=Path("images/dir"), arch="amd64"
         )
         assert Path("images/dir").is_dir()
         assert image.image_name == "a:b"
@@ -148,7 +150,7 @@ class TestImage:
         ]
         mock_run.reset_mock()
         _ = oci.Image.from_docker_registry(
-            "a:b", image_dir=Path("images/dir"), arch="arm64", variant="v8"
+            "a:b", image_dir=Path("images/dir"), arch="arm64"
         )
         assert mock_run.mock_calls == [
             call(
@@ -168,10 +170,54 @@ class TestImage:
             )
         ]
 
-    def test_new_oci_image(self, mock_inject_variant, mock_run):
+    def _get_arch_from_call(self, mock_call):
+        ArchData = namedtuple("ArchData", ["override_arch", "override_variant"])
+
+        call_args = mock_call.args[0]
+        override_arch_index = call_args.index("--override-arch")
+        override_arch = call_args[override_arch_index + 1]
+
+        override_variant = None
+        try:
+            override_variant_index = call_args.index("--override-variant")
+            override_variant = call_args[override_variant_index + 1]
+        except ValueError:
+            pass
+
+        return ArchData(override_arch, override_variant)
+
+    # The archs here were taken from the supported architectures in the registry
+    # that we currently use (https://gallery.ecr.aws/ubuntu/ubuntu)
+    @pytest.mark.parametrize(
+        ["deb_arch", "expected_arch", "expected_variant"],
+        [
+            ("amd64", "amd64", None),
+            ("arm64", "arm64", "v8"),
+            ("armhf", "arm", "v7"),
+            ("ppc64el", "ppc64le", None),
+            ("s390x", "s390x", None),
+        ],
+    )
+    def test_from_docker_registry_arch(
+        self, mock_run, new_dir, deb_arch, expected_arch, expected_variant
+    ):
+        """Test that the correct arch-related parameters are passed to skopeo."""
+        oci.Image.from_docker_registry(
+            "a:b", image_dir=Path("images/dir"), arch=deb_arch
+        )
+        arch_data = self._get_arch_from_call(mock_run.mock_calls[0])
+
+        assert arch_data.override_arch == expected_arch
+        assert arch_data.override_variant == expected_variant
+
+    @pytest.mark.parametrize("deb_arch", list(SUPPORTED_ARCHS))
+    def test_new_oci_image(self, mock_inject_variant, mock_run, deb_arch):
+        """Test that new blank images are created with the correct GOARCH values."""
+        expected = SUPPORTED_ARCHS[deb_arch]
+
         image_dir = Path("images/dir")
         image, source_image = oci.Image.new_oci_image(
-            "bare:latest", image_dir=image_dir, arch="amd64"
+            "bare:latest", image_dir=image_dir, arch=deb_arch
         )
         assert image_dir.is_dir()
         assert image.image_name == "bare:latest"
@@ -187,16 +233,17 @@ class TestImage:
                     "--image",
                     f"{image_dir}/bare:latest",
                     "--architecture",
-                    "amd64",
+                    expected.go_arch,
                     "--no-history",
                 ]
             ),
         ]
-        mock_inject_variant.assert_not_called()
-        _ = oci.Image.new_oci_image(
-            "bare:latest", image_dir=image_dir, arch="foo", variant="bar"
-        )
-        mock_inject_variant.assert_called_once_with(image_dir / "bare", "bar")
+        if expected.go_variant is None:
+            mock_inject_variant.assert_not_called()
+        else:
+            mock_inject_variant.assert_called_once_with(
+                image_dir / "bare", expected.go_variant
+            )
 
     def test_copy_to(self, mock_run):
         image = oci.Image("a:b", Path("/c"))
