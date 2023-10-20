@@ -13,7 +13,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
+import pathlib
 import sys
 from argparse import Namespace
 from unittest.mock import call, patch
@@ -180,7 +180,7 @@ def test_run_init_with_invalid_name(mocker, lifecycle_init_mock):
 
 def test_run_init_fallback_name(mocker, lifecycle_init_mock):
     mocker.patch.object(sys, "argv", ["rockcraft", "init"])
-    mocker.patch("os.getcwd", return_value="/f")
+    mocker.patch("pathlib.Path.cwd", return_value=pathlib.Path("/f"))
 
     cli.run()
 
