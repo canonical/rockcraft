@@ -36,6 +36,7 @@ from craft_parts.executor.collisions import paths_collide
 from craft_parts.overlays import overlays
 
 from rockcraft import errors
+from rockcraft.architectures import SUPPORTED_ARCHS
 from rockcraft.pebble import Pebble
 
 logger = logging.getLogger(__name__)
@@ -68,7 +69,6 @@ class Image:
         *,
         image_dir: Path,
         arch: str,
-        variant: Optional[str] = None,
     ) -> Tuple["Image", str]:
         """Obtain an image from a docker registry.
 
@@ -76,7 +76,7 @@ class Image:
 
         :param image_name: The image to retrieve, in ``name:tag`` format.
         :param image_dir: The directory to store local OCI images.
-        :param arch: The architecture of the Docker image to fetch.
+        :param arch: The architecture of the Docker image to fetch, in Debian format.
         :param variant: The variant, if any, of the Docker image to fetch.
 
 
@@ -87,12 +87,16 @@ class Image:
 
         source_image = f"docker://{REGISTRY_URL}/{image_name}"
         copy_params = ["--retry-times", str(MAX_DOWNLOAD_RETRIES)]
+
+        mapping = SUPPORTED_ARCHS[arch]
+
         platform_params = [
             "--override-arch",
-            arch,
+            mapping.go_arch,
         ]
-        if variant:
-            platform_params += ["--override-variant", variant]
+        if mapping.go_variant:
+            platform_params += ["--override-variant", mapping.go_variant]
+
         _copy_image(
             source_image,
             f"oci:{image_target}",
@@ -108,13 +112,12 @@ class Image:
         image_name: str,
         image_dir: Path,
         arch: str,
-        variant: Optional[str] = None,
     ) -> Tuple["Image", str]:
         """Create a new OCI image out of thin air.
 
         :param image_name: The image to initiate, in ``name:tag`` format.
         :param image_dir: The directory to store the local OCI image.
-        :param arch: The architecture of the OCI image to create.
+        :param arch: The architecture of the OCI image to create, in Debian format.
         :param variant: The variant, if any, of the OCI image to create.
 
         :returns: The new image object and it's corresponding source image
@@ -126,12 +129,17 @@ class Image:
         _process_run(["umoci", "init", "--layout", image_target_no_tag])
         _process_run(["umoci", "new", "--image", str(image_target)])
 
+        # Note: umoci's docs aren't clear on this but we assume that arch-related
+        # calls must use GOARCH-format, following the OCI spec.
+        mapping = SUPPORTED_ARCHS[arch]
+
         # Unfortunately, umoci does not allow initializing an image
         # with arch and variant. We can configure the arch via
         # umoci config, but not the variant. Need to do it manually
-        _config_image(image_target, ["--architecture", arch, "--no-history"])
-        if variant:
-            _inject_architecture_variant(Path(image_target_no_tag), variant)
+        _config_image(image_target, ["--architecture", mapping.go_arch, "--no-history"])
+
+        if mapping.go_variant:
+            _inject_architecture_variant(Path(image_target_no_tag), mapping.go_variant)
 
         # for new OCI images, the source image corresponds to the newly generated image
         return (

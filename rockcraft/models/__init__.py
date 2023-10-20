@@ -17,11 +17,6 @@
 """Rockcraft models."""
 
 
-from rockcraft.models.project import (
-    Project,
-    RockcraftBuildInfo,
-    load_project,
-    transform_yaml,
-)
+from rockcraft.models.project import Project, load_project, transform_yaml
 
-__all__ = ["Project", "RockcraftBuildInfo", "load_project", "transform_yaml"]
+__all__ = ["Project", "load_project", "transform_yaml"]

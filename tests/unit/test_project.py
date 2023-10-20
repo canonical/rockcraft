@@ -20,16 +20,16 @@ import subprocess
 import textwrap
 from pathlib import Path
 from typing import Any, Dict
-from unittest.mock import patch
 
 import pydantic
 import pytest
 import yaml
+from craft_application.models import BuildInfo
 from craft_providers.bases import BaseName
 
 from rockcraft.errors import ProjectLoadError, ProjectValidationError
-from rockcraft.models import Project, RockcraftBuildInfo, load_project
-from rockcraft.models.project import INVALID_NAME_MESSAGE, ArchitectureMapping, Platform
+from rockcraft.models import Project, load_project
+from rockcraft.models.project import INVALID_NAME_MESSAGE, Platform
 from rockcraft.pebble import Service
 
 _ARCH_MAPPING = {"x86": "amd64", "x64": "amd64"}
@@ -259,15 +259,6 @@ def test_project_build_base(yaml_loaded_data):
     assert project.build_base == "ubuntu:18.04"
 
 
-def test_architecture_mapping():
-    _ = ArchitectureMapping(
-        description="mock arch",
-        deb_arch="amd64",
-        compatible_uts_machine_archs=["x86_64"],
-        go_arch="amd64",
-    )
-
-
 def test_project_platform_invalid():
     def load_platform(platform, raises):
         with pytest.raises(raises) as err:
@@ -296,36 +287,6 @@ def test_project_platform_invalid():
     mock_platform = {"build-for": ["arm64"]}
     assert "'build_for' expects 'build_on' to also be provided." in load_platform(
         mock_platform, ProjectValidationError
-    )
-
-
-@patch("platform.machine")
-def test_project_platform_variants(mock_uts_machine, yaml_loaded_data):
-    def load_project_for_arch(uts_arch: str, arch: str) -> Project:
-        mock_uts_machine.return_value = uts_arch
-        yaml_loaded_data["platforms"] = {arch: None}
-        return Project.unmarshal(yaml_loaded_data)
-
-    # arm/v7
-    assert (
-        load_project_for_arch("arm", "arm").platforms["arm"]["build_for_variant"]
-        == "v7"
-    )
-
-    # arm64/v8
-    assert (
-        load_project_for_arch("aarch64", "arm64").platforms["arm64"][
-            "build_for_variant"
-        ]
-        == "v8"
-    )
-
-    # others
-    assert (
-        load_project_for_arch("x86_64", "amd64")
-        .platforms["amd64"]
-        .get("build_for_variant")
-        is None
     )
 
 
@@ -363,18 +324,6 @@ def test_project_all_platforms_invalid(yaml_loaded_data):
     }
     assert "build ROCK for target architecture noarch" in reload_project_platforms(
         mock_platforms
-    )
-
-    # The underlying build machine must be compatible
-    # with both build_on and build_for
-    other_arch = "arm" if BUILD_ON_ARCH == "amd64" else "amd64"
-    mock_platforms = {"mock": {"build-on": [other_arch], "build-for": other_arch}}
-    assert "if the host is compatible with" in reload_project_platforms(mock_platforms)
-
-    mock_platforms = {"mock": {"build-on": [other_arch], "build-for": "amd64"}}
-    assert (
-        f"must be built on one of the following architectures: {[other_arch]}"
-        in reload_project_platforms(mock_platforms)
     )
 
 
@@ -598,12 +547,11 @@ def test_project_yaml(yaml_loaded_data):
                 "amd64": None,
             },
             [
-                RockcraftBuildInfo(
+                BuildInfo(
                     build_on="amd64",
                     build_for="amd64",
                     base=BaseName(name="ubuntu", version="20.04"),
                     platform="amd64",
-                    build_for_variant=None,
                 )
             ],
         ),
@@ -615,19 +563,17 @@ def test_project_yaml(yaml_loaded_data):
                 },
             },
             [
-                RockcraftBuildInfo(
+                BuildInfo(
                     build_on="amd64",
                     build_for="amd64",
                     base=BaseName(name="ubuntu", version="20.04"),
                     platform="amd64",
-                    build_for_variant=None,
                 ),
-                RockcraftBuildInfo(
+                BuildInfo(
                     build_on="i386",
                     build_for="amd64",
                     base=BaseName(name="ubuntu", version="20.04"),
                     platform="amd64",
-                    build_for_variant=None,
                 ),
             ],
         ),
@@ -639,12 +585,11 @@ def test_project_yaml(yaml_loaded_data):
                 },
             },
             [
-                RockcraftBuildInfo(
+                BuildInfo(
                     build_on="amd64",
                     build_for="amd64",
                     base=BaseName(name="ubuntu", version="20.04"),
                     platform="amd64v2",
-                    build_for_variant=None,
                 )
             ],
         ),
