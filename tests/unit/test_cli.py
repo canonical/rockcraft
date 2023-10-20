@@ -180,7 +180,7 @@ def test_run_init_with_invalid_name(mocker, lifecycle_init_mock):
 
 def test_run_init_fallback_name(mocker, lifecycle_init_mock):
     mocker.patch.object(sys, "argv", ["rockcraft", "init"])
-    mocker.patch("os.getcwd", return_value="/")
+    mocker.patch("os.getcwd", return_value="/f")
 
     cli.run()
 
