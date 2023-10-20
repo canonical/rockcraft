@@ -185,8 +185,8 @@ def test_run_init_fallback_name(mocker, lifecycle_init_mock):
     cli.run()
 
     rendered = lifecycle_init_mock.mock_calls[0].args[0]
-    rock_project = project.Project.unmarshal(yaml.safe_load(rendered))
-    assert rock_project.name == "my-rock-name"
+    rock_project = yaml.safe_load(rendered)
+    assert rock_project["name"] == "my-rock-name"
 
 
 def test_run_init_flask(mocker, lifecycle_init_mock, tmp_path, monkeypatch):
