@@ -49,7 +49,7 @@ lxml==4.9.3
 Markdown==3.4.4
 markdown-it-py==3.0.0
 MarkupSafe==2.1.3
-mccabe==0.6.1
+mccabe==0.7.0
 mdurl==0.1.2
 more-itertools==10.1.0
 mypy==1.5.1
