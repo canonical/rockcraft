@@ -118,7 +118,7 @@ INVALID_NAME_MESSAGE = (
     "Invalid name for ROCK (must contain only lowercase letters, numbers and hyphens)"
 )
 
-DEPRECATED_COLON_BASES = ["ubuntu:18.04", "ubuntu:20.04", "ubuntu:22.04"]
+DEPRECATED_COLON_BASES = ["ubuntu:20.04", "ubuntu:22.04"]
 
 
 class NameStr(pydantic.ConstrainedStr):
@@ -136,8 +136,8 @@ class Project(YamlModelMixin, BaseProject):
     description: str
     rock_license: str = pydantic.Field(alias="license")
     platforms: Dict[str, Any]
-    base: Literal["bare", "ubuntu@18.04", "ubuntu@20.04", "ubuntu@22.04"]
-    build_base: Optional[Literal["ubuntu@18.04", "ubuntu@20.04", "ubuntu@22.04"]]
+    base: Literal["bare", "ubuntu@20.04", "ubuntu@22.04"]
+    build_base: Optional[Literal["ubuntu@20.04", "ubuntu@22.04"]]
     environment: Optional[Dict[str, str]]
     run_user: Optional[Literal[tuple(SUPPORTED_GLOBAL_USERNAMES)]]  # type: ignore
     services: Optional[Dict[str, Service]]
