@@ -259,6 +259,34 @@ def test_project_build_base(yaml_loaded_data):
     assert project.build_base == "ubuntu:18.04"
 
 
+@pytest.mark.parametrize(
+    ["base", "build_base", "expected_base", "expected_build_base"],
+    [
+        ("ubuntu:22.04", None, "ubuntu@22.04", "ubuntu@22.04"),
+        ("ubuntu:22.04", "ubuntu:20.04", "ubuntu@22.04", "ubuntu@20.04"),
+    ],
+)
+def test_project_base_colon(
+    yaml_loaded_data, emitter, base, build_base, expected_base, expected_build_base
+):
+    """Test converting ":" to "@" in supported bases, and that warnings are emitted."""
+    yaml_loaded_data["base"] = base
+    yaml_loaded_data["build-base"] = build_base
+
+    project = Project.unmarshal(yaml_loaded_data)
+
+    assert project.base == expected_base
+    assert project.build_base == expected_build_base
+
+    emitter.assert_message(
+        f'Warning: use of ":" in field "base" is deprecated. Prefer "{expected_base}" instead.'
+    )
+    if build_base is not None:
+        emitter.assert_message(
+            f'Warning: use of ":" in field "build_base" is deprecated. Prefer "{expected_build_base}" instead.'
+        )
+
+
 def test_project_platform_invalid():
     def load_platform(platform, raises):
         with pytest.raises(raises) as err:

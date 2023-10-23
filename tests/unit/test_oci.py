@@ -127,7 +127,7 @@ class TestImage:
 
     def test_from_docker_registry(self, mock_run, new_dir):
         image, source_image = oci.Image.from_docker_registry(
-            "a:b", image_dir=Path("images/dir"), arch="amd64"
+            "a@b", image_dir=Path("images/dir"), arch="amd64"
         )
         assert Path("images/dir").is_dir()
         assert image.image_name == "a:b"
@@ -150,7 +150,7 @@ class TestImage:
         ]
         mock_run.reset_mock()
         _ = oci.Image.from_docker_registry(
-            "a:b", image_dir=Path("images/dir"), arch="arm64"
+            "a@b", image_dir=Path("images/dir"), arch="arm64"
         )
         assert mock_run.mock_calls == [
             call(
@@ -203,7 +203,7 @@ class TestImage:
     ):
         """Test that the correct arch-related parameters are passed to skopeo."""
         oci.Image.from_docker_registry(
-            "a:b", image_dir=Path("images/dir"), arch=deb_arch
+            "a@b", image_dir=Path("images/dir"), arch=deb_arch
         )
         arch_data = self._get_arch_from_call(mock_run.mock_calls[0])
 
@@ -217,7 +217,7 @@ class TestImage:
 
         image_dir = Path("images/dir")
         image, source_image = oci.Image.new_oci_image(
-            "bare:latest", image_dir=image_dir, arch=deb_arch
+            "bare@latest", image_dir=image_dir, arch=deb_arch
         )
         assert image_dir.is_dir()
         assert image.image_name == "bare:latest"
@@ -1192,7 +1192,7 @@ class TestImage:
     def test_stat(self, new_dir, mock_run, mocker):
         image_dir = Path("images/dir")
         image, _ = oci.Image.new_oci_image(
-            "bare:latest", image_dir=image_dir, arch="amd64"
+            "bare@latest", image_dir=image_dir, arch="amd64"
         )
 
         mock_loads = mocker.patch("json.loads")

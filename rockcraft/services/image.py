@@ -69,7 +69,7 @@ class RockcraftImageService(BaseService):
         project = cast(models.Project, self._project)
         if project.base == "bare":
             base_image, source_image = oci.Image.new_oci_image(
-                f"{project.base}:latest",
+                f"{project.base}@latest",
                 image_dir=image_dir,
                 arch=self._build_for,
             )

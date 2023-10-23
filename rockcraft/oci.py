@@ -74,7 +74,7 @@ class Image:
 
         The image is fetched from the registry at ``REGISTRY_URL``.
 
-        :param image_name: The image to retrieve, in ``name:tag`` format.
+        :param image_name: The image to retrieve, in ``name@tag`` format.
         :param image_dir: The directory to store local OCI images.
         :param arch: The architecture of the Docker image to fetch, in Debian format.
         :param variant: The variant, if any, of the Docker image to fetch.
@@ -82,6 +82,11 @@ class Image:
 
         :returns: The downloaded image and it's corresponding source image
         """
+        if "@" not in image_name:
+            raise ValueError(f"Bad image name: {image_name}")
+
+        image_name = image_name.replace("@", ":")
+
         image_dir.mkdir(parents=True, exist_ok=True)
         image_target = image_dir / image_name
 
@@ -115,16 +120,21 @@ class Image:
     ) -> Tuple["Image", str]:
         """Create a new OCI image out of thin air.
 
-        :param image_name: The image to initiate, in ``name:tag`` format.
+        :param image_name: The image to initiate, in ``name@tag`` format.
         :param image_dir: The directory to store the local OCI image.
         :param arch: The architecture of the OCI image to create, in Debian format.
         :param variant: The variant, if any, of the OCI image to create.
 
         :returns: The new image object and it's corresponding source image
         """
+        if "@" not in image_name:
+            raise ValueError(f"Bad image name: {image_name}")
+
+        image_name = image_name.replace("@", ":")
         image_dir.mkdir(parents=True, exist_ok=True)
         image_target = image_dir / image_name
         image_target_no_tag = str(image_target).split(":", maxsplit=1)[0]
+
         shutil.rmtree(image_target_no_tag, ignore_errors=True)
         _process_run(["umoci", "init", "--layout", image_target_no_tag])
         _process_run(["umoci", "new", "--image", str(image_target)])
