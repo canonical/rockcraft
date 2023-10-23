@@ -198,7 +198,7 @@ def test_forbidden_env_var_interpolation(
         check.is_in("foo", project.environment)
 
 
-@pytest.mark.parametrize("base", ["ubuntu@18.04", "ubuntu@20.04"])
+@pytest.mark.parametrize("base", ["ubuntu@22.04", "ubuntu@20.04"])
 def test_project_base(yaml_loaded_data, base):
     yaml_loaded_data["base"] = base
 
@@ -214,7 +214,7 @@ def test_project_base_invalid(yaml_loaded_data):
         Project.unmarshal(yaml_loaded_data)
     assert str(err.value) == (
         "Bad rockcraft.yaml content:\n"
-        "- unexpected value; permitted: 'bare', 'ubuntu@18.04', 'ubuntu@20.04', 'ubuntu@22.04' in field 'base'"
+        "- unexpected value; permitted: 'bare', 'ubuntu@20.04', 'ubuntu@22.04' in field 'base'"
     )
 
 
@@ -252,11 +252,11 @@ def test_project_title_empty_invalid_name(yaml_loaded_data):
 
 
 def test_project_build_base(yaml_loaded_data):
-    yaml_loaded_data["build-base"] = "ubuntu@18.04"
+    yaml_loaded_data["build-base"] = "ubuntu@22.04"
 
     project = Project.unmarshal(yaml_loaded_data)
     assert project.base == "ubuntu@20.04"
-    assert project.build_base == "ubuntu@18.04"
+    assert project.build_base == "ubuntu@22.04"
 
 
 @pytest.mark.parametrize(
