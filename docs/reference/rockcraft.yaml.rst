@@ -68,7 +68,7 @@ The ROCK version, used to tag the OCI image and name the ROCK file.
 ``base``
 --------
 
-**Type**: One of ``ubuntu:18.04 | ubuntu:20.04 | ubuntu:22.04 | bare``
+**Type**: One of ``ubuntu@18.04 | ubuntu@20.04 | ubuntu@22.04 | bare``
 
 **Required**: Yes
 
@@ -78,10 +78,14 @@ special value ``bare`` means that the ROCK will have no base system at all,
 which is typically used with static binaries or
 :ref:`Chisel slices <chisel_explanation>`.
 
+.. note::
+   The notation "ubuntu:<channel>" is also supported for some channels, but this
+   format is deprecated and should be avoided.
+
 ``build-base``
 --------------
 
-**Type**: One of ``ubuntu:18.04 | ubuntu:20.04 | ubuntu:22.04``
+**Type**: One of ``ubuntu@18.04 | ubuntu@20.04 | ubuntu@22.04``
 
 **Required**: Yes, if ``base`` is ``bare``
 
@@ -90,6 +94,10 @@ included in the final ROCK itself. It comprises the set of tools and libraries
 that Rockcraft will use when building the ROCK's contents. This field is
 mandatory if ``base`` is ``bare``, but otherwise it is optional and defaults to
 the value of ``base``.
+
+.. note::
+   The notation "ubuntu:<channel>" is also supported for some channels, but this
+   format is deprecated and should be avoided.
 
 ``license``
 -----------
@@ -225,7 +233,7 @@ Example
     for a Hello World ROCK.
   version: latest
   base: bare
-  build-base: ubuntu:22.04
+  build-base: ubuntu@22.04
   license: Apache-2.0
   run-user: _daemon_
   environment:

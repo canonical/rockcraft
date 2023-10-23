@@ -6,7 +6,7 @@ description: |
   and "teardown" price once. Feel free to add to this file and to "task.yaml", 
   adding references to issues/PRs where appropriate.
 license: Apache-2.0
-base: ubuntu:22.04
+base: ubuntu:22.04 # Leaving ":"-notation on purpose here
 platforms:
   amd64:
 

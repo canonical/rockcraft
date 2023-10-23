@@ -1,6 +1,6 @@
-summary: Build ROCKs with Python 3.6 with bases bare and ubuntu:20.04
+summary: Build ROCKs with Python 3.6 with bases bare and ubuntu@20.04
 environment:
-  BASE/base_2004: "ubuntu:20.04"
+  BASE/base_2004: "ubuntu@20.04"
   BASE/bare: "bare"
 execute: |
   IMAGE="plugin-python-36:latest"

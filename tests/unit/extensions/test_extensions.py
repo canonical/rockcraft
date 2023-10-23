@@ -37,7 +37,7 @@ def fake_extensions(mock_extensions):
 
 @pytest.fixture
 def input_yaml():
-    return {"base": "ubuntu:22.04"}
+    return {"base": "ubuntu@22.04"}
 
 
 def test_experimental_with_env(fake_extensions, tmp_path, input_yaml, monkeypatch):

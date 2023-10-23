@@ -1,6 +1,6 @@
 summary: Check that invalid Python plugin cases fail the build
 environment:
-  BASE/base_2204: "ubuntu:22.04"
+  BASE/base_2204: "ubuntu@22.04"
   BASE/bare: "bare"
 execute: |
   sed "s/placeholder-base/$BASE/" rockcraft.orig.yaml  > rockcraft.yaml

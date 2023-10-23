@@ -31,7 +31,7 @@ EXPECTED_EXPAND_EXTENSIONS = textwrap.dedent(
     version: latest
     summary: Project with extensions
     description: Project with extensions
-    base: ubuntu:22.04
+    base: ubuntu@22.04
     license: Apache-2.0
     parts:
       foo:
@@ -55,7 +55,7 @@ EXPECTED_EXPAND_EXTENSIONS = textwrap.dedent(
       amd64:
         build_on: null
         build_for: null
-    build-base: ubuntu:22.04
+    build-base: ubuntu@22.04
     services:
       my-service:
         override: merge

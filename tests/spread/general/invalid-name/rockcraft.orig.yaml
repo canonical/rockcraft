@@ -1,5 +1,5 @@
 name: placeholder-name
-base: ubuntu:22.04
+base: ubuntu@22.04
 version: '0.1'
 summary: A ROCK with an invalid name
 description: A ROCK with an invalid name
