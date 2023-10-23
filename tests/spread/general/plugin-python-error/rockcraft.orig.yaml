@@ -1,6 +1,6 @@
 name: plugin-python-error
 base: placeholder-base
-build-base: ubuntu:22.04
+build-base: ubuntu@22.04
 version: '0.1'
 summary: An invalid Python plugin project
 description: A project that uses the Python plugin but doesn't include Python

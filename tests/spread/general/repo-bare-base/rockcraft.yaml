@@ -4,7 +4,7 @@ summary: A ROCK that pulls in a package from an external PPA
 description: A ROCK that pulls in a package from an external PPA
 license: Apache-2.0
 base: bare
-build-base: ubuntu:18.04
+build-base: ubuntu@18.04
 
 platforms:
   amd64:

@@ -63,7 +63,7 @@ def test_package_repositories_in_overlay(new_dir, mocker, run_lifecycle):
     mocker.patch.object(lifecycle, "_install_package_repositories")
 
     project = create_project(
-        base="ubuntu:22.04",
+        base="ubuntu@22.04",
         parts=parts,
         package_repositories=package_repositories,
     )

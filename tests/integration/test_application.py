@@ -34,7 +34,7 @@ name: my-project
 title: My Project
 version: 1.2.3
 base: bare
-build-base: "ubuntu:22.04"
+build-base: "ubuntu@22.04"
 summary: "example of global variables"
 description: "example of global variables"
 license: Apache-2.0

@@ -51,7 +51,7 @@ ROCKCRAFT_YAML = f"""---
 name: mytest
 title: My Test
 version: latest
-base: ubuntu:20.04
+base: ubuntu@20.04
 summary: "example for unit tests"
 description: "this is an example of a rockcraft.yaml for the purpose of testing rockcraft"
 license: Apache-2.0
@@ -198,7 +198,7 @@ def test_forbidden_env_var_interpolation(
         check.is_in("foo", project.environment)
 
 
-@pytest.mark.parametrize("base", ["ubuntu:18.04", "ubuntu:20.04"])
+@pytest.mark.parametrize("base", ["ubuntu@18.04", "ubuntu@20.04"])
 def test_project_base(yaml_loaded_data, base):
     yaml_loaded_data["base"] = base
 
@@ -208,13 +208,13 @@ def test_project_base(yaml_loaded_data, base):
 
 
 def test_project_base_invalid(yaml_loaded_data):
-    yaml_loaded_data["base"] = "ubuntu:19.04"
+    yaml_loaded_data["base"] = "ubuntu@19.04"
 
     with pytest.raises(ProjectValidationError) as err:
         Project.unmarshal(yaml_loaded_data)
     assert str(err.value) == (
         "Bad rockcraft.yaml content:\n"
-        "- unexpected value; permitted: 'bare', 'ubuntu:18.04', 'ubuntu:20.04', 'ubuntu:22.04' in field 'base'"
+        "- unexpected value; permitted: 'bare', 'ubuntu@18.04', 'ubuntu@20.04', 'ubuntu@22.04' in field 'base'"
     )
 
 
@@ -252,11 +252,11 @@ def test_project_title_empty_invalid_name(yaml_loaded_data):
 
 
 def test_project_build_base(yaml_loaded_data):
-    yaml_loaded_data["build-base"] = "ubuntu:18.04"
+    yaml_loaded_data["build-base"] = "ubuntu@18.04"
 
     project = Project.unmarshal(yaml_loaded_data)
-    assert project.base == "ubuntu:20.04"
-    assert project.build_base == "ubuntu:18.04"
+    assert project.base == "ubuntu@20.04"
+    assert project.build_base == "ubuntu@18.04"
 
 
 @pytest.mark.parametrize(
@@ -422,7 +422,7 @@ def test_project_parts_validation(yaml_loaded_data):
 def test_project_bare_overlay(yaml_loaded_data, packages, script):
     """Test that the combination of 'bare' base with an overlay-using part is blocked."""
     yaml_loaded_data["base"] = "bare"
-    yaml_loaded_data["build-base"] = "ubuntu:22.04"
+    yaml_loaded_data["build-base"] = "ubuntu@22.04"
 
     foo_part = yaml_loaded_data["parts"]["foo"]
     foo_part["overlay-packages"] = packages
@@ -460,7 +460,7 @@ def test_project_unmarshal_existing_pebble(tmp_path):
         name: pebble-part
         title: Rock with Pebble
         version: latest
-        base: ubuntu:20.04
+        base: ubuntu@20.04
         summary: Rock with Pebble
         description: Rock with Pebble
         license: Apache-2.0
@@ -526,7 +526,7 @@ title: My Test
 version: latest
 summary: example for unit tests
 description: this is an example of a rockcraft.yaml for the purpose of testing rockcraft
-base: ubuntu:20.04
+base: ubuntu@20.04
 license: Apache-2.0
 parts:
   foo:
@@ -546,7 +546,7 @@ platforms:
     - {BUILD_ON_ARCH}
     build_for:
     - {BUILD_ON_ARCH}
-build-base: ubuntu:20.04
+build-base: ubuntu@20.04
 environment:
   BAZ: value1
   FOO: value3

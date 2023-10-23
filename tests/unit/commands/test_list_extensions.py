@@ -38,7 +38,7 @@ def test_list_extensions(setup_extensions, emitter, command_class):
             """\
         Extension name          Supported bases
         ----------------------  --------------------------
-        experimental-extension  ubuntu:20.04, ubuntu:22.04
-        fake-extension          ubuntu:22.04"""
+        experimental-extension  ubuntu@20.04, ubuntu@22.04
+        fake-extension          ubuntu@22.04"""
         )
     )

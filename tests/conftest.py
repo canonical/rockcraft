@@ -122,7 +122,7 @@ def default_project(extra_project_params):
         version=VersionStr("1.0"),
         summary="default project",
         description="default project",
-        base="ubuntu:22.04",
+        base="ubuntu@22.04",
         parts=parts,
         license="MIT",
         platforms={"amd64": None},
