@@ -7,7 +7,7 @@ version: chiselled
 base: bare
 
 # Meeting requirement R1 by making sure the ROCK builds on Jammy
-build-base: ubuntu:22.04
+build-base: ubuntu@22.04
 
 license: Apache-2.0
 

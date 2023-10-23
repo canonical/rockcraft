@@ -5,7 +5,7 @@ license: Apache-2.0
 description: Install overlay-packages that come from `package-repositories`.
 version: 0.1
 
-base: ubuntu:22.04
+base: ubuntu@22.04
 platforms:
   amd64:
 

@@ -1,6 +1,6 @@
 name: custom-openssl-rock
 base: bare
-build_base: "ubuntu:22.04"
+build_base: "ubuntu@22.04"
 version: '0.0.1'
 summary: A chiselled ROCK with a custom OpenSSL slice
 description: |

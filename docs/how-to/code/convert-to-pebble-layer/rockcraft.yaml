@@ -1,5 +1,5 @@
 name: custom-nginx-rock
-base: "ubuntu:22.04"
+base: "ubuntu@22.04"
 version: latest
 summary: An NGINX ROCK
 description: |

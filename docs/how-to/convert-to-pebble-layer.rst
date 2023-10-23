@@ -82,8 +82,8 @@ You should see something like this:
     :class: log-snippets
 
     Launching instance...
-    Retrieved base ubuntu:22.04 for amd64
-    Extracted ubuntu:22.04
+    Retrieved base ubuntu@22.04 for amd64
+    Extracted ubuntu@22.04
     Refreshing repositories | (4.6s)
     Package repositories installed
     Executed: pull nginx-user
