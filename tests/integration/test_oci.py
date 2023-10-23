@@ -45,7 +45,7 @@ def create_base_image(
     """
     image_dir = work_dir / "images"
     image = oci.Image.new_oci_image(
-        image_name="bare:original",
+        image_name="bare@original",
         image_dir=image_dir,
         arch="amd64",
     )[0]
@@ -192,7 +192,7 @@ def test_add_layer_with_overlay(new_dir, mocker, lifecycle_service, mock_obtain_
 
 def test_stat(new_dir):
     image = oci.Image.new_oci_image(
-        image_name="bare:original",
+        image_name="bare@original",
         image_dir=Path("images"),
         arch="amd64",
     )[0]

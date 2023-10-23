@@ -31,6 +31,7 @@ from typing import (
     cast,
 )
 
+import craft_cli
 import pydantic
 import spdx_lookup  # type: ignore
 import yaml
@@ -117,6 +118,8 @@ INVALID_NAME_MESSAGE = (
     "Invalid name for ROCK (must contain only lowercase letters, numbers and hyphens)"
 )
 
+DEPRECATED_COLON_BASES = ["ubuntu:18.04", "ubuntu:20.04", "ubuntu:22.04"]
+
 
 class NameStr(pydantic.ConstrainedStr):
     """Constrained string type only accepting valid ROCK names."""
@@ -133,8 +136,8 @@ class Project(YamlModelMixin, BaseProject):
     description: str
     rock_license: str = pydantic.Field(alias="license")
     platforms: Dict[str, Any]
-    base: Literal["bare", "ubuntu:18.04", "ubuntu:20.04", "ubuntu:22.04"]
-    build_base: Optional[Literal["ubuntu:18.04", "ubuntu:20.04", "ubuntu:22.04"]]
+    base: Literal["bare", "ubuntu@18.04", "ubuntu@20.04", "ubuntu@22.04"]
+    build_base: Optional[Literal["ubuntu@18.04", "ubuntu@20.04", "ubuntu@22.04"]]
     environment: Optional[Dict[str, str]]
     run_user: Optional[Literal[tuple(SUPPORTED_GLOBAL_USERNAMES)]]  # type: ignore
     services: Optional[Dict[str, Service]]
@@ -160,7 +163,7 @@ class Project(YamlModelMixin, BaseProject):
     def effective_base(self) -> bases.BaseName:
         """Get the Base name for craft-providers."""
         base = super().effective_base
-        name, channel = base.split(":")
+        name, channel = base.split("@")
         return bases.BaseName(name, channel)
 
     @pydantic.root_validator(pre=True)
@@ -218,6 +221,33 @@ class Project(YamlModelMixin, BaseProject):
                 )
             build_base = values.get("base")
         return cast(str, build_base)
+
+    @pydantic.validator("base", pre=True)
+    @classmethod
+    def _validate_deprecated_base(cls, base_value: Optional[str]) -> Optional[str]:
+        return cls._check_deprecated_base(base_value, "base")
+
+    @pydantic.validator("build_base", pre=True)
+    @classmethod
+    def _validate_deprecated_build_base(
+        cls, base_value: Optional[str]
+    ) -> Optional[str]:
+        return cls._check_deprecated_base(base_value, "build_base")
+
+    @staticmethod
+    def _check_deprecated_base(
+        base_value: Optional[str], field_name: str
+    ) -> Optional[str]:
+        if base_value in DEPRECATED_COLON_BASES:
+            at_value = base_value.replace(":", "@")
+            message = (
+                f'Warning: use of ":" in field "{field_name}" is deprecated. '
+                f'Prefer "{at_value}" instead.'
+            )
+            craft_cli.emit.message(message)
+            return at_value
+
+        return base_value
 
     @pydantic.validator("platforms")
     @classmethod
