@@ -52,7 +52,7 @@ MarkupSafe==2.1.3
 mccabe==0.6.1
 mdurl==0.1.2
 more-itertools==10.1.0
-mypy==1.5.1
+mypy==1.6.1
 mypy-extensions==1.0.0
 nh3==0.2.14
 oauthlib==3.2.2
