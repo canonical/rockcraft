@@ -11,9 +11,9 @@ cffi==1.16.0
 chardet==5.2.0
 charset-normalizer==3.2.0
 click==8.1.7
-codespell==2.2.5
+codespell==2.2.6
 colorama==0.4.6
-coverage==7.3.1
+coverage==7.3.2
 craft-archives==1.1.3
 craft-cli==2.1.0
 craft-parts==1.25.1
@@ -70,7 +70,7 @@ pydantic-yaml==0.11.2
 pydocstyle==6.3.0
 pyflakes==2.4.0
 Pygments==2.16.1
-pylint==2.17.6
+pylint==2.17.7
 pylint-fixme-info==1.0.3
 pylint-pytest==1.1.2
 pyparsing==3.1.1
@@ -126,7 +126,7 @@ types-setuptools==68.2.0.0
 types-tabulate==0.9.0.3
 types-urllib3==1.26.25.14
 typing_extensions==4.8.0
-urllib3==1.26.16
+urllib3==1.26.18
 virtualenv==20.24.5
 wadllib==1.3.6
 wcmatch==8.5
