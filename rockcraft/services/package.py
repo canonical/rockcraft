@@ -41,13 +41,13 @@ class RockcraftPackageService(PackageService):
     def __init__(
         self,
         app: AppMetadata,
-        project: models.Project,
         services: RockcraftServiceFactory,
         *,
+        project: models.Project,
         platform: str | None,
         build_for: str,
     ) -> None:
-        super().__init__(app, project, services)
+        super().__init__(app, services, project=project)
         self._platform = platform
         self._build_for = build_for
 

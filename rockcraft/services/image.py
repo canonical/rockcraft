@@ -22,7 +22,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import cast
 
-from craft_application import AppMetadata, BaseService, ServiceFactory
+from craft_application import AppMetadata, ProjectService, ServiceFactory
 from craft_cli import emit
 
 from rockcraft import models, oci
@@ -37,19 +37,19 @@ class ImageInfo:
     base_digest: bytes
 
 
-class RockcraftImageService(BaseService):
+class RockcraftImageService(ProjectService):
     """Service to fetch and cache OCI images."""
 
     def __init__(
         self,
         app: AppMetadata,
-        project: models.Project,
         services: ServiceFactory,
         *,
+        project: models.Project,
         work_dir: Path,
         build_for: str,
     ):
-        super().__init__(app, project, services)
+        super().__init__(app, services, project=project)
 
         self._work_dir = work_dir
         self._build_for = build_for
