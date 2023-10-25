@@ -26,7 +26,7 @@ from rockcraft.services import lifecycle as lifecycle_module
 
 @pytest.fixture
 def extra_project_params():
-    return dict(package_repositories=[{"type": "apt", "ppa": "ppa/ppa"}])
+    return {"package_repositories": [{"type": "apt", "ppa": "ppa/ppa"}]}
 
 
 def test_lifecycle_args(lifecycle_service, default_factory, default_image_info, mocker):
