@@ -152,3 +152,6 @@ docs/reference/commands
 .DS_Store
 __pycache__
 .idea/
+
+# build-generated version file
+rockcraft/_version.py

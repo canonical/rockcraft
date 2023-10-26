@@ -25,11 +25,14 @@ from typing import cast
 from craft_application import LifecycleService
 from craft_archives import repo
 from craft_cli import emit
-from craft_parts import callbacks
+from craft_parts import Features, callbacks
 from craft_parts.errors import CallbackRegistrationError
 from overrides import override
 
 from rockcraft.models.project import Project
+
+# Enable the craft-parts features that we use
+Features(enable_overlay=True)
 
 
 class RockcraftLifecycleService(LifecycleService):
