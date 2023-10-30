@@ -1,0 +1,36 @@
+
+summary: donejs tutorial
+
+execute: |
+  # [docs:install-rockcraft]
+  sudo snap install rockcraft --classic --edge
+  # [docs:install-rockcraft-end]
+
+  # [docs:build-rock]
+  rockcraft pack
+  # [docs:build-rock-end]
+
+  test -f my-node-app_1.0_amd64.rock
+
+  # test container execution
+  docker images
+
+  # [docs:skopeo-copy]
+  sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:my-node-app_1.0_amd64.rock docker-daemon:my-node-app:1.0
+  # [docs:skopeo-copy-end]
+
+  rm *.rock
+  docker images my-node-app:1.0
+
+  # When the container is started it launches the app listening on port 8080
+  docker run --detach --name my-node-app -p 8000:8080 my-node-app:1.0
+
+  # Wait for a bit for the app to come online
+  retry -n 5 --wait 2 curl localhost:8000
+
+  curl localhost:8000 | MATCH "Hello World from inside the ROCK"
+
+restore: |
+  rm -f ./*.rock
+  docker rm -f my-node-app
+  docker rmi -f my-node-app:1.0
