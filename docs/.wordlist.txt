@@ -36,6 +36,7 @@ init
 interoperable
 io
 js
+json
 Kubernetes
 libc
 libssl
