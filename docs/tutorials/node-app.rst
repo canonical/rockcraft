@@ -86,8 +86,14 @@ To build the ROCK, run:
     :end-before: [docs:build-rock-end]
     :dedent: 2
 
-At the end of the process, a file named ``my-node-app_0.1_amd64.rock`` should be
-present in the current directory.
+At the end of the process, a new ROCK file should be present in the current
+directory:
+
+.. literalinclude:: code/node-app/task.yaml
+    :language: bash
+    :start-after: [docs:check-rock]
+    :end-before: [docs:check-rock-end]
+    :dedent: 2
 
 Run the ROCK in Docker
 ----------------------

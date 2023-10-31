@@ -10,7 +10,9 @@ execute: |
   rockcraft pack
   # [docs:build-rock-end]
 
-  test -f my-node-app_1.0_amd64.rock
+  # [docs:check-rock]
+  ls my-node-app_1.0_amd64.rock
+  # [docs:check-rock-end]
 
   # test container execution
   docker images
