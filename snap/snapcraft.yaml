@@ -5,6 +5,7 @@ summary: A craft like experience to create ROCKS
 description: |
     Rockcraft aims to take the same primitives used in Charmcraft and Snapcraft
     to create OCI images.
+adopt-info: rockcraft
 confinement: classic
 grade: devel
 license: GPL-3.0
@@ -69,6 +70,9 @@ parts:
         bin/craftctl: libexec/rockcraft/craftctl
     override-build: |
       ${SNAP}/libexec/snapcraft/craftctl default
+
+      version="$(python3 setup.py --version)"
+      ${SNAP}/libexec/snapcraft/craftctl set version="$version"
   
       sed -i -e '1 s|^#!/.*|#!/snap/rockcraft/current/bin/python -E|' $CRAFT_PART_INSTALL/bin/craftctl
     after:

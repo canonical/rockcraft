@@ -1,3 +1,27 @@
+[build-system]
+requires = [
+    "setuptools==67.7.2",
+    "setuptools_scm[toml]>=7.1"
+]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools_scm]
+write_to = "rockcraft/_version.py"
+# the version comes from the latest annotated git tag formatted as 'X.Y.Z'
+# version scheme:
+#   - X.Y.Z.post<commits since tag>+g<hash>.d<%Y%m%d>
+# parts of scheme:
+#   - X.Y.Z - most recent git tag
+#   - post<commits since tag>+g<hash> - present when current commit is not tagged
+#   - .d<%Y%m%d> - present when working dir is dirty
+# version scheme when no tags exist:
+#   - 0.0.post<total commits>+g<hash>
+version_scheme = "post-release"
+# deviations from the default 'git describe' command:
+# - only match annotated tags
+# - only match tags formatted as 'X.Y.Z'
+git_describe_command = "git describe --dirty --long --match '[0-9]*.[0-9]*.[0-9]*' --exclude '*[^0-9.]*'"
+
 [tool.isort]
 multi_line_output = 3
 include_trailing_comma = true
@@ -58,6 +82,9 @@ extension-pkg-whitelist = [
     "pydantic"
 ]
 load-plugins = "pylint_pytest"
+ignore-paths = [
+  "rockcraft/_version.py"
+]
 
 [tool.ruff]
 line-length = 88
@@ -66,6 +93,7 @@ src = ["rockcraft", "tests"]
 extend-exclude = [
     "docs",
     "__pycache__",
+    "rockcraft/_version.py"
 ]
 # Follow ST063 - Maintaining and updating linting specifications for updating these.
 select = [  # Base linting rule selections.
