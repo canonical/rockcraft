@@ -6,9 +6,9 @@ into a ROCK.
 
 Prerequisites
 -------------
-- snap enabled system (https://snapcraft.io)
-- LXD installed (https://linuxcontainers.org/lxd/getting-started-cli/)
-- skopeo installed (https://github.com/containers/skopeo)
+- snap enabled system (https://snapcraft.io/docs/installing-snapd)
+- LXD installed
+  (https://documentation.ubuntu.com/lxd/en/latest/howto/initialize/)
 - Docker installed (https://snapcraft.io/docker)
 - a text editor
 
@@ -35,21 +35,24 @@ The first one is the ``package.json`` listing of dependencies, with the
 following contents:
 
 .. literalinclude:: code/node-app/src/package.json
+    :caption: package.json
     :language: json
 
 The second file is our sample app, a simple "hello world" server. Still inside
 ``src/``, add the following contents to ``server.js``:
 
 .. literalinclude:: code/node-app/src/server.js
+    :caption: server.js
     :language: javascript
 
 Next, we'll setup the Rockcraft project. In the original empty folder, create
 an empty file called ``rockcraft.yaml``. Then add the following snippets, one
 after the other:
 
-Add the metadata that describes your ROCK, such as its name and license:
+Add the metadata that describes your ROCK, such as its name and licence:
 
 .. literalinclude:: code/node-app/rockcraft.yaml
+    :caption: rockcraft.yaml
     :language: yaml
     :start-after: [docs:rock-metadata]
     :end-before: [docs:rock-metadata-end]
@@ -57,32 +60,19 @@ Add the metadata that describes your ROCK, such as its name and license:
 Add the container entrypoint, as a `Pebble`_ service:
 
 .. literalinclude:: code/node-app/rockcraft.yaml
+    :caption: rockcraft.yaml
     :language: yaml
     :start-after: [docs:pebble-service]
     :end-before: [docs:pebble-service-end]
 
-Add a part declaring the dependency on the ``nodejs`` Ubuntu package:
+Finally, add a part that describes how to build the app created in the ``src/``
+directory using the ``npm`` plugin:
 
 .. literalinclude:: code/node-app/rockcraft.yaml
-    :language: yaml
-    :start-after: [docs:node-part]
-    :end-before: [docs:node-part-end]
-
-Add another part, describing how to build the app created in the ``src/``
-directory:
-
-.. literalinclude:: code/node-app/rockcraft.yaml
+    :caption: rockcraft.yaml
     :language: yaml
     :start-after: [docs:app-part]
     :end-before: [docs:app-part-end]
-
-Finally, add the `NodeSource`_ Ubuntu repository so that the ROCK uses a newer
-version of Node.js than is available in the official LTS archives:
-
-.. literalinclude:: code/node-app/rockcraft.yaml
-    :language: yaml
-    :start-after: [docs:nodesource-repo]
-    :end-before: [docs:nodesource-repo-end]
 
 
 Pack the ROCK with Rockcraft
@@ -113,9 +103,11 @@ First, import the recently created ROCK into Docker:
 Since the ROCK bundles a web-app, we'll first start serving that app on local
 port 8000:
 
-..  code-block:: bash
-
-  docker run -p8000:8080 --rm -it my-node-app:latest
+.. literalinclude:: code/node-app/task.yaml
+    :language: bash
+    :start-after: [docs:run-container]
+    :end-before: [docs:run-container-end]
+    :dedent: 2
 
 The output will look similar to this, indicating that Pebble started the ``app``
 service:
@@ -132,11 +124,20 @@ Next, open your web browser and navigate to ``http://localhost:8000``. You
 should see a blank page with a "Hello World from inside the ROCK!" message.
 Success!
 
+You can now stop the running container by either interrupting it with CTRL+C or
+by running the following in another terminal:
+
+.. literalinclude:: code/node-app/task.yaml
+    :language: bash
+    :start-after: [docs:stop-container]
+    :end-before: [docs:stop-container-end]
+    :dedent: 2
+
 References
 ----------
 
-The sample app code comes from the "Dockerizing a Node.js web app" tutorial,
-available at https://nodejs.org/en/docs/guides/nodejs-docker-webapp.
+The sample app code comes from the "Hello world example" Express tutorial,
+available at https://expressjs.com/en/starter/hello-world.html.
 
 
 .. _`Pebble`:  https://github.com/canonical/pebble

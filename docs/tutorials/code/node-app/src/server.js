@@ -1,17 +1,14 @@
 'use strict';
 
-const express = require('express');
+const express = require('express')
+const app = express()
+const port = 8080
+const host = '0.0.0.0'
 
-// Constants
-const PORT = 8080;
-const HOST = '0.0.0.0';
-
-// App
-const app = express();
 app.get('/', (req, res) => {
   res.send('Hello World from inside the ROCK!');
 });
 
-app.listen(PORT, HOST, () => {
-  console.log(`Running on http://${HOST}:${PORT}`);
+app.listen(port, host, () => {
+  console.log(`Running on http://${host}:${port}`);
 });

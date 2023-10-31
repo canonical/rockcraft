@@ -23,12 +23,24 @@ execute: |
   docker images my-node-app:1.0
 
   # When the container is started it launches the app listening on port 8080
-  docker run --detach --name my-node-app -p 8000:8080 my-node-app:1.0
+  # NOTE: the convoluted code here is to expose the "docker run" line cleanly
+  # to the documentation that uses it.
+  cat <<EOF > run-container.sh
+  # [docs:run-container]
+  docker run --name my-node-app -p 8000:8080 my-node-app:1.0
+  # [docs:run-container-end]
+  EOF
+
+  bash run-container.sh &
 
   # Wait for a bit for the app to come online
   retry -n 5 --wait 2 curl localhost:8000
 
   curl localhost:8000 | MATCH "Hello World from inside the ROCK"
+
+  # [docs:stop-container]
+  docker stop my-node-app
+  # [docs:stop-container-end]
 
 restore: |
   rm -f ./*.rock

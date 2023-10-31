@@ -4,8 +4,7 @@ base: ubuntu@22.04
 version: '1.0'
 summary: A ROCK that bundles a simple nodejs app
 description: |
-  This ROCK bundles a recent node runtime from nodesource.com
-  to serve a simple "hello-world" app.
+  This ROCK bundles a recent node runtime to serve a simple "hello-world" app.
 license: GPL-3.0
 platforms:
   amd64:
@@ -19,34 +18,14 @@ services:
         startup: enabled
         on-success: shutdown
         on-failure: shutdown
-        working-dir: /app
+        working-dir: /lib/node_modules/node_web_app
 # [docs:pebble-service-end]
 
-# [docs:node-part]
-parts:
-    node:
-        plugin: nil
-        stage-packages: [nodejs]
-# [docs:node-part-end]
-
 # [docs:app-part]
+parts:
     app:
-        after: [node]
-        plugin: nil
+        plugin: npm
+        npm-include-node: True
+        npm-node-version: "21.1.0"
         source: src/
-        override-build: |
-          npm install
-          cp -r * ${CRAFT_PART_INSTALL}/
-        organize:
-          "*": /app/
 # [docs:app-part-end]
-
-# [docs:nodesource-repo]
-package-repositories:
-  - type: apt
-    url: https://deb.nodesource.com/node_21.x
-    components: [main]
-    suites: [nodistro]
-    key-id: 6F71F525282841EEDAF851B42F59B5F99B1BE0B4
-    priority: always
-# [docs:nodesource-repo-end]
