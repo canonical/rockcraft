@@ -8,7 +8,7 @@ Prerequisites
 -------------
 - snap enabled system (https://snapcraft.io/docs/installing-snapd)
 - LXD installed
-  (https://documentation.ubuntu.com/lxd/en/latest/howto/initialize/)
+  (https://documentation.ubuntu.com/lxd/en/latest/installing/)
 - Docker installed (https://snapcraft.io/docker)
 - a text editor
 
