@@ -54,16 +54,16 @@ Add the metadata that describes your ROCK, such as its name and licence:
 .. literalinclude:: code/node-app/rockcraft.yaml
     :caption: rockcraft.yaml
     :language: yaml
-    :start-after: [docs:rock-metadata]
-    :end-before: [docs:rock-metadata-end]
+    :start-at: name: my-node-app
+    :end-at: amd64:
 
 Add the container entrypoint, as a `Pebble`_ service:
 
 .. literalinclude:: code/node-app/rockcraft.yaml
     :caption: rockcraft.yaml
     :language: yaml
-    :start-after: [docs:pebble-service]
-    :end-before: [docs:pebble-service-end]
+    :start-at: services:
+    :end-at: working-dir: /lib/node_modules/node_web_app
 
 Finally, add a part that describes how to build the app created in the ``src/``
 directory using the ``npm`` plugin:
@@ -71,8 +71,14 @@ directory using the ``npm`` plugin:
 .. literalinclude:: code/node-app/rockcraft.yaml
     :caption: rockcraft.yaml
     :language: yaml
-    :start-after: [docs:app-part]
-    :end-before: [docs:app-part-end]
+    :start-at: parts:
+    :end-at: source: src/
+
+The whole file then looks like this:
+
+.. literalinclude:: code/node-app/rockcraft.yaml
+    :caption: rockcraft.yaml
+    :language: yaml
 
 
 Pack the ROCK with Rockcraft

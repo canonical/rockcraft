@@ -1,4 +1,3 @@
-# [docs:rock-metadata]
 name: my-node-app
 base: ubuntu@22.04
 version: '1.0'
@@ -8,9 +7,7 @@ description: |
 license: GPL-3.0
 platforms:
   amd64:
-# [docs:rock-metadata-end]
 
-# [docs:pebble-service]
 services:
     app:
         override: replace
@@ -19,13 +16,10 @@ services:
         on-success: shutdown
         on-failure: shutdown
         working-dir: /lib/node_modules/node_web_app
-# [docs:pebble-service-end]
 
-# [docs:app-part]
 parts:
     app:
         plugin: npm
         npm-include-node: True
         npm-node-version: "21.1.0"
         source: src/
-# [docs:app-part-end]
