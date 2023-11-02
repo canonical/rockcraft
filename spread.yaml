@@ -120,6 +120,9 @@ suites:
     systems:
     - ubuntu-22.04-64
 
+  docs/reference/code/:
+    summary: tests reference code from the docs
+
   tests/spread/general/:
     summary: tests for rockcraft core functionality
 

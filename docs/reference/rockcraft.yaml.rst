@@ -223,41 +223,8 @@ The set of parts that compose the ROCK's contents
 Example
 =======
 
-.. code-block:: yaml
-
-  name: hello
-  title: Hello World
-  summary: An Hello World ROCK
-  description: |
-    This is just an example of a Rockcraft project
-    for a Hello World ROCK.
-  version: latest
-  base: bare
-  build-base: ubuntu@22.04
-  license: Apache-2.0
-  run-user: _daemon_
-  environment:
-    FOO: bar
-  services:
-    hello:
-      override: replace
-      command: /usr/bin/hello -t
-      environment:
-        VAR1: value
-        VAR2: "other value"
-  platforms:
-    amd64:
-    arm:
-      build-on: ["arm", "arm64"]
-    ibm:
-      build-on: ["s390x"]
-      build-for: s390x
-
-  parts:
-    hello:
-      plugin: nil
-      stage-packages:
-        - hello
+.. literalinclude:: code/example/rockcraft.yaml
+    :language: yaml
 
 
 .. _`Pebble Layer Specification format`:  https://github.com/canonical/pebble#layer-specification
