@@ -1,5 +1,4 @@
 name: rockcraft
-version: git
 base: core22
 summary: A craft like experience to create ROCKS
 description: |
@@ -7,7 +6,6 @@ description: |
     to create OCI images.
 adopt-info: rockcraft
 confinement: classic
-grade: devel
 license: GPL-3.0
 
 # https://github.com/snapcore/snapcraft/issues/4187
@@ -73,11 +71,12 @@ parts:
 
       version="$(python3 setup.py --version)"
       ${SNAP}/libexec/snapcraft/craftctl set version="$version"
-  
+      [ -n "$(echo $version | grep "post")" ] && grade=devel || grade=stable
+
       sed -i -e '1 s|^#!/.*|#!/snap/rockcraft/current/bin/python -E|' $CRAFT_PART_INSTALL/bin/craftctl
     after:
       - rockcraft-libs
-  
+
   umoci:
     plugin: make
     source: https://github.com/opencontainers/umoci.git
