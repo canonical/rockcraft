@@ -35,3 +35,5 @@ formats:
 python:
   install:
     - requirements: requirements-doc.txt
+    - method: pip
+      path: .
