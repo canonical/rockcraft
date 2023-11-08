@@ -3,7 +3,7 @@ summary: nodejs tutorial
 
 execute: |
   # [docs:install-rockcraft]
-  sudo snap install rockcraft --classic --edge
+  sudo snap install rockcraft --classic
   # [docs:install-rockcraft-end]
 
   # [docs:build-rock]

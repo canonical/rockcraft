@@ -9,7 +9,7 @@ summary: test for the "Install packages slices into a ROCK" tutorial
 
 execute: |
   # [docs:install-rockcraft]
-  snap install rockcraft --classic --edge
+  snap install rockcraft --classic
   # [docs:install-rockcraft-end]
 
   # [docs:build-rock]
