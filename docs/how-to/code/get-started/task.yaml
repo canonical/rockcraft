@@ -29,7 +29,7 @@ execute: |
   # [docs:lxd-init-end]
 
   # [docs:install-rockcraft]
-  sudo snap install rockcraft --channel=latest/edge --classic
+  sudo snap install rockcraft --classic
   # [docs:install-rockcraft-end]
 
   # [docs:rockcraft-version]

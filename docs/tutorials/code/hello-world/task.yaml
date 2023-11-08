@@ -10,7 +10,7 @@ summary: hello world tutorial
 execute: |
   date
   # [docs:install-rockcraft]
-  sudo snap install rockcraft --classic --edge
+  sudo snap install rockcraft --classic
   # [docs:install-rockcraft-end]
 
   # [docs:build-rock]
