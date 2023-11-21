@@ -16,4 +16,12 @@
 
 """The craft tool to create ROCKs."""
 
-__version__ = "0.0.1.dev1"
+try:
+    from ._version import __version__
+except ImportError:  # pragma: no cover
+    from importlib.metadata import PackageNotFoundError, version
+
+    try:
+        __version__ = version("rockcraft")
+    except PackageNotFoundError:
+        __version__ = "dev"

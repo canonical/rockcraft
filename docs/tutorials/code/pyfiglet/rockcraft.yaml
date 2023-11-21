@@ -1,5 +1,5 @@
 name: pyfiglet
-base: ubuntu:22.04
+base: ubuntu@22.04
 version: '0.7.6'  # Note: should match `pyfiglet` below
 summary: A ROCK for pyfiglet
 description: A ROCK for pyfiglet

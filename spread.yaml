@@ -11,7 +11,7 @@ include:
     - tools/
     - docs/
     - requirements-doc.txt
-    - requirements-focal.txt
+    - requirements-jammy.txt
     - Makefile
     - rockcraft/
 
@@ -93,8 +93,8 @@ restore-each: |
   docker system prune -a -f
   if lxc project info rockcraft > /dev/null 2>&1 ; then
     for instance in $(lxc --project=rockcraft list -c n --format csv); do
-      # Don't remove the base instance, we want to re-use it between tests
-      if ! [[ $instance =~ ^base-instance-rockcraft* ]]; then
+      # Don't remove the base instance, we want to reuse it between tests
+      if ! [[ $instance =~ ^base-instance-* ]]; then
         lxc --project=rockcraft delete --force "$instance"
       fi
     done
@@ -119,6 +119,9 @@ suites:
     summary: tests how-to guides from the docs
     systems:
     - ubuntu-22.04-64
+
+  docs/reference/code/:
+    summary: tests reference code from the docs
 
   tests/spread/general/:
     summary: tests for rockcraft core functionality

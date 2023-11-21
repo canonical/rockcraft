@@ -20,21 +20,17 @@ import subprocess
 import textwrap
 from pathlib import Path
 from typing import Any, Dict
-from unittest.mock import patch
 
 import pydantic
 import pytest
 import yaml
+from craft_application.models import BuildInfo
+from craft_providers.bases import BaseName
 
 from rockcraft.errors import ProjectLoadError, ProjectValidationError
+from rockcraft.models import Project, load_project
+from rockcraft.models.project import INVALID_NAME_MESSAGE, Platform
 from rockcraft.pebble import Service
-from rockcraft.project import (
-    INVALID_NAME_MESSAGE,
-    ArchitectureMapping,
-    Platform,
-    Project,
-    load_project,
-)
 
 _ARCH_MAPPING = {"x86": "amd64", "x64": "amd64"}
 try:
@@ -55,7 +51,7 @@ ROCKCRAFT_YAML = f"""---
 name: mytest
 title: My Test
 version: latest
-base: ubuntu:20.04
+base: ubuntu@20.04
 summary: "example for unit tests"
 description: "this is an example of a rockcraft.yaml for the purpose of testing rockcraft"
 license: Apache-2.0
@@ -104,7 +100,7 @@ def pebble_part() -> Dict[str, Any]:
     return {
         "pebble": {
             "plugin": "nil",
-            "stage-snaps": ["pebble/latest/edge"],
+            "stage-snaps": ["pebble/latest/stable"],
             "stage": ["bin/pebble"],
             "override-prime": "craftctl default\nmkdir -p var/lib/pebble/default/layers",
         }
@@ -202,7 +198,7 @@ def test_forbidden_env_var_interpolation(
         check.is_in("foo", project.environment)
 
 
-@pytest.mark.parametrize("base", ["ubuntu:18.04", "ubuntu:20.04"])
+@pytest.mark.parametrize("base", ["ubuntu@22.04", "ubuntu@20.04"])
 def test_project_base(yaml_loaded_data, base):
     yaml_loaded_data["base"] = base
 
@@ -212,13 +208,13 @@ def test_project_base(yaml_loaded_data, base):
 
 
 def test_project_base_invalid(yaml_loaded_data):
-    yaml_loaded_data["base"] = "ubuntu:19.04"
+    yaml_loaded_data["base"] = "ubuntu@19.04"
 
     with pytest.raises(ProjectValidationError) as err:
         Project.unmarshal(yaml_loaded_data)
     assert str(err.value) == (
         "Bad rockcraft.yaml content:\n"
-        "- unexpected value; permitted: 'bare', 'ubuntu:18.04', 'ubuntu:20.04', 'ubuntu:22.04' in field 'base'"
+        "- unexpected value; permitted: 'bare', 'ubuntu@20.04', 'ubuntu@22.04' in field 'base'"
     )
 
 
@@ -256,20 +252,39 @@ def test_project_title_empty_invalid_name(yaml_loaded_data):
 
 
 def test_project_build_base(yaml_loaded_data):
-    yaml_loaded_data["build-base"] = "ubuntu:18.04"
+    yaml_loaded_data["build-base"] = "ubuntu@22.04"
 
     project = Project.unmarshal(yaml_loaded_data)
-    assert project.base == "ubuntu:20.04"
-    assert project.build_base == "ubuntu:18.04"
+    assert project.base == "ubuntu@20.04"
+    assert project.build_base == "ubuntu@22.04"
 
 
-def test_architecture_mapping():
-    _ = ArchitectureMapping(
-        description="mock arch",
-        deb_arch="amd64",
-        compatible_uts_machine_archs=["x86_64"],
-        go_arch="amd64",
+@pytest.mark.parametrize(
+    ["base", "build_base", "expected_base", "expected_build_base"],
+    [
+        ("ubuntu:22.04", None, "ubuntu@22.04", "ubuntu@22.04"),
+        ("ubuntu:22.04", "ubuntu:20.04", "ubuntu@22.04", "ubuntu@20.04"),
+    ],
+)
+def test_project_base_colon(
+    yaml_loaded_data, emitter, base, build_base, expected_base, expected_build_base
+):
+    """Test converting ":" to "@" in supported bases, and that warnings are emitted."""
+    yaml_loaded_data["base"] = base
+    yaml_loaded_data["build-base"] = build_base
+
+    project = Project.unmarshal(yaml_loaded_data)
+
+    assert project.base == expected_base
+    assert project.build_base == expected_build_base
+
+    emitter.assert_message(
+        f'Warning: use of ":" in field "base" is deprecated. Prefer "{expected_base}" instead.'
     )
+    if build_base is not None:
+        emitter.assert_message(
+            f'Warning: use of ":" in field "build_base" is deprecated. Prefer "{expected_build_base}" instead.'
+        )
 
 
 def test_project_platform_invalid():
@@ -300,36 +315,6 @@ def test_project_platform_invalid():
     mock_platform = {"build-for": ["arm64"]}
     assert "'build_for' expects 'build_on' to also be provided." in load_platform(
         mock_platform, ProjectValidationError
-    )
-
-
-@patch("platform.machine")
-def test_project_platform_variants(mock_uts_machine, yaml_loaded_data):
-    def load_project_for_arch(uts_arch: str, arch: str) -> Project:
-        mock_uts_machine.return_value = uts_arch
-        yaml_loaded_data["platforms"] = {arch: None}
-        return Project.unmarshal(yaml_loaded_data)
-
-    # arm/v7
-    assert (
-        load_project_for_arch("arm", "arm").platforms["arm"]["build_for_variant"]
-        == "v7"
-    )
-
-    # arm64/v8
-    assert (
-        load_project_for_arch("aarch64", "arm64").platforms["arm64"][
-            "build_for_variant"
-        ]
-        == "v8"
-    )
-
-    # others
-    assert (
-        load_project_for_arch("x86_64", "amd64")
-        .platforms["amd64"]
-        .get("build_for_variant")
-        is None
     )
 
 
@@ -367,18 +352,6 @@ def test_project_all_platforms_invalid(yaml_loaded_data):
     }
     assert "build ROCK for target architecture noarch" in reload_project_platforms(
         mock_platforms
-    )
-
-    # The underlying build machine must be compatible
-    # with both build_on and build_for
-    other_arch = "arm" if BUILD_ON_ARCH == "amd64" else "amd64"
-    mock_platforms = {"mock": {"build-on": [other_arch], "build-for": other_arch}}
-    assert "if the host is compatible with" in reload_project_platforms(mock_platforms)
-
-    mock_platforms = {"mock": {"build-on": [other_arch], "build-for": "amd64"}}
-    assert (
-        f"must be built on one of the following architectures: {[other_arch]}"
-        in reload_project_platforms(mock_platforms)
     )
 
 
@@ -449,7 +422,7 @@ def test_project_parts_validation(yaml_loaded_data):
 def test_project_bare_overlay(yaml_loaded_data, packages, script):
     """Test that the combination of 'bare' base with an overlay-using part is blocked."""
     yaml_loaded_data["base"] = "bare"
-    yaml_loaded_data["build-base"] = "ubuntu:22.04"
+    yaml_loaded_data["build-base"] = "ubuntu@22.04"
 
     foo_part = yaml_loaded_data["parts"]["foo"]
     foo_part["overlay-packages"] = packages
@@ -487,7 +460,7 @@ def test_project_unmarshal_existing_pebble(tmp_path):
         name: pebble-part
         title: Rock with Pebble
         version: latest
-        base: ubuntu:20.04
+        base: ubuntu@20.04
         summary: Rock with Pebble
         description: Rock with Pebble
         license: Apache-2.0
@@ -550,10 +523,15 @@ def test_project_generate_metadata(yaml_loaded_data):
 EXPECTED_DUMPED_YAML = f"""\
 name: mytest
 title: My Test
+version: latest
 summary: example for unit tests
 description: this is an example of a rockcraft.yaml for the purpose of testing rockcraft
+base: ubuntu@20.04
 license: Apache-2.0
-version: latest
+parts:
+  foo:
+    plugin: nil
+    overlay-script: ls
 platforms:
   {BUILD_ON_ARCH}:
     build_on: null
@@ -568,8 +546,7 @@ platforms:
     - {BUILD_ON_ARCH}
     build_for:
     - {BUILD_ON_ARCH}
-base: ubuntu:20.04
-build-base: ubuntu:20.04
+build-base: ubuntu@20.04
 environment:
   BAZ: value1
   FOO: value3
@@ -582,13 +559,71 @@ services:
 package-repositories:
 - type: apt
   ppa: ppa/ppa
-parts:
-  foo:
-    plugin: nil
-    overlay-script: ls
 """
 
 
 def test_project_yaml(yaml_loaded_data):
     project = Project.unmarshal(yaml_loaded_data)
     assert project.to_yaml() == EXPECTED_DUMPED_YAML
+
+
+@pytest.mark.parametrize(
+    ["platforms", "expected_build_infos"],
+    [
+        (
+            {
+                "amd64": None,
+            },
+            [
+                BuildInfo(
+                    build_on="amd64",
+                    build_for="amd64",
+                    base=BaseName(name="ubuntu", version="20.04"),
+                    platform="amd64",
+                )
+            ],
+        ),
+        (
+            {
+                "amd64": {
+                    "build-on": ["amd64", "i386"],
+                    "build-for": ["amd64"],
+                },
+            },
+            [
+                BuildInfo(
+                    build_on="amd64",
+                    build_for="amd64",
+                    base=BaseName(name="ubuntu", version="20.04"),
+                    platform="amd64",
+                ),
+                BuildInfo(
+                    build_on="i386",
+                    build_for="amd64",
+                    base=BaseName(name="ubuntu", version="20.04"),
+                    platform="amd64",
+                ),
+            ],
+        ),
+        (
+            {
+                "amd64v2": {
+                    "build-on": ["amd64"],
+                    "build-for": "amd64",
+                },
+            },
+            [
+                BuildInfo(
+                    build_on="amd64",
+                    build_for="amd64",
+                    base=BaseName(name="ubuntu", version="20.04"),
+                    platform="amd64v2",
+                )
+            ],
+        ),
+    ],
+)
+def test_project_get_build_plan(yaml_loaded_data, platforms, expected_build_infos):
+    yaml_loaded_data["platforms"] = platforms
+    project = Project.unmarshal(yaml_loaded_data)
+    assert project.get_build_plan() == expected_build_infos

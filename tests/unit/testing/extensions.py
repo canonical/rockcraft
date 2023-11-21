@@ -31,7 +31,7 @@ class FakeExtension(Extension):
     @staticmethod
     def get_supported_bases() -> Tuple[str, ...]:
         """Return a tuple of supported bases."""
-        return ("ubuntu:22.04",)
+        return ("ubuntu@22.04",)
 
     @staticmethod
     def is_experimental(base: Optional[str]) -> bool:
@@ -59,7 +59,7 @@ class ExperimentalExtension(FakeExtension):
     @staticmethod
     def get_supported_bases() -> Tuple[str, ...]:
         """Return a tuple of supported bases."""
-        return ("ubuntu:22.04", "ubuntu:20.04")
+        return ("ubuntu@22.04", "ubuntu@20.04")
 
     @staticmethod
     def is_experimental(base: Optional[str]) -> bool:
@@ -108,7 +108,7 @@ FULL_EXTENSION_YAML = textwrap.dedent(
     f"""
     name: project-with-extensions
     version: latest
-    base: ubuntu:22.04
+    base: ubuntu@22.04
     summary: Project with extensions
     description: Project with extensions
     license: Apache-2.0

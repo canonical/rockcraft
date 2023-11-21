@@ -164,7 +164,7 @@ class Pebble:
     PEBBLE_BINARY_PATH = "bin/pebble"
     PEBBLE_PART_SPEC = {
         "plugin": "nil",
-        "stage-snaps": ["pebble/latest/edge"],
+        "stage-snaps": ["pebble/latest/stable"],
         "stage": [PEBBLE_BINARY_PATH],
         # We need this because "services" is Optional, but the directory must exist
         "override-prime": f"craftctl default\nmkdir -p {PEBBLE_LAYERS_PATH}",

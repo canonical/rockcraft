@@ -20,8 +20,10 @@ import textwrap
 from pathlib import Path
 from typing import Callable, List, Tuple
 
+import pytest
+
 from rockcraft import oci
-from rockcraft.parts import PartsLifecycle
+from rockcraft.services.image import ImageInfo
 from tests.util import jammy_only
 
 pytestmark = jammy_only
@@ -43,7 +45,7 @@ def create_base_image(
     """
     image_dir = work_dir / "images"
     image = oci.Image.new_oci_image(
-        image_name="bare:original",
+        image_name="bare@original",
         image_dir=image_dir,
         arch="amd64",
     )[0]
@@ -109,10 +111,6 @@ def test_add_layer_with_symlink_in_base(new_dir):
     new_layer_dir = Path("new")
     new_layer_dir.mkdir()
 
-    # Create the following structure to use as a new layer:
-    # /bin/new_bin_file
-    # /lib/new_lib_file
-    # /tmp/new_tmp_file
     for target in targets + ["tmp"]:
         new_target_dir = new_layer_dir / target
         new_target_dir.mkdir()
@@ -130,7 +128,28 @@ def test_add_layer_with_symlink_in_base(new_dir):
     ]
 
 
-def test_add_layer_with_overlay(new_dir, mocker):
+@pytest.fixture
+def extra_project_params():
+    """Fixture used to configure the Project used by the default test services."""
+    return {
+        "parts": {
+            "with-overlay": {
+                "plugin": "nil",
+                "override-build": "touch ${CRAFT_PART_INSTALL}/file_from_override_build",
+                "overlay-script": textwrap.dedent(
+                    """
+                cd ${CRAFT_OVERLAY}
+                unlink bin
+                mkdir bin
+                touch bin/file_from_overlay_script
+                """
+                ),
+            }
+        }
+    }
+
+
+def test_add_layer_with_overlay(new_dir, mocker, lifecycle_service, mock_obtain_image):
     """Test "overwriting" directories in the base layer via overlays."""
 
     def populate_base_layer(base_layer_dir):
@@ -139,42 +158,28 @@ def test_add_layer_with_overlay(new_dir, mocker):
 
     image, base_layer_dir = create_base_image(Path(new_dir), populate_base_layer)
 
-    parts = {
-        "with-overlay": {
-            "plugin": "nil",
-            "override-build": "touch ${CRAFT_PART_INSTALL}/file_from_override_build",
-            "overlay-script": textwrap.dedent(
-                """
-                cd ${CRAFT_OVERLAY}
-                unlink bin
-                mkdir bin
-                touch bin/file_from_overlay_script
-                """
-            ),
-        }
-    }
-    work_dir = Path()
+    image_info = ImageInfo(
+        base_image=image,
+        base_layer_dir=base_layer_dir,
+        base_digest=b"deadbeef",
+    )
+    mock_obtain_image.return_value = image_info
 
     # Mock os.geteuid() because currently craft-parts doesn't allow overlays
     # without superuser privileges.
     mock_geteuid = mocker.patch.object(os, "geteuid", return_value=0)
 
-    lifecycle = PartsLifecycle(
-        all_parts=parts,
-        work_dir=work_dir,
-        part_names=None,
-        base_layer_dir=base_layer_dir,
-        base_layer_hash=b"deadbeef",
-        base="unused",
-        project_name="overlay",
-    )
-
+    # Setup the service, to create the LifecycleManager.
+    lifecycle_service.setup()
     assert mock_geteuid.called
 
-    lifecycle.run("prime")
+    # Run the lifecycle.
+    lifecycle_service.run("prime")
 
     new_image = image.add_layer(
-        tag="new", new_layer_dir=lifecycle.prime_dir, base_layer_dir=base_layer_dir
+        tag="new",
+        new_layer_dir=lifecycle_service.prime_dir,
+        base_layer_dir=base_layer_dir,
     )
 
     assert get_names_in_layer(new_image) == [
@@ -187,7 +192,7 @@ def test_add_layer_with_overlay(new_dir, mocker):
 
 def test_stat(new_dir):
     image = oci.Image.new_oci_image(
-        image_name="bare:original",
+        image_name="bare@original",
         image_dir=Path("images"),
         arch="amd64",
     )[0]

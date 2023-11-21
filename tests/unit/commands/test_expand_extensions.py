@@ -28,23 +28,11 @@ EXPECTED_EXPAND_EXTENSIONS = textwrap.dedent(
     """\
     name: project-with-extensions
     title: project-with-extensions
+    version: latest
     summary: Project with extensions
     description: Project with extensions
+    base: ubuntu@22.04
     license: Apache-2.0
-    version: latest
-    platforms:
-      amd64:
-        build_on: null
-        build_for: null
-    base: ubuntu:22.04
-    build-base: ubuntu:22.04
-    services:
-      my-service:
-        override: merge
-        command: foo
-      full-extension-service:
-        override: replace
-        command: fake command
     parts:
       foo:
         plugin: nil
@@ -57,12 +45,24 @@ EXPECTED_EXPAND_EXTENSIONS = textwrap.dedent(
       pebble:
         plugin: nil
         stage-snaps:
-        - pebble/latest/edge
+        - pebble/latest/stable
         stage:
         - bin/pebble
         override-prime: |-
           craftctl default
           mkdir -p var/lib/pebble/default/layers
+    platforms:
+      amd64:
+        build_on: null
+        build_for: null
+    build-base: ubuntu@22.04
+    services:
+      my-service:
+        override: merge
+        command: foo
+      full-extension-service:
+        override: replace
+        command: fake command
     """
 )
 

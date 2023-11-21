@@ -10,7 +10,7 @@ summary: docker image migration tutorial
 execute: |
   date
 
-  sudo snap install rockcraft --classic --edge
+  sudo snap install rockcraft --classic
 
   # docker snap can only access its own snap folder and $HOME
   # so we need to run the build from someplace else
@@ -33,7 +33,7 @@ execute: |
   # [docs:run-docker-image-end]
 
   # [docs:build-rock]
-  rockcraft --verbosity debug
+  rockcraft pack --verbosity debug
   # [docs:build-rock-end]
 
   test -f dotnet-runtime_chiselled_amd64.rock

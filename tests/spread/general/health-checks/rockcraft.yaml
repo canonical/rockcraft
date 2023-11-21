@@ -4,7 +4,7 @@ description: A test ROCK with a bunch of different Pebble checks
 license: Apache-2.0
 
 version: latest
-base: "ubuntu:22.04"
+base: ubuntu@22.04
 
 services: 
   webserver:

@@ -1,0 +1,8 @@
+
+summary: Check that we can build the example rockcraft.yaml
+
+execute: |
+  rockcraft pack
+
+restore: |
+  rm -f ./*.rock

@@ -71,12 +71,14 @@ def main(docs_dir):
         commands_ref_dir.mkdir()
 
     # Create a dispatcher like Rockcraft does to get access to the same options.
+    app = cli._create_app()
+    command_groups = app.command_groups
+
     dispatcher = Dispatcher(
-        "rockcraft",
-        cli.COMMAND_GROUPS,
-        summary="A tool to create OCI images",
-        extra_global_args=cli.GLOBAL_ARGS,
-        default_command=cli.commands.PackCommand,
+        app.app.name,
+        command_groups,
+        summary=str(app.app.summary),
+        extra_global_args=app._global_arguments,
     )
 
     help_builder = dispatcher._help_builder
@@ -88,13 +90,13 @@ def main(docs_dir):
 
     toc = []
 
-    for group in cli.COMMAND_GROUPS:
+    for group in command_groups:
         group_name = group.name.lower() + "-commands" + os.extsep + "rst"
         group_path = commands_ref_dir / group_name
         g = group_path.open("w")
 
         for cmd_class in sorted(group.commands, key=lambda c: c.name):
-            cmd = cmd_class({})
+            cmd = cmd_class({"app": {}, "services": {}})
             p = _CustomArgumentParser(help_builder)
             cmd.fill_parser(p)
 

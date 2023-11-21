@@ -9,7 +9,7 @@ summary: test the "How to convert a popular entrypoint to a Pebble layer" guide
 
 execute: |
   # [docs:pack]
-  rockcraft
+  rockcraft pack
   # [docs:pack-end]
 
   # [docs:skopeo]
