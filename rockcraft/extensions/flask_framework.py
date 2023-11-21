@@ -36,7 +36,7 @@ class FlaskFramework(Extension):
     @override
     def get_supported_bases() -> Tuple[str, ...]:
         """Return supported bases."""
-        return "bare", "ubuntu:20.04", "ubuntu:22.04"
+        return "bare", "ubuntu@20.04", "ubuntu@22.04", "ubuntu:20.04", "ubuntu:22.04"
 
     @staticmethod
     @override

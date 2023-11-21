@@ -22,7 +22,7 @@ import pytest
 import yaml
 from craft_cli import emit
 
-from rockcraft import cli, services
+from rockcraft import cli, extensions, services
 from rockcraft.application import Rockcraft
 from rockcraft.models import project
 
@@ -84,3 +84,50 @@ def test_run_init(mocker, lifecycle_init_mock):
     assert len(rock_project.summary) < 80
     assert len(rock_project.description.split()) < 100
     assert mock_ended_ok.mock_calls == [call()]
+
+
+def test_run_init_with_name(mocker, lifecycle_init_mock):
+    mocker.patch.object(sys, "argv", ["rockcraft", "init", "--name=foobar"])
+
+    cli.run()
+
+    assert len(lifecycle_init_mock.mock_calls) == 1
+    rendered = lifecycle_init_mock.mock_calls[0].args[0]
+    rock_project = project.Project.unmarshal(yaml.safe_load(rendered))
+    assert rock_project.name == "foobar"
+
+
+def test_run_init_with_invalid_name(mocker, lifecycle_init_mock):
+    mocker.patch.object(sys, "argv", ["rockcraft", "init", "--name=f"])
+    return_code = cli.run()
+    assert return_code == 1
+
+
+def test_run_init_fallback_name(mocker, lifecycle_init_mock):
+    mocker.patch.object(sys, "argv", ["rockcraft", "init"])
+    mocker.patch("pathlib.Path.cwd", return_value=pathlib.Path("/f"))
+
+    cli.run()
+
+    rendered = lifecycle_init_mock.mock_calls[0].args[0]
+    rock_project = yaml.safe_load(rendered)
+    assert rock_project["name"] == "my-rock-name"
+
+
+def test_run_init_flask(mocker, lifecycle_init_mock, tmp_path, monkeypatch):
+    (tmp_path / "requirements.txt").write_text("flask")
+    (tmp_path / "app.py").write_text("app = object()")
+    mock_ended_ok = mocker.patch.object(emit, "ended_ok")
+    mocker.patch.object(sys, "argv", ["rockcraft", "init", "--profile=flask-framework"])
+
+    cli.run()
+
+    assert len(lifecycle_init_mock.mock_calls) == 1
+    rendered = lifecycle_init_mock.mock_calls[0].args[0]
+    rock_project = yaml.safe_load(rendered)
+    assert len(rock_project["summary"]) < 80
+    assert len(rock_project["description"].split()) < 100
+    assert mock_ended_ok.mock_calls == [call()]
+
+    monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "0")
+    project.Project.unmarshal(extensions.apply_extensions(tmp_path, rock_project))

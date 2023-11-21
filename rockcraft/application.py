@@ -18,6 +18,7 @@
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Any
 
 from craft_application import Application, AppMetadata, util
@@ -39,7 +40,7 @@ class Rockcraft(Application):
 
     @override
     def _extra_yaml_transform(self, yaml_data: dict[str, Any]) -> dict[str, Any]:
-        return models.transform_yaml(self._work_dir, yaml_data)
+        return models.transform_yaml(Path.cwd(), yaml_data)
 
     @override
     def _configure_services(self, platform: str | None, build_for: str | None) -> None:

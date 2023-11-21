@@ -35,7 +35,7 @@ TEMPLATES = {
     "simple": textwrap.dedent(
         """\
             name: {name}
-            base: ubuntu:22.04 # the base environment for this ROCK
+            base: ubuntu@22.04 # the base environment for this ROCK
             version: '0.1' # just for humans. Semantic versioning is recommended
             summary: Single-line elevator pitch for your amazing ROCK # 79 char long summary
             description: |
@@ -55,7 +55,7 @@ TEMPLATES = {
     "flask-framework": textwrap.dedent(
         """\
             name: {name}
-            base: ubuntu:22.04 # the base environment for this Flask application
+            base: ubuntu@22.04 # the base environment for this Flask application
             version: '0.1' # just for humans. Semantic versioning is recommended
             summary: A summary of your Flask application # 79 char long summary
             description: |
