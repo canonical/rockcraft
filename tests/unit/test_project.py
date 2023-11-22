@@ -625,5 +625,5 @@ def test_project_yaml(yaml_loaded_data):
 )
 def test_project_get_build_plan(yaml_loaded_data, platforms, expected_build_infos):
     yaml_loaded_data["platforms"] = platforms
-    project = Project.unmarshal(yaml_loaded_data)
-    assert project.get_build_plan() == expected_build_infos
+    build_plan = Project.get_build_plan(yaml_loaded_data)
+    assert build_plan == expected_build_infos

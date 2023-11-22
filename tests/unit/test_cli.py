@@ -35,14 +35,15 @@ def lifecycle_init_mock():
     patcher.stop()
 
 
-def test_run_pack_services(mocker, monkeypatch, tmp_path):
+def test_run_pack_services(mocker, monkeypatch, tmp_path, default_project):
     # Pretend it's running inside the managed instance
     monkeypatch.setenv("CRAFT_MANAGED_MODE", "1")
 
     log_path = tmp_path / "rockcraft.log"
     mock_ended_ok = mocker.spy(emit, "ended_ok")
-    mocker.patch.object(Rockcraft, "project")
+    mocker.patch.object(Rockcraft, "load_project")
     mocker.patch.object(Rockcraft, "log_path", new=log_path)
+    monkeypatch.setattr(Rockcraft, "project", default_project, raising=False)
 
     fake_prime_dir = Path("/fake/prime/dir")
 

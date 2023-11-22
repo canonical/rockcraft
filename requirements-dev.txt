@@ -14,11 +14,11 @@ click==8.1.7
 codespell==2.2.6
 colorama==0.4.6
 coverage==7.3.2
-craft-application==1.0.0
+craft-application@git+https://github.com/canonical/craft-application@CRAFT-2242-Grammar-Integration-into-Craft-Application
 craft-archives==1.1.3
 craft-cli==2.4.0
 craft-parts==1.25.2
-craft-providers==1.19.2
+craft-providers==1.20.0
 cryptography==41.0.5
 Deprecated==1.2.14
 dill==0.3.7

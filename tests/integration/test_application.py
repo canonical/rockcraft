@@ -61,6 +61,7 @@ def test_global_environment(
 ):
     """Test our additions to the global environment that is available to the
     build process."""
+    monkeypatch.setenv("CRAFT_DEBUG", "1")
 
     rootfs = Path(new_dir) / "rootfs"
     rootfs.mkdir()

@@ -46,8 +46,9 @@ class RockcraftPackageService(PackageService):
         project: models.Project,
         platform: str | None,
         build_for: str,
+        **kwargs,
     ) -> None:
-        super().__init__(app, services, project=project)
+        super().__init__(app, services, project=project, **kwargs)
         self._platform = platform
         self._build_for = build_for
 
@@ -72,7 +73,7 @@ class RockcraftPackageService(PackageService):
             # This should only happen in destructive mode, in which case we
             # can only pack a single ROCK.
             build_on = util.get_host_architecture()
-            base_build_plan = self._project.get_build_plan()
+            base_build_plan = self._build_plan
             build_plan = [
                 plan for plan in base_build_plan if plan.build_for == self._build_for
             ]

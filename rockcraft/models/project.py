@@ -431,12 +431,17 @@ class Project(YamlModelMixin, BaseProject):
 
         return (annotations, metadata)
 
-    def get_build_plan(self) -> List[BuildInfo]:
+    @classmethod
+    def get_build_plan(cls, data: Dict[str, Any]) -> List[BuildInfo]:
         """Obtain the list of architectures and bases from the project file."""
         build_infos: List[BuildInfo] = []
-        base = self.effective_base
 
-        for platform_entry, platform in self.platforms.items():
+        platforms = cls._validate_all_platforms(data["platforms"])
+        effective_base = data["build-base"] if "build-base" in data else data["base"]
+        name, channel = effective_base.replace(":", "@").split("@")
+        base = bases.BaseName(name, channel)
+
+        for platform_entry, platform in platforms.items():
             for build_for in platform.get("build_for") or [platform_entry]:
                 for build_on in platform.get("build_on") or [platform_entry]:
                     build_infos.append(

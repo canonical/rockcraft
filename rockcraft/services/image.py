@@ -48,8 +48,9 @@ class RockcraftImageService(ProjectService):
         project: models.Project,
         work_dir: Path,
         build_for: str,
+        **kwargs,
     ):
-        super().__init__(app, services, project=project)
+        super().__init__(app, services, project=project, **kwargs)
 
         self._work_dir = work_dir
         self._build_for = build_for
