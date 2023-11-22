@@ -90,7 +90,7 @@ def _install_package_repositories(package_repositories, lifecycle_manager) -> No
         emit.progress("Refreshing repositories")
         lifecycle_manager.refresh_packages_list()
 
-    emit.progress("Package repositories installed", permanent=True)
+    emit.progress("Package repositories installed")
 
 
 def _install_overlay_repositories(overlay_dir, project_info):

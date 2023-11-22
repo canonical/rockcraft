@@ -200,6 +200,6 @@ def _pack(
     emit.progress("Exporting to OCI archive")
     archive_name = f"{project.name}_{project.version}_{rock_suffix}.rock"
     new_image.to_oci_archive(tag=project.version, filename=archive_name)
-    emit.progress(f"Exported to OCI archive '{archive_name}'", permanent=True)
+    emit.progress(f"Exported to OCI archive '{archive_name}'")
 
     return archive_name
