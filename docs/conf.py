@@ -47,6 +47,9 @@ author = "Canonical Ltd."
 
 # The full version, including alpha/beta/rc tags
 release = rockcraft.__version__
+if ".post" in release:
+    # The commit hash in the dev release version confuses the spellchecker
+    release = release[0 : release.find(".post")]
 
 # Update with the favicon for your product
 html_favicon = "_static/favicon.png"

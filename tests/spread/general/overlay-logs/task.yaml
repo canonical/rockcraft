@@ -5,7 +5,7 @@ execute: |
   error_pattern="E: Unable to locate package idontexist"
 
   # Check that the message is shown to the "terminal"
-  rockcraft --verbosity=debug 2>&1 >/dev/null | MATCH "$error_pattern"
+  rockcraft pack --verbosity=debug 2>&1 >/dev/null | MATCH "$error_pattern"
 
   # Check that the message was actually written to the logfile.
   rockcraft_log_file=$(find /root/.local/state/rockcraft/log/ -name 'rockcraft*.log' | sort -n | tail -n1)

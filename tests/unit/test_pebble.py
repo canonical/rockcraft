@@ -22,8 +22,8 @@ import pytest
 import yaml
 
 import tests
+from rockcraft.models.project import ProjectValidationError
 from rockcraft.pebble import Check, ExecCheck, HttpCheck, Pebble, Service, TcpCheck
-from rockcraft.project import ProjectValidationError
 
 
 @tests.linux_only
@@ -258,12 +258,13 @@ class TestPebble:
                     "backoff-factor": "not a float",
                 },
                 r"^8 validation errors[\s\S]*"
-                r"unhashable type[\s\S]*"
+                r"unexpected value; permitted: 'merge', 'replace'[\s\S]*"
+                r"str type expected[\s\S]*"
                 r"str type expected[\s\S]*"
                 r"value is not a valid list[\s\S]*"
                 r"value is not a valid dict[\s\S]*"
                 r"value is not a valid integer[\s\S]*"
-                r"unhashable type[\s\S]*"
+                r"unexpected value; permitted: 'restart', 'shutdown'[\s\S]*"
                 r"value is not a valid float[\s\S]*",
             ),
         ],
@@ -407,8 +408,8 @@ class TestPebble:
                 },
                 pydantic.ValidationError,
                 r"^6 validation errors[\s\S]*"
-                r"unhashable type: 'list'[\s\S]*"
-                r"unhashable type: 'list'[\s\S]*"
+                r"unexpected value; permitted: 'merge', 'replace'[\s\S]*"
+                r"unexpected value; permitted: 'alive', 'ready'[\s\S]*"
                 r"str type expected[\s\S]*"
                 r"str type expected[\s\S]*"
                 r"value is not a valid integer[\s\S]*"

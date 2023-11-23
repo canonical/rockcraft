@@ -8,6 +8,7 @@ CLI
 cmake
 CMake
 CMD
+CTRL
 declaratively
 dev
 Diátaxis
@@ -22,16 +23,21 @@ emacs
 entrypoint
 entrypoints
 executables
+expressjs
 filesystem
 fs
+gc
 GID
 github
 GPG
 Gunicorn
+html
 https
 init
 interoperable
 io
+js
+json
 Kubernetes
 libc
 libssl
@@ -76,6 +82,7 @@ SCons
 skopeo
 Skopeo
 sliceName
+snapd
 snapcraft
 Snapcraft
 Snyk's

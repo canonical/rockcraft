@@ -1,6 +1,6 @@
 name: environment-test
 version: latest
-base: ubuntu:20.04
+base: ubuntu@20.04
 summary: Environment
 description: A ROCK with an environment but no real purpose
 license: Apache-2.0

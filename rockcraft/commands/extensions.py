@@ -23,12 +23,13 @@ from pathlib import Path
 from typing import Dict, List
 
 import tabulate
-from craft_cli import BaseCommand, emit
+from craft_application.commands import AppCommand
+from craft_cli import emit
 from overrides import overrides
 from pydantic import BaseModel
 
 from rockcraft import extensions
-from rockcraft.project import Project, load_project
+from rockcraft.models.project import Project, load_project
 
 
 class ExtensionModel(BaseModel):
@@ -45,7 +46,7 @@ class ExtensionModel(BaseModel):
         }
 
 
-class ListExtensionsCommand(BaseCommand, abc.ABC):
+class ListExtensionsCommand(AppCommand, abc.ABC):
     """List available extensions for all supported bases."""
 
     name = "list-extensions"
@@ -82,7 +83,7 @@ class ExtensionsCommand(ListExtensionsCommand, abc.ABC):
     hidden = True
 
 
-class ExpandExtensionsCommand(BaseCommand, abc.ABC):
+class ExpandExtensionsCommand(AppCommand, abc.ABC):
     """Expand the extensions in the snapcraft.yaml file."""
 
     name = "expand-extensions"
@@ -99,4 +100,4 @@ class ExpandExtensionsCommand(BaseCommand, abc.ABC):
         """Print the project's specification with the extensions expanded."""
         project = Project.unmarshal(load_project(Path("rockcraft.yaml")))
 
-        emit.message(project.to_yaml())
+        emit.message(project.to_yaml())  # pylint: disable=no-member

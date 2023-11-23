@@ -19,14 +19,15 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import pytest
+from craft_application import errors
 from craft_cli import EmitterMode, emit
 from craft_parts.errors import OsReleaseVersionIdError
 from craft_parts.utils.os_utils import OsRelease
 
-from rockcraft import errors, plugins
-from rockcraft.parts import PartsLifecycle
+from rockcraft import plugins
+from rockcraft.models.project import Project
 from rockcraft.plugins.python_plugin import SITECUSTOMIZE_TEMPLATE
-from rockcraft.project import Project
+from tests.testing.project import create_project
 from tests.util import ubuntu_only
 
 pytestmark = ubuntu_only
@@ -46,9 +47,8 @@ def setup_python_test(monkeypatch):
     plugins.register()
 
 
-def run_lifecycle(base: str, work_dir: Path, extra_part_props=None) -> None:
+def create_python_project(base, extra_part_props=None) -> Project:
     source = Path(__file__).parent / "python_source"
-
     extra = extra_part_props or {}
 
     parts = {
@@ -60,17 +60,10 @@ def run_lifecycle(base: str, work_dir: Path, extra_part_props=None) -> None:
         }
     }
 
-    lifecycle = PartsLifecycle(
-        all_parts=parts,
-        work_dir=work_dir,
-        part_names=None,
-        base_layer_dir=Path("unused"),
-        base_layer_hash=b"deadbeef",
+    return create_project(
         base=base,
-        project_name="python-project",
+        parts=parts,
     )
-
-    lifecycle.run("stage")
 
 
 @dataclass
@@ -107,8 +100,9 @@ except OsReleaseVersionIdError:
 
 
 @pytest.mark.parametrize("base", tuple(UBUNTU_BASES))
-def test_python_plugin_ubuntu(base, tmp_path):
-    run_lifecycle(base, tmp_path)
+def test_python_plugin_ubuntu(base, tmp_path, run_lifecycle):
+    project = create_python_project(base=base)
+    run_lifecycle(project=project, work_dir=tmp_path)
 
     bin_dir = tmp_path / "stage/bin"
 
@@ -134,8 +128,9 @@ def test_python_plugin_ubuntu(base, tmp_path):
     assert not pyvenv_cfg.is_file()
 
 
-def test_python_plugin_bare(tmp_path):
-    run_lifecycle("bare", tmp_path)
+def test_python_plugin_bare(tmp_path, run_lifecycle):
+    project = create_python_project(base="bare")
+    run_lifecycle(project=project, work_dir=tmp_path)
 
     bin_dir = tmp_path / "stage/bin"
 
@@ -168,7 +163,7 @@ def test_python_plugin_bare(tmp_path):
     assert not pyvenv_cfg.is_file()
 
 
-def test_python_plugin_invalid_interpreter(tmp_path):
+def test_python_plugin_invalid_interpreter(tmp_path, run_lifecycle):
     """Check that an invalid value for PARTS_PYTHON_INTERPRETER fails the build"""
     log_filepath = tmp_path / "log.txt"
     emit.init(EmitterMode.VERBOSE, "rockcraft", "rockcraft", log_filepath=log_filepath)
@@ -177,8 +172,10 @@ def test_python_plugin_invalid_interpreter(tmp_path):
         "build-environment": [{"PARTS_PYTHON_INTERPRETER": "/full/path/python3"}]
     }
 
+    project = create_python_project(base="bare", extra_part_props=extra_part)
+
     with pytest.raises(errors.PartsLifecycleError):
-        run_lifecycle("bare", tmp_path, extra_part_props=extra_part)
+        run_lifecycle(project=project, work_dir=tmp_path)
 
     emit.ended_ok()
 

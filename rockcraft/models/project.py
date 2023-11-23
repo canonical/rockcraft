@@ -15,11 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 """Project definition and helpers."""
-
-import operator
-import platform as host_platform
 import re
-from functools import reduce
 from pathlib import Path
 from typing import (
     TYPE_CHECKING,
@@ -35,75 +31,25 @@ from typing import (
     cast,
 )
 
+import craft_cli
 import pydantic
 import spdx_lookup  # type: ignore
 import yaml
+from craft_application.models import BuildInfo
+from craft_application.models import Project as BaseProject
 from craft_archives import repo
-from pydantic_yaml import YamlModel
+from craft_providers import bases
+from pydantic_yaml import YamlModelMixin
 
+from rockcraft.architectures import SUPPORTED_ARCHS
 from rockcraft.errors import ProjectLoadError, ProjectValidationError
 from rockcraft.extensions import apply_extensions
 from rockcraft.parts import part_has_overlay, validate_part
 from rockcraft.pebble import Check, Pebble, Service
 from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from pydantic.error_wrappers import ErrorDict
-
-
-class ArchitectureMapping(pydantic.BaseModel):
-    """Maps different denominations of the same architecture."""
-
-    description: str
-    deb_arch: str
-    compatible_uts_machine_archs: List[str]
-    go_arch: str
-
-
-_SUPPORTED_ARCHS: Dict[str, ArchitectureMapping] = {
-    "amd64": ArchitectureMapping(
-        description="Intel 64",
-        deb_arch="amd64",
-        compatible_uts_machine_archs=["amd64", "x86_64"],
-        go_arch="amd64",
-    ),
-    "arm": ArchitectureMapping(
-        description="ARM 32-bit",
-        deb_arch="armhf",
-        compatible_uts_machine_archs=["arm"],
-        go_arch="arm",
-    ),
-    "arm64": ArchitectureMapping(
-        description="ARM 64-bit",
-        deb_arch="arm64",
-        compatible_uts_machine_archs=["aarch64"],
-        go_arch="arm64",
-    ),
-    "i386": ArchitectureMapping(
-        description="Intel 386",
-        deb_arch="i386",
-        compatible_uts_machine_archs=["i386"],  # TODO: also include "i686", "x86_64"?
-        go_arch="386",
-    ),
-    "ppc64le": ArchitectureMapping(
-        description="PowerPC 64-bit",
-        deb_arch="ppc64el",
-        compatible_uts_machine_archs=["ppc64le"],
-        go_arch="ppc64le",
-    ),
-    "riscv64": ArchitectureMapping(
-        description="RISCV 64-bit",
-        deb_arch="riscv64",
-        compatible_uts_machine_archs=["riscv64"],
-        go_arch="riscv64",
-    ),
-    "s390x": ArchitectureMapping(
-        description="IBM Z 64-bit",
-        deb_arch="s390x",
-        compatible_uts_machine_archs=["s390x"],
-        go_arch="s390x",
-    ),
-}
 
 
 class Platform(pydantic.BaseModel):
@@ -172,6 +118,8 @@ INVALID_NAME_MESSAGE = (
     "Invalid name for ROCK (must contain only lowercase letters, numbers and hyphens)"
 )
 
+DEPRECATED_COLON_BASES = ["ubuntu:20.04", "ubuntu:22.04"]
+
 
 class NameStr(pydantic.ConstrainedStr):
     """Constrained string type only accepting valid ROCK names."""
@@ -179,18 +127,17 @@ class NameStr(pydantic.ConstrainedStr):
     regex = re.compile(NAME_REGEX)
 
 
-class Project(YamlModel):
+class Project(YamlModelMixin, BaseProject):
     """Rockcraft project definition."""
 
-    name: NameStr
-    title: Optional[str]
-    summary: str
+    name: NameStr  # type: ignore
+    # summary is Optional[str] in BaseProject
+    summary: str  # type: ignore
     description: str
     rock_license: str = pydantic.Field(alias="license")
-    version: str
     platforms: Dict[str, Any]
-    base: Literal["bare", "ubuntu:18.04", "ubuntu:20.04", "ubuntu:22.04"]
-    build_base: Optional[Literal["ubuntu:18.04", "ubuntu:20.04", "ubuntu:22.04"]]
+    base: Literal["bare", "ubuntu@20.04", "ubuntu@22.04"]
+    build_base: Optional[Literal["ubuntu@20.04", "ubuntu@22.04"]]
     environment: Optional[Dict[str, str]]
     run_user: Optional[Literal[tuple(SUPPORTED_GLOBAL_USERNAMES)]]  # type: ignore
     services: Optional[Dict[str, Service]]
@@ -211,6 +158,13 @@ class Project(YamlModel):
         error_msg_templates = {
             "value_error.str.regex": INVALID_NAME_MESSAGE,
         }
+
+    @property
+    def effective_base(self) -> bases.BaseName:
+        """Get the Base name for craft-providers."""
+        base = super().effective_base
+        name, channel = base.split("@")
+        return bases.BaseName(name, channel)
 
     @pydantic.root_validator(pre=True)
     @classmethod
@@ -268,12 +222,37 @@ class Project(YamlModel):
             build_base = values.get("base")
         return cast(str, build_base)
 
+    @pydantic.validator("base", pre=True)
+    @classmethod
+    def _validate_deprecated_base(cls, base_value: Optional[str]) -> Optional[str]:
+        return cls._check_deprecated_base(base_value, "base")
+
+    @pydantic.validator("build_base", pre=True)
+    @classmethod
+    def _validate_deprecated_build_base(
+        cls, base_value: Optional[str]
+    ) -> Optional[str]:
+        return cls._check_deprecated_base(base_value, "build_base")
+
+    @staticmethod
+    def _check_deprecated_base(
+        base_value: Optional[str], field_name: str
+    ) -> Optional[str]:
+        if base_value in DEPRECATED_COLON_BASES:
+            at_value = base_value.replace(":", "@")
+            message = (
+                f'Warning: use of ":" in field "{field_name}" is deprecated. '
+                f'Prefer "{at_value}" instead.'
+            )
+            craft_cli.emit.message(message)
+            return at_value
+
+        return base_value
+
     @pydantic.validator("platforms")
     @classmethod
     def _validate_all_platforms(cls, platforms: Dict[str, Any]) -> Dict[str, Any]:
         """Make sure all provided platforms are tangible and sane."""
-        _self_uts_machine = host_platform.machine().lower()
-
         for platform_label in platforms:
             platform = platforms[platform_label] if platforms[platform_label] else {}
             error_prefix = f"Error for platform entry '{platform_label}'"
@@ -296,10 +275,7 @@ class Project(YamlModel):
             # otherwise the project is invalid.
             if platform["build_for"]:
                 build_target = platform["build_for"][0]
-                if (
-                    platform_label in _SUPPORTED_ARCHS
-                    and platform_label != build_target
-                ):
+                if platform_label in SUPPORTED_ARCHS and platform_label != build_target:
                     raise ProjectValidationError(
                         str(
                             f"{error_prefix}: if 'build_for' is provided and the "
@@ -311,64 +287,23 @@ class Project(YamlModel):
                 build_target = platform_label
 
             # Both build and target architectures must be supported
-            if not any(b_o in _SUPPORTED_ARCHS for b_o in build_on_one_of):
+            if not any(b_o in SUPPORTED_ARCHS for b_o in build_on_one_of):
                 raise ProjectValidationError(
                     str(
                         f"{error_prefix}: trying to build ROCK in one of "
                         f"{build_on_one_of}, but none of these build architectures is supported. "
-                        f"Supported architectures: {list(_SUPPORTED_ARCHS.keys())}"
+                        f"Supported architectures: {list(SUPPORTED_ARCHS.keys())}"
                     )
                 )
 
-            if build_target not in _SUPPORTED_ARCHS:
+            if build_target not in SUPPORTED_ARCHS:
                 raise ProjectValidationError(
                     str(
                         f"{error_prefix}: trying to build ROCK for target "
                         f"architecture {build_target}, which is not supported. "
-                        f"Supported architectures: {list(_SUPPORTED_ARCHS.keys())}"
+                        f"Supported architectures: {list(SUPPORTED_ARCHS.keys())}"
                     )
                 )
-
-            # The underlying build machine must be compatible
-            # with both build_on and build_for
-            # TODO: in the future, this may be removed
-            # as Rockcraft gains the ability to natively build
-            # for multiple architectures
-            build_for_compatible_uts = _SUPPORTED_ARCHS[
-                build_target
-            ].compatible_uts_machine_archs
-            if _self_uts_machine not in build_for_compatible_uts:
-                raise ProjectValidationError(
-                    str(
-                        f"{error_prefix}: this machine's architecture ({_self_uts_machine}) "
-                        "is not compatible with the ROCK's target architecture. Can only "
-                        f"build a ROCK for {build_target} if the host is compatible with {build_for_compatible_uts}."
-                    )
-                )
-
-            build_on_compatible_uts = list(
-                reduce(
-                    operator.add,
-                    map(
-                        lambda m: _SUPPORTED_ARCHS[m].compatible_uts_machine_archs,
-                        build_on_one_of,
-                    ),
-                )
-            )
-            if _self_uts_machine not in build_on_compatible_uts:
-                raise ProjectValidationError(
-                    str(
-                        f"{error_prefix}: this ROCK must be built on one of the "
-                        f"following architectures: {build_on_compatible_uts}. "
-                        f"This machine ({_self_uts_machine}) is not one of those."
-                    )
-                )
-
-            # Add variant, if needed, and return sanitized platform
-            if build_target == "arm":
-                platform["build_for_variant"] = "v7"
-            elif build_target == "arm64":
-                platform["build_for_variant"] = "v8"
 
             platforms[platform_label] = platform
 
@@ -454,22 +389,12 @@ class Project(YamlModel):
 
     @classmethod
     def unmarshal(cls, data: Dict[str, Any]) -> "Project":
-        """Create and populate a new ``Project`` object from dictionary data.
-
-        The unmarshal method validates entries in the input dictionary, populating
-        the corresponding fields in the data object.
-
-        :param data: The dictionary data to unmarshal.
-
-        :return: The newly created object.
-
-        :raise TypeError: If data is not a dictionary.
-        """
+        """Overridden to raise ProjectValidationError() for Pydantic errors."""
         if not isinstance(data, dict):
             raise TypeError("project data is not a dictionary")
 
         try:
-            project = Project(**data)
+            project = super().unmarshal(data)
         except pydantic.ValidationError as err:
             raise ProjectValidationError(_format_pydantic_errors(err.errors())) from err
 
@@ -505,6 +430,25 @@ class Project(YamlModel):
         }
 
         return (annotations, metadata)
+
+    def get_build_plan(self) -> List[BuildInfo]:
+        """Obtain the list of architectures and bases from the project file."""
+        build_infos: List[BuildInfo] = []
+        base = self.effective_base
+
+        for platform_entry, platform in self.platforms.items():
+            for build_for in platform.get("build_for") or [platform_entry]:
+                for build_on in platform.get("build_on") or [platform_entry]:
+                    build_infos.append(
+                        BuildInfo(
+                            platform=platform_entry,
+                            build_on=build_on,
+                            build_for=build_for,
+                            base=base,
+                        )
+                    )
+
+        return build_infos
 
 
 def _format_pydantic_errors(
@@ -623,7 +567,17 @@ def load_project(filename: Path) -> Dict[str, Any]:
             msg = f"{msg}: {err.filename!r}."
         raise ProjectLoadError(msg) from err
 
-    yaml_data = apply_extensions(filename.parent, yaml_data)
+    yaml_data = transform_yaml(filename.parent, yaml_data)
+    return yaml_data
+
+
+def transform_yaml(project_root: Path, yaml_data: Dict[str, Any]) -> Dict[str, Any]:
+    """Do Rockcraft-specific transformations on a project yaml.
+
+    :param project_root: The path that contains the "rockcraft.yaml" file.
+    :param yaml_data: The data dict loaded from the yaml file.
+    """
+    yaml_data = apply_extensions(project_root, yaml_data)
 
     _add_pebble_data(yaml_data)
 

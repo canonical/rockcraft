@@ -68,7 +68,7 @@ The ROCK version, used to tag the OCI image and name the ROCK file.
 ``base``
 --------
 
-**Type**: One of ``ubuntu:18.04 | ubuntu:20.04 | ubuntu:22.04 | bare``
+**Type**: One of ``ubuntu@20.04 | ubuntu@22.04 | bare``
 
 **Required**: Yes
 
@@ -78,10 +78,14 @@ special value ``bare`` means that the ROCK will have no base system at all,
 which is typically used with static binaries or
 :ref:`Chisel slices <chisel_explanation>`.
 
+.. note::
+   The notation "ubuntu:<channel>" is also supported for some channels, but this
+   format is deprecated and should be avoided.
+
 ``build-base``
 --------------
 
-**Type**: One of ``ubuntu:18.04 | ubuntu:20.04 | ubuntu:22.04``
+**Type**: One of ``ubuntu@20.04 | ubuntu@22.04``
 
 **Required**: Yes, if ``base`` is ``bare``
 
@@ -90,6 +94,10 @@ included in the final ROCK itself. It comprises the set of tools and libraries
 that Rockcraft will use when building the ROCK's contents. This field is
 mandatory if ``base`` is ``bare``, but otherwise it is optional and defaults to
 the value of ``base``.
+
+.. note::
+   The notation "ubuntu:<channel>" is also supported for some channels, but this
+   format is deprecated and should be avoided.
 
 ``license``
 -----------
@@ -159,10 +167,10 @@ entry corresponding to a check. Each check can be one of three types:
 **Required**: Yes
 
 The set of architecture-specific ROCKs to be built. Supported architectures are:
-``amd64``, ``arm64``, ``arm``, ``i386``, ``ppc64le``, ``riscv64`` and ``s390x``.
+``amd64``, ``arm64``, ``armhf``, ``i386``, ``ppc64el``, ``riscv64`` and ``s390x``.
 
 Entries in the ``platforms`` dict can be free-form strings, or the name of a
-supported architecture.
+supported architecture (in Debian format).
 
 .. warning::
    **All** target architectures must be compatible with the architecture of
@@ -227,41 +235,8 @@ Currently supported extensions:
 Example
 =======
 
-.. code-block:: yaml
-
-  name: hello
-  title: Hello World
-  summary: An Hello World ROCK
-  description: |
-    This is just an example of a Rockcraft project
-    for a Hello World ROCK.
-  version: latest
-  base: bare
-  build-base: ubuntu:22.04
-  license: Apache-2.0
-  run-user: _daemon_
-  environment:
-    FOO: bar
-  services:
-    hello:
-      override: replace
-      command: /usr/bin/hello -t
-      environment:
-        VAR1: value
-        VAR2: "other value"
-  platforms:
-    amd64:
-    arm:
-      build-on: ["arm", "arm64"]
-    ibm:
-      build-on: ["s390x"]
-      build-for: s390x
-
-  parts:
-    hello:
-      plugin: nil
-      stage-packages:
-        - hello
+.. literalinclude:: code/example/rockcraft.yaml
+    :language: yaml
 
 
 .. _`Pebble Layer Specification format`:  https://github.com/canonical/pebble#layer-specification

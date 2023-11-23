@@ -15,7 +15,7 @@ execute: |
   cp ../rockcraft.yaml .
   
   # [docs:build-rock]
-  rockcraft
+  rockcraft pack
   # [docs:build-rock-end]  
 
   # [docs:skopeo-copy]

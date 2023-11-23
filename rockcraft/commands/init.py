@@ -21,11 +21,12 @@ import textwrap
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from craft_cli import BaseCommand, CraftError, emit
+from craft_application.commands import AppCommand
+from craft_cli import emit
 from overrides import overrides
 
 from rockcraft import errors
-from rockcraft.project import INVALID_NAME_MESSAGE, NAME_REGEX
+from rockcraft.models.project import INVALID_NAME_MESSAGE, NAME_REGEX
 
 if TYPE_CHECKING:
     import argparse
@@ -34,7 +35,7 @@ TEMPLATES = {
     "simple": textwrap.dedent(
         """\
             name: {name}
-            base: ubuntu:22.04 # the base environment for this ROCK
+            base: ubuntu@22.04 # the base environment for this ROCK
             version: '0.1' # just for humans. Semantic versioning is recommended
             summary: Single-line elevator pitch for your amazing ROCK # 79 char long summary
             description: |
@@ -54,7 +55,7 @@ TEMPLATES = {
     "flask-framework": textwrap.dedent(
         """\
             name: {name}
-            base: ubuntu:22.04 # the base environment for this Flask application
+            base: ubuntu@22.04 # the base environment for this Flask application
             version: '0.1' # just for humans. Semantic versioning is recommended
             summary: A summary of your Flask application # 79 char long summary
             description: |
@@ -118,7 +119,7 @@ def init(rockcraft_yaml_content: str) -> None:
     emit.progress(f"Created {rockcraft_yaml_path}.")
 
 
-class InitCommand(BaseCommand):
+class InitCommand(AppCommand):
     """Initialize a rockcraft project."""
 
     name = "init"
@@ -147,7 +148,7 @@ class InitCommand(BaseCommand):
         """Run the command."""
         name = parsed_args.name
         if name and not re.match(NAME_REGEX, name):
-            raise CraftError(
+            raise errors.RockcraftInitError(
                 f"'{name}' is not a valid rock name. " + INVALID_NAME_MESSAGE
             )
 
