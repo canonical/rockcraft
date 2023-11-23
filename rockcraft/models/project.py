@@ -35,7 +35,7 @@ import craft_cli
 import pydantic
 import spdx_lookup  # type: ignore
 import yaml
-from craft_application.models import BuildInfo
+from craft_application.models import BuildInfo, CraftBaseModel, CraftBaseConfig
 from craft_application.models import Project as BaseProject
 from craft_archives import repo
 from craft_providers import bases
@@ -127,84 +127,23 @@ class NameStr(pydantic.ConstrainedStr):
     regex = re.compile(NAME_REGEX)
 
 
-class Project(YamlModelMixin, BaseProject):
-    """Rockcraft project definition."""
+class BuildProjectConfig(CraftBaseConfig):
+    """Config for BuildProjects."""
 
-    name: NameStr  # type: ignore
-    # summary is Optional[str] in BaseProject
-    summary: str  # type: ignore
-    description: str
-    rock_license: str = pydantic.Field(alias="license")
+    extra = pydantic.Extra.ignore
+    """BuildProjects are used to validate only the build-related data from
+    a model; this config lets us parse only those items and ignore everything
+    else."""
+
+
+class BuildProject(CraftBaseModel):
+    """Model for a project's data related to build info and plan."""
+
+    Config = BuildProjectConfig
+
     platforms: Dict[str, Any]
     base: Literal["bare", "ubuntu@20.04", "ubuntu@22.04"]
     build_base: Optional[Literal["ubuntu@20.04", "ubuntu@22.04"]]
-    environment: Optional[Dict[str, str]]
-    run_user: Optional[Literal[tuple(SUPPORTED_GLOBAL_USERNAMES)]]  # type: ignore
-    services: Optional[Dict[str, Service]]
-    checks: Optional[Dict[str, Check]]
-
-    package_repositories: Optional[List[Dict[str, Any]]]
-
-    parts: Dict[str, Any]
-
-    class Config:  # pylint: disable=too-few-public-methods
-        """Pydantic model configuration."""
-
-        validate_assignment = True
-        extra = "forbid"
-        allow_mutation = False
-        allow_population_by_field_name = True
-        alias_generator = lambda s: s.replace("_", "-")  # noqa: E731
-        error_msg_templates = {
-            "value_error.str.regex": INVALID_NAME_MESSAGE,
-        }
-
-    @property
-    def effective_base(self) -> bases.BaseName:
-        """Get the Base name for craft-providers."""
-        base = super().effective_base
-        name, channel = base.split("@")
-        return bases.BaseName(name, channel)
-
-    @pydantic.root_validator(pre=True)
-    @classmethod
-    def _check_unsupported_options(cls, values: Mapping[str, Any]) -> Mapping[str, Any]:
-        """Before validation, check if unsupported fields exist. Exit if so."""
-        # pylint: disable=unused-argument
-        unsupported_msg = str(
-            "The fields 'entrypoint', 'cmd' and 'env' are not supported in "
-            "Rockcraft. All ROCKs have Pebble as their entrypoint, so you must "
-            "use 'services' to define your container application and "
-            "respective environment."
-        )
-        unsupported_fields = ["cmd", "entrypoint", "env"]
-        if any(field in values for field in unsupported_fields):
-            raise ProjectValidationError(unsupported_msg)
-
-        return values
-
-    @pydantic.validator("rock_license", always=True)
-    @classmethod
-    def _validate_license(cls, rock_license: str) -> str:
-        """Make sure the provided license is valid and in SPDX format."""
-        if rock_license == "proprietary":
-            # This is the license name we use on our stores.
-            return rock_license
-
-        lic: Optional[spdx_lookup.License] = spdx_lookup.by_id(rock_license)
-        if lic is None:
-            raise ProjectValidationError(
-                f"License {rock_license} not valid. It must be valid and in SPDX format."
-            )
-        return lic.id
-
-    @pydantic.validator("title", always=True)
-    @classmethod
-    def _validate_title(cls, title: Optional[str], values: Mapping[str, Any]) -> str:
-        """If title is not provided, it defaults to the provided ROCK name."""
-        if not title:
-            title = values.get("name", "")
-        return cast(str, title)
 
     @pydantic.validator("build_base", always=True)
     @classmethod
@@ -309,6 +248,98 @@ class Project(YamlModelMixin, BaseProject):
 
         return platforms
 
+    def get_build_plan(self) -> List[BuildInfo]:
+        """Obtain the list of architectures and bases from the project file."""
+        return create_build_plan(self.build_base, self.platforms)
+
+    @classmethod
+    def build_plan_from_data(cls, data: Dict[str, Any]) -> List[BuildInfo]:
+        model = BuildProject.unmarshal(data)
+        return model.get_build_plan()
+
+    @classmethod
+    def unmarshal(cls, data: Dict[str, Any]) -> "Project":
+        """Overridden to raise ProjectValidationError() for Pydantic errors."""
+        if not isinstance(data, dict):
+            raise TypeError("project data is not a dictionary")
+
+        try:
+            project = super().unmarshal(data)
+        except pydantic.ValidationError as err:
+            raise ProjectValidationError(_format_pydantic_errors(err.errors())) from err
+
+        return project
+
+
+class Project(YamlModelMixin, BuildProject, BaseProject):
+    """Rockcraft project definition."""
+
+    name: NameStr  # type: ignore
+    # summary is Optional[str] in BaseProject
+    summary: str  # type: ignore
+    description: str
+    rock_license: str = pydantic.Field(alias="license")
+    environment: Optional[Dict[str, str]]
+    run_user: Optional[Literal[tuple(SUPPORTED_GLOBAL_USERNAMES)]]  # type: ignore
+    services: Optional[Dict[str, Service]]
+    checks: Optional[Dict[str, Check]]
+
+    package_repositories: Optional[List[Dict[str, Any]]]
+
+    parts: Dict[str, Any]
+
+    class Config:  # pylint: disable=too-few-public-methods
+        """Pydantic model configuration."""
+
+        validate_assignment = True
+        extra = "forbid"
+        allow_mutation = False
+        allow_population_by_field_name = True
+        alias_generator = lambda s: s.replace("_", "-")  # noqa: E731
+        error_msg_templates = {
+            "value_error.str.regex": INVALID_NAME_MESSAGE,
+        }
+
+    @pydantic.root_validator(pre=True)
+    @classmethod
+    def _check_unsupported_options(cls, values: Mapping[str, Any]) -> Mapping[str, Any]:
+        """Before validation, check if unsupported fields exist. Exit if so."""
+        # pylint: disable=unused-argument
+        unsupported_msg = str(
+            "The fields 'entrypoint', 'cmd' and 'env' are not supported in "
+            "Rockcraft. All ROCKs have Pebble as their entrypoint, so you must "
+            "use 'services' to define your container application and "
+            "respective environment."
+        )
+        unsupported_fields = ["cmd", "entrypoint", "env"]
+        if any(field in values for field in unsupported_fields):
+            raise ProjectValidationError(unsupported_msg)
+
+        return values
+
+    @pydantic.validator("rock_license", always=True)
+    @classmethod
+    def _validate_license(cls, rock_license: str) -> str:
+        """Make sure the provided license is valid and in SPDX format."""
+        if rock_license == "proprietary":
+            # This is the license name we use on our stores.
+            return rock_license
+
+        lic: Optional[spdx_lookup.License] = spdx_lookup.by_id(rock_license)
+        if lic is None:
+            raise ProjectValidationError(
+                f"License {rock_license} not valid. It must be valid and in SPDX format."
+            )
+        return lic.id
+
+    @pydantic.validator("title", always=True)
+    @classmethod
+    def _validate_title(cls, title: Optional[str], values: Mapping[str, Any]) -> str:
+        """If title is not provided, it defaults to the provided ROCK name."""
+        if not title:
+            title = values.get("name", "")
+        return cast(str, title)
+
     @pydantic.validator("parts", each_item=True)
     @classmethod
     def _validate_parts(cls, item: Dict[str, Any]) -> Dict[str, Any]:
@@ -387,19 +418,6 @@ class Project(YamlModelMixin, BaseProject):
             width=1000,
         )
 
-    @classmethod
-    def unmarshal(cls, data: Dict[str, Any]) -> "Project":
-        """Overridden to raise ProjectValidationError() for Pydantic errors."""
-        if not isinstance(data, dict):
-            raise TypeError("project data is not a dictionary")
-
-        try:
-            project = super().unmarshal(data)
-        except pydantic.ValidationError as err:
-            raise ProjectValidationError(_format_pydantic_errors(err.errors())) from err
-
-        return project
-
     def generate_metadata(
         self, generation_time: str, base_digest: bytes
     ) -> Tuple[dict, dict]:
@@ -430,25 +448,6 @@ class Project(YamlModelMixin, BaseProject):
         }
 
         return (annotations, metadata)
-
-    def get_build_plan(self) -> List[BuildInfo]:
-        """Obtain the list of architectures and bases from the project file."""
-        build_infos: List[BuildInfo] = []
-        base = self.effective_base
-
-        for platform_entry, platform in self.platforms.items():
-            for build_for in platform.get("build_for") or [platform_entry]:
-                for build_on in platform.get("build_on") or [platform_entry]:
-                    build_infos.append(
-                        BuildInfo(
-                            platform=platform_entry,
-                            build_on=build_on,
-                            build_for=build_for,
-                            base=base,
-                        )
-                    )
-
-        return build_infos
 
 
 def _format_pydantic_errors(
@@ -603,3 +602,23 @@ def _add_pebble_data(yaml_data: Dict[str, Any]) -> None:
         raise ProjectValidationError('Cannot override the default "pebble" part')
 
     parts["pebble"] = Pebble.PEBBLE_PART_SPEC
+
+
+def create_build_plan(base: str, platforms: Dict[str, Any]) -> List[BuildInfo]:
+    build_infos: List[BuildInfo] = []
+    name, channel = base.split("@")
+    basename = bases.BaseName(name, channel)
+
+    for platform_entry, platform in platforms.items():
+        for build_for in platform.get("build_for") or [platform_entry]:
+            for build_on in platform.get("build_on") or [platform_entry]:
+                build_infos.append(
+                    BuildInfo(
+                        platform=platform_entry,
+                        build_on=build_on,
+                        build_for=build_for,
+                        base=basename,
+                    )
+                )
+
+    return build_infos
