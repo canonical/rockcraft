@@ -31,6 +31,7 @@ def run_mocked_lifecycle(
     work_dir: pathlib.Path,
     mocker,
     base_layer_dir: pathlib.Path | None = None,
+    step: str = "stage",
 ) -> RockcraftLifecycleService:
     """Run a project's lifecycle with a mocked base image."""
 
@@ -56,6 +57,6 @@ def run_mocked_lifecycle(
     mocker.patch.object(factory.image, "obtain_image", return_value=image_info)
 
     lifecycle_service = factory.lifecycle
-    lifecycle_service.run("stage")
+    lifecycle_service.run(step)
 
     return cast(RockcraftLifecycleService, lifecycle_service)

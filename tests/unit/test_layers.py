@@ -13,6 +13,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+import os
 import re
 import stat
 import sys
@@ -330,3 +331,30 @@ def test_archive_layer_duplicate_identical_files(tmp_path):
         "usr/bin/dir1/same.txt",
     ]
     assert temp_tar_contents == expected_tar_contents
+
+
+def test_prune_prime_files(tmp_path):
+    base_layer_dir = tmp_path / "base"
+    base_layer_dir.mkdir()
+
+    (base_layer_dir / "file1.txt").write_text("file1")
+    (base_layer_dir / "file2.txt").write_text("file2")
+    (base_layer_dir / "file3.txt").write_text("file3")
+    (base_layer_dir / "file3.txt").chmod(0o666)
+
+    prime_dir = tmp_path / "prime"
+    prime_dir.mkdir()
+
+    # file1.txt is identical
+    (prime_dir / "file1.txt").write_text("file1")
+    # file2.txt has different contents
+    (prime_dir / "file2.txt").write_text("different")
+    # file3.txt has same contents but different permissions
+    (prime_dir / "file3.txt").write_text("file3")
+    (prime_dir / "file3.txt").chmod(0o444)
+
+    files = {"file1.txt", "file2.txt", "file3.txt"}
+    layers.prune_prime_files(prime_dir, files, base_layer_dir)
+
+    # "file1.txt" gets pruned, the other files remain.
+    assert sorted(os.listdir(prime_dir)) == ["file2.txt", "file3.txt"]

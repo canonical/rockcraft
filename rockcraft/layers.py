@@ -19,11 +19,12 @@ import os
 import tarfile
 from collections import defaultdict
 from pathlib import Path
-from typing import DefaultDict, Dict, List, Optional, Tuple
+from typing import DefaultDict, Dict, List, Optional, Set, Tuple
 
 from craft_cli import emit
 from craft_parts.executor.collisions import paths_collide
 from craft_parts.overlays import overlays
+from craft_parts.permissions import Permissions
 
 from rockcraft import errors
 
@@ -35,8 +36,8 @@ def archive_layer(
 ) -> None:
     """Prepare new OCI layer by archiving its content into tar file.
 
-    :param new_layer_dir: path to the content to be archived into a layer
-    :param temp_tar_file: path to the temporary tar file holding the archived content
+    :param new_layer_dir: path to the content to be archived into a layer.
+    :param temp_tar_file: path to the temporary tar file holding the archived content.
     :param base_layer_dir: optional path to the filesystem containing the extracted
         base below this new layer. Used to preserve lower-level directory symlinks,
         like the ones from Debian/Ubuntu's usrmerge.
@@ -52,6 +53,37 @@ def archive_layer(
             filepath = layer_paths[arcname]
             emit.debug(f"Adding to layer: {filepath} as '{arcname}'")
             tar_file.add(filepath, arcname=arcname, recursive=False)
+
+
+def prune_prime_files(prime_dir: Path, files: Set[str], base_layer_dir: Path) -> None:
+    """Remove (prune) files in a prime directory if they exist in the base layer.
+
+    Given a set of filenames ``files``, this function will remove (prune) all those
+    filenames from prime dir ``prime_dir`` if the corresponding sub path exists in
+    the extracted base layer directory ``base_layer_dir`` with same contents and
+    permissions.
+
+    For example, "{prime_dir}/dir/subdir/file1" will be pruned if the matching file
+    "{base_layer_dir}/dir/subdir/file1" exists and has the same contents, owner,
+    group, and permission bits.
+
+    :param prime_dir: The directory containing the lifecycle's primed contents.
+    :param files: The set of filenames added to ``prime_dir``, as provided by
+        the corresponding post_step lifecycle callback.
+    :param base_layer_dir: The directory where the base layer was extracted.
+    """
+    emit.debug("Pruning primed files that already exist on base layer...")
+    for filename in files:
+        base_layer_file = base_layer_dir / filename
+        if base_layer_file.is_file():
+            prime_file = prime_dir / filename
+            if _all_compatible_files([base_layer_file, prime_file]):
+                emit.debug(f"Pruning: {prime_file} as it exists on the base")
+                prime_file.unlink()
+            else:
+                emit.debug(
+                    f"{prime_file} exists on the base but with different contents or permissions"
+                )
 
 
 def _gather_layer_paths(
@@ -251,8 +283,19 @@ def _all_compatible_files(paths: List[Path]) -> bool:
 
     first_file = paths[0]
 
+    permissions_first = [_get_permissions(first_file)]
+
     for other_file in paths[1:]:
-        if paths_collide(str(first_file), str(other_file)):
+        permissions_other = [_get_permissions(other_file)]
+        if paths_collide(
+            str(first_file), str(other_file), permissions_first, permissions_other
+        ):
             return False
 
     return True
+
+
+def _get_permissions(filename: Path) -> Permissions:
+    """Create a Permissions object for a given Path."""
+    stat = os.stat(filename)
+    return Permissions(owner=stat.st_uid, group=stat.st_gid, mode=oct(stat.st_mode))
