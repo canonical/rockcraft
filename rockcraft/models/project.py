@@ -36,6 +36,7 @@ import pydantic
 import spdx_lookup  # type: ignore
 import yaml
 from craft_application.models import BuildInfo
+from craft_application.models import BuildPlanner as BaseBuildPlanner
 from craft_application.models import Project as BaseProject
 from craft_archives import repo
 from craft_providers import bases
@@ -100,6 +101,136 @@ class Platform(pydantic.BaseModel):
             )
 
         return values
+
+
+class BuildPlanner(BaseBuildPlanner):
+
+    platforms: Dict[str, Any]
+    base: Literal["bare", "ubuntu@20.04", "ubuntu@22.04"]
+    build_base: Optional[Literal["ubuntu@20.04", "ubuntu@22.04"]]
+
+    @pydantic.validator("build_base", always=True)
+    @classmethod
+    def _validate_build_base(cls, build_base: Optional[str], values: Any) -> str:
+        """Build-base defaults to the base value if not specified.
+
+        :raises ProjectValidationError: If base validation fails.
+        """
+        if not build_base:
+            base_value = values.get("base")
+            if base_value == "bare":
+                raise ProjectValidationError(
+                    'When "base" is bare, a build-base must be specified!'
+                )
+            build_base = values.get("base")
+        return cast(str, build_base)
+
+    @pydantic.validator("base", pre=True)
+    @classmethod
+    def _validate_deprecated_base(cls, base_value: Optional[str]) -> Optional[str]:
+        return cls._check_deprecated_base(base_value, "base")
+
+    @pydantic.validator("build_base", pre=True)
+    @classmethod
+    def _validate_deprecated_build_base(
+        cls, base_value: Optional[str]
+    ) -> Optional[str]:
+        return cls._check_deprecated_base(base_value, "build_base")
+
+    @staticmethod
+    def _check_deprecated_base(
+        base_value: Optional[str], field_name: str
+    ) -> Optional[str]:
+        if base_value in DEPRECATED_COLON_BASES:
+            at_value = base_value.replace(":", "@")
+            message = (
+                f'Warning: use of ":" in field "{field_name}" is deprecated. '
+                f'Prefer "{at_value}" instead.'
+            )
+            craft_cli.emit.message(message)
+            return at_value
+
+        return base_value
+
+    @pydantic.validator("platforms")
+    @classmethod
+    def _validate_all_platforms(cls, platforms: Dict[str, Any]) -> Dict[str, Any]:
+        """Make sure all provided platforms are tangible and sane."""
+        for platform_label in platforms:
+            platform = platforms[platform_label] if platforms[platform_label] else {}
+            error_prefix = f"Error for platform entry '{platform_label}'"
+
+            # Make sure the provided platform_set is valid
+            try:
+                platform = Platform(**platform).dict()
+            except ProjectValidationError as err:
+                # pylint: disable=raise-missing-from
+                raise ProjectValidationError(f"{error_prefix}: {str(err)}")
+
+            # build_on and build_for are validated
+            # let's also validate the platform label
+            build_on_one_of = (
+                platform["build_on"] if platform["build_on"] else [platform_label]
+            )
+
+            # If the label maps to a valid architecture and
+            # `build-for` is present, then both need to have the same value,
+            # otherwise the project is invalid.
+            if platform["build_for"]:
+                build_target = platform["build_for"][0]
+                if platform_label in SUPPORTED_ARCHS and platform_label != build_target:
+                    raise ProjectValidationError(
+                        str(
+                            f"{error_prefix}: if 'build_for' is provided and the "
+                            "platform entry label corresponds to a valid architecture, then "
+                            f"both values must match. {platform_label} != {build_target}"
+                        )
+                    )
+            else:
+                build_target = platform_label
+
+            # Both build and target architectures must be supported
+            if not any(b_o in SUPPORTED_ARCHS for b_o in build_on_one_of):
+                raise ProjectValidationError(
+                    str(
+                        f"{error_prefix}: trying to build ROCK in one of "
+                        f"{build_on_one_of}, but none of these build architectures is supported. "
+                        f"Supported architectures: {list(SUPPORTED_ARCHS.keys())}"
+                    )
+                )
+
+            if build_target not in SUPPORTED_ARCHS:
+                raise ProjectValidationError(
+                    str(
+                        f"{error_prefix}: trying to build ROCK for target "
+                        f"architecture {build_target}, which is not supported. "
+                        f"Supported architectures: {list(SUPPORTED_ARCHS.keys())}"
+                    )
+                )
+
+            platforms[platform_label] = platform
+
+        return platforms
+
+    def get_build_plan(self) -> List[BuildInfo]:
+        """Obtain the list of architectures and bases from the project file."""
+        build_infos: List[BuildInfo] = []
+        name, channel = self.build_base.split("@")
+        base = bases.BaseName(name, channel)
+
+        for platform_entry, platform in self.platforms.items():
+            for build_for in platform.get("build_for") or [platform_entry]:
+                for build_on in platform.get("build_on") or [platform_entry]:
+                    build_infos.append(
+                        BuildInfo(
+                            platform=platform_entry,
+                            build_on=build_on,
+                            build_for=build_for,
+                            base=base,
+                        )
+                    )
+
+        return build_infos
 
 
 NAME_REGEX = r"^([a-z](?:-?[a-z0-9]){2,})$"
@@ -430,25 +561,6 @@ class Project(YamlModelMixin, BaseProject):
         }
 
         return (annotations, metadata)
-
-    def get_build_plan(self) -> List[BuildInfo]:
-        """Obtain the list of architectures and bases from the project file."""
-        build_infos: List[BuildInfo] = []
-        base = self.effective_base
-
-        for platform_entry, platform in self.platforms.items():
-            for build_for in platform.get("build_for") or [platform_entry]:
-                for build_on in platform.get("build_on") or [platform_entry]:
-                    build_infos.append(
-                        BuildInfo(
-                            platform=platform_entry,
-                            build_on=build_on,
-                            build_for=build_for,
-                            base=base,
-                        )
-                    )
-
-        return build_infos
 
 
 def _format_pydantic_errors(

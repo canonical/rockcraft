@@ -29,7 +29,7 @@ from craft_providers.bases import BaseName
 
 from rockcraft.errors import ProjectLoadError, ProjectValidationError
 from rockcraft.models import Project, load_project
-from rockcraft.models.project import INVALID_NAME_MESSAGE, Platform
+from rockcraft.models.project import INVALID_NAME_MESSAGE, Platform, BuildPlanner
 from rockcraft.pebble import Service
 
 _ARCH_MAPPING = {"x86": "amd64", "x64": "amd64"}
@@ -623,7 +623,7 @@ def test_project_yaml(yaml_loaded_data):
         ),
     ],
 )
-def test_project_get_build_plan(yaml_loaded_data, platforms, expected_build_infos):
+def test_get_build_plan(yaml_loaded_data, platforms, expected_build_infos):
     yaml_loaded_data["platforms"] = platforms
-    project = Project.unmarshal(yaml_loaded_data)
-    assert project.get_build_plan() == expected_build_infos
+    planner = BuildPlanner.unmarshal(yaml_loaded_data)
+    assert planner.get_build_plan() == expected_build_infos
