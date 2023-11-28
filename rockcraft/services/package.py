@@ -16,8 +16,6 @@
 
 """Rockcraft Package service."""
 
-from __future__ import annotations
-
 import datetime
 import pathlib
 import typing

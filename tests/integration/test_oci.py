@@ -18,7 +18,7 @@ import subprocess
 import tarfile
 import textwrap
 from pathlib import Path
-from typing import Callable, List, Tuple
+from collections.abc import Callable
 
 import pytest
 
@@ -31,7 +31,7 @@ pytestmark = jammy_only
 
 def create_base_image(
     work_dir: Path, populate_base_layer: Callable[[Path], None]
-) -> Tuple[oci.Image, Path]:
+) -> tuple[oci.Image, Path]:
     """Create a base image with content provided by a callable.
 
     This function will create an empty image, extract it to a bundle and then
@@ -72,7 +72,7 @@ def create_base_image(
     return image, base_layer_dir
 
 
-def get_names_in_layer(image: oci.Image, layer_number: int = -1) -> List[str]:
+def get_names_in_layer(image: oci.Image, layer_number: int = -1) -> list[str]:
     """Get the list of file/dir names contained in the given layer, sorted."""
     umoci_stat = image.stat()
 

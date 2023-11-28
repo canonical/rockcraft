@@ -797,7 +797,7 @@ class TestImage:
             "raw",
             "add-layer",
             "--image",
-            str("/c/a:b"),
+            "/c/a:b",
             str(f"/c/.temp_layer.control_data.{os.getpid()}.tar"),
         ]
         assert mock_run.mock_calls == [
@@ -829,7 +829,7 @@ class TestImage:
                 ],
                 capture_output=True,
                 check=True,
-                universal_newlines=True,
+                text=True,
             ),
             call(
                 [
@@ -845,7 +845,7 @@ class TestImage:
                 ],
                 capture_output=True,
                 check=True,
-                universal_newlines=True,
+                text=True,
             ),
         ]
 

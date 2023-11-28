@@ -60,20 +60,20 @@ class TestPebble:
                 },
                 (
                     "summary: mock summary"
-                    "{n}"
+                    f"{os.linesep}"
                     "description: mock description"
-                    "{n}"
+                    f"{os.linesep}"
                     "services:"
-                    "{n}"
+                    f"{os.linesep}"
                     "  mockServiceOne:"
-                    "{n}"
+                    f"{os.linesep}"
                     "    override: replace"
-                    "{n}"
+                    f"{os.linesep}"
                     "    command: foo"
-                    "{n}"
+                    f"{os.linesep}"
                     "    on-success: shutdown"
-                    "{n}"
-                ).format(n=os.linesep),
+                    f"{os.linesep}"
+                ),
             ),
             # Test Case 2:
             # With existing layers, the default layer prefix is an increment.
@@ -91,24 +91,24 @@ class TestPebble:
                 },
                 (
                     "summary: mock summary"
-                    "{n}"
+                    f"{os.linesep}"
                     "description: mock description"
-                    "{n}"
+                    f"{os.linesep}"
                     "services:"
-                    "{n}"
+                    f"{os.linesep}"
                     "  mockServiceOne:"
-                    "{n}"
+                    f"{os.linesep}"
                     "    override: replace"
-                    "{n}"
+                    f"{os.linesep}"
                     "    command: foo"
-                    "{n}"
+                    f"{os.linesep}"
                     "  mockServiceTwo:"
-                    "{n}"
+                    f"{os.linesep}"
                     "    override: merge"
-                    "{n}"
+                    f"{os.linesep}"
                     "    command: bar"
-                    "{n}"
-                ).format(n=os.linesep),
+                    f"{os.linesep}"
+                ),
             ),
             # Test Case 3:
             # If there are more files that are not layers, they are ignored.
@@ -124,18 +124,18 @@ class TestPebble:
                 },
                 (
                     "summary: mock summary"
-                    "{n}"
+                    f"{os.linesep}"
                     "description: mock description"
-                    "{n}"
+                    f"{os.linesep}"
                     "services:"
-                    "{n}"
+                    f"{os.linesep}"
                     "  mockServiceOne:"
-                    "{n}"
+                    f"{os.linesep}"
                     "    override: replace"
-                    "{n}"
+                    f"{os.linesep}"
                     "    command: foo"
-                    "{n}"
-                ).format(n=os.linesep),
+                    f"{os.linesep}"
+                ),
             ),
         ],
     )

@@ -19,7 +19,7 @@ import os
 import subprocess
 import textwrap
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 import pydantic
 import pytest
@@ -98,7 +98,7 @@ def yaml_loaded_data():
 
 
 @pytest.fixture
-def pebble_part() -> Dict[str, Any]:
+def pebble_part() -> dict[str, Any]:
     return {
         "pebble": {
             "plugin": "nil",
