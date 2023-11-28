@@ -82,7 +82,7 @@ def test_confirm_with_user_defaults_without_tty(mock_input, mock_isatty):
 
 
 @pytest.mark.parametrize(
-    "user_input,expected",
+    ("user_input", "expected"),
     [
         ("y", True),
         ("Y", True),
