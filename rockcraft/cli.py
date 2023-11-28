@@ -39,7 +39,7 @@ def run() -> int:
     return app.run()
 
 
-def _create_app():
+def _create_app():  # noqa: ANN202
     # pylint: disable=import-outside-toplevel
     # Import these here so that the script that generates the docs for the
     # commands doesn't need to know *too much* of the application.
