@@ -18,13 +18,14 @@
 
 import contextlib
 from pathlib import Path
-from typing import cast
+from typing import Any, cast
 
 from craft_application import LifecycleService
 from craft_archives import repo
 from craft_cli import emit
-from craft_parts import Features, Step, callbacks
+from craft_parts import Features, LifecycleManager, Step, callbacks
 from craft_parts.errors import CallbackRegistrationError
+from craft_parts.infos import ProjectInfo
 from overrides import override
 
 from rockcraft import layers
@@ -83,7 +84,10 @@ class RockcraftLifecycleService(LifecycleService):
             callbacks.unregister_all()
 
 
-def _install_package_repositories(package_repositories, lifecycle_manager) -> None:
+def _install_package_repositories(
+    package_repositories: list[dict[str, Any]] | None,
+    lifecycle_manager: LifecycleManager,
+) -> None:
     """Install package repositories in the environment."""
     if not package_repositories:
         emit.debug("No package repositories specified, none to install.")
@@ -97,7 +101,7 @@ def _install_package_repositories(package_repositories, lifecycle_manager) -> No
     emit.progress("Package repositories installed")
 
 
-def _install_overlay_repositories(overlay_dir, project_info):
+def _install_overlay_repositories(overlay_dir: Path, project_info: ProjectInfo) -> None:
     if project_info.base != "bare":
         package_repositories = project_info.package_repositories
         repo.install_in_root(
