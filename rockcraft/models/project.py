@@ -189,7 +189,9 @@ class Project(YamlModelMixin, BaseProject):
 
     @pydantic.validator("build_base", always=True)
     @classmethod
-    def _validate_build_base(cls, build_base: str | None, values: Any) -> str:
+    def _validate_build_base(
+        cls, build_base: str | None, values: dict[str, Any]
+    ) -> str:
         """Build-base defaults to the base value if not specified.
 
         :raises CraftValidationError: If base validation fails.
@@ -295,7 +297,9 @@ class Project(YamlModelMixin, BaseProject):
 
     @pydantic.validator("parts", each_item=True)
     @classmethod
-    def _validate_base_and_overlay(cls, item: dict[str, Any], values) -> dict[str, Any]:
+    def _validate_base_and_overlay(
+        cls, item: dict[str, Any], values: dict[str, Any]
+    ) -> dict[str, Any]:
         """Projects with "bare" bases cannot use overlays."""
         if values.get("base") == "bare" and part_has_overlay(item):
             raise CraftValidationError(
@@ -306,7 +310,7 @@ class Project(YamlModelMixin, BaseProject):
     @pydantic.validator("entrypoint_service")
     @classmethod
     def _validate_entrypoint_service(
-        cls, entrypoint_service: str | None, values: Any
+        cls, entrypoint_service: str | None, values: dict[str, Any]
     ) -> str | None:
         """Verify that the entrypoint_service exists in the services dict."""
         craft_cli.emit.message(
@@ -375,7 +379,7 @@ class Project(YamlModelMixin, BaseProject):
     def to_yaml(self) -> str:
         """Dump this project as a YAML string."""
 
-        def _repr_str(dumper, data):
+        def _repr_str(dumper: yaml.SafeDumper, data: str) -> yaml.ScalarNode:
             """Multi-line string representer for the YAML dumper."""
             if "\n" in data:
                 return dumper.represent_scalar("tag:yaml.org,2002:str", data, style="|")

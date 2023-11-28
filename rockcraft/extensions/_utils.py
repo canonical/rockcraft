@@ -79,7 +79,10 @@ def _apply_extension(
         parts[part_name] = parts_snippet[part_name]
 
 
-def _apply_extension_property(existing_property: Any, extension_property: Any) -> Any:
+def _apply_extension_property(
+    existing_property: list[Any] | dict[str, Any] | None,
+    extension_property: list[Any] | dict[str, Any],
+) -> list[Any] | dict[str, Any] | None:
     if existing_property:
         # If the property is not scalar, merge them
         if isinstance(existing_property, list) and isinstance(extension_property, list):
