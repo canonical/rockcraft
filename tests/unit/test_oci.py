@@ -301,7 +301,7 @@ class TestImage:
             "tag",
         ]
         assert mock_run.mock_calls == [
-            call(expected_cmd + ["--history.created_by", " ".join(expected_cmd)])
+            call([*expected_cmd, "--history.created_by", " ".join(expected_cmd)])
         ]
 
     def test_add_new_user(
@@ -361,7 +361,12 @@ class TestImage:
             check.is_in("conflict with existing user/group in the base filesystem", err)
 
     @pytest.mark.parametrize(
-        ("base_user_files", "prime_user_files", "whiteouts_exist", "expected_user_files"),
+        (
+            "base_user_files",
+            "prime_user_files",
+            "whiteouts_exist",
+            "expected_user_files",
+        ),
         [
             # If file in prime, the rest doesn't matter
             (
@@ -802,7 +807,7 @@ class TestImage:
         ]
         assert mock_run.mock_calls == [
             call(
-                expected_cmd + ["--history.created_by", " ".join(expected_cmd)],
+                [*expected_cmd, "--history.created_by", " ".join(expected_cmd)],
             )
         ]
         mock_rmtree.assert_called_once_with(Path(mock_control_data_path))

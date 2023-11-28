@@ -40,7 +40,12 @@ class TestPebble:
         )
 
     @pytest.mark.parametrize(
-        ("existing_layers", "expected_new_layer_prefix", "layer_content", "expected_layer_yaml"),
+        (
+            "existing_layers",
+            "expected_new_layer_prefix",
+            "layer_content",
+            "expected_layer_yaml",
+        ),
         [
             # Test Case 1:
             # Without any previous layers, the default layer prefix is 001.

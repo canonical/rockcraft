@@ -519,9 +519,7 @@ def _copy_image(
         [
             "skopeo",
             "--insecure-policy",
-        ]
-        + list(system_params)
-        + [
+            *list(system_params),
             "copy",
             *copy_extra,
             source,
@@ -532,7 +530,7 @@ def _copy_image(
 
 def _config_image(image_path: Path, params: list[str]) -> None:
     """Configure the OCI image."""
-    _process_run(["umoci", "config", "--image", str(image_path)] + params)
+    _process_run(["umoci", "config", "--image", str(image_path), *params])
 
 
 def _add_layer_into_image(
@@ -551,7 +549,7 @@ def _add_layer_into_image(
         str(image_path),
         str(archived_content),
     ] + [arg_val for k, v in kwargs.items() for arg_val in [k, v]]
-    _process_run(cmd + ["--history.created_by", " ".join(cmd)])
+    _process_run([*cmd, "--history.created_by", " ".join(cmd)])
 
 
 def _inject_architecture_variant(image_path: Path, variant: str) -> None:
