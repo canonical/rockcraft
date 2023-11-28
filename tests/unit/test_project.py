@@ -26,7 +26,6 @@ import pytest
 import yaml
 from craft_application.models import BuildInfo
 from craft_providers.bases import BaseName
-
 from rockcraft.errors import ProjectLoadError, ProjectValidationError
 from rockcraft.models import Project, load_project
 from rockcraft.models.project import INVALID_NAME_MESSAGE, Platform
@@ -87,17 +86,17 @@ entrypoint-service: test-service
 """
 
 
-@pytest.fixture
+@pytest.fixture()
 def yaml_data():
     return ROCKCRAFT_YAML
 
 
-@pytest.fixture
+@pytest.fixture()
 def yaml_loaded_data():
     return yaml.safe_load(ROCKCRAFT_YAML)
 
 
-@pytest.fixture
+@pytest.fixture()
 def pebble_part() -> dict[str, Any]:
     return {
         "pebble": {

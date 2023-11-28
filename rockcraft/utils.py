@@ -24,7 +24,6 @@ import shutil
 import sys
 from collections import namedtuple
 from distutils.util import strtobool  # pylint: disable=deprecated-module
-from typing import Optional
 
 import rockcraft.errors
 

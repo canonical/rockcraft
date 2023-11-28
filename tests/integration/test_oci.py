@@ -17,13 +17,13 @@ import os
 import subprocess
 import tarfile
 import textwrap
-from pathlib import Path
 from collections.abc import Callable
+from pathlib import Path
 
 import pytest
-
 from rockcraft import oci
 from rockcraft.services.image import ImageInfo
+
 from tests.util import jammy_only
 
 pytestmark = jammy_only
@@ -128,7 +128,7 @@ def test_add_layer_with_symlink_in_base(new_dir):
     ]
 
 
-@pytest.fixture
+@pytest.fixture()
 def extra_project_params():
     """Fixture used to configure the Project used by the default test services."""
     return {

@@ -19,8 +19,8 @@ from pathlib import Path
 
 import pytest
 from craft_parts import overlays
-
 from rockcraft.services import lifecycle
+
 from tests.testing.project import create_project
 from tests.util import jammy_only
 

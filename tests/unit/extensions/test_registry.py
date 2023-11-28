@@ -14,7 +14,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import pytest
-
 from rockcraft import errors, extensions
 from rockcraft.extensions.extension import Extension
 
@@ -37,7 +36,7 @@ class FakeExtension3(Extension):
     NAME = "fake-extension-3"
 
 
-@pytest.fixture
+@pytest.fixture()
 def fake_extensions(mock_extensions):
     for ext_class in (FakeExtension1, FakeExtension2):
         extensions.register(ext_class.NAME, ext_class)

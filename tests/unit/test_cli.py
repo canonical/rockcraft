@@ -21,13 +21,12 @@ from unittest.mock import DEFAULT, call, patch
 import pytest
 import yaml
 from craft_cli import emit
-
 from rockcraft import cli, services
 from rockcraft.application import Rockcraft
 from rockcraft.models import project
 
 
-@pytest.fixture
+@pytest.fixture()
 def lifecycle_init_mock():
     """Mock for ui.init."""
     patcher = patch("rockcraft.commands.init.init")
@@ -66,7 +65,7 @@ def test_run_pack_services(mocker, monkeypatch, tmp_path):
     lifecycle_mocks["run"].assert_called_once_with(step_name="prime", part_names=[])
 
     package_mocks["write_metadata"].assert_called_once_with(fake_prime_dir)
-    package_mocks["pack"].assert_called_once_with(fake_prime_dir, Path("."))
+    package_mocks["pack"].assert_called_once_with(fake_prime_dir, Path())
 
     assert mock_ended_ok.called
     assert log_path.is_file()

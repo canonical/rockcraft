@@ -23,10 +23,10 @@ from craft_application import errors
 from craft_cli import EmitterMode, emit
 from craft_parts.errors import OsReleaseVersionIdError
 from craft_parts.utils.os_utils import OsRelease
-
 from rockcraft import plugins
 from rockcraft.models.project import Project
 from rockcraft.plugins.python_plugin import SITECUSTOMIZE_TEMPLATE
+
 from tests.testing.project import create_project
 from tests.util import ubuntu_only
 

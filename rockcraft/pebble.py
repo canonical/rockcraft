@@ -17,9 +17,9 @@
 """Pebble metadata and configuration helpers."""
 
 import glob
+from collections.abc import Mapping
 from pathlib import Path
 from typing import Any, Literal
-from collections.abc import Mapping
 
 import pydantic
 import yaml

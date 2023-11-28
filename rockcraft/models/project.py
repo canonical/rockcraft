@@ -17,6 +17,7 @@
 """Project definition and helpers."""
 import re
 import shlex
+from collections.abc import Mapping, Sequence
 from pathlib import Path
 from typing import (
     TYPE_CHECKING,
@@ -24,7 +25,6 @@ from typing import (
     Literal,
     cast,
 )
-from collections.abc import Mapping, Sequence
 
 import craft_cli
 import pydantic

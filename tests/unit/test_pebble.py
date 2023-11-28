@@ -20,10 +20,10 @@ from pathlib import Path
 import pydantic
 import pytest
 import yaml
-
-import tests
 from rockcraft.models.project import ProjectValidationError
 from rockcraft.pebble import Check, ExecCheck, HttpCheck, Pebble, Service, TcpCheck
+
+import tests
 
 
 @tests.linux_only
