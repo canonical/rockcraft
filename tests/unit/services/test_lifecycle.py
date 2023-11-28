@@ -54,7 +54,7 @@ def test_lifecycle_args(lifecycle_service, default_factory, default_image_info, 
         project_name="default",
         project_vars={"version": "1.0"},
         work_dir=Path("work"),
-        rootfs_dir=Path("."),
+        rootfs_dir=Path(),
     )
 
 

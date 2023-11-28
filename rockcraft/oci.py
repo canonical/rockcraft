@@ -379,7 +379,7 @@ class Image:
         except ValueError:
             emit.debug(
                 f"The entrypoint-service command '{command}' has no default "
-                + "arguments. CMD won't be set."
+                "arguments. CMD won't be set."
             )
             return
         for arg in opt_args:

@@ -66,7 +66,7 @@ def _apply_extension(
         yaml_data["parts"] = {}
 
     parts = yaml_data["parts"]
-    for _, part_definition in parts.items():
+    for part_definition in parts.values():
         for property_name, property_value in part_extension.items():
             part_definition[property_name] = _apply_extension_property(
                 part_definition.get(property_name), property_value
