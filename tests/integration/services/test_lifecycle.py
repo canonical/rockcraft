@@ -14,6 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import os
+import textwrap
 from pathlib import Path
 
 import pytest
@@ -82,3 +83,46 @@ def test_package_repositories_in_overlay(new_dir, mocker, run_lifecycle):
     assert (overlay_apt / "keyrings/craft-CE49EC21.gpg").is_file()
     assert (overlay_apt / "sources.list.d/craft-ppa-mozillateam_ppa.sources").is_file()
     assert (overlay_apt / "preferences.d/craft-archives").is_file()
+
+
+def test_prune_prime_files(new_dir, mocker, run_lifecycle):
+    """Test that primed files are "pruned"/removed based on the contents of the
+    base layer."""
+
+    base_layer_dir = Path(new_dir) / "base"
+    base_layer_dir.mkdir()
+
+    # Add some files to the base layer.
+    (base_layer_dir / "same_contents.txt").write_text("Same contents\n")
+    (base_layer_dir / "different_contents.txt").write_text("File from base\n")
+
+    # Set an override-build script that has an *identical* same_contents.txt,
+    # but a *different* different_contents.txt.
+    build_script = textwrap.dedent(
+        """\
+        echo "Same contents" >> ${CRAFT_PART_INSTALL}/same_contents.txt
+        echo "File from lifecycle" >> ${CRAFT_PART_INSTALL}/different_contents.txt
+        """
+    )
+
+    parts = {"part1": {"plugin": "nil", "override-build": build_script}}
+    work_dir = Path("work")
+
+    project = create_project(parts=parts)
+    lifecycle_service = run_lifecycle(
+        project=project,
+        step="prime",
+        work_dir=work_dir,
+        base_layer_dir=base_layer_dir,
+    )
+
+    prime_dir = lifecycle_service.prime_dir
+
+    # Prime dir must only have the "different_contents.txt" file, because
+    # "same_contents.txt" was pruned (exists on base).
+    assert os.listdir(prime_dir) == ["different_contents.txt"]
+
+    # The "different_contents.txt" file must be the one that the part created
+    # (and not the one from the base).
+    different_file = prime_dir / "different_contents.txt"
+    assert different_file.read_text() == "File from lifecycle\n"
