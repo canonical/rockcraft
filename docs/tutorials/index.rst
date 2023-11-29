@@ -15,4 +15,3 @@ reproducible steps.
    3. Chisel packages into a ROCK <chisel.rst>
    4. Bundle a Node.js app into a ROCK <node-app.rst>
    5. Migrate a Docker image to a Chiselled ROCK <migrate-to-chiselled-rock.rst>
-   Publish a ROCK <publish-a-rock.rst>
