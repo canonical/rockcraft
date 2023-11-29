@@ -10,9 +10,7 @@ include:
     - tests/
     - tools/
     - docs/
-    - requirements-doc.txt
-    - requirements-jammy.txt
-    - Makefile
+    - pyproject.toml
     - rockcraft/
 
 backends:
