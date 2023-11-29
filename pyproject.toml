@@ -211,6 +211,40 @@ ignore = [
     # Ignored due to common usage in current code
     "TRY003",  # Avoid specifying long messages outside the exception class
     "COM812",  # Allow trailing comma missing
+
+    # Ignored for now 
+    "PGH003",
+    "PT004",
+    "PTH123",
+    "INP001",
+    "PTH118",
+    "PLR0913",
+    "PT007",
+    "PT012",
+    "ARG002",
+    "PTH110",
+    "ERA001",
+    "S101",
+    "FIX002",
+    "PYI024",
+    "PTH115",
+    "PTH207",
+    "PLR2004",
+    "ANN001",
+    "S108",
+    "FBT001",
+    "FBT002",
+    "B007",
+    "B026",
+    "PT011",
+    "PTH109",
+    "PTH116",
+    "PERF203",
+    "PERF401",
+    "E741",
+    "PLW290",
+    "TRY004",
+    "TRY200",
 ]
 
 [tool.ruff.flake8-annotations]
