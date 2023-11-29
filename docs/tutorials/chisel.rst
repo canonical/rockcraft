@@ -34,6 +34,8 @@ Project Setup
 Create a new directory, write the following into a text editor and save it as
 ``rockcraft.yaml``:
 
+.. _chisel-example:
+
 .. literalinclude:: code/chisel/rockcraft.yaml
     :language: yaml
 
