@@ -19,11 +19,11 @@ from rockcraft.models import Project
 
 def create_project(**kwargs) -> Project:
     """Utility function to create test Projects with defaults."""
-    base = kwargs.get("base", "ubuntu:22.04")
+    base = kwargs.get("base", "ubuntu@22.04")
 
     build_base = kwargs.get("build_base")
     if not build_base:
-        build_base = base if base != "bare" else "ubuntu:22.04"
+        build_base = base if base != "bare" else "ubuntu@22.04"
 
     return Project.unmarshal(
         {

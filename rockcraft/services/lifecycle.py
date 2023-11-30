@@ -25,10 +25,11 @@ from typing import cast
 from craft_application import LifecycleService
 from craft_archives import repo
 from craft_cli import emit
-from craft_parts import Features, callbacks
+from craft_parts import Features, Step, callbacks
 from craft_parts.errors import CallbackRegistrationError
 from overrides import override
 
+from rockcraft import layers
 from rockcraft.models.project import Project
 
 # Enable the craft-parts features that we use
@@ -60,6 +61,7 @@ class RockcraftLifecycleService(LifecycleService):
             package_repositories=project.package_repositories or [],
             project_name=project.name,
             project_vars=project_vars,
+            rootfs_dir=image_info.base_layer_dir,
         )
 
         super().setup()
@@ -76,7 +78,11 @@ class RockcraftLifecycleService(LifecycleService):
             with contextlib.suppress(CallbackRegistrationError):
                 callbacks.register_configure_overlay(_install_overlay_repositories)
 
-        super().run(step_name, part_names)
+        try:
+            callbacks.register_post_step(_post_prime_callback, step_list=[Step.PRIME])
+            super().run(step_name, part_names)
+        finally:
+            callbacks.unregister_all()
 
 
 def _install_package_repositories(package_repositories, lifecycle_manager) -> None:
@@ -101,3 +107,12 @@ def _install_overlay_repositories(overlay_dir, project_info):
             root=overlay_dir,
             key_assets=Path("/dev/null"),
         )
+
+
+def _post_prime_callback(step_info) -> bool:
+    prime_dir = step_info.prime_dir
+    files = step_info.state.files
+    base_layer_dir = step_info.rootfs_dir
+
+    layers.prune_prime_files(prime_dir, files, base_layer_dir)
+    return True

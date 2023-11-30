@@ -90,7 +90,7 @@ requests-toolbelt==1.0.0
 requests-unixsocket==0.3.0
 rfc3986==2.0.0
 rich==13.6.0
-ruff==0.1.1
+ruff==0.1.6
 SecretStorage==3.3.3
 six==1.16.0
 snowballstemmer==2.2.0
