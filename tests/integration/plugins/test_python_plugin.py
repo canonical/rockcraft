@@ -111,9 +111,13 @@ def test_python_plugin_ubuntu(base, tmp_path, run_lifecycle):
     assert list(bin_dir.glob("python*")) == []
 
     # Check the shebang in the "hello" script
-    expected_shebang = "#!/bin/python3"
+    # In test env this could be replaced with sh that exec python by the venv
+    expected_shebang = ("#!/bin/python3", "#!/bin/sh")
     hello = bin_dir / "hello"
-    assert hello.read_text().startswith(expected_shebang)
+    hello_text = hello.read_text()
+    assert hello_text.startswith(expected_shebang)
+    if hello_text.startswith("#!/bin/sh"):
+        assert "bin/python" in hello_text
 
     # Check the extra sitecustomize.py module that we add
     expected_text = SITECUSTOMIZE_TEMPLATE.replace("EOF", "")
@@ -146,9 +150,13 @@ def test_python_plugin_bare(tmp_path, run_lifecycle):
     )
 
     # Check the shebang in the "hello" script
-    expected_shebang = "#!/bin/python3"
+    # In test env this could be replaced with sh that exec python by the venv
+    expected_shebang = ("#!/bin/python3", "#!/bin/sh")
     hello = bin_dir / "hello"
-    assert hello.read_text().startswith(expected_shebang)
+    hello_text = hello.read_text()
+    assert hello_text.startswith(expected_shebang)
+    if hello_text.startswith("#!/bin/sh"):
+        assert "bin/python" in hello_text
 
     # Check the extra sitecustomize.py module that we add
     expected_text = SITECUSTOMIZE_TEMPLATE.replace("EOF", "")
