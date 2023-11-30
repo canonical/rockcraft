@@ -72,6 +72,7 @@ parts:
       version="$(python3 setup.py --version)"
       ${SNAP}/libexec/snapcraft/craftctl set version="$version"
       [ -n "$(echo $version | grep "post")" ] && grade=devel || grade=stable
+      ${SNAP}/libexec/snapcraft/craftctl set grade="${grade}"
 
       sed -i -e '1 s|^#!/.*|#!/snap/rockcraft/current/bin/python -E|' $CRAFT_PART_INSTALL/bin/craftctl
     after:
