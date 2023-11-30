@@ -4,6 +4,8 @@
 rockcraft.yaml
 **************
 
+.. include:: rock_parts/toc.rst
+
 A Rockcraft project is defined in a YAML file named ``rockcraft.yaml``
 at the root of the project tree in the filesystem.
 
