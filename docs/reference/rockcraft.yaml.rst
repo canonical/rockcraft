@@ -149,6 +149,23 @@ specification syntax exactly, with each entry defining a Pebble service. For
 each service, the ``override`` and ``command`` fields are mandatory, but all
 others are optional.
 
+``entrypoint-service``
+------------------------
+
+**Type**: string
+
+**Required**: No
+
+The optional name of the Pebble service to serve as the OCI entrypoint. If set,
+this makes Rockcraft extend ``["/bin/pebble", "enter", "--verbose"]`` with
+``["--args", "<serviceName>"]``. The command of the Pebble service must
+contain an optional argument that will become the OCI CMD.
+
+.. warning::
+   This option must only be used in cases where the targeted deployment
+   environment has unalterable assumptions about the container image's
+   entrypoint.
+
 ``checks``
 ------------
 
@@ -160,6 +177,7 @@ A list of health checks that can be configured to restart Pebble services
 when they fail. It uses Pebble's layer specification syntax, with each
 entry corresponding to a check. Each check can be one of three types:
 ``http``, ``tcp`` or ``exec``.
+
 
 ``platforms``
 -------------

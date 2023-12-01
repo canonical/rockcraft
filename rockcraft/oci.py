@@ -20,6 +20,7 @@ import hashlib
 import json
 import logging
 import os
+import shlex
 import shutil
 import subprocess
 import tempfile
@@ -351,18 +352,40 @@ class Image:
         _config_image(image_path, params)
         emit.progress(f"Default user set to {user}")
 
-    def set_entrypoint(self) -> None:
-        """Set the OCI image entrypoint. It is always Pebble and CMD is null."""
+    def set_entrypoint(self, entrypoint_service: Optional[str] = None) -> None:
+        """Set the OCI image entrypoint. It is always Pebble."""
         emit.progress("Configuring entrypoint...")
         image_path = self.path / self.image_name
         entrypoint = [f"/{Pebble.PEBBLE_BINARY_PATH}", "enter", "--verbose"]
+        if entrypoint_service:
+            entrypoint.extend(["--args", entrypoint_service])
         params = ["--clear=config.entrypoint"]
         for entry in entrypoint:
             params.extend(["--config.entrypoint", entry])
+        params.extend(["--clear=config.cmd"])
         _config_image(image_path, params)
-        # Clear the CMD
-        _config_image(image_path, ["--clear=config.cmd"])
         emit.progress(f"Entrypoint set to {entrypoint}")
+
+    def set_cmd(self, command: Optional[str] = None) -> None:
+        """Set the OCI image CMD."""
+        emit.progress("Configuring CMD...")
+        image_path = self.path / self.image_name
+        cmd_params = ["--clear=config.cmd"]
+        command_sh_args = shlex.split(command or "")
+        try:
+            opt_args = command_sh_args[
+                command_sh_args.index("[") + 1 : command_sh_args.index("]")
+            ]
+        except ValueError:
+            emit.debug(
+                f"The entrypoint-service command '{command}' has no default "
+                + "arguments. CMD won't be set."
+            )
+            return
+        for arg in opt_args:
+            cmd_params.extend(["--config.cmd", arg])
+        _config_image(image_path, cmd_params)
+        emit.progress(f"CMD set to {opt_args}")
 
     def set_pebble_layer(
         self,

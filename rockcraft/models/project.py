@@ -16,6 +16,7 @@
 
 """Project definition and helpers."""
 import re
+import shlex
 from pathlib import Path
 from typing import (
     TYPE_CHECKING,
@@ -142,6 +143,7 @@ class Project(YamlModelMixin, BaseProject):
     run_user: Optional[Literal[tuple(SUPPORTED_GLOBAL_USERNAMES)]]  # type: ignore
     services: Optional[Dict[str, Service]]
     checks: Optional[Dict[str, Check]]
+    entrypoint_service: Optional[str]
 
     package_repositories: Optional[List[Dict[str, Any]]]
 
@@ -325,6 +327,44 @@ class Project(YamlModelMixin, BaseProject):
                 'Overlays cannot be used with "bare" bases (there is no system to overlay).'
             )
         return item
+
+    @pydantic.validator("entrypoint_service")
+    @classmethod
+    def _validate_entrypoint_service(
+        cls, entrypoint_service: Optional[str], values: Any
+    ) -> Optional[str]:
+        """Verify that the entrypoint_service exists in the services dict."""
+        craft_cli.emit.message(
+            "Warning: defining an entrypoint-service will result in a rock with "
+            + "an atypical OCI Entrypoint. While that might be acceptable for "
+            + "testing and personal use, it shall require prior approval before "
+            + "submitting to a Canonical registry namespace."
+        )
+
+        if entrypoint_service not in values.get("services", {}):
+            raise ProjectValidationError(
+                f"The provided entrypoint-service '{entrypoint_service}' is not "
+                + "a valid Pebble service."
+            )
+
+        command = values.get("services")[entrypoint_service].command
+        command_sh_args = shlex.split(command)
+        # optional arg is surrounded by brackets, so check that they exist in the
+        # right order
+        try:
+            if command_sh_args.index("[") >= command_sh_args.index("]"):
+                raise IndexError(
+                    "Bad syntax for the entrypoint-service command's"
+                    + " additional args."
+                )
+        except ValueError as ex:
+            raise ProjectValidationError(
+                f"The Pebble service '{entrypoint_service}' has a command "
+                + f"{command} without default arguments and thus cannot be used "
+                + "as the entrypoint-service."
+            ) from ex
+
+        return entrypoint_service
 
     @pydantic.validator("package_repositories")
     @classmethod
@@ -568,6 +608,7 @@ def load_project(filename: Path) -> Dict[str, Any]:
         raise ProjectLoadError(msg) from err
 
     yaml_data = transform_yaml(filename.parent, yaml_data)
+
     return yaml_data
 
 
