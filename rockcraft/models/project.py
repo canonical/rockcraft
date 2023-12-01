@@ -32,7 +32,7 @@ import spdx_lookup  # type: ignore
 import yaml
 from craft_application.models import BuildInfo
 from craft_application.models import Project as BaseProject
-from craft_archives import repo
+from craft_archives import repo  # type: ignore[import-untyped]
 from craft_providers import bases
 from pydantic_yaml import YamlModelMixin
 
@@ -50,8 +50,10 @@ if TYPE_CHECKING:  # pragma: no cover
 class Platform(pydantic.BaseModel):
     """Rockcraft project platform definition."""
 
-    build_on: pydantic.conlist(str, unique_items=True, min_items=1) | None
-    build_for: pydantic.conlist(str, unique_items=True, min_items=1) | None
+    build_on: pydantic.conlist(str, unique_items=True, min_items=1) | None  # type: ignore[valid-type]
+    build_for: pydantic.conlist(  # type: ignore[valid-type]
+        str, unique_items=True, min_items=1
+    ) | None
 
     class Config:  # pylint: disable=too-few-public-methods
         """Pydantic model configuration."""
@@ -188,7 +190,7 @@ class Project(YamlModelMixin, BaseProject):
             raise ProjectValidationError(
                 f"License {rock_license} not valid. It must be valid and in SPDX format."
             )
-        return lic.id
+        return str(lic.id)
 
     @pydantic.validator("title", always=True)
     @classmethod
@@ -337,7 +339,12 @@ class Project(YamlModelMixin, BaseProject):
                 "a valid Pebble service."
             )
 
-        command = values.get("services")[entrypoint_service].command
+        services = values.get("services")
+        if services:
+            command = services[entrypoint_service].command
+        else:
+            raise ProjectValidationError("The project does not define any services.")
+
         command_sh_args = shlex.split(command)
         # optional arg is surrounded by brackets, so check that they exist in the
         # right order
@@ -432,7 +439,7 @@ class Project(YamlModelMixin, BaseProject):
 
     def generate_metadata(
         self, generation_time: str, base_digest: bytes
-    ) -> tuple[dict, dict]:
+    ) -> tuple[dict[str, Any], dict[str, Any]]:
         """Generate the ROCK's metadata (both the OCI annotation and internal metadata.
 
         :param generation_time: the UTC time at the time of calling this method

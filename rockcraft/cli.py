@@ -36,10 +36,10 @@ def run() -> int:
 
     app = _create_app()
 
-    return app.run()
+    return app.run()  # type: ignore[no-any-return]
 
 
-def _create_app():  # noqa: ANN202
+def _create_app():  # type: ignore[no-untyped-def] # noqa: ANN202
     # pylint: disable=import-outside-toplevel
     # Import these here so that the script that generates the docs for the
     # commands doesn't need to know *too much* of the application.

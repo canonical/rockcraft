@@ -295,13 +295,14 @@ class Image:
             emit.progress(f"Adding user {username}:{uid} with group {username}:{uid}")
             self.add_layer(tag, Path(tmpfs))
 
-    def stat(self) -> dict[Any, Any]:
+    def stat(self) -> dict[str, Any]:
         """Obtain the image statistics, as reported by "umoci stat --json"."""
         image_path = self.path / self.image_name
-        output = _process_run(
+        output: bytes = _process_run(
             ["umoci", "stat", "--json", "--image", str(image_path)]
         ).stdout
-        return json.loads(output)
+        result: dict[str, Any] = json.loads(output)
+        return result
 
     @staticmethod
     def digest(source_image: str) -> bytes:
@@ -598,7 +599,7 @@ def _inject_architecture_variant(image_path: Path, variant: str) -> None:
     tl_index_path.write_bytes(json.dumps(tl_index).encode("utf-8"))
 
 
-def _process_run(command: list[str], **kwargs: Any) -> subprocess.CompletedProcess:
+def _process_run(command: list[str], **kwargs: Any) -> subprocess.CompletedProcess[Any]:
     """Run a command and handle its output."""
     if not Path(command[0]).is_absolute():
         command[0] = get_snap_command_path(command[0])
