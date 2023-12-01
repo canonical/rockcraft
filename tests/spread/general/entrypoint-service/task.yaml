@@ -7,7 +7,7 @@ execute: |
 
   # test container execution
   sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:entrypoint-service-test_latest_amd64.rock docker-daemon:entrypoint-service-test:latest
-  rm entrypoint-service-test_latest*.rock  
+  rm entrypoint-service-test_latest*.rock
   docker images entrypoint-service-test:latest
   id=$(docker run -d entrypoint-service-test)
   test "$(docker inspect "$id" -f '{{json .Config.Entrypoint}}')" = '["/bin/pebble","enter","--verbose","--args","test-service"]'

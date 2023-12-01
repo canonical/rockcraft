@@ -7,11 +7,11 @@ environment:
   PATH: /snap/bin:$PATH:$SNAPD_TESTING_TOOLS:$PROJECT_PATH/tools/spread
 
 include:
-    - tests/
-    - tools/
-    - docs/
-    - pyproject.toml
-    - rockcraft/
+  - tests/
+  - tools/
+  - docs/
+  - pyproject.toml
+  - rockcraft/
 
 backends:
   google:
@@ -79,11 +79,11 @@ prepare: |
     snap install docker --channel=core18/stable
   else
     snap install docker
-  fi  
+  fi
 
   # make sure docker is working
   retry -n 10 --wait 2 sh -c 'docker run --rm hello-world'
-  
+
   install_rockcraft
 
 restore-each: |
@@ -96,7 +96,7 @@ restore-each: |
         lxc --project=rockcraft delete --force "$instance"
       fi
     done
-  fi  
+  fi
 
 debug-each: |
   # output latest rockcraft log file on test failure
@@ -116,7 +116,7 @@ suites:
   docs/how-to/code/:
     summary: tests how-to guides from the docs
     systems:
-    - ubuntu-22.04-64
+      - ubuntu-22.04-64
 
   docs/reference/code/:
     summary: tests reference code from the docs
@@ -127,4 +127,3 @@ suites:
   tests/spread/large/:
     summary: bigger tests that take longer to run
     manual: true
-

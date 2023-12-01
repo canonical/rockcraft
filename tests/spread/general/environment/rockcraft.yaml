@@ -21,7 +21,7 @@ platforms:
   amd64v2:
     build-on: ["amd64", "i386"]
     build-for: amd64
-    
+
 parts:
   part1:
     plugin: nil

@@ -58,4 +58,3 @@ body:
       render: shell
     validations:
       required: true
-

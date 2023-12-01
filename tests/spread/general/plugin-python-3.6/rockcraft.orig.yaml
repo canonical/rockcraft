@@ -9,9 +9,9 @@ platforms:
     amd64:
 
 package-repositories:
-  - type: apt
-    ppa: deadsnakes/ppa
-    priority: always
+    - type: apt
+      ppa: deadsnakes/ppa
+      priority: always
 
 parts:
     my-part:

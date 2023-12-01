@@ -10,7 +10,7 @@ execute: |
   # test container execution
   docker images
   sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:environment-test_latest_amd64v2.rock docker-daemon:environment-test:latest
-  rm environment-test_latest*.rock  
+  rm environment-test_latest*.rock
   docker images environment-test:latest
   id=$(docker run --rm -d environment-test -v)
   grep_docker_log "$id" "X=ship it!"
