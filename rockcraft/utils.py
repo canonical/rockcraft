@@ -22,14 +22,20 @@ import os
 import pathlib
 import shutil
 import sys
-from collections import namedtuple
 from distutils.util import strtobool  # pylint: disable=deprecated-module
+from typing import NamedTuple
 
 import rockcraft.errors
 
 logger = logging.getLogger(__name__)
 
-OSPlatform = namedtuple("OSPlatform", "system release machine")
+
+class OSPlatform(NamedTuple):
+    """Tuple containing the OS platform information."""
+
+    system: str
+    release: str
+    machine: str
 
 
 def is_managed_mode() -> bool:

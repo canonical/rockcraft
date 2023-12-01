@@ -26,7 +26,7 @@ from craft_cli import emit
 from craft_parts import Features, LifecycleManager, Step, callbacks
 from craft_parts.errors import CallbackRegistrationError
 from craft_parts.infos import ProjectInfo, StepInfo
-from overrides import override
+from overrides import override  # type: ignore[reportUnknownVariableType]
 
 from rockcraft import layers
 from rockcraft.models.project import Project

@@ -17,7 +17,7 @@
 """Project definition and helpers."""
 import re
 import shlex
-from collections.abc import Mapping
+from collections.abc import Callable, Mapping
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Literal, cast
 
@@ -59,7 +59,9 @@ class Platform(pydantic.BaseModel):
         """Pydantic model configuration."""
 
         allow_population_by_field_name = True
-        alias_generator = lambda s: s.replace("_", "-")  # noqa: E731
+        alias_generator: Callable[[str], str] = lambda s: s.replace(  # noqa: E731
+            "_", "-"
+        )
 
     @pydantic.validator("build_for", pre=True)
     @classmethod
@@ -73,8 +75,8 @@ class Platform(pydantic.BaseModel):
     @classmethod
     def _validate_platform_set(cls, values: Mapping[str, Any]) -> Mapping[str, Any]:
         """Validate the build_on build_for combination."""
-        build_for = values["build_for"] if values.get("build_for") else []
-        build_on = values["build_on"] if values.get("build_on") else []
+        build_for: list[str] = values["build_for"] if values.get("build_for") else []
+        build_on: list[str] = values["build_on"] if values.get("build_on") else []
 
         # We can only build for 1 arch at the moment
         if len(build_for) > 1:
@@ -180,12 +182,12 @@ class Project(YamlModelMixin, BaseProject):
             # This is the license name we use on our stores.
             return rock_license
 
-        lic: spdx_lookup.License | None = spdx_lookup.by_id(rock_license)
+        lic: spdx_lookup.License | None = spdx_lookup.by_id(rock_license)  # type: ignore[reportUnknownMemberType]
         if lic is None:
             raise CraftValidationError(
                 f"License {rock_license} not valid. It must be valid and in SPDX format."
             )
-        return str(lic.id)
+        return str(lic.id)  # type: ignore[reportUnknownMemberType]
 
     @pydantic.validator("title", always=True)
     @classmethod
@@ -241,7 +243,9 @@ class Project(YamlModelMixin, BaseProject):
     def _validate_all_platforms(cls, platforms: dict[str, Any]) -> dict[str, Any]:
         """Make sure all provided platforms are tangible and sane."""
         for platform_label in platforms:
-            platform = platforms[platform_label] if platforms[platform_label] else {}
+            platform: dict[str, Any] = (
+                platforms[platform_label] if platforms[platform_label] else {}
+            )
             error_prefix = f"Error for platform entry '{platform_label}'"
 
             # Make sure the provided platform_set is valid
@@ -390,11 +394,11 @@ class Project(YamlModelMixin, BaseProject):
         def _repr_str(dumper: yaml.SafeDumper, data: str) -> yaml.ScalarNode:
             """Multi-line string representer for the YAML dumper."""
             if "\n" in data:
-                return dumper.represent_scalar("tag:yaml.org,2002:str", data, style="|")
-            return dumper.represent_scalar("tag:yaml.org,2002:str", data)
+                return dumper.represent_scalar("tag:yaml.org,2002:str", data, style="|")  # type: ignore[reportUnknownMemberType]
+            return dumper.represent_scalar("tag:yaml.org,2002:str", data)  # type: ignore[reportUnknownMemberType]
 
         yaml.add_representer(str, _repr_str, Dumper=yaml.SafeDumper)
-        return super().yaml(
+        return super().yaml(  # type: ignore[reportUnknownMemberType]
             by_alias=True,
             exclude_none=True,
             allow_unicode=True,
