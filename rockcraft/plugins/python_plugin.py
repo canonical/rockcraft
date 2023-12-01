@@ -20,7 +20,7 @@ import logging
 from textwrap import dedent
 
 from craft_parts.plugins import python_plugin
-from overrides import override
+from overrides import override  # type: ignore[reportUnknownVariableType]
 
 logger = logging.getLogger(__name__)
 
@@ -90,7 +90,7 @@ class PythonPlugin(python_plugin.PythonPlugin):
     @override
     def get_build_commands(self) -> list[str]:
         """Overridden to add a sitecustomize.py ."""
-        commands = []
+        commands: list[str] = []
 
         # Detect whether PARTS_PYTHON_INTERPRETER is a full path (not supported)
         commands.append(

@@ -23,7 +23,7 @@ from typing import cast
 
 from craft_application import AppMetadata, PackageService, models, util
 from craft_cli import emit
-from overrides import override
+from overrides import override  # type: ignore[reportUnknownVariableType]
 
 from rockcraft import errors, oci
 from rockcraft.models import Project
@@ -39,7 +39,7 @@ class RockcraftPackageService(PackageService):
     def __init__(
         self,
         app: AppMetadata,
-        services: RockcraftServiceFactory,
+        services: "RockcraftServiceFactory",
         *,
         project: models.Project,
         platform: str | None,

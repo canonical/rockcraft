@@ -17,7 +17,7 @@
 """Pebble metadata and configuration helpers."""
 
 import glob
-from collections.abc import Mapping
+from collections.abc import Callable, Mapping
 from pathlib import Path
 from typing import Any, Literal
 
@@ -70,7 +70,9 @@ class ExecCheck(pydantic.BaseModel):
         """Pydantic model configuration."""
 
         allow_population_by_field_name = True
-        alias_generator = lambda s: s.replace("_", "-")  # noqa: E731
+        alias_generator: Callable[[str], str] = lambda s: s.replace(  # noqa: E731
+            "_", "-"
+        )
         extra = "forbid"
 
 
@@ -116,7 +118,9 @@ class Check(pydantic.BaseModel):
         """Pydantic model configuration."""
 
         allow_population_by_field_name = True
-        alias_generator = lambda s: s.replace("_", "-")  # noqa: E731
+        alias_generator: Callable[[str], str] = lambda s: s.replace(  # noqa: E731
+            "_", "-"
+        )
         extra = "forbid"
 
 
@@ -153,7 +157,9 @@ class Service(pydantic.BaseModel):
         """Pydantic model configuration."""
 
         allow_population_by_field_name = True
-        alias_generator = lambda s: s.replace("_", "-")  # noqa: E731
+        alias_generator: Callable[[str], str] = lambda s: s.replace(  # noqa: E731
+            "_", "-"
+        )
         extra = "forbid"
 
 

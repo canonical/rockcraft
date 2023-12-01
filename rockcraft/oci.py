@@ -442,8 +442,8 @@ class Image:
         """
         emit.progress("Configuring OCI environment...")
         image_path = self.path / self.image_name
-        params = []
-        env_list = []
+        params: list[str] = []
+        env_list: list[str] = []
 
         for name, value in env.items():
             env_item = f"{name}={value}"
@@ -491,7 +491,7 @@ class Image:
         label_params = ["--clear=config.labels"]
         annotation_params = ["--clear=manifest.annotations"]
 
-        labels_list = []
+        labels_list: list[str] = []
         for label_key, label_value in annotations.items():
             label_item = f"{label_key}={label_value}"
             labels_list.append(label_item)

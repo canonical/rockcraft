@@ -17,7 +17,7 @@
 """Rockcraft Provider service."""
 
 from craft_application import ProviderService
-from overrides import override
+from overrides import override  # type: ignore[reportUnknownVariableType]
 
 
 class RockcraftProviderService(ProviderService):
