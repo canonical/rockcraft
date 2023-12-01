@@ -8,7 +8,8 @@ Rockcraft
 Purpose
 -------
 
-Tool to create OCI Images using the language from `Snapcraft`_ and `Charmcraft`_.
+Tool to create OCI Images using the language from `Snapcraft`_ and
+`Charmcraft`_.
 
 .. _Snapcraft: https://snapcraft.io
 
@@ -44,13 +45,14 @@ https://canonical-rockcraft.readthedocs-hosted.com/
     :target: https://snapcraft.io/rockcraft
 
 
-  
+
 Testing
 -------
 
-In addition to unit tests in :code:`tests/unit`, which can be run with :code:`make test-units`,
-a number of integrated tests in :code:`tests/spread` can be run with `Spread`_. See the
-`general notes`_ and take note of these ``rockcraft``-specific instructions:
+In addition to unit tests in :code:`tests/unit`, which can be run with
+:code:`make test-units`, a number of integrated tests in :code:`tests/spread`
+can be run with `Spread`_. See the `general notes`_ and take note of these
+``rockcraft``-specific instructions:
 
 * Initialize/update git submodules to fetch Spread-related helper scripts:
 
