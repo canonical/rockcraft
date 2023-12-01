@@ -16,6 +16,7 @@
 
 """List of allowed shared usernames/UIDs (analogously to SnapD)."""
 
+
 import pydantic
 
 
@@ -38,7 +39,7 @@ class GlobalUser(pydantic.BaseModel):
 
         return username
 
-    def get_dict(self) -> dict:
+    def get_dict(self) -> dict[str, dict[str, int]]:
         """Cast the object into a dict using the username as the key."""
         return {self.username: {"uid": self.uid}}
 

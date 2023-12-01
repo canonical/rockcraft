@@ -19,7 +19,7 @@ import re
 import shlex
 from collections.abc import Mapping
 from pathlib import Path
-from typing import Any, Literal, cast
+from typing import TYPE_CHECKING, Any, Literal, cast
 
 import craft_cli
 import pydantic
@@ -28,7 +28,7 @@ import yaml
 from craft_application.errors import CraftValidationError
 from craft_application.models import BuildInfo, CraftBaseConfig
 from craft_application.models import Project as BaseProject
-from craft_archives import repo
+from craft_archives import repo  # type: ignore[import-untyped]
 from craft_providers import bases
 from pydantic_yaml import YamlModelMixin
 from typing_extensions import override
@@ -40,12 +40,20 @@ from rockcraft.parts import part_has_overlay, validate_part
 from rockcraft.pebble import Check, Pebble, Service
 from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
 
+# pyright workaround
+if TYPE_CHECKING:
+    _RunUser = str | None
+else:
+    _RunUser = Literal[tuple(SUPPORTED_GLOBAL_USERNAMES)] | None
+
 
 class Platform(pydantic.BaseModel):
     """Rockcraft project platform definition."""
 
     build_on: pydantic.conlist(str, unique_items=True, min_items=1) | None  # type: ignore[valid-type]
-    build_for: pydantic.conlist(str, unique_items=True, min_items=1) | None  # type: ignore[valid-type]
+    build_for: pydantic.conlist(  # type: ignore[valid-type]
+        str, unique_items=True, min_items=1
+    ) | None
 
     class Config:  # pylint: disable=too-few-public-methods
         """Pydantic model configuration."""
@@ -126,7 +134,7 @@ class Project(YamlModelMixin, BaseProject):
     base: Literal["bare", "ubuntu@20.04", "ubuntu@22.04"]
     build_base: Literal["ubuntu@20.04", "ubuntu@22.04"] | None
     environment: dict[str, str] | None
-    run_user: Literal[tuple(SUPPORTED_GLOBAL_USERNAMES)] | None  # type: ignore
+    run_user: _RunUser
     services: dict[str, Service] | None
     checks: dict[str, Check] | None
     entrypoint_service: str | None
@@ -177,7 +185,7 @@ class Project(YamlModelMixin, BaseProject):
             raise CraftValidationError(
                 f"License {rock_license} not valid. It must be valid and in SPDX format."
             )
-        return lic.id
+        return str(lic.id)
 
     @pydantic.validator("title", always=True)
     @classmethod
@@ -326,7 +334,7 @@ class Project(YamlModelMixin, BaseProject):
                 + "a valid Pebble service."
             )
 
-        command = values.get("services")[entrypoint_service].command
+        command = values["services"][entrypoint_service].command
         command_sh_args = shlex.split(command)
         # optional arg is surrounded by brackets, so check that they exist in the
         # right order
@@ -396,7 +404,7 @@ class Project(YamlModelMixin, BaseProject):
 
     def generate_metadata(
         self, generation_time: str, base_digest: bytes
-    ) -> tuple[dict, dict]:
+    ) -> tuple[dict[str, Any], dict[str, Any]]:
         """Generate the rock's metadata (both the OCI annotation and internal metadata.
 
         :param generation_time: the UTC time at the time of calling this method

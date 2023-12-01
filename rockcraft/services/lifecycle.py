@@ -21,11 +21,11 @@ from pathlib import Path
 from typing import Any, cast
 
 from craft_application import LifecycleService
-from craft_archives import repo
+from craft_archives import repo  # type: ignore[import-untyped]
 from craft_cli import emit
 from craft_parts import Features, LifecycleManager, Step, callbacks
 from craft_parts.errors import CallbackRegistrationError
-from craft_parts.infos import ProjectInfo
+from craft_parts.infos import ProjectInfo, StepInfo
 from overrides import override
 
 from rockcraft import layers
@@ -111,10 +111,12 @@ def _install_overlay_repositories(overlay_dir: Path, project_info: ProjectInfo) 
         )
 
 
-def _post_prime_callback(step_info) -> bool:
+def _post_prime_callback(step_info: StepInfo) -> bool:
     prime_dir = step_info.prime_dir
-    files = step_info.state.files
     base_layer_dir = step_info.rootfs_dir
+    files: set[str]
+
+    files = step_info.state.files if step_info.state else set()
 
     layers.prune_prime_files(prime_dir, files, base_layer_dir)
     return True
