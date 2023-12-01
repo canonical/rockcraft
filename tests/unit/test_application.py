@@ -49,7 +49,7 @@ def test_application_expand_environment(default_application, new_dir):
     project_file = Path(new_dir) / "rockcraft.yaml"
     project_file.write_text(ENVIRONMENT_YAML)
 
-    project = default_application.project
+    project = default_application.get_project("amd64", "amd64", "amd64")
 
     assert project.services["test"].environment == {
         "X": "ship it!",
@@ -62,5 +62,5 @@ def test_application_pebble_part(default_application, new_dir):
     project_file = Path(new_dir) / "rockcraft.yaml"
     project_file.write_text(ENVIRONMENT_YAML)
 
-    project = default_application.project
+    project = default_application.get_project("amd64", "amd64", "amd64")
     assert project.parts["pebble"] == Pebble.PEBBLE_PART_SPEC

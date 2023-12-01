@@ -30,6 +30,7 @@ APP_METADATA = AppMetadata(
     name="rockcraft",
     summary="A tool to create OCI images",
     ProjectClass=project.Project,
+    BuildPlannerClass=project.BuildPlanner,
     source_ignore_patterns=["*.rock"],
 )
 
@@ -51,5 +52,6 @@ class Rockcraft(Application):
             "package",
             platform=platform,
             build_for=build_for,
+            build_plan=self._build_plan,
         )
         super()._configure_services(platform, build_for)

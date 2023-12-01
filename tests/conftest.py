@@ -131,6 +131,13 @@ def default_project(extra_project_params):
 
 
 @pytest.fixture
+def default_build_plan(default_project):
+    from rockcraft.models.project import BuildPlanner
+
+    return BuildPlanner.unmarshal(default_project.marshal()).get_build_plan()
+
+
+@pytest.fixture
 def default_factory(default_project):
     from rockcraft.application import APP_METADATA
     from rockcraft.services import RockcraftServiceFactory
@@ -177,7 +184,7 @@ def image_service(default_project, default_factory, tmp_path):
 
 
 @pytest.fixture
-def provider_service(default_project, default_factory, tmp_path):
+def provider_service(default_project, default_factory, default_build_plan, tmp_path):
     from rockcraft.application import APP_METADATA
     from rockcraft.services import RockcraftProviderService
 
@@ -186,11 +193,12 @@ def provider_service(default_project, default_factory, tmp_path):
         project=default_project,
         services=default_factory,
         work_dir=tmp_path,
+        build_plan=default_build_plan,
     )
 
 
 @pytest.fixture
-def package_service(default_project, default_factory):
+def package_service(default_project, default_build_plan, default_factory):
     from rockcraft.application import APP_METADATA
     from rockcraft.services import RockcraftPackageService
 
@@ -200,6 +208,7 @@ def package_service(default_project, default_factory):
         services=default_factory,
         platform="amd64",
         build_for="amd64",
+        build_plan=default_build_plan,
     )
 
 
