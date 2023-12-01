@@ -24,7 +24,7 @@ from pathlib import Path
 import tabulate
 from craft_application.commands import AppCommand
 from craft_cli import emit
-from overrides import overrides
+from overrides import overrides  # type: ignore[reportUnknownVariableType]
 from pydantic import BaseModel
 
 from rockcraft import extensions
