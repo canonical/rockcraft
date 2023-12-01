@@ -551,7 +551,7 @@ class TestImage:
             )
         ]
 
-    def test_set_entrypoint(self, mock_run):
+    def test_set_entrypoint_default(self, mock_run):
         image = oci.Image("a:b", Path("/c"))
 
         image.set_entrypoint()
@@ -570,8 +570,49 @@ class TestImage:
                     "enter",
                     "--config.entrypoint",
                     "--verbose",
+                    "--clear=config.cmd",
                 ],
             ),
+        ]
+
+    def test_set_entrypoint_withservice(self, mock_run):
+        image = oci.Image("a:b", Path("/tmp"))
+        image.set_entrypoint("test-service")
+
+        assert mock_run.mock_calls == [
+            call(
+                [
+                    "umoci",
+                    "config",
+                    "--image",
+                    "/tmp/a:b",
+                    "--clear=config.entrypoint",
+                    "--config.entrypoint",
+                    "/bin/pebble",
+                    "--config.entrypoint",
+                    "enter",
+                    "--config.entrypoint",
+                    "--verbose",
+                    "--config.entrypoint",
+                    "--args",
+                    "--config.entrypoint",
+                    "test-service",
+                    "--clear=config.cmd",
+                ],
+            ),
+        ]
+
+    def test_set_cmd_empty(self, mock_run):
+        image = oci.Image("a:b", Path("/c"))
+        image.set_cmd()
+
+        assert mock_run.mock_calls == []
+
+    def test_set_cmd_nonempty(self, mock_run):
+        image = oci.Image("a:b", Path("/c"))
+        image.set_cmd("echo [ foo ]")
+
+        assert mock_run.mock_calls == [
             call(
                 [
                     "umoci",
@@ -579,6 +620,26 @@ class TestImage:
                     "--image",
                     "/c/a:b",
                     "--clear=config.cmd",
+                    "--config.cmd",
+                    "foo",
+                ]
+            ),
+        ]
+
+    def test_set_cmd_nonempty2(self, mock_run):
+        image = oci.Image("a:b", Path("/c"))
+        image.set_cmd("echo foo [ bar ]")
+
+        assert mock_run.mock_calls == [
+            call(
+                [
+                    "umoci",
+                    "config",
+                    "--image",
+                    "/c/a:b",
+                    "--clear=config.cmd",
+                    "--config.cmd",
+                    "bar",
                 ]
             ),
         ]

@@ -73,15 +73,17 @@ platforms:
         build-on: [{BUILD_ON_ARCH}]
         build-for: [{BUILD_ON_ARCH}]
 services:
-    hello:
+    test-service:
         override: replace
-        command: /bin/hello
+        command: echo [ foo ]
         on-failure: restart
 
 parts:
     foo:
         plugin: nil
         overlay-script: ls
+
+entrypoint-service: test-service
 """
 
 
@@ -128,7 +130,7 @@ def test_project_unmarshal(check, yaml_loaded_data):
             continue
         if attr == "services":
             # Services are classes and not Dicts upfront
-            v["hello"] = Service(**v["hello"])
+            v["test-service"] = Service(**v["test-service"])
 
         check.equal(getattr(project, attr.replace("-", "_")), v)
 
@@ -249,6 +251,48 @@ def test_project_title_empty_invalid_name(yaml_loaded_data):
     with pytest.raises(ProjectValidationError) as err:
         Project.unmarshal(yaml_loaded_data)
     assert "Invalid name for ROCK" in str(err.value)
+
+
+@pytest.mark.parametrize("entrypoint_service", [""])
+def test_project_entrypoint_service_empty(yaml_loaded_data, entrypoint_service):
+    yaml_loaded_data["entrypoint-service"] = entrypoint_service
+    with pytest.raises(ProjectValidationError) as err:
+        Project.unmarshal(yaml_loaded_data)
+    assert "The provided entrypoint-service '' is not a valid Pebble service." in str(
+        err.value
+    )
+
+
+@pytest.mark.parametrize("entrypoint_service", ["test-service"])
+def test_project_entrypoint_service_valid(
+    yaml_loaded_data, emitter, entrypoint_service
+):
+    yaml_loaded_data["entrypoint-service"] = entrypoint_service
+    project = Project.unmarshal(yaml_loaded_data)
+    assert project.entrypoint_service == entrypoint_service
+    emitter.assert_message(
+        "Warning: defining an entrypoint-service will result in a rock with "
+        + "an atypical OCI Entrypoint. While that might be acceptable for "
+        + "testing and personal use, it shall require prior approval before "
+        + "submitting to a Canonical registry namespace."
+    )
+
+
+@pytest.mark.parametrize("entrypoint_service", ["baz"])
+def test_project_entrypoint_service_invalid(yaml_loaded_data, entrypoint_service):
+    yaml_loaded_data["entrypoint-service"] = entrypoint_service
+    with pytest.raises(ProjectValidationError) as err:
+        Project.unmarshal(yaml_loaded_data)
+    assert (
+        "The provided entrypoint-service 'baz' is not a valid Pebble service."
+        in str(err.value)
+    )
+
+
+def test_project_entrypoint_service_absent(yaml_loaded_data):
+    yaml_loaded_data.pop("entrypoint-service")
+    project = Project.unmarshal(yaml_loaded_data)
+    assert project.entrypoint_service is None
 
 
 def test_project_build_base(yaml_loaded_data):
@@ -552,10 +596,11 @@ environment:
   FOO: value3
   BAR: value2
 services:
-  hello:
+  test-service:
     override: replace
-    command: /bin/hello
+    command: echo [ foo ]
     on-failure: restart
+entrypoint-service: test-service
 package-repositories:
 - type: apt
   ppa: ppa/ppa

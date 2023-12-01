@@ -163,7 +163,9 @@ def _pack(
 
     emit.progress("Adding Pebble entrypoint")
 
-    new_image.set_entrypoint()
+    new_image.set_entrypoint(project.entrypoint_service)
+    if project.services and project.entrypoint_service in project.services:
+        new_image.set_cmd(project.services[project.entrypoint_service].command)
 
     services = project.dict(exclude_none=True, by_alias=True).get("services", {})
 
