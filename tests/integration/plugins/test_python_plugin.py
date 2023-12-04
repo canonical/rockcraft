@@ -99,6 +99,7 @@ except OsReleaseVersionIdError:
     VALUES_FOR_HOST = RELEASE_TO_VALUES["22.04"]
 
 
+@pytest.mark.notox()
 @pytest.mark.parametrize("base", tuple(UBUNTU_BASES))
 def test_python_plugin_ubuntu(base, tmp_path, run_lifecycle):
     project = create_python_project(base=base)
@@ -112,7 +113,7 @@ def test_python_plugin_ubuntu(base, tmp_path, run_lifecycle):
 
     # Check the shebang in the "hello" script
     # In test env this could be replaced with sh that exec python by the venv
-    expected_shebang = ("#!/bin/python3", "#!/bin/sh")
+    expected_shebang = "#!/bin/python3"
     hello = bin_dir / "hello"
     hello_text = hello.read_text()
     assert hello_text.startswith(expected_shebang)
@@ -132,6 +133,7 @@ def test_python_plugin_ubuntu(base, tmp_path, run_lifecycle):
     assert not pyvenv_cfg.is_file()
 
 
+@pytest.mark.notox()
 def test_python_plugin_bare(tmp_path, run_lifecycle):
     project = create_python_project(base="bare")
     run_lifecycle(project=project, work_dir=tmp_path)
@@ -151,7 +153,7 @@ def test_python_plugin_bare(tmp_path, run_lifecycle):
 
     # Check the shebang in the "hello" script
     # In test env this could be replaced with sh that exec python by the venv
-    expected_shebang = ("#!/bin/python3", "#!/bin/sh")
+    expected_shebang = "#!/bin/python3"
     hello = bin_dir / "hello"
     hello_text = hello.read_text()
     assert hello_text.startswith(expected_shebang)
