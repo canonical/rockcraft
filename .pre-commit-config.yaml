@@ -20,11 +20,11 @@ repos:
         args: [--fix, --exit-non-zero-on-fix]
   - repo: https://github.com/psf/black
     # renovate: datasource=pypi;depName=black
-    rev: "23.3.0"
+    rev: "23.11.0"
     hooks:
       - id: black
   - repo: https://github.com/adrienverge/yamllint.git
     # renovate: datasource=pypi;depName=yamllint
-    rev: "v1.31.0"
+    rev: "v1.33.0"
     hooks:
       - id: yamllint
