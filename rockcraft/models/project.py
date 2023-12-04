@@ -351,12 +351,7 @@ class Project(YamlModelMixin, BaseProject):
                 "a valid Pebble service."
             )
 
-        services = values.get("services")
-        if services:
-            command = services[entrypoint_service].command
-        else:
-            raise ProjectValidationError("The project does not define any services.")
-
+        command = values["services"][entrypoint_service].command
         command_sh_args = shlex.split(command)
         # optional arg is surrounded by brackets, so check that they exist in the
         # right order
