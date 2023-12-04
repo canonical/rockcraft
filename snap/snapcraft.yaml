@@ -70,7 +70,8 @@ parts:
       rm -f "${CRAFT_PART_INSTALL}/bin/python3"
       ln -s "${CRAFT_PART_INSTALL}/../../../stage/usr/bin/python3" "${CRAFT_PART_INSTALL}/bin/python3"
 
-      # stable Snapcraft not support pure pyproject.toml, install it manually
+      # Snapcraft 7 currently not support pure pyproject.toml, and will not install anything.
+      # Install the package manually
       "${CRAFT_PART_INSTALL}/bin/pip" install -U "${CRAFT_PART_BUILD}[ubuntu-jammy]"
 
       version="$(${CRAFT_PART_INSTALL}/bin/python3 -B -c 'import importlib.metadata; print(importlib.metadata.version("rockcraft"))')"
