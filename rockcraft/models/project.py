@@ -46,6 +46,12 @@ from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
 if TYPE_CHECKING:  # pragma: no cover
     from pydantic.error_wrappers import ErrorDict
 
+# pyright workaround
+if TYPE_CHECKING:
+    _RunUser = str | None
+else:
+    _RunUser = Literal[tuple(SUPPORTED_GLOBAL_USERNAMES)] | None
+
 
 class Platform(pydantic.BaseModel):
     """Rockcraft project platform definition."""
@@ -134,10 +140,7 @@ class Project(YamlModelMixin, BaseProject):
     base: Literal["bare", "ubuntu@20.04", "ubuntu@22.04"]
     build_base: Literal["ubuntu@20.04", "ubuntu@22.04"] | None
     environment: dict[str, str] | None
-    if TYPE_CHECKING:
-        run_user: str | None
-    else:
-        run_user: Literal[tuple(SUPPORTED_GLOBAL_USERNAMES)] | None  # type: ignore
+    run_user: _RunUser
     services: dict[str, Service] | None
     checks: dict[str, Check] | None
     entrypoint_service: str | None
