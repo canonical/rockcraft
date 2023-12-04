@@ -17,11 +17,15 @@
 """Command-line application entry point."""
 
 import logging
+from typing import TYPE_CHECKING
 
 from rockcraft import plugins
 
 from . import commands
 from .services import RockcraftServiceFactory
+
+if TYPE_CHECKING:
+    from .application import Rockcraft
 
 
 def run() -> int:
@@ -39,7 +43,7 @@ def run() -> int:
     return app.run()  # type: ignore[no-any-return]
 
 
-def _create_app():  # type: ignore[no-untyped-def] # noqa: ANN202
+def _create_app() -> "Rockcraft":
     # pylint: disable=import-outside-toplevel
     # Import these here so that the script that generates the docs for the
     # commands doesn't need to know *too much* of the application.
