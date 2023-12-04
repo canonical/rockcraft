@@ -40,7 +40,7 @@ def test_run_pack_services(mocker, monkeypatch, tmp_path):
 
     log_path = tmp_path / "rockcraft.log"
     mock_ended_ok = mocker.spy(emit, "ended_ok")
-    mocker.patch.object(Rockcraft, "project")
+    mocker.patch.object(Rockcraft, "get_project")
     mocker.patch.object(Rockcraft, "log_path", new=log_path)
 
     fake_prime_dir = Path("/fake/prime/dir")
