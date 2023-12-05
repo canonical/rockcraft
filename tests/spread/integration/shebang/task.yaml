@@ -1,0 +1,13 @@
+summary: test shebang handling (not working in tox)
+
+execute: |
+  tests.pkgs install tox libapt-pkg-dev
+
+  pushd $PROJECT_PATH/
+
+  git init
+  git add .
+  git commit -m "test"
+
+  tox run --colored yes -m tests --notest
+  ./.tox/integration-py3.10/bin/pytest -m notox tests/integration/

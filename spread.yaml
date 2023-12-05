@@ -12,6 +12,7 @@ include:
   - docs/
   - pyproject.toml
   - rockcraft/
+  - tox.ini
 
 backends:
   google:
@@ -127,3 +128,8 @@ suites:
   tests/spread/large/:
     summary: bigger tests that take longer to run
     manual: true
+
+  tests/spread/integration/:
+    summary: tests for rockcraft integration that not work in tox
+    systems:
+      - ubuntu-22.04-64
