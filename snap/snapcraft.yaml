@@ -66,22 +66,10 @@ parts:
     override-build: |
       ${SNAP}/libexec/snapcraft/craftctl default
 
-      # craft-parts changed the python symlink in venv, and unusable at the time
-      rm -f "${CRAFT_PART_INSTALL}/bin/python3"
-      ln -s "${CRAFT_PART_INSTALL}/../../../stage/usr/bin/python3" "${CRAFT_PART_INSTALL}/bin/python3"
-
-      # Snapcraft 7 currently not support pure pyproject.toml, and will not install anything.
-      # Install the package manually
-      "${CRAFT_PART_INSTALL}/bin/pip" install -U "${CRAFT_PART_BUILD}[ubuntu-jammy]"
-
-      version="$(${CRAFT_PART_INSTALL}/bin/python3 -B -c 'import importlib.metadata; print(importlib.metadata.version("rockcraft"))')"
-
+      version="$(python3 setup.py --version)"
       ${SNAP}/libexec/snapcraft/craftctl set version="$version"
       [ -n "$(echo $version | grep "post")" ] && grade=devel || grade=stable
       ${SNAP}/libexec/snapcraft/craftctl set grade="${grade}"
-
-      # rerun to fix the symlinks
-      ${SNAP}/libexec/snapcraft/craftctl default
 
       sed -i -e '1 s|^#!/.*|#!/snap/rockcraft/current/bin/python -E|' $CRAFT_PART_INSTALL/bin/craftctl
     after:
