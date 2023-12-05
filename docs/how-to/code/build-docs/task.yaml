@@ -1,0 +1,35 @@
+###########################################
+# IMPORTANT
+# Comments matter!
+# The docs use the wrapping comments as
+# markers for including said instructions
+# as snippets in the docs.
+###########################################
+summary: test the "Build the docs" guide
+
+prepare: |
+  tests.pkgs install tox libapt-pkg-dev
+
+execute: |
+  pushd $PROJECT_PATH/
+
+  # create git for getting version
+  git init
+  git add .
+  git commit -m "test"
+
+  # [docs:build-docs]
+  tox -e build-docs  # the home page can be found at docs/_build/html/index.html
+  # [docs:build-docs-end]
+
+  set +e
+  timeout -s SIGINT 60 \
+  tox -e autobuild-docs
+  # [docs:build-autobuild-end]
+  ret=$?
+  set -e
+
+  if [ $ret -ne 124 ]
+  then
+    exit $ret
+  fi
