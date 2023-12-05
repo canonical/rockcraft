@@ -1,4 +1,4 @@
-Create a ROCK from a PyPI package
+Create a ROCK for a PyPI package
 *********************************
 
 By the end of this tutorial you will be able to run pyfiglet via docker:

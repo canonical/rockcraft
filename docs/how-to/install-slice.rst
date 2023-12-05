@@ -1,4 +1,4 @@
-How to install your own package slice
+How to install a custom package slice
 *************************************
 
 When a specific package slice is not available on the `upstream Chisel

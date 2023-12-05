@@ -1,7 +1,7 @@
 .. _how_to_use_chisel:
 
-How to use Chisel
------------------
+How to use Chisel to cut existing slices
+-----------------------------------------
 
 Chisel has been integrated with Rockcraft in a way that it becomes seamless to
 users. Packages and slices can be both installed via the ``stage-packages``
