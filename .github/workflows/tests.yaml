@@ -19,7 +19,7 @@ jobs:
         with:
           fetch-depth: 0
           submodules: true
-      - name: conventional commits
+      - name: Conventional commits
         uses: webiny/action-conventional-commits@v1.1.0
       - name: Install packages
         run: |
