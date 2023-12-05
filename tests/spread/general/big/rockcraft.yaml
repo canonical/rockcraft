@@ -3,10 +3,10 @@ version: latest
 summary: A big ROCK to test many features
 description: |
   A big ROCK whose purpose is to test many features while only paying the "setup"
-  and "teardown" price once. Feel free to add to this file and to "task.yaml", 
+  and "teardown" price once. Feel free to add to this file and to "task.yaml",
   adding references to issues/PRs where appropriate.
 license: Apache-2.0
-base: ubuntu:22.04 # Leaving ":"-notation on purpose here
+base: ubuntu:22.04  # Leaving ":"-notation on purpose here
 platforms:
   amd64:
 
@@ -18,7 +18,7 @@ services:
     on-success: shutdown
     on-failure: shutdown
     working-dir: /tmp
-  
+
 parts:
   issue-44-dir-owner:
     plugin: dump
@@ -52,4 +52,3 @@ parts:
       mkdir fake_rock_dir
       touch fake_rock_dir/fake_rock_file
       ln -s fake_rock_dir .rock
-

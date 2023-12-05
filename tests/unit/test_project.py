@@ -19,14 +19,13 @@ import os
 import subprocess
 import textwrap
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 import pydantic
 import pytest
 import yaml
 from craft_application.models import BuildInfo
 from craft_providers.bases import BaseName
-
 from rockcraft.errors import ProjectLoadError, ProjectValidationError
 from rockcraft.models import Project, load_project
 from rockcraft.models.project import INVALID_NAME_MESSAGE, Platform
@@ -87,18 +86,18 @@ entrypoint-service: test-service
 """
 
 
-@pytest.fixture
+@pytest.fixture()
 def yaml_data():
     return ROCKCRAFT_YAML
 
 
-@pytest.fixture
+@pytest.fixture()
 def yaml_loaded_data():
     return yaml.safe_load(ROCKCRAFT_YAML)
 
 
-@pytest.fixture
-def pebble_part() -> Dict[str, Any]:
+@pytest.fixture()
+def pebble_part() -> dict[str, Any]:
     return {
         "pebble": {
             "plugin": "nil",
@@ -181,7 +180,7 @@ def test_project_unmarshal_with_unsupported_fields(unsupported_field, yaml_loade
 
 
 @pytest.mark.parametrize(
-    "variable,is_forbidden",
+    ("variable", "is_forbidden"),
     [("$BAR", True), ("BAR_$BAZ", True), ("BAR$", False)],
 )
 def test_forbidden_env_var_interpolation(
@@ -272,9 +271,9 @@ def test_project_entrypoint_service_valid(
     assert project.entrypoint_service == entrypoint_service
     emitter.assert_message(
         "Warning: defining an entrypoint-service will result in a rock with "
-        + "an atypical OCI Entrypoint. While that might be acceptable for "
-        + "testing and personal use, it shall require prior approval before "
-        + "submitting to a Canonical registry namespace."
+        "an atypical OCI Entrypoint. While that might be acceptable for "
+        "testing and personal use, it shall require prior approval before "
+        "submitting to a Canonical registry namespace."
     )
 
 
@@ -304,7 +303,7 @@ def test_project_build_base(yaml_loaded_data):
 
 
 @pytest.mark.parametrize(
-    ["base", "build_base", "expected_base", "expected_build_base"],
+    ("base", "build_base", "expected_base", "expected_build_base"),
     [
         ("ubuntu:22.04", None, "ubuntu@22.04", "ubuntu@22.04"),
         ("ubuntu:22.04", "ubuntu:20.04", "ubuntu@22.04", "ubuntu@20.04"),
@@ -457,7 +456,7 @@ def test_project_parts_validation(yaml_loaded_data):
 
 
 @pytest.mark.parametrize(
-    "packages,script",
+    ("packages", "script"),
     [
         (["pkg"], None),
         ([], "ls"),
@@ -613,7 +612,7 @@ def test_project_yaml(yaml_loaded_data):
 
 
 @pytest.mark.parametrize(
-    ["platforms", "expected_build_infos"],
+    ("platforms", "expected_build_infos"),
     [
         (
             {

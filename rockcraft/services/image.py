@@ -16,8 +16,6 @@
 
 """Rockcraft Image Service."""
 
-from __future__ import annotations
-
 from dataclasses import dataclass
 from pathlib import Path
 from typing import cast
@@ -48,7 +46,7 @@ class RockcraftImageService(ProjectService):
         project: models.Project,
         work_dir: Path,
         build_for: str,
-    ):
+    ) -> None:
         super().__init__(app, services, project=project)
 
         self._work_dir = work_dir

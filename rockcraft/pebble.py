@@ -17,8 +17,9 @@
 """Pebble metadata and configuration helpers."""
 
 import glob
+from collections.abc import Callable, Mapping
 from pathlib import Path
-from typing import Any, Dict, List, Literal, Mapping, Optional
+from typing import Any, Literal
 
 import pydantic
 import yaml
@@ -31,7 +32,7 @@ class HttpCheck(pydantic.BaseModel):
     """Lightweight schema validation for a Pebble HTTP check."""
 
     url: pydantic.AnyHttpUrl
-    headers: Optional[Dict[str, str]]
+    headers: dict[str, str] | None
 
     class Config:  # pylint: disable=too-few-public-methods
         """Pydantic model configuration."""
@@ -44,7 +45,7 @@ class TcpCheck(pydantic.BaseModel):
     """Lightweight schema validation for a Pebble TCP check."""
 
     port: int
-    host: Optional[str]
+    host: str | None
 
     class Config:  # pylint: disable=too-few-public-methods
         """Pydantic model configuration."""
@@ -57,19 +58,21 @@ class ExecCheck(pydantic.BaseModel):
     """Lightweight schema validation for a Pebble exec check."""
 
     command: str
-    service_context: Optional[str]
-    environment: Optional[Dict[str, str]]
-    user: Optional[str]
-    user_id: Optional[int]
-    group: Optional[str]
-    group_id: Optional[int]
-    working_dir: Optional[str]
+    service_context: str | None
+    environment: dict[str, str] | None
+    user: str | None
+    user_id: int | None
+    group: str | None
+    group_id: int | None
+    working_dir: str | None
 
     class Config:  # pylint: disable=too-few-public-methods
         """Pydantic model configuration."""
 
         allow_population_by_field_name = True
-        alias_generator = lambda s: s.replace("_", "-")  # noqa: E731
+        alias_generator: Callable[[str], str] = lambda s: s.replace(  # noqa: E731
+            "_", "-"
+        )
         extra = "forbid"
 
 
@@ -81,13 +84,13 @@ class Check(pydantic.BaseModel):
     """
 
     override: Literal["merge", "replace"]
-    level: Optional[Literal["alive", "ready"]]
-    period: Optional[str]
-    timeout: Optional[str]
-    threshold: Optional[int]
-    http: Optional[HttpCheck]
-    tcp: Optional[TcpCheck]
-    exec: Optional[ExecCheck]
+    level: Literal["alive", "ready"] | None
+    period: str | None
+    timeout: str | None
+    threshold: int | None
+    http: HttpCheck | None
+    tcp: TcpCheck | None
+    exec: ExecCheck | None
 
     @pydantic.root_validator(pre=True)
     @classmethod
@@ -115,7 +118,9 @@ class Check(pydantic.BaseModel):
         """Pydantic model configuration."""
 
         allow_population_by_field_name = True
-        alias_generator = lambda s: s.replace("_", "-")  # noqa: E731
+        alias_generator: Callable[[str], str] = lambda s: s.replace(  # noqa: E731
+            "_", "-"
+        )
         extra = "forbid"
 
 
@@ -128,31 +133,33 @@ class Service(pydantic.BaseModel):
 
     override: Literal["merge", "replace"]
     command: str
-    summary: Optional[str]
-    description: Optional[str]
-    startup: Optional[Literal["enabled", "disabled"]]
-    after: Optional[List[str]]
-    before: Optional[List[str]]
-    requires: Optional[List[str]]
-    environment: Optional[Dict[str, str]]
-    user: Optional[str]
-    user_id: Optional[int]
-    group: Optional[str]
-    group_id: Optional[int]
-    working_dir: Optional[str]
-    on_success: Optional[Literal["restart", "shutdown", "ignore"]]
-    on_failure: Optional[Literal["restart", "shutdown", "ignore"]]
-    on_check_failure: Optional[Dict[str, Literal["restart", "shutdown", "ignore"]]]
-    backoff_delay: Optional[str]
-    backoff_factor: Optional[float]
-    backoff_limit: Optional[str]
-    kill_delay: Optional[str]
+    summary: str | None
+    description: str | None
+    startup: Literal["enabled", "disabled"] | None
+    after: list[str] | None
+    before: list[str] | None
+    requires: list[str] | None
+    environment: dict[str, str] | None
+    user: str | None
+    user_id: int | None
+    group: str | None
+    group_id: int | None
+    working_dir: str | None
+    on_success: Literal["restart", "shutdown", "ignore"] | None
+    on_failure: Literal["restart", "shutdown", "ignore"] | None
+    on_check_failure: dict[str, Literal["restart", "shutdown", "ignore"]] | None
+    backoff_delay: str | None
+    backoff_factor: float | None
+    backoff_limit: str | None
+    kill_delay: str | None
 
     class Config:  # pylint: disable=too-few-public-methods
         """Pydantic model configuration."""
 
         allow_population_by_field_name = True
-        alias_generator = lambda s: s.replace("_", "-")  # noqa: E731
+        alias_generator: Callable[[str], str] = lambda s: s.replace(  # noqa: E731
+            "_", "-"
+        )
         extra = "forbid"
 
 
@@ -174,7 +181,7 @@ class Pebble:
         self,
         target_dir: Path,
         ref_fs: Path,
-        layer_content: Dict[str, Any],
+        layer_content: dict[str, Any],
         rock_name: str,
     ) -> None:
         """Infers and defines a new Pebble layer file.
@@ -194,7 +201,7 @@ class Pebble:
             pebble_layers_path_in_base + "/[0-9][0-9][0-9]-???*.yaml"
         ) + glob.glob(pebble_layers_path_in_base + "/[0-9][0-9][0-9]-???*.yml")
 
-        prefixes = list(map(lambda l: Path(l).name[:3], existing_pebble_layers))
+        prefixes = [Path(l).name[:3] for l in existing_pebble_layers]
         prefixes.sort()
         emit.progress(
             f"Found {len(existing_pebble_layers)} Pebble layers in the base's root filesystem"

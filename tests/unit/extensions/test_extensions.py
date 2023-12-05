@@ -15,9 +15,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import pytest
-
 from rockcraft import errors, extensions
 from rockcraft.models import load_project
+
 from tests.unit.testing.extensions import (
     FULL_EXTENSION_YAML,
     ExperimentalExtension,
@@ -27,7 +27,7 @@ from tests.unit.testing.extensions import (
 )
 
 
-@pytest.fixture
+@pytest.fixture()
 def fake_extensions(mock_extensions):
     extensions.register(FakeExtension.NAME, FakeExtension)
     extensions.register(ExperimentalExtension.NAME, ExperimentalExtension)
@@ -35,7 +35,7 @@ def fake_extensions(mock_extensions):
     extensions.register(FullExtension.NAME, FullExtension)
 
 
-@pytest.fixture
+@pytest.fixture()
 def input_yaml():
     return {"base": "ubuntu@22.04"}
 

@@ -16,7 +16,6 @@
 
 import contextlib
 from pathlib import Path
-from typing import Optional
 from unittest import mock
 
 import pytest
@@ -25,14 +24,13 @@ from craft_providers import Executor, Provider, base
 # pylint: disable=import-outside-toplevel
 
 
-@pytest.fixture
+@pytest.fixture()
 def mock_instance():
     """Provide a mock instance (Executor)."""
-    _mock_instance = mock.Mock(spec=Executor)
-    yield _mock_instance
+    return mock.Mock(spec=Executor)
 
 
-@pytest.fixture
+@pytest.fixture()
 def mock_extensions(monkeypatch):
     from rockcraft.extensions import registry
 
@@ -78,7 +76,7 @@ def fake_provider(mock_instance):
             project_name: str,
             project_path: Path,
             base_configuration: base.Base,
-            build_base: Optional[str] = None,
+            build_base: str | None = None,
             instance_name: str,
             allow_unstable: bool = False,
         ):

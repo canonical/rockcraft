@@ -27,7 +27,7 @@ import tempfile
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 import yaml
 from craft_cli import emit
@@ -67,7 +67,7 @@ class Image:
         *,
         image_dir: Path,
         arch: str,
-    ) -> Tuple["Image", str]:
+    ) -> tuple["Image", str]:
         """Obtain an image from a docker registry.
 
         The image is fetched from the registry at ``REGISTRY_URL``.
@@ -115,7 +115,7 @@ class Image:
         image_name: str,
         image_dir: Path,
         arch: str,
-    ) -> Tuple["Image", str]:
+    ) -> tuple["Image", str]:
         """Create a new OCI image out of thin air.
 
         :param image_name: The image to initiate, in ``name@tag`` format.
@@ -193,7 +193,7 @@ class Image:
         self,
         tag: str,
         new_layer_dir: Path,
-        base_layer_dir: Optional[Path] = None,
+        base_layer_dir: Path | None = None,
     ) -> "Image":
         """Add a layer to the image.
 
@@ -295,13 +295,14 @@ class Image:
             emit.progress(f"Adding user {username}:{uid} with group {username}:{uid}")
             self.add_layer(tag, Path(tmpfs))
 
-    def stat(self) -> Dict[Any, Any]:
+    def stat(self) -> dict[str, Any]:
         """Obtain the image statistics, as reported by "umoci stat --json"."""
         image_path = self.path / self.image_name
-        output = _process_run(
+        output: bytes = _process_run(
             ["umoci", "stat", "--json", "--image", str(image_path)]
         ).stdout
-        return json.loads(output)
+        result: dict[str, Any] = json.loads(output)
+        return result
 
     @staticmethod
     def digest(source_image: str) -> bytes:
@@ -352,7 +353,7 @@ class Image:
         _config_image(image_path, params)
         emit.progress(f"Default user set to {user}")
 
-    def set_entrypoint(self, entrypoint_service: Optional[str] = None) -> None:
+    def set_entrypoint(self, entrypoint_service: str | None = None) -> None:
         """Set the OCI image entrypoint. It is always Pebble."""
         emit.progress("Configuring entrypoint...")
         image_path = self.path / self.image_name
@@ -366,7 +367,7 @@ class Image:
         _config_image(image_path, params)
         emit.progress(f"Entrypoint set to {entrypoint}")
 
-    def set_cmd(self, command: Optional[str] = None) -> None:
+    def set_cmd(self, command: str | None = None) -> None:
         """Set the OCI image CMD."""
         emit.progress("Configuring CMD...")
         image_path = self.path / self.image_name
@@ -379,7 +380,7 @@ class Image:
         except ValueError:
             emit.debug(
                 f"The entrypoint-service command '{command}' has no default "
-                + "arguments. CMD won't be set."
+                "arguments. CMD won't be set."
             )
             return
         for arg in opt_args:
@@ -389,8 +390,8 @@ class Image:
 
     def set_pebble_layer(
         self,
-        services: Dict[str, Any],
-        checks: Dict[str, Any],
+        services: dict[str, Any],
+        checks: dict[str, Any],
         name: str,
         tag: str,
         summary: str,
@@ -408,7 +409,7 @@ class Image:
         :param base_layer_dir: Path to the base layer's root filesystem
         """
         # pylint: disable=too-many-arguments
-        pebble_layer_content: Dict[str, Any] = {
+        pebble_layer_content: dict[str, Any] = {
             "summary": summary,
             "description": description,
         }
@@ -433,7 +434,7 @@ class Image:
             emit.progress("Writing new Pebble layer file")
             self.add_layer(tag, tmpfs_path)
 
-    def set_environment(self, env: Dict[str, str]) -> None:
+    def set_environment(self, env: dict[str, str]) -> None:
         """Set the OCI image environment.
 
         :param env: A dictionary mapping environment variables to
@@ -441,8 +442,8 @@ class Image:
         """
         emit.progress("Configuring OCI environment...")
         image_path = self.path / self.image_name
-        params = []
-        env_list = []
+        params: list[str] = []
+        env_list: list[str] = []
 
         for name, value in env.items():
             env_item = f"{name}={value}"
@@ -451,7 +452,7 @@ class Image:
         _config_image(image_path, params)
         emit.progress(f"Environment set to {env_list}")
 
-    def set_control_data(self, metadata: Dict[str, Any]) -> None:
+    def set_control_data(self, metadata: dict[str, Any]) -> None:
         """Create and populate the ROCK's control data folder.
 
         :param metadata: content for the ROCK's metadata YAML file
@@ -480,7 +481,7 @@ class Image:
         emit.progress("Control data written")
         shutil.rmtree(local_control_data_path)
 
-    def set_annotations(self, annotations: Dict[str, Any]) -> None:
+    def set_annotations(self, annotations: dict[str, Any]) -> None:
         """Add the given annotations to the final image.
 
         :param annotations: A dictionary with each annotation/label and its value
@@ -490,7 +491,7 @@ class Image:
         label_params = ["--clear=config.labels"]
         annotation_params = ["--clear=manifest.annotations"]
 
-        labels_list = []
+        labels_list: list[str] = []
         for label_key, label_value in annotations.items():
             label_item = f"{label_key}={label_value}"
             labels_list.append(label_item)
@@ -507,7 +508,7 @@ def _copy_image(
     source: str,
     destination: str,
     *system_params: str,
-    copy_params: Optional[List[str]] = None,
+    copy_params: list[str] | None = None,
 ) -> None:
     """Transfer images from source to destination.
 
@@ -519,9 +520,7 @@ def _copy_image(
         [
             "skopeo",
             "--insecure-policy",
-        ]
-        + list(system_params)
-        + [
+            *list(system_params),
             "copy",
             *copy_extra,
             source,
@@ -530,9 +529,9 @@ def _copy_image(
     )
 
 
-def _config_image(image_path: Path, params: List[str]) -> None:
+def _config_image(image_path: Path, params: list[str]) -> None:
     """Configure the OCI image."""
-    _process_run(["umoci", "config", "--image", str(image_path)] + params)
+    _process_run(["umoci", "config", "--image", str(image_path), *params])
 
 
 def _add_layer_into_image(
@@ -551,7 +550,7 @@ def _add_layer_into_image(
         str(image_path),
         str(archived_content),
     ] + [arg_val for k, v in kwargs.items() for arg_val in [k, v]]
-    _process_run(cmd + ["--history.created_by", " ".join(cmd)])
+    _process_run([*cmd, "--history.created_by", " ".join(cmd)])
 
 
 def _inject_architecture_variant(image_path: Path, variant: str) -> None:
@@ -600,7 +599,7 @@ def _inject_architecture_variant(image_path: Path, variant: str) -> None:
     tl_index_path.write_bytes(json.dumps(tl_index).encode("utf-8"))
 
 
-def _process_run(command: List[str], **kwargs: Any) -> subprocess.CompletedProcess:
+def _process_run(command: list[str], **kwargs: Any) -> subprocess.CompletedProcess[Any]:
     """Run a command and handle its output."""
     if not Path(command[0]).is_absolute():
         command[0] = get_snap_command_path(command[0])
@@ -613,7 +612,7 @@ def _process_run(command: List[str], **kwargs: Any) -> subprocess.CompletedProce
             **kwargs,
             capture_output=True,
             check=True,
-            universal_newlines=True,
+            text=True,
         )
     except subprocess.CalledProcessError as err:
         msg = f"Failed to copy image: {err!s}"

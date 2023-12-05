@@ -1,8 +1,8 @@
 ###########################################
 # IMPORTANT
 # Comments matter!
-# The docs use the wrapping comments as 
-# markers for including said instructions 
+# The docs use the wrapping comments as
+# markers for including said instructions
 # as snippets in the docs.
 ###########################################
 summary: docker image migration tutorial
@@ -21,7 +21,7 @@ execute: |
   # [docs:build-docker-image]
   docker build -t dotnet-runtime:reference .
   # [docs:build-docker-image-end]
-  
+
   popd
 
   # [docs:inspect-docker-image]
@@ -48,7 +48,7 @@ execute: |
   # [docs:skopeo-copy]
   sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:dotnet-runtime_chiselled_amd64.rock docker-daemon:dotnet-runtime:chiselled
   # [docs:skopeo-copy-end]
-  
+
   # [docs:inspect-rock]
   docker images dotnet-runtime:chiselled
   # [docs:inspect-rock-end]
@@ -56,7 +56,7 @@ execute: |
   # [docs:run-rock]
   docker run --rm dotnet-runtime:chiselled exec dotnet --info
   # [docs:run-rock-end]
-  
+
 restore: |
   rm dotnet-runtime_chiselled_amd64.rock
   docker rmi -f dotnet-runtime:chiselled dotnet-runtime:reference

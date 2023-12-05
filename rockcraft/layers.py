@@ -19,7 +19,6 @@ import os
 import tarfile
 from collections import defaultdict
 from pathlib import Path
-from typing import DefaultDict, Dict, List, Optional, Set, Tuple
 
 from craft_cli import emit
 from craft_parts.executor.collisions import paths_collide
@@ -32,7 +31,7 @@ from rockcraft import errors
 def archive_layer(
     new_layer_dir: Path,
     temp_tar_file: Path,
-    base_layer_dir: Optional[Path] = None,
+    base_layer_dir: Path | None = None,
 ) -> None:
     """Prepare new OCI layer by archiving its content into tar file.
 
@@ -55,7 +54,7 @@ def archive_layer(
             tar_file.add(filepath, arcname=arcname, recursive=False)
 
 
-def prune_prime_files(prime_dir: Path, files: Set[str], base_layer_dir: Path) -> None:
+def prune_prime_files(prime_dir: Path, files: set[str], base_layer_dir: Path) -> None:
     """Remove (prune) files in a prime directory if they exist in the base layer.
 
     Given a set of filenames ``files``, this function will remove (prune) all those
@@ -87,8 +86,8 @@ def prune_prime_files(prime_dir: Path, files: Set[str], base_layer_dir: Path) ->
 
 
 def _gather_layer_paths(
-    new_layer_dir: Path, base_layer_dir: Optional[Path] = None
-) -> Dict[str, List[Path]]:
+    new_layer_dir: Path, base_layer_dir: Path | None = None
+) -> dict[str, list[Path]]:
     """Map paths in ``new_layer_dir`` to names in a layer file.
 
     See ``_archive_layer()`` for the parameters.
@@ -132,7 +131,7 @@ def _gather_layer_paths(
             return path
 
     layer_linker = LayerLinker()
-    result: DefaultDict[str, List[Path]] = defaultdict(list)
+    result: defaultdict[str, list[Path]] = defaultdict(list)
     for dirpath, subdirs, filenames in os.walk(new_layer_dir):
         # Sort `subdirs` in-place, to ensure that `os.walk()` iterates on
         # them in sorted order.
@@ -180,7 +179,7 @@ def _gather_layer_paths(
     return result
 
 
-def _merge_layer_paths(candidate_paths: Dict[str, List[Path]]) -> Dict[str, Path]:
+def _merge_layer_paths(candidate_paths: dict[str, list[Path]]) -> dict[str, Path]:
     """Merge ``candidate_paths`` into a single path per name.
 
     This function handles the case where multiple paths refer to the same name
@@ -192,7 +191,7 @@ def _merge_layer_paths(candidate_paths: Dict[str, List[Path]]) -> Dict[str, Path
         A dict where the values are Paths and the keys are the names those paths
         correspond to in the new layer.
     """
-    result: Dict[str, Path] = {}
+    result: dict[str, Path] = {}
 
     for name, paths in candidate_paths.items():
         if len(paths) == 1:
@@ -224,8 +223,8 @@ def _merge_layer_paths(candidate_paths: Dict[str, List[Path]]) -> Dict[str, Path
 
 
 def _symlink_target_in_base_layer(
-    relative_path: Path, base_layer_dir: Optional[Path]
-) -> Optional[Path]:
+    relative_path: Path, base_layer_dir: Path | None
+) -> Path | None:
     """If `relative_path` is a dir symlink in `base_layer_dir`, return its 'target'.
 
     This function checks if `relative_path` exists in the base `base_layer_dir` as
@@ -246,7 +245,7 @@ def _symlink_target_in_base_layer(
     return None
 
 
-def _all_compatible_directories(paths: List[Path]) -> bool:
+def _all_compatible_directories(paths: list[Path]) -> bool:
     """Whether ``paths`` contains only directories with the same ownership and permissions."""
     if not all(p.is_dir() for p in paths):
         return False
@@ -254,7 +253,7 @@ def _all_compatible_directories(paths: List[Path]) -> bool:
     if len(paths) < 2:
         return True
 
-    def stat_props(stat: os.stat_result) -> Tuple[int, int, int]:
+    def stat_props(stat: os.stat_result) -> tuple[int, int, int]:
         return stat.st_uid, stat.st_gid, stat.st_mode
 
     first_stat = stat_props(paths[0].stat())
@@ -263,17 +262,15 @@ def _all_compatible_directories(paths: List[Path]) -> bool:
         other_stat = stat_props(other_path.stat())
         if first_stat != other_stat:
             emit.debug(
-                (
-                    f"Path attributes differ for '{paths[0]}' and '{other_path}': "
-                    f"{first_stat} vs {other_stat}"
-                )
+                f"Path attributes differ for '{paths[0]}' and '{other_path}': "
+                f"{first_stat} vs {other_stat}"
             )
             return False
 
     return True
 
 
-def _all_compatible_files(paths: List[Path]) -> bool:
+def _all_compatible_files(paths: list[Path]) -> bool:
     """Whether ``paths`` contains only files with the same attributes and contents."""
     if not all(p.is_file() for p in paths):
         return False

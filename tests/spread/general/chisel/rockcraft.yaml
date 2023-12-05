@@ -7,7 +7,7 @@ version: "0.0.1"
 base: bare
 build_base: ubuntu@22.04
 run-user: _daemon_
-services: 
+services:
   dotnet:
     override: replace
     command: /usr/lib/dotnet/dotnet [ --info ]

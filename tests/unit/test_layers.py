@@ -19,20 +19,18 @@ import stat
 import sys
 import tarfile
 from pathlib import Path
-from typing import List, Tuple
 
 import pytest
 from craft_parts.overlays import overlays
-
 from rockcraft import errors, layers
 
 
-def get_tar_contents(tar_path: Path) -> List[str]:
+def get_tar_contents(tar_path: Path) -> list[str]:
     with tarfile.open(tar_path, "r") as tar_file:
         return tar_file.getnames()
 
 
-def duplicate_dirs_setup(tmp_path) -> Tuple[Path, Path]:
+def duplicate_dirs_setup(tmp_path) -> tuple[Path, Path]:
     """Create a filetree with an upper layer and a fake 'rootfs' structure.
 
     layer_dir/

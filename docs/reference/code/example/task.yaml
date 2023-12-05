@@ -1,4 +1,3 @@
-
 summary: Check that we can build the example rockcraft.yaml
 
 execute: |

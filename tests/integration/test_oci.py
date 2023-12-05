@@ -17,13 +17,13 @@ import os
 import subprocess
 import tarfile
 import textwrap
+from collections.abc import Callable
 from pathlib import Path
-from typing import Callable, List, Tuple
 
 import pytest
-
 from rockcraft import oci
 from rockcraft.services.image import ImageInfo
+
 from tests.util import jammy_only
 
 pytestmark = jammy_only
@@ -31,7 +31,7 @@ pytestmark = jammy_only
 
 def create_base_image(
     work_dir: Path, populate_base_layer: Callable[[Path], None]
-) -> Tuple[oci.Image, Path]:
+) -> tuple[oci.Image, Path]:
     """Create a base image with content provided by a callable.
 
     This function will create an empty image, extract it to a bundle and then
@@ -72,7 +72,7 @@ def create_base_image(
     return image, base_layer_dir
 
 
-def get_names_in_layer(image: oci.Image, layer_number: int = -1) -> List[str]:
+def get_names_in_layer(image: oci.Image, layer_number: int = -1) -> list[str]:
     """Get the list of file/dir names contained in the given layer, sorted."""
     umoci_stat = image.stat()
 
@@ -111,7 +111,7 @@ def test_add_layer_with_symlink_in_base(new_dir):
     new_layer_dir = Path("new")
     new_layer_dir.mkdir()
 
-    for target in targets + ["tmp"]:
+    for target in [*targets, "tmp"]:
         new_target_dir = new_layer_dir / target
         new_target_dir.mkdir()
         (new_target_dir / f"new_{target}_file").write_text(f"new {target} file")
@@ -128,7 +128,7 @@ def test_add_layer_with_symlink_in_base(new_dir):
     ]
 
 
-@pytest.fixture
+@pytest.fixture()
 def extra_project_params():
     """Fixture used to configure the Project used by the default test services."""
     return {

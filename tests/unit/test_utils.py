@@ -18,23 +18,22 @@ from pathlib import Path
 from unittest.mock import call
 
 import pytest
-
 from rockcraft import utils
 
 
-@pytest.fixture
+@pytest.fixture()
 def mock_isatty(mocker):
-    yield mocker.patch("rockcraft.utils.sys.stdin.isatty", return_value=True)
+    return mocker.patch("rockcraft.utils.sys.stdin.isatty", return_value=True)
 
 
-@pytest.fixture
+@pytest.fixture()
 def mock_input(mocker):
-    yield mocker.patch("rockcraft.utils.input", return_value="")
+    return mocker.patch("rockcraft.utils.input", return_value="")
 
 
-@pytest.fixture
+@pytest.fixture()
 def mock_is_managed_mode(mocker):
-    yield mocker.patch("rockcraft.utils.is_managed_mode", return_value=False)
+    return mocker.patch("rockcraft.utils.is_managed_mode", return_value=False)
 
 
 def test_get_managed_environment_home_path():
@@ -83,7 +82,7 @@ def test_confirm_with_user_defaults_without_tty(mock_input, mock_isatty):
 
 
 @pytest.mark.parametrize(
-    "user_input,expected",
+    ("user_input", "expected"),
     [
         ("y", True),
         ("Y", True),

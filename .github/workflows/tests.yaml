@@ -1,108 +1,143 @@
 name: Tests
 
 on:
-  pull_request:
   push:
     branches:
-      - main
+      - "main"
+      - "feature/*"
+      - "hotfix/*"
+      - "release/*"
+      - "renovate/*"
+  pull_request:
 
 jobs:
-  linters:
+  lint:
     runs-on: ubuntu-22.04
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           submodules: true
+      - name: Conventional commits
+        uses: webiny/action-conventional-commits@v1.1.0
       - name: Install packages
         run: |
           sudo apt update
           sudo apt install -y libapt-pkg-dev aspell aspell-en
-      - name: Set up Python 3.10
+      - name: Setup Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.10"
-      - name: Install python packages and dependencies
+          python-version: '3.10'
+          cache: 'pip'
+      - name: Configure environment
         run: |
-          pip install -U wheel -r requirements-jammy.txt -r requirements.txt -r requirements-dev.txt
-          pip install -e .
-      - name: Run black
-        run: |
-          make test-black
-      - name: Run codespell
-        run: |
-          make test-codespell
-      - name: Run flake8
-        run: |
-          make test-flake8
-      - name: Run isort
-        run: |
-          make test-isort
-      - name: Run mypy
-        run: |
-          make test-mypy
-      - name: Run pydocstyle
-        run: |
-          make test-pydocstyle
-      - name: Run pyright
-        run: |
-          sudo snap install --classic node
-          sudo snap install --classic pyright
-          make test-pyright
-      - name: Run pylint
-        run: |
-          make test-pylint
-      - name: Run sphinx-lint
-        run: |
-          make test-sphinx-lint
-      - name: Run shellcheck
-        run: |
-          sudo snap install shellcheck
-          make test-shellcheck
-      - name: Run linkcheck,woke,spelling
-        run: |
-          sudo snap install woke
-          make test-docs
-
-  tests:
+          echo "::group::Begin snap install"
+          echo "Installing snaps in the background while running apt and pip..."
+          sudo snap install --no-wait --classic pyright
+          sudo snap install --no-wait shellcheck
+          echo "::endgroup::"
+          echo "::group::pip install"
+          python -m pip install tox
+          echo "::endgroup::"
+          echo "::group::Create virtual environments for linting processes."
+          tox run --colored yes -m lint --notest
+          echo "::endgroup::"
+          echo "::group::Wait for snap to complete"
+          snap watch --last=install
+          echo "::endgroup::"
+      - name: Run Linters
+        run: tox run --skip-pkg-install --no-list-dependencies --colored yes -m lint
+  unit:
     strategy:
       matrix:
-        os: [ubuntu-22.04, windows-2019]
-        python-version: ["3.10", "3.12"]
-
-    runs-on: ${{ matrix.os }}
+        platform: [ubuntu-22.04, windows-2019]
+    runs-on: ${{ matrix.platform }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Set up Python ${{ matrix.python-version }} on ${{ matrix.os }}
+      - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: ${{ matrix.python-version }}
-      - name: Install python packages and dependencies
-        run: |
-          pip install -U wheel
+          python-version: |
+            3.10
+            3.12
+          cache: 'pip'
       - name: Install Ubuntu-specific dependencies
-        if: ${{ startsWith(matrix.os, 'ubuntu') }}
+        if: ${{ startsWith(matrix.platform, 'ubuntu') }}
         run: |
           sudo apt update
-          sudo apt install -y python3-pip python3-setuptools python3-wheel python3-venv libapt-pkg-dev
+          sudo apt install -y libapt-pkg-dev
       - name: Install Ubuntu 22.04-specific dependencies
-        if: ${{ matrix.os == 'ubuntu-22.04' }}
+        if: ${{ matrix.platform == 'ubuntu-22.04' }}
         run: |
-          pip install -U -r requirements-jammy.txt
           # 22.04 is the only one that has an 'umoci' package
           sudo apt install -y umoci
-      - name: Install dependencies
+      - name: Configure environment
         run: |
-          pip install -U -r requirements.txt -r requirements-dev.txt
-          pip install -e .
-      - name: Run unit tests
+          echo "::group::pip install"
+          python -m pip install tox
+          echo "::endgroup::"
+          mkdir -p results
+      - name: Setup Tox environments
+        run: tox run --colored yes -m tests --notest
+      - name: Test with tox
+        run: tox run --skip-pkg-install --no-list-dependencies --result-json results/tox-${{ matrix.platform }}.json --colored yes -m unit-tests
+        env:
+          PYTEST_ADDOPTS: "--no-header -vv -rN"
+      - name: Upload code coverage
+        uses: codecov/codecov-action@v3
+        with:
+          directory: ./results/
+          files: coverage*.xml
+      - name: Upload test results
+        if: success() || failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results-${{ matrix.platform }}
+          path: results/
+  integration:
+    strategy:
+      matrix:
+        platform: [ubuntu-22.04, windows-2019]
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: |
+            3.10
+            3.12
+          cache: 'pip'
+      - name: Install Ubuntu-specific dependencies
+        if: ${{ startsWith(matrix.platform, 'ubuntu') }}
         run: |
-          make test-units
-      - name: Run integration tests
+          sudo apt update
+          sudo apt install -y libapt-pkg-dev
+      - name: Install Ubuntu 22.04-specific dependencies
+        if: ${{ matrix.platform == 'ubuntu-22.04' }}
         run: |
-          make test-integrations
-
+          # 22.04 is the only one that has an 'umoci' package
+          sudo apt install -y umoci
+      - name: Configure environment
+        run: |
+          echo "::group::pip install"
+          python -m pip install tox
+          echo "::endgroup::"
+          mkdir -p results
+      - name: Setup Tox environments
+        run: tox run --colored yes -m tests --notest
+      - name: Test with tox
+        run: tox run --skip-pkg-install --no-list-dependencies --result-json results/tox-${{ matrix.platform }}.json --colored yes -m integration-tests
+        env:
+          PYTEST_ADDOPTS: "--no-header -vv -rN"
+      - name: Upload test results
+        if: success() || failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results-${{ matrix.platform }}
+          path: results/

@@ -1,4 +1,3 @@
-
 # Actual parts definition for the rockcraft + python cases that we are testing.
 # (this gets appended to all rockcraft.yaml files in the subdirectories in the
 # main task.yaml).

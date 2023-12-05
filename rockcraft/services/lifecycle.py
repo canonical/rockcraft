@@ -16,18 +16,17 @@
 
 """Rockcraft Lifecycle service."""
 
-from __future__ import annotations
-
 import contextlib
 from pathlib import Path
-from typing import cast
+from typing import Any, cast
 
 from craft_application import LifecycleService
-from craft_archives import repo
+from craft_archives import repo  # type: ignore[import-untyped]
 from craft_cli import emit
-from craft_parts import Features, Step, callbacks
+from craft_parts import Features, LifecycleManager, Step, callbacks
 from craft_parts.errors import CallbackRegistrationError
-from overrides import override
+from craft_parts.infos import ProjectInfo, StepInfo
+from overrides import override  # type: ignore[reportUnknownVariableType]
 
 from rockcraft import layers
 from rockcraft.models.project import Project
@@ -85,7 +84,10 @@ class RockcraftLifecycleService(LifecycleService):
             callbacks.unregister_all()
 
 
-def _install_package_repositories(package_repositories, lifecycle_manager) -> None:
+def _install_package_repositories(
+    package_repositories: list[dict[str, Any]] | None,
+    lifecycle_manager: LifecycleManager,
+) -> None:
     """Install package repositories in the environment."""
     if not package_repositories:
         emit.debug("No package repositories specified, none to install.")
@@ -99,7 +101,7 @@ def _install_package_repositories(package_repositories, lifecycle_manager) -> No
     emit.progress("Package repositories installed")
 
 
-def _install_overlay_repositories(overlay_dir, project_info):
+def _install_overlay_repositories(overlay_dir: Path, project_info: ProjectInfo) -> None:
     if project_info.base != "bare":
         package_repositories = project_info.package_repositories
         repo.install_in_root(
@@ -109,10 +111,12 @@ def _install_overlay_repositories(overlay_dir, project_info):
         )
 
 
-def _post_prime_callback(step_info) -> bool:
+def _post_prime_callback(step_info: StepInfo) -> bool:
     prime_dir = step_info.prime_dir
-    files = step_info.state.files
     base_layer_dir = step_info.rootfs_dir
+    files: set[str]
+
+    files = step_info.state.files if step_info.state else set()
 
     layers.prune_prime_files(prime_dir, files, base_layer_dir)
     return True

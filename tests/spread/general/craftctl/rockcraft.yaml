@@ -8,7 +8,7 @@ platforms:
   craftctl:
     build-on: ["amd64", "i386"]
     build-for: amd64
-  
+
 parts:
   hello:
     plugin: make

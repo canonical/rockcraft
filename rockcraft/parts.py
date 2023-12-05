@@ -15,12 +15,12 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 """Craft-parts lifecycle."""
-from typing import Any, Dict
+from typing import Any
 
 import craft_parts
 
 
-def validate_part(data: Dict[str, Any]) -> None:
+def validate_part(data: dict[str, Any]) -> None:
     """Validate the given part data against common and plugin models.
 
     :param data: The part data to validate.
@@ -28,6 +28,6 @@ def validate_part(data: Dict[str, Any]) -> None:
     craft_parts.validate_part(data)
 
 
-def part_has_overlay(data: Dict[str, Any]) -> bool:
+def part_has_overlay(data: dict[str, Any]) -> bool:
     """Whether ``data`` declares an overlay-using part."""
     return craft_parts.part_has_overlay(data)

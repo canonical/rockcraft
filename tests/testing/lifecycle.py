@@ -14,7 +14,6 @@
 #  You should have received a copy of the GNU General Public License along
 #  with this program.  If not, see <http://www.gnu.org/licenses/>.
 """Project-related utility functions for running lifecycles."""
-from __future__ import annotations
 
 import pathlib
 from typing import cast

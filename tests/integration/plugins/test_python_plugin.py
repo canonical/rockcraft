@@ -23,10 +23,10 @@ from craft_application import errors
 from craft_cli import EmitterMode, emit
 from craft_parts.errors import OsReleaseVersionIdError
 from craft_parts.utils.os_utils import OsRelease
-
 from rockcraft import plugins
 from rockcraft.models.project import Project
 from rockcraft.plugins.python_plugin import SITECUSTOMIZE_TEMPLATE
+
 from tests.testing.project import create_project
 from tests.util import ubuntu_only
 
@@ -70,7 +70,7 @@ def create_python_project(base, extra_part_props=None) -> Project:
 class ExpectedValues:
     """Expected venv Python values for a given Ubuntu host."""
 
-    symlinks: typing.List[str]
+    symlinks: list[str]
     symlink_target: str
     version_dir: str
 
@@ -99,6 +99,7 @@ except OsReleaseVersionIdError:
     VALUES_FOR_HOST = RELEASE_TO_VALUES["22.04"]
 
 
+@pytest.mark.notox()
 @pytest.mark.parametrize("base", tuple(UBUNTU_BASES))
 def test_python_plugin_ubuntu(base, tmp_path, run_lifecycle):
     project = create_python_project(base=base)
@@ -111,9 +112,13 @@ def test_python_plugin_ubuntu(base, tmp_path, run_lifecycle):
     assert list(bin_dir.glob("python*")) == []
 
     # Check the shebang in the "hello" script
+    # In test env this could be replaced with sh that exec python by the venv
     expected_shebang = "#!/bin/python3"
     hello = bin_dir / "hello"
-    assert hello.read_text().startswith(expected_shebang)
+    hello_text = hello.read_text()
+    assert hello_text.startswith(expected_shebang)
+    if hello_text.startswith("#!/bin/sh"):
+        assert "bin/python" in hello_text
 
     # Check the extra sitecustomize.py module that we add
     expected_text = SITECUSTOMIZE_TEMPLATE.replace("EOF", "")
@@ -128,6 +133,7 @@ def test_python_plugin_ubuntu(base, tmp_path, run_lifecycle):
     assert not pyvenv_cfg.is_file()
 
 
+@pytest.mark.notox()
 def test_python_plugin_bare(tmp_path, run_lifecycle):
     project = create_python_project(base="bare")
     run_lifecycle(project=project, work_dir=tmp_path)
@@ -146,9 +152,13 @@ def test_python_plugin_bare(tmp_path, run_lifecycle):
     )
 
     # Check the shebang in the "hello" script
+    # In test env this could be replaced with sh that exec python by the venv
     expected_shebang = "#!/bin/python3"
     hello = bin_dir / "hello"
-    assert hello.read_text().startswith(expected_shebang)
+    hello_text = hello.read_text()
+    assert hello_text.startswith(expected_shebang)
+    if hello_text.startswith("#!/bin/sh"):
+        assert "bin/python" in hello_text
 
     # Check the extra sitecustomize.py module that we add
     expected_text = SITECUSTOMIZE_TEMPLATE.replace("EOF", "")
