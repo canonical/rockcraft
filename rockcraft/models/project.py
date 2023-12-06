@@ -26,11 +26,12 @@ import pydantic
 import spdx_lookup  # type: ignore
 import yaml
 from craft_application.errors import CraftValidationError
-from craft_application.models import BuildInfo
+from craft_application.models import BuildInfo, CraftBaseConfig
 from craft_application.models import Project as BaseProject
 from craft_archives import repo
 from craft_providers import bases
 from pydantic_yaml import YamlModelMixin
+from typing_extensions import override
 
 from rockcraft.architectures import SUPPORTED_ARCHS
 from rockcraft.errors import ProjectLoadError
@@ -99,7 +100,9 @@ layer files:
 """
 
 INVALID_NAME_MESSAGE = (
-    "Invalid name for rock (must contain only lowercase letters, numbers and hyphens)"
+    "Invalid name for rock: Names can only use ASCII lowercase letters, numbers, and hyphens. "
+    "They must start with a lowercase letter, may not end with a hyphen, "
+    "and may not have two hyphens in a row."
 )
 
 DEPRECATED_COLON_BASES = ["ubuntu:20.04", "ubuntu:22.04"]
@@ -132,17 +135,10 @@ class Project(YamlModelMixin, BaseProject):
 
     parts: dict[str, Any]
 
-    class Config:  # pylint: disable=too-few-public-methods
+    class Config(CraftBaseConfig):  # pylint: disable=too-few-public-methods
         """Pydantic model configuration."""
 
-        validate_assignment = True
-        extra = "forbid"
         allow_mutation = False
-        allow_population_by_field_name = True
-        alias_generator = lambda s: s.replace("_", "-")  # noqa: E731
-        error_msg_templates = {
-            "value_error.str.regex": INVALID_NAME_MESSAGE,
-        }
 
     @property
     def effective_base(self) -> bases.BaseName:
@@ -443,6 +439,19 @@ class Project(YamlModelMixin, BaseProject):
                     )
 
         return build_infos
+
+    @override
+    @classmethod
+    def transform_pydantic_error(cls, error: pydantic.ValidationError) -> None:
+        BaseProject.transform_pydantic_error(error)
+
+        for error_dict in error.errors():
+            loc_and_type = (str(error_dict["loc"][0]), error_dict["type"])
+            if loc_and_type == ("name", "value_error.str.regex"):
+                # Note: The base Project class already changes the error message
+                # for the "name" regex, but we re-change it here because
+                # Rockcraft's name regex is slightly stricter.
+                error_dict["msg"] = INVALID_NAME_MESSAGE
 
 
 def load_project(filename: Path) -> dict[str, Any]:
