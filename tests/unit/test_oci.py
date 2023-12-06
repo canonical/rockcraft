@@ -41,54 +41,54 @@ MOCK_NEW_USER = {
 }
 
 
-@pytest.fixture
+@pytest.fixture()
 def mock_run(mocker):
-    yield mocker.patch("rockcraft.oci._process_run")
+    return mocker.patch("rockcraft.oci._process_run")
 
 
-@pytest.fixture
+@pytest.fixture()
 def mock_archive_layer(mocker):
-    yield mocker.patch("rockcraft.layers.archive_layer")
+    return mocker.patch("rockcraft.layers.archive_layer")
 
 
-@pytest.fixture
+@pytest.fixture()
 def mock_rmtree(mocker):
-    yield mocker.patch("shutil.rmtree")
+    return mocker.patch("shutil.rmtree")
 
 
-@pytest.fixture
+@pytest.fixture()
 def mock_mkdir(mocker):
-    yield mocker.patch("pathlib.Path.mkdir")
+    return mocker.patch("pathlib.Path.mkdir")
 
 
-@pytest.fixture
+@pytest.fixture()
 def mock_mkdtemp(mocker):
-    yield mocker.patch("tempfile.mkdtemp")
+    return mocker.patch("tempfile.mkdtemp")
 
 
-@pytest.fixture
+@pytest.fixture()
 def mock_tmpdir(mocker):
-    yield mocker.patch("tempfile.TemporaryDirectory")
+    return mocker.patch("tempfile.TemporaryDirectory")
 
 
-@pytest.fixture
+@pytest.fixture()
 def mock_inject_variant(mocker):
-    yield mocker.patch("rockcraft.oci._inject_architecture_variant")
+    return mocker.patch("rockcraft.oci._inject_architecture_variant")
 
 
-@pytest.fixture
+@pytest.fixture()
 def mock_read_bytes(mocker):
-    yield mocker.patch("pathlib.Path.read_bytes")
+    return mocker.patch("pathlib.Path.read_bytes")
 
 
-@pytest.fixture
+@pytest.fixture()
 def mock_write_bytes(mocker):
-    yield mocker.patch("pathlib.Path.write_bytes")
+    return mocker.patch("pathlib.Path.write_bytes")
 
 
-@pytest.fixture
+@pytest.fixture()
 def mock_add_layer(mocker):
-    yield mocker.patch("rockcraft.oci.Image.add_layer")
+    return mocker.patch("rockcraft.oci.Image.add_layer")
 
 
 @tests.linux_only
@@ -769,9 +769,9 @@ class TestImage:
         now = datetime.datetime.now(datetime.timezone.utc).isoformat()
         metadata = {"name": "rock-name", "version": 1, "created": now}
 
-        expected = (
-            f"created: '{now}'" + "{n}" "name: rock-name{n}" "version: 1{n}"
-        ).format(n=os.linesep)
+        expected = (f"created: '{now}'" + "{n}name: rock-name{n}version: 1{n}").format(
+            n=os.linesep
+        )
 
         mocked_data = {"writes": ""}
 
