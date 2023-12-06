@@ -1,5 +1,5 @@
-Put Chisel slices in a ROCK
-===========================
+Install slices in a ROCK
+========================
 
 In this tutorial, you will create a lean ROCK that contains a fully functional
 OpenSSL installation, and you will verify that it is functional by loading the
