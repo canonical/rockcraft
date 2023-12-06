@@ -25,6 +25,7 @@ import pydantic
 import pytest
 import yaml
 from craft_application.models import BuildInfo
+from craft_parts import Features
 from craft_providers.bases import BaseName
 
 from rockcraft.errors import ProjectLoadError, ProjectValidationError
@@ -85,6 +86,13 @@ parts:
 
 entrypoint-service: test-service
 """
+
+
+@pytest.fixture(autouse=True)
+def enable_overlay_feature():
+    """Enable the overlay feature to make this test module standalone."""
+    Features.reset()
+    Features(enable_overlay=True)
 
 
 @pytest.fixture
