@@ -1,5 +1,5 @@
-Bundle a Node.js app into a ROCK
-********************************
+Bundle a Node.js app within a ROCK
+***********************************
 
 This tutorial describes the steps needed to bundle a typical Node.js application
 into a ROCK.

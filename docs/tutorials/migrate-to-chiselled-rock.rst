@@ -1,4 +1,4 @@
-Migrate a popular Docker image to a Chiselled ROCK
+Migrate a popular Docker image to a chiselled ROCK
 **************************************************
 
 Prerequisites

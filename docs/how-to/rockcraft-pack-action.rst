@@ -1,5 +1,5 @@
-How to build a ROCK with Rockcraft's GitHub Action
-**************************************************
+How to use Rockcraft's GitHub Action
+************************************
 
 Within your GitHub repository, make sure you have
 `GitHub Actions enabled <https://docs.github.com/en/actions/quickstart>`_.
