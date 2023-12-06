@@ -194,7 +194,7 @@ def test_project_unmarshal_with_unsupported_fields(unsupported_field, yaml_loade
 
 
 @pytest.mark.parametrize(
-    "variable,is_forbidden",
+    ("variable", "is_forbidden"),
     [("$BAR", True), ("BAR_$BAZ", True), ("BAR$", False)],
 )
 def test_forbidden_env_var_interpolation(
@@ -317,7 +317,7 @@ def test_project_build_base(yaml_loaded_data):
 
 
 @pytest.mark.parametrize(
-    ["base", "build_base", "expected_base", "expected_build_base"],
+    ("base", "build_base", "expected_base", "expected_build_base"),
     [
         ("ubuntu:22.04", None, "ubuntu@22.04", "ubuntu@22.04"),
         ("ubuntu:22.04", "ubuntu:20.04", "ubuntu@22.04", "ubuntu@20.04"),
@@ -470,7 +470,7 @@ def test_project_parts_validation(yaml_loaded_data):
 
 
 @pytest.mark.parametrize(
-    "packages,script",
+    ("packages", "script"),
     [
         (["pkg"], None),
         ([], "ls"),
@@ -626,7 +626,7 @@ def test_project_yaml(yaml_loaded_data):
 
 
 @pytest.mark.parametrize(
-    ["platforms", "expected_build_infos"],
+    ("platforms", "expected_build_infos"),
     [
         (
             {
