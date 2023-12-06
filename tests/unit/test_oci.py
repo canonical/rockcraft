@@ -164,7 +164,7 @@ class TestImage:
     # The archs here were taken from the supported architectures in the registry
     # that we currently use (https://gallery.ecr.aws/ubuntu/ubuntu)
     @pytest.mark.parametrize(
-        ["deb_arch", "expected_arch", "expected_variant"],
+        ("deb_arch", "expected_arch", "expected_variant"),
         [
             ("amd64", "amd64", None),
             ("arm64", "arm64", "v8"),
@@ -361,7 +361,12 @@ class TestImage:
             check.is_in("conflict with existing user/group in the base filesystem", err)
 
     @pytest.mark.parametrize(
-        "base_user_files,prime_user_files,whiteouts_exist,expected_user_files",
+        (
+            "base_user_files",
+            "prime_user_files",
+            "whiteouts_exist",
+            "expected_user_files",
+        ),
         [
             # If file in prime, the rest doesn't matter
             (
@@ -645,7 +650,7 @@ class TestImage:
         ]
 
     @pytest.mark.parametrize(
-        "mock_services,mock_checks",
+        ("mock_services", "mock_checks"),
         [
             # Both services and checks are given
             (
