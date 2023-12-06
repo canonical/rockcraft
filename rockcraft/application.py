@@ -16,8 +16,6 @@
 
 """Main Rockcraft Application."""
 
-from __future__ import annotations
-
 from typing import Any
 
 from craft_application import Application, AppMetadata, util

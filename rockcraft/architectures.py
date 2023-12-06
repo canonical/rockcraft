@@ -15,8 +15,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """Architecture definitions and conversions for Debian and Go/Docker."""
 
-from __future__ import annotations
-
 import dataclasses
 
 

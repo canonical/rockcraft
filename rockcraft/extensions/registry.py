@@ -16,19 +16,19 @@
 
 """Extension registry."""
 
-from typing import TYPE_CHECKING, Dict, List, Type
+from typing import TYPE_CHECKING
 
 from rockcraft import errors
 
 if TYPE_CHECKING:
     from .extension import Extension
 
-    ExtensionType = Type[Extension]
+    ExtensionType = type[Extension]
 
-_EXTENSIONS: Dict[str, "ExtensionType"] = {}
+_EXTENSIONS: dict[str, "ExtensionType"] = {}
 
 
-def get_extension_names() -> List[str]:
+def get_extension_names() -> list[str]:
     """Obtain a extension class given the name.
 
     :param name: The extension name.

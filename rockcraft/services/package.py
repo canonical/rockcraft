@@ -16,8 +16,6 @@
 
 """Rockcraft Package service."""
 
-from __future__ import annotations
-
 import datetime
 import pathlib
 import typing
@@ -41,7 +39,7 @@ class RockcraftPackageService(PackageService):
     def __init__(
         self,
         app: AppMetadata,
-        services: RockcraftServiceFactory,
+        services: "RockcraftServiceFactory",
         *,
         project: models.Project,
         platform: str | None,

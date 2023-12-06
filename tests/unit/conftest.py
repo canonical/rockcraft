@@ -16,7 +16,6 @@
 
 import contextlib
 from pathlib import Path
-from typing import Optional
 from unittest import mock
 
 import pytest
@@ -78,7 +77,7 @@ def fake_provider(mock_instance):
             project_name: str,
             project_path: Path,
             base_configuration: base.Base,
-            build_base: Optional[str] = None,
+            build_base: str | None = None,
             instance_name: str,
             allow_unstable: bool = False,
         ):
