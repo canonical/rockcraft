@@ -433,6 +433,23 @@ def test_project_name_invalid(yaml_loaded_data, invalid_name):
     assert expected_message in str(err.value)
 
 
+def test_project_version_invalid(yaml_loaded_data):
+    yaml_loaded_data["version"] = "invalid_version"
+
+    with pytest.raises(CraftValidationError) as err:
+        load_project_yaml(yaml_loaded_data)
+
+    # We don't want to be completely tied to the formatting of the message here,
+    # because it comes from craft-application and might change slightly. We just
+    # want to ensure that the message refers to the version.
+    expected_contents = "Invalid version: Valid versions consist of"
+    expected_suffix = "(in field 'version')"
+
+    message = str(err.value)
+    assert expected_contents in message
+    assert message.endswith(expected_suffix)
+
+
 @pytest.mark.parametrize(
     "field", ["name", "version", "base", "parts", "description", "summary", "license"]
 )
