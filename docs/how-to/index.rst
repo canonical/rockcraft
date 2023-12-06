@@ -14,7 +14,7 @@ adapt the steps to fit your specific requirements.
    :maxdepth: 1
 
    Get started - quick guide <get-started>
-   Use GitHub Action to ROCK <rockcraft-pack-action>
+   Use Rockcraft's GitHub Action <rockcraft-pack-action>
    Contribute to Rockcraft documentation <contribute-docs>
    Build the documentation <build-docs>
    Cut existing slices with Chisel <use-chisel>
