@@ -96,17 +96,17 @@ def enable_overlay_feature():
     Features(enable_overlay=True)
 
 
-@pytest.fixture
+@pytest.fixture()
 def yaml_data():
     return ROCKCRAFT_YAML
 
 
-@pytest.fixture
+@pytest.fixture()
 def yaml_loaded_data():
     return yaml.safe_load(ROCKCRAFT_YAML)
 
 
-@pytest.fixture
+@pytest.fixture()
 def pebble_part() -> dict[str, Any]:
     return {
         "pebble": {

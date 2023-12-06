@@ -128,7 +128,7 @@ def test_add_layer_with_symlink_in_base(new_dir):
     ]
 
 
-@pytest.fixture
+@pytest.fixture()
 def extra_project_params():
     """Fixture used to configure the Project used by the default test services."""
     return {

@@ -35,7 +35,7 @@ def test_pack(package_service, default_factory, default_image_info, mocker):
     # parameters.
     mock_inner_pack.assert_called_once_with(
         base_digest=b"deadbeef",
-        base_layer_dir=Path("."),
+        base_layer_dir=Path(),
         build_for="amd64",
         prime_dir=Path("prime"),
         project=default_factory.project,
