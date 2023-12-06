@@ -45,8 +45,8 @@ if TYPE_CHECKING:  # pragma: no cover
 class Platform(pydantic.BaseModel):
     """Rockcraft project platform definition."""
 
-    build_on: pydantic.conlist(str, unique_items=True, min_items=1) | None
-    build_for: pydantic.conlist(str, unique_items=True, min_items=1) | None
+    build_on: pydantic.conlist(str, unique_items=True, min_items=1) | None  # type: ignore[valid-type]
+    build_for: pydantic.conlist(str, unique_items=True, min_items=1) | None  # type: ignore[valid-type]
 
     class Config:  # pylint: disable=too-few-public-methods
         """Pydantic model configuration."""
