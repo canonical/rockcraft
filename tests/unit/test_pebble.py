@@ -20,9 +20,9 @@ from pathlib import Path
 import pydantic
 import pytest
 import yaml
+from craft_application.errors import CraftValidationError
 
 import tests
-from rockcraft.models.project import ProjectValidationError
 from rockcraft.pebble import Check, ExecCheck, HttpCheck, Pebble, Service, TcpCheck
 
 
@@ -368,7 +368,7 @@ class TestPebble:
             # Missing check type fields
             (
                 {},
-                ProjectValidationError,
+                CraftValidationError,
                 r"Must specify exactly one of http, tcp, exec for each check.",
             ),
             # Missing mandatory fields
@@ -380,7 +380,7 @@ class TestPebble:
             # Too many check types
             (
                 {"override": "merge", "exec": {"command": "foo"}, "tcp": {"port": 1}},
-                ProjectValidationError,
+                CraftValidationError,
                 r"Multiple check types specified ([\s\S]*). "
                 r"Each check must have exactly one type.",
             ),
