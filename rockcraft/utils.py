@@ -54,7 +54,7 @@ def get_managed_environment_log_path() -> pathlib.Path:
     return pathlib.Path("/tmp/rockcraft.log")
 
 
-def get_managed_environment_snap_channel() -> Optional[str]:
+def get_managed_environment_snap_channel() -> str | None:
     """User-specified channel to use when installing Rockcraft snap from Snap Store.
 
     :returns: Channel string if specified, else None.
@@ -85,7 +85,7 @@ def confirm_with_user(prompt: str, default: bool = False) -> bool:
     return reply[0] == "y" if reply else default
 
 
-def _find_command_path_in_root(root: str, command_name: str) -> Optional[str]:
+def _find_command_path_in_root(root: str, command_name: str) -> str | None:
     """Find the path of a command in a given root path."""
     for bin_directory in (
         "usr/local/sbin",
