@@ -14,12 +14,12 @@ adapt the steps to fit your specific requirements.
    :maxdepth: 1
 
    Get started - quick guide <get-started>
-   Build a ROCK with GitHub Action <rockcraft-pack-action>
+   Use GitHub Action to ROCK <rockcraft-pack-action>
    Contribute to Rockcraft documentation <contribute-docs>
    Build the documentation <build-docs>
-   Use Chisel to cut existing slices <use-chisel>
+   Cut existing slices with Chisel <use-chisel>
    Create a package slice for Chisel <create-slice>
    Install a custom package slice <install-slice>
-   Publish a slice definitions <publish-slice>
+   Publish a slice definition <publish-slice>
    Convert an entrypoint to a Pebble layer <convert-to-pebble-layer>
    Publish a ROCK to a registry <publish-a-rock.rst>
