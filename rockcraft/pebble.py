@@ -23,9 +23,8 @@ from typing import Any, Literal
 
 import pydantic
 import yaml
+from craft_application.errors import CraftValidationError
 from craft_cli import emit
-
-from rockcraft.errors import ProjectValidationError
 
 
 class HttpCheck(pydantic.BaseModel):
@@ -110,7 +109,7 @@ class Check(pydantic.BaseModel):
         else:
             return values
 
-        raise ProjectValidationError(err)
+        raise CraftValidationError(err)
 
     class Config:  # pylint: disable=too-few-public-methods
         """Pydantic model configuration."""

@@ -17,14 +17,15 @@
 """Project definition and helpers."""
 import re
 import shlex
-from collections.abc import Mapping, Sequence
+from collections.abc import Mapping
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Literal, cast
+from typing import Any, Literal, cast
 
 import craft_cli
 import pydantic
 import spdx_lookup  # type: ignore
 import yaml
+from craft_application.errors import CraftValidationError
 from craft_application.models import BuildInfo
 from craft_application.models import Project as BaseProject
 from craft_archives import repo
@@ -32,14 +33,11 @@ from craft_providers import bases
 from pydantic_yaml import YamlModelMixin
 
 from rockcraft.architectures import SUPPORTED_ARCHS
-from rockcraft.errors import ProjectLoadError, ProjectValidationError
+from rockcraft.errors import ProjectLoadError
 from rockcraft.extensions import apply_extensions
 from rockcraft.parts import part_has_overlay, validate_part
 from rockcraft.pebble import Check, Pebble, Service
 from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
-
-if TYPE_CHECKING:  # pragma: no cover
-    from pydantic.error_wrappers import ErrorDict
 
 
 class Platform(pydantic.BaseModel):
@@ -71,7 +69,7 @@ class Platform(pydantic.BaseModel):
 
         # We can only build for 1 arch at the moment
         if len(build_for) > 1:
-            raise ProjectValidationError(
+            raise CraftValidationError(
                 str(
                     f"Trying to build a ROCK for {build_for} "
                     "but multiple target architectures are not "
@@ -81,7 +79,7 @@ class Platform(pydantic.BaseModel):
 
         # If build_for is provided, then build_on must also be
         if not build_on and build_for:
-            raise ProjectValidationError(
+            raise CraftValidationError(
                 "'build_for' expects 'build_on' to also be provided."
             )
 
@@ -166,7 +164,7 @@ class Project(YamlModelMixin, BaseProject):
         )
         unsupported_fields = ["cmd", "entrypoint", "env"]
         if any(field in values for field in unsupported_fields):
-            raise ProjectValidationError(unsupported_msg)
+            raise CraftValidationError(unsupported_msg)
 
         return values
 
@@ -180,7 +178,7 @@ class Project(YamlModelMixin, BaseProject):
 
         lic: spdx_lookup.License | None = spdx_lookup.by_id(rock_license)
         if lic is None:
-            raise ProjectValidationError(
+            raise CraftValidationError(
                 f"License {rock_license} not valid. It must be valid and in SPDX format."
             )
         return lic.id
@@ -198,12 +196,12 @@ class Project(YamlModelMixin, BaseProject):
     def _validate_build_base(cls, build_base: str | None, values: Any) -> str:
         """Build-base defaults to the base value if not specified.
 
-        :raises ProjectValidationError: If base validation fails.
+        :raises CraftValidationError: If base validation fails.
         """
         if not build_base:
             base_value = values.get("base")
             if base_value == "bare":
-                raise ProjectValidationError(
+                raise CraftValidationError(
                     'When "base" is bare, a build-base must be specified!'
                 )
             build_base = values.get("base")
@@ -243,9 +241,9 @@ class Project(YamlModelMixin, BaseProject):
             # Make sure the provided platform_set is valid
             try:
                 platform = Platform(**platform).dict()
-            except ProjectValidationError as err:
+            except CraftValidationError as err:
                 # pylint: disable=raise-missing-from
-                raise ProjectValidationError(f"{error_prefix}: {str(err)}")
+                raise CraftValidationError(f"{error_prefix}: {str(err)}")
 
             # build_on and build_for are validated
             # let's also validate the platform label
@@ -259,7 +257,7 @@ class Project(YamlModelMixin, BaseProject):
             if platform["build_for"]:
                 build_target = platform["build_for"][0]
                 if platform_label in SUPPORTED_ARCHS and platform_label != build_target:
-                    raise ProjectValidationError(
+                    raise CraftValidationError(
                         str(
                             f"{error_prefix}: if 'build_for' is provided and the "
                             "platform entry label corresponds to a valid architecture, then "
@@ -271,7 +269,7 @@ class Project(YamlModelMixin, BaseProject):
 
             # Both build and target architectures must be supported
             if not any(b_o in SUPPORTED_ARCHS for b_o in build_on_one_of):
-                raise ProjectValidationError(
+                raise CraftValidationError(
                     str(
                         f"{error_prefix}: trying to build ROCK in one of "
                         f"{build_on_one_of}, but none of these build architectures is supported. "
@@ -280,7 +278,7 @@ class Project(YamlModelMixin, BaseProject):
                 )
 
             if build_target not in SUPPORTED_ARCHS:
-                raise ProjectValidationError(
+                raise CraftValidationError(
                     str(
                         f"{error_prefix}: trying to build ROCK for target "
                         f"architecture {build_target}, which is not supported. "
@@ -304,7 +302,7 @@ class Project(YamlModelMixin, BaseProject):
     def _validate_base_and_overlay(cls, item: dict[str, Any], values) -> dict[str, Any]:
         """Projects with "bare" bases cannot use overlays."""
         if values.get("base") == "bare" and part_has_overlay(item):
-            raise ProjectValidationError(
+            raise CraftValidationError(
                 'Overlays cannot be used with "bare" bases (there is no system to overlay).'
             )
         return item
@@ -323,7 +321,7 @@ class Project(YamlModelMixin, BaseProject):
         )
 
         if entrypoint_service not in values.get("services", {}):
-            raise ProjectValidationError(
+            raise CraftValidationError(
                 f"The provided entrypoint-service '{entrypoint_service}' is not "
                 + "a valid Pebble service."
             )
@@ -339,7 +337,7 @@ class Project(YamlModelMixin, BaseProject):
                     + " additional args."
                 )
         except ValueError as ex:
-            raise ProjectValidationError(
+            raise CraftValidationError(
                 f"The Pebble service '{entrypoint_service}' has a command "
                 + f"{command} without default arguments and thus cannot be used "
                 + "as the entrypoint-service."
@@ -347,26 +345,14 @@ class Project(YamlModelMixin, BaseProject):
 
         return entrypoint_service
 
-    @pydantic.validator("package_repositories")
+    @pydantic.validator("package_repositories", each_item=True)
     @classmethod
     def _validate_package_repositories(
-        cls, package_repositories: list[dict[str, Any]] | None
-    ) -> list[dict[str, Any]]:
-        if not package_repositories:
-            return []
+        cls, repository: dict[str, Any]
+    ) -> dict[str, Any]:
+        repo.validate_repository(repository)
 
-        errors = []
-        for repository in package_repositories:
-            try:
-                repo.validate_repository(repository)
-            except pydantic.ValidationError as exc:
-                errors.extend(exc.errors())
-        if errors:
-            raise ProjectValidationError(
-                _format_pydantic_errors(errors, base_location="package-repositories")
-            )
-
-        return package_repositories
+        return repository
 
     @pydantic.validator("environment")
     @classmethod
@@ -381,7 +367,7 @@ class Project(YamlModelMixin, BaseProject):
             filter(lambda v: "$" in str(v[:-1]), environment.values())
         )
         if values_with_dollar_signs:
-            raise ProjectValidationError(
+            raise CraftValidationError(
                 str(
                     "String interpolation not allowed for: "
                     f"{' ; '.join(values_with_dollar_signs)}"
@@ -407,19 +393,6 @@ class Project(YamlModelMixin, BaseProject):
             sort_keys=False,
             width=1000,
         )
-
-    @classmethod
-    def unmarshal(cls, data: dict[str, Any]) -> "Project":
-        """Overridden to raise ProjectValidationError() for Pydantic errors."""
-        if not isinstance(data, dict):
-            raise TypeError("project data is not a dictionary")
-
-        try:
-            project = super().unmarshal(data)
-        except pydantic.ValidationError as err:
-            raise ProjectValidationError(_format_pydantic_errors(err.errors())) from err
-
-        return project
 
     def generate_metadata(
         self, generation_time: str, base_digest: bytes
@@ -472,103 +445,6 @@ class Project(YamlModelMixin, BaseProject):
         return build_infos
 
 
-def _format_pydantic_errors(
-    errors: list["ErrorDict"],
-    *,
-    file_name: str = "rockcraft.yaml",
-    base_location: str | None = None,
-) -> str:
-    """Format errors.
-
-    Example 1: Single error.
-
-    Bad rockcraft.yaml content:
-    - field: <some field>
-      reason: <some reason>
-
-    Example 2: Multiple errors.
-
-    Bad rockcraft.yaml content:
-    - field: <some field>
-      reason: <some reason>
-    - field: <some field 2>
-      reason: <some reason 2>
-    """
-    combined = [f"Bad {file_name} content:"]
-    for error in errors:
-        if base_location:
-            error_loc: list[int | str] = [base_location]
-        else:
-            error_loc = []
-        error_loc.extend(error["loc"])
-        formatted_loc = _format_pydantic_error_location(error_loc)
-        formatted_msg = _format_pydantic_error_message(error["msg"])
-
-        if formatted_msg == "field required":
-            field_name, location = _printable_field_location_split(formatted_loc)
-            combined.append(
-                f"- field {field_name} required in {location} configuration"
-            )
-        elif formatted_msg == "extra fields not permitted":
-            field_name, location = _printable_field_location_split(formatted_loc)
-            combined.append(
-                f"- extra field {field_name} not permitted in {location} configuration"
-            )
-        else:
-            combined.append(f"- {formatted_msg} in field {formatted_loc!r}")
-
-    return "\n".join(combined)
-
-
-def _format_pydantic_error_location(loc: Sequence[str | int]) -> str:
-    """Format location."""
-    loc_parts = []
-    for loc_part in loc:
-        if isinstance(loc_part, str):
-            loc_parts.append(loc_part)
-        elif isinstance(loc_part, int):
-            # Integer indicates an index. Go
-            # back and fix up previous part.
-            previous_part = loc_parts.pop()
-            previous_part += f"[{loc_part}]"
-            loc_parts.append(previous_part)
-        else:
-            raise RuntimeError(f"unhandled loc: {loc_part}")
-
-    new_loc = ".".join(loc_parts)
-
-    # Filter out internal __root__ detail.
-    new_loc = new_loc.replace(".__root__", "")
-    return new_loc
-
-
-def _format_pydantic_error_message(msg: str) -> str:
-    """Format pydantic's error message field."""
-    # Replace shorthand "str" with "string".
-    msg = msg.replace("str type expected", "string type expected")
-    return msg
-
-
-def _printable_field_location_split(location: str) -> tuple[str, str]:
-    """Return split field location.
-
-    If top-level, location is returned as unquoted "top-level".
-    If not top-level, location is returned as quoted location, e.g.
-
-    (1) field1[idx].foo => 'foo', 'field1[idx]'
-    (2) field2 => 'field2', top-level
-
-    :returns: Tuple of <field name>, <location> as printable representations.
-    """
-    loc_split = location.split(".")
-    field_name = repr(loc_split.pop())
-
-    if loc_split:
-        return field_name, repr(".".join(loc_split))
-
-    return field_name, "top-level"
-
-
 def load_project(filename: Path) -> dict[str, Any]:
     """Load and unmarshal the project YAML file.
 
@@ -577,7 +453,7 @@ def load_project(filename: Path) -> dict[str, Any]:
     :returns: The populated project data.
 
     :raises ProjectLoadError: If loading fails.
-    :raises ProjectValidationError: If data validation fails.
+    :raises CraftValidationError: If data validation fails.
     """
     try:
         with open(filename, encoding="utf-8") as yaml_file:
@@ -613,7 +489,7 @@ def _add_pebble_data(yaml_data: dict[str, Any]) -> None:
     (eventually) used as the image's entrypoint.
 
     :param yaml_data: The project spec loaded from "rockcraft.yaml".
-    :raises ProjectValidationError: If `yaml_data` already contains a "pebble" part.
+    :raises CraftValidationError: If `yaml_data` already contains a "pebble" part.
     """
     if "parts" not in yaml_data:
         # Invalid project: let it return to fail in the regular validation flow.
@@ -622,6 +498,6 @@ def _add_pebble_data(yaml_data: dict[str, Any]) -> None:
     parts = yaml_data["parts"]
     if "pebble" in parts:
         # Project already has a pebble part: this is not supported.
-        raise ProjectValidationError('Cannot override the default "pebble" part')
+        raise CraftValidationError('Cannot override the default "pebble" part')
 
     parts["pebble"] = Pebble.PEBBLE_PART_SPEC
