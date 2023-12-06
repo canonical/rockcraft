@@ -172,9 +172,9 @@ def test_unmarshal_invalid_repositories(yaml_loaded_data):
 
     assert error.value.args[0] == (
         "Bad rockcraft.yaml content:\n"
-        "- field type required in package-repositories[0] configuration\n"
-        "- field url required in package-repositories[0] configuration\n"
-        "- field key-id required in package-repositories[0] configuration"
+        "- field 'type' required in 'package-repositories[0]' configuration\n"
+        "- field 'url' required in 'package-repositories[0]' configuration\n"
+        "- field 'key-id' required in 'package-repositories[0]' configuration"
     )
 
 
@@ -443,7 +443,7 @@ def test_project_missing_field(yaml_loaded_data, field):
         load_project_yaml(yaml_loaded_data)
     assert str(err.value) == (
         "Bad rockcraft.yaml content:\n"
-        f"- field {field} required in top-level configuration"
+        f"- field '{field}' required in top-level configuration"
     )
 
 
@@ -454,7 +454,7 @@ def test_project_extra_field(yaml_loaded_data):
         load_project_yaml(yaml_loaded_data)
     assert str(err.value) == (
         "Bad rockcraft.yaml content:\n"
-        "- extra field extra not permitted in top-level configuration"
+        "- extra field 'extra' not permitted in top-level configuration"
     )
 
 
@@ -465,7 +465,7 @@ def test_project_parts_validation(yaml_loaded_data):
         load_project_yaml(yaml_loaded_data)
     assert str(err.value) == (
         "Bad rockcraft.yaml content:\n"
-        "- extra field invalid not permitted in parts.foo configuration"
+        "- extra field 'invalid' not permitted in 'parts.foo' configuration"
     )
 
 
