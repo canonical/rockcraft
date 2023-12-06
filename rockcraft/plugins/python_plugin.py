@@ -18,7 +18,6 @@
 
 import logging
 from textwrap import dedent
-from typing import List, Optional
 
 from craft_parts.plugins import python_plugin
 from overrides import override
@@ -79,7 +78,7 @@ class PythonPlugin(python_plugin.PythonPlugin):
         return self._part_info.base != "bare"
 
     @override
-    def _get_system_python_interpreter(self) -> Optional[str]:
+    def _get_system_python_interpreter(self) -> str | None:
         """Overridden because Python must always be provided by the parts."""
         return None
 
@@ -89,7 +88,7 @@ class PythonPlugin(python_plugin.PythonPlugin):
         return "#!/bin/${PARTS_PYTHON_INTERPRETER}"
 
     @override
-    def get_build_commands(self) -> List[str]:
+    def get_build_commands(self) -> list[str]:
         """Overridden to add a sitecustomize.py ."""
         commands = []
 

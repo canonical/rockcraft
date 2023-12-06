@@ -19,8 +19,9 @@
 import abc
 import os
 import sys
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Any, Dict, Optional, Sequence, Tuple, final
+from typing import Any, final
 
 from craft_cli import emit
 
@@ -41,7 +42,7 @@ class Extension(abc.ABC):
         self,
         *,
         project_root: Path,
-        yaml_data: Dict[str, Any],
+        yaml_data: dict[str, Any],
     ) -> None:
         """Create a new Extension."""
         self.project_root = project_root
@@ -49,24 +50,24 @@ class Extension(abc.ABC):
 
     @staticmethod
     @abc.abstractmethod
-    def get_supported_bases() -> Tuple[str, ...]:
+    def get_supported_bases() -> tuple[str, ...]:
         """Return a tuple of supported bases."""
 
     @staticmethod
     @abc.abstractmethod
-    def is_experimental(base: Optional[str]) -> bool:
+    def is_experimental(base: str | None) -> bool:
         """Return whether or not this extension is unstable for given base."""
 
     @abc.abstractmethod
-    def get_root_snippet(self) -> Dict[str, Any]:
+    def get_root_snippet(self) -> dict[str, Any]:
         """Return the root snippet to apply."""
 
     @abc.abstractmethod
-    def get_part_snippet(self) -> Dict[str, Any]:
+    def get_part_snippet(self) -> dict[str, Any]:
         """Return the part snippet to apply to existing parts."""
 
     @abc.abstractmethod
-    def get_parts_snippet(self) -> Dict[str, Any]:
+    def get_parts_snippet(self) -> dict[str, Any]:
         """Return the parts to add to parts."""
 
     @final
