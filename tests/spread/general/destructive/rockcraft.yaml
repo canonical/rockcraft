@@ -1,7 +1,7 @@
 name: destructive-mode
 version: latest
-summary: A destructively-built ROCK
-description: Building a ROCK in destructive mode
+summary: A destructively-built rock
+description: Building a rock in destructive mode
 license: Apache-2.0
 build-base: ubuntu:22.04 # Leaving ":"-notation on purpose here
 base: bare

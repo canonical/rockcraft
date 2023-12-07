@@ -18,7 +18,7 @@ execute: |
   # copy the Python source of the project we're building (also shared)
   cp -r ../src .
   
-  # Build the ROCK & load it into docker
+  # Build the rock & load it into docker
   run_rockcraft pack
   test -f ${ROCK_FILE}
   sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:${ROCK_FILE} docker-daemon:${IMAGE}

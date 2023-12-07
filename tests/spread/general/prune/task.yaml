@@ -5,7 +5,7 @@ execute: |
 
   test -f ./*.rock
   
-  # Unpack the ROCK and verify that the lifecycle-based layer has no files in
+  # Unpack the rock and verify that the lifecycle-based layer has no files in
   # common with the base Ubuntu layer.
   tar -xf ./*.rock
   python3 check_layers.py ./*.rock
