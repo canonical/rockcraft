@@ -9,7 +9,7 @@ field without any ambiguities because slices follow an underscore-driven naming
 convention. For instance, ``openssl`` means the whole OpenSSL package, while
 ``openssl_bins`` means just the binaries slice of the OpenSSL package.
 Rockcraft will take care of the installation and priming of your
-content into the ROCK. There's an example :ref:`here <chisel-example>`.
+content into the rock. There's an example :ref:`here <chisel-example>`.
 
 Chisel isn't, however, specific to Rockcraft. It can be used on its own! It
 relies on a `database of slices <https://github.com/canonical/chisel-releases>`_

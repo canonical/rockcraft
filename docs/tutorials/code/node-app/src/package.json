@@ -1,7 +1,7 @@
 {
     "name": "node_web_app",
     "version": "1.0.0",
-    "description": "Node.js on a ROCK",
+    "description": "Node.js on a rock",
     "author": "First Last <first.last@example.com>",
     "main": "server.js",
     "scripts": {

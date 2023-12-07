@@ -1,12 +1,12 @@
 name: dotnet-runtime
 summary: .NET Runtime 6.0
-description: A Chiselled ROCK for the .NET Runtime 6.0
+description: A Chiselled rock for the .NET Runtime 6.0
 version: chiselled
 
-# Use a "bare" base for an even smaller ROCK
+# Use a "bare" base for an even smaller rock
 base: bare
 
-# Meeting requirement R1 by making sure the ROCK builds on Jammy
+# Meeting requirement R1 by making sure the rock builds on Jammy
 build-base: ubuntu@22.04
 
 license: Apache-2.0

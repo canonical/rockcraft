@@ -1,9 +1,9 @@
-Install slices in a ROCK
+Install slices in a rock
 ========================
 
-In this tutorial, you will create a lean ROCK that contains a fully functional
+In this tutorial, you will create a lean rock that contains a fully functional
 OpenSSL installation, and you will verify that it is functional by loading the
-ROCK into Docker and using it to validate the certificates of the Ubuntu
+rock into Docker and using it to validate the certificates of the Ubuntu
 website.
 
 Prerequisites
@@ -45,10 +45,10 @@ files that are strictly necessary for a functional OpenSSL installation. See
 :ref:`chisel_explanation` for details on the Chisel tool.
 
 
-Pack the ROCK with Rockcraft
+Pack the rock with Rockcraft
 ----------------------------
 
-To build the ROCK, run:
+To build the rock, run:
 
 .. literalinclude:: code/chisel/task.yaml
     :language: bash
@@ -75,12 +75,12 @@ The output will look similar to:
 
 The process might take a little while, but at the end, a new file named
 ``chisel-openssl_0.0.1_amd64.rock`` will be present in the current directory.
-That's your OpenSSL ROCK, in oci-archive format.
+That's your OpenSSL rock, in oci-archive format.
 
-Run the ROCK in Docker
+Run the rock in Docker
 ----------------------
 
-First, import the recently created ROCK into Docker:
+First, import the recently created rock into Docker:
 
 .. literalinclude:: code/chisel/task.yaml
     :language: bash
@@ -88,7 +88,7 @@ First, import the recently created ROCK into Docker:
     :end-before: [docs:skopeo-copy-end]
     :dedent: 2
 
-Now you can run a container from the ROCK:
+Now you can run a container from the rock:
 
 .. literalinclude:: code/chisel/task.yaml
     :language: bash
@@ -141,4 +141,4 @@ The output will look similar to the following:
     Server Temp Key: X25519, 253 bits
 
 The ``Verification: OK`` line indicates that the OpenSSL installation inside
-your ROCK was able to validate Ubuntu Website's certificates successfully.
+your rock was able to validate Ubuntu Website's certificates successfully.

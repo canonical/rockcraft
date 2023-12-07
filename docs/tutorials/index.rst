@@ -10,8 +10,8 @@ reproducible steps.
 .. toctree::
    :maxdepth: 1
 
-   1. Create a Hello World ROCK <hello-world>
+   1. Create a Hello World rock <hello-world>
    2. Containerise a PyPI package <pypi-package.rst>
-   3. Install slices in a ROCK <chisel.rst>
-   4. Bundle a Node.js app within a ROCK <node-app.rst>
-   5. Migrate a Docker image to a chiselled ROCK <migrate-to-chiselled-rock.rst>
+   3. Install slices in a rock <chisel.rst>
+   4. Bundle a Node.js app within a rock <node-app.rst>
+   5. Migrate a Docker image to a chiselled rock <migrate-to-chiselled-rock.rst>

@@ -22,4 +22,4 @@ adapt the steps to fit your specific requirements.
    Install a custom package slice <install-slice>
    Publish a slice definition <publish-slice>
    Convert an entrypoint to a Pebble layer <convert-to-pebble-layer>
-   Publish a ROCK to a registry <publish-a-rock.rst>
+   Publish a rock to a registry <publish-a-rock.rst>
