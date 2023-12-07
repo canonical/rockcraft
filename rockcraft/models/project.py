@@ -117,7 +117,7 @@ class Project(YamlModelMixin, BaseProject):
     name: NameStr  # type: ignore
     # summary is Optional[str] in BaseProject
     summary: str  # type: ignore
-    description: str
+    description: str  # type: ignore[reportIncompatibleVariableOverride]
     rock_license: str = pydantic.Field(alias="license")
     platforms: dict[str, Any]
     base: Literal["bare", "ubuntu@20.04", "ubuntu@22.04"]

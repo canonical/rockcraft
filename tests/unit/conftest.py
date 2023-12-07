@@ -67,7 +67,7 @@ def fake_provider(mock_instance):
         def is_provider_installed(cls) -> bool:
             return True
 
-        def create_environment(self, *, instance_name: str):
+        def create_environment(self, *, instance_name: str):  # type: ignore[reportIncompatibleVariableOverride]
             yield mock_instance
 
         @contextlib.contextmanager  # type: ignore[misc]
