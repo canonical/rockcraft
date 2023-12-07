@@ -17,7 +17,7 @@
 """Pebble metadata and configuration helpers."""
 
 import glob
-from collections.abc import Callable, Mapping
+from collections.abc import Mapping
 from pathlib import Path
 from typing import Any, Literal
 
@@ -25,6 +25,11 @@ import pydantic
 import yaml
 from craft_application.errors import CraftValidationError
 from craft_cli import emit
+
+
+def _alias_generator(name: str) -> str:
+    """Convert underscores to dashes in aliases."""
+    return name.replace("_", "-")
 
 
 class HttpCheck(pydantic.BaseModel):
@@ -69,9 +74,7 @@ class ExecCheck(pydantic.BaseModel):
         """Pydantic model configuration."""
 
         allow_population_by_field_name = True
-        alias_generator: Callable[[str], str] = lambda s: s.replace(  # noqa: E731
-            "_", "-"
-        )
+        alias_generator = _alias_generator
         extra = "forbid"
 
 
@@ -117,9 +120,7 @@ class Check(pydantic.BaseModel):
         """Pydantic model configuration."""
 
         allow_population_by_field_name = True
-        alias_generator: Callable[[str], str] = lambda s: s.replace(  # noqa: E731
-            "_", "-"
-        )
+        alias_generator = _alias_generator
         extra = "forbid"
 
 
@@ -156,9 +157,7 @@ class Service(pydantic.BaseModel):
         """Pydantic model configuration."""
 
         allow_population_by_field_name = True
-        alias_generator: Callable[[str], str] = lambda s: s.replace(  # noqa: E731
-            "_", "-"
-        )
+        alias_generator = _alias_generator
         extra = "forbid"
 
 
