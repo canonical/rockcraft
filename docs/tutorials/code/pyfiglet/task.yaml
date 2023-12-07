@@ -5,7 +5,7 @@
 # markers for including said instructions
 # as snippets in the docs.
 ###########################################
-summary: test the "Create a ROCK from a PyPI package" guide
+summary: test the "Create a rock from a PyPI package" guide
 
 execute: |
   # [docs:create-pyfiglet-dir]

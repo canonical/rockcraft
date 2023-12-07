@@ -41,10 +41,10 @@ Next, create a file called ``rockcraft.yaml`` with the following contents:
     :language: yaml
 
 
-Pack the ROCK with Rockcraft
+Pack the rock with Rockcraft
 ----------------------------
 
-To build the ROCK, run:
+To build the rock, run:
 
 .. literalinclude:: code/pyfiglet/task.yaml
     :language: bash
@@ -54,10 +54,10 @@ To build the ROCK, run:
 
 
 
-Run the ROCK in Docker
+Run the rock in Docker
 ----------------------
 
-First, import the recently created ROCK into Docker:
+First, import the recently created rock into Docker:
 
 .. literalinclude:: code/pyfiglet/task.yaml
     :language: bash
@@ -66,7 +66,7 @@ First, import the recently created ROCK into Docker:
     :dedent: 2
 
 
-Now run the ``pyfiglet`` command from the ROCK:
+Now run the ``pyfiglet`` command from the rock:
 
 .. literalinclude:: code/pyfiglet/task.yaml
     :language: bash
@@ -83,7 +83,7 @@ Which should print:
 Explore the running container
 -----------------------------
 
-Since the ROCK uses an ubuntu base, you can poke around in a running container
+Since the rock uses an ubuntu base, you can poke around in a running container
 using bash, via:
 
 .. code:: yaml

@@ -456,7 +456,8 @@ class Image:
 
         :param metadata: content for the ROCK's metadata YAML file
         """
-        emit.progress("Setting the ROCK's Control Data")
+
+        emit.progress("Setting the rock's control data")
         local_control_data_path = Path(tempfile.mkdtemp())
 
         # the ROCK control data structure starts with the folder ".rock"

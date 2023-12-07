@@ -1,4 +1,4 @@
-Migrate a popular Docker image to a chiselled ROCK
+Migrate a popular Docker image to a chiselled rock
 **************************************************
 
 Prerequisites
@@ -128,9 +128,9 @@ Convert Dockerfile to rockcraft.yaml file
 From a quick analysis of the reference Dockerfile above, the following
 requirements must be met:
 
-- R1. The ROCK must be based on Ubuntu Jammy
+- R1. The rock must be based on Ubuntu Jammy
 - R2. There is no predefined Entrypoint or default command
-- R3. The ROCK must have version 6.0 of the .NET Runtime installed
+- R3. The rock must have version 6.0 of the .NET Runtime installed
 - R4. ``/usr/bin/dotnet`` must be a symbolic link to the .NET binary
 
 With these requirements in mind, and in the same directory as the Dockerfile
@@ -147,10 +147,10 @@ file above. You are requesting Rockcraft to install the ``libs`` slice of the
 <https://github.com/canonical/chisel-releases/blob/ubuntu-22.04/slices/>`_.
 
 
-Pack the Chiselled ROCK with Rockcraft
+Pack the Chiselled Rock with Rockcraft
 --------------------------------------
 
-To build the ROCK, run:
+To build the rock, run:
 
 .. literalinclude:: code/migrate-to-chiselled-rock/task.yaml
     :language: bash
@@ -223,14 +223,14 @@ The output should be similar to:
     2023-04-19 15:56:00.567 :: 2023-04-19 13:56:00.148 Exported to OCI archive 'dotnet-runtime_chiselled_amd64.rock'
 
 At the end of the process, a file named ``dotnet-runtime_chiselled_amd64.rock``
-should be present in the current directory. That's your Chiselled ROCK,
+should be present in the current directory. That's your chiselled rock,
 as an OCI archive.
 
 
-Test the ROCK
+Test the rock
 -------------
 
-First, import the recently created ROCK into Docker:
+First, import the recently created rock into Docker:
 
 .. literalinclude:: code/migrate-to-chiselled-rock/task.yaml
     :language: bash
@@ -238,7 +238,7 @@ First, import the recently created ROCK into Docker:
     :end-before: [docs:skopeo-copy-end]
     :dedent: 2
 
-Now inspect the Chiselled .NET Runtime ROCK the same way as it was done for the
+Now inspect the chiselled .NET Runtime rock the same way as it was done for the
 reference Docker image:
 
 .. literalinclude:: code/migrate-to-chiselled-rock/task.yaml
@@ -256,7 +256,7 @@ Which should print something like:
     REPOSITORY TAG IMAGE ID CREATED SIZE
     dotnet-runtime   chiselled   4e0951d180e3   About a minute ago   124MB
 
-And make sure this ROCK is as functional as the reference Docker image:
+And make sure this rock is as functional as the reference Docker image:
 
 .. literalinclude:: code/migrate-to-chiselled-rock/task.yaml
     :language: bash
@@ -298,5 +298,5 @@ In this tutorial, you have migrated from an imperative container build recipe
 (Dockerfile) to a declarative one (``rockcraft.yaml``), without any overhead
 on the final recipe's size or complexity.
 
-The resulting ROCK ended up being 63MB smaller than the reference one, while
+The resulting rock ended up being 63MB smaller than the reference one, while
 offering the same .NET Runtime functionality.

@@ -1,6 +1,6 @@
 name: chisel-openssl
 summary: OpenSSL from Chisel slices
-description: A "bare" ROCK containing an OpenSSL installation created from Chisel slices.
+description: A "bare" rock containing an OpenSSL installation created from Chisel slices.
 license: Apache-2.0
 
 version: "0.0.1"

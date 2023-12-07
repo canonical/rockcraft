@@ -8,7 +8,7 @@ Debian packages into a filesystem.
 
 Using the analogy of a tool to carve and cut stone, Chisel is used in
 Rockcraft to sculpt minimal collections of files that only include what is
-needed for the ROCK to function properly.
+needed for the rock to function properly.
 
 See :ref:`how_to_use_chisel` for information about using the tool.
 
@@ -42,7 +42,7 @@ With these slice definitions in place, Chisel is able to extract a
 highly-customised and specialised slice of the Ubuntu distribution, which one
 could see as a block of stone from which we can carve and extract only the
 small and relevant parts that we need to run our applications, thus keeping
-ROCKs small and less exposed to vulnerabilities.
+rocks small and less exposed to vulnerabilities.
 
 Defining slices
 ~~~~~~~~~~~~~~~
