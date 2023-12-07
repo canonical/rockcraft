@@ -71,7 +71,7 @@ class Platform(pydantic.BaseModel):
         if len(build_for) > 1:
             raise CraftValidationError(
                 str(
-                    f"Trying to build a ROCK for {build_for} "
+                    f"Trying to build a rock for {build_for} "
                     "but multiple target architectures are not "
                     "currently supported. Please specify only 1 value."
                 )
@@ -88,7 +88,7 @@ class Platform(pydantic.BaseModel):
 
 NAME_REGEX = r"^([a-z](?:-?[a-z0-9]){2,})$"
 """
-The regex for valid names for ROCKs. It matches the accepted values for pebble
+The regex for valid names for rocks. It matches the accepted values for pebble
 layer files:
 
 - must start with a lowercase letter [a-z]
@@ -99,14 +99,14 @@ layer files:
 """
 
 INVALID_NAME_MESSAGE = (
-    "Invalid name for ROCK (must contain only lowercase letters, numbers and hyphens)"
+    "Invalid name for rock (must contain only lowercase letters, numbers and hyphens)"
 )
 
 DEPRECATED_COLON_BASES = ["ubuntu:20.04", "ubuntu:22.04"]
 
 
 class NameStr(pydantic.ConstrainedStr):
-    """Constrained string type only accepting valid ROCK names."""
+    """Constrained string type only accepting valid rock names."""
 
     regex = re.compile(NAME_REGEX)
 
@@ -158,7 +158,7 @@ class Project(YamlModelMixin, BaseProject):
         # pylint: disable=unused-argument
         unsupported_msg = str(
             "The fields 'entrypoint', 'cmd' and 'env' are not supported in "
-            "Rockcraft. All ROCKs have Pebble as their entrypoint, so you must "
+            "Rockcraft. All rocks have Pebble as their entrypoint, so you must "
             "use 'services' to define your container application and "
             "respective environment."
         )
@@ -186,7 +186,7 @@ class Project(YamlModelMixin, BaseProject):
     @pydantic.validator("title", always=True)
     @classmethod
     def _validate_title(cls, title: str | None, values: Mapping[str, Any]) -> str:
-        """If title is not provided, it defaults to the provided ROCK name."""
+        """If title is not provided, it defaults to the provided rock name."""
         if not title:
             title = values.get("name", "")
         return cast(str, title)
@@ -271,7 +271,7 @@ class Project(YamlModelMixin, BaseProject):
             if not any(b_o in SUPPORTED_ARCHS for b_o in build_on_one_of):
                 raise CraftValidationError(
                     str(
-                        f"{error_prefix}: trying to build ROCK in one of "
+                        f"{error_prefix}: trying to build rock in one of "
                         f"{build_on_one_of}, but none of these build architectures is supported. "
                         f"Supported architectures: {list(SUPPORTED_ARCHS.keys())}"
                     )
@@ -280,7 +280,7 @@ class Project(YamlModelMixin, BaseProject):
             if build_target not in SUPPORTED_ARCHS:
                 raise CraftValidationError(
                     str(
-                        f"{error_prefix}: trying to build ROCK for target "
+                        f"{error_prefix}: trying to build rock for target "
                         f"architecture {build_target}, which is not supported. "
                         f"Supported architectures: {list(SUPPORTED_ARCHS.keys())}"
                     )
@@ -397,7 +397,7 @@ class Project(YamlModelMixin, BaseProject):
     def generate_metadata(
         self, generation_time: str, base_digest: bytes
     ) -> tuple[dict, dict]:
-        """Generate the ROCK's metadata (both the OCI annotation and internal metadata.
+        """Generate the rock's metadata (both the OCI annotation and internal metadata.
 
         :param generation_time: the UTC time at the time of calling this method
         :param base_digest: digest of the base image

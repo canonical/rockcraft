@@ -185,7 +185,7 @@ class Pebble:
         :param target_dir: Path where to write the new Pebble layer file
         :param ref_fs: filesystem to use as a reference when inferring the layer name
         :param layer_content: the actual Pebble layer, in JSON
-        :param rock_name: name of the ROCK where the layer will end up
+        :param rock_name: name of the rock where the layer will end up
         """
         # NOTE: the layer's filename prefix will always be "001-" when using
         # "bare" and "ubuntu" bases

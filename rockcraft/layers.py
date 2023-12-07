@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Handling of files and directories for ROCKs image layers."""
+"""Handling of files and directories for rocks image layers."""
 import os
 import tarfile
 from collections import defaultdict

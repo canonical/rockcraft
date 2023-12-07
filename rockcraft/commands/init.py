@@ -63,17 +63,17 @@ class InitCommand(AppCommand):
 
     _INIT_TEMPLATE_YAML = textwrap.dedent(
         """\
-            name: my-rock-name # the name of your ROCK
-            base: ubuntu@22.04 # the base environment for this ROCK
+            name: my-rock-name # the name of your rock
+            base: ubuntu@22.04 # the base environment for this rock
             version: '0.1' # just for humans. Semantic versioning is recommended
-            summary: Single-line elevator pitch for your amazing ROCK # 79 char long summary
+            summary: Single-line elevator pitch for your amazing rock # 79 char long summary
             description: |
                 This is my my-rock-name's description. You have a paragraph or two to tell the
                 most important story about it. Keep it under 100 words though,
                 we live in tweetspace and your description wants to look good in the
                 container registries out there.
             license: GPL-3.0 # your application's SPDX license
-            platforms: # The platforms this ROCK should be built on and run on
+            platforms: # The platforms this rock should be built on and run on
                 amd64:
 
             parts:

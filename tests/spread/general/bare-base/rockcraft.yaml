@@ -1,7 +1,7 @@
 name: bare-base-test
 version: latest
-summary: A tiny ROCK
-description: Building a tiny ROCK from a bare base, with just one package
+summary: A tiny rock
+description: Building a tiny rock from a bare base, with just one package
 license: Apache-2.0
 build-base: ubuntu@22.04
 base: bare

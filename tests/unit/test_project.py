@@ -188,7 +188,7 @@ def test_project_unmarshal_with_unsupported_fields(unsupported_field, yaml_loade
         _ = Project.unmarshal(loaded_data_with_unsupported_fields)
 
     assert (
-        "All ROCKs have Pebble as their entrypoint, so you must use "
+        "All rocks have Pebble as their entrypoint, so you must use "
         "'services' to define your container application" in str(err.value)
     )
 
@@ -263,7 +263,7 @@ def test_project_title_empty_invalid_name(yaml_loaded_data):
     yaml_loaded_data["name"] = "my@rock"
     with pytest.raises(CraftValidationError) as err:
         load_project_yaml(yaml_loaded_data)
-    assert "Invalid name for ROCK" in str(err.value)
+    assert "Invalid name for rock" in str(err.value)
 
 
 @pytest.mark.parametrize("entrypoint_service", [""])
@@ -407,7 +407,7 @@ def test_project_all_platforms_invalid(yaml_loaded_data):
     mock_platforms = {
         "mock": {"build-on": ["arm64a", "arm64"], "build-for": ["noarch"]}
     }
-    assert "build ROCK for target architecture noarch" in reload_project_platforms(
+    assert "build rock for target architecture noarch" in reload_project_platforms(
         mock_platforms
     )
 

@@ -59,7 +59,7 @@ class PythonPlugin(python_plugin.PythonPlugin):
     """A Python plugin for Rockcraft.
 
     This plugin extends Craft-parts' vanilla Python plugin to properly
-    set the Python interpreter according to the ROCK's base. Specifically:
+    set the Python interpreter according to the rock's base. Specifically:
 
     - If the base is ubuntu, the venv-created symlinks in bin/ are removed
       altogether. This is because of the usrmerge; when the layer is added on
@@ -108,7 +108,7 @@ class PythonPlugin(python_plugin.PythonPlugin):
         commands.extend(super().get_build_commands())
 
         # Add a "sitecustomize.py" module to handle the very common case of the
-        # ROCK's interpreter being called as "python3"; in this case, because of
+        # rock's interpreter being called as "python3"; in this case, because of
         # the default $PATH, "/usr/bin/python3" ends up being called and that is
         # *not* the venv-aware executable. This sitecustomize adds the location
         # of the pip-installed packages.
