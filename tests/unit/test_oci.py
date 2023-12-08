@@ -520,8 +520,13 @@ class TestImage:
             "subprocess.check_output",
             return_value="000102030405060708090a0b0c0d0e0f",
         )
+        mock_skopeo = mocker.patch(
+            "shutil.which",
+            return_value="/usr/bin/skopeo",
+        )
 
         digest = image.digest(source_image)
+        assert mock_skopeo.mock_calls == [call("skopeo")]
         assert mock_output.mock_calls == [
             call(
                 [
