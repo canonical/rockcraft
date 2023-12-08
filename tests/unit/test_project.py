@@ -172,9 +172,9 @@ def test_unmarshal_invalid_repositories(yaml_loaded_data):
 
     assert error.value.args[0] == (
         "Bad rockcraft.yaml content:\n"
-        "- field type required in package-repositories[0] configuration\n"
-        "- field url required in package-repositories[0] configuration\n"
-        "- field key-id required in package-repositories[0] configuration"
+        "- field 'type' required in 'package-repositories[0]' configuration\n"
+        "- field 'url' required in 'package-repositories[0]' configuration\n"
+        "- field 'key-id' required in 'package-repositories[0]' configuration"
     )
 
 
@@ -433,6 +433,23 @@ def test_project_name_invalid(yaml_loaded_data, invalid_name):
     assert expected_message in str(err.value)
 
 
+def test_project_version_invalid(yaml_loaded_data):
+    yaml_loaded_data["version"] = "invalid_version"
+
+    with pytest.raises(CraftValidationError) as err:
+        load_project_yaml(yaml_loaded_data)
+
+    # We don't want to be completely tied to the formatting of the message here,
+    # because it comes from craft-application and might change slightly. We just
+    # want to ensure that the message refers to the version.
+    expected_contents = "Invalid version: Valid versions consist of"
+    expected_suffix = "(in field 'version')"
+
+    message = str(err.value)
+    assert expected_contents in message
+    assert message.endswith(expected_suffix)
+
+
 @pytest.mark.parametrize(
     "field", ["name", "version", "base", "parts", "description", "summary", "license"]
 )
@@ -443,7 +460,7 @@ def test_project_missing_field(yaml_loaded_data, field):
         load_project_yaml(yaml_loaded_data)
     assert str(err.value) == (
         "Bad rockcraft.yaml content:\n"
-        f"- field {field} required in top-level configuration"
+        f"- field '{field}' required in top-level configuration"
     )
 
 
@@ -454,7 +471,7 @@ def test_project_extra_field(yaml_loaded_data):
         load_project_yaml(yaml_loaded_data)
     assert str(err.value) == (
         "Bad rockcraft.yaml content:\n"
-        "- extra field extra not permitted in top-level configuration"
+        "- extra field 'extra' not permitted in top-level configuration"
     )
 
 
@@ -465,7 +482,7 @@ def test_project_parts_validation(yaml_loaded_data):
         load_project_yaml(yaml_loaded_data)
     assert str(err.value) == (
         "Bad rockcraft.yaml content:\n"
-        "- extra field invalid not permitted in parts.foo configuration"
+        "- extra field 'invalid' not permitted in 'parts.foo' configuration"
     )
 
 
