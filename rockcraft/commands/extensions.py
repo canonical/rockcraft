@@ -24,7 +24,7 @@ from pathlib import Path
 import tabulate
 from craft_application.commands import AppCommand
 from craft_cli import emit
-from overrides import overrides
+from overrides import overrides  # type: ignore[reportUnknownVariableType]
 from pydantic import BaseModel
 
 from rockcraft import extensions
@@ -57,7 +57,7 @@ class ListExtensionsCommand(AppCommand, abc.ABC):
     )
 
     @overrides
-    def run(self, parsed_args: argparse.Namespace):
+    def run(self, parsed_args: argparse.Namespace) -> None:
         """Print the list of available extensions and their bases."""
         extension_presentation: dict[str, ExtensionModel] = {}
 
@@ -95,7 +95,7 @@ class ExpandExtensionsCommand(AppCommand, abc.ABC):
     )
 
     @overrides
-    def run(self, parsed_args: argparse.Namespace):
+    def run(self, parsed_args: argparse.Namespace) -> None:
         """Print the project's specification with the extensions expanded."""
         project = Project.unmarshal(load_project(Path("rockcraft.yaml")))
 

@@ -27,6 +27,11 @@ from craft_application.errors import CraftValidationError
 from craft_cli import emit
 
 
+def _alias_generator(name: str) -> str:
+    """Convert underscores to dashes in aliases."""
+    return name.replace("_", "-")
+
+
 class HttpCheck(pydantic.BaseModel):
     """Lightweight schema validation for a Pebble HTTP check."""
 
@@ -69,7 +74,7 @@ class ExecCheck(pydantic.BaseModel):
         """Pydantic model configuration."""
 
         allow_population_by_field_name = True
-        alias_generator = lambda s: s.replace("_", "-")  # noqa: E731
+        alias_generator = _alias_generator
         extra = "forbid"
 
 
@@ -115,7 +120,7 @@ class Check(pydantic.BaseModel):
         """Pydantic model configuration."""
 
         allow_population_by_field_name = True
-        alias_generator = lambda s: s.replace("_", "-")  # noqa: E731
+        alias_generator = _alias_generator
         extra = "forbid"
 
 
@@ -152,7 +157,7 @@ class Service(pydantic.BaseModel):
         """Pydantic model configuration."""
 
         allow_population_by_field_name = True
-        alias_generator = lambda s: s.replace("_", "-")  # noqa: E731
+        alias_generator = _alias_generator
         extra = "forbid"
 
 
