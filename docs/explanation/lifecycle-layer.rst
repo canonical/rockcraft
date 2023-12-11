@@ -1,12 +1,13 @@
 
-From lifecycle to OCI layer
-===========================
+From prime step to OCI layer
+============================
 
 Rockcraft is a tool that creates OCI images using the same concepts and
 mechanisms that create snaps and charms: the lifecycle language from
-Craft Parts. There is a significant difference between the works of the Craft
-lifecycle and the OCI specification, and one of Rockcraft's jobs is to bridge
-the gap between these two worlds. This page describes how this is accomplished.
+Craft Parts. There is a significant difference between the way the Craft
+lifecycle works and the OCI specification, and one of Rockcraft's jobs is to
+bridge the gap between these two worlds. This page describes how this is
+accomplished.
 
 .. note::
    It is not necessary to know these details to use the tool effectively, but
@@ -28,7 +29,7 @@ containing a bare-bones Python 3.10 interpreter:
        stage-packages:
          - python3-minimal
 
-This rock has Ubuntu 22.04 as its base, and includes ``python3-minimal``.
+This rock has Ubuntu 22.04 as its base and includes ``python3-minimal``.
 Conceptually, this means that at build time Craft Parts will pull in the
 ``python3-minimal`` Ubuntu package and whatever dependencies it needs to work.
 Indeed, if we run ``rockcraft prime --shell-after``, we can see the final
@@ -49,7 +50,8 @@ available at build-time through the ``${CRAFT_PRIME}`` environment variable:
 As we can see, the prime directory has the contents of the ``python3-minimal``
 package but also many of its dependencies, direct and otherwise. Once the
 lifecycle is finished, Rockcraft packs the contents of the prime directory as a
-new OCI layer, directly as if the prime directory was the filesystem root ``/``.
+new OCI layer, directly as if the prime directory were the filesystem root
+``/``.
 
 .. note::
 
@@ -76,7 +78,7 @@ file ``/usr/lib/x86_64-linux-gnu/libcrypto.so.3`` exists both in the base layer
 (as part of the base Ubuntu system) and in the primed layer (pulled in by
 belonging to a package that is an indirect dependency of ``python3-minimal``).
 
-Starting from version ``1.1.0``, Rockcraft will "prune" those files in the prime
+Starting from version ``1.1.0``, Rockcraft "prunes" those files in the prime
 directory that also exist, with the same contents, ownership and permissions, in
 the base layer. The end result is semantically the same, because the layers are
 "stacked" together when creating containers from the rock. This "pruning" can be
