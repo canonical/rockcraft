@@ -27,6 +27,11 @@ from craft_application.errors import CraftValidationError
 from craft_cli import emit
 
 
+def _alias_generator(name: str) -> str:
+    """Convert underscores to dashes in aliases."""
+    return name.replace("_", "-")
+
+
 class HttpCheck(pydantic.BaseModel):
     """Lightweight schema validation for a Pebble HTTP check."""
 
@@ -69,7 +74,7 @@ class ExecCheck(pydantic.BaseModel):
         """Pydantic model configuration."""
 
         allow_population_by_field_name = True
-        alias_generator = lambda s: s.replace("_", "-")  # noqa: E731
+        alias_generator = _alias_generator
         extra = "forbid"
 
 
@@ -115,7 +120,7 @@ class Check(pydantic.BaseModel):
         """Pydantic model configuration."""
 
         allow_population_by_field_name = True
-        alias_generator = lambda s: s.replace("_", "-")  # noqa: E731
+        alias_generator = _alias_generator
         extra = "forbid"
 
 
@@ -152,7 +157,7 @@ class Service(pydantic.BaseModel):
         """Pydantic model configuration."""
 
         allow_population_by_field_name = True
-        alias_generator = lambda s: s.replace("_", "-")  # noqa: E731
+        alias_generator = _alias_generator
         extra = "forbid"
 
 
@@ -185,7 +190,7 @@ class Pebble:
         :param target_dir: Path where to write the new Pebble layer file
         :param ref_fs: filesystem to use as a reference when inferring the layer name
         :param layer_content: the actual Pebble layer, in JSON
-        :param rock_name: name of the ROCK where the layer will end up
+        :param rock_name: name of the rock where the layer will end up
         """
         # NOTE: the layer's filename prefix will always be "001-" when using
         # "bare" and "ubuntu" bases

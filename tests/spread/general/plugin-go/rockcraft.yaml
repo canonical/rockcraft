@@ -1,5 +1,5 @@
 name: go-pebble
-summary: A ROCK built with go
+summary: A rock built with go
 description: The go version used does not interfere with the one used for pebble
 license: Apache-2.0
 

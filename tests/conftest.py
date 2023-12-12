@@ -21,7 +21,7 @@ import pytest
 import xdg  # type: ignore
 
 
-@pytest.fixture
+@pytest.fixture()
 def new_dir(tmpdir):
     """Change to a new temporary directory."""
 
@@ -103,13 +103,13 @@ class RecordingEmitter:
         self._check(expected, self.raw)
 
 
-@pytest.fixture
+@pytest.fixture()
 def extra_project_params():
     """Configuration fixture for the Project used by the default services."""
     return {}
 
 
-@pytest.fixture
+@pytest.fixture()
 def default_project(extra_project_params):
     from craft_application.models import VersionStr
 
@@ -130,7 +130,7 @@ def default_project(extra_project_params):
     )
 
 
-@pytest.fixture
+@pytest.fixture()
 def default_factory(default_project):
     from rockcraft.application import APP_METADATA
     from rockcraft.services import RockcraftServiceFactory
@@ -143,7 +143,7 @@ def default_factory(default_project):
     return factory
 
 
-@pytest.fixture
+@pytest.fixture()
 def default_image_info():
     from rockcraft import oci
     from rockcraft.services.image import ImageInfo
@@ -155,14 +155,14 @@ def default_image_info():
     )
 
 
-@pytest.fixture
+@pytest.fixture()
 def default_application(default_factory, default_project):
     from rockcraft.application import APP_METADATA, Rockcraft
 
     return Rockcraft(APP_METADATA, default_factory)
 
 
-@pytest.fixture
+@pytest.fixture()
 def image_service(default_project, default_factory, tmp_path):
     from rockcraft.application import APP_METADATA
     from rockcraft.services import RockcraftImageService
@@ -176,7 +176,7 @@ def image_service(default_project, default_factory, tmp_path):
     )
 
 
-@pytest.fixture
+@pytest.fixture()
 def provider_service(default_project, default_factory, tmp_path):
     from rockcraft.application import APP_METADATA
     from rockcraft.services import RockcraftProviderService
@@ -189,7 +189,7 @@ def provider_service(default_project, default_factory, tmp_path):
     )
 
 
-@pytest.fixture
+@pytest.fixture()
 def package_service(default_project, default_factory):
     from rockcraft.application import APP_METADATA
     from rockcraft.services import RockcraftPackageService
@@ -203,7 +203,7 @@ def package_service(default_project, default_factory):
     )
 
 
-@pytest.fixture
+@pytest.fixture()
 def lifecycle_service(default_project, default_factory):
     from rockcraft.application import APP_METADATA
     from rockcraft.services import RockcraftLifecycleService
@@ -218,14 +218,14 @@ def lifecycle_service(default_project, default_factory):
     )
 
 
-@pytest.fixture
+@pytest.fixture()
 def mock_obtain_image(default_factory, mocker):
     """Mock and return the "obtain_image()" method of the default image service."""
     image_service = default_factory.image
     return mocker.patch.object(image_service, "obtain_image")
 
 
-@pytest.fixture
+@pytest.fixture()
 def run_lifecycle(mocker):
     """Helper to call testing.run_mocked_lifecycle()."""
 

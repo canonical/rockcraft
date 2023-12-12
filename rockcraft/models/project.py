@@ -17,20 +17,21 @@
 """Project definition and helpers."""
 import re
 import shlex
-from collections.abc import Mapping
+from collections.abc import Callable, Mapping
 from pathlib import Path
-from typing import Any, Literal, cast
+from typing import TYPE_CHECKING, Any, Literal, cast
 
 import craft_cli
 import pydantic
 import spdx_lookup  # type: ignore
 import yaml
 from craft_application.errors import CraftValidationError
-from craft_application.models import BuildInfo
+from craft_application.models import BuildInfo, CraftBaseConfig
 from craft_application.models import Project as BaseProject
-from craft_archives import repo
+from craft_archives import repo  # type: ignore[import-untyped]
 from craft_providers import bases
 from pydantic_yaml import YamlModelMixin
+from typing_extensions import override
 
 from rockcraft.architectures import SUPPORTED_ARCHS
 from rockcraft.errors import ProjectLoadError
@@ -39,18 +40,28 @@ from rockcraft.parts import part_has_overlay, validate_part
 from rockcraft.pebble import Check, Pebble, Service
 from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
 
+# pyright workaround
+if TYPE_CHECKING:
+    _RunUser = str | None
+else:
+    _RunUser = Literal[tuple(SUPPORTED_GLOBAL_USERNAMES)] | None
+
 
 class Platform(pydantic.BaseModel):
     """Rockcraft project platform definition."""
 
     build_on: pydantic.conlist(str, unique_items=True, min_items=1) | None  # type: ignore[valid-type]
-    build_for: pydantic.conlist(str, unique_items=True, min_items=1) | None  # type: ignore[valid-type]
+    build_for: pydantic.conlist(  # type: ignore[valid-type]
+        str, unique_items=True, min_items=1
+    ) | None
 
     class Config:  # pylint: disable=too-few-public-methods
         """Pydantic model configuration."""
 
         allow_population_by_field_name = True
-        alias_generator = lambda s: s.replace("_", "-")  # noqa: E731
+        alias_generator: Callable[[str], str] = lambda s: s.replace(  # noqa: E731
+            "_", "-"
+        )
 
     @pydantic.validator("build_for", pre=True)
     @classmethod
@@ -64,14 +75,14 @@ class Platform(pydantic.BaseModel):
     @classmethod
     def _validate_platform_set(cls, values: Mapping[str, Any]) -> Mapping[str, Any]:
         """Validate the build_on build_for combination."""
-        build_for = values["build_for"] if values.get("build_for") else []
-        build_on = values["build_on"] if values.get("build_on") else []
+        build_for: list[str] = values["build_for"] if values.get("build_for") else []
+        build_on: list[str] = values["build_on"] if values.get("build_on") else []
 
         # We can only build for 1 arch at the moment
         if len(build_for) > 1:
             raise CraftValidationError(
                 str(
-                    f"Trying to build a ROCK for {build_for} "
+                    f"Trying to build a rock for {build_for} "
                     "but multiple target architectures are not "
                     "currently supported. Please specify only 1 value."
                 )
@@ -88,7 +99,7 @@ class Platform(pydantic.BaseModel):
 
 NAME_REGEX = r"^([a-z](?:-?[a-z0-9]){2,})$"
 """
-The regex for valid names for ROCKs. It matches the accepted values for pebble
+The regex for valid names for rocks. It matches the accepted values for pebble
 layer files:
 
 - must start with a lowercase letter [a-z]
@@ -99,14 +110,16 @@ layer files:
 """
 
 INVALID_NAME_MESSAGE = (
-    "Invalid name for ROCK (must contain only lowercase letters, numbers and hyphens)"
+    "Invalid name for rock: Names can only use ASCII lowercase letters, numbers, and hyphens. "
+    "They must start with a lowercase letter, may not end with a hyphen, "
+    "and may not have two hyphens in a row."
 )
 
 DEPRECATED_COLON_BASES = ["ubuntu:20.04", "ubuntu:22.04"]
 
 
 class NameStr(pydantic.ConstrainedStr):
-    """Constrained string type only accepting valid ROCK names."""
+    """Constrained string type only accepting valid rock names."""
 
     regex = re.compile(NAME_REGEX)
 
@@ -117,13 +130,13 @@ class Project(YamlModelMixin, BaseProject):
     name: NameStr  # type: ignore
     # summary is Optional[str] in BaseProject
     summary: str  # type: ignore
-    description: str
+    description: str  # type: ignore[reportIncompatibleVariableOverride]
     rock_license: str = pydantic.Field(alias="license")
     platforms: dict[str, Any]
     base: Literal["bare", "ubuntu@20.04", "ubuntu@22.04"]
     build_base: Literal["ubuntu@20.04", "ubuntu@22.04"] | None
     environment: dict[str, str] | None
-    run_user: Literal[tuple(SUPPORTED_GLOBAL_USERNAMES)] | None  # type: ignore
+    run_user: _RunUser
     services: dict[str, Service] | None
     checks: dict[str, Check] | None
     entrypoint_service: str | None
@@ -132,17 +145,10 @@ class Project(YamlModelMixin, BaseProject):
 
     parts: dict[str, Any]
 
-    class Config:  # pylint: disable=too-few-public-methods
+    class Config(CraftBaseConfig):  # pylint: disable=too-few-public-methods
         """Pydantic model configuration."""
 
-        validate_assignment = True
-        extra = "forbid"
         allow_mutation = False
-        allow_population_by_field_name = True
-        alias_generator = lambda s: s.replace("_", "-")  # noqa: E731
-        error_msg_templates = {
-            "value_error.str.regex": INVALID_NAME_MESSAGE,
-        }
 
     @property
     def effective_base(self) -> bases.BaseName:
@@ -158,7 +164,7 @@ class Project(YamlModelMixin, BaseProject):
         # pylint: disable=unused-argument
         unsupported_msg = str(
             "The fields 'entrypoint', 'cmd' and 'env' are not supported in "
-            "Rockcraft. All ROCKs have Pebble as their entrypoint, so you must "
+            "Rockcraft. All rocks have Pebble as their entrypoint, so you must "
             "use 'services' to define your container application and "
             "respective environment."
         )
@@ -176,24 +182,26 @@ class Project(YamlModelMixin, BaseProject):
             # This is the license name we use on our stores.
             return rock_license
 
-        lic: spdx_lookup.License | None = spdx_lookup.by_id(rock_license)
+        lic: spdx_lookup.License | None = spdx_lookup.by_id(rock_license)  # type: ignore[reportUnknownMemberType]
         if lic is None:
             raise CraftValidationError(
                 f"License {rock_license} not valid. It must be valid and in SPDX format."
             )
-        return lic.id
+        return str(lic.id)  # type: ignore[reportUnknownMemberType]
 
     @pydantic.validator("title", always=True)
     @classmethod
     def _validate_title(cls, title: str | None, values: Mapping[str, Any]) -> str:
-        """If title is not provided, it defaults to the provided ROCK name."""
+        """If title is not provided, it defaults to the provided rock name."""
         if not title:
             title = values.get("name", "")
         return cast(str, title)
 
     @pydantic.validator("build_base", always=True)
     @classmethod
-    def _validate_build_base(cls, build_base: str | None, values: Any) -> str:
+    def _validate_build_base(
+        cls, build_base: str | None, values: dict[str, Any]
+    ) -> str:
         """Build-base defaults to the base value if not specified.
 
         :raises CraftValidationError: If base validation fails.
@@ -235,7 +243,9 @@ class Project(YamlModelMixin, BaseProject):
     def _validate_all_platforms(cls, platforms: dict[str, Any]) -> dict[str, Any]:
         """Make sure all provided platforms are tangible and sane."""
         for platform_label in platforms:
-            platform = platforms[platform_label] if platforms[platform_label] else {}
+            platform: dict[str, Any] = (
+                platforms[platform_label] if platforms[platform_label] else {}
+            )
             error_prefix = f"Error for platform entry '{platform_label}'"
 
             # Make sure the provided platform_set is valid
@@ -271,7 +281,7 @@ class Project(YamlModelMixin, BaseProject):
             if not any(b_o in SUPPORTED_ARCHS for b_o in build_on_one_of):
                 raise CraftValidationError(
                     str(
-                        f"{error_prefix}: trying to build ROCK in one of "
+                        f"{error_prefix}: trying to build rock in one of "
                         f"{build_on_one_of}, but none of these build architectures is supported. "
                         f"Supported architectures: {list(SUPPORTED_ARCHS.keys())}"
                     )
@@ -280,7 +290,7 @@ class Project(YamlModelMixin, BaseProject):
             if build_target not in SUPPORTED_ARCHS:
                 raise CraftValidationError(
                     str(
-                        f"{error_prefix}: trying to build ROCK for target "
+                        f"{error_prefix}: trying to build rock for target "
                         f"architecture {build_target}, which is not supported. "
                         f"Supported architectures: {list(SUPPORTED_ARCHS.keys())}"
                     )
@@ -299,7 +309,9 @@ class Project(YamlModelMixin, BaseProject):
 
     @pydantic.validator("parts", each_item=True)
     @classmethod
-    def _validate_base_and_overlay(cls, item: dict[str, Any], values) -> dict[str, Any]:
+    def _validate_base_and_overlay(
+        cls, item: dict[str, Any], values: dict[str, Any]
+    ) -> dict[str, Any]:
         """Projects with "bare" bases cannot use overlays."""
         if values.get("base") == "bare" and part_has_overlay(item):
             raise CraftValidationError(
@@ -310,7 +322,7 @@ class Project(YamlModelMixin, BaseProject):
     @pydantic.validator("entrypoint_service")
     @classmethod
     def _validate_entrypoint_service(
-        cls, entrypoint_service: str | None, values: Any
+        cls, entrypoint_service: str | None, values: dict[str, Any]
     ) -> str | None:
         """Verify that the entrypoint_service exists in the services dict."""
         craft_cli.emit.message(
@@ -326,7 +338,7 @@ class Project(YamlModelMixin, BaseProject):
                 + "a valid Pebble service."
             )
 
-        command = values.get("services")[entrypoint_service].command
+        command = values["services"][entrypoint_service].command
         command_sh_args = shlex.split(command)
         # optional arg is surrounded by brackets, so check that they exist in the
         # right order
@@ -379,14 +391,14 @@ class Project(YamlModelMixin, BaseProject):
     def to_yaml(self) -> str:
         """Dump this project as a YAML string."""
 
-        def _repr_str(dumper, data):
+        def _repr_str(dumper: yaml.SafeDumper, data: str) -> yaml.ScalarNode:
             """Multi-line string representer for the YAML dumper."""
             if "\n" in data:
-                return dumper.represent_scalar("tag:yaml.org,2002:str", data, style="|")
-            return dumper.represent_scalar("tag:yaml.org,2002:str", data)
+                return dumper.represent_scalar("tag:yaml.org,2002:str", data, style="|")  # type: ignore[reportUnknownMemberType]
+            return dumper.represent_scalar("tag:yaml.org,2002:str", data)  # type: ignore[reportUnknownMemberType]
 
         yaml.add_representer(str, _repr_str, Dumper=yaml.SafeDumper)
-        return super().yaml(
+        return super().yaml(  # type: ignore[reportUnknownMemberType]
             by_alias=True,
             exclude_none=True,
             allow_unicode=True,
@@ -396,8 +408,8 @@ class Project(YamlModelMixin, BaseProject):
 
     def generate_metadata(
         self, generation_time: str, base_digest: bytes
-    ) -> tuple[dict, dict]:
-        """Generate the ROCK's metadata (both the OCI annotation and internal metadata.
+    ) -> tuple[dict[str, Any], dict[str, Any]]:
+        """Generate the rock's metadata (both the OCI annotation and internal metadata.
 
         :param generation_time: the UTC time at the time of calling this method
         :param base_digest: digest of the base image
@@ -443,6 +455,19 @@ class Project(YamlModelMixin, BaseProject):
                     )
 
         return build_infos
+
+    @override
+    @classmethod
+    def transform_pydantic_error(cls, error: pydantic.ValidationError) -> None:
+        BaseProject.transform_pydantic_error(error)
+
+        for error_dict in error.errors():
+            loc_and_type = (str(error_dict["loc"][0]), error_dict["type"])
+            if loc_and_type == ("name", "value_error.str.regex"):
+                # Note: The base Project class already changes the error message
+                # for the "name" regex, but we re-change it here because
+                # Rockcraft's name regex is slightly stricter.
+                error_dict["msg"] = INVALID_NAME_MESSAGE
 
 
 def load_project(filename: Path) -> dict[str, Any]:

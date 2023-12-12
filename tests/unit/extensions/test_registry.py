@@ -37,7 +37,7 @@ class FakeExtension3(Extension):
     NAME = "fake-extension-3"
 
 
-@pytest.fixture
+@pytest.fixture()
 def fake_extensions(mock_extensions):
     for ext_class in (FakeExtension1, FakeExtension2):
         extensions.register(ext_class.NAME, ext_class)

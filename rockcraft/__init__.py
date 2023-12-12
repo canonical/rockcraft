@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-"""The craft tool to create ROCKs."""
+"""The craft tool to create rocks."""
 
 try:
     from ._version import __version__

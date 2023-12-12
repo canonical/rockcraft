@@ -40,7 +40,12 @@ class TestPebble:
         )
 
     @pytest.mark.parametrize(
-        "existing_layers,expected_new_layer_prefix,layer_content,expected_layer_yaml",
+        (
+            "existing_layers",
+            "expected_new_layer_prefix",
+            "layer_content",
+            "expected_layer_yaml",
+        ),
         [
             # Test Case 1:
             # Without any previous layers, the default layer prefix is 001.
@@ -221,7 +226,7 @@ class TestPebble:
         _ = Service(**service)
 
     @pytest.mark.parametrize(
-        "bad_service,error",
+        ("bad_service", "error"),
         [
             # Missing fields
             ({}, r"^2 validation errors[\s\S]*override[\s\S]*command"),
@@ -274,7 +279,7 @@ class TestPebble:
             _ = Service(**bad_service)
 
     @pytest.mark.parametrize(
-        "bad_http_check,error",
+        ("bad_http_check", "error"),
         [
             # Missing fields
             ({}, r"^1 validation error[\s\S]*url[\s\S]"),
@@ -295,7 +300,7 @@ class TestPebble:
             _ = HttpCheck(**bad_http_check)
 
     @pytest.mark.parametrize(
-        "bad_tcp_check,error",
+        ("bad_tcp_check", "error"),
         [
             # Missing fields
             ({}, r"^1 validation error[\s\S]*port[\s\S]"),
@@ -316,7 +321,7 @@ class TestPebble:
             _ = TcpCheck(**bad_tcp_check)
 
     @pytest.mark.parametrize(
-        "bad_exec_check,error",
+        ("bad_exec_check", "error"),
         [
             # Missing fields
             ({}, r"^1 validation error[\s\S]*command[\s\S]"),
@@ -363,7 +368,7 @@ class TestPebble:
         _ = Check(override="merge", exec={"command": "foo cmd"})  # pyright: ignore
 
     @pytest.mark.parametrize(
-        "bad_check,exception,error",
+        ("bad_check", "exception", "error"),
         [
             # Missing check type fields
             (

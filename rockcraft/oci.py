@@ -224,11 +224,11 @@ class Image:
         username: str,
         uid: int,
     ) -> None:
-        """Create a new ROCK user.
+        """Create a new rock user.
 
         :param prime_dir: Path to the user-defined parts' primed content.
         :param base_layer_dir: Path to the base layer's root filesystem.
-        :param tag: The ROCK's image tag.
+        :param tag: The rock's image tag.
         :param username: Username to be created. Same as group name.
         :param uid: UID of the username to be created. Same as GID.
         """
@@ -295,13 +295,14 @@ class Image:
             emit.progress(f"Adding user {username}:{uid} with group {username}:{uid}")
             self.add_layer(tag, Path(tmpfs))
 
-    def stat(self) -> dict[Any, Any]:
+    def stat(self) -> dict[str, Any]:
         """Obtain the image statistics, as reported by "umoci stat --json"."""
         image_path = self.path / self.image_name
-        output = _process_run(
+        output: bytes = _process_run(
             ["umoci", "stat", "--json", "--image", str(image_path)]
         ).stdout
-        return json.loads(output)
+        result: dict[str, Any] = json.loads(output)
+        return result
 
     @staticmethod
     def digest(source_image: str) -> bytes:
@@ -401,8 +402,8 @@ class Image:
 
         :param services: The Pebble services
         :param checks: The Pebble checks
-        :param name: The name of the ROCK
-        :param tag: The ROCK's image tag
+        :param name: The name of the rock
+        :param tag: The rock's image tag
         :param summary: The summary for the Pebble layer
         :param description: The description for the Pebble layer
         :param base_layer_dir: Path to the base layer's root filesystem
@@ -441,8 +442,8 @@ class Image:
         """
         emit.progress("Configuring OCI environment...")
         image_path = self.path / self.image_name
-        params = []
-        env_list = []
+        params: list[str] = []
+        env_list: list[str] = []
 
         for name, value in env.items():
             env_item = f"{name}={value}"
@@ -452,14 +453,14 @@ class Image:
         emit.progress(f"Environment set to {env_list}")
 
     def set_control_data(self, metadata: dict[str, Any]) -> None:
-        """Create and populate the ROCK's control data folder.
+        """Create and populate the rock's control data folder.
 
-        :param metadata: content for the ROCK's metadata YAML file
+        :param metadata: content for the rock's metadata YAML file
         """
-        emit.progress("Setting the ROCK's Control Data")
+        emit.progress("Setting the rock's control data")
         local_control_data_path = Path(tempfile.mkdtemp())
 
-        # the ROCK control data structure starts with the folder ".rock"
+        # the rock control data structure starts with the folder ".rock"
         control_data_rock_folder = local_control_data_path / ".rock"
         control_data_rock_folder.mkdir()
 
@@ -490,7 +491,7 @@ class Image:
         label_params = ["--clear=config.labels"]
         annotation_params = ["--clear=manifest.annotations"]
 
-        labels_list = []
+        labels_list: list[str] = []
         for label_key, label_value in annotations.items():
             label_item = f"{label_key}={label_value}"
             labels_list.append(label_item)
@@ -600,7 +601,7 @@ def _inject_architecture_variant(image_path: Path, variant: str) -> None:
     tl_index_path.write_bytes(json.dumps(tl_index).encode("utf-8"))
 
 
-def _process_run(command: list[str], **kwargs: Any) -> subprocess.CompletedProcess:
+def _process_run(command: list[str], **kwargs: Any) -> subprocess.CompletedProcess[Any]:
     """Run a command and handle its output."""
     if not Path(command[0]).is_absolute():
         command[0] = get_snap_command_path(command[0])

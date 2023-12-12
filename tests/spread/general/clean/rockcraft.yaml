@@ -1,8 +1,8 @@
 name: clean
 base: ubuntu@22.04
 version: '0.1'
-summary: A minimal hello world ROCK
-description: A minimal hello world ROCK
+summary: A minimal hello world rock
+description: A minimal hello world rock
 license: GPL-3.0
 platforms:
     amd64:

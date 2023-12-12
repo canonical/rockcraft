@@ -71,8 +71,8 @@ reStructuredText
 rockcraft
 Rockcraft
 Rockcraft's
-ROCK's
-ROCKs
+rock's
+rocks
 runit
 runtime
 Runtime

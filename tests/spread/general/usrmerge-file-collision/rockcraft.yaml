@@ -1,7 +1,7 @@
 name: usrmerge
 version: latest
-summary: A ROCK that tests file conflicts in usrmerge handling.
-description: A ROCK that tests file conflicts in usrmerge handling
+summary: A rock that tests file conflicts in usrmerge handling.
+description: A rock that tests file conflicts in usrmerge handling
 license: Apache-2.0
 base: ubuntu@22.04
 platforms:

@@ -96,17 +96,17 @@ def enable_overlay_feature():
     Features(enable_overlay=True)
 
 
-@pytest.fixture
+@pytest.fixture()
 def yaml_data():
     return ROCKCRAFT_YAML
 
 
-@pytest.fixture
+@pytest.fixture()
 def yaml_loaded_data():
     return yaml.safe_load(ROCKCRAFT_YAML)
 
 
-@pytest.fixture
+@pytest.fixture()
 def pebble_part() -> dict[str, Any]:
     return {
         "pebble": {
@@ -172,9 +172,9 @@ def test_unmarshal_invalid_repositories(yaml_loaded_data):
 
     assert error.value.args[0] == (
         "Bad rockcraft.yaml content:\n"
-        "- field type required in package-repositories[0] configuration\n"
-        "- field url required in package-repositories[0] configuration\n"
-        "- field key-id required in package-repositories[0] configuration"
+        "- field 'type' required in 'package-repositories[0]' configuration\n"
+        "- field 'url' required in 'package-repositories[0]' configuration\n"
+        "- field 'key-id' required in 'package-repositories[0]' configuration"
     )
 
 
@@ -188,13 +188,13 @@ def test_project_unmarshal_with_unsupported_fields(unsupported_field, yaml_loade
         _ = Project.unmarshal(loaded_data_with_unsupported_fields)
 
     assert (
-        "All ROCKs have Pebble as their entrypoint, so you must use "
+        "All rocks have Pebble as their entrypoint, so you must use "
         "'services' to define your container application" in str(err.value)
     )
 
 
 @pytest.mark.parametrize(
-    "variable,is_forbidden",
+    ("variable", "is_forbidden"),
     [("$BAR", True), ("BAR_$BAZ", True), ("BAR$", False)],
 )
 def test_forbidden_env_var_interpolation(
@@ -263,7 +263,7 @@ def test_project_title_empty_invalid_name(yaml_loaded_data):
     yaml_loaded_data["name"] = "my@rock"
     with pytest.raises(CraftValidationError) as err:
         load_project_yaml(yaml_loaded_data)
-    assert "Invalid name for ROCK" in str(err.value)
+    assert "Invalid name for rock" in str(err.value)
 
 
 @pytest.mark.parametrize("entrypoint_service", [""])
@@ -317,7 +317,7 @@ def test_project_build_base(yaml_loaded_data):
 
 
 @pytest.mark.parametrize(
-    ["base", "build_base", "expected_base", "expected_build_base"],
+    ("base", "build_base", "expected_base", "expected_build_base"),
     [
         ("ubuntu:22.04", None, "ubuntu@22.04", "ubuntu@22.04"),
         ("ubuntu:22.04", "ubuntu:20.04", "ubuntu@22.04", "ubuntu@20.04"),
@@ -407,7 +407,7 @@ def test_project_all_platforms_invalid(yaml_loaded_data):
     mock_platforms = {
         "mock": {"build-on": ["arm64a", "arm64"], "build-for": ["noarch"]}
     }
-    assert "build ROCK for target architecture noarch" in reload_project_platforms(
+    assert "build rock for target architecture noarch" in reload_project_platforms(
         mock_platforms
     )
 
@@ -433,6 +433,23 @@ def test_project_name_invalid(yaml_loaded_data, invalid_name):
     assert expected_message in str(err.value)
 
 
+def test_project_version_invalid(yaml_loaded_data):
+    yaml_loaded_data["version"] = "invalid_version"
+
+    with pytest.raises(CraftValidationError) as err:
+        load_project_yaml(yaml_loaded_data)
+
+    # We don't want to be completely tied to the formatting of the message here,
+    # because it comes from craft-application and might change slightly. We just
+    # want to ensure that the message refers to the version.
+    expected_contents = "Invalid version: Valid versions consist of"
+    expected_suffix = "(in field 'version')"
+
+    message = str(err.value)
+    assert expected_contents in message
+    assert message.endswith(expected_suffix)
+
+
 @pytest.mark.parametrize(
     "field", ["name", "version", "base", "parts", "description", "summary", "license"]
 )
@@ -443,7 +460,7 @@ def test_project_missing_field(yaml_loaded_data, field):
         load_project_yaml(yaml_loaded_data)
     assert str(err.value) == (
         "Bad rockcraft.yaml content:\n"
-        f"- field {field} required in top-level configuration"
+        f"- field '{field}' required in top-level configuration"
     )
 
 
@@ -454,7 +471,7 @@ def test_project_extra_field(yaml_loaded_data):
         load_project_yaml(yaml_loaded_data)
     assert str(err.value) == (
         "Bad rockcraft.yaml content:\n"
-        "- extra field extra not permitted in top-level configuration"
+        "- extra field 'extra' not permitted in top-level configuration"
     )
 
 
@@ -465,12 +482,12 @@ def test_project_parts_validation(yaml_loaded_data):
         load_project_yaml(yaml_loaded_data)
     assert str(err.value) == (
         "Bad rockcraft.yaml content:\n"
-        "- extra field invalid not permitted in parts.foo configuration"
+        "- extra field 'invalid' not permitted in 'parts.foo' configuration"
     )
 
 
 @pytest.mark.parametrize(
-    "packages,script",
+    ("packages", "script"),
     [
         (["pkg"], None),
         ([], "ls"),
@@ -626,7 +643,7 @@ def test_project_yaml(yaml_loaded_data):
 
 
 @pytest.mark.parametrize(
-    ["platforms", "expected_build_infos"],
+    ("platforms", "expected_build_infos"),
     [
         (
             {

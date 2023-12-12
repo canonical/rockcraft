@@ -24,14 +24,14 @@ from craft_providers import Executor, Provider, base
 # pylint: disable=import-outside-toplevel
 
 
-@pytest.fixture
+@pytest.fixture()
 def mock_instance():
     """Provide a mock instance (Executor)."""
     _mock_instance = mock.Mock(spec=Executor)
-    yield _mock_instance
+    return _mock_instance
 
 
-@pytest.fixture
+@pytest.fixture()
 def mock_extensions(monkeypatch):
     from rockcraft.extensions import registry
 
@@ -67,7 +67,7 @@ def fake_provider(mock_instance):
         def is_provider_installed(cls) -> bool:
             return True
 
-        def create_environment(self, *, instance_name: str):
+        def create_environment(self, *, instance_name: str):  # type: ignore[reportIncompatibleVariableOverride]
             yield mock_instance
 
         @contextlib.contextmanager  # type: ignore[misc]

@@ -23,7 +23,7 @@ from typing import cast
 
 from craft_application import AppMetadata, PackageService, models, util
 from craft_cli import emit
-from overrides import override
+from overrides import override  # type: ignore[reportUnknownVariableType]
 
 from rockcraft import errors, oci
 from rockcraft.models import Project
@@ -68,7 +68,7 @@ class RockcraftPackageService(PackageService):
 
         if platform is None:
             # This should only happen in destructive mode, in which case we
-            # can only pack a single ROCK.
+            # can only pack a single rock.
             build_on = util.get_host_architecture()
             base_build_plan = self._project.get_build_plan()
             build_plan = [

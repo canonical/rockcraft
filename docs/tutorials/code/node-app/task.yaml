@@ -38,7 +38,7 @@ execute: |
   # Wait for a bit for the app to come online
   retry -n 5 --wait 2 curl localhost:8000
 
-  curl localhost:8000 | MATCH "Hello World from inside the ROCK"
+  curl localhost:8000 | MATCH "Hello World from inside the rock"
 
   # [docs:stop-container]
   docker stop my-node-app

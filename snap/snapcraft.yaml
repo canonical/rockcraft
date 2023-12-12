@@ -1,6 +1,6 @@
 name: rockcraft
 base: core22
-summary: A craft like experience to create ROCKS
+summary: A craft like experience to create rocks
 description: |
     Rockcraft aims to take the same primitives used in Charmcraft and Snapcraft
     to create OCI images.

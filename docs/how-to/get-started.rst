@@ -7,10 +7,10 @@ Getting started
 ---------------
 
 Rockcraft is **the tool** for building Ubuntu-based and production-grade OCI
-images, aka ROCKs!
+images, aka rocks!
 
-Rockcraft is distributed as a snap. For packing new ROCKs, it makes use of
-"providers" to execute all the steps involved in the ROCK's build process. At
+Rockcraft is distributed as a snap. For packing new rocks, it makes use of
+"providers" to execute all the steps involved in the rock's build process. At
 the moment, the supported providers are LXD and Multipass.
 
 Requirements

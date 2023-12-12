@@ -65,8 +65,8 @@ def _apply_extension(
     if "parts" not in yaml_data:
         yaml_data["parts"] = {}
 
-    parts = yaml_data["parts"]
-    for _, part_definition in parts.items():
+    parts: dict[str, Any] = yaml_data["parts"]
+    for part_definition in parts.values():
         for property_name, property_value in part_extension.items():
             part_definition[property_name] = _apply_extension_property(
                 part_definition.get(property_name), property_value
@@ -79,7 +79,10 @@ def _apply_extension(
         parts[part_name] = parts_snippet[part_name]
 
 
-def _apply_extension_property(existing_property: Any, extension_property: Any) -> Any:
+def _apply_extension_property(
+    existing_property: list[Any] | dict[str, Any] | None,
+    extension_property: list[Any] | dict[str, Any],
+) -> list[Any] | dict[str, Any] | None:
     if existing_property:
         # If the property is not scalar, merge them
         if isinstance(existing_property, list) and isinstance(extension_property, list):

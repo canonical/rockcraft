@@ -41,54 +41,54 @@ MOCK_NEW_USER = {
 }
 
 
-@pytest.fixture
+@pytest.fixture()
 def mock_run(mocker):
-    yield mocker.patch("rockcraft.oci._process_run")
+    return mocker.patch("rockcraft.oci._process_run")
 
 
-@pytest.fixture
+@pytest.fixture()
 def mock_archive_layer(mocker):
-    yield mocker.patch("rockcraft.layers.archive_layer")
+    return mocker.patch("rockcraft.layers.archive_layer")
 
 
-@pytest.fixture
+@pytest.fixture()
 def mock_rmtree(mocker):
-    yield mocker.patch("shutil.rmtree")
+    return mocker.patch("shutil.rmtree")
 
 
-@pytest.fixture
+@pytest.fixture()
 def mock_mkdir(mocker):
-    yield mocker.patch("pathlib.Path.mkdir")
+    return mocker.patch("pathlib.Path.mkdir")
 
 
-@pytest.fixture
+@pytest.fixture()
 def mock_mkdtemp(mocker):
-    yield mocker.patch("tempfile.mkdtemp")
+    return mocker.patch("tempfile.mkdtemp")
 
 
-@pytest.fixture
+@pytest.fixture()
 def mock_tmpdir(mocker):
-    yield mocker.patch("tempfile.TemporaryDirectory")
+    return mocker.patch("tempfile.TemporaryDirectory")
 
 
-@pytest.fixture
+@pytest.fixture()
 def mock_inject_variant(mocker):
-    yield mocker.patch("rockcraft.oci._inject_architecture_variant")
+    return mocker.patch("rockcraft.oci._inject_architecture_variant")
 
 
-@pytest.fixture
+@pytest.fixture()
 def mock_read_bytes(mocker):
-    yield mocker.patch("pathlib.Path.read_bytes")
+    return mocker.patch("pathlib.Path.read_bytes")
 
 
-@pytest.fixture
+@pytest.fixture()
 def mock_write_bytes(mocker):
-    yield mocker.patch("pathlib.Path.write_bytes")
+    return mocker.patch("pathlib.Path.write_bytes")
 
 
-@pytest.fixture
+@pytest.fixture()
 def mock_add_layer(mocker):
-    yield mocker.patch("rockcraft.oci.Image.add_layer")
+    return mocker.patch("rockcraft.oci.Image.add_layer")
 
 
 @tests.linux_only
@@ -164,7 +164,7 @@ class TestImage:
     # The archs here were taken from the supported architectures in the registry
     # that we currently use (https://gallery.ecr.aws/ubuntu/ubuntu)
     @pytest.mark.parametrize(
-        ["deb_arch", "expected_arch", "expected_variant"],
+        ("deb_arch", "expected_arch", "expected_variant"),
         [
             ("amd64", "amd64", None),
             ("arm64", "arm64", "v8"),
@@ -361,7 +361,12 @@ class TestImage:
             check.is_in("conflict with existing user/group in the base filesystem", err)
 
     @pytest.mark.parametrize(
-        "base_user_files,prime_user_files,whiteouts_exist,expected_user_files",
+        (
+            "base_user_files",
+            "prime_user_files",
+            "whiteouts_exist",
+            "expected_user_files",
+        ),
         [
             # If file in prime, the rest doesn't matter
             (
@@ -515,8 +520,13 @@ class TestImage:
             "subprocess.check_output",
             return_value="000102030405060708090a0b0c0d0e0f",
         )
+        mock_skopeo = mocker.patch(
+            "shutil.which",
+            return_value="/usr/bin/skopeo",
+        )
 
         digest = image.digest(source_image)
+        assert mock_skopeo.mock_calls == [call("skopeo")]
         assert mock_output.mock_calls == [
             call(
                 [
@@ -645,7 +655,7 @@ class TestImage:
         ]
 
     @pytest.mark.parametrize(
-        "mock_services,mock_checks",
+        ("mock_services", "mock_checks"),
         [
             # Both services and checks are given
             (
@@ -769,9 +779,9 @@ class TestImage:
         now = datetime.datetime.now(datetime.timezone.utc).isoformat()
         metadata = {"name": "rock-name", "version": 1, "created": now}
 
-        expected = (
-            f"created: '{now}'" + "{n}" "name: rock-name{n}" "version: 1{n}"
-        ).format(n=os.linesep)
+        expected = (f"created: '{now}'" + "{n}name: rock-name{n}version: 1{n}").format(
+            n=os.linesep
+        )
 
         mocked_data = {"writes": ""}
 

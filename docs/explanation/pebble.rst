@@ -4,7 +4,7 @@ Pebble
 ======
 
 .. important::
-    **Pebble is the default entrypoint for all ROCKs!**
+    **Pebble is the default entrypoint for all rocks!**
 
 Similar to other well-known process managers such as *supervisord*, *runit*, or
 *s6*, `Pebble`_ is a service manager that enables the seamless orchestration of
@@ -19,7 +19,7 @@ Multiple processes in a container?
 
 Containers' best practices advocate the separation of concerns and the adoption
 of a single service per container. With the introduction of `Pebble`_ as the
-ROCKs' entrypoint, this principle is elevated to new heights:
+rocks' entrypoint, this principle is elevated to new heights:
 
   *if multiple processes rely on shared dependencies and are tightly coupled
   together (i.e. they serve a single purpose and cannot be executed
@@ -40,7 +40,7 @@ Pebble distinguishes itself from other similar tools (like `tini`_ and
 `s6-overlay`_) by offering the following core features:
 
 * **client-server model behind a single binary**: Pebble is injected into
-  ROCKs as a single binary which acts both as a daemon and a client to itself;
+  rocks as a single binary which acts both as a daemon and a client to itself;
 * **declarative service definition**: the Pebble service processes (or simply
   *Pebble services*) are declaratively defined in YAML files called layers.
   Compared to `imperative wrapper scripts (as suggested in the Docker
@@ -53,7 +53,7 @@ Pebble distinguishes itself from other similar tools (like `tini`_ and
 * **layering**: Pebble can stack multiple layers (represented as YAML files)
   into a single Pebble plan where all services are defined. With this layering
   mechanism, existing services can be overridden or re-configured;
-* **container-optimised init process**: as a ROCK's PID 1, Pebble acts as an
+* **container-optimised init process**: as a rock's PID 1, Pebble acts as an
   init process and thus offers:
 
   * support for multiple child processes,
@@ -62,11 +62,11 @@ Pebble distinguishes itself from other similar tools (like `tini`_ and
   * graceful shutdown,
   * log rotation,
   * run the Pebble daemon and client commands in a single operation;
-* **consistent user experience**: since every ROCK has Pebble as its
+* **consistent user experience**: since every rock has Pebble as its
   entrypoint, a predictable and consistent user experience is guaranteed;
-* **embedded utilities**: regardless of the ROCK's contents, Pebble offers a
+* **embedded utilities**: regardless of the rock's contents, Pebble offers a
   comprehensive suite of commands for inspecting and interacting with the
-  container. These commands are especially useful for :ref:`Chiselled ROCKs
+  container. These commands are especially useful for :ref:`Chiselled Rocks
   <chisel_explanation>`, as they encompass functionalities such as listing and
   deleting files, creating directories, and inspecting Pebble services,
   among others.
