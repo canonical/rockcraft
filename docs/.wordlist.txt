@@ -25,11 +25,13 @@ entrypoints
 executables
 expressjs
 filesystem
+filesystems
 fs
 gc
 GID
 github
 GPG
+hardcoded
 html
 https
 init
@@ -92,9 +94,12 @@ subdirectory
 submodules
 subreaping
 supervisord
+symlink
+symlinks
 tini
 triaged
 ubuntu
+usrmerge
 UID
 yaml
 Znet
