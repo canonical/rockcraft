@@ -1,6 +1,8 @@
 ACR
+ARGS
 autotools
 Autotools
+boolean
 centric
 Charmcraft
 cli
@@ -28,6 +30,7 @@ filesystem
 filesystems
 fs
 gc
+GiB
 GID
 github
 GPG
@@ -46,7 +49,10 @@ lifecycle
 Lifecycle
 linuxcontainers
 literalinclude
+LLVM
 localhost
+lto
+LTO
 LTS
 lxd
 LXD
@@ -75,11 +81,14 @@ Rockcraft
 Rockcraft's
 rock's
 rocks
+ROCKs
 runit
 runtime
 Runtime
+rustc
 scons
 SCons
+setuptools
 skopeo
 Skopeo
 sliceName
@@ -97,9 +106,13 @@ supervisord
 symlink
 symlinks
 tini
+toml
+toolchain
 triaged
 ubuntu
 usrmerge
 UID
+venv
+VENV
 yaml
 Znet
