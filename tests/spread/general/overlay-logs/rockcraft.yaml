@@ -5,9 +5,9 @@ summary: Check overlay logs
 description: Check that actions done inside the overlay are logged
 license: GPL-3.0
 platforms:
-    amd64:
+  amd64:
 
 parts:
-    my-part:
-        plugin: nil
-        overlay-packages: [idontexist]
+  my-part:
+    plugin: nil
+    overlay-packages: [idontexist]

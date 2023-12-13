@@ -5,9 +5,8 @@ summary: A minimal hello world rock
 description: A minimal hello world rock
 license: GPL-3.0
 platforms:
-    amd64:
+  amd64:
 
 parts:
-    my-part:
-        plugin: nil
-
+  my-part:
+    plugin: nil

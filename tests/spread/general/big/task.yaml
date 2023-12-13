@@ -28,7 +28,7 @@ execute: |
 
   # Check the rock's output
   docker run --rm big:latest | MATCH "/tmp"
-  
+
   ############################################################################################
   # test ownership: "newfiles" and "a.txt" are owned by uid 9999, "b.txt" is owned by uid 3333
   # (github issue #44)
@@ -54,7 +54,7 @@ execute: |
   file pebble | grep "statically linked"
   docker rm -f big-container
   rm pebble
-  
+
   ############################################################################################
   # This check documents the fact that we currently don't preserve/observe symlinks between
   # layers - we only take the base on which the rock was built into account. If the behavior

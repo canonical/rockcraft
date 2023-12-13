@@ -15,5 +15,5 @@ execute: |
   grep_docker_log "$id" "ship it!"
   docker exec "$id" pebble services | grep hello
   docker exec "$id" pebble ls /usr/bin/hello
-  
+
   docker rm -f "$id"

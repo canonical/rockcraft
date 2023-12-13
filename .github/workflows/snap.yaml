@@ -32,7 +32,7 @@ jobs:
         run: |
           if [[ "${{ github.event_name }}" == "pull_request" ]]
           then
-            echo "branch=pr-${{ github.event.number }}" >> "$GITHUB_OUTPUT"            
+            echo "branch=pr-${{ github.event.number }}" >> "$GITHUB_OUTPUT"
           else
             branch=$(echo ${GITHUB_REF#refs/*/} | sed -e 's|feature/\(.*\)|\1|')
             echo "branch=$branch" >> "$GITHUB_OUTPUT"

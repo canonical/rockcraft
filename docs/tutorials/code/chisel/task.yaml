@@ -1,8 +1,8 @@
 ###########################################
 # IMPORTANT
 # Comments matter!
-# The docs use the wrapping comments as 
-# markers for including said instructions 
+# The docs use the wrapping comments as
+# markers for including said instructions
 # as snippets in the docs.
 ###########################################
 summary: test for the "Install packages slices into a rock" tutorial
@@ -15,7 +15,7 @@ execute: |
   # [docs:build-rock]
   rockcraft pack
   # [docs:build-rock-end]
-  
+
   test -f chisel-openssl_0.0.1_amd64.rock
 
   # [docs:skopeo-copy]
@@ -29,5 +29,5 @@ execute: |
   # [docs:docker-run-with-args]
   docker run --rm chisel-openssl exec --env=SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt openssl s_client -connect ubuntu.com:443 -brief
   # [docs:docker-run-with-args-end]
-  
+
   docker run --rm chisel-openssl exec --env=SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt openssl s_client -connect ubuntu.com:443 -brief 2>&1 | grep "Verification: OK"
