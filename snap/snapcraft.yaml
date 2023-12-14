@@ -120,3 +120,5 @@ parts:
     plugin: nil
     stage-snaps:
       - chisel/latest/candidate
+    stage:
+      - bin/chisel
