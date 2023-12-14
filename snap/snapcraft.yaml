@@ -120,5 +120,7 @@ parts:
     plugin: nil
     stage-snaps:
       - chisel/latest/candidate
+    organize: 
+      bin/chisel: libexec/rockcraft/chisel
     stage:
-      - bin/chisel
+      - libexec/rockcraft/chisel
