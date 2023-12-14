@@ -12,3 +12,4 @@ Rockcraft's components, commands and keywords.
 
    rockcraft.yaml
    commands
+   plugins
