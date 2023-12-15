@@ -1,6 +1,11 @@
 {
   // Configuration file for RenovateBot: https://docs.renovatebot.com/configuration-options
   extends: ["config:base"],
+  ignoreDeps: [
+    "pydantic", // Updating this is a project
+    "pydantic-yaml", // Updates with pydantic
+    "mcr.microsoft.com/dotnet/runtime-deps", // This is intentionally dotnet 6
+  ],
   labels: ["dependencies"],  // For convenient searching in GitHub
   pip_requirements: {
     fileMatch: ["^tox.ini$", "(^|/)requirements([\\w-]*)\\.txt$"]
@@ -12,7 +17,7 @@
       groupName: "bugfixes",
       excludePackagePrefixes: ["dev", "lint", "types"],
       matchUpdateTypes: ["patch", "pin", "digest"],
-      prPriority: 3, // Patches should go first!
+      prPriority: 3 // Patches should go first!
       // Uncomment once we're comfortable with automatic merges. automerge: true
     },
     {
@@ -26,7 +31,7 @@
       // GitHub Actions are higher priority to update than most dependencies.
       groupName: "GitHub Actions",
       matchManagers: ["github-actions"],
-      prPriority: 1,
+      prPriority: 1
       // Uncomment once we're comfortable with automatic merges. automerge: true,
     },
     // Everything not in one of these rules gets priority 0 and falls here.
@@ -41,7 +46,7 @@
       ],
       excludePackagePatterns: ["ruff"],
       matchUpdateTypes: ["minor", "patch", "pin", "digest"],
-      prPriority: -1,
+      prPriority: -1
       // Uncomment once we're comfortable with automatic merges.  automerge: true
     },
     {
@@ -50,7 +55,7 @@
       groupSlug: "doc-dependencies",
       matchPackageNames: ["Sphinx"],
       matchPackagePatterns: ["^[Ss]phinx.*$", "^furo$"],
-      matchPackagePrefixes: ["docs"],
+      matchPackagePrefixes: ["docs"]
     },
     {
       // Other major dependencies get deprioritised below minor dev dependencies.
