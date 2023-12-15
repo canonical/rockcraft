@@ -117,12 +117,10 @@ parts:
         - pkg-config
 
   chisel:
-    plugin: go
-    source: https://github.com/canonical/chisel.git
-    source-commit: bd27f8700cd7d2a6b4e0df6b10c3761c83a70485
-    build-environment:
-      - CGO: "0"
-      - CGO_ENABLED: "0"
-      - GOBIN: "${CRAFT_PART_INSTALL}/libexec/rockcraft"
-    build-snaps:
-      - go/1.18/stable
+    plugin: nil
+    stage-snaps:
+      - chisel/latest/candidate
+    organize: 
+      bin/chisel: libexec/rockcraft/chisel
+    stage:
+      - libexec/rockcraft/chisel
