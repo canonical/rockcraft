@@ -6,7 +6,7 @@ If your package doesn't yet have the slice definitions you actually need to
 merged upstream for everyone else to use :ref:`publishslice` ).
 
 **Let's assume you are trying to create a slice definition for installing the
-OpenSSL binary into your ROCK!**
+OpenSSL binary into your rock!**
 
 Make sure the slice definition doesn't exist yet
 ------------------------------------------------
@@ -16,7 +16,7 @@ your needs already exists:
 
 #. Look into the upstream `chisel-releases`_ repository
 #. Switch to the branch corresponding to the desired Ubuntu release for your
-   ROCK
+   rock
 #. Search your package name within the list of slice definitions files
 
    * if you find it, open it and try to find a slice name containing the bits
@@ -98,7 +98,7 @@ Create your slice definition
 ----------------------------
 
 You now have everything needed to actually define the OpenSSL slice that will
-install the content you are looking to have in the final ROCK. Since you are
+install the content you are looking to have in the final rock. Since you are
 looking to install just the OpenSSL binaries from the ``openssl`` package, what
 about naming this new slice **bins**? Let's go for it:
 
@@ -139,7 +139,7 @@ definition that only needs the OpenSSL configurations and not the binaries.
 
 And that's it. This is your brand new slice definitions file, which will allow
 Chisel to install **just** the OpenSSL binaries (and their dependencies) into
-your ROCK! To learn about how to actually use this new slice definition file and
+your rock! To learn about how to actually use this new slice definition file and
 publish it upstream for others to use, please check the following guides.
 
 .. _chisel-releases:

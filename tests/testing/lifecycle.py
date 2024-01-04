@@ -14,7 +14,6 @@
 #  You should have received a copy of the GNU General Public License along
 #  with this program.  If not, see <http://www.gnu.org/licenses/>.
 """Project-related utility functions for running lifecycles."""
-from __future__ import annotations
 
 import pathlib
 from typing import cast
@@ -31,6 +30,7 @@ def run_mocked_lifecycle(
     work_dir: pathlib.Path,
     mocker,
     base_layer_dir: pathlib.Path | None = None,
+    step: str = "stage",
 ) -> RockcraftLifecycleService:
     """Run a project's lifecycle with a mocked base image."""
 
@@ -56,6 +56,6 @@ def run_mocked_lifecycle(
     mocker.patch.object(factory.image, "obtain_image", return_value=image_info)
 
     lifecycle_service = factory.lifecycle
-    lifecycle_service.run("stage")
+    lifecycle_service.run(step)
 
     return cast(RockcraftLifecycleService, lifecycle_service)

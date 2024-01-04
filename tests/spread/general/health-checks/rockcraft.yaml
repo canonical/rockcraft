@@ -1,6 +1,6 @@
 name: healthy-rock
-summary: A ROCK with health checks
-description: A test ROCK with a bunch of different Pebble checks
+summary: A rock with health checks
+description: A test rock with a bunch of different Pebble checks
 license: Apache-2.0
 
 version: latest

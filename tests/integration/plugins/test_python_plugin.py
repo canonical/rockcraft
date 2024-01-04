@@ -70,7 +70,7 @@ def create_python_project(base, extra_part_props=None) -> Project:
 class ExpectedValues:
     """Expected venv Python values for a given Ubuntu host."""
 
-    symlinks: typing.List[str]
+    symlinks: list[str]
     symlink_target: str
     version_dir: str
 

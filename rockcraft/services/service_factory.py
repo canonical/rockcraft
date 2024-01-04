@@ -16,8 +16,6 @@
 
 """Rockcraft Service Factory."""
 
-from __future__ import annotations
-
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
@@ -37,11 +35,11 @@ class RockcraftServiceFactory(ServiceFactory):
     ImageClass: type[services.RockcraftImageService] = services.RockcraftImageService
 
     # These are overrides of default ServiceFactory services
-    LifecycleClass: type[
+    LifecycleClass: type[  # type: ignore[reportIncompatibleVariableOverride]
         services.RockcraftLifecycleService
     ] = services.RockcraftLifecycleService
     PackageClass: type[base_services.PackageService] = services.RockcraftPackageService
-    ProviderClass: type[
+    ProviderClass: type[  # type: ignore[reportIncompatibleVariableOverride]
         services.RockcraftProviderService
     ] = services.RockcraftProviderService
 

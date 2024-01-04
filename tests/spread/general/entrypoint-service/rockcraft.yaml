@@ -1,0 +1,19 @@
+name: entrypoint-service-test
+version: latest
+base: ubuntu@22.04
+summary: A rock with an entrypoint-service field
+description: A rock with an entrypoint-service field
+license: Apache-2.0
+entrypoint-service: test-service
+services:
+  test-service:
+    override: replace
+    command: echo [ foo ]
+    startup: enabled
+
+platforms:
+  amd64:
+
+parts:
+  part1:
+    plugin: nil

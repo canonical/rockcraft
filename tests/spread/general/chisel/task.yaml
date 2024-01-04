@@ -1,4 +1,4 @@
-summary: a test that checks ROCKs created with Chisel slices
+summary: a test that checks rocks created with Chisel slices
 
 execute: |
   run_rockcraft pack

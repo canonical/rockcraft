@@ -16,8 +16,6 @@
 
 """Rockcraft Package service."""
 
-from __future__ import annotations
-
 import datetime
 import pathlib
 import typing
@@ -25,7 +23,7 @@ from typing import cast
 
 from craft_application import AppMetadata, PackageService, models, util
 from craft_cli import emit
-from overrides import override
+from overrides import override  # type: ignore[reportUnknownVariableType]
 
 from rockcraft import errors, oci
 from rockcraft.models import Project
@@ -41,7 +39,7 @@ class RockcraftPackageService(PackageService):
     def __init__(
         self,
         app: AppMetadata,
-        services: RockcraftServiceFactory,
+        services: "RockcraftServiceFactory",
         *,
         project: models.Project,
         platform: str | None,
@@ -70,7 +68,7 @@ class RockcraftPackageService(PackageService):
 
         if platform is None:
             # This should only happen in destructive mode, in which case we
-            # can only pack a single ROCK.
+            # can only pack a single rock.
             build_on = util.get_host_architecture()
             base_build_plan = self._project.get_build_plan()
             build_plan = [
@@ -163,7 +161,9 @@ def _pack(
 
     emit.progress("Adding Pebble entrypoint")
 
-    new_image.set_entrypoint()
+    new_image.set_entrypoint(project.entrypoint_service)
+    if project.services and project.entrypoint_service in project.services:
+        new_image.set_cmd(project.services[project.entrypoint_service].command)
 
     services = project.dict(exclude_none=True, by_alias=True).get("services", {})
 
@@ -200,6 +200,6 @@ def _pack(
     emit.progress("Exporting to OCI archive")
     archive_name = f"{project.name}_{project.version}_{rock_suffix}.rock"
     new_image.to_oci_archive(tag=project.version, filename=archive_name)
-    emit.progress(f"Exported to OCI archive '{archive_name}'", permanent=True)
+    emit.progress(f"Exported to OCI archive '{archive_name}'")
 
     return archive_name

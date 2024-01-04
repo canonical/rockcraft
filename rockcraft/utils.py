@@ -22,15 +22,20 @@ import os
 import pathlib
 import shutil
 import sys
-from collections import namedtuple
 from distutils.util import strtobool  # pylint: disable=deprecated-module
-from typing import Optional
+from typing import NamedTuple
 
 import rockcraft.errors
 
 logger = logging.getLogger(__name__)
 
-OSPlatform = namedtuple("OSPlatform", "system release machine")
+
+class OSPlatform(NamedTuple):
+    """Tuple containing the OS platform information."""
+
+    system: str
+    release: str
+    machine: str
 
 
 def is_managed_mode() -> bool:
@@ -54,7 +59,7 @@ def get_managed_environment_log_path() -> pathlib.Path:
     return pathlib.Path("/tmp/rockcraft.log")
 
 
-def get_managed_environment_snap_channel() -> Optional[str]:
+def get_managed_environment_snap_channel() -> str | None:
     """User-specified channel to use when installing Rockcraft snap from Snap Store.
 
     :returns: Channel string if specified, else None.
@@ -85,7 +90,7 @@ def confirm_with_user(prompt: str, default: bool = False) -> bool:
     return reply[0] == "y" if reply else default
 
 
-def _find_command_path_in_root(root: str, command_name: str) -> Optional[str]:
+def _find_command_path_in_root(root: str, command_name: str) -> str | None:
     """Find the path of a command in a given root path."""
     for bin_directory in (
         "usr/local/sbin",

@@ -26,7 +26,7 @@ execute: |
 
   docker images
 
-  # Check the ROCK's output
+  # Check the rock's output
   docker run --rm big:latest | MATCH "/tmp"
   
   ############################################################################################
@@ -57,7 +57,7 @@ execute: |
   
   ############################################################################################
   # This check documents the fact that we currently don't preserve/observe symlinks between
-  # layers - we only take the base on which the ROCK was built into account. If the behavior
+  # layers - we only take the base on which the rock was built into account. If the behavior
   # changes, this check will break and then can be removed/updated.
   ############################################################################################
   docker run --rm big exec readlink /.rock | NOMATCH fake_rock_dir

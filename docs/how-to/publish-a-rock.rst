@@ -1,4 +1,4 @@
-Publish a ROCK to a registry
+Publish a rock to a registry
 ============================
 
 Prerequisites
@@ -8,10 +8,10 @@ Prerequisites
 - Docker installed (https://docs.docker.com/get-docker/)
 
 
-Push a ROCK to Docker Hub
+Push a rock to Docker Hub
 -------------------------
 
-The output of ``rockcraft pack`` is a ROCK in its oci-archive archive format.
+The output of ``rockcraft pack`` is a rock in its oci-archive archive format.
 
 ..  code-block:: bash
 

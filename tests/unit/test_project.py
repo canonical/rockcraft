@@ -19,17 +19,19 @@ import os
 import subprocess
 import textwrap
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 import pydantic
 import pytest
 import yaml
+from craft_application.errors import CraftValidationError
 from craft_application.models import BuildInfo
+from craft_parts import Features
 from craft_providers.bases import BaseName
 
-from rockcraft.errors import ProjectLoadError, ProjectValidationError
-from rockcraft.models import Project, load_project
-from rockcraft.models.project import INVALID_NAME_MESSAGE, Platform
+from rockcraft.errors import ProjectLoadError
+from rockcraft.models import Project
+from rockcraft.models.project import INVALID_NAME_MESSAGE, Platform, load_project
 from rockcraft.pebble import Service
 
 _ARCH_MAPPING = {"x86": "amd64", "x64": "amd64"}
@@ -73,30 +75,39 @@ platforms:
         build-on: [{BUILD_ON_ARCH}]
         build-for: [{BUILD_ON_ARCH}]
 services:
-    hello:
+    test-service:
         override: replace
-        command: /bin/hello
+        command: echo [ foo ]
         on-failure: restart
 
 parts:
     foo:
         plugin: nil
         overlay-script: ls
+
+entrypoint-service: test-service
 """
 
 
-@pytest.fixture
+@pytest.fixture(autouse=True)
+def enable_overlay_feature():
+    """Enable the overlay feature to make this test module standalone."""
+    Features.reset()
+    Features(enable_overlay=True)
+
+
+@pytest.fixture()
 def yaml_data():
     return ROCKCRAFT_YAML
 
 
-@pytest.fixture
+@pytest.fixture()
 def yaml_loaded_data():
     return yaml.safe_load(ROCKCRAFT_YAML)
 
 
-@pytest.fixture
-def pebble_part() -> Dict[str, Any]:
+@pytest.fixture()
+def pebble_part() -> dict[str, Any]:
     return {
         "pebble": {
             "plugin": "nil",
@@ -105,6 +116,10 @@ def pebble_part() -> Dict[str, Any]:
             "override-prime": "craftctl default\nmkdir -p var/lib/pebble/default/layers",
         }
     }
+
+
+def load_project_yaml(yaml_loaded_data) -> Project:
+    return Project.from_yaml_data(yaml_loaded_data, Path("rockcraft.yaml"))
 
 
 def test_project_unmarshal(check, yaml_loaded_data):
@@ -128,7 +143,7 @@ def test_project_unmarshal(check, yaml_loaded_data):
             continue
         if attr == "services":
             # Services are classes and not Dicts upfront
-            v["hello"] = Service(**v["hello"])
+            v["test-service"] = Service(**v["test-service"])
 
         check.equal(getattr(project, attr.replace("-", "_")), v)
 
@@ -138,7 +153,7 @@ def test_unmarshal_no_repositories(yaml_loaded_data):
 
     project = Project.unmarshal(yaml_loaded_data)
 
-    assert project.package_repositories == []
+    assert project.package_repositories is None
 
 
 def test_unmarshal_undefined_repositories(yaml_loaded_data):
@@ -152,14 +167,14 @@ def test_unmarshal_undefined_repositories(yaml_loaded_data):
 def test_unmarshal_invalid_repositories(yaml_loaded_data):
     yaml_loaded_data["package-repositories"] = [{}]
 
-    with pytest.raises(ProjectValidationError) as error:
-        Project.unmarshal(yaml_loaded_data)
+    with pytest.raises(CraftValidationError) as error:
+        load_project_yaml(yaml_loaded_data)
 
     assert error.value.args[0] == (
         "Bad rockcraft.yaml content:\n"
-        "- field 'type' required in 'package-repositories' configuration\n"
-        "- field 'url' required in 'package-repositories' configuration\n"
-        "- field 'key-id' required in 'package-repositories' configuration"
+        "- field 'type' required in 'package-repositories[0]' configuration\n"
+        "- field 'url' required in 'package-repositories[0]' configuration\n"
+        "- field 'key-id' required in 'package-repositories[0]' configuration"
     )
 
 
@@ -169,17 +184,17 @@ def test_unmarshal_invalid_repositories(yaml_loaded_data):
 )
 def test_project_unmarshal_with_unsupported_fields(unsupported_field, yaml_loaded_data):
     loaded_data_with_unsupported_fields = {**yaml_loaded_data, **unsupported_field}
-    with pytest.raises(ProjectValidationError) as err:
+    with pytest.raises(CraftValidationError) as err:
         _ = Project.unmarshal(loaded_data_with_unsupported_fields)
 
     assert (
-        "All ROCKs have Pebble as their entrypoint, so you must use "
+        "All rocks have Pebble as their entrypoint, so you must use "
         "'services' to define your container application" in str(err.value)
     )
 
 
 @pytest.mark.parametrize(
-    "variable,is_forbidden",
+    ("variable", "is_forbidden"),
     [("$BAR", True), ("BAR_$BAZ", True), ("BAR$", False)],
 )
 def test_forbidden_env_var_interpolation(
@@ -188,7 +203,7 @@ def test_forbidden_env_var_interpolation(
     yaml_loaded_data["environment"]["foo"] = variable
 
     if is_forbidden:
-        with pytest.raises(ProjectValidationError) as err:
+        with pytest.raises(CraftValidationError) as err:
             Project.unmarshal(yaml_loaded_data)
             check.equal(
                 str(err.value), f"String interpolation not allowed for: {variable}"
@@ -210,19 +225,19 @@ def test_project_base(yaml_loaded_data, base):
 def test_project_base_invalid(yaml_loaded_data):
     yaml_loaded_data["base"] = "ubuntu@19.04"
 
-    with pytest.raises(ProjectValidationError) as err:
-        Project.unmarshal(yaml_loaded_data)
+    with pytest.raises(CraftValidationError) as err:
+        load_project_yaml(yaml_loaded_data)
     assert str(err.value) == (
         "Bad rockcraft.yaml content:\n"
-        "- unexpected value; permitted: 'bare', 'ubuntu@20.04', 'ubuntu@22.04' in field 'base'"
+        "- unexpected value; permitted: 'bare', 'ubuntu@20.04', 'ubuntu@22.04' (in field 'base')"
     )
 
 
 def test_project_license_invalid(yaml_loaded_data):
     yaml_loaded_data["license"] = "apache 0.x"
 
-    with pytest.raises(ProjectValidationError) as err:
-        Project.unmarshal(yaml_loaded_data)
+    with pytest.raises(CraftValidationError) as err:
+        load_project_yaml(yaml_loaded_data)
     assert str(err.value) == (
         f"License {yaml_loaded_data['license']} not valid. It must be valid and in SPDX format."
     )
@@ -246,9 +261,51 @@ def test_project_title_empty_invalid_name(yaml_loaded_data):
     """Test that an invalid name doesn't break the validation of the title."""
     yaml_loaded_data.pop("title")
     yaml_loaded_data["name"] = "my@rock"
-    with pytest.raises(ProjectValidationError) as err:
+    with pytest.raises(CraftValidationError) as err:
+        load_project_yaml(yaml_loaded_data)
+    assert "Invalid name for rock" in str(err.value)
+
+
+@pytest.mark.parametrize("entrypoint_service", [""])
+def test_project_entrypoint_service_empty(yaml_loaded_data, entrypoint_service):
+    yaml_loaded_data["entrypoint-service"] = entrypoint_service
+    with pytest.raises(CraftValidationError) as err:
         Project.unmarshal(yaml_loaded_data)
-    assert "Invalid name for ROCK" in str(err.value)
+    assert "The provided entrypoint-service '' is not a valid Pebble service." in str(
+        err.value
+    )
+
+
+@pytest.mark.parametrize("entrypoint_service", ["test-service"])
+def test_project_entrypoint_service_valid(
+    yaml_loaded_data, emitter, entrypoint_service
+):
+    yaml_loaded_data["entrypoint-service"] = entrypoint_service
+    project = Project.unmarshal(yaml_loaded_data)
+    assert project.entrypoint_service == entrypoint_service
+    emitter.assert_message(
+        "Warning: defining an entrypoint-service will result in a rock with "
+        + "an atypical OCI Entrypoint. While that might be acceptable for "
+        + "testing and personal use, it shall require prior approval before "
+        + "submitting to a Canonical registry namespace."
+    )
+
+
+@pytest.mark.parametrize("entrypoint_service", ["baz"])
+def test_project_entrypoint_service_invalid(yaml_loaded_data, entrypoint_service):
+    yaml_loaded_data["entrypoint-service"] = entrypoint_service
+    with pytest.raises(CraftValidationError) as err:
+        Project.unmarshal(yaml_loaded_data)
+    assert (
+        "The provided entrypoint-service 'baz' is not a valid Pebble service."
+        in str(err.value)
+    )
+
+
+def test_project_entrypoint_service_absent(yaml_loaded_data):
+    yaml_loaded_data.pop("entrypoint-service")
+    project = Project.unmarshal(yaml_loaded_data)
+    assert project.entrypoint_service is None
 
 
 def test_project_build_base(yaml_loaded_data):
@@ -260,7 +317,7 @@ def test_project_build_base(yaml_loaded_data):
 
 
 @pytest.mark.parametrize(
-    ["base", "build_base", "expected_base", "expected_build_base"],
+    ("base", "build_base", "expected_base", "expected_build_base"),
     [
         ("ubuntu:22.04", None, "ubuntu@22.04", "ubuntu@22.04"),
         ("ubuntu:22.04", "ubuntu:20.04", "ubuntu@22.04", "ubuntu@20.04"),
@@ -308,13 +365,13 @@ def test_project_platform_invalid():
     # build-for must be only 1 element (NOTE: this may change)
     mock_platform = {"build-on": ["amd64"], "build-for": ["amd64", "arm64"]}
     assert "multiple target architectures" in load_platform(
-        mock_platform, ProjectValidationError
+        mock_platform, CraftValidationError
     )
 
     # If build_for is provided, then build_on must also be
     mock_platform = {"build-for": ["arm64"]}
     assert "'build_for' expects 'build_on' to also be provided." in load_platform(
-        mock_platform, ProjectValidationError
+        mock_platform, CraftValidationError
     )
 
 
@@ -322,7 +379,7 @@ def test_project_all_platforms_invalid(yaml_loaded_data):
     def reload_project_platforms(new_platforms=None):
         if new_platforms:
             yaml_loaded_data["platforms"] = mock_platforms
-        with pytest.raises(ProjectValidationError) as err:
+        with pytest.raises(CraftValidationError) as err:
             Project.unmarshal(yaml_loaded_data)
 
         return str(err.value)
@@ -350,7 +407,7 @@ def test_project_all_platforms_invalid(yaml_loaded_data):
     mock_platforms = {
         "mock": {"build-on": ["arm64a", "arm64"], "build-for": ["noarch"]}
     }
-    assert "build ROCK for target architecture noarch" in reload_project_platforms(
+    assert "build rock for target architecture noarch" in reload_project_platforms(
         mock_platforms
     )
 
@@ -369,11 +426,28 @@ def test_project_name_valid(yaml_loaded_data, valid_name):
 def test_project_name_invalid(yaml_loaded_data, invalid_name):
     yaml_loaded_data["name"] = invalid_name
 
-    with pytest.raises(ProjectValidationError) as err:
-        Project.unmarshal(yaml_loaded_data)
+    with pytest.raises(CraftValidationError) as err:
+        load_project_yaml(yaml_loaded_data)
 
-    expected_message = f"{INVALID_NAME_MESSAGE} in field 'name'"
+    expected_message = f"{INVALID_NAME_MESSAGE} (in field 'name')"
     assert expected_message in str(err.value)
+
+
+def test_project_version_invalid(yaml_loaded_data):
+    yaml_loaded_data["version"] = "invalid_version"
+
+    with pytest.raises(CraftValidationError) as err:
+        load_project_yaml(yaml_loaded_data)
+
+    # We don't want to be completely tied to the formatting of the message here,
+    # because it comes from craft-application and might change slightly. We just
+    # want to ensure that the message refers to the version.
+    expected_contents = "Invalid version: Valid versions consist of"
+    expected_suffix = "(in field 'version')"
+
+    message = str(err.value)
+    assert expected_contents in message
+    assert message.endswith(expected_suffix)
 
 
 @pytest.mark.parametrize(
@@ -382,8 +456,8 @@ def test_project_name_invalid(yaml_loaded_data, invalid_name):
 def test_project_missing_field(yaml_loaded_data, field):
     del yaml_loaded_data[field]
 
-    with pytest.raises(ProjectValidationError) as err:
-        Project.unmarshal(yaml_loaded_data)
+    with pytest.raises(CraftValidationError) as err:
+        load_project_yaml(yaml_loaded_data)
     assert str(err.value) == (
         "Bad rockcraft.yaml content:\n"
         f"- field '{field}' required in top-level configuration"
@@ -393,8 +467,8 @@ def test_project_missing_field(yaml_loaded_data, field):
 def test_project_extra_field(yaml_loaded_data):
     yaml_loaded_data["extra"] = "invalid"
 
-    with pytest.raises(ProjectValidationError) as err:
-        Project.unmarshal(yaml_loaded_data)
+    with pytest.raises(CraftValidationError) as err:
+        load_project_yaml(yaml_loaded_data)
     assert str(err.value) == (
         "Bad rockcraft.yaml content:\n"
         "- extra field 'extra' not permitted in top-level configuration"
@@ -404,8 +478,8 @@ def test_project_extra_field(yaml_loaded_data):
 def test_project_parts_validation(yaml_loaded_data):
     yaml_loaded_data["parts"]["foo"]["invalid"] = True
 
-    with pytest.raises(ProjectValidationError) as err:
-        Project.unmarshal(yaml_loaded_data)
+    with pytest.raises(CraftValidationError) as err:
+        load_project_yaml(yaml_loaded_data)
     assert str(err.value) == (
         "Bad rockcraft.yaml content:\n"
         "- extra field 'invalid' not permitted in 'parts.foo' configuration"
@@ -413,7 +487,7 @@ def test_project_parts_validation(yaml_loaded_data):
 
 
 @pytest.mark.parametrize(
-    "packages,script",
+    ("packages", "script"),
     [
         (["pkg"], None),
         ([], "ls"),
@@ -428,7 +502,7 @@ def test_project_bare_overlay(yaml_loaded_data, packages, script):
     foo_part["overlay-packages"] = packages
     foo_part["overlay-script"] = script
 
-    with pytest.raises(ProjectValidationError) as err:
+    with pytest.raises(CraftValidationError) as err:
         Project.unmarshal(yaml_loaded_data)
     assert str(err.value) == (
         'Overlays cannot be used with "bare" bases (there is no system to overlay).'
@@ -483,8 +557,8 @@ def test_project_unmarshal_existing_pebble(tmp_path):
         encoding="utf-8",
     )
 
-    with pytest.raises(ProjectValidationError):
-        Project.unmarshal(load_project(rockcraft_file))
+    with pytest.raises(CraftValidationError):
+        load_project(rockcraft_file)
 
 
 def test_project_load_error():
@@ -552,10 +626,11 @@ environment:
   FOO: value3
   BAR: value2
 services:
-  hello:
+  test-service:
     override: replace
-    command: /bin/hello
+    command: echo [ foo ]
     on-failure: restart
+entrypoint-service: test-service
 package-repositories:
 - type: apt
   ppa: ppa/ppa
@@ -568,7 +643,7 @@ def test_project_yaml(yaml_loaded_data):
 
 
 @pytest.mark.parametrize(
-    ["platforms", "expected_build_infos"],
+    ("platforms", "expected_build_infos"),
     [
         (
             {

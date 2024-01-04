@@ -1,4 +1,4 @@
-How to install your own package slice
+How to install a custom package slice
 *************************************
 
 When a specific package slice is not available on the `upstream Chisel
@@ -50,7 +50,7 @@ If you wanted to test it with Chisel alone, you could now simply run
 You should end up with a folder named "my-custom-openssl-fs" containing a few
 folders, amongst which there would be ``./usr/bin/openssl``.
 
-**To install the custom package slice into a ROCK though**, you need to use
+**To install the custom package slice into a rock though**, you need to use
 Rockcraft!
 
 Start by initialising a new Rockcraft project:
@@ -79,7 +79,7 @@ install from a custom Chisel release. If the desired slice definitions are
 already upstream, then you can simply use ``stage-packages``, as demonstrated
 in :ref:`here <chisel-example>`.
 
-Build your ROCK with:
+Build your rock with:
 
 .. literalinclude:: code/install-slice/task.yaml
     :language: bash
@@ -159,5 +159,5 @@ The output of the Docker command will be OpenSSL's default help message:
     <... many more lines of output>
 
 
-And that's it! You've now built your own ROCK from a custom Chisel release.
+And that's it! You've now built your own rock from a custom Chisel release.
 Next step: share your slice definitions file with others!

@@ -22,7 +22,7 @@ name: environment-test
 version: 2.0
 base: ubuntu:20.04
 summary: Environment
-description: A ROCK with an environment but no real purpose
+description: A rock with an environment but no real purpose
 license: Apache-2.0
 environment:
   FOO: bar

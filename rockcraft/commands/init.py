@@ -23,7 +23,7 @@ from typing import TYPE_CHECKING
 
 from craft_application.commands import AppCommand
 from craft_cli import emit
-from overrides import overrides
+from overrides import overrides  # type: ignore[reportUnknownVariableType]
 
 from rockcraft import errors
 from rockcraft.models.project import INVALID_NAME_MESSAGE, NAME_REGEX

@@ -1,9 +1,9 @@
 name: my-node-app
 base: ubuntu@22.04
 version: '1.0'
-summary: A ROCK that bundles a simple nodejs app
+summary: A rock that bundles a simple nodejs app
 description: |
-  This ROCK bundles a recent node runtime to serve a simple "hello-world" app.
+  This rock bundles a recent node runtime to serve a simple "hello-world" app.
 license: GPL-3.0
 platforms:
   amd64:

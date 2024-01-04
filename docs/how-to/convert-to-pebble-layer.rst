@@ -1,9 +1,9 @@
-How to convert a popular entrypoint to a Pebble layer
-*****************************************************
+How to convert an entrypoint to a Pebble layer
+***********************************************
 
 This guide will show you how to take an existing Docker image entrypoint
 and convert it into a Pebble layer, aka the list of one or more services
-which is defined in ``rockcraft.yaml`` and then taken by the ROCK's
+which is defined in ``rockcraft.yaml`` and then taken by the rock's
 Pebble entrypoint.
 
 
@@ -32,7 +32,7 @@ is composed of metadata, checks and services. The latter is present in
 <https://canonical-rockcraft.readthedocs-hosted.com/en/latest/reference/
 rockcraft.yaml/#format-specification>`_
 and it represents the services which are loaded by the Pebble entrypoint when
-deploying a ROCK.
+deploying a rock.
 
 Given the reference entrypoint, this guide's goal is to create two services:
 one for ``nginx`` and another for ``nginx-debug``. The following ``services``
@@ -46,11 +46,11 @@ This is defining two separate Pebble services which are disabled by default
 at startup, have the same environment variable, but are executed with
 different commands (``nginx`` and ``nginx-debug``).
 
-Build the ROCK
+Build the rock
 --------------
 
 Copy the above snippet and incorporate it into the ``rockcraft.yaml`` file
-which will be used to build your ROCK, as shown below:
+which will be used to build your rock, as shown below:
 
 .. literalinclude:: code/convert-to-pebble-layer/rockcraft.yaml
     :language: yaml
@@ -67,7 +67,7 @@ GPG key ID as the one used in `the Dockerfile
 
 **NOTE**: to add custom configuration files, you can use the ``dump`` plugin.
 
-Now, build the final custom NGINX ROCK with:
+Now, build the final custom NGINX rock with:
 
 .. literalinclude:: code/convert-to-pebble-layer/task.yaml
     :language: bash
@@ -108,7 +108,7 @@ You should see something like this:
     Executed parts lifecycle
     Exported to OCI archive 'custom-nginx-rock_latest_amd64.rock'
 
-Then copy the resulting ROCK (from the OCI archive format) to the Docker daemon
+Then copy the resulting rock (from the OCI archive format) to the Docker daemon
 via:
 
 .. literalinclude:: code/convert-to-pebble-layer/task.yaml

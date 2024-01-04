@@ -20,22 +20,19 @@ import hashlib
 import json
 import logging
 import os
+import shlex
 import shutil
 import subprocess
-import tarfile
 import tempfile
-from collections import defaultdict
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, DefaultDict, Dict, List, Optional, Tuple
+from typing import Any
 
 import yaml
 from craft_cli import emit
-from craft_parts.executor.collisions import paths_collide
-from craft_parts.overlays import overlays
 
-from rockcraft import errors
+from rockcraft import errors, layers
 from rockcraft.architectures import SUPPORTED_ARCHS
 from rockcraft.pebble import Pebble
 from rockcraft.utils import get_snap_command_path
@@ -70,7 +67,7 @@ class Image:
         *,
         image_dir: Path,
         arch: str,
-    ) -> Tuple["Image", str]:
+    ) -> tuple["Image", str]:
         """Obtain an image from a docker registry.
 
         The image is fetched from the registry at ``REGISTRY_URL``.
@@ -118,7 +115,7 @@ class Image:
         image_name: str,
         image_dir: Path,
         arch: str,
-    ) -> Tuple["Image", str]:
+    ) -> tuple["Image", str]:
         """Create a new OCI image out of thin air.
 
         :param image_name: The image to initiate, in ``name@tag`` format.
@@ -196,7 +193,7 @@ class Image:
         self,
         tag: str,
         new_layer_dir: Path,
-        base_layer_dir: Optional[Path] = None,
+        base_layer_dir: Path | None = None,
     ) -> "Image":
         """Add a layer to the image.
 
@@ -211,7 +208,7 @@ class Image:
         temp_file.unlink(missing_ok=True)
 
         try:
-            _archive_layer(new_layer_dir, temp_file, base_layer_dir)
+            layers.archive_layer(new_layer_dir, temp_file, base_layer_dir)
             _add_layer_into_image(image_path, temp_file, **{"--tag": tag})
         finally:
             temp_file.unlink(missing_ok=True)
@@ -227,11 +224,11 @@ class Image:
         username: str,
         uid: int,
     ) -> None:
-        """Create a new ROCK user.
+        """Create a new rock user.
 
         :param prime_dir: Path to the user-defined parts' primed content.
         :param base_layer_dir: Path to the base layer's root filesystem.
-        :param tag: The ROCK's image tag.
+        :param tag: The rock's image tag.
         :param username: Username to be created. Same as group name.
         :param uid: UID of the username to be created. Same as GID.
         """
@@ -298,13 +295,14 @@ class Image:
             emit.progress(f"Adding user {username}:{uid} with group {username}:{uid}")
             self.add_layer(tag, Path(tmpfs))
 
-    def stat(self) -> Dict[Any, Any]:
+    def stat(self) -> dict[str, Any]:
         """Obtain the image statistics, as reported by "umoci stat --json"."""
         image_path = self.path / self.image_name
-        output = _process_run(
+        output: bytes = _process_run(
             ["umoci", "stat", "--json", "--image", str(image_path)]
         ).stdout
-        return json.loads(output)
+        result: dict[str, Any] = json.loads(output)
+        return result
 
     @staticmethod
     def digest(source_image: str) -> bytes:
@@ -355,23 +353,45 @@ class Image:
         _config_image(image_path, params)
         emit.progress(f"Default user set to {user}")
 
-    def set_entrypoint(self) -> None:
-        """Set the OCI image entrypoint. It is always Pebble and CMD is null."""
+    def set_entrypoint(self, entrypoint_service: str | None = None) -> None:
+        """Set the OCI image entrypoint. It is always Pebble."""
         emit.progress("Configuring entrypoint...")
         image_path = self.path / self.image_name
         entrypoint = [f"/{Pebble.PEBBLE_BINARY_PATH}", "enter", "--verbose"]
+        if entrypoint_service:
+            entrypoint.extend(["--args", entrypoint_service])
         params = ["--clear=config.entrypoint"]
         for entry in entrypoint:
             params.extend(["--config.entrypoint", entry])
+        params.extend(["--clear=config.cmd"])
         _config_image(image_path, params)
-        # Clear the CMD
-        _config_image(image_path, ["--clear=config.cmd"])
         emit.progress(f"Entrypoint set to {entrypoint}")
+
+    def set_cmd(self, command: str | None = None) -> None:
+        """Set the OCI image CMD."""
+        emit.progress("Configuring CMD...")
+        image_path = self.path / self.image_name
+        cmd_params = ["--clear=config.cmd"]
+        command_sh_args = shlex.split(command or "")
+        try:
+            opt_args = command_sh_args[
+                command_sh_args.index("[") + 1 : command_sh_args.index("]")
+            ]
+        except ValueError:
+            emit.debug(
+                f"The entrypoint-service command '{command}' has no default "
+                + "arguments. CMD won't be set."
+            )
+            return
+        for arg in opt_args:
+            cmd_params.extend(["--config.cmd", arg])
+        _config_image(image_path, cmd_params)
+        emit.progress(f"CMD set to {opt_args}")
 
     def set_pebble_layer(
         self,
-        services: Dict[str, Any],
-        checks: Dict[str, Any],
+        services: dict[str, Any],
+        checks: dict[str, Any],
         name: str,
         tag: str,
         summary: str,
@@ -382,14 +402,14 @@ class Image:
 
         :param services: The Pebble services
         :param checks: The Pebble checks
-        :param name: The name of the ROCK
-        :param tag: The ROCK's image tag
+        :param name: The name of the rock
+        :param tag: The rock's image tag
         :param summary: The summary for the Pebble layer
         :param description: The description for the Pebble layer
         :param base_layer_dir: Path to the base layer's root filesystem
         """
         # pylint: disable=too-many-arguments
-        pebble_layer_content: Dict[str, Any] = {
+        pebble_layer_content: dict[str, Any] = {
             "summary": summary,
             "description": description,
         }
@@ -414,7 +434,7 @@ class Image:
             emit.progress("Writing new Pebble layer file")
             self.add_layer(tag, tmpfs_path)
 
-    def set_environment(self, env: Dict[str, str]) -> None:
+    def set_environment(self, env: dict[str, str]) -> None:
         """Set the OCI image environment.
 
         :param env: A dictionary mapping environment variables to
@@ -422,8 +442,8 @@ class Image:
         """
         emit.progress("Configuring OCI environment...")
         image_path = self.path / self.image_name
-        params = []
-        env_list = []
+        params: list[str] = []
+        env_list: list[str] = []
 
         for name, value in env.items():
             env_item = f"{name}={value}"
@@ -432,15 +452,15 @@ class Image:
         _config_image(image_path, params)
         emit.progress(f"Environment set to {env_list}")
 
-    def set_control_data(self, metadata: Dict[str, Any]) -> None:
-        """Create and populate the ROCK's control data folder.
+    def set_control_data(self, metadata: dict[str, Any]) -> None:
+        """Create and populate the rock's control data folder.
 
-        :param metadata: content for the ROCK's metadata YAML file
+        :param metadata: content for the rock's metadata YAML file
         """
-        emit.progress("Setting the ROCK's Control Data")
+        emit.progress("Setting the rock's control data")
         local_control_data_path = Path(tempfile.mkdtemp())
 
-        # the ROCK control data structure starts with the folder ".rock"
+        # the rock control data structure starts with the folder ".rock"
         control_data_rock_folder = local_control_data_path / ".rock"
         control_data_rock_folder.mkdir()
 
@@ -453,7 +473,7 @@ class Image:
         temp_tar_file.unlink(missing_ok=True)
 
         try:
-            _archive_layer(local_control_data_path, temp_tar_file)
+            layers.archive_layer(local_control_data_path, temp_tar_file)
             _add_layer_into_image(self.path / self.image_name, temp_tar_file)
         finally:
             temp_tar_file.unlink(missing_ok=True)
@@ -461,7 +481,7 @@ class Image:
         emit.progress("Control data written")
         shutil.rmtree(local_control_data_path)
 
-    def set_annotations(self, annotations: Dict[str, Any]) -> None:
+    def set_annotations(self, annotations: dict[str, Any]) -> None:
         """Add the given annotations to the final image.
 
         :param annotations: A dictionary with each annotation/label and its value
@@ -471,7 +491,7 @@ class Image:
         label_params = ["--clear=config.labels"]
         annotation_params = ["--clear=manifest.annotations"]
 
-        labels_list = []
+        labels_list: list[str] = []
         for label_key, label_value in annotations.items():
             label_item = f"{label_key}={label_value}"
             labels_list.append(label_item)
@@ -488,7 +508,7 @@ def _copy_image(
     source: str,
     destination: str,
     *system_params: str,
-    copy_params: Optional[List[str]] = None,
+    copy_params: list[str] | None = None,
 ) -> None:
     """Transfer images from source to destination.
 
@@ -511,7 +531,7 @@ def _copy_image(
     )
 
 
-def _config_image(image_path: Path, params: List[str]) -> None:
+def _config_image(image_path: Path, params: list[str]) -> None:
     """Configure the OCI image."""
     _process_run(["umoci", "config", "--image", str(image_path)] + params)
 
@@ -533,236 +553,6 @@ def _add_layer_into_image(
         str(archived_content),
     ] + [arg_val for k, v in kwargs.items() for arg_val in [k, v]]
     _process_run(cmd + ["--history.created_by", " ".join(cmd)])
-
-
-def _archive_layer(
-    new_layer_dir: Path,
-    temp_tar_file: Path,
-    base_layer_dir: Optional[Path] = None,
-) -> None:
-    """Prepare new OCI layer by archiving its content into tar file.
-
-    :param new_layer_dir: path to the content to be archived into a layer
-    :param temp_tar_file: path to the temporary tar file holding the archived content
-    :param base_layer_dir: optional path to the filesystem containing the extracted
-        base below this new layer. Used to preserve lower-level directory symlinks,
-        like the ones from Debian/Ubuntu's usrmerge.
-    """
-    candidates = _gather_layer_paths(new_layer_dir, base_layer_dir)
-    layer_paths = _merge_layer_paths(candidates)
-
-    with tarfile.open(temp_tar_file, mode="w") as tar_file:
-        # Iterate on sorted keys, so that the directories are always listed before
-        # any files that they contain (otherwise tools like Docker might choke on
-        # the layer tarball).
-        for arcname in sorted(layer_paths):
-            filepath = layer_paths[arcname]
-            emit.debug(f"Adding to layer: {filepath} as '{arcname}'")
-            tar_file.add(filepath, arcname=arcname, recursive=False)
-
-
-def _gather_layer_paths(
-    new_layer_dir: Path, base_layer_dir: Optional[Path] = None
-) -> Dict[str, List[Path]]:
-    """Map paths in ``new_layer_dir`` to names in a layer file.
-
-    See ``_archive_layer()`` for the parameters.
-
-    :return:
-      A dict where the value is a path (file or dir) in ``new_layer_dir`` and the
-      key is the name that this path should have in the tarball for the layer.
-    """
-    # pylint: disable=too-many-locals
-
-    class LayerLinker:
-        """Helper to keep track of paths between the upper and lower layer."""
-
-        upper_prefix: str = ""
-        lower_prefix: str = ""
-
-        def reset(self, upper_prefix: str, lower_prefix: str) -> None:
-            """Set a correspondence between a path in the upper layer and a path the lower layer.
-
-            For example, if in the lower layer `bin` is a symlink to `usr/bin`,
-            calling ``reset("bin", "usr/bin")`` will let this LayerLinker convert
-            upper layer paths in "bin" to "usr/bin" when calling ``get_target_path()``.
-            """
-            self.upper_prefix = upper_prefix
-            self.lower_prefix = lower_prefix
-
-        def get_target_path(self, path: Path) -> Path:
-            """Get the path that should be used when adding ``path`` to the archive.
-
-            :return:
-                If ``path`` starts with ``upper_prefix``, the returned Path is ``path``
-                with that prefix replaced with ``lower_prefix``. Otherwise, the return
-                is ``path`` unchanged.
-            """
-            if not self.upper_prefix:
-                return path
-
-            str_path = str(path)
-            if str_path.startswith(self.upper_prefix):
-                return Path(str_path.replace(self.upper_prefix, self.lower_prefix, 1))
-            return path
-
-    layer_linker = LayerLinker()
-    result: DefaultDict[str, List[Path]] = defaultdict(list)
-    for dirpath, subdirs, filenames in os.walk(new_layer_dir):
-        # Sort `subdirs` in-place, to ensure that `os.walk()` iterates on
-        # them in sorted order.
-        subdirs.sort()
-
-        upper_subpath = Path(dirpath)
-
-        # The path with `new_layer_dir` as the "root"
-        relative_path = upper_subpath.relative_to(new_layer_dir)
-
-        # Handle adding an entry for the directory. We skip this IF:
-        # - The directory is the root (to skip a spurious "." entry), OR
-        # - The directory is NOT an opaque OCI entry AND
-        # - The directory's exists on ``base_layer_dir`` as a symlink to another
-        #   directory (like in usrmerge).
-        if upper_subpath != new_layer_dir:
-            upper_is_not_opaque_dir = not overlays.is_oci_opaque_dir(upper_subpath)
-            lower_symlink_target = _symlink_target_in_base_layer(
-                relative_path, base_layer_dir
-            )
-            lower_is_symlink = lower_symlink_target is not None
-
-            if upper_is_not_opaque_dir and lower_is_symlink:
-                emit.debug(
-                    f"Skipping {upper_subpath} because it exists as a symlink on the lower layer"
-                )
-                layer_linker.reset(str(relative_path), str(lower_symlink_target))
-            else:
-                lower_path = layer_linker.get_target_path(relative_path)
-                result[f"{lower_path}"].append(upper_subpath)
-
-        # Add each file in the directory.
-        for name in filenames:
-            archive_path = layer_linker.get_target_path(relative_path / name)
-            result[f"{archive_path}"].append(upper_subpath / name)
-
-        # Add each subdir in the directory if it's a symlink, because the os.walk()
-        # call will not enter them.
-        for subdir in subdirs:
-            upper_subdir_path = upper_subpath / subdir
-            if upper_subdir_path.is_symlink():
-                archive_path = layer_linker.get_target_path(relative_path / subdir)
-                result[f"{archive_path}"].append(upper_subdir_path)
-
-    return result
-
-
-def _merge_layer_paths(candidate_paths: Dict[str, List[Path]]) -> Dict[str, Path]:
-    """Merge ``candidate_paths`` into a single path per name.
-
-    This function handles the case where multiple paths refer to the same name
-    in the new layer; if all paths are directories with the same ownership and
-    permissions then a single one is used (they are all equivalent). All other
-    cases (directories with different attributes, files) will raise an error.
-
-    :return:
-        A dict where the values are Paths and the keys are the names those paths
-        correspond to in the new layer.
-    """
-    result: Dict[str, Path] = {}
-
-    for name, paths in candidate_paths.items():
-        if len(paths) == 1:
-            result[name] = paths[0]
-            continue
-
-        if _all_compatible_directories(paths):
-            emit.debug(
-                f"Multiple directories pointing to '{name}': {', '.join(map(str, paths))}"
-            )
-            result[name] = paths[0]
-            continue
-
-        if _all_compatible_files(paths):
-            emit.debug(
-                f"Multiple files pointing to '{name}': {', '.join(map(str, paths))}"
-            )
-            result[name] = paths[0]
-            continue
-
-        # We currently don't try to do any kind of path conflict resolution; if
-        # the paths aren't all directories with the same ownership and permissions,
-        # bail out with an error.
-        raise errors.LayerArchivingError(
-            f"Conflicting paths pointing to '{name}': {', '.join(map(str, paths))}"
-        )
-
-    return result
-
-
-def _symlink_target_in_base_layer(
-    relative_path: Path, base_layer_dir: Optional[Path]
-) -> Optional[Path]:
-    """If `relative_path` is a dir symlink in `base_layer_dir`, return its 'target'.
-
-    This function checks if `relative_path` exists in the base `base_layer_dir` as
-    a symbolic link to another directory; if it does, the function will return the
-    symlink target. In all other cases, the function returns None.
-
-    :param relative_path: The subpath to check.
-    :param base_layer_dir: The directory with the contents of the base layer.
-    """
-    if base_layer_dir is None:
-        return None
-
-    lower_path = base_layer_dir / relative_path
-
-    if lower_path.is_symlink():
-        return Path(os.readlink(lower_path))
-
-    return None
-
-
-def _all_compatible_directories(paths: List[Path]) -> bool:
-    """Whether ``paths`` contains only directories with the same ownership and permissions."""
-    if not all(p.is_dir() for p in paths):
-        return False
-
-    if len(paths) < 2:
-        return True
-
-    def stat_props(stat: os.stat_result) -> Tuple[int, int, int]:
-        return stat.st_uid, stat.st_gid, stat.st_mode
-
-    first_stat = stat_props(paths[0].stat())
-
-    for other_path in paths[1:]:
-        other_stat = stat_props(other_path.stat())
-        if first_stat != other_stat:
-            emit.debug(
-                (
-                    f"Path attributes differ for '{paths[0]}' and '{other_path}': "
-                    f"{first_stat} vs {other_stat}"
-                )
-            )
-            return False
-
-    return True
-
-
-def _all_compatible_files(paths: List[Path]) -> bool:
-    """Whether ``paths`` contains only files with the same attributes and contents."""
-    if not all(p.is_file() for p in paths):
-        return False
-
-    if len(paths) < 2:
-        return True
-
-    first_file = paths[0]
-
-    for other_file in paths[1:]:
-        if paths_collide(str(first_file), str(other_file)):
-            return False
-
-    return True
 
 
 def _inject_architecture_variant(image_path: Path, variant: str) -> None:
@@ -811,7 +601,7 @@ def _inject_architecture_variant(image_path: Path, variant: str) -> None:
     tl_index_path.write_bytes(json.dumps(tl_index).encode("utf-8"))
 
 
-def _process_run(command: List[str], **kwargs: Any) -> subprocess.CompletedProcess:
+def _process_run(command: list[str], **kwargs: Any) -> subprocess.CompletedProcess[Any]:
     """Run a command and handle its output."""
     if not Path(command[0]).is_absolute():
         command[0] = get_snap_command_path(command[0])
@@ -824,7 +614,7 @@ def _process_run(command: List[str], **kwargs: Any) -> subprocess.CompletedProce
             **kwargs,
             capture_output=True,
             check=True,
-            universal_newlines=True,
+            text=True,
         )
     except subprocess.CalledProcessError as err:
         msg = f"Failed to copy image: {err!s}"
