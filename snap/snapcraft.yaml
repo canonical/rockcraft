@@ -1,6 +1,6 @@
 name: rockcraft
 base: core22
-summary: A craft like experience to create ROCKS
+summary: A craft like experience to create rocks
 description: |
     Rockcraft aims to take the same primitives used in Charmcraft and Snapcraft
     to create OCI images.
@@ -72,6 +72,7 @@ parts:
       version="$(python3 setup.py --version)"
       ${SNAP}/libexec/snapcraft/craftctl set version="$version"
       [ -n "$(echo $version | grep "post")" ] && grade=devel || grade=stable
+      ${SNAP}/libexec/snapcraft/craftctl set grade="${grade}"
 
       sed -i -e '1 s|^#!/.*|#!/snap/rockcraft/current/bin/python -E|' $CRAFT_PART_INSTALL/bin/craftctl
     after:
@@ -116,12 +117,10 @@ parts:
         - pkg-config
 
   chisel:
-    plugin: go
-    source: https://github.com/canonical/chisel.git
-    source-commit: bd27f8700cd7d2a6b4e0df6b10c3761c83a70485
-    build-environment:
-      - CGO: "0"
-      - CGO_ENABLED: "0"
-      - GOBIN: "${CRAFT_PART_INSTALL}/libexec/rockcraft"
-    build-snaps:
-      - go/1.18/stable
+    plugin: nil
+    stage-snaps:
+      - chisel/latest/candidate
+    organize: 
+      bin/chisel: libexec/rockcraft/chisel
+    stage:
+      - libexec/rockcraft/chisel

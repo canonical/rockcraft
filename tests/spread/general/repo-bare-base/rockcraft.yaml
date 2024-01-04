@@ -1,7 +1,7 @@
 name: apt-repo-static-test
 version: latest
-summary: A ROCK that pulls in a package from an external PPA
-description: A ROCK that pulls in a package from an external PPA
+summary: A rock that pulls in a package from an external PPA
+description: A rock that pulls in a package from an external PPA
 license: Apache-2.0
 base: bare
 build-base: ubuntu@20.04

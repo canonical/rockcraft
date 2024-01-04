@@ -4,8 +4,8 @@
 # main task.yaml).
 
 version: '0.1'
-summary: A ROCK that bundles a Python project.
-description: A ROCK that bundles a Python project.
+summary: A rock that bundles a Python project.
+description: A rock that bundles a Python project.
 license: GPL-3.0
 platforms:
   amd64:

@@ -15,6 +15,6 @@ execute: |
   docker images usrmerge:latest
 
   ############################################################################################
-  # check that usr/lib/x86_64-linux-gnu/rock-libexpat.so.1 was successfully packed into the ROCK
+  # check that usr/lib/x86_64-linux-gnu/rock-libexpat.so.1 was successfully packed into the rock
   ############################################################################################
   docker run --rm usrmerge exec ls /usr/lib/x86_64-linux-gnu/rock-libexpat.so.1

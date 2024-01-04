@@ -1,5 +1,5 @@
 ************************************************
-How to contribute to the Rockcraft documentation
+How to contribute to Rockcraft documentation
 ************************************************
 
 Tools and markup
