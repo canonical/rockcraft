@@ -20,8 +20,6 @@ adapt the steps to fit your specific requirements.
    Cut existing slices with Chisel <use-chisel>
    Create a package slice for Chisel <create-slice>
    Install a custom package slice <install-slice>
-   Release a slice definitions file <publish-slice>
-   Convert an entrypoint to a Pebble layer <convert-to-pebble-layer.rst>
    Publish a slice definition <publish-slice>
    Convert an entrypoint to a Pebble layer <convert-to-pebble-layer>
    Publish a rock to a registry <publish-a-rock.rst>
