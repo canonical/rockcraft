@@ -18,10 +18,9 @@
 
 import logging
 from textwrap import dedent
-from typing import List, Optional
 
 from craft_parts.plugins import python_plugin
-from overrides import override
+from overrides import override  # type: ignore[reportUnknownVariableType]
 
 logger = logging.getLogger(__name__)
 
@@ -60,7 +59,7 @@ class PythonPlugin(python_plugin.PythonPlugin):
     """A Python plugin for Rockcraft.
 
     This plugin extends Craft-parts' vanilla Python plugin to properly
-    set the Python interpreter according to the ROCK's base. Specifically:
+    set the Python interpreter according to the rock's base. Specifically:
 
     - If the base is ubuntu, the venv-created symlinks in bin/ are removed
       altogether. This is because of the usrmerge; when the layer is added on
@@ -76,10 +75,10 @@ class PythonPlugin(python_plugin.PythonPlugin):
     @override
     def _should_remove_symlinks(self) -> bool:
         """Overridden because for ubuntu bases we must always remove the symlinks."""
-        return self._part_info.base != "bare"
+        return bool(self._part_info.base != "bare")
 
     @override
-    def _get_system_python_interpreter(self) -> Optional[str]:
+    def _get_system_python_interpreter(self) -> str | None:
         """Overridden because Python must always be provided by the parts."""
         return None
 
@@ -89,9 +88,9 @@ class PythonPlugin(python_plugin.PythonPlugin):
         return "#!/bin/${PARTS_PYTHON_INTERPRETER}"
 
     @override
-    def get_build_commands(self) -> List[str]:
+    def get_build_commands(self) -> list[str]:
         """Overridden to add a sitecustomize.py ."""
-        commands = []
+        commands: list[str] = []
 
         # Detect whether PARTS_PYTHON_INTERPRETER is a full path (not supported)
         commands.append(
@@ -109,7 +108,7 @@ class PythonPlugin(python_plugin.PythonPlugin):
         commands.extend(super().get_build_commands())
 
         # Add a "sitecustomize.py" module to handle the very common case of the
-        # ROCK's interpreter being called as "python3"; in this case, because of
+        # rock's interpreter being called as "python3"; in this case, because of
         # the default $PATH, "/usr/bin/python3" ends up being called and that is
         # *not* the venv-aware executable. This sitecustomize adds the location
         # of the pip-installed packages.

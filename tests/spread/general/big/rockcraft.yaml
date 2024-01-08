@@ -1,8 +1,8 @@
 name: big
 version: latest
-summary: A big ROCK to test many features
+summary: A big rock to test many features
 description: |
-  A big ROCK whose purpose is to test many features while only paying the "setup"
+  A big rock whose purpose is to test many features while only paying the "setup"
   and "teardown" price once. Feel free to add to this file and to "task.yaml", 
   adding references to issues/PRs where appropriate.
 license: Apache-2.0

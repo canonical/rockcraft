@@ -22,7 +22,7 @@ from pathlib import Path
 from typing import Any
 
 from craft_application import Application, AppMetadata, util
-from overrides import override
+from overrides import override  # type: ignore[reportUnknownVariableType]
 
 from rockcraft import models
 from rockcraft.models import project

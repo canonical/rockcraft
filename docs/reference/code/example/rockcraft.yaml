@@ -1,9 +1,9 @@
 name: hello
 title: Hello World
-summary: An Hello World ROCK
+summary: An Hello World rock
 description: |
   This is just an example of a Rockcraft project
-  for a Hello World ROCK.
+  for a Hello World rock.
 version: latest
 base: bare
 build-base: ubuntu@22.04

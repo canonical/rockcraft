@@ -1,7 +1,7 @@
 name: usrmerge
 version: latest
-summary: A ROCK that tests usrmerge handling.
-description: A ROCK that tests usrmerge handling
+summary: A rock that tests usrmerge handling.
+description: A rock that tests usrmerge handling
 license: Apache-2.0
 base: ubuntu@22.04
 platforms:

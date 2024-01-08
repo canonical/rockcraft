@@ -1,4 +1,4 @@
-Create a "Hello World" ROCK
+Create a "Hello World" rock
 ***************************
 
 Prerequisites
@@ -30,17 +30,17 @@ save it as ``rockcraft.yaml``:
 .. literalinclude:: code/hello-world/rockcraft.yaml
     :language: yaml
 
-This file instructs Rockcraft to build a ROCK that **only** has the ``hello``
+This file instructs Rockcraft to build a rock that **only** has the ``hello``
 binaries package slice (and its dependencies) inside, using
 :ref:`chisel_explanation`. For more information about the ``parts``
 section, check :ref:`ref_parts`. The remaining YAML fields correspond
-to metadata that help define and describe the ROCK. For more
+to metadata that help define and describe the rock. For more
 information about all available fields check :doc:`/reference/rockcraft.yaml`.
 
-Pack the ROCK with Rockcraft
+Pack the rock with Rockcraft
 ----------------------------
 
-To build the ROCK, run:
+To build the rock, run:
 
 .. literalinclude:: code/hello-world/task.yaml
     :language: bash
@@ -71,14 +71,14 @@ The output should look as follows:
     Exported to OCI archive 'hello_1.0_amd64.rock'
 
 At the end of the process, a file named ``hello_1.0_amd64.rock`` should be
-present in the current directory. That's your ROCK, in oci-archive format
+present in the current directory. That's your rock, in oci-archive format
 (a tarball).
 
 
-Run the ROCK in Docker
+Run the rock in Docker
 ----------------------
 
-First, import the recently created ROCK into Docker:
+First, import the recently created rock into Docker:
 
 .. literalinclude:: code/hello-world/task.yaml
     :language: bash
@@ -86,7 +86,7 @@ First, import the recently created ROCK into Docker:
     :end-before: [docs:skopeo-copy-end]
     :dedent: 2
 
-Now run the ``hello`` command from the ROCK:
+Now run the ``hello`` command from the rock:
 
 .. literalinclude:: code/hello-world/task.yaml
     :language: bash

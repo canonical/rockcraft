@@ -18,13 +18,13 @@
 
 import copy
 from pathlib import Path
-from typing import Any, Dict, List, Set, cast
+from typing import Any, cast
 
 from .extension import Extension
 from .registry import get_extension_class
 
 
-def apply_extensions(project_root: Path, yaml_data: Dict[str, Any]) -> Dict[str, Any]:
+def apply_extensions(project_root: Path, yaml_data: dict[str, Any]) -> dict[str, Any]:
     """Apply all extensions.
 
     :param dict yaml_data: Loaded, unprocessed rockcraft.yaml
@@ -32,7 +32,7 @@ def apply_extensions(project_root: Path, yaml_data: Dict[str, Any]) -> Dict[str,
     """
     # Don't modify the dict passed in
     yaml_data = copy.deepcopy(yaml_data)
-    declared_extensions: List[str] = cast(List[str], yaml_data.get("extensions", []))
+    declared_extensions: list[str] = cast(list[str], yaml_data.get("extensions", []))
     if not declared_extensions:
         return yaml_data
 
@@ -50,7 +50,7 @@ def apply_extensions(project_root: Path, yaml_data: Dict[str, Any]) -> Dict[str,
 
 
 def _apply_extension(
-    yaml_data: Dict[str, Any],
+    yaml_data: dict[str, Any],
     extension: Extension,
 ) -> None:
     # Apply the root components of the extension (if any)
@@ -65,8 +65,8 @@ def _apply_extension(
     if "parts" not in yaml_data:
         yaml_data["parts"] = {}
 
-    parts = yaml_data["parts"]
-    for _, part_definition in parts.items():
+    parts: dict[str, Any] = yaml_data["parts"]
+    for part_definition in parts.values():
         for property_name, property_value in part_extension.items():
             part_definition[property_name] = _apply_extension_property(
                 part_definition.get(property_name), property_value
@@ -79,7 +79,10 @@ def _apply_extension(
         parts[part_name] = parts_snippet[part_name]
 
 
-def _apply_extension_property(existing_property: Any, extension_property: Any) -> Any:
+def _apply_extension_property(
+    existing_property: list[Any] | dict[str, Any] | None,
+    extension_property: list[Any] | dict[str, Any],
+) -> list[Any] | dict[str, Any] | None:
     if existing_property:
         # If the property is not scalar, merge them
         if isinstance(existing_property, list) and isinstance(extension_property, list):
@@ -102,10 +105,10 @@ def _apply_extension_property(existing_property: Any, extension_property: Any) -
     return extension_property
 
 
-def _remove_list_duplicates(seq: List[str]) -> List[str]:
+def _remove_list_duplicates(seq: list[str]) -> list[str]:
     """De-dupe string list maintaining ordering."""
-    seen: Set[str] = set()
-    deduped: List[str] = []
+    seen: set[str] = set()
+    deduped: list[str] = []
 
     for item in seq:
         if item not in seen:

@@ -1,9 +1,9 @@
 name: custom-nginx-rock
 base: "ubuntu@22.04"
 version: latest
-summary: An NGINX ROCK
+summary: An NGINX rock
 description: |
-    A ROCK equivalent of the official NGINX Docker image from Docker Hub.
+    A rock equivalent of the official NGINX Docker image from Docker Hub.
 license: Apache-2.0
 platforms:
     amd64:

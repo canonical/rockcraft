@@ -20,9 +20,9 @@ from pathlib import Path
 import pydantic
 import pytest
 import yaml
+from craft_application.errors import CraftValidationError
 
 import tests
-from rockcraft.models.project import ProjectValidationError
 from rockcraft.pebble import Check, ExecCheck, HttpCheck, Pebble, Service, TcpCheck
 
 
@@ -40,7 +40,12 @@ class TestPebble:
         )
 
     @pytest.mark.parametrize(
-        "existing_layers,expected_new_layer_prefix,layer_content,expected_layer_yaml",
+        (
+            "existing_layers",
+            "expected_new_layer_prefix",
+            "layer_content",
+            "expected_layer_yaml",
+        ),
         [
             # Test Case 1:
             # Without any previous layers, the default layer prefix is 001.
@@ -60,20 +65,20 @@ class TestPebble:
                 },
                 (
                     "summary: mock summary"
-                    "{n}"
+                    f"{os.linesep}"
                     "description: mock description"
-                    "{n}"
+                    f"{os.linesep}"
                     "services:"
-                    "{n}"
+                    f"{os.linesep}"
                     "  mockServiceOne:"
-                    "{n}"
+                    f"{os.linesep}"
                     "    override: replace"
-                    "{n}"
+                    f"{os.linesep}"
                     "    command: foo"
-                    "{n}"
+                    f"{os.linesep}"
                     "    on-success: shutdown"
-                    "{n}"
-                ).format(n=os.linesep),
+                    f"{os.linesep}"
+                ),
             ),
             # Test Case 2:
             # With existing layers, the default layer prefix is an increment.
@@ -91,24 +96,24 @@ class TestPebble:
                 },
                 (
                     "summary: mock summary"
-                    "{n}"
+                    f"{os.linesep}"
                     "description: mock description"
-                    "{n}"
+                    f"{os.linesep}"
                     "services:"
-                    "{n}"
+                    f"{os.linesep}"
                     "  mockServiceOne:"
-                    "{n}"
+                    f"{os.linesep}"
                     "    override: replace"
-                    "{n}"
+                    f"{os.linesep}"
                     "    command: foo"
-                    "{n}"
+                    f"{os.linesep}"
                     "  mockServiceTwo:"
-                    "{n}"
+                    f"{os.linesep}"
                     "    override: merge"
-                    "{n}"
+                    f"{os.linesep}"
                     "    command: bar"
-                    "{n}"
-                ).format(n=os.linesep),
+                    f"{os.linesep}"
+                ),
             ),
             # Test Case 3:
             # If there are more files that are not layers, they are ignored.
@@ -124,18 +129,18 @@ class TestPebble:
                 },
                 (
                     "summary: mock summary"
-                    "{n}"
+                    f"{os.linesep}"
                     "description: mock description"
-                    "{n}"
+                    f"{os.linesep}"
                     "services:"
-                    "{n}"
+                    f"{os.linesep}"
                     "  mockServiceOne:"
-                    "{n}"
+                    f"{os.linesep}"
                     "    override: replace"
-                    "{n}"
+                    f"{os.linesep}"
                     "    command: foo"
-                    "{n}"
-                ).format(n=os.linesep),
+                    f"{os.linesep}"
+                ),
             ),
         ],
     )
@@ -221,7 +226,7 @@ class TestPebble:
         _ = Service(**service)
 
     @pytest.mark.parametrize(
-        "bad_service,error",
+        ("bad_service", "error"),
         [
             # Missing fields
             ({}, r"^2 validation errors[\s\S]*override[\s\S]*command"),
@@ -274,7 +279,7 @@ class TestPebble:
             _ = Service(**bad_service)
 
     @pytest.mark.parametrize(
-        "bad_http_check,error",
+        ("bad_http_check", "error"),
         [
             # Missing fields
             ({}, r"^1 validation error[\s\S]*url[\s\S]"),
@@ -295,7 +300,7 @@ class TestPebble:
             _ = HttpCheck(**bad_http_check)
 
     @pytest.mark.parametrize(
-        "bad_tcp_check,error",
+        ("bad_tcp_check", "error"),
         [
             # Missing fields
             ({}, r"^1 validation error[\s\S]*port[\s\S]"),
@@ -316,7 +321,7 @@ class TestPebble:
             _ = TcpCheck(**bad_tcp_check)
 
     @pytest.mark.parametrize(
-        "bad_exec_check,error",
+        ("bad_exec_check", "error"),
         [
             # Missing fields
             ({}, r"^1 validation error[\s\S]*command[\s\S]"),
@@ -363,12 +368,12 @@ class TestPebble:
         _ = Check(override="merge", exec={"command": "foo cmd"})  # pyright: ignore
 
     @pytest.mark.parametrize(
-        "bad_check,exception,error",
+        ("bad_check", "exception", "error"),
         [
             # Missing check type fields
             (
                 {},
-                ProjectValidationError,
+                CraftValidationError,
                 r"Must specify exactly one of http, tcp, exec for each check.",
             ),
             # Missing mandatory fields
@@ -380,7 +385,7 @@ class TestPebble:
             # Too many check types
             (
                 {"override": "merge", "exec": {"command": "foo"}, "tcp": {"port": 1}},
-                ProjectValidationError,
+                CraftValidationError,
                 r"Multiple check types specified ([\s\S]*). "
                 r"Each check must have exactly one type.",
             ),

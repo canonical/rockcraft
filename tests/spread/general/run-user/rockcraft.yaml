@@ -1,7 +1,7 @@
 name: run-user-test
 version: latest
-summary: A ROCK with a nonroot user
-description: A ROCK that has a nonroot default OCI user
+summary: A rock with a nonroot user
+description: A rock that has a nonroot default OCI user
 license: Apache-2.0
 base: ubuntu@22.04
 run-user: _daemon_

@@ -44,7 +44,7 @@ verify that the latter have no high/critical vulnerabilities in them!
   :width: 95%
   :alt: vulnerabilities in Official vs Canonical-maintained OCI images
 
-So this is where the motivation for a new generation of OCI images (aka ROCKs)
+So this is where the motivation for a new generation of OCI images (aka rocks)
 starts - the need for more secure container images! And while this need might
 carry the biggest weight in the container users' demands, other values come into
 play when selecting the best container image, such as:
@@ -56,14 +56,14 @@ play when selecting the best container image, such as:
 
 You can find these values and their relevance in `this report`_.
 
-This brings us to the problem statement behind ROCKs:
+This brings us to the problem statement behind rocks:
 
     *How might we redesign secure container images \
     for Kubernetes developers and application maintainers, \
     considering the Top 10 Docker images \
     are full of vulnerabilities, except Ubuntu?*
 
-A ROCK is:
+A rock is:
 
 * **secure** and **stable**: based on the latest and greatest Ubuntu releases;
 * **OCI-compliant**: compatible with all the popular container management tools
@@ -76,8 +76,8 @@ A ROCK is:
 Do I need to use Rockcraft?
 ---------------------------
 
-If you want to build a proper ROCK, yes, we'd recommend you do. This is not to
-say you wouldn't be able to build ROCK-like container images with your own
+If you want to build a proper rock, yes, we'd recommend you do. This is not to
+say you wouldn't be able to build rock-like container images with your own
 tools, but Rockcraft has been developed precisely to offer an easy way to build
 production-grade container images.
 

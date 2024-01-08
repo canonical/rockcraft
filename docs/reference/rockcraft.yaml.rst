@@ -4,6 +4,8 @@
 rockcraft.yaml
 **************
 
+.. include:: rock_parts/toc.rst
+
 A Rockcraft project is defined in a YAML file named ``rockcraft.yaml``
 at the root of the project tree in the filesystem.
 
@@ -21,7 +23,7 @@ Format specification
 
 **Required**: Yes
 
-The name of the ROCK. This value must conform with Pebble's format for layer
+The name of the rock. This value must conform with Pebble's format for layer
 files, meaning that the ``name``:
 
 - must start with a lowercase letter [a-z];
@@ -36,7 +38,7 @@ files, meaning that the ``name``:
 
 **Required**: No
 
-The human-readable title of the ROCK. If omitted, defaults to ``name``.
+The human-readable title of the rock. If omitted, defaults to ``name``.
 
 ``summary``
 -----------
@@ -45,7 +47,7 @@ The human-readable title of the ROCK. If omitted, defaults to ``name``.
 
 **Required**: Yes
 
-A short summary describing the ROCK.
+A short summary describing the rock.
 
 ``description``
 ---------------
@@ -54,7 +56,7 @@ A short summary describing the ROCK.
 
 **Required**: Yes
 
-A longer, possibly multi-line description of the ROCK.
+A longer, possibly multi-line description of the rock.
 
 ``version``
 -----------
@@ -63,7 +65,7 @@ A longer, possibly multi-line description of the ROCK.
 
 **Required**: Yes
 
-The ROCK version, used to tag the OCI image and name the ROCK file.
+The rock version, used to tag the OCI image and name the rock file.
 
 ``base``
 --------
@@ -72,9 +74,9 @@ The ROCK version, used to tag the OCI image and name the ROCK file.
 
 **Required**: Yes
 
-The base system image that the ROCK's contents will be layered on. This is also
+The base system image that the rock's contents will be layered on. This is also
 the system that will be mounted and made available when using Overlays. The
-special value ``bare`` means that the ROCK will have no base system at all,
+special value ``bare`` means that the rock will have no base system at all,
 which is typically used with static binaries or
 :ref:`Chisel slices <chisel_explanation>`.
 
@@ -89,9 +91,9 @@ which is typically used with static binaries or
 
 **Required**: Yes, if ``base`` is ``bare``
 
-The system and version that will be used during the ROCK's build, but not
-included in the final ROCK itself. It comprises the set of tools and libraries
-that Rockcraft will use when building the ROCK's contents. This field is
+The system and version that will be used during the rock's build, but not
+included in the final rock itself. It comprises the set of tools and libraries
+that Rockcraft will use when building the rock's contents. This field is
 mandatory if ``base`` is ``bare``, but otherwise it is optional and defaults to
 the value of ``base``.
 
@@ -106,7 +108,7 @@ the value of ``base``.
 
 **Required**: Yes
 
-The license of the software packaged inside the ROCK. This must match the SPDX
+The license of the software packaged inside the rock. This must match the SPDX
 format, but is case insensitive (e.g. both ``MIT`` and ``mit`` are valid).
 
 ``run-user``
@@ -147,6 +149,23 @@ specification syntax exactly, with each entry defining a Pebble service. For
 each service, the ``override`` and ``command`` fields are mandatory, but all
 others are optional.
 
+``entrypoint-service``
+------------------------
+
+**Type**: string
+
+**Required**: No
+
+The optional name of the Pebble service to serve as the OCI entrypoint. If set,
+this makes Rockcraft extend ``["/bin/pebble", "enter", "--verbose"]`` with
+``["--args", "<serviceName>"]``. The command of the Pebble service must
+contain an optional argument that will become the OCI CMD.
+
+.. warning::
+   This option must only be used in cases where the targeted deployment
+   environment has unalterable assumptions about the container image's
+   entrypoint.
+
 ``checks``
 ------------
 
@@ -159,6 +178,7 @@ when they fail. It uses Pebble's layer specification syntax, with each
 entry corresponding to a check. Each check can be one of three types:
 ``http``, ``tcp`` or ``exec``.
 
+
 ``platforms``
 -------------
 
@@ -166,7 +186,7 @@ entry corresponding to a check. Each check can be one of three types:
 
 **Required**: Yes
 
-The set of architecture-specific ROCKs to be built. Supported architectures are:
+The set of architecture-specific rocks to be built. Supported architectures are:
 ``amd64``, ``arm64``, ``armhf``, ``i386``, ``ppc64el``, ``riscv64`` and ``s390x``.
 
 Entries in the ``platforms`` dict can be free-form strings, or the name of a
@@ -185,7 +205,7 @@ supported architecture (in Debian format).
 **Required**: Yes, if ``build-for`` is specified *or* if ``<entry>`` is not a
 supported architecture name.
 
-Host architectures where the ROCK can be built. Defaults to ``<entry>`` if that
+Host architectures where the rock can be built. Defaults to ``<entry>`` if that
 is a valid, supported architecture name.
 
 ``platforms.<entry>.build-for``
@@ -195,7 +215,7 @@ is a valid, supported architecture name.
 
 **Required**: Yes, if ``<entry>`` is not a supported architecture name.
 
-Target architecture the ROCK will be built for. Defaults to ``<entry>`` that
+Target architecture the rock will be built for. Defaults to ``<entry>`` that
 is a valid, supported architecture name.
 
 .. note::
@@ -210,13 +230,13 @@ is a valid, supported architecture name.
 
 **Required**: Yes
 
-The set of parts that compose the ROCK's contents
+The set of parts that compose the rock's contents
 (see :ref:`Parts <ref_parts>`).
 
 
 .. note::
    The fields ``entrypoint``, ``cmd`` and ``env`` are not supported in
-   Rockcraft. All ROCKs have Pebble as their entrypoint, and thus you must use
+   Rockcraft. All rocks have Pebble as their entrypoint, and thus you must use
    ``services`` to define your container application.
 
 ``extensions``
