@@ -16,14 +16,15 @@
 
 """Creation of schema for rockcraft.yaml."""
 import json
+import os
 import sys
 from typing import TYPE_CHECKING
 
 from craft_parts import Part
 
-sys.path.append("rockcraft")
+script_dir = os.path.dirname(os.path.realpath(__file__))
+sys.path.append(os.path.join(script_dir, "../../"))
 
-from rockcraft import errors  # noqa: E402
 from rockcraft.models.project import Project  # noqa: E402
 
 if TYPE_CHECKING:

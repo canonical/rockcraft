@@ -1,3 +1,0 @@
-craft_application>=1.2.1
-craft_cli>=2.5.0
-craft_parts>=1.26.1
