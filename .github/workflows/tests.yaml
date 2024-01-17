@@ -105,4 +105,3 @@ jobs:
       - name: Run integration tests
         run: |
           make test-integrations
-

@@ -27,45 +27,45 @@ parts:
   rockcraft-libs:
     plugin: nil
     build-attributes:
-        - enable-patchelf
+      - enable-patchelf
     stage-packages:
-        - apt
-        - apt-transport-https
-        - apt-utils
-        - binutils
-        - gpg
-        - gpgv
-        - libpython3-stdlib
-        - libpython3.10-stdlib
-        - libpython3.10-minimal
-        - python3-pip
-        - python3-setuptools
-        - python3-wheel
-        - python3-venv
-        - python3-minimal
-        - python3-distutils
-        - python3-pkg-resources
-        - python3.10-minimal
-        - fuse-overlayfs
+      - apt
+      - apt-transport-https
+      - apt-utils
+      - binutils
+      - gpg
+      - gpgv
+      - libpython3-stdlib
+      - libpython3.10-stdlib
+      - libpython3.10-minimal
+      - python3-pip
+      - python3-setuptools
+      - python3-wheel
+      - python3-venv
+      - python3-minimal
+      - python3-distutils
+      - python3-pkg-resources
+      - python3.10-minimal
+      - fuse-overlayfs
     organize:
-        "usr/bin/fuse-overlayfs": "libexec/rockcraft/fuse-overlayfs"
+      "usr/bin/fuse-overlayfs": "libexec/rockcraft/fuse-overlayfs"
 
   rockcraft:
     source: .
     plugin: python
     python-packages:
-        - wheel
-        - pip
-        - setuptools
+      - wheel
+      - pip
+      - setuptools
     python-requirements:
-        - requirements-jammy.txt
-        - requirements.txt
+      - requirements-jammy.txt
+      - requirements.txt
     build-attributes:
-        - enable-patchelf
+      - enable-patchelf
     build-environment:
-        - "CFLAGS": "$(pkg-config python-3.10 yaml-0.1 --cflags)"
+      - "CFLAGS": "$(pkg-config python-3.10 yaml-0.1 --cflags)"
     organize:
-        bin/craftctl: libexec/rockcraft/craftctl
+      bin/craftctl: libexec/rockcraft/craftctl
     override-build: |
       ${SNAP}/libexec/snapcraft/craftctl default
 
@@ -83,14 +83,14 @@ parts:
     source: https://github.com/opencontainers/umoci.git
     source-tag: v0.4.7
     make-parameters:
-        - umoci.static
+      - umoci.static
     override-build: |
-        make umoci.static
-        mkdir "$CRAFT_PART_INSTALL"/bin
-        install -m755 umoci.static "$CRAFT_PART_INSTALL"/bin/umoci
+      make umoci.static
+      mkdir "$CRAFT_PART_INSTALL"/bin
+      install -m755 umoci.static "$CRAFT_PART_INSTALL"/bin/umoci
     build-packages:
-        - golang-go
-        - make
+      - golang-go
+      - make
 
   skopeo:
     plugin: nil
@@ -101,20 +101,20 @@ parts:
         mkdir "$CRAFT_PART_INSTALL"/bin
         install -m755 skopeo "$CRAFT_PART_INSTALL"/bin/skopeo
     stage-packages:
-        - libgpgme11
-        - libassuan0
-        - libbtrfs0
-        - libdevmapper1.02.1
+      - libgpgme11
+      - libassuan0
+      - libbtrfs0
+      - libdevmapper1.02.1
     build-attributes:
-        - enable-patchelf
+      - enable-patchelf
     build-snaps:
-        - go/1.17/stable
+      - go/1.17/stable
     build-packages:
-        - libgpgme-dev
-        - libassuan-dev
-        - libbtrfs-dev
-        - libdevmapper-dev
-        - pkg-config
+      - libgpgme-dev
+      - libassuan-dev
+      - libbtrfs-dev
+      - libdevmapper-dev
+      - pkg-config
 
   chisel:
     plugin: nil

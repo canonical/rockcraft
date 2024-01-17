@@ -5,8 +5,8 @@ summary: A rock with an invalid name
 description: A rock with an invalid name
 license: GPL-3.0
 platforms:
-    amd64:
+  amd64:
 
 parts:
-    my-part:
-        plugin: nil
+  my-part:
+    plugin: nil

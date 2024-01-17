@@ -6,7 +6,7 @@ summary: A project using Python 3.6
 description: A project using Python 3.6
 license: GPL-3.0
 platforms:
-    amd64:
+  amd64:
 
 package-repositories:
   - type: apt
@@ -14,9 +14,9 @@ package-repositories:
     priority: always
 
 parts:
-    my-part:
-        plugin: python
-        source: src
-        stage-packages: [python3.6-venv]
-        build-environment:
-            - PARTS_PYTHON_INTERPRETER: python3.6
+  my-part:
+    plugin: python
+    source: src
+    stage-packages: [python3.6-venv]
+    build-environment:
+      - PARTS_PYTHON_INTERPRETER: python3.6

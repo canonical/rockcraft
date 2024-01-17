@@ -1,8 +1,8 @@
 ###########################################
 # IMPORTANT
 # Comments matter!
-# The docs use the wrapping comments as 
-# markers for including said instructions 
+# The docs use the wrapping comments as
+# markers for including said instructions
 # as snippets in the docs.
 ###########################################
 summary: test the "Build the docs" guide
@@ -16,7 +16,7 @@ execute: |
   # [docs:install-deps]
   make installdocs
   # [docs:install-deps-end]
-    
+
   # [docs:make-docs]
   make docs  # the home page can be found at docs/_build/html/index.html
   # [docs:make-docs-end]

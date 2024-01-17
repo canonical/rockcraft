@@ -25,7 +25,7 @@ parts:
     stage-packages:
       - base-files_base
       - dotnet-runtime-6.0_libs
-    
+
     # Based on requirement R4, create the symbolic link
     override-prime: |
       craftctl default

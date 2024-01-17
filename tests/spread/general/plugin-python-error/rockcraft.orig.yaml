@@ -6,10 +6,10 @@ summary: An invalid Python plugin project
 description: A project that uses the Python plugin but doesn't include Python
 license: GPL-3.0
 platforms:
-    amd64:
+  amd64:
 
 parts:
-    my-part:
-        plugin: python
-        source: .
-        build-packages: [python3-pip]
+  my-part:
+    plugin: python
+    source: .
+    build-packages: [python3-pip]

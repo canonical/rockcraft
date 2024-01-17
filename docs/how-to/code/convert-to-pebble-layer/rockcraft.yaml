@@ -3,16 +3,16 @@ base: "ubuntu@22.04"
 version: latest
 summary: An NGINX rock
 description: |
-    A rock equivalent of the official NGINX Docker image from Docker Hub.
+  A rock equivalent of the official NGINX Docker image from Docker Hub.
 license: Apache-2.0
 platforms:
-    amd64:
+  amd64:
 
 package-repositories:
   - type: apt
     url: https://nginx.org/packages/mainline/ubuntu
     key-id: 573BFD6B3D8FBC641079A6ABABF5BD827BD9BF62
-    suites: 
+    suites:
       - jammy
     components:
       - nginx
@@ -49,4 +49,3 @@ services:
     environment:
       TZ: UTC
     on-failure: shutdown
-    
