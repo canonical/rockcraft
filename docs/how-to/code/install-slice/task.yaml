@@ -1,13 +1,17 @@
 ###########################################
 # IMPORTANT
 # Comments matter!
-# The docs use the wrapping comments as 
-# markers for including said instructions 
+# The docs use the wrapping comments as
+# markers for including said instructions
 # as snippets in the docs.
 ###########################################
 summary: test the "Install a custom package slice" guide
 
 execute: |
+  # Both the local chisel-releases and root path must be in $HOME for the 
+  # chisel snap to be able to access them.
+  pushd $HOME
+
   # [docs:clone-chisel-releases]
   # Let's assume we are working with Ubuntu 22.04
   git clone -b ubuntu-22.04 https://github.com/canonical/chisel-releases/

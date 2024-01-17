@@ -1,8 +1,8 @@
 ###########################################
 # IMPORTANT
 # Comments matter!
-# The docs use the wrapping comments as 
-# markers for including said instructions 
+# The docs use the wrapping comments as
+# markers for including said instructions
 # as snippets in the docs.
 ###########################################
 summary: test the "Create a package slice for Chisel" guide
@@ -12,6 +12,9 @@ execute: |
   apt show openssl
   # [docs:apt-show-openssl-end]
 
+  # Both the local chisel-releases and root path must be in $HOME for the 
+  # chisel snap to be able to access them.
+  pushd $HOME
   git clone -b ubuntu-22.04 https://github.com/canonical/chisel-releases
   cp openssl.yaml chisel-releases/slices
 
@@ -19,6 +22,6 @@ execute: |
 
   mkdir out
 
-  chisel cut --release ./chisel-releases --root ./out openssl_bins
+  chisel cut --release chisel-releases --root out openssl_bins
 
   rm -fr chisel-releases/ out/
