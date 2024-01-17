@@ -12,17 +12,13 @@ execute: |
   apt show openssl
   # [docs:apt-show-openssl-end]
 
-  git clone https://github.com/canonical/chisel
   git clone -b ubuntu-22.04 https://github.com/canonical/chisel-releases
   cp openssl.yaml chisel-releases/slices
 
-  pushd chisel
-  git reset --hard f0bff5a30dfdcb400b3c4efe85962ad8ff3ca2ba
-  go build ./cmd/chisel
-  popd
+  snap install chisel --channel=latest/candidate
 
   mkdir out
 
-  ./chisel/chisel cut --release ./chisel-releases --root ./out openssl_bins
+  chisel cut --release ./chisel-releases --root ./out openssl_bins
 
-  rm -fr chisel-releases/ chisel/ out/
+  rm -fr chisel-releases/ out/
