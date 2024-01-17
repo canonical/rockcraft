@@ -14,14 +14,19 @@ execute: |
 
   # Both the local chisel-releases and root path must be in $HOME for the 
   # chisel snap to be able to access them.
-  pushd $HOME
-  git clone -b ubuntu-22.04 https://github.com/canonical/chisel-releases
-  cp openssl.yaml chisel-releases/slices
+  local_release="${HOME}/chisel-releases_create-slice"
+  local_root="${HOME}/out_create-slice"
+  rm -fr "${local_release}" "${local_root}"
+
+  git clone -b ubuntu-22.04 https://github.com/canonical/chisel-releases \
+    "${local_release}"
+  mkdir "${local_root}"
+
+  cp openssl.yaml "${local_release}/slices"
 
   snap install chisel --channel=latest/candidate
 
-  mkdir out
+  chisel cut --release "${local_release}" --root "${local_root}" openssl_bins
 
-  chisel cut --release chisel-releases --root out openssl_bins
-
-  rm -fr chisel-releases/ out/
+restore: |
+  rm -fr "${HOME}/*_create-slice"
