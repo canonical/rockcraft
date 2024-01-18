@@ -18,6 +18,7 @@ import typing
 from dataclasses import dataclass
 from pathlib import Path
 
+import craft_parts.plugins
 import pytest
 from craft_application import errors
 from craft_cli import EmitterMode, emit
@@ -44,7 +45,7 @@ def setup_python_test(monkeypatch):
     # Keep craft-parts from trying to refresh apt's cache, so that we can run
     # this test as regular users.
     monkeypatch.setenv("CRAFT_PARTS_PACKAGE_REFRESH", "0")
-    plugins.register()
+    craft_parts.plugins.register({"python": plugins.PythonPlugin})
 
 
 def create_python_project(base, extra_part_props=None) -> Project:

@@ -19,10 +19,12 @@
 from typing import Any
 
 from craft_application import Application, AppMetadata, util
+from craft_parts.plugins.plugins import PluginType
 from overrides import override  # type: ignore[reportUnknownVariableType]
 
 from rockcraft import models
 from rockcraft.models import project
+from rockcraft.plugins.python_plugin import PythonPlugin
 
 APP_METADATA = AppMetadata(
     name="rockcraft",
@@ -34,6 +36,11 @@ APP_METADATA = AppMetadata(
 
 class Rockcraft(Application):
     """Rockcraft application definition."""
+
+    @override
+    def _get_app_plugins(self) -> dict[str, PluginType]:
+        """Register Rockcraft plugins."""
+        return {"python": PythonPlugin}
 
     @override
     def _extra_yaml_transform(self, yaml_data: dict[str, Any]) -> dict[str, Any]:

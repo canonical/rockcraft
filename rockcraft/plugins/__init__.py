@@ -17,6 +17,5 @@
 """Rockcraft-specific plugins."""
 
 from .python_plugin import PythonPlugin
-from .register import register
 
-__all__ = ["PythonPlugin", "register"]
+__all__ = ["PythonPlugin"]
