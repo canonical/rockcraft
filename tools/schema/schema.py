@@ -18,36 +18,37 @@
 import json
 import os
 import sys
-from typing import TYPE_CHECKING
 
+import yaml
 from craft_parts import Part
 
 script_dir = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.join(script_dir, "../../"))
 
+from rockcraft import cli  # noqa: E402
 from rockcraft.models.project import Project  # noqa: E402
-
-if TYPE_CHECKING:
-    import argparse
 
 
 def generate_project_schema() -> str:
     """Generate the schema."""
-    project = Project(
-        name="placeholder",
-        version="1.0",
-        summary="summary",
-        description="description",
-        base="ubuntu@22.04",
-        parts=[],
-        license="MIT",
-        platforms={"amd64": None},
+    # Initiate a project with all required fields
+    project = Project.unmarshal(
+        yaml.safe_load(
+            # pylint: disable=W0212
+            cli.commands.InitCommand._INIT_TEMPLATE_YAML
+        )
     )
-    project_schema = project.schema(by_alias=True)
 
+    # generate the project schema
+    project_schema = project.schema(by_alias=True)
+    # override the generic title "Project"
+    project_schema["title"] = "Rockcraft project"
+
+    # project.schema() will define the `parts` field as an `object`
+    # so we need to manually add the schema for parts by running
+    # schema() on part.spec and add the outcome project schema's definitions
     part = Part(name="placeholder", data={})
     part_schema = part.spec.schema(by_alias=True)
-
     project_schema["properties"]["parts"]["additionalProperties"] = {
         "$ref": "#/definitions/Part"
     }

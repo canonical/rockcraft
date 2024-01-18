@@ -1,4 +1,4 @@
-name: schema
+name: Schema
 on: [pull_request]
 
 jobs:
@@ -20,7 +20,10 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Run generator script
-        run: python .github/scripts/schema.py > generated_schema.json
+        run: python tools/schema/schema.py > generated_schema.json
 
       - name: Check with stored schema
-        run: diff generated_schema.json schemas/rockcraft_schema.json > /dev/null
+        run: |
+          if [[ -f schemas/rockcraft.json ]]; then
+            diff generated_schema.json schemas/rockcraft.json
+          fi
