@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+#
 # -*- Mode:Python; indent-tabs-mode:nil; tab-width:4 -*-
 #
 # Copyright 2024 Canonical Ltd.

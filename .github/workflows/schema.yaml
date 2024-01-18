@@ -20,10 +20,9 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Run generator script
-        run: python tools/schema/schema.py > generated_schema.json
+        run: ./tools/schema/schema.py > generated_schema.json
 
       - name: Check with stored schema
         run: |
-          if [[ -f schemas/rockcraft.json ]]; then
-            diff generated_schema.json schemas/rockcraft.json
-          fi
+          test -f schema/rockcraft.json &&
+          diff generated_schema.json schema/rockcraft.json
