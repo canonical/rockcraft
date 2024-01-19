@@ -41,10 +41,17 @@ def generate_project_schema() -> str:
         )
     )
 
+    # initiate the schema with the $id and $schema fields
+    initial_schema = {
+        "$id": "https://github.com/canonical/rockcraft/blob/main/schema/rockcraft.json",
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+    }
     # generate the project schema
     project_schema = project.schema(by_alias=True)
     # override the generic title "Project"
     project_schema["title"] = "Rockcraft project"
+    # combine both schemas
+    project_schema = {**initial_schema, **project_schema}
 
     # project.schema() will define the `parts` field as an `object`
     # so we need to manually add the schema for parts by running

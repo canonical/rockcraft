@@ -1,4 +1,6 @@
 {
+  "$id": "https://github.com/canonical/rockcraft/blob/main/schema/rockcraft.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Rockcraft project",
   "description": "Rockcraft project definition.",
   "type": "object",
