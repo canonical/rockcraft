@@ -1,0 +1,12 @@
+summary: Build rocks using the "devel" build-base
+environment:
+  BASE/base_2404: "ubuntu@24.04"
+  BASE/bare: "bare"
+execute: |
+  # Make sure the yaml file has the "placeholder-base" string, and replace
+  # it with the correct base.
+  grep placeholder-base rockcraft.orig.yaml
+  sed "s/placeholder-base/$BASE/" rockcraft.orig.yaml  > rockcraft.yaml
+
+  # Build the rock & load it into docker
+  run_rockcraft pack

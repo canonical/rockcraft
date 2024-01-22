@@ -25,7 +25,7 @@ from craft_parts.errors import OsReleaseVersionIdError
 from craft_parts.utils.os_utils import OsRelease
 
 from rockcraft import plugins
-from rockcraft.models.project import Project
+from rockcraft.models.project import CURRENT_DEVEL_BASE, Project
 from rockcraft.plugins.python_plugin import SITECUSTOMIZE_TEMPLATE
 from tests.testing.project import create_project
 from tests.util import ubuntu_only
@@ -60,10 +60,11 @@ def create_python_project(base, extra_part_props=None) -> Project:
         }
     }
 
-    return create_project(
-        base=base,
-        parts=parts,
-    )
+    build_base = None
+    if base == CURRENT_DEVEL_BASE:
+        build_base = "devel"
+
+    return create_project(base=base, parts=parts, build_base=build_base)
 
 
 @dataclass
