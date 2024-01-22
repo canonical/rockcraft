@@ -1,0 +1,28 @@
+name: Schema
+on: [pull_request]
+
+jobs:
+  generate-schema:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout rockcraft
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install requirements
+        run: pip install -r requirements.txt
+
+      - name: Run generator script
+        run: ./tools/schema/schema.py > generated_schema.json
+
+      - name: Check with stored schema
+        run: |
+          test -f schema/rockcraft.json &&
+          diff generated_schema.json schema/rockcraft.json
