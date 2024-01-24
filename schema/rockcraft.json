@@ -617,31 +617,29 @@
           }
         }
       },
-      "additionalProperties": false,
-      "definitions": {
-        "Permissions": {
-          "title": "Permissions",
-          "description": "Description of the ownership and permission settings for a set of files.\n\nA ``Permissions`` object specifies that a given pattern-like ``path`` should\nbe owned by ``owner`` with a given ``group``, and have the read/write/execute\nbits defined by ``mode``.\n\nNotes\n-----\n- ``path`` is optional and defaults to \"everything\";\n- ``owner`` and ``group`` are optional if both are omitted - that is, if\n  one of the pair is specified then both must be;\n- ``mode`` is a string containing an integer in base 8. For example, \"755\",\n  \"0755\" and \"0o755\" are all accepted and are the equivalent of calling\n  ``chmod 755 ...``.",
-          "type": "object",
-          "properties": {
-            "path": {
-              "title": "Path",
-              "default": "*",
-              "type": "string"
-            },
-            "owner": {
-              "title": "Owner",
-              "type": "integer"
-            },
-            "group": {
-              "title": "Group",
-              "type": "integer"
-            },
-            "mode": {
-              "title": "Mode",
-              "type": "string"
-            }
-          }
+      "additionalProperties": false
+    },
+    "Permissions": {
+      "title": "Permissions",
+      "description": "Description of the ownership and permission settings for a set of files.\n\nA ``Permissions`` object specifies that a given pattern-like ``path`` should\nbe owned by ``owner`` with a given ``group``, and have the read/write/execute\nbits defined by ``mode``.\n\nNotes\n-----\n- ``path`` is optional and defaults to \"everything\";\n- ``owner`` and ``group`` are optional if both are omitted - that is, if\n  one of the pair is specified then both must be;\n- ``mode`` is a string containing an integer in base 8. For example, \"755\",\n  \"0755\" and \"0o755\" are all accepted and are the equivalent of calling\n  ``chmod 755 ...``.",
+      "type": "object",
+      "properties": {
+        "path": {
+          "title": "Path",
+          "default": "*",
+          "type": "string"
+        },
+        "owner": {
+          "title": "Owner",
+          "type": "integer"
+        },
+        "group": {
+          "title": "Group",
+          "type": "integer"
+        },
+        "mode": {
+          "title": "Mode",
+          "type": "string"
         }
       }
     }
