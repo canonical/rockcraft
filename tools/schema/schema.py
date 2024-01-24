@@ -62,6 +62,10 @@ def generate_project_schema() -> str:
         "$ref": "#/definitions/Part"
     }
     project_schema["definitions"]["Part"] = part_schema
+    project_schema["definitions"]["Permissions"] = project_schema["definitions"][
+        "Part"
+    ]["definitions"]["Permissions"]
+    del project_schema["definitions"]["Part"]["definitions"]
 
     return json.dumps(project_schema, indent=2)
 
