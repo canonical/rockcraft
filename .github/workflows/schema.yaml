@@ -2,8 +2,8 @@ name: Schema
 on: [pull_request]
 
 jobs:
-  generate-schema:
-    runs-on: ubuntu-22.04
+  diff-schema:
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout rockcraft
@@ -14,7 +14,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: "3.10"
 
       - name: Install requirements
         run: pip install -r requirements.txt
@@ -26,3 +26,24 @@ jobs:
         run: |
           test -f schema/rockcraft.json &&
           diff generated_schema.json schema/rockcraft.json
+
+  validate-schema:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout rockcraft
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install ajv cli
+        run: npm install -g ajv-cli
+
+      - name: Run ajv
+        run: |
+          ajv validate -s schema/rockcraft.json -d docs/reference/code/example/rockcraft.yaml --strict=false --spec=draft2020
