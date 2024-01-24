@@ -1,6 +1,9 @@
 name: Schema
 on: [pull_request]
 
+env:
+  ROCKCRAFT_JSON: schema/rockcraft.json
+
 jobs:
   diff-schema:
     runs-on: ubuntu-latest
@@ -24,8 +27,8 @@ jobs:
 
       - name: Check with stored schema
         run: |
-          test -f schema/rockcraft.json &&
-          diff generated_schema.json schema/rockcraft.json
+          test -f $ROCKCRAFT_JSON &&
+          diff generated_schema.json $ROCKCRAFT_JSON
 
   validate-schema:
     runs-on: ubuntu-latest
@@ -46,4 +49,4 @@ jobs:
 
       - name: Run ajv
         run: |
-          ajv validate -s schema/rockcraft.json -d docs/reference/code/example/rockcraft.yaml --strict=false --spec=draft2020
+          ajv validate -s $ROCKCRAFT_JSON -d docs/reference/code/example/rockcraft.yaml --strict=false --spec=draft2020
