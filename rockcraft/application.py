@@ -18,7 +18,7 @@
 
 from typing import Any
 
-from craft_application import Application, AppMetadata, util
+from craft_application import Application, AppMetadata, util, AppFeatures
 from overrides import override  # type: ignore[reportUnknownVariableType]
 
 from rockcraft import models
@@ -29,6 +29,7 @@ APP_METADATA = AppMetadata(
     summary="A tool to create OCI images",
     ProjectClass=project.Project,
     source_ignore_patterns=["*.rock"],
+    features=AppFeatures(package_repository=True),
 )
 
 

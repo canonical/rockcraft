@@ -1,6 +1,6 @@
 certifi==2023.11.17
 charset-normalizer==3.3.2
-craft-application==1.2.0
+git+https://github.com/canonical/craft-application.git@CRAFT-2404-repo#egg=craft_application
 craft-archives==1.1.3
 craft-cli==2.5.0
 craft-parts==1.26.1

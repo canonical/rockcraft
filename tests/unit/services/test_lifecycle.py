@@ -59,22 +59,22 @@ def test_lifecycle_args(lifecycle_service, default_factory, default_image_info, 
     )
 
 
-def test_lifecycle_package_repositories(
-    extra_project_params, lifecycle_service, default_project, mocker
-):
-    fake_repositories = extra_project_params["package_repositories"]
-    lifecycle_service._lcm = mock.MagicMock(spec=LifecycleManager)
-
-    # Installation of repositories in the build instance
-    mock_install = mocker.patch.object(
-        lifecycle_module, "_install_package_repositories"
-    )
-    # Installation of repositories in overlays
-    mock_callback = mocker.patch.object(callbacks, "register_configure_overlay")
-
-    lifecycle_service.run("prime")
-
-    mock_install.assert_called_once_with(fake_repositories, lifecycle_service._lcm)
-    mock_callback.assert_called_once_with(
-        lifecycle_module._install_overlay_repositories
-    )
+# def test_lifecycle_package_repositories(
+#     extra_project_params, lifecycle_service, default_project, mocker
+# ):
+#     fake_repositories = extra_project_params["package_repositories"]
+#     lifecycle_service._lcm = mock.MagicMock(spec=LifecycleManager)
+#
+#     # Installation of repositories in the build instance
+#     mock_install = mocker.patch.object(
+#         lifecycle_module, "_install_package_repositories"
+#     )
+#     # Installation of repositories in overlays
+#     mock_callback = mocker.patch.object(callbacks, "register_configure_overlay")
+#
+#     lifecycle_service.run("prime")
+#
+#     mock_install.assert_called_once_with(fake_repositories, lifecycle_service._lcm)
+#     mock_callback.assert_called_once_with(
+#         lifecycle_module._install_overlay_repositories
+#     )

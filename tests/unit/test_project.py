@@ -606,6 +606,9 @@ parts:
   foo:
     plugin: nil
     overlay-script: ls
+package-repositories:
+- type: apt
+  ppa: ppa/ppa
 platforms:
   {BUILD_ON_ARCH}:
     build_on: null
@@ -631,9 +634,6 @@ services:
     command: echo [ foo ]
     on-failure: restart
 entrypoint-service: test-service
-package-repositories:
-- type: apt
-  ppa: ppa/ppa
 """
 
 

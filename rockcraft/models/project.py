@@ -26,8 +26,12 @@ import pydantic
 import spdx_lookup  # type: ignore
 import yaml
 from craft_application.errors import CraftValidationError
-from craft_application.models import BuildInfo, CraftBaseConfig
-from craft_application.models import Project as BaseProject
+from craft_application.models import (
+    BuildInfo,
+    CraftBaseConfig,
+    AppFeaturePackageRepositoryMixin,
+)
+from craft_application.models import BaseProject
 from craft_archives import repo  # type: ignore[import-untyped]
 from craft_providers import bases
 from pydantic_yaml import YamlModelMixin
@@ -124,7 +128,7 @@ class NameStr(pydantic.ConstrainedStr):
     regex = re.compile(NAME_REGEX)
 
 
-class Project(YamlModelMixin, BaseProject):
+class Project(YamlModelMixin, AppFeaturePackageRepositoryMixin, BaseProject):
     """Rockcraft project definition."""
 
     name: NameStr  # type: ignore
@@ -140,8 +144,6 @@ class Project(YamlModelMixin, BaseProject):
     services: dict[str, Service] | None
     checks: dict[str, Check] | None
     entrypoint_service: str | None
-
-    package_repositories: list[dict[str, Any]] | None
 
     parts: dict[str, Any]
 
@@ -356,15 +358,6 @@ class Project(YamlModelMixin, BaseProject):
             ) from ex
 
         return entrypoint_service
-
-    @pydantic.validator("package_repositories", each_item=True)
-    @classmethod
-    def _validate_package_repositories(
-        cls, repository: dict[str, Any]
-    ) -> dict[str, Any]:
-        repo.validate_repository(repository)
-
-        return repository
 
     @pydantic.validator("environment")
     @classmethod
