@@ -14,5 +14,7 @@ parts:
         plugin: nil
         source: chisel-releases/
         source-type: local
+        stage-snaps:
+          - "chisel/latest/candidate"
         override-build:
             chisel cut --release ./ --root ${CRAFT_PART_INSTALL} openssl_bins
