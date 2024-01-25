@@ -57,7 +57,7 @@ class RockcraftLifecycleService(LifecycleService):
             base_layer_dir=image_info.base_layer_dir,
             base_layer_hash=image_info.base_digest,
             base=project.base,
-            package_repositories=project.package_repositories or [],
+            # package_repositories=project.package_repositories or [],
             project_name=project.name,
             project_vars=project_vars,
             rootfs_dir=image_info.base_layer_dir,
@@ -69,13 +69,13 @@ class RockcraftLifecycleService(LifecycleService):
     def run(self, step_name: str | None, part_names: list[str] | None = None) -> None:
         """Run the lifecycle manager for the parts."""
         # Overridden to configure package repositories.
-        project = cast(Project, self._project)
-        package_repositories = project.package_repositories
+        # project = cast(Project, self._project)
+        # package_repositories = project.package_repositories
 
-        if package_repositories is not None:
-            _install_package_repositories(package_repositories, self._lcm)
-            with contextlib.suppress(CallbackRegistrationError):
-                callbacks.register_configure_overlay(_install_overlay_repositories)
+        # if package_repositories is not None:
+        #     _install_package_repositories(package_repositories, self._lcm)
+        #     with contextlib.suppress(CallbackRegistrationError):
+        #         callbacks.register_configure_overlay(_install_overlay_repositories)
 
         try:
             callbacks.register_post_step(_post_prime_callback, step_list=[Step.PRIME])
