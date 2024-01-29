@@ -617,7 +617,7 @@
           }
         }
       },
-      "additionalProperties": false
+      "additionalProperties": true
     },
     "Permissions": {
       "title": "Permissions",
