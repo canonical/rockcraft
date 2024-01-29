@@ -37,7 +37,7 @@ def generate_project_schema() -> str:
     project = Project.unmarshal(
         yaml.safe_load(
             # pylint: disable=W0212
-            cli.commands.InitCommand._INIT_TEMPLATE_YAML
+            cli.commands.InitCommand._INIT_TEMPLATE_YAML[cli.commands.InitCommand._DEFAULT_PROFILE]
         )
     )
 
