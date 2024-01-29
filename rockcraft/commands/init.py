@@ -54,7 +54,7 @@ def init(rockcraft_yaml_content: str) -> None:
 
 class InitCommand(AppCommand):
     """Initialize a rockcraft project."""
-    
+
     _INIT_TEMPLATES = {
         "simple": textwrap.dedent(
             """\
