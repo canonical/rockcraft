@@ -1,13 +1,19 @@
 ###########################################
 # IMPORTANT
 # Comments matter!
-# The docs use the wrapping comments as 
-# markers for including said instructions 
+# The docs use the wrapping comments as
+# markers for including said instructions
 # as snippets in the docs.
 ###########################################
 summary: test the "Install a custom package slice" guide
 
 execute: |
+  # Both the local chisel-releases and root path must be in $HOME for the 
+  # chisel snap to be able to access them.
+  mv rockcraft.yaml "${HOME}/rockcraft.yaml.backup"
+  pushd $HOME
+  rm -fr chisel-releases/ my-custom-openssl-fs/
+
   # [docs:clone-chisel-releases]
   # Let's assume we are working with Ubuntu 22.04
   git clone -b ubuntu-22.04 https://github.com/canonical/chisel-releases/
@@ -17,20 +23,13 @@ execute: |
   grep -q "bins" chisel-releases/slices/openssl.yaml && echo "My slice exists"
   # [docs:slice-exists-end]
 
-  git clone https://github.com/canonical/chisel
-  pushd chisel
-  git reset --hard f0bff5a30dfdcb400b3c4efe85962ad8ff3ca2ba
-  go build ./cmd/chisel
-  mv chisel /bin/chisel
-  popd
+  sudo snap install chisel --channel=latest/candidate
 
   # [docs:cut]
   # Testing with Chisel directly:
   mkdir -p my-custom-openssl-fs
   chisel cut --release ./chisel-releases --root my-custom-openssl-fs openssl_bins
   # [docs:cut-end]
-
-  mv rockcraft.yaml rockcraft.yaml.backup
 
   # [docs:init]
   rockcraft init
@@ -46,8 +45,11 @@ execute: |
   sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:custom-openssl-rock_0.0.1_amd64.rock docker-daemon:chisel-openssl:latest
   # [docs:skopeo-copy-end]
 
-  rm -fr chisel/ chisel-releases/ my-custom-openssl-fs/ custom-openssl-rock_0.0.1_amd64.rock
-
   # [docs:docker-run]
   docker run --rm chisel-openssl exec openssl
   # [docs:docker-run-end]
+
+restore: |
+  pushd $HOME
+  rm -fr chisel-releases/ my-custom-openssl-fs/ custom-openssl-rock_0.0.1_amd64.rock
+

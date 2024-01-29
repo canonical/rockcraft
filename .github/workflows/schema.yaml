@@ -1,0 +1,52 @@
+name: Schema
+on: [pull_request]
+
+env:
+  ROCKCRAFT_JSON: schema/rockcraft.json
+
+jobs:
+  diff-schema:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout rockcraft
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install requirements
+        run: pip install -r requirements.txt
+
+      - name: Run generator script
+        run: ./tools/schema/schema.py > generated_schema.json
+
+      - name: Check with stored schema
+        run: |
+          test -f $ROCKCRAFT_JSON &&
+          diff generated_schema.json $ROCKCRAFT_JSON
+
+  validate-schema:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout rockcraft
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install ajv cli
+        run: npm install -g ajv-cli
+
+      - name: Run ajv
+        run: |
+          ajv validate -s $ROCKCRAFT_JSON -d docs/reference/code/example/rockcraft.yaml --strict=false --spec=draft2020
