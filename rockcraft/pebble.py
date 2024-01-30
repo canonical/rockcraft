@@ -172,7 +172,11 @@ class Pebble:
         "stage-snaps": ["pebble/latest/stable"],
         "stage": [PEBBLE_BINARY_PATH],
         # We need this because "services" is Optional, but the directory must exist
-        "override-prime": f"craftctl default\nmkdir -p {PEBBLE_LAYERS_PATH}",
+        "override-prime": str(
+            "craftctl default\n"
+            f"mkdir -p {PEBBLE_LAYERS_PATH}\n"
+            f"chmod 777 {PEBBLE_PATH}"
+        ),
     }
 
     def define_pebble_layer(
