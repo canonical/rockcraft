@@ -1,0 +1,81 @@
+name: Rockcraft rock
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+    tags:
+      - "*"
+
+jobs:
+  snap-build:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Build snap
+        uses: snapcore/action-build@v1
+        id: rockcraft
+      - name: Upload snap artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: snap
+          path: ${{ steps.rockcraft.outputs.snap }}
+
+  rock-build:
+    runs-on: ubuntu-22.04
+    needs: [snap-build]
+    strategy:
+      matrix:
+        ubuntu-release: [22.04]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: true
+      - name: Setup LXD
+        uses: canonical/setup-lxd@main
+      - name: Download snap artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: snap
+          path: tests
+      - name: Install Rockcraft
+        run: |
+          sudo snap install --classic --dangerous ./tests/*.snap
+      # This should change once this build matrix has more ubuntu-releases
+      - name: Build Rockcraft rock
+        id: rockcraft-rock
+        run: |
+          rockcraft pack --verbosity trace
+          echo "name=$(ls rockcraft*.rock)" >> $GITHUB_OUTPUT
+          echo "tag=$(rockcraft -V | cut -d' ' -f 2)-${{ matrix.ubuntu-release }}_edge" >> $GITHUB_OUTPUT
+      - name: Upload rock
+        uses: actions/upload-artifact@v3
+        with:
+          name: rock
+          path: ${{ steps.rockcraft-rock.outputs.name }}
+      - name: Login to GHCR
+        uses: docker/login-action@v2
+        if: ${{ github.event_name != 'pull_request' }}
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Publish rock to GHCR
+        if: ${{ github.event_name != 'pull_request' }}
+        run: |
+          /snap/rockcraft/current/bin/skopeo copy \
+            oci-archive:${{ steps.rockcraft-rock.outputs.name }} \
+            docker://ghcr.io/${{ github.repository }}/rockcraft-rock:latest
+      - name: Published tagged rock to GHCR
+        if: ${{ startsWith(github.ref, 'refs/tags/') && github.event_name != 'pull_request' }}
+        run: |
+          # Only publish the versioned image when it
+          /snap/rockcraft/current/bin/skopeo copy \
+            oci-archive:${{ steps.rockcraft-rock.outputs.name }} \
+            docker://ghcr.io/${{ github.repository }}/rockcraft-rock:${{ steps.rockcraft-rock.outputs.tag }}

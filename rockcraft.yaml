@@ -1,0 +1,128 @@
+# Run the container:
+#   docker run --rm -v $PWD:/project \
+#     --device /dev/fuse \
+#     --cap-add SYS_ADMIN \
+#     --security-opt apparmor:unconfined \
+#     <rock>
+name: rockcraft
+
+# Other bases are automatically built by the CI
+base: ubuntu@22.04
+
+# Until adopt-info is supported, we'll just build dev images based on whatever
+# is committed to the main branch
+version: "dev"
+summary: A Rockcraft rock
+description: |
+  This is a rock that offers Rockcraft's capabilities from inside a container.
+  The default behavior is to pack a rock in destructive mode.
+license: GPL-3.0
+platforms:
+  amd64:
+
+services:
+  rockcraft:
+    override: replace
+    startup: enabled
+    command: /usr/libexec/rockcraft/rockcraft-entrypoint.sh [ -v ]
+    working-dir: /workdir
+    on-success: shutdown
+    on-failure: shutdown
+
+parts:
+  rockcraft:
+    plugin: python
+    source: .
+    python-packages:
+      - wheel
+      - pip
+      - setuptools
+    python-requirements:
+      - requirements-jammy.txt
+      - requirements.txt
+    build-environment:
+      - "CFLAGS": "$(pkg-config python-3.10 yaml-0.1 --cflags)"
+    build-attributes:
+      - enable-patchelf
+    build-packages:
+      - libapt-pkg-dev
+      - aspell
+      - aspell-en
+    stage-packages:
+      - binutils
+      - snapd
+      - python3-venv
+      - fuse-overlayfs
+      - rsync
+      - g++
+    organize:
+      bin/craftctl: usr/libexec/rockcraft/craftctl
+      bin/rockcraft: usr/libexec/rockcraft/rockcraft
+
+  # The custom script makes sure the build happens in a different path from
+  # the host's bind mount, to avoid polluting that space.
+  startup-script:
+    plugin: dump
+    source: tools
+    organize:
+      rock/rockcraft-entrypoint.sh: usr/libexec/rockcraft/rockcraft-entrypoint.sh
+    prime:
+      - usr/libexec/rockcraft/rockcraft-entrypoint.sh
+
+  workdirs:
+    plugin: nil
+    override-build: |
+      # This is where Rockcraft projects on the host should be mounted
+      mkdir -p ${CRAFT_PART_INSTALL}/project
+      # This is where Rockcraft actually builds the rocks, to avoid polluting
+      # the host
+      mkdir -p ${CRAFT_PART_INSTALL}/workdir
+
+  umoci:
+    plugin: make
+    source: https://github.com/opencontainers/umoci.git
+    source-tag: v0.4.7
+    make-parameters:
+      - umoci.static
+    override-build: |
+      make umoci.static
+      mkdir "$CRAFT_PART_INSTALL"/bin
+      install -m755 umoci.static "$CRAFT_PART_INSTALL"/bin/umoci
+    build-packages:
+      - golang-go
+      - make
+
+  skopeo:
+    plugin: nil
+    source: https://github.com/containers/skopeo.git
+    source-tag: v1.9.0
+    override-build: |
+      CGO=1 go build -ldflags -linkmode=external ./cmd/skopeo
+      mkdir -p "$CRAFT_PART_INSTALL"/bin
+      install -m755 skopeo "$CRAFT_PART_INSTALL"/bin/skopeo
+    stage-packages:
+      - libgpgme11
+      - libassuan0
+      - libbtrfs0
+      - libdevmapper1.02.1
+    build-attributes:
+      - enable-patchelf
+    build-snaps:
+      - go/1.17/stable
+    build-packages:
+      - libgpgme-dev
+      - libassuan-dev
+      - libbtrfs-dev
+      - libdevmapper-dev
+      - pkg-config
+    overlay-packages:
+      - ca-certificates
+
+  chisel:
+    plugin: nil
+    stage-snaps:
+      - chisel/latest/candidate
+    organize:
+      bin/chisel: usr/libexec/rockcraft/chisel
+    stage:
+      - usr/libexec/rockcraft/chisel
