@@ -51,6 +51,7 @@ EXPECTED_EXPAND_EXTENSIONS = textwrap.dedent(
         override-prime: |-
           craftctl default
           mkdir -p var/lib/pebble/default/layers
+          chmod 777 var/lib/pebble/default
     platforms:
       amd64:
         build_on: null

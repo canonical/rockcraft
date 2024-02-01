@@ -113,7 +113,11 @@ def pebble_part() -> dict[str, Any]:
             "plugin": "nil",
             "stage-snaps": ["pebble/latest/stable"],
             "stage": ["bin/pebble"],
-            "override-prime": "craftctl default\nmkdir -p var/lib/pebble/default/layers",
+            "override-prime": str(
+                "craftctl default\n"
+                "mkdir -p var/lib/pebble/default/layers\n"
+                "chmod 777 var/lib/pebble/default"
+            ),
         }
     }
 
