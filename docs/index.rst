@@ -1,7 +1,7 @@
-Welcome to Rockcraft's documentation!
+Rockcraft documentation
 ===========================================
 
-**Rockcraft is a tool to create** :ref:`rocks_explanation` -- a new generation
+**Rockcraft is a tool to create** :ref:`rocks <rocks_explanation>` -- a new generation
 of secure, stable and `OCI-compliant container images <OCI_image_spec_>`_,
 based on Ubuntu.
 
@@ -32,7 +32,7 @@ allowing complex operations to be declared at build time.
 
    .. grid-item-card:: :ref:`Tutorials <tutorials>`
 
-      **Get started** with a hands-on introduction to Rockcraft
+      **Get started** - become familiar with Rockcraft by containerising different kinds of software as rocks.
 
    .. grid-item-card:: :ref:`How-to guides <how-to>`
 
