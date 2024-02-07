@@ -8,5 +8,22 @@ execute: |
   grep placeholder-base rockcraft.orig.yaml
   sed "s/placeholder-base/$BASE/" rockcraft.orig.yaml  > rockcraft.yaml
 
-  # Build the rock & load it into docker
+  # Build the rock
   run_rockcraft pack
+
+  # Extract the built rock and check that the "grade" is "devel" in the metadata
+
+  # Extract the rock into a dir called "devel"
+  mkdir devel
+  tar -xvf base-devel*.rock -C devel
+
+  # Unpack the rootfs into "rootfs"
+  /snap/rockcraft/current/bin/umoci unpack --rootless --image devel:0.1 rootfs
+
+  # Check the grade
+  MATCH "grade: devel" < rootfs/rootfs/.rock/metadata.yaml
+
+restore: |
+  rm -rf devel
+  rm -rf rootfs
+

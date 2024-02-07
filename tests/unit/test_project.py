@@ -605,6 +605,18 @@ def test_project_generate_metadata(yaml_loaded_data):
     }
 
 
+def test_metadata_base_devel(yaml_loaded_data):
+    yaml_loaded_data["base"] = CURRENT_DEVEL_BASE
+    yaml_loaded_data["build-base"] = "devel"
+    project = Project.unmarshal(yaml_loaded_data)
+
+    now = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    digest = "a1b2c3"  # mock digest
+
+    _, rock_metadata = project.generate_metadata(now, bytes.fromhex(digest))
+    assert rock_metadata["grade"] == "devel"
+
+
 EXPECTED_DUMPED_YAML = f"""\
 name: mytest
 title: My Test

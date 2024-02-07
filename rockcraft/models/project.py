@@ -457,6 +457,10 @@ class Project(YamlModelMixin, BaseProject):
             "base-digest": base_digest.hex(),
         }
 
+        if self.build_base == "devel":
+            # Annotate that this project was built with a development base.
+            metadata["grade"] = "devel"
+
         annotations = {
             "org.opencontainers.image.version": self.version,
             "org.opencontainers.image.title": self.title,
