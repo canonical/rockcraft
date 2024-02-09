@@ -554,7 +554,6 @@
         },
         "organize": {
           "title": "Organize",
-          "default": {},
           "type": "object",
           "additionalProperties": {
             "type": "string"
@@ -562,9 +561,6 @@
         },
         "overlay": {
           "title": "Overlay",
-          "default": [
-            "*"
-          ],
           "type": "array",
           "items": {
             "type": "string"
@@ -572,9 +568,6 @@
         },
         "stage": {
           "title": "Stage",
-          "default": [
-            "*"
-          ],
           "type": "array",
           "items": {
             "type": "string"
@@ -582,9 +575,6 @@
         },
         "prime": {
           "title": "Prime",
-          "default": [
-            "*"
-          ],
           "type": "array",
           "items": {
             "type": "string"
