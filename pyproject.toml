@@ -36,7 +36,7 @@ line_length = 88
 extend-exclude = "docs/sphinx-starter-pack"
 
 [tool.pyright]
-ignore = ["docs/sphinx-starter-pack"]
+lint.ignore = ["docs/sphinx-starter-pack"]
 
 [tool.mypy]
 python_version = "3.10"
@@ -96,7 +96,7 @@ extend-exclude = [
     "rockcraft/_version.py"
 ]
 # Follow ST063 - Maintaining and updating linting specifications for updating these.
-select = [  # Base linting rule selections.
+lint.select = [  # Base linting rule selections.
     # See the internal document for discussion:
     # https://docs.google.com/document/d/1i1n8pDmFmWi4wTDpk-JfnWCVUThPJiggyPi2DYwBBu4/edit
     # All sections here are stable in ruff and shouldn't randomly introduce
@@ -119,14 +119,14 @@ select = [  # Base linting rule selections.
     "RET",  # Simpler logic after return, raise, continue or break
     "UP018", "C408",  # Convert type calls to literals. The latest pylint enforces this, but ruff has auto-fixes.
 ]
-extend-select = [
+lint.extend-select = [
     # These sets are still frequently getting new rules.
     # Therefore, they're getting frozen with the current rules so we can
     # upgrade ruff without breaking linting.
     # Pyupgrade: https://github.com/charliermarsh/ruff#pyupgrade-up
     "UP00", "UP01", "UP02", "UP030", "UP032", "UP033",
     # "UP034",  # Very new, not yet enabled in ruff 0.0.227
-    # Annotations: https://github.com/charliermarsh/ruff#flake8-annotations-ann
+    # Annotations: https://github.com/charliermarsh/ruff#lint.flake8-annotations-ann
     "ANN0",  # Type annotations for arguments other than `self` and `cls`
     "ANN2",  # Return type annotations
     # flake8-bandit: security testing. https://github.com/charliermarsh/ruff#flake8-bandit-s
@@ -145,7 +145,7 @@ extend-select = [
     "RUF005",  # Encourages unpacking rather than concatenation
     "RUF100",  # #noqa directive that doesn't flag anything.
 ]
-ignore = [
+lint.ignore = [
     #"E203",  # Whitespace before ":"  -- Commented because ruff doesn't currently check E203
     "E501",  # Line too long (reason: black will automatically fix this for us)
     "D105",  # Missing docstring in magic method (reason: magic methods already have definitions)
@@ -157,7 +157,7 @@ ignore = [
 
 ]
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "tests/**.py" = [  # Some things we want for the moin project are unnecessary in tests.
     "D",  # Ignore docstring rules in tests
     "ANN", # Ignore type annotations in tests
