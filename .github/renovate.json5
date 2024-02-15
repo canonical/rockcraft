@@ -44,10 +44,21 @@
         "lint",
         "types"
       ],
-      excludePackagePatterns: ["ruff"],
+      matchPackagePatterns: [
+        // Generated from the dependency dashboard, may not be complete.
+        "^(.*/)?ruff$",
+        "^(.*/)?black$",
+        "^(.*/)?pyflakes$",
+        "^(.*/)?pylint$",
+        "^(.*/)?flake8$",
+        "^(.*/)?pycodestyle$",
+        "^(.*/)?autoflake$",
+        "^(.*/)?types-",
+        "^(.*/)?twine$",
+      ],
       matchUpdateTypes: ["minor", "patch", "pin", "digest"],
-      prPriority: -1
-      // Uncomment once we're comfortable with automatic merges.  automerge: true
+      prPriority: -1,
+      automerge: true
     },
     {
       // Documentation related updates
@@ -68,12 +79,18 @@
       groupSlug: "dev-dependencies",
       matchDepTypes: ["devDependencies"],
       matchUpdateTypes: ["major"],
-      prPriority: -3
-    },
-    {
-      // Ruff is still unstable, so update it separately.
-      groupName: "ruff",
-      matchPackagePatterns: ["^(lint/)?ruff$"],
+      matchPackagePatterns: [
+        // Generated from the dependency dashboard, may not be complete.
+        "^(.*/)?ruff$",
+        "^(.*/)?black$",
+        "^(.*/)?pyflakes$",
+        "^(.*/)?pylint$",
+        "^(.*/)?flake8$",
+        "^(.*/)?pycodestyle$",
+        "^(.*/)?autoflake$",
+        "^(.*/)?types-",
+        "^(.*/)?twine$",
+      ],
       prPriority: -3
     }
   ],
