@@ -624,11 +624,7 @@ version: latest
 summary: example for unit tests
 description: this is an example of a rockcraft.yaml for the purpose of testing rockcraft
 base: ubuntu@20.04
-license: Apache-2.0
-parts:
-  foo:
-    plugin: nil
-    overlay-script: ls
+build-base: ubuntu@20.04
 platforms:
   {BUILD_ON_ARCH}:
     build_on: null
@@ -643,7 +639,14 @@ platforms:
     - {BUILD_ON_ARCH}
     build_for:
     - {BUILD_ON_ARCH}
-build-base: ubuntu@20.04
+license: Apache-2.0
+parts:
+  foo:
+    plugin: nil
+    overlay-script: ls
+package-repositories:
+- type: apt
+  ppa: ppa/ppa
 environment:
   BAZ: value1
   FOO: value3
@@ -654,9 +657,6 @@ services:
     command: echo [ foo ]
     on-failure: restart
 entrypoint-service: test-service
-package-repositories:
-- type: apt
-  ppa: ppa/ppa
 """
 
 
