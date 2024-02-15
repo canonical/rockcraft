@@ -40,6 +40,19 @@
       ],
       "type": "string"
     },
+    "build-base": {
+      "title": "Build-Base",
+      "enum": [
+        "ubuntu@20.04",
+        "ubuntu@22.04",
+        "devel"
+      ],
+      "type": "string"
+    },
+    "platforms": {
+      "title": "Platforms",
+      "type": "object"
+    },
     "contact": {
       "title": "Contact",
       "anyOf": [
@@ -88,18 +101,12 @@
         "$ref": "#/definitions/Part"
       }
     },
-    "platforms": {
-      "title": "Platforms",
-      "type": "object"
-    },
-    "build-base": {
-      "title": "Build-Base",
-      "enum": [
-        "ubuntu@20.04",
-        "ubuntu@22.04",
-        "devel"
-      ],
-      "type": "string"
+    "package-repositories": {
+      "title": "Package-Repositories",
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
     },
     "environment": {
       "title": "Environment",
@@ -132,13 +139,6 @@
     "entrypoint-service": {
       "title": "Entrypoint-Service",
       "type": "string"
-    },
-    "package-repositories": {
-      "title": "Package-Repositories",
-      "type": "array",
-      "items": {
-        "type": "object"
-      }
     }
   },
   "required": [
@@ -147,9 +147,9 @@
     "summary",
     "description",
     "base",
+    "platforms",
     "parts",
-    "license",
-    "platforms"
+    "license"
   ],
   "additionalProperties": false,
   "definitions": {
