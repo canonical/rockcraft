@@ -14,7 +14,7 @@ click==8.1.7
 codespell==2.2.6
 colorama==0.4.6
 coverage==7.4.1
-craft-application==1.2.1
+craft-application @ git+https://github.com/canonical/craft-application@main
 craft-archives==1.1.3
 craft-cli==2.5.1
 craft-parts==1.26.1
@@ -67,6 +67,7 @@ pycparser==2.21
 pydantic==1.10.14
 pydantic-yaml==0.11.2
 pydocstyle==6.3.0
+pygit2==1.14.1
 pyflakes==2.4.0
 Pygments==2.17.2
 pylint==2.17.7
