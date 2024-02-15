@@ -30,7 +30,6 @@ from craft_application.models import BuildInfo
 from craft_application.models import BuildPlanner as BaseBuildPlanner
 from craft_application.models import CraftBaseConfig
 from craft_application.models import Project as BaseProject
-from craft_archives import repo  # type: ignore[import-untyped]
 from craft_providers import bases
 from pydantic_yaml import YamlModelMixin
 from typing_extensions import override
