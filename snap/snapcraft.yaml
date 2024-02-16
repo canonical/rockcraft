@@ -89,8 +89,9 @@ parts:
         mkdir "$CRAFT_PART_INSTALL"/bin
         install -m755 umoci.static "$CRAFT_PART_INSTALL"/bin/umoci
     build-packages:
-        - golang-go
         - make
+    build-snaps:
+        - go/1.21/stable
 
   skopeo:
     plugin: nil
@@ -108,7 +109,7 @@ parts:
     build-attributes:
         - enable-patchelf
     build-snaps:
-        - go/1.17/stable
+        - go/1.21/stable
     build-packages:
         - libgpgme-dev
         - libassuan-dev
