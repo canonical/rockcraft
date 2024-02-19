@@ -17,10 +17,16 @@
 """Rockcraft-provided plugin registration."""
 
 import craft_parts
+from craft_parts.plugins.plugins import PluginType
 
 from .python_plugin import PythonPlugin
 
 
 def register() -> None:
     """Register Rockcraft plugins."""
-    craft_parts.plugins.register({"python": PythonPlugin})
+    craft_parts.plugins.register(get_plugins())
+
+
+def get_plugins() -> dict[str, PluginType]:
+    """Get a dict of Rockcraft-specific plugins."""
+    return {"python": PythonPlugin}

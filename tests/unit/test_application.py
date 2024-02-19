@@ -45,7 +45,7 @@ parts:
 """
 
 
-def test_application_expand_environment(default_application, new_dir):
+def test_application_expand_environment(new_dir, default_application):
     project_file = Path(new_dir) / "rockcraft.yaml"
     project_file.write_text(ENVIRONMENT_YAML)
 
@@ -57,7 +57,7 @@ def test_application_expand_environment(default_application, new_dir):
     }
 
 
-def test_application_pebble_part(default_application, new_dir):
+def test_application_pebble_part(new_dir, default_application):
     """Test that loading the project through the application adds the Pebble part."""
     project_file = Path(new_dir) / "rockcraft.yaml"
     project_file.write_text(ENVIRONMENT_YAML)

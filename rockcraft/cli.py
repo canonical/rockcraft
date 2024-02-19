@@ -16,10 +16,7 @@
 
 """Command-line application entry point."""
 
-import logging
 from typing import TYPE_CHECKING
-
-from rockcraft import plugins
 
 from . import commands
 from .services import RockcraftServiceFactory
@@ -30,14 +27,6 @@ if TYPE_CHECKING:
 
 def run() -> int:
     """Command-line interface entrypoint."""
-    # Register our own plugins
-    plugins.register()
-
-    # set lib loggers to debug level so that all messages are sent to Emitter
-    for lib_name in ("craft_providers", "craft_parts"):
-        logger = logging.getLogger(lib_name)
-        logger.setLevel(logging.DEBUG)
-
     app = _create_app()
 
     return app.run()

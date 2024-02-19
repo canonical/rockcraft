@@ -18,9 +18,9 @@ import textwrap
 from pathlib import Path
 
 import pytest
+from craft_application.util import repositories
 from craft_parts import overlays
 
-from rockcraft.services import lifecycle
 from tests.testing.project import create_project
 from tests.util import jammy_only
 
@@ -61,7 +61,7 @@ def test_package_repositories_in_overlay(new_dir, mocker, run_lifecycle):
 
     # Mock the installation of package repositories in the base system, as that
     # is undesired and will fail without root.
-    mocker.patch.object(lifecycle, "_install_package_repositories")
+    mocker.patch.object(repositories, "install_package_repositories")
 
     project = create_project(
         base="ubuntu@22.04",

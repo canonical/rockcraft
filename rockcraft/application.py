@@ -19,15 +19,17 @@
 from typing import Any
 
 from craft_application import Application, AppMetadata, util
+from craft_parts.plugins.plugins import PluginType
 from overrides import override  # type: ignore[reportUnknownVariableType]
 
-from rockcraft import models
+from rockcraft import models, plugins
 from rockcraft.models import project
 
 APP_METADATA = AppMetadata(
     name="rockcraft",
     summary="A tool to create OCI images",
     ProjectClass=project.Project,
+    BuildPlannerClass=project.BuildPlanner,
     source_ignore_patterns=["*.rock"],
 )
 
@@ -51,3 +53,11 @@ class Rockcraft(Application):
             build_for=build_for,
         )
         super()._configure_services(platform, build_for)
+
+    @override
+    def _get_app_plugins(self) -> dict[str, PluginType]:
+        """Get the plugins for this application.
+
+        Should be overridden by applications that need to register plugins at startup.
+        """
+        return plugins.get_plugins()
