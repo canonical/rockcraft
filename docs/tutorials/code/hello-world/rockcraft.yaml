@@ -3,7 +3,7 @@
 name: hello
 summary: Hello World
 description: The most basic example of a rock.
-version: "1.0"
+version: "latest"
 license: Apache-2.0
 
 base: bare

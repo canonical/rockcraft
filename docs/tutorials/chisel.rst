@@ -2,7 +2,8 @@ Install slices in a rock
 ========================
 
 In this tutorial, you will create a lean hello-world rock that uses chisel
-slices, and then compare the resulting rock with the one created without slices.
+slices, and then compare the resulting rock with the one created without slices
+in :doc:`/tutorials/hello-world`.
 
 Prerequisites
 -------------
@@ -38,8 +39,8 @@ Create a new directory, write the following into a text editor and save it as
     :language: yaml
 
 Note that this Rockcraft file uses the ``hello_bins`` Chisel slice to generate
-an image containing only files that are strictly necessary for hello binary. See
-:ref:`chisel_explanation` for details on the Chisel tool.
+an image containing only files that are strictly necessary for the ``hello``
+binary. See :ref:`chisel_explanation` for details on the Chisel tool.
 
 
 Pack the rock with Rockcraft
@@ -68,11 +69,11 @@ The output will look similar to:
     Executed: stage hello
     Executed: prime hello
     Executed parts lifecycle
-    Exported to OCI archive 'chisel-hello_1.0_amd64.rock'
+    Exported to OCI archive 'chiselled-hello_latest_amd64.rock'
 
 The process might take a little while, but at the end, a new file named
-``chisel-hello_1.0_amd64.rock`` will be present in the current directory.
-That's your OpenSSL rock, in oci-archive format.
+``chiselled-hello_latest_amd64.rock`` will be present in the current directory.
+That's your chiselled-hello rock, in oci-archive format.
 
 Run the rock in Docker
 ----------------------
@@ -100,5 +101,5 @@ Which should print:
 
     hello, world
 
-The ``slice-hello`` image will have a size of 5.6 MB, which is much less in size
-than the 8.8-MB ``hello`` rock created in :doc:`/tutorials/hello-world`.
+The ``chiselled-hello`` image will have a size of 5.6 MB, which is much less in
+size than the 8.8 MB ``hello`` rock created in :doc:`/tutorials/hello-world`.

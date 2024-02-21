@@ -32,12 +32,12 @@ allowing complex operations to be declared at build time.
 
    .. grid-item-card:: :ref:`Tutorials <tutorials>`
 
-      **Get started** - become familiar with Rockcraft by containerising different kinds of software as rocks.
+      **Get started** - become familiar with Rockcraft by containerising different software applications as rocks.
 
    .. grid-item-card:: :ref:`How-to guides <how-to>`
 
-      **Step-by-step guides** - learn key operations about slices and rocks,
-      ranging from creating and cutting slices to migrating and publishing rocks.
+      **Step-by-step guides** - learn key operations, ranging from creating and
+      cutting slices to migrating and publishing rocks.
 
 .. grid:: 1 1 2 2
    :reverse:
@@ -49,8 +49,8 @@ allowing complex operations to be declared at build time.
 
    .. grid-item-card:: :ref:`Explanation <explanation>`
 
-      **Discussion and clarification** - explore Rockcraft lifecycle and how a
-      rock image gets packed under the hood.
+      **Discussion and clarification** - explore Rockcraft's lifecycle and how a
+      rock gets packed under the hood.
 
 
 Project and community
