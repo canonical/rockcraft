@@ -17,4 +17,4 @@ parts:
   hello:
     plugin: nil
     stage-packages:
-      - hello_bins
+      - hello

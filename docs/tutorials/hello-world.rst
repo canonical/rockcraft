@@ -31,11 +31,10 @@ save it as ``rockcraft.yaml``:
     :language: yaml
 
 This file instructs Rockcraft to build a rock that **only** has the ``hello``
-binaries package slice (and its dependencies) inside, using
-:ref:`chisel_explanation`. For more information about the ``parts``
-section, check :ref:`ref_parts`. The remaining YAML fields correspond
-to metadata that help define and describe the rock. For more
-information about all available fields check :doc:`/reference/rockcraft.yaml`.
+apt package (and its dependencies) inside. For more information about the
+``parts`` section, check :ref:`ref_parts`. The remaining YAML fields correspond
+to metadata that help define and describe the rock. For more information about
+all available fields check :doc:`/reference/rockcraft.yaml`.
 
 Pack the rock with Rockcraft
 ----------------------------

@@ -16,18 +16,14 @@ execute: |
   rockcraft pack
   # [docs:build-rock-end]
   
-  test -f chisel-openssl_0.0.1_amd64.rock
+  test -f chisel-hello_1.0_amd64.rock
 
   # [docs:skopeo-copy]
-  sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:chisel-openssl_0.0.1_amd64.rock docker-daemon:chisel-openssl:latest
+  sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:chisel-hello_1.0_amd64.rock docker-daemon:chisel-hello:latest
   # [docs:skopeo-copy-end]
 
   # [docs:docker-run]
-  docker run --rm chisel-openssl exec openssl
+  docker run --rm chisel-hello:1.0 exec hello -t
   # [docs:docker-run-end]
-
-  # [docs:docker-run-with-args]
-  docker run --rm chisel-openssl exec --env=SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt openssl s_client -connect ubuntu.com:443 -brief
-  # [docs:docker-run-with-args-end]
   
-  docker run --rm chisel-openssl exec --env=SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt openssl s_client -connect ubuntu.com:443 -brief 2>&1 | grep "Verification: OK"
+  docker run --rm chisel-hello:1.0 exec hello -t | grep "hello, world"
