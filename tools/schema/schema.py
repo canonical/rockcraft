@@ -62,9 +62,6 @@ def generate_project_schema() -> str:
         "$ref": "#/definitions/Part"
     }
     project_schema["definitions"]["Part"] = part_schema
-    # allow "plugin" under "parts" to have extra fields such as "python-packages"
-    project_schema["definitions"]["Part"]["additionalProperties"] = True
-    # move Permissions definition to the top scope
     project_schema["definitions"]["Permissions"] = project_schema["definitions"][
         "Part"
     ]["definitions"]["Permissions"]
