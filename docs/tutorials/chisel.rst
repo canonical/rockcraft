@@ -97,7 +97,7 @@ Now you can run a container from the rock:
 Which should print:
 
 ..  code-block:: text
-    :class: foo
+    :class: log-snippets
 
     hello, world
 

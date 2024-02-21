@@ -96,6 +96,6 @@ Now run the ``hello`` command from the rock:
 Which should print:
 
 ..  code-block:: text
-    :class: foo
+    :class: log-snippets
 
     hello, world
