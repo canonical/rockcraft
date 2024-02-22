@@ -1,0 +1,5 @@
+name: base-2404
+base: ubuntu@24.04
+build-base: devel
+
+# Remaining contents will come from "parts.yaml"

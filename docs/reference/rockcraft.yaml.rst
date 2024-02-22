@@ -70,7 +70,7 @@ The rock version, used to tag the OCI image and name the rock file.
 ``base``
 --------
 
-**Type**: One of ``ubuntu@20.04 | ubuntu@22.04 | bare``
+**Type**: One of ``ubuntu@20.04 | ubuntu@22.04 | ubuntu@24.04 | bare``
 
 **Required**: Yes
 
@@ -84,10 +84,14 @@ which is typically used with static binaries or
    The notation "ubuntu:<channel>" is also supported for some channels, but this
    format is deprecated and should be avoided.
 
+.. note::
+   Base ``ubuntu@24.04`` is still unstable and under active development. To use
+   it, ``build-base`` *must* be ``devel``.
+
 ``build-base``
 --------------
 
-**Type**: One of ``ubuntu@20.04 | ubuntu@22.04``
+**Type**: One of ``ubuntu@20.04 | ubuntu@22.04 | devel``
 
 **Required**: Yes, if ``base`` is ``bare``
 
@@ -100,6 +104,11 @@ the value of ``base``.
 .. note::
    The notation "ubuntu:<channel>" is also supported for some channels, but this
    format is deprecated and should be avoided.
+
+.. note::
+   ``devel`` is a "special" value that means "the next Ubuntu version, currently
+   in development". This means that the contents of this system changes
+   frequently and should not be relied on for production rocks.
 
 ``license``
 -----------

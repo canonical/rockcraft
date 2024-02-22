@@ -1,0 +1,649 @@
+{
+  "$id": "https://github.com/canonical/rockcraft/blob/main/schema/rockcraft.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Rockcraft project",
+  "description": "Rockcraft project definition.",
+  "type": "object",
+  "properties": {
+    "name": {
+      "title": "Name",
+      "pattern": "^([a-z](?:-?[a-z0-9]){2,})$",
+      "type": "string"
+    },
+    "title": {
+      "title": "Title",
+      "minLength": 2,
+      "maxLength": 40,
+      "type": "string"
+    },
+    "version": {
+      "title": "Version",
+      "maxLength": 32,
+      "pattern": "^[a-zA-Z0-9](?:[a-zA-Z0-9:.+~-]*[a-zA-Z0-9+~])?$",
+      "type": "string"
+    },
+    "summary": {
+      "title": "Summary",
+      "type": "string"
+    },
+    "description": {
+      "title": "Description",
+      "type": "string"
+    },
+    "base": {
+      "title": "Base",
+      "enum": [
+        "bare",
+        "ubuntu@20.04",
+        "ubuntu@22.04",
+        "ubuntu@24.04"
+      ],
+      "type": "string"
+    },
+    "contact": {
+      "title": "Contact",
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        }
+      ]
+    },
+    "issues": {
+      "title": "Issues",
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        }
+      ]
+    },
+    "source-code": {
+      "title": "Source-Code",
+      "minLength": 1,
+      "maxLength": 65536,
+      "format": "uri",
+      "type": "string"
+    },
+    "license": {
+      "title": "License",
+      "type": "string"
+    },
+    "parts": {
+      "title": "Parts",
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/Part"
+      }
+    },
+    "platforms": {
+      "title": "Platforms",
+      "type": "object"
+    },
+    "build-base": {
+      "title": "Build-Base",
+      "enum": [
+        "ubuntu@20.04",
+        "ubuntu@22.04",
+        "devel"
+      ],
+      "type": "string"
+    },
+    "environment": {
+      "title": "Environment",
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "run-user": {
+      "title": "Run-User",
+      "enum": [
+        "_daemon_"
+      ],
+      "type": "string"
+    },
+    "services": {
+      "title": "Services",
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/Service"
+      }
+    },
+    "checks": {
+      "title": "Checks",
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/Check"
+      }
+    },
+    "entrypoint-service": {
+      "title": "Entrypoint-Service",
+      "type": "string"
+    },
+    "package-repositories": {
+      "title": "Package-Repositories",
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    }
+  },
+  "required": [
+    "name",
+    "version",
+    "summary",
+    "description",
+    "base",
+    "parts",
+    "license",
+    "platforms"
+  ],
+  "additionalProperties": false,
+  "definitions": {
+    "Service": {
+      "title": "Service",
+      "description": "Lightweight schema validation for a Pebble service.\n\nBased on\nhttps://github.com/canonical/pebble#layer-specification",
+      "type": "object",
+      "properties": {
+        "override": {
+          "title": "Override",
+          "enum": [
+            "merge",
+            "replace"
+          ],
+          "type": "string"
+        },
+        "command": {
+          "title": "Command",
+          "type": "string"
+        },
+        "summary": {
+          "title": "Summary",
+          "type": "string"
+        },
+        "description": {
+          "title": "Description",
+          "type": "string"
+        },
+        "startup": {
+          "title": "Startup",
+          "enum": [
+            "enabled",
+            "disabled"
+          ],
+          "type": "string"
+        },
+        "after": {
+          "title": "After",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "before": {
+          "title": "Before",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "requires": {
+          "title": "Requires",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "environment": {
+          "title": "Environment",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "user": {
+          "title": "User",
+          "type": "string"
+        },
+        "user-id": {
+          "title": "User-Id",
+          "type": "integer"
+        },
+        "group": {
+          "title": "Group",
+          "type": "string"
+        },
+        "group-id": {
+          "title": "Group-Id",
+          "type": "integer"
+        },
+        "working-dir": {
+          "title": "Working-Dir",
+          "type": "string"
+        },
+        "on-success": {
+          "title": "On-Success",
+          "enum": [
+            "restart",
+            "shutdown",
+            "ignore"
+          ],
+          "type": "string"
+        },
+        "on-failure": {
+          "title": "On-Failure",
+          "enum": [
+            "restart",
+            "shutdown",
+            "ignore"
+          ],
+          "type": "string"
+        },
+        "on-check-failure": {
+          "title": "On-Check-Failure",
+          "type": "object",
+          "additionalProperties": {
+            "enum": [
+              "restart",
+              "shutdown",
+              "ignore"
+            ],
+            "type": "string"
+          }
+        },
+        "backoff-delay": {
+          "title": "Backoff-Delay",
+          "type": "string"
+        },
+        "backoff-factor": {
+          "title": "Backoff-Factor",
+          "type": "number"
+        },
+        "backoff-limit": {
+          "title": "Backoff-Limit",
+          "type": "string"
+        },
+        "kill-delay": {
+          "title": "Kill-Delay",
+          "type": "string"
+        }
+      },
+      "required": [
+        "override",
+        "command"
+      ],
+      "additionalProperties": false
+    },
+    "HttpCheck": {
+      "title": "HttpCheck",
+      "description": "Lightweight schema validation for a Pebble HTTP check.",
+      "type": "object",
+      "properties": {
+        "url": {
+          "title": "Url",
+          "minLength": 1,
+          "maxLength": 65536,
+          "format": "uri",
+          "type": "string"
+        },
+        "headers": {
+          "title": "Headers",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "url"
+      ],
+      "additionalProperties": false
+    },
+    "TcpCheck": {
+      "title": "TcpCheck",
+      "description": "Lightweight schema validation for a Pebble TCP check.",
+      "type": "object",
+      "properties": {
+        "port": {
+          "title": "Port",
+          "type": "integer"
+        },
+        "host": {
+          "title": "Host",
+          "type": "string"
+        }
+      },
+      "required": [
+        "port"
+      ],
+      "additionalProperties": false
+    },
+    "ExecCheck": {
+      "title": "ExecCheck",
+      "description": "Lightweight schema validation for a Pebble exec check.",
+      "type": "object",
+      "properties": {
+        "command": {
+          "title": "Command",
+          "type": "string"
+        },
+        "service-context": {
+          "title": "Service-Context",
+          "type": "string"
+        },
+        "environment": {
+          "title": "Environment",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "user": {
+          "title": "User",
+          "type": "string"
+        },
+        "user-id": {
+          "title": "User-Id",
+          "type": "integer"
+        },
+        "group": {
+          "title": "Group",
+          "type": "string"
+        },
+        "group-id": {
+          "title": "Group-Id",
+          "type": "integer"
+        },
+        "working-dir": {
+          "title": "Working-Dir",
+          "type": "string"
+        }
+      },
+      "required": [
+        "command"
+      ],
+      "additionalProperties": false
+    },
+    "Check": {
+      "title": "Check",
+      "description": "Lightweight schema validation for a Pebble checks.\n\nBased on\nhttps://github.com/canonical/pebble#layer-specification",
+      "type": "object",
+      "properties": {
+        "override": {
+          "title": "Override",
+          "enum": [
+            "merge",
+            "replace"
+          ],
+          "type": "string"
+        },
+        "level": {
+          "title": "Level",
+          "enum": [
+            "alive",
+            "ready"
+          ],
+          "type": "string"
+        },
+        "period": {
+          "title": "Period",
+          "type": "string"
+        },
+        "timeout": {
+          "title": "Timeout",
+          "type": "string"
+        },
+        "threshold": {
+          "title": "Threshold",
+          "type": "integer"
+        },
+        "http": {
+          "$ref": "#/definitions/HttpCheck"
+        },
+        "tcp": {
+          "$ref": "#/definitions/TcpCheck"
+        },
+        "exec": {
+          "$ref": "#/definitions/ExecCheck"
+        }
+      },
+      "required": [
+        "override"
+      ],
+      "additionalProperties": false
+    },
+    "Part": {
+      "title": "PartSpec",
+      "description": "The part specification data.",
+      "type": "object",
+      "properties": {
+        "plugin": {
+          "title": "Plugin",
+          "type": "string"
+        },
+        "source": {
+          "title": "Source",
+          "type": "string"
+        },
+        "source-checksum": {
+          "title": "Source-Checksum",
+          "default": "",
+          "type": "string"
+        },
+        "source-branch": {
+          "title": "Source-Branch",
+          "default": "",
+          "type": "string"
+        },
+        "source-commit": {
+          "title": "Source-Commit",
+          "default": "",
+          "type": "string"
+        },
+        "source-depth": {
+          "title": "Source-Depth",
+          "default": 0,
+          "type": "integer"
+        },
+        "source-subdir": {
+          "title": "Source-Subdir",
+          "default": "",
+          "type": "string"
+        },
+        "source-submodules": {
+          "title": "Source-Submodules",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "source-tag": {
+          "title": "Source-Tag",
+          "default": "",
+          "type": "string"
+        },
+        "source-type": {
+          "title": "Source-Type",
+          "default": "",
+          "type": "string"
+        },
+        "disable-parallel": {
+          "title": "Disable-Parallel",
+          "default": false,
+          "type": "boolean"
+        },
+        "after": {
+          "title": "After",
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "overlay-packages": {
+          "title": "Overlay-Packages",
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "stage-snaps": {
+          "title": "Stage-Snaps",
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "stage-packages": {
+          "title": "Stage-Packages",
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "build-snaps": {
+          "title": "Build-Snaps",
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "build-packages": {
+          "title": "Build-Packages",
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "build-environment": {
+          "title": "Build-Environment",
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          }
+        },
+        "build-attributes": {
+          "title": "Build-Attributes",
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "organize": {
+          "title": "Organize",
+          "default": {},
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "overlay": {
+          "title": "Overlay",
+          "default": [
+            "*"
+          ],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "stage": {
+          "title": "Stage",
+          "default": [
+            "*"
+          ],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "prime": {
+          "title": "Prime",
+          "default": [
+            "*"
+          ],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "override-pull": {
+          "title": "Override-Pull",
+          "type": "string"
+        },
+        "overlay-script": {
+          "title": "Overlay-Script",
+          "type": "string"
+        },
+        "override-build": {
+          "title": "Override-Build",
+          "type": "string"
+        },
+        "override-stage": {
+          "title": "Override-Stage",
+          "type": "string"
+        },
+        "override-prime": {
+          "title": "Override-Prime",
+          "type": "string"
+        },
+        "permissions": {
+          "title": "Permissions",
+          "default": [],
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Permissions"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "Permissions": {
+      "title": "Permissions",
+      "description": "Description of the ownership and permission settings for a set of files.\n\nA ``Permissions`` object specifies that a given pattern-like ``path`` should\nbe owned by ``owner`` with a given ``group``, and have the read/write/execute\nbits defined by ``mode``.\n\nNotes\n-----\n- ``path`` is optional and defaults to \"everything\";\n- ``owner`` and ``group`` are optional if both are omitted - that is, if\n  one of the pair is specified then both must be;\n- ``mode`` is a string containing an integer in base 8. For example, \"755\",\n  \"0755\" and \"0o755\" are all accepted and are the equivalent of calling\n  ``chmod 755 ...``.",
+      "type": "object",
+      "properties": {
+        "path": {
+          "title": "Path",
+          "default": "*",
+          "type": "string"
+        },
+        "owner": {
+          "title": "Owner",
+          "type": "integer"
+        },
+        "group": {
+          "title": "Group",
+          "type": "integer"
+        },
+        "mode": {
+          "title": "Mode",
+          "type": "string"
+        }
+      }
+    }
+  }
+}

@@ -31,73 +31,6 @@ from rockcraft.models.project import INVALID_NAME_MESSAGE, NAME_REGEX
 if TYPE_CHECKING:
     import argparse
 
-TEMPLATES = {
-    "simple": textwrap.dedent(
-        """\
-            name: {name}
-            base: ubuntu@22.04 # the base environment for this ROCK
-            version: '0.1' # just for humans. Semantic versioning is recommended
-            summary: Single-line elevator pitch for your amazing ROCK # 79 char long summary
-            description: |
-                This is {name}'s description. You have a paragraph or two to tell the
-                most important story about it. Keep it under 100 words though,
-                we live in tweetspace and your description wants to look good in the
-                container registries out there.
-            license: GPL-3.0 # your application's SPDX license
-            platforms: # The platforms this ROCK should be built on and run on
-                amd64:
-
-            parts:
-                my-part:
-                    plugin: nil
-            """
-    ),
-    "flask-framework": textwrap.dedent(
-        """\
-            name: {name}
-            base: ubuntu@22.04 # the base environment for this Flask application
-            version: '0.1' # just for humans. Semantic versioning is recommended
-            summary: A summary of your Flask application # 79 char long summary
-            description: |
-                This is {name}'s description. You have a paragraph or two to tell the
-                most important story about it. Keep it under 100 words though,
-                we live in tweetspace and your description wants to look good in the
-                container registries out there.
-            license: GPL-3.0 # your application's SPDX license
-            platforms: # The platforms this ROCK should be built on and run on
-                amd64:
-
-            # To ensure the flask-framework extension works properly, your Flask application
-            # should have an `app.py` file with an `app` object as the WSGI entrypoint.
-            extensions:
-                - flask-framework
-
-
-            # Uncomment the sections you need and adjust according to your requirements.
-            # parts:
-            #   flask/dependencies:
-            #     stage-packages:
-            #       # list required packages or slices for your flask application below.
-            #       - libpq-dev
-            #
-            #   flask/install-app:
-            #     prime:
-            #       # By default, only the files in app/, templates/, static/, and app.py
-            #       # are copied into the image. You can modify the list below to override
-            #       # the default list and include or exclude specific files/directories
-            #       # in your project.
-            #       # Note: Prefix each entry with "flask/app/" followed by the local path.
-            #       - flask/app/.env
-            #       - flask/app/app.py
-            #       - flask/app/webapp
-            #       - flask/app/templates
-            #       - flask/app/static
-            """
-    ),
-}
-
-DEFAULT_PROFILE = "simple"
-
 
 def init(rockcraft_yaml_content: str) -> None:
     """Initialize a rockcraft project.
@@ -122,6 +55,72 @@ def init(rockcraft_yaml_content: str) -> None:
 class InitCommand(AppCommand):
     """Initialize a rockcraft project."""
 
+    _INIT_TEMPLATES = {
+        "simple": textwrap.dedent(
+            """\
+                name: {name}
+                base: ubuntu@22.04 # the base environment for this ROCK
+                version: '0.1' # just for humans. Semantic versioning is recommended
+                summary: Single-line elevator pitch for your amazing ROCK # 79 char long summary
+                description: |
+                    This is {name}'s description. You have a paragraph or two to tell the
+                    most important story about it. Keep it under 100 words though,
+                    we live in tweetspace and your description wants to look good in the
+                    container registries out there.
+                license: GPL-3.0 # your application's SPDX license
+                platforms: # The platforms this ROCK should be built on and run on
+                    amd64:
+
+                parts:
+                    my-part:
+                        plugin: nil
+                """
+        ),
+        "flask-framework": textwrap.dedent(
+            """\
+                name: {name}
+                base: ubuntu@22.04 # the base environment for this Flask application
+                version: '0.1' # just for humans. Semantic versioning is recommended
+                summary: A summary of your Flask application # 79 char long summary
+                description: |
+                    This is {name}'s description. You have a paragraph or two to tell the
+                    most important story about it. Keep it under 100 words though,
+                    we live in tweetspace and your description wants to look good in the
+                    container registries out there.
+                license: GPL-3.0 # your application's SPDX license
+                platforms: # The platforms this ROCK should be built on and run on
+                    amd64:
+
+                # To ensure the flask-framework extension works properly, your Flask application
+                # should have an `app.py` file with an `app` object as the WSGI entrypoint.
+                extensions:
+                    - flask-framework
+
+
+                # Uncomment the sections you need and adjust according to your requirements.
+                # parts:
+                #   flask/dependencies:
+                #     stage-packages:
+                #       # list required packages or slices for your flask application below.
+                #       - libpq-dev
+                #
+                #   flask/install-app:
+                #     prime:
+                #       # By default, only the files in app/, templates/, static/, and app.py
+                #       # are copied into the image. You can modify the list below to override
+                #       # the default list and include or exclude specific files/directories
+                #       # in your project.
+                #       # Note: Prefix each entry with "flask/app/" followed by the local path.
+                #       - flask/app/.env
+                #       - flask/app/app.py
+                #       - flask/app/webapp
+                #       - flask/app/templates
+                #       - flask/app/static
+                """
+        ),
+    }
+    _DEFAULT_PROFILE = "simple"
+
     name = "init"
     help_msg = "Initialize a rockcraft project"
     overview = textwrap.dedent(
@@ -138,9 +137,9 @@ class InitCommand(AppCommand):
         )
         parser.add_argument(
             "--profile",
-            choices=list(TEMPLATES),
-            default=DEFAULT_PROFILE,
-            help=f"Use the specified project profile (defaults to '{DEFAULT_PROFILE}')",
+            choices=list(self._INIT_TEMPLATES),
+            default=self._DEFAULT_PROFILE,
+            help=f"Use the specified project profile (defaults to '{self._DEFAULT_PROFILE}')",
         )
 
     @overrides
@@ -162,4 +161,4 @@ class InitCommand(AppCommand):
             "name": name,
         }
 
-        init(TEMPLATES[parsed_args.profile].format(**context))
+        init(self._INIT_TEMPLATES[parsed_args.profile].format(**context))
