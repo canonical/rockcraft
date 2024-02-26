@@ -430,7 +430,23 @@
       "properties": {
         "plugin": {
           "title": "Plugin",
-          "type": "string"
+          "type": "string",
+          "enum": [
+            "ant",
+            "autotools",
+            "cmake",
+            "dotnet",
+            "dump",
+            "go",
+            "make",
+            "maven",
+            "meson",
+            "nil",
+            "npm",
+            "python",
+            "rust",
+            "scons"
+          ]
         },
         "source": {
           "title": "Source",
@@ -617,7 +633,3251 @@
           }
         }
       },
-      "additionalProperties": false
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "plugin": {
+                "const": "ant"
+              }
+            }
+          },
+          "then": {
+            "$comment": "common properties had to be repeated here or they would be considered invalid by the schema validator otherwise",
+            "properties": {
+              "ant-build-targets": {
+                "title": "Ant-Build-Targets",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "ant-build-file": {
+                "title": "Ant-Build-File",
+                "type": "string"
+              },
+              "ant-properties": {
+                "title": "Ant-Properties",
+                "default": {},
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "source": {
+                "title": "Source",
+                "type": "string"
+              },
+              "plugin": {
+                "title": "Plugin",
+                "type": "string",
+                "enum": [
+                  "ant",
+                  "autotools",
+                  "cmake",
+                  "dotnet",
+                  "dump",
+                  "go",
+                  "make",
+                  "maven",
+                  "meson",
+                  "nil",
+                  "npm",
+                  "python",
+                  "rust",
+                  "scons"
+                ]
+              },
+              "source-checksum": {
+                "title": "Source-Checksum",
+                "default": "",
+                "type": "string"
+              },
+              "source-branch": {
+                "title": "Source-Branch",
+                "default": "",
+                "type": "string"
+              },
+              "source-commit": {
+                "title": "Source-Commit",
+                "default": "",
+                "type": "string"
+              },
+              "source-depth": {
+                "title": "Source-Depth",
+                "default": 0,
+                "type": "integer"
+              },
+              "source-subdir": {
+                "title": "Source-Subdir",
+                "default": "",
+                "type": "string"
+              },
+              "source-submodules": {
+                "title": "Source-Submodules",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "source-tag": {
+                "title": "Source-Tag",
+                "default": "",
+                "type": "string"
+              },
+              "source-type": {
+                "title": "Source-Type",
+                "default": "",
+                "type": "string"
+              },
+              "disable-parallel": {
+                "title": "Disable-Parallel",
+                "default": false,
+                "type": "boolean"
+              },
+              "after": {
+                "title": "After",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "overlay-packages": {
+                "title": "Overlay-Packages",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "stage-snaps": {
+                "title": "Stage-Snaps",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "stage-packages": {
+                "title": "Stage-Packages",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "build-snaps": {
+                "title": "Build-Snaps",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "build-packages": {
+                "title": "Build-Packages",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "build-environment": {
+                "title": "Build-Environment",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              },
+              "build-attributes": {
+                "title": "Build-Attributes",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "organize": {
+                "title": "Organize",
+                "default": {},
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "overlay": {
+                "title": "Overlay",
+                "default": [
+                  "*"
+                ],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "stage": {
+                "title": "Stage",
+                "default": [
+                  "*"
+                ],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "prime": {
+                "title": "Prime",
+                "default": [
+                  "*"
+                ],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "override-pull": {
+                "title": "Override-Pull",
+                "type": "string"
+              },
+              "overlay-script": {
+                "title": "Overlay-Script",
+                "type": "string"
+              },
+              "override-build": {
+                "title": "Override-Build",
+                "type": "string"
+              },
+              "override-stage": {
+                "title": "Override-Stage",
+                "type": "string"
+              },
+              "override-prime": {
+                "title": "Override-Prime",
+                "type": "string"
+              },
+              "permissions": {
+                "title": "Permissions",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Permissions"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "plugin": {
+                "const": "autotools"
+              }
+            }
+          },
+          "then": {
+            "$comment": "common properties had to be repeated here or they would be considered invalid by the schema validator otherwise",
+            "properties": {
+              "autotools-configure-parameters": {
+                "title": "Autotools-Configure-Parameters",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "autotools-bootstrap-parameters": {
+                "title": "Autotools-Bootstrap-Parameters",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "source": {
+                "title": "Source",
+                "type": "string"
+              },
+              "plugin": {
+                "title": "Plugin",
+                "type": "string",
+                "enum": [
+                  "ant",
+                  "autotools",
+                  "cmake",
+                  "dotnet",
+                  "dump",
+                  "go",
+                  "make",
+                  "maven",
+                  "meson",
+                  "nil",
+                  "npm",
+                  "python",
+                  "rust",
+                  "scons"
+                ]
+              },
+              "source-checksum": {
+                "title": "Source-Checksum",
+                "default": "",
+                "type": "string"
+              },
+              "source-branch": {
+                "title": "Source-Branch",
+                "default": "",
+                "type": "string"
+              },
+              "source-commit": {
+                "title": "Source-Commit",
+                "default": "",
+                "type": "string"
+              },
+              "source-depth": {
+                "title": "Source-Depth",
+                "default": 0,
+                "type": "integer"
+              },
+              "source-subdir": {
+                "title": "Source-Subdir",
+                "default": "",
+                "type": "string"
+              },
+              "source-submodules": {
+                "title": "Source-Submodules",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "source-tag": {
+                "title": "Source-Tag",
+                "default": "",
+                "type": "string"
+              },
+              "source-type": {
+                "title": "Source-Type",
+                "default": "",
+                "type": "string"
+              },
+              "disable-parallel": {
+                "title": "Disable-Parallel",
+                "default": false,
+                "type": "boolean"
+              },
+              "after": {
+                "title": "After",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "overlay-packages": {
+                "title": "Overlay-Packages",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "stage-snaps": {
+                "title": "Stage-Snaps",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "stage-packages": {
+                "title": "Stage-Packages",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "build-snaps": {
+                "title": "Build-Snaps",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "build-packages": {
+                "title": "Build-Packages",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "build-environment": {
+                "title": "Build-Environment",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              },
+              "build-attributes": {
+                "title": "Build-Attributes",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "organize": {
+                "title": "Organize",
+                "default": {},
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "overlay": {
+                "title": "Overlay",
+                "default": [
+                  "*"
+                ],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "stage": {
+                "title": "Stage",
+                "default": [
+                  "*"
+                ],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "prime": {
+                "title": "Prime",
+                "default": [
+                  "*"
+                ],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "override-pull": {
+                "title": "Override-Pull",
+                "type": "string"
+              },
+              "overlay-script": {
+                "title": "Overlay-Script",
+                "type": "string"
+              },
+              "override-build": {
+                "title": "Override-Build",
+                "type": "string"
+              },
+              "override-stage": {
+                "title": "Override-Stage",
+                "type": "string"
+              },
+              "override-prime": {
+                "title": "Override-Prime",
+                "type": "string"
+              },
+              "permissions": {
+                "title": "Permissions",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Permissions"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "plugin": {
+                "const": "cmake"
+              }
+            }
+          },
+          "then": {
+            "$comment": "common properties had to be repeated here or they would be considered invalid by the schema validator otherwise",
+            "properties": {
+              "cmake-parameters": {
+                "title": "Cmake-Parameters",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "cmake-generator": {
+                "title": "Cmake-Generator",
+                "default": "Unix Makefiles",
+                "type": "string"
+              },
+              "source": {
+                "title": "Source",
+                "type": "string"
+              },
+              "plugin": {
+                "title": "Plugin",
+                "type": "string",
+                "enum": [
+                  "ant",
+                  "autotools",
+                  "cmake",
+                  "dotnet",
+                  "dump",
+                  "go",
+                  "make",
+                  "maven",
+                  "meson",
+                  "nil",
+                  "npm",
+                  "python",
+                  "rust",
+                  "scons"
+                ]
+              },
+              "source-checksum": {
+                "title": "Source-Checksum",
+                "default": "",
+                "type": "string"
+              },
+              "source-branch": {
+                "title": "Source-Branch",
+                "default": "",
+                "type": "string"
+              },
+              "source-commit": {
+                "title": "Source-Commit",
+                "default": "",
+                "type": "string"
+              },
+              "source-depth": {
+                "title": "Source-Depth",
+                "default": 0,
+                "type": "integer"
+              },
+              "source-subdir": {
+                "title": "Source-Subdir",
+                "default": "",
+                "type": "string"
+              },
+              "source-submodules": {
+                "title": "Source-Submodules",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "source-tag": {
+                "title": "Source-Tag",
+                "default": "",
+                "type": "string"
+              },
+              "source-type": {
+                "title": "Source-Type",
+                "default": "",
+                "type": "string"
+              },
+              "disable-parallel": {
+                "title": "Disable-Parallel",
+                "default": false,
+                "type": "boolean"
+              },
+              "after": {
+                "title": "After",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "overlay-packages": {
+                "title": "Overlay-Packages",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "stage-snaps": {
+                "title": "Stage-Snaps",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "stage-packages": {
+                "title": "Stage-Packages",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "build-snaps": {
+                "title": "Build-Snaps",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "build-packages": {
+                "title": "Build-Packages",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "build-environment": {
+                "title": "Build-Environment",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              },
+              "build-attributes": {
+                "title": "Build-Attributes",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "organize": {
+                "title": "Organize",
+                "default": {},
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "overlay": {
+                "title": "Overlay",
+                "default": [
+                  "*"
+                ],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "stage": {
+                "title": "Stage",
+                "default": [
+                  "*"
+                ],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "prime": {
+                "title": "Prime",
+                "default": [
+                  "*"
+                ],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "override-pull": {
+                "title": "Override-Pull",
+                "type": "string"
+              },
+              "overlay-script": {
+                "title": "Overlay-Script",
+                "type": "string"
+              },
+              "override-build": {
+                "title": "Override-Build",
+                "type": "string"
+              },
+              "override-stage": {
+                "title": "Override-Stage",
+                "type": "string"
+              },
+              "override-prime": {
+                "title": "Override-Prime",
+                "type": "string"
+              },
+              "permissions": {
+                "title": "Permissions",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Permissions"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "plugin": {
+                "const": "dotnet"
+              }
+            }
+          },
+          "then": {
+            "$comment": "common properties had to be repeated here or they would be considered invalid by the schema validator otherwise",
+            "properties": {
+              "dotnet-build-configuration": {
+                "title": "Dotnet-Build-Configuration",
+                "default": "Release",
+                "type": "string"
+              },
+              "dotnet-self-contained-runtime-identifier": {
+                "title": "Dotnet-Self-Contained-Runtime-Identifier",
+                "type": "string"
+              },
+              "source": {
+                "title": "Source",
+                "type": "string"
+              },
+              "plugin": {
+                "title": "Plugin",
+                "type": "string",
+                "enum": [
+                  "ant",
+                  "autotools",
+                  "cmake",
+                  "dotnet",
+                  "dump",
+                  "go",
+                  "make",
+                  "maven",
+                  "meson",
+                  "nil",
+                  "npm",
+                  "python",
+                  "rust",
+                  "scons"
+                ]
+              },
+              "source-checksum": {
+                "title": "Source-Checksum",
+                "default": "",
+                "type": "string"
+              },
+              "source-branch": {
+                "title": "Source-Branch",
+                "default": "",
+                "type": "string"
+              },
+              "source-commit": {
+                "title": "Source-Commit",
+                "default": "",
+                "type": "string"
+              },
+              "source-depth": {
+                "title": "Source-Depth",
+                "default": 0,
+                "type": "integer"
+              },
+              "source-subdir": {
+                "title": "Source-Subdir",
+                "default": "",
+                "type": "string"
+              },
+              "source-submodules": {
+                "title": "Source-Submodules",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "source-tag": {
+                "title": "Source-Tag",
+                "default": "",
+                "type": "string"
+              },
+              "source-type": {
+                "title": "Source-Type",
+                "default": "",
+                "type": "string"
+              },
+              "disable-parallel": {
+                "title": "Disable-Parallel",
+                "default": false,
+                "type": "boolean"
+              },
+              "after": {
+                "title": "After",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "overlay-packages": {
+                "title": "Overlay-Packages",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "stage-snaps": {
+                "title": "Stage-Snaps",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "stage-packages": {
+                "title": "Stage-Packages",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "build-snaps": {
+                "title": "Build-Snaps",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "build-packages": {
+                "title": "Build-Packages",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "build-environment": {
+                "title": "Build-Environment",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              },
+              "build-attributes": {
+                "title": "Build-Attributes",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "organize": {
+                "title": "Organize",
+                "default": {},
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "overlay": {
+                "title": "Overlay",
+                "default": [
+                  "*"
+                ],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "stage": {
+                "title": "Stage",
+                "default": [
+                  "*"
+                ],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "prime": {
+                "title": "Prime",
+                "default": [
+                  "*"
+                ],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "override-pull": {
+                "title": "Override-Pull",
+                "type": "string"
+              },
+              "overlay-script": {
+                "title": "Overlay-Script",
+                "type": "string"
+              },
+              "override-build": {
+                "title": "Override-Build",
+                "type": "string"
+              },
+              "override-stage": {
+                "title": "Override-Stage",
+                "type": "string"
+              },
+              "override-prime": {
+                "title": "Override-Prime",
+                "type": "string"
+              },
+              "permissions": {
+                "title": "Permissions",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Permissions"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "plugin": {
+                "const": "dump"
+              }
+            }
+          },
+          "then": {
+            "$comment": "common properties had to be repeated here or they would be considered invalid by the schema validator otherwise",
+            "properties": {
+              "plugin": {
+                "title": "Plugin",
+                "type": "string",
+                "enum": [
+                  "ant",
+                  "autotools",
+                  "cmake",
+                  "dotnet",
+                  "dump",
+                  "go",
+                  "make",
+                  "maven",
+                  "meson",
+                  "nil",
+                  "npm",
+                  "python",
+                  "rust",
+                  "scons"
+                ]
+              },
+              "source": {
+                "title": "Source",
+                "type": "string"
+              },
+              "source-checksum": {
+                "title": "Source-Checksum",
+                "default": "",
+                "type": "string"
+              },
+              "source-branch": {
+                "title": "Source-Branch",
+                "default": "",
+                "type": "string"
+              },
+              "source-commit": {
+                "title": "Source-Commit",
+                "default": "",
+                "type": "string"
+              },
+              "source-depth": {
+                "title": "Source-Depth",
+                "default": 0,
+                "type": "integer"
+              },
+              "source-subdir": {
+                "title": "Source-Subdir",
+                "default": "",
+                "type": "string"
+              },
+              "source-submodules": {
+                "title": "Source-Submodules",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "source-tag": {
+                "title": "Source-Tag",
+                "default": "",
+                "type": "string"
+              },
+              "source-type": {
+                "title": "Source-Type",
+                "default": "",
+                "type": "string"
+              },
+              "disable-parallel": {
+                "title": "Disable-Parallel",
+                "default": false,
+                "type": "boolean"
+              },
+              "after": {
+                "title": "After",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "overlay-packages": {
+                "title": "Overlay-Packages",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "stage-snaps": {
+                "title": "Stage-Snaps",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "stage-packages": {
+                "title": "Stage-Packages",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "build-snaps": {
+                "title": "Build-Snaps",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "build-packages": {
+                "title": "Build-Packages",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "build-environment": {
+                "title": "Build-Environment",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              },
+              "build-attributes": {
+                "title": "Build-Attributes",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "organize": {
+                "title": "Organize",
+                "default": {},
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "overlay": {
+                "title": "Overlay",
+                "default": [
+                  "*"
+                ],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "stage": {
+                "title": "Stage",
+                "default": [
+                  "*"
+                ],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "prime": {
+                "title": "Prime",
+                "default": [
+                  "*"
+                ],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "override-pull": {
+                "title": "Override-Pull",
+                "type": "string"
+              },
+              "overlay-script": {
+                "title": "Overlay-Script",
+                "type": "string"
+              },
+              "override-build": {
+                "title": "Override-Build",
+                "type": "string"
+              },
+              "override-stage": {
+                "title": "Override-Stage",
+                "type": "string"
+              },
+              "override-prime": {
+                "title": "Override-Prime",
+                "type": "string"
+              },
+              "permissions": {
+                "title": "Permissions",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Permissions"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "plugin": {
+                "const": "go"
+              }
+            }
+          },
+          "then": {
+            "$comment": "common properties had to be repeated here or they would be considered invalid by the schema validator otherwise",
+            "properties": {
+              "go-buildtags": {
+                "title": "Go-Buildtags",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "go-generate": {
+                "title": "Go-Generate",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "source": {
+                "title": "Source",
+                "type": "string"
+              },
+              "plugin": {
+                "title": "Plugin",
+                "type": "string",
+                "enum": [
+                  "ant",
+                  "autotools",
+                  "cmake",
+                  "dotnet",
+                  "dump",
+                  "go",
+                  "make",
+                  "maven",
+                  "meson",
+                  "nil",
+                  "npm",
+                  "python",
+                  "rust",
+                  "scons"
+                ]
+              },
+              "source-checksum": {
+                "title": "Source-Checksum",
+                "default": "",
+                "type": "string"
+              },
+              "source-branch": {
+                "title": "Source-Branch",
+                "default": "",
+                "type": "string"
+              },
+              "source-commit": {
+                "title": "Source-Commit",
+                "default": "",
+                "type": "string"
+              },
+              "source-depth": {
+                "title": "Source-Depth",
+                "default": 0,
+                "type": "integer"
+              },
+              "source-subdir": {
+                "title": "Source-Subdir",
+                "default": "",
+                "type": "string"
+              },
+              "source-submodules": {
+                "title": "Source-Submodules",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "source-tag": {
+                "title": "Source-Tag",
+                "default": "",
+                "type": "string"
+              },
+              "source-type": {
+                "title": "Source-Type",
+                "default": "",
+                "type": "string"
+              },
+              "disable-parallel": {
+                "title": "Disable-Parallel",
+                "default": false,
+                "type": "boolean"
+              },
+              "after": {
+                "title": "After",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "overlay-packages": {
+                "title": "Overlay-Packages",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "stage-snaps": {
+                "title": "Stage-Snaps",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "stage-packages": {
+                "title": "Stage-Packages",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "build-snaps": {
+                "title": "Build-Snaps",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "build-packages": {
+                "title": "Build-Packages",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "build-environment": {
+                "title": "Build-Environment",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              },
+              "build-attributes": {
+                "title": "Build-Attributes",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "organize": {
+                "title": "Organize",
+                "default": {},
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "overlay": {
+                "title": "Overlay",
+                "default": [
+                  "*"
+                ],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "stage": {
+                "title": "Stage",
+                "default": [
+                  "*"
+                ],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "prime": {
+                "title": "Prime",
+                "default": [
+                  "*"
+                ],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "override-pull": {
+                "title": "Override-Pull",
+                "type": "string"
+              },
+              "overlay-script": {
+                "title": "Overlay-Script",
+                "type": "string"
+              },
+              "override-build": {
+                "title": "Override-Build",
+                "type": "string"
+              },
+              "override-stage": {
+                "title": "Override-Stage",
+                "type": "string"
+              },
+              "override-prime": {
+                "title": "Override-Prime",
+                "type": "string"
+              },
+              "permissions": {
+                "title": "Permissions",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Permissions"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "plugin": {
+                "const": "make"
+              }
+            }
+          },
+          "then": {
+            "$comment": "common properties had to be repeated here or they would be considered invalid by the schema validator otherwise",
+            "properties": {
+              "make-parameters": {
+                "title": "Make-Parameters",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "source": {
+                "title": "Source",
+                "type": "string"
+              },
+              "plugin": {
+                "title": "Plugin",
+                "type": "string",
+                "enum": [
+                  "ant",
+                  "autotools",
+                  "cmake",
+                  "dotnet",
+                  "dump",
+                  "go",
+                  "make",
+                  "maven",
+                  "meson",
+                  "nil",
+                  "npm",
+                  "python",
+                  "rust",
+                  "scons"
+                ]
+              },
+              "source-checksum": {
+                "title": "Source-Checksum",
+                "default": "",
+                "type": "string"
+              },
+              "source-branch": {
+                "title": "Source-Branch",
+                "default": "",
+                "type": "string"
+              },
+              "source-commit": {
+                "title": "Source-Commit",
+                "default": "",
+                "type": "string"
+              },
+              "source-depth": {
+                "title": "Source-Depth",
+                "default": 0,
+                "type": "integer"
+              },
+              "source-subdir": {
+                "title": "Source-Subdir",
+                "default": "",
+                "type": "string"
+              },
+              "source-submodules": {
+                "title": "Source-Submodules",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "source-tag": {
+                "title": "Source-Tag",
+                "default": "",
+                "type": "string"
+              },
+              "source-type": {
+                "title": "Source-Type",
+                "default": "",
+                "type": "string"
+              },
+              "disable-parallel": {
+                "title": "Disable-Parallel",
+                "default": false,
+                "type": "boolean"
+              },
+              "after": {
+                "title": "After",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "overlay-packages": {
+                "title": "Overlay-Packages",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "stage-snaps": {
+                "title": "Stage-Snaps",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "stage-packages": {
+                "title": "Stage-Packages",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "build-snaps": {
+                "title": "Build-Snaps",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "build-packages": {
+                "title": "Build-Packages",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "build-environment": {
+                "title": "Build-Environment",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              },
+              "build-attributes": {
+                "title": "Build-Attributes",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "organize": {
+                "title": "Organize",
+                "default": {},
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "overlay": {
+                "title": "Overlay",
+                "default": [
+                  "*"
+                ],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "stage": {
+                "title": "Stage",
+                "default": [
+                  "*"
+                ],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "prime": {
+                "title": "Prime",
+                "default": [
+                  "*"
+                ],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "override-pull": {
+                "title": "Override-Pull",
+                "type": "string"
+              },
+              "overlay-script": {
+                "title": "Overlay-Script",
+                "type": "string"
+              },
+              "override-build": {
+                "title": "Override-Build",
+                "type": "string"
+              },
+              "override-stage": {
+                "title": "Override-Stage",
+                "type": "string"
+              },
+              "override-prime": {
+                "title": "Override-Prime",
+                "type": "string"
+              },
+              "permissions": {
+                "title": "Permissions",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Permissions"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "plugin": {
+                "const": "maven"
+              }
+            }
+          },
+          "then": {
+            "$comment": "common properties had to be repeated here or they would be considered invalid by the schema validator otherwise",
+            "properties": {
+              "maven-parameters": {
+                "title": "Maven-Parameters",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "source": {
+                "title": "Source",
+                "type": "string"
+              },
+              "plugin": {
+                "title": "Plugin",
+                "type": "string",
+                "enum": [
+                  "ant",
+                  "autotools",
+                  "cmake",
+                  "dotnet",
+                  "dump",
+                  "go",
+                  "make",
+                  "maven",
+                  "meson",
+                  "nil",
+                  "npm",
+                  "python",
+                  "rust",
+                  "scons"
+                ]
+              },
+              "source-checksum": {
+                "title": "Source-Checksum",
+                "default": "",
+                "type": "string"
+              },
+              "source-branch": {
+                "title": "Source-Branch",
+                "default": "",
+                "type": "string"
+              },
+              "source-commit": {
+                "title": "Source-Commit",
+                "default": "",
+                "type": "string"
+              },
+              "source-depth": {
+                "title": "Source-Depth",
+                "default": 0,
+                "type": "integer"
+              },
+              "source-subdir": {
+                "title": "Source-Subdir",
+                "default": "",
+                "type": "string"
+              },
+              "source-submodules": {
+                "title": "Source-Submodules",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "source-tag": {
+                "title": "Source-Tag",
+                "default": "",
+                "type": "string"
+              },
+              "source-type": {
+                "title": "Source-Type",
+                "default": "",
+                "type": "string"
+              },
+              "disable-parallel": {
+                "title": "Disable-Parallel",
+                "default": false,
+                "type": "boolean"
+              },
+              "after": {
+                "title": "After",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "overlay-packages": {
+                "title": "Overlay-Packages",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "stage-snaps": {
+                "title": "Stage-Snaps",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "stage-packages": {
+                "title": "Stage-Packages",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "build-snaps": {
+                "title": "Build-Snaps",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "build-packages": {
+                "title": "Build-Packages",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "build-environment": {
+                "title": "Build-Environment",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              },
+              "build-attributes": {
+                "title": "Build-Attributes",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "organize": {
+                "title": "Organize",
+                "default": {},
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "overlay": {
+                "title": "Overlay",
+                "default": [
+                  "*"
+                ],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "stage": {
+                "title": "Stage",
+                "default": [
+                  "*"
+                ],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "prime": {
+                "title": "Prime",
+                "default": [
+                  "*"
+                ],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "override-pull": {
+                "title": "Override-Pull",
+                "type": "string"
+              },
+              "overlay-script": {
+                "title": "Overlay-Script",
+                "type": "string"
+              },
+              "override-build": {
+                "title": "Override-Build",
+                "type": "string"
+              },
+              "override-stage": {
+                "title": "Override-Stage",
+                "type": "string"
+              },
+              "override-prime": {
+                "title": "Override-Prime",
+                "type": "string"
+              },
+              "permissions": {
+                "title": "Permissions",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Permissions"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "plugin": {
+                "const": "meson"
+              }
+            }
+          },
+          "then": {
+            "$comment": "common properties had to be repeated here or they would be considered invalid by the schema validator otherwise",
+            "properties": {
+              "meson-parameters": {
+                "title": "Meson-Parameters",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "source": {
+                "title": "Source",
+                "type": "string"
+              },
+              "plugin": {
+                "title": "Plugin",
+                "type": "string",
+                "enum": [
+                  "ant",
+                  "autotools",
+                  "cmake",
+                  "dotnet",
+                  "dump",
+                  "go",
+                  "make",
+                  "maven",
+                  "meson",
+                  "nil",
+                  "npm",
+                  "python",
+                  "rust",
+                  "scons"
+                ]
+              },
+              "source-checksum": {
+                "title": "Source-Checksum",
+                "default": "",
+                "type": "string"
+              },
+              "source-branch": {
+                "title": "Source-Branch",
+                "default": "",
+                "type": "string"
+              },
+              "source-commit": {
+                "title": "Source-Commit",
+                "default": "",
+                "type": "string"
+              },
+              "source-depth": {
+                "title": "Source-Depth",
+                "default": 0,
+                "type": "integer"
+              },
+              "source-subdir": {
+                "title": "Source-Subdir",
+                "default": "",
+                "type": "string"
+              },
+              "source-submodules": {
+                "title": "Source-Submodules",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "source-tag": {
+                "title": "Source-Tag",
+                "default": "",
+                "type": "string"
+              },
+              "source-type": {
+                "title": "Source-Type",
+                "default": "",
+                "type": "string"
+              },
+              "disable-parallel": {
+                "title": "Disable-Parallel",
+                "default": false,
+                "type": "boolean"
+              },
+              "after": {
+                "title": "After",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "overlay-packages": {
+                "title": "Overlay-Packages",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "stage-snaps": {
+                "title": "Stage-Snaps",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "stage-packages": {
+                "title": "Stage-Packages",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "build-snaps": {
+                "title": "Build-Snaps",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "build-packages": {
+                "title": "Build-Packages",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "build-environment": {
+                "title": "Build-Environment",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              },
+              "build-attributes": {
+                "title": "Build-Attributes",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "organize": {
+                "title": "Organize",
+                "default": {},
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "overlay": {
+                "title": "Overlay",
+                "default": [
+                  "*"
+                ],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "stage": {
+                "title": "Stage",
+                "default": [
+                  "*"
+                ],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "prime": {
+                "title": "Prime",
+                "default": [
+                  "*"
+                ],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "override-pull": {
+                "title": "Override-Pull",
+                "type": "string"
+              },
+              "overlay-script": {
+                "title": "Overlay-Script",
+                "type": "string"
+              },
+              "override-build": {
+                "title": "Override-Build",
+                "type": "string"
+              },
+              "override-stage": {
+                "title": "Override-Stage",
+                "type": "string"
+              },
+              "override-prime": {
+                "title": "Override-Prime",
+                "type": "string"
+              },
+              "permissions": {
+                "title": "Permissions",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Permissions"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "plugin": {
+                "const": "nil"
+              }
+            }
+          },
+          "then": {
+            "$comment": "common properties had to be repeated here or they would be considered invalid by the schema validator otherwise",
+            "properties": {
+              "plugin": {
+                "title": "Plugin",
+                "type": "string",
+                "enum": [
+                  "ant",
+                  "autotools",
+                  "cmake",
+                  "dotnet",
+                  "dump",
+                  "go",
+                  "make",
+                  "maven",
+                  "meson",
+                  "nil",
+                  "npm",
+                  "python",
+                  "rust",
+                  "scons"
+                ]
+              },
+              "source": {
+                "title": "Source",
+                "type": "string"
+              },
+              "source-checksum": {
+                "title": "Source-Checksum",
+                "default": "",
+                "type": "string"
+              },
+              "source-branch": {
+                "title": "Source-Branch",
+                "default": "",
+                "type": "string"
+              },
+              "source-commit": {
+                "title": "Source-Commit",
+                "default": "",
+                "type": "string"
+              },
+              "source-depth": {
+                "title": "Source-Depth",
+                "default": 0,
+                "type": "integer"
+              },
+              "source-subdir": {
+                "title": "Source-Subdir",
+                "default": "",
+                "type": "string"
+              },
+              "source-submodules": {
+                "title": "Source-Submodules",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "source-tag": {
+                "title": "Source-Tag",
+                "default": "",
+                "type": "string"
+              },
+              "source-type": {
+                "title": "Source-Type",
+                "default": "",
+                "type": "string"
+              },
+              "disable-parallel": {
+                "title": "Disable-Parallel",
+                "default": false,
+                "type": "boolean"
+              },
+              "after": {
+                "title": "After",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "overlay-packages": {
+                "title": "Overlay-Packages",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "stage-snaps": {
+                "title": "Stage-Snaps",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "stage-packages": {
+                "title": "Stage-Packages",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "build-snaps": {
+                "title": "Build-Snaps",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "build-packages": {
+                "title": "Build-Packages",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "build-environment": {
+                "title": "Build-Environment",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              },
+              "build-attributes": {
+                "title": "Build-Attributes",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "organize": {
+                "title": "Organize",
+                "default": {},
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "overlay": {
+                "title": "Overlay",
+                "default": [
+                  "*"
+                ],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "stage": {
+                "title": "Stage",
+                "default": [
+                  "*"
+                ],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "prime": {
+                "title": "Prime",
+                "default": [
+                  "*"
+                ],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "override-pull": {
+                "title": "Override-Pull",
+                "type": "string"
+              },
+              "overlay-script": {
+                "title": "Overlay-Script",
+                "type": "string"
+              },
+              "override-build": {
+                "title": "Override-Build",
+                "type": "string"
+              },
+              "override-stage": {
+                "title": "Override-Stage",
+                "type": "string"
+              },
+              "override-prime": {
+                "title": "Override-Prime",
+                "type": "string"
+              },
+              "permissions": {
+                "title": "Permissions",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Permissions"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "plugin": {
+                "const": "npm"
+              }
+            }
+          },
+          "then": {
+            "$comment": "common properties had to be repeated here or they would be considered invalid by the schema validator otherwise",
+            "properties": {
+              "npm-include-node": {
+                "title": "Npm-Include-Node",
+                "default": false,
+                "type": "boolean"
+              },
+              "npm-node-version": {
+                "title": "Npm-Node-Version",
+                "type": "string"
+              },
+              "source": {
+                "title": "Source",
+                "type": "string"
+              },
+              "plugin": {
+                "title": "Plugin",
+                "type": "string",
+                "enum": [
+                  "ant",
+                  "autotools",
+                  "cmake",
+                  "dotnet",
+                  "dump",
+                  "go",
+                  "make",
+                  "maven",
+                  "meson",
+                  "nil",
+                  "npm",
+                  "python",
+                  "rust",
+                  "scons"
+                ]
+              },
+              "source-checksum": {
+                "title": "Source-Checksum",
+                "default": "",
+                "type": "string"
+              },
+              "source-branch": {
+                "title": "Source-Branch",
+                "default": "",
+                "type": "string"
+              },
+              "source-commit": {
+                "title": "Source-Commit",
+                "default": "",
+                "type": "string"
+              },
+              "source-depth": {
+                "title": "Source-Depth",
+                "default": 0,
+                "type": "integer"
+              },
+              "source-subdir": {
+                "title": "Source-Subdir",
+                "default": "",
+                "type": "string"
+              },
+              "source-submodules": {
+                "title": "Source-Submodules",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "source-tag": {
+                "title": "Source-Tag",
+                "default": "",
+                "type": "string"
+              },
+              "source-type": {
+                "title": "Source-Type",
+                "default": "",
+                "type": "string"
+              },
+              "disable-parallel": {
+                "title": "Disable-Parallel",
+                "default": false,
+                "type": "boolean"
+              },
+              "after": {
+                "title": "After",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "overlay-packages": {
+                "title": "Overlay-Packages",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "stage-snaps": {
+                "title": "Stage-Snaps",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "stage-packages": {
+                "title": "Stage-Packages",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "build-snaps": {
+                "title": "Build-Snaps",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "build-packages": {
+                "title": "Build-Packages",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "build-environment": {
+                "title": "Build-Environment",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              },
+              "build-attributes": {
+                "title": "Build-Attributes",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "organize": {
+                "title": "Organize",
+                "default": {},
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "overlay": {
+                "title": "Overlay",
+                "default": [
+                  "*"
+                ],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "stage": {
+                "title": "Stage",
+                "default": [
+                  "*"
+                ],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "prime": {
+                "title": "Prime",
+                "default": [
+                  "*"
+                ],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "override-pull": {
+                "title": "Override-Pull",
+                "type": "string"
+              },
+              "overlay-script": {
+                "title": "Overlay-Script",
+                "type": "string"
+              },
+              "override-build": {
+                "title": "Override-Build",
+                "type": "string"
+              },
+              "override-stage": {
+                "title": "Override-Stage",
+                "type": "string"
+              },
+              "override-prime": {
+                "title": "Override-Prime",
+                "type": "string"
+              },
+              "permissions": {
+                "title": "Permissions",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Permissions"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "plugin": {
+                "const": "python"
+              }
+            }
+          },
+          "then": {
+            "$comment": "common properties had to be repeated here or they would be considered invalid by the schema validator otherwise",
+            "properties": {
+              "python-requirements": {
+                "title": "Python-Requirements",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "python-constraints": {
+                "title": "Python-Constraints",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "python-packages": {
+                "title": "Python-Packages",
+                "default": [
+                  "pip",
+                  "setuptools",
+                  "wheel"
+                ],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "source": {
+                "title": "Source",
+                "type": "string"
+              },
+              "plugin": {
+                "title": "Plugin",
+                "type": "string",
+                "enum": [
+                  "ant",
+                  "autotools",
+                  "cmake",
+                  "dotnet",
+                  "dump",
+                  "go",
+                  "make",
+                  "maven",
+                  "meson",
+                  "nil",
+                  "npm",
+                  "python",
+                  "rust",
+                  "scons"
+                ]
+              },
+              "source-checksum": {
+                "title": "Source-Checksum",
+                "default": "",
+                "type": "string"
+              },
+              "source-branch": {
+                "title": "Source-Branch",
+                "default": "",
+                "type": "string"
+              },
+              "source-commit": {
+                "title": "Source-Commit",
+                "default": "",
+                "type": "string"
+              },
+              "source-depth": {
+                "title": "Source-Depth",
+                "default": 0,
+                "type": "integer"
+              },
+              "source-subdir": {
+                "title": "Source-Subdir",
+                "default": "",
+                "type": "string"
+              },
+              "source-submodules": {
+                "title": "Source-Submodules",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "source-tag": {
+                "title": "Source-Tag",
+                "default": "",
+                "type": "string"
+              },
+              "source-type": {
+                "title": "Source-Type",
+                "default": "",
+                "type": "string"
+              },
+              "disable-parallel": {
+                "title": "Disable-Parallel",
+                "default": false,
+                "type": "boolean"
+              },
+              "after": {
+                "title": "After",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "overlay-packages": {
+                "title": "Overlay-Packages",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "stage-snaps": {
+                "title": "Stage-Snaps",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "stage-packages": {
+                "title": "Stage-Packages",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "build-snaps": {
+                "title": "Build-Snaps",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "build-packages": {
+                "title": "Build-Packages",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "build-environment": {
+                "title": "Build-Environment",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              },
+              "build-attributes": {
+                "title": "Build-Attributes",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "organize": {
+                "title": "Organize",
+                "default": {},
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "overlay": {
+                "title": "Overlay",
+                "default": [
+                  "*"
+                ],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "stage": {
+                "title": "Stage",
+                "default": [
+                  "*"
+                ],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "prime": {
+                "title": "Prime",
+                "default": [
+                  "*"
+                ],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "override-pull": {
+                "title": "Override-Pull",
+                "type": "string"
+              },
+              "overlay-script": {
+                "title": "Overlay-Script",
+                "type": "string"
+              },
+              "override-build": {
+                "title": "Override-Build",
+                "type": "string"
+              },
+              "override-stage": {
+                "title": "Override-Stage",
+                "type": "string"
+              },
+              "override-prime": {
+                "title": "Override-Prime",
+                "type": "string"
+              },
+              "permissions": {
+                "title": "Permissions",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Permissions"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "plugin": {
+                "const": "rust"
+              }
+            }
+          },
+          "then": {
+            "$comment": "common properties had to be repeated here or they would be considered invalid by the schema validator otherwise",
+            "properties": {
+              "rust-features": {
+                "title": "Rust-Features",
+                "default": [],
+                "uniqueItems": true,
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "rust-path": {
+                "title": "Rust-Path",
+                "default": [
+                  "."
+                ],
+                "uniqueItems": true,
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "rust-channel": {
+                "title": "Rust-Channel",
+                "type": "string"
+              },
+              "rust-use-global-lto": {
+                "title": "Rust-Use-Global-Lto",
+                "default": false,
+                "type": "boolean"
+              },
+              "rust-no-default-features": {
+                "title": "Rust-No-Default-Features",
+                "default": false,
+                "type": "boolean"
+              },
+              "source": {
+                "title": "Source",
+                "type": "string"
+              },
+              "after": {
+                "title": "After",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "plugin": {
+                "title": "Plugin",
+                "type": "string",
+                "enum": [
+                  "ant",
+                  "autotools",
+                  "cmake",
+                  "dotnet",
+                  "dump",
+                  "go",
+                  "make",
+                  "maven",
+                  "meson",
+                  "nil",
+                  "npm",
+                  "python",
+                  "rust",
+                  "scons"
+                ]
+              },
+              "source-checksum": {
+                "title": "Source-Checksum",
+                "default": "",
+                "type": "string"
+              },
+              "source-branch": {
+                "title": "Source-Branch",
+                "default": "",
+                "type": "string"
+              },
+              "source-commit": {
+                "title": "Source-Commit",
+                "default": "",
+                "type": "string"
+              },
+              "source-depth": {
+                "title": "Source-Depth",
+                "default": 0,
+                "type": "integer"
+              },
+              "source-subdir": {
+                "title": "Source-Subdir",
+                "default": "",
+                "type": "string"
+              },
+              "source-submodules": {
+                "title": "Source-Submodules",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "source-tag": {
+                "title": "Source-Tag",
+                "default": "",
+                "type": "string"
+              },
+              "source-type": {
+                "title": "Source-Type",
+                "default": "",
+                "type": "string"
+              },
+              "disable-parallel": {
+                "title": "Disable-Parallel",
+                "default": false,
+                "type": "boolean"
+              },
+              "overlay-packages": {
+                "title": "Overlay-Packages",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "stage-snaps": {
+                "title": "Stage-Snaps",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "stage-packages": {
+                "title": "Stage-Packages",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "build-snaps": {
+                "title": "Build-Snaps",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "build-packages": {
+                "title": "Build-Packages",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "build-environment": {
+                "title": "Build-Environment",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              },
+              "build-attributes": {
+                "title": "Build-Attributes",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "organize": {
+                "title": "Organize",
+                "default": {},
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "overlay": {
+                "title": "Overlay",
+                "default": [
+                  "*"
+                ],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "stage": {
+                "title": "Stage",
+                "default": [
+                  "*"
+                ],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "prime": {
+                "title": "Prime",
+                "default": [
+                  "*"
+                ],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "override-pull": {
+                "title": "Override-Pull",
+                "type": "string"
+              },
+              "overlay-script": {
+                "title": "Overlay-Script",
+                "type": "string"
+              },
+              "override-build": {
+                "title": "Override-Build",
+                "type": "string"
+              },
+              "override-stage": {
+                "title": "Override-Stage",
+                "type": "string"
+              },
+              "override-prime": {
+                "title": "Override-Prime",
+                "type": "string"
+              },
+              "permissions": {
+                "title": "Permissions",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Permissions"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "plugin": {
+                "const": "scons"
+              }
+            }
+          },
+          "then": {
+            "$comment": "common properties had to be repeated here or they would be considered invalid by the schema validator otherwise",
+            "properties": {
+              "scons-parameters": {
+                "title": "Scons-Parameters",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "source": {
+                "title": "Source",
+                "type": "string"
+              },
+              "plugin": {
+                "title": "Plugin",
+                "type": "string",
+                "enum": [
+                  "ant",
+                  "autotools",
+                  "cmake",
+                  "dotnet",
+                  "dump",
+                  "go",
+                  "make",
+                  "maven",
+                  "meson",
+                  "nil",
+                  "npm",
+                  "python",
+                  "rust",
+                  "scons"
+                ]
+              },
+              "source-checksum": {
+                "title": "Source-Checksum",
+                "default": "",
+                "type": "string"
+              },
+              "source-branch": {
+                "title": "Source-Branch",
+                "default": "",
+                "type": "string"
+              },
+              "source-commit": {
+                "title": "Source-Commit",
+                "default": "",
+                "type": "string"
+              },
+              "source-depth": {
+                "title": "Source-Depth",
+                "default": 0,
+                "type": "integer"
+              },
+              "source-subdir": {
+                "title": "Source-Subdir",
+                "default": "",
+                "type": "string"
+              },
+              "source-submodules": {
+                "title": "Source-Submodules",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "source-tag": {
+                "title": "Source-Tag",
+                "default": "",
+                "type": "string"
+              },
+              "source-type": {
+                "title": "Source-Type",
+                "default": "",
+                "type": "string"
+              },
+              "disable-parallel": {
+                "title": "Disable-Parallel",
+                "default": false,
+                "type": "boolean"
+              },
+              "after": {
+                "title": "After",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "overlay-packages": {
+                "title": "Overlay-Packages",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "stage-snaps": {
+                "title": "Stage-Snaps",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "stage-packages": {
+                "title": "Stage-Packages",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "build-snaps": {
+                "title": "Build-Snaps",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "build-packages": {
+                "title": "Build-Packages",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "build-environment": {
+                "title": "Build-Environment",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              },
+              "build-attributes": {
+                "title": "Build-Attributes",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "organize": {
+                "title": "Organize",
+                "default": {},
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "overlay": {
+                "title": "Overlay",
+                "default": [
+                  "*"
+                ],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "stage": {
+                "title": "Stage",
+                "default": [
+                  "*"
+                ],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "prime": {
+                "title": "Prime",
+                "default": [
+                  "*"
+                ],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "override-pull": {
+                "title": "Override-Pull",
+                "type": "string"
+              },
+              "overlay-script": {
+                "title": "Overlay-Script",
+                "type": "string"
+              },
+              "override-build": {
+                "title": "Override-Build",
+                "type": "string"
+              },
+              "override-stage": {
+                "title": "Override-Stage",
+                "type": "string"
+              },
+              "override-prime": {
+                "title": "Override-Prime",
+                "type": "string"
+              },
+              "permissions": {
+                "title": "Permissions",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Permissions"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      ]
     },
     "Permissions": {
       "title": "Permissions",
