@@ -1,7 +1,7 @@
 Using the flask-framework extension
 -----------------------------------
 
-The Flask extension is compatible with the ``bare`` and ``ubuntu:22.04`` bases.
+The Flask extension is compatible with the ``bare`` and ``ubuntu@22.04`` bases.
 To employ it, include ``extensions: [ flask-framework ]`` in your
 ``rockcraft.yaml`` file.
 
@@ -24,9 +24,9 @@ Managing project files with the flask extension
 
 By default the flask extension only includes the ``app.py``, ``static/``,
 ``app/``, and ``templates/`` in the flask project. But you can overwrite this
-behaviour with a prime declaration in the specially-named ``flask/install-app``
-part to instruct the flask extension on which files to include or exclude
-from the project directory in the ROCK image.
+behaviour with a prime declaration in the specially-named
+``flask-framework/install-app`` part to instruct the flask extension on which
+files to include or exclude from the project directory in the ROCK image.
 
 The extension places the files from the project folder in the ``/flask/app``
 directory in the final image - therefore, all inclusions and exclusions must
@@ -36,7 +36,7 @@ For example, to include only select files:
 
 .. code-block:: yaml
 
-    flask/install-app:
+    flask-framework/install-app:
       prime:
         - flask/app/static
         - flask/app/.env
@@ -48,7 +48,7 @@ add the following part to ``rockcraft.yaml``:
 
 .. code-block:: yaml
 
-    flask/install-app:
+    flask-framework/install-app:
       prime:
         - -flask/app/.git
         - -flask/app/.venv

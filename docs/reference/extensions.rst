@@ -14,3 +14,6 @@ The Flask extension streamlines the process of building Flask application rocks.
 It facilitates the installation of Flask application dependencies, including
 Gunicorn, in the rock image. Additionally, it transfers your project files to
 ``/flask/app`` within the rock image.
+
+A statsd-exporter is installed alongside the Gunicorn server to export Gunicorn
+server metrics.

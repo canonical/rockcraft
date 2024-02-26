@@ -157,8 +157,6 @@ class InitCommand(AppCommand):
                 name = "my-rock-name"
             emit.debug(f"Set project name to '{name}'")
 
-        context = {
-            "name": name,
-        }
+        context = {"name": name}
 
         init(self._INIT_TEMPLATES[parsed_args.profile].format(**context))
