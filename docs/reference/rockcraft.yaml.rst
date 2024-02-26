@@ -166,7 +166,7 @@ others are optional.
 **Required**: No
 
 The optional name of the Pebble service to serve as the OCI entrypoint. If set,
-this makes Rockcraft extend ``["/bin/pebble", "enter", "--verbose"]`` with
+this makes Rockcraft extend ``["/bin/pebble", "enter"]`` with
 ``["--args", "<serviceName>"]``. The command of the Pebble service must
 contain an optional argument that will become the OCI CMD.
 

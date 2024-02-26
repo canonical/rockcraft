@@ -10,7 +10,7 @@ execute: |
   rm entrypoint-service-test_latest*.rock  
   docker images entrypoint-service-test:latest
   id=$(docker run -d entrypoint-service-test)
-  test "$(docker inspect "$id" -f '{{json .Config.Entrypoint}}')" = '["/bin/pebble","enter","--verbose","--args","test-service"]'
+  test "$(docker inspect "$id" -f '{{json .Config.Entrypoint}}')" = '["/bin/pebble","enter","--args","test-service"]'
   test "$(docker inspect "$id" -f '{{json .Config.Cmd}}')" = '["foo"]'
   grep_docker_log "$id" "foo"
   docker rm -f "$id"
