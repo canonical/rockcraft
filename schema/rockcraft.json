@@ -35,7 +35,8 @@
       "enum": [
         "bare",
         "ubuntu@20.04",
-        "ubuntu@22.04"
+        "ubuntu@22.04",
+        "ubuntu@24.04"
       ],
       "type": "string"
     },
@@ -95,7 +96,8 @@
       "title": "Build-Base",
       "enum": [
         "ubuntu@20.04",
-        "ubuntu@22.04"
+        "ubuntu@22.04",
+        "devel"
       ],
       "type": "string"
     },

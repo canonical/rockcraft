@@ -1,0 +1,16 @@
+name: run-user-minimal-test
+version: latest
+summary: A minimal rock with a non-root user
+description: A minimal rock that has a non-root default user
+license: GPL-3.0
+
+base: ubuntu@22.04
+
+platforms:
+    amd64:
+
+run-user: _daemon_
+
+parts:
+    my-part:
+        plugin: nil
