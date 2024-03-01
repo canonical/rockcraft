@@ -13,11 +13,22 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+import os
 from pathlib import Path
 from unittest import mock
 
 import pytest
-from craft_parts import LifecycleManager, callbacks
+from craft_parts import (
+    LifecycleManager,
+    Part,
+    PartInfo,
+    ProjectDirs,
+    ProjectInfo,
+    Step,
+    StepInfo,
+    callbacks,
+)
+from craft_parts.state_manager.prime_state import PrimeState
 
 from rockcraft.services import lifecycle as lifecycle_module
 
@@ -78,3 +89,40 @@ def test_lifecycle_package_repositories(
     mock_callback.assert_called_once_with(
         lifecycle_module._install_overlay_repositories
     )
+
+
+def test_python_usrmerge_fix(tmp_path):
+    # The test setup is rather involved because we need to recreate/mock an
+    # exact set of circumstances here:
+
+    # 1) Create a project with 24.04 base;
+    dirs = ProjectDirs(work_dir=tmp_path)
+    project_info = ProjectInfo(
+        project_dirs=dirs,
+        application_name="test",
+        cache_dir=tmp_path,
+        strict_mode=False,
+        base="ubuntu@24.04",
+    )
+
+    # 2) Create a part using the Python plugin;
+    part = Part("p1", {"source": ".", "plugin": "python"})
+    part_info = PartInfo(project_info=project_info, part=part)
+
+    prime_dir = dirs.prime_dir
+    prime_dir.mkdir()
+
+    # 3) Setup a 'prime' directory where "lib64" is a symlink to "lib";
+    (prime_dir / "lib").mkdir()
+    (prime_dir / "lib64").symlink_to("lib")
+
+    # 4) Create a StepInfo that contains all of this.
+    step_info = StepInfo(part_info=part_info, step=Step.PRIME)
+    step_info.state = PrimeState(part_properties=part.spec.marshal(), files={"lib64"})
+
+    assert sorted(os.listdir(prime_dir)) == ["lib", "lib64"]
+
+    lifecycle_module._python_usrmerge_fix(step_info)
+
+    # After running the fix the "lib64" symlink must be gone
+    assert sorted(os.listdir(prime_dir)) == ["lib"]
