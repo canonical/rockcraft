@@ -89,13 +89,14 @@ parts:
         mkdir "$CRAFT_PART_INSTALL"/bin
         install -m755 umoci.static "$CRAFT_PART_INSTALL"/bin/umoci
     build-packages:
-        - golang-go
         - make
+    build-snaps:
+        - go/1.21/stable
 
   skopeo:
     plugin: nil
     source: https://github.com/containers/skopeo.git
-    source-tag: v1.9.0
+    source-tag: v1.14.2
     override-build: |
         CGO=1 go build -ldflags -linkmode=external ./cmd/skopeo
         mkdir "$CRAFT_PART_INSTALL"/bin
@@ -108,7 +109,7 @@ parts:
     build-attributes:
         - enable-patchelf
     build-snaps:
-        - go/1.17/stable
+        - go/1.21/stable
     build-packages:
         - libgpgme-dev
         - libassuan-dev
