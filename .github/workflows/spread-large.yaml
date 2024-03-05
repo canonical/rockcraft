@@ -45,3 +45,11 @@ jobs:
           path: tests
       - name: Run spread (large)
         run: spread tests/spread/large/
+        
+      - name: Discard spread workers
+        if: always()
+        run: |
+          shopt -s nullglob
+          for r in .spread-reuse.*.yaml; do
+            spread -discard -reuse-pid="$(echo "$r" | grep -o -E '[0-9]+')"
+          done
