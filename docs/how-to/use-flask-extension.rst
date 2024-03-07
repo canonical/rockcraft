@@ -1,7 +1,9 @@
 Use the flask-framework extension
 ---------------------------------
 
-The Flask extension is compatible with the ``bare`` and ``ubuntu@22.04`` bases.
+.. note::
+	The Flask extension is compatible with the ``bare`` and ``ubuntu@22.04`` bases.
+
 To employ it, include ``extensions: [ flask-framework ]`` in your
 ``rockcraft.yaml`` file.
 
