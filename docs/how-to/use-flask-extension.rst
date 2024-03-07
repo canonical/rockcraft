@@ -11,7 +11,7 @@ Example:
 
     name: example-flask
     summary: A Flask application
-    description: A ROCK packing a Flask application via the flask extension
+    description: A rock packing a Flask application via the flask extension
     version: "0.1"
     base: bare
     license: Apache-2.0
@@ -26,7 +26,7 @@ By default the flask extension only includes the ``app.py``, ``static/``,
 ``app/``, and ``templates/`` in the flask project. But you can overwrite this
 behaviour with a prime declaration in the specially-named
 ``flask-framework/install-app`` part to instruct the flask extension on which
-files to include or exclude from the project directory in the ROCK image.
+files to include or exclude from the project directory in the rock image.
 
 The extension places the files from the project folder in the ``/flask/app``
 directory in the final image - therefore, all inclusions and exclusions must
