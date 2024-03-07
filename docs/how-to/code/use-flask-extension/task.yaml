@@ -1,0 +1,19 @@
+###########################################
+# IMPORTANT
+# Comments matter!
+# The docs use the wrapping comments as 
+# markers for including said instructions 
+# as snippets in the docs.
+###########################################
+summary: test the "Use the flask-framework extension" guide
+
+execute: |
+  cd example
+  rockcraft pack --verbosity debug
+  cd ../prime_example
+  rockcraft pack --verbosity debug
+  cd ../prime_exclude_example
+  rockcraft pack --verbosity debug
+
+restore: |
+  rm -rf */*.rock

@@ -1,5 +1,5 @@
-Using the flask-framework extension
------------------------------------
+Use the flask-framework extension
+---------------------------------
 
 The Flask extension is compatible with the ``bare`` and ``ubuntu@22.04`` bases.
 To employ it, include ``extensions: [ flask-framework ]`` in your
@@ -7,17 +7,8 @@ To employ it, include ``extensions: [ flask-framework ]`` in your
 
 Example:
 
-.. code-block:: yaml
-
-    name: example-flask
-    summary: A Flask application
-    description: A rock packing a Flask application via the flask extension
-    version: "0.1"
-    base: bare
-    license: Apache-2.0
-
-    extensions:
-      - flask-framework
+.. literalinclude:: code/use-flask-extension/example/rockcraft.yaml
+    :language: yaml
 
 Managing project files with the flask extension
 -----------------------------------------------
@@ -34,23 +25,15 @@ be prefixed with ``flask/app``.
 
 For example, to include only select files:
 
-.. code-block:: yaml
-
-    flask-framework/install-app:
-      prime:
-        - flask/app/static
-        - flask/app/.env
-        - flask/app/app.py
-        - flask/app/templates
+.. literalinclude:: code/use-flask-extension/prime_example/rockcraft.yaml
+    :language: yaml
+    :start-after: [docs:parts-start]
+    :end-before: [docs:parts-end]
 
 To exclude certain files from the project directory in the rock image,
 add the following part to ``rockcraft.yaml``:
 
-.. code-block:: yaml
-
-    flask-framework/install-app:
-      prime:
-        - -flask/app/.git
-        - -flask/app/.venv
-        - -flask/app/.yarn
-        - -flask/app/node_modules
+.. literalinclude:: code/use-flask-extension/prime_exclude_example/rockcraft.yaml
+    :language: yaml
+    :start-after: [docs:parts-start]
+    :end-before: [docs:parts-end]
