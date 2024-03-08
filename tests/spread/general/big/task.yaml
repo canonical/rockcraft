@@ -27,7 +27,7 @@ execute: |
   docker images
 
   # Check the rock's output
-  docker run --rm big:latest | MATCH "/tmp"
+  docker run --rm big:latest exec pebble logs | MATCH "/tmp"
   
   ############################################################################################
   # test ownership: "newfiles" and "a.txt" are owned by uid 9999, "b.txt" is owned by uid 3333
