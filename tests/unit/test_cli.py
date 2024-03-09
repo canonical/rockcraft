@@ -1,6 +1,6 @@
 # -*- Mode:Python; indent-tabs-mode:nil; tab-width:4 -*-
 #
-# Copyright 2021-2022 Canonical Ltd.
+# Copyright 2021-2024 Canonical Ltd.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 3 as
@@ -55,7 +55,7 @@ def test_run_pack_services(mocker, monkeypatch, tmp_path):
     )
 
     package_mocks = mocker.patch.multiple(
-        services.RockcraftPackageService, write_metadata=DEFAULT, pack=DEFAULT
+        services.RockcraftPackageService, write_metadata=DEFAULT, pack=DEFAULT, update_project=DEFAULT,
     )
 
     command_line = ["rockcraft", "pack"]

@@ -1,6 +1,6 @@
 # -*- Mode:Python; indent-tabs-mode:nil; tab-width:4 -*-
 #
-# Copyright 2023 Canonical Ltd.
+# Copyright 2023-2024 Canonical Ltd.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 3 as
@@ -38,7 +38,11 @@ class Rockcraft(Application):
     """Rockcraft application definition."""
 
     @override
-    def _extra_yaml_transform(self, yaml_data: dict[str, Any]) -> dict[str, Any]:
+    def _extra_yaml_transform(self, yaml_data: dict[str, Any],
+                              *,
+                              build_on: str,  # noqa: ARG002 (Unused method argument)
+                              build_for: str | None,  # noqa: ARG002 (Unused method argument)
+                              ) -> dict[str, Any]:
         return models.transform_yaml(self._work_dir, yaml_data)
 
     @override

@@ -1,6 +1,6 @@
 # -*- Mode:Python; indent-tabs-mode:nil; tab-width:4 -*-
 #
-# Copyright 2021 Canonical Ltd.
+# Copyright 2021-2024 Canonical Ltd.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 3 as
@@ -30,6 +30,7 @@ from craft_application.models import BuildInfo
 from craft_application.models import BuildPlanner as BaseBuildPlanner
 from craft_application.models import CraftBaseConfig
 from craft_application.models import Project as BaseProject
+from craft_application.models import VersionStr
 from craft_providers import bases
 from pydantic_yaml import YamlModelMixin
 from typing_extensions import override
@@ -300,6 +301,7 @@ class Project(YamlModelMixin, BuildPlanner, BaseProject):  # type: ignore[misc]
     # summary is Optional[str] in BaseProject
     summary: str  # type: ignore
     description: str  # type: ignore[reportIncompatibleVariableOverride]
+    version: VersionStr  # Remove this when implementing adopt-info.
     rock_license: str = pydantic.Field(alias="license")
     environment: dict[str, str] | None
     run_user: _RunUser

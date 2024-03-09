@@ -1,6 +1,6 @@
 # -*- Mode:Python; indent-tabs-mode:nil; tab-width:4 -*-
 #
-# Copyright 2023 Canonical Ltd.
+# Copyright 2023-2024 Canonical Ltd.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 3 as
@@ -56,7 +56,9 @@ def test_lifecycle_args(
         package_repositories=[{"ppa": "ppa/ppa", "type": "apt"}],
         parallel_build_count=4,
         project_name="default",
-        # project_vars={"version": "1.0"},
+        project_vars={"version": "1.0"},
+        project_vars_part_name=None,
+        track_stage_packages=True,
         work_dir=Path("work"),
         rootfs_dir=Path("."),
     )

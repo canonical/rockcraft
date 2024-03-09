@@ -1,6 +1,6 @@
 # -*- Mode:Python; indent-tabs-mode:nil; tab-width:4 -*-
 #
-# Copyright 2023 Canonical Ltd.
+# Copyright 2023-2024 Canonical Ltd.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3 as
@@ -79,6 +79,11 @@ class ExpectedValues:
 # A mapping from host Ubuntu to expected Python values; We need this mapping
 # because these integration tests run on the host machine as the "build base".
 RELEASE_TO_VALUES = {
+    "24.04": ExpectedValues(
+            symlinks=["python", "python3", "python3.12"],
+            symlink_target="../usr/bin/python3.12",
+            version_dir="python3.12",
+        ),
     "22.04": ExpectedValues(
         symlinks=["python", "python3", "python3.10"],
         symlink_target="../usr/bin/python3.10",
@@ -101,9 +106,9 @@ except OsReleaseVersionIdError:
 
 
 @pytest.mark.parametrize("base", tuple(UBUNTU_BASES))
-def test_python_plugin_ubuntu(base, tmp_path, run_lifecycle):
+def test_python_plugin_ubuntu(base, tmp_path, run_lifecycle, default_build_plan):
     project = create_python_project(base=base)
-    run_lifecycle(project=project, work_dir=tmp_path)
+    run_lifecycle(project=project, work_dir=tmp_path, build_plan=default_build_plan)
 
     bin_dir = tmp_path / "stage/bin"
 
@@ -129,9 +134,9 @@ def test_python_plugin_ubuntu(base, tmp_path, run_lifecycle):
     assert not pyvenv_cfg.is_file()
 
 
-def test_python_plugin_bare(tmp_path, run_lifecycle):
+def test_python_plugin_bare(tmp_path, run_lifecycle, default_build_plan):
     project = create_python_project(base="bare")
-    run_lifecycle(project=project, work_dir=tmp_path)
+    run_lifecycle(project=project, work_dir=tmp_path, build_plan=default_build_plan)
 
     bin_dir = tmp_path / "stage/bin"
 
@@ -164,7 +169,7 @@ def test_python_plugin_bare(tmp_path, run_lifecycle):
     assert not pyvenv_cfg.is_file()
 
 
-def test_python_plugin_invalid_interpreter(tmp_path, run_lifecycle):
+def test_python_plugin_invalid_interpreter(tmp_path, run_lifecycle, default_build_plan):
     """Check that an invalid value for PARTS_PYTHON_INTERPRETER fails the build"""
     log_filepath = tmp_path / "log.txt"
     emit.init(EmitterMode.VERBOSE, "rockcraft", "rockcraft", log_filepath=log_filepath)
@@ -176,7 +181,7 @@ def test_python_plugin_invalid_interpreter(tmp_path, run_lifecycle):
     project = create_python_project(base="bare", extra_part_props=extra_part)
 
     with pytest.raises(errors.PartsLifecycleError):
-        run_lifecycle(project=project, work_dir=tmp_path)
+        run_lifecycle(project=project, work_dir=tmp_path, build_plan=default_build_plan)
 
     emit.ended_ok()
 
