@@ -1,6 +1,6 @@
 # -*- Mode:Python; indent-tabs-mode:nil; tab-width:4 -*-
 #
-# Copyright 2023 Canonical Ltd.
+# Copyright 2023-2024 Canonical Ltd.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 3 as
@@ -18,7 +18,7 @@
 
 from typing import Any
 
-from craft_application import Application, AppMetadata, util
+from craft_application import Application, AppMetadata
 from craft_parts.plugins.plugins import PluginType
 from overrides import override  # type: ignore[reportUnknownVariableType]
 
@@ -38,14 +38,17 @@ class Rockcraft(Application):
     """Rockcraft application definition."""
 
     @override
-    def _extra_yaml_transform(self, yaml_data: dict[str, Any]) -> dict[str, Any]:
+    def _extra_yaml_transform(
+        self,
+        yaml_data: dict[str, Any],
+        *,
+        build_on: str,  # (Unused method argument)
+        build_for: str | None,  # (Unused method argument)
+    ) -> dict[str, Any]:
         return models.transform_yaml(self._work_dir, yaml_data)
 
     @override
     def _configure_services(self, platform: str | None, build_for: str | None) -> None:
-        if build_for is None:
-            build_for = util.get_host_architecture()
-
         self.services.set_kwargs("image", work_dir=self._work_dir, build_for=build_for)
         self.services.set_kwargs(
             "package",

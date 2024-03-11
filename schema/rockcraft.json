@@ -94,6 +94,10 @@
       "title": "License",
       "type": "string"
     },
+    "adopt-info": {
+      "title": "Adopt-Info",
+      "type": "string"
+    },
     "parts": {
       "title": "Parts",
       "type": "object",
@@ -554,7 +558,6 @@
         },
         "organize": {
           "title": "Organize",
-          "default": {},
           "type": "object",
           "additionalProperties": {
             "type": "string"
@@ -562,9 +565,6 @@
         },
         "overlay": {
           "title": "Overlay",
-          "default": [
-            "*"
-          ],
           "type": "array",
           "items": {
             "type": "string"
@@ -572,9 +572,6 @@
         },
         "stage": {
           "title": "Stage",
-          "default": [
-            "*"
-          ],
           "type": "array",
           "items": {
             "type": "string"
@@ -582,9 +579,6 @@
         },
         "prime": {
           "title": "Prime",
-          "default": [
-            "*"
-          ],
           "type": "array",
           "items": {
             "type": "string"
