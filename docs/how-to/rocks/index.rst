@@ -1,3 +1,5 @@
+.. _how-to-rocks:
+
 .. toctree::
    :maxdepth: 1
 

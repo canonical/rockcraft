@@ -1,3 +1,5 @@
+.. _how-to-chisel:
+
 .. toctree::
    :maxdepth: 1
 

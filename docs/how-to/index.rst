@@ -11,7 +11,7 @@ They'll help you achieve an end result but may require you to understand and
 adapt the steps to fit your specific requirements.
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    Get started - quick guide <get-started>
    Cut and Slice with Chisel <chisel/index>
