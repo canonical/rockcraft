@@ -48,14 +48,14 @@ class Rockcraft(Application):
         return models.transform_yaml(self._work_dir, yaml_data)
 
     @override
-    def _configure_services(self) -> None:
+    def _configure_services(self, platform: str | None, build_for: str | None) -> None:
         self.services.set_kwargs("image", work_dir=self._work_dir, build_for=build_for)
         self.services.set_kwargs(
             "package",
             platform=platform,
             build_for=build_for,
         )
-        super()._configure_services()
+        super()._configure_services(platform, build_for)
 
     @override
     def _get_app_plugins(self) -> dict[str, PluginType]:
