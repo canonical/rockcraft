@@ -14,3 +14,4 @@ Rockcraft's components, commands and keywords.
    commands
    extensions
    plugins
+   parts_steps

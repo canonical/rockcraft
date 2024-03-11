@@ -16,3 +16,6 @@ the motivations behind its development.
    rocks
    pebble
    lifecycle-layer
+   filesets
+   parts
+   lifecycle
