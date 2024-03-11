@@ -58,6 +58,7 @@ that warmly welcomes community projects, contributions, suggestions, fixes
 and constructive feedback.
 
 * `Ubuntu Rocks Discourse <https://discourse.ubuntu.com/c/rocks/117>`_
+* `Rocks space on Matrix <https://matrix.to/#/#rocks:ubuntu.com>`_
 * `Ubuntu Code of Conduct <https://ubuntu.com/community/code-of-conduct>`_
 * `Canonical contributor license agreement
   <https://ubuntu.com/legal/contributors>`_
