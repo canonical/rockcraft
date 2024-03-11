@@ -23,10 +23,10 @@ from pathlib import Path
 from unittest.mock import ANY, call, mock_open, patch
 
 import pytest
-
-import tests
 from rockcraft import errors, oci
 from rockcraft.architectures import SUPPORTED_ARCHS
+
+import tests
 
 MOCK_NEW_USER = {
     "user": "foo",

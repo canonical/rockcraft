@@ -15,9 +15,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import pytest
-
 from rockcraft import errors, extensions
 from rockcraft.models import load_project
+
 from tests.unit.testing.extensions import (
     FULL_EXTENSION_YAML,
     ExperimentalExtension,

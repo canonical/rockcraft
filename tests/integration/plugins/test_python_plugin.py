@@ -23,10 +23,10 @@ from craft_application import errors
 from craft_cli import EmitterMode, emit
 from craft_parts.errors import OsReleaseVersionIdError
 from craft_parts.utils.os_utils import OsRelease
-
 from rockcraft import plugins
 from rockcraft.models.project import CURRENT_DEVEL_BASE, Project
 from rockcraft.plugins.python_plugin import SITECUSTOMIZE_TEMPLATE
+
 from tests.testing.project import create_project
 from tests.util import ubuntu_only
 
@@ -80,10 +80,10 @@ class ExpectedValues:
 # because these integration tests run on the host machine as the "build base".
 RELEASE_TO_VALUES = {
     "24.04": ExpectedValues(
-            symlinks=["python", "python3", "python3.12"],
-            symlink_target="../usr/bin/python3.12",
-            version_dir="python3.12",
-        ),
+        symlinks=["python", "python3", "python3.12"],
+        symlink_target="../usr/bin/python3.12",
+        version_dir="python3.12",
+    ),
     "22.04": ExpectedValues(
         symlinks=["python", "python3", "python3.10"],
         symlink_target="../usr/bin/python3.10",

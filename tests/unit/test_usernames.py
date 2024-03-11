@@ -16,7 +16,6 @@
 
 import pydantic
 import pytest
-
 from rockcraft import usernames
 
 

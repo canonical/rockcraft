@@ -18,7 +18,7 @@
 
 from typing import Any
 
-from craft_application import Application, AppMetadata, util
+from craft_application import Application, AppMetadata
 from craft_parts.plugins.plugins import PluginType
 from overrides import override  # type: ignore[reportUnknownVariableType]
 
@@ -38,25 +38,24 @@ class Rockcraft(Application):
     """Rockcraft application definition."""
 
     @override
-    def _extra_yaml_transform(self, yaml_data: dict[str, Any],
-                              *,
-                              build_on: str,  # noqa: ARG002 (Unused method argument)
-                              build_for: str | None,  # noqa: ARG002 (Unused method argument)
-                              ) -> dict[str, Any]:
+    def _extra_yaml_transform(
+        self,
+        yaml_data: dict[str, Any],
+        *,
+        build_on: str,  # (Unused method argument)
+        build_for: str | None,  # (Unused method argument)
+    ) -> dict[str, Any]:
         return models.transform_yaml(self._work_dir, yaml_data)
 
     @override
-    def _configure_services(self, platform: str | None, build_for: str | None) -> None:
-        if build_for is None:
-            build_for = util.get_host_architecture()
-
+    def _configure_services(self) -> None:
         self.services.set_kwargs("image", work_dir=self._work_dir, build_for=build_for)
         self.services.set_kwargs(
             "package",
             platform=platform,
             build_for=build_for,
         )
-        super()._configure_services(platform, build_for)
+        super()._configure_services()
 
     @override
     def _get_app_plugins(self) -> dict[str, PluginType]:

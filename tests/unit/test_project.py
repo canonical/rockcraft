@@ -28,7 +28,6 @@ from craft_application.errors import CraftValidationError
 from craft_application.models import BuildInfo
 from craft_parts import Features
 from craft_providers.bases import BaseName
-
 from rockcraft.errors import ProjectLoadError
 from rockcraft.models import Project
 from rockcraft.models.project import (

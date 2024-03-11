@@ -21,7 +21,6 @@ from unittest.mock import DEFAULT, call, patch
 import pytest
 import yaml
 from craft_cli import emit
-
 from rockcraft import cli, services
 from rockcraft.application import Rockcraft
 from rockcraft.models import project
@@ -55,7 +54,10 @@ def test_run_pack_services(mocker, monkeypatch, tmp_path):
     )
 
     package_mocks = mocker.patch.multiple(
-        services.RockcraftPackageService, write_metadata=DEFAULT, pack=DEFAULT, update_project=DEFAULT,
+        services.RockcraftPackageService,
+        write_metadata=DEFAULT,
+        pack=DEFAULT,
+        update_project=DEFAULT,
     )
 
     command_line = ["rockcraft", "pack"]
