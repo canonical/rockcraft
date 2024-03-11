@@ -111,6 +111,7 @@ linkcheck_ignore = [
     "https://github.com/canonical/craft-actions#rockcraft-pack",
     "https://github.com/canonical/pebble#layer-specification",
     "https://juju.is/cloud-native-kubernetes-usage-report-2021#selection-criteria-for-container-images",
+    "https://matrix.to/#/#rocks:ubuntu.com",
 ]
 
 rst_epilog = """
