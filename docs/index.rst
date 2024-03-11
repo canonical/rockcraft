@@ -1,9 +1,9 @@
-Welcome to Rockcraft's documentation!
+Rockcraft documentation
 ===========================================
 
-**Rockcraft is a tool to create** :ref:`rocks_explanation` -- a new generation
-of secure, stable and `OCI-compliant container images <OCI_image_spec_>`_,
-based on Ubuntu.
+**Rockcraft is a tool to create** :ref:`rocks <rocks_explanation>` -- a new
+generation of secure, stable and `OCI-compliant container images
+<OCI_image_spec_>`_, based on Ubuntu.
 
 **Rockcraft is for anyone who wants to build production-grade container images,
 regardless of their experience as a software developer** -- from independent
@@ -32,22 +32,25 @@ allowing complex operations to be declared at build time.
 
    .. grid-item-card:: :ref:`Tutorials <tutorials>`
 
-      **Get started** with a hands-on introduction to Rockcraft
+      **Get started** - become familiar with Rockcraft by containerising different software applications as rocks.
 
    .. grid-item-card:: :ref:`How-to guides <how-to>`
 
-      **Step-by-step guides** covering key operations and common tasks
+      **Step-by-step guides** - learn key operations, ranging from creating and
+      cutting slices to migrating and publishing rocks.
 
 .. grid:: 1 1 2 2
    :reverse:
 
    .. grid-item-card:: :ref:`Reference <reference>`
 
-      **Technical information** about the ``rockcraft.yaml`` format
+      **Technical information** - understand how to use every field in
+      ``rockcraft.yaml``.
 
    .. grid-item-card:: :ref:`Explanation <explanation>`
 
-      **Discussion and clarification** of key topics
+      **Discussion and clarification** - explore Rockcraft's lifecycle and how a
+      rock gets packed under the hood.
 
 
 Project and community
