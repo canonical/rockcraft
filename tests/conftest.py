@@ -212,7 +212,7 @@ def package_service(default_project, default_factory):
 
 
 @pytest.fixture()
-def lifecycle_service(default_project, default_factory):
+def lifecycle_service(default_project, default_factory, default_build_plan):
     from rockcraft.application import APP_METADATA
     from rockcraft.services import RockcraftLifecycleService
 
@@ -222,7 +222,7 @@ def lifecycle_service(default_project, default_factory):
         services=default_factory,
         work_dir=Path("work/"),
         cache_dir=Path("cache/"),
-        build_for="amd64",
+        build_plan=default_build_plan,
     )
 
 

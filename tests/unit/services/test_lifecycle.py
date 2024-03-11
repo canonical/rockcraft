@@ -56,8 +56,10 @@ def test_lifecycle_args(
         package_repositories=[{"ppa": "ppa/ppa", "type": "apt"}],
         parallel_build_count=4,
         project_name="default",
-        # project_vars={"version": "1.0"},
+        project_vars={"version": "1.0"},
+        project_vars_part_name=None,
         work_dir=Path("work"),
+        track_stage_packages=True,
         rootfs_dir=Path("."),
     )
 
