@@ -26,9 +26,11 @@ import pydantic
 import spdx_lookup  # type: ignore
 import yaml
 from craft_application.errors import CraftValidationError
-from craft_application.models import BuildInfo, CraftBaseConfig, VersionStr
+from craft_application.models import BuildInfo
 from craft_application.models import BuildPlanner as BaseBuildPlanner
+from craft_application.models import CraftBaseConfig
 from craft_application.models import Project as BaseProject
+from craft_application.models import VersionStr
 from craft_providers import bases
 from pydantic_yaml import YamlModelMixin
 from typing_extensions import override

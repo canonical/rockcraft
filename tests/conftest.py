@@ -112,6 +112,7 @@ def extra_project_params():
 @pytest.fixture()
 def default_project(extra_project_params):
     from craft_application.models import VersionStr
+
     from rockcraft.models.project import NameStr, Project
 
     parts = extra_project_params.pop("parts", {})

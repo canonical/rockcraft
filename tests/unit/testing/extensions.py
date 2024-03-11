@@ -19,6 +19,7 @@ import textwrap
 from typing import Any
 
 from overrides import override
+
 from rockcraft.extensions.extension import Extension
 
 

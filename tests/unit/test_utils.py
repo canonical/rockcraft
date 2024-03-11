@@ -18,6 +18,7 @@ from pathlib import Path
 from unittest.mock import call
 
 import pytest
+
 from rockcraft import utils
 
 

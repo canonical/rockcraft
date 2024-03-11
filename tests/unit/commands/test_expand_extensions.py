@@ -18,9 +18,9 @@ import textwrap
 from pathlib import Path
 
 import pytest
+
 from rockcraft import extensions
 from rockcraft.commands import ExpandExtensionsCommand
-
 from tests.unit.testing.extensions import FULL_EXTENSION_YAML, FullExtension
 
 # The project with the extension (FullExtension) expanded

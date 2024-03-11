@@ -19,6 +19,7 @@ import pathlib
 from typing import cast
 
 from craft_application import models
+
 from rockcraft.application import APP_METADATA
 from rockcraft.models import Project
 from rockcraft.services import RockcraftLifecycleService, RockcraftServiceFactory
