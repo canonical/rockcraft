@@ -18,6 +18,9 @@
 import pathlib
 from typing import cast
 
+from craft_application import util
+from craft_application.models import BuildInfo
+
 from rockcraft.application import APP_METADATA
 from rockcraft.models import Project
 from rockcraft.services import RockcraftLifecycleService, RockcraftServiceFactory
@@ -34,12 +37,21 @@ def run_mocked_lifecycle(
 ) -> RockcraftLifecycleService:
     """Run a project's lifecycle with a mocked base image."""
 
+    build_plan = [
+        BuildInfo(
+            platform="unused",
+            base=util.get_host_base(),
+            build_on=util.get_host_architecture(),
+            build_for=util.get_host_architecture(),
+        )
+    ]
+
     factory = RockcraftServiceFactory(APP_METADATA)
     factory.set_kwargs(
         "lifecycle",
         work_dir=work_dir,
         cache_dir=work_dir / "cache_dir",
-        build_for="amd64",
+        build_plan=build_plan,
     )
     factory.set_kwargs(
         "image",

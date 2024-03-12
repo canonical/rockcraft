@@ -4,7 +4,15 @@ execute: |
   # Check that work dirs *don't* exist
   test ! -d parts -a ! -d stage -a ! -d prime
   
-  run_rockcraft pack --destructive-mode
+  if [ "$SPREAD_SYSTEM" = "ubuntu-22.04-64" ]; then
+    # System matches the build-base: must work
+    run_rockcraft pack --destructive-mode
+  else
+    # System does not match the build-base: must fail
+    error_pattern='"Ubuntu 22.04" builds cannot be performed on this'
+    run_rockcraft pack --destructive-mode 2>&1 >/dev/null | MATCH "$error_pattern"
+    exit 0
+  fi
 
   test -f destructive-mode*.rock
   

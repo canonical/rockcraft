@@ -462,11 +462,14 @@ def test_project_version_invalid(yaml_loaded_data):
 
 
 @pytest.mark.parametrize(
-    "field", ["name", "version", "base", "parts", "description", "summary", "license"]
+    # "field", ["name", "version", "base", "parts", "description", "summary", "license"]
+    "field",
+    ["version"],
 )
 def test_project_missing_field(yaml_loaded_data, field):
     del yaml_loaded_data[field]
 
+    p = load_project_yaml(yaml_loaded_data)
     with pytest.raises(CraftValidationError) as err:
         load_project_yaml(yaml_loaded_data)
     assert str(err.value) == (

@@ -38,6 +38,7 @@ def lifecycle_init_mock():
 def test_run_pack_services(mocker, monkeypatch, tmp_path):
     # Pretend it's running inside the managed instance
     monkeypatch.setenv("CRAFT_MANAGED_MODE", "1")
+    monkeypatch.setenv("CRAFT_DEBUG", "1")
 
     log_path = tmp_path / "rockcraft.log"
     mock_ended_ok = mocker.spy(emit, "ended_ok")
@@ -52,6 +53,7 @@ def test_run_pack_services(mocker, monkeypatch, tmp_path):
         setup=DEFAULT,
         prime_dir=fake_prime_dir,
         run=DEFAULT,
+        project_info=DEFAULT,
     )
 
     package_mocks = mocker.patch.multiple(
