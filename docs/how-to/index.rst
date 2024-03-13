@@ -18,8 +18,9 @@ adapt the steps to fit your specific requirements.
 Chisel
 ------
 
-Chisel is a tool that lets you keep only the required files from one or more apt packages and discard the rest. Upgrade your Chisel slicing skills by learning how
-to cut, install and publish slices.
+Chisel is a tool that lets you keep only the required files from one or more apt
+packages and discard the rest. Upgrade your Chisel slicing skills by learning
+how to cut, install and publish slices.
 
 .. toctree::
    :maxdepth: 1
