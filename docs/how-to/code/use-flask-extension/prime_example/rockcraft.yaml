@@ -13,7 +13,7 @@ parts:
   flask-framework/install-app:
     prime:
       - flask/app/static
-      - flask/app/.env
+      - flask/app/.env.production
       - flask/app/app.py
       - flask/app/templates
 # [docs:parts-end]
