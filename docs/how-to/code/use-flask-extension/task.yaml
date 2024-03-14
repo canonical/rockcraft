@@ -7,6 +7,9 @@
 ###########################################
 summary: test the "Use the flask-framework extension" guide
 
+environment:
+  ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS: "1"
+
 execute: |
   cd example
   rockcraft pack --verbosity debug
