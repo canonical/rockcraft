@@ -59,7 +59,7 @@ class InitCommand(AppCommand):
         "simple": textwrap.dedent(
             """\
                 name: {name}
-                base: ubuntu@22.04 # the base environment for this ROCK
+                base: ubuntu@22.04 # the base environment for this rock
                 version: '0.1' # just for humans. Semantic versioning is recommended
                 summary: Single-line elevator pitch for your amazing rock # 79 char long summary
                 description: |
@@ -133,7 +133,7 @@ class InitCommand(AppCommand):
     def fill_parser(self, parser):
         """Specify command's specific parameters."""
         parser.add_argument(
-            "--name", help="The name of the ROCK; defaults to the directory name"
+            "--name", help="The name of the rock; defaults to the directory name"
         )
         parser.add_argument(
             "--profile",
