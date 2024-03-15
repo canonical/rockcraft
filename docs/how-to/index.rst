@@ -18,9 +18,8 @@ adapt the steps to fit your specific requirements.
 Chisel
 ------
 
-Chisel is a tool that lets you keep only the required files from one or more apt
-packages and discard the rest. Upgrade your Chisel slicing skills by learning
-how to cut, install and publish slices.
+Upgrade your Chisel slicing skills by learning how to cut, install and publish
+slices.
 
 .. toctree::
    :maxdepth: 1
@@ -42,9 +41,9 @@ compiled a couple of guides for you to facilitate your contribution.
 Rocks
 -----
 
-Are you curious about packing a rock, seeking information on how to migrate a
-Dockerfile to a rock, or struggling with using services in your rockcraft.yaml?
-Those guides will help you explore all those aspects in Rockcraft and more.
+Learn about how to pack a rock, how to migrate a Dockerfile to a rock, or how
+to use services in your rockcraft.yaml. Those guides will help you explore all
+those aspects in Rockcraft and more.
 
 .. toctree::
    :maxdepth: 1
