@@ -119,4 +119,32 @@ def _post_prime_callback(step_info: StepInfo) -> bool:
     files = step_info.state.files if step_info.state else set()
 
     layers.prune_prime_files(prime_dir, files, base_layer_dir)
+
+    _python_usrmerge_fix(step_info)
+
     return True
+
+
+def _python_usrmerge_fix(step_info: StepInfo):
+    """Fix 'lib64' symlinks created by the Python plugin on ubuntu@24.04 projects."""
+    if step_info.project_info.base != "ubuntu@24.04":
+        # The issue only affects rocks with 24.04 bases.
+        return
+
+    state = step_info.state
+    if state is None:
+        # Can't inspect the files without a StepState.
+        return
+
+    if state.part_properties["plugin"] != "python":
+        # Be conservative and don't try to fix the files if they didn't come
+        # from the Python plugin.
+        return
+
+    if "lib64" not in state.files:
+        return
+
+    prime_dir = step_info.prime_dir
+    lib64 = prime_dir / "lib64"
+    if lib64.is_symlink() and lib64.readlink() == Path("lib"):
+        lib64.unlink()

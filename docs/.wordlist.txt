@@ -11,8 +11,11 @@ CMake
 cmake
 CMD
 CTRL
+dataset
+Deadsnakes
 declaratively
 dev
+dir
 distroless
 Diátaxis
 Django
@@ -28,6 +31,9 @@ entrypoint
 entrypoints
 executables
 expressjs
+Filesets
+fileset
+filesets
 filesystem
 filesystems
 fs
@@ -37,6 +43,7 @@ GID
 github
 GPG
 Gunicorn
+gzipped
 hardcoded
 html
 https
@@ -46,6 +53,8 @@ io
 js
 json
 Kubernetes
+LDFLAGS
+ldflags
 libc
 libssl
 Lifecycle
@@ -72,10 +81,13 @@ OpenSSL
 openssl
 OpenSSL's
 organize
+os
 packageName
 Permalink
 PID
 Podman
+ppa
+pre
 pyfiglet
 PyPI
 reStructuredText
@@ -89,8 +101,12 @@ runit
 Runtime
 runtime
 rustc
-SCons
+RUSTFLAGS
 scons
+SCons
+scriptlets
+SDK
+SDL
 setuptools
 Skopeo
 skopeo
@@ -103,9 +119,12 @@ SPDX
 SSL
 statsd
 subdir
+subdirectories
 subdirectory
+subkey
 submodules
 subreaping
+subtree
 supervisord
 symlink
 symlinks
@@ -114,6 +133,7 @@ toml
 toolchain
 triaged
 ubuntu
+unbuilt
 UID
 usrmerge
 VENV

@@ -103,7 +103,6 @@ exclude_patterns = [
     ".DS_Store",
     "env",
     "sphinx-starter-pack",
-    "common",
 ]
 
 # Links to ignore when checking links
@@ -112,6 +111,7 @@ linkcheck_ignore = [
     "https://github.com/canonical/craft-actions#rockcraft-pack",
     "https://github.com/canonical/pebble#layer-specification",
     "https://juju.is/cloud-native-kubernetes-usage-report-2021#selection-criteria-for-container-images",
+    "https://matrix.to/#/#rocks:ubuntu.com",
 ]
 
 rst_epilog = """
@@ -225,6 +225,28 @@ linkcheck_anchors_ignore = ["slice-definitions"]
 
 # Enable support for google-style instance attributes.
 napoleon_use_ivar = True
+
+extensions.extend(("sphinxcontrib.details.directive",))
+
+exclude_patterns.extend(
+    (
+        # Excluded here because they are included explicitly in other documents;
+        # if we don't exclude them, they generate "duplicate label" errors.
+        "common/craft-parts/dump_plugin.rst",
+        "common/craft-parts/overlay_parameters.rst",
+        "common/craft-parts/part_properties.rst",
+        "common/craft-parts/python_plugin.rst",
+        "common/craft-parts/rust_plugin.rst",
+        "common/craft-parts/step_execution_environment.rst",
+        "common/craft-parts/step_output_directories.rst",
+        "common/craft-parts/explanation/filesets.rst",
+        "common/craft-parts/explanation/lifecycle.rst",
+        "common/craft-parts/explanation/parts.rst",
+        "common/craft-parts/explanation/how_parts_are_built.rst",
+        "common/craft-parts/explanation/overlay_step.rst",
+        "common/craft-parts/reference/parts_steps.rst",
+    )
+)
 
 
 def generate_cli_docs(nil):
