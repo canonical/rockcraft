@@ -22,13 +22,13 @@ backends:
     halt-timeout: 2h
     systems:
       - ubuntu-20.04-64:
-          workers: 2
+          workers: 3
           storage: 40G
       - ubuntu-22.04-64:
-          workers: 2
+          workers: 3
           storage: 40G
       - fedora-37-64:
-          workers: 2
+          workers: 3
           storage: 40G
 
 prepare: |
