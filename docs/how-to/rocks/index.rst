@@ -7,3 +7,4 @@
    Convert an entrypoint to a Pebble layer <convert-to-pebble-layer>
    Publish a rock to a registry <publish-a-rock.rst>
    Migrate a Docker image to a chiselled rock <migrate-to-chiselled-rock.rst>
+   Use the flask extension <use-flask-extension.rst>
