@@ -16,7 +16,7 @@ Install Rockcraft
 
 Install Rockcraft on your host:
 
-.. literalinclude:: ../tutorials/code/hello-world/task.yaml
+.. literalinclude:: ../../tutorials/code/hello-world/task.yaml
     :language: bash
     :start-after: [docs:install-rockcraft]
     :end-before: [docs:install-rockcraft-end]
@@ -34,13 +34,13 @@ be ``amd64``.
 Create a new directory, write the reference Dockerfile (pasted below) into a
 text editor and save it as ``Dockerfile``:
 
-.. literalinclude:: code/migrate-to-chiselled-rock/Dockerfile
+.. literalinclude:: ../code/migrate-to-chiselled-rock/Dockerfile
     :language: Docker
 
 For the sake of comparison, start by building this Docker image by running:
 
 
-.. literalinclude:: code/migrate-to-chiselled-rock/task.yaml
+.. literalinclude:: ../code/migrate-to-chiselled-rock/task.yaml
     :language: bash
     :start-after: [docs:build-docker-image]
     :end-before: [docs:build-docker-image-end]
@@ -71,7 +71,7 @@ The output should look as follows:
 
 Now, inspect this .NET reference image's size:
 
-.. literalinclude:: code/migrate-to-chiselled-rock/task.yaml
+.. literalinclude:: ../code/migrate-to-chiselled-rock/task.yaml
     :language: bash
     :start-after: [docs:inspect-docker-image]
     :end-before: [docs:inspect-docker-image-end]
@@ -89,7 +89,7 @@ The output should look as follows:
 
 And make sure it is functional:
 
-.. literalinclude:: code/migrate-to-chiselled-rock/task.yaml
+.. literalinclude:: ../code/migrate-to-chiselled-rock/task.yaml
     :language: bash
     :start-after: [docs:run-docker-image]
     :end-before: [docs:run-docker-image-end]
@@ -137,7 +137,7 @@ With these requirements in mind, and in the same directory as the Dockerfile
 from above, write the following into a text editor and save it as
 ``rockcraft.yaml``:
 
-.. literalinclude:: code/migrate-to-chiselled-rock/rockcraft.yaml
+.. literalinclude:: ../code/migrate-to-chiselled-rock/rockcraft.yaml
     :language: yaml
 
 Note the subtle chiselling of the .NET Runtime package in the ``rockcraft.yaml``
@@ -152,7 +152,7 @@ Pack the Chiselled Rock with Rockcraft
 
 To build the rock, run:
 
-.. literalinclude:: code/migrate-to-chiselled-rock/task.yaml
+.. literalinclude:: ../code/migrate-to-chiselled-rock/task.yaml
     :language: bash
     :start-after: [docs:build-rock]
     :end-before: [docs:build-rock-end]
@@ -232,7 +232,7 @@ Test the rock
 
 First, import the recently created rock into Docker:
 
-.. literalinclude:: code/migrate-to-chiselled-rock/task.yaml
+.. literalinclude:: ../code/migrate-to-chiselled-rock/task.yaml
     :language: bash
     :start-after: [docs:skopeo-copy]
     :end-before: [docs:skopeo-copy-end]
@@ -241,7 +241,7 @@ First, import the recently created rock into Docker:
 Now inspect the chiselled .NET Runtime rock the same way as it was done for the
 reference Docker image:
 
-.. literalinclude:: code/migrate-to-chiselled-rock/task.yaml
+.. literalinclude:: ../code/migrate-to-chiselled-rock/task.yaml
     :language: bash
     :start-after: [docs:inspect-rock]
     :end-before: [docs:inspect-rock-end]
@@ -258,7 +258,7 @@ Which should print something like:
 
 And make sure this rock is as functional as the reference Docker image:
 
-.. literalinclude:: code/migrate-to-chiselled-rock/task.yaml
+.. literalinclude:: ../code/migrate-to-chiselled-rock/task.yaml
     :language: bash
     :start-after: [docs:run-rock]
     :end-before: [docs:run-rock-end]

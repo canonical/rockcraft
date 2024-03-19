@@ -14,14 +14,38 @@ adapt the steps to fit your specific requirements.
    :maxdepth: 1
 
    Get started - quick guide <get-started>
-   Use Rockcraft's GitHub Action <rockcraft-pack-action>
-   Contribute to Rockcraft documentation <contribute-docs>
-   Build the documentation <build-docs>
-   Cut existing slices with Chisel <use-chisel>
-   Create a package slice for Chisel <create-slice>
-   Install a custom package slice <install-slice>
-   Publish a slice definition <publish-slice>
-   Convert an entrypoint to a Pebble layer <convert-to-pebble-layer>
-   Publish a rock to a registry <publish-a-rock.rst>
-   Migrate a Docker image to a chiselled rock <migrate-to-chiselled-rock.rst>
-   Use the flask extension <use-flask-extension.rst>
+
+Chisel
+------
+
+Upgrade your Chisel slicing skills by learning how to cut, install and publish
+slices.
+
+.. toctree::
+   :maxdepth: 1
+
+   chisel <chisel/index>
+
+Documentation
+-------------
+
+If you have found something missing in this documentation, or have useful
+information to add whether it is a tutorial, a guide or something else, we
+compiled a couple of guides for you to facilitate your contribution.
+
+.. toctree::
+   :maxdepth: 1
+
+   documentation <documentation/index>
+
+Rocks
+-----
+
+Learn about how to pack a rock, how to migrate a Dockerfile to a rock, or how
+to use services in your rockcraft.yaml. Those guides will help you explore all
+those aspects in Rockcraft and more.
+
+.. toctree::
+   :maxdepth: 1
+
+   rocks <rocks/index>
