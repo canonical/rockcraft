@@ -16,6 +16,10 @@
 
 """Rockcraft Provider service."""
 
+from __future__ import annotations
+
+import os
+
 from craft_application import ProviderService
 from overrides import override  # type: ignore[reportUnknownVariableType]
 
@@ -28,3 +32,12 @@ class RockcraftProviderService(ProviderService):
         """Configure the APT packages to be installed in the provider instance."""
         super().setup()
         self.packages.extend(["gpg", "dirmngr"])
+
+        for env_key in [
+            "http_proxy",
+            "https_proxy",
+            "no_proxy",
+            "ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS",
+        ]:
+            if env_key in os.environ:
+                self.environment[env_key] = os.environ[env_key]
