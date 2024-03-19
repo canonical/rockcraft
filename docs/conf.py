@@ -230,21 +230,23 @@ extensions.extend(("sphinxcontrib.details.directive",))
 
 exclude_patterns.extend(
     (
-        # Excluded here because they are included explicitly in other documents;
-        # if we don't exclude them, they generate "duplicate label" errors.
-        "common/craft-parts/dump_plugin.rst",
-        "common/craft-parts/overlay_parameters.rst",
-        "common/craft-parts/part_properties.rst",
-        "common/craft-parts/python_plugin.rst",
-        "common/craft-parts/rust_plugin.rst",
-        "common/craft-parts/step_execution_environment.rst",
-        "common/craft-parts/step_output_directories.rst",
+        # Excluded here because they are either included explicitly in other
+        # documents (so they generate "duplicate label" errors) or they aren't
+        # used in this documentation at all (so they generate "unreferenced"
+        # errors).
         "common/craft-parts/explanation/filesets.rst",
         "common/craft-parts/explanation/lifecycle.rst",
+        "common/craft-parts/explanation/overlay_parameters.rst",
+        "common/craft-parts/explanation/overlays.rst",
         "common/craft-parts/explanation/parts.rst",
         "common/craft-parts/explanation/how_parts_are_built.rst",
         "common/craft-parts/explanation/overlay_step.rst",
+        "common/craft-parts/how-to/craftctl.rst",
         "common/craft-parts/reference/parts_steps.rst",
+        "common/craft-parts/reference/step_execution_environment.rst",
+        "common/craft-parts/reference/step_output_directories.rst",
+        "common/craft-parts/reference/plugins/python_plugin.rst",
+        # Extra non-craft-parts exclusions can be added after this comment
     )
 )
 
@@ -260,7 +262,7 @@ def setup(app):
 
 # Setup libraries documentation snippets for use in rockcraft docs.
 common_docs_path = pathlib.Path(__file__).parent / "common"
-craft_parts_docs_path = pathlib.Path(craft_parts_docs.__file__).parent
+craft_parts_docs_path = pathlib.Path(craft_parts_docs.__file__).parent / "craft-parts"
 (common_docs_path / "craft-parts").unlink(missing_ok=True)
 (common_docs_path / "craft-parts").symlink_to(
     craft_parts_docs_path, target_is_directory=True

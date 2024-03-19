@@ -19,3 +19,4 @@ the motivations behind its development.
    filesets
    parts
    lifecycle
+   /common/craft-parts/explanation/dump_plugin
