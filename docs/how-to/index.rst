@@ -25,3 +25,4 @@ adapt the steps to fit your specific requirements.
    Publish a rock to a registry <publish-a-rock.rst>
    Migrate a Docker image to a chiselled rock <migrate-to-chiselled-rock.rst>
    Use the flask extension <use-flask-extension.rst>
+   Use the django extension <use-django-extension.rst>

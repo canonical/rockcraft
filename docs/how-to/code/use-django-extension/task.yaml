@@ -1,0 +1,21 @@
+###########################################
+# IMPORTANT
+# Comments matter!
+# The docs use the wrapping comments as 
+# markers for including said instructions 
+# as snippets in the docs.
+###########################################
+summary: test the "Use the django-framework extension" guide
+
+environment:
+  ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS: "1"
+
+execute: |
+  cd example
+  rockcraft pack --verbosity debug
+  cd ../override_example
+  rockcraft pack --verbosity debug
+  cd ..
+
+restore: |
+  rm -rf */*.rock
