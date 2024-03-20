@@ -17,3 +17,9 @@ Gunicorn, in the rock image. Additionally, it transfers your project files to
 
 A statsd-exporter is installed alongside the Gunicorn server to export Gunicorn
 server metrics.
+
+The ``django-framework`` extension
+----------------------------------
+
+The Django extension is similar to the flask-framework extension but tailored
+for Django applications.

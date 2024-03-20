@@ -118,6 +118,47 @@ class InitCommand(AppCommand):
                 #       - flask/app/static
                 """
         ),
+        "django-framework": textwrap.dedent(
+            """\
+                name: {name}
+                base: ubuntu@22.04 # the base environment for this Django application
+                version: '0.1' # just for humans. Semantic versioning is recommended
+                summary: A summary of your Django application # 79 char long summary
+                description: |
+                    This is {name}'s description. You have a paragraph or two to tell the
+                    most important story about it. Keep it under 100 words though,
+                    we live in tweetspace and your description wants to look good in the
+                    container registries out there.
+                license: GPL-3.0 # your application's SPDX license
+                platforms: # The platforms this rock should be built on and run on
+                    amd64:
+
+                # To ensure the django-framework extension functions properly, your Django project
+                # should have a structure similar to the following with ./{snake_name}/{snake_name}/wsgi.py
+                # being the WSGI entry point and contain an application object.
+                # +-- {snake_name}
+                # |   |-- {snake_name}
+                # |   |   |-- wsgi.py
+                # |   |   +-- ...
+                # |   |-- manage.py
+                # |   |-- migrate.sh
+                # |   +-- some_app
+                # |       |-- views.py
+                # |       +-- ...
+                # |-- requirements.txt
+                # +-- rockcraft.yaml
+
+                extensions:
+                    - django-framework
+
+                # Uncomment the sections you need and adjust according to your requirements.
+                # parts:
+                #   django-framework/dependencies:
+                #     stage-packages:
+                #       # list required packages or slices for your Django application below.
+                #       - libpq-dev
+            """
+        ),
     }
     _DEFAULT_PROFILE = "simple"
 
@@ -157,6 +198,6 @@ class InitCommand(AppCommand):
                 name = "my-rock-name"
             emit.debug(f"Set project name to '{name}'")
 
-        context = {"name": name}
+        context = {"name": name, "snake_name": name.replace("-", "_").lower()}
 
         init(self._INIT_TEMPLATES[parsed_args.profile].format(**context))
