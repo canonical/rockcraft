@@ -10,7 +10,7 @@ To employ it, include ``extensions: [ flask-framework ]`` in your
 
 Example:
 
-.. literalinclude:: code/use-flask-extension/example/rockcraft.yaml
+.. literalinclude:: ../code/use-flask-extension/example/rockcraft.yaml
     :language: yaml
 
 Managing project files with the flask extension
@@ -28,7 +28,7 @@ be prefixed with ``flask/app``.
 
 For example, to include only select files:
 
-.. literalinclude:: code/use-flask-extension/prime_example/rockcraft.yaml
+.. literalinclude:: ../code/use-flask-extension/prime_example/rockcraft.yaml
     :language: yaml
     :start-after: [docs:parts-start]
     :end-before: [docs:parts-end]
@@ -36,7 +36,7 @@ For example, to include only select files:
 To exclude certain files from the project directory in the rock image,
 add the following part to ``rockcraft.yaml``:
 
-.. literalinclude:: code/use-flask-extension/prime_exclude_example/rockcraft.yaml
+.. literalinclude:: ../code/use-flask-extension/prime_exclude_example/rockcraft.yaml
     :language: yaml
     :start-after: [docs:parts-start]
     :end-before: [docs:parts-end]

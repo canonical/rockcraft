@@ -50,7 +50,7 @@ environment or clean up after the test has been run. Each snippet should be
 delimited with comments that enable them to be conveniently extracted, as in
 this example:
 
-.. literalinclude:: code/get-started/task.yaml
+.. literalinclude:: ../code/get-started/task.yaml
    :start-at: [docs:snap-version]
    :end-at: [docs:snap-version-end]
 
@@ -60,7 +60,7 @@ to extract the relevant lines of text. If the indentation of the quoted
 code is excessive, use the ``dedent`` option to reduce it to an acceptable
 level, as in this example:
 
-.. literalinclude:: get-started.rst
+.. literalinclude:: ../get-started.rst
    :language: rst
    :start-at: literalinclude:: code/get-started/task.yaml
    :end-at: :dedent: 2
