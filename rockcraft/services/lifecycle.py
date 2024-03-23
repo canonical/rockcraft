@@ -45,14 +45,25 @@ class RockcraftLifecycleService(LifecycleService):
         # This inner import is necessary to resolve a cyclic import
         from rockcraft.services import RockcraftServiceFactory
 
+        # this will be removed once part_has_slices is added to craft-parts
+        def part_has_slices(data: dict[str, Any]) -> bool:
+            stage_packages = data.get("stage-packages", [])
+            return any(name for name in stage_packages if "_" in name)
+
         # Configure extra args to the LifecycleManager
         project = cast(Project, self._project)
         project_vars = {"version": project.version}
+        parts = project.parts
 
         services = cast(RockcraftServiceFactory, self._services)
         image_service = services.image
         image_info = image_service.obtain_image()
+        needs_chisel = any(part for part in parts if part_has_slices(parts[part]))
 
+        if needs_chisel:
+            self._manager_kwargs.update(
+                extra_build_snaps=["chisel/latest/candidate"],
+            )
         self._manager_kwargs.update(
             base_layer_dir=image_info.base_layer_dir,
             base_layer_hash=image_info.base_digest,
