@@ -1,7 +1,7 @@
 summary: rockcraft init test
 
 execute: |
-  run_rockcraft init
+  run_rockcraft init --name=my-rock-name
   test -f rockcraft.yaml
   run_rockcraft pack
 

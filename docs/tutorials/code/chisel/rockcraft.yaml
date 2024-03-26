@@ -1,17 +1,16 @@
-name: chisel-openssl
-summary: OpenSSL from Chisel slices
-description: A "bare" rock containing an OpenSSL installation created from Chisel slices.
+name: chiselled-hello
+summary: Hello world from Chisel slices
+description: A "bare" rock containing the "hello" package binaries from Chisel slices.
 license: Apache-2.0
 
-version: "0.0.1"
+version: "latest"
 base: bare
 build_base: "ubuntu@22.04"
 platforms:
   amd64:
 
 parts:
-  openssl:
+  hello:
     plugin: nil
     stage-packages:
-      - openssl_bins
-      - ca-certificates_data
+      - hello_bins

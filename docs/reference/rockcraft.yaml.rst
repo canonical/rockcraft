@@ -240,7 +240,7 @@ is a valid, supported architecture name.
 **Required**: Yes
 
 The set of parts that compose the rock's contents
-(see :ref:`Parts <ref_parts>`).
+(see :ref:`Parts <part_properties>`).
 
 
 .. note::
@@ -248,6 +248,18 @@ The set of parts that compose the rock's contents
    Rockcraft. All rocks have Pebble as their entrypoint, and thus you must use
    ``services`` to define your container application.
 
+``extensions``
+--------------
+
+**Type**: list[string]
+
+**Required**: No
+
+Extensions to enable when building the ROCK.
+
+Currently supported extensions:
+
+- ``flask`` (experimental)
 
 Example
 =======

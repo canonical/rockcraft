@@ -12,4 +12,6 @@ Rockcraft's components, commands and keywords.
 
    rockcraft.yaml
    commands
+   extensions
    plugins
+   parts_steps

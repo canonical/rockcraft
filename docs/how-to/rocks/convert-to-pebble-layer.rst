@@ -38,7 +38,7 @@ Given the reference entrypoint, this guide's goal is to create two services:
 one for ``nginx`` and another for ``nginx-debug``. The following ``services``
 snippet does just that:
 
-.. literalinclude:: code/convert-to-pebble-layer/rockcraft.yaml
+.. literalinclude:: ../code/convert-to-pebble-layer/rockcraft.yaml
     :language: yaml
     :start-after: Pebble entrypoint
 
@@ -52,7 +52,7 @@ Build the rock
 Copy the above snippet and incorporate it into the ``rockcraft.yaml`` file
 which will be used to build your rock, as shown below:
 
-.. literalinclude:: code/convert-to-pebble-layer/rockcraft.yaml
+.. literalinclude:: ../code/convert-to-pebble-layer/rockcraft.yaml
     :language: yaml
 
 This Rockcraft recipe is fully declarative, with the creation of the "nginx"
@@ -69,7 +69,7 @@ GPG key ID as the one used in `the Dockerfile
 
 Now, build the final custom NGINX rock with:
 
-.. literalinclude:: code/convert-to-pebble-layer/task.yaml
+.. literalinclude:: ../code/convert-to-pebble-layer/task.yaml
     :language: bash
     :start-after: [docs:pack]
     :end-before: [docs:pack-end]
@@ -111,7 +111,7 @@ You should see something like this:
 Then copy the resulting rock (from the OCI archive format) to the Docker daemon
 via:
 
-.. literalinclude:: code/convert-to-pebble-layer/task.yaml
+.. literalinclude:: ../code/convert-to-pebble-layer/task.yaml
     :language: bash
     :start-after: [docs:skopeo]
     :end-before: [docs:skopeo-end]
@@ -119,7 +119,7 @@ via:
 
 And finally, run the container:
 
-.. literalinclude:: code/convert-to-pebble-layer/task.yaml
+.. literalinclude:: ../code/convert-to-pebble-layer/task.yaml
     :language: bash
     :start-after: [docs:docker-run]
     :end-before: [docs:docker-run-end]
@@ -136,7 +136,7 @@ At this point, your container should be deployed and running the ``nginx``
 service, and you should be able to see the NGINX landing page by accessing
 port 8080 on you localhost:
 
-.. literalinclude:: code/convert-to-pebble-layer/task.yaml
+.. literalinclude:: ../code/convert-to-pebble-layer/task.yaml
     :language: bash
     :start-after: [docs:curl]
     :end-before: [docs:curl-end]
