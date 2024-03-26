@@ -12,9 +12,9 @@ execute: |
   id=$(docker run -d entrypoint-service-test)
   test "$(docker inspect "$id" -f '{{json .Config.Entrypoint}}')" = '["/bin/pebble","enter","--args","test-service"]'
   test "$(docker inspect "$id" -f '{{json .Config.Cmd}}')" = '["foo"]'
-  docker logs "$id" | MATCH "foo"
+  docker logs "$id" 2>&1 | grep "foo"
   docker rm -f "$id"
   id=$(docker run -d entrypoint-service-test bar)
   test "$(docker inspect "$id" -f '{{json .Config.Cmd}}')" = '["bar"]'
-  docker logs "$id" | MATCH "bar"
+  docker logs "$id" 2>&1 | grep "bar"
   docker rm -f "$id"

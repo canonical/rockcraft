@@ -27,8 +27,8 @@ execute: |
   docker images
 
   # Check the rock's output
-  id=$(docker run -d big:latest)
-  docker logs "$id" | MATCH "/tmp"
+  id=$(docker run -d big:latest --verbose)
+  docker logs "$id" 2>&1 | MATCH "/tmp"
   docker rm -f "$id"
   
   ############################################################################################
