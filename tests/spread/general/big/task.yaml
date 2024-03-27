@@ -27,7 +27,9 @@ execute: |
   docker images
 
   # Check the rock's output
-  docker run --rm big:latest | MATCH "/tmp"
+  id=$(docker run -d big:latest --verbose)
+  docker logs "$id" 2>&1 | MATCH "/tmp"
+  docker rm -f "$id"
   
   ############################################################################################
   # test ownership: "newfiles" and "a.txt" are owned by uid 9999, "b.txt" is owned by uid 3333

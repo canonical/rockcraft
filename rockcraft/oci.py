@@ -357,7 +357,7 @@ class Image:
         """Set the OCI image entrypoint. It is always Pebble."""
         emit.progress("Configuring entrypoint...")
         image_path = self.path / self.image_name
-        entrypoint = [f"/{Pebble.PEBBLE_BINARY_PATH}", "enter", "--verbose"]
+        entrypoint = [f"/{Pebble.PEBBLE_BINARY_PATH}", "enter"]
         if entrypoint_service:
             entrypoint.extend(["--args", entrypoint_service])
         params = ["--clear=config.entrypoint"]
