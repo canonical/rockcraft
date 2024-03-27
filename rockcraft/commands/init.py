@@ -99,12 +99,12 @@ class InitCommand(AppCommand):
 
                 # Uncomment the sections you need and adjust according to your requirements.
                 # parts:
-                #   flask/dependencies:
+                #   flask-framework/dependencies:
                 #     stage-packages:
                 #       # list required packages or slices for your flask application below.
                 #       - libpq-dev
                 #
-                #   flask/install-app:
+                #   flask-framework/install-app:
                 #     prime:
                 #       # By default, only the files in app/, templates/, static/, and app.py
                 #       # are copied into the image. You can modify the list below to override
