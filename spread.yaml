@@ -132,8 +132,8 @@ suites:
     systems:
     - ubuntu-22.04-64
 
-  tests/spread/all-systems/:
-    summary: tests that we want to run on multiple systems
+  tests/spread/foreign/:
+    summary: tests that rockcraft and rocks work on different host systems
 
   tests/spread/large/:
     summary: bigger tests that take longer to run
