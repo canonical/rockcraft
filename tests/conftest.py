@@ -138,7 +138,7 @@ def default_build_plan(default_project):
 
 
 @pytest.fixture()
-def default_factory(default_project):
+def default_factory(default_project, default_build_plan):
     from rockcraft.application import APP_METADATA
     from rockcraft.services import RockcraftServiceFactory
 
@@ -146,7 +146,7 @@ def default_factory(default_project):
         app=APP_METADATA,
         project=default_project,
     )
-    factory.set_kwargs("image", work_dir=Path("work"), build_for="amd64")
+    factory.set_kwargs("image", work_dir=Path("work"), build_plan=default_build_plan)
     return factory
 
 
@@ -170,7 +170,7 @@ def default_application(default_factory, default_project):
 
 
 @pytest.fixture()
-def image_service(default_project, default_factory, tmp_path):
+def image_service(default_project, default_factory, tmp_path, default_build_plan):
     from rockcraft.application import APP_METADATA
     from rockcraft.services import RockcraftImageService
 
@@ -179,7 +179,7 @@ def image_service(default_project, default_factory, tmp_path):
         project=default_project,
         services=default_factory,
         work_dir=tmp_path,
-        build_for="amd64",
+        build_plan=default_build_plan,
     )
 
 
@@ -198,7 +198,7 @@ def provider_service(default_project, default_build_plan, default_factory, tmp_p
 
 
 @pytest.fixture()
-def package_service(default_project, default_factory):
+def package_service(default_project, default_factory, default_build_plan):
     from rockcraft.application import APP_METADATA
     from rockcraft.services import RockcraftPackageService
 
@@ -206,13 +206,12 @@ def package_service(default_project, default_factory):
         app=APP_METADATA,
         project=default_project,
         services=default_factory,
-        platform=None,
-        build_for="amd64",
+        build_plan=default_build_plan,
     )
 
 
 @pytest.fixture()
-def lifecycle_service(default_project, default_factory):
+def lifecycle_service(default_project, default_factory, default_build_plan):
     from rockcraft.application import APP_METADATA
     from rockcraft.services import RockcraftLifecycleService
 
@@ -222,7 +221,7 @@ def lifecycle_service(default_project, default_factory):
         services=default_factory,
         work_dir=Path("work/"),
         cache_dir=Path("cache/"),
-        build_for="amd64",
+        build_plan=default_build_plan,
     )
 
 
@@ -234,12 +233,23 @@ def mock_obtain_image(default_factory, mocker):
 
 
 @pytest.fixture()
-def run_lifecycle(mocker):
+def run_lifecycle(mocker, default_build_plan):
     """Helper to call testing.run_mocked_lifecycle()."""
 
     def _inner(**kwargs):
         from tests.testing.lifecycle import run_mocked_lifecycle
 
-        return run_mocked_lifecycle(mocker=mocker, **kwargs)
+        return run_mocked_lifecycle(
+            mocker=mocker, build_plan=default_build_plan, **kwargs
+        )
 
     return _inner
+
+
+@pytest.fixture()
+def enable_overlay_feature():
+    """Enable the overlay feature."""
+    from craft_parts import Features
+
+    Features.reset()
+    Features(enable_overlay=True)
