@@ -18,6 +18,8 @@ from pathlib import Path
 from unittest import mock
 
 import pytest
+from craft_application import util
+from craft_application.util import repositories
 from craft_parts import (
     LifecycleManager,
     Part,
@@ -29,7 +31,6 @@ from craft_parts import (
     callbacks,
 )
 from craft_parts.state_manager.prime_state import PrimeState
-from craft_application.util import repositories
 
 from rockcraft.services import lifecycle as lifecycle_module
 
@@ -68,16 +69,21 @@ def test_lifecycle_args(
         ignore_local_sources=["*.rock"],
         package_repositories=[{"ppa": "ppa/ppa", "type": "apt"}],
         parallel_build_count=4,
+        partitions=None,
         project_name="default",
-        # project_vars={"version": "1.0"},
+        project_vars={"version": "1.0"},
+        project_vars_part_name=None,
         work_dir=Path("work"),
         rootfs_dir=Path("."),
+        track_stage_packages=True,
     )
 
 
 def test_lifecycle_package_repositories(
-    extra_project_params, lifecycle_service, default_project, mocker
+    extra_project_params, lifecycle_service, default_project, mocker, default_build_plan
 ):
+    base = default_build_plan[0].base
+    mocker.patch.object(util, "get_host_base", return_value=base)
     fake_repositories = extra_project_params["package_repositories"]
     lifecycle_service._lcm = mock.MagicMock(spec=LifecycleManager)
 
