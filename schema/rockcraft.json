@@ -94,6 +94,10 @@
       "title": "License",
       "type": "string"
     },
+    "adopt-info": {
+      "title": "Adopt-Info",
+      "type": "string"
+    },
     "parts": {
       "title": "Parts",
       "type": "object",
@@ -143,7 +147,6 @@
   },
   "required": [
     "name",
-    "version",
     "summary",
     "description",
     "base",

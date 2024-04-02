@@ -24,7 +24,10 @@ from craft_parts import overlays
 from tests.testing.project import create_project
 from tests.util import jammy_only
 
-pytestmark = [jammy_only, pytest.mark.usefixtures("reset_callbacks")]
+pytestmark = [
+    jammy_only,
+    pytest.mark.usefixtures("reset_callbacks", "enable_overlay_feature"),
+]
 
 # pyright: reportPrivateImportUsage=false
 

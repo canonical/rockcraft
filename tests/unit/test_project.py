@@ -26,7 +26,6 @@ import pytest
 import yaml
 from craft_application.errors import CraftValidationError
 from craft_application.models import BuildInfo
-from craft_parts import Features
 from craft_providers.bases import BaseName
 
 from rockcraft.errors import ProjectLoadError
@@ -95,11 +94,7 @@ entrypoint-service: test-service
 """
 
 
-@pytest.fixture(autouse=True)
-def enable_overlay_feature():
-    """Enable the overlay feature to make this test module standalone."""
-    Features.reset()
-    Features(enable_overlay=True)
+pytestmark = [pytest.mark.usefixtures("enable_overlay_feature")]
 
 
 @pytest.fixture()
@@ -462,7 +457,7 @@ def test_project_version_invalid(yaml_loaded_data):
 
 
 @pytest.mark.parametrize(
-    "field", ["name", "version", "base", "parts", "description", "summary", "license"]
+    "field", ["name", "base", "parts", "description", "summary", "license"]
 )
 def test_project_missing_field(yaml_loaded_data, field):
     del yaml_loaded_data[field]

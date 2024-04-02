@@ -27,6 +27,7 @@ from rockcraft import layers
 from rockcraft.models.project import Project
 
 # Enable the craft-parts features that we use
+Features.reset()
 Features(enable_overlay=True)
 
 
