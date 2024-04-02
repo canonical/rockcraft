@@ -36,7 +36,11 @@ line_length = 88
 extend-exclude = "docs/sphinx-starter-pack"
 
 [tool.pyright]
-ignore = ["docs/sphinx-starter-pack", "docs/how-to/code"]
+ignore = [
+    "docs/sphinx-starter-pack",
+    "docs/how-to/code",
+    "tests/spread/general/extension-django/example_django"
+]
 
 [tool.mypy]
 python_version = "3.10"
