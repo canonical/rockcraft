@@ -9,13 +9,14 @@ summary: test the "Use the django-framework extension" guide
 
 environment:
   ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS: "1"
+  EXAMPLE_DIR/example: example
+  EXAMPLE_DIR/override_example: override_example
 
 execute: |
-  cd example
+  cd $EXAMPLE_DIR
   rockcraft pack --verbosity debug
-  cd ../override_example
-  rockcraft pack --verbosity debug
-  cd ..
 
 restore: |
-  rm -rf */*.rock
+  cd $EXAMPLE_DIR
+  rm *.rock
+  rockcraft clean

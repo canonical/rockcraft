@@ -1,7 +1,9 @@
 summary: django extension test
 
+environment:
+  ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS: "true"
+
 execute: |
-  export ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS=true
   
   run_rockcraft init --name example-django --profile django-framework
   run_rockcraft pack
