@@ -34,13 +34,18 @@ from rockcraft.models.project import Project  # noqa: E402
 
 def generate_project_schema() -> str:
     """Generate the schema."""
+
+    # Initialize the default template with a name
+    context = {
+        "name": "my-rock-name",
+    }
+    # pylint: disable=W0212
+    init_template = cli.commands.InitCommand._INIT_TEMPLATES[
+        cli.commands.InitCommand._DEFAULT_PROFILE
+    ].format(**context)
+
     # Initiate a project with all required fields
-    project = Project.unmarshal(
-        yaml.safe_load(
-            # pylint: disable=W0212
-            cli.commands.InitCommand._INIT_TEMPLATE_YAML
-        )
-    )
+    project = Project.unmarshal(yaml.safe_load(init_template))
 
     # initiate the schema with the $id and $schema fields
     initial_schema = {

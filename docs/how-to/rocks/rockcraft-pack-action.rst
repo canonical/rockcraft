@@ -7,7 +7,7 @@ Within your GitHub repository, make sure you have
 Navigate to ``.github/workflows``, open the YAML file where you want the rock
 build to take place, and add the following steps:
 
-.. literalinclude:: code/rockcraft-pack-action/rockcraft-pack.yaml
+.. literalinclude:: ../code/rockcraft-pack-action/rockcraft-pack.yaml
     :language: yaml
 
 Commit and push the changes. This will trigger a new workflow run using

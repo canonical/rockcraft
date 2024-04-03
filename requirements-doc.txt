@@ -8,8 +8,8 @@ colorama==0.4.6
 craft-application==1.2.1
 craft-archives==1.1.3
 craft-cli==2.5.1
-craft-parts==1.26.1
-craft-providers==1.22.0
+craft-parts==1.29.0
+craft-providers==1.23.1
 Deprecated==1.2.14
 distro==1.9.0
 docutils==0.19
@@ -59,6 +59,7 @@ sphinx-pydantic==0.1.1
 sphinx-rtd-theme==2.0.0
 sphinx_design==0.5.0
 sphinxcontrib-applehelp==1.0.8
+sphinxcontrib-details-directive==0.1.0
 sphinxcontrib-devhelp==1.0.6
 sphinxcontrib-htmlhelp==2.0.5
 sphinxcontrib-jquery==4.1

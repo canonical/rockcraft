@@ -69,7 +69,7 @@ Find the dependencies of your package
 Find the dependencies of the package for which you want to create a new slice
 definition (``openssl`` in this guide) with this command:
 
-.. literalinclude:: code/create-slice/task.yaml
+.. literalinclude:: ../code/create-slice/task.yaml
     :language: bash
     :start-after: [docs:apt-show-openssl]
     :end-before: [docs:apt-show-openssl-end]
@@ -126,7 +126,7 @@ about naming this new slice **bins**? Let's go for it:
 
 Create a new YAML file named ``openssl.yaml``, with the following content:
 
-.. literalinclude:: code/create-slice/openssl.yaml
+.. literalinclude:: ../code/create-slice/openssl.yaml
     :language: yaml
 
 Notice the unforeseen new slice ``config``. Because your OpenSSL binaries depend

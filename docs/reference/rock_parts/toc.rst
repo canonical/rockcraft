@@ -1,4 +1,4 @@
 .. toctree::
    :hidden:
 
-   /reference/part_properties
+   /common/craft-parts/reference/part_properties

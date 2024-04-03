@@ -15,6 +15,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 """Creation of minimalist rockcraft projects."""
+import pathlib
+import re
 import textwrap
 from pathlib import Path
 from typing import TYPE_CHECKING
@@ -24,6 +26,7 @@ from craft_cli import emit
 from overrides import overrides  # type: ignore[reportUnknownVariableType]
 
 from rockcraft import errors
+from rockcraft.models.project import INVALID_NAME_MESSAGE, NAME_REGEX
 
 if TYPE_CHECKING:
     import argparse
@@ -52,6 +55,72 @@ def init(rockcraft_yaml_content: str) -> None:
 class InitCommand(AppCommand):
     """Initialize a rockcraft project."""
 
+    _INIT_TEMPLATES = {
+        "simple": textwrap.dedent(
+            """\
+                name: {name}
+                base: ubuntu@22.04 # the base environment for this rock
+                version: '0.1' # just for humans. Semantic versioning is recommended
+                summary: Single-line elevator pitch for your amazing rock # 79 char long summary
+                description: |
+                    This is {name}'s description. You have a paragraph or two to tell the
+                    most important story about it. Keep it under 100 words though,
+                    we live in tweetspace and your description wants to look good in the
+                    container registries out there.
+                license: GPL-3.0 # your application's SPDX license
+                platforms: # The platforms this rock should be built on and run on
+                    amd64:
+
+                parts:
+                    my-part:
+                        plugin: nil
+                """
+        ),
+        "flask-framework": textwrap.dedent(
+            """\
+                name: {name}
+                base: ubuntu@22.04 # the base environment for this Flask application
+                version: '0.1' # just for humans. Semantic versioning is recommended
+                summary: A summary of your Flask application # 79 char long summary
+                description: |
+                    This is {name}'s description. You have a paragraph or two to tell the
+                    most important story about it. Keep it under 100 words though,
+                    we live in tweetspace and your description wants to look good in the
+                    container registries out there.
+                license: GPL-3.0 # your application's SPDX license
+                platforms: # The platforms this rock should be built on and run on
+                    amd64:
+
+                # To ensure the flask-framework extension works properly, your Flask application
+                # should have an `app.py` file with an `app` object as the WSGI entrypoint.
+                extensions:
+                    - flask-framework
+
+
+                # Uncomment the sections you need and adjust according to your requirements.
+                # parts:
+                #   flask-framework/dependencies:
+                #     stage-packages:
+                #       # list required packages or slices for your flask application below.
+                #       - libpq-dev
+                #
+                #   flask-framework/install-app:
+                #     prime:
+                #       # By default, only the files in app/, templates/, static/, and app.py
+                #       # are copied into the image. You can modify the list below to override
+                #       # the default list and include or exclude specific files/directories
+                #       # in your project.
+                #       # Note: Prefix each entry with "flask/app/" followed by the local path.
+                #       - flask/app/.env
+                #       - flask/app/app.py
+                #       - flask/app/webapp
+                #       - flask/app/templates
+                #       - flask/app/static
+                """
+        ),
+    }
+    _DEFAULT_PROFILE = "simple"
+
     name = "init"
     help_msg = "Initialize a rockcraft project"
     overview = textwrap.dedent(
@@ -61,28 +130,33 @@ class InitCommand(AppCommand):
         """
     )
 
-    _INIT_TEMPLATE_YAML = textwrap.dedent(
-        """\
-            name: my-rock-name # the name of your rock
-            base: ubuntu@22.04 # the base environment for this rock
-            version: '0.1' # just for humans. Semantic versioning is recommended
-            summary: Single-line elevator pitch for your amazing rock # 79 char long summary
-            description: |
-                This is my my-rock-name's description. You have a paragraph or two to tell the
-                most important story about it. Keep it under 100 words though,
-                we live in tweetspace and your description wants to look good in the
-                container registries out there.
-            license: GPL-3.0 # your application's SPDX license
-            platforms: # The platforms this rock should be built on and run on
-                amd64:
-
-            parts:
-                my-part:
-                    plugin: nil
-            """
-    )
+    def fill_parser(self, parser):
+        """Specify command's specific parameters."""
+        parser.add_argument(
+            "--name", help="The name of the rock; defaults to the directory name"
+        )
+        parser.add_argument(
+            "--profile",
+            choices=list(self._INIT_TEMPLATES),
+            default=self._DEFAULT_PROFILE,
+            help=f"Use the specified project profile (defaults to '{self._DEFAULT_PROFILE}')",
+        )
 
     @overrides
     def run(self, parsed_args: "argparse.Namespace") -> None:
         """Run the command."""
-        init(self._INIT_TEMPLATE_YAML)
+        name = parsed_args.name
+        if name and not re.match(NAME_REGEX, name):
+            raise errors.RockcraftInitError(
+                f"'{name}' is not a valid rock name. " + INVALID_NAME_MESSAGE
+            )
+
+        if not name:
+            name = pathlib.Path.cwd().name
+            if not re.match(NAME_REGEX, name):
+                name = "my-rock-name"
+            emit.debug(f"Set project name to '{name}'")
+
+        context = {"name": name}
+
+        init(self._INIT_TEMPLATES[parsed_args.profile].format(**context))
