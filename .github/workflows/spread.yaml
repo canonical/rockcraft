@@ -25,7 +25,7 @@ jobs:
           path: ${{ steps.rockcraft.outputs.snap }}
 
   snap-tests:
-    runs-on: self-hosted
+    runs-on: [spread-installed]
     needs: [snap-build]
 
     steps:
