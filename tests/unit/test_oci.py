@@ -564,7 +564,7 @@ class TestImage:
     def test_set_entrypoint_default(self, mock_run):
         image = oci.Image("a:b", Path("/c"))
 
-        image.set_entrypoint()
+        image.set_entrypoint(None, "ubuntu@22.04")
 
         assert mock_run.mock_calls == [
             call(
@@ -609,7 +609,7 @@ class TestImage:
 
     def test_set_entrypoint_withservice(self, mock_run):
         image = oci.Image("a:b", Path("/tmp"))
-        image.set_entrypoint("test-service")
+        image.set_entrypoint("test-service", "ubuntu@22.04")
 
         assert mock_run.mock_calls == [
             call(
