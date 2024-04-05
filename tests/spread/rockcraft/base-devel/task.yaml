@@ -26,11 +26,11 @@ execute: |
   # test container execution
   docker images
   sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy \
-      oci-archive:base-devel-test_0.1_amd64.rock \
-      docker-daemon:base-devel-test:0.1
-  rm base-devel-test_0.1_amd64.rock
-  docker images base-devel-test:0.1
-  id=$(docker run --rm -d base-devel-test:0.1)
+      oci-archive:base-devel_0.1_amd64.rock \
+      docker-daemon:base-devel:0.1
+  rm base-devel_0.1_amd64.rock
+  docker images base-devel:0.1
+  id=$(docker run --rm -d base-devel:0.1)
   test "$(docker inspect "$id" -f '{{json .Config.Entrypoint}}')" = '["/bin/pebble","enter"]'
   docker rm -f "$id"
 
