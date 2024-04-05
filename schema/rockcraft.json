@@ -446,6 +446,7 @@
             "nil",
             "npm",
             "python",
+            "qmake",
             "rust",
             "scons"
           ]
@@ -677,6 +678,7 @@
                   "nil",
                   "npm",
                   "python",
+                  "qmake",
                   "rust",
                   "scons"
                 ]
@@ -797,7 +799,6 @@
               },
               "organize": {
                 "title": "Organize",
-                "default": {},
                 "type": "object",
                 "additionalProperties": {
                   "type": "string"
@@ -805,9 +806,6 @@
               },
               "overlay": {
                 "title": "Overlay",
-                "default": [
-                  "*"
-                ],
                 "type": "array",
                 "items": {
                   "type": "string"
@@ -815,9 +813,6 @@
               },
               "stage": {
                 "title": "Stage",
-                "default": [
-                  "*"
-                ],
                 "type": "array",
                 "items": {
                   "type": "string"
@@ -825,9 +820,6 @@
               },
               "prime": {
                 "title": "Prime",
-                "default": [
-                  "*"
-                ],
                 "type": "array",
                 "items": {
                   "type": "string"
@@ -912,6 +904,7 @@
                   "nil",
                   "npm",
                   "python",
+                  "qmake",
                   "rust",
                   "scons"
                 ]
@@ -1032,7 +1025,6 @@
               },
               "organize": {
                 "title": "Organize",
-                "default": {},
                 "type": "object",
                 "additionalProperties": {
                   "type": "string"
@@ -1040,9 +1032,6 @@
               },
               "overlay": {
                 "title": "Overlay",
-                "default": [
-                  "*"
-                ],
                 "type": "array",
                 "items": {
                   "type": "string"
@@ -1050,9 +1039,6 @@
               },
               "stage": {
                 "title": "Stage",
-                "default": [
-                  "*"
-                ],
                 "type": "array",
                 "items": {
                   "type": "string"
@@ -1060,9 +1046,6 @@
               },
               "prime": {
                 "title": "Prime",
-                "default": [
-                  "*"
-                ],
                 "type": "array",
                 "items": {
                   "type": "string"
@@ -1144,6 +1127,7 @@
                   "nil",
                   "npm",
                   "python",
+                  "qmake",
                   "rust",
                   "scons"
                 ]
@@ -1264,7 +1248,6 @@
               },
               "organize": {
                 "title": "Organize",
-                "default": {},
                 "type": "object",
                 "additionalProperties": {
                   "type": "string"
@@ -1272,9 +1255,6 @@
               },
               "overlay": {
                 "title": "Overlay",
-                "default": [
-                  "*"
-                ],
                 "type": "array",
                 "items": {
                   "type": "string"
@@ -1282,9 +1262,6 @@
               },
               "stage": {
                 "title": "Stage",
-                "default": [
-                  "*"
-                ],
                 "type": "array",
                 "items": {
                   "type": "string"
@@ -1292,9 +1269,6 @@
               },
               "prime": {
                 "title": "Prime",
-                "default": [
-                  "*"
-                ],
                 "type": "array",
                 "items": {
                   "type": "string"
@@ -1372,6 +1346,7 @@
                   "nil",
                   "npm",
                   "python",
+                  "qmake",
                   "rust",
                   "scons"
                 ]
@@ -1492,7 +1467,6 @@
               },
               "organize": {
                 "title": "Organize",
-                "default": {},
                 "type": "object",
                 "additionalProperties": {
                   "type": "string"
@@ -1500,9 +1474,6 @@
               },
               "overlay": {
                 "title": "Overlay",
-                "default": [
-                  "*"
-                ],
                 "type": "array",
                 "items": {
                   "type": "string"
@@ -1510,9 +1481,6 @@
               },
               "stage": {
                 "title": "Stage",
-                "default": [
-                  "*"
-                ],
                 "type": "array",
                 "items": {
                   "type": "string"
@@ -1520,9 +1488,6 @@
               },
               "prime": {
                 "title": "Prime",
-                "default": [
-                  "*"
-                ],
                 "type": "array",
                 "items": {
                   "type": "string"
@@ -1587,6 +1552,7 @@
                   "nil",
                   "npm",
                   "python",
+                  "qmake",
                   "rust",
                   "scons"
                 ]
@@ -1711,7 +1677,6 @@
               },
               "organize": {
                 "title": "Organize",
-                "default": {},
                 "type": "object",
                 "additionalProperties": {
                   "type": "string"
@@ -1719,9 +1684,6 @@
               },
               "overlay": {
                 "title": "Overlay",
-                "default": [
-                  "*"
-                ],
                 "type": "array",
                 "items": {
                   "type": "string"
@@ -1729,9 +1691,6 @@
               },
               "stage": {
                 "title": "Stage",
-                "default": [
-                  "*"
-                ],
                 "type": "array",
                 "items": {
                   "type": "string"
@@ -1739,9 +1698,6 @@
               },
               "prime": {
                 "title": "Prime",
-                "default": [
-                  "*"
-                ],
                 "type": "array",
                 "items": {
                   "type": "string"
@@ -1826,6 +1782,7 @@
                   "nil",
                   "npm",
                   "python",
+                  "qmake",
                   "rust",
                   "scons"
                 ]
@@ -1946,7 +1903,6 @@
               },
               "organize": {
                 "title": "Organize",
-                "default": {},
                 "type": "object",
                 "additionalProperties": {
                   "type": "string"
@@ -1954,9 +1910,6 @@
               },
               "overlay": {
                 "title": "Overlay",
-                "default": [
-                  "*"
-                ],
                 "type": "array",
                 "items": {
                   "type": "string"
@@ -1964,9 +1917,6 @@
               },
               "stage": {
                 "title": "Stage",
-                "default": [
-                  "*"
-                ],
                 "type": "array",
                 "items": {
                   "type": "string"
@@ -1974,9 +1924,6 @@
               },
               "prime": {
                 "title": "Prime",
-                "default": [
-                  "*"
-                ],
                 "type": "array",
                 "items": {
                   "type": "string"
@@ -2053,6 +2000,7 @@
                   "nil",
                   "npm",
                   "python",
+                  "qmake",
                   "rust",
                   "scons"
                 ]
@@ -2173,7 +2121,6 @@
               },
               "organize": {
                 "title": "Organize",
-                "default": {},
                 "type": "object",
                 "additionalProperties": {
                   "type": "string"
@@ -2181,9 +2128,6 @@
               },
               "overlay": {
                 "title": "Overlay",
-                "default": [
-                  "*"
-                ],
                 "type": "array",
                 "items": {
                   "type": "string"
@@ -2191,9 +2135,6 @@
               },
               "stage": {
                 "title": "Stage",
-                "default": [
-                  "*"
-                ],
                 "type": "array",
                 "items": {
                   "type": "string"
@@ -2201,9 +2142,6 @@
               },
               "prime": {
                 "title": "Prime",
-                "default": [
-                  "*"
-                ],
                 "type": "array",
                 "items": {
                   "type": "string"
@@ -2280,6 +2218,7 @@
                   "nil",
                   "npm",
                   "python",
+                  "qmake",
                   "rust",
                   "scons"
                 ]
@@ -2400,7 +2339,6 @@
               },
               "organize": {
                 "title": "Organize",
-                "default": {},
                 "type": "object",
                 "additionalProperties": {
                   "type": "string"
@@ -2408,9 +2346,6 @@
               },
               "overlay": {
                 "title": "Overlay",
-                "default": [
-                  "*"
-                ],
                 "type": "array",
                 "items": {
                   "type": "string"
@@ -2418,9 +2353,6 @@
               },
               "stage": {
                 "title": "Stage",
-                "default": [
-                  "*"
-                ],
                 "type": "array",
                 "items": {
                   "type": "string"
@@ -2428,9 +2360,6 @@
               },
               "prime": {
                 "title": "Prime",
-                "default": [
-                  "*"
-                ],
                 "type": "array",
                 "items": {
                   "type": "string"
@@ -2507,6 +2436,7 @@
                   "nil",
                   "npm",
                   "python",
+                  "qmake",
                   "rust",
                   "scons"
                 ]
@@ -2627,7 +2557,6 @@
               },
               "organize": {
                 "title": "Organize",
-                "default": {},
                 "type": "object",
                 "additionalProperties": {
                   "type": "string"
@@ -2635,9 +2564,6 @@
               },
               "overlay": {
                 "title": "Overlay",
-                "default": [
-                  "*"
-                ],
                 "type": "array",
                 "items": {
                   "type": "string"
@@ -2645,9 +2571,6 @@
               },
               "stage": {
                 "title": "Stage",
-                "default": [
-                  "*"
-                ],
                 "type": "array",
                 "items": {
                   "type": "string"
@@ -2655,9 +2578,6 @@
               },
               "prime": {
                 "title": "Prime",
-                "default": [
-                  "*"
-                ],
                 "type": "array",
                 "items": {
                   "type": "string"
@@ -2722,6 +2642,7 @@
                   "nil",
                   "npm",
                   "python",
+                  "qmake",
                   "rust",
                   "scons"
                 ]
@@ -2846,7 +2767,6 @@
               },
               "organize": {
                 "title": "Organize",
-                "default": {},
                 "type": "object",
                 "additionalProperties": {
                   "type": "string"
@@ -2854,9 +2774,6 @@
               },
               "overlay": {
                 "title": "Overlay",
-                "default": [
-                  "*"
-                ],
                 "type": "array",
                 "items": {
                   "type": "string"
@@ -2864,9 +2781,6 @@
               },
               "stage": {
                 "title": "Stage",
-                "default": [
-                  "*"
-                ],
                 "type": "array",
                 "items": {
                   "type": "string"
@@ -2874,9 +2788,6 @@
               },
               "prime": {
                 "title": "Prime",
-                "default": [
-                  "*"
-                ],
                 "type": "array",
                 "items": {
                   "type": "string"
@@ -2954,6 +2865,7 @@
                   "nil",
                   "npm",
                   "python",
+                  "qmake",
                   "rust",
                   "scons"
                 ]
@@ -3074,7 +2986,6 @@
               },
               "organize": {
                 "title": "Organize",
-                "default": {},
                 "type": "object",
                 "additionalProperties": {
                   "type": "string"
@@ -3082,9 +2993,6 @@
               },
               "overlay": {
                 "title": "Overlay",
-                "default": [
-                  "*"
-                ],
                 "type": "array",
                 "items": {
                   "type": "string"
@@ -3092,9 +3000,6 @@
               },
               "stage": {
                 "title": "Stage",
-                "default": [
-                  "*"
-                ],
                 "type": "array",
                 "items": {
                   "type": "string"
@@ -3102,9 +3007,6 @@
               },
               "prime": {
                 "title": "Prime",
-                "default": [
-                  "*"
-                ],
                 "type": "array",
                 "items": {
                   "type": "string"
@@ -3201,6 +3103,7 @@
                   "nil",
                   "npm",
                   "python",
+                  "qmake",
                   "rust",
                   "scons"
                 ]
@@ -3321,7 +3224,6 @@
               },
               "organize": {
                 "title": "Organize",
-                "default": {},
                 "type": "object",
                 "additionalProperties": {
                   "type": "string"
@@ -3329,9 +3231,6 @@
               },
               "overlay": {
                 "title": "Overlay",
-                "default": [
-                  "*"
-                ],
                 "type": "array",
                 "items": {
                   "type": "string"
@@ -3339,9 +3238,6 @@
               },
               "stage": {
                 "title": "Stage",
-                "default": [
-                  "*"
-                ],
                 "type": "array",
                 "items": {
                   "type": "string"
@@ -3349,9 +3245,234 @@
               },
               "prime": {
                 "title": "Prime",
-                "default": [
-                  "*"
-                ],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "override-pull": {
+                "title": "Override-Pull",
+                "type": "string"
+              },
+              "overlay-script": {
+                "title": "Overlay-Script",
+                "type": "string"
+              },
+              "override-build": {
+                "title": "Override-Build",
+                "type": "string"
+              },
+              "override-stage": {
+                "title": "Override-Stage",
+                "type": "string"
+              },
+              "override-prime": {
+                "title": "Override-Prime",
+                "type": "string"
+              },
+              "permissions": {
+                "title": "Permissions",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Permissions"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "plugin": {
+                "const": "qmake"
+              }
+            }
+          },
+          "then": {
+            "$comment": "common properties had to be repeated here or they would be considered invalid by the schema validator otherwise",
+            "properties": {
+              "qmake-parameters": {
+                "title": "Qmake-Parameters",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "qmake-project-file": {
+                "title": "Qmake-Project-File",
+                "default": "",
+                "type": "string"
+              },
+              "qmake-major-version": {
+                "title": "Qmake-Major-Version",
+                "default": 5,
+                "type": "integer"
+              },
+              "source": {
+                "title": "Source",
+                "type": "string"
+              },
+              "plugin": {
+                "title": "Plugin",
+                "type": "string",
+                "enum": [
+                  "ant",
+                  "autotools",
+                  "cmake",
+                  "dotnet",
+                  "dump",
+                  "go",
+                  "make",
+                  "maven",
+                  "meson",
+                  "nil",
+                  "npm",
+                  "python",
+                  "qmake",
+                  "rust",
+                  "scons"
+                ]
+              },
+              "source-checksum": {
+                "title": "Source-Checksum",
+                "default": "",
+                "type": "string"
+              },
+              "source-branch": {
+                "title": "Source-Branch",
+                "default": "",
+                "type": "string"
+              },
+              "source-commit": {
+                "title": "Source-Commit",
+                "default": "",
+                "type": "string"
+              },
+              "source-depth": {
+                "title": "Source-Depth",
+                "default": 0,
+                "type": "integer"
+              },
+              "source-subdir": {
+                "title": "Source-Subdir",
+                "default": "",
+                "type": "string"
+              },
+              "source-submodules": {
+                "title": "Source-Submodules",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "source-tag": {
+                "title": "Source-Tag",
+                "default": "",
+                "type": "string"
+              },
+              "source-type": {
+                "title": "Source-Type",
+                "default": "",
+                "type": "string"
+              },
+              "disable-parallel": {
+                "title": "Disable-Parallel",
+                "default": false,
+                "type": "boolean"
+              },
+              "after": {
+                "title": "After",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "overlay-packages": {
+                "title": "Overlay-Packages",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "stage-snaps": {
+                "title": "Stage-Snaps",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "stage-packages": {
+                "title": "Stage-Packages",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "build-snaps": {
+                "title": "Build-Snaps",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "build-packages": {
+                "title": "Build-Packages",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "build-environment": {
+                "title": "Build-Environment",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              },
+              "build-attributes": {
+                "title": "Build-Attributes",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "organize": {
+                "title": "Organize",
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "overlay": {
+                "title": "Overlay",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "stage": {
+                "title": "Stage",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "prime": {
+                "title": "Prime",
                 "type": "array",
                 "items": {
                   "type": "string"
@@ -3434,6 +3555,24 @@
                 "default": false,
                 "type": "boolean"
               },
+              "rust-ignore-toolchain-file": {
+                "title": "Rust-Ignore-Toolchain-File",
+                "default": false,
+                "type": "boolean"
+              },
+              "rust-cargo-parameters": {
+                "title": "Rust-Cargo-Parameters",
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "rust-inherit-ldflags": {
+                "title": "Rust-Inherit-Ldflags",
+                "default": false,
+                "type": "boolean"
+              },
               "source": {
                 "title": "Source",
                 "type": "string"
@@ -3462,6 +3601,7 @@
                   "nil",
                   "npm",
                   "python",
+                  "qmake",
                   "rust",
                   "scons"
                 ]
@@ -3574,7 +3714,6 @@
               },
               "organize": {
                 "title": "Organize",
-                "default": {},
                 "type": "object",
                 "additionalProperties": {
                   "type": "string"
@@ -3582,9 +3721,6 @@
               },
               "overlay": {
                 "title": "Overlay",
-                "default": [
-                  "*"
-                ],
                 "type": "array",
                 "items": {
                   "type": "string"
@@ -3592,9 +3728,6 @@
               },
               "stage": {
                 "title": "Stage",
-                "default": [
-                  "*"
-                ],
                 "type": "array",
                 "items": {
                   "type": "string"
@@ -3602,9 +3735,6 @@
               },
               "prime": {
                 "title": "Prime",
-                "default": [
-                  "*"
-                ],
                 "type": "array",
                 "items": {
                   "type": "string"
@@ -3681,6 +3811,7 @@
                   "nil",
                   "npm",
                   "python",
+                  "qmake",
                   "rust",
                   "scons"
                 ]
@@ -3801,7 +3932,6 @@
               },
               "organize": {
                 "title": "Organize",
-                "default": {},
                 "type": "object",
                 "additionalProperties": {
                   "type": "string"
@@ -3809,9 +3939,6 @@
               },
               "overlay": {
                 "title": "Overlay",
-                "default": [
-                  "*"
-                ],
                 "type": "array",
                 "items": {
                   "type": "string"
@@ -3819,9 +3946,6 @@
               },
               "stage": {
                 "title": "Stage",
-                "default": [
-                  "*"
-                ],
                 "type": "array",
                 "items": {
                   "type": "string"
@@ -3829,9 +3953,6 @@
               },
               "prime": {
                 "title": "Prime",
-                "default": [
-                  "*"
-                ],
                 "type": "array",
                 "items": {
                   "type": "string"
