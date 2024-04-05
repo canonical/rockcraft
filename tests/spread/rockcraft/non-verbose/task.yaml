@@ -1,0 +1,15 @@
+summary: container pebble without --verbose test
+
+execute: |
+  run_rockcraft pack
+
+  test -f non-verbose-test_latest_amd64.rock
+
+  # test container execution
+  sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:non-verbose-test_latest_amd64.rock docker-daemon:non-verbose-test:latest
+  rm non-verbose-test_latest*.rock  
+  docker images non-verbose-test:latest
+  id=$(docker run -d non-verbose-test)
+  test "$(docker inspect "$id" -f '{{json .Config.Entrypoint}}')" = '["/bin/pebble","enter"]'
+  docker rm -f "$id"
+  docker run --rm non-verbose-test:latest 2>&1 | grep -v "/tmp"
