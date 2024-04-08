@@ -357,10 +357,9 @@ class Image:
         """Set the OCI image entrypoint. It is always Pebble."""
         emit.progress("Configuring entrypoint...")
         image_path = self.path / self.image_name
+        entrypoint = [f"/{Pebble.PEBBLE_BINARY_PATH}", "enter"]
         if build_base in ["ubuntu@20.04", "ubuntu@22.04"]:
-            entrypoint = [f"/{Pebble.PEBBLE_BINARY_PATH}", "enter", "--verbose"]
-        else:
-            entrypoint = [f"/{Pebble.PEBBLE_BINARY_PATH}", "enter"]
+            entrypoint.append("--verbose")
         if entrypoint_service:
             entrypoint.extend(["--args", entrypoint_service])
         params = ["--clear=config.entrypoint"]

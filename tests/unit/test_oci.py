@@ -561,102 +561,71 @@ class TestImage:
             )
         ]
 
-    def test_set_entrypoint_default(self, mock_run):
-        image = oci.Image("a:b", Path("/c"))
-
-        image.set_entrypoint(None, "ubuntu@22.04")
-
-        assert mock_run.mock_calls == [
-            call(
-                [
-                    "umoci",
-                    "config",
-                    "--image",
-                    "/c/a:b",
-                    "--clear=config.entrypoint",
-                    "--config.entrypoint",
-                    "/bin/pebble",
-                    "--config.entrypoint",
-                    "enter",
-                    "--config.entrypoint",
-                    "--verbose",
-                    "--clear=config.cmd",
-                ],
+    @pytest.mark.parametrize(
+        ("service", "build_base", "verbose", "config"),
+        [
+            (
+                None,
+                "ubuntu@22.04",
+                ["--config.entrypoint", "--verbose"],
+                [],
             ),
-        ]
-
-    def test_set_entrypoint_default_no_verbose(self, mock_run):
-        image = oci.Image("a:b", Path("/c"))
-
-        image.set_entrypoint(None, "ubuntu@24.04")
-
-        assert mock_run.mock_calls == [
-            call(
-                [
-                    "umoci",
-                    "config",
-                    "--image",
-                    "/c/a:b",
-                    "--clear=config.entrypoint",
-                    "--config.entrypoint",
-                    "/bin/pebble",
-                    "--config.entrypoint",
-                    "enter",
-                    "--clear=config.cmd",
-                ],
+            (
+                None,
+                "ubuntu@24.04",
+                [],
+                [],
             ),
-        ]
-
-    def test_set_entrypoint_withservice(self, mock_run):
-        image = oci.Image("a:b", Path("/tmp"))
-        image.set_entrypoint("test-service", "ubuntu@22.04")
-
-        assert mock_run.mock_calls == [
-            call(
+            (
+                "test-service",
+                "ubuntu@22.04",
+                ["--config.entrypoint", "--verbose"],
                 [
-                    "umoci",
-                    "config",
-                    "--image",
-                    "/tmp/a:b",
-                    "--clear=config.entrypoint",
-                    "--config.entrypoint",
-                    "/bin/pebble",
-                    "--config.entrypoint",
-                    "enter",
-                    "--config.entrypoint",
-                    "--verbose",
                     "--config.entrypoint",
                     "--args",
                     "--config.entrypoint",
                     "test-service",
-                    "--clear=config.cmd",
                 ],
             ),
-        ]
-
-    def test_set_entrypoint_withservice_no_verbose(self, mock_run):
-        image = oci.Image("a:b", Path("/tmp"))
-        image.set_entrypoint("test-service", "ubuntu@24.04")
-
-        assert mock_run.mock_calls == [
-            call(
+            (
+                "test-service",
+                "ubuntu@24.04",
+                [],
                 [
-                    "umoci",
-                    "config",
-                    "--image",
-                    "/tmp/a:b",
-                    "--clear=config.entrypoint",
-                    "--config.entrypoint",
-                    "/bin/pebble",
-                    "--config.entrypoint",
-                    "enter",
                     "--config.entrypoint",
                     "--args",
                     "--config.entrypoint",
                     "test-service",
-                    "--clear=config.cmd",
                 ],
             ),
+        ],
+    )
+    def test_set_entrypoint_default(
+        self, mock_run, service, build_base, verbose, service_config
+    ):
+        image = oci.Image("a:b", Path("/tmp"))
+
+        image.set_entrypoint(service, build_base)
+
+        arg_list = [
+            "umoci",
+            "config",
+            "--image",
+            "/tmp/a:b",
+            "--clear=config.entrypoint",
+            "--config.entrypoint",
+            "/bin/pebble",
+            "--config.entrypoint",
+            "enter",
+        ]
+        arg_list.extend(verbose)
+
+        arg_list.extend(service_config)
+
+        arg_list.append("--clear=config.cmd")
+
+        assert mock_run.mock_calls == [
+            call(arg_list),
         ]
 
     def test_set_cmd_empty(self, mock_run):
