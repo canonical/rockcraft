@@ -1,0 +1,20 @@
+summary: a test that checks rocks created with Chisel slices
+
+execute: |
+  run_rockcraft pack
+
+  ROCK=$(ls ./*.rock)
+  IMG_NAME=chiselled-image
+
+  test -f "$ROCK"
+
+  # copy image to docker
+  docker images
+  sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy "oci-archive:$ROCK" "docker-daemon:$IMG_NAME:latest"
+  rm "$ROCK"
+  docker images $IMG_NAME:latest
+  docker inspect $IMG_NAME:latest --format '{{.Config.User}}' | MATCH "_daemon_"
+
+  id=$(docker run --rm -d $IMG_NAME)
+  docker logs "$id"
+  docker rm -f "$id"

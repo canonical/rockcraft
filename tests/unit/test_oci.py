@@ -27,6 +27,7 @@ import pytest
 import tests
 from rockcraft import errors, oci
 from rockcraft.architectures import SUPPORTED_ARCHS
+from rockcraft.pebble import Pebble
 
 MOCK_NEW_USER = {
     "user": "foo",
@@ -562,23 +563,26 @@ class TestImage:
         ]
 
     @pytest.mark.parametrize(
-        ("service", "build_base", "verbose", "service_config"),
+        ("service", "build_base", "pebble_binary", "verbose", "service_config"),
         [
             (
                 None,
                 "ubuntu@22.04",
+                Pebble.PEBBLE_BINARY_PATH_PREVIOUS,
                 ["--config.entrypoint", "--verbose"],
                 [],
             ),
             (
                 None,
                 "ubuntu@24.04",
+                Pebble.PEBBLE_BINARY_PATH,
                 [],
                 [],
             ),
             (
                 "test-service",
                 "ubuntu@22.04",
+                Pebble.PEBBLE_BINARY_PATH_PREVIOUS,
                 ["--config.entrypoint", "--verbose"],
                 [
                     "--config.entrypoint",
@@ -590,6 +594,7 @@ class TestImage:
             (
                 "test-service",
                 "ubuntu@24.04",
+                Pebble.PEBBLE_BINARY_PATH,
                 [],
                 [
                     "--config.entrypoint",
@@ -601,7 +606,7 @@ class TestImage:
         ],
     )
     def test_set_entrypoint_default(
-        self, mock_run, service, build_base, verbose, service_config
+        self, mock_run, service, build_base, pebble_binary, verbose, service_config
     ):
         image = oci.Image("a:b", Path("/tmp"))
 
@@ -614,7 +619,7 @@ class TestImage:
             "/tmp/a:b",
             "--clear=config.entrypoint",
             "--config.entrypoint",
-            "/bin/pebble",
+            f"/{pebble_binary}",
             "--config.entrypoint",
             "enter",
         ]
