@@ -562,7 +562,7 @@ class TestImage:
         ]
 
     @pytest.mark.parametrize(
-        ("service", "build_base", "verbose", "config"),
+        ("service", "build_base", "verbose", "service_config"),
         [
             (
                 None,
