@@ -353,11 +353,13 @@ class Image:
         _config_image(image_path, params)
         emit.progress(f"Default user set to {user}")
 
-    def set_entrypoint(self, entrypoint_service: str | None = None) -> None:
+    def set_entrypoint(self, entrypoint_service: str | None, build_base: str) -> None:
         """Set the OCI image entrypoint. It is always Pebble."""
         emit.progress("Configuring entrypoint...")
         image_path = self.path / self.image_name
-        entrypoint = [f"/{Pebble.PEBBLE_BINARY_PATH}", "enter", "--verbose"]
+        entrypoint = [f"/{Pebble.PEBBLE_BINARY_PATH}", "enter"]
+        if build_base in ["ubuntu@20.04", "ubuntu@22.04"]:
+            entrypoint.append("--verbose")
         if entrypoint_service:
             entrypoint.extend(["--args", entrypoint_service])
         params = ["--clear=config.entrypoint"]

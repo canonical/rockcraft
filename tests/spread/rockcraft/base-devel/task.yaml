@@ -23,6 +23,17 @@ execute: |
   # Check the grade
   MATCH "grade: devel" < rootfs/rootfs/.rock/metadata.yaml
 
+  # test container execution
+  docker images
+  sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy \
+      oci-archive:base-devel_0.1_amd64.rock \
+      docker-daemon:base-devel:0.1
+  rm base-devel_0.1_amd64.rock
+  docker images base-devel:0.1
+  id=$(docker run --rm -d base-devel:0.1)
+  test "$(docker inspect "$id" -f '{{json .Config.Entrypoint}}')" = '["/bin/pebble","enter"]'
+  docker rm -f "$id"
+
 restore: |
   rm -rf devel
   rm -rf rootfs

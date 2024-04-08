@@ -151,7 +151,9 @@ def _pack(
 
     emit.progress("Adding Pebble entrypoint")
 
-    new_image.set_entrypoint(project.entrypoint_service)
+    new_image.set_entrypoint(
+        project.entrypoint_service, project.build_base or project.base
+    )
     if project.services and project.entrypoint_service in project.services:
         new_image.set_cmd(project.services[project.entrypoint_service].command)
 
