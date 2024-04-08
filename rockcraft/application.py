@@ -21,16 +21,18 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
-from craft_application import Application, AppMetadata, util
+from craft_application import Application, AppMetadata
+from craft_parts.plugins.plugins import PluginType
 from overrides import override  # type: ignore[reportUnknownVariableType]
 
-from rockcraft import models
+from rockcraft import models, plugins
 from rockcraft.models import project
 
 APP_METADATA = AppMetadata(
     name="rockcraft",
     summary="A tool to create OCI images",
     ProjectClass=project.Project,
+    BuildPlannerClass=project.BuildPlanner,
     source_ignore_patterns=["*.rock"],
 )
 
@@ -39,18 +41,32 @@ class Rockcraft(Application):
     """Rockcraft application definition."""
 
     @override
-    def _extra_yaml_transform(self, yaml_data: dict[str, Any]) -> dict[str, Any]:
+    def _extra_yaml_transform(
+        self,
+        yaml_data: dict[str, Any],
+        *,
+        build_on: str,  # noqa: ARG002 (Unused method argument)
+        build_for: str | None,  # noqa: ARG002 (Unused method argument)
+    ) -> dict[str, Any]:
         return models.transform_yaml(Path.cwd(), yaml_data)
 
     @override
-    def _configure_services(self, platform: str | None, build_for: str | None) -> None:
-        if build_for is None:
-            build_for = util.get_host_architecture()
-
-        self.services.set_kwargs("image", work_dir=self._work_dir, build_for=build_for)
+    def _configure_services(self, provider_name: str | None) -> None:
+        self.services.set_kwargs(
+            "image",
+            work_dir=self._work_dir,
+            build_plan=self._build_plan,
+        )
         self.services.set_kwargs(
             "package",
-            platform=platform,
-            build_for=build_for,
+            build_plan=self._build_plan,
         )
-        super()._configure_services(platform, build_for)
+        super()._configure_services(provider_name)
+
+    @override
+    def _get_app_plugins(self) -> dict[str, PluginType]:
+        """Get the plugins for this application.
+
+        Should be overridden by applications that need to register plugins at startup.
+        """
+        return plugins.get_plugins()
