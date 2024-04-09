@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-"""An experimental extension for the Gunicorn based Python WSGI application extensions."""
+"""An extension for the Gunicorn based Python WSGI application extensions."""
 import abc
 import ast
 import fnmatch
@@ -187,6 +187,12 @@ class FlaskFramework(_GunicornBase):
     def framework(self) -> str:
         """Return the wsgi framework name, e.g. flask, django."""
         return "flask"
+
+    @staticmethod
+    @override
+    def is_experimental(base: str | None) -> bool:
+        """Check if the extension is in an experimental state."""
+        return False
 
     @override
     def gen_install_app_part(self) -> Dict[str, Any]:
