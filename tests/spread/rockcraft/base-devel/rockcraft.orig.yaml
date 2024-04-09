@@ -11,7 +11,7 @@ platforms:
 parts:
   from-chisel-slices:
     plugin: nil
-    stage-packages: [dotnet-runtime-8.0_libs]
+    stage-packages: [coreutils_bins]
 
   from-deb:
     plugin: nil
