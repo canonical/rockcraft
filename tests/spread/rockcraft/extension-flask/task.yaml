@@ -1,8 +1,6 @@
 summary: flask extension test
 
 execute: |
-  export ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS=true
-  
   run_rockcraft init --name flask-extension --profile flask-framework
   run_rockcraft pack
 
@@ -15,15 +13,15 @@ execute: |
   sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:flask-extension_0.1_amd64.rock docker-daemon:flask-extension:latest
   # Ensure container exists
   docker images flask-extension | MATCH "flask-extension"
-  
+
   # ensure container doesn't exist
   docker rm -f flask-extension-container
-  
+
   # test the flask project is ready to run inside the container
   docker run --rm --entrypoint /bin/python3 flask-extension -m gunicorn --chdir /flask/app --check-config app:app
   docker run --rm --entrypoint /bin/python3 flask-extension -c "import pathlib;assert pathlib.Path('/flask/app/static/js/test.js').is_file()"
   docker run --rm --entrypoint /bin/python3 flask-extension -c "import pathlib;assert not pathlib.Path('/flask/app/node_modules').exists()"
-  
+
   # test the default flask service
   docker run --name flask-extension-container -d -p 8137:8000 flask-extension
   retry -n 5 --wait 2 curl localhost:8137

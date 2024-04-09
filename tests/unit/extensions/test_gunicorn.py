@@ -21,8 +21,7 @@ from rockcraft.errors import ExtensionError
 
 
 @pytest.fixture
-def flask_extension(mock_extensions, monkeypatch):
-    monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "1")
+def flask_extension(mock_extensions):
     extensions.register("flask-framework", extensions.FlaskFramework)
 
 
