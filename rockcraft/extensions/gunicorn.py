@@ -117,6 +117,12 @@ class _GunicornBase(Extension):
           - services: a service to run the Gunicorn server
           - parts: see _GunicornBase._gen_parts
         """
+        for required_key in ("base", "build-base", "platforms"):
+            if required_key not in self.yaml_data:
+                raise ExtensionError(
+                    f"flask-framework extension requires {required_key} to be defined."
+                )
+
         self.check_project()
         snippet: Dict[str, Any] = {
             "run_user": "_daemon_",
@@ -141,13 +147,6 @@ class _GunicornBase(Extension):
                 },
             },
         }
-        if (
-            "build-base" not in self.yaml_data
-            and self.yaml_data.get("base", "bare") == "bare"
-        ):
-            snippet["build-base"] = "ubuntu@22.04"
-        if "platforms" not in self.yaml_data:
-            snippet["platforms"] = {"amd64": {}}
         snippet["parts"] = self._gen_parts()
         return snippet
 
