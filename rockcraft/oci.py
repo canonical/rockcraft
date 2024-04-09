@@ -34,6 +34,7 @@ from craft_cli import emit
 
 from rockcraft import errors, layers
 from rockcraft.architectures import SUPPORTED_ARCHS
+from rockcraft.constants import ROCK_CONTROL_DIR
 from rockcraft.pebble import Pebble
 from rockcraft.utils import get_snap_command_path
 
@@ -461,7 +462,7 @@ class Image:
         local_control_data_path = Path(tempfile.mkdtemp())
 
         # the rock control data structure starts with the folder ".rock"
-        control_data_rock_folder = local_control_data_path / ".rock"
+        control_data_rock_folder = local_control_data_path / ROCK_CONTROL_DIR
         control_data_rock_folder.mkdir()
 
         rock_metadata_file = control_data_rock_folder / "metadata.yaml"

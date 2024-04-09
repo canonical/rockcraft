@@ -26,6 +26,8 @@ import yaml
 from craft_application.errors import CraftValidationError
 from craft_cli import emit
 
+from rockcraft.constants import ROCK_CONTROL_DIR
+
 
 def _alias_generator(name: str) -> str:
     """Convert underscores to dashes in aliases."""
@@ -166,7 +168,7 @@ class Pebble:
 
     PEBBLE_PATH = "var/lib/pebble/default"
     PEBBLE_LAYERS_PATH = f"{PEBBLE_PATH}/layers"
-    PEBBLE_BINARY_DIR = ".rock/bin"
+    PEBBLE_BINARY_DIR = f"{ROCK_CONTROL_DIR}/bin"
     PEBBLE_BINARY_PATH = f"{PEBBLE_BINARY_DIR}/pebble"
     PEBBLE_BINARY_PATH_PREVIOUS = "bin/pebble"
     _BASE_PART_SPEC = {
@@ -242,7 +244,7 @@ class Pebble:
 
     @staticmethod
     def get_part_spec(build_base: str) -> dict[str, Any]:
-        """Get the partpart that providers the pebble binary for a given build base."""
+        """Get the part providing the pebble binary for a given build base."""
         part_spec: dict[str, Any] = Pebble.PEBBLE_PART_SPEC
 
         if Pebble._is_focal_or_jammy(build_base):
