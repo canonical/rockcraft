@@ -80,7 +80,6 @@ class InitCommand(AppCommand):
             """\
                 name: {name}
                 base: ubuntu@22.04 # the base environment for this Flask application
-                build-base: ubuntu@22.04 # the build base environment for creating the OCI image
                 version: '0.1' # just for humans. Semantic versioning is recommended
                 summary: A summary of your Flask application # 79 char long summary
                 description: |
