@@ -551,4 +551,7 @@ def _add_pebble_data(yaml_data: dict[str, Any]) -> None:
         # Project already has a pebble part: this is not supported.
         raise CraftValidationError('Cannot override the default "pebble" part')
 
-    parts["pebble"] = Pebble.PEBBLE_PART_SPEC
+    model = BuildPlanner.unmarshal(yaml_data)
+    build_base = model.build_base if model.build_base else model.base
+
+    parts["pebble"] = Pebble.get_part_spec(build_base)

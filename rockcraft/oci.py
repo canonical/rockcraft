@@ -34,6 +34,7 @@ from craft_cli import emit
 
 from rockcraft import errors, layers
 from rockcraft.architectures import SUPPORTED_ARCHS
+from rockcraft.constants import ROCK_CONTROL_DIR
 from rockcraft.pebble import Pebble
 from rockcraft.utils import get_snap_command_path
 
@@ -357,9 +358,7 @@ class Image:
         """Set the OCI image entrypoint. It is always Pebble."""
         emit.progress("Configuring entrypoint...")
         image_path = self.path / self.image_name
-        entrypoint = [f"/{Pebble.PEBBLE_BINARY_PATH}", "enter"]
-        if build_base in ["ubuntu@20.04", "ubuntu@22.04"]:
-            entrypoint.append("--verbose")
+        entrypoint = Pebble.get_entrypoint(build_base)
         if entrypoint_service:
             entrypoint.extend(["--args", entrypoint_service])
         params = ["--clear=config.entrypoint"]
@@ -463,7 +462,7 @@ class Image:
         local_control_data_path = Path(tempfile.mkdtemp())
 
         # the rock control data structure starts with the folder ".rock"
-        control_data_rock_folder = local_control_data_path / ".rock"
+        control_data_rock_folder = local_control_data_path / ROCK_CONTROL_DIR
         control_data_rock_folder.mkdir()
 
         rock_metadata_file = control_data_rock_folder / "metadata.yaml"
