@@ -23,6 +23,7 @@ import sys
 
 import yaml
 from craft_parts import Part
+from craft_parts.plugins import plugins
 
 script_dir = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.join(script_dir, "../../"))
@@ -71,6 +72,33 @@ def generate_project_schema() -> str:
         "Part"
     ]["definitions"]["Permissions"]
     del project_schema["definitions"]["Part"]["definitions"]
+
+    # add conditions for plugin properties fields
+    project_schema["definitions"]["Part"]["properties"]["plugin"]["enum"] = list(
+        plugins.get_registered_plugins().keys()
+    )
+
+    # remove the global additionalProperties to allow for each plugin its own
+    del project_schema["definitions"]["Part"]["additionalProperties"]
+
+    # add each plugin's property names in a conditional block
+    if_array = []
+    for name, cls in plugins.get_registered_plugins().items():
+        properties_dict = {}
+        for k, v in cls.properties_class.schema().get("properties", {}).items():
+            properties_dict[k] = v
+        properties_dict.update(project_schema["definitions"]["Part"]["properties"])
+        if_array.append(
+            {
+                "if": {"properties": {"plugin": {"const": name}}},
+                "then": {
+                    "$comment": "common properties had to be repeated here or they would be considered invalid by the schema validator otherwise",
+                    "properties": properties_dict,
+                    "additionalProperties": False,
+                },
+            }
+        )
+    project_schema["definitions"]["Part"]["allOf"] = if_array
 
     return json.dumps(project_schema, indent=2)
 

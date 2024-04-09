@@ -52,6 +52,7 @@ def test_run_pack_services(mocker, monkeypatch, tmp_path):
         setup=DEFAULT,
         prime_dir=fake_prime_dir,
         run=DEFAULT,
+        project_info=DEFAULT,
     )
 
     package_mocks = mocker.patch.multiple(

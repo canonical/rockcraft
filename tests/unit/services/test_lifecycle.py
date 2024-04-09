@@ -18,6 +18,8 @@ from pathlib import Path
 from unittest import mock
 
 import pytest
+from craft_application import util
+from craft_application.util import repositories
 from craft_parts import (
     LifecycleManager,
     Part,
@@ -40,7 +42,10 @@ def extra_project_params():
     return {"package_repositories": [{"type": "apt", "ppa": "ppa/ppa"}]}
 
 
-def test_lifecycle_args(lifecycle_service, default_factory, default_image_info, mocker):
+def test_lifecycle_args(
+    lifecycle_service, default_factory, default_image_info, mocker, monkeypatch
+):
+    monkeypatch.setenv("CRAFT_PARALLEL_BUILD_COUNT", "4")
     image_service = default_factory.image
 
     mock_obtain_image = mocker.patch.object(
@@ -63,32 +68,34 @@ def test_lifecycle_args(lifecycle_service, default_factory, default_image_info, 
         cache_dir=Path("cache"),
         ignore_local_sources=["*.rock"],
         package_repositories=[{"ppa": "ppa/ppa", "type": "apt"}],
+        parallel_build_count=4,
+        partitions=None,
         project_name="default",
         project_vars={"version": "1.0"},
+        project_vars_part_name=None,
         work_dir=Path("work"),
         rootfs_dir=Path("."),
+        track_stage_packages=True,
     )
 
 
 def test_lifecycle_package_repositories(
-    extra_project_params, lifecycle_service, default_project, mocker
+    extra_project_params, lifecycle_service, default_project, mocker, default_build_plan
 ):
+    base = default_build_plan[0].base
+    mocker.patch.object(util, "get_host_base", return_value=base)
     fake_repositories = extra_project_params["package_repositories"]
     lifecycle_service._lcm = mock.MagicMock(spec=LifecycleManager)
 
     # Installation of repositories in the build instance
-    mock_install = mocker.patch.object(
-        lifecycle_module, "_install_package_repositories"
-    )
+    mock_install = mocker.patch.object(repositories, "install_package_repositories")
     # Installation of repositories in overlays
     mock_callback = mocker.patch.object(callbacks, "register_configure_overlay")
 
     lifecycle_service.run("prime")
 
     mock_install.assert_called_once_with(fake_repositories, lifecycle_service._lcm)
-    mock_callback.assert_called_once_with(
-        lifecycle_module._install_overlay_repositories
-    )
+    mock_callback.assert_called_once_with(repositories.install_overlay_repositories)
 
 
 def test_python_usrmerge_fix(tmp_path):

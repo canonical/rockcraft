@@ -141,13 +141,6 @@ class _GunicornBase(Extension):
                 },
             },
         }
-        if (
-            "build-base" not in self.yaml_data
-            and self.yaml_data.get("base", "bare") == "bare"
-        ):
-            snippet["build-base"] = "ubuntu@22.04"
-        if "platforms" not in self.yaml_data:
-            snippet["platforms"] = {"amd64": {}}
         snippet["parts"] = self._gen_parts()
         return snippet
 

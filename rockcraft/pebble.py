@@ -26,6 +26,8 @@ import yaml
 from craft_application.errors import CraftValidationError
 from craft_cli import emit
 
+from rockcraft.constants import ROCK_CONTROL_DIR
+
 
 def _alias_generator(name: str) -> str:
     """Convert underscores to dashes in aliases."""
@@ -166,17 +168,27 @@ class Pebble:
 
     PEBBLE_PATH = "var/lib/pebble/default"
     PEBBLE_LAYERS_PATH = f"{PEBBLE_PATH}/layers"
-    PEBBLE_BINARY_PATH = "bin/pebble"
-    PEBBLE_PART_SPEC = {
+    PEBBLE_BINARY_DIR = f"{ROCK_CONTROL_DIR}/bin"
+    PEBBLE_BINARY_PATH = f"{PEBBLE_BINARY_DIR}/pebble"
+    PEBBLE_BINARY_PATH_PREVIOUS = "bin/pebble"
+    _BASE_PART_SPEC = {
         "plugin": "nil",
         "stage-snaps": ["pebble/latest/stable"],
-        "stage": [PEBBLE_BINARY_PATH],
         # We need this because "services" is Optional, but the directory must exist
         "override-prime": str(
             "craftctl default\n"
             f"mkdir -p {PEBBLE_LAYERS_PATH}\n"
             f"chmod 777 {PEBBLE_PATH}"
         ),
+    }
+    PEBBLE_PART_SPEC = {
+        **_BASE_PART_SPEC,
+        "organize": {"bin": PEBBLE_BINARY_DIR},
+        "stage": [PEBBLE_BINARY_PATH],
+    }
+    PEBBLE_PART_SPEC_PREVIOUS = {
+        **_BASE_PART_SPEC,
+        "stage": [PEBBLE_BINARY_PATH_PREVIOUS],
     }
 
     def define_pebble_layer(
@@ -203,7 +215,7 @@ class Pebble:
             pebble_layers_path_in_base + "/[0-9][0-9][0-9]-???*.yaml"
         ) + glob.glob(pebble_layers_path_in_base + "/[0-9][0-9][0-9]-???*.yml")
 
-        prefixes = list(map(lambda l: Path(l).name[:3], existing_pebble_layers))
+        prefixes = list(map(lambda layer: Path(layer).name[:3], existing_pebble_layers))
         prefixes.sort()
         emit.progress(
             f"Found {len(existing_pebble_layers)} Pebble layers in the base's root filesystem"
@@ -229,3 +241,34 @@ class Pebble:
             )
 
         tmp_new_layer.chmod(0o777)
+
+    @staticmethod
+    def get_part_spec(build_base: str) -> dict[str, Any]:
+        """Get the part providing the pebble binary for a given build base."""
+        part_spec: dict[str, Any] = Pebble.PEBBLE_PART_SPEC
+
+        if Pebble._is_focal_or_jammy(build_base):
+            part_spec = Pebble.PEBBLE_PART_SPEC_PREVIOUS
+
+        return part_spec
+
+    @staticmethod
+    def get_entrypoint(build_base: str) -> list[str]:
+        """Get the rock's entry point for a given build base."""
+        is_legacy = Pebble._is_focal_or_jammy(build_base)
+
+        pebble_path = Pebble.PEBBLE_BINARY_PATH
+        if is_legacy:
+            # Previously pebble existed in /bin/pebble
+            pebble_path = Pebble.PEBBLE_BINARY_PATH_PREVIOUS
+
+        entrypoint = [f"/{pebble_path}", "enter"]
+
+        if is_legacy:
+            entrypoint += ["--verbose"]
+
+        return entrypoint
+
+    @staticmethod
+    def _is_focal_or_jammy(build_base: str) -> bool:
+        return build_base in ("ubuntu@20.04", "ubuntu@22.04")
