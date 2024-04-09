@@ -1,6 +1,6 @@
 # -*- Mode:Python; indent-tabs-mode:nil; tab-width:4 -*-
 #
-# Copyright (C) 2021 Canonical Ltd
+# Copyright (C) 2021,2024 Canonical Ltd
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 3 as
@@ -25,14 +25,12 @@ import pydantic
 import pytest
 import yaml
 from craft_application.errors import CraftValidationError
-from craft_application.models import BuildInfo
+from craft_application.models import CURRENT_DEVEL_BASE, DEVEL_BASE_WARNING, BuildInfo
 from craft_providers.bases import BaseName
 
 from rockcraft.errors import ProjectLoadError
 from rockcraft.models import Project
 from rockcraft.models.project import (
-    CURRENT_DEVEL_BASE,
-    DEVEL_BASE_WARNING,
     INVALID_NAME_MESSAGE,
     Platform,
     load_project,
@@ -601,7 +599,7 @@ def test_project_generate_metadata(yaml_loaded_data):
 
 
 def test_metadata_base_devel(yaml_loaded_data):
-    yaml_loaded_data["base"] = CURRENT_DEVEL_BASE
+    yaml_loaded_data["base"] = f"ubuntu@{CURRENT_DEVEL_BASE.value}"
     yaml_loaded_data["build-base"] = "devel"
     project = Project.unmarshal(yaml_loaded_data)
 
@@ -723,21 +721,20 @@ def test_project_get_build_plan(yaml_loaded_data, platforms, expected_build_info
 
 
 def test_project_devel_base(yaml_loaded_data):
-    yaml_loaded_data["base"] = CURRENT_DEVEL_BASE
+    yaml_loaded_data["base"] = f"ubuntu@{CURRENT_DEVEL_BASE.value}"
     yaml_loaded_data["build-base"] = "ubuntu@22.04"
 
     with pytest.raises(CraftValidationError) as err:
         _ = Project.unmarshal(yaml_loaded_data)
 
     expected = (
-        f'To use the unstable base "{CURRENT_DEVEL_BASE}", '
-        f'"build-base" must be "devel".'
+        f"build-base must be 'devel' when base is 'ubuntu@{CURRENT_DEVEL_BASE.value}'"
     )
     assert str(err.value) == expected
 
 
 def test_get_effective_devel_base(yaml_loaded_data):
-    yaml_loaded_data["base"] = CURRENT_DEVEL_BASE
+    yaml_loaded_data["base"] = f"ubuntu@{CURRENT_DEVEL_BASE.value}"
     yaml_loaded_data["build-base"] = "devel"
     project = Project.unmarshal(yaml_loaded_data)
 
@@ -747,7 +744,7 @@ def test_get_effective_devel_base(yaml_loaded_data):
 
 
 def test_devel_base_warning(yaml_loaded_data, emitter):
-    yaml_loaded_data["base"] = CURRENT_DEVEL_BASE
+    yaml_loaded_data["base"] = f"ubuntu@{CURRENT_DEVEL_BASE.value}"
     yaml_loaded_data["build-base"] = "devel"
     del yaml_loaded_data["entrypoint-service"]
     _ = Project.unmarshal(yaml_loaded_data)

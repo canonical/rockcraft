@@ -1,6 +1,6 @@
 # -*- Mode:Python; indent-tabs-mode:nil; tab-width:4 -*-
 #
-# Copyright 2021 Canonical Ltd.
+# Copyright 2021,2024 Canonical Ltd.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 3 as
@@ -118,14 +118,6 @@ INVALID_NAME_MESSAGE = (
 
 DEPRECATED_COLON_BASES = ["ubuntu:20.04", "ubuntu:22.04"]
 
-CURRENT_DEVEL_BASE = "ubuntu@24.04"
-
-DEVEL_BASE_WARNING = (
-    "The development build-base should only be used for testing purposes, "
-    "as its contents are bound to change with the opening of new Ubuntu releases, "
-    "suddenly and without warning."
-)
-
 
 class NameStr(pydantic.ConstrainedStr):
     """Constrained string type only accepting valid rock names."""
@@ -139,24 +131,6 @@ class BuildPlanner(BaseBuildPlanner):
     platforms: dict[str, Any]  # type: ignore[reportIncompatibleVariableOverride]
     base: Literal["bare", "ubuntu@20.04", "ubuntu@22.04", "ubuntu@24.04"]
     build_base: Literal["ubuntu@20.04", "ubuntu@22.04", "devel"] | None
-
-    @pydantic.root_validator(skip_on_failure=True)
-    @classmethod
-    def _validate_devel_base(cls, values: Mapping[str, Any]) -> Mapping[str, Any]:
-        """If 'base' is currently unstable, 'build-base' must be 'devel'."""
-        base = values.get("base")
-        build_base = values.get("build_base")
-
-        if base == CURRENT_DEVEL_BASE and build_base != "devel":
-            raise CraftValidationError(
-                f'To use the unstable base "{CURRENT_DEVEL_BASE}", '
-                '"build-base" must be "devel".'
-            )
-
-        if base == CURRENT_DEVEL_BASE:
-            craft_cli.emit.message(DEVEL_BASE_WARNING)
-
-        return values
 
     @pydantic.validator("build_base", always=True)
     @classmethod
@@ -316,6 +290,16 @@ class Project(YamlModelMixin, BuildPlanner, BaseProject):  # type: ignore[misc]
 
         allow_mutation = False
         extra = pydantic.Extra.forbid
+
+    @override
+    @classmethod
+    def _providers_base(cls, base: str | None) -> bases.BaseAlias | None:
+        """Get a BaseAlias from rockcraft's base."""
+        if not base or base == "bare":
+            return None
+
+        name, channel = base.split("@")
+        return bases.get_base_alias((name, channel))
 
     @pydantic.root_validator(pre=True)
     @classmethod
