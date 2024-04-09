@@ -118,7 +118,7 @@ INVALID_NAME_MESSAGE = (
 
 DEPRECATED_COLON_BASES = ["ubuntu:20.04", "ubuntu:22.04"]
 
-CURRENT_DEVEL_BASE = "ubuntu@24.04"
+CURRENT_DEVEL_BASE = "ubuntu@26.04"
 
 DEVEL_BASE_WARNING = (
     "The development build-base should only be used for testing purposes, "
@@ -138,7 +138,7 @@ class BuildPlanner(BaseBuildPlanner):
 
     platforms: dict[str, Any]  # type: ignore[reportIncompatibleVariableOverride]
     base: Literal["bare", "ubuntu@20.04", "ubuntu@22.04", "ubuntu@24.04"]
-    build_base: Literal["ubuntu@20.04", "ubuntu@22.04", "devel"] | None
+    build_base: Literal["ubuntu@20.04", "ubuntu@22.04", "ubuntu@24.04", "devel"] | None
 
     @pydantic.root_validator(skip_on_failure=True)
     @classmethod
