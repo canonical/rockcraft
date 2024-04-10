@@ -1,0 +1,4 @@
+# Add 'cocumentation' label to any changes within 'docs' folder or any subfolders
+documentation:
+- changed-files:
+  - any-glob-to-any-file: docs/**
