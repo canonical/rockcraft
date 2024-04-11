@@ -95,6 +95,16 @@ entrypoint-service: test-service
 pytestmark = [pytest.mark.usefixtures("enable_overlay_feature")]
 
 
+class DevelProject(Project):
+    """A Project subclass that always accepts CURRENT_DEVEL_BASE as a "base".
+
+    Needed because we might not have a currently supported base that is still in
+    "development", but we want to test the behavior anyway.
+    """
+
+    base: str  # type: ignore
+
+
 @pytest.fixture()
 def yaml_data():
     return ROCKCRAFT_YAML
@@ -725,7 +735,7 @@ def test_project_devel_base(yaml_loaded_data):
     yaml_loaded_data["build-base"] = "ubuntu@22.04"
 
     with pytest.raises(CraftValidationError) as err:
-        _ = Project.unmarshal(yaml_loaded_data)
+        _ = DevelProject.unmarshal(yaml_loaded_data)
 
     expected = (
         f"build-base must be 'devel' when base is 'ubuntu@{CURRENT_DEVEL_BASE.value}'"
@@ -747,6 +757,6 @@ def test_devel_base_warning(yaml_loaded_data, emitter):
     yaml_loaded_data["base"] = f"ubuntu@{CURRENT_DEVEL_BASE.value}"
     yaml_loaded_data["build-base"] = "devel"
     del yaml_loaded_data["entrypoint-service"]
-    _ = Project.unmarshal(yaml_loaded_data)
+    _ = DevelProject.unmarshal(yaml_loaded_data)
 
     emitter.assert_message(DEVEL_BASE_WARNING)

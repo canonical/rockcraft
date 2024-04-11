@@ -51,12 +51,12 @@ EXPECTED_EXPAND_EXTENSIONS = textwrap.dedent(
         plugin: nil
         stage-snaps:
         - pebble/latest/stable
-        stage:
-        - bin/pebble
         override-prime: |-
           craftctl default
           mkdir -p var/lib/pebble/default/layers
           chmod 777 var/lib/pebble/default
+        stage:
+        - bin/pebble
     services:
       my-service:
         override: merge
