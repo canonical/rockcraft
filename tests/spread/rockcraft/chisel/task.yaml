@@ -1,0 +1,21 @@
+summary: a test that checks rocks created with Chisel slices
+
+execute: |
+  run_rockcraft pack
+
+  ROCK=$(ls ./*.rock)
+  IMG_NAME=chiseled-base-files
+
+  test -f "$ROCK"
+
+  # copy image to docker
+  docker images
+  sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy "oci-archive:$ROCK" "docker-daemon:$IMG_NAME:latest"
+  rm "$ROCK"
+
+  # Check that the file "md5sum" exists in "/bin". This file is provided
+  # by the "coreutils_bins" slice as "/usr/bin/lmd5sum", so this check will
+  # only succeed if:
+  #   * the "/bin -> usr/bin" symlink is correct, and;
+  #   * pebble itself is found and working correctly (for the exec call).
+  docker run --rm $IMG_NAME -v exec test -f /bin/md5sum

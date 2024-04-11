@@ -1,0 +1,24 @@
+name: chiseled-base-files
+summary: An Ubuntu 24.04 rock with chiseled base-files
+description: |
+  Check that a simple rock containing base-files is able to build successfully
+  with the part that provides the pebble binary.
+license: Apache-2.0
+version: "0.0.1"
+
+base: bare
+build-base: devel
+
+platforms:
+  amd64:
+
+parts:
+  chisel-part:
+    plugin: nil
+    stage-packages:
+      # This slice has "bin" as a symlink to "usr/bin"
+      - base-files_base
+      # This slice has "test"
+      - coreutils_bins
+      # This is needed to generate /etc/passwd
+      - base-passwd_data

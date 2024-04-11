@@ -22,13 +22,13 @@ backends:
     halt-timeout: 2h
     systems:
       - ubuntu-20.04-64:
-          workers: 2
+          workers: 1
           storage: 40G
       - ubuntu-22.04-64:
-          workers: 2
+          workers: 4
           storage: 40G
       - fedora-37-64:
-          workers: 2
+          workers: 1
           storage: 40G
 
 prepare: |
@@ -114,6 +114,8 @@ debug-each: |
 suites:
   docs/tutorials/code/:
     summary: tests basic tutorials from the docs
+    systems:
+    - ubuntu-22.04-64
 
   docs/how-to/code/:
     summary: tests how-to guides from the docs
@@ -122,11 +124,19 @@ suites:
 
   docs/reference/code/:
     summary: tests reference code from the docs
+    systems:
+    - ubuntu-22.04-64
 
-  tests/spread/general/:
-    summary: tests for rockcraft core functionality
+  tests/spread/rockcraft/:
+    summary: tests for rockcraft core functionality, independent of host system
+    systems:
+    - ubuntu-22.04-64
+
+  tests/spread/foreign/:
+    summary: tests that rockcraft and rocks work on different host systems
 
   tests/spread/large/:
     summary: bigger tests that take longer to run
     manual: true
-
+    systems:
+    - ubuntu-22.04-64

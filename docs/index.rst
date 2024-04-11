@@ -36,8 +36,9 @@ allowing complex operations to be declared at build time.
 
    .. grid-item-card:: :ref:`How-to guides <how-to>`
 
-      **Step-by-step guides** - learn key operations, ranging from creating and
-      cutting slices to migrating and publishing rocks.
+      **Step-by-step guides** - learn key operations, ranging from :ref:`creating
+      and cutting slices <how-to-chisel>` to :ref:`migrating and publishing
+      rocks <how-to-rocks>`.
 
 .. grid:: 1 1 2 2
    :reverse:

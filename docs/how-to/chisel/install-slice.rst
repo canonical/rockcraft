@@ -13,7 +13,7 @@ Let's assume you want to install the OpenSSL binaries slice created in
 
 **First**, clone the Chisel releases repository:
 
-.. literalinclude:: code/install-slice/task.yaml
+.. literalinclude:: ../code/install-slice/task.yaml
     :language: bash
     :start-after: [docs:clone-chisel-releases]
     :end-before: [docs:clone-chisel-releases-end]
@@ -33,7 +33,7 @@ need to merge your changes into that existing file.
 At this point, you should be able to find your custom OpenSSL slice ``bins``
 in the local Chisel release:
 
-.. literalinclude:: code/install-slice/task.yaml
+.. literalinclude:: ../code/install-slice/task.yaml
     :language: bash
     :start-after: [docs:slice-exists]
     :end-before: [docs:slice-exists-end]
@@ -41,7 +41,7 @@ in the local Chisel release:
 
 If you wanted to test it with Chisel alone, you could now simply run
 
-.. literalinclude:: code/install-slice/task.yaml
+.. literalinclude:: ../code/install-slice/task.yaml
     :language: bash
     :start-after: [docs:cut]
     :end-before: [docs:cut-end]
@@ -55,7 +55,7 @@ Rockcraft!
 
 Start by initialising a new Rockcraft project:
 
-.. literalinclude:: code/install-slice/task.yaml
+.. literalinclude:: ../code/install-slice/task.yaml
     :language: bash
     :start-after: [docs:init]
     :end-before: [docs:init-end]
@@ -68,7 +68,7 @@ Adjust the ``rockcraft.yaml`` file according to the following content (feel
 free to adjust the metadata, but pay special attention to the ``parts``
 section):
 
-.. literalinclude:: code/install-slice/rockcraft.yaml
+.. literalinclude:: ../code/install-slice/rockcraft.yaml
     :language: yaml
 
 The "build-context" part allows you to send the local ``chisel-releases``
@@ -81,7 +81,7 @@ in :ref:`here <chisel-example>`.
 
 Build your rock with:
 
-.. literalinclude:: code/install-slice/task.yaml
+.. literalinclude:: ../code/install-slice/task.yaml
     :language: bash
     :start-after: [docs:pack]
     :end-before: [docs:pack-end]
@@ -111,7 +111,7 @@ The output will be:
 
 Test that the OpenSSL binaries have been correctly installed with the following:
 
-.. literalinclude:: code/install-slice/task.yaml
+.. literalinclude:: ../code/install-slice/task.yaml
     :language: bash
     :start-after: [docs:skopeo-copy]
     :end-before: [docs:skopeo-copy-end]
@@ -131,7 +131,7 @@ The output will be:
 
 And after:
 
-.. literalinclude:: code/install-slice/task.yaml
+.. literalinclude:: ../code/install-slice/task.yaml
     :language: bash
     :start-after: [docs:docker-run]
     :end-before: [docs:docker-run-end]

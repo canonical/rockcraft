@@ -33,10 +33,17 @@ class TestPebble:
     def test_attributes(self):
         assert Pebble.PEBBLE_PATH == "var/lib/pebble/default"
         assert Pebble.PEBBLE_LAYERS_PATH == "var/lib/pebble/default/layers"
-        assert Pebble.PEBBLE_BINARY_PATH == "bin/pebble"
+        assert Pebble.PEBBLE_BINARY_PATH == ".rock/bin/pebble"
+        assert Pebble.PEBBLE_BINARY_PATH_PREVIOUS == "bin/pebble"
         assert all(
             field in Pebble.PEBBLE_PART_SPEC
-            for field in ["plugin", "stage-snaps", "stage", "override-prime"]
+            for field in [
+                "plugin",
+                "stage-snaps",
+                "organize",
+                "stage",
+                "override-prime",
+            ]
         )
 
     @pytest.mark.parametrize(

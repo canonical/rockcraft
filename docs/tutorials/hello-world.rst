@@ -32,7 +32,7 @@ save it as ``rockcraft.yaml``:
 
 This file instructs Rockcraft to build a rock that **only** has the ``hello``
 package (and its dependencies) inside. For more information about the ``parts``
-section, check :ref:`ref_parts`. The remaining YAML fields correspond to
+section, check :ref:`part_properties`. The remaining YAML fields correspond to
 metadata that help define and describe the rock. For more information about all
 available fields check :doc:`/reference/rockcraft.yaml`.
 

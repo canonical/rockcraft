@@ -1,5 +1,5 @@
 
-.. include:: /common/craft-parts/python_plugin.rst
+.. include:: /common/craft-parts/reference/plugins/python_plugin.rst
    :end-before: .. _python-details-begin:
 
 Dependencies
@@ -29,5 +29,5 @@ here's an example that uses ``python3.12-venv`` from the Deadsnakes ppa:
        source: .
        stage-packages: [python3.12-venv]
 
-.. include:: /common/craft-parts/python_plugin.rst
+.. include:: /common/craft-parts/reference/plugins/python_plugin.rst
    :start-after: .. _python-details-end:

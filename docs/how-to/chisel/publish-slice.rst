@@ -22,7 +22,7 @@ It is as simple as proposing your changes into the upstream
 
 2. Create a branch:
 
-.. literalinclude:: code/publish-slice/task.yaml
+.. literalinclude:: ../code/publish-slice/task.yaml
    :language: bash
    :start-after: [docs:new-branch]
    :end-before: [docs:new-branch-end]

@@ -240,7 +240,7 @@ is a valid, supported architecture name.
 **Required**: Yes
 
 The set of parts that compose the rock's contents
-(see :ref:`Parts <ref_parts>`).
+(see :ref:`Parts <part_properties>`).
 
 
 .. note::
@@ -259,7 +259,7 @@ Extensions to enable when building the ROCK.
 
 Currently supported extensions:
 
-- ``flask`` (experimental)
+- ``flask-framework``
 
 Example
 =======
