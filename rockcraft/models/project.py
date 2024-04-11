@@ -306,6 +306,10 @@ class Project(YamlModelMixin, BuildPlanner, BaseProject):  # type: ignore[misc]
         if not base or base == "bare":
             return None
 
+        if base == "devel":
+            return bases.get_base_alias(("ubuntu", "devel"))
+
+
         name, channel = base.split("@")
         return bases.get_base_alias((name, channel))
 

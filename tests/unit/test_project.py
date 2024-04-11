@@ -25,8 +25,8 @@ import pydantic
 import pytest
 import yaml
 from craft_application.errors import CraftValidationError
-from craft_application.models import CURRENT_DEVEL_BASE, DEVEL_BASE_WARNING, BuildInfo
-from craft_providers.bases import BaseName
+from craft_application.models import CURRENT_DEVEL_BASE, BuildInfo
+from craft_providers.bases import BaseName, ubuntu
 
 from rockcraft.errors import ProjectLoadError
 from rockcraft.models import Project
@@ -609,7 +609,7 @@ def test_project_generate_metadata(yaml_loaded_data):
 
 
 def test_metadata_base_devel(yaml_loaded_data):
-    yaml_loaded_data["base"] = f"ubuntu@{CURRENT_DEVEL_BASE.value}"
+    yaml_loaded_data["base"] = "ubuntu@24.04"
     yaml_loaded_data["build-base"] = "devel"
     project = Project.unmarshal(yaml_loaded_data)
 
@@ -730,21 +730,8 @@ def test_project_get_build_plan(yaml_loaded_data, platforms, expected_build_info
     assert project.get_build_plan() == expected_build_infos
 
 
-def test_project_devel_base(yaml_loaded_data):
-    yaml_loaded_data["base"] = f"ubuntu@{CURRENT_DEVEL_BASE.value}"
-    yaml_loaded_data["build-base"] = "ubuntu@22.04"
-
-    with pytest.raises(CraftValidationError) as err:
-        _ = DevelProject.unmarshal(yaml_loaded_data)
-
-    expected = (
-        f"build-base must be 'devel' when base is 'ubuntu@{CURRENT_DEVEL_BASE.value}'"
-    )
-    assert str(err.value) == expected
-
-
 def test_get_effective_devel_base(yaml_loaded_data):
-    yaml_loaded_data["base"] = f"ubuntu@{CURRENT_DEVEL_BASE.value}"
+    yaml_loaded_data["base"] = "ubuntu@24.04"
     yaml_loaded_data["build-base"] = "devel"
     project = Project.unmarshal(yaml_loaded_data)
 
@@ -753,10 +740,18 @@ def test_get_effective_devel_base(yaml_loaded_data):
     assert base.version == "devel"
 
 
-def test_devel_base_warning(yaml_loaded_data, emitter):
-    yaml_loaded_data["base"] = f"ubuntu@{CURRENT_DEVEL_BASE.value}"
-    yaml_loaded_data["build-base"] = "devel"
-    del yaml_loaded_data["entrypoint-service"]
-    _ = DevelProject.unmarshal(yaml_loaded_data)
+@pytest.mark.parametrize(
+    ("base", "expected_base"),
+    [
+        (None, None),
+        ("bare", None),
+        ("ubuntu@20.04", ubuntu.BuilddBaseAlias.FOCAL),
+        ("ubuntu@22.04", ubuntu.BuilddBaseAlias.JAMMY),
+        ("ubuntu@24.04", ubuntu.BuilddBaseAlias.NOBLE),
+        ("devel", ubuntu.BuilddBaseAlias.DEVEL),
+    ],
+)
+def test_provider_base(base, expected_base):
+    actual_base = Project._providers_base(base)
 
-    emitter.assert_message(DEVEL_BASE_WARNING)
+    assert actual_base == expected_base
