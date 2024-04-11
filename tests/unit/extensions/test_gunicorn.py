@@ -45,6 +45,7 @@ def django_input_yaml_fixture():
     return {
         "name": "foo-bar",
         "base": "ubuntu@22.04",
+        "platforms": {"amd64": {}},
         "extensions": ["django-framework"],
     }
 
