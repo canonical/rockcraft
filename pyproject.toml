@@ -1,9 +1,101 @@
+[project]
+name = "rockcraft"
+description = "Create rocks"
+dynamic = ["version", "readme"]
+authors = [
+  {name = "Canonical Ltd.", email = "snapcraft@lists.snapcraft.io"}
+]
+dependencies = [
+    "craft-application>=1.0.0",
+    "craft-archives>=1.1.0",
+    "craft-cli",
+    "craft-parts",
+    "craft-providers",
+    "overrides",
+    "spdx-lookup",
+    "tabulate>=0.8.10",
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Operating System :: MacOS :: MacOS X",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+]
+requires-python = ">=3.10"
+license = {file = "LICENSE", text = "GNU General Public License v3 (GPLv3)"}
+
+[project.optional-dependencies]
+doc = [
+    "furo",
+    "sphinx<7",
+    "sphinx-autobuild",
+    "sphinx-autodoc-typehints",
+    "sphinx-copybutton",
+    "sphinx_design",
+    "sphinx-lint",
+    "sphinx-pydantic",
+    "sphinx-rtd-theme",
+    "pyspelling",
+]
+release = [
+    "twine",
+    "wheel",
+]
+test = [
+    "mccabe<0.7.0",   # to resolve version conflict
+    "coverage",
+    "black",
+    "codespell",
+    "flake8>=4.0.1",
+    "isort",
+    "mypy",
+    "pydocstyle",
+    "pylint",
+    "pylint-fixme-info",
+    "pylint-pytest>=1.1.3",
+    "pytest",
+    "pytest-check>=2.0",
+    "pytest-mock",
+    "pytest-subprocess",
+    "ruff==0.3.5",
+    "tox",
+    "types-requests",
+    "types-setuptools",
+    "types-pyyaml",
+    "types-tabulate>=0.9.0.2",
+]
+dev = [
+    "autoflake"
+    "doc[doc,release,test]",
+]
+
+[project.scripts]
+rockcraft = "rockcraft.cli:run"
+
+[project.urls]
+Homepage = "https://github.com/canonical/rockcraft"
+Documentation = "https://rockcraft.readthedocs.io/en/latest/"
+Repository = "https://github.com/canonical/rockcraft"
+Issues = "https://github.com/canonical/rockcraft/issues"
+
 [build-system]
 requires = [
     "setuptools~=69.0.3",
     "setuptools_scm[toml]>=7.1"
 ]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+exclude = [
+    "tests",
+    "tests.*",
+]
+
+[tool.setuptools.package-data]
+rockcraft = ["py.typed"]
 
 [tool.setuptools_scm]
 write_to = "rockcraft/_version.py"
