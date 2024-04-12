@@ -25,16 +25,12 @@ import pydantic
 import pytest
 import yaml
 from craft_application.errors import CraftValidationError
-from craft_application.models import CURRENT_DEVEL_BASE, BuildInfo
+from craft_application.models import BuildInfo
 from craft_providers.bases import BaseName, ubuntu
 
 from rockcraft.errors import ProjectLoadError
 from rockcraft.models import Project
-from rockcraft.models.project import (
-    INVALID_NAME_MESSAGE,
-    Platform,
-    load_project,
-)
+from rockcraft.models.project import INVALID_NAME_MESSAGE, Platform, load_project
 from rockcraft.pebble import Service
 
 _ARCH_MAPPING = {"x86": "amd64", "x64": "amd64"}
