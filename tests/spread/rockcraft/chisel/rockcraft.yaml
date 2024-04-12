@@ -1,23 +1,24 @@
-name: chiseled-dotnet
-summary: A "bare" rock containing the .NET runtime
-description: A "bare" rock containing the .NET runtime
+name: chiseled-base-files
+summary: An Ubuntu 24.04 rock with chiseled base-files
+description: |
+  Check that a simple rock containing base-files is able to build successfully
+  with the part that provides the pebble binary.
 license: Apache-2.0
-
 version: "0.0.1"
+
 base: bare
-build_base: ubuntu@22.04
-run-user: _daemon_
-services: 
-  dotnet:
-    override: replace
-    command: /usr/lib/dotnet/dotnet [ --info ]
-    startup: enabled
+build-base: devel
+
 platforms:
   amd64:
 
 parts:
-
   chisel-part:
     plugin: nil
     stage-packages:
-      - dotnet-runtime-6.0_libs
+      # This slice has "bin" as a symlink to "usr/bin"
+      - base-files_base
+      # This slice has "test"
+      - coreutils_bins
+      # This is needed to generate /etc/passwd
+      - base-passwd_data

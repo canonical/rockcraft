@@ -20,7 +20,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import cast
 
-from craft_application import AppMetadata, ProjectService, ServiceFactory
+from craft_application import AppMetadata, ProjectService, ServiceFactory, errors
+from craft_application.models import BuildInfo
 from craft_cli import emit
 
 from rockcraft import models, oci
@@ -45,12 +46,12 @@ class RockcraftImageService(ProjectService):
         *,
         project: models.Project,
         work_dir: Path,
-        build_for: str,
+        build_plan: list[BuildInfo],
     ):
         super().__init__(app, services, project=project)
 
         self._work_dir = work_dir
-        self._build_for = build_for
+        self._build_plan = build_plan
         self._image_info: ImageInfo | None = None
 
     def obtain_image(self) -> ImageInfo:
@@ -63,20 +64,24 @@ class RockcraftImageService(ProjectService):
     def _create_image_info(self) -> ImageInfo:
         image_dir = self._work_dir / "images"
         bundle_dir = self._work_dir / "bundles"
-        build_for = self._build_for
+
+        if len(self._build_plan) != 1:
+            raise errors.MultipleBuildsError
+
+        build_for = self._build_plan[0].build_for
         project = cast(models.Project, self._project)
         if project.base == "bare":
             base_image, source_image = oci.Image.new_oci_image(
                 f"{project.base}@latest",
                 image_dir=image_dir,
-                arch=self._build_for,
+                arch=build_for,
             )
         else:
             emit.progress(f"Retrieving base {project.base} for {build_for}")
             base_image, source_image = oci.Image.from_docker_registry(
                 project.base,
                 image_dir=image_dir,
-                arch=self._build_for,
+                arch=build_for,
             )
             emit.progress(f"Retrieved base {project.base} for {build_for}")
 

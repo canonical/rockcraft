@@ -3,10 +3,14 @@ summary: A Flask application
 description: A rock packing a Flask application via the flask extension
 version: "0.1"
 base: bare
+build-base: ubuntu@22.04
 license: Apache-2.0
 
 extensions:
   - flask-framework
+
+platforms:
+  amd64:
 
 # [docs:parts-start]
 parts:

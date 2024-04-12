@@ -21,14 +21,17 @@ from rockcraft.errors import ExtensionError
 
 
 @pytest.fixture
-def flask_extension(mock_extensions, monkeypatch):
-    monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "1")
+def flask_extension(mock_extensions):
     extensions.register("flask-framework", extensions.FlaskFramework)
 
 
 @pytest.fixture(name="flask_input_yaml")
 def flask_input_yaml_fixture():
-    return {"base": "ubuntu@22.04", "extensions": ["flask-framework"]}
+    return {
+        "base": "ubuntu@22.04",
+        "platforms": {"amd64": {}},
+        "extensions": ["flask-framework"],
+    }
 
 
 @pytest.fixture(name="django_input_yaml")
@@ -276,6 +279,8 @@ def test_flask_extension_bare(tmp_path):
     flask_input_yaml = {
         "extensions": ["flask-framework"],
         "base": "bare",
+        "build-base": "ubuntu@22.04",
+        "platforms": {"amd64": {}},
         "parts": {"flask/install-app": {"prime": ["-flask/app/.git"]}},
     }
     applied = extensions.apply_extensions(tmp_path, flask_input_yaml)
@@ -284,13 +289,17 @@ def test_flask_extension_bare(tmp_path):
         "override-build": "mkdir -m 777 ${CRAFT_PART_INSTALL}/tmp",
         "stage-packages": ["bash_bins", "coreutils_bins", "ca-certificates_data"],
     }
-    assert applied["build-base"] == "ubuntu@22.04"
 
 
 @pytest.mark.usefixtures("flask_extension")
 def test_flask_extension_no_requirements_txt_error(tmp_path):
     (tmp_path / "app.py").write_text("app = object()")
-    flask_input_yaml = {"extensions": ["flask-framework"], "base": "bare"}
+    flask_input_yaml = {
+        "extensions": ["flask-framework"],
+        "base": "bare",
+        "build-base": "ubuntu@22.04",
+        "platforms": {"amd64": {}},
+    }
     with pytest.raises(ExtensionError) as exc:
         extensions.apply_extensions(tmp_path, flask_input_yaml)
     assert "requirements.txt" in str(exc)
@@ -303,6 +312,8 @@ def test_flask_extension_incorrect_prime_prefix_error(tmp_path):
     flask_input_yaml = {
         "extensions": ["flask-framework"],
         "base": "bare",
+        "build-base": "ubuntu@22.04",
+        "platforms": {"amd64": {}},
         "parts": {"flask-framework/install-app": {"prime": ["app.py"]}},
     }
     (tmp_path / "requirements.txt").write_text("flask")
@@ -317,6 +328,8 @@ def test_flask_extension_incorrect_wsgi_path_error(tmp_path):
     flask_input_yaml = {
         "extensions": ["flask-framework"],
         "base": "bare",
+        "build-base": "ubuntu@22.04",
+        "platforms": {"amd64": {}},
         "parts": {"flask/install-app": {"prime": ["flask/app/requirement.txt"]}},
     }
     (tmp_path / "requirements.txt").write_text("flask")
@@ -339,6 +352,8 @@ def test_flask_extension_flask_service_override_disable_wsgi_path_check(tmp_path
     flask_input_yaml = {
         "extensions": ["flask-framework"],
         "base": "bare",
+        "build-base": "ubuntu@22.04",
+        "platforms": {"amd64": {}},
         "services": {
             "flask": {
                 "command": "/bin/python3 -m gunicorn -c /flask/gunicorn.conf.py webapp:app"
