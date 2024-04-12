@@ -748,6 +748,7 @@ def test_get_effective_devel_base(yaml_loaded_data):
     ],
 )
 def test_provider_base(base, expected_base):
+    # pylint: disable-next=protected-access
     actual_base = Project._providers_base(base)
 
     assert actual_base == expected_base
