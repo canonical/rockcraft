@@ -24,7 +24,7 @@ Deprecated==1.2.14
 dill==0.3.8
 distlib==0.3.8
 distro==1.9.0
-docutils==0.19
+docutils==0.21.1
 filelock==3.13.1
 flake8==7.0.0
 furo==2024.1.29

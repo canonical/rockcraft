@@ -12,7 +12,7 @@ craft-parts==1.29.0
 craft-providers==1.23.1
 Deprecated==1.2.14
 distro==1.9.0
-docutils==0.19
+docutils==0.21.1
 furo==2024.1.29
 html5lib==1.1
 httplib2==0.22.0
