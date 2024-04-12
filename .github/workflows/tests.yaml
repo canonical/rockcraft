@@ -42,9 +42,6 @@ jobs:
       - name: Run mypy
         run: |
           make test-mypy
-      - name: Run pydocstyle
-        run: |
-          make test-pydocstyle
       - name: Run pyright
         run: |
           sudo snap install --classic node

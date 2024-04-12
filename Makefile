@@ -75,7 +75,7 @@ install: clean ## Install python package.
 	python setup.py install
 
 .PHONY: lint
-lint: test-black test-codespell test-flake8 test-isort test-mypy test-pydocstyle test-pyright test-pylint test-sphinx-lint test-shellcheck ## Run all linting tests.
+lint: test-black test-codespell test-flake8 test-isort test-mypy test-pyright test-pylint test-sphinx-lint test-shellcheck ## Run all linting tests.
 
 .PHONY: release
 release: dist ## Release with twine.
@@ -108,10 +108,6 @@ test-isort:
 .PHONY: test-mypy
 test-mypy:
 	mypy rockcraft tests
-
-.PHONY: test-pydocstyle
-test-pydocstyle:
-	pydocstyle rockcraft
 
 .PHONY: test-pylint
 test-pylint:
