@@ -8,6 +8,10 @@ license: Apache-2.0
 extensions:
   - django-framework
 
+platforms:
+  amd64:
+  arm64:
+
 services:
   django:
     command: /bin/python3 -m gunicorn -c /django/gunicorn.conf.py foobar.wsgi:application
