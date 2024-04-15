@@ -1,8 +1,8 @@
 name: Pull Request Labeler
 on:
   pull_request_target:
-   branches:
-     - main 
+    branches:
+      - main
 
 jobs:
   labeler:
@@ -11,4 +11,4 @@ jobs:
       pull-requests: write
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/labeler@v5
+      - uses: actions/labeler@v5
