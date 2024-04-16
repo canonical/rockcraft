@@ -26,8 +26,6 @@ import yaml
 from craft_application.errors import CraftValidationError
 from craft_cli import emit
 
-from rockcraft.constants import ROCK_CONTROL_DIR
-
 
 def _alias_generator(name: str) -> str:
     """Convert underscores to dashes in aliases."""
@@ -168,7 +166,7 @@ class Pebble:
 
     PEBBLE_PATH = "var/lib/pebble/default"
     PEBBLE_LAYERS_PATH = f"{PEBBLE_PATH}/layers"
-    PEBBLE_BINARY_DIR = f"{ROCK_CONTROL_DIR}/bin"
+    PEBBLE_BINARY_DIR = "usr/bin"
     PEBBLE_BINARY_PATH = f"{PEBBLE_BINARY_DIR}/pebble"
     PEBBLE_BINARY_PATH_PREVIOUS = "bin/pebble"
     _BASE_PART_SPEC = {
