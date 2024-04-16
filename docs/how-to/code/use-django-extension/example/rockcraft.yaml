@@ -7,3 +7,7 @@ license: Apache-2.0
 
 extensions:
   - django-framework
+
+platforms:
+  amd64:
+  arm64:
