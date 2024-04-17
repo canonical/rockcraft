@@ -33,7 +33,7 @@ class TestPebble:
     def test_attributes(self):
         assert Pebble.PEBBLE_PATH == "var/lib/pebble/default"
         assert Pebble.PEBBLE_LAYERS_PATH == "var/lib/pebble/default/layers"
-        assert Pebble.PEBBLE_BINARY_PATH == ".rock/bin/pebble"
+        assert Pebble.PEBBLE_BINARY_PATH == "usr/bin/pebble"
         assert Pebble.PEBBLE_BINARY_PATH_PREVIOUS == "bin/pebble"
         assert all(
             field in Pebble.PEBBLE_PART_SPEC

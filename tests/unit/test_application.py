@@ -63,7 +63,7 @@ def test_application_expand_environment(new_dir, default_application):
 @pytest.mark.parametrize(
     ("base", "build_base", "expected_spec"),
     [
-        # 24.04 and beyond: pebble exists in .rock/bin/
+        # 24.04 and beyond: pebble exists in usr/bin/
         ("bare", "devel", Pebble.PEBBLE_PART_SPEC),
         ("ubuntu@24.04", "devel", Pebble.PEBBLE_PART_SPEC),
         # 20.04 and 22.04: pebble exists in bin/
