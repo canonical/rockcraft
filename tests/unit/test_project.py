@@ -739,7 +739,6 @@ def test_get_effective_devel_base(yaml_loaded_data):
 @pytest.mark.parametrize(
     ("base", "expected_base"),
     [
-        (None, None),
         ("bare", None),
         ("ubuntu@20.04", ubuntu.BuilddBaseAlias.FOCAL),
         ("ubuntu@22.04", ubuntu.BuilddBaseAlias.JAMMY),
@@ -748,7 +747,13 @@ def test_get_effective_devel_base(yaml_loaded_data):
     ],
 )
 def test_provider_base(base, expected_base):
-    # pylint: disable-next=protected-access
-    actual_base = Project._providers_base(base)
+    actual_base = Project._providers_base(base)  # pylint: disable=protected-access
 
     assert actual_base == expected_base
+
+
+def test_provider_base_error():
+    with pytest.raises(CraftValidationError) as raised:
+        Project._providers_base("unknown")  # pylint: disable=protected-access
+
+    assert "Unknown base 'unknown'" in str(raised.value)

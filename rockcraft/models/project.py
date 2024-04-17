@@ -31,6 +31,7 @@ from craft_application.models import BuildPlanner as BaseBuildPlanner
 from craft_application.models import CraftBaseConfig
 from craft_application.models import Project as BaseProject
 from craft_providers import bases
+from craft_providers.errors import BaseConfigurationError
 from pydantic_yaml import YamlModelMixin
 from typing_extensions import override
 
@@ -301,16 +302,26 @@ class Project(YamlModelMixin, BuildPlanner, BaseProject):  # type: ignore[misc]
 
     @override
     @classmethod
-    def _providers_base(cls, base: str | None) -> bases.BaseAlias | None:
-        """Get a BaseAlias from rockcraft's base."""
-        if not base or base == "bare":
+    def _providers_base(cls, base: str) -> bases.BaseAlias | None:
+        """Get a BaseAlias from rockcraft's base.
+
+        :param base: The base name.
+
+        :returns: The BaseAlias for the base or None for bare bases.
+
+        :raises CraftValidationError: If the project's base cannot be determined.
+        """
+        if base == "bare":
             return None
 
         if base == "devel":
             return bases.get_base_alias(("ubuntu", "devel"))
 
-        name, channel = base.split("@")
-        return bases.get_base_alias((name, channel))
+        try:
+            name, channel = base.split("@")
+            return bases.get_base_alias((name, channel))
+        except (ValueError, BaseConfigurationError) as err:
+            raise CraftValidationError(f"Unknown base {base!r}") from err
 
     @pydantic.root_validator(pre=True)
     @classmethod
