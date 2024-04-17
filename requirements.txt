@@ -20,7 +20,7 @@ platformdirs==4.2.0
 pydantic==1.10.14
 pydantic-yaml==0.11.2
 pygit2==1.14.1
-pyparsing==3.1.1
+pyparsing==3.1.2
 pyxdg==0.28
 PyYAML==6.0.1
 requests==2.31.0

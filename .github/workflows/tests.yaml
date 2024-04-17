@@ -36,9 +36,6 @@ jobs:
       - name: Run flake8
         run: |
           make test-flake8
-      - name: Run isort
-        run: |
-          make test-isort
       - name: Run mypy
         run: |
           make test-mypy
