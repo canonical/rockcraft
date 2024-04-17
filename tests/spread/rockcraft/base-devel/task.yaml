@@ -30,8 +30,9 @@ execute: |
       docker-daemon:base-devel:0.1
   rm base-devel_0.1_amd64.rock
   docker images base-devel:0.1
-  id=$(docker run --rm -d base-devel:0.1)
+  id=$(docker run -d base-devel:0.1)
   test "$(docker inspect "$id" -f '{{json .Config.Entrypoint}}')" = '["/usr/bin/pebble","enter"]'
+  docker exec "$id" pebble services
   docker rm -f "$id"
 
 restore: |
