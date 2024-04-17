@@ -10,7 +10,7 @@ To use it, include ``extensions: [ django-framework ]`` in your
 
 Example:
 
-.. literalinclude:: code/use-django-extension/example/rockcraft.yaml
+.. literalinclude:: ../code/use-django-extension/example/rockcraft.yaml
     :language: yaml
 
 Managing project files with the Django extension
@@ -43,7 +43,7 @@ the ``django-framework/install-app`` part to install the Django project in
 the ``/django/app`` directory within the rock image and update the command
 for the ``django`` service to point to the WSGI path of your project.
 
-.. literalinclude:: code/use-django-extension/override_example/rockcraft.yaml
+.. literalinclude:: ../code/use-django-extension/override_example/rockcraft.yaml
     :language: yaml
     :start-after: [docs:parts-start]
     :end-before: [docs:parts-end]
