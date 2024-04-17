@@ -5,7 +5,7 @@ Use the django-framework extension
     The Django extension is compatible with the ``bare`` and ``ubuntu@22.04``
     bases.
 
-To employ it, include ``extensions: [ django-framework ]`` in your
+To use it, include ``extensions: [ django-framework ]`` in your
 ``rockcraft.yaml`` file.
 
 Example:
