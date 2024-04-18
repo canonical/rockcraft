@@ -92,7 +92,7 @@ pytestmark = [pytest.mark.usefixtures("enable_overlay_feature")]
 
 
 class DevelProject(Project):
-    """A Project subclass that always accepts CURRENT_DEVEL_BASE as a "base".
+    """A Project subclass that always accepts devel bases as a "base".
 
     Needed because we might not have a currently supported base that is still in
     "development", but we want to test the behavior anyway.
