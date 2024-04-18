@@ -34,11 +34,18 @@ def flask_input_yaml_fixture():
     }
 
 
+@pytest.fixture
+def django_extension(mock_extensions, monkeypatch):
+    monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "1")
+    extensions.register("django-framework", extensions.DjangoFramework)
+
+
 @pytest.fixture(name="django_input_yaml")
 def django_input_yaml_fixture():
     return {
         "name": "foo-bar",
         "base": "ubuntu@22.04",
+        "platforms": {"amd64": {}},
         "extensions": ["django-framework"],
     }
 
@@ -362,3 +369,143 @@ def test_flask_extension_flask_service_override_disable_wsgi_path_check(tmp_path
     }
 
     extensions.apply_extensions(tmp_path, flask_input_yaml)
+
+
+@pytest.mark.usefixtures("django_extension")
+def test_django_extension_default(tmp_path, django_input_yaml):
+    (tmp_path / "requirements.txt").write_text("django")
+    (tmp_path / "test").mkdir()
+    (tmp_path / "foo_bar" / "foo_bar").mkdir(parents=True)
+    (tmp_path / "foo_bar" / "foo_bar" / "wsgi.py").write_text("application = object()")
+
+    applied = extensions.apply_extensions(tmp_path, django_input_yaml)
+
+    source = applied["parts"]["django-framework/config-files"]["source"]
+    del applied["parts"]["django-framework/config-files"]["source"]
+    suffix = "share/rockcraft/extensions/django-framework"
+    assert source[-len(suffix) :].replace("\\", "/") == suffix
+
+    assert applied == {
+        "base": "ubuntu@22.04",
+        "name": "foo-bar",
+        "parts": {
+            "django-framework/config-files": {
+                "organize": {"gunicorn.conf.py": "django/gunicorn.conf.py"},
+                "plugin": "dump",
+            },
+            "django-framework/dependencies": {
+                "plugin": "python",
+                "python-packages": ["gunicorn"],
+                "python-requirements": ["requirements.txt"],
+                "source": ".",
+                "stage-packages": ["python3-venv"],
+            },
+            "django-framework/install-app": {
+                "organize": {"*": "django/app/", ".*": "django/app/"},
+                "plugin": "dump",
+                "source": "foo_bar",
+            },
+            "django-framework/runtime": {
+                "plugin": "nil",
+                "stage-packages": ["ca-certificates_data"],
+            },
+            "django-framework/statsd-exporter": {
+                "build-snaps": ["go"],
+                "plugin": "go",
+                "source": "https://github.com/prometheus/statsd_exporter.git",
+                "source-tag": "v0.26.0",
+            },
+        },
+        "platforms": {"amd64": {}},
+        "run_user": "_daemon_",
+        "services": {
+            "django": {
+                "after": ["statsd-exporter"],
+                "command": "/bin/python3 -m gunicorn -c /django/gunicorn.conf.py foo_bar.wsgi:application",
+                "override": "replace",
+                "startup": "enabled",
+                "user": "_daemon_",
+            },
+            "statsd-exporter": {
+                "command": (
+                    "/bin/statsd_exporter --statsd.mapping-config=/statsd-mapping.conf "
+                    "--statsd.listen-udp=localhost:9125 "
+                    "--statsd.listen-tcp=localhost:9125"
+                ),
+                "override": "merge",
+                "startup": "enabled",
+                "summary": "statsd exporter service",
+                "user": "_daemon_",
+            },
+        },
+    }
+
+
+@pytest.mark.usefixtures("django_extension")
+def test_django_extension_override_install_app(tmp_path, django_input_yaml):
+    (tmp_path / "requirements.txt").write_text("django")
+    (tmp_path / "test").mkdir()
+    (tmp_path / "foobar").mkdir()
+    (tmp_path / "foobar" / "wsgi.py").write_text("application = object()")
+    django_input_yaml["parts"] = {
+        "django-framework/install-app": {
+            "plugin": "dump",
+            "source": ".",
+            "organize": {"foobar": "django/app"},
+        }
+    }
+    django_input_yaml["services"] = {
+        "django": {
+            "command": "/bin/python3 -m gunicorn -c /django/gunicorn.conf.py foobar.wsgi:application"
+        }
+    }
+    applied = extensions.apply_extensions(tmp_path, django_input_yaml)
+    assert applied["parts"]["django-framework/install-app"] == {
+        "plugin": "dump",
+        "source": ".",
+        "organize": {"foobar": "django/app"},
+    }
+
+
+@pytest.mark.usefixtures("django_extension")
+def test_django_extension_incorrect_wsgi_path_error(tmp_path):
+    input_yaml = {
+        "name": "foobar",
+        "extensions": ["django-framework"],
+        "base": "bare",
+    }
+    (tmp_path / "requirements.txt").write_text("django")
+
+    with pytest.raises(ExtensionError) as exc:
+        extensions.apply_extensions(tmp_path, input_yaml)
+
+    assert "wsgi:application" in str(exc)
+
+    django_project_dir = tmp_path / "foobar" / "foobar"
+    django_project_dir.mkdir(parents=True)
+    (django_project_dir / "wsgi.py").write_text("app = object()")
+
+    with pytest.raises(ExtensionError):
+        extensions.apply_extensions(tmp_path, input_yaml)
+
+    (django_project_dir / "wsgi.py").write_text("application = object()")
+
+    extensions.apply_extensions(tmp_path, input_yaml)
+
+
+@pytest.mark.usefixtures("django_extension")
+def test_django_extension_django_service_override_disable_wsgi_path_check(tmp_path):
+    (tmp_path / "requirements.txt").write_text("flask")
+
+    input_yaml = {
+        "name": "foobar",
+        "extensions": ["django-framework"],
+        "base": "bare",
+        "services": {
+            "django": {
+                "command": "/bin/python3 -m gunicorn -c /django/gunicorn.conf.py webapp:app"
+            }
+        },
+    }
+
+    extensions.apply_extensions(tmp_path, input_yaml)

@@ -17,7 +17,7 @@
 """Extension processor and related utilities."""
 
 from ._utils import apply_extensions
-from .gunicorn import FlaskFramework
+from .gunicorn import DjangoFramework, FlaskFramework
 from .registry import get_extension_class, get_extension_names, register, unregister
 
 __all__ = [
@@ -28,4 +28,5 @@ __all__ = [
     "unregister",
 ]
 
+register("django-framework", DjangoFramework)
 register("flask-framework", FlaskFramework)
