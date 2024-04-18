@@ -119,14 +119,6 @@ INVALID_NAME_MESSAGE = (
 
 DEPRECATED_COLON_BASES = ["ubuntu:20.04", "ubuntu:22.04"]
 
-CURRENT_DEVEL_BASE = "ubuntu@26.04"
-
-DEVEL_BASE_WARNING = (
-    "The development build-base should only be used for testing purposes, "
-    "as its contents are bound to change with the opening of new Ubuntu releases, "
-    "suddenly and without warning."
-)
-
 
 class NameStr(pydantic.ConstrainedStr):
     """Constrained string type only accepting valid rock names."""
