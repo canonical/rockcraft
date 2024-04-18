@@ -76,7 +76,7 @@ pylint-pytest==1.1.7
 pyparsing==3.1.2
 pyproject-api==1.6.1
 pyspelling==2.10
-pytest==8.0.0
+pytest==8.1.1
 pytest-check==2.3.1
 pytest-mock==3.12.0
 pytest-subprocess==1.5.0
