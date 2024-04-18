@@ -3,7 +3,7 @@ astroid==2.15.8
 autoflake==2.3.1
 Babel==2.14.0
 beautifulsoup4==4.12.3
-black==23.12.1
+black==24.4.0
 bracex==2.4
 cachetools==5.3.3
 certifi==2024.2.2
