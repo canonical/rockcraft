@@ -38,14 +38,8 @@ coverage: ## Run pytest with coverage report.
 	coverage report -m
 	coverage html
 
-.PHONY: preparedocs
-preparedocs: ## move file from the sphinx-starter-pack to docs folder
-	cp docs/sphinx-starter-pack/.sphinx/_static/* docs/_static
-	mkdir -p docs/_templates
-	cp -R docs/sphinx-starter-pack/.sphinx/_templates/* docs/_templates
-
 .PHONY: installdocs
-installdocs: preparedocs ## install documentation dependencies.
+installdocs:
 	$(MAKE) -C docs install
 
 .PHONY: docs
