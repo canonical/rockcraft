@@ -237,7 +237,11 @@ def run_lifecycle(mocker, default_build_plan):
     """Helper to call testing.run_mocked_lifecycle()."""
 
     def _inner(**kwargs):
+        from craft_application.util import get_host_base
         from tests.testing.lifecycle import run_mocked_lifecycle
+
+        for build_plan in default_build_plan:
+            build_plan.base = get_host_base()
 
         return run_mocked_lifecycle(
             mocker=mocker, build_plan=default_build_plan, **kwargs
