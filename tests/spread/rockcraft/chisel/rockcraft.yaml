@@ -7,7 +7,7 @@ license: Apache-2.0
 version: "0.0.1"
 
 base: bare
-build-base: devel
+build-base: ubuntu@24.04
 
 platforms:
   amd64:

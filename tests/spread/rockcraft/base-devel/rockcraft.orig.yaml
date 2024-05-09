@@ -9,10 +9,6 @@ platforms:
   amd64:
 
 parts:
-  from-chisel-slices:
-    plugin: nil
-    stage-packages: [coreutils_bins]
-
   from-deb:
     plugin: nil
     stage-packages: [hello]
