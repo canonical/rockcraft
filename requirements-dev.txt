@@ -30,7 +30,7 @@ flake8==7.0.0
 furo==2024.1.29
 html5lib==1.1
 httplib2==0.22.0
-idna==3.6
+idna==3.7
 imagesize==1.4.1
 importlib-metadata==7.0.1
 iniconfig==2.0.0

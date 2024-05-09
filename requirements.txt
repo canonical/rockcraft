@@ -8,7 +8,7 @@ craft-providers==1.23.1
 Deprecated==1.2.14
 distro==1.9.0
 httplib2==0.22.0
-idna==3.6
+idna==3.7
 importlib-metadata==7.0.1
 launchpadlib==1.11.0
 lazr.restfulclient==0.14.6
