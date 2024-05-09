@@ -44,7 +44,7 @@ launchpadlib==1.11.0
 lazr.restfulclient==0.14.6
 lazr.uri==1.0.6
 livereload==2.6.3
-lxml==5.1.0
+lxml==5.2.1
 Markdown==3.5.2
 markdown-it-py==3.0.0
 MarkupSafe==2.1.5
