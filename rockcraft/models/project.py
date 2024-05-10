@@ -301,7 +301,6 @@ class Project(YamlModelMixin, BuildPlanner, BaseProject):  # type: ignore[misc]
         :param base: The base name.
 
         :returns: The BaseAlias for the base or None for bare bases.
-
         :raises ValueError: If the project's base cannot be determined.
         """
         if base == "bare":
