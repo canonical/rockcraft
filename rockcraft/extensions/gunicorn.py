@@ -303,14 +303,21 @@ class DjangoFramework(_GunicornBase):
 
     @override
     def gen_install_app_part(self) -> Dict[str, Any]:
-        """Return the prime list for the Flask project."""
+        """Return the prime list for the Django project."""
+        extension_install_app = {
+            "plugin": "dump",
+            "source": self.name,
+            "organize": {"*": "django/app/", ".*": "django/app/"},
+        }
         if "django-framework/install-app" not in self.yaml_data.get("parts", {}):
-            return {
-                "plugin": "dump",
-                "source": self.name,
-                "organize": {"*": "django/app/", ".*": "django/app/"},
-            }
-        return {}
+            return extension_install_app
+
+        existing_install_app = self.yaml_data["parts"]["django-framework/install-app"]
+        return {
+            k: v
+            for k, v in extension_install_app.items()
+            if k not in existing_install_app
+        }
 
     def _check_wsgi_path(self):
         wsgi_file = self.project_root / self.name / self.name / "wsgi.py"

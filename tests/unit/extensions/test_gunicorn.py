@@ -14,8 +14,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import pytest
+import textwrap
 
+import pytest
 from rockcraft import extensions
 from rockcraft.errors import ExtensionError
 
@@ -230,7 +231,7 @@ def test_flask_framework_add_service(tmp_path, flask_input_yaml):
     assert applied["services"] == {
         "flask": {
             "after": ["statsd-exporter"],
-            "command": "/bin/python3 -m gunicorn -c /flask/gunicorn.conf.py " "app:app",
+            "command": "/bin/python3 -m gunicorn -c /flask/gunicorn.conf.py app:app",
             "override": "replace",
             "startup": "enabled",
             "user": "_daemon_",
@@ -495,7 +496,7 @@ def test_django_extension_incorrect_wsgi_path_error(tmp_path):
 
 @pytest.mark.usefixtures("django_extension")
 def test_django_extension_django_service_override_disable_wsgi_path_check(tmp_path):
-    (tmp_path / "requirements.txt").write_text("flask")
+    (tmp_path / "requirements.txt").write_text("django")
 
     input_yaml = {
         "name": "foobar",
@@ -509,3 +510,38 @@ def test_django_extension_django_service_override_disable_wsgi_path_check(tmp_pa
     }
 
     extensions.apply_extensions(tmp_path, input_yaml)
+
+
+@pytest.mark.usefixtures("django_extension")
+def test_django_extension_merge_override_install_app(tmp_path, django_input_yaml):
+    (tmp_path / "requirements.txt").write_text("django")
+    (tmp_path / "test").mkdir()
+    (tmp_path / "foo_bar" / "foo_bar").mkdir(parents=True)
+    (tmp_path / "foo_bar" / "foo_bar" / "wsgi.py").write_text("application = object()")
+
+    django_input_yaml["parts"] = {
+        "django-framework/install-app": {
+            "source": "alternative_source",
+            "after": ["django-framework/dependencies"],
+            "override-pull": textwrap.dedent(
+                """\
+                craftctl default
+                another command
+                """
+            ),
+        }
+    }
+
+    applied = extensions.apply_extensions(tmp_path, django_input_yaml)
+    assert applied["parts"]["django-framework/install-app"] == {
+        "plugin": "dump",
+        "source": "alternative_source",
+        "organize": {"*": "django/app/", ".*": "django/app/"},
+        "override-pull": textwrap.dedent(
+            """\
+            craftctl default
+            another command
+            """
+        ),
+        "after": ["django-framework/dependencies"],
+    }
