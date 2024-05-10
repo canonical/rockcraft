@@ -138,10 +138,12 @@ def test_project_unmarshal(check, yaml_loaded_data):
             # platforms get mutated at validation time
             assert getattr(project, attr).keys() == v.keys()
             assert all(
-                "build_on" in platform for platform in getattr(project, attr).values()
+                hasattr(platform, "build_on")
+                for platform in getattr(project, attr).values()
             )
             assert all(
-                "build_for" in platform for platform in getattr(project, attr).values()
+                hasattr(platform, "build_for")
+                for platform in getattr(project, attr).values()
             )
             continue
         if attr == "services":
@@ -420,8 +422,8 @@ def test_project_all_platforms_invalid(yaml_loaded_data):
 
     expected = (
         "Bad rockcraft.yaml content:\n"
-        "- error for platform entry 'foo': 'build-for' expects 'build-on' "
-        "to also be provided. (in field 'platforms')"
+        "- 'build-for' expects 'build-on' to also be provided."
+        " (in field 'platforms.foo')"
     )
 
     assert reload_project_platforms(mock_platforms) == expected
@@ -652,18 +654,16 @@ description: this is an example of a rockcraft.yaml for the purpose of testing r
 base: ubuntu@20.04
 build-base: ubuntu@20.04
 platforms:
-  {BUILD_ON_ARCH}:
-    build_on: null
-    build_for: null
+  {BUILD_ON_ARCH}: {{}}
   some-text:
-    build_on:
+    build-on:
     - {BUILD_ON_ARCH}
-    build_for:
+    build-for:
     - {BUILD_ON_ARCH}
   same-with-different-syntax:
-    build_on:
+    build-on:
     - {BUILD_ON_ARCH}
-    build_for:
+    build-for:
     - {BUILD_ON_ARCH}
 license: Apache-2.0
 parts:
