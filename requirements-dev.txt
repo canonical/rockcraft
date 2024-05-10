@@ -1,5 +1,5 @@
 alabaster==0.7.16
-astroid==2.15.8
+astroid==3.2.0
 autoflake==2.3.1
 Babel==2.14.0
 beautifulsoup4==4.12.3
