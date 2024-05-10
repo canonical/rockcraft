@@ -96,9 +96,9 @@ snowballstemmer==2.2.0
 soupsieve==2.5
 spdx==2.5.1
 spdx-lookup==0.3.3
-Sphinx==6.2.1
+Sphinx==7.3.7
 sphinx-autobuild==2024.2.4
-sphinx-autodoc-typehints==1.23.0
+sphinx-autodoc-typehints==2.1.0
 sphinx-basic-ng==1.0.0b2
 sphinx-copybutton==0.5.2
 sphinx-jsonschema==1.19.1
