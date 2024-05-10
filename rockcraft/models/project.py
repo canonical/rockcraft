@@ -1,6 +1,6 @@
 # -*- Mode:Python; indent-tabs-mode:nil; tab-width:4 -*-
 #
-# Copyright 2021 Canonical Ltd.
+# Copyright 2021,2024 Canonical Ltd.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 3 as
@@ -31,6 +31,7 @@ from craft_application.models import BuildPlanner as BaseBuildPlanner
 from craft_application.models import CraftBaseConfig
 from craft_application.models import Project as BaseProject
 from craft_providers import bases
+from craft_providers.errors import BaseConfigurationError
 from pydantic_yaml import YamlModelMixin
 from typing_extensions import override
 
@@ -118,14 +119,6 @@ INVALID_NAME_MESSAGE = (
 
 DEPRECATED_COLON_BASES = ["ubuntu:20.04", "ubuntu:22.04"]
 
-CURRENT_DEVEL_BASE = "ubuntu@26.04"
-
-DEVEL_BASE_WARNING = (
-    "The development build-base should only be used for testing purposes, "
-    "as its contents are bound to change with the opening of new Ubuntu releases, "
-    "suddenly and without warning."
-)
-
 
 class NameStr(pydantic.ConstrainedStr):
     """Constrained string type only accepting valid rock names."""
@@ -139,24 +132,6 @@ class BuildPlanner(BaseBuildPlanner):
     platforms: dict[str, Any]  # type: ignore[reportIncompatibleVariableOverride]
     base: Literal["bare", "ubuntu@20.04", "ubuntu@22.04", "ubuntu@24.04"]
     build_base: Literal["ubuntu@20.04", "ubuntu@22.04", "ubuntu@24.04", "devel"] | None
-
-    @pydantic.root_validator(skip_on_failure=True)
-    @classmethod
-    def _validate_devel_base(cls, values: Mapping[str, Any]) -> Mapping[str, Any]:
-        """If 'base' is currently unstable, 'build-base' must be 'devel'."""
-        base = values.get("base")
-        build_base = values.get("build_base")
-
-        if base == CURRENT_DEVEL_BASE and build_base != "devel":
-            raise CraftValidationError(
-                f'To use the unstable base "{CURRENT_DEVEL_BASE}", '
-                '"build-base" must be "devel".'
-            )
-
-        if base == CURRENT_DEVEL_BASE:
-            craft_cli.emit.message(DEVEL_BASE_WARNING)
-
-        return values
 
     @pydantic.validator("build_base", always=True)
     @classmethod
@@ -316,6 +291,29 @@ class Project(YamlModelMixin, BuildPlanner, BaseProject):  # type: ignore[misc]
 
         allow_mutation = False
         extra = pydantic.Extra.forbid
+
+    @override
+    @classmethod
+    def _providers_base(cls, base: str) -> bases.BaseAlias | None:
+        """Get a BaseAlias from rockcraft's base.
+
+        :param base: The base name.
+
+        :returns: The BaseAlias for the base or None for bare bases.
+
+        :raises CraftValidationError: If the project's base cannot be determined.
+        """
+        if base == "bare":
+            return None
+
+        if base == "devel":
+            return bases.get_base_alias(("ubuntu", "devel"))
+
+        try:
+            name, channel = base.split("@")
+            return bases.get_base_alias((name, channel))
+        except (ValueError, BaseConfigurationError) as err:
+            raise CraftValidationError(f"Unknown base {base!r}") from err
 
     @pydantic.root_validator(pre=True)
     @classmethod

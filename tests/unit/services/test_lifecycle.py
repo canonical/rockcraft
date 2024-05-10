@@ -94,7 +94,9 @@ def test_lifecycle_package_repositories(
 
     lifecycle_service.run("prime")
 
-    mock_install.assert_called_once_with(fake_repositories, lifecycle_service._lcm, local_keys_path=None)
+    mock_install.assert_called_once_with(
+        fake_repositories, lifecycle_service._lcm, local_keys_path=None
+    )
     mock_callback.assert_called_once_with(repositories.install_overlay_repositories)
 
 
