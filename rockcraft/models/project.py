@@ -17,17 +17,17 @@
 """Project definition and helpers."""
 import re
 import shlex
-from collections.abc import Callable, Mapping
+from collections.abc import Mapping
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Literal, cast
 
+import craft_application.models
 import craft_cli
 import pydantic
 import spdx_lookup  # type: ignore
 import yaml
 from craft_application.errors import CraftValidationError
-from craft_application.models import BuildInfo, CraftBaseConfig
-from craft_application.models import BuildPlanner as BaseBuildPlanner
+from craft_application.models import BuildPlanner as BaseBuildPlanner, CraftBaseConfig
 from craft_application.models import Project as BaseProject
 from craft_providers import bases
 from craft_providers.errors import BaseConfigurationError
@@ -48,21 +48,13 @@ else:
     _RunUser = Literal[tuple(SUPPORTED_GLOBAL_USERNAMES)] | None
 
 
-class Platform(pydantic.BaseModel):
+class Platform(craft_application.models.Platform):
     """Rockcraft project platform definition."""
 
     build_on: pydantic.conlist(str, unique_items=True, min_items=1) | None  # type: ignore[valid-type]
     build_for: (  # type: ignore[valid-type]
         pydantic.conlist(str, unique_items=True, min_items=1) | None  # type: ignore[reportInvalidTypeForm]
     )
-
-    class Config:  # pylint: disable=too-few-public-methods
-        """Pydantic model configuration."""
-
-        allow_population_by_field_name = True
-        alias_generator: Callable[[str], str] = lambda s: s.replace(  # noqa: E731
-            "_", "-"
-        )
 
     @pydantic.validator("build_for", pre=True)
     @classmethod
@@ -126,9 +118,9 @@ class NameStr(pydantic.ConstrainedStr):
 class BuildPlanner(BaseBuildPlanner):
     """BuildPlanner for Rockcraft projects."""
 
-    platforms: dict[str, Any]  # type: ignore[reportIncompatibleVariableOverride]
-    base: Literal["bare", "ubuntu@20.04", "ubuntu@22.04", "ubuntu@24.04"]
-    build_base: Literal["ubuntu@20.04", "ubuntu@22.04", "ubuntu@24.04", "devel"] | None
+    platforms: dict[str, Platform | None]  # type: ignore[assignment, reportIncompatibleVariableOverride]
+    base: Literal["bare", "ubuntu@20.04", "ubuntu@22.04", "ubuntu@24.04"]  # type: ignore[reportIncompatibleVariableOverride]
+    build_base: Literal["ubuntu@20.04", "ubuntu@22.04", "ubuntu@24.04", "devel"] | None  # type: ignore[reportIncompatibleVariableOverride]
 
     @pydantic.validator("build_base", always=True)
     @classmethod
@@ -174,30 +166,31 @@ class BuildPlanner(BaseBuildPlanner):
     def _validate_all_platforms(cls, platforms: dict[str, Any]) -> dict[str, Any]:
         """Make sure all provided platforms are tangible and sane."""
         for platform_label in platforms:
-            platform: dict[str, Any] = (
+            platform: Platform | dict[str, Any] = (
                 platforms[platform_label] if platforms[platform_label] else {}
             )
             error_prefix = f"Error for platform entry '{platform_label}'"
 
             # Make sure the provided platform_set is valid
-            try:
-                platform = Platform(**platform).dict()
-            except pydantic.ValidationError as err:
-                errors = [err_dict["msg"] for err_dict in err.errors()]
-                full_errors = ",".join(errors)
-                raise ValueError(f"{error_prefix}: {full_errors}") from None
+            if not isinstance(platform, Platform):
+                try:
+                    platform = Platform(**platform)
+                except pydantic.ValidationError as err:
+                    errors = [err_dict["msg"] for err_dict in err.errors()]
+                    full_errors = ",".join(errors)
+                    raise ValueError(f"{error_prefix}: {full_errors}") from None
 
             # build_on and build_for are validated
             # let's also validate the platform label
             build_on_one_of = (
-                platform["build_on"] if platform["build_on"] else [platform_label]
+                platform.build_on if platform.build_on else [platform_label]
             )
 
             # If the label maps to a valid architecture and
             # `build-for` is present, then both need to have the same value,
             # otherwise the project is invalid.
-            if platform["build_for"]:
-                build_target = platform["build_for"][0]
+            if platform.build_for:
+                build_target = platform.build_for[0]
                 if platform_label in SUPPORTED_ARCHS and platform_label != build_target:
                     raise ValueError(
                         str(
@@ -244,25 +237,6 @@ class BuildPlanner(BaseBuildPlanner):
 
         return bases.BaseName(name, channel)
 
-    def get_build_plan(self) -> list[BuildInfo]:
-        """Obtain the list of architectures and bases from the project file."""
-        build_infos: list[BuildInfo] = []
-        base = self.effective_base
-
-        for platform_entry, platform in self.platforms.items():
-            for build_for in platform.get("build_for") or [platform_entry]:
-                for build_on in platform.get("build_on") or [platform_entry]:
-                    build_infos.append(
-                        BuildInfo(
-                            platform=platform_entry,
-                            build_on=build_on,
-                            build_for=build_for,
-                            base=base,
-                        )
-                    )
-
-        return build_infos
-
     @override
     @classmethod
     def model_reference_slug(cls) -> str | None:
@@ -282,6 +256,7 @@ class Project(YamlModelMixin, BuildPlanner, BaseProject):  # type: ignore[misc]
     services: dict[str, Service] | None
     checks: dict[str, Check] | None
     entrypoint_service: str | None
+    platforms: dict[str, Platform | None]  # type: ignore[assignment]
 
     package_repositories: list[dict[str, Any]] | None
 
