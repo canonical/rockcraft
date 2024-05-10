@@ -1,6 +1,6 @@
 # -*- Mode:Python; indent-tabs-mode:nil; tab-width:4 -*-
 #
-# Copyright (C) 2021 Canonical Ltd
+# Copyright (C) 2021,2024 Canonical Ltd
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 3 as
@@ -26,17 +26,11 @@ import pytest
 import yaml
 from craft_application.errors import CraftValidationError
 from craft_application.models import BuildInfo
-from craft_providers.bases import BaseName
+from craft_providers.bases import BaseName, ubuntu
 
 from rockcraft.errors import ProjectLoadError
 from rockcraft.models import Project
-from rockcraft.models.project import (
-    CURRENT_DEVEL_BASE,
-    DEVEL_BASE_WARNING,
-    INVALID_NAME_MESSAGE,
-    Platform,
-    load_project,
-)
+from rockcraft.models.project import INVALID_NAME_MESSAGE, Platform, load_project
 from rockcraft.pebble import Service
 
 _ARCH_MAPPING = {"x86": "amd64", "x64": "amd64"}
@@ -98,7 +92,7 @@ pytestmark = [pytest.mark.usefixtures("enable_overlay_feature")]
 
 
 class DevelProject(Project):
-    """A Project subclass that always accepts CURRENT_DEVEL_BASE as a "base".
+    """A Project subclass that always accepts devel bases as a "base".
 
     Needed because we might not have a currently supported base that is still in
     "development", but we want to test the behavior anyway.
@@ -732,20 +726,6 @@ def test_project_get_build_plan(yaml_loaded_data, platforms, expected_build_info
     assert project.get_build_plan() == expected_build_infos
 
 
-def test_project_devel_base(yaml_loaded_data):
-    yaml_loaded_data["base"] = CURRENT_DEVEL_BASE
-    yaml_loaded_data["build-base"] = "ubuntu@22.04"
-
-    with pytest.raises(CraftValidationError) as err:
-        _ = DevelProject.unmarshal(yaml_loaded_data)
-
-    expected = (
-        f'To use the unstable base "{CURRENT_DEVEL_BASE}", '
-        f'"build-base" must be "devel".'
-    )
-    assert str(err.value) == expected
-
-
 def test_get_effective_devel_base(yaml_loaded_data):
     yaml_loaded_data["base"] = "ubuntu@24.04"
     yaml_loaded_data["build-base"] = "devel"
@@ -756,10 +736,24 @@ def test_get_effective_devel_base(yaml_loaded_data):
     assert base.version == "devel"
 
 
-def test_devel_base_warning(yaml_loaded_data, emitter):
-    yaml_loaded_data["base"] = CURRENT_DEVEL_BASE
-    yaml_loaded_data["build-base"] = "devel"
-    del yaml_loaded_data["entrypoint-service"]
-    _ = DevelProject.unmarshal(yaml_loaded_data)
+@pytest.mark.parametrize(
+    ("base", "expected_base"),
+    [
+        ("bare", None),
+        ("ubuntu@20.04", ubuntu.BuilddBaseAlias.FOCAL),
+        ("ubuntu@22.04", ubuntu.BuilddBaseAlias.JAMMY),
+        ("ubuntu@24.04", ubuntu.BuilddBaseAlias.NOBLE),
+        ("devel", ubuntu.BuilddBaseAlias.DEVEL),
+    ],
+)
+def test_provider_base(base, expected_base):
+    actual_base = Project._providers_base(base)  # pylint: disable=protected-access
 
-    emitter.assert_message(DEVEL_BASE_WARNING)
+    assert actual_base == expected_base
+
+
+def test_provider_base_error():
+    with pytest.raises(CraftValidationError) as raised:
+        Project._providers_base("unknown")  # pylint: disable=protected-access
+
+    assert "Unknown base 'unknown'" in str(raised.value)
