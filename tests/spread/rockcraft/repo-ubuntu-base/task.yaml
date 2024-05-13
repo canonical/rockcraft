@@ -9,7 +9,7 @@ execute: |
   # Ensure docker does not have this container
   docker rmi --force apt-repo-test
   # Install container
-  sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:apt-repo-test_latest_amd64.rock docker-daemon:apt-repo-test:latest
+  sudo rockcraft.skopeo --insecure-policy copy oci-archive:apt-repo-test_latest_amd64.rock docker-daemon:apt-repo-test:latest
   # Ensure container exists
   docker images apt-repo-test | MATCH "apt-repo-test"
   

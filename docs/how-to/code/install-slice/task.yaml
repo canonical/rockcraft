@@ -42,7 +42,7 @@ execute: |
   # [docs:pack-end]
 
   # [docs:skopeo-copy]
-  sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:custom-openssl-rock_0.0.1_amd64.rock docker-daemon:chisel-openssl:latest
+  sudo rockcraft.skopeo --insecure-policy copy oci-archive:custom-openssl-rock_0.0.1_amd64.rock docker-daemon:chisel-openssl:latest
   # [docs:skopeo-copy-end]
 
   # [docs:docker-run]

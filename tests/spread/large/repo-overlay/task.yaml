@@ -3,7 +3,7 @@ summary: package repositories in overlays test
 execute: |
   run_rockcraft pack
 
-  sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:repo-overlay_0.1_amd64.rock docker-daemon:repo-overlay:0.1
+  sudo rockcraft.skopeo --insecure-policy copy oci-archive:repo-overlay_0.1_amd64.rock docker-daemon:repo-overlay:0.1
 
   docker images repo-overlay | MATCH "repo-overlay"
 

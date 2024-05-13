@@ -18,7 +18,7 @@ execute: |
   docker images
 
   # [docs:skopeo-copy]
-  sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:my-node-app_1.0_amd64.rock docker-daemon:my-node-app:1.0
+  sudo rockcraft.skopeo --insecure-policy copy oci-archive:my-node-app_1.0_amd64.rock docker-daemon:my-node-app:1.0
   # [docs:skopeo-copy-end]
 
   rm *.rock
