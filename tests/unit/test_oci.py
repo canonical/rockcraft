@@ -569,7 +569,7 @@ class TestImage:
                 None,
                 "ubuntu@22.04",
                 Pebble.PEBBLE_BINARY_PATH_PREVIOUS,
-                ["--config.entrypoint"],
+                [],
                 [],
             ),
             (
@@ -583,7 +583,7 @@ class TestImage:
                 "test-service",
                 "ubuntu@22.04",
                 Pebble.PEBBLE_BINARY_PATH_PREVIOUS,
-                ["--config.entrypoint"],
+                [],
                 [
                     "--config.entrypoint",
                     "--args",
