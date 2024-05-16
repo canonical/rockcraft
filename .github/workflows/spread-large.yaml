@@ -25,7 +25,7 @@ jobs:
 
   snap-tests:
     if: ${{ github.event.label.name == 'run-large-spread' || github.event_name == 'schedule' }}
-    runs-on: self-hosted
+    runs-on: [self-hosted, spread-installed]
     needs: [snap-build]
 
     steps:
