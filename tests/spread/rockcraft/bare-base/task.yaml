@@ -8,7 +8,7 @@ execute: |
 
   # test container execution
   docker images
-  sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:bare-base-test_latest_amd64.rock docker-daemon:bare-base-test:latest
+  sudo rockcraft.skopeo --insecure-policy copy oci-archive:bare-base-test_latest_amd64.rock docker-daemon:bare-base-test:latest
   rm bare-base-test_latest_amd64.rock
   docker images bare-base-test:latest
   id=$(docker run --rm -d bare-base-test)

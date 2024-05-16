@@ -21,7 +21,7 @@ execute: |
 
   # copy image to docker
   docker images
-  sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy "oci-archive:$ROCK" docker-daemon:big:latest
+  sudo rockcraft.skopeo --insecure-policy copy "oci-archive:$ROCK" docker-daemon:big:latest
   rm "$ROCK"
 
   docker images

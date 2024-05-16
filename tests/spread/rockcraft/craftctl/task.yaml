@@ -11,7 +11,7 @@ execute: |
 
   # test container execution
   docker images
-  sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:craftctl-test_latest_craftctl.rock docker-daemon:craftctl-test:latest
+  sudo rockcraft.skopeo --insecure-policy copy oci-archive:craftctl-test_latest_craftctl.rock docker-daemon:craftctl-test:latest
   rm craftctl-test_latest_craftctl.rock
   docker images craftctl-test:latest
   docker run --rm --entrypoint /usr/bin/hello craftctl-test:latest

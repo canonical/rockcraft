@@ -27,7 +27,7 @@ execute: |
   docker images
 
   # [docs:skopeo-copy]
-  sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:hello_latest_amd64.rock docker-daemon:hello:latest
+  sudo rockcraft.skopeo --insecure-policy copy oci-archive:hello_latest_amd64.rock docker-daemon:hello:latest
   # [docs:skopeo-copy-end]
 
   rm hello_latest_amd64.rock

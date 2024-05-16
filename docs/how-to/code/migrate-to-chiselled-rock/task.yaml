@@ -46,7 +46,7 @@ execute: |
   docker images
 
   # [docs:skopeo-copy]
-  sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:dotnet-runtime_chiselled_amd64.rock docker-daemon:dotnet-runtime:chiselled
+  sudo rockcraft.skopeo --insecure-policy copy oci-archive:dotnet-runtime_chiselled_amd64.rock docker-daemon:dotnet-runtime:chiselled
   # [docs:skopeo-copy-end]
   
   # [docs:inspect-rock]

@@ -22,7 +22,7 @@ execute: |
   # Build the rock & load it into docker
   run_rockcraft pack
   test -f ${ROCK_FILE}
-  sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:${ROCK_FILE} docker-daemon:${IMAGE}
+  sudo rockcraft.skopeo --insecure-policy copy oci-archive:${ROCK_FILE} docker-daemon:${IMAGE}
   docker images
   rm ${ROCK_FILE}
   

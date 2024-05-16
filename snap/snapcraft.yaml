@@ -16,6 +16,8 @@ environment:
 apps:
   rockcraft:
     command: bin/python $SNAP/bin/rockcraft
+  skopeo:
+    command: bin/skopeo
 
 build-packages:
   - libapt-pkg-dev

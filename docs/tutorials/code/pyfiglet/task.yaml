@@ -19,7 +19,7 @@ execute: |
   # [docs:build-rock-end]  
 
   # [docs:skopeo-copy]
-  sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:pyfiglet_0.7.6_amd64.rock docker-daemon:pyfiglet:0.7.6
+  sudo rockcraft.skopeo --insecure-policy copy oci-archive:pyfiglet_0.7.6_amd64.rock docker-daemon:pyfiglet:0.7.6
   # [docs:skopeo-copy-end]
 
   rm pyfiglet_0.7.6_amd64.rock

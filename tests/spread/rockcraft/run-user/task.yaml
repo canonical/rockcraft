@@ -9,7 +9,7 @@ execute: |
   # Ensure docker does not have this container image
   docker rmi --force run-user-test
   # Install container
-  sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:run-user-test_latest_amd64.rock docker-daemon:run-user-test:latest
+  sudo rockcraft.skopeo --insecure-policy copy oci-archive:run-user-test_latest_amd64.rock docker-daemon:run-user-test:latest
   # Ensure container exists
   docker images run-user-test | MATCH "run-user-test"
   docker inspect run-user-test --format '{{.Config.User}}' | MATCH "_daemon_"

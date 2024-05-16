@@ -10,7 +10,7 @@ execute: |
   # Ensure docker does not have this container image
   docker rmi --force flask-extension
   # Install container
-  sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:flask-extension_0.1_amd64.rock docker-daemon:flask-extension:latest
+  sudo rockcraft.skopeo --insecure-policy copy oci-archive:flask-extension_0.1_amd64.rock docker-daemon:flask-extension:latest
   # Ensure container exists
   docker images flask-extension | MATCH "flask-extension"
 

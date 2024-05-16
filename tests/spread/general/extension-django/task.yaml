@@ -13,7 +13,7 @@ execute: |
   # Ensure docker does not have this container image
   docker rmi --force example-django
   # Install container
-  sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:example-django_0.1_amd64.rock docker-daemon:example-django:latest
+  sudo rockcraft.skopeo --insecure-policy copy oci-archive:example-django_0.1_amd64.rock docker-daemon:example-django:latest
   # Ensure container exists
   docker images example-django | MATCH "example-django"
   

@@ -52,7 +52,7 @@ def _get_tar_file(tarinfo: tarfile.TarInfo, sha: str, dest_dir: Path) -> Path:
 rock_name = sys.argv[1]
 
 inspect = subprocess.check_output(
-    ["/snap/rockcraft/current/bin/skopeo", "inspect", f"oci-archive:{rock_name}"]
+    ["rockcraft.skopeo", "inspect", f"oci-archive:{rock_name}"]
 )
 as_json = json.loads(inspect)
 
