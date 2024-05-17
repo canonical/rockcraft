@@ -21,7 +21,6 @@ from unittest.mock import DEFAULT, call, patch
 import pytest
 import yaml
 from craft_cli import emit
-
 from rockcraft import cli, extensions, services
 from rockcraft.application import Rockcraft
 from rockcraft.models import project

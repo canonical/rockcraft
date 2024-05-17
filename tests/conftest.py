@@ -112,7 +112,6 @@ def extra_project_params():
 @pytest.fixture()
 def default_project(extra_project_params):
     from craft_application.models import VersionStr
-
     from rockcraft.models.project import NameStr, Project
 
     parts = extra_project_params.pop("parts", {})
@@ -238,6 +237,7 @@ def run_lifecycle(mocker, default_build_plan):
 
     def _inner(**kwargs):
         from craft_application.util import get_host_base
+
         from tests.testing.lifecycle import run_mocked_lifecycle
 
         for build_plan in default_build_plan:

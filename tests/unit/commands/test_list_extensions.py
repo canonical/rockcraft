@@ -17,9 +17,9 @@ import argparse
 from textwrap import dedent
 
 import pytest
-
 from rockcraft import extensions
 from rockcraft.commands import ExtensionsCommand, ListExtensionsCommand
+
 from tests.unit.testing.extensions import ExperimentalExtension, FakeExtension
 
 

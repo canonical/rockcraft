@@ -26,9 +26,8 @@ import pydantic
 import spdx_lookup  # type: ignore
 import yaml
 from craft_application.errors import CraftValidationError
-from craft_application.models import BuildInfo
+from craft_application.models import BuildInfo, CraftBaseConfig
 from craft_application.models import BuildPlanner as BaseBuildPlanner
-from craft_application.models import CraftBaseConfig
 from craft_application.models import Project as BaseProject
 from craft_providers import bases
 from craft_providers.errors import BaseConfigurationError
@@ -53,9 +52,9 @@ class Platform(pydantic.BaseModel):
     """Rockcraft project platform definition."""
 
     build_on: pydantic.conlist(str, unique_items=True, min_items=1) | None  # type: ignore[valid-type]
-    build_for: pydantic.conlist(  # type: ignore[valid-type]
-        str, unique_items=True, min_items=1
-    ) | None
+    build_for: (  # type: ignore[valid-type]
+        pydantic.conlist(str, unique_items=True, min_items=1) | None
+    )
 
     class Config:  # pylint: disable=too-few-public-methods
         """Pydantic model configuration."""
