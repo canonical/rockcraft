@@ -39,7 +39,7 @@ class ImageInfo:
 class RockcraftImageService(ProjectService):
     """Service to fetch and cache OCI images."""
 
-    def __init__(
+    def __init__(  # pylint: disable=too-many-arguments
         self,
         app: AppMetadata,
         services: ServiceFactory,

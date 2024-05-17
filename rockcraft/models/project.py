@@ -53,7 +53,7 @@ class Platform(pydantic.BaseModel):
 
     build_on: pydantic.conlist(str, unique_items=True, min_items=1) | None  # type: ignore[valid-type]
     build_for: (  # type: ignore[valid-type]
-        pydantic.conlist(str, unique_items=True, min_items=1) | None
+        pydantic.conlist(str, unique_items=True, min_items=1) | None  # type: ignore[reportInvalidTypeForm]
     )
 
     class Config:  # pylint: disable=too-few-public-methods
