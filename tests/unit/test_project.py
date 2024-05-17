@@ -27,7 +27,6 @@ import yaml
 from craft_application.errors import CraftValidationError
 from craft_application.models import BuildInfo
 from craft_providers.bases import BaseName, ubuntu
-
 from rockcraft.errors import ProjectLoadError
 from rockcraft.models import Project
 from rockcraft.models.project import INVALID_NAME_MESSAGE, Platform, load_project

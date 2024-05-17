@@ -17,7 +17,6 @@ from pathlib import Path
 
 import pytest
 import yaml
-
 from rockcraft.pebble import Pebble
 
 ENVIRONMENT_YAML = """\

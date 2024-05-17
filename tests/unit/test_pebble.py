@@ -21,9 +21,9 @@ import pydantic
 import pytest
 import yaml
 from craft_application.errors import CraftValidationError
+from rockcraft.pebble import Check, ExecCheck, HttpCheck, Pebble, Service, TcpCheck
 
 import tests
-from rockcraft.pebble import Check, ExecCheck, HttpCheck, Pebble, Service, TcpCheck
 
 
 @tests.linux_only

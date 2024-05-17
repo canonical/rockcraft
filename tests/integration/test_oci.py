@@ -21,9 +21,9 @@ from collections.abc import Callable
 from pathlib import Path
 
 import pytest
-
 from rockcraft import oci
 from rockcraft.services.image import ImageInfo
+
 from tests.util import jammy_only
 
 pytestmark = jammy_only

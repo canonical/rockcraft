@@ -15,7 +15,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import pytest
-
 from rockcraft import extensions
 from rockcraft.errors import ExtensionError
 
@@ -230,7 +229,7 @@ def test_flask_framework_add_service(tmp_path, flask_input_yaml):
     assert applied["services"] == {
         "flask": {
             "after": ["statsd-exporter"],
-            "command": "/bin/python3 -m gunicorn -c /flask/gunicorn.conf.py " "app:app",
+            "command": "/bin/python3 -m gunicorn -c /flask/gunicorn.conf.py app:app",
             "override": "replace",
             "startup": "enabled",
             "user": "_daemon_",
