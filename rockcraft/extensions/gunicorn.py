@@ -22,6 +22,7 @@ import os.path
 import pathlib
 import posixpath
 import re
+import textwrap
 from typing import Any, Dict, Tuple
 
 from overrides import override
@@ -73,6 +74,12 @@ class _GunicornBase(Extension):
                 "source": ".",
                 "python-packages": ["gunicorn"],
                 "python-requirements": ["requirements.txt"],
+                "override-build": textwrap.dedent(
+                    """\
+                    rm -f pyproject.toml
+                    craftctl default
+                    """
+                ),
             },
             f"{self.framework}-framework/install-app": self.gen_install_app_part(),
             f"{self.framework}-framework/config-files": {
