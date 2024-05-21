@@ -92,17 +92,17 @@ class _GunicornBase(Extension):
         if self.yaml_data["base"] == "bare":
             parts[f"{self.framework}-framework/runtime"] = {
                 "plugin": "nil",
+                "overlay-packages": ["ca-certificates"],
                 "override-build": "mkdir -m 777 ${CRAFT_PART_INSTALL}/tmp",
                 "stage-packages": [
                     "bash_bins",
                     "coreutils_bins",
-                    "ca-certificates_data",
                 ],
             }
         else:
             parts[f"{self.framework}-framework/runtime"] = {
                 "plugin": "nil",
-                "stage-packages": ["ca-certificates_data"],
+                "overlay-packages": ["ca-certificates"],
             }
         return parts
 

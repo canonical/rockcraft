@@ -2,7 +2,7 @@ name: example-flask
 summary: A Flask application
 description: A rock packing a Flask application via the flask extension
 version: "0.1"
-base: bare
+base: ubuntu@22.04
 build-base: ubuntu@22.04
 license: Apache-2.0
 

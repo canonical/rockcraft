@@ -91,7 +91,7 @@ def test_flask_extension_default(tmp_path, flask_input_yaml):
             },
             "flask-framework/runtime": {
                 "plugin": "nil",
-                "stage-packages": ["ca-certificates_data"],
+                "overlay-packages": ["ca-certificates"],
             },
             "flask-framework/statsd-exporter": {
                 "build-snaps": ["go"],
@@ -293,8 +293,9 @@ def test_flask_extension_bare(tmp_path):
     applied = extensions.apply_extensions(tmp_path, flask_input_yaml)
     assert applied["parts"]["flask-framework/runtime"] == {
         "plugin": "nil",
+        "overlay-packages": ["ca-certificates"],
         "override-build": "mkdir -m 777 ${CRAFT_PART_INSTALL}/tmp",
-        "stage-packages": ["bash_bins", "coreutils_bins", "ca-certificates_data"],
+        "stage-packages": ["bash_bins", "coreutils_bins"],
     }
 
 
@@ -407,7 +408,7 @@ def test_django_extension_default(tmp_path, django_input_yaml):
             },
             "django-framework/runtime": {
                 "plugin": "nil",
-                "stage-packages": ["ca-certificates_data"],
+                "overlay-packages": ["ca-certificates"],
             },
             "django-framework/statsd-exporter": {
                 "build-snaps": ["go"],
