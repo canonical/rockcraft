@@ -112,7 +112,8 @@ def extra_project_params():
 @pytest.fixture()
 def default_project(extra_project_params):
     from craft_application.models import VersionStr
-    from rockcraft.models.project import NameStr, Project
+
+    from rockcraft.models.project import NameStr, Project, Platform
 
     parts = extra_project_params.pop("parts", {})
 
@@ -124,7 +125,7 @@ def default_project(extra_project_params):
         base="ubuntu@22.04",
         parts=parts,
         license="MIT",
-        platforms={"amd64": None},
+        platforms={"amd64": Platform(build_on=["amd64"], build_for=["amd64"])},
         **extra_project_params,
     )
 
