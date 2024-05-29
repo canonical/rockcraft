@@ -437,15 +437,15 @@ def test_project_all_platforms_invalid(yaml_loaded_data):
     mock_platforms = {
         "mock": {"build-on": ["arm64a", "noarch"], "build-for": ["amd64"]}
     }
-    assert "none of these build architectures is supported" in reload_project_platforms(
-        mock_platforms
+    assert (
+        "Invalid architecture: 'arm64a' must be a valid debian architecture."
+        in reload_project_platforms(mock_platforms)
     )
 
-    mock_platforms = {
-        "mock": {"build-on": ["arm64a", "arm64"], "build-for": ["noarch"]}
-    }
-    assert "build rock for target architecture noarch" in reload_project_platforms(
-        mock_platforms
+    mock_platforms = {"mock": {"build-on": ["arm64", "arm64"], "build-for": ["noarch"]}}
+    assert (
+        "Invalid architecture: 'noarch' must be a valid debian architecture."
+        in reload_project_platforms(mock_platforms)
     )
 
 
@@ -654,7 +654,11 @@ description: this is an example of a rockcraft.yaml for the purpose of testing r
 base: ubuntu@20.04
 build-base: ubuntu@20.04
 platforms:
-  {BUILD_ON_ARCH}: {{}}
+  {BUILD_ON_ARCH}:
+    build-on:
+    - {BUILD_ON_ARCH}
+    build-for:
+    - {BUILD_ON_ARCH}
   some-text:
     build-on:
     - {BUILD_ON_ARCH}
