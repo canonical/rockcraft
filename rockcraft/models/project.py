@@ -15,18 +15,19 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 """Project definition and helpers."""
+import copy
 import re
 import shlex
-from collections.abc import Callable, Mapping
+from collections.abc import Mapping
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Literal, cast
 
+import craft_application.models
 import craft_cli
 import pydantic
 import spdx_lookup  # type: ignore
 import yaml
 from craft_application.errors import CraftValidationError
-from craft_application.models import BuildInfo
 from craft_application.models import BuildPlanner as BaseBuildPlanner
 from craft_application.models import CraftBaseConfig
 from craft_application.models import Project as BaseProject
@@ -49,21 +50,13 @@ else:
     _RunUser = Literal[tuple(SUPPORTED_GLOBAL_USERNAMES)] | None
 
 
-class Platform(pydantic.BaseModel):
+class Platform(craft_application.models.Platform):
     """Rockcraft project platform definition."""
 
     build_on: pydantic.conlist(str, unique_items=True, min_items=1) | None  # type: ignore[valid-type]
     build_for: pydantic.conlist(  # type: ignore[valid-type]
         str, unique_items=True, min_items=1
     ) | None
-
-    class Config:  # pylint: disable=too-few-public-methods
-        """Pydantic model configuration."""
-
-        allow_population_by_field_name = True
-        alias_generator: Callable[[str], str] = lambda s: s.replace(  # noqa: E731
-            "_", "-"
-        )
 
     @pydantic.validator("build_for", pre=True)
     @classmethod
@@ -129,9 +122,9 @@ class NameStr(pydantic.ConstrainedStr):
 class BuildPlanner(BaseBuildPlanner):
     """BuildPlanner for Rockcraft projects."""
 
-    platforms: dict[str, Any]  # type: ignore[reportIncompatibleVariableOverride]
-    base: Literal["bare", "ubuntu@20.04", "ubuntu@22.04", "ubuntu@24.04"]
-    build_base: Literal["ubuntu@20.04", "ubuntu@22.04", "ubuntu@24.04", "devel"] | None
+    platforms: dict[str, Platform]  # type: ignore[assignment]
+    base: Literal["bare", "ubuntu@20.04", "ubuntu@22.04", "ubuntu@24.04"]  # type: ignore[reportIncompatibleVariableOverride]
+    build_base: Literal["ubuntu@20.04", "ubuntu@22.04", "ubuntu@24.04", "devel"] | None  # type: ignore[reportIncompatibleVariableOverride]
 
     @pydantic.validator("build_base", always=True)
     @classmethod
@@ -179,29 +172,28 @@ class BuildPlanner(BaseBuildPlanner):
     def _validate_all_platforms(cls, platforms: dict[str, Any]) -> dict[str, Any]:
         """Make sure all provided platforms are tangible and sane."""
         for platform_label in platforms:
-            platform: dict[str, Any] = (
+            platform: Platform | dict[str, Any] = (
                 platforms[platform_label] if platforms[platform_label] else {}
             )
             error_prefix = f"Error for platform entry '{platform_label}'"
 
             # Make sure the provided platform_set is valid
-            try:
-                platform = Platform(**platform).dict()
-            except CraftValidationError as err:
-                # pylint: disable=raise-missing-from
-                raise CraftValidationError(f"{error_prefix}: {str(err)}")
+            if not isinstance(platform, Platform):
+                try:
+                    platform = Platform(**platform)
+                except CraftValidationError as err:
+                    # pylint: disable=raise-missing-from
+                    raise CraftValidationError(f"{error_prefix}: {str(err)}")
 
             # build_on and build_for are validated
             # let's also validate the platform label
-            build_on_one_of = (
-                platform["build_on"] if platform["build_on"] else [platform_label]
-            )
+            build_on_one_of = platform.build_on or [platform_label]
 
             # If the label maps to a valid architecture and
             # `build-for` is present, then both need to have the same value,
             # otherwise the project is invalid.
-            if platform["build_for"]:
-                build_target = platform["build_for"][0]
+            if platform.build_for:
+                build_target = platform.build_for[0]
                 if platform_label in SUPPORTED_ARCHS and platform_label != build_target:
                     raise CraftValidationError(
                         str(
@@ -248,25 +240,6 @@ class BuildPlanner(BaseBuildPlanner):
 
         return bases.BaseName(name, channel)
 
-    def get_build_plan(self) -> list[BuildInfo]:
-        """Obtain the list of architectures and bases from the project file."""
-        build_infos: list[BuildInfo] = []
-        base = self.effective_base
-
-        for platform_entry, platform in self.platforms.items():
-            for build_for in platform.get("build_for") or [platform_entry]:
-                for build_on in platform.get("build_on") or [platform_entry]:
-                    build_infos.append(
-                        BuildInfo(
-                            platform=platform_entry,
-                            build_on=build_on,
-                            build_for=build_for,
-                            base=base,
-                        )
-                    )
-
-        return build_infos
-
 
 class Project(YamlModelMixin, BuildPlanner, BaseProject):  # type: ignore[misc]
     """Rockcraft project definition."""
@@ -281,6 +254,7 @@ class Project(YamlModelMixin, BuildPlanner, BaseProject):  # type: ignore[misc]
     services: dict[str, Service] | None
     checks: dict[str, Check] | None
     entrypoint_service: str | None
+    platforms: dict[str, Platform | None]  # type: ignore[assignment]
 
     package_repositories: list[dict[str, Any]] | None
 
@@ -549,7 +523,8 @@ def _add_pebble_data(yaml_data: dict[str, Any]) -> None:
         # Project already has a pebble part: this is not supported.
         raise CraftValidationError('Cannot override the default "pebble" part')
 
-    model = BuildPlanner.unmarshal(yaml_data)
+    # do not modify the original data with pre-validators
+    model = BuildPlanner.unmarshal(copy.deepcopy(yaml_data))
     build_base = model.build_base if model.build_base else model.base
 
     parts["pebble"] = Pebble.get_part_spec(build_base)

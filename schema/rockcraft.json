@@ -52,7 +52,10 @@
     },
     "platforms": {
       "title": "Platforms",
-      "type": "object"
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/Platform"
+      }
     },
     "contact": {
       "title": "Contact",
@@ -157,6 +160,32 @@
   ],
   "additionalProperties": false,
   "definitions": {
+    "Platform": {
+      "title": "Platform",
+      "description": "Rockcraft project platform definition.",
+      "type": "object",
+      "properties": {
+        "build-on": {
+          "title": "Build-On",
+          "minItems": 1,
+          "uniqueItems": true,
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "build-for": {
+          "title": "Build-For",
+          "minItems": 1,
+          "uniqueItems": true,
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
     "Service": {
       "title": "Service",
       "description": "Lightweight schema validation for a Pebble service.\n\nBased on\nhttps://github.com/canonical/pebble#layer-specification",

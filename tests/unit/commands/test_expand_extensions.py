@@ -35,8 +35,10 @@ EXPECTED_EXPAND_EXTENSIONS = textwrap.dedent(
     build-base: ubuntu@22.04
     platforms:
       amd64:
-        build_on: null
-        build_for: null
+        build-on:
+        - amd64
+        build-for:
+        - amd64
     license: Apache-2.0
     parts:
       foo:
