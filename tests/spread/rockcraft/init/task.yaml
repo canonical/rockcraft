@@ -1,0 +1,17 @@
+summary: rockcraft init test
+
+execute: |
+  run_rockcraft init --name=my-rock-name
+  test -f rockcraft.yaml
+  run_rockcraft pack
+
+  test -f my-rock-name_0.1_amd64.rock
+  test ! -d parts -a ! -d stage -a ! -d prime
+
+  # test container execution
+  docker images
+  sudo rockcraft.skopeo --insecure-policy copy oci-archive:my-rock-name_0.1_amd64.rock docker-daemon:my-rock-name:0.1
+  rm my-rock-name_0.1_amd64.rock
+  docker images my-rock-name:0.1
+  docker run --rm my-rock-name:0.1 exec bash -c 'echo Hello World'
+  docker system prune -a -f

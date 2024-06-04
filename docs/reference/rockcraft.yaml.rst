@@ -259,7 +259,7 @@ Extensions to enable when building the ROCK.
 
 Currently supported extensions:
 
-- ``flask`` (experimental)
+- ``flask-framework``
 
 Example
 =======

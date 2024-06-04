@@ -1,0 +1,51 @@
+summary: Python plugin tests
+environment:
+  SCENARIO/base_2004: base-2004
+  SCENARIO/base_2204: base-2204
+  SCENARIO/base_2404: base-2404
+  SCENARIO/bare_build_2004: bare-build-2004
+  SCENARIO/bare_build_2204: bare-build-2204
+execute: |
+  SCENARIO_DIR="${SCENARIO}"
+  ROCK_FILE="${SCENARIO}_0.1_amd64.rock"
+  IMAGE="${SCENARIO}:0.1"
+  
+  # change into the scenario's directory
+  cd ${SCENARIO_DIR}
+  
+  # add the parts definition, common to all scenarios
+  cat ../parts.yaml >> rockcraft.yaml
+  
+  # copy the Python source of the project we're building (also shared)
+  cp -r ../src .
+  
+  # Build the rock & load it into docker
+  run_rockcraft pack
+  test -f ${ROCK_FILE}
+  sudo rockcraft.skopeo --insecure-policy copy oci-archive:${ROCK_FILE} docker-daemon:${IMAGE}
+  docker images
+  rm ${ROCK_FILE}
+  
+  # Run the packaged project, both via the console script and via "python -m"
+  docker run --rm $IMAGE exec hello | MATCH "hello world"
+  docker run --rm $IMAGE exec /bin/python3 -m hello | MATCH "hello world"
+  docker run --rm $IMAGE exec /usr/bin/python3 -m hello | MATCH "hello world"
+  docker run --rm $IMAGE exec python3 -m hello | MATCH "hello world"
+  
+  # Run the extra Python package, installed as a python-package, to make sure it's found
+  docker run --rm $IMAGE exec black --version
+  docker run --rm $IMAGE exec /bin/python3 -m black --version
+  docker run --rm $IMAGE exec /usr/bin/python3 -m black --version
+  docker run --rm $IMAGE exec python3 -m black --version
+  
+  # Run the extra Python dist-package, installed as a stage-package, to make sure it's found
+  docker run --rm $IMAGE exec /bin/python3 -m cpuinfo --help
+  docker run --rm $IMAGE exec /usr/bin/python3 -m cpuinfo --help
+  docker run --rm $IMAGE exec python3 -m cpuinfo --help
+  
+  # Run "check-pythonpath.py" to make sure the ordering of the packages dirs is correct
+  docker run --rm $IMAGE exec /bin/python3 /check-pythonpath.py
+  docker run --rm $IMAGE exec /usr/bin/python3 /check-pythonpath.py
+  docker run --rm $IMAGE exec python3 /check-pythonpath.py
+
+  docker system prune -a -f

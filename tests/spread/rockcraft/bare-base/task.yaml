@@ -1,0 +1,20 @@
+summary: bare base build test
+
+execute: |
+  run_rockcraft pack
+
+  test -f bare-base-test_latest_amd64.rock
+  test ! -d parts -a ! -d stage -a ! -d prime
+
+  # test container execution
+  docker images
+  sudo rockcraft.skopeo --insecure-policy copy oci-archive:bare-base-test_latest_amd64.rock docker-daemon:bare-base-test:latest
+  rm bare-base-test_latest_amd64.rock
+  docker images bare-base-test:latest
+  id=$(docker run --rm -d bare-base-test --verbose)
+  grep_docker_log "$id" "ship it!"
+  docker exec "$id" pebble services | grep hello
+  docker exec "$id" pebble ls /usr/bin/hello
+  test "$(docker inspect "$id" -f '{{json .Config.Entrypoint}}')" = '["/bin/pebble","enter","--verbose"]'
+  
+  docker rm -f "$id"

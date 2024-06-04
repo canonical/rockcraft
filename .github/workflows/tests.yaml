@@ -20,7 +20,7 @@ jobs:
           sudo apt update
           sudo apt install -y libapt-pkg-dev aspell aspell-en
       - name: Set up Python 3.10
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: "3.10"
       - name: Install python packages and dependencies
@@ -36,9 +36,6 @@ jobs:
       - name: Run flake8
         run: |
           make test-flake8
-      - name: Run isort
-        run: |
-          make test-isort
       - name: Run mypy
         run: |
           make test-mypy
@@ -78,7 +75,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Set up Python ${{ matrix.python-version }} on ${{ matrix.os }}
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install python packages and dependencies

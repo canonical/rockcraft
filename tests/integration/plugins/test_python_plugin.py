@@ -1,6 +1,6 @@
 # -*- Mode:Python; indent-tabs-mode:nil; tab-width:4 -*-
 #
-# Copyright 2023 Canonical Ltd.
+# Copyright 2023-2024 Canonical Ltd.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License version 3 as
@@ -20,13 +20,14 @@ from pathlib import Path
 
 import pytest
 from craft_application import errors
+from craft_application.models import DEVEL_BASE_INFOS
 from craft_cli import EmitterMode, emit
 from craft_parts.errors import OsReleaseVersionIdError
 from craft_parts.utils.os_utils import OsRelease
-
 from rockcraft import plugins
-from rockcraft.models.project import CURRENT_DEVEL_BASE, Project
+from rockcraft.models.project import Project
 from rockcraft.plugins.python_plugin import SITECUSTOMIZE_TEMPLATE
+
 from tests.testing.project import create_project
 from tests.util import ubuntu_only
 
@@ -61,7 +62,7 @@ def create_python_project(base, extra_part_props=None) -> Project:
     }
 
     build_base = None
-    if base == CURRENT_DEVEL_BASE:
+    if base in [info.current_devel_base for info in DEVEL_BASE_INFOS]:
         build_base = "devel"
 
     return create_project(base=base, parts=parts, build_base=build_base)
@@ -79,6 +80,11 @@ class ExpectedValues:
 # A mapping from host Ubuntu to expected Python values; We need this mapping
 # because these integration tests run on the host machine as the "build base".
 RELEASE_TO_VALUES = {
+    "24.04": ExpectedValues(
+        symlinks=["python", "python3", "python3.12"],
+        symlink_target="../usr/bin/python3.12",
+        version_dir="python3.12",
+    ),
     "22.04": ExpectedValues(
         symlinks=["python", "python3", "python3.10"],
         symlink_target="../usr/bin/python3.10",

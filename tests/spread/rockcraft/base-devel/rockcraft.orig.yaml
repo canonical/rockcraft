@@ -1,0 +1,14 @@
+name: base-devel
+base: placeholder-base
+build-base: devel
+version: '0.1'
+summary: A project using the "devel" build-base
+description: A project using the "devel" build-base
+license: GPL-3.0
+platforms:
+  amd64:
+
+parts:
+  from-deb:
+    plugin: nil
+    stage-packages: [hello]

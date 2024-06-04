@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-"""An experimental extension for the Gunicorn based Python WSGI application extensions."""
+"""An extension for the Gunicorn based Python WSGI application extensions."""
 import abc
 import ast
 import fnmatch
@@ -141,13 +141,6 @@ class _GunicornBase(Extension):
                 },
             },
         }
-        if (
-            "build-base" not in self.yaml_data
-            and self.yaml_data.get("base", "bare") == "bare"
-        ):
-            snippet["build-base"] = "ubuntu@22.04"
-        if "platforms" not in self.yaml_data:
-            snippet["platforms"] = {"amd64": {}}
         snippet["parts"] = self._gen_parts()
         return snippet
 
@@ -194,6 +187,12 @@ class FlaskFramework(_GunicornBase):
     def framework(self) -> str:
         """Return the wsgi framework name, e.g. flask, django."""
         return "flask"
+
+    @staticmethod
+    @override
+    def is_experimental(base: str | None) -> bool:
+        """Check if the extension is in an experimental state."""
+        return False
 
     @override
     def gen_install_app_part(self) -> Dict[str, Any]:
@@ -274,4 +273,65 @@ class FlaskFramework(_GunicornBase):
                 "flask-framework extension requires this file with flask specified as a dependency"
             )
         if not self.yaml_data.get("services", {}).get("flask", {}).get("command"):
+            self._check_wsgi_path()
+
+
+class DjangoFramework(_GunicornBase):
+    """An extension for constructing Python applications based on the Django framework."""
+
+    @property
+    def name(self):
+        """Return the normalized name of the rockcraft project."""
+        return self.yaml_data["name"].replace("-", "_").lower()
+
+    @property
+    def default_wsgi_path(self):
+        """Return the default wsgi path for the Django project."""
+        return f"{self.name}.wsgi:application"
+
+    @property
+    @override
+    def wsgi_path(self) -> str:
+        """Return the wsgi path of the wsgi application."""
+        return self.default_wsgi_path
+
+    @property
+    @override
+    def framework(self) -> str:
+        """Return the wsgi framework name, e.g. flask, django."""
+        return "django"
+
+    @override
+    def gen_install_app_part(self) -> Dict[str, Any]:
+        """Return the prime list for the Flask project."""
+        if "django-framework/install-app" not in self.yaml_data.get("parts", {}):
+            return {
+                "plugin": "dump",
+                "source": self.name,
+                "organize": {"*": "django/app/", ".*": "django/app/"},
+            }
+        return {}
+
+    def _check_wsgi_path(self):
+        wsgi_file = self.project_root / self.name / self.name / "wsgi.py"
+        if not wsgi_file.exists():
+            raise ExtensionError(
+                f"django application can not be imported from {self.default_wsgi_path}, "
+                f"no wsgi.py file found in the project directory ({str(wsgi_file.parent)})."
+            )
+        if not self.has_global_variable(wsgi_file, "application"):
+            raise ExtensionError(
+                "django application can not be imported from {self.default_wsgi_path}, "
+                "no variable named application in application.py"
+            )
+
+    @override
+    def check_project(self):
+        """Ensure this extension can apply to the current rockcraft project."""
+        if not (self.project_root / "requirements.txt").exists():
+            raise ExtensionError(
+                "missing requirements.txt file, django-framework extension "
+                "requires this file with Django specified as a dependency"
+            )
+        if not self.yaml_data.get("services", {}).get("django", {}).get("command"):
             self._check_wsgi_path()

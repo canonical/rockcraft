@@ -1,6 +1,6 @@
 # -*- Mode:Python; indent-tabs-mode:nil; tab-width:4 -*-
 #
-# Copyright 2021 Canonical Ltd.
+# Copyright 2021,2024 Canonical Ltd.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 3 as
@@ -27,16 +27,17 @@ import spdx_lookup  # type: ignore
 import yaml
 from craft_application.errors import CraftValidationError
 from craft_application.models import BuildInfo, CraftBaseConfig
+from craft_application.models import BuildPlanner as BaseBuildPlanner
 from craft_application.models import Project as BaseProject
-from craft_archives import repo  # type: ignore[import-untyped]
 from craft_providers import bases
+from craft_providers.errors import BaseConfigurationError
 from pydantic_yaml import YamlModelMixin
 from typing_extensions import override
 
 from rockcraft.architectures import SUPPORTED_ARCHS
 from rockcraft.errors import ProjectLoadError
 from rockcraft.extensions import apply_extensions
-from rockcraft.parts import part_has_overlay, validate_part
+from rockcraft.parts import part_has_overlay
 from rockcraft.pebble import Check, Pebble, Service
 from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
 
@@ -51,9 +52,9 @@ class Platform(pydantic.BaseModel):
     """Rockcraft project platform definition."""
 
     build_on: pydantic.conlist(str, unique_items=True, min_items=1) | None  # type: ignore[valid-type]
-    build_for: pydantic.conlist(  # type: ignore[valid-type]
-        str, unique_items=True, min_items=1
-    ) | None
+    build_for: (  # type: ignore[valid-type]
+        pydantic.conlist(str, unique_items=True, min_items=1) | None  # type: ignore[reportInvalidTypeForm]
+    )
 
     class Config:  # pylint: disable=too-few-public-methods
         """Pydantic model configuration."""
@@ -117,14 +118,6 @@ INVALID_NAME_MESSAGE = (
 
 DEPRECATED_COLON_BASES = ["ubuntu:20.04", "ubuntu:22.04"]
 
-CURRENT_DEVEL_BASE = "ubuntu@24.04"
-
-DEVEL_BASE_WARNING = (
-    "The development build-base should only be used for testing purposes, "
-    "as its contents are bound to change with the opening of new Ubuntu releases, "
-    "suddenly and without warning."
-)
-
 
 class NameStr(pydantic.ConstrainedStr):
     """Constrained string type only accepting valid rock names."""
@@ -132,101 +125,12 @@ class NameStr(pydantic.ConstrainedStr):
     regex = re.compile(NAME_REGEX)
 
 
-class Project(YamlModelMixin, BaseProject):
-    """Rockcraft project definition."""
+class BuildPlanner(BaseBuildPlanner):
+    """BuildPlanner for Rockcraft projects."""
 
-    name: NameStr  # type: ignore
-    # summary is Optional[str] in BaseProject
-    summary: str  # type: ignore
-    description: str  # type: ignore[reportIncompatibleVariableOverride]
-    rock_license: str = pydantic.Field(alias="license")
-    platforms: dict[str, Any]
+    platforms: dict[str, Any]  # type: ignore[reportIncompatibleVariableOverride]
     base: Literal["bare", "ubuntu@20.04", "ubuntu@22.04", "ubuntu@24.04"]
-    build_base: Literal["ubuntu@20.04", "ubuntu@22.04", "devel"] | None
-    environment: dict[str, str] | None
-    run_user: _RunUser
-    services: dict[str, Service] | None
-    checks: dict[str, Check] | None
-    entrypoint_service: str | None
-
-    package_repositories: list[dict[str, Any]] | None
-
-    parts: dict[str, Any]
-
-    class Config(CraftBaseConfig):  # pylint: disable=too-few-public-methods
-        """Pydantic model configuration."""
-
-        allow_mutation = False
-
-    @property
-    def effective_base(self) -> bases.BaseName:
-        """Get the Base name for craft-providers."""
-        base = super().effective_base
-
-        if base == "devel":
-            name, channel = "ubuntu", "devel"
-        else:
-            name, channel = base.split("@")
-
-        return bases.BaseName(name, channel)
-
-    @pydantic.root_validator(pre=True)
-    @classmethod
-    def _check_unsupported_options(cls, values: Mapping[str, Any]) -> Mapping[str, Any]:
-        """Before validation, check if unsupported fields exist. Exit if so."""
-        # pylint: disable=unused-argument
-        unsupported_msg = str(
-            "The fields 'entrypoint', 'cmd' and 'env' are not supported in "
-            "Rockcraft. All rocks have Pebble as their entrypoint, so you must "
-            "use 'services' to define your container application and "
-            "respective environment."
-        )
-        unsupported_fields = ["cmd", "entrypoint", "env"]
-        if any(field in values for field in unsupported_fields):
-            raise CraftValidationError(unsupported_msg)
-
-        return values
-
-    @pydantic.validator("rock_license", always=True)
-    @classmethod
-    def _validate_license(cls, rock_license: str) -> str:
-        """Make sure the provided license is valid and in SPDX format."""
-        if rock_license == "proprietary":
-            # This is the license name we use on our stores.
-            return rock_license
-
-        lic: spdx_lookup.License | None = spdx_lookup.by_id(rock_license)  # type: ignore[reportUnknownMemberType]
-        if lic is None:
-            raise CraftValidationError(
-                f"License {rock_license} not valid. It must be valid and in SPDX format."
-            )
-        return str(lic.id)  # type: ignore[reportUnknownMemberType]
-
-    @pydantic.validator("title", always=True)
-    @classmethod
-    def _validate_title(cls, title: str | None, values: Mapping[str, Any]) -> str:
-        """If title is not provided, it defaults to the provided rock name."""
-        if not title:
-            title = values.get("name", "")
-        return cast(str, title)
-
-    @pydantic.root_validator(skip_on_failure=True)
-    @classmethod
-    def _validate_devel_base(cls, values: Mapping[str, Any]) -> Mapping[str, Any]:
-        """If 'base' is currently unstable, 'build-base' must be 'devel'."""
-        base = values.get("base")
-        build_base = values.get("build_base")
-
-        if base == CURRENT_DEVEL_BASE and build_base != "devel":
-            raise CraftValidationError(
-                f'To use the unstable base "{CURRENT_DEVEL_BASE}", '
-                '"build-base" must be "devel".'
-            )
-
-        if base == CURRENT_DEVEL_BASE:
-            craft_cli.emit.message(DEVEL_BASE_WARNING)
-
-        return values
+    build_base: Literal["ubuntu@20.04", "ubuntu@22.04", "ubuntu@24.04", "devel"] | None
 
     @pydantic.validator("build_base", always=True)
     @classmethod
@@ -331,12 +235,124 @@ class Project(YamlModelMixin, BaseProject):
 
         return platforms
 
-    @pydantic.validator("parts", each_item=True)
+    @property
+    def effective_base(self) -> bases.BaseName:
+        """Get the Base name for craft-providers."""
+        base = self.build_base if self.build_base else self.base
+
+        if base == "devel":
+            name, channel = "ubuntu", "devel"
+        else:
+            name, channel = base.split("@")
+
+        return bases.BaseName(name, channel)
+
+    def get_build_plan(self) -> list[BuildInfo]:
+        """Obtain the list of architectures and bases from the project file."""
+        build_infos: list[BuildInfo] = []
+        base = self.effective_base
+
+        for platform_entry, platform in self.platforms.items():
+            for build_for in platform.get("build_for") or [platform_entry]:
+                for build_on in platform.get("build_on") or [platform_entry]:
+                    build_infos.append(
+                        BuildInfo(
+                            platform=platform_entry,
+                            build_on=build_on,
+                            build_for=build_for,
+                            base=base,
+                        )
+                    )
+
+        return build_infos
+
+
+class Project(YamlModelMixin, BuildPlanner, BaseProject):  # type: ignore[misc]
+    """Rockcraft project definition."""
+
+    name: NameStr  # type: ignore
+    # summary is Optional[str] in BaseProject
+    summary: str  # type: ignore
+    description: str  # type: ignore[reportIncompatibleVariableOverride]
+    rock_license: str = pydantic.Field(alias="license")
+    environment: dict[str, str] | None
+    run_user: _RunUser
+    services: dict[str, Service] | None
+    checks: dict[str, Check] | None
+    entrypoint_service: str | None
+
+    package_repositories: list[dict[str, Any]] | None
+
+    parts: dict[str, Any]
+
+    class Config(CraftBaseConfig):  # pylint: disable=too-few-public-methods
+        """Pydantic model configuration."""
+
+        allow_mutation = False
+        extra = pydantic.Extra.forbid
+
+    @override
     @classmethod
-    def _validate_parts(cls, item: dict[str, Any]) -> dict[str, Any]:
-        """Verify each part (craft-parts will re-validate this)."""
-        validate_part(item)
-        return item
+    def _providers_base(cls, base: str) -> bases.BaseAlias | None:
+        """Get a BaseAlias from rockcraft's base.
+
+        :param base: The base name.
+
+        :returns: The BaseAlias for the base or None for bare bases.
+
+        :raises CraftValidationError: If the project's base cannot be determined.
+        """
+        if base == "bare":
+            return None
+
+        if base == "devel":
+            return bases.get_base_alias(("ubuntu", "devel"))
+
+        try:
+            name, channel = base.split("@")
+            return bases.get_base_alias((name, channel))
+        except (ValueError, BaseConfigurationError) as err:
+            raise CraftValidationError(f"Unknown base {base!r}") from err
+
+    @pydantic.root_validator(pre=True)
+    @classmethod
+    def _check_unsupported_options(cls, values: Mapping[str, Any]) -> Mapping[str, Any]:
+        """Before validation, check if unsupported fields exist. Exit if so."""
+        # pylint: disable=unused-argument
+        unsupported_msg = str(
+            "The fields 'entrypoint', 'cmd' and 'env' are not supported in "
+            "Rockcraft. All rocks have Pebble as their entrypoint, so you must "
+            "use 'services' to define your container application and "
+            "respective environment."
+        )
+        unsupported_fields = ["cmd", "entrypoint", "env"]
+        if any(field in values for field in unsupported_fields):
+            raise CraftValidationError(unsupported_msg)
+
+        return values
+
+    @pydantic.validator("rock_license", always=True)
+    @classmethod
+    def _validate_license(cls, rock_license: str) -> str:
+        """Make sure the provided license is valid and in SPDX format."""
+        if rock_license == "proprietary":
+            # This is the license name we use on our stores.
+            return rock_license
+
+        lic: spdx_lookup.License | None = spdx_lookup.by_id(rock_license)  # type: ignore[reportUnknownMemberType]
+        if lic is None:
+            raise CraftValidationError(
+                f"License {rock_license} not valid. It must be valid and in SPDX format."
+            )
+        return str(lic.id)  # type: ignore[reportUnknownMemberType]
+
+    @pydantic.validator("title", always=True)
+    @classmethod
+    def _validate_title(cls, title: str | None, values: Mapping[str, Any]) -> str:
+        """If title is not provided, it defaults to the provided rock name."""
+        if not title:
+            title = values.get("name", "")
+        return cast(str, title)
 
     @pydantic.validator("parts", each_item=True)
     @classmethod
@@ -387,15 +403,6 @@ class Project(YamlModelMixin, BaseProject):
             ) from ex
 
         return entrypoint_service
-
-    @pydantic.validator("package_repositories", each_item=True)
-    @classmethod
-    def _validate_package_repositories(
-        cls, repository: dict[str, Any]
-    ) -> dict[str, Any]:
-        repo.validate_repository(repository)
-
-        return repository
 
     @pydantic.validator("environment")
     @classmethod
@@ -472,25 +479,6 @@ class Project(YamlModelMixin, BaseProject):
 
         return (annotations, metadata)
 
-    def get_build_plan(self) -> list[BuildInfo]:
-        """Obtain the list of architectures and bases from the project file."""
-        build_infos: list[BuildInfo] = []
-        base = self.effective_base
-
-        for platform_entry, platform in self.platforms.items():
-            for build_for in platform.get("build_for") or [platform_entry]:
-                for build_on in platform.get("build_on") or [platform_entry]:
-                    build_infos.append(
-                        BuildInfo(
-                            platform=platform_entry,
-                            build_on=build_on,
-                            build_for=build_for,
-                            base=base,
-                        )
-                    )
-
-        return build_infos
-
     @override
     @classmethod
     def transform_pydantic_error(cls, error: pydantic.ValidationError) -> None:
@@ -560,4 +548,7 @@ def _add_pebble_data(yaml_data: dict[str, Any]) -> None:
         # Project already has a pebble part: this is not supported.
         raise CraftValidationError('Cannot override the default "pebble" part')
 
-    parts["pebble"] = Pebble.PEBBLE_PART_SPEC
+    model = BuildPlanner.unmarshal(yaml_data)
+    build_base = model.build_base if model.build_base else model.base
+
+    parts["pebble"] = Pebble.get_part_spec(build_base)

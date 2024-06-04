@@ -6,7 +6,6 @@ help: ## Show this help.
 
 .PHONY: autoformat
 autoformat: ## Run automatic code formatters.
-	isort .
 	autoflake rockcraft/ tests/
 	black .
 	ruff check --fix-only rockcraft tests
@@ -39,14 +38,8 @@ coverage: ## Run pytest with coverage report.
 	coverage report -m
 	coverage html
 
-.PHONY: preparedocs
-preparedocs: ## move file from the sphinx-starter-pack to docs folder
-	cp docs/sphinx-starter-pack/.sphinx/_static/* docs/_static
-	mkdir -p docs/_templates
-	cp -R docs/sphinx-starter-pack/.sphinx/_templates/* docs/_templates
-
 .PHONY: installdocs
-installdocs: preparedocs ## install documentation dependencies.
+installdocs:
 	$(MAKE) -C docs install
 
 .PHONY: docs
@@ -75,7 +68,7 @@ install: clean ## Install python package.
 	python setup.py install
 
 .PHONY: lint
-lint: test-black test-codespell test-flake8 test-isort test-mypy test-pydocstyle test-pyright test-pylint test-sphinx-lint test-shellcheck ## Run all linting tests.
+lint: test-black test-codespell test-flake8 test-mypy test-pydocstyle test-pyright test-pylint test-sphinx-lint test-shellcheck ## Run all linting tests.
 
 .PHONY: release
 release: dist ## Release with twine.
@@ -100,10 +93,6 @@ test-ruff:
 .PHONY: test-integrations
 test-integrations: ## Run integration tests.
 	pytest tests/integration
-
-.PHONY: test-isort
-test-isort:
-	isort --check rockcraft tests
 
 .PHONY: test-mypy
 test-mypy:

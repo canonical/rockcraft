@@ -1,0 +1,33 @@
+name: example-django
+summary: A Django application
+description: A rock packing a Django application
+version: "0.1"
+base: ubuntu@22.04
+license: Apache-2.0
+
+extensions:
+  - django-framework
+
+platforms:
+  amd64:
+  arm64:
+
+services:
+  django:
+    command: /bin/python3 -m gunicorn -c /django/gunicorn.conf.py foobar.wsgi:application
+
+# [docs:parts-start]
+parts:
+  django-framework/install-app:
+    plugin: dump
+    source: .
+    organize:
+      foobar: django/app/foobar
+      manage.py: django/app/manage.py
+    stage:
+      - django/app/foobar
+      - django/app/manage.py
+    prime:
+      - django/app/foobar
+      - django/app/manage.py
+# [docs:parts-end]

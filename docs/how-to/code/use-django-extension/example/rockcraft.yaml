@@ -1,0 +1,13 @@
+name: example-django
+summary: A Django application
+description: A rock packing a Django application
+version: "0.1"
+base: ubuntu@22.04
+license: Apache-2.0
+
+extensions:
+  - django-framework
+
+platforms:
+  amd64:
+  arm64:

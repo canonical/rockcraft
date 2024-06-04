@@ -1,0 +1,36 @@
+summary: django extension test
+
+environment:
+  ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS: "true"
+
+execute: |
+  
+  run_rockcraft init --name example-django --profile django-framework
+  run_rockcraft pack
+
+  test -f example-django_0.1_amd64.rock
+
+  # Ensure docker does not have this container image
+  docker rmi --force example-django
+  # Install container
+  sudo rockcraft.skopeo --insecure-policy copy oci-archive:example-django_0.1_amd64.rock docker-daemon:example-django:latest
+  # Ensure container exists
+  docker images example-django | MATCH "example-django"
+  
+  # ensure container doesn't exist
+  docker rm -f example-django-container
+  
+  # test the django project is ready to run inside the container
+  docker run --rm --entrypoint /bin/python3 example-django -m gunicorn --chdir /django/app --check-config example_django.wsgi:application
+  docker run --rm --entrypoint /bin/python3 example-django -c "import pathlib;assert pathlib.Path('/django/app/manage.py').is_file()"
+  docker run --rm --entrypoint /bin/python3 example-django -c "import pathlib;assert pathlib.Path('/django/app/.foobar').is_file()"
+
+  # test the default django service
+  docker run --name example-django-container -d -p 8138:8000 example-django
+  retry -n 5 --wait 2 curl localhost:8138
+  [ "$(curl -sw '%{http_code}' -o /dev/null localhost:8138)" == "200" ]
+
+restore: |
+  rm -f example-django_0.1_amd64.rock
+  docker rmi -f example-django
+  docker rm -f example-django-container

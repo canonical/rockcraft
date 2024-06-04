@@ -18,9 +18,9 @@ import textwrap
 from pathlib import Path
 
 import pytest
-
 from rockcraft import extensions
 from rockcraft.commands import ExpandExtensionsCommand
+
 from tests.unit.testing.extensions import FULL_EXTENSION_YAML, FullExtension
 
 # The project with the extension (FullExtension) expanded
@@ -32,6 +32,11 @@ EXPECTED_EXPAND_EXTENSIONS = textwrap.dedent(
     summary: Project with extensions
     description: Project with extensions
     base: ubuntu@22.04
+    build-base: ubuntu@22.04
+    platforms:
+      amd64:
+        build_on: null
+        build_for: null
     license: Apache-2.0
     parts:
       foo:
@@ -46,17 +51,12 @@ EXPECTED_EXPAND_EXTENSIONS = textwrap.dedent(
         plugin: nil
         stage-snaps:
         - pebble/latest/stable
-        stage:
-        - bin/pebble
         override-prime: |-
           craftctl default
           mkdir -p var/lib/pebble/default/layers
           chmod 777 var/lib/pebble/default
-    platforms:
-      amd64:
-        build_on: null
-        build_for: null
-    build-base: ubuntu@22.04
+        stage:
+        - bin/pebble
     services:
       my-service:
         override: merge
