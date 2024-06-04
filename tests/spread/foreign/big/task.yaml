@@ -28,7 +28,7 @@ execute: |
 
   # Check the rock's output
   id=$(docker run -d big:latest --verbose)
-  docker logs "$id" 2>&1 | MATCH "/tmp"
+  grep_docker_log "$id" "/tmp"
   docker rm -f "$id"
   
   ############################################################################################
