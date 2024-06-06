@@ -27,7 +27,7 @@ backends:
       - ubuntu-22.04-64:
           workers: 4
           storage: 40G
-      - fedora-37-64:
+      - fedora-39-64:
           workers: 1
           storage: 40G
 
@@ -56,7 +56,7 @@ prepare: |
   # older linux releases have separate packages for lxd and lxc (lxd-client)
   if [ "$SPREAD_SYSTEM" = "ubuntu-18.04-64" ] || \
      [ "$SPREAD_SYSTEM" = "ubuntu-20.04-64" ] || \
-     [ "$SPREAD_SYSTEM" = "fedora-37-64" ]; then
+     [ "$SPREAD_SYSTEM" = "fedora-39-64" ]; then
     tests.pkgs remove lxd lxd-client
   else
     tests.pkgs remove lxd
@@ -75,7 +75,7 @@ prepare: |
   lxd waitready --timeout=30
   lxd init --auto
 
-  if [ "$SPREAD_SYSTEM" = "fedora-37-64" ]; then
+  if [ "$SPREAD_SYSTEM" = "fedora-39-64" ]; then
     # Latest docker snap needs a more recent version of snapd than Fedora ships
     # https://github.com/canonical/rockcraft/pull/277
     snap install docker --channel=core18/stable
