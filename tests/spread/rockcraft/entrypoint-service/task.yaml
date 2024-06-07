@@ -18,5 +18,5 @@ execute: |
   id=$(sh -c 'docker run -d entrypoint-service-test bar \; --verbose')
   test "$(docker inspect "$id" -f '{{json .Config.Entrypoint}}')" = '["/bin/pebble","enter","--args","test-service"]'
   test "$(docker inspect "$id" -f '{{json .Config.Cmd}}')" = '["bar",";","--verbose"]'
-  docker logs "$id" 2>&1 | grep '[test-service] bar'
+  docker logs "$id" 2>&1 | grep '\[test-service\] bar'
   docker rm -f "$id"
