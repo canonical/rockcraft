@@ -1,6 +1,7 @@
 summary: container entrypoint-service test
 
 execute: |
+  set -ex
   run_rockcraft pack
 
   test -f entrypoint-service-test_latest_amd64.rock
@@ -10,11 +11,12 @@ execute: |
   rm entrypoint-service-test_latest*.rock  
   docker images entrypoint-service-test:latest
   id=$(docker run -d entrypoint-service-test)
-  test "$(docker inspect "$id" -f '{{json .Config.Entrypoint}}')" = '["/bin/pebble","enter","--verbose","--args","test-service"]'
+  test "$(docker inspect "$id" -f '{{json .Config.Entrypoint}}')" = '["/bin/pebble","enter","--args","test-service"]'
   test "$(docker inspect "$id" -f '{{json .Config.Cmd}}')" = '["foo"]'
-  grep_docker_log "$id" "foo"
+  docker logs "$id" 2>&1 | grep "foo"
   docker rm -f "$id"
-  id=$(docker run -d entrypoint-service-test bar)
-  test "$(docker inspect "$id" -f '{{json .Config.Cmd}}')" = '["bar"]'
-  grep_docker_log "$id" "bar"
+  id=$(sh -c 'docker run -d entrypoint-service-test bar \; --verbose')
+  test "$(docker inspect "$id" -f '{{json .Config.Entrypoint}}')" = '["/bin/pebble","enter","--args","test-service"]'
+  test "$(docker inspect "$id" -f '{{json .Config.Cmd}}')" = '["bar",";","--verbose"]'
+  docker logs "$id" 2>&1 | grep '\[test-service\] bar'
   docker rm -f "$id"

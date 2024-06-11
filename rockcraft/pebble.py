@@ -260,12 +260,7 @@ class Pebble:
             # Previously pebble existed in /bin/pebble
             pebble_path = Pebble.PEBBLE_BINARY_PATH_PREVIOUS
 
-        entrypoint = [f"/{pebble_path}", "enter"]
-
-        if is_legacy:
-            entrypoint += ["--verbose"]
-
-        return entrypoint
+        return [f"/{pebble_path}", "enter"]
 
     @staticmethod
     def _is_focal_or_jammy(build_base: str) -> bool:
