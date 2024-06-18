@@ -35,7 +35,7 @@ copyright = "2022-%s, %s" % (datetime.date.today().year, author)
 release = rockcraft.__version__
 if ".post" in release:
     # The commit hash in the dev release version confuses the spellchecker
-    release = release[0 : release.find(".post")]
+    release = "dev"
 
 # region Configuration for canonical-sphinx
 ogp_site_url = "https://canonical-rockcraft.readthedocs-hosted.com/"
