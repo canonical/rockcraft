@@ -115,7 +115,7 @@ the value of ``base``.
 
 **Type**: string, in `SPDX format <https://spdx.org/licenses/>`_
 
-**Required**: Yes
+**Required**: No
 
 The license of the software packaged inside the rock. This must match the SPDX
 format, but is case insensitive (e.g. both ``MIT`` and ``mit`` are valid).

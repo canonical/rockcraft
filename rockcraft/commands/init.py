@@ -67,7 +67,6 @@ class InitCommand(AppCommand):
                     most important story about it. Keep it under 100 words though,
                     we live in tweetspace and your description wants to look good in the
                     container registries out there.
-                license: GPL-3.0 # your application's SPDX license
                 platforms: # The platforms this rock should be built on and run on
                     amd64:
 
@@ -87,7 +86,6 @@ class InitCommand(AppCommand):
                     most important story about it. Keep it under 100 words though,
                     we live in tweetspace and your description wants to look good in the
                     container registries out there.
-                license: GPL-3.0 # your application's SPDX license
                 platforms: # The platforms this rock should be built on and run on
                     amd64:
 
@@ -129,7 +127,6 @@ class InitCommand(AppCommand):
                     most important story about it. Keep it under 100 words though,
                     we live in tweetspace and your description wants to look good in the
                     container registries out there.
-                license: GPL-3.0 # your application's SPDX license
                 platforms: # The platforms this rock should be built on and run on
                     amd64:
 

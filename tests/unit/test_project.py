@@ -54,7 +54,6 @@ version: latest
 base: ubuntu@20.04
 summary: "example for unit tests"
 description: "this is an example of a rockcraft.yaml for the purpose of testing rockcraft"
-license: Apache-2.0
 environment:
     BAZ: value1
     FOO: value3
@@ -134,11 +133,6 @@ def test_project_unmarshal(check, yaml_loaded_data):
     project = Project.unmarshal(yaml_loaded_data)
 
     for attr, v in yaml_loaded_data.items():
-        if attr == "license":
-            # The var license is a built-in,
-            # so we workaround it by using an alias
-            attr = "rock_license"
-
         if attr == "platforms":
             # platforms get mutated at validation time
             assert getattr(project, attr).keys() == v.keys()
@@ -256,7 +250,7 @@ def test_project_license_clean_name(yaml_loaded_data):
     yaml_loaded_data["license"] = "mIt"
 
     project = Project.unmarshal(yaml_loaded_data)
-    assert project.rock_license == "MIT"
+    assert project.license == "MIT"
 
 
 def test_project_title_empty(yaml_loaded_data):

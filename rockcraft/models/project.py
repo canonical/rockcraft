@@ -274,7 +274,7 @@ class Project(YamlModelMixin, BuildPlanner, BaseProject):  # type: ignore[misc]
     # summary is Optional[str] in BaseProject
     summary: str  # type: ignore
     description: str  # type: ignore[reportIncompatibleVariableOverride]
-    rock_license: str = pydantic.Field(alias="license")
+    # license is Optional[str] in BaseProject
     environment: dict[str, str] | None
     run_user: _RunUser
     services: dict[str, Service] | None
@@ -331,18 +331,23 @@ class Project(YamlModelMixin, BuildPlanner, BaseProject):  # type: ignore[misc]
 
         return values
 
-    @pydantic.validator("rock_license", always=True)
+    @pydantic.validator("license", always=True)
     @classmethod
-    def _validate_license(cls, rock_license: str) -> str:
+    def _validate_license(cls, license: str | None) -> str | None:
         """Make sure the provided license is valid and in SPDX format."""
-        if rock_license == "proprietary":
-            # This is the license name we use on our stores.
-            return rock_license
+        if not license:
+            return None
 
-        lic: spdx_lookup.License | None = spdx_lookup.by_id(rock_license)  # type: ignore[reportUnknownMemberType]
+        if license == "proprietary":
+            # This is the license name we use on our stores.
+            return license
+
+        lic: spdx_lookup.License | None = spdx_lookup.by_id(license)  # type: ignore[reportUnknownMemberType]
         if lic is None:
+            docs_url = "https://documentation.ubuntu.com/rockcraft/en/stable/reference/rockcraft.yaml/#license"
             raise CraftValidationError(
-                f"License {rock_license} not valid. It must be valid and in SPDX format."
+                f"License {license} not valid. It must be valid and in SPDX format.\n"
+                f"See {docs_url}"
             )
         return str(lic.id)  # type: ignore[reportUnknownMemberType]
 
@@ -472,10 +477,11 @@ class Project(YamlModelMixin, BuildPlanner, BaseProject):  # type: ignore[misc]
             "org.opencontainers.image.version": self.version,
             "org.opencontainers.image.title": self.title,
             "org.opencontainers.image.ref.name": self.name,
-            "org.opencontainers.image.licenses": self.rock_license,
             "org.opencontainers.image.created": generation_time,
             "org.opencontainers.image.base.digest": base_digest.hex(),
         }
+        if self.license:
+            annotations["org.opencontainers.image.licenses"] = self.license
 
         return (annotations, metadata)
 
