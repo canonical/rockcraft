@@ -87,9 +87,6 @@ entrypoint-service: test-service
 """
 
 
-pytestmark = [pytest.mark.usefixtures("enable_overlay_feature")]
-
-
 class DevelProject(Project):
     """A Project subclass that always accepts devel bases as a "base".
 
