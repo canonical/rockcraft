@@ -31,6 +31,7 @@ execute: |
 
   # [docs:pack]
   sudo iptables -I DOCKER-USER -j ACCEPT
+  lxd init --auto
   rockcraft pack
   ls *.rock
   # [docs:pack-end]
