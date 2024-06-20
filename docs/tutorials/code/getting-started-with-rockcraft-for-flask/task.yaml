@@ -11,7 +11,7 @@ environment:
 
 execute: |
   # [docs:create-venv]
-  sudo apt install python3-venv -y
+  sudo apt-get update && sudo apt-get install python3-venv -y
   python3 -m venv .venv
   source .venv/bin/activate
   pip install -r requirements.txt
@@ -25,11 +25,12 @@ execute: |
 
   # [docs:create-rockcraft-yaml]
   rockcraft init --profile flask-framework
-  sed -i "s/name: my-rock-name/name: flask-hello-world/g" rockcraft.yaml
+  sed -i "s/name: .*/name: flask-hello-world/g" rockcraft.yaml
   ls rockcraft.yaml
   # [create-rockcraft-yaml-end]
 
   # [docs:pack]
+  sudo iptables -I DOCKER-USER -j ACCEPT
   rockcraft pack
   ls *.rock
   # [pack-end]
@@ -38,16 +39,16 @@ execute: |
   sudo rockcraft.skopeo --insecure-policy copy oci-archive:flask-hello-world_0.1_amd64.rock docker-daemon:flask-hello-world:0.1
   # [docs:skopeo-copy-end]
 
-  docker images flask-hello-world:0.1
+  sudo docker images flask-hello-world:0.1
 
   # [docs:docker-run]
-  docker run -d -p 8000:8000 --name flask-hello-world flask-hello-world:0.1
+  sudo docker run -d -p 8000:8000 --name flask-hello-world flask-hello-world:0.1
   curl localhost:8000
   # [docs:docker-run-end]
 
   # [docs:cleanup]
-  docker stop flask-hello-world
-  docker rm flask-hello-world
+  sudo docker stop flask-hello-world
+  sudo docker rm flask-hello-world
   deactivate
   rm -rf .venv
   rm flask-hello-world_0.1_amd64.rock rockcraft.yaml app.py requirements.txt

@@ -41,7 +41,7 @@ Run and test the flask application to verify everything is working:
     :end-before: [run-flask-end]
     :dedent: 2
 
-The ``curl`` command should print ``Hello, world!`` in response.
+The ``curl`` command should print ``Hello, world!``.
 
 Install Rockcraft
 -----------------
@@ -81,6 +81,10 @@ Run the rock in Docker
 ----------------------
 
 First, import the rock into Docker:
+
+.. note::
+    If you changed the ``name`` in ``rockcraft.yaml`` or are not on an ``amd64``
+    platform, tahe name of the ``*.rock`` file will be different for you.
 
 .. literalinclude:: code/getting-started-with-rockcraft-for-flask/task.yaml
     :language: bash
