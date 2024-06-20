@@ -65,7 +65,7 @@ Use the ``flask-framework`` profile to create ``rockcraft.yaml``:
     :end-before: [docs:create-rockcraft-yaml-end]
     :dedent: 2
 
-Open ``rockcraft.yaml`` in a text editor and customize the ``name``,
+Open ``rockcraft.yaml`` in a text editor and customise the ``name``,
 ``summary``, ``description`` and ``license``. Ensure that ``platforms`` includes
 the architecture of your host. For example, if your host uses the ARM
 architecture, include ``arm64`` in ``platforms``. Pack the rock:
@@ -84,7 +84,7 @@ First, import the rock into Docker:
 
 .. note::
     If you changed the ``name`` in ``rockcraft.yaml`` or are not on an ``amd64``
-    platform, tahe name of the ``*.rock`` file will be different for you.
+    platform, the name of the ``*.rock`` file will be different for you.
 
 .. literalinclude:: code/getting-started-with-flask/task.yaml
     :language: bash

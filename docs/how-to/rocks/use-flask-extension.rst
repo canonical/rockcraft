@@ -27,7 +27,7 @@ Example:
 from a host with Ubuntu installed to a Flask app running in docker.
 
 Chisel the Flask rock
-------------------------
+---------------------
 
 The OCI image created in the
 :doc:`/tutorials/getting-started-with-flask` tutorial is roughly
