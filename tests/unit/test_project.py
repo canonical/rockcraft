@@ -243,7 +243,7 @@ def test_project_license_invalid(yaml_loaded_data):
     with pytest.raises(CraftValidationError) as err:
         load_project_yaml(yaml_loaded_data)
     assert str(err.value) == (
-        f"License {yaml_loaded_data['license']} not valid. It must be valid and in SPDX format."
+        f"License {yaml_loaded_data['license']} not valid. It must be either 'proprietary' or in SPDX format."
     )
 
 

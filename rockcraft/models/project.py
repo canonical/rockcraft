@@ -347,7 +347,7 @@ class Project(YamlModelMixin, BuildPlanner, BaseProject):  # type: ignore[misc]
         lic: spdx_lookup.License | None = spdx_lookup.by_id(license)  # type: ignore[reportUnknownMemberType]
         if lic is None:
             raise CraftValidationError(
-                f"License {license} not valid. It must be valid and in SPDX format.",
+                f"License {license} not valid. It must be either 'proprietary' or in SPDX format.",
                 docs_url="https://documentation.ubuntu.com/rockcraft/en/stable/reference/rockcraft.yaml/#license",
             )
         return str(lic.id)  # type: ignore[reportUnknownMemberType]
