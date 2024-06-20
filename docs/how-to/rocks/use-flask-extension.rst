@@ -101,10 +101,45 @@ Update the version in ``rockcraft.yaml``:
 
 Pack and deploy the new rock and send a request to the ``/time`` endpoint:
 
-.. literalinclude:: ../code/use-flask-extension//task.yaml
+.. literalinclude:: ../code/use-flask-extension/task.yaml
     :language: bash
     :start-after: [docs:update-app-start]
     :end-before: [docs:update-app-end]
     :dedent: 2
 
 The ``curl`` command should return the current time.
+
+View the logs
+-------------
+
+To retrieve the logs for the follow app:
+
+.. literalinclude:: ../code/use-flask-extension/example/app.py
+    :language: python
+
+With ``requirements.txt``:
+
+.. literalinclude:: ../code/use-flask-extension/example/requirements.txt
+
+And ``rockcraft.yaml``:
+
+.. literalinclude:: ../code/use-flask-extension/example/rockcraft.yaml
+    :language: yaml
+
+Run the following steps to get the app running in docker:
+
+.. literalinclude:: ../code/use-flask-extension/task.yaml
+    :language: bash
+    :start-after: [docs:logs-app-setup-start]
+    :end-before: [docs:logs-app-setup-end]
+    :dedent: 2
+
+Retrieve the logs using:
+
+.. literalinclude:: ../code/use-flask-extension/task.yaml
+    :language: bash
+    :start-after: [docs:logs-app-start]
+    :end-before: [docs:logs-app-end]
+    :dedent: 2
+
+This will show all the logs for the ``flask`` service running in the container.
