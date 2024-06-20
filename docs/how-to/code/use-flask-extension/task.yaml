@@ -7,30 +7,7 @@
 ###########################################
 summary: test the "Use the flask-framework extension" guide
 
-environment:
-  ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS: "1"
-
 execute: |
-  cd example
-  rockcraft pack
-  cd -
-
-  cd prime-example
-  rockcraft pack
-  cd -
-
-  cd prime-exclude-example
-  rockcraft pack
-  cd -
-
-  cd deb-example
-  rockcraft pack
-  cd -
-
-  cd chiseled-example
-  rockcraft pack
-  cd -
-
   cd update-example
   # [docs:update-app-start]
   rockcraft pack
