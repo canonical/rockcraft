@@ -1,0 +1,39 @@
+###########################################
+# IMPORTANT
+# Comments matter!
+# The docs use the wrapping comments as 
+# markers for including said instructions 
+# as snippets in the docs.
+###########################################
+summary: Getting started with Rockcraft for Flask tutorial
+
+environment:
+
+execute: |
+  # [docs:create-venv]
+  sudo apt install python3-venv -y
+  python3 -m venv .venv
+  source .venv/bin/activate
+  pip install -r requirements.txt
+  # [docs:create-venv-end]
+
+  # [docs:run-flask]
+  flask run &
+  curl localhost:5000
+  kill $!
+  # [docs:run-flask-end]
+
+  # [docs:create-rockcraft-yaml]
+  rockcraft init --profile flask-framework
+  ls rockcraft.yaml
+  # [create-rockcraft-yaml-end]
+
+  # [docs:pack]
+  rockcraft pack
+  ls *.rock
+  # [pack-end]
+
+restore:
+  rm -rf .venv
+  rm rockcraft.yaml
+  rm -rf */*.rock
