@@ -25,3 +25,31 @@ Example:
 
 :doc:`/tutorials/getting-started-with-rockcraft-for-flask` shows you how to go
 from a host with Ubuntu installed to a Flask app running in docker.
+
+Managing project files with the flask extension
+-----------------------------------------------
+
+By default the flask extension only includes ``app.py``, ``static/``,
+``app/``, ``templates/`` and ``migrate.sh`` in the flask project. You can
+overwrite this behaviour with a prime declaration in the specially-named
+``flask-framework/install-app`` part to instruct the flask extension on which
+files to include or exclude from the project directory in the rock image.
+
+The extension places the files from the project folder in the ``/flask/app``
+directory in the final image - therefore, all inclusions and exclusions must
+be prefixed with ``flask/app``.
+
+For example, to include only select files:
+
+.. literalinclude:: ../code/use-flask-extension/prime-example/rockcraft.yaml
+    :language: yaml
+    :start-after: [docs:parts-start]
+    :end-before: [docs:parts-end]
+
+To exclude certain files from the project directory in the rock image and
+include everything else, add the following part to ``rockcraft.yaml``:
+
+.. literalinclude:: ../code/use-flask-extension/prime_exclude_example/rockcraft.yaml
+    :language: yaml
+    :start-after: [docs:parts-start]
+    :end-before: [docs:parts-end]
