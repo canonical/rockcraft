@@ -25,6 +25,7 @@ execute: |
 
   # [docs:create-rockcraft-yaml]
   rockcraft init --profile flask-framework
+  sed -i "s/name: my-rock-name/name: flask-hello-world/g" rockcraft.yaml
   ls rockcraft.yaml
   # [create-rockcraft-yaml-end]
 
@@ -33,7 +34,21 @@ execute: |
   ls *.rock
   # [pack-end]
 
-restore:
+  # [docs:skopeo-copy]
+  sudo rockcraft.skopeo --insecure-policy copy oci-archive:flask-hello-world_0.1_amd64.rock docker-daemon:flask-hello-world:0.1
+  # [docs:skopeo-copy-end]
+
+  docker images flask-hello-world:0.1
+
+  # [docs:docker-run]
+  docker run -d -p 8000:8000 --name flask-hello-world flask-hello-world:0.1
+  curl localhost:8000
+  # [docs:docker-run-end]
+
+  # [docs:cleanup]
+  docker stop flask-hello-world
+  docker rm flask-hello-world
+  deactivate
   rm -rf .venv
-  rm rockcraft.yaml
-  rm -rf */*.rock
+  rm flask-hello-world_0.1_amd64.rock rockcraft.yaml app.py requirements.txt
+  # [docs:cleanup-end]
