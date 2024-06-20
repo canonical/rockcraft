@@ -1,8 +1,8 @@
 ###########################################
 # IMPORTANT
 # Comments matter!
-# The docs use the wrapping comments as 
-# markers for including said instructions 
+# The docs use the wrapping comments as
+# markers for including said instructions
 # as snippets in the docs.
 ###########################################
 summary: test the "How to chisel an existing rock" guide
@@ -36,7 +36,7 @@ execute: |
   # [docs:run-bare-rock-end]
 
   docker run --rm python-rock:3.11-bare exec python3.11 -c 'print("Hello, world")' | grep "Hello, world"
-  
+
   popd
   pushd chiselled-rock
   # [docs:pack-chiselled-rock]
