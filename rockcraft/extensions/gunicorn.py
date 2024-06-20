@@ -268,7 +268,7 @@ class FlaskFramework(_GunicornBase):
             )
 
     def _check_requirements_txt(self):
-        """Ensure the requirements.txt is correct."""
+        """Ensure the requirements.txt file is correct."""
         requirements_file = self.project_root / "requirements.txt"
         if not requirements_file.exists():
             raise ExtensionError(
@@ -277,12 +277,8 @@ class FlaskFramework(_GunicornBase):
                 docs_url="https://TODO",
             )
 
-        if not any(
-            (
-                "flask" in line
-                for line in requirements_file.read_text(encoding="utf-8").splitlines()
-            )
-        ):
+        requirements_lines = requirements_file.read_text(encoding="utf-8").splitlines()
+        if not any(("flask" in line.lower() for line in requirements_lines)):
             raise ExtensionError(
                 "requirements.txt file should include the flask package as a dependency.",
                 docs_url="https://TODO",
