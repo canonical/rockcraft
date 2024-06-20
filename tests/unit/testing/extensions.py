@@ -15,9 +15,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 """Fake Extensions for use in tests."""
-import textwrap
 from typing import Any
 
+from craft_application import util
 from overrides import override
 from rockcraft.extensions.extension import Extension
 
@@ -103,29 +103,23 @@ class FullExtension(FakeExtension):
         return {"full-extension/new-part": {"plugin": "nil", "source": None}}
 
 
-FULL_EXTENSION_YAML = textwrap.dedent(
-    f"""
-    name: project-with-extensions
-    version: latest
-    base: ubuntu@22.04
-    summary: Project with extensions
-    description: Project with extensions
-    license: Apache-2.0
-    platforms:
-        amd64:
+FULL_EXTENSION_PROJECT = {
+    "name": "project-with-extensions",
+    "version": "latest",
+    "base": "ubuntu@22.04",
+    "summary": "Project with extensions",
+    "description": "Project with extensions",
+    "license": "Apache-2.0",
+    "platforms": {"amd64": None},
+    "extensions": [FullExtension.NAME],
+    "parts": {"foo": {"plugin": "nil", "stage-packages": ["old-package"]}},
+    "services": {
+        "my-service": {
+            "command": "foo",
+            "override": "merge",
+        }
+    },
+}
 
-    extensions:
-        - {FullExtension.NAME}
 
-    parts:
-        foo:
-            plugin: nil
-            stage-packages:
-                - old-package
-
-    services:
-        my-service:
-            command: foo
-            override: merge
-    """
-)
+FULL_EXTENSION_YAML = util.dump_yaml(FULL_EXTENSION_PROJECT)

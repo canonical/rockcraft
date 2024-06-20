@@ -14,14 +14,22 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import argparse
+import copy
+import re
 import textwrap
 from pathlib import Path
 
 import pytest
+from craft_application import util, errors
+
 from rockcraft import extensions
 from rockcraft.commands import ExpandExtensionsCommand
 
-from tests.unit.testing.extensions import FULL_EXTENSION_YAML, FullExtension
+from tests.unit.testing.extensions import (
+    FULL_EXTENSION_YAML,
+    FullExtension,
+    FULL_EXTENSION_PROJECT,
+)
 
 # The project with the extension (FullExtension) expanded
 EXPECTED_EXPAND_EXTENSIONS = textwrap.dedent(
@@ -82,3 +90,27 @@ def test_expand_extensions(setup_extensions, emitter, new_dir):
     cmd.run(argparse.Namespace())
 
     emitter.assert_message(EXPECTED_EXPAND_EXTENSIONS)
+
+
+def test_expand_extensions_error(setup_extensions, new_dir):
+    wrong_yaml = copy.deepcopy(FULL_EXTENSION_PROJECT)
+
+    # Misconfigure the plugin
+    wrong_yaml["parts"]["foo"]["plugin"] = "nonexistent"
+
+    # Misconfigure a service
+    wrong_yaml["services"]["my-service"]["override"] = "invalid"
+
+    project_file = Path("rockcraft.yaml")
+    dumped = util.dump_yaml(wrong_yaml)
+    project_file.write_text(dumped)
+
+    expected_message = re.escape(
+        "Bad rockcraft.yaml content:\n"
+        "- plugin not registered: 'nonexistent' (in field 'parts.foo')\n"
+        "- unexpected value; permitted: 'merge', 'replace' (in field 'services.my-service.override')"
+    )
+
+    cmd = ExpandExtensionsCommand(None)
+    with pytest.raises(errors.CraftValidationError, match=expected_message):
+        cmd.run(argparse.Namespace())
