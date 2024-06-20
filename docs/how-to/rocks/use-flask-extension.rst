@@ -26,13 +26,28 @@ Example:
 :doc:`/tutorials/getting-started-with-rockcraft-for-flask` shows you how to go
 from a host with Ubuntu installed to a Flask app running in docker.
 
-Managing project files with the flask extension
+Chiseling the Flask rock
+------------------------
+
+The OCI image created in the
+:doc:`/tutorials/getting-started-with-rockcraft-for-flask` tutorial is roughly
+159MB in size. This can be reduced by using a ``bare`` base. Change the ``base``
+to ``bare`` and include a ``build-base`` in ``rockcraft.yaml``:
+
+.. literalinclude:: ../code/use-flask-extension/chiseled-example/rockcraft.yaml
+    :language: yaml
+    :start-after: [docs:base-start]
+    :end-before: [docs:base-end]
+
+Now the OCI image is just 130MB in size.
+
+Managing project files with the Flask extension
 -----------------------------------------------
 
-By default the flask extension only includes ``app.py``, ``static/``,
-``app/``, ``templates/`` and ``migrate.sh`` in the flask project. You can
+By default the Flask extension only includes ``app.py``, ``static/``,
+``app/``, ``templates/`` and ``migrate.sh`` in the Flask project. You can
 overwrite this behaviour with a prime declaration in the specially-named
-``flask-framework/install-app`` part to instruct the flask extension on which
+``flask-framework/install-app`` part to instruct the Flask extension on which
 files to include or exclude from the project directory in the rock image.
 
 The extension places the files from the project folder in the ``/flask/app``
