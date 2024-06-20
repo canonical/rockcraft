@@ -19,7 +19,7 @@ execute: |
 
   # [docs:run-flask]
   flask run &
-  curl localhost:5000
+  retry -n 5 --wait 2 curl localhost:5000
   kill $!
   # [docs:run-flask-end]
 
@@ -44,7 +44,7 @@ execute: |
 
   # [docs:docker-run]
   sudo docker run -d -p 8000:8000 --name flask-hello-world flask-hello-world:0.1
-  curl localhost:8000
+  retry -n 5 --wait 2 curl localhost:8000
   # [docs:docker-run-end]
 
   # [docs:cleanup]
