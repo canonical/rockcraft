@@ -80,7 +80,7 @@ class InitCommand(AppCommand):
             """\
                 name: {name}
                 # See https://documentation.ubuntu.com/rockcraft/en/latest/reference/rockcraft.yaml/#base
-                # for bare bases for reduced image size and enhanced security.
+                # for chiselled and bare bases for reduced image size and enhanced security.
                 # TODO SOMETHING EXTRA ABOUT THIS?
                 base: ubuntu@22.04 # the base environment for this Flask application
                 version: '0.1' # just for humans. Semantic versioning is recommended
@@ -98,6 +98,8 @@ class InitCommand(AppCommand):
 
                 # To ensure the flask-framework extension works properly, your Flask application
                 # should have an `app.py` file with an `app` object as the WSGI entrypoint.
+                # A `requirements.txt` file with at least the flask package should also exist.
+                # TODO SEE LINK FOR EXAMPLE
                 extensions:
                     - flask-framework
 
@@ -115,13 +117,17 @@ class InitCommand(AppCommand):
                 #       - flask/app/webapp
                 #       - flask/app/templates
                 #       - flask/app/static
+                #       # You may need packages to build a python package. Add it here if necessary
+                #       build-packages:
+                #           - pkg-config
+                #           - libxmlsec1-dev
 
                 # # You can add package slices or Debian packages to the image.
                 # # Package slices are subsets of Debian packages, which result
                 # # in smaller and more secure images.
                 # # See https://documentation.ubuntu.com/rockcraft/en/latest/explanation/chisel/
 
-                # # Add this part if you want to add packages slices in your image.
+                # # Add this part if you want to add packages slices to your image.
                 # # You can find a list of packages slices in https://github.com/canonical/chisel-releases
                 # flask-framework/runtime-slices:
                 #   plugin: nil
