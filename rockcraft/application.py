@@ -31,6 +31,7 @@ from rockcraft.models import project
 APP_METADATA = AppMetadata(
     name="rockcraft",
     summary="A tool to create OCI images",
+    docs_url="https://canonical-rockcraft.readthedocs-hosted.com/en/stable",
     ProjectClass=project.Project,
     BuildPlannerClass=project.BuildPlanner,
     source_ignore_patterns=["*.rock"],
