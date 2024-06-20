@@ -32,7 +32,7 @@ from craft_application.models import Project as BaseProject
 from craft_providers import bases
 from craft_providers.errors import BaseConfigurationError
 from pydantic_yaml import YamlModelMixin
-from typing_extensions import override
+from typing_extensions import override, Self
 
 from rockcraft.architectures import SUPPORTED_ARCHS
 from rockcraft.errors import ProjectLoadError
@@ -498,6 +498,23 @@ class Project(YamlModelMixin, BuildPlanner, BaseProject):  # type: ignore[misc]
                 # for the "name" regex, but we re-change it here because
                 # Rockcraft's name regex is slightly stricter.
                 error_dict["msg"] = INVALID_NAME_MESSAGE
+
+    @override
+    @classmethod
+    def unmarshal(cls, data: dict[str, Any]) -> Self:
+        """Overridden to enable the overlay craft-parts feature."""
+        # pylint: disable=import-outside-toplevel
+        from craft_parts.features import Features
+
+        # enable the craft-parts Features that we use here, right before
+        # loading the project and validating its parts.
+        Features.reset()
+        Features(enable_overlay=True)
+
+        if not isinstance(data, dict):  # pyright: ignore[reportUnnecessaryIsInstance]
+            raise TypeError("Project data is not a dictionary")
+
+        return cls(**data)
 
 
 def load_project(filename: Path) -> dict[str, Any]:

@@ -248,12 +248,3 @@ def run_lifecycle(mocker, default_build_plan):
         )
 
     return _inner
-
-
-@pytest.fixture()
-def enable_overlay_feature():
-    """Enable the overlay feature."""
-    from craft_parts import Features
-
-    Features.reset()
-    Features(enable_overlay=True)
