@@ -233,7 +233,7 @@ class FlaskFramework(_GunicornBase):
             raise ExtensionError(
                 "flask-framework extension required prime entry in the "
                 "flask-framework/install-app part to start with flask/app",
-                docs_url="https://TODO"
+                docs_url="https://TODO",
             )
         if not user_prime:
             user_prime = [
@@ -258,13 +258,13 @@ class FlaskFramework(_GunicornBase):
             raise ExtensionError(
                 "flask application can not be imported from app:app, "
                 "no app.py file found in the project root",
-                docs_url="https://TODO"
+                docs_url="https://TODO",
             )
         if not self.has_global_variable(app_file, "app"):
             raise ExtensionError(
                 "flask application can not be imported from app:app, "
                 "no variable named app in app.py",
-                docs_url="https://TODO"
+                docs_url="https://TODO",
             )
 
     def _check_requirements_txt(self):
@@ -274,13 +274,18 @@ class FlaskFramework(_GunicornBase):
             raise ExtensionError(
                 "missing requirements.txt file, flask-framework extension "
                 "requires this file with flask specified as a dependency",
-                docs_url="https://TODO"
+                docs_url="https://TODO",
             )
 
-        if not any(("flask" in line for line in requirements_file.read_text(encoding="utf-8").splitlines())):
+        if not any(
+            (
+                "flask" in line
+                for line in requirements_file.read_text(encoding="utf-8").splitlines()
+            )
+        ):
             raise ExtensionError(
                 "requirements.txt file should include the flask package as a dependency.",
-                docs_url="https://TODO"
+                docs_url="https://TODO",
             )
 
     @override
