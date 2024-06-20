@@ -26,7 +26,10 @@ from rockcraft.services.image import ImageInfo
 
 from tests.util import jammy_only
 
-pytestmark = jammy_only
+pytestmark = [
+    jammy_only,
+    pytest.mark.usefixtures("reset_callbacks", "enable_overlay_feature"),
+]
 
 
 def create_base_image(
