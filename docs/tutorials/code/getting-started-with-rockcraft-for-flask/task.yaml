@@ -49,6 +49,7 @@ execute: |
   # [docs:cleanup]
   sudo docker stop flask-hello-world
   sudo docker rm flask-hello-world
+  sudo docker rmi flask-hello-world:0.1
   deactivate
   rm -rf .venv
   rm flask-hello-world_0.1_amd64.rock rockcraft.yaml app.py requirements.txt

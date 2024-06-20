@@ -1,0 +1,47 @@
+###########################################
+# IMPORTANT
+# Comments matter!
+# The docs use the wrapping comments as 
+# markers for including said instructions 
+# as snippets in the docs.
+###########################################
+summary: test the "Use the flask-framework extension" guide
+
+environment:
+  ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS: "1"
+
+execute: |
+  cd example
+  rockcraft pack --verbosity debug
+  cd -
+
+  cd prime-example
+  rockcraft pack --verbosity debug
+  cd -
+
+  cd prime-exclude-example
+  rockcraft pack --verbosity debug
+  cd -
+
+  cd deb-example
+  rockcraft pack --verbosity debug
+  cd -
+
+  cd chiseled-example
+  rockcraft pack --verbosity debug
+  cd -
+
+  cd update-example
+  # [docs:update-app-start]
+  rockcraft pack
+  sudo rockcraft.skopeo --insecure-policy copy oci-archive:flask-hello-world_0.2_amd64.rock docker-daemon:flask-hello-world:0.2
+  sudo docker run -d -p 8000:8000 --name flask-hello-world flask-hello-world:0.2
+  curl localhost:8000/time
+  # [docs:update-app-end]
+  sudo docker stop flask-hello-world
+  sudo docker rm flask-hello-world
+  sudo docker rmi flask-hello-world:0.2
+  cd -
+
+restore: |
+  rm -rf */*.rock
