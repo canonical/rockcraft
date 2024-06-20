@@ -53,3 +53,14 @@ include everything else, add the following part to ``rockcraft.yaml``:
     :language: yaml
     :start-after: [docs:parts-start]
     :end-before: [docs:parts-end]
+
+Including additional debs in the OCI image
+------------------------------------------
+
+if your app requires debs, for example to connect to a database, add the
+following snippet to the `rockfile.yaml`:
+
+.. literalinclude:: ../code/use-flask-extension/deb-example/rockcraft.yaml
+    :language: yaml
+    :start-after: [docs:parts-start]
+    :end-before: [docs:parts-end]
