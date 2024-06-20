@@ -63,7 +63,7 @@ def test_run_pack_services(mocker, monkeypatch, tmp_path):
 
     cli.run()
 
-    lifecycle_mocks["run"].assert_called_once_with(step_name="prime", part_names=[])
+    lifecycle_mocks["run"].assert_called_once_with(step_name="prime")
 
     package_mocks["write_metadata"].assert_called_once_with(fake_prime_dir)
     package_mocks["pack"].assert_called_once_with(fake_prime_dir, Path())
