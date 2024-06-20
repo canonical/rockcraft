@@ -79,6 +79,9 @@ class InitCommand(AppCommand):
         "flask-framework": textwrap.dedent(
             """\
                 name: {name}
+                # See https://documentation.ubuntu.com/rockcraft/en/latest/reference/rockcraft.yaml/#base
+                # for bare bases for reduced image size and enhanced security.
+                # TODO SOMETHING EXTRA ABOUT THIS?
                 base: ubuntu@22.04 # the base environment for this Flask application
                 version: '0.1' # just for humans. Semantic versioning is recommended
                 summary: A summary of your Flask application # 79 char long summary
@@ -87,7 +90,9 @@ class InitCommand(AppCommand):
                     most important story about it. Keep it under 100 words though,
                     we live in tweetspace and your description wants to look good in the
                     container registries out there.
-                license: GPL-3.0 # your application's SPDX license
+                # You can choose a license for your project.
+                # See https://spdx.org/licenses /for the list of SPDX licenses.
+                # license: GPL-3.0  # Example for GPL-3.0 license
                 platforms: # The platforms this rock should be built on and run on
                     amd64:
 
@@ -96,14 +101,8 @@ class InitCommand(AppCommand):
                 extensions:
                     - flask-framework
 
-
                 # Uncomment the sections you need and adjust according to your requirements.
-                # parts:
-                #   flask-framework/dependencies:
-                #     stage-packages:
-                #       # list required packages or slices for your flask application below.
-                #       - libpq-dev
-                #
+                # parts:  # You need to uncomment this line to add or update any part.
                 #   flask-framework/install-app:
                 #     prime:
                 #       # By default, only the files in app/, templates/, static/, and app.py
@@ -116,6 +115,26 @@ class InitCommand(AppCommand):
                 #       - flask/app/webapp
                 #       - flask/app/templates
                 #       - flask/app/static
+
+                # # You can add package slices or Debian packages to the image.
+                # # Package slices are subsets of Debian packages, which result
+                # # in smaller and more secure images.
+                # # See https://documentation.ubuntu.com/rockcraft/en/latest/explanation/chisel/
+
+                # # Add this part if you want to add packages slices in your image.
+                # # You can find a list of packages slices in https://github.com/canonical/chisel-releases
+                # flask-framework/runtime-slices:
+                #   plugin: nil
+                #   stage-packages:
+                #   # list required package slices for your flask application below.
+                #   - libxml2_libs
+
+                # # If you want to add a Debian package to your image, add the next part
+                # flask-framework/runtime-deb:
+                #   plugin: nil
+                #   stage-packages:
+                #   # list required Debian packages for your flask application below.
+                #   - libpq-dev
                 """
         ),
         "django-framework": textwrap.dedent(
