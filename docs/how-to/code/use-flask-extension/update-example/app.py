@@ -15,6 +15,8 @@ import datetime
 @app.route("/time")
 def time():
     return f"{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
+
+
 # [docs:time-endpoint-end]
 
 
