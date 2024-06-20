@@ -27,13 +27,13 @@ execute: |
   rockcraft init --profile flask-framework
   sed -i "s/name: .*/name: flask-hello-world/g" rockcraft.yaml
   ls rockcraft.yaml
-  # [create-rockcraft-yaml-end]
+  # [docs:create-rockcraft-yaml-end]
 
   # [docs:pack]
   sudo iptables -I DOCKER-USER -j ACCEPT
   rockcraft pack
   ls *.rock
-  # [pack-end]
+  # [docs:pack-end]
 
   # [docs:skopeo-copy]
   sudo rockcraft.skopeo --insecure-policy copy oci-archive:flask-hello-world_0.1_amd64.rock docker-daemon:flask-hello-world:0.1
