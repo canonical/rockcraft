@@ -1,0 +1,58 @@
+###########################################
+# IMPORTANT
+# Comments matter!
+# The docs use the wrapping comments as 
+# markers for including said instructions 
+# as snippets in the docs.
+###########################################
+summary: test the "How to chisel an existing rock" guide
+
+execute: |
+  pushd rock
+  # [docs:pack-rock]
+  rockcraft pack
+  # [docs:pack-rock-end]
+
+  du -sh python_3.11_amd64.rock
+
+  # [docs:run-rock]
+  sudo rockcraft.skopeo --insecure-policy copy oci-archive:python_3.11_amd64.rock docker-daemon:python-rock:3.11-22.04
+  docker run --rm python-rock:3.11-22.04 exec python3.11 -c 'print("Hello, world")'
+  # [docs:run-rock-end]
+
+  docker run --rm python-rock:3.11-22.04 exec python3.11 -c 'print("Hello, world")' | grep "Hello, world"
+
+  popd
+  pushd bare-rock
+  # [docs:pack-bare-rock]
+  rockcraft pack
+  # [docs:pack-bare-rock-end]
+
+  du -sh bare-python_3.11_amd64.rock
+
+  # [docs:run-bare-rock]
+  sudo rockcraft.skopeo --insecure-policy copy oci-archive:bare-python_3.11_amd64.rock docker-daemon:python-rock:3.11-bare
+  docker run --rm python-rock:3.11-bare exec python3.11 -c 'print("Hello, world")'
+  # [docs:run-bare-rock-end]
+
+  docker run --rm python-rock:3.11-bare exec python3.11 -c 'print("Hello, world")' | grep "Hello, world"
+  
+  popd
+  pushd chiselled-rock
+  # [docs:pack-chiselled-rock]
+  rockcraft pack
+  # [docs:pack-chiselled-rock-end]
+
+  du -sh chiselled-python_3.11_amd64.rock
+
+  # [docs:run-chiselled-rock]
+  sudo rockcraft.skopeo --insecure-policy copy oci-archive:chiselled-python_3.11_amd64.rock docker-daemon:python-rock:3.11-chiselled
+  docker run --rm python-rock:3.11-chiselled exec python3.11 -c 'print("Hello, world")'
+  # [docs:run-chiselled-rock-end]
+
+  docker run --rm python-rock:3.11-chiselled exec python3.11 -c 'print("Hello, world")' | grep "Hello, world"
+
+  ###
+  docker rmi -f python-rock:3.11-22.04
+  docker rmi -f python-rock:3.11-bare
+  docker rmi -f python-rock:3.11-chiselled
