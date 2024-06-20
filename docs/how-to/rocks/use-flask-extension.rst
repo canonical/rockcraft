@@ -23,14 +23,14 @@ Example:
 .. literalinclude:: ../code/use-flask-extension/example/rockcraft.yaml
     :language: yaml
 
-:doc:`/tutorials/getting-started-with-rockcraft-for-flask` shows you how to go
+:doc:`/tutorials/getting-started-with-flask` shows you how to go
 from a host with Ubuntu installed to a Flask app running in docker.
 
 Chiseling the Flask rock
 ------------------------
 
 The OCI image created in the
-:doc:`/tutorials/getting-started-with-rockcraft-for-flask` tutorial is roughly
+:doc:`/tutorials/getting-started-with-flask` tutorial is roughly
 159MB in size. This can be reduced by using a ``bare`` base. Change the ``base``
 to ``bare`` and include a ``build-base`` in ``rockcraft.yaml``:
 
@@ -83,7 +83,7 @@ following snippet to the ``rockfile.yaml``:
 Update Flask app
 ----------------
 
-After completing the :doc:`/tutorials/getting-started-with-rockcraft-for-flask`
+After completing the :doc:`/tutorials/getting-started-with-flask`
 tutorial, let's say you want to add a new endpoint to your Flask application
 ``/time`` which returns the current time:
 

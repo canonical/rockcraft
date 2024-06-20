@@ -17,11 +17,11 @@ Create Flask application
 Create a new directory and write the following into a text editor and save it as
 ``requirements.txt``:
 
-.. literalinclude:: code/getting-started-with-rockcraft-for-flask/requirements.txt
+.. literalinclude:: code/getting-started-with-flask/requirements.txt
 
 Install ``python3-venv`` on your host and create a virtual environment:
 
-.. literalinclude:: code/getting-started-with-rockcraft-for-flask/task.yaml
+.. literalinclude:: code/getting-started-with-flask/task.yaml
     :language: bash
     :start-after: [docs:create-venv]
     :end-before: [docs:create-venv-end]
@@ -30,12 +30,12 @@ Install ``python3-venv`` on your host and create a virtual environment:
 In the same directory, write the following into a text editor and save it as
 ``app.py``:
 
-.. literalinclude:: code/getting-started-with-rockcraft-for-flask/app.py
+.. literalinclude:: code/getting-started-with-flask/app.py
     :language: python
 
 Run and test the flask application to verify everything is working:
 
-.. literalinclude:: code/getting-started-with-rockcraft-for-flask/task.yaml
+.. literalinclude:: code/getting-started-with-flask/task.yaml
     :language: bash
     :start-after: [docs:run-flask]
     :end-before: [docs:run-flask-end]
@@ -59,7 +59,7 @@ Create Flask rock
 
 Use the ``flask-framework`` profile to create ``rockcraft.yaml``:
 
-.. literalinclude:: code/getting-started-with-rockcraft-for-flask/task.yaml
+.. literalinclude:: code/getting-started-with-flask/task.yaml
     :language: bash
     :start-after: [docs:create-rockcraft-yaml]
     :end-before: [docs:create-rockcraft-yaml-end]
@@ -70,7 +70,7 @@ Open ``rockcraft.yaml`` in a text editor and customize the ``name``,
 the architecture of your host. For example, if your host uses the ARM
 architecture, include ``arm64`` in ``platforms``. Pack the rock:
 
-.. literalinclude:: code/getting-started-with-rockcraft-for-flask/task.yaml
+.. literalinclude:: code/getting-started-with-flask/task.yaml
     :language: bash
     :start-after: [docs:pack]
     :end-before: [docs:pack-end]
@@ -86,7 +86,7 @@ First, import the rock into Docker:
     If you changed the ``name`` in ``rockcraft.yaml`` or are not on an ``amd64``
     platform, tahe name of the ``*.rock`` file will be different for you.
 
-.. literalinclude:: code/getting-started-with-rockcraft-for-flask/task.yaml
+.. literalinclude:: code/getting-started-with-flask/task.yaml
     :language: bash
     :start-after: [docs:skopeo-copy]
     :end-before: [docs:skopeo-copy-end]
@@ -94,7 +94,7 @@ First, import the rock into Docker:
 
 Now run the rock:
 
-.. literalinclude:: code/getting-started-with-rockcraft-for-flask/task.yaml
+.. literalinclude:: code/getting-started-with-flask/task.yaml
     :language: bash
     :start-after: [docs:docker-run]
     :end-before: [docs:docker-run-end]
@@ -107,7 +107,7 @@ Cleanup
 
 Stop the container and delete all the created files:
 
-.. literalinclude:: code/getting-started-with-rockcraft-for-flask/task.yaml
+.. literalinclude:: code/getting-started-with-flask/task.yaml
     :language: bash
     :start-after: [docs:cleanup]
     :end-before: [docs:cleanup-end]
