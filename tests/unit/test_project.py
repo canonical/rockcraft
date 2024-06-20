@@ -54,6 +54,7 @@ version: latest
 base: ubuntu@20.04
 summary: "example for unit tests"
 description: "this is an example of a rockcraft.yaml for the purpose of testing rockcraft"
+license: Apache-2.0
 environment:
     BAZ: value1
     FOO: value3
@@ -251,6 +252,13 @@ def test_project_license_clean_name(yaml_loaded_data):
 
     project = Project.unmarshal(yaml_loaded_data)
     assert project.license == "MIT"
+
+
+def test_project_license_empty(yaml_loaded_data):
+    del yaml_loaded_data["license"]
+
+    project = Project.unmarshal(yaml_loaded_data)
+    assert project.license is None
 
 
 def test_project_title_empty(yaml_loaded_data):
@@ -453,9 +461,7 @@ def test_project_version_invalid(yaml_loaded_data):
     assert message.endswith(expected_suffix)
 
 
-@pytest.mark.parametrize(
-    "field", ["name", "base", "parts", "description", "summary", "license"]
-)
+@pytest.mark.parametrize("field", ["name", "base", "parts", "description", "summary"])
 def test_project_missing_field(yaml_loaded_data, field):
     del yaml_loaded_data[field]
 

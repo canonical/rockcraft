@@ -333,7 +333,9 @@ class Project(YamlModelMixin, BuildPlanner, BaseProject):  # type: ignore[misc]
 
     @pydantic.validator("license", always=True)
     @classmethod
-    def _validate_license(cls, license: str | None) -> str | None:
+    def _validate_license(
+        cls, license: str | None  # pylint: disable=redefined-builtin
+    ) -> str | None:
         """Make sure the provided license is valid and in SPDX format."""
         if not license:
             return None
@@ -344,10 +346,9 @@ class Project(YamlModelMixin, BuildPlanner, BaseProject):  # type: ignore[misc]
 
         lic: spdx_lookup.License | None = spdx_lookup.by_id(license)  # type: ignore[reportUnknownMemberType]
         if lic is None:
-            docs_url = "https://documentation.ubuntu.com/rockcraft/en/stable/reference/rockcraft.yaml/#license"
             raise CraftValidationError(
-                f"License {license} not valid. It must be valid and in SPDX format.\n"
-                f"See {docs_url}"
+                f"License {license} not valid. It must be valid and in SPDX format.",
+                docs_url="https://documentation.ubuntu.com/rockcraft/en/stable/reference/rockcraft.yaml/#license",
             )
         return str(lic.id)  # type: ignore[reportUnknownMemberType]
 
