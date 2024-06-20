@@ -12,23 +12,23 @@ environment:
 
 execute: |
   cd example
-  rockcraft pack --verbosity debug
+  rockcraft pack
   cd -
 
   cd prime-example
-  rockcraft pack --verbosity debug
+  rockcraft pack
   cd -
 
   cd prime-exclude-example
-  rockcraft pack --verbosity debug
+  rockcraft pack
   cd -
 
   cd deb-example
-  rockcraft pack --verbosity debug
+  rockcraft pack
   cd -
 
   cd chiseled-example
-  rockcraft pack --verbosity debug
+  rockcraft pack
   cd -
 
   cd update-example
