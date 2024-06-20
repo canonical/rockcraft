@@ -24,4 +24,5 @@ code into container applications:
 
    3. Containerise a PyPI package <pypi-package.rst>
    4. Bundle a Node.js app within a rock <node-app.rst>
-   5. Getting started with Rockcraft for Flask <getting-started-with-rockcraft-for-flask.rst>
+   5. Getting started with Rockcraft for Flask
+      <getting-started-with-rockcraft-for-flask.rst>

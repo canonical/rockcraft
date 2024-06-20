@@ -19,7 +19,7 @@ Create a new directory and write the following into a text editor and save it as
 
 .. literalinclude:: code/getting-started-with-rockcraft-for-flask/requirements.txt
 
-Install `python3-venv` on your host and create a virtual environment:
+Install ``python3-venv`` on your host and create a virtual environment:
 
 .. literalinclude:: code/getting-started-with-rockcraft-for-flask/task.yaml
     :language: bash

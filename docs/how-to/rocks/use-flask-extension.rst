@@ -73,7 +73,7 @@ Including additional debs in the OCI image
 ------------------------------------------
 
 if your app requires debs, for example to connect to a database, add the
-following snippet to the `rockfile.yaml`:
+following snippet to the ``rockfile.yaml``:
 
 .. literalinclude:: ../code/use-flask-extension/deb-example/rockcraft.yaml
     :language: yaml
