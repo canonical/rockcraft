@@ -64,7 +64,7 @@ For example, to include only select files:
 To exclude certain files from the project directory in the rock image and
 include everything else, add the following part to ``rockcraft.yaml``:
 
-.. literalinclude:: ../code/use-flask-extension/prime_exclude_example/rockcraft.yaml
+.. literalinclude:: ../code/use-flask-extension/prime-exclude-example/rockcraft.yaml
     :language: yaml
     :start-after: [docs:parts-start]
     :end-before: [docs:parts-end]
@@ -89,8 +89,8 @@ tutorial, let's say you want to add a new endpoint to your Flask application
 
 .. literalinclude:: ../code/use-flask-extension/update-example/app.py
     :language: python
-    :start-after: [docs:time-enpoint-start]
-    :end-before: [docs:time-enpoint-end]
+    :start-after: [docs:time-endpoint-start]
+    :end-before: [docs:time-endpoint-end]
 
 Update the version in ``rockcraft.yaml``:
 

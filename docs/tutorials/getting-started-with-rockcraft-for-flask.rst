@@ -23,8 +23,8 @@ Install ``python3-venv`` on your host and create a virtual environment:
 
 .. literalinclude:: code/getting-started-with-rockcraft-for-flask/task.yaml
     :language: bash
-    :start-after: [create-venv]
-    :end-before: [create-venv-end]
+    :start-after: [docs:create-venv]
+    :end-before: [docs:create-venv-end]
     :dedent: 2
 
 In the same directory, write the following into a text editor and save it as
@@ -37,8 +37,8 @@ Run and test the flask application to verify everything is working:
 
 .. literalinclude:: code/getting-started-with-rockcraft-for-flask/task.yaml
     :language: bash
-    :start-after: [run-flask]
-    :end-before: [run-flask-end]
+    :start-after: [docs:run-flask]
+    :end-before: [docs:run-flask-end]
     :dedent: 2
 
 The ``curl`` command should print ``Hello, world!``.
@@ -61,8 +61,8 @@ Use the ``flask-framework`` profile to create ``rockcraft.yaml``:
 
 .. literalinclude:: code/getting-started-with-rockcraft-for-flask/task.yaml
     :language: bash
-    :start-after: [create-rockcraft-yaml]
-    :end-before: [create-rockcraft-yaml-end]
+    :start-after: [docs:create-rockcraft-yaml]
+    :end-before: [docs:create-rockcraft-yaml-end]
     :dedent: 2
 
 Open ``rockcraft.yaml`` in a text editor and customize the ``name``,
@@ -72,8 +72,8 @@ architecture, include ``arm64`` in ``platforms``. Pack the rock:
 
 .. literalinclude:: code/getting-started-with-rockcraft-for-flask/task.yaml
     :language: bash
-    :start-after: [pack]
-    :end-before: [pack-end]
+    :start-after: [docs:pack]
+    :end-before: [docs:pack-end]
     :dedent: 2
 
 
