@@ -26,7 +26,7 @@ Example:
 :doc:`/tutorials/getting-started-with-flask` shows you how to go
 from a host with Ubuntu installed to a Flask app running in docker.
 
-Chiseling the Flask rock
+Chisel the Flask rock
 ------------------------
 
 The OCI image created in the
