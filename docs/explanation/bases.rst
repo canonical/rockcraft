@@ -49,7 +49,7 @@ functionality.
 
 Note that, when using the ``bare``
 :ref:`base <rockcraft_yaml_base>`, the rock will still be
-**Ubuntu-based**! As such, Rockcraft needs to know the Ubuntu release to be
+**Ubuntu-based**! As such, Rockcraft needs to know the Ubuntu release to be used
 as the :ref:`build environment <rockcraft_yaml_build_base>` for the rock.
 
 For example, if the goal is to have a tiny chiselled rock with software
