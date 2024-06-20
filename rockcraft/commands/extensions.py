@@ -97,6 +97,7 @@ class ExpandExtensionsCommand(AppCommand, abc.ABC):
     @overrides
     def run(self, parsed_args: argparse.Namespace) -> None:
         """Print the project's specification with the extensions expanded."""
-        project = Project.unmarshal(load_project(Path("rockcraft.yaml")))
+        project_path = Path("rockcraft.yaml")
+        project = Project.from_yaml_data(load_project(project_path), project_path)
 
         emit.message(project.to_yaml())  # pylint: disable=no-member
