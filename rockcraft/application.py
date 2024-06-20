@@ -71,3 +71,12 @@ class Rockcraft(Application):
         Should be overridden by applications that need to register plugins at startup.
         """
         return plugins.get_plugins()
+
+    @override
+    def _enable_craft_parts_features(self) -> None:
+        # pylint: disable=import-outside-toplevel
+        from craft_parts.features import Features
+
+        # enable the craft-parts Features that we use here, right before
+        # loading the project and validating its parts.
+        Features(enable_overlay=True)

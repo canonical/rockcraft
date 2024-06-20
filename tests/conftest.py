@@ -248,3 +248,20 @@ def run_lifecycle(mocker, default_build_plan):
         )
 
     return _inner
+
+
+@pytest.fixture(autouse=True)
+def reset_features():
+    from craft_parts import Features
+
+    Features.reset()
+    yield
+    Features.reset()
+
+
+@pytest.fixture()
+def enable_overlay_feature(reset_features):
+    """Enable the overlay feature."""
+    from craft_parts import Features
+
+    Features(enable_overlay=True)
