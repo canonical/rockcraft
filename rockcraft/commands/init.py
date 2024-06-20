@@ -92,7 +92,7 @@ class InitCommand(AppCommand):
                     container registries out there.
                 # You can choose a license for your project.
                 # See https://spdx.org/licenses /for the list of SPDX licenses.
-                # license: GPL-3.0  # Example for GPL-3.0 license
+                license: GPL-3.0  # Example for GPL-3.0 license
                 platforms: # The platforms this rock should be built on and run on
                     amd64:
 

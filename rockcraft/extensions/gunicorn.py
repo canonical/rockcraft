@@ -232,7 +232,8 @@ class FlaskFramework(_GunicornBase):
         if not all(re.match("-? *flask/app", p) for p in user_prime):
             raise ExtensionError(
                 "flask-framework extension required prime entry in the "
-                "flask-framework/install-app part to start with flask/app"
+                "flask-framework/install-app part to start with flask/app",
+                docs_url="https://TODO"
             )
         if not user_prime:
             user_prime = [
@@ -256,22 +257,36 @@ class FlaskFramework(_GunicornBase):
         if not app_file.exists():
             raise ExtensionError(
                 "flask application can not be imported from app:app, "
-                "no app.py file found in the project root"
+                "no app.py file found in the project root",
+                docs_url="https://TODO"
             )
         if not self.has_global_variable(app_file, "app"):
             raise ExtensionError(
                 "flask application can not be imported from app:app, "
-                "no variable named app in app.py"
+                "no variable named app in app.py",
+                docs_url="https://TODO"
+            )
+
+    def _check_requirements_txt(self):
+        """Ensure the requirements.txt is correct."""
+        requirements_file = self.project_root / "requirements.txt"
+        if not requirements_file.exists():
+            raise ExtensionError(
+                "missing requirements.txt file, flask-framework extension "
+                "requires this file with flask specified as a dependency",
+                docs_url="https://TODO"
+            )
+
+        if not any(("flask" in line for line in requirements_file.read_text(encoding="utf-8").splitlines())):
+            raise ExtensionError(
+                "requirements.txt file should include the flask package as a dependency.",
+                docs_url="https://TODO"
             )
 
     @override
     def check_project(self):
         """Ensure this extension can apply to the current rockcraft project."""
-        if not (self.project_root / "requirements.txt").exists():
-            raise ExtensionError(
-                "missing requirements.txt file, "
-                "flask-framework extension requires this file with flask specified as a dependency"
-            )
+        self._check_requirements_txt()
         if not self.yaml_data.get("services", {}).get("flask", {}).get("command"):
             self._check_wsgi_path()
 
