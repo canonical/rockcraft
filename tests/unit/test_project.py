@@ -185,12 +185,15 @@ def test_unmarshal_invalid_repositories(yaml_loaded_data):
 def test_project_unmarshal_with_unsupported_fields(unsupported_field, yaml_loaded_data):
     loaded_data_with_unsupported_fields = {**yaml_loaded_data, **unsupported_field}
     with pytest.raises(CraftValidationError) as err:
-        _ = Project.unmarshal(loaded_data_with_unsupported_fields)
+        _ = load_project_yaml(loaded_data_with_unsupported_fields)
 
-    assert (
-        "All rocks have Pebble as their entrypoint, so you must use "
-        "'services' to define your container application" in str(err.value)
+    expected = (
+        "Bad rockcraft.yaml content:\n"
+        "- the fields 'entrypoint', 'cmd' and 'env' are not supported in Rockcraft. "
+        "All rocks have Pebble as their entrypoint, so you must use 'services' to define "
+        "your container application and respective environment."
     )
+    assert str(err.value) == expected
 
 
 @pytest.mark.parametrize(
@@ -204,10 +207,12 @@ def test_forbidden_env_var_interpolation(
 
     if is_forbidden:
         with pytest.raises(CraftValidationError) as err:
-            Project.unmarshal(yaml_loaded_data)
-            check.equal(
-                str(err.value), f"String interpolation not allowed for: {variable}"
-            )
+            load_project_yaml(yaml_loaded_data)
+        expected = (
+            "Bad rockcraft.yaml content:\n"
+            f"- string interpolation not allowed for: {variable} (in field 'environment')"
+        )
+        check.equal(str(err.value), expected)
     else:
         project = Project.unmarshal(yaml_loaded_data)
         check.is_in("foo", project.environment)
@@ -239,9 +244,13 @@ def test_project_license_invalid(yaml_loaded_data):
 
     with pytest.raises(CraftValidationError) as err:
         load_project_yaml(yaml_loaded_data)
-    assert str(err.value) == (
-        f"License {yaml_loaded_data['license']} not valid. It must be either 'proprietary' or in SPDX format."
+
+    expected = (
+        "Bad rockcraft.yaml content:\n"
+        f"- license {yaml_loaded_data['license']} not valid. "
+        "It must be either 'proprietary' or in SPDX format. (in field 'license')"
     )
+    assert str(err.value) == expected
 
 
 def test_project_license_clean_name(yaml_loaded_data):
@@ -271,17 +280,26 @@ def test_project_title_empty_invalid_name(yaml_loaded_data):
     yaml_loaded_data["name"] = "my@rock"
     with pytest.raises(CraftValidationError) as err:
         load_project_yaml(yaml_loaded_data)
-    assert "Invalid name for rock" in str(err.value)
+
+    expected = (
+        "Bad rockcraft.yaml content:\n"
+        "- invalid name for rock: Names can only use .* "
+        r"\(in field 'name'\)"
+    )
+    assert err.match(expected)
 
 
 @pytest.mark.parametrize("entrypoint_service", [""])
 def test_project_entrypoint_service_empty(yaml_loaded_data, entrypoint_service):
     yaml_loaded_data["entrypoint-service"] = entrypoint_service
     with pytest.raises(CraftValidationError) as err:
-        Project.unmarshal(yaml_loaded_data)
-    assert "The provided entrypoint-service '' is not a valid Pebble service." in str(
-        err.value
+        load_project_yaml(yaml_loaded_data)
+    expected = (
+        "Bad rockcraft.yaml content:\n"
+        "- the provided entrypoint-service '' is not a valid Pebble service. "
+        "(in field 'entrypoint-service')"
     )
+    assert str(err.value) == expected
 
 
 @pytest.mark.parametrize("entrypoint_service", ["test-service"])
@@ -303,11 +321,14 @@ def test_project_entrypoint_service_valid(
 def test_project_entrypoint_service_invalid(yaml_loaded_data, entrypoint_service):
     yaml_loaded_data["entrypoint-service"] = entrypoint_service
     with pytest.raises(CraftValidationError) as err:
-        Project.unmarshal(yaml_loaded_data)
-    assert (
-        "The provided entrypoint-service 'baz' is not a valid Pebble service."
-        in str(err.value)
+        load_project_yaml(yaml_loaded_data)
+
+    expected = (
+        "Bad rockcraft.yaml content:\n"
+        "- the provided entrypoint-service 'baz' is not a valid Pebble service. "
+        "(in field 'entrypoint-service')"
     )
+    assert str(err.value) == expected
 
 
 def test_project_entrypoint_service_absent(yaml_loaded_data):
@@ -353,33 +374,31 @@ def test_project_base_colon(
 
 
 def test_project_platform_invalid():
-    def load_platform(platform, raises):
-        with pytest.raises(raises) as err:
+    def load_platform(platform):
+        with pytest.raises(pydantic.ValidationError) as err:
             Platform(**platform)
 
         return str(err.value)
 
     # build_on must be a list
     mock_platform = {"build-on": "amd64"}
-    assert "not a valid list" in load_platform(mock_platform, pydantic.ValidationError)
+    assert "not a valid list" in load_platform(mock_platform)
 
     # lists must be unique
     mock_platform = {"build-on": ["amd64", "amd64"]}
-    assert "duplicated" in load_platform(mock_platform, pydantic.ValidationError)
+    assert "duplicated" in load_platform(mock_platform)
 
     mock_platform = {"build-for": ["amd64", "amd64"]}
-    assert "duplicated" in load_platform(mock_platform, pydantic.ValidationError)
+    assert "duplicated" in load_platform(mock_platform)
 
     # build-for must be only 1 element (NOTE: this may change)
     mock_platform = {"build-on": ["amd64"], "build-for": ["amd64", "arm64"]}
-    assert "multiple target architectures" in load_platform(
-        mock_platform, CraftValidationError
-    )
+    assert "multiple target architectures" in load_platform(mock_platform)
 
     # If build_for is provided, then build_on must also be
     mock_platform = {"build-for": ["arm64"]}
-    assert "'build_for' expects 'build_on' to also be provided." in load_platform(
-        mock_platform, CraftValidationError
+    assert "'build-for' expects 'build-on' to also be provided." in load_platform(
+        mock_platform
     )
 
 
@@ -388,16 +407,21 @@ def test_project_all_platforms_invalid(yaml_loaded_data):
         if new_platforms:
             yaml_loaded_data["platforms"] = mock_platforms
         with pytest.raises(CraftValidationError) as err:
-            Project.unmarshal(yaml_loaded_data)
+            load_project_yaml(yaml_loaded_data)
 
         return str(err.value)
 
     # A platform validation error must have an explicit prefix indicating
     # the platform entry for which the validation has failed
     mock_platforms = {"foo": {"build-for": ["amd64"]}}
-    assert "'foo': 'build_for' expects 'build_on'" in reload_project_platforms(
-        mock_platforms
+
+    expected = (
+        "Bad rockcraft.yaml content:\n"
+        "- error for platform entry 'foo': 'build-for' expects 'build-on' "
+        "to also be provided. (in field 'platforms')"
     )
+
+    assert reload_project_platforms(mock_platforms) == expected
 
     # If the label maps to a valid architecture and
     # `build-for` is present, then both need to have the same value    mock_platforms = {"mock": {"build-on": "amd64"}}
@@ -450,7 +474,7 @@ def test_project_version_invalid(yaml_loaded_data):
     # We don't want to be completely tied to the formatting of the message here,
     # because it comes from craft-application and might change slightly. We just
     # want to ensure that the message refers to the version.
-    expected_contents = "Invalid version: Valid versions consist of"
+    expected_contents = "invalid version: Valid versions consist of"
     expected_suffix = "(in field 'version')"
 
     message = str(err.value)
@@ -509,10 +533,14 @@ def test_project_bare_overlay(yaml_loaded_data, packages, script):
     foo_part["overlay-script"] = script
 
     with pytest.raises(CraftValidationError) as err:
-        Project.unmarshal(yaml_loaded_data)
-    assert str(err.value) == (
-        'Overlays cannot be used with "bare" bases (there is no system to overlay).'
+        load_project_yaml(yaml_loaded_data)
+
+    expected = (
+        "Bad rockcraft.yaml content:\n"
+        '- overlays cannot be used with "bare" bases (there is no system to overlay). '
+        "(in field 'parts.foo')"
     )
+    assert str(err.value) == expected
 
 
 def test_project_load(check, yaml_data, yaml_loaded_data, pebble_part, tmp_path):
@@ -749,7 +777,7 @@ def test_provider_base(base, expected_base):
 
 
 def test_provider_base_error():
-    with pytest.raises(CraftValidationError) as raised:
+    with pytest.raises(ValueError) as raised:
         Project._providers_base("unknown")  # pylint: disable=protected-access
 
     assert "Unknown base 'unknown'" in str(raised.value)

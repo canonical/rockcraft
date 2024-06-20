@@ -81,7 +81,7 @@ class Platform(pydantic.BaseModel):
 
         # We can only build for 1 arch at the moment
         if len(build_for) > 1:
-            raise CraftValidationError(
+            raise ValueError(
                 str(
                     f"Trying to build a rock for {build_for} "
                     "but multiple target architectures are not "
@@ -91,9 +91,7 @@ class Platform(pydantic.BaseModel):
 
         # If build_for is provided, then build_on must also be
         if not build_on and build_for:
-            raise CraftValidationError(
-                "'build_for' expects 'build_on' to also be provided."
-            )
+            raise ValueError("'build-for' expects 'build-on' to also be provided.")
 
         return values
 
@@ -111,7 +109,7 @@ layer files:
 """
 
 INVALID_NAME_MESSAGE = (
-    "Invalid name for rock: Names can only use ASCII lowercase letters, numbers, and hyphens. "
+    "invalid name for rock: Names can only use ASCII lowercase letters, numbers, and hyphens. "
     "They must start with a lowercase letter, may not end with a hyphen, "
     "and may not have two hyphens in a row."
 )
@@ -144,9 +142,7 @@ class BuildPlanner(BaseBuildPlanner):
         if not build_base:
             base_value = values.get("base")
             if base_value == "bare":
-                raise CraftValidationError(
-                    'When "base" is bare, a build-base must be specified!'
-                )
+                raise ValueError('When "base" is bare, a build-base must be specified!')
             build_base = values.get("base")
         return cast(str, build_base)
 
@@ -186,9 +182,12 @@ class BuildPlanner(BaseBuildPlanner):
             # Make sure the provided platform_set is valid
             try:
                 platform = Platform(**platform).dict()
-            except CraftValidationError as err:
-                # pylint: disable=raise-missing-from
-                raise CraftValidationError(f"{error_prefix}: {str(err)}")
+            except pydantic.ValidationError as err:
+                errors = []
+                for err_dict in err.errors():
+                    errors.append(err_dict["msg"])
+                full_errors = ",".join(errors)
+                raise ValueError(f"{error_prefix}: {full_errors}") from None
 
             # build_on and build_for are validated
             # let's also validate the platform label
@@ -202,9 +201,9 @@ class BuildPlanner(BaseBuildPlanner):
             if platform["build_for"]:
                 build_target = platform["build_for"][0]
                 if platform_label in SUPPORTED_ARCHS and platform_label != build_target:
-                    raise CraftValidationError(
+                    raise ValueError(
                         str(
-                            f"{error_prefix}: if 'build_for' is provided and the "
+                            f"{error_prefix}: if 'build-for' is provided and the "
                             "platform entry label corresponds to a valid architecture, then "
                             f"both values must match. {platform_label} != {build_target}"
                         )
@@ -214,7 +213,7 @@ class BuildPlanner(BaseBuildPlanner):
 
             # Both build and target architectures must be supported
             if not any(b_o in SUPPORTED_ARCHS for b_o in build_on_one_of):
-                raise CraftValidationError(
+                raise ValueError(
                     str(
                         f"{error_prefix}: trying to build rock in one of "
                         f"{build_on_one_of}, but none of these build architectures is supported. "
@@ -223,7 +222,7 @@ class BuildPlanner(BaseBuildPlanner):
                 )
 
             if build_target not in SUPPORTED_ARCHS:
-                raise CraftValidationError(
+                raise ValueError(
                     str(
                         f"{error_prefix}: trying to build rock for target "
                         f"architecture {build_target}, which is not supported. "
@@ -300,7 +299,7 @@ class Project(YamlModelMixin, BuildPlanner, BaseProject):  # type: ignore[misc]
 
         :returns: The BaseAlias for the base or None for bare bases.
 
-        :raises CraftValidationError: If the project's base cannot be determined.
+        :raises ValueError: If the project's base cannot be determined.
         """
         if base == "bare":
             return None
@@ -312,7 +311,7 @@ class Project(YamlModelMixin, BuildPlanner, BaseProject):  # type: ignore[misc]
             name, channel = base.split("@")
             return bases.get_base_alias((name, channel))
         except (ValueError, BaseConfigurationError) as err:
-            raise CraftValidationError(f"Unknown base {base!r}") from err
+            raise ValueError(f"Unknown base {base!r}") from err
 
     @pydantic.root_validator(pre=True)
     @classmethod
@@ -327,7 +326,7 @@ class Project(YamlModelMixin, BuildPlanner, BaseProject):  # type: ignore[misc]
         )
         unsupported_fields = ["cmd", "entrypoint", "env"]
         if any(field in values for field in unsupported_fields):
-            raise CraftValidationError(unsupported_msg)
+            raise ValueError(unsupported_msg)
 
         return values
 
@@ -346,9 +345,8 @@ class Project(YamlModelMixin, BuildPlanner, BaseProject):  # type: ignore[misc]
 
         lic: spdx_lookup.License | None = spdx_lookup.by_id(license)  # type: ignore[reportUnknownMemberType]
         if lic is None:
-            raise CraftValidationError(
+            raise ValueError(
                 f"License {license} not valid. It must be either 'proprietary' or in SPDX format.",
-                docs_url="https://documentation.ubuntu.com/rockcraft/en/stable/reference/rockcraft.yaml/#license",
             )
         return str(lic.id)  # type: ignore[reportUnknownMemberType]
 
@@ -367,7 +365,7 @@ class Project(YamlModelMixin, BuildPlanner, BaseProject):  # type: ignore[misc]
     ) -> dict[str, Any]:
         """Projects with "bare" bases cannot use overlays."""
         if values.get("base") == "bare" and part_has_overlay(item):
-            raise CraftValidationError(
+            raise ValueError(
                 'Overlays cannot be used with "bare" bases (there is no system to overlay).'
             )
         return item
@@ -386,7 +384,7 @@ class Project(YamlModelMixin, BuildPlanner, BaseProject):  # type: ignore[misc]
         )
 
         if entrypoint_service not in values.get("services", {}):
-            raise CraftValidationError(
+            raise ValueError(
                 f"The provided entrypoint-service '{entrypoint_service}' is not "
                 + "a valid Pebble service."
             )
@@ -402,7 +400,7 @@ class Project(YamlModelMixin, BuildPlanner, BaseProject):  # type: ignore[misc]
                     + " additional args."
                 )
         except ValueError as ex:
-            raise CraftValidationError(
+            raise ValueError(
                 f"The Pebble service '{entrypoint_service}' has a command "
                 + f"{command} without default arguments and thus cannot be used "
                 + "as the entrypoint-service."
@@ -423,7 +421,7 @@ class Project(YamlModelMixin, BuildPlanner, BaseProject):  # type: ignore[misc]
             filter(lambda v: "$" in str(v[:-1]), environment.values())
         )
         if values_with_dollar_signs:
-            raise CraftValidationError(
+            raise ValueError(
                 str(
                     "String interpolation not allowed for: "
                     f"{' ; '.join(values_with_dollar_signs)}"
