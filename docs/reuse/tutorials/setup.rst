@@ -11,7 +11,7 @@ one available, you can create one using `Multipass`_:
 
     If you see the ``multipass`` service but it isn't "active", then you'll
     need to run ``sudo snap start multipass``. On the other hand, if you get
-    an error saying ``snap "multipass" not found``, then you must Install
+    an error saying ``snap "multipass" not found``, then you must install
     `Multipass <install-multipass_>`_:
 
     .. code-block:: bash
