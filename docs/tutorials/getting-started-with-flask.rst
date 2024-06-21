@@ -113,6 +113,10 @@ Pack the rock:
     :end-before: [docs:pack-end]
     :dedent: 2
 
+.. note::
+
+    Depending on your network, this step can take a couple of minutes to finish.
+
 Once Rockcraft has finished packing the Flask rock, you'll find a new file in
 your working directory (an `OCI <OCI_image_spec_>`_ archive) with the ``.rock``
 extension:
@@ -313,8 +317,8 @@ look like the following:
 .. literalinclude:: code/getting-started-with-flask/time-app.py
     :language: python
 
-Since you are creating a new version of your application, open the
-``rockfile.yaml`` file and change the ``version`` (e.g. to ``0.2``).
+Since you are creating a new version of your application, **open the**
+``rockfile.yaml`` **file and change the** ``version`` (e.g. to ``0.2``).
 
 Pack and run the rock using similar commands as before:
 
