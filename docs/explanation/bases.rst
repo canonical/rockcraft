@@ -19,7 +19,7 @@ corresponding Ubuntu base container image from a container registry. This is
 exactly the same container one would get from places like
 `Docker Hub <docker_hub_>`_ or `Amazon ECR <ecr_>`_.
 
-The resulting rock will therefore also contain and software and utilities that
+The resulting rock will therefore also contain any software and utilities that
 are present in the Ubuntu base container images.
 
 Setting an Ubuntu :ref:`base <rockcraft_yaml_base>` for a rock is
@@ -29,7 +29,7 @@ general-purpose environments such as a development working space.
 Bare bases
 ----------
 
-As the name says, a ``bare`` :ref:`base <rockcraft_yaml_base>` indicates
+As the name suggests, a ``bare`` :ref:`base <rockcraft_yaml_base>` indicates
 that the rock shall have no
 baseline system. This definition is similar to the "`scratch`_" Docker image,
 with the exception that a rock **can never be completely empty**, since it must
