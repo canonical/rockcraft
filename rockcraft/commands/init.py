@@ -141,7 +141,7 @@ class InitCommand(AppCommand):
                 #   flask-framework/runtime-debs:
                 #     plugin: nil
                 #     stage-packages:
-                #     # List required Debian packages for your flask application below.
+                #     # list required Debian packages for your flask application below.
                 #     - libpq-dev
                 """
         ),
