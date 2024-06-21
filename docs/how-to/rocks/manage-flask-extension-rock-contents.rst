@@ -2,7 +2,8 @@ Manage Flask extension rock contents
 ------------------------------------
 
 The ``flask-framework`` extension requires a ``requirements.txt`` file and a
-``app.py`` file that exposes ``app`` as a WSGI app. For example, ``app.py``:
+``app.py`` file that exposes the Flask ``app`` object as a WSGI app. For
+example, ``app.py``:
 
 .. literalinclude:: ../code/manage-flask-extension-rock-contents/example/app.py
     :language: python
@@ -12,7 +13,8 @@ And ``requirements.txt``:
 .. literalinclude:: ../code/manage-flask-extension-rock-contents/example/requirements.txt
 
 To employ it, include ``extensions: [ flask-framework ]`` in your
-``rockcraft.yaml`` file.
+``rockcraft.yaml`` file. Reference docs for the ``flask-framework`` extension:
+:ref:`flask-framework-reference`
 
 .. note::
     The Flask extension is compatible with the ``bare`` and ``ubuntu@22.04``
@@ -57,7 +59,7 @@ include everything else, add the following part to ``rockcraft.yaml``:
 Including additional debs in the OCI image
 ------------------------------------------
 
-if your app requires debs, for example to connect to a database, add the
+If your app requires debs, for example to connect to a database, add the
 following snippet to the ``rockfile.yaml``:
 
 .. literalinclude:: ../code/manage-flask-extension-rock-contents/deb-example/rockcraft.yaml

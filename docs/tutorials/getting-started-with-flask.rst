@@ -72,6 +72,12 @@ Run and test the flask application to verify everything is working:
     :end-before: [docs:run-flask-end]
     :dedent: 2
 
+.. note::
+    The ``&`` at the end of the command runs the Flask application in the
+    background. You can continue to use your terminal as normal and will see all
+    the output from the Flask application in your terminal. The command to stop
+    the Flask application is included below.
+
 Use ``curl`` to send a request to the root endpoint:
 
 ..  code-block:: text
