@@ -116,7 +116,7 @@ class InitCommand(AppCommand):
                 #       - flask/app/webapp
                 #       - flask/app/templates
                 #       - flask/app/static
-                #       # You may need packages to build a python package. Add it here if necessary
+                #       # You may need packages to build a python package. Add them here if necessary.
                 #       build-packages:
                 #           - pkg-config
                 #           - libxmlsec1-dev
