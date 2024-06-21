@@ -86,12 +86,6 @@ execute: |
   mv time-app.py app.py
   sed -i "s/version: .*/version: 0.2/g" rockcraft.yaml
 
-  # [docs:cleanup]
-  deactivate
-  rm -rf .venv
-  rm flask-hello-world_0.1_amd64.rock flask-hello-world_0.2_amd64.rock rockcraft.yaml app.py requirements.txt
-  # [docs:cleanup-end]
-
   # [docs:docker-run-update]
   rockcraft pack
   sudo rockcraft.skopeo --insecure-policy copy oci-archive:flask-hello-world_0.2_amd64.rock docker-daemon:flask-hello-world:0.2
@@ -103,6 +97,16 @@ execute: |
   curl localhost:8000/time
   # [docs:request-docker-update-end]
 
-restore:
   mv app.py time-app.py
+
+  # [docs:cleanup]
+  sudo docker stop flask-hello-world
+  sudo docker rm flask-hello-world
+  sudo docker rmi flask-hello-world:0.2
+  deactivate
+  rm -rf .venv
+  rm flask-hello-world_0.1_amd64.rock flask-hello-world_0.2_amd64.rock rockcraft.yaml app.py requirements.txt
+  # [docs:cleanup-end]
+
+restore:
   mv basic-app.py app.py

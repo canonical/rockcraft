@@ -244,7 +244,7 @@ Stop the rock and remove the container and image for now:
     :dedent: 2
 
 Update Flask app
-----------------
+================
 
 To update the app, for example, by adding a new ``/time`` endpoint which returns
 the current time, open ``app.py`` in a text editor and update the code to:
@@ -274,6 +274,20 @@ Use ``curl`` to send a request to the ``/time`` endpoint:
 
     $ curl localhost:8000/time
     2024-06-21 03:42:38
+
+View the logs
+=============
+
+The logs can be viewed using ``pebble``:
+
+..  code-block:: text
+    :class: log-snippets
+
+    $ sudo docker exec flask-hello-world pebble logs flask
+    2024-06-21T03:41:45.077Z [flask] [2024-06-21 03:41:45 +0000] [17] [INFO] Starting gunicorn 22.0.0
+    2024-06-21T03:41:45.077Z [flask] [2024-06-21 03:41:45 +0000] [17] [INFO] Listening at: http://0.0.0.0:8000 (17)
+    2024-06-21T03:41:45.077Z [flask] [2024-06-21 03:41:45 +0000] [17] [INFO] Using worker: sync
+    2024-06-21T03:41:45.078Z [flask] [2024-06-21 03:41:45 +0000] [18] [INFO] Booting worker with pid: 18
 
 Cleanup
 =======
