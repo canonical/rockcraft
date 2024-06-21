@@ -127,6 +127,11 @@ suites:
     systems:
     - ubuntu-22.04-64
 
+  docs/reuse/tutorials/code/:
+    summary: tests reusable code from the docs
+    systems:
+    - ubuntu-22.04-64
+
   tests/spread/rockcraft/:
     summary: tests for rockcraft core functionality, independent of host system
     systems:
