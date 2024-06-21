@@ -77,3 +77,8 @@ notation. For example:
 Some files, if they exist, are included by default. These include:
 ``app``, ``app.py``, ``migrate``, ``migrate.sh``, ``migrate.py``, ``static``,
 ``templates``.
+
+Useful links
+============
+
+- :ref:`build-a-rock-for-a-flask-application`

@@ -1,3 +1,5 @@
+.. _build-a-rock-for-a-flask-application:
+
 Build a rock for a Flask application
 ------------------------------------
 
@@ -192,7 +194,7 @@ Run the Flask rock with Docker
 ==============================
 
 You already have the rock as an `OCI <OCI_image_spec_>`_ archive. Now you'll
-need to import it into a format that Docker recognizes:
+need to import it into a format that Docker recognises:
 
 .. literalinclude:: code/getting-started-with-flask/task.yaml
     :language: bash
