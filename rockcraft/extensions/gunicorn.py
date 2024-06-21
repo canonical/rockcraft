@@ -233,7 +233,8 @@ class FlaskFramework(_GunicornBase):
             raise ExtensionError(
                 "flask-framework extension required prime entry in the "
                 "flask-framework/install-app part to start with flask/app",
-                docs_url="https://TODO",
+                # TODO PENDING TO CONFIRM
+                docs_url="https://documentation.ubuntu.com/rockcraft/en/stable/reference/extensions/",
             )
         if not user_prime:
             user_prime = [
@@ -288,7 +289,8 @@ class FlaskFramework(_GunicornBase):
         if error_messages:
             raise ExtensionError(
                 "\n".join("- " + message for message in error_messages),
-                docs_url="https://TODO",
+                # TODO PENDING TO CONFIRM
+                docs_url="https://documentation.ubuntu.com/rockcraft/en/stable/reference/extensions/",
             )
 
 

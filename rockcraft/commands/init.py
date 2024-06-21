@@ -78,9 +78,9 @@ class InitCommand(AppCommand):
         "flask-framework": textwrap.dedent(
             """\
                 name: {name}
-                # See https://documentation.ubuntu.com/rockcraft/en/latest/reference/rockcraft.yaml/#base
+                # TODO PENDING TO CONFIRM
+                # See https://documentation.ubuntu.com/rockcraft/en/latest/explanation/bases/
                 # for chiselled and bare bases for reduced image size and enhanced security.
-                # TODO SOMETHING EXTRA ABOUT THIS?
                 base: ubuntu@22.04 # the base environment for this Flask application
                 version: '0.1' # just for humans. Semantic versioning is recommended
                 summary: A summary of your Flask application # 79 char long summary
@@ -95,7 +95,9 @@ class InitCommand(AppCommand):
                 # To ensure the flask-framework extension works properly, your Flask application
                 # should have an `app.py` file with an `app` object as the WSGI entrypoint.
                 # A `requirements.txt` file with at least the flask package should also exist.
-                # TODO SEE LINK FOR EXAMPLE
+                # TODO PENDING TO CONFIRM
+                # See https://documentation.ubuntu.com/rockcraft/en/stable/reference/extensions/
+                # for more information.
                 extensions:
                     - flask-framework
 
@@ -132,7 +134,7 @@ class InitCommand(AppCommand):
                 #   - libxml2_libs
 
                 # # If you want to add a Debian package to your image, add the next part
-                # flask-framework/runtime-deb:
+                # flask-framework/runtime-debs:
                 #   plugin: nil
                 #   stage-packages:
                 #   # list required Debian packages for your flask application below.
