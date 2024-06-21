@@ -8,7 +8,7 @@ Setup
 =====
 
 Start with a clean Ubuntu 22.04 installation. If you don't have one available,
-you can create one using [multipass](https://multipass.run):
+you can create one using `Multipass <https://multipass.run>`_:
 
 .. code-block:: bash
 
@@ -74,19 +74,13 @@ Run and test the flask application to verify everything is working:
 
 Use ``curl`` to send a request to the root endpoint:
 
-.. literalinclude:: code/getting-started-with-flask/task.yaml
-    :language: bash
-    :start-after: [docs:request-flask]
-    :end-before: [docs:request-flask-end]
-    :dedent: 2
-
 ..  code-block:: text
     :class: log-snippets
 
     $ curl localhost:5000
     Hello, world!
 
-Stop flask for now:
+The Flask application should respond with ``Hello, world!``. Stop flask for now:
 
 .. literalinclude:: code/getting-started-with-flask/task.yaml
     :language: bash
@@ -145,11 +139,12 @@ Import the rock into Docker:
 
 Check that the image was imported into Docker:
 
-.. literalinclude:: code/getting-started-with-flask/task.yaml
-    :language: bash
-    :start-after: [docs:verify-image]
-    :end-before: [docs:verify-image-end]
-    :dedent: 2
+..  code-block:: text
+    :class: log-snippets
+
+    $ sudo docker images flask-hello-world:0.1
+    REPOSITORY          TAG       IMAGE ID       CREATED       SIZE
+    flask-hello-world   0.1       c256056698ba   2 weeks ago   149MB
 
 .. note::
     The size of the image reported by Docker is the uncompressed size which is
@@ -165,19 +160,14 @@ Now run the rock:
 
 Use ``curl`` to send a request to the root endpoint:
 
-.. literalinclude:: code/getting-started-with-flask/task.yaml
-    :language: bash
-    :start-after: [docs:request-docker]
-    :end-before: [docs:request-docker-end]
-    :dedent: 2
-
 ..  code-block:: text
     :class: log-snippets
 
     $ curl localhost:8000
     Hello, world!
 
-Stop the rock and remove the container and image for now:
+The Flask application should again respond with ``Hello, world!``. Stop the rock
+and remove the container and image for now:
 
 .. literalinclude:: code/getting-started-with-flask/task.yaml
     :language: bash
@@ -197,6 +187,8 @@ The size of the image can be reduced by using a ``bare`` base. In
     :start-after: [docs:change-base]
     :end-before: [docs:change-base-end]
     :dedent: 2
+
+Pack the rock using the new base:
 
 .. literalinclude:: code/getting-started-with-flask/task.yaml
     :language: bash
@@ -223,19 +215,14 @@ using the same commands as before:
 
 Use ``curl`` to send a request to the root endpoint:
 
-.. literalinclude:: code/getting-started-with-flask/task.yaml
-    :language: bash
-    :start-after: [docs:request-docker-chisel]
-    :end-before: [docs:request-docker-chisel-end]
-    :dedent: 2
-
 ..  code-block:: text
     :class: log-snippets
 
     $ curl localhost:8000
     Hello, world!
 
-Stop the rock and remove the container and image for now:
+The Flask application should still respond with ``Hello, world!``. Stop the rock
+and remove the container and image for now:
 
 .. literalinclude:: code/getting-started-with-flask/task.yaml
     :language: bash
@@ -263,17 +250,13 @@ rock using similar commands as before:
 
 Use ``curl`` to send a request to the ``/time`` endpoint:
 
-.. literalinclude:: code/getting-started-with-flask/task.yaml
-    :language: bash
-    :start-after: [docs:request-docker-update]
-    :end-before: [docs:request-docker-update-end]
-    :dedent: 2
-
 ..  code-block:: text
     :class: log-snippets
 
     $ curl localhost:8000/time
     2024-06-21 03:42:38
+
+The app should respond with the current date and time.
 
 View the logs
 =============
@@ -288,6 +271,8 @@ The logs can be viewed using ``pebble``:
     2024-06-21T03:41:45.077Z [flask] [2024-06-21 03:41:45 +0000] [17] [INFO] Listening at: http://0.0.0.0:8000 (17)
     2024-06-21T03:41:45.077Z [flask] [2024-06-21 03:41:45 +0000] [17] [INFO] Using worker: sync
     2024-06-21T03:41:45.078Z [flask] [2024-06-21 03:41:45 +0000] [18] [INFO] Booting worker with pid: 18
+
+The above command shows the logs for the ``flask`` service.
 
 Cleanup
 =======
