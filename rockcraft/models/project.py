@@ -183,9 +183,7 @@ class BuildPlanner(BaseBuildPlanner):
             try:
                 platform = Platform(**platform).dict()
             except pydantic.ValidationError as err:
-                errors = []
-                for err_dict in err.errors():
-                    errors.append(err_dict["msg"])
+                errors = [err_dict["msg"] for err_dict in err.errors()]
                 full_errors = ",".join(errors)
                 raise ValueError(f"{error_prefix}: {full_errors}") from None
 

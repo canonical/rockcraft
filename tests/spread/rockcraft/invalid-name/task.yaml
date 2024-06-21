@@ -4,5 +4,5 @@ execute: |
   for name in a_a a@a a--a aa-
   do
     sed "s/placeholder-name/$name/" rockcraft.orig.yaml  > rockcraft.yaml
-    rockcraft pack 2>&1 >/dev/null | MATCH "Invalid name for rock"
+    rockcraft pack 2>&1 >/dev/null | MATCH "invalid name for rock"
   done
