@@ -12,7 +12,16 @@ one available, you can create one using Multipass_:
 
 .. collapse:: How to create an Ubuntu 22.04 VM with Multipass        
     
-    If Multipass_ isn't yet installed, isntall via via ``snap``:
+    Is Multipass_ already installed and active? Start by running
+
+    .. code-block:: bash
+
+        sudo snap services multipass
+
+    If you see the ``multipass`` service but it isn't "active", then you'll
+    need to run ``sudo snap start multipass``. On the other hand, if you get
+    an error saying ``snap "multipass" not found``, then you must Install
+    Multipass_:
     
     .. code-block:: bash
 
