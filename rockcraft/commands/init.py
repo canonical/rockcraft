@@ -116,25 +116,25 @@ class InitCommand(AppCommand):
                 #       - flask/app/webapp
                 #       - flask/app/templates
                 #       - flask/app/static
-                #       # You may need packages to build a python package. Add them here if necessary.
+                #       # you may need packages to build a python package. Add them here if necessary.
                 #       build-packages:
-                #           # For example, if you need pkg-config and libxmlsec1-dev to build one
+                #           # for example, if you need pkg-config and libxmlsec1-dev to build one
                 #           # of your packages:
                 #           - pkg-config
                 #           - libxmlsec1-dev
 
-                # You can add package slices or Debian packages to the image.
-                # Package slices are subsets of Debian packages, which result
+                # you can add package slices or Debian packages to the image.
+                # package slices are subsets of Debian packages, which result
                 # in smaller and more secure images.
-                # See https://documentation.ubuntu.com/rockcraft/en/latest/explanation/chisel/
+                # see https://documentation.ubuntu.com/rockcraft/en/latest/explanation/chisel/
 
-                # Add this part if you want to add packages slices to your image.
-                # You can find a list of packages slices in https://github.com/canonical/chisel-releases
+                # add this part if you want to add packages slices to your image.
+                # you can find a list of packages slices at https://github.com/canonical/chisel-releases
                 #   flask-framework/runtime-slices:
                 #     plugin: nil
                 #     stage-packages:
-                #     # List required package slices for your flask application below.
-                #     # For example, for the slice libs of libxml2:
+                #     # list the required package slices for your flask application below.
+                #     # for example, for the slice libs of libxml2:
                 #     - libxml2_libs
 
                 # If you want to add a Debian package to your image, add the next part
