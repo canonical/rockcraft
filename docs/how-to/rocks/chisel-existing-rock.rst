@@ -101,7 +101,7 @@ package slice names to the list of ``stage-packages``, like this:
 .. literalinclude:: ../code/chisel-existing-rock/chiselled-rock/rockcraft.yaml
     :language: yaml
 
-Pack it with
+Pack it with:
 
 .. literalinclude:: ../code/chisel-existing-rock/task.yaml
     :language: bash
