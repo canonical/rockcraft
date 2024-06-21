@@ -50,8 +50,9 @@ def django_input_yaml_fixture():
 
 
 @pytest.mark.usefixtures("flask_extension")
-def test_flask_extension_default(tmp_path, flask_input_yaml):
-    (tmp_path / "requirements.txt").write_text("flask")
+@pytest.mark.parametrize("packages", ["other\nflask", "flask", "Flask", " flask == 99"])
+def test_flask_extension_default(tmp_path, flask_input_yaml, packages):
+    (tmp_path / "requirements.txt").write_text(packages)
     (tmp_path / "app.py").write_text("app = object()")
     (tmp_path / "static").mkdir()
     (tmp_path / "node_modules").mkdir()
@@ -279,9 +280,8 @@ def test_flask_extension_override_parts(tmp_path, flask_input_yaml):
 
 
 @pytest.mark.usefixtures("flask_extension")
-@pytest.mark.parametrize("packages", ["other\nflask", "flask", "Flask", " flask == 99"])
-def test_flask_extension_bare(tmp_path, packages):
-    (tmp_path / "requirements.txt").write_text(packages)
+def test_flask_extension_bare(tmp_path):
+    (tmp_path / "requirements.txt").write_text("flask")
     (tmp_path / "app.py").write_text("app = object()")
     flask_input_yaml = {
         "extensions": ["flask-framework"],
