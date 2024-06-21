@@ -231,7 +231,7 @@ class FlaskFramework(_GunicornBase):
         )
         if not all(re.match("-? *flask/app", p) for p in user_prime):
             raise ExtensionError(
-                "flask-framework extension required prime entry in the "
+                "flask-framework extension requires the 'prime' entry in the "
                 "flask-framework/install-app part to start with flask/app",
                 docs_url="https://documentation.ubuntu.com/rockcraft/en/stable/reference/extensions/flask-framework",
                 logpath_report=False,
