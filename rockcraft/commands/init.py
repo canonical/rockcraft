@@ -101,7 +101,7 @@ class InitCommand(AppCommand):
                 extensions:
                     - flask-framework
 
-                # Uncomment the sections you need and adjust according to your requirements.
+                # uncomment the sections you need and adjust according to your requirements.
                 # parts:  # You need to uncomment this line to add or update any part.
 
                 #   flask-framework/install-app:
