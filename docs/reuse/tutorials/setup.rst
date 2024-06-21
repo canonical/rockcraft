@@ -3,7 +3,7 @@ one available, you can create one using `Multipass`_:
 
 .. collapse:: How to create an Ubuntu 22.04 VM with Multipass
 
-    Is Multipass_ already installed and active? Start by running
+    Is Multipass_ already installed and active? Check by running
 
     .. code-block:: bash
 
@@ -48,7 +48,7 @@ In order to create the rock, you'll need to install Rockcraft:
     :end-before: [docs:install-rockcraft-end]
     :dedent: 2
 
-We'll use Docker run the rock. You can install it as a ``snap``:
+We'll use Docker to run the rock. You can install it as a ``snap``:
 
 .. literalinclude:: /reuse/tutorials/code/task.yaml
     :language: bash
