@@ -74,16 +74,14 @@ execute: |
   mv time-app.py app.py
   sed -i "s/version: .*/version: 0.2/g" rockcraft.yaml
 
+  cat app.py
   # [docs:docker-run-update]
   rockcraft pack
   sudo rockcraft.skopeo --insecure-policy copy oci-archive:flask-hello-world_0.2_amd64.rock docker-daemon:flask-hello-world:0.2
   sudo docker images flask-hello-world:0.2
   sudo docker run -d -p 8000:8000 --name flask-hello-world flask-hello-world:0.2
   # [docs:docker-run-update-end]
-  retry -n 5 --wait 2 curl localhost:8000
-  # [docs:request-docker-update]
-  curl localhost:8000/time
-  # [docs:request-docker-update-end]
+  retry -n 5 --wait 2 curl localhost:8000/time
 
   mv app.py time-app.py
 
