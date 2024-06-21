@@ -78,7 +78,6 @@ class InitCommand(AppCommand):
         "flask-framework": textwrap.dedent(
             """\
                 name: {name}
-                # TODO PENDING TO CONFIRM
                 # See https://documentation.ubuntu.com/rockcraft/en/latest/explanation/bases/
                 # for chiselled and bare bases for reduced image size and enhanced security.
                 base: ubuntu@22.04 # the base environment for this Flask application
@@ -95,8 +94,7 @@ class InitCommand(AppCommand):
                 # To ensure the flask-framework extension works properly, your Flask application
                 # should have an `app.py` file with an `app` object as the WSGI entrypoint.
                 # A `requirements.txt` file with at least the flask package should also exist.
-                # TODO PENDING TO CONFIRM
-                # See https://documentation.ubuntu.com/rockcraft/en/stable/reference/extensions/
+                # See https://documentation.ubuntu.com/rockcraft/en/stable/reference/extensions/flask-framework
                 # for more information.
                 extensions:
                     - flask-framework
