@@ -234,6 +234,7 @@ class FlaskFramework(_GunicornBase):
                 "flask-framework extension required prime entry in the "
                 "flask-framework/install-app part to start with flask/app",
                 docs_url="https://documentation.ubuntu.com/rockcraft/en/stable/reference/extensions/flask-framework",
+                logpath_report=False,
             )
         if not user_prime:
             user_prime = [
@@ -288,8 +289,8 @@ class FlaskFramework(_GunicornBase):
         if error_messages:
             raise ExtensionError(
                 "\n".join("- " + message for message in error_messages),
-                # TODO PENDING TO CONFIRM
                 docs_url="https://documentation.ubuntu.com/rockcraft/en/stable/reference/extensions/flask-framework",
+                logpath_report=False,
             )
 
 
