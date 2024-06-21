@@ -90,34 +90,59 @@ class InitCommand(AppCommand):
                     most important story about it. Keep it under 100 words though,
                     we live in tweetspace and your description wants to look good in the
                     container registries out there.
-                platforms: # The platforms this rock should be built on and run on
+                platforms: # the platforms this rock should be built on and run on
                     amd64:
 
                 # to ensure the flask-framework extension works properly, your Flask application
                 # should have an `app.py` file with an `app` object as the WSGI entrypoint.
+                # a `requirements.txt` file with at least the flask package should also exist.
+                # see https://documentation.ubuntu.com/rockcraft/en/stable/reference/extensions/flask-framework
+                # for more information.
                 extensions:
                     - flask-framework
 
-
                 # uncomment the sections you need and adjust according to your requirements.
-                # parts:
-                #   flask-framework/dependencies:
-                #     stage-packages:
-                #       # list required packages or slices for your flask application below.
-                #       - libpq-dev
-                #
+                # parts:  # you need to uncomment this line to add or update any part.
+
                 #   flask-framework/install-app:
                 #     prime:
-                #       # by default, only the files in app/, templates/, static/, and app.py
-                #       # are copied into the image. You can modify the list below to override
-                #       # the default list and include or exclude specific files/directories
-                #       # in your project.
+                #       # by default, only the files in app/, templates/, static/, migrate,
+                #       # migrate.sh and app.py are copied into the image. You can modify the list
+                #       # below to override the default list and include or exclude specific
+                #       # files/directories in your project.
                 #       # note: prefix each entry with "flask/app/" followed by the local path.
                 #       - flask/app/.env
                 #       - flask/app/app.py
                 #       - flask/app/webapp
                 #       - flask/app/templates
                 #       - flask/app/static
+                #       # you may need packages to build a python package. Add them here if necessary.
+                #       build-packages:
+                #           # for example, if you need pkg-config and libxmlsec1-dev to build one
+                #           # of your packages:
+                #           - pkg-config
+                #           - libxmlsec1-dev
+
+                # you can add package slices or Debian packages to the image.
+                # package slices are subsets of Debian packages, which result
+                # in smaller and more secure images.
+                # see https://documentation.ubuntu.com/rockcraft/en/latest/explanation/chisel/
+
+                # add this part if you want to add packages slices to your image.
+                # you can find a list of packages slices at https://github.com/canonical/chisel-releases
+                #   flask-framework/runtime-slices:
+                #     plugin: nil
+                #     stage-packages:
+                #     # list the required package slices for your flask application below.
+                #     # for example, for the slice libs of libpq5:
+                #     - libpq5_libs
+
+                # if you want to add a Debian package to your image, add the next part
+                #   flask-framework/runtime-debs:
+                #     plugin: nil
+                #     stage-packages:
+                #     # list required Debian packages for your flask application below.
+                #     - libpq5
                 """
         ),
         "django-framework": textwrap.dedent(

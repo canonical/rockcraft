@@ -50,8 +50,9 @@ def django_input_yaml_fixture():
 
 
 @pytest.mark.usefixtures("flask_extension")
-def test_flask_extension_default(tmp_path, flask_input_yaml):
-    (tmp_path / "requirements.txt").write_text("flask")
+@pytest.mark.parametrize("packages", ["other\nflask", "flask", "Flask", " flask == 99"])
+def test_flask_extension_default(tmp_path, flask_input_yaml, packages):
+    (tmp_path / "requirements.txt").write_text(packages)
     (tmp_path / "app.py").write_text("app = object()")
     (tmp_path / "static").mkdir()
     (tmp_path / "node_modules").mkdir()
@@ -308,7 +309,44 @@ def test_flask_extension_no_requirements_txt_error(tmp_path):
     }
     with pytest.raises(ExtensionError) as exc:
         extensions.apply_extensions(tmp_path, flask_input_yaml)
-    assert "requirements.txt" in str(exc)
+    assert (
+        str(exc.value)
+        == "- missing a requirements.txt file. The flask-framework extension requires this file with 'flask' specified as a dependency."
+    )
+
+
+@pytest.mark.usefixtures("flask_extension")
+def test_flask_extension_requirements_txt_no_flask_error(tmp_path):
+    (tmp_path / "app.py").write_text("app = object()")
+    (tmp_path / "requirements.txt").write_text("")
+    flask_input_yaml = {
+        "extensions": ["flask-framework"],
+        "base": "bare",
+        "build-base": "ubuntu@22.04",
+        "platforms": {"amd64": {}},
+    }
+    with pytest.raises(ExtensionError) as exc:
+        extensions.apply_extensions(tmp_path, flask_input_yaml)
+
+    assert (
+        str(exc.value) == "- missing flask package dependency in requirements.txt file."
+    )
+
+
+@pytest.mark.usefixtures("flask_extension")
+def test_flask_extension_no_requirements_txt_no_app_py_error(tmp_path):
+    flask_input_yaml = {
+        "extensions": ["flask-framework"],
+        "base": "bare",
+        "build-base": "ubuntu@22.04",
+        "platforms": {"amd64": {}},
+    }
+    with pytest.raises(ExtensionError) as exc:
+        extensions.apply_extensions(tmp_path, flask_input_yaml)
+    assert str(exc.value) == (
+        "- missing a requirements.txt file. The flask-framework extension requires this file with 'flask' specified as a dependency.\n"
+        "- flask application can not be imported from app:app, no app.py file found in the project root."
+    )
 
 
 @pytest.mark.usefixtures("flask_extension")
