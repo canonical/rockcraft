@@ -86,7 +86,7 @@ Use ``curl`` to send a request to the root endpoint:
     $ curl localhost:5000
     Hello, world!
 
-The Flask application should respond with ``Hello, world!``. Stop flask for now:
+The Flask application should respond with ``Hello, world!`` Stop flask for now:
 
 .. literalinclude:: code/getting-started-with-flask/task.yaml
     :language: bash
@@ -172,7 +172,7 @@ Use ``curl`` to send a request to the root endpoint:
     $ curl localhost:8000
     Hello, world!
 
-The Flask application should again respond with ``Hello, world!``. Stop the rock
+The Flask application should again respond with ``Hello, world!`` Stop the rock
 and remove the container and image for now:
 
 .. literalinclude:: code/getting-started-with-flask/task.yaml
@@ -227,7 +227,7 @@ Use ``curl`` to send a request to the root endpoint:
     $ curl localhost:8000
     Hello, world!
 
-The Flask application should still respond with ``Hello, world!``. Stop the rock
+The Flask application should still respond with ``Hello, world!`` Stop the rock
 and remove the container and image for now:
 
 .. literalinclude:: code/getting-started-with-flask/task.yaml
