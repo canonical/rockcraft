@@ -1,0 +1,18 @@
+###########################################
+# IMPORTANT
+# Comments matter!
+# The docs use the wrapping comments as 
+# markers for including said instructions 
+# as snippets in the docs.
+###########################################
+summary: common setup instructions
+
+execute: |
+  date
+  # [docs:install-rockcraft]
+  sudo snap install rockcraft --classic
+  # [docs:install-rockcraft-end]
+
+  # [docs:install-docker]
+  sudo snap install docker
+  # [docs:install-docker-end]

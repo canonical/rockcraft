@@ -13,18 +13,12 @@ By the end of this tutorial you will be able to run pyfiglet via docker:
     |_| |_|\___|_|_|\___/
 
 
-Prerequisites
--------------
-- snap enabled system (https://snapcraft.io)
-- LXD installed (https://linuxcontainers.org/lxd/getting-started-cli/)
-- skopeo installed (https://github.com/containers/skopeo).
-  Skopeo will also be automatically installed as a Rockcraft dependency
-- Docker installed (https://snapcraft.io/docker)
-- Rockcraft installed
-- a text editor
+Setup your environment
+----------------------
 
+.. include:: /reuse/tutorials/setup.rst
 
-Project Setup
+Project setup
 -------------
 
 To create a new Rockcraft project, create a new directory and change into it:

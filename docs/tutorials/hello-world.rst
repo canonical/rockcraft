@@ -1,27 +1,12 @@
 Create a "Hello World" rock
 ***************************
 
-Prerequisites
--------------
-- snap enabled system (https://snapcraft.io)
-- LXD installed (https://linuxcontainers.org/lxd/getting-started-cli/)
-- skopeo installed (https://github.com/containers/skopeo)
-- Docker installed (https://snapcraft.io/docker)
-- a text editor
+Setup your environment
+----------------------
 
+.. include:: /reuse/tutorials/setup.rst
 
-Install Rockcraft
------------------
-
-Install Rockcraft on your host:
-
-.. literalinclude:: code/hello-world/task.yaml
-    :language: bash
-    :start-after: [docs:install-rockcraft]
-    :end-before: [docs:install-rockcraft-end]
-    :dedent: 2
-
-Project Setup
+Project setup
 -------------
 
 Create a new directory and write the following into a text editor and

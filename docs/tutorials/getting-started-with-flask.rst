@@ -10,66 +10,7 @@ containerise it in a rock, using Rockcraft's ``flask-framework``
 Setup
 =====
 
-We recommend starting from a clean Ubuntu 22.04 installation. If you don't have
-one available, you can create one using Multipass_:
-
-.. collapse:: How to create an Ubuntu 22.04 VM with Multipass
-
-    Is Multipass_ already installed and active? Start by running
-
-    .. code-block:: bash
-
-        sudo snap services multipass
-
-    If you see the ``multipass`` service but it isn't "active", then you'll
-    need to run ``sudo snap start multipass``. On the other hand, if you get
-    an error saying ``snap "multipass" not found``, then you must Install
-    `Multipass <install-multipass_>`_:
-
-    .. code-block:: bash
-
-        sudo snap install multipass
-
-    Then you can create the VM with the following command:
-
-    .. code-block:: text
-
-        multipass launch --disk 10G --name flask-hello-world 22.04
-
-    Finally, once the VM is up, open a shell into it:
-
-    .. code-block:: bash
-
-        multipass shell flask-hello-world
-
-----
-
-`LXD`_ will be required for creating the OCI image. Make sure it is installed
-and initialised:
-
-.. code-block:: bash
-
-   sudo snap install lxd
-   lxd init --auto
-
-In order to create the Flask rock, you'll need to install Rockcraft:
-
-.. code-block:: bash
-
-   sudo snap install rockcraft --classic
-
-We'll use Docker run the Flask rock. You can also install it as a ``snap``:
-
-.. code-block:: bash
-
-   sudo snap install docker
-
-.. warning::
-   There is a `known connectivity issue with LXD and Docker
-   <lxd-docker-connectivity-issue_>`_. During the tutorial, if you see a
-   networking issue such as "*A network related operation failed in a context
-   of no network access*", make sure you apply one of the fixes suggested
-   `here <lxd-docker-connectivity-issue_>`_.
+.. include:: /reuse/tutorials/setup.rst
 
 Finally, create a new directory for this tutorial and go inside it:
 
@@ -171,6 +112,10 @@ Pack the rock:
     :start-after: [docs:pack]
     :end-before: [docs:pack-end]
     :dedent: 2
+
+.. note::
+
+    Depending on your network, this step can take a couple of minutes to finish.
 
 Once Rockcraft has finished packing the Flask rock, you'll find a new file in
 your working directory (an `OCI <OCI_image_spec_>`_ archive) with the ``.rock``
@@ -372,8 +317,8 @@ look like the following:
 .. literalinclude:: code/getting-started-with-flask/time-app.py
     :language: python
 
-Since you are creating a new version of your application, open the
-``rockfile.yaml`` file and change the ``version`` (e.g. to ``0.2``).
+Since you are creating a new version of your application, **open the**
+``rockfile.yaml`` **file and change the** ``version`` (e.g. to ``0.2``).
 
 Pack and run the rock using similar commands as before:
 
@@ -437,7 +382,7 @@ following:
 
     .. code-block:: bash
 
-        multipass delete flask-hello-world
+        multipass delete rock-dev
         multipass purge
 
 ----
