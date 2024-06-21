@@ -103,6 +103,7 @@ class InitCommand(AppCommand):
 
                 # Uncomment the sections you need and adjust according to your requirements.
                 # parts:  # You need to uncomment this line to add or update any part.
+
                 #   flask-framework/install-app:
                 #     prime:
                 #       # By default, only the files in app/, templates/, static/, and app.py
@@ -120,25 +121,25 @@ class InitCommand(AppCommand):
                 #           - pkg-config
                 #           - libxmlsec1-dev
 
-                # # You can add package slices or Debian packages to the image.
-                # # Package slices are subsets of Debian packages, which result
-                # # in smaller and more secure images.
-                # # See https://documentation.ubuntu.com/rockcraft/en/latest/explanation/chisel/
+                # You can add package slices or Debian packages to the image.
+                # Package slices are subsets of Debian packages, which result
+                # in smaller and more secure images.
+                # See https://documentation.ubuntu.com/rockcraft/en/latest/explanation/chisel/
 
-                # # Add this part if you want to add packages slices to your image.
-                # # You can find a list of packages slices in https://github.com/canonical/chisel-releases
-                # flask-framework/runtime-slices:
-                #   plugin: nil
-                #   stage-packages:
-                #   # list required package slices for your flask application below.
-                #   - libxml2_libs
+                # Add this part if you want to add packages slices to your image.
+                # You can find a list of packages slices in https://github.com/canonical/chisel-releases
+                #   flask-framework/runtime-slices:
+                #     plugin: nil
+                #     stage-packages:
+                #     # list required package slices for your flask application below.
+                #     - libxml2_libs
 
-                # # If you want to add a Debian package to your image, add the next part
-                # flask-framework/runtime-debs:
-                #   plugin: nil
-                #   stage-packages:
-                #   # list required Debian packages for your flask application below.
-                #   - libpq-dev
+                # If you want to add a Debian package to your image, add the next part
+                #   flask-framework/runtime-debs:
+                #     plugin: nil
+                #     stage-packages:
+                #     # list required Debian packages for your flask application below.
+                #     - libpq-dev
                 """
         ),
         "django-framework": textwrap.dedent(
