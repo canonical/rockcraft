@@ -32,20 +32,21 @@ Bare bases
 As the name suggests, a ``bare`` :ref:`base <rockcraft_yaml_base>` indicates
 that the rock shall have no
 baseline system. This definition is similar to the "`scratch`_" Docker image,
-with the exception that a rock **can never be completely empty**, since it must
-always have :ref:`Pebble <pebble_explanation_page>` as its entrypoint, and
-include their own :ref:`metadata <what-sets-rocks-apart>` inside.
+with the exception that a rock **can never be completely empty**, as it must
+always include a minimum baseline with :ref:`pebble_explanation_page`
+and additional metadata (:ref:`what-sets-rocks-apart`).
 
 When and how to use a ``bare`` base
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The ``bare`` :ref:`base <rockcraft_yaml_base>` is extremely useful when
-the goal is to build a lean **chiselled rock**. Such rocks are typically meant
-for production environments, and as such, the combination of the ``bare``
-:ref:`base <rockcraft_yaml_base>`
+the goal is to build a lean **chiselled rock**. Such rocks are typically
+preferred for production environments due to their optimized deployment
+efficiency and reduced attack surface. The combination of the
+``bare`` :ref:`base <rockcraft_yaml_base>`
 with :ref:`Chisel <chisel_explanation>` slices will result in a minimalistic
-container image that has a reduced attack surface while retaining its
-functionality.
+container image that meets the production environment's criteria while
+retaining its functionality.
 
 Note that, when using the ``bare``
 :ref:`base <rockcraft_yaml_base>`, the rock will still be

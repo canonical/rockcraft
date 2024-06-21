@@ -84,7 +84,7 @@ Python rock with such a drastic reduction in size?*
 
 And the answer is: *the rock no longer has the Ubuntu base as its first layer,
 and thus no longer has utilities like ``bash`` and ``apt`` (which aren't needed
-anyway)!*
+for this use case anyway)!*
 
 Chisel the Python rock
 ----------------------
