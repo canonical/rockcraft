@@ -20,7 +20,7 @@ parts:
       # list required package slices for your flask application below.
       - libxml2_libs
 
-  flask-framework/runtime-deb:
+  flask-framework/runtime-debs:
     plugin: nil
     stage-packages:
       # list required Debian packages for your flask application below.
