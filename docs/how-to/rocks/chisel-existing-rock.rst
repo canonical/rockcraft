@@ -109,7 +109,7 @@ Pack it with:
     :end-before: [docs:pack-chiselled-rock-end]
     :dedent: 2
 
-and the end result will be an astoundingly small Python rock with **13MB**!
+And the end result will be an astoundingly small Python rock with **13MB**!
 And the "Hello, world" script still works:
 
 .. literalinclude:: ../code/chisel-existing-rock/task.yaml
