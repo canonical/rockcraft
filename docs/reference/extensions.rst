@@ -31,8 +31,8 @@ There are 4 requirements to be able to use the ``flask-framework`` extension:
 4. The project must include a WSGI app with the path ``app:app`` (set the name
    of the Flask object to ``app`` in ``app.py``)
 
-``rockcraft.yaml`` > ``parts`` > ``flask-framework/dependencies:`` > ``stage-packages``
-=======================================================================================
+``parts`` > ``flask-framework/dependencies:`` > ``stage-packages``
+==================================================================
 
 You can use this key to specify any dependencies required for your Flask
 application. For example, below we use it to specify ``libpq-dev``:
@@ -45,8 +45,8 @@ application. For example, below we use it to specify ``libpq-dev``:
                 # list required packages or slices for your flask application below.
                 - libpq-dev
 
-``rockcraft.yaml`` > ``parts`` > ``flask-framework/install-app:`` > ``prime``
-=============================================================================
+``parts`` > ``flask-framework/install-app:`` > ``prime``
+========================================================
 
 You can use this key to specify the files to be included in your rock upon
 ``rockcraft pack``, in ``flask/app/<filename>`` notation. For example:
@@ -63,4 +63,5 @@ You can use this key to specify the files to be included in your rock upon
                 - flask/app/static
 
 Some files, if they exist, are included by default. These include:
-`app`, `app.py`, `migrate`, `migrate.sh`, `migrate.py`, `static`, `templates`.
+``app``, ``app.py``, ``migrate``, ``migrate.sh``, ``migrate.py``, ``static``,
+``templates``.
