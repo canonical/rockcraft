@@ -90,7 +90,7 @@ class InitCommand(AppCommand):
                     most important story about it. Keep it under 100 words though,
                     we live in tweetspace and your description wants to look good in the
                     container registries out there.
-                platforms: # The platforms this rock should be built on and run on
+                platforms: # the platforms this rock should be built on and run on
                     amd64:
 
                 # to ensure the flask-framework extension works properly, your Flask application
@@ -137,7 +137,7 @@ class InitCommand(AppCommand):
                 #     # for example, for the slice libs of libxml2:
                 #     - libxml2_libs
 
-                # If you want to add a Debian package to your image, add the next part
+                # if you want to add a Debian package to your image, add the next part
                 #   flask-framework/runtime-debs:
                 #     plugin: nil
                 #     stage-packages:
