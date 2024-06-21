@@ -19,16 +19,11 @@ from pathlib import Path
 from typing import cast
 
 from craft_application import LifecycleService
-from craft_parts import Features
 from craft_parts.infos import StepInfo
 from overrides import override  # type: ignore[reportUnknownVariableType]
 
 from rockcraft import layers
 from rockcraft.models.project import Project
-
-# Enable the craft-parts features that we use
-Features.reset()
-Features(enable_overlay=True)
 
 
 class RockcraftLifecycleService(LifecycleService):

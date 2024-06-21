@@ -87,9 +87,6 @@ entrypoint-service: test-service
 """
 
 
-pytestmark = [pytest.mark.usefixtures("enable_overlay_feature")]
-
-
 class DevelProject(Project):
     """A Project subclass that always accepts devel bases as a "base".
 
@@ -134,11 +131,6 @@ def test_project_unmarshal(check, yaml_loaded_data):
     project = Project.unmarshal(yaml_loaded_data)
 
     for attr, v in yaml_loaded_data.items():
-        if attr == "license":
-            # The var license is a built-in,
-            # so we workaround it by using an alias
-            attr = "rock_license"
-
         if attr == "platforms":
             # platforms get mutated at validation time
             assert getattr(project, attr).keys() == v.keys()
@@ -248,7 +240,7 @@ def test_project_license_invalid(yaml_loaded_data):
     with pytest.raises(CraftValidationError) as err:
         load_project_yaml(yaml_loaded_data)
     assert str(err.value) == (
-        f"License {yaml_loaded_data['license']} not valid. It must be valid and in SPDX format."
+        f"License {yaml_loaded_data['license']} not valid. It must be either 'proprietary' or in SPDX format."
     )
 
 
@@ -256,7 +248,14 @@ def test_project_license_clean_name(yaml_loaded_data):
     yaml_loaded_data["license"] = "mIt"
 
     project = Project.unmarshal(yaml_loaded_data)
-    assert project.rock_license == "MIT"
+    assert project.license == "MIT"
+
+
+def test_project_license_empty(yaml_loaded_data):
+    del yaml_loaded_data["license"]
+
+    project = Project.unmarshal(yaml_loaded_data)
+    assert project.license is None
 
 
 def test_project_title_empty(yaml_loaded_data):
@@ -459,9 +458,7 @@ def test_project_version_invalid(yaml_loaded_data):
     assert message.endswith(expected_suffix)
 
 
-@pytest.mark.parametrize(
-    "field", ["name", "base", "parts", "description", "summary", "license"]
-)
+@pytest.mark.parametrize("field", ["name", "base", "parts", "description", "summary"])
 def test_project_missing_field(yaml_loaded_data, field):
     del yaml_loaded_data[field]
 
