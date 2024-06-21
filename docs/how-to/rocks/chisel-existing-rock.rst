@@ -31,9 +31,9 @@ This rock can be built by running:
     :end-before: [docs:pack-rock-end]
     :dedent: 2
 
-The resulting rock (*python_3.11_amd64.rock*) will have approximately **42MB**
-and have a functional Python3.11 interpreter. You can verify that by running a
-very simply "Hello, world" Python script in it, with Docker:
+The resulting rock (``python_3.11_amd64.rock``) will have approximately
+**42MB** and have a functional Python3.11 interpreter. You can verify that by
+running a very simply "Hello, world" Python script in it, with Docker:
 
 .. literalinclude:: ../code/chisel-existing-rock/task.yaml
     :language: bash
@@ -68,8 +68,8 @@ Pack this rock with the same ``rockcraft`` command as above:
     :end-before: [docs:pack-bare-rock-end]
     :dedent: 2
 
-This new rock (*bare-python_3.11_amd64.rock*) will now have about **28MB** - a
-~33% size reduction - and also have a functional Python3.11 interpreter.
+This new rock (``bare-python_3.11_amd64.rock``) will now have about **28MB** -
+a ~33% size reduction - and also have a functional Python3.11 interpreter.
 Run the same "Hello, world" Python script as before to confirm:
 
 .. literalinclude:: ../code/chisel-existing-rock/task.yaml
