@@ -2,7 +2,7 @@ Build a rock for a Flask application
 ------------------------------------
 
 In this tutorial you will create a simple Flask application and learn how to
-containerize it in a rock.
+containerise it in a rock.
 
 Setup
 =====
