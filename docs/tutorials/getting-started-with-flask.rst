@@ -49,19 +49,19 @@ initialised:
    sudo snap install lxd
    lxd init --auto
 
-Docker will be required to run the OCI image:
-
-.. code-block:: bash
-
-   sudo snap install docker
-
-Rockcraft is required to create the OCI image:
+In order to create the Flask rock, you'll need to install Rockcraft:
 
 .. code-block:: bash
 
    sudo snap install rockcraft --classic
 
-Create a new directory for this tutorial and change into it:
+We'll use Docker run the Flask rock. You can also install it as a ``snap``:
+
+.. code-block:: bash
+
+   sudo snap install docker
+
+Finally, create a new directory for this tutorial and go inside it:
 
 .. code-block:: bash
 
