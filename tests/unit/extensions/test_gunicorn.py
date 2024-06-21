@@ -311,7 +311,7 @@ def test_flask_extension_no_requirements_txt_error(tmp_path):
         extensions.apply_extensions(tmp_path, flask_input_yaml)
     assert (
         str(exc.value)
-        == "- missing requirements.txt file, flask-framework extension requires this file with flask specified as a dependency."
+        == "- missing a requirements.txt file. The flask-framework extension requires this file with 'flask' specified as a dependency."
     )
 
 
@@ -344,7 +344,7 @@ def test_flask_extension_no_requirements_txt_no_app_py_error(tmp_path):
     with pytest.raises(ExtensionError) as exc:
         extensions.apply_extensions(tmp_path, flask_input_yaml)
     assert str(exc.value) == (
-        "- missing requirements.txt file, flask-framework extension requires this file with flask specified as a dependency.\n"
+        "- missing a requirements.txt file. The flask-framework extension requires this file with 'flask' specified as a dependency.\n"
         "- flask application can not be imported from app:app, no app.py file found in the project root."
     )
 
