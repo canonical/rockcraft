@@ -18,11 +18,6 @@ Extension commands
 
 .. include:: commands/extensions-commands.rst
 
-Overlay commands
-----------------
-
-.. include:: commands/overlay.rst
-
 Other commands
 --------------
 
