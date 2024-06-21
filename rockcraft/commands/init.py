@@ -106,10 +106,10 @@ class InitCommand(AppCommand):
 
                 #   flask-framework/install-app:
                 #     prime:
-                #       # by default, only the files in app/, templates/, static/, and app.py
-                #       # are copied into the image. You can modify the list below to override
-                #       # the default list and include or exclude specific files/directories
-                #       # in your project.
+                #       # by default, only the files in app/, templates/, static/, migrate,
+                #       # migrate.sh and app.py are copied into the image. You can modify the list
+                #       # below to override the default list and include or exclude specific
+                #       # files/directories in your project.
                 #       # note: prefix each entry with "flask/app/" followed by the local path.
                 #       - flask/app/.env
                 #       - flask/app/app.py
@@ -118,6 +118,8 @@ class InitCommand(AppCommand):
                 #       - flask/app/static
                 #       # You may need packages to build a python package. Add it here if necessary
                 #       build-packages:
+                #           # For example, if you need pkg-config and libxmlsec1-dev to build one
+                #           # of your packages:
                 #           - pkg-config
                 #           - libxmlsec1-dev
 
@@ -131,14 +133,15 @@ class InitCommand(AppCommand):
                 #   flask-framework/runtime-slices:
                 #     plugin: nil
                 #     stage-packages:
-                #     # list required package slices for your flask application below.
+                #     # List required package slices for your flask application below.
+                #     # For example, for the slice libs of libxml2:
                 #     - libxml2_libs
 
                 # If you want to add a Debian package to your image, add the next part
                 #   flask-framework/runtime-debs:
                 #     plugin: nil
                 #     stage-packages:
-                #     # list required Debian packages for your flask application below.
+                #     # List required Debian packages for your flask application below.
                 #     - libpq-dev
                 """
         ),
