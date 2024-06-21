@@ -100,7 +100,7 @@ install ``python3-venv`` and create a virtual environment:
     :end-before: [docs:create-venv-end]
     :dedent: 2
 
-In the same directory, write and save the following into text file called
+In the same directory, copy and save the following into a text file called
 ``app.py``:
 
 .. literalinclude:: code/getting-started-with-flask/app.py
