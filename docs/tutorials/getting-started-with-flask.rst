@@ -42,7 +42,7 @@ one available, you can create one using Multipass_:
 
 ----
 
-LXD will be required for creating the OCI image. Make sure it is installed an
+`LXD`_ will be required for creating the OCI image. Make sure it is installed an
 initialised:
 
 .. code-block:: bash
