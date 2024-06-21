@@ -134,15 +134,15 @@ class InitCommand(AppCommand):
                 #     plugin: nil
                 #     stage-packages:
                 #     # list the required package slices for your flask application below.
-                #     # for example, for the slice libs of libxml2:
-                #     - libxml2_libs
+                #     # for example, for the slice libs of libpq5:
+                #     - libpq5_libs
 
                 # if you want to add a Debian package to your image, add the next part
                 #   flask-framework/runtime-debs:
                 #     plugin: nil
                 #     stage-packages:
                 #     # list required Debian packages for your flask application below.
-                #     - libpq-dev
+                #     - libpq5
                 """
         ),
         "django-framework": textwrap.dedent(
