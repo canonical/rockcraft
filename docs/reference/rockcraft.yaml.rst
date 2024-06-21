@@ -67,6 +67,8 @@ A longer, possibly multi-line description of the rock.
 
 The rock version, used to tag the OCI image and name the rock file.
 
+.. _rockcraft_yaml_base:
+
 ``base``
 --------
 
@@ -84,14 +86,12 @@ which is typically used with static binaries or
    The notation "ubuntu:<channel>" is also supported for some channels, but this
    format is deprecated and should be avoided.
 
-.. note::
-   Base ``ubuntu@24.04`` is still unstable and under active development. To use
-   it, ``build-base`` *must* be ``devel``.
+.. _rockcraft_yaml_build_base:
 
 ``build-base``
 --------------
 
-**Type**: One of ``ubuntu@20.04 | ubuntu@22.04 | devel``
+**Type**: One of ``ubuntu@20.04 | ubuntu@22.04 | ubuntu@24.04 | devel``
 
 **Required**: Yes, if ``base`` is ``bare``
 
