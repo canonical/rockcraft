@@ -4,28 +4,12 @@ Bundle a Node.js app within a rock
 This tutorial describes the steps needed to bundle a typical Node.js application
 into a rock.
 
-Prerequisites
--------------
-- snap enabled system (https://snapcraft.io/docs/installing-snapd)
-- LXD installed
-  (https://documentation.ubuntu.com/lxd/en/latest/installing/)
-- Docker installed (https://snapcraft.io/docker)
-- a text editor
+Setup your environment
+----------------------
 
+.. include:: /reuse/tutorials/setup.rst
 
-Install Rockcraft
------------------
-
-Install Rockcraft on your host:
-
-.. literalinclude:: code/node-app/task.yaml
-    :language: bash
-    :start-after: [docs:install-rockcraft]
-    :end-before: [docs:install-rockcraft-end]
-    :dedent: 2
-
-
-Project Setup
+Project setup
 -------------
 
 Starting in an empty folder, create a ``src/`` subdirectory. Inside it, add two

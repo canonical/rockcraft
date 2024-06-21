@@ -5,29 +5,12 @@ In this tutorial, you will create a lean hello-world rock that uses chisel
 slices, and then compare the resulting rock with the one created without slices
 in :doc:`/tutorials/hello-world`.
 
-Prerequisites
--------------
+Setup your environment
+----------------------
 
-- snap enabled system (https://snapcraft.io)
-- LXD installed (https://linuxcontainers.org/lxd/getting-started-cli/)
-- skopeo installed (https://github.com/containers/skopeo)
-- Docker installed (https://docs.docker.com/get-docker/)
-- a text editor
+.. include:: /reuse/tutorials/setup.rst
 
-
-Install Rockcraft
------------------
-
-Install Rockcraft on your host:
-
-.. literalinclude:: code/chisel/task.yaml
-    :language: bash
-    :start-after: [docs:install-rockcraft]
-    :end-before: [docs:install-rockcraft-end]
-    :dedent: 2
-
-
-Project Setup
+Project setup
 -------------
 
 Create a new directory, write the following into a text editor and save it as
