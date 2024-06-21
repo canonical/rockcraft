@@ -17,6 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 """Creation of schema for rockcraft.yaml."""
+
 import json
 import os
 import sys
@@ -40,9 +41,9 @@ def generate_project_schema() -> str:
         "name": "my-rock-name",
     }
     # pylint: disable=W0212
-    init_template = cli.commands.InitCommand._INIT_TEMPLATES[
+    init_template = cli.commands.InitCommand._PROFILES[
         cli.commands.InitCommand._DEFAULT_PROFILE
-    ].format(**context)
+    ].rockcraft_yaml.format(**context)
 
     # Initiate a project with all required fields
     project = Project.unmarshal(yaml.safe_load(init_template))
