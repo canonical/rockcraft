@@ -10,8 +10,8 @@ Setup
 We recommend starting from a clean Ubuntu 22.04 installation. If you don't have
 one available, you can create one using Multipass_:
 
-.. collapse:: How to create an Ubuntu 22.04 VM with Multipass        
-    
+.. collapse:: How to create an Ubuntu 22.04 VM with Multipass
+
     Is Multipass_ already installed and active? Start by running
 
     .. code-block:: bash
@@ -22,7 +22,7 @@ one available, you can create one using Multipass_:
     need to run ``sudo snap start multipass``. On the other hand, if you get
     an error saying ``snap "multipass" not found``, then you must Install
     Multipass_:
-    
+
     .. code-block:: bash
 
         sudo snap install multipass
