@@ -57,7 +57,7 @@ include everything else, add the following part to ``rockcraft.yaml``:
     :end-before: [docs:parts-end]
 
 Including additional debs in the OCI image
-------------------------------------------
+==========================================
 
 If your app requires debs, for example to connect to a database, add the
 following snippet to the ``rockfile.yaml``:

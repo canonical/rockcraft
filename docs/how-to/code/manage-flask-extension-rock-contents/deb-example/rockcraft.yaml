@@ -14,7 +14,15 @@ platforms:
 
 # [docs:parts-start]
 parts:
-  flask-framework/dependencies:
+  flask-framework/runtime-slices:
+    plugin: nil
     stage-packages:
+      # list required package slices for your flask application below.
+      - libxml2_libs
+
+  flask-framework/runtime-deb:
+    plugin: nil
+    stage-packages:
+      # list required Debian packages for your flask application below.
       - libpq-dev
 # [docs:parts-end]
