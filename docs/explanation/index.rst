@@ -14,6 +14,7 @@ the motivations behind its development.
    chisel
    overlay-step
    rocks
+   bases
    pebble
    lifecycle-layer
    filesets

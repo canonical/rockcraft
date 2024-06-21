@@ -15,6 +15,8 @@ Interoperability between rocks and other containers also extends to how
 container images are built, allowing rocks to be used as bases for existing
 build recipes, such as Dockerfiles, for further customisation and development.
 
+.. _what-sets-rocks-apart:
+
 What sets rocks apart?
 ~~~~~~~~~~~~~~~~~~~~~~
 
