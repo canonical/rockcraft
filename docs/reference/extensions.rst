@@ -31,7 +31,7 @@ There are 4 requirements to be able to use the ``flask-framework`` extension:
 4. The project must include a WSGI app with the path ``app:app`` (set the name
    of the Flask object to ``app`` in ``app.py``)
 
-``parts`` - ``flask-framework/dependencies:`` - ``stage-packages``
+``parts`` > ``flask-framework/dependencies:`` > ``stage-packages``
 ==================================================================
 
 You can use this key to specify any dependencies required for your Flask
@@ -45,7 +45,7 @@ application. For example, below we use it to specify ``libpq-dev``:
                 # list required packages or slices for your flask application below.
                 - libpq-dev
 
-``parts`` - ``flask-framework/install-app:`` - ``prime``
+``parts`` > ``flask-framework/install-app:`` > ``prime``
 ========================================================
 
 You can use this key to specify the files to be included in your rock upon
