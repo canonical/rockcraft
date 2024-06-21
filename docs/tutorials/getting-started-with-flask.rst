@@ -1,20 +1,36 @@
-Getting started with Rockcraft for Flask
-----------------------------------------
+Build a rock for a Flask application
+------------------------------------
 
-In this tutorial you will learn how to create a Flask application, build a rock
-with the Flask application and run it.
+In this tutorial you will create a simple Flask application and learn how to
+containerize it in a rock.
 
 Setup
 =====
 
-Start with a clean Ubuntu 22.04 installation. If you don't have one available,
-you can create one using Multipass_:
+We recommend starting from a clean Ubuntu 22.04 installation. If you don't have
+one available, you can create one using Multipass_:
 
-.. code-block:: bash
+.. collapse:: How to create an Ubuntu 22.04 VM with Multipass        
+    
+    If Multipass_ isn't yet installed, isntall via via ``snap``:
+    
+    .. code-block:: bash
 
-   sudo snap install multipass
-   multipass launch --disk 10G --name flask-hello-world 22.04
-   multipass shell flask-hello-world
+        sudo snap install multipass
+
+    Then you can create the VM with the following command:
+
+    .. code-block:: text
+
+        multipass launch --disk 10G --name flask-hello-world 22.04
+
+    Finally, once the VM is up, open a shell into it:
+
+    .. code-block:: bash
+
+        multipass shell flask-hello-world
+
+----
 
 LXD will be required for creating the OCI image. Make sure it is installed an
 initialised:
