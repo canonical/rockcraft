@@ -49,7 +49,7 @@ Rebuild the rock with a ``bare`` base
 
 When starting to prepare the rock for production, the main goal is to get rid
 of all the software that is not necessary at runtime, and the first step
-towards achieving that goal is to use a ``bare``.
+towards achieving that goal is to use a ``bare`` base.
 
 In a separate directory, copy the *rockcraft.yaml* from above and replace
 ``base: ubuntu@22.04`` with ``base: bare``. With this change, you must also
