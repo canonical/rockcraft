@@ -40,7 +40,6 @@ ignore = [
     "docs/sphinx-starter-pack",
     "docs/how-to/code",
     "docs/tutorials/code/getting-started-with-flask",
-    "docs/how-to/code/use-flask-extension",
     "tests/spread/general/extension-django/example_django"
 ]
 

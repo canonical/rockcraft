@@ -17,3 +17,48 @@ Gunicorn, in the rock image. Additionally, it transfers your project files to
 
 A statsd-exporter is installed alongside the Gunicorn server to export Gunicorn
 server metrics.
+
+Project requirements
+====================
+
+There are 4 requirements to be able to use the ``flask-framework`` extension:
+
+1. There must be a ``requirements.txt`` file in the root of the project
+2. ``Flask`` must be declared as a dependency in the ``requirements.txt`` file
+3. There must be an ``app.py`` file in the root of the project
+4. The project must include a WSGI app with the path ``app:app`` (set the name
+   of the Flask object to ``app`` in ``app.py``)
+
+``rockcraft.yaml`` > ``parts`` > ``flask-framework/dependencies:`` > ``stage-packages``
+=======================================================================================
+
+You can use this key to specify any dependencies required for your Flask
+application. For example, below we use it to specify ``libpq-dev``:
+
+.. code-block:: yaml
+
+    parts:
+        flask-framework/dependencies:
+            stage-packages:
+                # list required packages or slices for your flask application below.
+                - libpq-dev
+
+``rockcraft.yaml`` > ``parts`` > ``flask-framework/install-app:`` > ``prime``
+=============================================================================
+
+You can use this key to specify the files to be included in your rock upon
+``rockcraft pack``, in ``flask/app/<filename>`` notation. For example:
+
+.. code-block:: yaml
+
+    parts:
+        flask-framework/install-app:
+            prime:
+                - flask/app/.env
+                - flask/app/app.py
+                - flask/app/webapp
+                - flask/app/templates
+                - flask/app/static
+
+Some files, if they exist, are included by default. These include:
+`app`, `app.py`, `migrate`, `migrate.sh`, `migrate.py`, `static`, `templates`.
