@@ -8,7 +8,7 @@ Setup
 =====
 
 Start with a clean Ubuntu 22.04 installation. If you don't have one available,
-you can create one using `Multipass <https://multipass.run>`_:
+you can create one using Multipass_:
 
 .. code-block:: bash
 
