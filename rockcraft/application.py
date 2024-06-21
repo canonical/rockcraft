@@ -34,6 +34,7 @@ APP_METADATA = AppMetadata(
     ProjectClass=project.Project,
     BuildPlannerClass=project.BuildPlanner,
     source_ignore_patterns=["*.rock"],
+    docs_url="https://documentation.ubuntu.com/rockcraft/en/stable",
 )
 
 

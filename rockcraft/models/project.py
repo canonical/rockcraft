@@ -263,6 +263,11 @@ class BuildPlanner(BaseBuildPlanner):
 
         return build_infos
 
+    @override
+    @classmethod
+    def model_reference_slug(cls) -> str | None:
+        return "/reference/rockcraft.yaml"
+
 
 class Project(YamlModelMixin, BuildPlanner, BaseProject):  # type: ignore[misc]
     """Rockcraft project definition."""
@@ -511,6 +516,11 @@ class Project(YamlModelMixin, BuildPlanner, BaseProject):  # type: ignore[misc]
             raise TypeError("Project data is not a dictionary")
 
         return cls(**data)
+
+    @override
+    @classmethod
+    def model_reference_slug(cls) -> str | None:
+        return "/reference/rockcraft.yaml"
 
 
 def load_project(filename: Path) -> dict[str, Any]:
