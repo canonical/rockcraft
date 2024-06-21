@@ -22,7 +22,7 @@ one available, you can create one using Multipass_:
     If you see the ``multipass`` service but it isn't "active", then you'll
     need to run ``sudo snap start multipass``. On the other hand, if you get
     an error saying ``snap "multipass" not found``, then you must Install
-    Multipass_:
+    `Multipass <install-multipass_>`_:
 
     .. code-block:: bash
 
@@ -156,7 +156,7 @@ The ``rockcraft.yaml`` file will automatically be created in your working
 directory. Open it in a text editor and customise the ``name``,
 ``summary`` and ``description``. Ensure that ``platforms`` includes
 the architecture of your host. For example, if your host uses the ARM
-architecture, include ``arm64`` in ``platforms``. 
+architecture, include ``arm64`` in ``platforms``.
 
 .. note::
     For this tutorial, we'll use the ``name`` "flask-hello-world" and build
@@ -371,7 +371,7 @@ look like the following:
     :language: python
 
 Since you are creating a new version of your application, open the
-``rockfile.yaml`` file and change the ``version`` to ``0.2``.
+``rockfile.yaml`` file and change the ``version`` (e.g. to ``0.2``).
 
 Pack and run the rock using similar commands as before:
 
@@ -384,7 +384,7 @@ Pack and run the rock using similar commands as before:
 .. note::
 
     Note that the resulting ``.rock`` file will now be named differently, as
-    its new version ``0.2`` will be part of the filename.
+    its new version will be part of the filename.
 
 Finally, use ``curl`` to send a request to the ``/time`` endpoint:
 
@@ -423,7 +423,7 @@ following:
     :dedent: 2
 
 .. collapse:: If using Multipass...
-    
+
     If you created an instance using Multipass, you can also clean it up.
     Start by exiting it:
 
@@ -452,3 +452,4 @@ your changes are not taking effect (e.g. the ``/time``
 ``rockcraft pack``.
 
 .. _`lxd-docker-connectivity-issue`: https://documentation.ubuntu.com/lxd/en/latest/howto/network_bridge_firewalld/#prevent-connectivity-issues-with-lxd-and-docker
+.. _`install-multipass`: https://multipass.run/docs/how-to-install-multipass
