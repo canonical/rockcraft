@@ -69,6 +69,7 @@ LTS
 LXD
 lxd
 Multipass
+multipass
 nano
 NGINX
 nginx
