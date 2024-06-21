@@ -41,10 +41,10 @@ When and how to use a ``bare`` base
 
 The ``bare`` :ref:`base <rockcraft_yaml_base>` is extremely useful when
 the goal is to build a lean **chiselled rock**. Such rocks are typically
-preferred for production environments due to their optimized deployment
+preferred for production environments due to their optimised deployment
 efficiency and reduced attack surface. The combination of the
 ``bare`` :ref:`base <rockcraft_yaml_base>`
-with :ref:`Chisel <chisel_explanation>` slices will result in a minimalistic
+with :ref:`Chisel <chisel_explanation>` slices will result in a minimalist
 container image that meets the production environment's criteria while
 retaining its functionality.
 

@@ -1,4 +1,5 @@
 ACR
+amd64
 ARGS
 Autotools
 autotools

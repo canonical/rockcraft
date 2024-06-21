@@ -121,7 +121,7 @@ And the "Hello, world" script still works:
 **To conclude**, you've just created a general-purpose Python rock with just a
 few YAML lines and no code whatsoever! Then, by changing a couple of YAML
 fields (the ``base``), you've achieving a **~33% size reduction** while
-maintaining functionality. Finally, by apprending two words (literally, just
+maintaining functionality. Finally, by appending two words (literally, just
 the slice names) to the *rockcraft.yaml*, you were able to reduce the rock's
 size even further by an **additional ~37%** of its original size! In short:
 
