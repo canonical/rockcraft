@@ -271,7 +271,7 @@ class FlaskFramework(_GunicornBase):
         requirements_file = self.project_root / "requirements.txt"
         if not requirements_file.exists():
             return [
-                "missing requirements.txt file, flask-framework extension requires this file with flask specified as a dependency."
+                "missing a requirements.txt file. The flask-framework extension requires this file with 'flask' specified as a dependency."
             ]
 
         requirements_lines = requirements_file.read_text(encoding="utf-8").splitlines()
