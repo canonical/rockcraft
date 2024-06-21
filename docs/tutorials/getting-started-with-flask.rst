@@ -296,7 +296,7 @@ contents that are not needed for your Flask application to run. This results
 in a much smaller rock with a reduced attack surface.
 
 The first step towards chiselling your rock is to ensure you are using a
-``bare`` base.
+``bare`` :ref:`base <bases_explanation>`.
 In ``rockcraft.yaml``, change the ``base`` to ``bare`` and add
 ``build-base: ubuntu@22.04``:
 
@@ -306,7 +306,7 @@ In ``rockcraft.yaml``, change the ``base`` to ``bare`` and add
     :end-before: [docs:change-base-end]
     :dedent: 2
 
-Pack the rock with the new ``bare`` base:
+Pack the rock with the new ``bare`` :ref:`base <bases_explanation>`:
 
 .. literalinclude:: code/getting-started-with-flask/task.yaml
     :language: bash
