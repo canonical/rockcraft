@@ -60,6 +60,7 @@ extensions.extend(
         "sphinx.ext.viewcode",
         "sphinx_autodoc_typehints",  # must be loaded after napoleon
         "sphinxcontrib.details.directive",
+        "sphinx_toolbox.collapse",
     ]
 )
 
