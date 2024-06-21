@@ -5,7 +5,7 @@
 # markers for including said instructions 
 # as snippets in the docs.
 ###########################################
-summary: Getting started with Rockcraft for Flask tutorial
+summary: Getting started with Flask tutorial
 
 environment:
 
