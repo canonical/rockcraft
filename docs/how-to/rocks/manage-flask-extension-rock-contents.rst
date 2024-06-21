@@ -1,41 +1,23 @@
-Manage Flask extension rock contents
-------------------------------------
+Manage project files with the Flask extension
+---------------------------------------------
 
-The ``flask-framework`` extension requires a ``requirements.txt`` file and a
-``app.py`` file that exposes the Flask ``app`` object as a WSGI app. For
-example, ``app.py``:
+Rockcraft offers a ``flask-framework``
+:ref:`extension <flask-framework-reference>` to facilitate the containerisation
+of your Flask application as a rock.
 
-.. literalinclude:: ../code/manage-flask-extension-rock-contents/example/app.py
-    :language: python
+See the tutorial :doc:`/tutorials/getting-started-with-flask` for a
+comprehensive set of steps that guide you through the creation and
+containerisation of a Flask application, from scratch, using Rockcraft and this
+``flask-framework`` :ref:`extension <flask-framework-reference>`
 
-And ``requirements.txt``:
 
-.. literalinclude:: ../code/manage-flask-extension-rock-contents/example/requirements.txt
-
-To employ it, include ``extensions: [ flask-framework ]`` in your
-``rockcraft.yaml`` file. Reference docs for the ``flask-framework`` extension:
-:ref:`flask-framework-reference`
-
-.. note::
-    The Flask extension is compatible with the ``bare`` and ``ubuntu@22.04``
-    bases.
-
-Example:
-
-.. literalinclude:: ../code/manage-flask-extension-rock-contents/example/rockcraft.yaml
-    :language: yaml
-
-:doc:`/tutorials/getting-started-with-flask` shows you how to go
-from a host with Ubuntu installed to a Flask app running in docker.
-
-Managing project files with the Flask extension
-===============================================
+----
 
 By default the Flask extension only includes ``app.py``, ``static/``,
 ``app/``, ``templates/`` and ``migrate.sh`` in the Flask project. You can
 overwrite this behaviour with a prime declaration in the specially-named
-``flask-framework/install-app`` part to instruct the Flask extension on which
-files to include or exclude from the project directory in the rock image.
+``flask-framework/install-app`` Rockcraft part to instruct the Flask extension on which
+files to include or exclude from the project directory when building the rock.
 
 The extension places the files from the project folder in the ``/flask/app``
 directory in the final image - therefore, all inclusions and exclusions must
@@ -48,19 +30,20 @@ For example, to include only select files:
     :start-after: [docs:parts-start]
     :end-before: [docs:parts-end]
 
-To exclude certain files from the project directory in the rock image and
-include everything else, add the following part to ``rockcraft.yaml``:
+To exclude certain files from the project directory when building the rock,
+while including everything else, add the following part to ``rockcraft.yaml``:
 
 .. literalinclude:: ../code/manage-flask-extension-rock-contents/prime-exclude-example/rockcraft.yaml
     :language: yaml
     :start-after: [docs:parts-start]
     :end-before: [docs:parts-end]
 
-Including additional debs in the OCI image
-==========================================
+Including additional packages in the rock
+=========================================
 
-If your app requires debs, for example to connect to a database, add the
-following snippet to the ``rockfile.yaml``:
+If your app requires additional dependencies (.e.g. to connect to a
+database), you can add and adjust the following snippet to the
+``rockcraft.yaml`` file, according to your application needs:
 
 .. literalinclude:: ../code/manage-flask-extension-rock-contents/deb-example/rockcraft.yaml
     :language: yaml

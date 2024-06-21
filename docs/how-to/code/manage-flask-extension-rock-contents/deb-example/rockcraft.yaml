@@ -17,7 +17,7 @@ parts:
   flask-framework/runtime-slices:
     plugin: nil
     stage-packages:
-      # list required package slices for your flask application below.
+      # list required package Chisel slices for your flask application below.
       - libxml2_libs
 
   flask-framework/runtime-debs:

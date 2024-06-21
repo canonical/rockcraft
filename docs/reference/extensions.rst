@@ -20,6 +20,10 @@ Gunicorn, in the rock image. Additionally, it transfers your project files to
 A statsd-exporter is installed alongside the Gunicorn server to export Gunicorn
 server metrics.
 
+.. note::
+    The Flask extension is compatible with the ``bare`` and ``ubuntu@22.04``
+    bases.
+
 Project requirements
 ====================
 
