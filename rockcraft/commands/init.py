@@ -59,6 +59,8 @@ class InitCommand(AppCommand):
         "simple": textwrap.dedent(
             """\
                 name: {name}
+                # see https://documentation.ubuntu.com/rockcraft/en/stable/explanation/bases/
+                # for more information about bases and using 'bare' bases for chiselled rocks
                 base: ubuntu@22.04 # the base environment for this rock
                 version: '0.1' # just for humans. Semantic versioning is recommended
                 summary: Single-line elevator pitch for your amazing rock # 79 char long summary
@@ -67,7 +69,7 @@ class InitCommand(AppCommand):
                     most important story about it. Keep it under 100 words though,
                     we live in tweetspace and your description wants to look good in the
                     container registries out there.
-                platforms: # The platforms this rock should be built on and run on
+                platforms: # the platforms this rock should be built on and run on
                     amd64:
 
                 parts:
@@ -78,8 +80,8 @@ class InitCommand(AppCommand):
         "flask-framework": textwrap.dedent(
             """\
                 name: {name}
-                # See https://documentation.ubuntu.com/rockcraft/en/latest/explanation/bases/
-                # for chiselled and bare bases for reduced image size and enhanced security.
+                # see https://documentation.ubuntu.com/rockcraft/en/stable/explanation/bases/
+                # for more information about bases and using 'bare' bases for chiselled rocks
                 base: ubuntu@22.04 # the base environment for this Flask application
                 version: '0.1' # just for humans. Semantic versioning is recommended
                 summary: A summary of your Flask application # 79 char long summary
@@ -91,7 +93,7 @@ class InitCommand(AppCommand):
                 platforms: # The platforms this rock should be built on and run on
                     amd64:
 
-                # To ensure the flask-framework extension works properly, your Flask application
+                # to ensure the flask-framework extension works properly, your Flask application
                 # should have an `app.py` file with an `app` object as the WSGI entrypoint.
                 # A `requirements.txt` file with at least the flask package should also exist.
                 # See https://documentation.ubuntu.com/rockcraft/en/stable/reference/extensions/flask-framework
@@ -104,11 +106,11 @@ class InitCommand(AppCommand):
 
                 #   flask-framework/install-app:
                 #     prime:
-                #       # By default, only the files in app/, templates/, static/, and app.py
+                #       # by default, only the files in app/, templates/, static/, and app.py
                 #       # are copied into the image. You can modify the list below to override
                 #       # the default list and include or exclude specific files/directories
                 #       # in your project.
-                #       # Note: Prefix each entry with "flask/app/" followed by the local path.
+                #       # note: prefix each entry with "flask/app/" followed by the local path.
                 #       - flask/app/.env
                 #       - flask/app/app.py
                 #       - flask/app/webapp
@@ -143,6 +145,8 @@ class InitCommand(AppCommand):
         "django-framework": textwrap.dedent(
             """\
                 name: {name}
+                # see https://documentation.ubuntu.com/rockcraft/en/stable/explanation/bases/
+                # for more information about bases and using 'bare' bases for chiselled rocks
                 base: ubuntu@22.04 # the base environment for this Django application
                 version: '0.1' # just for humans. Semantic versioning is recommended
                 summary: A summary of your Django application # 79 char long summary
@@ -154,7 +158,7 @@ class InitCommand(AppCommand):
                 platforms: # The platforms this rock should be built on and run on
                     amd64:
 
-                # To ensure the django-framework extension functions properly, your Django project
+                # to ensure the django-framework extension functions properly, your Django project
                 # should have a structure similar to the following with ./{snake_name}/{snake_name}/wsgi.py
                 # being the WSGI entry point and contain an application object.
                 # +-- {snake_name}
@@ -172,7 +176,7 @@ class InitCommand(AppCommand):
                 extensions:
                     - django-framework
 
-                # Uncomment the sections you need and adjust according to your requirements.
+                # uncomment the sections you need and adjust according to your requirements.
                 # parts:
                 #   django-framework/dependencies:
                 #     stage-packages:
