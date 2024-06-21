@@ -6,7 +6,7 @@ How to chisel an existing rock
 Having additional utilities inside a rock can be useful for development and
 testing purposes. However, when moving to production, you want to make your
 rock as lean and secure as possible, getting rid of all the unnecessary bits
-and thus reducing its attack surface, while retaining its functionality. 
+and thus reducing its attack surface, while retaining its functionality.
 
 For this, you'll want to ensure that your rock has a ``bare``
 :ref:`base <rockcraft_yaml_base>` and that its contents are
@@ -49,7 +49,7 @@ Rebuild the rock with a ``bare`` base
 
 When starting to prepare the rock for production, the main goal is to get rid
 of all the software that is not necessary at runtime, and the first step
-towards achieving that goal is to use a ``bare``. 
+towards achieving that goal is to use a ``bare``.
 
 In a separate directory, copy the *rockcraft.yaml* from above and replace
 ``base: ubuntu@22.04`` with ``base: bare``. With this change, you must also
@@ -69,7 +69,7 @@ Pack this rock with the same ``rockcraft`` command as above:
     :dedent: 2
 
 This new rock (*bare-python_3.11_amd64.rock*) will now have about **28MB** - a
-~33% size reduction - and also have a functional Python3.11 interpreter. 
+~33% size reduction - and also have a functional Python3.11 interpreter.
 Run the same "Hello, world" Python script as before to confirm:
 
 .. literalinclude:: ../code/chisel-existing-rock/task.yaml
@@ -80,7 +80,7 @@ Run the same "Hello, world" Python script as before to confirm:
 
 
 The question then is: *how is rockcraft able to produce an equally functional
-Python rock with such a drastic reduction in size?* 
+Python rock with such a drastic reduction in size?*
 
 And the answer is: *the rock no longer has the Ubuntu base as its first layer,
 and thus no longer has utilities like ``bash`` and ``apt`` (which aren't needed
@@ -118,12 +118,12 @@ And the "Hello, world" script still works:
     :end-before: [docs:run-chiselled-rock-end]
     :dedent: 2
 
-**To conclude**, you've just created a general-purpose Python rock with just a few
-YAML lines and no code whatsoever! Then, by changing a couple of YAML fields
-(the ``base``), you've achieving a **~33% size reduction** while maintaining
-functionality. Finally, by apprending two words (literally, just the slice
-names) to the *rockcraft.yaml*, you were able to reduce the rock's size even
-further by an **additional ~37%** of its original size! In short:
+**To conclude**, you've just created a general-purpose Python rock with just a
+few YAML lines and no code whatsoever! Then, by changing a couple of YAML
+fields (the ``base``), you've achieving a **~33% size reduction** while
+maintaining functionality. Finally, by apprending two words (literally, just
+the slice names) to the *rockcraft.yaml*, you were able to reduce the rock's
+size even further by an **additional ~37%** of its original size! In short:
 
 +---------------+------------------+-----------+
 | Original rock | w/ ``bare`` base | chiselled |

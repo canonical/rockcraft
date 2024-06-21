@@ -4,7 +4,7 @@ Bases
 =====
 
 One mandatory field for every rock project is the
-:ref:`base <rockcraft_yaml_base>`. 
+:ref:`base <rockcraft_yaml_base>`.
 
 This field defines the baseline system upon which the rock's contents shall be
 layered on. Only Ubuntu and ``bare``
