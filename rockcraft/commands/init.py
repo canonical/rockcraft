@@ -95,7 +95,7 @@ class InitCommand(AppCommand):
 
                 # to ensure the flask-framework extension works properly, your Flask application
                 # should have an `app.py` file with an `app` object as the WSGI entrypoint.
-                # A `requirements.txt` file with at least the flask package should also exist.
+                # a `requirements.txt` file with at least the flask package should also exist.
                 # See https://documentation.ubuntu.com/rockcraft/en/stable/reference/extensions/flask-framework
                 # for more information.
                 extensions:
