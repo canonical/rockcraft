@@ -8,18 +8,6 @@
 summary: test the "Use the flask-framework extension" guide
 
 execute: |
-  cd update-example
-  # [docs:update-app-start]
-  rockcraft pack
-  sudo rockcraft.skopeo --insecure-policy copy oci-archive:flask-hello-world_0.2_amd64.rock docker-daemon:flask-hello-world:0.2
-  sudo docker run -d -p 8000:8000 --name flask-hello-world flask-hello-world:0.2
-  retry -n 5 --wait 2 curl localhost:8000/time
-  # [docs:update-app-end]
-  sudo docker stop flask-hello-world
-  sudo docker rm flask-hello-world
-  sudo docker rmi flask-hello-world:0.2
-  cd -
-
   cd example
   # [docs:logs-app-setup-start]
   rockcraft pack

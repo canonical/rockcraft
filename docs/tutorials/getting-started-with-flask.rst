@@ -72,7 +72,7 @@ Run and test the flask application to verify everything is working:
     :end-before: [docs:run-flask-end]
     :dedent: 2
 
-Use ``curl`` to send a request to the root endpoint:.
+Use ``curl`` to send a request to the root endpoint:
 
 .. literalinclude:: code/getting-started-with-flask/task.yaml
     :language: bash
@@ -163,7 +163,7 @@ Now run the rock:
     :end-before: [docs:docker-run-end]
     :dedent: 2
 
-Use ``curl`` to send a request to the root endpoint:.
+Use ``curl`` to send a request to the root endpoint:
 
 .. literalinclude:: code/getting-started-with-flask/task.yaml
     :language: bash
@@ -221,7 +221,7 @@ using the same commands as before:
     :end-before: [docs:docker-run-chisel-end]
     :dedent: 2
 
-Use ``curl`` to send a request to the root endpoint:.
+Use ``curl`` to send a request to the root endpoint:
 
 .. literalinclude:: code/getting-started-with-flask/task.yaml
     :language: bash
@@ -243,6 +243,37 @@ Stop the rock and remove the container and image for now:
     :end-before: [docs:stop-docker-chisel-end]
     :dedent: 2
 
+Update Flask app
+----------------
+
+To update the app, for example, by adding a new ``/time`` endpoint which returns
+the current time, open ``app.py`` in a text editor and update the code to:
+
+.. literalinclude:: code/getting-started-with-flask/time-app.py
+    :language: python
+
+Open ``rockfile.yaml`` and change the ``version`` to ``0.2``. Pack and run the
+rock using similar commands as before:
+
+.. literalinclude:: code/getting-started-with-flask/task.yaml
+    :language: bash
+    :start-after: [docs:docker-run-update]
+    :end-before: [docs:docker-run-update-end]
+    :dedent: 2
+
+Use ``curl`` to send a request to the ``/time`` endpoint:
+
+.. literalinclude:: code/getting-started-with-flask/task.yaml
+    :language: bash
+    :start-after: [docs:request-docker-update]
+    :end-before: [docs:request-docker-update-end]
+    :dedent: 2
+
+..  code-block:: text
+    :class: log-snippets
+
+    $ curl localhost:8000/time
+    2024-06-21 03:42:38
 
 Cleanup
 =======

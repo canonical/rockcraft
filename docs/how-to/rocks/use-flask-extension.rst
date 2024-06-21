@@ -26,21 +26,6 @@ Example:
 :doc:`/tutorials/getting-started-with-flask` shows you how to go
 from a host with Ubuntu installed to a Flask app running in docker.
 
-Chisel the Flask rock
----------------------
-
-The OCI image created in the
-:doc:`/tutorials/getting-started-with-flask` tutorial is roughly
-159MB in size. This can be reduced by using a ``bare`` base. Change the ``base``
-to ``bare`` and include a ``build-base`` in ``rockcraft.yaml``:
-
-.. literalinclude:: ../code/use-flask-extension/chiseled-example/rockcraft.yaml
-    :language: yaml
-    :start-after: [docs:base-start]
-    :end-before: [docs:base-end]
-
-Now the OCI image is just 130MB in size.
-
 Managing project files with the Flask extension
 -----------------------------------------------
 
@@ -79,35 +64,6 @@ following snippet to the ``rockfile.yaml``:
     :language: yaml
     :start-after: [docs:parts-start]
     :end-before: [docs:parts-end]
-
-Update Flask app
-----------------
-
-After completing the :doc:`/tutorials/getting-started-with-flask`
-tutorial, let's say you want to add a new endpoint to your Flask application
-``/time`` which returns the current time:
-
-.. literalinclude:: ../code/use-flask-extension/update-example/app.py
-    :language: python
-    :start-after: [docs:time-endpoint-start]
-    :end-before: [docs:time-endpoint-end]
-
-Update the version in ``rockcraft.yaml``:
-
-.. literalinclude:: ../code/use-flask-extension/update-example/rockcraft.yaml
-    :language: yaml
-    :start-after: [docs:version-start]
-    :end-before: [docs:version-end]
-
-Pack and deploy the new rock and send a request to the ``/time`` endpoint:
-
-.. literalinclude:: ../code/use-flask-extension/task.yaml
-    :language: bash
-    :start-after: [docs:update-app-start]
-    :end-before: [docs:update-app-end]
-    :dedent: 2
-
-The ``curl`` command should return the current time.
 
 View the logs
 -------------
