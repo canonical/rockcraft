@@ -70,11 +70,10 @@ execute: |
   sudo docker rmi flask-hello-world:0.1
   # [docs:stop-docker-chisel-end]
 
-  mv time-app.py app.py
-  sed -i "s/version: .*/version: 0.2/g" rockcraft.yaml
-
   cat time-app.py > app.py
+  sed -i "s/version: .*/version: 0.2/g" rockcraft.yaml
   rockcraft clean
+
   # [docs:docker-run-update]
   rockcraft pack
   sudo rockcraft.skopeo --insecure-policy copy oci-archive:flask-hello-world_0.2_amd64.rock docker-daemon:flask-hello-world:0.2
