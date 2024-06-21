@@ -290,3 +290,11 @@ Stop the container and delete all the created files:
     :start-after: [docs:cleanup]
     :end-before: [docs:cleanup-end]
     :dedent: 2
+
+If you created an instance using Multipass, clean it up:
+
+.. code-block:: bash
+
+   exit
+   multipass delete flask-hello-world
+   multipass purge
