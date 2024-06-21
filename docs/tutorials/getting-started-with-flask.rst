@@ -264,6 +264,10 @@ Use ``curl`` to send a request to the ``/time`` endpoint:
 
 The app should respond with the current date and time.
 
+.. note::
+    If the ``/time`` endpoint returns a 404, try ``rockcraft clean`` to reset
+    Rockcraft and then start again from ``rockcraft pack``.
+
 View the logs
 =============
 
