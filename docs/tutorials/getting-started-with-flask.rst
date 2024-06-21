@@ -2,7 +2,7 @@ Build a rock for a Flask application
 ------------------------------------
 
 In this tutorial you will create a simple Flask application and learn how to
-containerize it in a rock.
+containerise it in a rock.
 
 Setup
 =====
@@ -61,6 +61,13 @@ We'll use Docker run the Flask rock. You can also install it as a ``snap``:
 
    sudo snap install docker
 
+.. warning::
+   There is a `known connectivity issue with LXD and Docker
+   <lxd-docker-connectivity-issue_>`_. During the tutorial, if you see a
+   networking issue such as "*A network related operation failed in a context
+   of no network access*", make sure you apply one of the fixes suggested
+   `here <lxd-docker-connectivity-issue_>`_.
+
 Finally, create a new directory for this tutorial and go inside it:
 
 .. code-block:: bash
@@ -68,14 +75,23 @@ Finally, create a new directory for this tutorial and go inside it:
    mkdir flask-hello-world
    cd flask-hello-world
 
-Create Flask application
-========================
+Note that you'll also need a text editor. You can either install one of your
+choice or simply use one of the already existing editors in your Ubuntu
+environment (like ``vi``).
 
-Write the following into a text editor and save it as ``requirements.txt``:
+Create the Flask application
+============================
+
+Start by creating the "Hello, world" Flask application that will be used for
+this tutorial.
+
+Create a ``requirements.txt`` file, copy the following text into it and then
+save it:
 
 .. literalinclude:: code/getting-started-with-flask/requirements.txt
 
-Install ``python3-venv`` on your host and create a virtual environment:
+In order to test the Flask application locally (before packing it into a rock),
+install ``python3-venv`` and create a virtual environment:
 
 .. literalinclude:: code/getting-started-with-flask/task.yaml
     :language: bash
@@ -83,13 +99,13 @@ Install ``python3-venv`` on your host and create a virtual environment:
     :end-before: [docs:create-venv-end]
     :dedent: 2
 
-In the same directory, write the following into a text editor and save it as
+In the same directory, write and save the following into text file called
 ``app.py``:
 
 .. literalinclude:: code/getting-started-with-flask/app.py
     :language: python
 
-Run and test the flask application to verify everything is working:
+Run the Flask application to verify that it works:
 
 .. literalinclude:: code/getting-started-with-flask/task.yaml
     :language: bash
@@ -100,18 +116,21 @@ Run and test the flask application to verify everything is working:
 .. note::
     The ``&`` at the end of the command runs the Flask application in the
     background. You can continue to use your terminal as normal and will see all
-    the output from the Flask application in your terminal. The command to stop
-    the Flask application is included below.
+    the output from the Flask application in your terminal. To stop the Flask
+    application, you can use the ``kill`` command shown below.
 
-Use ``curl`` to send a request to the root endpoint:
+Test the Flask application by using ``curl`` to send a request to the root
+endpoint:
 
-..  code-block:: text
-    :class: log-snippets
+.. literalinclude:: code/getting-started-with-flask/task.yaml
+    :language: bash
+    :start-after: [docs:curl-flask]
+    :end-before: [docs:curl-flask-end]
+    :dedent: 2
 
-    $ curl localhost:8000
-    Hello, world!
+The Flask application should respond with ``Hello, world!``.
 
-The Flask application should respond with ``Hello, world!`` Stop flask for now:
+The Flask application looks good, so you can stop for now:
 
 .. literalinclude:: code/getting-started-with-flask/task.yaml
     :language: bash
@@ -119,10 +138,12 @@ The Flask application should respond with ``Hello, world!`` Stop flask for now:
     :end-before: [docs:stop-flask-end]
     :dedent: 2
 
-Create Flask rock
-=================
+Pack the Flask application into a rock
+======================================
 
-Use the ``flask-framework`` profile to create ``rockcraft.yaml``:
+First, you'll need a ``rockcraft.yaml`` file. Rockcraft will automate its
+creation and tailoring for a Flask application by using the
+``flask-framework`` profile:
 
 .. literalinclude:: code/getting-started-with-flask/task.yaml
     :language: bash
@@ -130,10 +151,17 @@ Use the ``flask-framework`` profile to create ``rockcraft.yaml``:
     :end-before: [docs:create-rockcraft-yaml-end]
     :dedent: 2
 
-Open ``rockcraft.yaml`` in a text editor and customise the ``name``,
-``summary``, ``description`` and ``license``. Ensure that ``platforms`` includes
+The ``rockcraft.yaml`` file will automatically be created in your working
+directory. Open it in a text editor and customise the ``name``,
+``summary`` and ``description``. Ensure that ``platforms`` includes
 the architecture of your host. For example, if your host uses the ARM
-architecture, include ``arm64`` in ``platforms``. Pack the rock:
+architecture, include ``arm64`` in ``platforms``. 
+
+.. note::
+    For this tutorial, we'll use the ``name`` "flask-hello-world" and build
+    the rock on an ``amd64`` platform.
+
+Pack the rock:
 
 .. literalinclude:: code/getting-started-with-flask/task.yaml
     :language: bash
@@ -141,26 +169,29 @@ architecture, include ``arm64`` in ``platforms``. Pack the rock:
     :end-before: [docs:pack-end]
     :dedent: 2
 
-Verify that the rock was created:
+Once Rockcraft has finished packing the Flask rock, you'll find a new file in
+your working directory (an `OCI <OCI_image_spec_>`_ archive) with the ``.rock``
+extension:
 
-..  code-block:: text
-    :class: log-snippets
+.. literalinclude:: code/getting-started-with-flask/task.yaml
+    :language: bash
+    :start-after: [docs:ls-rock]
+    :end-before: [docs:ls-rock-end]
+    :dedent: 2
 
-    $ ls *.rock -l --block-size=MB
-    -rw-r--r-- 1 ubuntu ubuntu 62MB Jun 21 13:09 flask-hello-world_0.1_amd64.rock
-
-The created rock is around 62MB in size. This can be reduced which will be done
-in a later part of this tutorial.
+The created rock is about 62MB in size. We will reduce its size later in this
+tutorial.
 
 .. note::
     If you changed the ``name`` or ``version`` in ``rockcraft.yaml`` or are not
     on an ``amd64`` platform, the name of the ``.rock`` file will be different
     for you.
 
-Run the rock in Docker
-======================
+Run the Flask rock with Docker
+==============================
 
-Import the rock into Docker:
+You already have the rock as an `OCI <OCI_image_spec_>`_ archive. Now you'll
+need to import it into a format that Docker recognizes:
 
 .. literalinclude:: code/getting-started-with-flask/task.yaml
     :language: bash
@@ -168,37 +199,85 @@ Import the rock into Docker:
     :end-before: [docs:skopeo-copy-end]
     :dedent: 2
 
-Check that the image was imported into Docker:
+Check that the image was successfully imported into Docker:
+
+.. literalinclude:: code/getting-started-with-flask/task.yaml
+    :language: bash
+    :start-after: [docs:docker-images]
+    :end-before: [docs:docker-images-end]
+    :dedent: 2
+
+The output should list your Flask container image, along with its tag, ID and
+size:
 
 ..  code-block:: text
     :class: log-snippets
 
-    $ sudo docker images flask-hello-world:0.1
     REPOSITORY          TAG       IMAGE ID       CREATED       SIZE
     flask-hello-world   0.1       c256056698ba   2 weeks ago   149MB
 
 .. note::
     The size of the image reported by Docker is the uncompressed size which is
-    larger than the size of the ``.rock`` file which is compressed.
+    larger than the size of the compressed ``.rock`` file.
 
-Now run the rock:
+Now you're finally ready to run the rock and test your containerised Flask
+application:
 
 .. literalinclude:: code/getting-started-with-flask/task.yaml
-    :language: bash
+    :language: text
     :start-after: [docs:docker-run]
     :end-before: [docs:docker-run-end]
     :dedent: 2
 
-Use ``curl`` to send a request to the root endpoint:
+Use the same ``curl`` command as before to send a request to the Flask
+application's root endpoint which is running inside the container:
+
+.. literalinclude:: code/getting-started-with-flask/task.yaml
+    :language: text
+    :start-after: [docs:curl-flask-rock]
+    :end-before: [docs:curl-flask-rock-end]
+    :dedent: 2
+
+The Flask application should again respond with ``Hello, world!``.
+
+View the application logs
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+When deploying your Flask rock, you can always get the application logs via
+``pebble``:
+
+.. literalinclude:: code/getting-started-with-flask/task.yaml
+    :language: text
+    :start-after: [docs:get-logs]
+    :end-before: [docs:get-logs-end]
+    :dedent: 2
+
+As a result, :ref:`pebble_explanation_page` will give you the logs for the
+``flask`` service running inside the container.
+You should expect to see something similar to this:
 
 ..  code-block:: text
     :class: log-snippets
 
-    $ curl localhost:8000
-    Hello, world!
+    2024-06-21T03:41:45.077Z [flask] [2024-06-21 03:41:45 +0000] [17] [INFO] Starting gunicorn 22.0.0
+    2024-06-21T03:41:45.077Z [flask] [2024-06-21 03:41:45 +0000] [17] [INFO] Listening at: http://0.0.0.0:8000 (17)
+    2024-06-21T03:41:45.077Z [flask] [2024-06-21 03:41:45 +0000] [17] [INFO] Using worker: sync
+    2024-06-21T03:41:45.078Z [flask] [2024-06-21 03:41:45 +0000] [18] [INFO] Booting worker with pid: 18
 
-The Flask application should again respond with ``Hello, world!`` Stop the rock
-and remove the container and image for now:
+You can also choose to follow the logs by using the ``-f`` option with the
+``pebble logs`` command above.
+
+.. important::
+
+    To get the Flask application logs, the container must be running. This is
+    also valid for the remaining sections of this tutorial.
+
+Cleanup
+~~~~~~~
+
+Now you have a fully functional rock for you Flask application! This concludes
+the first part of this tutorial, so you can stop the container and remove the
+respective image for now:
 
 .. literalinclude:: code/getting-started-with-flask/task.yaml
     :language: bash
@@ -209,9 +288,16 @@ and remove the container and image for now:
 Chisel the rock
 ===============
 
-The size of the image can be reduced by using a ``bare`` base. In
-``rockcraft.yaml``, change the ``base`` to ``bare`` and add a ``build-base`` of
-``ubuntu@22.04``:
+This is an optional but recommended step, especially if you're looking to
+deploy your rock into a production environment. With :ref:`chisel_explanation`
+you can produce lean and production-ready rocks by getting rid of all the
+contents that are not needed for your Flask application to run. This results
+in a much smaller rock with a reduced attack surface.
+
+The first step towards chiselling your rock is to ensure you are using a
+``bare`` base.
+In ``rockcraft.yaml``, change the ``base`` to ``bare`` and add
+``build-base: ubuntu@22.04``:
 
 .. literalinclude:: code/getting-started-with-flask/task.yaml
     :language: bash
@@ -219,7 +305,7 @@ The size of the image can be reduced by using a ``bare`` base. In
     :end-before: [docs:change-base-end]
     :dedent: 2
 
-Pack the rock using the new base:
+Pack the rock with the new ``bare`` base:
 
 .. literalinclude:: code/getting-started-with-flask/task.yaml
     :language: bash
@@ -227,33 +313,41 @@ Pack the rock using the new base:
     :end-before: [docs:chisel-pack-end]
     :dedent: 2
 
-Verify that the rock was created:
-
-..  code-block:: text
-    :class: log-snippets
-
-    $ ls *.rock -l --block-size=MB
-    -rw-r--r-- 1 ubuntu ubuntu 53MB Jun 21 13:25 flask-hello-world_0.1_amd64.rock
-
-The created rock is now smaller at just 53MB in size. It can be run using Docker
-using the same commands as before:
+As before, verify that the new rock was created:
 
 .. literalinclude:: code/getting-started-with-flask/task.yaml
     :language: bash
+    :start-after: [docs:ls-bare-rock]
+    :end-before: [docs:ls-bare-rock-end]
+    :dedent: 2
+
+You'll verify that the new Flask rock is now approximately **15% smaller**
+in size! And that's just because of the simple change of ``base``.
+
+And the functionality is still the same. As before, you can confirm this by
+running the rock with Docker
+
+.. literalinclude:: code/getting-started-with-flask/task.yaml
+    :language: text
     :start-after: [docs:docker-run-chisel]
     :end-before: [docs:docker-run-chisel-end]
     :dedent: 2
 
-Use ``curl`` to send a request to the root endpoint:
+and then using the same ``curl`` request:
 
-..  code-block:: text
-    :class: log-snippets
+.. literalinclude:: code/getting-started-with-flask/task.yaml
+    :language: text
+    :start-after: [docs:curl-flask-bare-rock]
+    :end-before: [docs:curl-flask-bare-rock-end]
+    :dedent: 2
 
-    $ curl localhost:8000
-    Hello, world!
+Unsurprisingly, the Flask application should still respond with
+``Hello, world!``.
 
-The Flask application should still respond with ``Hello, world!`` Stop the rock
-and remove the container and image for now:
+Cleanup
+~~~~~~~
+
+And that's it. You can now stop container and remove the corresponding image:
 
 .. literalinclude:: code/getting-started-with-flask/task.yaml
     :language: bash
@@ -261,58 +355,65 @@ and remove the container and image for now:
     :end-before: [docs:stop-docker-chisel-end]
     :dedent: 2
 
-Update Flask app
-================
+.. _update-flask-application:
 
-To update the app, for example, by adding a new ``/time`` endpoint which returns
-the current time, open ``app.py`` in a text editor and update the code to:
+Update Flask application
+========================
+
+As a final step, let's say you want to update your application. For example,
+you want to add a new ``/time`` endpoint which returns the current time.
+
+Start by opening the ``app.py`` file in a text editor and update the code to
+look like the following:
 
 .. literalinclude:: code/getting-started-with-flask/time-app.py
     :language: python
 
-Open ``rockfile.yaml`` and change the ``version`` to ``0.2``. Pack and run the
-rock using similar commands as before:
+Since you are creating a new version of your application, open the
+``rockfile.yaml`` file and change the ``version`` to ``0.2``.
+
+Pack and run the rock using similar commands as before:
 
 .. literalinclude:: code/getting-started-with-flask/task.yaml
-    :language: bash
+    :language: text
     :start-after: [docs:docker-run-update]
     :end-before: [docs:docker-run-update-end]
     :dedent: 2
 
-Use ``curl`` to send a request to the ``/time`` endpoint:
-
-..  code-block:: text
-    :class: log-snippets
-
-    $ curl localhost:8000/time
-    2024-06-21 03:42:38
-
-The app should respond with the current date and time.
-
 .. note::
-    If the ``/time`` endpoint returns a 404, try ``rockcraft clean`` to reset
-    Rockcraft and then start again from ``rockcraft pack``.
 
-View the logs
-=============
+    Note that the resulting ``.rock`` file will now be named differently, as
+    its new version ``0.2`` will be part of the filename.
 
-The logs can be viewed using ``pebble``:
+Finally, use ``curl`` to send a request to the ``/time`` endpoint:
 
-..  code-block:: text
-    :class: log-snippets
+.. literalinclude:: code/getting-started-with-flask/task.yaml
+    :language: text
+    :start-after: [docs:curl-time]
+    :end-before: [docs:curl-time-end]
+    :dedent: 2
 
-    $ sudo docker exec flask-hello-world pebble logs flask
-    2024-06-21T03:41:45.077Z [flask] [2024-06-21 03:41:45 +0000] [17] [INFO] Starting gunicorn 22.0.0
-    2024-06-21T03:41:45.077Z [flask] [2024-06-21 03:41:45 +0000] [17] [INFO] Listening at: http://0.0.0.0:8000 (17)
-    2024-06-21T03:41:45.077Z [flask] [2024-06-21 03:41:45 +0000] [17] [INFO] Using worker: sync
-    2024-06-21T03:41:45.078Z [flask] [2024-06-21 03:41:45 +0000] [18] [INFO] Booting worker with pid: 18
-
-The above command shows the logs for the ``flask`` service.
+The updated application should respond with the current date and time (e.g.
+``2024-06-21 09:47:56``).
 
 Cleanup
-=======
+~~~~~~~
 
-Stop the container and delete all the created files:
+You can now stop container and remove the corresponding image:
+
+.. literalinclude:: code/getting-started-with-flask/task.yaml
+    :language: bash
+    :start-after: [docs:stop-docker-updated]
+    :end-before: [docs:stop-docker-updated-end]
+    :dedent: 2
+
+Reset your environment
+======================
+
+You've reached the end of this tutorial.
+
+If you'd like to reset your working environment, you can simply run the
+following:
 
 .. literalinclude:: code/getting-started-with-flask/task.yaml
     :language: bash
@@ -320,10 +421,33 @@ Stop the container and delete all the created files:
     :end-before: [docs:cleanup-end]
     :dedent: 2
 
-If you created an instance using Multipass, clean it up:
+.. collapse:: If using Multipass...
+    
+    If you created an instance using Multipass, you can also clean it up.
+    Start by exiting it:
 
-.. code-block:: bash
+    .. code-block:: bash
 
-   exit
-   multipass delete flask-hello-world
-   multipass purge
+        exit
+
+    And then you can proceed with its deletion:
+
+    .. code-block:: bash
+
+        multipass delete flask-hello-world
+        multipass purge
+
+----
+
+Troubleshooting
+===============
+
+**Application updates not taking effect?**
+
+Upon changing your Flask application and re-packing the rock, if you believe
+your changes are not taking effect (e.g. the ``/time``
+:ref:`endpoint <update-flask-application>` is returning a
+404), try running ``rockcraft clean`` and pack the rock again with
+``rockcraft pack``.
+
+.. _`lxd-docker-connectivity-issue`: https://documentation.ubuntu.com/lxd/en/latest/howto/network_bridge_firewalld/#prevent-connectivity-issues-with-lxd-and-docker
