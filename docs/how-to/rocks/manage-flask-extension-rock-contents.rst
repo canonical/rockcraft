@@ -1,15 +1,15 @@
-Use the flask-framework extension
----------------------------------
+Manage Flask extension rock contents
+------------------------------------
 
 The ``flask-framework`` extension requires a ``requirements.txt`` file and a
 ``app.py`` file that exposes ``app`` as a WSGI app. For example, ``app.py``:
 
-.. literalinclude:: ../code/use-flask-extension/example/app.py
+.. literalinclude:: ../code/manage-flask-extension-rock-contents/example/app.py
     :language: python
 
 And ``requirements.txt``:
 
-.. literalinclude:: ../code/use-flask-extension/example/requirements.txt
+.. literalinclude:: ../code/manage-flask-extension-rock-contents/example/requirements.txt
 
 To employ it, include ``extensions: [ flask-framework ]`` in your
 ``rockcraft.yaml`` file.
@@ -20,14 +20,14 @@ To employ it, include ``extensions: [ flask-framework ]`` in your
 
 Example:
 
-.. literalinclude:: ../code/use-flask-extension/example/rockcraft.yaml
+.. literalinclude:: ../code/manage-flask-extension-rock-contents/example/rockcraft.yaml
     :language: yaml
 
 :doc:`/tutorials/getting-started-with-flask` shows you how to go
 from a host with Ubuntu installed to a Flask app running in docker.
 
 Managing project files with the Flask extension
------------------------------------------------
+===============================================
 
 By default the Flask extension only includes ``app.py``, ``static/``,
 ``app/``, ``templates/`` and ``migrate.sh`` in the Flask project. You can
@@ -41,7 +41,7 @@ be prefixed with ``flask/app``.
 
 For example, to include only select files:
 
-.. literalinclude:: ../code/use-flask-extension/prime-example/rockcraft.yaml
+.. literalinclude:: ../code/manage-flask-extension-rock-contents/prime-example/rockcraft.yaml
     :language: yaml
     :start-after: [docs:parts-start]
     :end-before: [docs:parts-end]
@@ -49,7 +49,7 @@ For example, to include only select files:
 To exclude certain files from the project directory in the rock image and
 include everything else, add the following part to ``rockcraft.yaml``:
 
-.. literalinclude:: ../code/use-flask-extension/prime-exclude-example/rockcraft.yaml
+.. literalinclude:: ../code/manage-flask-extension-rock-contents/prime-exclude-example/rockcraft.yaml
     :language: yaml
     :start-after: [docs:parts-start]
     :end-before: [docs:parts-end]
@@ -60,7 +60,7 @@ Including additional debs in the OCI image
 if your app requires debs, for example to connect to a database, add the
 following snippet to the ``rockfile.yaml``:
 
-.. literalinclude:: ../code/use-flask-extension/deb-example/rockcraft.yaml
+.. literalinclude:: ../code/manage-flask-extension-rock-contents/deb-example/rockcraft.yaml
     :language: yaml
     :start-after: [docs:parts-start]
     :end-before: [docs:parts-end]
