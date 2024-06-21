@@ -2,7 +2,8 @@ Build a rock for a Flask application
 ------------------------------------
 
 In this tutorial you will create a simple Flask application and learn how to
-containerise it in a rock.
+containerise it in a rock, using Rockcraft's ``flask-framework``
+:ref:`extension <flask-framework-reference>`.
 
 Setup
 =====

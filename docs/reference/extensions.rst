@@ -14,8 +14,8 @@ The ``flask-framework`` extension
 The Flask extension streamlines the process of building Flask application rocks.
 
 It facilitates the installation of Flask application dependencies, including
-Gunicorn, in the rock image. Additionally, it transfers your project files to
-``/flask/app`` within the rock image.
+Gunicorn, inside the rock. Additionally, it transfers your project files to
+``/flask/app`` within the rock.
 
 A statsd-exporter is installed alongside the Gunicorn server to export Gunicorn
 server metrics.
@@ -38,7 +38,8 @@ There are 4 requirements to be able to use the ``flask-framework`` extension:
 ``parts`` > ``flask-framework/runtime-slices`` > ``stage-packages``
 ===================================================================
 
-You can use this key to specify any package slices required for your Flask
+You can use this field to specify any :ref:`chisel_explanation` package slices
+required for your Flask
 application. For example, below we use it to specify ``libxml2_libs``:
 
 .. code-block:: yaml
@@ -46,13 +47,13 @@ application. For example, below we use it to specify ``libxml2_libs``:
   parts:
     flask-framework/runtime-slices:
       stage-packages:
-        # list required package slices for your flask application below.
+        # list required Chisel package slices for your flask application below.
         - libxml2_libs
 
 ``parts`` > ``flask-framework/runtime-debs`` > ``stage-packages``
 =================================================================
 
-You can use this key to specify any Debian packages required for your Flask
+You can use this field to specify any Debian packages required for your Flask
 application. For example, below we use it to specify ``libpq-dev``:
 
 .. code-block:: yaml
@@ -61,13 +62,14 @@ application. For example, below we use it to specify ``libpq-dev``:
     flask-framework/runtime-debs:
       stage-packages:
         # list required Debian packages for your flask application below.
-        - libxml2_libs
+        - libpq-dev
 
 ``parts`` > ``flask-framework/install-app`` > ``prime``
 =======================================================
 
-You can use this key to specify the files to be included in your rock upon
-``rockcraft pack``, in ``flask/app/<filename>`` notation. For example:
+You can use this field to specify the files to be included or excluded from
+your rock upon ``rockcraft pack``. Follow the ``flask/app/<filename>``
+notation. For example:
 
 .. code-block:: yaml
 
