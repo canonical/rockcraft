@@ -18,9 +18,9 @@ execute: |
   # [docs:create-venv-end]
 
   # [docs:run-flask]
-  flask run &
+  flask run -p 8000 &
   # [docs:run-flask-end]
-  retry -n 5 --wait 2 curl localhost:5000
+  retry -n 5 --wait 2 curl localhost:8000
   # [docs:stop-flask]
   kill $!
   # [docs:stop-flask-end]

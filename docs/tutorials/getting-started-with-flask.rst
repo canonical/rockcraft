@@ -108,7 +108,7 @@ Use ``curl`` to send a request to the root endpoint:
 ..  code-block:: text
     :class: log-snippets
 
-    $ curl localhost:5000
+    $ curl localhost:8000
     Hello, world!
 
 The Flask application should respond with ``Hello, world!`` Stop flask for now:
