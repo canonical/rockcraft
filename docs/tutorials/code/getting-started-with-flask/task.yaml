@@ -19,38 +19,70 @@ execute: |
 
   # [docs:run-flask]
   flask run &
-  retry -n 5 --wait 2 curl localhost:5000
-  kill $!
   # [docs:run-flask-end]
+  retry -n 5 --wait 2 curl localhost:5000
+  # [docs:request-flask]
+  curl localhost:5000
+  # [docs:request-flask-end]
+  # [docs:stop-flask]
+  kill $!
+  # [docs:stop-flask-end]
 
   # [docs:create-rockcraft-yaml]
   rockcraft init --profile flask-framework
-  sed -i "s/name: .*/name: flask-hello-world/g" rockcraft.yaml
   ls rockcraft.yaml
   # [docs:create-rockcraft-yaml-end]
+  sed -i "s/name: .*/name: flask-hello-world/g" rockcraft.yaml
 
   # [docs:pack]
-  sudo iptables -I DOCKER-USER -j ACCEPT
-  lxd init --auto
   rockcraft pack
-  ls *.rock
   # [docs:pack-end]
 
   # [docs:skopeo-copy]
   sudo rockcraft.skopeo --insecure-policy copy oci-archive:flask-hello-world_0.1_amd64.rock docker-daemon:flask-hello-world:0.1
   # [docs:skopeo-copy-end]
 
+  # [docs:verify-image]
   sudo docker images flask-hello-world:0.1
+  # [docs:verify-image-end]
 
   # [docs:docker-run]
   sudo docker run -d -p 8000:8000 --name flask-hello-world flask-hello-world:0.1
-  retry -n 5 --wait 2 curl localhost:8000
   # [docs:docker-run-end]
-
-  # [docs:cleanup]
+  retry -n 5 --wait 2 curl localhost:8000
+  # [docs:request-docker]
+  curl localhost:8000
+  # [docs:request-docker-end]
+  # [docs:stop-docker]
   sudo docker stop flask-hello-world
   sudo docker rm flask-hello-world
   sudo docker rmi flask-hello-world:0.1
+  # [docs:stop-docker-end]
+
+  # [docs:change-base]
+  sed -i "s/base: .*/base: bare\nbuild-base: ubuntu@22.04/g" rockcraft.yaml
+  # [docs:change-base-end]
+
+  # [docs:chisel-pack]
+  rockcraft pack
+  # [docs:chisel-pack-end]
+
+  # [docs:docker-run-chisel]
+  sudo rockcraft.skopeo --insecure-policy copy oci-archive:flask-hello-world_0.1_amd64.rock docker-daemon:flask-hello-world:0.1
+  sudo docker images flask-hello-world:0.1
+  sudo docker run -d -p 8000:8000 --name flask-hello-world flask-hello-world:0.1
+  # [docs:docker-run-chisel-end]
+  retry -n 5 --wait 2 curl localhost:8000
+  # [docs:request-docker-chisel]
+  curl localhost:8000
+  # [docs:request-docker-chisel-end]
+  # [docs:stop-docker-chisel]
+  sudo docker stop flask-hello-world
+  sudo docker rm flask-hello-world
+  sudo docker rmi flask-hello-world:0.1
+  # [docs:stop-docker-chisel-end]
+
+  # [docs:cleanup]
   deactivate
   rm -rf .venv
   rm flask-hello-world_0.1_amd64.rock rockcraft.yaml app.py requirements.txt
