@@ -78,6 +78,7 @@ def test_flask_extension_default(tmp_path, flask_input_yaml, packages):
                 "python-requirements": ["requirements.txt"],
                 "source": ".",
                 "stage-packages": ["python3-venv"],
+                "build-environment": [],
             },
             "flask-framework/install-app": {
                 "organize": {
@@ -276,6 +277,7 @@ def test_flask_extension_override_parts(tmp_path, flask_input_yaml):
         "python-requirements": ["requirements.txt", "requirements-jammy.txt"],
         "source": ".",
         "stage-packages": ["python3-venv"],
+        "build-environment": [],
     }
 
 
@@ -295,6 +297,14 @@ def test_flask_extension_bare(tmp_path):
         "plugin": "nil",
         "override-build": "mkdir -m 777 ${CRAFT_PART_INSTALL}/tmp",
         "stage-packages": ["bash_bins", "coreutils_bins", "ca-certificates_data"],
+    }
+    assert applied["parts"]["flask-framework/dependencies"] == {
+        "plugin": "python",
+        "python-packages": ["gunicorn"],
+        "python-requirements": ["requirements.txt"],
+        "source": ".",
+        "stage-packages": ["python3.11-venv_ensurepip"],
+        "build-environment": [{"PARTS_PYTHON_INTERPRETER": "python3.11"}],
     }
 
 
@@ -436,6 +446,7 @@ def test_django_extension_default(tmp_path, django_input_yaml):
                 "python-requirements": ["requirements.txt"],
                 "source": ".",
                 "stage-packages": ["python3-venv"],
+                "build-environment": [],
             },
             "django-framework/install-app": {
                 "organize": {"*": "django/app/", ".*": "django/app/"},
