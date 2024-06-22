@@ -1,10 +1,10 @@
 summary: rockcraft init test
 
 execute: |
-  run_rockcraft init --name=my-rock-name 2> output.txt
+  run_rockcraft init --name=my-rock-name > output.txt
 
   # Output of init must be exactly this line, and nothing else.  
-  echo "Created rockcraft.yaml." > expected.txt
+  echo "Created 'rockcraft.yaml'." > expected.txt
   diff output.txt expected.txt
   
   test -f rockcraft.yaml
