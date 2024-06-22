@@ -244,7 +244,7 @@ class InitCommand(AppCommand):
         # Get the init profile
         init_profile = self._PROFILES[parsed_args.profile]
 
-        # Setup the reference documenation link if available
+        # Setup the reference documentation link if available
         profile_reference_docs: str | None = None
         if self._app.docs_url and init_profile.doc_slug:
             profile_reference_docs = self._app.docs_url + init_profile.doc_slug
