@@ -16,6 +16,7 @@
 import pathlib
 import sys
 from pathlib import Path
+import textwrap
 from unittest.mock import DEFAULT, call
 
 import pytest
@@ -117,11 +118,10 @@ def test_run_init_fallback_name(mocker):
     assert rock_project.name == "my-rock-name"
 
 
-@pytest.mark.usefixtures("new_dir")
-def test_run_init_flask(mocker, tmp_path, monkeypatch):
-    (tmp_path / "requirements.txt").write_text("flask")
-    (tmp_path / "app.py").write_text("app = object()")
-    mock_ended_ok = mocker.patch.object(emit, "ended_ok")
+def test_run_init_flask(mocker, emitter, monkeypatch, new_dir, tmp_path):
+    (new_dir / "requirements.txt").write_text("Flask", encoding="utf-8")
+    (new_dir / "app.py").write_text("app = object()", encoding="utf-8")
+
     mocker.patch.object(sys, "argv", ["rockcraft", "init", "--profile=flask-framework"])
 
     cli.run()
@@ -131,7 +131,12 @@ def test_run_init_flask(mocker, tmp_path, monkeypatch):
 
     assert len(rock_project_yaml["summary"]) < 80
     assert len(rock_project_yaml["description"].split()) < 100
-    assert mock_ended_ok.mock_calls == [call()]
-
+    emitter.assert_message(
+        textwrap.dedent(
+            """\
+        Created 'rockcraft.yaml'.
+        Go to https://documentation.ubuntu.com/rockcraft/en/stable/reference/extensions/flask-framework to read more about the 'flask-framework' profile."""
+        )
+    )
     monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "0")
     project.Project.unmarshal(extensions.apply_extensions(tmp_path, rock_project_yaml))

@@ -156,7 +156,7 @@ class InitCommand(AppCommand):
                 #     - libpq5
                 """
             ),
-            doc_slug="/reference/extensions/#the-flask-framework-extension",
+            doc_slug="/reference/extensions/flask-framework",
         ),
         "django-framework": _InitProfile(
             rockcraft_yaml=textwrap.dedent(
@@ -246,11 +246,11 @@ class InitCommand(AppCommand):
         init_profile = self._PROFILES[parsed_args.profile]
         rockcraft_yaml_path = init(init_profile.rockcraft_yaml.format(**context))
 
-        message = f"Created {rockcraft_yaml_path}."
+        message = f"Created {str(rockcraft_yaml_path)!r}."
         if self._app.docs_url and init_profile.doc_slug:
             profile_reference = self._app.docs_url + init_profile.doc_slug
             message += (
-                f"\nRead more about the {parsed_args.profile!r} at: {profile_reference}"
+                f"\nGo to {profile_reference} to read more about the "
+                f"{parsed_args.profile!r} profile."
             )
-
-        emit.progress(message)
+        emit.message(message)
