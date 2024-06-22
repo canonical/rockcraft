@@ -49,9 +49,9 @@ html_context = {
 
 extensions = [
     "canonical_sphinx",
+    "notfound.extension",
 ]
 # endregion
-
 extensions.extend(
     [
         "sphinx.ext.autodoc",
@@ -120,6 +120,50 @@ linkcheck_anchors_ignore = ["slice-definitions"]
 # Enable support for google-style instance attributes.
 napoleon_use_ivar = True
 
+# endregion
+
+# TODO: this is a boilerplate copy from the sphinx-docs. It should
+# be built on top of it instead of duplicating its content
+# Not found
+# The URL prefix for the notfound extension depends on whether the documentation uses versions.
+# For documentation on documentation.ubuntu.com, we also must add the slug.
+url_version = ""
+url_lang = ""
+slug = "rockcraft"
+
+# Determine if the URL uses versions and language
+if (
+    "READTHEDOCS_CANONICAL_URL" in os.environ
+    and os.environ["READTHEDOCS_CANONICAL_URL"]
+):
+    url_parts = os.environ["READTHEDOCS_CANONICAL_URL"].split("/")
+
+    if (
+        len(url_parts) >= 2
+        and "READTHEDOCS_VERSION" in os.environ
+        and os.environ["READTHEDOCS_VERSION"] == url_parts[-2]
+    ):
+        url_version = url_parts[-2] + "/"
+
+    if (
+        len(url_parts) >= 3
+        and "READTHEDOCS_LANGUAGE" in os.environ
+        and os.environ["READTHEDOCS_LANGUAGE"] == url_parts[-3]
+    ):
+        url_lang = url_parts[-3] + "/"
+
+# Set notfound_urls_prefix to the slug (if defined) and the version/language affix
+if slug:
+    notfound_urls_prefix = "/" + slug + "/" + url_lang + url_version
+elif len(url_lang + url_version) > 0:
+    notfound_urls_prefix = "/" + url_lang + url_version
+else:
+    notfound_urls_prefix = ""
+
+notfound_context = {
+    "title": "Page not found",
+    "body": "<p><strong>Sorry, but the documentation page that you are looking for was not found.</strong></p>\n\n<p>Documentation changes over time, and pages are moved around. We try to redirect you to the updated content where possible, but unfortunately, that didn't work this time (maybe because the content you were looking for does not exist in this version of the documentation).</p>\n<p>You can try to use the navigation to locate the content you're looking for, or search for a similar page.</p>\n",
+}
 # endregion
 
 
