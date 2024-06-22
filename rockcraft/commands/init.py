@@ -241,16 +241,27 @@ class InitCommand(AppCommand):
                 name = "my-rock-name"
             emit.debug(f"Set project name to '{name}'")
 
-        context = {"name": name, "snake_name": name.replace("-", "_").lower()}
-
+        # Get the init profile
         init_profile = self._PROFILES[parsed_args.profile]
+
+        # Setup the reference documenation link if available
+        profile_reference_docs: str | None = None
+        if self._app.docs_url and init_profile.doc_slug:
+            profile_reference_docs = self._app.docs_url + init_profile.doc_slug
+
+        # Format the template, all templates should be tested to avoid risk of
+        # expecting documentation when there isn't any set
+        context = {
+            "name": name,
+            "snake_name": name.replace("-", "_").lower(),
+            "profile_reference_docs": profile_reference_docs,
+        }
         rockcraft_yaml_path = init(init_profile.rockcraft_yaml.format(**context))
 
         message = f"Created {str(rockcraft_yaml_path)!r}."
-        if self._app.docs_url and init_profile.doc_slug:
-            profile_reference = self._app.docs_url + init_profile.doc_slug
+        if profile_reference_docs:
             message += (
-                f"\nGo to {profile_reference} to read more about the "
+                f"\nGo to {profile_reference_docs} to read more about the "
                 f"{parsed_args.profile!r} profile."
             )
         emit.message(message)
