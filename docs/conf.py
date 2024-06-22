@@ -166,6 +166,7 @@ notfound_context = {
 }
 # endregion
 
+
 def generate_cli_docs(nil):
     gen_cli_docs_path = (project_dir / "tools" / "docs" / "gen_cli_docs.py").resolve()
     os.system("%s %s" % (gen_cli_docs_path, project_dir / "docs"))
