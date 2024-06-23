@@ -1,9 +1,9 @@
 summary: flask extension test
 environment:
   SCENARIO/bare: bare
-  SCENARIO/base_2204: ubuntu_22.04
+  SCENARIO/base_2204: ubuntu-22.04
 execute: |
-  NAME="flask_${SCENARIO}"
+  NAME="flask-${SCENARIO//./-}"
   ROCK_FILE="${NAME}_0.1_amd64.rock"
   IMAGE="${NAME}:0.1"
 
@@ -12,7 +12,7 @@ execute: |
   if [ "${SCENARIO}" = "bare" ]; then
       sed -i "s/base: .*/base: ${SCENARIO}\nbuild-base: ubuntu@22.04/g" rockcraft.yaml
   else
-      sed -i "s/base: .*/base: ${SCENARIO//_/@}/g" rockcraft.yaml
+      sed -i "s/base: .*/base: ${SCENARIO//-/@}/g" rockcraft.yaml
   fi
   run_rockcraft pack
 
