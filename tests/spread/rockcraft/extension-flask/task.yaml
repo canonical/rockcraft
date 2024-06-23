@@ -8,26 +8,45 @@ execute: |
   test ! -d work
 
   # Ensure docker does not have this container image
-  docker rmi --force flask-extension
+  docker rmi --force flask-extension:ubuntu
   # Install container
-  sudo rockcraft.skopeo --insecure-policy copy oci-archive:flask-extension_0.1_amd64.rock docker-daemon:flask-extension:latest
+  sudo rockcraft.skopeo --insecure-policy copy oci-archive:flask-extension_0.1_amd64.rock docker-daemon:flask-extension:ubuntu
   # Ensure container exists
-  docker images flask-extension | MATCH "flask-extension"
+  docker images flask-extension:ubuntu | MATCH "flask-extension"
 
-  # ensure container doesn't exist
-  docker rm -f flask-extension-container
+  #Change base to bare
+  sed -i "s/base: .*/base: bare\nbuild-base: ubuntu@22.04/g" rockcraft.yaml
+  sed -i "s/version: .*/version: 0.2/g" rockcraft.yaml
 
-  # test the flask project is ready to run inside the container
-  docker run --rm --entrypoint /bin/python3 flask-extension -m gunicorn --chdir /flask/app --check-config app:app
-  docker run --rm --entrypoint /bin/python3 flask-extension -c "import pathlib;assert pathlib.Path('/flask/app/static/js/test.js').is_file()"
-  docker run --rm --entrypoint /bin/python3 flask-extension -c "import pathlib;assert not pathlib.Path('/flask/app/node_modules').exists()"
+  run_rockcraft pack
 
-  # test the default flask service
-  docker run --name flask-extension-container -d -p 8137:8000 flask-extension
-  retry -n 5 --wait 2 curl localhost:8137
-  [ "$(curl -sSf localhost:8137)" == "ok" ]
+  test -f flask-extension_0.2_amd64.rock
+  test ! -d work
+
+  # Ensure docker does not have this container image
+  docker rmi --force flask-extension:bare
+  # Install container
+  sudo rockcraft.skopeo --insecure-policy copy oci-archive:flask-extension_0.2_amd64.rock docker-daemon:flask-extension:bare
+  # Ensure container exists
+  docker images flask-extension:bare | MATCH "flask-extension"
+
+  for base in ubuntu bare; do
+    # ensure container doesn't exist
+    docker rm -f flask-extension-container
+
+    # test the flask project is ready to run inside the container
+    docker run --rm --entrypoint /bin/python3 flask-extension:${base} -m gunicorn --chdir /flask/app --check-config app:app
+    docker run --rm --entrypoint /bin/python3 flask-extension:${base} -c "import pathlib;assert pathlib.Path('/flask/app/static/js/test.js').is_file()"
+    docker run --rm --entrypoint /bin/python3 flask-extension:${base} -c "import pathlib;assert not pathlib.Path('/flask/app/node_modules').exists()"
+
+    # test the default flask service
+    docker run --name flask-extension-container -d -p 8137:8000 flask-extension:${base}
+    retry -n 5 --wait 2 curl localhost:8137
+    [ "$(curl -sSf localhost:8137)" == "ok" ]
+  done;
 
 restore: |
-  rm -f flask-extension_0.1_amd64.rock
-  docker rmi -f flask-extension
+  rm -f flask-extension_0.1_amd64.rock flask-extension_0.2_amd64.rock
+  docker rmi -f flask-extension:ubuntu
+  docker rmi -f flask-extension:bare
   docker rm -f flask-extension-container
