@@ -129,7 +129,7 @@ class InitCommand(AppCommand):
                 #       - flask/app/static
 
                 # you may need packages to build a python package. Add them here if necessary.
-                #   flask-framework/install-app:
+                #   flask-framework/dependencies:
                 #     build-packages:
                 #       # for example, if you need pkg-config and libxmlsec1-dev to build one
                 #       # of your packages:
