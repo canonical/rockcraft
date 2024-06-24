@@ -17,11 +17,13 @@ execute: |
       sed -i "s/base: .*/base: ${SCENARIO//-/@}/g" rockcraft.yaml
   fi
 
+  # uncomment the parts main section
+  sed -i "s/# parts:/parts:/g" rockcraft.yaml
   # uncomment the part depending on the base
   awk -i inplace -v block_key="${BLOCK}" '
   BEGIN {
     in_block = 0;
-    comment_pattern = "^#[[:space:]]{3}";
+    comment_pattern = "^#[[:space:]]";
     uncommented_line = "";
   }
 
