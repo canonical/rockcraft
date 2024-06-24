@@ -18,7 +18,7 @@ execute: |
   fi
 
   # uncomment the part depending on the base
-  awk -v block_key="${BLOCK}" '
+  awk -i inplace -v block_key="${BLOCK}" '
   BEGIN {
     in_block = 0;
     comment_pattern = "^#[[:space:]]{3}";
