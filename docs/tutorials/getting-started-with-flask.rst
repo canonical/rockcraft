@@ -19,10 +19,6 @@ Finally, create a new directory for this tutorial and go inside it:
    mkdir flask-hello-world
    cd flask-hello-world
 
-Note that you'll also need a text editor. You can either install one of your
-choice or simply use one of the already existing editors in your Ubuntu
-environment (like ``vi``).
-
 Create the Flask application
 ============================
 
@@ -127,7 +123,7 @@ extension:
     :end-before: [docs:ls-rock-end]
     :dedent: 2
 
-The created rock is about 62MB in size. We will reduce its size later in this
+The created rock is about 65MB in size. We will reduce its size later in this
 tutorial.
 
 .. note::
@@ -295,7 +291,8 @@ Unsurprisingly, the Flask application should still respond with
 Cleanup
 ~~~~~~~
 
-And that's it. You can now stop container and remove the corresponding image:
+And that's it. You can now stop the container and remove the corresponding
+image:
 
 .. literalinclude:: code/getting-started-with-flask/task.yaml
     :language: bash
@@ -318,7 +315,7 @@ look like the following:
     :language: python
 
 Since you are creating a new version of your application, **open the**
-``rockfile.yaml`` **file and change the** ``version`` (e.g. to ``0.2``).
+``rockfile.yaml`` file and change the ``version`` (e.g. to ``0.2``).
 
 Pack and run the rock using similar commands as before:
 
@@ -347,7 +344,7 @@ The updated application should respond with the current date and time (e.g.
 Cleanup
 ~~~~~~~
 
-You can now stop container and remove the corresponding image:
+You can now stop the container and remove the corresponding image:
 
 .. literalinclude:: code/getting-started-with-flask/task.yaml
     :language: bash
