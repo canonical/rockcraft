@@ -1,0 +1,77 @@
+summary: flask extension test
+environment:
+  SCENARIO/bare: bare
+  SCENARIO/base_2204: ubuntu-22.04
+  BLOCK/bare: runtime-slices
+  BLOCK/base_2204: runtime-debs
+execute: |
+  NAME="flask-${SCENARIO//./-}"
+  ROCK_FILE="${NAME}_0.1_amd64.rock"
+  IMAGE="${NAME}:0.1"
+
+  run_rockcraft init --name flask-extension --profile flask-framework
+  sed -i "s/name: .*/name: ${NAME}/g" rockcraft.yaml
+  if [ "${SCENARIO}" = "bare" ]; then
+      sed -i "s/base: .*/base: ${SCENARIO}\nbuild-base: ubuntu@22.04/g" rockcraft.yaml
+  else
+      sed -i "s/base: .*/base: ${SCENARIO//-/@}/g" rockcraft.yaml
+  fi
+
+  # uncomment the part depending on the base
+  awk -v block_key="${BLOCK}" '
+  BEGIN {
+    in_block = 0;
+    comment_pattern = "^#[[:space:]]{3}";
+    uncommented_line = "";
+  }
+
+  /^#[[:space:]]/ {
+    # Check if the line contains the block key
+    if (in_block == 0 && $0 ~ block_key) {
+      in_block = 1;
+    }
+  }
+
+  {
+    # If in_block is active, uncomment lines
+    if (in_block == 1) {
+      uncommented_line = gensub(comment_pattern, "", 1, $0);
+      if (uncommented_line == $0) {
+        in_block = 0;
+      }
+      print uncommented_line;
+    } else {
+      print $0;
+    }
+  }' rockcraft.yaml
+  run_rockcraft pack
+
+  test -f "${ROCK_FILE}"
+  test ! -d work
+
+  # Ensure docker does not have this container image
+  docker rmi --force "${IMAGE}"
+  # Install container
+  sudo rockcraft.skopeo --insecure-policy copy "oci-archive:${ROCK_FILE}" "docker-daemon:${IMAGE}"
+  # Ensure container exists
+  docker images "${IMAGE}" | MATCH "${NAME}"
+
+  # ensure container doesn't exist
+  docker rm -f "${NAME}-container"
+
+  # test the flask project is ready to run inside the container
+  docker run --rm --entrypoint /bin/python3 "${IMAGE}" -m gunicorn --chdir /flask/app --check-config app:app
+  docker run --rm --entrypoint /bin/python3 "${IMAGE}" -c "import pathlib;assert pathlib.Path('/flask/app/static/js/test.js').is_file()"
+  docker run --rm --entrypoint /bin/python3 "${IMAGE}" -c "import pathlib;assert not pathlib.Path('/flask/app/node_modules').exists()"
+
+  # test the uncommented extra parts effectively added libpq library
+  docker run --rm --entrypoint /bin/bash "${IMAGE}" -c 'find /usr/lib -type f -name libpq.so.5* | grep .'
+
+  # test the default flask service
+  docker run --name "${NAME}-container" -d -p 8137:8000 "${IMAGE}"
+  retry -n 5 --wait 2 curl localhost:8137
+  [ "$(curl -sSf localhost:8137)" == "ok" ]
+
+restore: |
+  rm -f "*.rock"
+  docker system prune -a -f
