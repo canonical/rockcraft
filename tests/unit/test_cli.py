@@ -174,12 +174,14 @@ def test_run_init_flask(mocker, emitter, monkeypatch, new_dir, tmp_path):
             #       - flask/app/webapp
             #       - flask/app/templates
             #       - flask/app/static
-            #       # you may need packages to build a python package. Add them here if necessary.
-            #       build-packages:
-            #           # for example, if you need pkg-config and libxmlsec1-dev to build one
-            #           # of your packages:
-            #           - pkg-config
-            #           - libxmlsec1-dev
+
+            # you may need packages to build a python package. Add them here if necessary.
+            #   flask-framework/install-app:
+            #     build-packages:
+            #       # for example, if you need pkg-config and libxmlsec1-dev to build one
+            #       # of your packages:
+            #       - pkg-config
+            #       - libxmlsec1-dev
 
             # you can add package slices or Debian packages to the image.
             # package slices are subsets of Debian packages, which result
