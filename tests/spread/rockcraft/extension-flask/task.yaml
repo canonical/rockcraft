@@ -16,26 +16,26 @@ execute: |
   fi
   run_rockcraft pack
 
-  test -f ${ROCK_FILE}
+  test -f "${ROCK_FILE}"
   test ! -d work
 
   # Ensure docker does not have this container image
-  docker rmi --force ${IMAGE}
+  docker rmi --force "${IMAGE}"
   # Install container
-  sudo rockcraft.skopeo --insecure-policy copy oci-archive:${ROCK_FILE} docker-daemon:${IMAGE}
+  sudo rockcraft.skopeo --insecure-policy copy "oci-archive:${ROCK_FILE}" "docker-daemon:${IMAGE}"
   # Ensure container exists
-  docker images ${IMAGE} | MATCH "flask-extension"
+  docker images "${IMAGE}" | MATCH "${NAME}"
 
   # ensure container doesn't exist
-  docker rm -f ${NAME}-container
+  docker rm -f "${NAME}-container"
 
   # test the flask project is ready to run inside the container
-  docker run --rm --entrypoint /bin/python3 ${IMAGE} -m gunicorn --chdir /flask/app --check-config app:app
-  docker run --rm --entrypoint /bin/python3 ${IMAGE} -c "import pathlib;assert pathlib.Path('/flask/app/static/js/test.js').is_file()"
-  docker run --rm --entrypoint /bin/python3 ${IMAGE} -c "import pathlib;assert not pathlib.Path('/flask/app/node_modules').exists()"
+  docker run --rm --entrypoint /bin/python3 "${IMAGE}" -m gunicorn --chdir /flask/app --check-config app:app
+  docker run --rm --entrypoint /bin/python3 "${IMAGE}" -c "import pathlib;assert pathlib.Path('/flask/app/static/js/test.js').is_file()"
+  docker run --rm --entrypoint /bin/python3 "${IMAGE}" -c "import pathlib;assert not pathlib.Path('/flask/app/node_modules').exists()"
 
   # test the default flask service
-  docker run --name ${NAME}-container -d -p 8137:8000 ${IMAGE}
+  docker run --name "${NAME}-container" -d -p 8137:8000 "${IMAGE}"
   retry -n 5 --wait 2 curl localhost:8137
   [ "$(curl -sSf localhost:8137)" == "ok" ]
 
