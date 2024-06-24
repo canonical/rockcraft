@@ -156,7 +156,7 @@ class InitCommand(AppCommand):
                 #     - libpq5
                 """
             ),
-            doc_slug="/reference/extensions/#the-flask-framework-extension",
+            doc_slug="/reference/extensions/flask-framework",
         ),
         "django-framework": _InitProfile(
             rockcraft_yaml=textwrap.dedent(
@@ -241,16 +241,27 @@ class InitCommand(AppCommand):
                 name = "my-rock-name"
             emit.debug(f"Set project name to '{name}'")
 
-        context = {"name": name, "snake_name": name.replace("-", "_").lower()}
-
+        # Get the init profile
         init_profile = self._PROFILES[parsed_args.profile]
+
+        # Setup the reference documentation link if available
+        profile_reference_docs: str | None = None
+        if self._app.docs_url and init_profile.doc_slug:
+            profile_reference_docs = self._app.docs_url + init_profile.doc_slug
+
+        # Format the template, all templates should be tested to avoid risk of
+        # expecting documentation when there isn't any set
+        context = {
+            "name": name,
+            "snake_name": name.replace("-", "_").lower(),
+            "profile_reference_docs": profile_reference_docs,
+        }
         rockcraft_yaml_path = init(init_profile.rockcraft_yaml.format(**context))
 
-        message = f"Created {rockcraft_yaml_path}."
-        if self._app.docs_url and init_profile.doc_slug:
-            profile_reference = self._app.docs_url + init_profile.doc_slug
+        message = f"Created {str(rockcraft_yaml_path)!r}."
+        if profile_reference_docs:
             message += (
-                f"\nRead more about the {parsed_args.profile!r} at: {profile_reference}"
+                f"\nGo to {profile_reference_docs} to read more about the "
+                f"{parsed_args.profile!r} profile."
             )
-
-        emit.progress(message)
+        emit.message(message)
