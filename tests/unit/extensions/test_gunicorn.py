@@ -13,6 +13,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+import textwrap
 
 import pytest
 from rockcraft import extensions
@@ -331,6 +332,34 @@ def test_flask_extension_requirements_txt_no_flask_error(tmp_path):
     assert (
         str(exc.value) == "- missing flask package dependency in requirements.txt file."
     )
+
+
+@pytest.mark.usefixtures("flask_extension")
+def test_flask_extension_bad_app_py(tmp_path):
+    bad_code = textwrap.dedent(
+        """
+    import flask
+
+    app = flask.Flask()
+
+    bad = "my value
+    """
+    ).strip()
+    (tmp_path / "app.py").write_text(bad_code)
+    (tmp_path / "requirements.txt").write_text("flask")
+    flask_input_yaml = {
+        "extensions": ["flask-framework"],
+        "base": "bare",
+        "build-base": "ubuntu@22.04",
+        "platforms": {"amd64": {}},
+    }
+    with pytest.raises(ExtensionError) as exc:
+        extensions.apply_extensions(tmp_path, flask_input_yaml)
+
+    expected = (
+        "- error parsing app.py: unterminated string literal (detected at line 5)"
+    )
+    assert str(exc.value) == expected
 
 
 @pytest.mark.usefixtures("flask_extension")
