@@ -266,7 +266,7 @@ class FlaskFramework(_GunicornBase):
 
         if not has_app:
             return [
-                "flask application can not be imported from app:app in file app.py file in the project root."
+                "flask application can not be imported from app:app in app.py in the project root."
             ]
 
         return []
