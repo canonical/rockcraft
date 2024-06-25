@@ -27,35 +27,6 @@ There are 2 requirements to be able to use the ``flask-framework`` extension:
    there must be an ``app.py`` file at the root of the project with the name
    of the Flask object is set to ``app``
 
-``parts`` > ``flask-framework/runtime-slices`` > ``stage-packages``
-===================================================================
-
-You can use this field to specify any :ref:`chisel_explanation` package slices
-required for your Flask
-application. For example, below we use it to specify ``libxml2_libs``:
-
-.. code-block:: yaml
-
-  parts:
-    flask-framework/runtime-slices:
-      stage-packages:
-        # list required Chisel package slices for your flask application below.
-        - libxml2_libs
-
-``parts`` > ``flask-framework/runtime-debs`` > ``stage-packages``
-=================================================================
-
-You can use this field to specify any Debian packages required for your Flask
-application. For example, below we use it to specify ``libpq-dev``:
-
-.. code-block:: yaml
-
-  parts:
-    flask-framework/runtime-debs:
-      stage-packages:
-        # list required Debian packages for your flask application below.
-        - libpq-dev
-
 ``parts`` > ``flask-framework/install-app`` > ``prime``
 =======================================================
 
