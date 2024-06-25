@@ -40,5 +40,7 @@ execute: |
   [ "$(curl -sSf localhost:8137)" == "ok" ]
 
 restore: |
+  docker stop "${NAME}-container"
+  docker rm "${NAME}-container"
   rm -f "*.rock" rockcraft.yaml
   docker system prune -a -f

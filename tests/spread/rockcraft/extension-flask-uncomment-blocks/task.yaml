@@ -70,10 +70,12 @@ execute: |
   docker run --rm --entrypoint /bin/bash "${IMAGE}" -c '/bin/ls -1 /usr/lib/**/libpq.so.5*'
 
   # test the default flask service
-  docker run --name "${NAME}-container" -d -p 8137:8000 "${IMAGE}"
+  docker run --name "${NAME}-container" -d -p 8138:8000 "${IMAGE}"
   retry -n 5 --wait 2 curl localhost:8137
   [ "$(curl -sSf localhost:8137)" == "ok" ]
 
 restore: |
+  docker stop "${NAME}-container"
+  docker rm "${NAME}-container"
   rm -f "*.rock" rockcraft.yaml
   docker system prune -a -f
