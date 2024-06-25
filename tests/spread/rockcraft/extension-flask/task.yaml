@@ -40,6 +40,7 @@ execute: |
   [ "$(curl -sSf localhost:8137)" == "ok" ]
 
 restore: |
+  NAME="flask-${SCENARIO//./-}"
   docker stop "${NAME}-container"
   docker rm "${NAME}-container"
   rm -f "*.rock" rockcraft.yaml
