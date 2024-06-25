@@ -266,9 +266,14 @@ class FlaskFramework(_GunicornBase):
             return [
                 "flask application can not be imported from app:app, no app.py file found in the project root."
             ]
-        if not self.has_global_variable(app_file, "app"):
+        try:
+            has_app = self.has_global_variable(app_file, "app")
+        except SyntaxError as err:
+            return [f"error parsing app.py: {err.msg}"]
+
+        if not has_app:
             return [
-                "flask application can not be imported from app:app in file app.py file in the project root."
+                "flask application can not be imported from app:app in app.py in the project root."
             ]
 
         return []
