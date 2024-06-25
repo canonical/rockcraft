@@ -190,19 +190,19 @@ def test_run_init_flask(mocker, emitter, monkeypatch, new_dir, tmp_path):
 
             # add this part if you want to add packages slices to your image.
             # you can find a list of packages slices at https://github.com/canonical/chisel-releases
-            #   flask-framework/runtime-slices:
+            #   runtime-slices:
             #     plugin: nil
             #     stage-packages:
-            #     # list the required package slices for your flask application below.
-            #     # for example, for the slice libs of libpq5:
-            #     - libpq5_libs
+            #       # list the required package slices for your flask application below.
+            #       # for example, for the slice libs of libpq5:
+            #       - libpq5_libs
 
             # if you want to add a Debian package to your image, add the next part
-            #   flask-framework/runtime-debs:
+            #   runtime-debs:
             #     plugin: nil
             #     stage-packages:
-            #     # list required Debian packages for your flask application below.
-            #     - libpq5
+            #       # list required Debian packages for your flask application below.
+            #       - libpq5
         """
     )
     emitter.assert_message(
