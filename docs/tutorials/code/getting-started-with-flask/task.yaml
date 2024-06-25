@@ -121,7 +121,7 @@ execute: |
   # [docs:cleanup]
   # exit and delete the virtual environment
   deactivate
-  rm -rf .venv
+  rm -rf .venv __pycache__
   # delete all the files created during the tutorial
   rm flask-hello-world_0.1_amd64.rock flask-hello-world_0.2_amd64.rock rockcraft.yaml app.py requirements.txt
   # [docs:cleanup-end]
