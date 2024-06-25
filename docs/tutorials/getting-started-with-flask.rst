@@ -265,7 +265,7 @@ As before, verify that the new rock was created:
     :end-before: [docs:ls-bare-rock-end]
     :dedent: 2
 
-You'll verify that the new Flask rock is now approximately **15% smaller**
+You'll verify that the new Flask rock is now approximately **30% smaller**
 in size! And that's just because of the simple change of ``base``.
 
 And the functionality is still the same. As before, you can confirm this by

@@ -66,13 +66,20 @@ class _GunicornBase(Extension):
     def _gen_parts(self) -> dict:
         """Generate the parts associated with this extension."""
         data_dir = get_extensions_data_dir()
+        stage_packages = ["python3-venv"]
+        build_environment = []
+        if self.yaml_data["base"] == "bare":
+            stage_packages = ["python3.10-venv_ensurepip"]
+            build_environment = [{"PARTS_PYTHON_INTERPRETER": "python3.10"}]
+
         parts: Dict[str, Any] = {
             f"{self.framework}-framework/dependencies": {
                 "plugin": "python",
-                "stage-packages": ["python3-venv"],
+                "stage-packages": stage_packages,
                 "source": ".",
                 "python-packages": ["gunicorn"],
                 "python-requirements": ["requirements.txt"],
+                "build-environment": build_environment,
             },
             f"{self.framework}-framework/install-app": self.gen_install_app_part(),
             f"{self.framework}-framework/config-files": {
