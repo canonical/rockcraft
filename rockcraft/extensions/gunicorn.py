@@ -69,8 +69,8 @@ class _GunicornBase(Extension):
         stage_packages = ["python3-venv"]
         build_environment = []
         if self.yaml_data["base"] == "bare":
-            stage_packages = ["python3.11-venv_ensurepip"]
-            build_environment = [{"PARTS_PYTHON_INTERPRETER": "python3.11"}]
+            stage_packages = ["python3.10-venv_ensurepip"]
+            build_environment = [{"PARTS_PYTHON_INTERPRETER": "python3.10"}]
 
         parts: Dict[str, Any] = {
             f"{self.framework}-framework/dependencies": {
