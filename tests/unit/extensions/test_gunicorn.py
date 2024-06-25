@@ -303,8 +303,8 @@ def test_flask_extension_bare(tmp_path):
         "python-packages": ["gunicorn"],
         "python-requirements": ["requirements.txt"],
         "source": ".",
-        "stage-packages": ["python3.11-venv_ensurepip"],
-        "build-environment": [{"PARTS_PYTHON_INTERPRETER": "python3.11"}],
+        "stage-packages": ["python3.10-venv_ensurepip"],
+        "build-environment": [{"PARTS_PYTHON_INTERPRETER": "python3.10"}],
     }
 
 
