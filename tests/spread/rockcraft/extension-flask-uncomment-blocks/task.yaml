@@ -71,8 +71,8 @@ execute: |
 
   # test the default flask service
   docker run --name "${NAME}-container" -d -p 8138:8000 "${IMAGE}"
-  retry -n 5 --wait 2 curl localhost:8137
-  [ "$(curl -sSf localhost:8137)" == "ok" ]
+  retry -n 5 --wait 2 curl localhost:8138
+  [ "$(curl -sSf localhost:8138)" == "ok" ]
 
 restore: |
   docker stop "${NAME}-container"
