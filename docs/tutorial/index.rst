@@ -1,14 +1,14 @@
-.. _tutorials:
+.. _tutorial:
 
-Tutorials
-*********
+Tutorial
+********
 
-If you want to learn the basics from experience, then our tutorials will help
+If you want to learn the basics from experience, then our tutorial will help
 you acquire the necessary competencies from real-life examples with fully
 reproducible steps.
 
-The first tutorials will familiarise you with the basic operations, tools and
-workflows for packing rocks.
+The first steps of the tutorial will familiarise you with the basic operations,
+tools and workflows for packing rocks.
 
 .. toctree::
    :maxdepth: 1
@@ -16,7 +16,7 @@ workflows for packing rocks.
    1. Create a Hello World rock <hello-world>
    2. Install slices in a rock <chisel.rst>
 
-The next tutorials walk you through examples of transforming applications source
+The next steps walk you through examples of transforming applications source
 code into container applications:
 
 .. toctree::
@@ -24,4 +24,4 @@ code into container applications:
 
    3. Containerise a PyPI package <pypi-package.rst>
    4. Bundle a Node.js app within a rock <node-app.rst>
-   5. Build a rock for a Flask application <getting-started-with-flask.rst>
+   5. Build a rock for a Flask application <flask.rst>

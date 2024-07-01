@@ -3,12 +3,12 @@ Install slices in a rock
 
 In this tutorial, you will create a lean hello-world rock that uses chisel
 slices, and then compare the resulting rock with the one created without slices
-in :doc:`/tutorials/hello-world`.
+in :doc:`/tutorial/hello-world`.
 
 Setup your environment
 ----------------------
 
-.. include:: /reuse/tutorials/setup.rst
+.. include:: /reuse/tutorial/setup.rst
 
 Project setup
 -------------
@@ -85,4 +85,4 @@ Which should print:
     hello, world
 
 The ``chiselled-hello`` image will have a size of 5.6 MB, which is much less in
-size than the 8.8 MB ``hello`` rock created in :doc:`/tutorials/hello-world`.
+size than the 8.8 MB ``hello`` rock created in :doc:`/tutorial/hello-world`.

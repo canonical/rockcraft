@@ -4,7 +4,7 @@ How-to guides
 *************
 
 If you have a specific goal but are already familiar with Rockcraft, our How-to
-guides have more in-depth detail than our tutorials and can be applied to a
+guides have more in-depth detail than our tutorial and can be applied to a
 broader set of applications.
 
 They'll help you achieve an end result but may require you to understand and
