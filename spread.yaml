@@ -112,8 +112,8 @@ debug-each: |
   fi
 
 suites:
-  docs/tutorials/code/:
-    summary: tests basic tutorials from the docs
+  docs/tutorial/code/:
+    summary: tests tutorial from the docs
     systems:
     - ubuntu-22.04-64
 
@@ -127,7 +127,7 @@ suites:
     systems:
     - ubuntu-22.04-64
 
-  docs/reuse/tutorials/code/:
+  docs/reuse/tutorial/code/:
     summary: tests reusable code from the docs
     systems:
     - ubuntu-22.04-64

@@ -10,7 +10,7 @@ containerise it in a rock, using Rockcraft's ``flask-framework``
 Setup
 =====
 
-.. include:: /reuse/tutorials/setup.rst
+.. include:: /reuse/tutorial/setup.rst
 
 Finally, create a new directory for this tutorial and go inside it:
 
@@ -28,12 +28,12 @@ this tutorial.
 Create a ``requirements.txt`` file, copy the following text into it and then
 save it:
 
-.. literalinclude:: code/getting-started-with-flask/requirements.txt
+.. literalinclude:: code/flask/requirements.txt
 
 In order to test the Flask application locally (before packing it into a rock),
 install ``python3-venv`` and create a virtual environment:
 
-.. literalinclude:: code/getting-started-with-flask/task.yaml
+.. literalinclude:: code/flask/task.yaml
     :language: bash
     :start-after: [docs:create-venv]
     :end-before: [docs:create-venv-end]
@@ -42,12 +42,12 @@ install ``python3-venv`` and create a virtual environment:
 In the same directory, copy and save the following into a text file called
 ``app.py``:
 
-.. literalinclude:: code/getting-started-with-flask/app.py
+.. literalinclude:: code/flask/app.py
     :language: python
 
 Run the Flask application to verify that it works:
 
-.. literalinclude:: code/getting-started-with-flask/task.yaml
+.. literalinclude:: code/flask/task.yaml
     :language: bash
     :start-after: [docs:run-flask]
     :end-before: [docs:run-flask-end]
@@ -62,7 +62,7 @@ Run the Flask application to verify that it works:
 Test the Flask application by using ``curl`` to send a request to the root
 endpoint:
 
-.. literalinclude:: code/getting-started-with-flask/task.yaml
+.. literalinclude:: code/flask/task.yaml
     :language: bash
     :start-after: [docs:curl-flask]
     :end-before: [docs:curl-flask-end]
@@ -72,7 +72,7 @@ The Flask application should respond with ``Hello, world!``.
 
 The Flask application looks good, so you can stop for now:
 
-.. literalinclude:: code/getting-started-with-flask/task.yaml
+.. literalinclude:: code/flask/task.yaml
     :language: bash
     :start-after: [docs:stop-flask]
     :end-before: [docs:stop-flask-end]
@@ -85,7 +85,7 @@ First, you'll need a ``rockcraft.yaml`` file. Rockcraft will automate its
 creation and tailoring for a Flask application by using the
 ``flask-framework`` profile:
 
-.. literalinclude:: code/getting-started-with-flask/task.yaml
+.. literalinclude:: code/flask/task.yaml
     :language: bash
     :start-after: [docs:create-rockcraft-yaml]
     :end-before: [docs:create-rockcraft-yaml-end]
@@ -103,7 +103,7 @@ architecture, include ``arm64`` in ``platforms``.
 
 Pack the rock:
 
-.. literalinclude:: code/getting-started-with-flask/task.yaml
+.. literalinclude:: code/flask/task.yaml
     :language: bash
     :start-after: [docs:pack]
     :end-before: [docs:pack-end]
@@ -117,7 +117,7 @@ Once Rockcraft has finished packing the Flask rock, you'll find a new file in
 your working directory (an `OCI <OCI_image_spec_>`_ archive) with the ``.rock``
 extension:
 
-.. literalinclude:: code/getting-started-with-flask/task.yaml
+.. literalinclude:: code/flask/task.yaml
     :language: bash
     :start-after: [docs:ls-rock]
     :end-before: [docs:ls-rock-end]
@@ -137,7 +137,7 @@ Run the Flask rock with Docker
 You already have the rock as an `OCI <OCI_image_spec_>`_ archive. Now you'll
 need to import it into a format that Docker recognises:
 
-.. literalinclude:: code/getting-started-with-flask/task.yaml
+.. literalinclude:: code/flask/task.yaml
     :language: bash
     :start-after: [docs:skopeo-copy]
     :end-before: [docs:skopeo-copy-end]
@@ -145,7 +145,7 @@ need to import it into a format that Docker recognises:
 
 Check that the image was successfully imported into Docker:
 
-.. literalinclude:: code/getting-started-with-flask/task.yaml
+.. literalinclude:: code/flask/task.yaml
     :language: bash
     :start-after: [docs:docker-images]
     :end-before: [docs:docker-images-end]
@@ -167,7 +167,7 @@ size:
 Now you're finally ready to run the rock and test your containerised Flask
 application:
 
-.. literalinclude:: code/getting-started-with-flask/task.yaml
+.. literalinclude:: code/flask/task.yaml
     :language: text
     :start-after: [docs:docker-run]
     :end-before: [docs:docker-run-end]
@@ -176,7 +176,7 @@ application:
 Use the same ``curl`` command as before to send a request to the Flask
 application's root endpoint which is running inside the container:
 
-.. literalinclude:: code/getting-started-with-flask/task.yaml
+.. literalinclude:: code/flask/task.yaml
     :language: text
     :start-after: [docs:curl-flask-rock]
     :end-before: [docs:curl-flask-rock-end]
@@ -190,7 +190,7 @@ View the application logs
 When deploying your Flask rock, you can always get the application logs via
 ``pebble``:
 
-.. literalinclude:: code/getting-started-with-flask/task.yaml
+.. literalinclude:: code/flask/task.yaml
     :language: text
     :start-after: [docs:get-logs]
     :end-before: [docs:get-logs-end]
@@ -223,7 +223,7 @@ Now you have a fully functional rock for you Flask application! This concludes
 the first part of this tutorial, so you can stop the container and remove the
 respective image for now:
 
-.. literalinclude:: code/getting-started-with-flask/task.yaml
+.. literalinclude:: code/flask/task.yaml
     :language: bash
     :start-after: [docs:stop-docker]
     :end-before: [docs:stop-docker-end]
@@ -243,7 +243,7 @@ The first step towards chiselling your rock is to ensure you are using a
 In ``rockcraft.yaml``, change the ``base`` to ``bare`` and add
 ``build-base: ubuntu@22.04``:
 
-.. literalinclude:: code/getting-started-with-flask/task.yaml
+.. literalinclude:: code/flask/task.yaml
     :language: bash
     :start-after: [docs:change-base]
     :end-before: [docs:change-base-end]
@@ -251,7 +251,7 @@ In ``rockcraft.yaml``, change the ``base`` to ``bare`` and add
 
 Pack the rock with the new ``bare`` :ref:`base <bases_explanation>`:
 
-.. literalinclude:: code/getting-started-with-flask/task.yaml
+.. literalinclude:: code/flask/task.yaml
     :language: bash
     :start-after: [docs:chisel-pack]
     :end-before: [docs:chisel-pack-end]
@@ -259,7 +259,7 @@ Pack the rock with the new ``bare`` :ref:`base <bases_explanation>`:
 
 As before, verify that the new rock was created:
 
-.. literalinclude:: code/getting-started-with-flask/task.yaml
+.. literalinclude:: code/flask/task.yaml
     :language: bash
     :start-after: [docs:ls-bare-rock]
     :end-before: [docs:ls-bare-rock-end]
@@ -271,7 +271,7 @@ in size! And that's just because of the simple change of ``base``.
 And the functionality is still the same. As before, you can confirm this by
 running the rock with Docker
 
-.. literalinclude:: code/getting-started-with-flask/task.yaml
+.. literalinclude:: code/flask/task.yaml
     :language: text
     :start-after: [docs:docker-run-chisel]
     :end-before: [docs:docker-run-chisel-end]
@@ -279,7 +279,7 @@ running the rock with Docker
 
 and then using the same ``curl`` request:
 
-.. literalinclude:: code/getting-started-with-flask/task.yaml
+.. literalinclude:: code/flask/task.yaml
     :language: text
     :start-after: [docs:curl-flask-bare-rock]
     :end-before: [docs:curl-flask-bare-rock-end]
@@ -294,7 +294,7 @@ Cleanup
 And that's it. You can now stop the container and remove the corresponding
 image:
 
-.. literalinclude:: code/getting-started-with-flask/task.yaml
+.. literalinclude:: code/flask/task.yaml
     :language: bash
     :start-after: [docs:stop-docker-chisel]
     :end-before: [docs:stop-docker-chisel-end]
@@ -311,7 +311,7 @@ you want to add a new ``/time`` endpoint which returns the current time.
 Start by opening the ``app.py`` file in a text editor and update the code to
 look like the following:
 
-.. literalinclude:: code/getting-started-with-flask/time-app.py
+.. literalinclude:: code/flask/time-app.py
     :language: python
 
 Since you are creating a new version of your application, **open the**
@@ -319,7 +319,7 @@ Since you are creating a new version of your application, **open the**
 
 Pack and run the rock using similar commands as before:
 
-.. literalinclude:: code/getting-started-with-flask/task.yaml
+.. literalinclude:: code/flask/task.yaml
     :language: text
     :start-after: [docs:docker-run-update]
     :end-before: [docs:docker-run-update-end]
@@ -332,7 +332,7 @@ Pack and run the rock using similar commands as before:
 
 Finally, use ``curl`` to send a request to the ``/time`` endpoint:
 
-.. literalinclude:: code/getting-started-with-flask/task.yaml
+.. literalinclude:: code/flask/task.yaml
     :language: text
     :start-after: [docs:curl-time]
     :end-before: [docs:curl-time-end]
@@ -346,7 +346,7 @@ Cleanup
 
 You can now stop the container and remove the corresponding image:
 
-.. literalinclude:: code/getting-started-with-flask/task.yaml
+.. literalinclude:: code/flask/task.yaml
     :language: bash
     :start-after: [docs:stop-docker-updated]
     :end-before: [docs:stop-docker-updated-end]
@@ -360,7 +360,7 @@ You've reached the end of this tutorial.
 If you'd like to reset your working environment, you can simply run the
 following:
 
-.. literalinclude:: code/getting-started-with-flask/task.yaml
+.. literalinclude:: code/flask/task.yaml
     :language: bash
     :start-after: [docs:cleanup]
     :end-before: [docs:cleanup-end]

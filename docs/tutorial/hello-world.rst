@@ -4,7 +4,7 @@ Create a "Hello World" rock
 Setup your environment
 ----------------------
 
-.. include:: /reuse/tutorials/setup.rst
+.. include:: /reuse/tutorial/setup.rst
 
 Project setup
 -------------
