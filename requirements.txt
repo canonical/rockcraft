@@ -3,7 +3,7 @@ cffi==1.16.0
 charset-normalizer==3.3.2
 craft-application @ git+https://github.com/canonical/craft-application@rockcraft
 craft-archives==1.1.3
-craft-cli @ git+https://github.com/canonical/craft-cli@rockcraft
+craft-cli @ git+https://github.com/canonical/craft-cli@main
 craft-grammar==1.2.0
 craft-parts @ git+https://github.com/canonical/craft-parts@rockcraft
 craft-providers @ git+https://github.com/canonical/craft-providers@rockcraft
