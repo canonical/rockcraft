@@ -249,6 +249,11 @@ In ``rockcraft.yaml``, change the ``base`` to ``bare`` and add
     :end-before: [docs:change-base-end]
     :dedent: 2
 
+.. note::
+    The ``sed`` command replaces the current ``base`` in ``rockcraft.yaml`` with
+    the ``bare`` base. The command also adds a ``build-base`` which is required
+    for the ``bare`` base.
+
 Pack the rock with the new ``bare`` :ref:`base <bases_explanation>`:
 
 .. literalinclude:: code/getting-started-with-flask/task.yaml
