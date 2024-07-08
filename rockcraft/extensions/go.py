@@ -77,15 +77,6 @@ class GoFramework(Extension):
         """Return the normalized name of the rockcraft project."""
         return self.yaml_data["name"]
 
-    @property
-    def install_app_part(self):
-        """Return the install app part for the Go project."""
-        if (
-            "parts" in self.yaml_data
-            and "go-framework/install-app" in self.yaml_data["parts"]
-        ):
-            self.yaml_data["parts"]["go-framework/install-app"]
-
     def _gen_install_assets_part(self):
         # if stage is not in exclude mode, use it to generate organize
         if (
@@ -187,7 +178,7 @@ class GoFramework(Extension):
             "organize": organize,
         }
 
-        install_app_part["stage"] = [val for val in organize.values()]
+        install_app_part["stage"] = list(organize.values())
         if build_environment:
             install_app_part["build-environment"] = build_environment
 
