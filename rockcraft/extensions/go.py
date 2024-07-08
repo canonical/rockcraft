@@ -79,6 +79,7 @@ class GoFramework(Extension):
 
     @property
     def install_app_part(self):
+        """Return the install app part for the Go project."""
         if (
             "parts" in self.yaml_data
             and "go-framework/install-app" in self.yaml_data["parts"]
