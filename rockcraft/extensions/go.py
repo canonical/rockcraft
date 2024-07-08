@@ -86,7 +86,6 @@ class GoFramework(Extension):
             self.yaml_data["parts"]["go-framework/install-app"]
 
     def _gen_install_assets_part(self):
-        source_files = [f.name for f in sorted(self.project_root.iterdir())]
         # if stage is not in exclude mode, use it to generate organize
         if (
             self._assets_stage
