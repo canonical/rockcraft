@@ -1,0 +1,47 @@
+summary: go extension test
+environment:
+  SCENARIO/bare: bare
+  SCENARIO/base_2204: ubuntu-22.04
+  ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS: "true"
+
+execute: |
+  NAME="go-${SCENARIO//./-}"
+  ROCK_FILE="${NAME}_0.1_amd64.rock"
+  IMAGE="${NAME}:0.1"
+
+  run_rockcraft init --name ${NAME} --profile go
+  sed -i "s/name: .*/name: ${NAME}/g" rockcraft.yaml
+  if [ "${SCENARIO}" = "bare" ]; then
+      sed -i "s/base: .*/base: ${SCENARIO}\nbuild-base: ubuntu@22.04/g" rockcraft.yaml
+  else
+      sed -i "s/base: .*/base: ${SCENARIO//-/@}/g" rockcraft.yaml
+  fi
+  sed -i "s/NAME/${NAME}/g" go.mod
+
+  run_rockcraft pack
+
+  test -f "${ROCK_FILE}"
+  test ! -d work
+
+  # Ensure docker does not have this container image
+  docker rmi --force "${IMAGE}"
+  # Install container
+  sudo rockcraft.skopeo --insecure-policy copy "oci-archive:${ROCK_FILE}" "docker-daemon:${IMAGE}"
+  # Ensure container exists
+  docker images "${IMAGE}" | MATCH "${NAME}"
+
+  # ensure container doesn't exist
+  docker rm -f "${NAME}-container"
+
+  # test the default go service
+  docker run --name "${NAME}-container" -d -p 8137:8000 "${IMAGE}"
+  retry -n 5 --wait 2 curl localhost:8137
+  [ "$(curl -sSf localhost:8137)" == "ok" ]
+
+restore: |
+  NAME="go-${SCENARIO//./-}"
+  sed -i "s/${NAME}/NAME/g" go.mod
+  docker stop "${NAME}-container"
+  docker rm "${NAME}-container"
+  rm -f "*.rock" rockcraft.yaml
+  docker system prune -a -f

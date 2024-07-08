@@ -204,6 +204,64 @@ class InitCommand(AppCommand):
             """
             )
         ),
+        "go": _InitProfile(
+            rockcraft_yaml=textwrap.dedent(
+                """\
+                name: {name}
+                # see https://documentation.ubuntu.com/rockcraft/en/stable/explanation/bases/
+                # for more information about bases and using 'bare' bases for chiselled rocks
+                base: ubuntu@22.04 # the base environment for this Django application
+                version: '0.1' # just for humans. Semantic versioning is recommended
+                summary: A summary of your Go application # 79 char long summary
+                description: |
+                    This is {name}'s description. You have a paragraph or two to tell the
+                    most important story about it. Keep it under 100 words though,
+                    we live in tweetspace and your description wants to look good in the
+                    container registries out there.
+                platforms: # The platforms this rock should be built on and run on
+                    amd64:
+
+                # to ensure the go-framework extension functions properly, your Go project
+                # should have a go.mod file. Check the parts section for the selection of
+                # the default binary.
+                # see https://documentation.ubuntu.com/rockcraft/en/stable/reference/extensions/go-framework
+                # for more information.
+                # +-- {snake_name}
+                # |   |-- go.mod
+                # |   |-- migrate.sh
+
+                extensions:
+                    - go-framework
+
+                # Uncomment the sections you need and adjust according to your requirements.
+                # parts:
+                #   go-framework/binary:
+                #    # Select a specific Go version. Otherwise the current stable one will be used.
+                #    build-snaps:
+                #    - go/1.22/stable
+                #    organize:
+                #    # If the main package is in the base directory and the rockcraft name
+                #    # attribute is equal to the go module name, the name of the server will
+                #    # be selected correctly, otherwise you can adjust it.
+                #    # The file in /usr/local/bin/ with the name of the rockcraft will be
+                #    # the binary to run your server.
+                #    # You can also include here other binary files to be included in the rock.
+                #      bin/otherbinary: usr/local/bin/projectname
+
+                #   go-framework/assets:
+                #     stage:
+                #       # By default, only the files in templates/ and static/
+                #       # are copied into the image. You can modify the list below to override
+                #       # the default list and include or exclude specific files/directories
+                #       # in your project.
+                #       # Note: Prefix each entry with "go/" followed by the local path.
+                #       - go/templates
+                #       - go/static
+                #       - go/otherdirectory
+                #       - go/otherfile
+            """
+            )
+        ),
     }
     _DEFAULT_PROFILE = "simple"
 

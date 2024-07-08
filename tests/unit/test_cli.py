@@ -15,8 +15,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import pathlib
 import sys
-from pathlib import Path
 import textwrap
+from pathlib import Path
 from unittest.mock import DEFAULT, call
 
 import pytest
