@@ -210,7 +210,7 @@ class InitCommand(AppCommand):
                 name: {name}
                 # see https://documentation.ubuntu.com/rockcraft/en/stable/explanation/bases/
                 # for more information about bases and using 'bare' bases for chiselled rocks
-                base: ubuntu@22.04 # the base environment for this Django application
+                base: ubuntu@22.04 # the base environment for this Go application
                 version: '0.1' # just for humans. Semantic versioning is recommended
                 summary: A summary of your Go application # 79 char long summary
                 description: |
