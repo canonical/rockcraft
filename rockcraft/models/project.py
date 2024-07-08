@@ -64,6 +64,14 @@ class Platform(pydantic.BaseModel):
             "_", "-"
         )
 
+    @pydantic.validator("build_on", pre=True)
+    @classmethod
+    def _helpful_error_for_non_list_build_on(cls, val: list[str] | Any) -> list[str]:
+        """Provide helpful error when 'build_on' is not a list."""
+        if not isinstance(val, (list, type(None))):
+            raise ValueError("'build-on' field must be a list of strings.")
+        return val
+
     @pydantic.validator("build_for", pre=True)
     @classmethod
     def _vectorise_build_for(cls, val: str | list[str]) -> list[str]:
