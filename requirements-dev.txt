@@ -18,12 +18,12 @@ click==8.1.7
 codespell==2.2.6
 colorama==0.4.6
 coverage==7.5.1
-craft-application @ git+https://github.com/canonical/craft-application@rockcraft
+craft-application==2.9.0
 craft-archives==1.1.3
-craft-cli @ git+https://github.com/canonical/craft-cli@rockcraft
+craft-cli==2.6.0
 craft-grammar==1.2.0
-craft-parts @ git+https://github.com/canonical/craft-parts@rockcraft
-craft-providers @ git+https://github.com/canonical/craft-providers@rockcraft
+craft-parts==1.33.0
+craft-providers==1.24.1
 cryptography==42.0.7
 Deprecated==1.2.14
 dill==0.3.8
