@@ -9,7 +9,7 @@ execute: |
   ROCK_FILE="${NAME}_0.1_amd64.rock"
   IMAGE="${NAME}:0.1"
 
-  run_rockcraft init --name "${NAME}" --profile go
+  run_rockcraft init --name "${NAME}" --profile go-framework
   sed -i "s/name: .*/name: ${NAME}/g" rockcraft.yaml
   if [ "${SCENARIO}" = "bare" ]; then
       sed -i "s/base: .*/base: ${SCENARIO}\nbuild-base: ubuntu@22.04/g" rockcraft.yaml

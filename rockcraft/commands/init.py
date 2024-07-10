@@ -204,7 +204,7 @@ class InitCommand(AppCommand):
             """
             )
         ),
-        "go": _InitProfile(
+        "go-framework": _InitProfile(
             rockcraft_yaml=textwrap.dedent(
                 """\
                 name: {name}
@@ -235,7 +235,7 @@ class InitCommand(AppCommand):
 
                 # Uncomment the sections you need and adjust according to your requirements.
                 # parts:
-                #   go-framework/binary:
+                #   go-framework/install-app:
                 #    # Select a specific Go version. Otherwise the current stable one will be used.
                 #    build-snaps:
                 #    - go/1.22/stable
