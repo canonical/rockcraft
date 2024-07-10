@@ -54,7 +54,14 @@
       "title": "Platforms",
       "type": "object",
       "additionalProperties": {
-        "$ref": "#/definitions/Platform"
+        "oneOf": [
+          {
+            "type": "null"
+          },
+          {
+            "$ref": "#/definitions/Platform"
+          }
+        ]
       }
     },
     "contact": {
@@ -174,13 +181,21 @@
           }
         },
         "build-for": {
-          "title": "Build-For",
-          "minItems": 1,
-          "uniqueItems": true,
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
+          "oneOf": [
+            {
+              "title": "Build-For",
+              "minItems": 1,
+              "uniqueItems": true,
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "title": "Build-For",
+              "type": "string"
+            }
+          ]
         }
       },
       "additionalProperties": false
