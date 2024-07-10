@@ -42,7 +42,7 @@ and initialised:
 
 In order to create the rock, you'll need to install Rockcraft:
 
-.. literalinclude:: /reuse/tutorials/code/task.yaml
+.. literalinclude:: /reuse/tutorial/code/task.yaml
     :language: bash
     :start-after: [docs:install-rockcraft]
     :end-before: [docs:install-rockcraft-end]
@@ -50,7 +50,7 @@ In order to create the rock, you'll need to install Rockcraft:
 
 We'll use Docker to run the rock. You can install it as a ``snap``:
 
-.. literalinclude:: /reuse/tutorials/code/task.yaml
+.. literalinclude:: /reuse/tutorial/code/task.yaml
     :language: bash
     :start-after: [docs:install-docker]
     :end-before: [docs:install-docker-end]

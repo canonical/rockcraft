@@ -16,7 +16,7 @@ Install Rockcraft
 
 Install Rockcraft on your host:
 
-.. literalinclude:: ../../tutorials/code/hello-world/task.yaml
+.. literalinclude:: ../../tutorial/code/hello-world/task.yaml
     :language: bash
     :start-after: [docs:install-rockcraft]
     :end-before: [docs:install-rockcraft-end]
