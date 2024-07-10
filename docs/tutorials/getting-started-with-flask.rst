@@ -12,6 +12,13 @@ Setup
 
 .. include:: /reuse/tutorials/setup.rst
 
+.. note::
+    This tutorial required version ``1.5.2`` or later for Rockcraft. Check the
+    version of Rockcraft using ``rockcraft --version``. If you have an older
+    version of Rockcraft installed, use
+    ``sudo snap refresh rockcraft --channel latest/stable`` to get the latest
+    stable version of Rockcraft.
+
 Finally, create a new directory for this tutorial and go inside it:
 
 .. code-block:: bash
@@ -248,6 +255,11 @@ In ``rockcraft.yaml``, change the ``base`` to ``bare`` and add
     :start-after: [docs:change-base]
     :end-before: [docs:change-base-end]
     :dedent: 2
+
+.. note::
+    The ``sed`` command replaces the current ``base`` in ``rockcraft.yaml`` with
+    the ``bare`` base. The command also adds a ``build-base`` which is required
+    for the ``bare`` base.
 
 Pack the rock with the new ``bare`` :ref:`base <bases_explanation>`:
 
