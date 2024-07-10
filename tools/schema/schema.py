@@ -60,6 +60,25 @@ def generate_project_schema() -> str:
     # combine both schemas
     project_schema = {**initial_schema, **project_schema}
 
+    # tweak the platforms definition on the Project (each value can be empty)
+    project_schema["properties"]["platforms"]["additionalProperties"] = {
+        "oneOf": [{"type": "null"}, {"$ref": "#/definitions/Platform"}]
+    }
+
+    # tweak the Platform (build-for can be a single string)
+    project_schema["definitions"]["Platform"]["properties"]["build-for"] = {
+        "oneOf": [
+            {
+                "title": "Build-For",
+                "minItems": 1,
+                "uniqueItems": True,
+                "type": "array",
+                "items": {"type": "string"},
+            },
+            {"title": "Build-For", "type": "string"},
+        ]
+    }
+
     # project.schema() will define the `parts` field as an `object`
     # so we need to manually add the schema for parts by running
     # schema() on part.spec and add the outcome project schema's definitions
