@@ -68,7 +68,7 @@ class InitCommand(AppCommand):
             rockcraft_yaml=textwrap.dedent(
                 """\
                 name: {name}
-                # see https://documentation.ubuntu.com/rockcraft/en/stable/explanation/bases/
+                # see {versioned_url}/explanation/bases/
                 # for more information about bases and using 'bare' bases for chiselled rocks
                 base: ubuntu@22.04 # the base environment for this rock
                 version: '0.1' # just for humans. Semantic versioning is recommended
@@ -91,7 +91,7 @@ class InitCommand(AppCommand):
             rockcraft_yaml=textwrap.dedent(
                 """\
                 name: {name}
-                # see https://documentation.ubuntu.com/rockcraft/en/stable/explanation/bases/
+                # see {versioned_url}/explanation/bases/
                 # for more information about bases and using 'bare' bases for chiselled rocks
                 base: ubuntu@22.04 # the base environment for this Flask application
                 version: '0.1' # just for humans. Semantic versioning is recommended
@@ -107,7 +107,7 @@ class InitCommand(AppCommand):
                 # to ensure the flask-framework extension works properly, your Flask application
                 # should have an `app.py` file with an `app` object as the WSGI entrypoint.
                 # a `requirements.txt` file with at least the flask package should also exist.
-                # see https://documentation.ubuntu.com/rockcraft/en/stable/reference/extensions/flask-framework
+                # see {versioned_url}/reference/extensions/flask-framework
                 # for more information.
                 extensions:
                     - flask-framework
@@ -139,7 +139,7 @@ class InitCommand(AppCommand):
                 # you can add package slices or Debian packages to the image.
                 # package slices are subsets of Debian packages, which result
                 # in smaller and more secure images.
-                # see https://documentation.ubuntu.com/rockcraft/en/latest/explanation/chisel/
+                # see {versioned_url}/explanation/chisel/
 
                 # add this part if you want to add packages slices to your image.
                 # you can find a list of packages slices at https://github.com/canonical/chisel-releases
@@ -164,7 +164,7 @@ class InitCommand(AppCommand):
             rockcraft_yaml=textwrap.dedent(
                 """\
                 name: {name}
-                # see https://documentation.ubuntu.com/rockcraft/en/stable/explanation/bases/
+                # see {versioned_url}/explanation/bases/
                 # for more information about bases and using 'bare' bases for chiselled rocks
                 base: ubuntu@22.04 # the base environment for this Django application
                 version: '0.1' # just for humans. Semantic versioning is recommended
@@ -246,10 +246,12 @@ class InitCommand(AppCommand):
         # Get the init profile
         init_profile = self._PROFILES[parsed_args.profile]
 
+        versioned_docs_url = self._app.versioned_docs_url
+
         # Setup the reference documentation link if available
         profile_reference_docs: str | None = None
-        if self._app.docs_url and init_profile.doc_slug:
-            profile_reference_docs = self._app.docs_url + init_profile.doc_slug
+        if versioned_docs_url and init_profile.doc_slug:
+            profile_reference_docs = versioned_docs_url + init_profile.doc_slug
 
         # Format the template, all templates should be tested to avoid risk of
         # expecting documentation when there isn't any set
@@ -257,6 +259,7 @@ class InitCommand(AppCommand):
             "name": name,
             "snake_name": name.replace("-", "_").lower(),
             "profile_reference_docs": profile_reference_docs,
+            "versioned_url": versioned_docs_url,
         }
         rockcraft_yaml_path = init(init_profile.rockcraft_yaml.format(**context))
 
