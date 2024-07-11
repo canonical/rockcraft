@@ -39,6 +39,7 @@ def generate_project_schema() -> str:
     # Initialize the default template with a name
     context = {
         "name": "my-rock-name",
+        "versioned_url": "www.example.com",
     }
     # pylint: disable=W0212
     init_template = cli.commands.InitCommand._PROFILES[
