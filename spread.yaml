@@ -140,8 +140,8 @@ suites:
   tests/spread/foreign/:
     summary: tests that rockcraft and rocks work on different host systems
 
-  tests/spread/large/:
-    summary: bigger tests that take longer to run
+  tests/spread/manual/:
+    summary: manually-triggered tests, like bigger tests and flaky ones
     manual: true
     systems:
     - ubuntu-22.04-64
