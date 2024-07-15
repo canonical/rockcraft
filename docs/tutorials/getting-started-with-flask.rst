@@ -13,7 +13,7 @@ Setup
 .. include:: /reuse/tutorials/setup.rst
 
 .. note::
-    This tutorial required version ``1.5.2`` or later for Rockcraft. Check the
+    This tutorial requires version ``1.5.2`` or later for Rockcraft. Check the
     version of Rockcraft using ``rockcraft --version``. If you have an older
     version of Rockcraft installed, use
     ``sudo snap refresh rockcraft --channel latest/stable`` to get the latest
