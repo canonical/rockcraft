@@ -17,7 +17,7 @@ Setup
     version of Rockcraft using ``rockcraft --version``. If you have an older
     version of Rockcraft installed, use
     ``sudo snap refresh rockcraft --channel latest/stable`` to get the latest
-    stable version of Rockcraft.
+    stable version.
 
 Finally, create a new directory for this tutorial and go inside it:
 
