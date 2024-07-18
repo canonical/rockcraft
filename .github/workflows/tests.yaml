@@ -8,7 +8,7 @@ on:
 
 jobs:
   linters:
-    runs-on: ubuntu-22.04
+    runs-on: [self-hosted, jammy, X64]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
