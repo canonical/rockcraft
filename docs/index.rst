@@ -1,3 +1,4 @@
+sanity
 Rockcraft documentation
 =======================
 

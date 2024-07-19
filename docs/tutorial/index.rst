@@ -1,3 +1,5 @@
+sanity
+
 .. _tutorial:
 
 Tutorial
