@@ -48,7 +48,8 @@ woke:
 	# This is mitigated by changing to the repo root and running woke on the relative docs path.
 	# Tested on 19/07/24 with woke 0.19.0-4-g5d52c15
 	cd ..; woke $(RELCWD)/**/*.rst $(RELCWD)/*.rst \
-		-c https://github.com/canonical-web-and-design/Inclusive-naming/raw/main/config.yml 
+		-c https://github.com/canonical-web-and-design/Inclusive-naming/raw/main/config.yml \
+		--exit-1-on-failure
 
 .PHONY: help Makefile
 
