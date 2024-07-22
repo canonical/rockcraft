@@ -18,4 +18,4 @@ execute: |
   # only succeed if:
   #   * the "/bin -> usr/bin" symlink is correct, and;
   #   * pebble itself is found and working correctly (for the exec call).
-  docker run --rm $IMG_NAME -v exec test -f /bin/md5sum
+  docker run --rm $IMG_NAME exec test -f /bin/md5sum
