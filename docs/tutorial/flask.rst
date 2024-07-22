@@ -315,7 +315,7 @@ look like the following:
     :language: python
 
 Since you are creating a new version of your application, **open the**
-``rockfile.yaml`` file and change the ``version`` (e.g. to ``0.2``).
+``rockcraft.yaml`` file and change the ``version`` (e.g. to ``0.2``).
 
 Pack and run the rock using similar commands as before:
 
