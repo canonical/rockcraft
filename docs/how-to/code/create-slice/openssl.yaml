@@ -1,19 +1,32 @@
 package: openssl
-slices:
-    bins:
-        essential:
-          - libc6_libs
-          - libc6_config
-          - libssl3_libs
-          - openssl_config
-        contents:
-            /usr/bin/c_rehash:
-            /usr/bin/openssl:
 
-    config:
-        contents:
-            /etc/ssl/private/:
-            /etc/ssl/openssl.cnf:
-            /usr/lib/ssl/certs:
-            /usr/lib/ssl/openssl.cnf:
-            /usr/lib/ssl/private:
+essential:
+  - openssl_copyright
+
+slices:
+  bins:
+    essential:
+      - libc6_config
+      - libc6_libs
+      - libssl3_libs
+      - openssl_config
+    contents:
+      /usr/bin/c_rehash:
+      /usr/bin/openssl:
+
+  config:
+    contents:
+      /etc/ssl/certs/:
+      /etc/ssl/openssl.cnf:
+      /etc/ssl/private/:
+      /usr/lib/ssl/certs:
+      /usr/lib/ssl/openssl.cnf:
+      /usr/lib/ssl/private:
+
+  data:
+    contents:
+      /usr/lib/ssl/cert.pem: {symlink: /etc/ssl/certs/ca-certificates.crt}
+
+  copyright:
+    contents:
+      /usr/share/doc/openssl/copyright:
