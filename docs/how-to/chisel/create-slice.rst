@@ -132,11 +132,12 @@ Create a new YAML file named ``openssl.yaml``, with the following content:
 Notice the additional new slices ``config``, ``data`` and ``copyright``. The
 OpenSSL package includes files other than binaries, some of these files may be
 required depending on the specific use of OpenSSL. It is beneficial to separate
-and group the contents of a package according to their nature, allowing developers
-to select only the files they require. For example, one developer may require
-the ``bins`` and ``config`` slices of a package, while another only requires the
-``config`` slice as a dependency of another package. Our `contribution
-guidelines`_ provides more details on best practices for creating new slices.
+and group the contents of a package according to their nature, allowing
+developers to select only the files they require. For example, one developer may
+require the ``bins`` and ``config`` slices of a package, while another only
+requires the ``config`` slice as a dependency of another package. Our
+`contribution guidelines`_ provides more details on best practices for creating
+new slices.
 
 
 
