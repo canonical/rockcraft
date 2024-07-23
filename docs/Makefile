@@ -10,6 +10,10 @@ BUILDDIR      = _build
 VENV          = env/bin/activate
 PORT = 8080
 
+# Locate this directory relative to the repository root. See woke recipe.
+REPOROOT = $(shell git rev-parse --show-toplevel)
+RELCWD = $(shell realpath --relative-to=$(REPOROOT) $(CURDIR))
+
 # Put it first so that "make" without argument is like "make help".
 help:
 	@$(SPHINXBUILD) -M help "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
@@ -39,7 +43,14 @@ linkcheck:
 
 woke:
 	type woke >/dev/null 2>&1 || { snap install woke; exit 1; }
-	woke *.rst **/*.rst -c https://github.com/canonical-web-and-design/Inclusive-naming/raw/main/config.yml
+
+	# Woke appears to have an issue where it skips .*ignore files unless it is executed from the repo root.
+	# This is mitigated by changing to the repo root and running woke on the relative docs path.
+	# Tested on 19/07/24 with woke 0.19.0-4-g5d52c15
+	cd $(REPOROOT); woke $(RELCWD)/**/*.rst $(RELCWD)/*.rst \
+		-c https://github.com/canonical-web-and-design/Inclusive-naming/raw/main/config.yml \
+		--disable-default-rules \
+		--exit-1-on-failure
 
 .PHONY: help Makefile
 
