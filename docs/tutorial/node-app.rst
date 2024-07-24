@@ -116,9 +116,22 @@ service:
     2023-10-30T12:37:33.663Z [pebble] Service "app" starting: node server.js
     2023-10-30T12:37:33.864Z [app] Running on http://0.0.0.0:8080
 
-Next, open your web browser and navigate to ``http://localhost:8000``. You
-should see a blank page with a "Hello World from inside the rock!" message.
-Success!
+Next we'll verify that the Node.js app is up and running. If you're running this
+tutorial on a regular Ubuntu system, open your web browser and navigate to
+``http://localhost:8000``. You should see a blank page with a
+"Hello World from inside the rock!" message. Success!
+
+If, instead, you are following the tutorial through a Multipass VM, you can
+open another shell into the VM and access the app using curl:
+
+.. literalinclude:: code/node-app/task.yaml
+    :language: bash
+    :prepend: multipass shell rock-dev
+    :start-after: [docs:curl-localhost]
+    :end-before: [docs:curl-localhost-end]
+    :dedent: 2
+
+This should also print "Hello World from inside the rock!" to the terminal.
 
 You can now stop the running container by either interrupting it with CTRL+C or
 by running the following in another terminal:
