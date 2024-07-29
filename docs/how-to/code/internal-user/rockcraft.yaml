@@ -1,0 +1,20 @@
+name: internal-user
+base: bare
+build-base: ubuntu@24.04
+version: 'latest'
+summary: Add an internal user inside a rock
+description: Add an internal user inside a rock, and run a service with it.
+platforms:
+    amd64:
+
+parts:
+    my-part:
+        plugin: nil
+        stage-packages:
+            - base-passwd_data
+            - base-files_base
+            - coreutils_bins
+            - passwd_bins
+        override-build: |
+            groupadd -R ${CRAFT_PART_INSTALL} ubuntu
+            useradd -d /home/ubuntu -s /bin/bash -R ${CRAFT_PART_INSTALL} -g ubuntu ubuntu

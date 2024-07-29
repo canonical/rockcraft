@@ -1,0 +1,21 @@
+###########################################
+# IMPORTANT
+# Comments matter!
+# The docs use the wrapping comments as
+# markers for including said instructions
+# as snippets in the docs.
+###########################################
+summary:  test "How to add an internal user" guide
+
+execute: |
+  # [docs:pack-rock]
+  rockcraft pack
+  # [docs:pack-rock-end]
+
+  sudo rockcraft.skopeo --insecure-policy copy oci-archive:internal-user_latest_amd64.rock docker-daemon:internal-user:latest
+
+  # [docs:check-user]
+  docker run --rm internal-user:latest exec cat /etc/passwd | grep ubuntu
+  docker run --rm internal-user:latest exec cat /etc/group | grep ubuntu
+  # [docs:check-user-end]
+ 
