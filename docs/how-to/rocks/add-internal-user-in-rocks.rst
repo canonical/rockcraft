@@ -28,7 +28,7 @@ The following *rockcraft.yaml* illustrates how to use ``useradd`` command in
 .. literalinclude:: ../code/internal-user/rockcraft.yaml
     :language: yaml
     :start-after: [docs:rock-parts]
-    :end-before: [docs:rock-parts-end]  
+    :end-before: [docs:rock-parts-end]
 
 Furthermore, let's add a service that tests the running user by executing
 ``whoami``:
@@ -36,7 +36,7 @@ Furthermore, let's add a service that tests the running user by executing
 .. literalinclude:: ../code/internal-user/rockcraft.yaml
     :language: yaml
     :start-after: [docs:rock-services]
-    :end-before: [docs:rock-services-end]  
+    :end-before: [docs:rock-services-end]
 
 Moving along, the rock can be built by running:
 
