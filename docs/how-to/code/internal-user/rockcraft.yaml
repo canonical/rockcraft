@@ -26,7 +26,6 @@ parts:
             - base-files_base
             - bash_bins
             - coreutils_bins
-            - passwd_bins
         override-build: |
             groupadd --root ${CRAFT_PART_INSTALL} ubuntu
             useradd -d /home/ubuntu -s /bin/bash --root ${CRAFT_PART_INSTALL} -g ubuntu ubuntu
