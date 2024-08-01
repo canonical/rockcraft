@@ -11,23 +11,33 @@ UID/GID of 84792. For most daemon services that's sufficient, but other
 services require that the running user should have a specific username and/or
 UID.
 
-In order to add new internal user or group to a rock, three packages (or their
+In order to add a new internal user or group to a rock, three packages (or their
 respective slices) are needed:
 - ``base-files``: to create the base directories such as ``/etc`` and ``/bin``
 - ``base-passwd``: to produce basic ``/etc/passwd`` and ``/etc/group`` files,
 - ``passwd``: to provide ``useradd`` and ``groupadd`` commands.
 
-Invoking ``useradd`` and ``groupadd`` command can take place in the
+Invoking the ``useradd`` and ``groupadd`` commands can take place in the
 :ref:`build <lifecycle>` step, by appending the commands to the build flow.
 However, the changes made by those commands normally apply to the base system,
 not the build system. Hence, ``$CRAFT_PART_INSTALL`` should be passed as the
 root directory to those two commands.
 
 The following *rockcraft.yaml* illustrates how to use ``useradd`` command in
-``override-build`` field.
+``override-build`` field inside a part.
 
 .. literalinclude:: ../code/internal-user/rockcraft.yaml
     :language: yaml
+    :start-after: [docs:rock-parts]
+    :end-before: [docs:rock-parts-end]  
+
+Furthermore, let's add a service that tests the running user by executing
+``whoami``:
+
+.. literalinclude:: ../code/internal-user/rockcraft.yaml
+    :language: yaml
+    :start-after: [docs:rock-services]
+    :end-before: [docs:rock-services-end]  
 
 Moving along, the rock can be built by running:
 

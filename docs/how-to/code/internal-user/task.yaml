@@ -15,7 +15,8 @@ execute: |
   sudo rockcraft.skopeo --insecure-policy copy oci-archive:internal-user_latest_amd64.rock docker-daemon:internal-user:latest
 
   # [docs:check-user]
-  docker run --rm internal-user:latest exec cat /etc/passwd | grep ubuntu
-  docker run --rm internal-user:latest exec cat /etc/group | grep ubuntu
+  id=$(docker run -d internal-user:latest --verbose)
+  docker exec "$id" pebble logs | grep ubuntu
+  docker rm -f "$id"
   # [docs:check-user-end]
  
