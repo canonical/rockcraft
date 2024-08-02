@@ -30,7 +30,7 @@ from craft_providers.bases import BaseName, ubuntu
 
 from rockcraft.errors import ProjectLoadError
 from rockcraft.models import Project
-from rockcraft.models.project import INVALID_NAME_MESSAGE, Platform, load_project
+from rockcraft.models.project import MESSAGE_INVALID_NAME, Platform, load_project
 from rockcraft.pebble import Service
 
 _ARCH_MAPPING = {"x86": "amd64", "x64": "amd64"}
@@ -466,7 +466,7 @@ def test_project_name_invalid(yaml_loaded_data, invalid_name):
     with pytest.raises(CraftValidationError) as err:
         load_project_yaml(yaml_loaded_data)
 
-    expected_message = f"{INVALID_NAME_MESSAGE} (in field 'name')"
+    expected_message = f"{MESSAGE_INVALID_NAME} (in field 'name')"
     assert expected_message in str(err.value)
 
 
