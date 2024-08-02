@@ -26,7 +26,7 @@ class GlobalUser(pydantic.BaseModel):
     username: str
     uid: int = pydantic.Field(gt=584791, le=585287)
 
-    @pydantic.validator("username", always=True)
+    @pydantic.field_validator("username")
     @classmethod
     def _validate_run_user(cls, username: str) -> str:
         """Make sure the provided username has the right prefix and suffix."""

@@ -33,7 +33,7 @@ from craft_application.models import Project as BaseProject
 from craft_application.models import constraints
 from craft_providers import bases
 from craft_providers.errors import BaseConfigurationError
-from typing_extensions import Annotated, override
+from typing_extensions import Annotated, Self, override
 
 from rockcraft.architectures import SUPPORTED_ARCHS
 from rockcraft.errors import ProjectLoadError
@@ -41,7 +41,6 @@ from rockcraft.extensions import apply_extensions
 from rockcraft.parts import part_has_overlay
 from rockcraft.pebble import Check, Pebble, Service
 from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
-from pydantic import Field
 
 # pyright workaround
 if TYPE_CHECKING:
@@ -53,7 +52,7 @@ else:
 class Platform(craft_application.models.Platform):
     """Rockcraft project platform definition."""
 
-    @pydantic.validator("build_for", pre=True)
+    @pydantic.field_validator("build_for", mode="before")
     @classmethod
     def _vectorise_build_for(cls, val: str | list[str]) -> list[str]:
         """Vectorise target architecture if needed."""
@@ -61,12 +60,11 @@ class Platform(craft_application.models.Platform):
             val = [val]
         return val
 
-    @pydantic.root_validator(skip_on_failure=True)
-    @classmethod
-    def _validate_platform_set(cls, values: Mapping[str, Any]) -> Mapping[str, Any]:
+    @pydantic.model_validator(mode="after")
+    def _validate_platform_set(self) -> Self:
         """Validate the build_on build_for combination."""
-        build_for: list[str] = values["build_for"] if values.get("build_for") else []
-        build_on: list[str] = values["build_on"] if values.get("build_on") else []
+        build_for: list[str] = self.build_for
+        build_on: list[str] = self.build_on
 
         # We can only build for 1 arch at the moment
         if len(build_for) > 1:
@@ -82,7 +80,7 @@ class Platform(craft_application.models.Platform):
         if not build_on and build_for:
             raise ValueError("'build-for' expects 'build-on' to also be provided.")
 
-        return values
+        return self
 
 
 PROJECT_NAME_REGEX = r"^([a-z](?:-?[a-z0-9]){2,})$"
@@ -126,30 +124,30 @@ class BuildPlanner(BaseBuildPlanner):
 
     platforms: dict[str, Platform]  # type: ignore[assignment]
     base: Literal["bare", "ubuntu@20.04", "ubuntu@22.04", "ubuntu@24.04"]  # type: ignore[reportIncompatibleVariableOverride]
-    build_base: Literal["ubuntu@20.04", "ubuntu@22.04", "ubuntu@24.04", "devel"] | None  # type: ignore[reportIncompatibleVariableOverride]
+    build_base: Literal["ubuntu@20.04", "ubuntu@22.04", "ubuntu@24.04", "devel"] | None = None  # type: ignore[reportIncompatibleVariableOverride]
 
-    @pydantic.validator("build_base", always=True)
+    @pydantic.field_validator("build_base")
     @classmethod
     def _validate_build_base(
-        cls, build_base: str | None, values: dict[str, Any]
+        cls, build_base: str | None, info: pydantic.ValidationInfo
     ) -> str:
         """Build-base defaults to the base value if not specified.
 
         :raises CraftValidationError: If base validation fails.
         """
         if not build_base:
-            base_value = values.get("base")
+            base_value = info.data.get("base")
             if base_value == "bare":
                 raise ValueError('When "base" is bare, a build-base must be specified!')
-            build_base = values.get("base")
+            build_base = info.data.get("base")
         return cast(str, build_base)
 
-    @pydantic.validator("base", pre=True)
+    @pydantic.field_validator("base", mode="before")
     @classmethod
     def _validate_deprecated_base(cls, base_value: str | None) -> str | None:
         return cls._check_deprecated_base(base_value, "base")
 
-    @pydantic.validator("build_base", pre=True)
+    @pydantic.field_validator("build_base", mode="before")
     @classmethod
     def _validate_deprecated_build_base(cls, base_value: str | None) -> str | None:
         return cls._check_deprecated_base(base_value, "build_base")
@@ -167,7 +165,7 @@ class BuildPlanner(BaseBuildPlanner):
 
         return base_value
 
-    @pydantic.validator("platforms")
+    @pydantic.field_validator("platforms")
     @classmethod
     def _validate_all_platforms(cls, platforms: dict[str, Any]) -> dict[str, Any]:
         """Make sure all provided platforms are tangible and sane."""
@@ -255,11 +253,11 @@ class Project(BuildPlanner, BaseProject):  # type: ignore[misc]
     summary: str  # type: ignore
     description: str  # type: ignore[reportIncompatibleVariableOverride]
     # license is Optional[str] in BaseProject
-    environment: dict[str, str] | None
-    run_user: _RunUser
-    services: dict[str, Service] | None
-    checks: dict[str, Check] | None
-    entrypoint_service: str | None
+    environment: dict[str, str] | None = None
+    run_user: _RunUser = None
+    services: dict[str, Service] | None = None
+    checks: dict[str, Check] | None = None
+    entrypoint_service: str | None = None
     platforms: dict[str, Platform | None]  # type: ignore[assignment]
 
     package_repositories: list[dict[str, Any]] | None
@@ -293,7 +291,7 @@ class Project(BuildPlanner, BaseProject):  # type: ignore[misc]
         except (ValueError, BaseConfigurationError) as err:
             raise ValueError(f"Unknown base {base!r}") from err
 
-    @pydantic.root_validator(pre=True)
+    @pydantic.model_validator(mode="before")
     @classmethod
     def _check_unsupported_options(cls, values: Mapping[str, Any]) -> Mapping[str, Any]:
         """Before validation, check if unsupported fields exist. Exit if so."""
@@ -310,7 +308,7 @@ class Project(BuildPlanner, BaseProject):  # type: ignore[misc]
 
         return values
 
-    @pydantic.validator("license", always=True)
+    @pydantic.field_validator("license")
     @classmethod
     def _validate_license(
         cls, license: str | None  # pylint: disable=redefined-builtin
@@ -330,30 +328,34 @@ class Project(BuildPlanner, BaseProject):  # type: ignore[misc]
             )
         return str(lic.id)  # type: ignore[reportUnknownMemberType]
 
-    @pydantic.validator("title", always=True)
+    @pydantic.field_validator("title", mode="before")
     @classmethod
-    def _validate_title(cls, title: str | None, values: Mapping[str, Any]) -> str:
+    def _validate_title(cls, title: str | None, info: pydantic.ValidationInfo) -> str:
         """If title is not provided, it defaults to the provided rock name."""
         if not title:
-            title = values.get("name", "")
+            title = info.data.get("name", "")
         return cast(str, title)
 
-    @pydantic.validator("parts", each_item=True)
+    @pydantic.field_validator("parts")
     @classmethod
     def _validate_base_and_overlay(
-        cls, item: dict[str, Any], values: dict[str, Any]
+        cls, parts: dict[str, Any], info: pydantic.ValidationInfo
     ) -> dict[str, Any]:
         """Projects with "bare" bases cannot use overlays."""
-        if values.get("base") == "bare" and part_has_overlay(item):
-            raise ValueError(
-                'Overlays cannot be used with "bare" bases (there is no system to overlay).'
-            )
-        return item
+        if info.data.get("base") != "bare":
+            return parts
 
-    @pydantic.validator("entrypoint_service")
+        for part in parts.values():
+            if part_has_overlay(part):
+                raise ValueError(
+                    'Overlays cannot be used with "bare" bases (there is no system to overlay).'
+                )
+        return parts
+
+    @pydantic.field_validator("entrypoint_service")
     @classmethod
     def _validate_entrypoint_service(
-        cls, entrypoint_service: str | None, values: dict[str, Any]
+        cls, entrypoint_service: str | None, info: pydantic.ValidationInfo
     ) -> str | None:
         """Verify that the entrypoint_service exists in the services dict."""
         craft_cli.emit.message(
@@ -363,13 +365,13 @@ class Project(BuildPlanner, BaseProject):  # type: ignore[misc]
             + "submitting to a Canonical registry namespace."
         )
 
-        if entrypoint_service not in values.get("services", {}):
+        if entrypoint_service not in info.data.get("services", {}):
             raise ValueError(
                 f"The provided entrypoint-service '{entrypoint_service}' is not "
                 + "a valid Pebble service."
             )
 
-        command = values["services"][entrypoint_service].command
+        command = info.data["services"][entrypoint_service].command
         command_sh_args = shlex.split(command)
         # optional arg is surrounded by brackets, so check that they exist in the
         # right order
@@ -388,7 +390,7 @@ class Project(BuildPlanner, BaseProject):  # type: ignore[misc]
 
         return entrypoint_service
 
-    @pydantic.validator("environment")
+    @pydantic.field_validator("environment")
     @classmethod
     def _forbid_env_var_bash_interpolation(
         cls, environment: dict[str, str] | None
