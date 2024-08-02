@@ -113,12 +113,12 @@ def extra_project_params():
 def default_project(extra_project_params):
     from craft_application.models import VersionStr
 
-    from rockcraft.models.project import NameStr, Project, Platform
+    from rockcraft.models.project import ProjectName, Project, Platform
 
     parts = extra_project_params.pop("parts", {})
 
     return Project(
-        name=NameStr("default"),
+        name=ProjectName("default"),
         version=VersionStr("1.0"),
         summary="default project",
         description="default project",

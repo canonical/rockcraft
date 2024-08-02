@@ -20,7 +20,7 @@ import re
 import shlex
 from collections.abc import Mapping
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Literal, cast
+from typing import List, TYPE_CHECKING, Any, Literal, cast
 
 import craft_application.models
 import craft_cli
@@ -28,12 +28,12 @@ import pydantic
 import spdx_lookup  # type: ignore
 import yaml
 from craft_application.errors import CraftValidationError
-from craft_application.models import BuildPlanner as BaseBuildPlanner, CraftBaseConfig
+from craft_application.models import BuildPlanner as BaseBuildPlanner
 from craft_application.models import Project as BaseProject
+from craft_application.models import constraints
 from craft_providers import bases
 from craft_providers.errors import BaseConfigurationError
-from pydantic_yaml import YamlModelMixin
-from typing_extensions import override
+from typing_extensions import Annotated, override
 
 from rockcraft.architectures import SUPPORTED_ARCHS
 from rockcraft.errors import ProjectLoadError
@@ -41,6 +41,7 @@ from rockcraft.extensions import apply_extensions
 from rockcraft.parts import part_has_overlay
 from rockcraft.pebble import Check, Pebble, Service
 from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
+from pydantic import Field
 
 # pyright workaround
 if TYPE_CHECKING:
@@ -51,11 +52,6 @@ else:
 
 class Platform(craft_application.models.Platform):
     """Rockcraft project platform definition."""
-
-    build_on: pydantic.conlist(str, unique_items=True, min_items=1) | None  # type: ignore[valid-type]
-    build_for: (  # type: ignore[valid-type]
-        pydantic.conlist(str, unique_items=True, min_items=1) | None  # type: ignore[reportInvalidTypeForm]
-    )
 
     @pydantic.validator("build_for", pre=True)
     @classmethod
@@ -89,19 +85,17 @@ class Platform(craft_application.models.Platform):
         return values
 
 
-NAME_REGEX = r"^([a-z](?:-?[a-z0-9]){2,})$"
-"""
-The regex for valid names for rocks. It matches the accepted values for pebble
-layer files:
+PROJECT_NAME_REGEX = r"^([a-z](?:-?[a-z0-9]){2,})$"
+_PROJECT_NAME_DESCRIPTION = """\
+Valid names for rocks. It matches the accepted values for pebble layer files:
 
 - must start with a lowercase letter [a-z]
 - must contain only lowercase letters [a-z], numbers [0-9] or hyphens
 - must not end with a hyphen, and must not contain two or more consecutive hyphens
-
-(taken from https://github.com/canonical/pebble/blob/dbda12237fef3c4d2739824fce7fa65ba1dad76a/internal/plan/plan.go#L955)
 """
+_PROJECT_NAME_COMPILED_REGEX = re.compile(PROJECT_NAME_REGEX)
 
-INVALID_NAME_MESSAGE = (
+MESSAGE_INVALID_NAME = (
     "invalid name for rock: Names can only use ASCII lowercase letters, numbers, and hyphens. "
     "They must start with a lowercase letter, may not end with a hyphen, "
     "and may not have two hyphens in a row."
@@ -109,11 +103,22 @@ INVALID_NAME_MESSAGE = (
 
 DEPRECATED_COLON_BASES = ["ubuntu:20.04", "ubuntu:22.04"]
 
-
-class NameStr(pydantic.ConstrainedStr):
-    """Constrained string type only accepting valid rock names."""
-
-    regex = re.compile(NAME_REGEX)
+ProjectName = Annotated[
+    str,
+    pydantic.BeforeValidator(
+        constraints._get_validator_by_regex(
+            _PROJECT_NAME_COMPILED_REGEX, MESSAGE_INVALID_NAME
+        )
+    ),
+    pydantic.Field(
+        min_length=1,
+        max_length=40,
+        strict=True,
+        pattern=PROJECT_NAME_REGEX,
+        description=_PROJECT_NAME_DESCRIPTION,
+        title="Project Name",
+    ),
+]
 
 
 class BuildPlanner(BaseBuildPlanner):
@@ -242,10 +247,10 @@ class BuildPlanner(BaseBuildPlanner):
         return "/reference/rockcraft.yaml"
 
 
-class Project(YamlModelMixin, BuildPlanner, BaseProject):  # type: ignore[misc]
+class Project(BuildPlanner, BaseProject):  # type: ignore[misc]
     """Rockcraft project definition."""
 
-    name: NameStr  # type: ignore
+    name: ProjectName  # type: ignore
     # summary is Optional[str] in BaseProject
     summary: str  # type: ignore
     description: str  # type: ignore[reportIncompatibleVariableOverride]
@@ -261,11 +266,10 @@ class Project(YamlModelMixin, BuildPlanner, BaseProject):  # type: ignore[misc]
 
     parts: dict[str, Any]
 
-    class Config(CraftBaseConfig):  # pylint: disable=too-few-public-methods
-        """Pydantic model configuration."""
-
-        allow_mutation = False
-        extra = pydantic.Extra.forbid
+    model_config = pydantic.ConfigDict(
+        **BaseProject.model_config,
+        frozen=True,
+    )
 
     @override
     @classmethod
@@ -471,7 +475,7 @@ class Project(YamlModelMixin, BuildPlanner, BaseProject):  # type: ignore[misc]
                 # Note: The base Project class already changes the error message
                 # for the "name" regex, but we re-change it here because
                 # Rockcraft's name regex is slightly stricter.
-                error_dict["msg"] = INVALID_NAME_MESSAGE
+                error_dict["msg"] = MESSAGE_INVALID_NAME
 
     @override
     @classmethod
