@@ -25,6 +25,7 @@ import pydantic
 import yaml
 from craft_application.errors import CraftValidationError
 from craft_cli import emit
+from pydantic import ConfigDict
 
 
 def _alias_generator(name: str) -> str:
@@ -36,46 +37,30 @@ class HttpCheck(pydantic.BaseModel):
     """Lightweight schema validation for a Pebble HTTP check."""
 
     url: pydantic.AnyHttpUrl
-    headers: dict[str, str] | None
-
-    class Config:  # pylint: disable=too-few-public-methods
-        """Pydantic model configuration."""
-
-        allow_population_by_field_name = True
-        extra = "forbid"
+    headers: dict[str, str] | None = None
+    model_config = ConfigDict(populate_by_name=True, extra="forbid")
 
 
 class TcpCheck(pydantic.BaseModel):
     """Lightweight schema validation for a Pebble TCP check."""
 
     port: int
-    host: str | None
-
-    class Config:  # pylint: disable=too-few-public-methods
-        """Pydantic model configuration."""
-
-        allow_population_by_field_name = True
-        extra = "forbid"
+    host: str | None = None
+    model_config = ConfigDict(populate_by_name=True, extra="forbid")
 
 
 class ExecCheck(pydantic.BaseModel):
     """Lightweight schema validation for a Pebble exec check."""
 
     command: str
-    service_context: str | None
-    environment: dict[str, str] | None
-    user: str | None
-    user_id: int | None
-    group: str | None
-    group_id: int | None
-    working_dir: str | None
-
-    class Config:  # pylint: disable=too-few-public-methods
-        """Pydantic model configuration."""
-
-        allow_population_by_field_name = True
-        alias_generator = _alias_generator
-        extra = "forbid"
+    service_context: str | None = None
+    environment: dict[str, str] | None = None
+    user: str | None = None
+    user_id: int | None = None
+    group: str | None = None
+    group_id: int | None = None
+    working_dir: str | None = None
+    model_config = ConfigDict(populate_by_name=True, alias_generator=_alias_generator, extra="forbid")
 
 
 class Check(pydantic.BaseModel):
@@ -86,13 +71,13 @@ class Check(pydantic.BaseModel):
     """
 
     override: Literal["merge", "replace"]
-    level: Literal["alive", "ready"] | None
-    period: str | None
-    timeout: str | None
-    threshold: int | None
-    http: HttpCheck | None
-    tcp: TcpCheck | None
-    exec: ExecCheck | None
+    level: Literal["alive", "ready"] | None = None
+    period: str | None = None
+    timeout: str | None = None
+    threshold: int | None = None
+    http: HttpCheck | None = None
+    tcp: TcpCheck | None = None
+    exec: ExecCheck | None = None
 
     @pydantic.root_validator(pre=True)
     @classmethod
@@ -115,13 +100,7 @@ class Check(pydantic.BaseModel):
             return values
 
         raise CraftValidationError(err)
-
-    class Config:  # pylint: disable=too-few-public-methods
-        """Pydantic model configuration."""
-
-        allow_population_by_field_name = True
-        alias_generator = _alias_generator
-        extra = "forbid"
+    model_config = ConfigDict(populate_by_name=True, alias_generator=_alias_generator, extra="forbid")
 
 
 class Service(pydantic.BaseModel):
@@ -133,32 +112,26 @@ class Service(pydantic.BaseModel):
 
     override: Literal["merge", "replace"]
     command: str
-    summary: str | None
-    description: str | None
-    startup: Literal["enabled", "disabled"] | None
-    after: list[str] | None
-    before: list[str] | None
-    requires: list[str] | None
-    environment: dict[str, str] | None
-    user: str | None
-    user_id: int | None
-    group: str | None
-    group_id: int | None
-    working_dir: str | None
-    on_success: Literal["restart", "shutdown", "ignore"] | None
-    on_failure: Literal["restart", "shutdown", "ignore"] | None
-    on_check_failure: dict[str, Literal["restart", "shutdown", "ignore"]] | None
-    backoff_delay: str | None
-    backoff_factor: float | None
-    backoff_limit: str | None
-    kill_delay: str | None
-
-    class Config:  # pylint: disable=too-few-public-methods
-        """Pydantic model configuration."""
-
-        allow_population_by_field_name = True
-        alias_generator = _alias_generator
-        extra = "forbid"
+    summary: str | None = None
+    description: str | None = None
+    startup: Literal["enabled", "disabled"] | None = None
+    after: list[str] | None = None
+    before: list[str] | None = None
+    requires: list[str] | None = None
+    environment: dict[str, str] | None = None
+    user: str | None = None
+    user_id: int | None = None
+    group: str | None = None
+    group_id: int | None = None
+    working_dir: str | None = None
+    on_success: Literal["restart", "shutdown", "ignore"] | None = None
+    on_failure: Literal["restart", "shutdown", "ignore"] | None = None
+    on_check_failure: dict[str, Literal["restart", "shutdown", "ignore"]] | None = None
+    backoff_delay: str | None = None
+    backoff_factor: float | None = None
+    backoff_limit: str | None = None
+    kill_delay: str | None = None
+    model_config = ConfigDict(populate_by_name=True, alias_generator=_alias_generator, extra="forbid")
 
 
 class Pebble:

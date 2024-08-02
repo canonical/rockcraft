@@ -28,7 +28,7 @@ from craft_cli import emit
 from overrides import overrides  # type: ignore[reportUnknownVariableType]
 
 from rockcraft import errors
-from rockcraft.models.project import INVALID_NAME_MESSAGE, NAME_REGEX
+from rockcraft.models.project import MESSAGE_INVALID_NAME, PROJECT_NAME_REGEX
 
 if TYPE_CHECKING:
     import argparse
@@ -232,14 +232,14 @@ class InitCommand(AppCommand):
     def run(self, parsed_args: "argparse.Namespace") -> None:
         """Run the command."""
         name = parsed_args.name
-        if name and not re.match(NAME_REGEX, name):
+        if name and not re.match(PROJECT_NAME_REGEX, name):
             raise errors.RockcraftInitError(
-                f"'{name}' is not a valid rock name. " + INVALID_NAME_MESSAGE
+                f"'{name}' is not a valid rock name. " + MESSAGE_INVALID_NAME
             )
 
         if not name:
             name = pathlib.Path.cwd().name
-            if not re.match(NAME_REGEX, name):
+            if not re.match(PROJECT_NAME_REGEX, name):
                 name = "my-rock-name"
             emit.debug(f"Set project name to '{name}'")
 
