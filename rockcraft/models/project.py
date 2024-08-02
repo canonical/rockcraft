@@ -30,6 +30,7 @@ import yaml
 from craft_application.errors import CraftValidationError
 from craft_application.models import BuildPlanner as BaseBuildPlanner
 from craft_application.models import Project as BaseProject
+from craft_application.models import Platform
 from craft_application.models import constraints
 from craft_providers import bases
 from craft_providers.errors import BaseConfigurationError
@@ -47,40 +48,6 @@ if TYPE_CHECKING:
     _RunUser = str | None
 else:
     _RunUser = Literal[tuple(SUPPORTED_GLOBAL_USERNAMES)] | None
-
-
-class Platform(craft_application.models.Platform):
-    """Rockcraft project platform definition."""
-
-    @pydantic.field_validator("build_for", mode="before")
-    @classmethod
-    def _vectorise_build_for(cls, val: str | list[str]) -> list[str]:
-        """Vectorise target architecture if needed."""
-        if isinstance(val, str):
-            val = [val]
-        return val
-
-    @pydantic.model_validator(mode="after")
-    def _validate_platform_set(self) -> Self:
-        """Validate the build_on build_for combination."""
-        build_for: list[str] = self.build_for
-        build_on: list[str] = self.build_on
-
-        # We can only build for 1 arch at the moment
-        if len(build_for) > 1:
-            raise ValueError(
-                str(
-                    f"Trying to build a rock for {build_for} "
-                    "but multiple target architectures are not "
-                    "currently supported. Please specify only 1 value."
-                )
-            )
-
-        # If build_for is provided, then build_on must also be
-        if not build_on and build_for:
-            raise ValueError("'build-for' expects 'build-on' to also be provided.")
-
-        return self
 
 
 PROJECT_NAME_REGEX = r"^([a-z](?:-?[a-z0-9]){2,})$"
@@ -164,6 +131,17 @@ class BuildPlanner(BaseBuildPlanner):
             return at_value
 
         return base_value
+
+    @pydantic.field_validator("platforms", mode="before")
+    @classmethod
+    def _vectorise_build_for(cls, platforms: dict[str, Any]) -> dict[str, Any]:
+        """Vectorise target architecture if needed."""
+        for platform in platforms.values():
+            if not platform:
+                continue
+            if isinstance(platform.get("build-for"), str):
+                platform["build-for"] = [platform["build-for"]]
+        return platforms
 
     @pydantic.field_validator("platforms")
     @classmethod
