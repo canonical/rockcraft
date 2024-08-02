@@ -60,7 +60,9 @@ class ExecCheck(pydantic.BaseModel):
     group: str | None = None
     group_id: int | None = None
     working_dir: str | None = None
-    model_config = ConfigDict(populate_by_name=True, alias_generator=_alias_generator, extra="forbid")
+    model_config = ConfigDict(
+        populate_by_name=True, alias_generator=_alias_generator, extra="forbid"
+    )
 
 
 class Check(pydantic.BaseModel):
@@ -79,7 +81,7 @@ class Check(pydantic.BaseModel):
     tcp: TcpCheck | None = None
     exec: ExecCheck | None = None
 
-    @pydantic.root_validator(pre=True)
+    @pydantic.model_validator(mode="before")
     @classmethod
     def _validates_check_type(cls, values: Mapping[str, Any]) -> Mapping[str, Any]:
         """Before validation, make sure only one of 'http', 'tcp' or 'exec' exist."""
@@ -100,7 +102,10 @@ class Check(pydantic.BaseModel):
             return values
 
         raise CraftValidationError(err)
-    model_config = ConfigDict(populate_by_name=True, alias_generator=_alias_generator, extra="forbid")
+
+    model_config = ConfigDict(
+        populate_by_name=True, alias_generator=_alias_generator, extra="forbid"
+    )
 
 
 class Service(pydantic.BaseModel):
@@ -131,7 +136,9 @@ class Service(pydantic.BaseModel):
     backoff_factor: float | None = None
     backoff_limit: str | None = None
     kill_delay: str | None = None
-    model_config = ConfigDict(populate_by_name=True, alias_generator=_alias_generator, extra="forbid")
+    model_config = ConfigDict(
+        populate_by_name=True, alias_generator=_alias_generator, extra="forbid"
+    )
 
 
 class Pebble:
