@@ -1,3 +1,5 @@
+.. _overlays:
+
 Overlay step
 ============
 

@@ -78,7 +78,6 @@ exclude_patterns = [
     "common/craft-parts/explanation/lifecycle.rst",
     "common/craft-parts/explanation/overlay_parameters.rst",
     "common/craft-parts/explanation/overlays.rst",
-    "common/craft-parts/explanation/parts.rst",
     "common/craft-parts/explanation/how_parts_are_built.rst",
     "common/craft-parts/explanation/overlay_step.rst",
     "common/craft-parts/how-to/craftctl.rst",
