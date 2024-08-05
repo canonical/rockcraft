@@ -81,7 +81,7 @@ test-black:
 
 .PHONY: test-codespell
 test-codespell:
-	codespell .
+	codespell rockcraft tests
 
 .PHONY: test-flake8
 test-flake8:
