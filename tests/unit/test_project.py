@@ -194,7 +194,7 @@ def test_project_unmarshal_with_unsupported_fields(unsupported_field, yaml_loade
 
     expected = (
         "Bad rockcraft.yaml content:\n"
-        "- the fields 'entrypoint', 'cmd' and 'env' are not supported in Rockcraft. "
+        "- value error, The fields 'entrypoint', 'cmd' and 'env' are not supported in Rockcraft. "
         "All rocks have Pebble as their entrypoint, so you must use 'services' to define "
         "your container application and respective environment."
     )
@@ -215,7 +215,7 @@ def test_forbidden_env_var_interpolation(
             load_project_yaml(yaml_loaded_data)
         expected = (
             "Bad rockcraft.yaml content:\n"
-            f"- string interpolation not allowed for: {variable} (in field 'environment')"
+            f"- value error, String interpolation not allowed for: {variable} (in field 'environment')"
         )
         check.equal(str(err.value), expected)
     else:
@@ -239,8 +239,8 @@ def test_project_base_invalid(yaml_loaded_data):
         load_project_yaml(yaml_loaded_data)
     assert str(err.value) == (
         "Bad rockcraft.yaml content:\n"
-        "- unexpected value; permitted: 'bare', 'ubuntu@20.04', "
-        "'ubuntu@22.04', 'ubuntu@24.04' (in field 'base')"
+        "- input should be 'bare', 'ubuntu@20.04', 'ubuntu@22.04' or "
+        "'ubuntu@24.04' (in field 'base')"
     )
 
 
@@ -252,7 +252,7 @@ def test_project_license_invalid(yaml_loaded_data):
 
     expected = (
         "Bad rockcraft.yaml content:\n"
-        f"- license {yaml_loaded_data['license']} not valid. "
+        f"- value error, License {yaml_loaded_data['license']} not valid. "
         "It must be either 'proprietary' or in SPDX format. (in field 'license')"
     )
     assert str(err.value) == expected
@@ -288,7 +288,7 @@ def test_project_title_empty_invalid_name(yaml_loaded_data):
 
     expected = (
         "Bad rockcraft.yaml content:\n"
-        "- invalid name for rock: Names can only use .* "
+        "- value error, invalid name for rock: Names can only use .* "
         r"\(in field 'name'\)"
     )
     assert err.match(expected)
@@ -301,7 +301,7 @@ def test_project_entrypoint_service_empty(yaml_loaded_data, entrypoint_service):
         load_project_yaml(yaml_loaded_data)
     expected = (
         "Bad rockcraft.yaml content:\n"
-        "- the provided entrypoint-service '' is not a valid Pebble service. "
+        "- value error, The provided entrypoint-service '' is not a valid Pebble service. "
         "(in field 'entrypoint-service')"
     )
     assert str(err.value) == expected
@@ -330,7 +330,7 @@ def test_project_entrypoint_service_invalid(yaml_loaded_data, entrypoint_service
 
     expected = (
         "Bad rockcraft.yaml content:\n"
-        "- the provided entrypoint-service 'baz' is not a valid Pebble service. "
+        "- value error, The provided entrypoint-service 'baz' is not a valid Pebble service. "
         "(in field 'entrypoint-service')"
     )
     assert str(err.value) == expected
@@ -387,24 +387,19 @@ def test_project_platform_invalid():
 
     # build_on must be a list
     mock_platform = {"build-on": "amd64"}
-    assert "not a valid list" in load_platform(mock_platform)
+    assert "should be a valid list" in load_platform(mock_platform)
 
     # lists must be unique
     mock_platform = {"build-on": ["amd64", "amd64"]}
-    assert "duplicated" in load_platform(mock_platform)
-
-    mock_platform = {"build-for": ["amd64", "amd64"]}
-    assert "duplicated" in load_platform(mock_platform)
+    assert "duplicate values in" in load_platform(mock_platform)
 
     # build-for must be only 1 element (NOTE: this may change)
     mock_platform = {"build-on": ["amd64"], "build-for": ["amd64", "arm64"]}
-    assert "multiple target architectures" in load_platform(mock_platform)
+    assert "List should have at most 1 item" in load_platform(mock_platform)
 
     # If build_for is provided, then build_on must also be
     mock_platform = {"build-for": ["arm64"]}
-    assert "'build-for' expects 'build-on' to also be provided." in load_platform(
-        mock_platform
-    )
+    assert "Field required" in load_platform(mock_platform)
 
 
 def test_project_all_platforms_invalid(yaml_loaded_data):
@@ -422,8 +417,7 @@ def test_project_all_platforms_invalid(yaml_loaded_data):
 
     expected = (
         "Bad rockcraft.yaml content:\n"
-        "- 'build-for' expects 'build-on' to also be provided."
-        " (in field 'platforms.foo')"
+        "- field 'build-on' required in 'platforms.foo' configuration"
     )
 
     assert reload_project_platforms(mock_platforms) == expected
@@ -506,7 +500,7 @@ def test_project_extra_field(yaml_loaded_data):
         load_project_yaml(yaml_loaded_data)
     assert str(err.value) == (
         "Bad rockcraft.yaml content:\n"
-        "- extra field 'extra' not permitted in top-level configuration"
+        "- extra inputs are not permitted (in field 'extra')"
     )
 
 
@@ -517,7 +511,7 @@ def test_project_parts_validation(yaml_loaded_data):
         load_project_yaml(yaml_loaded_data)
     assert str(err.value) == (
         "Bad rockcraft.yaml content:\n"
-        "- extra field 'invalid' not permitted in 'parts.foo' configuration"
+        "- extra inputs are not permitted (in field 'parts.invalid')"
     )
 
 
@@ -542,8 +536,8 @@ def test_project_bare_overlay(yaml_loaded_data, packages, script):
 
     expected = (
         "Bad rockcraft.yaml content:\n"
-        '- overlays cannot be used with "bare" bases (there is no system to overlay). '
-        "(in field 'parts.foo')"
+        '- value error, Overlays cannot be used with "bare" bases (there is no system to overlay). '
+        "(in field 'parts')"
     )
     assert str(err.value) == expected
 
@@ -646,47 +640,46 @@ def test_metadata_base_devel(yaml_loaded_data):
 
 
 EXPECTED_DUMPED_YAML = f"""\
-name: mytest
-title: My Test
-version: latest
-summary: example for unit tests
-description: this is an example of a rockcraft.yaml for the purpose of testing rockcraft
 base: ubuntu@20.04
-build-base: ubuntu@20.04
-platforms:
-  {BUILD_ON_ARCH}:
-    build-on:
-    - {BUILD_ON_ARCH}
-    build-for:
-    - {BUILD_ON_ARCH}
-  some-text:
-    build-on:
-    - {BUILD_ON_ARCH}
-    build-for:
-    - {BUILD_ON_ARCH}
-  same-with-different-syntax:
-    build-on:
-    - {BUILD_ON_ARCH}
-    build-for:
-    - {BUILD_ON_ARCH}
-license: Apache-2.0
-parts:
-  foo:
-    plugin: nil
-    overlay-script: ls
-package-repositories:
-- type: apt
-  ppa: ppa/ppa
+description: this is an example of a rockcraft.yaml for the purpose of testing rockcraft
+entrypoint-service: test-service
 environment:
+  BAR: value2
   BAZ: value1
   FOO: value3
-  BAR: value2
+license: Apache-2.0
+name: mytest
+package-repositories:
+- ppa: ppa/ppa
+  type: apt
+parts:
+  foo:
+    overlay-script: ls
+    plugin: nil
+platforms:
+  {BUILD_ON_ARCH}:
+    build-for:
+    - {BUILD_ON_ARCH}
+    build-on:
+    - {BUILD_ON_ARCH}
+  same-with-different-syntax:
+    build-for:
+    - {BUILD_ON_ARCH}
+    build-on:
+    - {BUILD_ON_ARCH}
+  some-text:
+    build-for:
+    - {BUILD_ON_ARCH}
+    build-on:
+    - {BUILD_ON_ARCH}
 services:
   test-service:
-    override: replace
     command: echo [ foo ]
     on-failure: restart
-entrypoint-service: test-service
+    override: replace
+summary: example for unit tests
+title: My Test
+version: latest
 """
 
 

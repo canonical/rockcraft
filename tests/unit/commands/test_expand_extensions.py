@@ -16,7 +16,6 @@
 import argparse
 import copy
 import re
-import textwrap
 from pathlib import Path
 
 import pytest
@@ -32,50 +31,45 @@ from tests.unit.testing.extensions import (
 )
 
 # The project with the extension (FullExtension) expanded
-EXPECTED_EXPAND_EXTENSIONS = textwrap.dedent(
-    """\
-    name: project-with-extensions
-    title: project-with-extensions
-    version: latest
-    summary: Project with extensions
-    description: Project with extensions
-    base: ubuntu@22.04
-    build-base: ubuntu@22.04
-    platforms:
-      amd64:
-        build-on:
-        - amd64
-        build-for:
-        - amd64
-    license: Apache-2.0
-    parts:
-      foo:
-        plugin: nil
-        stage-packages:
-        - new-package-1
-        - old-package
-      full-extension/new-part:
-        plugin: nil
-        source: null
-      pebble:
-        plugin: nil
-        stage-snaps:
-        - pebble/latest/stable
-        override-prime: |-
-          craftctl default
-          mkdir -p var/lib/pebble/default/layers
-          chmod 777 var/lib/pebble/default
-        stage:
-        - bin/pebble
-    services:
-      my-service:
-        override: merge
-        command: foo
-      full-extension-service:
-        override: replace
-        command: fake command
-    """
-)
+EXPECTED_EXPAND_EXTENSIONS = """\
+base: ubuntu@22.04
+description: Project with extensions
+license: Apache-2.0
+name: project-with-extensions
+parts:
+  foo:
+    plugin: nil
+    stage-packages:
+    - new-package-1
+    - old-package
+  full-extension/new-part:
+    plugin: nil
+    source: null
+  pebble:
+    override-prime: "craftctl default\\nmkdir -p var/lib/pebble/default/layers\\nchmod
+      777 var/lib/pebble/default"
+    plugin: nil
+    stage:
+    - bin/pebble
+    stage-snaps:
+    - pebble/latest/stable
+platforms:
+  amd64:
+    build-for:
+    - amd64
+    build-on:
+    - amd64
+services:
+  full-extension-service:
+    command: fake command
+    override: replace
+  my-service:
+    command: foo
+    override: merge
+summary: Project with extensions
+title: project-with-extensions
+version: latest
+"""
 
 
 @pytest.fixture()
@@ -109,8 +103,8 @@ def test_expand_extensions_error(setup_extensions, new_dir):
 
     expected_message = re.escape(
         "Bad rockcraft.yaml content:\n"
-        "- plugin not registered: 'nonexistent' (in field 'parts.foo')\n"
-        "- unexpected value; permitted: 'merge', 'replace' (in field 'services.my-service.override')"
+        "- value error, plugin not registered: 'nonexistent' (in field 'parts')\n"
+        "- input should be 'merge' or 'replace' (in field 'services.my-service.override')"
     )
 
     cmd = ExpandExtensionsCommand(None)

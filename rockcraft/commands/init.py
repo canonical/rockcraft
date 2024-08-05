@@ -16,10 +16,10 @@
 
 """Creation of minimalist rockcraft projects."""
 
-from dataclasses import dataclass
 import pathlib
 import re
 import textwrap
+from dataclasses import dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING
 
