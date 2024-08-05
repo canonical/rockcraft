@@ -83,7 +83,7 @@ def test_package_repositories_in_overlay(new_dir, mocker, run_lifecycle):
     assert overlay_apt.is_dir()
 
     # Checking that the files are present should be enough
-    assert (overlay_apt / "keyrings/craft-CE49EC21.gpg").is_file()
+    assert (overlay_apt / "keyrings/craft-9BE21867.gpg").is_file()
     assert (overlay_apt / "sources.list.d/craft-ppa-mozillateam_ppa.sources").is_file()
     assert (overlay_apt / "preferences.d/craft-archives").is_file()
 
