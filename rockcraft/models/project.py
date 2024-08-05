@@ -24,6 +24,7 @@ from typing import TYPE_CHECKING, Any, Literal, cast
 
 import craft_application.models
 import craft_cli
+import craft_platforms
 import pydantic
 import spdx_lookup  # type: ignore
 import yaml
@@ -235,6 +236,17 @@ class BuildPlanner(BaseBuildPlanner):
             name, channel = base.split("@")
 
         return bases.BaseName(name, channel)
+
+    def get_build_plan(self) -> list[craft_platforms.BuildInfo]:
+        """Obtain the list of architectures and bases from the Project."""
+        data = self.marshal()
+        build_infos = craft_platforms.rock.get_platforms_rock_build_plan(
+            base=data["base"],
+            platforms=data["platforms"],
+            build_base=data.get("build-base"),
+        )
+
+        return list(build_infos)
 
     @override
     @classmethod

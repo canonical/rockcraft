@@ -20,8 +20,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import cast
 
+import craft_platforms
 from craft_application import AppMetadata, ProjectService, ServiceFactory, errors
-from craft_application.models import BuildInfo
 from craft_cli import emit
 
 from rockcraft import models, oci
@@ -46,7 +46,7 @@ class RockcraftImageService(ProjectService):
         *,
         project: models.Project,
         work_dir: Path,
-        build_plan: list[BuildInfo],
+        build_plan: list[craft_platforms.BuildInfo],
     ):
         super().__init__(app, services, project=project)
 

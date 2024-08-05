@@ -17,6 +17,7 @@ import os
 from pathlib import Path
 from unittest import mock
 
+import craft_platforms
 import pytest
 from craft_application import util
 from craft_application.util import repositories
@@ -81,8 +82,9 @@ def test_lifecycle_args(
 def test_lifecycle_package_repositories(
     extra_project_params, lifecycle_service, default_project, mocker, default_build_plan
 ):
-    base = default_build_plan[0].base
+    base = default_build_plan[0].build_base
     mocker.patch.object(util, "get_host_base", return_value=base)
+    mocker.patch.object(craft_platforms.DistroBase, "from_linux_distribution", return_value=base)
     fake_repositories = extra_project_params["package_repositories"]
     lifecycle_service._lcm = mock.MagicMock(spec=LifecycleManager)
 

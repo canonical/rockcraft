@@ -21,8 +21,8 @@ import pathlib
 import typing
 from typing import cast
 
+import craft_platforms
 from craft_application import AppMetadata, PackageService, errors, models
-from craft_application.models import BuildInfo
 from craft_cli import emit
 from overrides import override  # type: ignore[reportUnknownVariableType]
 
@@ -43,7 +43,7 @@ class RockcraftPackageService(PackageService):
         services: "RockcraftServiceFactory",
         *,
         project: models.Project,
-        build_plan: list[BuildInfo],
+        build_plan: list[craft_platforms.BuildInfo],
     ) -> None:
         super().__init__(app, services, project=project)
         self._build_plan = build_plan

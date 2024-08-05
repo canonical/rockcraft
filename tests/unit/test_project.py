@@ -21,13 +21,12 @@ import textwrap
 from pathlib import Path
 from typing import Any
 
+import craft_platforms
 import pydantic
 import pytest
 import yaml
 from craft_application.errors import CraftValidationError
-from craft_application.models import BuildInfo
-from craft_providers.bases import BaseName, ubuntu
-
+from craft_providers.bases import ubuntu
 from rockcraft.errors import ProjectLoadError
 from rockcraft.models import Project
 from rockcraft.models.project import INVALID_NAME_MESSAGE, Platform, load_project
@@ -703,11 +702,11 @@ def test_project_yaml(yaml_loaded_data):
                 "amd64": None,
             },
             [
-                BuildInfo(
-                    build_on="amd64",
-                    build_for="amd64",
-                    base=BaseName(name="ubuntu", version="20.04"),
+                craft_platforms.BuildInfo(
                     platform="amd64",
+                    build_on=craft_platforms.DebianArchitecture.AMD64,
+                    build_for=craft_platforms.DebianArchitecture.AMD64,
+                    build_base=craft_platforms.DistroBase("ubuntu", "20.04")
                 )
             ],
         ),
@@ -719,17 +718,17 @@ def test_project_yaml(yaml_loaded_data):
                 },
             },
             [
-                BuildInfo(
-                    build_on="amd64",
-                    build_for="amd64",
-                    base=BaseName(name="ubuntu", version="20.04"),
+                craft_platforms.BuildInfo(
                     platform="amd64",
+                    build_on=craft_platforms.DebianArchitecture.AMD64,
+                    build_for=craft_platforms.DebianArchitecture.AMD64,
+                    build_base=craft_platforms.DistroBase("ubuntu", "20.04")
                 ),
-                BuildInfo(
-                    build_on="i386",
-                    build_for="amd64",
-                    base=BaseName(name="ubuntu", version="20.04"),
+                craft_platforms.BuildInfo(
                     platform="amd64",
+                    build_on=craft_platforms.DebianArchitecture.I386,
+                    build_for=craft_platforms.DebianArchitecture.AMD64,
+                    build_base=craft_platforms.DistroBase("ubuntu", "20.04")
                 ),
             ],
         ),
@@ -741,11 +740,11 @@ def test_project_yaml(yaml_loaded_data):
                 },
             },
             [
-                BuildInfo(
-                    build_on="amd64",
-                    build_for="amd64",
-                    base=BaseName(name="ubuntu", version="20.04"),
+                craft_platforms.BuildInfo(
                     platform="amd64v2",
+                    build_on=craft_platforms.DebianArchitecture.AMD64,
+                    build_for=craft_platforms.DebianArchitecture.AMD64,
+                    build_base=craft_platforms.DistroBase("ubuntu", "20.04")
                 )
             ],
         ),

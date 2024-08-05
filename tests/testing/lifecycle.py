@@ -18,7 +18,7 @@
 import pathlib
 from typing import cast
 
-from craft_application import models
+import craft_platforms
 from rockcraft.application import APP_METADATA
 from rockcraft.models import Project
 from rockcraft.services import RockcraftLifecycleService, RockcraftServiceFactory
@@ -32,7 +32,7 @@ def run_mocked_lifecycle(
     mocker,
     base_layer_dir: pathlib.Path | None = None,
     step: str = "stage",
-    build_plan: list[models.BuildInfo]
+    build_plan: list[craft_platforms.BuildInfo]
 ) -> RockcraftLifecycleService:
     """Run a project's lifecycle with a mocked base image."""
 
