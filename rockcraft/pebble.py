@@ -24,32 +24,25 @@ from typing import Any, Literal
 import pydantic
 import yaml
 from craft_application.errors import CraftValidationError
+from craft_application.models import CraftBaseModel
 from craft_cli import emit
-from pydantic import ConfigDict
 
 
-def _alias_generator(name: str) -> str:
-    """Convert underscores to dashes in aliases."""
-    return name.replace("_", "-")
-
-
-class HttpCheck(pydantic.BaseModel):
+class HttpCheck(CraftBaseModel):
     """Lightweight schema validation for a Pebble HTTP check."""
 
     url: pydantic.AnyHttpUrl
     headers: dict[str, str] | None = None
-    model_config = ConfigDict(populate_by_name=True, extra="forbid")
 
 
-class TcpCheck(pydantic.BaseModel):
+class TcpCheck(CraftBaseModel):
     """Lightweight schema validation for a Pebble TCP check."""
 
     port: int
     host: str | None = None
-    model_config = ConfigDict(populate_by_name=True, extra="forbid")
 
 
-class ExecCheck(pydantic.BaseModel):
+class ExecCheck(CraftBaseModel):
     """Lightweight schema validation for a Pebble exec check."""
 
     command: str
@@ -60,12 +53,9 @@ class ExecCheck(pydantic.BaseModel):
     group: str | None = None
     group_id: int | None = None
     working_dir: str | None = None
-    model_config = ConfigDict(
-        populate_by_name=True, alias_generator=_alias_generator, extra="forbid"
-    )
 
 
-class Check(pydantic.BaseModel):
+class Check(CraftBaseModel):
     """Lightweight schema validation for a Pebble checks.
 
     Based on
@@ -103,12 +93,8 @@ class Check(pydantic.BaseModel):
 
         raise CraftValidationError(err)
 
-    model_config = ConfigDict(
-        populate_by_name=True, alias_generator=_alias_generator, extra="forbid"
-    )
 
-
-class Service(pydantic.BaseModel):
+class Service(CraftBaseModel):
     """Lightweight schema validation for a Pebble service.
 
     Based on
@@ -136,9 +122,6 @@ class Service(pydantic.BaseModel):
     backoff_factor: float | None = None
     backoff_limit: str | None = None
     kill_delay: str | None = None
-    model_config = ConfigDict(
-        populate_by_name=True, alias_generator=_alias_generator, extra="forbid"
-    )
 
 
 class Pebble:
