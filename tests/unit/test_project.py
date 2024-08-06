@@ -640,52 +640,52 @@ def test_metadata_base_devel(yaml_loaded_data):
 
 
 EXPECTED_DUMPED_YAML = f"""\
-base: ubuntu@20.04
-description: this is an example of a rockcraft.yaml for the purpose of testing rockcraft
-entrypoint-service: test-service
-environment:
-  BAR: value2
-  BAZ: value1
-  FOO: value3
-license: Apache-2.0
 name: mytest
-package-repositories:
-- ppa: ppa/ppa
-  type: apt
-parts:
-  foo:
-    overlay-script: ls
-    plugin: nil
-platforms:
-  {BUILD_ON_ARCH}:
-    build-for:
-    - {BUILD_ON_ARCH}
-    build-on:
-    - {BUILD_ON_ARCH}
-  same-with-different-syntax:
-    build-for:
-    - {BUILD_ON_ARCH}
-    build-on:
-    - {BUILD_ON_ARCH}
-  some-text:
-    build-for:
-    - {BUILD_ON_ARCH}
-    build-on:
-    - {BUILD_ON_ARCH}
-services:
-  test-service:
-    command: echo [ foo ]
-    on-failure: restart
-    override: replace
-summary: example for unit tests
 title: My Test
 version: latest
+summary: example for unit tests
+description: this is an example of a rockcraft.yaml for the purpose of testing rockcraft
+base: ubuntu@20.04
+platforms:
+  {BUILD_ON_ARCH}:
+    build-on:
+    - {BUILD_ON_ARCH}
+    build-for:
+    - {BUILD_ON_ARCH}
+  some-text:
+    build-on:
+    - {BUILD_ON_ARCH}
+    build-for:
+    - {BUILD_ON_ARCH}
+  same-with-different-syntax:
+    build-on:
+    - {BUILD_ON_ARCH}
+    build-for:
+    - {BUILD_ON_ARCH}
+license: Apache-2.0
+parts:
+  foo:
+    plugin: nil
+    overlay-script: ls
+package-repositories:
+- type: apt
+  ppa: ppa/ppa
+environment:
+  BAZ: value1
+  FOO: value3
+  BAR: value2
+services:
+  test-service:
+    override: replace
+    command: echo [ foo ]
+    on-failure: restart
+entrypoint-service: test-service
 """
 
 
 def test_project_yaml(yaml_loaded_data):
     project = Project.unmarshal(yaml_loaded_data)
-    assert project.to_yaml() == EXPECTED_DUMPED_YAML
+    assert project.to_yaml_string() == EXPECTED_DUMPED_YAML
 
 
 @pytest.mark.parametrize(
