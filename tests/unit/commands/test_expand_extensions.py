@@ -108,7 +108,7 @@ def test_expand_extensions_error(setup_extensions, new_dir):
 
     expected_message = re.escape(
         "Bad rockcraft.yaml content:\n"
-        "- value error, plugin not registered: 'nonexistent' (in field 'parts.foo')\n"
+        "- plugin not registered: 'nonexistent' (in field 'parts.foo')\n"
         "- input should be 'merge' or 'replace' (in field 'services.my-service.override')"
     )
 
