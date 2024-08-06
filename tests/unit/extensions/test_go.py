@@ -74,6 +74,7 @@ def test_go_extension_default(tmp_path, go_input_yaml):
                 "override": "replace",
                 "startup": "enabled",
                 "user": "_daemon_",
+                "working-dir": "/app",
             },
         },
     }
@@ -208,12 +209,12 @@ def test_go_extension_extra_assets(tmp_path, go_input_yaml):
         "plugin": "dump",
         "source": ".",
         "organize": {
-            "static": "go/static",
-            "migrate": "go/migrate",
-            "migrate.sh": "go/migrate.sh",
-            "templates": "go/templates",
+            "static": "app/static",
+            "migrate": "app/migrate",
+            "migrate.sh": "app/migrate.sh",
+            "templates": "app/templates",
         },
-        "stage": ["go/migrate", "go/migrate.sh", "go/static", "go/templates"],
+        "stage": ["app/migrate", "app/migrate.sh", "app/static", "app/templates"],
     }
 
 
@@ -225,7 +226,7 @@ def test_go_extension_extra_assets_overriden(tmp_path, go_input_yaml):
         "go-framework/assets": {
             "plugin": "dump",
             "source": ".",
-            "stage": ["go/foobar"],
+            "stage": ["app/foobar"],
         }
     }
     applied = extensions.apply_extensions(tmp_path, go_input_yaml)
@@ -233,7 +234,7 @@ def test_go_extension_extra_assets_overriden(tmp_path, go_input_yaml):
         "plugin": "dump",
         "source": ".",
         "organize": {
-            "foobar": "go/foobar",
+            "foobar": "app/foobar",
         },
-        "stage": ["go/foobar"],
+        "stage": ["app/foobar"],
     }

@@ -86,7 +86,7 @@ class GoFramework(Extension):
             and self._assets_stage[0][0] != "-"
         ):
             renaming_map = {
-                os.path.relpath(file, "go"): file for file in self._assets_stage
+                os.path.relpath(file, "app"): file for file in self._assets_stage
             }
         else:
             return None
@@ -106,16 +106,16 @@ class GoFramework(Extension):
             .get("go-framework/assets", {})
             .get("stage", [])
         )
-        if not all(re.match("-? *go/", p) for p in user_stage):
+        if not all(re.match("-? *app/", p) for p in user_stage):
             raise ExtensionError(
                 "go-framework extension requires the 'stage' entry in the "
-                "go-framework/assets part to start with go",
+                "go-framework/assets part to start with app",
                 docs_url="https://documentation.ubuntu.com/rockcraft/en/stable/reference/extensions/go-framework",
                 logpath_report=False,
             )
         if not user_stage:
             user_stage = [
-                f"go/{f}"
+                f"app/{f}"
                 for f in (
                     "migrate",
                     "migrate.sh",
