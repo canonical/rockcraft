@@ -157,9 +157,9 @@ def _pack(  # pylint: disable=too-many-arguments
     if project.services and project.entrypoint_service in project.services:
         new_image.set_cmd(project.services[project.entrypoint_service].command)
 
-    services = project.model_dump(exclude_none=True, by_alias=True).get("services", {})
-
-    checks = project.model_dump(exclude_none=True, by_alias=True).get("checks", {})
+    dumped = project.marshal()
+    services = cast(dict[str, typing.Any], dumped.get("services", {}))
+    checks = cast(dict[str, typing.Any], dumped.get("checks", {}))
 
     if services or checks:
         new_image.set_pebble_layer(
