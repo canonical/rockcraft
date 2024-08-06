@@ -432,3 +432,10 @@ class TestPebble:
     def test_bad_checks(self, bad_check, exception, error):
         with pytest.raises(exception, match=error):
             _ = Check(**bad_check)
+
+    def test_http_check_dump(self):
+        check = HttpCheck.model_validate({"url": "http://www.example.com"})
+        dump = check.model_dump(exclude_none=True, mode="json")
+
+        assert dump["url"] == "http://www.example.com/"
+        assert isinstance(dump["url"], str)
