@@ -3,27 +3,26 @@
 How to add an internal user to a rock
 *************************************
 
-Rockcraft allows you to use ``run-user`` to specify the user you want to run
-the rock's service(s) with. Without using that field in your rockcraft.yaml,
-the service(s) will be run by the root user. The downside, however, of using
-``run-user`` is that it only supports one user called ``_daemon_`` with a
-UID/GID of 84792. For most daemon services that's sufficient, but other
-services require that the running user should have a specific username and/or
-UID.
+Rockcraft allows you to use :ref:`run-user <rockcraft_yaml_run_user>` to
+specify the user you want to run the rock's service(s) with. Without using that
+field in the ``rockcraft.yaml`` file, the service(s) will be run by the root
+user. However, ``run-user`` only accepts a limited amount of well-known users,
+which could become a constraint for certain container applications.
 
 In order to add a new internal user or group to a rock, two packages (or their
 respective slices) are needed:
+
 - ``base-files``: to create the base dirs such as ``/root`` and ``/home``,
 - ``base-passwd``: to produce basic ``/etc/passwd`` and ``/etc/group`` files.
 
 Invoking the ``useradd`` and ``groupadd`` commands can take place in the
-:ref:`build <lifecycle>` step, by appending the commands to the build flow.
-However, the changes made by those commands normally apply to the base system,
-not the build system. Hence, ``$CRAFT_PART_INSTALL`` should be passed as the
-root directory to those two commands.
+:ref:`build <lifecycle>` step. However, the changes made by those commands will
+be only applied on the build instance, and will not be available in the
+resulting rock. Hence, ``$CRAFT_PART_INSTALL`` should be passed as the root
+directory to those two commands.
 
-The following *rockcraft.yaml* illustrates how to use ``useradd`` command in
-``override-build`` field inside a part.
+The following ``rockcraft.yaml`` illustrates how to use ``useradd`` command in
+the ``override-build`` field inside a part.
 
 .. literalinclude:: ../code/internal-user/rockcraft.yaml
     :language: yaml

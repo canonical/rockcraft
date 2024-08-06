@@ -16,7 +16,6 @@ execute: |
 
   # [docs:check-user]
   id=$(docker run -d internal-user:latest --verbose)
-  docker exec "$id" pebble logs | grep ubuntu
+  docker exec "$id" pebble logs | grep myuser 
   docker rm -f "$id"
   # [docs:check-user-end]
- 

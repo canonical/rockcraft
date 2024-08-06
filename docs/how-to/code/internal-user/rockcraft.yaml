@@ -5,28 +5,28 @@ version: 'latest'
 summary: Add an internal user inside a rock
 description: Add an internal user inside a rock, and run a service with it.
 platforms:
-    amd64:
+  amd64:
 
 # [docs:rock-services]
 services:
-    whoami:
-        override: replace
-        startup: enabled
-        command: bash -c "whoami; sleep 5"
-        user: ubuntu
-        on-success: ignore 
+  whoami:
+    override: replace
+    startup: enabled
+    command: bash -c "whoami; sleep 5"
+    user: myuser 
+    on-success: ignore 
 # [docs:rock-services-end]
 
 # [docs:rock-parts]
 parts:
-    my-part:
-        plugin: nil
-        stage-packages:
-            - base-passwd_data
-            - base-files_base
-            - bash_bins
-            - coreutils_bins
-        override-build: |
-            groupadd --root ${CRAFT_PART_INSTALL} ubuntu
-            useradd -d /home/ubuntu -s /bin/bash --root ${CRAFT_PART_INSTALL} -g ubuntu ubuntu
+  my-part:
+    plugin: nil
+    stage-packages:
+      - base-passwd_data
+      - base-files_base
+      - bash_bins
+      - coreutils_bins
+    override-build: |
+      groupadd --root ${CRAFT_PART_INSTALL} mygroup
+      useradd -d /home/myuser -s /bin/bash --root ${CRAFT_PART_INSTALL} -g mygroup myuser
 # [docs:rock-parts-end]
