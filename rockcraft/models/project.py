@@ -25,7 +25,6 @@ from typing import TYPE_CHECKING, Any, Literal
 
 import craft_cli
 import pydantic
-import pydantic_yaml
 import spdx_lookup  # type: ignore
 import yaml
 from craft_application.errors import CraftValidationError
@@ -386,29 +385,6 @@ class Project(BuildPlanner, BaseProject):  # type: ignore[misc]
             )
 
         return environment
-
-    def to_yaml(self) -> str:
-        """Dump this project as a YAML string."""
-
-        def _repr_str(dumper: yaml.SafeDumper, data: str) -> yaml.ScalarNode:
-            """Multi-line string representer for the YAML dumper."""
-            if "\n" in data:
-                return dumper.represent_scalar("tag:yaml.org,2002:str", data, style="|")  # type: ignore[reportUnknownMemberType]
-            return dumper.represent_scalar("tag:yaml.org,2002:str", data)  # type: ignore[reportUnknownMemberType]
-
-        yaml.add_representer(str, _repr_str, Dumper=yaml.SafeDumper)
-        return pydantic_yaml.to_yaml_str(
-            self,
-            by_alias=True,
-            exclude_unset=True,
-        )
-        # return super().yaml(  # type: ignore[reportUnknownMemberType]
-        #     by_alias=True,
-        #     exclude_none=True,
-        #     allow_unicode=True,
-        #     sort_keys=False,
-        #     width=1000,
-        # )
 
     def generate_metadata(
         self, generation_time: str, base_digest: bytes

@@ -72,10 +72,6 @@ strict = false
 module = ["craft_archives"]
 ignore_missing_imports = true
 
-[[tool.mypy.overrides]]
-module = ["ruamel"]
-ignore_missing_imports = true
-
 [tool.pylint.messages_control]
 disable = "too-many-ancestors,too-few-public-methods,fixme,unspecified-encoding,use-implicit-booleaness-not-comparison,unnecessary-lambda-assignment,line-too-long,cyclic-import"
 
