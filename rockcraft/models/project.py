@@ -233,8 +233,6 @@ class Project(BuildPlanner, BaseProject):  # type: ignore[misc]
     entrypoint_service: str | None = None
     platforms: dict[str, Platform | None]  # type: ignore[assignment]
 
-    parts: dict[str, Any]
-
     model_config = pydantic.ConfigDict(
         validate_assignment=True,
         extra="forbid",
