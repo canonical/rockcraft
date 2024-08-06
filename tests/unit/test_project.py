@@ -511,7 +511,7 @@ def test_project_parts_validation(yaml_loaded_data):
         load_project_yaml(yaml_loaded_data)
     assert str(err.value) == (
         "Bad rockcraft.yaml content:\n"
-        "- extra inputs are not permitted (in field 'parts.invalid')"
+        "- extra inputs are not permitted (in field 'parts.foo.invalid')"
     )
 
 
