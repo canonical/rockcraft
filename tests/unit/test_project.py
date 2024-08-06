@@ -194,7 +194,7 @@ def test_project_unmarshal_with_unsupported_fields(unsupported_field, yaml_loade
 
     expected = (
         "Bad rockcraft.yaml content:\n"
-        "- value error, The fields 'entrypoint', 'cmd' and 'env' are not supported in Rockcraft. "
+        "- the fields 'entrypoint', 'cmd' and 'env' are not supported in Rockcraft. "
         "All rocks have Pebble as their entrypoint, so you must use 'services' to define "
         "your container application and respective environment."
     )
@@ -215,7 +215,7 @@ def test_forbidden_env_var_interpolation(
             load_project_yaml(yaml_loaded_data)
         expected = (
             "Bad rockcraft.yaml content:\n"
-            f"- value error, String interpolation not allowed for: {variable} (in field 'environment')"
+            f"- string interpolation not allowed for: {variable} (in field 'environment')"
         )
         check.equal(str(err.value), expected)
     else:
@@ -252,7 +252,7 @@ def test_project_license_invalid(yaml_loaded_data):
 
     expected = (
         "Bad rockcraft.yaml content:\n"
-        f"- value error, License {yaml_loaded_data['license']} not valid. "
+        f"- license {yaml_loaded_data['license']} not valid. "
         "It must be either 'proprietary' or in SPDX format. (in field 'license')"
     )
     assert str(err.value) == expected
@@ -288,7 +288,7 @@ def test_project_title_empty_invalid_name(yaml_loaded_data):
 
     expected = (
         "Bad rockcraft.yaml content:\n"
-        "- value error, invalid name for rock: Names can only use .* "
+        "- invalid name for rock: Names can only use .* "
         r"\(in field 'name'\)"
     )
     assert err.match(expected)
@@ -301,7 +301,7 @@ def test_project_entrypoint_service_empty(yaml_loaded_data, entrypoint_service):
         load_project_yaml(yaml_loaded_data)
     expected = (
         "Bad rockcraft.yaml content:\n"
-        "- value error, The provided entrypoint-service '' is not a valid Pebble service. "
+        "- the provided entrypoint-service '' is not a valid Pebble service. "
         "(in field 'entrypoint-service')"
     )
     assert str(err.value) == expected
@@ -330,7 +330,7 @@ def test_project_entrypoint_service_invalid(yaml_loaded_data, entrypoint_service
 
     expected = (
         "Bad rockcraft.yaml content:\n"
-        "- value error, The provided entrypoint-service 'baz' is not a valid Pebble service. "
+        "- the provided entrypoint-service 'baz' is not a valid Pebble service. "
         "(in field 'entrypoint-service')"
     )
     assert str(err.value) == expected
@@ -536,7 +536,7 @@ def test_project_bare_overlay(yaml_loaded_data, packages, script):
 
     expected = (
         "Bad rockcraft.yaml content:\n"
-        '- value error, Overlays cannot be used with "bare" bases (there is no system to overlay). '
+        '- overlays cannot be used with "bare" bases (there is no system to overlay). '
         "(in field 'parts')"
     )
     assert str(err.value) == expected
