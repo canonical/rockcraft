@@ -54,6 +54,7 @@ class GoFramework(Extension):
                     "startup": "enabled",
                     "command": self.project_name,
                     "user": "_daemon_",
+                    "working-dir": "/app",
                 },
             },
         }
