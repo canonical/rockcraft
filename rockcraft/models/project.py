@@ -29,7 +29,10 @@ import pydantic_yaml
 import spdx_lookup  # type: ignore
 import yaml
 from craft_application.errors import CraftValidationError
-from craft_application.models import BuildPlanner as BaseBuildPlanner
+from craft_application.models import (
+    BuildPlanner as BaseBuildPlanner,
+    get_validator_by_regex,
+)
 from craft_application.models import Platform
 from craft_application.models import Project as BaseProject
 from craft_application.models.base import alias_generator
@@ -70,39 +73,10 @@ MESSAGE_INVALID_NAME = (
 DEPRECATED_COLON_BASES = ["ubuntu:20.04", "ubuntu:22.04"]
 
 
-def _get_validator_by_regex(
-    regex: re.Pattern[str], error_msg: str
-) -> typing.Callable[[str], str]:
-    """Get a string validator by regular expression with a known error message.
-
-    This allows providing better error messages for regex-based validation than the
-    standard message provided by pydantic. Simply place the result of this function in
-    a BeforeValidator attached to your annotated type.
-
-    :param regex: a compiled regular expression on a string.
-    :param error_msg: The error message to raise if the value is invalid.
-    :returns: A validator function ready to be used by pydantic.BeforeValidator
-    """
-
-    def validate(value: str) -> str:
-        """Validate the given string with the outer regex, raising the error message.
-
-        :param value: a string to be validated
-        :returns: that same string if it's valid.
-        :raises: ValueError if the string is invalid.
-        """
-        value = str(value)
-        if not regex.match(value):
-            raise ValueError(error_msg)
-        return value
-
-    return validate
-
-
 ProjectName = Annotated[
     str,
     pydantic.BeforeValidator(
-        _get_validator_by_regex(_PROJECT_NAME_COMPILED_REGEX, MESSAGE_INVALID_NAME)
+        get_validator_by_regex(_PROJECT_NAME_COMPILED_REGEX, MESSAGE_INVALID_NAME)
     ),
     pydantic.Field(
         min_length=1,
