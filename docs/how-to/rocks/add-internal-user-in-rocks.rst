@@ -29,8 +29,17 @@ the ``override-build`` field inside a part.
     :start-after: [docs:rock-parts]
     :end-before: [docs:rock-parts-end]
 
-Furthermore, let's add a service that tests the running user by executing
-``whoami``:
+Next, let's add a simple Python web service that runs a python script. The
+python script will be executed to return an HTTP response containing the
+username that is running the python web service. We will put this file in a
+``cgi-bin`` folder, and give the file the executive permission with
+``chmod +x cgi-bin/getuser.py``:
+
+.. literalinclude:: ../code/internal-user/cgi-bin/getuser.py
+    :language: python
+
+Finally, we will add a service to our ``rockcraft.yaml`` that runs the python
+http server with cgi capabilities:
 
 .. literalinclude:: ../code/internal-user/rockcraft.yaml
     :language: yaml
@@ -45,7 +54,9 @@ Moving along, the rock can be built by running:
     :end-before: [docs:pack-rock-end]
     :dedent: 2
 
-We can test the existence of the new user by running:
+We can test the existence of the new user by running the image and accessing
+the url ``http://127.0.0.1/cgi-bin/getuser.py`` with curl. The returned reponse
+should contain our username:
 
 .. literalinclude:: ../code/internal-user/task.yaml
     :language: bash

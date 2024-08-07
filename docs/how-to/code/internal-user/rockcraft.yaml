@@ -12,20 +12,20 @@ services:
   whoami:
     override: replace
     startup: enabled
-    command: bash -c "whoami; sleep 5"
+    command: python3 -m http.server --cgi
     user: myuser 
-    on-success: ignore 
 # [docs:rock-services-end]
 
 # [docs:rock-parts]
 parts:
   my-part:
-    plugin: nil
+    plugin: dump
+    source-type: local
+    source: .
     stage-packages:
       - base-passwd_data
       - base-files_base
-      - bash_bins
-      - coreutils_bins
+      - python3.12_standard
     override-build: |
       groupadd --root ${CRAFT_PART_INSTALL} mygroup
       useradd -d /home/myuser -s /bin/bash --root ${CRAFT_PART_INSTALL} -g mygroup myuser
