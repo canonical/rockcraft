@@ -5336,7 +5336,6 @@
   "properties": {
     "name": {
       "description": "Valid names for rocks. It matches the accepted values for pebble layer files:\n\n- must start with a lowercase letter [a-z]\n- must contain only lowercase letters [a-z], numbers [0-9] or hyphens\n- must not end with a hyphen, and must not contain two or more consecutive hyphens\n",
-      "maxLength": 40,
       "minLength": 1,
       "title": "Project Name",
       "type": "string"
