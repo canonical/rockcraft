@@ -39,7 +39,7 @@ username that is running the python web service. We will put this file in a
     :language: python
 
 Finally, we will add a service to our ``rockcraft.yaml`` that runs the python
-http server with cgi capabilities:
+web server with ``cgi`` capabilities:
 
 .. literalinclude:: ../code/internal-user/rockcraft.yaml
     :language: yaml
@@ -55,8 +55,8 @@ Moving along, the rock can be built by running:
     :dedent: 2
 
 We can test the existence of the new user by running the image and accessing
-the url ``http://127.0.0.1/cgi-bin/getuser.py`` with curl. The returned reponse
-should contain our username:
+the url ``http://127.0.0.1/cgi-bin/getuser.py`` with curl. The returned
+response should contain our username:
 
 .. literalinclude:: ../code/internal-user/task.yaml
     :language: bash
