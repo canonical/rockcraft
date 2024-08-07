@@ -79,7 +79,6 @@ ProjectName = Annotated[
     ),
     pydantic.Field(
         min_length=1,
-        max_length=40,
         strict=True,
         pattern=PROJECT_NAME_REGEX,
         description=_PROJECT_NAME_DESCRIPTION,
@@ -87,6 +86,7 @@ ProjectName = Annotated[
     ),
 ]
 
+BaseT = Literal["bare", "ubuntu@20.04", "ubuntu@22.04", "ubuntu@24.04"]
 BuildBaseT = typing.Annotated[
     Literal["ubuntu@20.04", "ubuntu@22.04", "ubuntu@24.04", "devel"] | None,
     pydantic.Field(validate_default=True),
@@ -97,7 +97,7 @@ class BuildPlanner(BaseBuildPlanner):
     """BuildPlanner for Rockcraft projects."""
 
     platforms: dict[str, Platform]  # type: ignore[assignment]
-    base: Literal["bare", "ubuntu@20.04", "ubuntu@22.04", "ubuntu@24.04"]  # type: ignore[reportIncompatibleVariableOverride]
+    base: BaseT  # type: ignore[reportIncompatibleVariableOverride]
     build_base: BuildBaseT = None  # type: ignore[reportIncompatibleVariableOverride]
 
     @pydantic.field_validator("build_base")
@@ -112,7 +112,7 @@ class BuildPlanner(BaseBuildPlanner):
         if not value:
             base_value = info.data.get("base")
             if base_value == "bare":
-                raise ValueError('When "base" is bare, a build-base must be specified!')
+                raise ValueError('When "base" is bare, a build-base must be specified.')
             return base_value
         return value
 
@@ -124,7 +124,7 @@ class BuildPlanner(BaseBuildPlanner):
     @pydantic.field_validator("build_base", mode="before")
     @classmethod
     def _validate_deprecated_build_base(cls, base_value: str | None) -> str | None:
-        return cls._check_deprecated_base(base_value, "build_base")
+        return cls._check_deprecated_base(base_value, "build-base")
 
     @staticmethod
     def _check_deprecated_base(base_value: str | None, field_name: str) -> str | None:
@@ -317,10 +317,11 @@ class Project(BuildPlanner, BaseProject):  # type: ignore[misc]
         if info.data.get("base") != "bare":
             return parts
 
-        for part in parts.values():
+        for part_name, part in parts.items():
             if part_has_overlay(part):
                 raise ValueError(
-                    'Overlays cannot be used with "bare" bases (there is no system to overlay).'
+                    f"Part '{part_name}' cannot use overlays with a 'bare' base"
+                    " (there is no system to overlay)."
                 )
         return parts
 
