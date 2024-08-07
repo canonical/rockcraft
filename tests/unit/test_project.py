@@ -374,7 +374,7 @@ def test_project_base_colon(
     )
     if build_base is not None:
         emitter.assert_message(
-            f'Warning: use of ":" in field "build_base" is deprecated. Prefer "{expected_build_base}" instead.'
+            f'Warning: use of ":" in field "build-base" is deprecated. Prefer "{expected_build_base}" instead.'
         )
 
 
@@ -536,8 +536,8 @@ def test_project_bare_overlay(yaml_loaded_data, packages, script):
 
     expected = (
         "Bad rockcraft.yaml content:\n"
-        '- overlays cannot be used with "bare" bases (there is no system to overlay). '
-        "(in field 'parts')"
+        "- part 'foo' cannot use overlays with a 'bare' base"
+        " (there is no system to overlay). (in field 'parts')"
     )
     assert str(err.value) == expected
 
