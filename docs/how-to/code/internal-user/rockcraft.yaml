@@ -9,24 +9,26 @@ platforms:
 
 # [docs:rock-services]
 services:
-  whoami:
+  web-server:
     override: replace
     startup: enabled
-    command: python3 -m http.server --cgi
+    command: python3.12 -m http.server --cgi
     user: myuser 
 # [docs:rock-services-end]
 
 # [docs:rock-parts]
 parts:
   my-part:
-    plugin: dump
+    plugin: nil
     source-type: local
-    source: .
+    source: ./
     stage-packages:
       - base-passwd_data
       - base-files_base
+      - bash_bins
       - python3.12_standard
     override-build: |
       groupadd --root ${CRAFT_PART_INSTALL} mygroup
       useradd -d /home/myuser -s /bin/bash --root ${CRAFT_PART_INSTALL} -g mygroup myuser
+      cp -r cgi-bin/ ${CRAFT_PART_INSTALL}/cgi-bin
 # [docs:rock-parts-end]

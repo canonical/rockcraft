@@ -1,11 +1,11 @@
-#!/usr/bin/python3
+#!/usr/bin/python3.12
 
-import os
+import getpass
 
 print(
     f"""\
 Content-Type: text/html
 
-{os.getlogin()}\
+{getpass.getuser()}\
 """
 )
