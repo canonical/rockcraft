@@ -45,14 +45,12 @@ jobs:
           name: test-results-ubuntu-22.04
           path: results/
 
-      # Uncomment when the project is setup
-      #      - name: Run TICS analysis
-      #        uses: tiobe/tics-github-action@v3
-      #        with:
-      #          mode: qserver
-      #          project: rockcraft
-      #          viewerUrl: https://canonical.tiobe.com/tiobeweb/TICS/api/cfg?name=default
-      #          branchdir: ${{ github.workspace }}
-      #          ticsAuthToken: ${{ secrets.TICSAUTHTOKEN }}
-      #          installTics: true
-
+      - name: Run TICS analysis
+        uses: tiobe/tics-github-action@v3
+        with:
+          mode: qserver
+          project: rockcraft
+          viewerUrl: https://canonical.tiobe.com/tiobeweb/TICS/api/cfg?name=default
+          branchdir: ${{ github.workspace }}
+          ticsAuthToken: ${{ secrets.TICSAUTHTOKEN }}
+          installTics: true
