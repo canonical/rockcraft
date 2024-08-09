@@ -208,9 +208,10 @@ class InitCommand(AppCommand):
             rockcraft_yaml=textwrap.dedent(
                 """\
                 name: {name}
-                # see https://documentation.ubuntu.com/rockcraft/en/stable/explanation/bases/
+                # see {versioned_url}/explanation/bases/
                 # for more information about bases and using 'bare' bases for chiselled rocks
-                base: ubuntu@22.04 # the base environment for this Go application
+                base: bare # as an alternative, the ubuntu@22.04 base can be used
+                build-base: ubuntu@22.04 # needed when the base is bare
                 version: '0.1' # just for humans. Semantic versioning is recommended
                 summary: A summary of your Go application # 79 char long summary
                 description: |
@@ -233,32 +234,33 @@ class InitCommand(AppCommand):
                 extensions:
                     - go-framework
 
-                # Uncomment the sections you need and adjust according to your requirements.
+                # uncomment the sections you need and adjust according to your requirements.
                 # parts:
+
                 #   go-framework/install-app:
-                #    # Select a specific Go version. Otherwise the current stable one will be used.
+                #    # select a specific Go version. Otherwise the current stable one will be used.
                 #    build-snaps:
                 #    - go/1.22/stable
                 #    organize:
-                #    # If the main package is in the base directory and the rockcraft name
+                #    # if the main package is in the base directory and the rockcraft name
                 #    # attribute is equal to the go module name, the name of the server will
                 #    # be selected correctly, otherwise you can adjust it.
-                #    # The file in /usr/local/bin/ with the name of the rockcraft will be
+                #    # the file in /usr/local/bin/ with the name of the rockcraft will be
                 #    # the binary to run your server.
-                #    # You can also include here other binary files to be included in the rock.
+                #    # you can also include here other binary files to be included in the rock.
                 #      bin/otherbinary: usr/local/bin/projectname
 
                 #   go-framework/assets:
                 #     stage:
-                #       # By default, only the files in templates/ and static/
+                #       # by default, only the files in templates/ and static/
                 #       # are copied into the image. You can modify the list below to override
                 #       # the default list and include or exclude specific files/directories
                 #       # in your project.
-                #       # Note: Prefix each entry with "go/" followed by the local path.
-                #       - go/templates
-                #       - go/static
-                #       - go/otherdirectory
-                #       - go/otherfile
+                #       # note: Prefix each entry with "app/" followed by the local path.
+                #       - app/templates
+                #       - app/static
+                #       - app/otherdirectory
+                #       - app/otherfile
             """
             )
         ),

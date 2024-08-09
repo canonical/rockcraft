@@ -60,6 +60,11 @@ class GoFramework(Extension):
         }
 
         snippet["parts"] = {
+            # This is needed in case there is no assets part, as the working directory is /app
+            "go-framework/base-layout": {
+                "plugin": "nil",
+                "override-build": "mkdir -p ${CRAFT_PART_INSTALL}/app",
+            },
             "go-framework/install-app": self._gen_install_app_part(),
             "go-framework/runtime": {
                 "plugin": "nil",

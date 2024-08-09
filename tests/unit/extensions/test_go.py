@@ -46,6 +46,10 @@ def test_go_extension_default(tmp_path, go_input_yaml):
         "platforms": {"amd64": {}},
         "run_user": "_daemon_",
         "parts": {
+            "go-framework/base-layout": {
+                "override-build": "mkdir -p ${CRAFT_PART_INSTALL}/app",
+                "plugin": "nil",
+            },
             "go-framework/install-app": {
                 "plugin": "go",
                 # "source-type": "local", # TODO is this needed
@@ -53,13 +57,6 @@ def test_go_extension_default(tmp_path, go_input_yaml):
                 "build-snaps": ["go"],
                 "organize": {"bin/goprojectname": "usr/local/bin/goprojectname"},
                 "stage": ["usr/local/bin/goprojectname"],
-                # NOT FOR NOW
-                # "override-pull": textwrap.dedent(
-                #     """\
-                #     craftctl default
-                #     test -e requirements || echo "missing go.mod file"; exit 1
-                #     """
-                # ),p
             },
             "go-framework/runtime": {
                 "plugin": "nil",
