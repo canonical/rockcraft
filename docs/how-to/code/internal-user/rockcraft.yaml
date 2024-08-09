@@ -1,0 +1,34 @@
+name: internal-user
+base: bare
+build-base: ubuntu@24.04
+version: 'latest'
+summary: Add an internal user inside a rock
+description: Add an internal user inside a rock, and run a service with it.
+platforms:
+  amd64:
+
+# [docs:rock-services]
+services:
+  web-server:
+    override: replace
+    startup: enabled
+    command: python3.12 -m http.server --cgi
+    user: myuser 
+# [docs:rock-services-end]
+
+# [docs:rock-parts]
+parts:
+  my-part:
+    plugin: nil
+    source-type: local
+    source: ./
+    stage-packages:
+      - base-passwd_data
+      - base-files_base
+      - bash_bins
+      - python3.12_standard
+    override-build: |
+      groupadd --root ${CRAFT_PART_INSTALL} mygroup
+      useradd -d /home/myuser -s /bin/bash --root ${CRAFT_PART_INSTALL} -g mygroup myuser
+      cp -r cgi-bin/ ${CRAFT_PART_INSTALL}/cgi-bin
+# [docs:rock-parts-end]
