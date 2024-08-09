@@ -259,7 +259,7 @@ class Project(BuildPlanner, BaseProject):  # type: ignore[misc]
 
         try:
             name, channel = base.split("@")
-            return bases.get_base_alias((name, channel))
+            return bases.get_base_alias(bases.BaseName(name, channel))
         except (ValueError, BaseConfigurationError) as err:
             raise ValueError(f"Unknown base {base!r}") from err
 

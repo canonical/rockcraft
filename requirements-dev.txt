@@ -6,29 +6,30 @@ apeye-core==1.1.5
 astroid==3.2.4
 autodocsumm==0.2.13
 autoflake==1.7.8
-Babel==2.15.0
+babel==2.16.0
 backports.tarfile==1.2.0
 beautifulsoup4==4.12.3
 black==24.8.0
+boolean.py==4.0
 bracex==2.5
 CacheControl==0.14.0
 cachetools==5.4.0
 canonical-sphinx==0.1.0
 canonical-sphinx-extensions==0.0.23
 certifi==2024.7.4
-cffi==1.16.0
+cffi==1.17.0
 chardet==5.2.0
 charset-normalizer==3.3.2
 click==8.1.7
 codespell==2.3.0
 colorama==0.4.6
 coverage==7.6.1
-craft-application @ git+https://github.com/canonical/craft-application@feature/pydantic-2
-craft-archives @ git+https://github.com/canonical/craft-archives@feature/2.0
+craft-application==4.0.0
+craft-archives==2.0.0
 craft-cli==2.6.0
-craft-grammar @ git+https://github.com/canonical/craft-grammar@feature/pydantic-2
-craft-parts @ git+https://github.com/canonical/craft-parts@feature/2.0
-craft-providers @ git+https://github.com/canonical/craft-providers@feature/2.0
+craft-grammar==2.0.0
+craft-parts==2.0.0
+craft-providers==2.0.0
 cryptography==43.0.0
 cssutils==2.11.1
 dict2css==0.3.0.post1
@@ -40,7 +41,7 @@ domdf-python-tools==3.9.0
 exceptiongroup==1.2.2
 filelock==3.15.4
 flake8==4.0.1
-furo==2024.7.18
+furo==2024.8.6
 gitdb==4.0.11
 GitPython==3.1.43
 h11==0.14.0
@@ -60,6 +61,7 @@ keyring==25.3.0
 launchpadlib==2.0.0
 lazr.restfulclient==0.14.6
 lazr.uri==1.0.6
+license-expression==30.3.0
 linkify-it-py==2.0.3
 lxml==5.2.2
 Markdown==3.6
@@ -68,7 +70,7 @@ MarkupSafe==2.1.5
 mccabe==0.6.1
 mdit-py-plugins==0.4.1
 mdurl==0.1.2
-more-itertools==10.3.0
+more-itertools==10.4.0
 msgpack==1.0.8
 mypy==1.11.1
 mypy-extensions==1.0.0
@@ -103,7 +105,7 @@ pytest-check==2.3.1
 pytest-mock==3.14.0
 pytest-subprocess==1.5.2
 pyxdg==0.28
-PyYAML==6.0.1
+PyYAML==6.0.2
 readme_renderer==44.0
 regex==2024.7.24
 requests==2.31.0
@@ -149,11 +151,11 @@ starlette==0.38.2
 tabulate==0.9.0
 tomli==2.0.1
 tomlkit==0.13.0
-tox==4.16.0
+tox==4.17.1
 twine==5.1.1
-types-PyYAML==6.0.12.20240724
+types-PyYAML==6.0.12.20240808
 types-requests==2.31.0.6
-types-setuptools==71.1.0.20240726
+types-setuptools==71.1.0.20240806
 types-tabulate==0.9.0.20240106
 types-urllib3==1.26.25.14
 typing_extensions==4.12.2
@@ -162,7 +164,7 @@ urllib3==1.26.19
 uvicorn==0.30.5
 virtualenv==20.26.3
 wadllib==1.3.6
-watchfiles==0.22.0
+watchfiles==0.23.0
 wcmatch==9.0
 webencodings==0.5.1
 websockets==12.0
