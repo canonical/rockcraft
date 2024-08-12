@@ -10,12 +10,8 @@ execute: |
   IMAGE="${NAME}:0.1"
 
   run_rockcraft init --name "${NAME}" --profile go-framework
-  sed -i "s/name: .*/name: ${NAME}/g" rockcraft.yaml
-  if [ "${SCENARIO}" = "bare" ]; then
-      sed -i "s/base: .*/base: ${SCENARIO}\nbuild-base: ubuntu@22.04/g" rockcraft.yaml
-  else
-      sed -i "s/base: .*/base: ${SCENARIO//-/@}/g" rockcraft.yaml
-  fi
+  sed -i "s/^name: .*/name: ${NAME}/g" rockcraft.yaml
+  sed -i "s/^base: .*/base: ${SCENARIO//-/@}/g" rockcraft.yaml
   sed -i "s/NAME/${NAME}/g" go.mod
 
   run_rockcraft pack
