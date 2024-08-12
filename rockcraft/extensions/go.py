@@ -150,15 +150,14 @@ class GoFramework(Extension):
                 if snap.startswith("go"):
                     return True
         build_packages = self._get_nested(
-            self.yaml_data
-, "parts.go-framework/install-app.build-packages"
+            self.yaml_data, "parts.go-framework/install-app.build-packages"
         )
         if build_packages:
             for package in build_packages:
                 if package in ["gccgo-go", "golang-go"]:
                     return True
         return False
-    
+
     def _gen_install_assets_part(self):
         """Generate assets-stage part for extra assets in the project."""
         # if stage is not in exclude mode, use it to generate organize
@@ -183,7 +182,9 @@ class GoFramework(Extension):
     @property
     def _assets_stage(self):
         """Return the assets stage list for the Go project."""
-        user_stage = self._get_nested(self.yaml_data, "parts.go-framework/assets" ).get("stage", [])
+        user_stage = self._get_nested(self.yaml_data, "parts.go-framework/assets").get(
+            "stage", []
+        )
 
         if not all(re.match("-? *app/", p) for p in user_stage):
             raise ExtensionError(
