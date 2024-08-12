@@ -16,20 +16,29 @@ include:
     - rockcraft/
 
 backends:
-  google:
-    key: '$(HOST: echo "$SPREAD_GOOGLE_KEY")'
-    location: snapd-spread/us-east1-b
-    halt-timeout: 2h
+  lxd:
     systems:
-      - ubuntu-20.04-64:
-          workers: 1
-          storage: 40G
       - ubuntu-22.04-64:
-          workers: 4
-          storage: 40G
-      - fedora-39-64:
-          workers: 1
-          storage: 40G
+          image: ubuntu:22.04
+          profiles:
+            - default
+            # With this profile, it works: https://microk8s.io/docs/install-lxd
+            - microk8s
+
+  # google:
+  #   key: '$(HOST: echo "$SPREAD_GOOGLE_KEY")'
+  #   location: snapd-spread/us-east1-b
+  #   halt-timeout: 2h
+  #   systems:
+  #     - ubuntu-20.04-64:
+  #         workers: 1
+  #         storage: 40G
+  #     - ubuntu-22.04-64:
+  #         workers: 4
+  #         storage: 40G
+  #     - fedora-39-64:
+  #         workers: 1
+  #         storage: 40G
 
 prepare: |
   # if the 'tools' directory inside the submodule does not exist, then assume the submodule is empty
