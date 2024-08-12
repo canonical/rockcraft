@@ -8,11 +8,17 @@
 summary:  test "How to add an internal user" guide
 
 execute: |
+  # [docs:chmod-getuser]
+  chmod +x cgi-bin/getuser.py
+  # [docs:chmod-getuser-end]
+
   # [docs:pack-rock]
   rockcraft pack
   # [docs:pack-rock-end]
 
+  # [docs:skopeo]
   sudo rockcraft.skopeo --insecure-policy copy oci-archive:internal-user_latest_amd64.rock docker-daemon:internal-user:latest
+  # [docs:skopeo-end]
 
   # [docs:check-user]
   id=$(docker run -d -p 8000:8000 internal-user:latest)

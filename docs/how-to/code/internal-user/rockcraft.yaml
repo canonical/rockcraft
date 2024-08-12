@@ -30,5 +30,6 @@ parts:
     override-build: |
       groupadd --root ${CRAFT_PART_INSTALL} mygroup
       useradd -d /home/myuser -s /bin/bash --root ${CRAFT_PART_INSTALL} -g mygroup myuser
-      cp -r cgi-bin/ ${CRAFT_PART_INSTALL}/cgi-bin
+      cp -r cgi-bin/ ${CRAFT_PART_INSTALL}/
+      chmod +x ${CRAFT_PART_INSTALL}/cgi-bin/getuser.py
 # [docs:rock-parts-end]
