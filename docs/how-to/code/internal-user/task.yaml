@@ -21,7 +21,7 @@ execute: |
   # [docs:skopeo-end]
 
   # [docs:check-user]
-  id=$(docker run -d -p 8000:8000 internal-user:latest)
-  curl -s http://127.0.0.1:8000/cgi-bin/getuser.py | grep myuser 
+  id=$(docker run -d -p 18001:18001 internal-user:latest)
+  curl -i http://127.0.0.1:18001/cgi-bin/getuser.py
   docker rm -f "$id"
   # [docs:check-user-end]
