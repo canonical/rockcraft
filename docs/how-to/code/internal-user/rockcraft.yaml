@@ -12,7 +12,7 @@ services:
   web-server:
     override: replace
     startup: enabled
-    command: python3.12 -m http.server --cgi 18001
+    command: python3.12 server_user.py 
     user: myuser 
 # [docs:rock-services-end]
 
@@ -21,7 +21,7 @@ parts:
   my-part:
     plugin: nil
     source-type: local
-    source: ./
+    source: .
     stage-packages:
       - base-passwd_data
       - base-files_base
@@ -30,6 +30,5 @@ parts:
     override-build: |
       groupadd --root ${CRAFT_PART_INSTALL} mygroup
       useradd -d /home/myuser -s /bin/bash --root ${CRAFT_PART_INSTALL} -g mygroup myuser
-      cp -r cgi-bin/ ${CRAFT_PART_INSTALL}/
-      chmod +x ${CRAFT_PART_INSTALL}/cgi-bin/getuser.py
+      cp serve_user.py ${CRAFT_PART_INSTALL}/
 # [docs:rock-parts-end]

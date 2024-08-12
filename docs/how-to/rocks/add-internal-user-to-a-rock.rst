@@ -39,29 +39,21 @@ in the ``override-build`` field inside a part.
     :start-after: [docs:rock-parts]
     :end-before: [docs:rock-parts-end]
 
-Next, let's add a simple Python web service that runs a python script. The
-python script will be executed to return an HTTP response containing the
-username that is running the python web service. We will put this file in a
-``cgi-bin`` folder, and give the file the executive permission with
-``chmod +x cgi-bin/getuser.py``:
 For an example of how to access the user inside the rock, here's a simple
-Python web service that runs a script. The script will return an HTTP response
-containing the user that is running the web service:
+Python web service that runs a script. The script will also print out a message
+that contains the user that is running the web service:
 
-.. literalinclude:: ../code/internal-user/cgi-bin/getuser.py
+.. literalinclude:: ../code/internal-user/serve_user.py
     :language: python
 
-Inside the ``override-build`` field, copy the ``cgi-bin`` folder to the part's
-installation folder ``$CRAFT_PART_INSTALL``, and give execute permission to the
-Python script file ``getuser.py``.
+Inside the ``override-build`` field, copy the ``serve_user.py`` file to the
+part's installation folder ``$CRAFT_PART_INSTALL``.
 
 .. code-block::
 
-    cp -r cgi-bin/ ${CRAFT_PART_INSTALL}/
-    chmod +x ${CRAFT_PART_INSTALL}/cgi-bin/getuser.py
+    cp serve_user.py ${CRAFT_PART_INSTALL}/
 
-Then, add a service to  ``rockcraft.yaml`` that runs the web service with
-``cgi`` capabilities:
+Then, add a service to  ``rockcraft.yaml`` that runs the web service:
 
 .. literalinclude:: ../code/internal-user/rockcraft.yaml
     :language: yaml
@@ -86,7 +78,7 @@ skopeo:
     :dedent: 2
 
 You can now check which internal user is running the service by running the
-image and querying ``http://127.0.0.1/cgi-bin/getuser.py`` with curl:
+image container:
 
 .. literalinclude:: ../code/internal-user/task.yaml
     :language: bash
@@ -98,4 +90,4 @@ The response should contain the new user name:
 
 .. code-block::
 
-    myuser
+    Serving by myuser on port 8000
