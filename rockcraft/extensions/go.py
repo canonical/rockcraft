@@ -78,12 +78,89 @@ class GoFramework(Extension):
 
         return snippet
 
+    @override
+    def get_parts_snippet(self) -> dict[str, Any]:
+        """Return the parts to add to parts."""
+        return {}
+
+    @override
+    def get_part_snippet(self) -> dict[str, Any]:
+        """Return the part snippet to apply to existing parts."""
+        return {}
+
     @property
     def project_name(self):
         """Return the normalized name of the rockcraft project."""
         return self.yaml_data["name"]
 
+    def _check_project(self):
+        """Check go.mod file exist in project."""
+        if not (self.project_root / "go.mod").exists():
+            raise ExtensionError(
+                "missing go.mod file",
+                docs_url="https://documentation.ubuntu.com/rockcraft/en/stable/reference/extensions/go-framework",
+                logpath_report=False,
+            )
+
+    def _gen_install_app_part(self):
+        """Generate install-app part with the Go plugin."""
+        install_app = self._get_nested(self.yaml_data, "parts.go-framework/install-app")
+
+        build_environment = install_app.get("build-environment", [])
+        if self.yaml_data["base"] == "bare":
+            for env_var in build_environment:
+                if "CGO_ENABLED" in env_var:
+                    break
+            else:
+                build_environment = [{"CGO_ENABLED": "0"}]
+
+        organize = install_app.get("organize", {})
+        binary_path = f"usr/local/bin/{self.project_name}"
+        for path in organize.values():
+            if path == binary_path:
+                break
+        else:
+            if not self._get_nested(self.yaml_data, "services.go.command"):
+                organize[f"bin/{self.project_name}"] = binary_path
+
+        install_app_part = {
+            "plugin": "go",
+            "source": ".",
+            "organize": organize,
+        }
+
+        if not self._check_go_overriden():
+            build_snaps = install_app.get("build-snaps", [])
+            build_snaps.append("go")
+            install_app_part["build-snaps"] = build_snaps
+
+        install_app_part["stage"] = list(organize.values())
+        if build_environment:
+            install_app_part["build-environment"] = build_environment
+
+        return install_app_part
+
+    def _check_go_overriden(self):
+        """Check if the user overrode the go snap or package for the build step."""
+        build_snaps = self._get_nested(
+            self.yaml_data, "parts.go-framework/install-app.build-snaps"
+        )
+        if build_snaps:
+            for snap in build_snaps:
+                if snap.startswith("go"):
+                    return True
+        build_packages = self._get_nested(
+            self.yaml_data
+, "parts.go-framework/install-app.build-packages"
+        )
+        if build_packages:
+            for package in build_packages:
+                if package in ["gccgo-go", "golang-go"]:
+                    return True
+        return False
+    
     def _gen_install_assets_part(self):
+        """Generate assets-stage part for extra assets in the project."""
         # if stage is not in exclude mode, use it to generate organize
         if (
             self._assets_stage
@@ -106,11 +183,8 @@ class GoFramework(Extension):
     @property
     def _assets_stage(self):
         """Return the assets stage list for the Go project."""
-        user_stage = (
-            self.yaml_data.get("parts", {})
-            .get("go-framework/assets", {})
-            .get("stage", [])
-        )
+        user_stage = self._get_nested(self.yaml_data, "parts.go-framework/assets" ).get("stage", [])
+
         if not all(re.match("-? *app/", p) for p in user_stage):
             raise ExtensionError(
                 "go-framework extension requires the 'stage' entry in the "
@@ -136,74 +210,3 @@ class GoFramework(Extension):
         for key in path.split("."):
             obj = obj.get(key, {})
         return obj
-
-    def _check_go_overriden(self):
-        build_snaps = self._get_nested(
-            self.yaml_data, "parts.go-framework/install-app.build-snaps"
-        )
-        if build_snaps:
-            for snap in build_snaps:
-                if snap.startswith("go"):
-                    return True
-        build_packages = self._get_nested(
-            self.yaml_data, "parts.go-framework/install-app.build-packages"
-        )
-        if build_packages:
-            for package in build_packages:
-                if package in ["gccgo-go", "golang-go"]:
-                    return True
-        return False
-
-    def _gen_install_app_part(self):
-        install_app = self._get_nested(self.yaml_data, "parts.go-framework/install-app")
-
-        build_environment = []
-        if self.yaml_data["base"] == "bare":
-            for env_var in build_environment:
-                if "CGO_ENABLED" in env_var:
-                    break
-            else:
-                build_environment = [{"CGO_ENABLED": "0"}]
-
-        organize = {}
-        if "organize" in install_app:
-            organize = install_app["organize"]
-
-        binary_path = f"usr/local/bin/{self.project_name}"
-        for path in organize.values():
-            if path == binary_path:
-                break
-        else:
-            if not self._get_nested(self.yaml_data, "services.go.command"):
-                organize[f"bin/{self.project_name}"] = binary_path
-
-        install_app_part = {
-            "plugin": "go",
-            "source": ".",
-            "build-snaps": [] if self._check_go_overriden() else ["go"],
-            "organize": organize,
-        }
-
-        install_app_part["stage"] = list(organize.values())
-        if build_environment:
-            install_app_part["build-environment"] = build_environment
-
-        return install_app_part
-
-    def _check_project(self):
-        if not (self.project_root / "go.mod").exists():
-            raise ExtensionError(
-                "missing go.mod file",
-                docs_url="https://documentation.ubuntu.com/rockcraft/en/stable/reference/extensions/go-framework",
-                logpath_report=False,
-            )
-
-    @override
-    def get_parts_snippet(self) -> dict[str, Any]:
-        """Return the parts to add to parts."""
-        return {}
-
-    @override
-    def get_part_snippet(self) -> dict[str, Any]:
-        """Return the part snippet to apply to existing parts."""
-        return {}

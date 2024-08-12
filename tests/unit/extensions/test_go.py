@@ -52,7 +52,6 @@ def test_go_extension_default(tmp_path, go_input_yaml):
             },
             "go-framework/install-app": {
                 "plugin": "go",
-                # "source-type": "local", # TODO is this needed
                 "source": ".",
                 "build-snaps": ["go"],
                 "organize": {"bin/goprojectname": "usr/local/bin/goprojectname"},
