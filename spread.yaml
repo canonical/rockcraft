@@ -110,7 +110,18 @@ prepare: |
     snap install docker --channel=core18/stable
   else
     snap install docker
-  fi  
+  fi
+
+  mkdir -p /etc/systemd/system/snap.docker.dockerd.service.d/
+  cat << EOF > /etc/systemd/system/snap.docker.dockerd.service.d/override.conf
+  [Service]
+  Environment=HTTP_PROXY=$HTTP_PROXY
+  Environment=HTTPS_PROXY=$HTTPS_PROXY
+  Environment=NO_PROXY=$NO_PROXY
+  EOF
+
+  snap stop docker.dockerd
+  snap start docker.dockerd
 
   # make sure docker is working
   retry -n 10 --wait 2 sh -c 'docker run --rm hello-world'
