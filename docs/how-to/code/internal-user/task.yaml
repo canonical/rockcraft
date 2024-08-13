@@ -17,7 +17,8 @@ execute: |
   # [docs:skopeo-end]
 
   # [docs:check-user]
-  id=$(docker run -d -p 8000:8000 internal-user:latest --verbose)
-  docker logs "$id" | grep "Serving by myuser"
+  id=$(docker run -d -p 8080:8080 internal-user:latest --verbose)
+  sleep 5
+  docker logs "$id" 2> &1 | grep "Serving by myuser"
   docker rm -f "$id"
   # [docs:check-user-end]

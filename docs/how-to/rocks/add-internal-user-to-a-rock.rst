@@ -36,22 +36,23 @@ in the ``override-build`` field inside a part.
 
 .. literalinclude:: ../code/internal-user/rockcraft.yaml
     :language: yaml
-    :start-after: [docs:rock-parts]
-    :end-before: [docs:rock-parts-end]
+    :start-after: [docs:rock-build]
+    :end-before: [docs:rock-build-end]
 
 For an example of how to access the user inside the rock, here's a simple
-Python web service that runs a script. The script will also print out a message
-that contains the user that is running the web service:
+Node.js web service. This web service will also print out a message that
+contains the user that is running the service. To create the files necessary
+for this service, create a folder called ``src`` and file called ``server.js``
+in it with the following contents:
 
-.. literalinclude:: ../code/internal-user/serve_user.py
-    :language: python
+.. literalinclude:: ../code/internal-user/src/server.js
+    :language: javascript
 
-Inside the ``override-build`` field, copy the ``serve_user.py`` file to the
-part's installation folder ``$CRAFT_PART_INSTALL``.
+You will also need a ``package.json`` file in the same folder to define the
+project name and the command that will run the ``server.js`` script:
 
-.. code-block::
-
-    cp serve_user.py ${CRAFT_PART_INSTALL}/
+.. literalinclude:: ../code/internal-user/src/package.json
+    :language: javascript
 
 Then, add a service to  ``rockcraft.yaml`` that runs the web service:
 
@@ -59,6 +60,14 @@ Then, add a service to  ``rockcraft.yaml`` that runs the web service:
     :language: yaml
     :start-after: [docs:rock-services]
     :end-before: [docs:rock-services-end]
+
+Next, we will use the ``npm`` plugin to build our Node.js project within the
+rock, similarly to what we have done in the
+:ref:`Bundle a Node.js app within a rock <bundle_a_nodejs_app_within_a_rock>`
+tutorial. The final ``rockcraft.yaml`` file will look like this:
+
+.. literalinclude:: ../code/internal-user/rockcraft.yaml
+    :language: yaml
 
 With the user and web service in place, build the rock:
 
@@ -90,4 +99,4 @@ The response should contain the new user name:
 
 .. code-block::
 
-    Serving by myuser on port 8000
+    Serving by myuser on port 8080
