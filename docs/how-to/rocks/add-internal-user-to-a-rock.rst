@@ -34,42 +34,35 @@ A full example
 The following ``rockcraft.yaml`` illustrates how to use the ``useradd`` command
 in the ``override-build`` field inside a part.
 
-.. literalinclude:: ../code/internal-user/rockcraft.yaml
-    :language: yaml
-    :start-after: [docs:rock-build]
-    :end-before: [docs:rock-build-end]
-
 For an example of how to access the user inside the rock, here's a simple
-Node.js web service. This web service will also print out a message that
-contains the user that is running the service. To create the files necessary
-for this service, create a folder called ``src`` and file called ``server.js``
-in it with the following contents:
+Python web service. The script will return an HTTP response containing the
+user that is running the web service:
 
-.. literalinclude:: ../code/internal-user/src/server.js
-    :language: javascript
+.. literalinclude:: ../code/internal-user/serve_user.py
+    :language: python
 
-You will also need a ``package.json`` file in the same folder to define the
-project name and the command that will run the ``server.js`` script:
-
-.. literalinclude:: ../code/internal-user/src/package.json
-    :language: javascript
-
-Then, add a service to  ``rockcraft.yaml`` that runs the web service:
+Then, add a service to ``rockcraft.yaml`` that runs the web service:
 
 .. literalinclude:: ../code/internal-user/rockcraft.yaml
     :language: yaml
     :start-after: [docs:rock-services]
     :end-before: [docs:rock-services-end]
 
-Next, we will use the ``npm`` plugin to build our Node.js project within the
-rock, similarly to what we have done in the
-:ref:`Bundle a Node.js app within a rock <bundle_a_nodejs_app_within_a_rock>`
-tutorial. The final ``rockcraft.yaml`` file will look like this:
+In the ``override-build`` section of the part, let's create a new user and a
+new group. We will also copy the python script to a ``cgi-bin`` folder, and
+give it the execute permission:
+
+.. literalinclude:: ../code/internal-user/rockcraft.yaml
+    :language: yaml
+    :start-after: [docs:rock-build]
+    :end-before: [docs:rock-build-end]
+
+The final ``rockcraft.yaml`` file will look like this:
 
 .. literalinclude:: ../code/internal-user/rockcraft.yaml
     :language: yaml
 
-With the user and web service in place, build the rock:
+With the part and web service in place, build the rock:
 
 .. literalinclude:: ../code/internal-user/task.yaml
     :language: bash
@@ -86,7 +79,7 @@ skopeo:
     :end-before: [docs:skopeo-end]
     :dedent: 2
 
-You can now check which internal user is running the service by running the
+We can now check which internal user is running the service by running the
 image container:
 
 .. literalinclude:: ../code/internal-user/task.yaml

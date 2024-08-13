@@ -1,5 +1,6 @@
 name: internal-user
-base: ubuntu@22.04
+base: bare
+build-base: ubuntu@24.04
 version: 'latest'
 summary: Add an internal user inside a rock
 description: Add an internal user inside a rock, and run a service with it.
@@ -10,27 +11,27 @@ platforms:
 services:
   web-service:
     override: replace
-    command: node server.js
+    command: python3.12 -m http.server --cgi 8080
     startup: enabled
-    on-success: shutdown
-    on-failure: shutdown
-    working-dir: /lib/node_modules/node_web_app
     user: myuser
+    working-dir: /
 # [docs:rock-services-end]
 
 parts:
   my-part:
-    plugin: npm
-    npm-include-node: True
-    npm-node-version: "21.1.0"
-    source: src/
+    plugin: nil
+    source-type: local
+    source: .
     stage-packages:
       - base-passwd_data
       - base-files_base
-      - bash_bins
+      - python3.12_standard
 # [docs:rock-build]
     override-build: |
       craftctl default
       groupadd --root ${CRAFT_PART_INSTALL} mygroup
       useradd -d /home/myuser -s /bin/bash --root ${CRAFT_PART_INSTALL} -g mygroup myuser
+      mkdir ${CRAFT_PART_INSTALL}/cgi-bin/
+      cp serve_user.py ${CRAFT_PART_INSTALL}/cgi-bin/
+      chmod +x ${CRAFT_PART_INSTALL}/cgi-bin/serve_user.py
 # [docs:rock-build-end]
