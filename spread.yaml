@@ -41,11 +41,9 @@ backends:
       - ubuntu-20.04-64:
           image: snapd-spread/ubuntu-20.04-64
           workers: 1
-          storage: 40G
       - ubuntu-22.04-64:
           image: snapd-spread/ubuntu-22.04-64
           workers: 4
-          storage: 40G
 #    - ubuntu-22.04-arm-64:
 #      image: ubuntu-jammy-22.04-arm64
 #      workers: 1
