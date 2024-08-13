@@ -210,8 +210,8 @@ class InitCommand(AppCommand):
                 name: {name}
                 # see {versioned_url}/explanation/bases/
                 # for more information about bases and using 'bare' bases for chiselled rocks
-                base: bare # as an alternative, a ubuntu base can be used
-                build-base: ubuntu@24.04 # build-base is required when the base is bare
+                base: bare # as an alternative, the ubuntu@22.04 base can be used
+                build-base: ubuntu@22.04 # needed when the base is bare
                 version: '0.1' # just for humans. Semantic versioning is recommended
                 summary: A summary of your Go application # 79 char long summary
                 description: |
