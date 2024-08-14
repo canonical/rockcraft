@@ -15,21 +15,48 @@ include:
     - Makefile
     - rockcraft/
 
+#backends:
+#  google:
+#    key: '$(HOST: echo "$SPREAD_GOOGLE_KEY")'
+#    location: snapd-spread/us-east1-b
+#    halt-timeout: 2h
+#    systems:
+#      - ubuntu-20.04-64:
+#          workers: 1
+#          storage: 40G
+#      - ubuntu-22.04-64:
+#          workers: 4
+#          storage: 40G
+#      - fedora-39-64:
+#          workers: 1
+#          storage: 40G
+
 backends:
-  google:
-    key: '$(HOST: echo "$SPREAD_GOOGLE_KEY")'
-    location: snapd-spread/us-east1-b
+  openstack:
+    key: '$(HOST: echo "$SPREAD_OPENSTACK_ENV")'
+    plan: staging-cpu2-ram4-disk50
     halt-timeout: 2h
+    groups: [default]
+    environment:
+        HTTP_PROXY: 'http://squid.internal:3128'
+        HTTPS_PROXY: 'http://squid.internal:3128'
+        http_proxy: 'http://squid.internal:3128'
+        https_proxy: 'http://squid.internal:3128'
+        no_proxy: '127.0.0.1,ubuntu.com'
+        NO_PROXY: '127.0.0.1,ubuntu.com'
     systems:
       - ubuntu-20.04-64:
+          image: snapd-spread/ubuntu-20.04-64
           workers: 1
-          storage: 40G
+      - fedora-40-64:
+          image: snapd-spread/fedora-40-64
+          workers: 1
       - ubuntu-22.04-64:
+          image: snapd-spread/ubuntu-22.04-64
           workers: 4
-          storage: 40G
-      - fedora-39-64:
-          workers: 1
-          storage: 40G
+#    - ubuntu-22.04-arm-64:
+#      image: ubuntu-jammy-22.04-arm64
+#      workers: 1
 
 prepare: |
   # if the 'tools' directory inside the submodule does not exist, then assume the submodule is empty
@@ -83,10 +110,21 @@ prepare: |
     snap install docker --channel=core18/stable
   else
     snap install docker
-  fi  
+  fi
+
+  mkdir -p /etc/systemd/system/snap.docker.dockerd.service.d/
+  cat << EOF > /etc/systemd/system/snap.docker.dockerd.service.d/override.conf
+  [Service]
+  Environment=HTTP_PROXY=$HTTP_PROXY
+  Environment=HTTPS_PROXY=$HTTPS_PROXY
+  Environment=NO_PROXY=$NO_PROXY
+  EOF
+
+  snap stop docker.dockerd
+  snap start docker.dockerd
 
   # make sure docker is working
-  retry -n 10 --wait 2 sh -c 'docker run --rm hello-world'
+  #retry -n 10 --wait 2 sh -c 'docker run --rm hello-world'
   
   install_rockcraft
 
