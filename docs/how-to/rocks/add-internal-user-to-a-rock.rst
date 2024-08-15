@@ -59,7 +59,7 @@ give it the execute permission:
 
 The final ``rockcraft.yaml`` file will look like this:
 
-.. literalinclude:: ../code/internal-user/rockcraft.yaml
+.. literalinclude:: ../code/internal-user/rockcraft-clean.yaml
     :language: yaml
 
 With the part and web service in place, build the rock:
