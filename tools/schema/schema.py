@@ -35,7 +35,6 @@ from rockcraft.models.project import Project  # noqa: E402
 
 def generate_project_schema() -> str:
     """Generate the schema."""
-
     # Initialize the default template with a name
     context = {
         "name": "my-rock-name",
