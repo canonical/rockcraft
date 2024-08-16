@@ -16,18 +16,19 @@
 
 """An extension for the FastAPI application extensions."""
 
-from typing import Any, Dict, Tuple
 import ast
 import fnmatch
+import os
 import pathlib
 import posixpath
-import os
 import re
+from typing import Any, Dict, Tuple
 
 from overrides import override
 
 from ..errors import ExtensionError
 from .extension import Extension
+
 
 class FastAPIFramework(Extension):
     """An extension base class for Python FastAPI/starlette framework extension."""
@@ -78,7 +79,6 @@ class FastAPIFramework(Extension):
     def name(self):
         """Return the normalized name of the rockcraft project."""
         return self.yaml_data["name"].replace("-", "_").lower()
-
 
     def has_global_variable(
         self, source_file: pathlib.Path, variable_name: str
@@ -141,8 +141,7 @@ class FastAPIFramework(Extension):
         # if prime is not in exclude mode, use it to generate the stage and organize
         if self._app_prime and self._app_prime[0] and self._app_prime[0][0] != "-":
             renaming_map = {
-                os.path.relpath(file, "app"): file
-                for file in self._app_prime
+                os.path.relpath(file, "app"): file for file in self._app_prime
             }
         else:
             renaming_map = {
@@ -191,10 +190,16 @@ class FastAPIFramework(Extension):
             user_prime.append("app/" + self._find_asgi_location().parts[0])
         return user_prime
 
-
     def _asgi_path(self) -> str:
         asgi_location = self._find_asgi_location()
-        return ".".join(part.removesuffix('.py') for part in asgi_location.parts if part != "__init__.py") + ":app"
+        return (
+            ".".join(
+                part.removesuffix(".py")
+                for part in asgi_location.parts
+                if part != "__init__.py"
+            )
+            + ":app"
+        )
 
     def _find_asgi_location(self) -> pathlib.Path:
         """TODO returns path (file/directory and the asgi entrypoint in format like app.main:app
@@ -211,9 +216,11 @@ class FastAPIFramework(Extension):
         """
         places_to_look = (
             (".", "app.py"),
-            *((src_dir, src_file)
-              for src_dir in ("app", "src", self.name)
-              for src_file in ("__init__.py", "app.py", "main.py")),
+            *(
+                (src_dir, src_file)
+                for src_dir in ("app", "src", self.name)
+                for src_file in ("__init__.py", "app.py", "main.py")
+            ),
         )
 
         for src_dir, src_file in places_to_look:

@@ -16,6 +16,7 @@
 import pytest
 from rockcraft import extensions
 
+
 @pytest.fixture(name="fastapi_input_yaml")
 def flask_input_yaml_fixture():
     return {
@@ -25,10 +26,12 @@ def flask_input_yaml_fixture():
         "extensions": ["fastapi-framework"],
     }
 
+
 @pytest.fixture
 def fastapi_extension(mock_extensions, monkeypatch):
     monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "1")
     extensions.register("fastapi-framework", extensions.FastAPIFramework)
+
 
 @pytest.mark.usefixtures("fastapi_extension")
 def test_fastapi_extension_default(tmp_path, fastapi_input_yaml):
@@ -73,6 +76,7 @@ def test_fastapi_extension_default(tmp_path, fastapi_input_yaml):
             },
         },
     }
+
 
 # TODO CHECK ALL POSSIBLE ENTRYPOINTS
 # TODO CHECK ENTRYPOINT WITH WRONG AST
