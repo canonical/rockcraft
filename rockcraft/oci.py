@@ -104,8 +104,8 @@ class Image:
         _copy_image(
             source_image,
             f"oci:{image_target}",
-            copy_params=copy_params,
             *platform_params,
+            copy_params=copy_params,
         )
 
         return cls(image_name=image_name, path=image_dir), source_image
@@ -381,7 +381,7 @@ class Image:
         except ValueError:
             emit.debug(
                 f"The entrypoint-service command '{command}' has no default "
-                + "arguments. CMD won't be set."
+                "arguments. CMD won't be set."
             )
             return
         for arg in opt_args:
@@ -389,7 +389,7 @@ class Image:
         _config_image(image_path, cmd_params)
         emit.progress(f"CMD set to {opt_args}")
 
-    def set_pebble_layer(
+    def set_pebble_layer(  # noqa: PLR0913
         self,
         services: dict[str, Any],
         checks: dict[str, Any],
@@ -518,7 +518,15 @@ def _copy_image(
     """
     copy_extra = copy_params if copy_params else []
     _process_run(
-        ["skopeo", "--insecure-policy", *list(system_params), "copy", *copy_extra, source, destination]
+        [
+            "skopeo",
+            "--insecure-policy",
+            *list(system_params),
+            "copy",
+            *copy_extra,
+            source,
+            destination,
+        ]
     )
 
 

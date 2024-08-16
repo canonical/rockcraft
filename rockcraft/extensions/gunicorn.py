@@ -56,7 +56,7 @@ class _GunicornBase(Extension):
         """Return the wsgi framework name, e.g. flask, django."""
 
     @abc.abstractmethod
-    def check_project(self):
+    def check_project(self) -> None:
         """Ensure this extension can apply to the current rockcraft project."""
 
     @abc.abstractmethod
@@ -201,8 +201,9 @@ class FlaskFramework(_GunicornBase):
         """Check if the extension is in an experimental state."""
         return False
 
+    # Silencing ruff because of https://github.com/astral-sh/ruff/issues/12942
     @override
-    def gen_install_app_part(self) -> Dict[str, Any]:
+    def gen_install_app_part(self) -> Dict[str, Any]:  # noqa: D102
         source_files = [f.name for f in sorted(self.project_root.iterdir())]
         # if prime is not in exclude mode, use it to generate the stage and organize
         if self._app_prime and self._app_prime[0] and self._app_prime[0][0] != "-":
@@ -229,7 +230,7 @@ class FlaskFramework(_GunicornBase):
         }
 
     @property
-    def _app_prime(self):
+    def _app_prime(self) -> list[str]:
         """Return the prime list for the Flask project."""
         user_prime = (
             self.yaml_data.get("parts", {})
@@ -259,7 +260,7 @@ class FlaskFramework(_GunicornBase):
             ]
         return user_prime
 
-    def _wsgi_path_error_messages(self):
+    def _wsgi_path_error_messages(self) -> list[str]:
         """Ensure the extension can infer the WSGI path of the Flask application."""
         app_file = self.project_root / "app.py"
         if not app_file.exists():
@@ -278,7 +279,7 @@ class FlaskFramework(_GunicornBase):
 
         return []
 
-    def _requirements_txt_error_messages(self):
+    def _requirements_txt_error_messages(self) -> list[str]:
         """Ensure the requirements.txt file is correct."""
         requirements_file = self.project_root / "requirements.txt"
         if not requirements_file.exists():
@@ -310,7 +311,7 @@ class DjangoFramework(_GunicornBase):
     """An extension for constructing Python applications based on the Django framework."""
 
     @property
-    def name(self):
+    def name(self) -> str:
         """Return the normalized name of the rockcraft project."""
         return self.yaml_data["name"].replace("-", "_").lower()
 
