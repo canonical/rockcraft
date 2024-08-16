@@ -48,7 +48,7 @@ class FastAPIFramework(Extension):
     @override
     def get_root_snippet(self) -> dict[str, Any]:
         """Return the root snippet to apply."""
-        # TODO self._check_project() for requirements.txt and entrypoint?
+        self._check_project()
 
         snippet: Dict[str, Any] = {
             "run_user": "_daemon_",
@@ -85,7 +85,7 @@ class FastAPIFramework(Extension):
     ) -> bool:
         """Check the given Python source code has a global variable defined."""
         # TODO COPY PASTED FROM gunicorn.py. MAYBE EXTRACT IT SOMEWHERE ELSE?
-        tree = ast.parse(source_file.read_text(encoding="utf-8"))
+        tree = ast.parse(source_file.read_text(encoding="utf-8"), filename=source_file)
         for node in ast.iter_child_nodes(tree):
             if isinstance(node, ast.Assign):
                 for target in node.targets:
@@ -229,8 +229,44 @@ class FastAPIFramework(Extension):
                 if self.has_global_variable(full_path, "app"):
                     return pathlib.Path(src_dir, src_file)
 
-        raise ExtensionError(
-            "missing ASGI entrypoint",
-            doc_slug="/reference/extensions/go-framework",
-            logpath_report=False,
-        )
+        raise FileNotFoundError("ASGI entrypoint not found")
+
+    def _check_project(self):
+        """Ensure this extension can apply to the current rockcraft project."""
+        error_messages = self._requirements_txt_error_messages()
+        error_messages += self._asgi_entrypoint_error_messages()
+        if error_messages:
+            raise ExtensionError(
+                "\n".join("- " + message for message in error_messages),
+                doc_slug="/reference/extensions/go-framework",
+                logpath_report=False,
+            )
+
+    def _requirements_txt_error_messages(self) -> list[str]:
+        """Ensure the requirements.txt file is correct."""
+        requirements_file = self.project_root / "requirements.txt"
+        if not requirements_file.exists():
+            return [
+                "missing a requirements.txt file. The fastapi-framework extension requires this file with 'fastapi'/'starlette' specified as a dependency."
+            ]
+
+        requirements_lines = requirements_file.read_text(encoding="utf-8").splitlines()
+        if not any(
+            dep in line.lower()
+            for line in requirements_lines
+            for dep in ("fastapi", "starlette")
+        ):
+            return [
+                "missing fastapi or starlette package dependency in requirements.txt file."
+            ]
+
+        return []
+
+    def _asgi_entrypoint_error_messages(self) -> list[str]:
+        try:
+            self._find_asgi_location()
+        except FileNotFoundError:
+            return ["missing ASGI entrypoint"]
+        except SyntaxError as e:
+            return [f"Syntax error in  python file in ASGI search path: {e}"]
+        return []
