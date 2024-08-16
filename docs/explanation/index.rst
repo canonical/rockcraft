@@ -18,6 +18,6 @@ the motivations behind its development.
    pebble
    lifecycle-layer
    filesets
-   parts
+   /common/craft-parts/explanation/parts
    lifecycle
    /common/craft-parts/explanation/dump_plugin

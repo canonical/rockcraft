@@ -40,7 +40,6 @@ EXPECTED_EXPAND_EXTENSIONS = textwrap.dedent(
     summary: Project with extensions
     description: Project with extensions
     base: ubuntu@22.04
-    build-base: ubuntu@22.04
     platforms:
       amd64:
         build-on:
@@ -110,7 +109,7 @@ def test_expand_extensions_error(setup_extensions, new_dir):
     expected_message = re.escape(
         "Bad rockcraft.yaml content:\n"
         "- plugin not registered: 'nonexistent' (in field 'parts.foo')\n"
-        "- unexpected value; permitted: 'merge', 'replace' (in field 'services.my-service.override')"
+        "- input should be 'merge' or 'replace' (in field 'services.my-service.override')"
     )
 
     cmd = ExpandExtensionsCommand(None)
