@@ -462,9 +462,8 @@ def load_project(filename: Path) -> dict[str, Any]:
             msg = f"{msg}: {err.filename!r}."
         raise ProjectLoadError(msg) from err
 
-    yaml_data = transform_yaml(filename.parent, yaml_data)
+    return transform_yaml(filename.parent, yaml_data)
 
-    return yaml_data
 
 
 def transform_yaml(project_root: Path, yaml_data: dict[str, Any]) -> dict[str, Any]:

@@ -216,7 +216,7 @@ class InitCommand(AppCommand):
         """
     )
 
-    def fill_parser(self, parser):
+    def fill_parser(self, parser) -> None:
         """Specify command's specific parameters."""
         parser.add_argument(
             "--name", help="The name of the rock; defaults to the directory name"
