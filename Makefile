@@ -69,7 +69,7 @@ install: clean ## Install python package.
 	python setup.py install
 
 .PHONY: lint
-lint: test-black test-codespell test-flake8 test-mypy test-pydocstyle test-pyright test-pylint test-sphinx-lint test-shellcheck ## Run all linting tests.
+lint: test-black test-codespell test-flake8 test-mypy test-pydocstyle test-pyright test-ruff test-sphinx-lint test-shellcheck ## Run all linting tests.
 
 .PHONY: release
 release: dist ## Release with twine.
@@ -89,7 +89,7 @@ test-flake8:
 
 .PHONY: test-ruff
 test-ruff:
-	ruff rockcraft tests
+	ruff check rockcraft tests
 
 .PHONY: test-integrations
 test-integrations: ## Run integration tests.
@@ -105,8 +105,8 @@ test-pydocstyle:
 
 .PHONY: test-pylint
 test-pylint:
-	pylint rockcraft
-	pylint tests --disable=invalid-name,missing-module-docstring,missing-function-docstring,redefined-outer-name,too-many-arguments,too-many-public-methods,no-member,import-outside-toplevel
+	echo "rockcraft has replaced pylint with ruff. Please use `make test-ruff` instead."
+	make test-ruff
 
 .PHONY: test-pyright
 test-pyright:
