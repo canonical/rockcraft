@@ -54,7 +54,6 @@ class FastAPIFramework(Extension):
             "run_user": "_daemon_",
             "services": {
                 "fastapi": {
-                    "command": f"/bin/python3 -m uvicorn {self._asgi_path()}",
                     "override": "replace",
                     "startup": "enabled",
                     "user": "_daemon_",
@@ -62,6 +61,11 @@ class FastAPIFramework(Extension):
                 },
             },
         }
+        if not self.yaml_data.get("services", {}).get("fastapi", {}).get("command"):
+            snippet["services"]["fastapi"][
+                "command"
+            ] = f"/bin/python3 -m uvicorn {self._asgi_path()}"
+
         snippet["parts"] = self._gen_parts()
         return snippet
 
@@ -168,10 +172,10 @@ class FastAPIFramework(Extension):
             .get("fastapi-framework/install-app", {})
             .get("prime", [])
         )
-        if not all(re.match("-? *app", p) for p in user_prime):
+        if not all(re.match("-? *app/", p) for p in user_prime):
             raise ExtensionError(
                 "fastapi-framework extension requires the 'prime' entry in the "
-                "fastapi-framework/install-app part to start with app",
+                "fastapi-framework/install-app part to start with app/",
                 doc_slug="/reference/extensions/fastapi-framework",
                 logpath_report=False,
             )
@@ -187,7 +191,8 @@ class FastAPIFramework(Extension):
                 )
                 if (self.project_root / f).exists()
             ]
-            user_prime.append("app/" + self._find_asgi_location().parts[0])
+            if not self.yaml_data.get("services", {}).get("fastapi", {}).get("command"):
+                user_prime.append("app/" + self._find_asgi_location().parts[0])
         return user_prime
 
     def _asgi_path(self) -> str:
@@ -234,7 +239,8 @@ class FastAPIFramework(Extension):
     def _check_project(self):
         """Ensure this extension can apply to the current rockcraft project."""
         error_messages = self._requirements_txt_error_messages()
-        error_messages += self._asgi_entrypoint_error_messages()
+        if not self.yaml_data.get("services", {}).get("fastapi", {}).get("command"):
+            error_messages += self._asgi_entrypoint_error_messages()
         if error_messages:
             raise ExtensionError(
                 "\n".join("- " + message for message in error_messages),

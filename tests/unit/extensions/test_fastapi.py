@@ -19,7 +19,7 @@ from rockcraft.errors import ExtensionError
 
 
 @pytest.fixture(name="fastapi_input_yaml")
-def flask_input_yaml_fixture():
+def fastapi_input_yaml_fixture():
     return {
         "name": "foo-bar",
         "base": "ubuntu@24.04",
@@ -35,7 +35,9 @@ def fastapi_extension(mock_extensions, monkeypatch):
 
 
 @pytest.mark.usefixtures("fastapi_extension")
-@pytest.mark.parametrize("packages", ["other\nfastapi", "fastapi", "Fastapi", " fastapi == 99", "starlette"])
+@pytest.mark.parametrize(
+    "packages", ["other\nfastapi", "fastapi", "Fastapi", " fastapi == 99", "starlette"]
+)
 def test_fastapi_extension_default(tmp_path, fastapi_input_yaml, packages):
     (tmp_path / "requirements.txt").write_text(packages)
     (tmp_path / "app.py").write_text("app = object()")
@@ -148,34 +150,34 @@ def test_fastapi_extension_asgi_entrypoints(
 
 
 @pytest.mark.usefixtures("fastapi_extension")
-def test_fastapi_wrong_asgi_entrypoint(
-    tmp_path, fastapi_input_yaml
-):
+def test_fastapi_wrong_asgi_entrypoint(tmp_path, fastapi_input_yaml):
     (tmp_path / "requirements.txt").write_text("fastapi")
     (tmp_path / "app.py").write_text("app = ")
     with pytest.raises(ExtensionError) as exc:
         extensions.apply_extensions(tmp_path, fastapi_input_yaml)
-    assert (
-        "- Syntax error in  python file in ASGI search path" in str(exc.value)
-    )
+    assert "- Syntax error in  python file in ASGI search path" in str(exc.value)
     assert "invalid syntax (app.py, line 1)" in str(exc.value)
 
+
 @pytest.mark.usefixtures("fastapi_extension")
-def test_fastapi_missing_asgi_entrypoint(
-    tmp_path, fastapi_input_yaml
-):
+def test_fastapi_no_asgi_entrypoint(tmp_path, fastapi_input_yaml):
+    (tmp_path / "requirements.txt").write_text("fastapi")
+    (tmp_path / "app.py").write_text("a = b\n")
+    with pytest.raises(ExtensionError) as exc:
+        extensions.apply_extensions(tmp_path, fastapi_input_yaml)
+    assert "- missing ASGI entrypoint" in str(exc.value)
+
+
+@pytest.mark.usefixtures("fastapi_extension")
+def test_fastapi_missing_asgi_entrypoint(tmp_path, fastapi_input_yaml):
     (tmp_path / "requirements.txt").write_text("fastapi")
     with pytest.raises(ExtensionError) as exc:
         extensions.apply_extensions(tmp_path, fastapi_input_yaml)
-    assert (
-        "- missing ASGI entrypoint" in str(exc.value)
-    )
+    assert "- missing ASGI entrypoint" in str(exc.value)
 
 
 @pytest.mark.usefixtures("fastapi_extension")
-def test_fastapi_missing_requirements_txt(
-    tmp_path, fastapi_input_yaml
-):
+def test_fastapi_missing_requirements_txt(tmp_path, fastapi_input_yaml):
     (tmp_path / "app.py").write_text("app = app")
     with pytest.raises(ExtensionError) as exc:
         extensions.apply_extensions(tmp_path, fastapi_input_yaml)
@@ -197,10 +199,101 @@ def test_fastapi_check_no_correct_requirement_and_no_asgi_entrypoint(
     )
 
 
-# something similar as in test_gunicorn for:
-#  test_flask_framework_exclude_prime
-#  test_flask_framework_service_override
-#  test_flask_extension_override_parts
-#  test_flask_extension_bare
-#  test_flask_extension_incorrect_prime_prefix_error
-#  test_flask_extension_flask_service_override_disable_wsgi_path_check
+@pytest.mark.usefixtures("fastapi_extension")
+def test_fastapi_extension_bare(tmp_path):
+    (tmp_path / "requirements.txt").write_text("fastapi")
+    (tmp_path / "app.py").write_text("app = object()")
+    fastapi_input_yaml = {
+        "name": "foo-bar",
+        "extensions": ["fastapi-framework"],
+        "base": "bare",
+        "build-base": "ubuntu@24.04",
+        "platforms": {"amd64": {}},
+    }
+    applied = extensions.apply_extensions(tmp_path, fastapi_input_yaml)
+    assert applied["parts"]["fastapi-framework/dependencies"] == {
+        "plugin": "python",
+        "stage-packages": ["python3.12-venv_ensurepip"],
+        "source": ".",
+        "python-packages": ["uvicorn"],
+        "python-requirements": ["requirements.txt"],
+        "build-environment": [{"PARTS_PYTHON_INTERPRETER": "python3.12"}],
+    }
+    assert applied["parts"]["fastapi-framework/runtime"] == {
+        "plugin": "nil",
+        "override-build": "mkdir -m 777 ${CRAFT_PART_INSTALL}/tmp",
+        "stage-packages": ["bash_bins", "coreutils_bins", "ca-certificates_data"],
+    }
+
+
+@pytest.mark.usefixtures("fastapi_extension")
+def test_fastapi_framework_exclude_prime(tmp_path, fastapi_input_yaml):
+    # copy pasted from flask.
+    (tmp_path / "requirements.txt").write_text("fastapi")
+    (tmp_path / "app.py").write_text("app = object()")
+    (tmp_path / "static").mkdir()
+    (tmp_path / "webapp").mkdir()
+    (tmp_path / "test").mkdir()
+    (tmp_path / "node_modules").mkdir()
+    fastapi_input_yaml["parts"] = {
+        "fastapi-framework/install-app": {
+            "prime": [
+                "- app/app/test",
+            ]
+        }
+    }
+    applied = extensions.apply_extensions(tmp_path, fastapi_input_yaml)
+    install_app_part = applied["parts"]["fastapi-framework/install-app"]
+    assert install_app_part["prime"] == ["- app/app/test"]
+    assert install_app_part["organize"] == {
+        "app.py": "app/app.py",
+        "requirements.txt": "app/requirements.txt",
+        "static": "app/static",
+        "test": "app/test",
+        "webapp": "app/webapp",
+    }
+    assert install_app_part["stage"] == [
+        "app/app.py",
+        "app/requirements.txt",
+        "app/static",
+        "app/test",
+        "app/webapp",
+    ]
+
+
+@pytest.mark.usefixtures("fastapi_extension")
+def test_fastapi_framework_service_override(tmp_path, fastapi_input_yaml):
+    (tmp_path / "requirements.txt").write_text("fastapi")
+    (tmp_path / "webapp.py").write_text("app = object()")
+    fastapi_input_yaml["services"] = {
+        "fastapi": {"command": "/bin/python3 -m uvicorn webapp:app"}
+    }
+    applied = extensions.apply_extensions(tmp_path, fastapi_input_yaml)
+    assert (
+        applied["services"]["fastapi"]["command"]
+        == "/bin/python3 -m uvicorn webapp:app"
+    )
+    # As there is not file/directory to copy, the extension copies everything.
+    assert applied["parts"]["fastapi-framework/install-app"] == {
+        "plugin": "dump",
+        "source": ".",
+        "organize": {
+            "requirements.txt": "app/requirements.txt",
+            "webapp.py": "app/webapp.py",
+        },
+        "stage": ["app/requirements.txt", "app/webapp.py"],
+    }
+
+
+@pytest.mark.usefixtures("fastapi_extension")
+def test_fastapi_extension_incorrect_prime_prefix_error(tmp_path, fastapi_input_yaml):
+    (tmp_path / "requirements.txt").write_text("fastapi")
+    (tmp_path / "app.py").write_text("app = object()")
+
+    fastapi_input_yaml["parts"] = {
+        "fastapi-framework/install-app": {"prime": ["app.py"]}
+    }
+
+    with pytest.raises(ExtensionError) as exc:
+        extensions.apply_extensions(tmp_path, fastapi_input_yaml)
+    assert "start with app/" in str(exc)
