@@ -203,7 +203,7 @@ class FlaskFramework(_GunicornBase):
 
     # Silencing ruff because of https://github.com/astral-sh/ruff/issues/12942
     @override
-    def gen_install_app_part(self) -> Dict[str, Any]:  # noqa: D102
+    def gen_install_app_part(self) -> Dict[str, Any]:
         source_files = [f.name for f in sorted(self.project_root.iterdir())]
         # if prime is not in exclude mode, use it to generate the stage and organize
         if self._app_prime and self._app_prime[0] and self._app_prime[0][0] != "-":

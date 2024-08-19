@@ -389,7 +389,7 @@ class Image:
         _config_image(image_path, cmd_params)
         emit.progress(f"CMD set to {opt_args}")
 
-    def set_pebble_layer(  # noqa: PLR0913
+    def set_pebble_layer(
         self,
         services: dict[str, Any],
         checks: dict[str, Any],
