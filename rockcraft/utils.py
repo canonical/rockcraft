@@ -67,7 +67,9 @@ def get_managed_environment_snap_channel() -> str | None:
     return os.getenv("ROCKCRAFT_INSTALL_SNAP_CHANNEL")
 
 
-def confirm_with_user(prompt: str, default: bool = False) -> bool:
+def confirm_with_user(
+    prompt: str, default: bool = False  # noqa: FBT001,FBT002
+) -> bool:
     """Query user for yes/no answer.
 
     If stdin is not a tty, the default value is returned.
