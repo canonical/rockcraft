@@ -16,10 +16,8 @@
 
 """An extension for the Gunicorn based Python WSGI application extensions."""
 import abc
-import ast
 import fnmatch
 import os.path
-import pathlib
 import posixpath
 import re
 from typing import Any, Dict, Tuple
@@ -27,8 +25,8 @@ from typing import Any, Dict, Tuple
 from overrides import override
 
 from ..errors import ExtensionError
-from .extension import Extension, get_extensions_data_dir
 from ._python_utils import has_global_variable
+from .extension import Extension, get_extensions_data_dir
 
 
 class _GunicornBase(Extension):

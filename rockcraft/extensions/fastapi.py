@@ -26,8 +26,8 @@ from typing import Any, Dict, Tuple
 from overrides import override
 
 from ..errors import ExtensionError
-from .extension import Extension
 from ._python_utils import has_global_variable
+from .extension import Extension
 
 
 class FastAPIFramework(Extension):
