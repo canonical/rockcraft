@@ -103,6 +103,9 @@ class InitCommand(AppCommand):
                     container registries out there.
                 platforms: # the platforms this rock should be built on and run on
                     amd64:
+                    arm64:
+                    ppc64el:
+                    s390x:
 
                 # to ensure the flask-framework extension works properly, your Flask application
                 # should have an `app.py` file with an `app` object as the WSGI entrypoint.
@@ -176,6 +179,9 @@ class InitCommand(AppCommand):
                     container registries out there.
                 platforms: # The platforms this rock should be built on and run on
                     amd64:
+                    arm64:
+                    ppc64el:
+                    s390x:
 
                 # to ensure the django-framework extension functions properly, your Django project
                 # should have a structure similar to the following with ./{snake_name}/{snake_name}/wsgi.py
@@ -221,6 +227,9 @@ class InitCommand(AppCommand):
                     container registries out there.
                 platforms: # The platforms this rock should be built on and run on
                     amd64:
+                    arm64:
+                    ppc64el:
+                    s390x:
 
                 # to ensure the go-framework extension functions properly, your Go project
                 # should have a go.mod file. Check the parts section for the selection of

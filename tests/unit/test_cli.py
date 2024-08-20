@@ -152,6 +152,9 @@ def test_run_init_flask(mocker, emitter, monkeypatch, new_dir, tmp_path):
                 container registries out there.
             platforms: # the platforms this rock should be built on and run on
                 amd64:
+                arm64:
+                ppc64el:
+                s390x:
 
             # to ensure the flask-framework extension works properly, your Flask application
             # should have an `app.py` file with an `app` object as the WSGI entrypoint.
