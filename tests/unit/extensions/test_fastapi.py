@@ -228,7 +228,6 @@ def test_fastapi_extension_bare(tmp_path):
 
 @pytest.mark.usefixtures("fastapi_extension")
 def test_fastapi_framework_exclude_prime(tmp_path, fastapi_input_yaml):
-    # copy pasted from flask.
     (tmp_path / "requirements.txt").write_text("fastapi")
     (tmp_path / "app.py").write_text("app = object()")
     (tmp_path / "static").mkdir()

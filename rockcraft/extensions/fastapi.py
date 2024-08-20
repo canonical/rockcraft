@@ -16,7 +16,6 @@
 
 """An extension for the FastAPI application extensions."""
 
-import ast
 import fnmatch
 import os
 import pathlib
@@ -28,6 +27,7 @@ from overrides import override
 
 from ..errors import ExtensionError
 from .extension import Extension
+from ._python_utils import has_global_variable
 
 
 class FastAPIFramework(Extension):
@@ -84,25 +84,6 @@ class FastAPIFramework(Extension):
         """Return the normalized name of the rockcraft project."""
         return self.yaml_data["name"].replace("-", "_").lower()
 
-    def has_global_variable(
-        self, source_file: pathlib.Path, variable_name: str
-    ) -> bool:
-        """Check the given Python source code has a global variable defined."""
-        # TODO COPY PASTED FROM gunicorn.py. MAYBE EXTRACT IT SOMEWHERE ELSE?
-        tree = ast.parse(source_file.read_text(encoding="utf-8"), filename=source_file)
-        for node in ast.iter_child_nodes(tree):
-            if isinstance(node, ast.Assign):
-                for target in node.targets:
-                    if isinstance(target, ast.Name) and target.id == variable_name:
-                        return True
-            if isinstance(node, ast.ImportFrom):
-                for name in node.names:
-                    if (name.asname is not None and name.asname == variable_name) or (
-                        name.asname is None and name.name == variable_name
-                    ):
-                        return True
-        return False
-
     def _gen_parts(self) -> dict:
         """Generate the parts associated with this extension."""
         stage_packages = ["python3-venv"]
@@ -111,7 +92,6 @@ class FastAPIFramework(Extension):
             stage_packages = ["python3.12-venv_ensurepip"]
             build_environment = [{"PARTS_PYTHON_INTERPRETER": "python3.12"}]
 
-        # TODO is it worth to try to make _GunicornBase -> _PythonBase?
         parts: Dict[str, Any] = {
             "fastapi-framework/dependencies": {
                 "plugin": "python",
@@ -207,18 +187,14 @@ class FastAPIFramework(Extension):
         )
 
     def _find_asgi_location(self) -> pathlib.Path:
-        """TODO returns path (file/directory and the asgi entrypoint in format like app.main:app.
+        """Return the path of the asgi entrypoint file.
 
-        looks for app.py:app
-        looks for app:app (in __init__.py)
-        looks for app.app:app
-        looks for app.main:app
-        looks for src:app (in __init__.py)
-        looks for src.app:app
-        looks for src.main:app
-        looks for PROJECTNAME:app (in __init__.py)
-        looks for PROJECTNAME.app:app
-        looks for PROJECTNAME.main:app
+        It will look for an `app` global variable in the following places:
+        1. `app.py`.
+        2. Inside the directories `app`, `src` and rockcraft name, in the files
+           `__init__.py`, `app.py` or `main.py`.
+
+        It will return the first instance found or raise FileNotFoundError.
         """
         places_to_look = (
             (".", "app.py"),
@@ -232,7 +208,7 @@ class FastAPIFramework(Extension):
         for src_dir, src_file in places_to_look:
             full_path = self.project_root / src_dir / src_file
             if full_path.exists():
-                if self.has_global_variable(full_path, "app"):
+                if has_global_variable(full_path, "app"):
                     return pathlib.Path(src_dir, src_file)
 
         raise FileNotFoundError("ASGI entrypoint not found")
@@ -250,7 +226,7 @@ class FastAPIFramework(Extension):
             )
 
     def _requirements_txt_error_messages(self) -> list[str]:
-        """Ensure the requirements.txt file is correct."""
+        """Ensure the requirements.txt file exists and has fastapi or starlette deps."""
         requirements_file = self.project_root / "requirements.txt"
         if not requirements_file.exists():
             return [

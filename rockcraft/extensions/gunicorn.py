@@ -28,6 +28,7 @@ from overrides import override
 
 from ..errors import ExtensionError
 from .extension import Extension, get_extensions_data_dir
+from ._python_utils import has_global_variable
 
 
 class _GunicornBase(Extension):
@@ -161,24 +162,6 @@ class _GunicornBase(Extension):
         """Return the parts to add to parts."""
         return {}
 
-    def has_global_variable(
-        self, source_file: pathlib.Path, variable_name: str
-    ) -> bool:
-        """Check the given Python source code has a global variable defined."""
-        tree = ast.parse(source_file.read_text(encoding="utf-8"))
-        for node in ast.iter_child_nodes(tree):
-            if isinstance(node, ast.Assign):
-                for target in node.targets:
-                    if isinstance(target, ast.Name) and target.id == variable_name:
-                        return True
-            if isinstance(node, ast.ImportFrom):
-                for name in node.names:
-                    if (name.asname is not None and name.asname == variable_name) or (
-                        name.asname is None and name.name == variable_name
-                    ):
-                        return True
-        return False
-
 
 class FlaskFramework(_GunicornBase):
     """An extension for constructing Python applications based on the Flask framework."""
@@ -267,7 +250,7 @@ class FlaskFramework(_GunicornBase):
                 "flask application can not be imported from app:app, no app.py file found in the project root."
             ]
         try:
-            has_app = self.has_global_variable(app_file, "app")
+            has_app = has_global_variable(app_file, "app")
         except SyntaxError as err:
             return [f"error parsing app.py: {err.msg}"]
 
@@ -349,7 +332,7 @@ class DjangoFramework(_GunicornBase):
                 f"django application can not be imported from {self.default_wsgi_path}, "
                 f"no wsgi.py file found in the project directory ({str(wsgi_file.parent)})."
             )
-        if not self.has_global_variable(wsgi_file, "application"):
+        if not has_global_variable(wsgi_file, "application"):
             raise ExtensionError(
                 "django application can not be imported from {self.default_wsgi_path}, "
                 "no variable named application in application.py"

@@ -295,7 +295,7 @@ class InitCommand(AppCommand):
                 # in one of the following places:
                 #   1. `app.py` file in the base directory
                 #   2. In any of the following directories, the extension will look for the variable
-                #      in the files  __init__.py or app.py:
+                #      in the files  __init__.py, app.py or main.py:
                 #     a. `app` directory.
                 #     b. `src` directory.
                 #     c. A directory with the same name as the project.
