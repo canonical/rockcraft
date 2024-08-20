@@ -207,7 +207,8 @@ class FastAPIFramework(Extension):
         )
 
     def _find_asgi_location(self) -> pathlib.Path:
-        """TODO returns path (file/directory and the asgi entrypoint in format like app.main:app
+        """TODO returns path (file/directory and the asgi entrypoint in format like app.main:app.
+
         looks for app.py:app
         looks for app:app (in __init__.py)
         looks for app.app:app
