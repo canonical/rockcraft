@@ -1,4 +1,4 @@
-.. django-framework-reference:
+.. _django-framework-reference:
 
 django-framework
 ----------------
