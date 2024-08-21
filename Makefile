@@ -34,9 +34,10 @@ clean: ## Clean artefacts from building, testing, etc.
 
 .PHONY: coverage
 coverage: ## Run pytest with coverage report.
-	coverage run --source craft_sore -m pytest
+	coverage run --source rockcraft -m pytest tests/unit
 	coverage report -m
 	coverage html
+	coverage xml -o results/coverage-unit.xml
 
 .PHONY: installdocs
 installdocs:
@@ -80,7 +81,7 @@ test-black:
 
 .PHONY: test-codespell
 test-codespell:
-	codespell .
+	codespell rockcraft tests
 
 .PHONY: test-flake8
 test-flake8:

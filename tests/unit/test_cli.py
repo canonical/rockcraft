@@ -23,7 +23,7 @@ import pytest
 import yaml
 from craft_cli import emit
 from rockcraft import cli, extensions, services
-from rockcraft.application import Rockcraft
+from rockcraft.application import Rockcraft, APP_METADATA
 from rockcraft.models import project
 
 
@@ -130,15 +130,17 @@ def test_run_init_flask(mocker, emitter, monkeypatch, new_dir, tmp_path):
 
     cli.run()
 
+    versioned_url = APP_METADATA.versioned_docs_url
+
     rockcraft_yaml_path = Path("rockcraft.yaml")
     rock_project_yaml = yaml.safe_load(rockcraft_yaml_path.read_text())
 
     assert len(rock_project_yaml["summary"]) < 80
     assert len(rock_project_yaml["description"].split()) < 100
     assert rockcraft_yaml_path.read_text() == textwrap.dedent(
-        """\
+        f"""\
             name: test-name
-            # see https://documentation.ubuntu.com/rockcraft/en/stable/explanation/bases/
+            # see {versioned_url}/explanation/bases/
             # for more information about bases and using 'bare' bases for chiselled rocks
             base: ubuntu@22.04 # the base environment for this Flask application
             version: '0.1' # just for humans. Semantic versioning is recommended
@@ -154,7 +156,7 @@ def test_run_init_flask(mocker, emitter, monkeypatch, new_dir, tmp_path):
             # to ensure the flask-framework extension works properly, your Flask application
             # should have an `app.py` file with an `app` object as the WSGI entrypoint.
             # a `requirements.txt` file with at least the flask package should also exist.
-            # see https://documentation.ubuntu.com/rockcraft/en/stable/reference/extensions/flask-framework
+            # see {versioned_url}/reference/extensions/flask-framework
             # for more information.
             extensions:
                 - flask-framework
@@ -186,7 +188,7 @@ def test_run_init_flask(mocker, emitter, monkeypatch, new_dir, tmp_path):
             # you can add package slices or Debian packages to the image.
             # package slices are subsets of Debian packages, which result
             # in smaller and more secure images.
-            # see https://documentation.ubuntu.com/rockcraft/en/latest/explanation/chisel/
+            # see {versioned_url}/explanation/chisel/
 
             # add this part if you want to add packages slices to your image.
             # you can find a list of packages slices at https://github.com/canonical/chisel-releases
@@ -207,9 +209,9 @@ def test_run_init_flask(mocker, emitter, monkeypatch, new_dir, tmp_path):
     )
     emitter.assert_message(
         textwrap.dedent(
-            """\
+            f"""\
         Created 'rockcraft.yaml'.
-        Go to https://documentation.ubuntu.com/rockcraft/en/stable/reference/extensions/flask-framework to read more about the 'flask-framework' profile."""
+        Go to {versioned_url}/reference/extensions/flask-framework to read more about the 'flask-framework' profile."""
         )
     )
     monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "0")

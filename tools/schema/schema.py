@@ -39,6 +39,7 @@ def generate_project_schema() -> str:
     # Initialize the default template with a name
     context = {
         "name": "my-rock-name",
+        "versioned_url": "www.example.com",
     }
     # pylint: disable=W0212
     init_template = cli.commands.InitCommand._PROFILES[
@@ -60,27 +61,46 @@ def generate_project_schema() -> str:
     # combine both schemas
     project_schema = {**initial_schema, **project_schema}
 
+    # tweak the platforms definition on the Project (each value can be empty)
+    project_schema["properties"]["platforms"]["additionalProperties"] = {
+        "oneOf": [{"type": "null"}, {"$ref": "#/$defs/Platform"}]
+    }
+
+    # tweak the Platform (build-for can be a single string)
+    project_schema["$defs"]["Platform"]["properties"]["build-for"] = {
+        "oneOf": [
+            {
+                "title": "Build-For",
+                "minItems": 1,
+                "uniqueItems": True,
+                "type": "array",
+                "items": {"type": "string"},
+            },
+            {"title": "Build-For", "type": "string"},
+        ]
+    }
+
     # project.schema() will define the `parts` field as an `object`
     # so we need to manually add the schema for parts by running
     # schema() on part.spec and add the outcome project schema's definitions
     part = Part(name="placeholder", data={})
     part_schema = part.spec.schema(by_alias=True)
     project_schema["properties"]["parts"]["additionalProperties"] = {
-        "$ref": "#/definitions/Part"
+        "$ref": "#/$defs/Part"
     }
-    project_schema["definitions"]["Part"] = part_schema
-    project_schema["definitions"]["Permissions"] = project_schema["definitions"][
-        "Part"
-    ]["definitions"]["Permissions"]
-    del project_schema["definitions"]["Part"]["definitions"]
+    project_schema["$defs"]["Part"] = part_schema
+    project_schema["$defs"]["Permissions"] = project_schema["$defs"]["Part"]["$defs"][
+        "Permissions"
+    ]
+    del project_schema["$defs"]["Part"]["$defs"]
 
     # add conditions for plugin properties fields
-    project_schema["definitions"]["Part"]["properties"]["plugin"]["enum"] = list(
+    project_schema["$defs"]["Part"]["properties"]["plugin"]["enum"] = list(
         plugins.get_registered_plugins().keys()
     )
 
     # remove the global additionalProperties to allow for each plugin its own
-    del project_schema["definitions"]["Part"]["additionalProperties"]
+    del project_schema["$defs"]["Part"]["additionalProperties"]
 
     # add each plugin's property names in a conditional block
     if_array = []
@@ -88,7 +108,7 @@ def generate_project_schema() -> str:
         properties_dict = {}
         for k, v in cls.properties_class.schema().get("properties", {}).items():
             properties_dict[k] = v
-        properties_dict.update(project_schema["definitions"]["Part"]["properties"])
+        properties_dict.update(project_schema["$defs"]["Part"]["properties"])
         if_array.append(
             {
                 "if": {"properties": {"plugin": {"const": name}}},
@@ -99,7 +119,7 @@ def generate_project_schema() -> str:
                 },
             }
         )
-    project_schema["definitions"]["Part"]["allOf"] = if_array
+    project_schema["$defs"]["Part"]["allOf"] = if_array
 
     return json.dumps(project_schema, indent=2)
 

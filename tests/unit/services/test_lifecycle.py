@@ -60,7 +60,7 @@ def test_lifecycle_args(
     mock_lifecycle.assert_called_once_with(
         {"parts": {}},
         application_name="rockcraft",
-        arch="x86_64",
+        arch="amd64",
         base="ubuntu@22.04",
         base_layer_dir=Path(),
         base_layer_hash=b"deadbeef",

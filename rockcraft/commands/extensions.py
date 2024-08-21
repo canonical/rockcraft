@@ -100,4 +100,4 @@ class ExpandExtensionsCommand(AppCommand, abc.ABC):
         project_path = Path("rockcraft.yaml")
         project = Project.from_yaml_data(load_project(project_path), project_path)
 
-        emit.message(project.to_yaml())  # pylint: disable=no-member
+        emit.message(project.to_yaml_string())
