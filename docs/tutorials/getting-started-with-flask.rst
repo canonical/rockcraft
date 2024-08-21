@@ -259,7 +259,7 @@ In ``rockcraft.yaml``, change the ``base`` to ``bare`` and add
 .. note::
     The ``sed`` command replaces the current ``base`` in ``rockcraft.yaml`` with
     the ``bare`` base. The command also adds a ``build-base`` which is required
-    for the ``bare`` base.
+    when using the ``bare`` base.
 
 Pack the rock with the new ``bare`` :ref:`base <bases_explanation>`:
 
