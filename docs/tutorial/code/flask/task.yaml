@@ -97,7 +97,7 @@ execute: |
   sudo docker rmi flask-hello-world:0.1
   # [docs:stop-docker-chisel-end]
 
-  cat time-app.py > app.py
+  cat time_app.py > app.py
   sed -i "s/version: .*/version: 0.2/g" rockcraft.yaml
   rockcraft clean
 

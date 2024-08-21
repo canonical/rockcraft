@@ -311,7 +311,7 @@ you want to add a new ``/time`` endpoint which returns the current time.
 Start by opening the ``app.py`` file in a text editor and update the code to
 look like the following:
 
-.. literalinclude:: code/flask/time-app.py
+.. literalinclude:: code/flask/time_app.py
     :language: python
 
 Since you are creating a new version of your application, **open the**
