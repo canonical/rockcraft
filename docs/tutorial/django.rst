@@ -311,7 +311,7 @@ image:
 .. _update-django-application:
 
 Update Django application
-========================
+=========================
 
 As a final step, let's say you want to update your application. For example,
 you want to add a new ``/time/`` endpoint which returns the current time.
