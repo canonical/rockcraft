@@ -39,7 +39,7 @@ install ``python3-venv`` and create a virtual environment:
     :end-before: [docs:create-venv-end]
     :dedent: 2
 
-Create a new project using `django-admin`:
+Create a new project using ``django-admin``:
 
 .. literalinclude:: code/django/task.yaml
     :language: bash
