@@ -277,7 +277,7 @@ You'll verify that the new Django rock is now approximately **15% smaller**
 in size! And that's just because of the simple change of ``base``.
 
 And the functionality is still the same. As before, you can confirm this by
-running the rock with Docker
+running the rock with Docker:
 
 .. literalinclude:: code/django/task.yaml
     :language: text
