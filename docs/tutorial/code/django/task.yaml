@@ -112,6 +112,7 @@ execute: |
   cat ../urls.py > django_hello_world/urls.py
 
   cd ..
+  sed -i "s/version: .*/version: 0.2/g" rockcraft.yaml
 
   # [docs:docker-run-update]
   ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS=true rockcraft pack
