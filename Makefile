@@ -1,3 +1,5 @@
+RUFF := $(shell ruff --version 2> /dev/null)
+
 .PHONY: help
 help: ## Show this help.
 	@printf "%-40s %s\n" "Target" "Description"
@@ -6,6 +8,9 @@ help: ## Show this help.
 
 .PHONY: autoformat
 autoformat: ## Run automatic code formatters.
+ifndef RUFF
+	$(error "Ruff not installed. Install it with `sudo snap install ruff` or using the official installation instructions: https://docs.astral.sh/ruff/installation/")
+endif
 	autoflake rockcraft/ tests/
 	black .
 	ruff check --fix-only rockcraft tests
@@ -89,6 +94,9 @@ test-flake8:
 
 .PHONY: test-ruff
 test-ruff:
+ifndef RUFF
+	$(error "Ruff not installed. Install it with `sudo snap install ruff` or using the official installation instructions: https://docs.astral.sh/ruff/installation/")
+endif
 	ruff check rockcraft tests
 
 .PHONY: test-integrations

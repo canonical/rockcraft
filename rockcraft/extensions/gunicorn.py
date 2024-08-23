@@ -201,7 +201,6 @@ class FlaskFramework(_GunicornBase):
         """Check if the extension is in an experimental state."""
         return False
 
-    # Silencing ruff because of https://github.com/astral-sh/ruff/issues/12942
     @override
     def gen_install_app_part(self) -> Dict[str, Any]:
         source_files = [f.name for f in sorted(self.project_root.iterdir())]
