@@ -107,7 +107,6 @@ class GoFramework(Extension):
         install_app = self._get_nested(
             self.yaml_data, ["parts", "go-framework/install-app"]
         )
-        import pdb; pdb.set_trace()
 
         build_environment = install_app.get("build-environment", [])
         if self.yaml_data["base"] == "bare":
