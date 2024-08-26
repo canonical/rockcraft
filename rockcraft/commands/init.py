@@ -254,7 +254,7 @@ class InitCommand(AppCommand):
                 #    # if the main package is in the base directory and the rockcraft name
                 #    # attribute is equal to the go module name, the name of the server will
                 #    # be selected correctly, otherwise you can adjust it.
-                #    # the file in /usr/local/bin/ with the name of the rockcraft will be
+                #    # the file in /usr/local/bin/ with the name of the rockcraft project will be
                 #    # the binary to run your server.
                 #    # you can also include here other binary files to be included in the rock.
                 #      bin/otherbinary: usr/local/bin/projectname
