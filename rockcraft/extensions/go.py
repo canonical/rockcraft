@@ -190,7 +190,7 @@ class GoFramework(Extension):
             raise ExtensionError(
                 "go-framework extension requires the 'stage' entry in the "
                 "go-framework/assets part to start with app",
-                docs_url="https://documentation.ubuntu.com/rockcraft/en/stable/reference/extensions/go-framework",
+                doc_slug="/reference/extensions/go-framework",
                 logpath_report=False,
             )
         if not user_stage:
