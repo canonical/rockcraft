@@ -107,6 +107,7 @@ class GoFramework(Extension):
         install_app = self._get_nested(
             self.yaml_data, ["parts", "go-framework/install-app"]
         )
+        import pdb; pdb.set_trace()
 
         build_environment = install_app.get("build-environment", [])
         if self.yaml_data["base"] == "bare":
@@ -207,7 +208,7 @@ class GoFramework(Extension):
             ]
         return user_stage
 
-    def _get_nested(self, obj: dict, paths: list[str]) -> Any:
+    def _get_nested(self, obj: dict, paths: list[str]) -> dict:
         """Get a nested object using a path (a list of keys)."""
         for key in paths:
             obj = obj.get(key, {})
