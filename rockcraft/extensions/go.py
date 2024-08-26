@@ -104,7 +104,9 @@ class GoFramework(Extension):
 
     def _gen_install_app_part(self):
         """Generate install-app part with the Go plugin."""
-        install_app = self._get_nested(self.yaml_data, "parts.go-framework/install-app")
+        install_app = self._get_nested(
+            self.yaml_data, ["parts", "go-framework/install-app"]
+        )
 
         build_environment = install_app.get("build-environment", [])
         if self.yaml_data["base"] == "bare":
@@ -120,7 +122,7 @@ class GoFramework(Extension):
             if path == binary_path:
                 break
         else:
-            if not self._get_nested(self.yaml_data, "services.go.command"):
+            if not self._get_nested(self.yaml_data, ["services", "go", "command"]):
                 organize[f"bin/{self.project_name}"] = binary_path
 
         install_app_part = {
@@ -142,16 +144,15 @@ class GoFramework(Extension):
 
     def _check_go_overriden(self):
         """Check if the user overrode the go snap or package for the build step."""
-        build_snaps = self._get_nested(
-            self.yaml_data, "parts.go-framework/install-app.build-snaps"
+        install_app = self._get_nested(
+            self.yaml_data, ["parts", "go-framework/install-app"]
         )
+        build_snaps = install_app.get("build-snaps", [])
         if build_snaps:
             for snap in build_snaps:
                 if snap.startswith("go"):
                     return True
-        build_packages = self._get_nested(
-            self.yaml_data, "parts.go-framework/install-app.build-packages"
-        )
+        build_packages = install_app.get("build-packages", [])
         if build_packages:
             for package in build_packages:
                 if package in ["gccgo-go", "golang-go"]:
@@ -182,9 +183,9 @@ class GoFramework(Extension):
     @property
     def _assets_stage(self):
         """Return the assets stage list for the Go project."""
-        user_stage = self._get_nested(self.yaml_data, "parts.go-framework/assets").get(
-            "stage", []
-        )
+        user_stage = self._get_nested(
+            self.yaml_data, ["parts", "go-framework/assets"]
+        ).get("stage", [])
 
         if not all(re.match("-? *app/", p) for p in user_stage):
             raise ExtensionError(
@@ -206,8 +207,8 @@ class GoFramework(Extension):
             ]
         return user_stage
 
-    def _get_nested(self, obj: dict, path: str) -> dict:
-        """Get a nested object using a path (a dot-separated list of keys)."""
-        for key in path.split("."):
+    def _get_nested(self, obj: dict, paths: list[str]) -> Any:
+        """Get a nested object using a path (a list of keys)."""
+        for key in paths:
             obj = obj.get(key, {})
         return obj
