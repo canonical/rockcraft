@@ -234,7 +234,7 @@ class InitCommand(AppCommand):
                 # to ensure the go-framework extension functions properly, your Go project
                 # should have a go.mod file. Check the parts section for the selection of
                 # the default binary.
-                # see https://documentation.ubuntu.com/rockcraft/en/stable/reference/extensions/go-framework
+                # see {versioned_url}/reference/extensions/go-framework
                 # for more information.
                 # +-- {snake_name}
                 # |   |-- go.mod
