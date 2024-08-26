@@ -98,7 +98,7 @@ class GoFramework(Extension):
         if not (self.project_root / "go.mod").exists():
             raise ExtensionError(
                 "missing go.mod file",
-                docs_url="https://documentation.ubuntu.com/rockcraft/en/stable/reference/extensions/go-framework",
+                doc_slug="/reference/extensions/go-framework",
                 logpath_report=False,
             )
 
