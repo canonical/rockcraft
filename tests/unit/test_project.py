@@ -27,7 +27,6 @@ import yaml
 from craft_application.errors import CraftValidationError
 from craft_application.models import BuildInfo
 from craft_providers.bases import BaseName, ubuntu
-
 from rockcraft.errors import ProjectLoadError
 from rockcraft.models import Project
 from rockcraft.models.project import MESSAGE_INVALID_NAME, Platform, load_project
@@ -316,9 +315,9 @@ def test_project_entrypoint_service_valid(
     assert project.entrypoint_service == entrypoint_service
     emitter.assert_message(
         "Warning: defining an entrypoint-service will result in a rock with "
-        + "an atypical OCI Entrypoint. While that might be acceptable for "
-        + "testing and personal use, it shall require prior approval before "
-        + "submitting to a Canonical registry namespace."
+        "an atypical OCI Entrypoint. While that might be acceptable for "
+        "testing and personal use, it shall require prior approval before "
+        "submitting to a Canonical registry namespace."
     )
 
 

@@ -56,7 +56,7 @@ def get_managed_environment_project_path() -> pathlib.Path:
 
 def get_managed_environment_log_path() -> pathlib.Path:
     """Path for log when running in managed environment."""
-    return pathlib.Path("/tmp/rockcraft.log")
+    return pathlib.Path("/tmp/rockcraft.log")  # noqa: S108
 
 
 def get_managed_environment_snap_channel() -> str | None:
@@ -67,7 +67,9 @@ def get_managed_environment_snap_channel() -> str | None:
     return os.getenv("ROCKCRAFT_INSTALL_SNAP_CHANNEL")
 
 
-def confirm_with_user(prompt: str, default: bool = False) -> bool:
+def confirm_with_user(
+    prompt: str, default: bool = False  # noqa: FBT001,FBT002
+) -> bool:
     """Query user for yes/no answer.
 
     If stdin is not a tty, the default value is returned.

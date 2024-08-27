@@ -250,7 +250,7 @@ def _all_compatible_directories(paths: list[Path]) -> bool:
     if not all(p.is_dir() for p in paths):
         return False
 
-    if len(paths) < 2:
+    if len(paths) < 2:  # noqa: PLR2004
         return True
 
     def stat_props(stat: os.stat_result) -> tuple[int, int, int]:
@@ -275,7 +275,7 @@ def _all_compatible_files(paths: list[Path]) -> bool:
     if not all(p.is_file() for p in paths):
         return False
 
-    if len(paths) < 2:
+    if len(paths) < 2:  # noqa: PLR2004
         return True
 
     first_file = paths[0]

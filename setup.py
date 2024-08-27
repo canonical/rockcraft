@@ -24,7 +24,10 @@ from typing import List, Tuple
 from setuptools import setup
 
 
-def recursive_data_files(directory, install_directory) -> List[Tuple[str, List[str]]]:
+def recursive_data_files(
+    directory: str, install_directory: str
+) -> List[Tuple[str, List[str]]]:
+    """Find all data files in directory, recursively, and add them to install_directory."""
     data_files = []
     for root, _directories, file_names in os.walk(directory):
         file_paths = [os.path.join(root, file_name) for file_name in file_names]
