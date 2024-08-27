@@ -114,7 +114,7 @@ def test_add_layer_with_symlink_in_base(new_dir):
     new_layer_dir = Path("new")
     new_layer_dir.mkdir()
 
-    for target in targets + ["tmp"]:
+    for target in [*targets, "tmp"]:
         new_target_dir = new_layer_dir / target
         new_target_dir.mkdir()
         (new_target_dir / f"new_{target}_file").write_text(f"new {target} file")

@@ -71,7 +71,7 @@ class Extension(abc.ABC):
         """Return the parts to add to parts."""
 
     @final
-    def validate(self, extension_name: str):
+    def validate(self, extension_name: str) -> None:
         """Validate that the extension can be used with the current project.
 
         :param extension_name: the name of the extension being parsed.

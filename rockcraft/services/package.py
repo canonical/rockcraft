@@ -99,7 +99,7 @@ class RockcraftPackageService(PackageService):
         return models.BaseMetadata()
 
 
-def _pack(  # pylint: disable=too-many-arguments
+def _pack(
     *,
     prime_dir: pathlib.Path,
     project: Project,
