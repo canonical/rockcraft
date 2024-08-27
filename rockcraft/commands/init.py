@@ -128,7 +128,7 @@ class InitCommand(AppCommand):
                 #       - flask/app/templates
                 #       - flask/app/static
 
-                # you may need packages to build a python package. Add them here if necessary.
+                # you may need Ubuntu packages to build a python dependency. Add them here if necessary.
                 #   flask-framework/dependencies:
                 #     build-packages:
                 #       # for example, if you need pkg-config and libxmlsec1-dev to build one
