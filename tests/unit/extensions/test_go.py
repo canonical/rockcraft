@@ -23,7 +23,7 @@ from rockcraft.errors import ExtensionError
 def go_input_yaml_fixture():
     return {
         "name": "goprojectname",
-        "base": "ubuntu@22.04",
+        "base": "ubuntu@24.04",
         "platforms": {"amd64": {}},
         "extensions": ["go-framework"],
     }
@@ -41,7 +41,7 @@ def test_go_extension_default(tmp_path, go_input_yaml):
     applied = extensions.apply_extensions(tmp_path, go_input_yaml)
 
     assert applied == {
-        "base": "ubuntu@22.04",
+        "base": "ubuntu@24.04",
         "name": "goprojectname",
         "platforms": {"amd64": {}},
         "run_user": "_daemon_",

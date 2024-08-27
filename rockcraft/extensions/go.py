@@ -33,7 +33,7 @@ class GoFramework(Extension):
     @override
     def get_supported_bases() -> Tuple[str, ...]:
         """Return supported bases."""
-        return "bare", "ubuntu@22.04", "ubuntu:22.04", "ubuntu@24.04"
+        return "bare", "ubuntu@24.04"
 
     @staticmethod
     @override
