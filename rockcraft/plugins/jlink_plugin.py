@@ -72,7 +72,7 @@ class JLinkPlugin(Plugin):
             commands.append(f"PROCESS_JARS={jars}")
         else:
             commands.append(
-                "PROCESS_JARS=$(find ${CRAFT_STAGE}/jars -type f -name *.jar)"
+                "PROCESS_JARS=$(find ${CRAFT_STAGE} -type f -name *.jar)"
             )
 
         # create temp folder
@@ -85,7 +85,7 @@ class JLinkPlugin(Plugin):
         commands.append("cpath=$(echo ${cpath} | sed s'/[[:space:]]/:/'g)")
         commands.append("echo ${cpath}")
         commands.append(
-            'if [ "x${PROCESS_JARS}" == "x" ]; then deps=$(jdeps --class-path=${cpath} -q --recursive  --ignore-missing-deps --print-module-deps --multi-release 21 ${PROCESS_JARS}; else deps=java.base; fi)'
+            'if [ "x${PROCESS_JARS}" != "x" ]; then deps=$(jdeps --class-path=${cpath} -q --recursive  --ignore-missing-deps --print-module-deps --multi-release 21 ${PROCESS_JARS}); else deps=java.base; fi'
         )
         commands.append(
             "install_root=${CRAFT_PART_INSTALL}/usr/lib/jvm/java-21-openjdk-${CRAFT_TARGET_ARCH}/"
