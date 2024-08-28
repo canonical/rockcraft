@@ -38,12 +38,12 @@ It is as simple as proposing your changes into the upstream
    git push origin create-openssl-bins-slice
 
 4. Create integration tests to test your changes.
-If necessary, add integration tests for your changes in
+If applicable, add integration tests for your changes in
 ``tests/spread/integration/<package_name>``. Those tests are composed of a
 ``task.yaml`` file (plus a few accompanying test scripts if needed) that
 contains instructions on how to cut the slices you created or changed and test
 their functionalities. You can find examples on how to write such tests in the
-children folders of ``tests/spread/tests``.
+child folders of ``tests/spread/tests``.
 
 5. Create a pull request and wait for it to be merged.
 
