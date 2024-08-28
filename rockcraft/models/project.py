@@ -30,9 +30,11 @@ import yaml
 from craft_application.errors import CraftValidationError
 from craft_application.models import (
     BuildPlanner as BaseBuildPlanner,
+)
+from craft_application.models import (
+    Platform,
     get_validator_by_regex,
 )
-from craft_application.models import Platform
 from craft_application.models import Project as BaseProject
 from craft_application.models.base import alias_generator
 from craft_providers import bases
@@ -283,7 +285,7 @@ class Project(BuildPlanner, BaseProject):  # type: ignore[misc]
     @pydantic.field_validator("license")
     @classmethod
     def _validate_license(
-        cls, license: str | None  # pylint: disable=redefined-builtin
+        cls, license: str | None  # pylint: disable=redefined-builtin  # noqa: A002
     ) -> str | None:
         """Make sure the provided license is valid and in SPDX format."""
         if not license:
@@ -332,16 +334,16 @@ class Project(BuildPlanner, BaseProject):  # type: ignore[misc]
     ) -> str | None:
         """Verify that the entrypoint_service exists in the services dict."""
         craft_cli.emit.message(
-            "Warning: defining an entrypoint-service will result in a rock with "
-            + "an atypical OCI Entrypoint. While that might be acceptable for "
-            + "testing and personal use, it shall require prior approval before "
-            + "submitting to a Canonical registry namespace."
+            "Warning: defining an entrypoint-service will result in a rock with an "
+            "atypical OCI Entrypoint. While that might be acceptable for testing and "
+            "personal use, it shall require prior approval before submitting to a "
+            "Canonical registry namespace."
         )
 
         if entrypoint_service not in info.data.get("services", {}):
             raise ValueError(
-                f"The provided entrypoint-service '{entrypoint_service}' is not "
-                + "a valid Pebble service."
+                f"The provided entrypoint-service '{entrypoint_service}' is not a "
+                "valid Pebble service."
             )
 
         command = info.data["services"][entrypoint_service].command
@@ -351,14 +353,13 @@ class Project(BuildPlanner, BaseProject):  # type: ignore[misc]
         try:
             if command_sh_args.index("[") >= command_sh_args.index("]"):
                 raise IndexError(
-                    "Bad syntax for the entrypoint-service command's"
-                    + " additional args."
+                    "Bad syntax for the entrypoint-service command's additional args."
                 )
         except ValueError as ex:
             raise ValueError(
-                f"The Pebble service '{entrypoint_service}' has a command "
-                + f"{command} without default arguments and thus cannot be used "
-                + "as the entrypoint-service."
+                f"The Pebble service '{entrypoint_service}' has a command {command} "
+                "without default arguments and thus cannot be used as the "
+                "entrypoint-service."
             ) from ex
 
         return entrypoint_service
@@ -460,9 +461,7 @@ def load_project(filename: Path) -> dict[str, Any]:
             msg = f"{msg}: {err.filename!r}."
         raise ProjectLoadError(msg) from err
 
-    yaml_data = transform_yaml(filename.parent, yaml_data)
-
-    return yaml_data
+    return transform_yaml(filename.parent, yaml_data)
 
 
 def transform_yaml(project_root: Path, yaml_data: dict[str, Any]) -> dict[str, Any]:

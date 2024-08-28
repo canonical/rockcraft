@@ -15,15 +15,15 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import pathlib
 import sys
-from pathlib import Path
 import textwrap
+from pathlib import Path
 from unittest.mock import DEFAULT, call
 
 import pytest
 import yaml
 from craft_cli import emit
 from rockcraft import cli, extensions, services
-from rockcraft.application import Rockcraft, APP_METADATA
+from rockcraft.application import APP_METADATA, Rockcraft
 from rockcraft.models import project
 
 

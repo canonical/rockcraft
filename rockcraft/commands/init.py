@@ -16,12 +16,12 @@
 
 """Creation of minimalist rockcraft projects."""
 
+import argparse
 import pathlib
 import re
 import textwrap
 from dataclasses import dataclass
 from pathlib import Path
-from typing import TYPE_CHECKING
 
 from craft_application.commands import AppCommand
 from craft_cli import emit
@@ -29,9 +29,6 @@ from overrides import overrides  # type: ignore[reportUnknownVariableType]
 
 from rockcraft import errors
 from rockcraft.models.project import MESSAGE_INVALID_NAME, PROJECT_NAME_REGEX
-
-if TYPE_CHECKING:
-    import argparse
 
 
 def init(rockcraft_yaml_content: str) -> Path:
@@ -216,7 +213,7 @@ class InitCommand(AppCommand):
         """
     )
 
-    def fill_parser(self, parser):
+    def fill_parser(self, parser: argparse.ArgumentParser) -> None:
         """Specify command's specific parameters."""
         parser.add_argument(
             "--name", help="The name of the rock; defaults to the directory name"
