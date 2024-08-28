@@ -89,11 +89,11 @@ class GoFramework(Extension):
         return {}
 
     @property
-    def project_name(self):
+    def project_name(self) -> str:
         """Return the normalized name of the rockcraft project."""
         return self.yaml_data["name"]
 
-    def _check_project(self):
+    def _check_project(self) -> None:
         """Check go.mod file exist in project."""
         if not (self.project_root / "go.mod").exists():
             raise ExtensionError(
@@ -102,7 +102,7 @@ class GoFramework(Extension):
                 logpath_report=False,
             )
 
-    def _gen_install_app_part(self):
+    def _gen_install_app_part(self) -> Dict[str, Any]:
         """Generate install-app part with the Go plugin."""
         install_app = self._get_nested(
             self.yaml_data, ["parts", "go-framework/install-app"]
@@ -142,7 +142,7 @@ class GoFramework(Extension):
 
         return install_app_part
 
-    def _check_go_overriden(self):
+    def _check_go_overriden(self) -> bool:
         """Check if the user overrode the go snap or package for the build step."""
         install_app = self._get_nested(
             self.yaml_data, ["parts", "go-framework/install-app"]
@@ -159,7 +159,7 @@ class GoFramework(Extension):
                     return True
         return False
 
-    def _gen_install_assets_part(self):
+    def _gen_install_assets_part(self) -> Dict[str, Any] | None:
         """Generate assets-stage part for extra assets in the project."""
         # if stage is not in exclude mode, use it to generate organize
         if (
@@ -181,7 +181,7 @@ class GoFramework(Extension):
         }
 
     @property
-    def _assets_stage(self):
+    def _assets_stage(self) -> list[str]:
         """Return the assets stage list for the Go project."""
         user_stage = self._get_nested(
             self.yaml_data, ["parts", "go-framework/assets"]
