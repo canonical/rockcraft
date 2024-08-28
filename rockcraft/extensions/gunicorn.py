@@ -56,7 +56,7 @@ class _GunicornBase(Extension):
         """Return the wsgi framework name, e.g. flask, django."""
 
     @abc.abstractmethod
-    def check_project(self):
+    def check_project(self) -> None:
         """Ensure this extension can apply to the current rockcraft project."""
 
     @abc.abstractmethod
@@ -229,7 +229,7 @@ class FlaskFramework(_GunicornBase):
         }
 
     @property
-    def _app_prime(self):
+    def _app_prime(self) -> list[str]:
         """Return the prime list for the Flask project."""
         user_prime = (
             self.yaml_data.get("parts", {})
@@ -259,7 +259,7 @@ class FlaskFramework(_GunicornBase):
             ]
         return user_prime
 
-    def _wsgi_path_error_messages(self):
+    def _wsgi_path_error_messages(self) -> list[str]:
         """Ensure the extension can infer the WSGI path of the Flask application."""
         app_file = self.project_root / "app.py"
         if not app_file.exists():
@@ -278,7 +278,7 @@ class FlaskFramework(_GunicornBase):
 
         return []
 
-    def _requirements_txt_error_messages(self):
+    def _requirements_txt_error_messages(self) -> list[str]:
         """Ensure the requirements.txt file is correct."""
         requirements_file = self.project_root / "requirements.txt"
         if not requirements_file.exists():
@@ -293,7 +293,7 @@ class FlaskFramework(_GunicornBase):
         return []
 
     @override
-    def check_project(self):
+    def check_project(self) -> None:
         """Ensure this extension can apply to the current rockcraft project."""
         error_messages = self._requirements_txt_error_messages()
         if not self.yaml_data.get("services", {}).get("flask", {}).get("command"):
@@ -310,12 +310,12 @@ class DjangoFramework(_GunicornBase):
     """An extension for constructing Python applications based on the Django framework."""
 
     @property
-    def name(self):
+    def name(self) -> str:
         """Return the normalized name of the rockcraft project."""
         return self.yaml_data["name"].replace("-", "_").lower()
 
     @property
-    def default_wsgi_path(self):
+    def default_wsgi_path(self) -> str:
         """Return the default wsgi path for the Django project."""
         return f"{self.name}.wsgi:application"
 
@@ -342,7 +342,7 @@ class DjangoFramework(_GunicornBase):
             }
         return {}
 
-    def _check_wsgi_path(self):
+    def _check_wsgi_path(self) -> None:
         wsgi_file = self.project_root / self.name / self.name / "wsgi.py"
         if not wsgi_file.exists():
             raise ExtensionError(
@@ -356,7 +356,7 @@ class DjangoFramework(_GunicornBase):
             )
 
     @override
-    def check_project(self):
+    def check_project(self) -> None:
         """Ensure this extension can apply to the current rockcraft project."""
         if not (self.project_root / "requirements.txt").exists():
             raise ExtensionError(

@@ -20,15 +20,14 @@ import textwrap
 from pathlib import Path
 
 import pytest
-from craft_application import util, errors
-
+from craft_application import errors, util
 from rockcraft import extensions
 from rockcraft.commands import ExpandExtensionsCommand
 
 from tests.unit.testing.extensions import (
+    FULL_EXTENSION_PROJECT,
     FULL_EXTENSION_YAML,
     FullExtension,
-    FULL_EXTENSION_PROJECT,
 )
 
 # The project with the extension (FullExtension) expanded
