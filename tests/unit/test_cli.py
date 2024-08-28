@@ -23,7 +23,7 @@ import pytest
 import yaml
 from craft_cli import emit
 from rockcraft import cli, extensions, services
-from rockcraft.application import Rockcraft, APP_METADATA
+from rockcraft.application import APP_METADATA, Rockcraft
 from rockcraft.models import project
 
 

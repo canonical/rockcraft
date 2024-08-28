@@ -85,7 +85,7 @@ class RecordingEmitter:
 
     def _check(self, expected, storage):
         """Really verify messages."""
-        for pos, recorded_msg in enumerate(storage):
+        for pos, recorded_msg in enumerate(storage):  # noqa: B007
             if recorded_msg == expected[0]:
                 break
         else:
