@@ -47,7 +47,7 @@ class RockcraftImageService(ProjectService):
         project: models.Project,
         work_dir: Path,
         build_plan: list[BuildInfo],
-    ):
+    ) -> None:
         super().__init__(app, services, project=project)
 
         self._work_dir = work_dir

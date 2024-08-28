@@ -32,10 +32,12 @@ class GlobalUser(pydantic.BaseModel):
         """Make sure the provided username has the right prefix and suffix."""
         suffix = prefix = "_"
         err = f"All shared usernames must start with the prefix {prefix}."
-        assert username.startswith(prefix), err
+        if not username.startswith(prefix):
+            raise AssertionError(err)
 
         err = f"All shared usernames must end with the suffic {prefix}."
-        assert username.endswith(suffix), err
+        if not username.endswith(suffix):
+            raise AssertionError(err)
 
         return username
 
