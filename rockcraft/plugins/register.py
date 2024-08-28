@@ -19,8 +19,8 @@
 import craft_parts
 from craft_parts.plugins.plugins import PluginType
 
-from .python_plugin import PythonPlugin
 from .jlink_plugin import JLinkPlugin
+from .python_plugin import PythonPlugin
 
 
 def register() -> None:
@@ -30,7 +30,4 @@ def register() -> None:
 
 def get_plugins() -> dict[str, PluginType]:
     """Get a dict of Rockcraft-specific plugins."""
-    return {
-        "python": PythonPlugin,
-        "jlink": JLinkPlugin
-        }
+    return {"python": PythonPlugin, "jlink": JLinkPlugin}
