@@ -65,14 +65,14 @@ class GoFramework(Extension):
                 "plugin": "nil",
                 "override-build": "mkdir -p ${CRAFT_PART_INSTALL}/app",
             },
-            "go-framework/install-app": self._gen_install_app_part(),
+            "go-framework/install-app": self._get_install_app_part(),
             "go-framework/runtime": {
                 "plugin": "nil",
                 "stage-packages": ["ca-certificates_data"],
             },
         }
 
-        assets_part = self._gen_install_assets_part()
+        assets_part = self._get_install_assets_part()
         if assets_part:
             snippet["parts"]["go-framework/assets"] = assets_part
 
@@ -102,7 +102,7 @@ class GoFramework(Extension):
                 logpath_report=False,
             )
 
-    def _gen_install_app_part(self) -> Dict[str, Any]:
+    def _get_install_app_part(self) -> Dict[str, Any]:
         """Generate install-app part with the Go plugin."""
         install_app = self._get_nested(
             self.yaml_data, ["parts", "go-framework/install-app"]
@@ -159,7 +159,7 @@ class GoFramework(Extension):
                     return True
         return False
 
-    def _gen_install_assets_part(self) -> Dict[str, Any] | None:
+    def _get_install_assets_part(self) -> Dict[str, Any] | None:
         """Generate assets-stage part for extra assets in the project."""
         # if stage is not in exclude mode, use it to generate organize
         if (

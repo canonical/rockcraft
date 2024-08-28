@@ -125,7 +125,7 @@ def test_go_extension_base_bare(tmp_path, go_input_yaml, build_environment):
         ),
     ],
 )
-def test_go_extension_override_organize(
+def test_go_extension_overrides_organize(
     tmp_path, go_input_yaml, organize, expected_organize
 ):
     (tmp_path / "go.mod").write_text("module projectname\n\ngo 1.22.4")
@@ -216,7 +216,7 @@ def test_go_extension_extra_assets(tmp_path, go_input_yaml):
 
 
 @pytest.mark.usefixtures("go_extension")
-def test_go_extension_extra_assets_overriden(tmp_path, go_input_yaml):
+def test_go_extension_extra_assets_overridden(tmp_path, go_input_yaml):
     (tmp_path / "go.mod").write_text("module projectname\n\ngo 1.22.4")
     (tmp_path / "static").mkdir()
     go_input_yaml["parts"] = {
