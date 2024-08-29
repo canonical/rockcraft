@@ -50,7 +50,9 @@ def create_test_project(base, parts) -> Project:
 def test_jlink_plugin_base(tmp_path, run_lifecycle):
     # pylint: disable=line-too-long
     # chisel snap is confined to user home
-    user_home_tmp = Path(f"{os.path.expanduser("~")}/{os.path.basename(tmp_path)}")
+    home = os.path.expanduser("~")
+    basename = os.path.basename(tmp_path)
+    user_home_tmp = Path(f"{home}/{basename}")
     atexit.register(lambda: shutil.rmtree(user_home_tmp))
     parts = {
         "my-part": {
