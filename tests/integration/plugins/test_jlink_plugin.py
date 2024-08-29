@@ -17,6 +17,7 @@
 import atexit
 import os
 import shutil
+import subprocess
 from pathlib import Path
 
 import pytest
@@ -45,13 +46,57 @@ def create_test_project(base, parts) -> Project:
 
     return create_project(base=base, parts=parts, build_base=build_base)
 
-
-def test_jlink_plugin_base(tmp_path, run_lifecycle):
+def get_tmp_path(tmp_path: str) -> Path:
     # chisel snap is confined to user home
     home = os.path.expanduser("~")
     basename = os.path.basename(tmp_path)
-    user_home_tmp = Path(f"{home}/{basename}")
-    atexit.register(lambda: shutil.rmtree(user_home_tmp))
+    ret = Path(f"{home}/{basename}")
+    atexit.register(lambda: shutil.rmtree(ret))
+    return ret
+
+
+def test_jlink_plugin_with_jar(tmp_path, run_lifecycle):
+    """Test that jlink produces tailored modules"""
+    user_home_tmp = get_tmp_path(tmp_path)
+    parts = {
+        "my-part": {
+            "plugin": "jlink",
+            "source": "https://github.com/vpa1977/chisel-releases",
+            "source-type": "git",
+            "source-branch": "24.04-openjdk-21-jre-headless",
+            "jlink-jars" : ["test.jar"],
+            "after": ["stage-jar"]
+        },
+        "stage-jar" : {
+            "plugin": "dump",
+            "source": ".",
+        }
+    }
+    # build test jar
+    Path(f"Test.java").write_text(
+        """
+            import javax.swing.*;
+            public class Test {
+                public static void main(String[] args) {
+                    new JFrame("foo").setVisible(true);
+                }
+            }
+        """
+        )
+    subprocess.run(["javac", "Test.java"], check=True, capture_output=True)
+    subprocess.run(["jar", "cvf", "test.jar", "Test.class"],check=True, capture_output=True)
+    atexit.register(lambda: os.remove("Test.class"))
+    atexit.register(lambda: os.remove("Test.java"))
+    atexit.register(lambda: os.remove("test.jar"))
+
+    project = create_test_project("ubuntu@24.04", parts)
+    run_lifecycle(project=project, work_dir=user_home_tmp)
+    # java.desktop module should be included in the image
+    assert len(list(Path(f"{user_home_tmp}/stage/usr/lib/jvm/").rglob("libawt.so"))) > 0
+
+
+def test_jlink_plugin_base(tmp_path, run_lifecycle):
+    """Test that jlink produces base image"""
     parts = {
         "my-part": {
             "plugin": "jlink",
@@ -60,6 +105,7 @@ def test_jlink_plugin_base(tmp_path, run_lifecycle):
             "source-branch": "24.04-openjdk-21-jre-headless",
         }
     }
+    user_home_tmp = get_tmp_path(tmp_path)
     project = create_test_project("ubuntu@24.04", parts)
     run_lifecycle(project=project, work_dir=user_home_tmp)
     java = user_home_tmp / "stage/usr/bin/java"
