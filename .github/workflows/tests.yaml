@@ -78,7 +78,7 @@ jobs:
       - name: Install dependencies
         run: |
           echo "::group::snap install"
-          sudo snap install chisel
+          sudo snap install chisel --edge
           echo "::endgroup::"
           echo "::group::apt-get update"
           sudo apt-get update
