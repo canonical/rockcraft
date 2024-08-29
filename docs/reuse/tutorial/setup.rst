@@ -1,20 +1,34 @@
 We recommend starting from a clean Ubuntu 22.04 installation. If you don't have
 one available, you can create one using `Multipass`_:
 
-Is Multipass_ already installed and active? Check by running
+.. tabs::
 
-.. code-block:: bash
+    .. tab:: Ubuntu
 
-    sudo snap services multipass
+        Is Multipass_ already installed and active? Check by running
 
-If you see the ``multipass`` service but it isn't "active", then you'll
-need to run ``sudo snap start multipass``. On the other hand, if you get
-an error saying ``snap "multipass" not found``, then you must install
-`Multipass <install-multipass_>`_:
+        .. code-block:: bash
 
-.. code-block:: bash
+            sudo snap services multipass
 
-    sudo snap install multipass
+        If you see the ``multipass`` service but it isn't "active", then you'll
+        need to run ``sudo snap start multipass``. On the other hand, if you get
+        an error saying ``snap "multipass" not found``, then you must install
+        `Multipass <install-multipass_>`_:
+
+        .. code-block:: bash
+
+            sudo snap install multipass
+
+    .. tab:: Windows
+
+        See `Multipass installation instructions <install-multipass_>`_, switch
+        to Windows in the drop down.
+
+    .. tab:: macOS
+
+        See `Multipass installation instructions <install-multipass_>`_, switch
+        to macOS in the drop down.
 
 Then you can create the VM with the following command:
 
