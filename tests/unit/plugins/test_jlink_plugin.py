@@ -69,9 +69,7 @@ class TestPluginJLinkPlugin:
             "chisel cut --root ${CRAFT_PART_INSTALL} base-files_base openjdk-21-jre-headless_core"
             in commands
         )
-        assert (
-            "PROCESS_JARS=$(find ${CRAFT_STAGE} -type f -name *.jar)" in commands
-        )
+        assert "PROCESS_JARS=$(find ${CRAFT_STAGE} -type f -name *.jar)" in commands
 
     def test_get_build_commands_17(self, setup_method_fixture, new_dir):
         plugin = setup_method_fixture(new_dir, properties={"jlink-java-version": "17"})
@@ -90,18 +88,15 @@ class TestPluginJLinkPlugin:
             "chisel cut --release ./ --root ${CRAFT_PART_INSTALL} base-files_base openjdk-21-jre-headless_core"
             in commands
         )
-        assert (
-            "PROCESS_JARS=$(find ${CRAFT_STAGE} -type f -name *.jar)" in commands
-        )
+        assert "PROCESS_JARS=$(find ${CRAFT_STAGE} -type f -name *.jar)" in commands
 
     def test_get_build_commands_jars(self, setup_method_fixture, new_dir):
         plugin = setup_method_fixture(new_dir, properties={"jlink-jars": ["foo.jar"]})
         assert "PROCESS_JARS=${CRAFT_STAGE}/foo.jar" in plugin.get_build_commands()
 
     def test_get_build_commands_deps(self, setup_method_fixture, new_dir):
-        plugin = setup_method_fixture(new_dir, properties={"jlink-dep-slices": ["base-files_base"]})
-        commands = plugin.get_build_commands()
-        assert (
-            "chisel cut --root ${CRAFT_PART_INSTALL} base-files_base"
-            in commands
+        plugin = setup_method_fixture(
+            new_dir, properties={"jlink-dep-slices": ["base-files_base"]}
         )
+        commands = plugin.get_build_commands()
+        assert "chisel cut --root ${CRAFT_PART_INSTALL} base-files_base" in commands
