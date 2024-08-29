@@ -82,14 +82,19 @@ creation and tailoring for a Flask application by using the
     :dedent: 2
 
 The ``rockcraft.yaml`` file will automatically be created in your working
-directory. Open it in a text editor and customise the ``name``,
-``summary`` and ``description``. Ensure that ``platforms`` includes
-the architecture of your host. For example, if your host uses the ARM
+directory. Open it in a text editor and check that the ``name`` is
+``flask-hello-world``. Ensure that ``platforms`` includes the architecture of
+your host. For example, if your host uses the ARM
 architecture, include ``arm64`` in ``platforms``.
 
 .. note::
-    For this tutorial, we'll use the ``name`` "flask-hello-world" and build
-    the rock on an ``amd64`` platform.
+    For this tutorial, we'll use the ``name`` ``flask-hello-world`` and assume
+    you are running on an ``amd64`` platform. Check the architecture of your
+    system using ``dpkg --print-architecture``.
+
+.. note::
+    The ``name``, ``version`` and ``platform`` all influence the name of the
+    generated ``.rock`` file.
 
 Pack the rock:
 
