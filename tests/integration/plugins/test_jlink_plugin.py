@@ -74,7 +74,7 @@ def test_jlink_plugin_with_jar(tmp_path, run_lifecycle):
         },
     }
     # build test jar
-    Path(f"Test.java").write_text(
+    Path("Test.java").write_text(
         """
             import javax.swing.*;
             public class Test {
