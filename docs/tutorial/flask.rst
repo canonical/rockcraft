@@ -207,7 +207,7 @@ You should expect to see something similar to this:
     2024-06-21T03:41:45.078Z [flask] [2024-06-21 03:41:45 +0000] [18] [INFO] Booting worker with pid: 18
 
 You can also choose to follow the logs by using the ``-f`` option with the
-``pebble logs`` command above.
+``pebble logs`` command above. To stop following the logs, press ``ctrl+c``.
 
 .. note::
 
