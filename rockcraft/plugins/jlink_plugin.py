@@ -22,7 +22,7 @@ from craft_parts.plugins import Plugin, PluginProperties
 from overrides import override
 
 
-class JLinkPluginProperties(PluginProperties):
+class JLinkPluginProperties(PluginProperties, frozen=True):
     """The part properties used by the JLink plugin."""
 
     plugin: Literal["jlink"] = "jlink"
@@ -47,7 +47,7 @@ class JLinkPlugin(Plugin):
 
     @override
     def get_build_snaps(self) -> Set[str]:
-        return ["chisel"]
+        return {}
 
     @override
     def get_build_commands(self) -> List[str]:
