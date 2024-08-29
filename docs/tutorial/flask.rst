@@ -356,6 +356,11 @@ Finally, use ``curl`` to send a request to the ``/time`` endpoint:
 The updated application should respond with the current date and time (e.g.
 ``2024-06-21 09:47:56``).
 
+.. note::
+
+    If you are getting a ``404`` for the ``/time`` endpoint, check the
+    :ref:`troubleshooting` steps below.
+
 Cleanup
 ~~~~~~~
 
@@ -398,6 +403,8 @@ following:
         multipass purge
 
 ----
+
+.. _troubleshooting:
 
 Troubleshooting
 ===============
