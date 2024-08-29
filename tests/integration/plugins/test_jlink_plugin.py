@@ -47,7 +47,6 @@ def create_test_project(base, parts) -> Project:
 
 
 def test_jlink_plugin_base(tmp_path, run_lifecycle):
-    # pylint: disable=line-too-long
     # chisel snap is confined to user home
     home = os.path.expanduser("~")
     basename = os.path.basename(tmp_path)
