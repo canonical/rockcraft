@@ -21,6 +21,7 @@ Rockcraft.
    /common/craft-parts/reference/plugins/meson_plugin
    /common/craft-parts/reference/plugins/nil_plugin
    /common/craft-parts/reference/plugins/npm_plugin
+   plugins/jlink_plugin
    plugins/python_plugin
    /common/craft-parts/reference/plugins/qmake_plugin
    /common/craft-parts/reference/plugins/rust_plugin
