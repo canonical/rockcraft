@@ -66,11 +66,11 @@ class TestPluginJLinkPlugin:
 
         commands = plugin.get_build_commands()
         assert (
-            "chisel cut --root ${CRAFT_PART_INSTALL} base-files_base openjdk-21-jre-headless_headless"
+            "chisel cut --root ${CRAFT_PART_INSTALL} base-files_base openjdk-21-jre-headless_core"
             in commands
         )
         assert (
-            "PROCESS_JARS=$(find ${CRAFT_STAGE}/jars -type f -name *.jar)" in commands
+            "PROCESS_JARS=$(find ${CRAFT_STAGE} -type f -name *.jar)" in commands
         )
 
     def test_get_build_commands_17(self, setup_method_fixture, new_dir):
@@ -78,7 +78,7 @@ class TestPluginJLinkPlugin:
 
         commands = plugin.get_build_commands()
         assert (
-            "chisel cut --root ${CRAFT_PART_INSTALL} base-files_base openjdk-17-jre-headless_headless"
+            "chisel cut --root ${CRAFT_PART_INSTALL} base-files_base openjdk-17-jre-headless_core"
             in commands
         )
 
@@ -87,13 +87,21 @@ class TestPluginJLinkPlugin:
 
         commands = plugin.get_build_commands()
         assert (
-            "chisel cut --release `pwd` --root ${CRAFT_PART_INSTALL} base-files_base openjdk-21-jre-headless_headless"
+            "chisel cut --release ./ --root ${CRAFT_PART_INSTALL} base-files_base openjdk-21-jre-headless_core"
             in commands
         )
         assert (
-            "PROCESS_JARS=$(find ${CRAFT_STAGE}/jars -type f -name *.jar)" in commands
+            "PROCESS_JARS=$(find ${CRAFT_STAGE} -type f -name *.jar)" in commands
         )
 
     def test_get_build_commands_jars(self, setup_method_fixture, new_dir):
         plugin = setup_method_fixture(new_dir, properties={"jlink-jars": ["foo.jar"]})
         assert "PROCESS_JARS=${CRAFT_STAGE}/foo.jar" in plugin.get_build_commands()
+
+    def test_get_build_commands_deps(self, setup_method_fixture, new_dir):
+        plugin = setup_method_fixture(new_dir, properties={"jlink-dep-slices": ["base-files_base"]})
+        commands = plugin.get_build_commands()
+        assert (
+            "chisel cut --root ${CRAFT_PART_INSTALL} base-files_base"
+            in commands
+        )
