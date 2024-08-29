@@ -47,7 +47,7 @@ class JLinkPlugin(Plugin):
 
     @override
     def get_build_snaps(self) -> Set[str]:
-        return {}
+        return set()
 
     @override
     def get_build_commands(self) -> List[str]:

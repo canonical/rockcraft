@@ -46,7 +46,7 @@ class TestPluginJLinkPlugin:
 
     def test_get_build_snaps(self, setup_method_fixture, new_dir):
         plugin = setup_method_fixture(new_dir)
-        assert plugin.get_build_snaps() == ["chisel"]
+        assert plugin.get_build_snaps() == {}
 
     def test_get_build_packages_default(self, setup_method_fixture, new_dir):
         plugin = setup_method_fixture(new_dir)
