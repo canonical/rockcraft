@@ -28,6 +28,7 @@ class JLinkPluginProperties(PluginProperties):
     plugin: Literal["jlink"] = "jlink"
     jlink_java_version: int = 21
     jlink_jars: list[str] = []
+    jlink_dep_slices: list[str] = []
 
 
 class JLinkPlugin(Plugin):
@@ -54,17 +55,17 @@ class JLinkPlugin(Plugin):
         options = cast(JLinkPluginProperties, self._options)
 
         commands = []
+        slices = " ".join(options.jlink_dep_slices)
+        if len(slices) == 0:
+            slices = f"base-files_base openjdk-{options.jlink_java_version}-jre-headless_core"
+
         if hasattr(options, "source") and isinstance(options.source, str):
             commands.append(
-                "chisel cut --release ./ --root ${CRAFT_PART_INSTALL} base-files_base openjdk-"
-                + str(options.jlink_java_version)
-                + "-jre-headless_headless"
+                "chisel cut --release ./ --root ${CRAFT_PART_INSTALL} " + slices
             )
         else:
             commands.append(
-                "chisel cut --root ${CRAFT_PART_INSTALL} base-files_base openjdk-"
-                + str(options.jlink_java_version)
-                + "-jre-headless_all"
+                "chisel cut --root ${CRAFT_PART_INSTALL} "+slices
             )
 
         if len(options.jlink_jars) > 0:
