@@ -64,17 +64,13 @@ class JLinkPlugin(Plugin):
                 "chisel cut --release ./ --root ${CRAFT_PART_INSTALL} " + slices
             )
         else:
-            commands.append(
-                "chisel cut --root ${CRAFT_PART_INSTALL} "+slices
-            )
+            commands.append("chisel cut --root ${CRAFT_PART_INSTALL} " + slices)
 
         if len(options.jlink_jars) > 0:
             jars = " ".join(["${CRAFT_STAGE}/" + x for x in options.jlink_jars])
             commands.append(f"PROCESS_JARS={jars}")
         else:
-            commands.append(
-                "PROCESS_JARS=$(find ${CRAFT_STAGE} -type f -name *.jar)"
-            )
+            commands.append("PROCESS_JARS=$(find ${CRAFT_STAGE} -type f -name *.jar)")
 
         # create temp folder
         commands.append("mkdir -p ${CRAFT_PART_BUILD}/tmp")
