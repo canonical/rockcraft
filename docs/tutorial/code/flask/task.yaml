@@ -17,18 +17,14 @@ execute: |
   pip install -r requirements.txt
   # [docs:create-venv-end]
 
-  # [docs:run-flask]
   flask run -p 8000 &
-  # [docs:run-flask-end]
   retry -n 5 --wait 2 curl localhost:8000
 
   # [docs:curl-flask]
   curl localhost:8000
   # [docs:curl-flask-end]
 
-  # [docs:stop-flask]
   kill $!
-  # [docs:stop-flask-end]
 
   # [docs:create-rockcraft-yaml]
   rockcraft init --profile flask-framework

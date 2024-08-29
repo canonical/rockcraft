@@ -52,22 +52,11 @@ In the same directory, copy and save the following into a text file called
 .. literalinclude:: code/flask/app.py
     :language: python
 
-Run the Flask application to verify that it works:
-
-.. literalinclude:: code/flask/task.yaml
-    :language: bash
-    :start-after: [docs:run-flask]
-    :end-before: [docs:run-flask-end]
-    :dedent: 2
-
-.. note::
-    The ``&`` at the end of the command runs the Flask application in the
-    background. You can continue to use your terminal as normal and will see all
-    the output from the Flask application in your terminal. To stop the Flask
-    application, you can use the ``kill`` command shown below.
+Run the Flask application using ``flask run -p 8000`` to verify that it works.
 
 Test the Flask application by using ``curl`` to send a request to the root
-endpoint:
+endpoint. You may need a new terminasl for this, if you are using Multipass use
+``multipass shell rock-dev`` to get another terminal:
 
 .. literalinclude:: code/flask/task.yaml
     :language: bash
@@ -77,13 +66,7 @@ endpoint:
 
 The Flask application should respond with ``Hello, world!``.
 
-The Flask application looks good, so you can stop for now:
-
-.. literalinclude:: code/flask/task.yaml
-    :language: bash
-    :start-after: [docs:stop-flask]
-    :end-before: [docs:stop-flask-end]
-    :dedent: 2
+The Flask application looks good, so you can stop for now using ``ctrl+C``.
 
 Pack the Flask application into a rock
 ======================================
