@@ -150,8 +150,13 @@ def test_run_init_flask(mocker, emitter, monkeypatch, new_dir, tmp_path):
                 most important story about it. Keep it under 100 words though,
                 we live in tweetspace and your description wants to look good in the
                 container registries out there.
-            platforms: # the platforms this rock should be built on and run on
+            # the platforms this rock should be built on and run on.
+            # you can check your architecture with `dpkg --print-architecture`
+            platforms:
                 amd64:
+                # arm64:
+                # ppc64el:
+                # s390x:
 
             # to ensure the flask-framework extension works properly, your Flask application
             # should have an `app.py` file with an `app` object as the WSGI entrypoint.
