@@ -138,7 +138,7 @@ need to load it into Docker:
     :end-before: [docs:skopeo-copy-end]
     :dedent: 2
 
-Check that the image was successfully imported into Docker:
+Check that the image was successfully loaded into Docker:
 
 .. literalinclude:: code/flask/task.yaml
     :language: bash
