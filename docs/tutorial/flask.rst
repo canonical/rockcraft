@@ -311,6 +311,12 @@ look like the following:
 Since you are creating a new version of your application, **open the**
 ``rockcraft.yaml`` file and change the ``version`` (e.g. to ``0.2``).
 
+.. note::
+
+    ``rockcraft pack`` will create a new image with the updated code even if you
+    don't change the version. It is recommended to change the version whenever
+    you make changes to the application in the image.
+
 Pack and run the rock using similar commands as before:
 
 .. literalinclude:: code/flask/task.yaml
