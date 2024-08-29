@@ -126,6 +126,9 @@ tutorial.
     on an ``amd64`` platform, the name of the ``.rock`` file will be different
     for you.
 
+.. note::
+    The size of the rock may vary for you.
+
 Run the Flask rock with Docker
 ==============================
 
