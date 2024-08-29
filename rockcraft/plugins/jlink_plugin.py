@@ -64,7 +64,7 @@ class JLinkPlugin(Plugin):
             commands.append(
                 "chisel cut --root ${CRAFT_PART_INSTALL} base-files_base openjdk-"
                 + str(options.jlink_java_version)
-                + "-jre-headless_headless"
+                + "-jre-headless_all"
             )
 
         if len(options.jlink_jars) > 0:
