@@ -46,6 +46,7 @@ def create_test_project(base, parts) -> Project:
 
     return create_project(base=base, parts=parts, build_base=build_base)
 
+
 def get_tmp_path(tmp_path: str) -> Path:
     # chisel snap is confined to user home
     home = os.path.expanduser("~")
@@ -64,13 +65,13 @@ def test_jlink_plugin_with_jar(tmp_path, run_lifecycle):
             "source": "https://github.com/vpa1977/chisel-releases",
             "source-type": "git",
             "source-branch": "24.04-openjdk-21-jre-headless",
-            "jlink-jars" : ["test.jar"],
-            "after": ["stage-jar"]
+            "jlink-jars": ["test.jar"],
+            "after": ["stage-jar"],
         },
-        "stage-jar" : {
+        "stage-jar": {
             "plugin": "dump",
             "source": ".",
-        }
+        },
     }
     # build test jar
     Path(f"Test.java").write_text(
@@ -82,9 +83,11 @@ def test_jlink_plugin_with_jar(tmp_path, run_lifecycle):
                 }
             }
         """
-        )
+    )
     subprocess.run(["javac", "Test.java"], check=True, capture_output=True)
-    subprocess.run(["jar", "cvf", "test.jar", "Test.class"],check=True, capture_output=True)
+    subprocess.run(
+        ["jar", "cvf", "test.jar", "Test.class"], check=True, capture_output=True
+    )
     atexit.register(lambda: os.remove("Test.class"))
     atexit.register(lambda: os.remove("Test.java"))
     atexit.register(lambda: os.remove("test.jar"))
