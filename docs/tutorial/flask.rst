@@ -218,10 +218,9 @@ You should expect to see something similar to this:
 You can also choose to follow the logs by using the ``-f`` option with the
 ``pebble logs`` command above.
 
-.. important::
+.. note::
 
-    To get the Flask application logs, the container must be running. This is
-    also valid for the remaining sections of this tutorial.
+    Applications logs are only available when the container is running.
 
 Cleanup
 ~~~~~~~
