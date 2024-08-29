@@ -235,6 +235,11 @@ you can produce lean and production-ready rocks by getting rid of all the
 contents that are not needed for your Flask application to run. This results
 in a much smaller rock with a reduced attack surface.
 
+.. note::
+    It is recommended to run chiselled images in production. For development,
+    you may prefer non-chiselled images as they will include additional
+    development tooling (such as for debugging).
+
 The first step towards chiselling your rock is to ensure you are using a
 ``bare`` :ref:`base <bases_explanation>`.
 In ``rockcraft.yaml``, change the ``base`` to ``bare`` and add
