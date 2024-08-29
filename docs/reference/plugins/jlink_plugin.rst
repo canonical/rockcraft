@@ -1,6 +1,6 @@
 .. _rockcraft_jlink_plugin:
 
-Jlink plugin
+JLink plugin
 =============
 
 The JLink plugin can be used for Java projects where you would want to
