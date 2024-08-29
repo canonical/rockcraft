@@ -82,10 +82,18 @@ class JLinkPlugin(Plugin):
         commands.append("CPATH=$(echo ${CPATH}:. | sed s'/[[:space:]]/:/'g)")
         commands.append("echo ${CPATH}")
         commands.append(
-            'if [ "x${PROCESS_JARS}" != "x" ]; then deps=$(jdeps --class-path=${CPATH} -q --recursive  --ignore-missing-deps --print-module-deps --multi-release 21 ${PROCESS_JARS}); else deps=java.base; fi'
+            """if [ "x${PROCESS_JARS}" != "x" ]; then
+                deps=$(jdeps --class-path=${CPATH} -q --recursive  --ignore-missing-deps \
+                    --print-module-deps --multi-release """
+            + str(options.jlink_java_version)
+            + """ ${PROCESS_JARS}); else deps=java.base;
+                fi
+            """
         )
         commands.append(
-            "INSTALL_ROOT=${CRAFT_PART_INSTALL}/usr/lib/jvm/java-21-openjdk-${CRAFT_TARGET_ARCH}/"
+            "INSTALL_ROOT=${CRAFT_PART_INSTALL}/usr/lib/jvm/java-"
+            + str(options.jlink_java_version)
+            + "-openjdk-${CRAFT_TARGET_ARCH}/"
         )
 
         commands.append(
@@ -93,7 +101,9 @@ class JLinkPlugin(Plugin):
         )
         # create /usr/bin/java link
         commands.append(
-            "(cd ${CRAFT_PART_INSTALL} && mkdir -p usr/bin && ln -s --relative usr/lib/jvm/java-21-openjdk-${CRAFT_TARGET_ARCH}/bin/java usr/bin/)"
+            "(cd ${CRAFT_PART_INSTALL} && mkdir -p usr/bin && ln -s --relative usr/lib/jvm/java-"
+            + str(options.jlink_java_version)
+            + "-openjdk-${CRAFT_TARGET_ARCH}/bin/java usr/bin/)"
         )
         commands.append("mkdir -p ${CRAFT_PART_INSTALL}/etc/ssl/certs/java/")
         # link cacerts
@@ -102,9 +112,13 @@ class JLinkPlugin(Plugin):
         )
         commands.append("cd ${CRAFT_PART_INSTALL}")
         commands.append(
-            "rm -f usr/lib/jvm/java-21-openjdk-${CRAFT_TARGET_ARCH}/lib/security/cacerts"
+            "rm -f usr/lib/jvm/java-"
+            + str(options.jlink_java_version)
+            + "-openjdk-${CRAFT_TARGET_ARCH}/lib/security/cacerts"
         )
         commands.append(
-            "ln -s --relative etc/ssl/certs/java/cacerts usr/lib/jvm/java-21-openjdk-${CRAFT_TARGET_ARCH}/lib/security/cacerts"
+            "ln -s --relative etc/ssl/certs/java/cacerts usr/lib/jvm/java-"
+            + str(options.jlink_java_version)
+            + "-openjdk-${CRAFT_TARGET_ARCH}/lib/security/cacerts"
         )
         return commands

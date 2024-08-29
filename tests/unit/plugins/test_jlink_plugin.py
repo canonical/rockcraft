@@ -79,6 +79,23 @@ class TestPluginJLinkPlugin:
             "chisel cut --root ${CRAFT_PART_INSTALL} base-files_base openjdk-17-jre-headless_core"
             in commands
         )
+        assert (
+            """if [ "x${PROCESS_JARS}" != "x" ]; then
+                deps=$(jdeps --class-path=${CPATH} -q --recursive  --ignore-missing-deps \
+                    --print-module-deps --multi-release 17\
+                        ${PROCESS_JARS}); else deps=java.base;
+                fi
+            """
+            in commands
+        )
+        assert (
+            "INSTALL_ROOT=${CRAFT_PART_INSTALL}/usr/lib/jvm/java-17-openjdk-${CRAFT_TARGET_ARCH}/"
+            in commands
+        )
+        assert (
+            "(cd ${CRAFT_PART_INSTALL} && mkdir -p usr/bin && ln -s --relative usr/lib/jvm/java-17-openjdk-${CRAFT_TARGET_ARCH}/bin/java usr/bin/)"
+            in commands
+        )
 
     def test_get_build_commands_chisel_source(self, setup_method_fixture, new_dir):
         plugin = setup_method_fixture(new_dir, properties={"source": "foo"})
