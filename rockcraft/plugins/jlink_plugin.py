@@ -78,18 +78,18 @@ class JLinkPlugin(Plugin):
         commands.append(
             "(cd ${CRAFT_PART_BUILD}/tmp && for jar in ${PROCESS_JARS}; do jar xvf ${jar}; done;)"
         )
-        commands.append("cpath=$(find ${CRAFT_PART_BUILD}/tmp -type f -name *.jar)")
-        commands.append("cpath=$(echo ${cpath}:. | sed s'/[[:space:]]/:/'g)")
-        commands.append("echo ${cpath}")
+        commands.append("CPATH=$(find ${CRAFT_PART_BUILD}/tmp -type f -name *.jar)")
+        commands.append("CPATH=$(echo ${CPATH}:. | sed s'/[[:space:]]/:/'g)")
+        commands.append("echo ${CPATH}")
         commands.append(
-            'if [ "x${PROCESS_JARS}" != "x" ]; then deps=$(jdeps --class-path=${cpath} -q --recursive  --ignore-missing-deps --print-module-deps --multi-release 21 ${PROCESS_JARS}); else deps=java.base; fi'
+            'if [ "x${PROCESS_JARS}" != "x" ]; then deps=$(jdeps --class-path=${CPATH} -q --recursive  --ignore-missing-deps --print-module-deps --multi-release 21 ${PROCESS_JARS}); else deps=java.base; fi'
         )
         commands.append(
-            "install_root=${CRAFT_PART_INSTALL}/usr/lib/jvm/java-21-openjdk-${CRAFT_TARGET_ARCH}/"
+            "INSTALL_ROOT=${CRAFT_PART_INSTALL}/usr/lib/jvm/java-21-openjdk-${CRAFT_TARGET_ARCH}/"
         )
 
         commands.append(
-            "rm -rf ${install_root} && jlink --add-modules ${deps} --output ${install_root}"
+            "rm -rf ${INSTALL_ROOT} && jlink --add-modules ${deps} --output ${INSTALL_ROOT}"
         )
         # create /usr/bin/java link
         commands.append(
