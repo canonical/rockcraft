@@ -86,8 +86,7 @@ class JLinkPlugin(Plugin):
                 deps=$(jdeps --class-path=${CPATH} -q --recursive  --ignore-missing-deps \
                     --print-module-deps --multi-release """
             + str(options.jlink_java_version)
-            + """ ${PROCESS_JARS}); else deps=java.base;
-                fi
+            + """ ${PROCESS_JARS}); else deps=java.base; fi
             """
         )
         commands.append(

@@ -82,9 +82,7 @@ class TestPluginJLinkPlugin:
         assert (
             """if [ "x${PROCESS_JARS}" != "x" ]; then
                 deps=$(jdeps --class-path=${CPATH} -q --recursive  --ignore-missing-deps \
-                    --print-module-deps --multi-release 17\
-                        ${PROCESS_JARS}); else deps=java.base;
-                fi
+                    --print-module-deps --multi-release 17 ${PROCESS_JARS}); else deps=java.base; fi
             """
             in commands
         )
