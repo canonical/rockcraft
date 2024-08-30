@@ -52,9 +52,9 @@ def test_spring_boot_extension_maven(tmp_path, spring_boot_input_yaml):
                 "source": ".",
                 "source-type": "local",
                 "build-packages": ["openjdk-21-jdk", "maven"],
-                "build-environment": {
-                    "JAVA_HOME": "/usr/lib/jvm/java-21-openjdk-${CRAFT_TARGET_ARCH}"
-                },
+                "build-environment": [
+                    {"JAVA_HOME": "/usr/lib/jvm/java-21-openjdk-${CRAFT_TARGET_ARCH}"}
+                ],
                 "override-build": """
                         mvn package
                         mkdir -p ${CRAFT_PART_INSTALL}/jar
@@ -104,9 +104,9 @@ def test_spring_boot_extension_gradle(tmp_path, spring_boot_input_yaml):
                 "source": ".",
                 "source-type": "local",
                 "build-packages": ["openjdk-21-jdk"],
-                "build-environment": {
-                    "JAVA_HOME": "/usr/lib/jvm/java-21-openjdk-${CRAFT_TARGET_ARCH}"
-                },
+                "build-environment": [
+                    {"JAVA_HOME": "/usr/lib/jvm/java-21-openjdk-${CRAFT_TARGET_ARCH}"}
+                ],
                 "override-build": """
                         ./gradlew jar --no-daemon
                         mkdir -p ${CRAFT_PART_INSTALL}/jar
