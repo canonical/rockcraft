@@ -127,7 +127,8 @@ class FastAPIFramework(Extension):
         # if prime is not in exclude mode, use it to generate the stage and organize
         if self._app_prime and self._app_prime[0] and self._app_prime[0][0] != "-":
             renaming_map = {
-                os.path.relpath(file, self.IMAGE_BASE_DIR): file for file in self._app_prime
+                os.path.relpath(file, self.IMAGE_BASE_DIR): file
+                for file in self._app_prime
             }
         else:
             renaming_map = {
@@ -174,7 +175,9 @@ class FastAPIFramework(Extension):
                 if (self.project_root / f).exists()
             ]
             if not self.yaml_data.get("services", {}).get("fastapi", {}).get("command"):
-                user_prime.append(f"{self.IMAGE_BASE_DIR}/" + self._find_asgi_location().parts[0])
+                user_prime.append(
+                    f"{self.IMAGE_BASE_DIR}/" + self._find_asgi_location().parts[0]
+                )
         return user_prime
 
     def _asgi_path(self) -> str:
