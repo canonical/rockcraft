@@ -57,8 +57,8 @@ def test_spring_boot_extension_maven(tmp_path, spring_boot_input_yaml):
                 ],
                 "override-build": """
                         mvn package
-                        mkdir -p ${CRAFT_PART_INSTALL}/jar
-                        find ${CRAFT_PART_BUILD}/ -iname "*.jar" -exec ln {} ${CRAFT_PART_INSTALL}/jar \\;
+                        mkdir -p ${CRAFT_PART_INSTALL}/jars
+                        find ${CRAFT_PART_BUILD}/ -iname "*.jar" -exec ln {} ${CRAFT_PART_INSTALL}/jars \\;
                         craftctl default
                     """,
             },
@@ -109,8 +109,8 @@ def test_spring_boot_extension_gradle(tmp_path, spring_boot_input_yaml):
                 ],
                 "override-build": """
                         ./gradlew jar --no-daemon
-                        mkdir -p ${CRAFT_PART_INSTALL}/jar
-                        find ${CRAFT_PART_BUILD}/ -iname "*.jar" -exec ln {} ${CRAFT_PART_INSTALL}/jar \\;
+                        mkdir -p ${CRAFT_PART_INSTALL}/jars
+                        find ${CRAFT_PART_BUILD}/ -iname "*.jar" -exec ln {} ${CRAFT_PART_INSTALL}/jars \\;
                         craftctl default
                     """,
             },

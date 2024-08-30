@@ -100,8 +100,8 @@ class SpringBootFramework(Extension):
                     ],
                     "override-build": """
                         mvn package
-                        mkdir -p ${CRAFT_PART_INSTALL}/jar
-                        find ${CRAFT_PART_BUILD}/ -iname "*.jar" -exec ln {} ${CRAFT_PART_INSTALL}/jar \\;
+                        mkdir -p ${CRAFT_PART_INSTALL}/jars
+                        find ${CRAFT_PART_BUILD}/ -iname "*.jar" -exec ln {} ${CRAFT_PART_INSTALL}/jars \\;
                         craftctl default
                     """,
                 }
@@ -118,8 +118,8 @@ class SpringBootFramework(Extension):
                     ],
                     "override-build": """
                         ./gradlew jar --no-daemon
-                        mkdir -p ${CRAFT_PART_INSTALL}/jar
-                        find ${CRAFT_PART_BUILD}/ -iname "*.jar" -exec ln {} ${CRAFT_PART_INSTALL}/jar \\;
+                        mkdir -p ${CRAFT_PART_INSTALL}/jars
+                        find ${CRAFT_PART_BUILD}/ -iname "*.jar" -exec ln {} ${CRAFT_PART_INSTALL}/jars \\;
                         craftctl default
                     """,
                 }
