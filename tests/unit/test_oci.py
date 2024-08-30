@@ -302,7 +302,7 @@ class TestImage:
             "tag",
         ]
         assert mock_run.mock_calls == [
-            call(expected_cmd + ["--history.created_by", " ".join(expected_cmd)])
+            call([*expected_cmd, "--history.created_by", " ".join(expected_cmd)])
         ]
 
     def test_add_new_user(
@@ -833,7 +833,7 @@ class TestImage:
         ]
         assert mock_run.mock_calls == [
             call(
-                expected_cmd + ["--history.created_by", " ".join(expected_cmd)],
+                [*expected_cmd, "--history.created_by", " ".join(expected_cmd)],
             )
         ]
         mock_rmtree.assert_called_once_with(Path(mock_control_data_path))
