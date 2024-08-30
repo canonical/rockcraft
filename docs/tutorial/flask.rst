@@ -92,7 +92,6 @@ architecture, include ``arm64`` in ``platforms``.
     you are running on an ``amd64`` platform. Check the architecture of your
     system using ``dpkg --print-architecture``.
 
-.. note::
     The ``name``, ``version`` and ``platform`` all influence the name of the
     generated ``.rock`` file.
 

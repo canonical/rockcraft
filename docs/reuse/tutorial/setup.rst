@@ -9,7 +9,7 @@ one available, you can create one using `Multipass`_:
 
         .. code-block:: bash
 
-            sudo snap services multipass
+            snap services multipass
 
         If you see the ``multipass`` service but it isn't "active", then you'll
         need to run ``sudo snap start multipass``. On the other hand, if you get
