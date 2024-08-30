@@ -30,17 +30,45 @@ jlink-jars
 List of paths to jar files of your application. If not specified, plugin
 will find all jar files in the staging area.
 
-jlink-slice-deps
-~~~~~~~~~~~~~~~~~~
-**Type:** list of strings
-
-List of dependent slices required for the Java runtime. By default jlink
-plugin deploys openjdk-21-jre-headless_core slice.
-
 Dependencies
 ------------
 
 By default this plugin uses openjdk-21-jdk from the build base.
+
+The user is expected to stage openjdk dependencies either by installing
+an appropriate openjdk slice:
+
+.. code-block:: yaml
+
+    parts:
+        runtime:
+            plugin: jlink
+            after:
+                - deps
+
+        deps:
+            plugin: nil
+            stage-packages:
+                - openjdk-21-jre-headless_security
+
+or by installing the dependencies directly:
+
+.. code-block:: yaml
+
+    parts:
+        runtime:
+            plugin: jlink
+            after:
+                - deps
+
+        deps:
+            plugin: nil
+            stage-packages:
+                - libc6_libs
+                - libgcc-s1_libs
+                - libstdc++6_libs
+                - zlib1g_libs
+                - libnss3_libs
 
 
 How it works
@@ -48,10 +76,9 @@ How it works
 
 During the build step, the plugin performs the following actions:
 
-* Installs dependent slices (openjdk-21-jre-headless_core and base_files_base)
-  by default to the staging area.
-* Finds all jar files in the staging area
+* Finds all jar files in the staging area or selects jars specified in
+  _jlink_jars_.
 * Unpacks jar files to the temporary location and concatenates all embedded jars
-  into classpath.
-* Runs jdeps to discover Java modules required for the staged jars.
-* Runs jlink to create a runtime image using build.
+  into `jdeps <https://docs.oracle.com/en/java/javase/21/docs/specs/man/jdeps.html>`_ classpath.
+* Runs `jdeps <jdeps_>`_ to discover Java modules required for the staged jars.
+* Runs `jlink <https://docs.oracle.com/en/java/javase/21/docs/specs/man/jlink.html>`_ to create a runtime image from the build JDK.
