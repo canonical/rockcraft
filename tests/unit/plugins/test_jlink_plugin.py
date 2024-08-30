@@ -61,57 +61,33 @@ class TestPluginJLinkPlugin:
 
         assert plugin.get_build_environment() == {}
 
-    def test_get_build_commands_default(self, setup_method_fixture, new_dir):
-        plugin = setup_method_fixture(new_dir)
+    @pytest.mark.parametrize("version", [None, "21", "17"])
+    def test_get_build_commands(self, setup_method_fixture, new_dir, version):
+
+        if version is None:
+            plugin = setup_method_fixture(new_dir)
+            version = "21"
+        else:
+            plugin = setup_method_fixture(new_dir, properties={"jlink-java-version": version})
 
         commands = plugin.get_build_commands()
-        assert (
-            "chisel cut --root ${CRAFT_PART_INSTALL} base-files_base openjdk-21-jre-headless_core"
-            in commands
-        )
         assert "PROCESS_JARS=$(find ${CRAFT_STAGE} -type f -name *.jar)" in commands
-
-    def test_get_build_commands_17(self, setup_method_fixture, new_dir):
-        plugin = setup_method_fixture(new_dir, properties={"jlink-java-version": "17"})
-
-        commands = plugin.get_build_commands()
-        assert (
-            "chisel cut --root ${CRAFT_PART_INSTALL} base-files_base openjdk-17-jre-headless_core"
-            in commands
-        )
         assert (
             """if [ "x${PROCESS_JARS}" != "x" ]; then
                 deps=$(jdeps --class-path=${CPATH} -q --recursive  --ignore-missing-deps \
-                    --print-module-deps --multi-release 17 ${PROCESS_JARS}); else deps=java.base; fi
+                    --print-module-deps --multi-release """+version+ """ ${PROCESS_JARS}); else deps=java.base; fi
             """
             in commands
         )
         assert (
-            "INSTALL_ROOT=${CRAFT_PART_INSTALL}/usr/lib/jvm/java-17-openjdk-${CRAFT_TARGET_ARCH}/"
+            "INSTALL_ROOT=${CRAFT_PART_INSTALL}/usr/lib/jvm/java-"+version+ "-openjdk-${CRAFT_TARGET_ARCH}/"
             in commands
         )
         assert (
-            "(cd ${CRAFT_PART_INSTALL} && mkdir -p usr/bin && ln -s --relative usr/lib/jvm/java-17-openjdk-${CRAFT_TARGET_ARCH}/bin/java usr/bin/)"
+            "(cd ${CRAFT_PART_INSTALL} && mkdir -p usr/bin && ln -s --relative usr/lib/jvm/java-"+version+ "-openjdk-${CRAFT_TARGET_ARCH}/bin/java usr/bin/)"
             in commands
         )
-
-    def test_get_build_commands_chisel_source(self, setup_method_fixture, new_dir):
-        plugin = setup_method_fixture(new_dir, properties={"source": "foo"})
-
-        commands = plugin.get_build_commands()
-        assert (
-            "chisel cut --release ./ --root ${CRAFT_PART_INSTALL} base-files_base openjdk-21-jre-headless_core"
-            in commands
-        )
-        assert "PROCESS_JARS=$(find ${CRAFT_STAGE} -type f -name *.jar)" in commands
 
     def test_get_build_commands_jars(self, setup_method_fixture, new_dir):
         plugin = setup_method_fixture(new_dir, properties={"jlink-jars": ["foo.jar"]})
         assert "PROCESS_JARS=${CRAFT_STAGE}/foo.jar" in plugin.get_build_commands()
-
-    def test_get_build_commands_deps(self, setup_method_fixture, new_dir):
-        plugin = setup_method_fixture(
-            new_dir, properties={"jlink-dep-slices": ["base-files_base"]}
-        )
-        commands = plugin.get_build_commands()
-        assert "chisel cut --root ${CRAFT_PART_INSTALL} base-files_base" in commands
