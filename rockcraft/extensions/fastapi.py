@@ -66,7 +66,7 @@ class FastAPIFramework(Extension):
                 "command"
             ] = f"/bin/python3 -m uvicorn {self._asgi_path()}"
 
-        snippet["parts"] = self._gen_parts()
+        snippet["parts"] = self._get_parts()
         return snippet
 
     @override
@@ -80,11 +80,11 @@ class FastAPIFramework(Extension):
         return {}
 
     @property
-    def name(self):
+    def name(self) -> str:
         """Return the normalized name of the rockcraft project."""
         return self.yaml_data["name"].replace("-", "_").lower()
 
-    def _gen_parts(self) -> dict:
+    def _get_parts(self) -> dict:
         """Generate the parts associated with this extension."""
         stage_packages = ["python3-venv"]
         build_environment = []
@@ -101,7 +101,7 @@ class FastAPIFramework(Extension):
                 "python-requirements": ["requirements.txt"],
                 "build-environment": build_environment,
             },
-            "fastapi-framework/install-app": self._gen_install_app_part(),
+            "fastapi-framework/install-app": self._get_install_app_part(),
         }
         if self.yaml_data["base"] == "bare":
             parts["fastapi-framework/runtime"] = {
@@ -120,7 +120,7 @@ class FastAPIFramework(Extension):
             }
         return parts
 
-    def _gen_install_app_part(self):
+    def _get_install_app_part(self) -> Dict[str, Any]:
         source_files = [f.name for f in sorted(self.project_root.iterdir())]
         # if prime is not in exclude mode, use it to generate the stage and organize
         if self._app_prime and self._app_prime[0] and self._app_prime[0][0] != "-":
@@ -145,7 +145,7 @@ class FastAPIFramework(Extension):
         }
 
     @property
-    def _app_prime(self):
+    def _app_prime(self) -> list[str]:
         """Return the prime list for the FastAPI project."""
         user_prime = (
             self.yaml_data.get("parts", {})
@@ -213,7 +213,7 @@ class FastAPIFramework(Extension):
 
         raise FileNotFoundError("ASGI entrypoint not found")
 
-    def _check_project(self):
+    def _check_project(self) -> None:
         """Ensure this extension can apply to the current rockcraft project."""
         error_messages = self._requirements_txt_error_messages()
         if not self.yaml_data.get("services", {}).get("fastapi", {}).get("command"):

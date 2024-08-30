@@ -261,7 +261,7 @@ def test_fastapi_framework_exclude_prime(tmp_path, fastapi_input_yaml):
 
 
 @pytest.mark.usefixtures("fastapi_extension")
-def test_fastapi_framework_service_override(tmp_path, fastapi_input_yaml):
+def test_fastapi_framework_service_overridden(tmp_path, fastapi_input_yaml):
     (tmp_path / "requirements.txt").write_text("fastapi")
     (tmp_path / "webapp.py").write_text("app = object()")
     fastapi_input_yaml["services"] = {
