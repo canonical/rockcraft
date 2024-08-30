@@ -68,23 +68,31 @@ class TestPluginJLinkPlugin:
             plugin = setup_method_fixture(new_dir)
             version = "21"
         else:
-            plugin = setup_method_fixture(new_dir, properties={"jlink-java-version": version})
+            plugin = setup_method_fixture(
+                new_dir, properties={"jlink-java-version": version}
+            )
 
         commands = plugin.get_build_commands()
         assert "PROCESS_JARS=$(find ${CRAFT_STAGE} -type f -name *.jar)" in commands
         assert (
             """if [ "x${PROCESS_JARS}" != "x" ]; then
                 deps=$(jdeps --class-path=${CPATH} -q --recursive  --ignore-missing-deps \
-                    --print-module-deps --multi-release """+version+ """ ${PROCESS_JARS}); else deps=java.base; fi
+                    --print-module-deps --multi-release """
+            + version
+            + """ ${PROCESS_JARS}); else deps=java.base; fi
             """
             in commands
         )
         assert (
-            "INSTALL_ROOT=${CRAFT_PART_INSTALL}/usr/lib/jvm/java-"+version+ "-openjdk-${CRAFT_TARGET_ARCH}/"
+            "INSTALL_ROOT=${CRAFT_PART_INSTALL}/usr/lib/jvm/java-"
+            + version
+            + "-openjdk-${CRAFT_TARGET_ARCH}/"
             in commands
         )
         assert (
-            "(cd ${CRAFT_PART_INSTALL} && mkdir -p usr/bin && ln -s --relative usr/lib/jvm/java-"+version+ "-openjdk-${CRAFT_TARGET_ARCH}/bin/java usr/bin/)"
+            "(cd ${CRAFT_PART_INSTALL} && mkdir -p usr/bin && ln -s --relative usr/lib/jvm/java-"
+            + version
+            + "-openjdk-${CRAFT_TARGET_ARCH}/bin/java usr/bin/)"
             in commands
         )
 
