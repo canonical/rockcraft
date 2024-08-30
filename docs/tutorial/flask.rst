@@ -55,7 +55,7 @@ In the same directory, copy and save the following into a text file called
 Run the Flask application using ``flask run -p 8000`` to verify that it works.
 
 Test the Flask application by using ``curl`` to send a request to the root
-endpoint. You may need a new terminasl for this, if you are using Multipass use
+endpoint. You may need a new terminal for this, if you are using Multipass use
 ``multipass shell rock-dev`` to get another terminal:
 
 .. literalinclude:: code/flask/task.yaml
