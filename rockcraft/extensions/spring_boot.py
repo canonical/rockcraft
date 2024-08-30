@@ -22,14 +22,22 @@ from typing import Any
 from typing import Dict
 from overrides import override
 
+from ..errors import ExtensionError
 from .extension import Extension
+
 
 class SpringBootFramework(Extension):
 
     def _check_project(self):
         """Ensure that either pom.xml or gradlew is present."""
-        if not os.path.exists(f"{self.project_root}/pom.xml") and not os.path.exists(f"{self.project_root}/gradlew"):
-            pass
+        if not os.path.exists(f"{self.project_root}/pom.xml") and not os.path.exists(
+            f"{self.project_root}/gradlew"
+        ):
+            raise ExtensionError(
+                "missing pom.xml or gradlew file",
+                doc_slug="/reference/extensions/spring-boot-framework",
+                logpath_report=False,
+            )
 
     @property
     def name(self) -> str:
@@ -55,8 +63,27 @@ class SpringBootFramework(Extension):
 
     def get_root_snippet(self) -> Dict[str, Any]:
         self._check_project()
-        return {"run_user": "_daemon_",}
+        return {
+            "run_user": "_daemon_",
+        }
 
+    def get_runtime_deps_part(self) -> Dict[str, Any]:
+        if "spring-boot-framework/runtime-deps" not in self.yaml_data.get("parts", {}):
+            return {
+                "plugin": "nil",
+                "source": "https://github.com/vpa1977/chisel-releases",
+                "source-type": "git",
+                "source-branch": "24.04-openjdk-21-jre-headless",
+                "override-build": """
+                    chisel cut --release ./ --root ${CRAFT_PART_INSTALL} \
+                        libc6_libs \
+                        libgcc-s1_libs \
+                        libstdc++6_libs \
+                        zlib1g_libs \
+                        libnss3_libs
+                    craftctl default
+                """,
+            }
 
     def gen_install_app_part(self) -> Dict[str, Any]:
         if "spring-boot-framework/install-app" not in self.yaml_data.get("parts", {}):
@@ -71,7 +98,7 @@ class SpringBootFramework(Extension):
                         mkdir -p ${CRAFT_PART_INSTALL}/jar
                         find ${CRAFT_PART_BUILD}/ -iname "*.jar" -exec ln {} ${CRAFT_PART_INSTALL}/jar \\;
                         craftctl default
-                    """
+                    """,
                 }
             elif os.path.exists(f"{self.project_root}/gradlew"):
                 return {
@@ -79,12 +106,12 @@ class SpringBootFramework(Extension):
                     "source": ".",
                     "source-type": "local",
                     "build-packages": ["default-jdk"],
-                    "override-build" : """
+                    "override-build": """
                         ./gradlew jar --no-daemon
                         mkdir -p ${CRAFT_PART_INSTALL}/jar
                         find ${CRAFT_PART_BUILD}/ -iname "*.jar" -exec ln {} ${CRAFT_PART_INSTALL}/jar \\;
                         craftctl default
-                    """
+                    """,
                 }
         return {}
 
@@ -92,18 +119,17 @@ class SpringBootFramework(Extension):
         if "spring-boot-framework/runtime" not in self.yaml_data.get("parts", {}):
             return {
                 "plugin": "jlink",
-                "after": [ "spring-boot-framework/install-app" ],
-                # temporary entries until chisel-releases for openjdk
-                # are merged upstream
-                "source": "https://github.com/vpa1977/chisel-releases",
-                "source-type": "git",
-                "source-branch": "24.04-openjdk-21-jre-headless",
+                "after": [
+                    "spring-boot-framework/install-app",
+                    "spring-boot-framework/runtime-deps",
+                ],
             }
         return {}
 
     def get_parts_snippet(self) -> dict[str, Any]:
         """Return the parts to add to parts."""
         return {
-            "spring-boot-framework/install-app" : self.gen_install_app_part(),
-            "spring-boot-framework/runtime": self.get_runtime_app_part()
+            "spring-boot-framework/install-app": self.gen_install_app_part(),
+            "spring-boot-framework/runtime": self.get_runtime_app_part(),
+            "spring-boot-framework/runtime-deps": self.get_runtime_deps_part(),
         }

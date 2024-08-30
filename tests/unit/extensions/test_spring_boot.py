@@ -61,10 +61,25 @@ def test_spring_boot_extension_maven(tmp_path, spring_boot_input_yaml):
             },
             "spring-boot-framework/runtime": {
                 "plugin": "jlink",
-                "after": ["spring-boot-framework/install-app"],
+                "after": [
+                    "spring-boot-framework/install-app",
+                    "spring-boot-framework/runtime-deps",
+                ],
+            },
+            "spring-boot-framework/runtime-deps": {
+                "plugin": "nil",
                 "source": "https://github.com/vpa1977/chisel-releases",
                 "source-type": "git",
                 "source-branch": "24.04-openjdk-21-jre-headless",
+                "override-build": """
+                    chisel cut --release ./ --root ${CRAFT_PART_INSTALL} \
+                        libc6_libs \
+                        libgcc-s1_libs \
+                        libstdc++6_libs \
+                        zlib1g_libs \
+                        libnss3_libs
+                    craftctl default
+                """,
             },
         },
     }
@@ -95,10 +110,25 @@ def test_spring_boot_extension_gradle(tmp_path, spring_boot_input_yaml):
             },
             "spring-boot-framework/runtime": {
                 "plugin": "jlink",
-                "after": ["spring-boot-framework/install-app"],
+                "after": [
+                    "spring-boot-framework/install-app",
+                    "spring-boot-framework/runtime-deps",
+                ],
+            },
+            "spring-boot-framework/runtime-deps": {
+                "plugin": "nil",
                 "source": "https://github.com/vpa1977/chisel-releases",
                 "source-type": "git",
                 "source-branch": "24.04-openjdk-21-jre-headless",
+                "override-build": """
+                    chisel cut --release ./ --root ${CRAFT_PART_INSTALL} \
+                        libc6_libs \
+                        libgcc-s1_libs \
+                        libstdc++6_libs \
+                        zlib1g_libs \
+                        libnss3_libs
+                    craftctl default
+                """,
             },
         },
     }
