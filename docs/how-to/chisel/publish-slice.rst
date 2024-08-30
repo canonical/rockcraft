@@ -34,10 +34,18 @@ It is as simple as proposing your changes into the upstream
 
    cp <path/to/your/slice/definitions/file> slices
    git add slices/
-   git commit -m "feat: add new slice definitions for 'name_of_the_package'"
+   git commit -m "feat(22.04): add new slice definitions for 'package_name'"
    git push origin create-openssl-bins-slice
 
-Create a pull request and wait for it to be merged.
+4. Create integration tests to test your changes.
+If applicable, add integration tests for your changes in
+``tests/spread/integration/<package_name>``. Those tests are composed of a
+``task.yaml`` file (plus a few accompanying test scripts if needed) that
+contains instructions on how to cut the slices you created or changed and test
+their functionalities. You can find examples on how to write such tests in the
+child folders of ``tests/spread/tests``.
+
+5. Create a pull request and wait for it to be merged.
 
 And that's it! Your custom Chisel release and new slice definitions are now
 available in Chisel, and anyone can use them. **Congrats**! And thank you for
