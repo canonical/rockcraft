@@ -276,6 +276,68 @@ class InitCommand(AppCommand):
             """
             )
         ),
+        "fastapi-framework": _InitProfile(
+            rockcraft_yaml=textwrap.dedent(
+                """\
+                name: {name}
+                # see {versioned_url}/explanation/bases/
+                # for more information about bases and using 'bare' bases for chiselled rocks
+                base: ubuntu@24.04 # the base environment for this FastAPI application
+                version: '0.1' # just for humans. Semantic versioning is recommended
+                summary: A summary of your FastAPI application # 79 char long summary
+                description: |
+                    This is fastapi project's description. You have a paragraph or two to tell the
+                    most important story about it. Keep it under 100 words though,
+                    we live in tweetspace and your description wants to look good in the
+                    container registries out there.
+                # the platforms this rock should be built on and run on.
+                # you can check your architecture with `dpkg --print-architecture`
+                platforms:
+                    amd64:
+                    # arm64:
+                    # ppc64el:
+                    # s390x:
+
+                # to ensure the FastAPI-framework extension works properly, your FastAPI application
+                # should have an ASGI entrypoint variable named `app`. This variable has to be defined
+                # in one of the following places:
+                #   1. `app.py` file in the base directory
+                #   2. In any of the following directories, the extension will look for the variable
+                #      in the files  __init__.py, app.py or main.py:
+                #     a. `app` directory.
+                #     b. `src` directory.
+                #     c. A directory with the same name as the project.
+                # a `requirements.txt` file with at least the fastapi/starlette package should also
+                # exist in the base directory.
+                # see {versioned_url}/reference/extensions/fastapi-framework
+                # for more information.
+                extensions:
+                - fastapi-framework
+
+                # uncomment the sections you need and adjust according to your requirements.
+                # parts:  # you need to uncomment this line to add or update any part.
+
+                #   fastapi-framework/install-app:
+                #     prime:
+                #       # by default, only the files in app.py, app/, src/, "project name/" templates/,
+                #       # static/, migrate, migrate.sh and main.py are copied into the image.
+                #       # You can modify the list below to override the default list and
+                #       # include or exclude specific files/directories in your project.
+                #       # note: prefix each entry with "app/" followed by the local path.
+                #       - app/app
+                #       - app/templates
+                #       - app/static
+
+                # you may need Ubuntu packages to build a python dependency. Add them here if necessary.
+                #   fastapi-framework/dependencies:
+                #     build-packages:
+                #       # for example, if you need pkg-config and libxmlsec1-dev to build one
+                #       # of your packages:
+                #       - pkg-config
+                #       - libxmlsec1-dev
+                """
+            ),
+        ),
     }
     _DEFAULT_PROFILE = "simple"
 
