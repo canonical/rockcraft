@@ -76,6 +76,7 @@ def test_spring_boot_extension_maven(tmp_path, spring_boot_input_yaml):
                 "source-branch": "24.04-openjdk-21-jre-headless",
                 "override-build": """
                     chisel cut --release ./ --root ${CRAFT_PART_INSTALL} \
+                        base-files_base \
                         libc6_libs \
                         libgcc-s1_libs \
                         libstdc++6_libs \
@@ -128,6 +129,7 @@ def test_spring_boot_extension_gradle(tmp_path, spring_boot_input_yaml):
                 "source-branch": "24.04-openjdk-21-jre-headless",
                 "override-build": """
                     chisel cut --release ./ --root ${CRAFT_PART_INSTALL} \
+                        base-files_base \
                         libc6_libs \
                         libgcc-s1_libs \
                         libstdc++6_libs \

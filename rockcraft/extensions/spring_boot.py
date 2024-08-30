@@ -76,6 +76,7 @@ class SpringBootFramework(Extension):
                 "source-branch": "24.04-openjdk-21-jre-headless",
                 "override-build": """
                     chisel cut --release ./ --root ${CRAFT_PART_INSTALL} \
+                        base-files_base \
                         libc6_libs \
                         libgcc-s1_libs \
                         libstdc++6_libs \
