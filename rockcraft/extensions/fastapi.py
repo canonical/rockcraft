@@ -33,11 +33,13 @@ from .extension import Extension
 class FastAPIFramework(Extension):
     """An extension base class for Python FastAPI/starlette framework extension."""
 
+    IMAGE_BASE_DIR = "app"
+
     @staticmethod
     @override
     def get_supported_bases() -> Tuple[str, ...]:
         """Return supported bases."""
-        return "bare", "ubuntu@22.04", "ubuntu:22.04", "ubuntu@24.04"
+        return "bare", "ubuntu@24.04"
 
     @staticmethod
     @override
@@ -57,7 +59,7 @@ class FastAPIFramework(Extension):
                     "override": "replace",
                     "startup": "enabled",
                     "user": "_daemon_",
-                    "working-dir": "/app",
+                    "working-dir": f"/{self.IMAGE_BASE_DIR}",
                 },
             },
         }
@@ -125,11 +127,11 @@ class FastAPIFramework(Extension):
         # if prime is not in exclude mode, use it to generate the stage and organize
         if self._app_prime and self._app_prime[0] and self._app_prime[0][0] != "-":
             renaming_map = {
-                os.path.relpath(file, "app"): file for file in self._app_prime
+                os.path.relpath(file, self.IMAGE_BASE_DIR): file for file in self._app_prime
             }
         else:
             renaming_map = {
-                f: posixpath.join("app", f)
+                f: posixpath.join(self.IMAGE_BASE_DIR, f)
                 for f in source_files
                 if not any(
                     fnmatch.fnmatch(f, p)
@@ -152,16 +154,16 @@ class FastAPIFramework(Extension):
             .get("fastapi-framework/install-app", {})
             .get("prime", [])
         )
-        if not all(re.match("-? *app/", p) for p in user_prime):
+        if not all(re.match(f"-? *{self.IMAGE_BASE_DIR}/", p) for p in user_prime):
             raise ExtensionError(
                 "fastapi-framework extension requires the 'prime' entry in the "
-                "fastapi-framework/install-app part to start with app/",
+                f"fastapi-framework/install-app part to start with {self.IMAGE_BASE_DIR}/",
                 doc_slug="/reference/extensions/fastapi-framework",
                 logpath_report=False,
             )
         if not user_prime:
             user_prime = [
-                f"app/{f}"
+                f"{self.IMAGE_BASE_DIR}/{f}"
                 for f in (
                     "migrate",
                     "migrate.sh",
@@ -172,7 +174,7 @@ class FastAPIFramework(Extension):
                 if (self.project_root / f).exists()
             ]
             if not self.yaml_data.get("services", {}).get("fastapi", {}).get("command"):
-                user_prime.append("app/" + self._find_asgi_location().parts[0])
+                user_prime.append(f"{self.IMAGE_BASE_DIR}/" + self._find_asgi_location().parts[0])
         return user_prime
 
     def _asgi_path(self) -> str:
