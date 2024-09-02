@@ -53,7 +53,9 @@ def test_spring_boot_extension_maven(tmp_path, spring_boot_input_yaml):
                 "source-type": "local",
                 "build-packages": ["openjdk-21-jdk", "maven"],
                 "build-environment": [
-                    {"JAVA_HOME": "/usr/lib/jvm/java-21-openjdk-${CRAFT_ARCH_BUILD_FOR}"}
+                    {
+                        "JAVA_HOME": "/usr/lib/jvm/java-21-openjdk-${CRAFT_ARCH_BUILD_FOR}"
+                    }
                 ],
                 "override-build": """
                         mvn package
@@ -106,12 +108,14 @@ def test_spring_boot_extension_gradle(tmp_path, spring_boot_input_yaml):
                 "source-type": "local",
                 "build-packages": ["openjdk-21-jdk"],
                 "build-environment": [
-                    {"JAVA_HOME": "/usr/lib/jvm/java-21-openjdk-${CRAFT_ARCH_BUILD_FOR}"}
+                    {
+                        "JAVA_HOME": "/usr/lib/jvm/java-21-openjdk-${CRAFT_ARCH_BUILD_FOR}"
+                    }
                 ],
                 "override-build": "./gradlew jar --no-daemon",
                 "override-stage": """
                                     mkdir -p ${CRAFT_STAGE}/jars
-                                    find ${CRAFT_PART_BUILD}/build -iname "*.jar" -exec ln {} ${CRAFT_PART_INSTALL}/jars \\;
+                                    find ${CRAFT_PART_BUILD}/build -iname "*.jar" -exec ln {} ${CRAFT_STAGE}/jars \\;
                                     craftctl default
                                     """,
                 "override-prime": """
