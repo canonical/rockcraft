@@ -21,19 +21,15 @@ execute: |
   django-admin startproject django_hello_world
   # [docs:create-project-end]
 
-  # [docs:run-django]
   cd django_hello_world
   python manage.py runserver &
-  # [docs:run-django-end]
   retry -n 5 --wait 2 curl localhost:8000
 
   # [docs:curl-django]
   curl localhost:8000
   # [docs:curl-django-end]
 
-  # [docs:stop-django]
   kill $!
-  # [docs:stop-django-end]
 
   # [docs:create-rockcraft-yaml]
   cd ..
@@ -50,7 +46,9 @@ execute: |
   # [docs:ls-rock-end]
 
   # [docs:skopeo-copy]
-  sudo rockcraft.skopeo --insecure-policy copy oci-archive:django-hello-world_0.1_amd64.rock docker-daemon:django-hello-world:0.1
+  sudo rockcraft.skopeo --insecure-policy \
+    copy oci-archive:django-hello-world_0.1_amd64.rock \
+    docker-daemon:django-hello-world:0.1
   # [docs:skopeo-copy-end]
 
   # [docs:docker-images]
@@ -58,7 +56,8 @@ execute: |
   # [docs:docker-images-end]
 
   # [docs:docker-run]
-  sudo docker run --rm -d -p 8000:8000 --name django-hello-world django-hello-world:0.1
+  sudo docker run --rm -d -p 8000:8000 \
+    --name django-hello-world django-hello-world:0.1
   # [docs:docker-run-end]
   retry -n 5 --wait 2 curl localhost:8000
 
@@ -76,8 +75,11 @@ execute: |
   # [docs:stop-docker-end]
 
   # [docs:change-base]
-  sed -i "s/base: .*/base: bare\nbuild-base: ubuntu@22.04/g" rockcraft.yaml
+  sed -i \
+    "s/base: .*/base: bare\nbuild-base: ubuntu@22.04/g" \
+    rockcraft.yaml
   # [docs:change-base-end]
+  sed -i "s/version: .*/version: 0.1-chiselled/g" rockcraft.yaml
 
   # [docs:chisel-pack]
   ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS=true rockcraft pack
@@ -88,9 +90,12 @@ execute: |
   # [docs:ls-bare-rock-end]
 
   # [docs:docker-run-chisel]
-  sudo rockcraft.skopeo --insecure-policy copy oci-archive:django-hello-world_0.1_amd64.rock docker-daemon:django-hello-world:0.1
-  sudo docker images django-hello-world:0.1
-  sudo docker run --rm -d -p 8000:8000 --name django-hello-world django-hello-world:0.1
+  sudo rockcraft.skopeo --insecure-policy \
+    copy oci-archive:django-hello-world_0.1-chiselled_amd64.rock \
+    docker-daemon:django-hello-world:0.1-chiselled
+  sudo docker images django-hello-world:0.1-chiselled
+  sudo docker run --rm -d -p 8000:8000 \
+    --name django-hello-world django-hello-world:0.1-chiselled
   # [docs:docker-run-chisel-end]
   retry -n 5 --wait 2 curl localhost:8000
 
@@ -116,9 +121,12 @@ execute: |
 
   # [docs:docker-run-update]
   ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS=true rockcraft pack
-  sudo rockcraft.skopeo --insecure-policy copy oci-archive:django-hello-world_0.2_amd64.rock docker-daemon:django-hello-world:0.2
+  sudo rockcraft.skopeo --insecure-policy copy \
+    oci-archive:django-hello-world_0.2_amd64.rock \
+    docker-daemon:django-hello-world:0.2
   sudo docker images django-hello-world:0.2
-  sudo docker run --rm -d -p 8000:8000 --name django-hello-world django-hello-world:0.2
+  sudo docker run --rm -d -p 8000:8000 \
+    --name django-hello-world django-hello-world:0.2
   # [docs:docker-run-update-end]
   retry -n 5 --wait 2 curl localhost:8000/time/
 
@@ -136,5 +144,8 @@ execute: |
   deactivate
   rm -rf .venv django_hello_world
   # delete all the files created during the tutorial
-  rm django-hello-world_0.1_amd64.rock django-hello-world_0.2_amd64.rock rockcraft.yaml requirements.txt
+  rm django-hello-world_0.1_amd64.rock \
+    django-hello-world_0.1-chiselled_amd64.rock \
+    django-hello-world_0.2_amd64.rock \
+    rockcraft.yaml requirements.txt
   # [docs:cleanup-end]

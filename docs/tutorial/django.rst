@@ -47,22 +47,12 @@ Create a new project using ``django-admin``:
     :end-before: [docs:create-project-end]
     :dedent: 2
 
-Run the Django application to verify that it works:
-
-.. literalinclude:: code/django/task.yaml
-    :language: bash
-    :start-after: [docs:run-django]
-    :end-before: [docs:run-django-end]
-    :dedent: 2
-
-.. note::
-    The ``&`` at the end of the command runs the Django application in the
-    background. You can continue to use your terminal as normal and will see all
-    the output from the Django application in your terminal. To stop the Django
-    application, you can use the ``kill`` command shown below.
+Change into the ``django_hello_world`` directory and run the Django application
+using ``python manage.py runserver`` to verify that it works.
 
 Test the Django application by using ``curl`` to send a request to the root
-endpoint:
+endpoint. You may need a new terminal for this, if you are using Multipass use
+``multipass shell rock-dev`` to get another terminal:
 
 .. literalinclude:: code/django/task.yaml
     :language: bash
@@ -78,13 +68,7 @@ The Django application should respond with
     it difficult to read on a terminal. Visit ``http://localhost:8000`` using a
     browser to see the fully rendered page.
 
-The Django application looks good, so you can stop for now:
-
-.. literalinclude:: code/django/task.yaml
-    :language: bash
-    :start-after: [docs:stop-django]
-    :end-before: [docs:stop-django-end]
-    :dedent: 2
+The Django application looks good, so you can stop for now using ``ctrl+C``.
 
 Pack the Django application into a rock
 =======================================
@@ -100,15 +84,18 @@ creation and tailoring for a Django application by using the
     :dedent: 2
 
 The ``rockcraft.yaml`` file will automatically be created in your working
-directory. Open it in a text editor and customise the ``name``. Ensure that
-``platforms`` includes the architecture of your host. For example, if your host
-uses the ARM architecture, include ``arm64`` in ``platforms``.
+directory. Open it in a text editor and check that the ``name`` is
+``django-hello-world``. Ensure that ``platforms`` includes the architecture of
+your host. For example, if your host uses the ARM architecture, include
+``arm64`` in ``platforms``.
 
 .. note::
-    For this tutorial, we'll use the ``name`` "django-hello-world" and assume
+    For this tutorial, we'll use the ``name`` ``django-hello-world`` and assume
     you are running on an ``amd64`` platform. Check the architecture of your
-    system using ``uname -m``. ``x86_64`` indicates ``amd64`` and ``aarch64``
-    indicates ``arm64``.
+    system using ``dpkg --print-architecture``.
+
+    The ``name``, ``version`` and ``platform`` all influence the name of the
+    generated ``.rock`` file.
 
 Pack the rock:
 
@@ -143,11 +130,13 @@ tutorial.
     on an ``amd64`` platform, the name of the ``.rock`` file will be different
     for you.
 
+    The size of the rock may vary for you.
+
 Run the Django rock with Docker
 ===============================
 
 You already have the rock as an `OCI <OCI_image_spec_>`_ archive. Now you'll
-need to import it into a format that Docker recognises:
+need to load it into Docker:
 
 .. literalinclude:: code/django/task.yaml
     :language: bash
@@ -155,7 +144,7 @@ need to import it into a format that Docker recognises:
     :end-before: [docs:skopeo-copy-end]
     :dedent: 2
 
-Check that the image was successfully imported into Docker:
+Check that the image was successfully loaded into Docker:
 
 .. literalinclude:: code/django/task.yaml
     :language: bash
@@ -243,8 +232,12 @@ This is an optional but recommended step, especially if you're looking to
 deploy your rock into a production environment. With :ref:`chisel_explanation`
 you can produce lean and production-ready rocks by getting rid of all the
 contents that are not needed for your Django application to run. This results
-in a much smaller rock with a reduced attack surface though with fewer debugging
-tools.
+in a much smaller rock with a reduced attack surface.
+
+.. note::
+    It is recommended to run chiselled images in production. For development,
+    you may prefer non-chiselled images as they will include additional
+    development tooling (such as for debugging).
 
 The first step towards chiselling your rock is to ensure you are using a
 ``bare`` :ref:`base <bases_explanation>`.
@@ -257,6 +250,8 @@ In ``rockcraft.yaml``, change the ``base`` to ``bare`` and add
     :end-before: [docs:change-base-end]
     :dedent: 2
 
+So that we can compare the size after chiselling, **open the**
+``rockcraft.yaml`` file and change the ``version`` (e.g. to ``0.1-chiselled``).
 Pack the rock with the new ``bare`` :ref:`base <bases_explanation>`:
 
 .. literalinclude:: code/django/task.yaml
@@ -341,6 +336,12 @@ Since you are creating a new version of your application, go back to the
 tutorial root directory using ``cd ..`` and **open the** ``rockcraft.yaml`` file
 and change the ``version`` (e.g. to ``0.2``).
 
+.. note::
+
+    ``rockcraft pack`` will create a new image with the updated code even if you
+    don't change the version. It is recommended to change the version whenever
+    you make changes to the application in the image.
+
 Pack and run the rock using similar commands as before:
 
 .. literalinclude:: code/django/task.yaml
@@ -364,6 +365,11 @@ Finally, use ``curl`` to send a request to the ``/time/`` endpoint:
 
 The updated application should respond with the current date and time (e.g.
 ``2024-08-20 07:28:19``).
+
+.. note::
+
+    If you are getting a ``404`` for the ``/time/`` endpoint, check the
+    :ref:`troubleshooting` steps below.
 
 Cleanup
 ~~~~~~~
@@ -407,6 +413,8 @@ following:
         multipass purge
 
 ----
+
+.. _troubleshooting:
 
 Troubleshooting
 ===============
