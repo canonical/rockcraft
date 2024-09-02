@@ -102,7 +102,7 @@ class SpringBootFramework(Extension):
                     "override-build": """
                         mvn package
                         mkdir -p ${CRAFT_PART_INSTALL}/jars
-                        find ${CRAFT_PART_BUILD}/ -iname "*.jar" -exec ln {} ${CRAFT_PART_INSTALL}/jars \\;
+                        find ${CRAFT_PART_BUILD}/target -iname "*.jar" -exec ln {} ${CRAFT_PART_INSTALL}/jars \\;
                         craftctl default
                     """,
                 }
