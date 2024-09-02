@@ -117,12 +117,16 @@ class SpringBootFramework(Extension):
                             "JAVA_HOME": "/usr/lib/jvm/java-21-openjdk-${CRAFT_TARGET_ARCH}"
                         }
                     ],
-                    "override-build": """
-                        ./gradlew jar --no-daemon
-                        mkdir -p ${CRAFT_PART_INSTALL}/jars
-                        find ${CRAFT_PART_BUILD}/ -iname "*.jar" -exec ln {} ${CRAFT_PART_INSTALL}/jars \\;
-                        craftctl default
-                    """,
+                    "override-build": "./gradlew jar --no-daemon",
+                    "override-stage": """
+                                    mkdir -p ${CRAFT_STAGE}/jars
+                                    find ${CRAFT_PART_BUILD}/build -iname "*.jar" -exec ln {} ${CRAFT_PART_INSTALL}/jars \\;
+                                    craftctl default
+                                    """,
+                    "override-prime": """
+                                    cp -r ${CRAFT_STAGE}/jars ${CRAFT_PRIME}
+                                    craftctl default
+                                    """,
                 }
         return {}
 
