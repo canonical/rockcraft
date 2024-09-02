@@ -96,7 +96,7 @@ class SpringBootFramework(Extension):
                     "build-packages": ["openjdk-21-jdk", "maven"],
                     "build-environment": [
                         {
-                            "JAVA_HOME": "/usr/lib/jvm/java-21-openjdk-${CRAFT_TARGET_ARCH}"
+                            "JAVA_HOME": "/usr/lib/jvm/java-21-openjdk-${CRAFT_ARCH_BUILD_FOR}"
                         }
                     ],
                     "override-build": """
@@ -114,7 +114,7 @@ class SpringBootFramework(Extension):
                     "build-packages": ["openjdk-21-jdk"],
                     "build-environment": [
                         {
-                            "JAVA_HOME": "/usr/lib/jvm/java-21-openjdk-${CRAFT_TARGET_ARCH}"
+                            "JAVA_HOME": "/usr/lib/jvm/java-21-openjdk-${CRAFT_ARCH_BUILD_FOR}"
                         }
                     ],
                     "override-build": "./gradlew jar --no-daemon",
