@@ -17,6 +17,11 @@ jobs:
           submodules: true
       - name: Install packages
         run: |
+          sudo snap install --no-wait ruff
+          sudo snap install --no-wait shellcheck
+          sudo snap install --no-wait woke
+          sudo snap install --no-wait --classic node
+          sudo snap install --no-wait --classic pyright
           sudo apt update
           sudo apt install -y libapt-pkg-dev aspell aspell-en
       - name: Set up Python 3.10
@@ -44,22 +49,22 @@ jobs:
           make test-pydocstyle
       - name: Run pyright
         run: |
-          sudo snap install --classic node
-          sudo snap install --classic pyright
+          sudo snap watch --last=install
           make test-pyright
-      - name: Run pylint
+      - name: Run ruff
         run: |
-          make test-pylint
+          sudo snap watch --last=install
+          make test-ruff
       - name: Run sphinx-lint
         run: |
           make test-sphinx-lint
       - name: Run shellcheck
         run: |
-          sudo snap install shellcheck
+          sudo snap watch --last=install
           make test-shellcheck
       - name: Run linkcheck,woke,spelling
         run: |
-          sudo snap install woke
+          sudo snap watch --last=install
           make test-docs
 
   tests:

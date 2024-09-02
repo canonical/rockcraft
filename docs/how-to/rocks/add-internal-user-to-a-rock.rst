@@ -1,6 +1,6 @@
 .. _add_internal_user_to_a_rock:
 
-How to add an new internal user to a rock
+How to add a new internal user to a rock
 *****************************************
 
 You can declare :ref:`run-user <rockcraft_yaml_run_user>` in ``rockcraft.yaml``
@@ -49,7 +49,7 @@ Then, add a service to ``rockcraft.yaml`` that runs the web service:
     :end-before: [docs:rock-services-end]
 
 In the ``override-build`` section of the part, let's create a new user and a
-new group. We will also copy the python script to a ``cgi-bin`` folder, and
+new group. We will also copy the Python script to a ``cgi-bin`` folder, and
 give it the execute permission:
 
 .. literalinclude:: ../code/internal-user/rockcraft.yaml
@@ -71,7 +71,7 @@ With the part and web service in place, build the rock:
     :dedent: 2
 
 Next, we will convert the rock from an OCI archive to a Docker image using
-skopeo:
+Skopeo:
 
 .. literalinclude:: ../code/internal-user/task.yaml
     :language: bash
@@ -93,3 +93,4 @@ The response should contain the new user name:
 .. code-block::
 
     Serving by myuser on port 8080
+
