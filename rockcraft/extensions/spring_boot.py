@@ -120,7 +120,7 @@ class SpringBootFramework(Extension):
                     "override-build": "./gradlew jar --no-daemon",
                     "override-stage": """
                                     mkdir -p ${CRAFT_STAGE}/jars
-                                    find ${CRAFT_PART_BUILD}/build -iname "*.jar" -exec ln {} ${CRAFT_PART_INSTALL}/jars \\;
+                                    find ${CRAFT_PART_BUILD}/build -iname "*.jar" -exec ln {} ${CRAFT_STAGE}/jars \\;
                                     craftctl default
                                     """,
                     "override-prime": """
