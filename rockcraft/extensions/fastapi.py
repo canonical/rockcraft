@@ -60,6 +60,10 @@ class FastAPIFramework(Extension):
                     "startup": "enabled",
                     "user": "_daemon_",
                     "working-dir": f"/{self.IMAGE_BASE_DIR}",
+                    "environment": {
+                        # Not listening on 0.0.0.0 complicates exposing the port of a container.
+                        "UVICORN_HOST": "0.0.0.0",
+                    },
                 },
             },
         }
