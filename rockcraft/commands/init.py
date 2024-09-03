@@ -260,6 +260,7 @@ class InitCommand(BaseInitCommand):
 
     help_msg = "Initialize a rockcraft project"
 
+    @overrides
     def fill_parser(self, parser: argparse.ArgumentParser) -> None:
         """Specify command's specific parameters."""
         super().fill_parser(parser)
@@ -271,21 +272,6 @@ class InitCommand(BaseInitCommand):
         )
 
     @overrides
-    def run(self, parsed_args: "argparse.Namespace") -> None:
-        """Run the command."""
-        name = parsed_args.name
-        if name and not re.match(PROJECT_NAME_REGEX, name):
-            raise errors.RockcraftInitError(
-                f"'{name}' is not a valid rock name. " + MESSAGE_INVALID_NAME
-            )
-        if not name:
-            name = pathlib.Path.cwd().name
-            if not re.match(PROJECT_NAME_REGEX, name):
-                name = "my-rock-name"
-            emit.debug(f"Set project name to '{name}'")
-
-        super().run(parsed_args)
-
     def _get_context(self, parsed_args: argparse.Namespace) -> dict[str, Any]:
         context = super()._get_context(parsed_args)
         name = context["name"]
@@ -306,17 +292,24 @@ class InitCommand(BaseInitCommand):
         )
         return context
 
+    @overrides
     def _get_name(self, parsed_args: argparse.Namespace) -> str:
         """Get name of the package that is about to be initialized.
 
         Check if name is set explicitly or fallback to project_dir.
         """
+        name = parsed_args.name
+        if name and not re.match(PROJECT_NAME_REGEX, name):
+            raise errors.RockcraftInitError(
+                f"'{name}' is not a valid rock name. " + MESSAGE_INVALID_NAME
+            )
         name = super()._get_name(parsed_args)
         if not re.match(PROJECT_NAME_REGEX, name):
             name = "my-rock-name"
         emit.debug(f"Set project name to '{name}'")
         return name
 
+    @overrides
     def _get_template_dir(
         self,
         parsed_args: argparse.Namespace,
