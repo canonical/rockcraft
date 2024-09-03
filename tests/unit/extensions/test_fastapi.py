@@ -78,7 +78,7 @@ def test_fastapi_extension_default(tmp_path, fastapi_input_yaml, packages):
                 "user": "_daemon_",
                 "working-dir": "/app",
                 "environment": {
-                        "UVICORN_HOST": "0.0.0.0",
+                    "UVICORN_HOST": "0.0.0.0",
                 },
             },
         },
