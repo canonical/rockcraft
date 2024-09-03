@@ -1,3 +1,5 @@
+.. _bundle_a_nodejs_app_within_a_rock:
+
 Bundle a Node.js app within a rock
 **********************************
 
