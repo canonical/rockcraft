@@ -93,10 +93,8 @@ class FastAPIFramework(Extension):
     def _get_parts(self) -> dict:
         """Generate the parts associated with this extension."""
         stage_packages = ["python3-venv"]
-        build_environment = []
         if self.yaml_data["base"] == "bare":
             stage_packages = ["python3.12-venv_ensurepip"]
-            build_environment = [{"PARTS_PYTHON_INTERPRETER": "python3.12"}]
 
         parts: Dict[str, Any] = {
             "fastapi-framework/dependencies": {
@@ -105,7 +103,6 @@ class FastAPIFramework(Extension):
                 "source": ".",
                 "python-packages": ["uvicorn"],
                 "python-requirements": ["requirements.txt"],
-                "build-environment": build_environment,
             },
             "fastapi-framework/install-app": self._get_install_app_part(),
         }

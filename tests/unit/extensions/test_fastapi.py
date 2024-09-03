@@ -55,7 +55,6 @@ def test_fastapi_extension_default(tmp_path, fastapi_input_yaml, packages):
                 "source": ".",
                 "python-packages": ["uvicorn"],
                 "python-requirements": ["requirements.txt"],
-                "build-environment": [],
             },
             "fastapi-framework/install-app": {
                 "plugin": "dump",
@@ -220,7 +219,6 @@ def test_fastapi_extension_bare(tmp_path):
         "source": ".",
         "python-packages": ["uvicorn"],
         "python-requirements": ["requirements.txt"],
-        "build-environment": [{"PARTS_PYTHON_INTERPRETER": "python3.12"}],
     }
     assert applied["parts"]["fastapi-framework/runtime"] == {
         "plugin": "nil",
