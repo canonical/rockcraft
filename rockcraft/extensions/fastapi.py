@@ -61,8 +61,8 @@ class FastAPIFramework(Extension):
                     "user": "_daemon_",
                     "working-dir": f"/{self.IMAGE_BASE_DIR}",
                     "environment": {
-                        # not listening on all interfaces complicates listening to ports in the host,
-                        # and the user would have to create this environment variable manually.
+                        # not listening on all interfaces complicates exposing ports outside of the
+                        # container and the user would have to create this environment variable manually.
                         "UVICORN_HOST": "0.0.0.0",  # noqa: S104
                     },
                 },
