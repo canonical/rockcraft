@@ -226,7 +226,7 @@ class FastAPIFramework(Extension):
         if error_messages:
             raise ExtensionError(
                 "\n".join("- " + message for message in error_messages),
-                doc_slug="/reference/extensions/go-framework",
+                doc_slug="/reference/extensions/fastapi-framework",
                 logpath_report=False,
             )
 
