@@ -68,7 +68,7 @@ The Django application should respond with
     it difficult to read on a terminal. Visit ``http://localhost:8000`` using a
     browser to see the fully rendered page.
 
-The Django application looks good, so you can stop for now using ``ctrl+C``.
+The Django application looks good, so you can stop it for now using ``ctrl+C``.
 
 Pack the Django application into a rock
 =======================================
