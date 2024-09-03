@@ -23,7 +23,7 @@ import textwrap
 from dataclasses import dataclass
 from pathlib import Path
 
-from craft_application.commands import AppCommand
+from craft_application.commands import InitCommand
 from craft_cli import emit
 from overrides import overrides  # type: ignore[reportUnknownVariableType]
 
@@ -57,7 +57,7 @@ class _InitProfile:
     doc_slug: str | None = None
 
 
-class InitCommand(AppCommand):
+class InitCommand(InitCommand):
     """Initialize a rockcraft project."""
 
     _PROFILES = {
@@ -290,9 +290,7 @@ class InitCommand(AppCommand):
 
     def fill_parser(self, parser: argparse.ArgumentParser) -> None:
         """Specify command's specific parameters."""
-        parser.add_argument(
-            "--name", help="The name of the rock; defaults to the directory name"
-        )
+        super().fill_parser(parser)
         parser.add_argument(
             "--profile",
             choices=list(self._PROFILES),
