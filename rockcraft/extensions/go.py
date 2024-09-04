@@ -18,7 +18,7 @@
 
 import os
 import re
-from typing import Any, Dict, Tuple
+from typing import Any
 
 from overrides import override
 
@@ -31,7 +31,7 @@ class GoFramework(Extension):
 
     @staticmethod
     @override
-    def get_supported_bases() -> Tuple[str, ...]:
+    def get_supported_bases() -> tuple[str, ...]:
         """Return supported bases."""
         return "bare", "ubuntu@24.04"
 
@@ -46,7 +46,7 @@ class GoFramework(Extension):
         """Return the root snippet to apply."""
         self._check_project()
 
-        snippet: Dict[str, Any] = {
+        snippet: dict[str, Any] = {
             "run_user": "_daemon_",
             "services": {
                 "go": {
@@ -102,7 +102,7 @@ class GoFramework(Extension):
                 logpath_report=False,
             )
 
-    def _get_install_app_part(self) -> Dict[str, Any]:
+    def _get_install_app_part(self) -> dict[str, Any]:
         """Generate install-app part with the Go plugin."""
         install_app = self._get_nested(
             self.yaml_data, ["parts", "go-framework/install-app"]
@@ -159,7 +159,7 @@ class GoFramework(Extension):
                     return True
         return False
 
-    def _get_install_assets_part(self) -> Dict[str, Any] | None:
+    def _get_install_assets_part(self) -> dict[str, Any] | None:
         """Generate assets-stage part for extra assets in the project."""
         # if stage is not in exclude mode, use it to generate organize
         if (
