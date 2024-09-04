@@ -16,7 +16,7 @@
 
 """The Java runtime plugin."""
 
-from typing import Dict, List, Literal, Set, cast
+from typing import Literal, cast
 
 from craft_parts.plugins import Plugin, PluginProperties
 from overrides import override
@@ -36,20 +36,20 @@ class JLinkPlugin(Plugin):
     properties_class = JLinkPluginProperties
 
     @override
-    def get_build_packages(self) -> Set[str]:
+    def get_build_packages(self) -> set[str]:
         options = cast(JLinkPluginProperties, self._options)
         return {f"openjdk-{options.jlink_java_version}-jdk"}
 
     @override
-    def get_build_environment(self) -> Dict[str, str]:
+    def get_build_environment(self) -> dict[str, str]:
         return {}
 
     @override
-    def get_build_snaps(self) -> Set[str]:
+    def get_build_snaps(self) -> set[str]:
         return set()
 
     @override
-    def get_build_commands(self) -> List[str]:
+    def get_build_commands(self) -> list[str]:
         """Return a list of commands to run during the build step."""
         options = cast(JLinkPluginProperties, self._options)
 
