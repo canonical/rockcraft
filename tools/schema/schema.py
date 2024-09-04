@@ -53,7 +53,6 @@ def generate_project_schema() -> str:
         ).read_text()
     ).render(**context)
 
-    print(init_template)
     # Initiate a project with all required fields
     project = Project.unmarshal(yaml.safe_load(init_template))
 
