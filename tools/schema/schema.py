@@ -21,10 +21,12 @@
 import json
 import os
 import sys
+from pathlib import Path
 
 import yaml
 from craft_parts import Part
 from craft_parts.plugins import plugins
+from jinja2 import Template
 
 script_dir = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.join(script_dir, "../../"))
@@ -40,11 +42,18 @@ def generate_project_schema() -> str:
         "name": "my-rock-name",
         "versioned_url": "www.example.com",
     }
-    # pylint: disable=W0212
-    init_template = cli.commands.InitCommand._PROFILES[
-        cli.commands.InitCommand._DEFAULT_PROFILE
-    ].rockcraft_yaml.format(**context)
+    # TODO: InitCommand._get_templates_dir, could be a classmethod, to not concatenate here
+    init_template = Template(
+        (
+            Path().cwd()
+            / "rockcraft"
+            / "templates"
+            / cli.commands.InitCommand._DEFAULT_PROFILE
+            / "rockcraft.yaml.j2"
+        ).read_text()
+    ).render(**context)
 
+    print(init_template)
     # Initiate a project with all required fields
     project = Project.unmarshal(yaml.safe_load(init_template))
 
