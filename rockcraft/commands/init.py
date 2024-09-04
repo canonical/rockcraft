@@ -275,6 +275,7 @@ class InitCommand(BaseInitCommand):
     def _get_context(self, parsed_args: argparse.Namespace) -> dict[str, Any]:
         context = super()._get_context(parsed_args)
         name = context["name"]
+        emit.debug(f"Set project name to '{name}'")
         versioned_docs_url = self._app.versioned_docs_url
 
         # Get the init profile
@@ -306,7 +307,6 @@ class InitCommand(BaseInitCommand):
         name = super()._get_name(parsed_args)
         if not re.match(PROJECT_NAME_REGEX, name):
             name = "my-rock-name"
-        emit.debug(f"Set project name to '{name}'")
         return name
 
     @overrides
