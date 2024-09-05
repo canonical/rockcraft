@@ -25,7 +25,6 @@ colorama==0.4.6
 coverage==7.6.1
 craft-application @ git+https://github.com/dariuszd21/craft-application@39fb9046c20002f28d9b7f88a0c59d0b0a2a3229
 craft-archives==2.0.0
-craft-cli @ git+https://github.com/dariuszd21/craft-cli@5065ba9b2c280c934b5fb6c1eaea910fd286294c
 craft-grammar==2.0.0
 craft-parts==2.0.0
 craft-providers==2.0.1
