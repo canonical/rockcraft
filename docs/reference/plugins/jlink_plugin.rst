@@ -77,10 +77,12 @@ How it works
 During the build step, the plugin performs the following actions:
 
 * Finds all jar files in the staging area or selects jars specified in
-  _jlink_jars_.
+  `jlink_jars`.
 * Unpacks jar files to the temporary location and concatenates all embedded jars
-  into `jdeps <https://docs.oracle.com/en/java/javase/21/docs/specs/man/jdeps.html>`_
-  classpath.
+  into `jdeps <jdeps_>`_ classpath.
 * Runs `jdeps <jdeps_>`_ to discover Java modules required for the staged jars.
-* Runs `jlink <https://docs.oracle.com/en/java/javase/21/docs/specs/man/jlink.html>`_
-  to create a runtime image from the build JDK.
+* Runs `jlink <jlink_>`_ to create a runtime image from the build JDK.
+
+
+.. _`jdeps`: https://docs.oracle.com/en/java/javase/21/docs/specs/man/jdeps.html
+.. _`jlink`: https://docs.oracle.com/en/java/javase/21/docs/specs/man/jlink.html
