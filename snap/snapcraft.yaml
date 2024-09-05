@@ -78,8 +78,11 @@ parts:
         - requirements.txt
     build-attributes:
         - enable-patchelf
+    build-packages:
+        - cargo
     build-environment:
         - "CFLAGS": "$(pkg-config python-3.10 yaml-0.1 --cflags)"
+        - "PIP_NO_BINARY": ":all:"
     organize:
         bin/craftctl: libexec/rockcraft/craftctl
     override-build: |

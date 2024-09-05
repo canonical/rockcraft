@@ -62,8 +62,9 @@ prepare: |
     tests.pkgs remove lxd
   fi
 
-  # 5.21/stable is the latest stable LTS
-  snap install lxd --channel=5.21/stable
+  # 5.21/stable is the latest stable LTS. Use 5.21/candidate as a "first line of
+  # defense" against LXD regressions.
+  snap install lxd --channel=5.21/candidate
 
   # Hold snap refreshes for 24h.
   snap set system refresh.hold="$(date --date=tomorrow +%Y-%m-%dT%H:%M:%S%:z)"
