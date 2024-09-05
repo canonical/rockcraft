@@ -74,7 +74,7 @@ section):
 The "build-context" part allows you to send the local ``chisel-releases``
 folder into the builder. The "override-build" enables you to install your
 custom slice.
-Please not that this level of customisation is only needed when you want to
+Please note that this level of customisation is only needed when you want to
 install from a custom Chisel release. If the desired slice definitions are
 already upstream, then you can simply use ``stage-packages``, as demonstrated
 in :ref:`here <chisel-example>`.
