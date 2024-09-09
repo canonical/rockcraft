@@ -1,0 +1,5 @@
+name: bare-build-2004
+base: bare
+build-base: ubuntu@20.04
+
+# Remaining contents will come from "parts.yaml"

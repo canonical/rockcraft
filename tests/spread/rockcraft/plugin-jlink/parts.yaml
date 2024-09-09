@@ -1,0 +1,49 @@
+
+# Actual parts definition for the rockcraft + python cases that we are testing.
+# (this gets appended to all rockcraft.yaml files in the subdirectories in the
+# main task.yaml).
+
+version: '0.1'
+summary: A rock that bundles a Java project.
+description: A rock that bundles a Java project.
+license: GPL-3.0
+platforms:
+  amd64:
+
+parts:
+  helloworld:
+    source: helloworld
+    source-type: local
+    build-packages:
+      - openjdk-21-jdk
+      - maven
+    plugin: nil
+    build-environment:
+      - JAVA_HOME: "/usr/lib/jvm/java-21-openjdk-${CRAFT_TARGET_ARCH}"
+    override-build: |
+      mvn package
+      mkdir -p ${CRAFT_PART_INSTALL}/jars
+      cp ${CRAFT_PART_BUILD}/target/*.jar ${CRAFT_PART_INSTALL}/jars
+      craftctl default
+
+  deps:
+    plugin: nil
+    source: https://github.com/vpa1977/chisel-releases
+    source-type: git
+    source-branch: 24.04-openjdk-21-jre-headless
+    override-build: |
+      chisel cut --release ./ --root ${CRAFT_PART_INSTALL} libc6_libs \
+        libgcc-s1_libs \
+        libstdc++6_libs \
+        zlib1g_libs \
+        libnss3_libs \
+        base-files_base
+      craftctl default
+
+  runtime:
+    after:
+      - helloworld
+      - deps
+    plugin: jlink
+    jlink-jars:
+      - jars/helloworld-1.0-SNAPSHOT.jar
