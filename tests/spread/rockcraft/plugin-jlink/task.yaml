@@ -2,6 +2,8 @@ summary: JLink plugin tests
 environment:
   SCENARIO/base_2404: base-2404
   SCENARIO/bare_build_2004: bare-build-2404
+systems:
+  - ubuntu-24.04
 execute: |
   SCENARIO_DIR="${SCENARIO}"
   ROCK_FILE="${SCENARIO}_0.1_amd64.rock"
