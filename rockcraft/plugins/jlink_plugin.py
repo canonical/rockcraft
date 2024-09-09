@@ -58,7 +58,7 @@ class JLinkPlugin(Plugin):
         java_home = (
             "usr/lib/jvm/java-"
             + str(options.jlink_java_version)
-            + "-openjdk-${CRAFT_TARGET_ARCH}/"
+            + "-openjdk-${CRAFT_TARGET_ARCH}"
         )
 
         if len(options.jlink_jars) > 0:

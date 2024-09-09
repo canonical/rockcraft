@@ -86,7 +86,7 @@ class TestPluginJLinkPlugin:
         assert (
             "INSTALL_ROOT=${CRAFT_PART_INSTALL}/usr/lib/jvm/java-"
             + version
-            + "-openjdk-${CRAFT_TARGET_ARCH}/"
+            + "-openjdk-${CRAFT_TARGET_ARCH}"
             in commands
         )
         assert (
