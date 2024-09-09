@@ -105,7 +105,7 @@ execute: |
 
   # [docs:stop-docker-chisel]
   sudo docker stop django-hello-world
-  sudo docker rmi django-hello-world:0.1
+  sudo docker rmi django-hello-world:0.1-chiselled
   # [docs:stop-docker-chisel-end]
 
   # [docs:create-time-app]
