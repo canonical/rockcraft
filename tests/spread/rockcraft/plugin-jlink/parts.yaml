@@ -21,7 +21,7 @@ parts:
     build-environment:
       - JAVA_HOME: "/usr/lib/jvm/java-21-openjdk-${CRAFT_TARGET_ARCH}"
     override-build: |
-      mvn package
+      mvn -Dmaven.compiler.release=8 package
       mkdir -p ${CRAFT_PART_INSTALL}/jars
       cp ${CRAFT_PART_BUILD}/target/*.jar ${CRAFT_PART_INSTALL}/jars
       craftctl default
