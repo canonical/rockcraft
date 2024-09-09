@@ -38,14 +38,14 @@ services:
   nginx:
     override: replace
     startup: disabled
-    command: nginx [ -h ]
+    command: nginx -g 'daemon off;'
     environment:
       TZ: UTC
     on-failure: shutdown
   nginx-debug:
     override: replace
     startup: disabled
-    command: nginx-debug [ -h ]
+    command: nginx-debug -g 'daemon off;'
     environment:
       TZ: UTC
     on-failure: shutdown

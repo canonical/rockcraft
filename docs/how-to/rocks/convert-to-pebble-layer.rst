@@ -55,8 +55,8 @@ which will be used to build your rock, as shown below:
 .. literalinclude:: ../code/convert-to-pebble-layer/rockcraft.yaml
     :language: yaml
 
-This Rockcraft recipe is fully declarative, with the creation of the "nginx"
-user being the only scripted step.
+This Rockcraft recipe is almost fully declarative, with the creation of the
+"nginx" user being the only scripted step.
 
 To reproduce what the reference NGINX Dockerfile is doing, notice the use of
 ``package-repositories`` in this ``rockcraft.yaml`` file, allowing you to also
@@ -125,16 +125,15 @@ And finally, run the container:
     :end-before: [docs:docker-run-end]
     :dedent: 2
 
-Notice the given command ``start nginx``, as this is Pebble's client syntax to
-let the Pebble daemon know that the ``nginx`` service defined in
-``rockcraft.yaml`` (which is disabled by default) should be enabled at startup.
-Otherwise, the Pebble daemon would start without any NGINX service, although
-you could still later on ask for that service to be started (via something like
-``docker exec <container-name> start nginx``).
+The Pebble daemon will start without any NGINX service, although you could
+still later on ask for either service to be started (via something like
+``docker exec <container-name> start nginx``). We could have chosen to make one
+of the services run on startup by changing its corresponding ``startup`` field
+value to ``enabled``.
 
-At this point, your container should be deployed and running the ``nginx``
-service, and you should be able to see the NGINX landing page by accessing
-port 8080 on you localhost:
+Once you start one of the services, your container should be deployed and
+running the ``nginx`` or ``nginx-debug`` service, and you should be able to see
+the NGINX landing page by accessing port 8080 on you localhost:
 
 .. literalinclude:: ../code/convert-to-pebble-layer/task.yaml
     :language: bash
