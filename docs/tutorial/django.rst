@@ -333,8 +333,8 @@ Open the file ``django_hello_world/urls.py`` and insert the following contents:
     :language: python
 
 Since you are creating a new version of your application, go back to the
-tutorial root directory using ``cd ..`` and **open the** ``rockcraft.yaml`` file
-and change the ``version`` (e.g. to ``0.2``).
+tutorial root directory using ``cd ..`` and open the ``rockcraft.yaml`` file and
+change the ``version`` (e.g. to ``0.2``).
 
 .. note::
 
