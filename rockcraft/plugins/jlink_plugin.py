@@ -55,6 +55,12 @@ class JLinkPlugin(Plugin):
 
         commands = []
 
+        java_home = (
+            "usr/lib/jvm/java-"
+            + str(options.jlink_java_version)
+            + "-openjdk-${CRAFT_TARGET_ARCH}/"
+        )
+
         if len(options.jlink_jars) > 0:
             jars = " ".join(["${CRAFT_STAGE}/" + x for x in options.jlink_jars])
             commands.append(f"PROCESS_JARS={jars}")
@@ -78,20 +84,16 @@ class JLinkPlugin(Plugin):
             + """ ${PROCESS_JARS}); else deps=java.base; fi
             """
         )
-        commands.append(
-            "INSTALL_ROOT=${CRAFT_PART_INSTALL}/usr/lib/jvm/java-"
-            + str(options.jlink_java_version)
-            + "-openjdk-${CRAFT_TARGET_ARCH}/"
-        )
+        commands.append("INSTALL_ROOT=${CRAFT_PART_INSTALL}/" + java_home)
 
         commands.append(
             "rm -rf ${INSTALL_ROOT} && jlink --add-modules ${deps} --output ${INSTALL_ROOT}"
         )
         # create /usr/bin/java link
         commands.append(
-            "(cd ${CRAFT_PART_INSTALL} && mkdir -p usr/bin && ln -s --relative usr/lib/jvm/java-"
-            + str(options.jlink_java_version)
-            + "-openjdk-${CRAFT_TARGET_ARCH}/bin/java usr/bin/)"
+            "(cd ${CRAFT_PART_INSTALL} && mkdir -p usr/bin && ln -s --relative "
+            + java_home
+            + "/bin/java usr/bin/)"
         )
         commands.append("mkdir -p ${CRAFT_PART_INSTALL}/etc/ssl/certs/java/")
         # link cacerts
@@ -99,14 +101,10 @@ class JLinkPlugin(Plugin):
             "cp /etc/ssl/certs/java/cacerts ${CRAFT_PART_INSTALL}/etc/ssl/certs/java/cacerts"
         )
         commands.append("cd ${CRAFT_PART_INSTALL}")
+        commands.append("rm -f " + java_home + "/lib/security/cacerts")
         commands.append(
-            "rm -f usr/lib/jvm/java-"
-            + str(options.jlink_java_version)
-            + "-openjdk-${CRAFT_TARGET_ARCH}/lib/security/cacerts"
-        )
-        commands.append(
-            "ln -s --relative etc/ssl/certs/java/cacerts usr/lib/jvm/java-"
-            + str(options.jlink_java_version)
-            + "-openjdk-${CRAFT_TARGET_ARCH}/lib/security/cacerts"
+            "ln -s --relative etc/ssl/certs/java/cacerts "
+            + java_home
+            + "/lib/security/cacerts"
         )
         return commands
