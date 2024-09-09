@@ -73,28 +73,9 @@ strict = false
 module = ["craft_archives"]
 ignore_missing_imports = true
 
-[tool.pylint.messages_control]
-disable = "too-many-ancestors,too-few-public-methods,fixme,unspecified-encoding,use-implicit-booleaness-not-comparison,unnecessary-lambda-assignment,line-too-long,cyclic-import"
-
-[tool.pylint.similarities]
-min-similarity-lines=12
-
-[tool.pylint.format]
-max-line-length = "88"
-max-locals = 16
-
-[tool.pylint.MASTER]
-extension-pkg-whitelist = [
-    "pydantic"
-]
-load-plugins = "pylint_pytest"
-ignore-paths = [
-  "rockcraft/_version.py"
-]
-
 [tool.ruff]
 line-length = 88
-target-version = "py38"
+target-version = "py310"
 src = ["rockcraft", "tests"]
 extend-exclude = [
     "docs",
