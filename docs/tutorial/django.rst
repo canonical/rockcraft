@@ -250,9 +250,9 @@ In ``rockcraft.yaml``, change the ``base`` to ``bare`` and add
     :end-before: [docs:change-base-end]
     :dedent: 2
 
-So that we can compare the size after chiselling, **open the**
-``rockcraft.yaml`` file and change the ``version`` (e.g. to ``0.1-chiselled``).
-Pack the rock with the new ``bare`` :ref:`base <bases_explanation>`:
+So that we can compare the size after chiselling, open the ``rockcraft.yaml``
+file and change the ``version`` (e.g. to ``0.1-chiselled``). Pack the rock with
+the new ``bare`` :ref:`base <bases_explanation>`:
 
 .. literalinclude:: code/django/task.yaml
     :language: bash
