@@ -1,34 +1,46 @@
 We recommend starting from a clean Ubuntu 22.04 installation. If you don't have
 one available, you can create one using `Multipass`_:
 
-.. collapse:: How to create an Ubuntu 22.04 VM with Multipass
+.. tabs::
 
-    Is Multipass_ already installed and active? Check by running
+    .. tab:: Ubuntu
 
-    .. code-block:: bash
+        Is Multipass_ already installed and active? Check by running
 
-        sudo snap services multipass
+        .. code-block:: bash
 
-    If you see the ``multipass`` service but it isn't "active", then you'll
-    need to run ``sudo snap start multipass``. On the other hand, if you get
-    an error saying ``snap "multipass" not found``, then you must install
-    `Multipass <install-multipass_>`_:
+            snap services multipass
 
-    .. code-block:: bash
+        If you see the ``multipass`` service but it isn't "active", then you'll
+        need to run ``sudo snap start multipass``. On the other hand, if you get
+        an error saying ``snap "multipass" not found``, then you must install
+        `Multipass <install-multipass_>`_:
 
-        sudo snap install multipass
+        .. code-block:: bash
 
-    Then you can create the VM with the following command:
+            sudo snap install multipass
 
-    .. code-block:: text
+    .. tab:: Windows
 
-        multipass launch --disk 10G --name rock-dev 22.04
+        See `Multipass installation instructions <install-multipass_>`_, switch
+        to Windows in the drop down.
 
-    Finally, once the VM is up, open a shell into it:
+    .. tab:: macOS
 
-    .. code-block:: bash
+        See `Multipass installation instructions <install-multipass_>`_, switch
+        to macOS in the drop down.
 
-        multipass shell rock-dev
+Then you can create the VM with the following command:
+
+.. code-block:: text
+
+    multipass launch --disk 10G --name rock-dev 22.04
+
+Finally, once the VM is up, open a shell into it:
+
+.. code-block:: bash
+
+    multipass shell rock-dev
 
 ----
 

@@ -17,18 +17,14 @@ execute: |
   pip install -r requirements.txt
   # [docs:create-venv-end]
 
-  # [docs:run-flask]
   flask run -p 8000 &
-  # [docs:run-flask-end]
   retry -n 5 --wait 2 curl localhost:8000
 
   # [docs:curl-flask]
   curl localhost:8000
   # [docs:curl-flask-end]
 
-  # [docs:stop-flask]
   kill $!
-  # [docs:stop-flask-end]
 
   # [docs:create-rockcraft-yaml]
   rockcraft init --profile flask-framework
@@ -44,7 +40,9 @@ execute: |
   # [docs:ls-rock-end]
 
   # [docs:skopeo-copy]
-  sudo rockcraft.skopeo --insecure-policy copy oci-archive:flask-hello-world_0.1_amd64.rock docker-daemon:flask-hello-world:0.1
+  sudo rockcraft.skopeo --insecure-policy \
+    copy oci-archive:flask-hello-world_0.1_amd64.rock \
+    docker-daemon:flask-hello-world:0.1
   # [docs:skopeo-copy-end]
 
   # [docs:docker-images]
@@ -52,7 +50,8 @@ execute: |
   # [docs:docker-images-end]
 
   # [docs:docker-run]
-  sudo docker run --rm -d -p 8000:8000 --name flask-hello-world flask-hello-world:0.1
+  sudo docker run --rm -d -p 8000:8000 \
+    --name flask-hello-world flask-hello-world:0.1
   # [docs:docker-run-end]
   retry -n 5 --wait 2 curl localhost:8000
 
@@ -70,8 +69,11 @@ execute: |
   # [docs:stop-docker-end]
 
   # [docs:change-base]
-  sed -i "s/base: .*/base: bare\nbuild-base: ubuntu@22.04/g" rockcraft.yaml
+  sed -i \
+    "s/base: .*/base: bare\nbuild-base: ubuntu@22.04/g" \
+    rockcraft.yaml
   # [docs:change-base-end]
+  sed -i "s/version: .*/version: 0.1-chiselled/g" rockcraft.yaml
 
   # [docs:chisel-pack]
   rockcraft pack
@@ -82,9 +84,12 @@ execute: |
   # [docs:ls-bare-rock-end]
 
   # [docs:docker-run-chisel]
-  sudo rockcraft.skopeo --insecure-policy copy oci-archive:flask-hello-world_0.1_amd64.rock docker-daemon:flask-hello-world:0.1
-  sudo docker images flask-hello-world:0.1
-  sudo docker run --rm -d -p 8000:8000 --name flask-hello-world flask-hello-world:0.1
+  sudo rockcraft.skopeo --insecure-policy \
+    copy oci-archive:flask-hello-world_0.1-chiselled_amd64.rock \
+    docker-daemon:flask-hello-world:0.1-chiselled
+  sudo docker images flask-hello-world:0.1-chiselled
+  sudo docker run --rm -d -p 8000:8000 \
+    --name flask-hello-world flask-hello-world:0.1-chiselled
   # [docs:docker-run-chisel-end]
   retry -n 5 --wait 2 curl localhost:8000
 
@@ -94,7 +99,7 @@ execute: |
 
   # [docs:stop-docker-chisel]
   sudo docker stop flask-hello-world
-  sudo docker rmi flask-hello-world:0.1
+  sudo docker rmi flask-hello-world:0.1-chiselled
   # [docs:stop-docker-chisel-end]
 
   cat time-app.py > app.py
@@ -103,9 +108,12 @@ execute: |
 
   # [docs:docker-run-update]
   rockcraft pack
-  sudo rockcraft.skopeo --insecure-policy copy oci-archive:flask-hello-world_0.2_amd64.rock docker-daemon:flask-hello-world:0.2
+  sudo rockcraft.skopeo --insecure-policy \
+    copy oci-archive:flask-hello-world_0.2_amd64.rock \
+    docker-daemon:flask-hello-world:0.2
   sudo docker images flask-hello-world:0.2
-  sudo docker run --rm -d -p 8000:8000 --name flask-hello-world flask-hello-world:0.2
+  sudo docker run --rm -d -p 8000:8000 \
+    --name flask-hello-world flask-hello-world:0.2
   # [docs:docker-run-update-end]
   retry -n 5 --wait 2 curl localhost:8000/time
 
@@ -123,5 +131,8 @@ execute: |
   deactivate
   rm -rf .venv
   # delete all the files created during the tutorial
-  rm flask-hello-world_0.1_amd64.rock flask-hello-world_0.2_amd64.rock rockcraft.yaml app.py requirements.txt
+  rm flask-hello-world_0.1_amd64.rock \
+    flask-hello-world_0.1-chiselled_amd64.rock \
+    flask-hello-world_0.2_amd64.rock \
+    rockcraft.yaml app.py requirements.txt
   # [docs:cleanup-end]
