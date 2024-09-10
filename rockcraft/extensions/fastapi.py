@@ -21,7 +21,7 @@ import os
 import pathlib
 import posixpath
 import re
-from typing import Any, Dict, Tuple
+from typing import Any
 
 from overrides import override
 
@@ -37,7 +37,7 @@ class FastAPIFramework(Extension):
 
     @staticmethod
     @override
-    def get_supported_bases() -> Tuple[str, ...]:
+    def get_supported_bases() -> tuple[str, ...]:
         """Return supported bases."""
         return "bare", "ubuntu@24.04"
 
@@ -52,7 +52,7 @@ class FastAPIFramework(Extension):
         """Return the root snippet to apply."""
         self._check_project()
 
-        snippet: Dict[str, Any] = {
+        snippet: dict[str, Any] = {
             "run_user": "_daemon_",
             "services": {
                 "fastapi": {
@@ -97,7 +97,7 @@ class FastAPIFramework(Extension):
         if self.yaml_data["base"] == "bare":
             stage_packages = ["python3.12-venv_ensurepip"]
 
-        parts: Dict[str, Any] = {
+        parts: dict[str, Any] = {
             "fastapi-framework/dependencies": {
                 "plugin": "python",
                 "stage-packages": stage_packages,
@@ -124,7 +124,7 @@ class FastAPIFramework(Extension):
             }
         return parts
 
-    def _get_install_app_part(self) -> Dict[str, Any]:
+    def _get_install_app_part(self) -> dict[str, Any]:
         source_files = [f.name for f in sorted(self.project_root.iterdir())]
         # if prime is not in exclude mode, use it to generate the stage and organize
         if self._app_prime and self._app_prime[0] and self._app_prime[0][0] != "-":
