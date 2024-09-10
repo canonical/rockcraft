@@ -130,7 +130,8 @@ tutorial.
     on an ``amd64`` platform, the name of the ``.rock`` file will be different
     for you.
 
-    The size of the rock may vary for you.
+    The size of your rock may vary depending on factors like the architecture
+    you are building on and the packages installed at the time of packing.
 
 Run the Django rock with Docker
 ===============================
