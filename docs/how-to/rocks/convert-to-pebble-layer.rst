@@ -127,7 +127,7 @@ And finally, run the container:
 
 The Pebble daemon will start without any NGINX service, although you could
 still later on ask for either service to be started. For instance, you can
-start ``nginx`` service by typing:
+start the ``nginx`` service by typing:
 
 .. literalinclude:: ../code/convert-to-pebble-layer/task.yaml
     :language: bash
