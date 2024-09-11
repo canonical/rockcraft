@@ -126,10 +126,17 @@ And finally, run the container:
     :dedent: 2
 
 The Pebble daemon will start without any NGINX service, although you could
-still later on ask for either service to be started (via something like
-``docker exec <container-name> start nginx``). We could have chosen to make one
-of the services run on startup by changing its corresponding ``startup`` field
-value to ``enabled``.
+still later on ask for either service to be started. For instance, you can
+start ``nginx`` service by typing:
+
+.. literalinclude:: ../code/convert-to-pebble-layer/task.yaml
+    :language: bash
+    :start-after: [docs:service-start]
+    :end-before: [docs:service-start-end]
+    :dedent: 2
+
+We could have chosen to make one of the two services run on startup by changing
+its corresponding ``startup`` field value to ``enabled``.
 
 Once you start one of the services, your container should be deployed and
 running the ``nginx`` or ``nginx-debug`` service, and you should be able to see

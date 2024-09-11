@@ -22,7 +22,9 @@ execute: |
   docker run -d --name nginx-pebble-service -p 8000:80 custom-nginx-rock:latest
   # [docs:docker-run-end]
 
+  # [docs:service-start]
   docker exec nginx-pebble-service pebble start nginx
+  # [docs:service-start-end]
 
   # [docs:curl]
   curl localhost:8000
