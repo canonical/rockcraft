@@ -72,6 +72,7 @@ lto
 LTS
 LXD
 lxd
+macOS
 Multipass
 multipass
 nano
