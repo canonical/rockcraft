@@ -357,7 +357,7 @@ The updated application should respond with the current date and time (e.g.
 .. note::
 
     If you are getting a ``404`` for the ``/time`` endpoint, check the
-    :ref:`troubleshooting` steps below.
+    :ref:`troubleshooting-flask` steps below.
 
 Cleanup
 ~~~~~~~
@@ -402,7 +402,7 @@ following:
 
 ----
 
-.. _troubleshooting:
+.. _troubleshooting-flask:
 
 Troubleshooting
 ===============
