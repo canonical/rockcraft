@@ -25,3 +25,4 @@ code into container applications:
    3. Containerise a PyPI package <pypi-package.rst>
    4. Bundle a Node.js app within a rock <node-app.rst>
    5. Build a rock for a Flask application <flask.rst>
+   6. Build a rock for a Django application <django.rst>
