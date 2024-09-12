@@ -3,7 +3,7 @@
 Build a rock for a Flask application
 ------------------------------------
 
-In this tutorial you will create a simple Flask application and learn how to
+In this tutorial we will create a simple Flask application and learn how to
 containerise it in a rock, using Rockcraft's ``flask-framework``
 :ref:`extension <flask-framework-reference>`.
 
@@ -66,12 +66,12 @@ endpoint. You may need a new terminal for this, if you are using Multipass use
 
 The Flask application should respond with ``Hello, world!``.
 
-The Flask application looks good, so you can stop it for now using ``ctrl+C``.
+The Flask application looks good, so stop it for now using ``ctrl+C``.
 
 Pack the Flask application into a rock
 ======================================
 
-First, you'll need a ``rockcraft.yaml`` file. Rockcraft will automate its
+First, we'll need a ``rockcraft.yaml`` file. Rockcraft will automate its
 creation and tailoring for a Flask application by using the
 ``flask-framework`` profile:
 
@@ -130,7 +130,7 @@ tutorial.
 Run the Flask rock with Docker
 ==============================
 
-You already have the rock as an `OCI <OCI_image_spec_>`_ archive. Now you'll
+We already have the rock as an `OCI <OCI_image_spec_>`_ archive. Now we
 need to load it into Docker:
 
 .. literalinclude:: code/flask/task.yaml
@@ -147,7 +147,7 @@ Check that the image was successfully loaded into Docker:
     :end-before: [docs:docker-images-end]
     :dedent: 2
 
-The output should list your Flask container image, along with its tag, ID and
+The output should list the Flask container image, along with its tag, ID and
 size:
 
 ..  code-block:: text
@@ -160,7 +160,7 @@ size:
     The size of the image reported by Docker is the uncompressed size which is
     larger than the size of the compressed ``.rock`` file.
 
-Now you're finally ready to run the rock and test your containerised Flask
+Now we're finally ready to run the rock and test your containerised Flask
 application:
 
 .. literalinclude:: code/flask/task.yaml
@@ -183,7 +183,7 @@ The Flask application should again respond with ``Hello, world!``.
 View the application logs
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-When deploying your Flask rock, you can always get the application logs via
+When deploying the Flask rock, you can always get the application logs via
 ``pebble``:
 
 .. literalinclude:: code/flask/task.yaml
@@ -214,8 +214,8 @@ You can also choose to follow the logs by using the ``-f`` option with the
 Cleanup
 ~~~~~~~
 
-Now you have a fully functional rock for you Flask application! This concludes
-the first part of this tutorial, so you can stop the container and remove the
+Now we have a fully functional rock for a Flask application! This concludes
+the first part of this tutorial, so we'll stop the container and remove the
 respective image for now:
 
 .. literalinclude:: code/flask/task.yaml
@@ -238,7 +238,7 @@ in a much smaller rock with a reduced attack surface.
     you may prefer non-chiselled images as they will include additional
     development tooling (such as for debugging).
 
-The first step towards chiselling your rock is to ensure you are using a
+The first step towards chiselling the rock is to ensure we are using a
 ``bare`` :ref:`base <bases_explanation>`.
 In ``rockcraft.yaml``, change the ``base`` to ``bare`` and add
 ``build-base: ubuntu@22.04``:
@@ -275,7 +275,7 @@ As before, verify that the new rock was created:
 You'll verify that the new Flask rock is now approximately **30% smaller**
 in size! And that's just because of the simple change of ``base``.
 
-And the functionality is still the same. As before, you can confirm this by
+And the functionality is still the same. As before, we can confirm this by
 running the rock with Docker
 
 .. literalinclude:: code/flask/task.yaml
@@ -298,7 +298,7 @@ Unsurprisingly, the Flask application should still respond with
 Cleanup
 ~~~~~~~
 
-And that's it. You can now stop the container and remove the corresponding
+And that's it. We can now stop the container and remove the corresponding
 image:
 
 .. literalinclude:: code/flask/task.yaml
@@ -312,8 +312,8 @@ image:
 Update Flask application
 ========================
 
-As a final step, let's say you want to update your application. For example,
-you want to add a new ``/time`` endpoint which returns the current time.
+As a final step, let's update our application. For example,
+we want to add a new ``/time`` endpoint which returns the current time.
 
 Start by opening the ``app.py`` file in a text editor and update the code to
 look like the following:
@@ -321,7 +321,7 @@ look like the following:
 .. literalinclude:: code/flask/time_app.py
     :language: python
 
-Since you are creating a new version of your application, **open the**
+Since we are creating a new version of the application, **open the**
 ``rockcraft.yaml`` file and change the ``version`` (e.g. to ``0.2``).
 
 .. note::
@@ -362,7 +362,7 @@ The updated application should respond with the current date and time (e.g.
 Cleanup
 ~~~~~~~
 
-You can now stop the container and remove the corresponding image:
+We can now stop the container and remove the corresponding image:
 
 .. literalinclude:: code/flask/task.yaml
     :language: bash
@@ -373,7 +373,7 @@ You can now stop the container and remove the corresponding image:
 Reset your environment
 ======================
 
-You've reached the end of this tutorial.
+We've reached the end of this tutorial.
 
 If you'd like to reset your working environment, you can simply run the
 following:
