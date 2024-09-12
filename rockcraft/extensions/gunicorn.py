@@ -339,6 +339,7 @@ class DjangoFramework(_GunicornBase):
                 "plugin": "dump",
                 "source": self.name,
                 "organize": {"*": "django/app/", ".*": "django/app/"},
+                "stage": ["-django/app/db.sqlite3"],
             }
         return {}
 

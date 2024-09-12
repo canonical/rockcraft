@@ -481,6 +481,7 @@ def test_django_extension_default(tmp_path, django_input_yaml):
                 "organize": {"*": "django/app/", ".*": "django/app/"},
                 "plugin": "dump",
                 "source": "foo_bar",
+                "stage": ["-django/app/db.sqlite3"],
             },
             "django-framework/runtime": {
                 "plugin": "nil",
