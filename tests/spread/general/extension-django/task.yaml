@@ -1,11 +1,16 @@
 summary: django extension test
 
 environment:
+  SCENARIO/base_2204: ubuntu-22.04
+  SCENARIO/base_2404: ubuntu-24.04
   ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS: "true"
 
 execute: |
   
   run_rockcraft init --name example-django --profile django-framework
+
+  sed -i "s/base: .*/base: ${SCENARIO//-/@}/g" rockcraft.yaml
+
   run_rockcraft pack
 
   test -f example-django_0.1_amd64.rock
