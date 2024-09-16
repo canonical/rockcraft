@@ -39,3 +39,5 @@ restore: |
   rm -f example-django_0.1_amd64.rock
   docker rmi -f example-django
   docker rm -f example-django-container
+  rm -f "*.rock" rockcraft.yaml
+  docker system prune -a -f
