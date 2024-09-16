@@ -21,7 +21,7 @@ import pathlib
 
 
 def has_global_variable(source_file: pathlib.Path, variable_name: str) -> bool:
-    """Check the given Python source code has a global variable defined."""
+    """Check whether the given Python source code has a global variable defined."""
     tree = ast.parse(source_file.read_text(encoding="utf-8"), filename=source_file)
     for node in ast.iter_child_nodes(tree):
         if isinstance(node, ast.Assign):
