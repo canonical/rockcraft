@@ -14,8 +14,8 @@ A statsd-exporter is installed alongside the Gunicorn server to export Gunicorn
 server metrics.
 
 .. note::
-    The Django extension is compatible with the ``bare`` and ``ubuntu@22.04``
-    bases.
+    The Django extension is compatible with the ``bare``, ``ubuntu@22.04``
+    and ``ubuntu@24.04`` bases.
 
 Project requirements
 ====================

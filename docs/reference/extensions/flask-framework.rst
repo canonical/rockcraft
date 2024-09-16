@@ -14,7 +14,7 @@ server metrics.
 
 .. note::
     The Flask extension is compatible with the ``bare`` and ``ubuntu@22.04``
-    bases.
+    and ``ubuntu@24.04`` bases.
 
 Project requirements
 ====================
