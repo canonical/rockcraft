@@ -95,16 +95,4 @@ class JLinkPlugin(Plugin):
             + java_home
             + "/bin/java usr/bin/)"
         )
-        commands.append("mkdir -p ${CRAFT_PART_INSTALL}/etc/ssl/certs/java/")
-        # link cacerts
-        commands.append(
-            "cp /etc/ssl/certs/java/cacerts ${CRAFT_PART_INSTALL}/etc/ssl/certs/java/cacerts"
-        )
-        commands.append("cd ${CRAFT_PART_INSTALL}")
-        commands.append("rm -f " + java_home + "/lib/security/cacerts")
-        commands.append(
-            "ln -s --relative etc/ssl/certs/java/cacerts "
-            + java_home
-            + "/lib/security/cacerts"
-        )
         return commands
