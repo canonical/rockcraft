@@ -131,7 +131,7 @@ class GoFramework(Extension):
             "organize": organize,
         }
 
-        if not self._check_go_overriden():
+        if not self._check_go_overridden():
             build_snaps = install_app.get("build-snaps", [])
             build_snaps.append("go")
             install_app_part["build-snaps"] = build_snaps
@@ -142,7 +142,7 @@ class GoFramework(Extension):
 
         return install_app_part
 
-    def _check_go_overriden(self) -> bool:
+    def _check_go_overridden(self) -> bool:
         """Check if the user overrode the go snap or package for the build step."""
         install_app = self._get_nested(
             self.yaml_data, ["parts", "go-framework/install-app"]

@@ -171,8 +171,8 @@ def test_run_init_flask(mocker, emitter, monkeypatch, new_dir, tmp_path):
 
             #   flask-framework/install-app:
             #     prime:
-            #       # by default, only the files in app/, templates/, static/, migrate,
-            #       # migrate.sh and app.py are copied into the image. You can modify the list
+            #       # by default, only the files in app/, templates/, static/, migrate, migrate.sh,
+            #       # migrate.py and app.py are copied into the image. You can modify the list
             #       # below to override the default list and include or exclude specific
             #       # files/directories in your project.
             #       # note: prefix each entry with "flask/app/" followed by the local path.
