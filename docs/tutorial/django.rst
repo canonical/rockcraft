@@ -220,7 +220,7 @@ You can also choose to follow the logs by using the ``-f`` option with the
 Cleanup
 ~~~~~~~
 
-Now we have a fully functional rock for you Django application! This concludes
+Now we have a fully functional rock for our Django application! This concludes
 the first part of this tutorial, so we can stop the container and remove the
 respective image for now:
 
