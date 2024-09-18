@@ -3,7 +3,7 @@
 Build a rock for a Django application
 -------------------------------------
 
-In this tutorial you will create a simple Django application and learn how to
+In this tutorial, we'll create a simple Django application and learn how to
 containerise it in a rock, using Rockcraft's ``django-framework``
 :ref:`extension <django-framework-reference>`.
 
@@ -39,6 +39,10 @@ install ``python3-venv`` and create a virtual environment:
     :end-before: [docs:create-venv-end]
     :dedent: 2
 
+.. note::
+   A pop-up window may appear when installing ``python-venv``. Select ``OK`` or press enter
+   to proceed to the next step.
+
 Create a new project using ``django-admin``:
 
 .. literalinclude:: code/django/task.yaml
@@ -73,7 +77,7 @@ The Django application looks good, so you can stop it for now using ``ctrl+C``.
 Pack the Django application into a rock
 =======================================
 
-First, you'll need a ``rockcraft.yaml`` file. Rockcraft will automate its
+First, we'll need a ``rockcraft.yaml`` file. Rockcraft will automate its
 creation and tailoring for a Django application by using the
 ``django-framework`` profile:
 
@@ -136,7 +140,7 @@ tutorial.
 Run the Django rock with Docker
 ===============================
 
-You already have the rock as an `OCI <OCI_image_spec_>`_ archive. Now you'll
+We already have the rock as an `OCI <OCI_image_spec_>`_ archive. Now we'll
 need to load it into Docker:
 
 .. literalinclude:: code/django/task.yaml
@@ -166,7 +170,7 @@ size:
     The size of the image reported by Docker is the uncompressed size which is
     larger than the size of the compressed ``.rock`` file.
 
-Now you're ready to run the rock and test your containerised Django application:
+Now we're ready to run the rock and test your containerised Django application:
 
 .. literalinclude:: code/django/task.yaml
     :language: text
@@ -216,8 +220,8 @@ You can also choose to follow the logs by using the ``-f`` option with the
 Cleanup
 ~~~~~~~
 
-Now you have a fully functional rock for you Django application! This concludes
-the first part of this tutorial, so you can stop the container and remove the
+Now we have a fully functional rock for you Django application! This concludes
+the first part of this tutorial, so we can stop the container and remove the
 respective image for now:
 
 .. literalinclude:: code/django/task.yaml
@@ -272,7 +276,7 @@ As before, verify that the new rock was created:
 You'll verify that the new Django rock is now approximately **15% smaller**
 in size! And that's just because of the simple change of ``base``.
 
-And the functionality is still the same. As before, you can confirm this by
+And the functionality is still the same. As before, we can confirm this by
 running the rock with Docker:
 
 .. literalinclude:: code/django/task.yaml
@@ -295,7 +299,7 @@ Unsurprisingly, the Django application should still respond with
 Cleanup
 ~~~~~~~
 
-And that's it. You can now stop the container and remove the corresponding
+And that's it. We can now stop the container and remove the corresponding
 image:
 
 .. literalinclude:: code/django/task.yaml
@@ -309,8 +313,8 @@ image:
 Update Django application
 =========================
 
-As a final step, let's say you want to update your application. For example,
-you want to add a new ``/time/`` endpoint which returns the current time.
+As a final step, let's update our application. For example,
+we want to add a new ``/time/`` endpoint which returns the current time.
 
 .. literalinclude:: code/django/task.yaml
     :language: bash
@@ -318,7 +322,7 @@ you want to add a new ``/time/`` endpoint which returns the current time.
     :end-before: [docs:create-time-app-end]
     :dedent: 2
 
-Open the file ``time_app/views.py`` and insert the following contents:
+Open the file ``time_app/views.py`` and replace its contents with the following:
 
 .. literalinclude:: code/django/time_app_views.py
     :language: python
@@ -328,12 +332,12 @@ Create the file ``time_app/urls.py`` with the following contents:
 .. literalinclude:: code/django/time_app_urls.py
     :language: python
 
-Open the file ``django_hello_world/urls.py`` and insert the following contents:
+Open the file ``django_hello_world/urls.py`` and replace its contents with the following:
 
 .. literalinclude:: code/django/urls.py
     :language: python
 
-Since you are creating a new version of your application, go back to the
+Since we are creating a new version of our application, go back to the
 tutorial root directory using ``cd ..`` and open the ``rockcraft.yaml`` file and
 change the ``version`` (e.g. to ``0.2``).
 
@@ -375,7 +379,7 @@ The updated application should respond with the current date and time (e.g.
 Cleanup
 ~~~~~~~
 
-You can now stop the container and remove the corresponding image:
+We can now stop the container and remove the corresponding image:
 
 .. literalinclude:: code/django/task.yaml
     :language: bash
@@ -386,7 +390,7 @@ You can now stop the container and remove the corresponding image:
 Reset your environment
 ======================
 
-You've reached the end of this tutorial.
+We've reached the end of this tutorial.
 
 If you'd like to reset your working environment, you can simply run the
 following:
