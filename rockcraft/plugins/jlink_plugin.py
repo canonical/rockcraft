@@ -55,11 +55,7 @@ class JLinkPlugin(Plugin):
 
         commands = []
 
-        java_home = (
-            "usr/lib/jvm/java-"
-            + str(options.jlink_java_version)
-            + "-openjdk-${CRAFT_TARGET_ARCH}"
-        )
+        java_home = f"usr/lib/jvm/java-{options.jlink_java_version}-openjdk-${{CRAFT_TARGET_ARCH}}"
 
         if len(options.jlink_jars) > 0:
             jars = " ".join(["${CRAFT_STAGE}/" + x for x in options.jlink_jars])
@@ -77,22 +73,21 @@ class JLinkPlugin(Plugin):
         commands.append("CPATH=$(echo ${CPATH}:. | sed s'/[[:space:]]/:/'g)")
         commands.append("echo ${CPATH}")
         commands.append(
-            """if [ "x${PROCESS_JARS}" != "x" ]; then
-                deps=$(jdeps --class-path=${CPATH} -q --recursive  --ignore-missing-deps \
-                    --print-module-deps --multi-release """
-            + str(options.jlink_java_version)
-            + """ ${PROCESS_JARS}); else deps=java.base; fi
+            f"""if [ "x${{PROCESS_JARS}}" != "x" ]; then
+                deps=$(jdeps --class-path=${{CPATH}} -q --recursive  --ignore-missing-deps \
+                    --print-module-deps --multi-release {options.jlink_java_version} ${{PROCESS_JARS}})
+                else
+                    deps=java.base
+                fi
             """
         )
-        commands.append("INSTALL_ROOT=${CRAFT_PART_INSTALL}/" + java_home)
+        commands.append(f"INSTALL_ROOT=${{CRAFT_PART_INSTALL}}/{java_home}")
 
         commands.append(
             "rm -rf ${INSTALL_ROOT} && jlink --add-modules ${deps} --output ${INSTALL_ROOT}"
         )
         # create /usr/bin/java link
         commands.append(
-            "(cd ${CRAFT_PART_INSTALL} && mkdir -p usr/bin && ln -s --relative "
-            + java_home
-            + "/bin/java usr/bin/)"
+            f"(cd ${{CRAFT_PART_INSTALL}} && mkdir -p usr/bin && ln -s --relative {java_home}/bin/java usr/bin/)"
         )
         return commands

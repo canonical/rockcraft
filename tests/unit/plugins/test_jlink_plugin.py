@@ -75,11 +75,12 @@ class TestPluginJLinkPlugin:
         commands = plugin.get_build_commands()
         assert "PROCESS_JARS=$(find ${CRAFT_STAGE} -type f -name *.jar)" in commands
         assert (
-            """if [ "x${PROCESS_JARS}" != "x" ]; then
-                deps=$(jdeps --class-path=${CPATH} -q --recursive  --ignore-missing-deps \
-                    --print-module-deps --multi-release """
-            + version
-            + """ ${PROCESS_JARS}); else deps=java.base; fi
+            f"""if [ "x${{PROCESS_JARS}}" != "x" ]; then
+                deps=$(jdeps --class-path=${{CPATH}} -q --recursive  --ignore-missing-deps \
+                    --print-module-deps --multi-release {version} ${{PROCESS_JARS}})
+                else
+                    deps=java.base
+                fi
             """
             in commands
         )
