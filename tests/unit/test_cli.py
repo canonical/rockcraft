@@ -171,8 +171,8 @@ def test_run_init_flask(mocker, emitter, monkeypatch, new_dir, tmp_path):
 
             #   flask-framework/install-app:
             #     prime:
-            #       # by default, only the files in app/, templates/, static/, migrate,
-            #       # migrate.sh and app.py are copied into the image. You can modify the list
+            #       # by default, only the files in app/, templates/, static/, migrate, migrate.sh,
+            #       # migrate.py and app.py are copied into the image. You can modify the list
             #       # below to override the default list and include or exclude specific
             #       # files/directories in your project.
             #       # note: prefix each entry with "flask/app/" followed by the local path.
@@ -182,7 +182,7 @@ def test_run_init_flask(mocker, emitter, monkeypatch, new_dir, tmp_path):
             #       - flask/app/templates
             #       - flask/app/static
 
-            # you may need packages to build a python package. Add them here if necessary.
+            # you may need Ubuntu packages to build a python dependency. Add them here if necessary.
             #   flask-framework/dependencies:
             #     build-packages:
             #       # for example, if you need pkg-config and libxmlsec1-dev to build one
