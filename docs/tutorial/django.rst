@@ -40,8 +40,8 @@ install ``python3-venv`` and create a virtual environment:
     :dedent: 2
 
 .. note::
-   A pop-up window may appear when installing ``python-venv``. Select ``OK`` or press enter
-   to proceed to the next step.
+   A pop-up window may appear when installing ``python-venv``. Select ``OK`` 
+   or press enter to proceed to the next step.
 
 Create a new project using ``django-admin``:
 
@@ -332,7 +332,8 @@ Create the file ``time_app/urls.py`` with the following contents:
 .. literalinclude:: code/django/time_app_urls.py
     :language: python
 
-Open the file ``django_hello_world/urls.py`` and replace its contents with the following:
+Open the file ``django_hello_world/urls.py`` and replace its contents with 
+the following:
 
 .. literalinclude:: code/django/urls.py
     :language: python
