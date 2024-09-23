@@ -22,8 +22,9 @@ import re
 import textwrap
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any
 
-from craft_application.commands import AppCommand
+from craft_application.commands import InitCommand as BaseInitCommand
 from craft_cli import emit
 from overrides import overrides  # type: ignore[reportUnknownVariableType]
 
@@ -57,33 +58,11 @@ class _InitProfile:
     doc_slug: str | None = None
 
 
-class InitCommand(AppCommand):
+class InitCommand(BaseInitCommand):
     """Initialize a rockcraft project."""
 
     _PROFILES = {
-        "simple": _InitProfile(
-            rockcraft_yaml=textwrap.dedent(
-                """\
-                name: {name}
-                # see {versioned_url}/explanation/bases/
-                # for more information about bases and using 'bare' bases for chiselled rocks
-                base: ubuntu@22.04 # the base environment for this rock
-                version: '0.1' # just for humans. Semantic versioning is recommended
-                summary: Single-line elevator pitch for your amazing rock # 79 char long summary
-                description: |
-                    This is {name}'s description. You have a paragraph or two to tell the
-                    most important story about it. Keep it under 100 words though,
-                    we live in tweetspace and your description wants to look good in the
-                    container registries out there.
-                platforms: # the platforms this rock should be built on and run on
-                    amd64:
-
-                parts:
-                    my-part:
-                        plugin: nil
-                """
-            )
-        ),
+        "simple": None,
         "flask-framework": _InitProfile(
             rockcraft_yaml=textwrap.dedent(
                 """\
@@ -341,20 +320,12 @@ class InitCommand(AppCommand):
     }
     _DEFAULT_PROFILE = "simple"
 
-    name = "init"
     help_msg = "Initialize a rockcraft project"
-    overview = textwrap.dedent(
-        """
-        Initialize a rockcraft project by creating a minimalist,
-        yet functional, rockcraft.yaml file in the current directory.
-        """
-    )
 
+    @overrides
     def fill_parser(self, parser: argparse.ArgumentParser) -> None:
         """Specify command's specific parameters."""
-        parser.add_argument(
-            "--name", help="The name of the rock; defaults to the directory name"
-        )
+        super().fill_parser(parser)
         parser.add_argument(
             "--profile",
             choices=list(self._PROFILES),
@@ -363,44 +334,51 @@ class InitCommand(AppCommand):
         )
 
     @overrides
-    def run(self, parsed_args: "argparse.Namespace") -> None:
-        """Run the command."""
+    def _get_context(self, parsed_args: argparse.Namespace) -> dict[str, Any]:
+        context = super()._get_context(parsed_args)
+        name = context["name"]
+        emit.debug(f"Set project name to '{name}'")
+        versioned_docs_url = self._app.versioned_docs_url
+
+        # Get the init profile
+        init_profile = self._PROFILES[parsed_args.profile]
+        # Setup the reference documentation link if available
+        profile_reference_docs: str | None = None
+        if versioned_docs_url and init_profile:
+            profile_reference_docs = versioned_docs_url + init_profile
+        context.update(
+            {
+                "snake_name": name.replace("-", "_").lower(),
+                "profile_reference_docs": profile_reference_docs,
+                "versioned_url": versioned_docs_url,
+            }
+        )
+        return context
+
+    @overrides
+    def _get_name(self, parsed_args: argparse.Namespace) -> str:
+        """Get name of the package that is about to be initialized.
+
+        Check if name is set explicitly or fallback to project_dir.
+        """
         name = parsed_args.name
         if name and not re.match(PROJECT_NAME_REGEX, name):
             raise errors.RockcraftInitError(
                 f"'{name}' is not a valid rock name. " + MESSAGE_INVALID_NAME
             )
+        name = super()._get_name(parsed_args)
+        if not re.match(PROJECT_NAME_REGEX, name):
+            name = "my-rock-name"
+        return name
 
-        if not name:
-            name = pathlib.Path.cwd().name
-            if not re.match(PROJECT_NAME_REGEX, name):
-                name = "my-rock-name"
-            emit.debug(f"Set project name to '{name}'")
+    @overrides
+    def _get_template_dir(
+        self,
+        parsed_args: argparse.Namespace,
+    ) -> pathlib.Path:
+        """Return the path to the template directory."""
+        return super()._get_template_dir(parsed_args) / self._get_profile(parsed_args)
 
-        # Get the init profile
-        init_profile = self._PROFILES[parsed_args.profile]
-
-        versioned_docs_url = self._app.versioned_docs_url
-
-        # Setup the reference documentation link if available
-        profile_reference_docs: str | None = None
-        if versioned_docs_url and init_profile.doc_slug:
-            profile_reference_docs = versioned_docs_url + init_profile.doc_slug
-
-        # Format the template, all templates should be tested to avoid risk of
-        # expecting documentation when there isn't any set
-        context = {
-            "name": name,
-            "snake_name": name.replace("-", "_").lower(),
-            "profile_reference_docs": profile_reference_docs,
-            "versioned_url": versioned_docs_url,
-        }
-        rockcraft_yaml_path = init(init_profile.rockcraft_yaml.format(**context))
-
-        message = f"Created {str(rockcraft_yaml_path)!r}."
-        if profile_reference_docs:
-            message += (
-                f"\nGo to {profile_reference_docs} to read more about the "
-                f"{parsed_args.profile!r} profile."
-            )
-        emit.message(message)
+    def _get_profile(self, parsed_args: argparse.Namespace) -> str:
+        """Return selected profile."""
+        return parsed_args.profile
