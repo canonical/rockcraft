@@ -338,7 +338,7 @@ the following:
 .. literalinclude:: code/django/urls.py
     :language: python
 
-Since we are creating a new version of our application, go back to the
+Since we are creating a new version of the application, go back to the
 tutorial root directory using ``cd ..`` and open the ``rockcraft.yaml`` file and
 change the ``version`` (e.g. to ``0.2``).
 
