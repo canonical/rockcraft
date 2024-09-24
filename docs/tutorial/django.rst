@@ -39,10 +39,6 @@ install ``python3-venv`` and create a virtual environment:
     :end-before: [docs:create-venv-end]
     :dedent: 2
 
-.. note::
-   A pop-up window may appear when installing ``python-venv``. Select ``OK``
-   or press enter to proceed to the next step.
-
 Create a new project using ``django-admin``:
 
 .. literalinclude:: code/django/task.yaml
