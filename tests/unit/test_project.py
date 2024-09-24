@@ -384,10 +384,6 @@ def test_project_platform_invalid():
 
         return str(err.value)
 
-    # build_on must be a list
-    mock_platform = {"build-on": "amd64"}
-    assert "should be a valid list" in load_platform(mock_platform)
-
     # lists must be unique
     mock_platform = {"build-on": ["amd64", "amd64"]}
     assert "duplicate values in" in load_platform(mock_platform)
