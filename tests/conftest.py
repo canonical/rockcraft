@@ -146,7 +146,7 @@ def default_factory(default_project, default_build_plan):
         app=APP_METADATA,
         project=default_project,
     )
-    factory.set_kwargs("image", work_dir=Path("work"), build_plan=default_build_plan)
+    factory.update_kwargs("image", work_dir=Path("work"), build_plan=default_build_plan)
     return factory
 
 

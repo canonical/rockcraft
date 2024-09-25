@@ -37,13 +37,13 @@ def run_mocked_lifecycle(
     """Run a project's lifecycle with a mocked base image."""
 
     factory = RockcraftServiceFactory(APP_METADATA)
-    factory.set_kwargs(
+    factory.update_kwargs(
         "lifecycle",
         work_dir=work_dir,
         cache_dir=work_dir / "cache_dir",
         build_plan=build_plan,
     )
-    factory.set_kwargs(
+    factory.update_kwargs(
         "image",
         work_dir=work_dir,
         build_plan=build_plan,
