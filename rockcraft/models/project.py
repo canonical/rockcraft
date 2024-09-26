@@ -225,8 +225,7 @@ class BuildPlanner(BaseBuildPlanner):
     @override
     def get_build_plan(self) -> list[BuildInfo]:
         platforms = typing.cast(
-            # https://github.com/canonical/craft-platforms/issues/43
-            craft_platforms.Platforms,  # pyright: ignore[reportPrivateImportUsage]
+            craft_platforms.Platforms,
             {name: platform.marshal() for name, platform in self.platforms.items()},
         )
         build_infos = rock.get_rock_build_plan(
