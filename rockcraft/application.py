@@ -53,12 +53,12 @@ class Rockcraft(Application):
 
     @override
     def _configure_services(self, provider_name: str | None) -> None:
-        self.services.set_kwargs(
+        self.services.update_kwargs(
             "image",
             work_dir=self._work_dir,
             build_plan=self._build_plan,
         )
-        self.services.set_kwargs(
+        self.services.update_kwargs(
             "package",
             build_plan=self._build_plan,
         )
