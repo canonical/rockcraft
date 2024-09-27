@@ -64,9 +64,7 @@ class SpringBootFramework(Extension):
 
     def get_root_snippet(self) -> Dict[str, Any]:
         self._check_project()
-        return {
-            "run_user": "_daemon_",
-        }
+        return {}
 
     def get_runtime_deps_part(self) -> Dict[str, Any]:
         if "spring-boot-framework/runtime-deps" not in self.yaml_data.get("parts", {}):
