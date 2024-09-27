@@ -22,5 +22,3 @@ execute: |
   docker run --rm $IMAGE exec /bin/python3 -m black --version
   docker run --rm $IMAGE exec /usr/bin/python3 -m black --version
   docker run --rm $IMAGE exec python3 -m black --version
-
-  docker system prune -a -f
