@@ -312,6 +312,12 @@ class DjangoFramework(_GunicornBase):
         """Return the wsgi framework name, e.g. flask, django."""
         return "django"
 
+    @staticmethod
+    @override
+    def is_experimental(base: str | None) -> bool:
+        """Check if the extension is in an experimental state."""
+        return False
+
     @override
     def gen_install_app_part(self) -> dict[str, Any]:
         """Return the prime list for the Flask project."""

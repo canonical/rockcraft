@@ -109,9 +109,6 @@ Pack the rock:
 
     Depending on your network, this step can take a couple of minutes to finish.
 
-    ``ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS`` is required whilst the Django
-    extension is experimental.
-
 Once Rockcraft has finished packing the Django rock, you'll find a new file in
 your working directory (an `OCI <OCI_image_spec_>`_ archive) with the ``.rock``
 extension:
