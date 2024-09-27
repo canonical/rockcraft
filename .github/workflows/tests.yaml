@@ -77,11 +77,14 @@ jobs:
 
       - name: Install dependencies
         run: |
+          echo "::group::snap install"
+          sudo snap install chisel --edge
+          echo "::endgroup::"
           echo "::group::apt-get update"
           sudo apt-get update
           echo "::endgroup::"
           echo "::group::apt-get install..."
-          sudo apt-get install -y python3 python3-dev libapt-pkg-dev libyaml-dev umoci
+          sudo apt-get install -y python3 python3-dev libapt-pkg-dev libyaml-dev umoci git openjdk-21-jdk
           echo "::endgroup::"
           echo "::group::pip install"
           python -m pip install -U wheel setuptools pip
@@ -99,4 +102,3 @@ jobs:
       - name: Run integration tests
         run: |
           make test-integrations
-
