@@ -1,6 +1,6 @@
 # -*- Mode:Python; indent-tabs-mode:nil; tab-width:4 -*-
 #
-# Copyright 2023 Canonical Ltd.
+# Copyright 2024 Canonical Ltd.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 3 as
@@ -14,17 +14,17 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-"""The Rockcraft Python plugin."""
+"""The Rockcraft Poetry plugin."""
 
 
-from craft_parts.plugins import python_plugin
+from craft_parts.plugins import poetry_plugin
 from overrides import override  # type: ignore[reportUnknownVariableType]
 
 from rockcraft.plugins import python_common
 
 
-class PythonPlugin(python_plugin.PythonPlugin):
-    """A Python plugin for Rockcraft."""
+class PoetryPlugin(poetry_plugin.PoetryPlugin):
+    """A Poetry plugin for Rockcraft."""
 
     @override
     def _should_remove_symlinks(self) -> bool:
@@ -43,5 +43,5 @@ class PythonPlugin(python_plugin.PythonPlugin):
 
     @override
     def get_build_commands(self) -> list[str]:
-        """Overridden to add a sitecustomize.py ."""
+        """Overridden to add a sitecustomize.py."""
         return python_common.wrap_build_commands(super().get_build_commands())
