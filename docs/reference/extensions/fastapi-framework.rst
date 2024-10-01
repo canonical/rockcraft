@@ -31,7 +31,7 @@ There are 2 requirements to be able to use the ``fastapi-framework`` extension:
      ``rockcraft.yaml``.
 
 ``parts`` > ``fastapi-framework/install-app`` > ``prime``
-=======================================================
+=========================================================
 
 You can use this field to specify the files to be included or excluded from
 your rock upon ``rockcraft pack``. Follow the ``app/<filename>`` notation. For
