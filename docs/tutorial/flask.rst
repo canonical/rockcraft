@@ -66,7 +66,7 @@ endpoint. You may need a new terminal for this, if you are using Multipass use
 
 The Flask application should respond with ``Hello, world!``.
 
-The Flask application looks good, so stop it for now using ``ctrl+C``.
+The Flask application looks good, so stop it for now using ``ctrl+c``.
 
 Pack the Flask application into a rock
 ======================================
