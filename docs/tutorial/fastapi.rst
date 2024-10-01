@@ -50,8 +50,8 @@ In the same directory, copy and save the following into a text file called
 .. literalinclude:: code/fastapi/app.py
     :language: python
 
-Run the FastAPI application using ``fastapi dev app.py --port 8000`` to verify that
-it works.
+Run the FastAPI application using ``fastapi dev app.py --port 8000`` to verify
+that it works.
 
 Test the FastAPI application by using ``curl`` to send a request to the root
 endpoint. You may need a new terminal for this, if you are using Multipass use
