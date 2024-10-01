@@ -135,8 +135,8 @@ open another shell into the VM and access the app with curl:
 
 This should also print "Hello World from inside the rock!" to the terminal.
 
-You can now stop the running container by either interrupting it with CTRL+C or
-by running the following in another terminal:
+You can now stop the running container by either interrupting it with
+:kbd:`Ctrl` + :kbd:`C` or by running the following in another terminal:
 
 .. literalinclude:: code/node-app/task.yaml
     :language: bash
