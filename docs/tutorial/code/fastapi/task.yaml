@@ -5,7 +5,7 @@
 # markers for including said instructions 
 # as snippets in the docs.
 ###########################################
-summary: Getting started with Flask tutorial
+summary: Getting started with FastAPI tutorial
 
 environment:
 
@@ -17,22 +17,22 @@ execute: |
   pip install -r requirements.txt
   # [docs:create-venv-end]
 
-  flask run -p 8000 &
+  fastapi dev app.py --port 8000 &
   retry -n 5 --wait 2 curl localhost:8000
 
-  # [docs:curl-flask]
+  # [docs:curl-fastapi]
   curl localhost:8000
-  # [docs:curl-flask-end]
+  # [docs:curl-fastapi-end]
 
   kill $!
 
   # [docs:create-rockcraft-yaml]
-  rockcraft init --profile flask-framework
+  rockcraft init --profile fastapi-framework
   # [docs:create-rockcraft-yaml-end]
-  sed -i "s/name: .*/name: flask-hello-world/g" rockcraft.yaml
+  sed -i "s/name: .*/name: fastapi-hello-world/g" rockcraft.yaml
 
   # [docs:pack]
-  rockcraft pack
+  ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS=true rockcraft pack
   # [docs:pack-end]
 
   # [docs:ls-rock]
@@ -41,42 +41,42 @@ execute: |
 
   # [docs:skopeo-copy]
   sudo rockcraft.skopeo --insecure-policy \
-    copy oci-archive:flask-hello-world_0.1_amd64.rock \
-    docker-daemon:flask-hello-world:0.1
+    copy oci-archive:fastapi-hello-world_0.1_amd64.rock \
+    docker-daemon:fastapi-hello-world:0.1
   # [docs:skopeo-copy-end]
 
   # [docs:docker-images]
-  sudo docker images flask-hello-world:0.1
+  sudo docker images fastapi-hello-world:0.1
   # [docs:docker-images-end]
 
   # [docs:docker-run]
   sudo docker run --rm -d -p 8000:8000 \
-    --name flask-hello-world flask-hello-world:0.1
+    --name fastapi-hello-world fastapi-hello-world:0.1
   # [docs:docker-run-end]
   retry -n 5 --wait 2 curl localhost:8000
 
-  # [docs:curl-flask-rock]
+  # [docs:curl-fastapi-rock]
   curl localhost:8000
-  # [docs:curl-flask-rock-end]
+  # [docs:curl-fastapi-rock-end]
 
   # [docs:get-logs]
-  sudo docker exec flask-hello-world pebble logs flask
+  sudo docker exec fastapi-hello-world pebble logs fastapi
   # [docs:get-logs-end]
 
   # [docs:stop-docker]
-  sudo docker stop flask-hello-world
-  sudo docker rmi flask-hello-world:0.1
+  sudo docker stop fastapi-hello-world
+  sudo docker rmi fastapi-hello-world:0.1
   # [docs:stop-docker-end]
 
   # [docs:change-base]
   sed -i \
-    "s/base: .*/base: bare\nbuild-base: ubuntu@22.04/g" \
+    "s/base: .*/base: bare\nbuild-base: ubuntu@24.04/g" \
     rockcraft.yaml
   # [docs:change-base-end]
   sed -i "s/version: .*/version: 0.1-chiselled/g" rockcraft.yaml
 
   # [docs:chisel-pack]
-  rockcraft pack
+  ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS=true rockcraft pack
   # [docs:chisel-pack-end]
 
   # [docs:ls-bare-rock]
@@ -85,35 +85,34 @@ execute: |
 
   # [docs:docker-run-chisel]
   sudo rockcraft.skopeo --insecure-policy \
-    copy oci-archive:flask-hello-world_0.1-chiselled_amd64.rock \
-    docker-daemon:flask-hello-world:0.1-chiselled
-  sudo docker images flask-hello-world:0.1-chiselled
+    copy oci-archive:fastapi-hello-world_0.1-chiselled_amd64.rock \
+    docker-daemon:fastapi-hello-world:0.1-chiselled
+  sudo docker images fastapi-hello-world:0.1-chiselled
   sudo docker run --rm -d -p 8000:8000 \
-    --name flask-hello-world flask-hello-world:0.1-chiselled
+    --name fastapi-hello-world fastapi-hello-world:0.1-chiselled
   # [docs:docker-run-chisel-end]
   retry -n 5 --wait 2 curl localhost:8000
 
-  # [docs:curl-flask-bare-rock]
+  # [docs:curl-fastapi-bare-rock]
   curl localhost:8000
-  # [docs:curl-flask-bare-rock-end]
+  # [docs:curl-fastapi-bare-rock-end]
 
   # [docs:stop-docker-chisel]
-  sudo docker stop flask-hello-world
-  sudo docker rmi flask-hello-world:0.1-chiselled
+  sudo docker stop fastapi-hello-world
+  sudo docker rmi fastapi-hello-world:0.1-chiselled
   # [docs:stop-docker-chisel-end]
 
   cat time_app.py > app.py
   sed -i "s/version: .*/version: 0.2/g" rockcraft.yaml
-  rockcraft clean
 
   # [docs:docker-run-update]
-  rockcraft pack
+  ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS=true rockcraft pack
   sudo rockcraft.skopeo --insecure-policy \
-    copy oci-archive:flask-hello-world_0.2_amd64.rock \
-    docker-daemon:flask-hello-world:0.2
-  sudo docker images flask-hello-world:0.2
+    copy oci-archive:fastapi-hello-world_0.2_amd64.rock \
+    docker-daemon:fastapi-hello-world:0.2
+  sudo docker images fastapi-hello-world:0.2
   sudo docker run --rm -d -p 8000:8000 \
-    --name flask-hello-world flask-hello-world:0.2
+    --name fastapi-hello-world fastapi-hello-world:0.2
   # [docs:docker-run-update-end]
   retry -n 5 --wait 2 curl localhost:8000/time
 
@@ -122,8 +121,8 @@ execute: |
   # [docs:curl-time-end]
 
   # [docs:stop-docker-updated]
-  sudo docker stop flask-hello-world
-  sudo docker rmi flask-hello-world:0.2
+  sudo docker stop fastapi-hello-world
+  sudo docker rmi fastapi-hello-world:0.2
   # [docs:stop-docker-updated-end]
 
   # [docs:cleanup]
@@ -131,8 +130,8 @@ execute: |
   deactivate
   rm -rf .venv __pycache__
   # delete all the files created during the tutorial
-  rm flask-hello-world_0.1_amd64.rock \
-    flask-hello-world_0.1-chiselled_amd64.rock \
-    flask-hello-world_0.2_amd64.rock \
+  rm fastapi-hello-world_0.1_amd64.rock \
+    fastapi-hello-world_0.1-chiselled_amd64.rock \
+    fastapi-hello-world_0.2_amd64.rock \
     rockcraft.yaml app.py requirements.txt
   # [docs:cleanup-end]

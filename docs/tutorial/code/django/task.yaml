@@ -142,7 +142,7 @@ execute: |
   # [docs:cleanup]
   # exit and delete the virtual environment
   deactivate
-  rm -rf .venv django_hello_world
+  rm -rf .venv django_hello_world __pycache__
   # delete all the files created during the tutorial
   rm django-hello-world_0.1_amd64.rock \
     django-hello-world_0.1-chiselled_amd64.rock \
