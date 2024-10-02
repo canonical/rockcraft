@@ -1,0 +1,109 @@
+###########################################
+# IMPORTANT
+# Comments matter!
+# The docs use the wrapping comments as
+# markers for including said instructions
+# as snippets in the docs.
+###########################################
+summary: Getting started with Go tutorial
+
+environment:
+
+execute: |
+  set -x
+  # [docs:install-go]
+  sudo snap install go --classic
+  # [docs:install-go-end]
+
+  # [docs:mod-init-go]
+  go mod init go-hello-world
+  go mod tidy
+  # [docs:mod-init-go-end]
+
+  # [docs:go-build]
+  go build .
+  # [docs:go-build-end]
+
+  ./go-hello-world &
+  retry -n 5 --wait 2 curl localhost:8000
+
+  # [docs:curl-go]
+  curl localhost:8000
+  # [docs:curl-go-end]
+
+  kill $!
+
+  # [docs:create-rockcraft-yaml]
+  rockcraft init --profile go-framework
+  # [docs:create-rockcraft-yaml-end]
+  sed -i "s/name: .*/name: go-hello-world/g" rockcraft.yaml
+
+  # [docs:pack]
+  ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS=true rockcraft pack
+  # [docs:pack-end]
+
+  # [docs:ls-rock]
+  ls *.rock -l --block-size=MB
+  # [docs:ls-rock-end]
+
+  # [docs:skopeo-copy]
+  sudo rockcraft.skopeo --insecure-policy \
+    copy oci-archive:go-hello-world_0.1_amd64.rock \
+    docker-daemon:go-hello-world:0.1
+  # [docs:skopeo-copy-end]
+
+  # [docs:docker-images]
+  sudo docker images go-hello-world:0.1
+  # [docs:docker-images-end]
+
+  # [docs:docker-run]
+  sudo docker run --rm -d -p 8000:8000 \
+    --name go-hello-world go-hello-world:0.1
+  # [docs:docker-run-end]
+
+  retry -n 5 --wait 2 curl localhost:8000
+  # [docs:curl-go-rock]
+  curl localhost:8000
+  # [docs:curl-go-rock-end]
+  [ "$(curl localhost:8000)" = "Hello World" ]
+
+  # [docs:get-logs]
+  sudo docker exec go-hello-world pebble logs go
+  # [docs:get-logs-end]
+
+  # [docs:stop-docker]
+  sudo docker stop go-hello-world
+  sudo docker rmi go-hello-world:0.1
+  # [docs:stop-docker-end]
+
+  ## Part 2 of the tutorial
+  sed -i "s/version: .*/version: 0.2/g" rockcraft.yaml
+  cat anotherserver_part >> rockcraft.yaml
+
+  # [docs:docker-run-update]
+  ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS=true rockcraft pack
+  sudo rockcraft.skopeo --insecure-policy \
+    copy oci-archive:go-hello-world_0.2_amd64.rock \
+    docker-daemon:go-hello-world:0.2
+  sudo docker images go-hello-world:0.2
+  sudo docker run --rm -d -p 8000:8000 \
+    --name go-hello-world go-hello-world:0.2
+  # [docs:docker-run-update-end]
+  retry -n 5 --wait 2 curl localhost:8000
+
+  # [docs:curl-anotherserver]
+  curl localhost:8000
+  # [docs:curl-anotherserver-end]
+  [ "$(curl localhost:8000)" = "Hello World from anotherserver" ]
+
+  # [docs:stop-docker-updated]
+  sudo docker stop go-hello-world
+  sudo docker rmi go-hello-world:0.2
+  # [docs:stop-docker-updated-end]
+
+  # [docs:cleanup]
+  # delete all the files created during the tutorial
+  rm go.mod rockcraft.yaml main.go go-hello-world \
+    go-hello-world_0.1_amd64.rock \
+    go-hello-world_0.2_amd64.rock
+  # [docs:cleanup-end]
