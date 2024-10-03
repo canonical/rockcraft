@@ -105,5 +105,7 @@ execute: |
   # delete all the files created during the tutorial
   rm go.mod rockcraft.yaml main.go go-hello-world \
     go-hello-world_0.1_amd64.rock \
+    cmd/anotherserver/main.go \
     go-hello-world_0.2_amd64.rock
+  rmdir -p cmd/anotherserver
   # [docs:cleanup-end]

@@ -138,8 +138,9 @@ extension:
     on an ``amd64`` platform, the name of the ``.rock`` file will be different
     for you.
 
-    The size of your rock may vary depending on factors like the architecture
-    you are building on and the packages installed at the time of packing.
+    By default, the ``go-framework` will use the ``bare`` base. You can improve
+    the developer experience changing the base to ``ubuntu@24.04``, but the
+    image size will increase.
 
 
 Run the Go rock with Docker
@@ -224,7 +225,7 @@ You should expect to see something similar to this:
     2024-10-01T06:32:58.214Z [fastapi] INFO:     172.17.0.1:55232 - "GET / HTTP/1.1" 200 OK
 
 You can also choose to follow the logs by using the ``-f`` option with the
-``pebble logs`` command above. To stop following the logs, press ``ctrl+c``.
+``pebble logs`` command above. To stop following the logs, press :kbd:`Ctrl` + :kbd:`C`.
 
 
 Cleanup

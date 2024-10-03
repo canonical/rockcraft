@@ -44,14 +44,14 @@ next snippet:
        bin/anotherserver: usr/local/bin/<rockcraft project name>
 
 
-``parts`` > ``go-framework/assets`` > ``assets``
+``parts`` > ``go-framework/assets`` > ``stage``
 =========================================================
 
 
 Some files, if they exist, are included by default. These include:
 ``migrate``, ``migrate.sh``, ``templates/`` and ``static/``.
 
-You can customise the files to include overriding the ``stage`` property
+You can customise the files to include by overriding the ``stage`` property
 of the ``go-framework/assets`` part:
 
 .. code-block:: yaml
