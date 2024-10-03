@@ -65,7 +65,7 @@ endpoint. You may need a new terminal for this, if you are using Multipass use
 
 The FastAPI application should respond with ``{"message":"Hello World"}``.
 
-The FastAPI application looks good, so stop it for now using ``ctrl+C``.
+The FastAPI application looks good, so stop it for now using ``ctrl + c``.
 
 Pack the FastAPI application into a rock
 ========================================
@@ -209,7 +209,7 @@ You should expect to see something similar to this:
     2024-10-01T06:32:58.214Z [fastapi] INFO:     172.17.0.1:55232 - "GET / HTTP/1.1" 200 OK
 
 You can also choose to follow the logs by using the ``-f`` option with the
-``pebble logs`` command above. To stop following the logs, press ``ctrl+c``.
+``pebble logs`` command above. To stop following the logs, press ``ctrl + c``.
 
 Cleanup
 ~~~~~~~
