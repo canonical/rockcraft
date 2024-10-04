@@ -25,10 +25,10 @@ execute: |
   # [docs:go-build-end]
 
   ./go-hello-world &
-  retry -n 5 --wait 2 curl localhost:8000
+  retry -n 5 --wait 2 curl --fail localhost:8000
 
   # [docs:curl-go]
-  curl localhost:8000
+  curl --fail localhost:8000
   # [docs:curl-go-end]
 
   kill $!
@@ -61,9 +61,9 @@ execute: |
     --name go-hello-world go-hello-world:0.1
   # [docs:docker-run-end]
 
-  retry -n 5 --wait 2 curl localhost:8000
+  retry -n 5 --wait 2 curl --fail localhost:8000
   # [docs:curl-go-rock]
-  curl localhost:8000
+  curl --fail localhost:8000
   # [docs:curl-go-rock-end]
   [ "$(curl localhost:8000)" = "Hello World" ]
 
@@ -89,10 +89,10 @@ execute: |
   sudo docker run --rm -d -p 8000:8000 \
     --name go-hello-world go-hello-world:0.2
   # [docs:docker-run-update-end]
-  retry -n 5 --wait 2 curl localhost:8000
+  retry -n 5 --wait 2 curl --fail localhost:8000
 
   # [docs:curl-anotherserver]
-  curl localhost:8000
+  curl --fail localhost:8000
   # [docs:curl-anotherserver-end]
   [ "$(curl localhost:8000)" = "Hello World from anotherserver" ]
 
