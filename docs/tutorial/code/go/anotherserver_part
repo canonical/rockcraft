@@ -1,4 +1,0 @@
-parts:
-  go-framework/install-app:
-    organize:
-       bin/anotherserver: usr/local/bin/go-hello-world

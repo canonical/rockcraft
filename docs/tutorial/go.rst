@@ -239,27 +239,20 @@ respective image for now:
     :dedent: 2
 
 
-Add another binary to the Go application
+Update Go application
 ========================================
 
-As a final step, let's update our application to include another binary.
+As a final step, let's update our application. For example,
+we want to add a new ``/time`` endpoint which returns the current time.
 
-Create a new ``main.go`` file in the directory  ``cmd/anotherserver`` relative
-to the base directory of the project, with the following text and then
-save it:
+Start by opening the ``main.go`` file in a text editor and update the code to
+look like the following:
 
-.. literalinclude:: code/go/cmd/anotherserver/main.go
+.. literalinclude:: code/go/main.go.time
     :language: go
-
-Add the following snippet to the file ``rockcraft.yaml``, so the new binary is
-set as the main application to run:
-
-.. literalinclude:: code/go/anotherserver_part
-    :language: yaml
 
 Since we are creating a new version of the application, **open the**
 ``rockcraft.yaml`` file and change the ``version`` (e.g. to ``0.2``).
-
 .. note::
 
     ``rockcraft pack`` will create a new image with the updated code even if you
@@ -274,28 +267,25 @@ Pack and run the rock using similar commands as before:
     :end-before: [docs:docker-run-update-end]
     :dedent: 2
 
-
 .. note::
 
     Note that the resulting ``.rock`` file will now be named differently, as
     its new version will be part of the filename.
 
-Finally, use ``curl`` to send a request that will be handled by the new
-binary in ``anotherserver``:
+Finally, use ``curl`` to send a request to the ``/time`` endpoint:
 
 .. literalinclude:: code/go/task.yaml
     :language: text
-    :start-after: [docs:curl-anotherserver]
-    :end-before: [docs:curl-anotherserver-end]
+    :start-after: [docs:curl-time]
+    :end-before: [docs:curl-time-end]
     :dedent: 2
 
-
-The Go application should respond with ``Hello, world! (from anotherserver)``.
-
+The updated application should respond with the current date and time (e.g.
+``2024-06-21 09:47:56``).
 
 .. note::
 
-    If you are getting a wrong response, check the
+    If you are getting a ``404`` for the ``/time`` endpoint, check the
     :ref:`troubleshooting-go` steps below.
 
 

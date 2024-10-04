@@ -78,7 +78,8 @@ execute: |
 
   ## Part 2 of the tutorial
   sed -i "s/version: .*/version: 0.2/g" rockcraft.yaml
-  cat anotherserver_part >> rockcraft.yaml
+
+  cp main.go.time main.go
 
   # [docs:docker-run-update]
   ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS=true rockcraft pack
@@ -91,10 +92,9 @@ execute: |
   # [docs:docker-run-update-end]
   retry -n 5 --wait 2 curl --fail localhost:8000
 
-  # [docs:curl-anotherserver]
-  curl --fail localhost:8000
-  # [docs:curl-anotherserver-end]
-  [ "$(curl localhost:8000)" = "Hello, world! (from anotherserver)" ]
+  # [docs:curl-time]
+  curl --fail localhost:8000/time
+  # [docs:curl-time-end]
 
   # [docs:stop-docker-updated]
   sudo docker stop go-hello-world
@@ -105,7 +105,5 @@ execute: |
   # delete all the files created during the tutorial
   rm go.mod rockcraft.yaml main.go go-hello-world \
     go-hello-world_0.1_amd64.rock \
-    cmd/anotherserver/main.go \
     go-hello-world_0.2_amd64.rock
-  rmdir -p cmd/anotherserver
   # [docs:cleanup-end]
