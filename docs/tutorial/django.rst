@@ -212,12 +212,8 @@ You should expect to see something similar to this:
     2024-08-20T06:34:36.116Z [django] [2024-08-20 06:34:36 +0000] [18] [INFO] Booting worker with pid: 18
 
 You can also choose to follow the logs by using the ``-f`` option with the
-<<<<<<< HEAD
-``pebble logs`` command above. To stop following the logs, press ``ctrl + c``.
-=======
 ``pebble logs`` command above. To stop following the logs, press :kbd:`Ctrl` +
 :kbd:`C`.
->>>>>>> main
 
 Cleanup
 ~~~~~~~
