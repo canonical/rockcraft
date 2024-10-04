@@ -95,6 +95,7 @@ execute: |
   # [docs:curl-time]
   curl --fail localhost:8000/time
   # [docs:curl-time-end]
+  [ "$(curl localhost:8000/time)" != "Hello, world!" ]
 
   # [docs:stop-docker-updated]
   sudo docker stop go-hello-world

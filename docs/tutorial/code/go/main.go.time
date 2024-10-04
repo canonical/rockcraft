@@ -15,7 +15,7 @@ func helloWorldHandler(w http.ResponseWriter, req *http.Request) {
 func timeHandler(w http.ResponseWriter, req *http.Request) {
 	log.Printf("new time request")
 	now := time.Now()
-	fmt.Println(w, now.Format("2006/01/02 15:04:05") + "\n")
+	fmt.Fprintf(w, now.Format("2006-01-02 15:04:05") + "\n")
 }
 
 func main() {

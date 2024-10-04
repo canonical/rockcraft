@@ -286,8 +286,8 @@ The updated application should respond with the current date and time (e.g.
 
 .. note::
 
-    If you are getting a ``404`` for the ``/time`` endpoint, check the
-    :ref:`troubleshooting-go` steps below.
+    If you are not getting the current date and time from the ``/time`` endpoint,
+    check the :ref:`troubleshooting-go` steps below.
 
 
 Cleanup
