@@ -253,6 +253,7 @@ look like the following:
 
 Since we are creating a new version of the application, **open the**
 ``rockcraft.yaml`` file and change the ``version`` (e.g. to ``0.2``).
+
 .. note::
 
     ``rockcraft pack`` will create a new image with the updated code even if you
