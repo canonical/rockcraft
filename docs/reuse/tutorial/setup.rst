@@ -34,7 +34,7 @@ Then you can create the VM with the following command:
 
 .. code-block:: text
 
-    multipass launch --disk 10G --name rock-dev 22.04
+    multipass launch --disk 10G --name rock-dev 24.04
 
 Finally, once the VM is up, open a shell into it:
 
