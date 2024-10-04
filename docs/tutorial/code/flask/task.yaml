@@ -18,7 +18,7 @@ execute: |
   # [docs:create-venv-end]
 
   flask run -p 8000 &
-  retry -n 5 --wait 2 curl localhost:8000
+  retry -n 5 --wait 2 curl --fail localhost:8000
 
   # [docs:curl-flask]
   curl localhost:8000
@@ -53,7 +53,7 @@ execute: |
   sudo docker run --rm -d -p 8000:8000 \
     --name flask-hello-world flask-hello-world:0.1
   # [docs:docker-run-end]
-  retry -n 5 --wait 2 curl localhost:8000
+  retry -n 5 --wait 2 curl --fail localhost:8000
 
   # [docs:curl-flask-rock]
   curl localhost:8000
@@ -91,7 +91,7 @@ execute: |
   sudo docker run --rm -d -p 8000:8000 \
     --name flask-hello-world flask-hello-world:0.1-chiselled
   # [docs:docker-run-chisel-end]
-  retry -n 5 --wait 2 curl localhost:8000
+  retry -n 5 --wait 2 curl --fail localhost:8000
 
   # [docs:curl-flask-bare-rock]
   curl localhost:8000
@@ -115,7 +115,7 @@ execute: |
   sudo docker run --rm -d -p 8000:8000 \
     --name flask-hello-world flask-hello-world:0.2
   # [docs:docker-run-update-end]
-  retry -n 5 --wait 2 curl localhost:8000/time
+  retry -n 5 --wait 2 curl --fail localhost:8000/time
 
   # [docs:curl-time]
   curl localhost:8000/time
