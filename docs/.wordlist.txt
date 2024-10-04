@@ -10,7 +10,7 @@ cli
 CMake
 cmake
 CMD
-CTRL
+Ctrl
 dataset
 Deadsnakes
 declaratively
