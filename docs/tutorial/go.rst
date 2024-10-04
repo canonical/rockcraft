@@ -123,7 +123,7 @@ Pack the rock:
     ``ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS`` is required whilst the Go
     extension is experimental.
 
-Once Rockcraft has finished packing the FastAPI rock, you'll find a new file in
+Once Rockcraft has finished packing the Go rock, you'll find a new file in
 your working directory (an `OCI <OCI_image_spec_>`_ archive) with the ``.rock``
 extension:
 
@@ -138,7 +138,7 @@ extension:
     on an ``amd64`` platform, the name of the ``.rock`` file will be different
     for you.
 
-    By default, the ``go-framework` will use the ``bare`` base. You can improve
+    By default, the ``go-framework`` will use the ``bare`` base. You can improve
     the developer experience changing the base to ``ubuntu@24.04``, but the
     image size will increase.
 
@@ -165,7 +165,7 @@ Check that the image was successfully loaded into Docker:
     :end-before: [docs:docker-images-end]
     :dedent: 2
 
-The output should list the FastAPI container image, along with its tag, ID and
+The output should list the Go container image, along with its tag, ID and
 size:
 
 ..  code-block:: text
@@ -196,7 +196,7 @@ application's root endpoint which is running inside the container:
     :end-before: [docs:curl-go-rock-end]
     :dedent: 2
 
-The Go application should again respond with ``Hello World``.
+The Go application should again respond with ``Hello, world!``.
 
 
 View the application logs
@@ -218,11 +218,8 @@ You should expect to see something similar to this:
 ..  code-block:: text
     :class: log-snippets
 
-    2024-10-01T06:32:50.180Z [fastapi] INFO:     Started server process [12]
-    2024-10-01T06:32:50.181Z [fastapi] INFO:     Waiting for application startup.
-    2024-10-01T06:32:50.181Z [fastapi] INFO:     Application startup complete.
-    2024-10-01T06:32:50.182Z [fastapi] INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
-    2024-10-01T06:32:58.214Z [fastapi] INFO:     172.17.0.1:55232 - "GET / HTTP/1.1" 200 OK
+    2024-10-04T08:51:35.826Z [go] 2024/10/04 08:51:35 starting hello world application
+    2024-10-04T08:51:39.974Z [go] 2024/10/04 08:51:39 new hello world request
 
 You can also choose to follow the logs by using the ``-f`` option with the
 ``pebble logs`` command above. To stop following the logs, press :kbd:`Ctrl` + :kbd:`C`.
@@ -293,7 +290,7 @@ binary in ``anotherserver``:
     :dedent: 2
 
 
-The Go application should respond with ``Hello World from anotherserver``.
+The Go application should respond with ``Hello, world! (from anotherserver)``.
 
 
 .. note::

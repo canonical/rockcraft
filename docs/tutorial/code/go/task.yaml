@@ -65,7 +65,7 @@ execute: |
   # [docs:curl-go-rock]
   curl --fail localhost:8000
   # [docs:curl-go-rock-end]
-  [ "$(curl localhost:8000)" = "Hello World" ]
+  [ "$(curl localhost:8000)" = "Hello, world!" ]
 
   # [docs:get-logs]
   sudo docker exec go-hello-world pebble logs go
@@ -94,7 +94,7 @@ execute: |
   # [docs:curl-anotherserver]
   curl --fail localhost:8000
   # [docs:curl-anotherserver-end]
-  [ "$(curl localhost:8000)" = "Hello World from anotherserver" ]
+  [ "$(curl localhost:8000)" = "Hello, world! (from anotherserver)" ]
 
   # [docs:stop-docker-updated]
   sudo docker stop go-hello-world
