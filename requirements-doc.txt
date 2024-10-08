@@ -7,7 +7,7 @@ autodocsumm==0.2.13
 babel==2.16.0
 beautifulsoup4==4.12.3
 boolean.py==4.0
-bracex==2.5
+bracex==2.5.post1
 CacheControl==0.14.0
 canonical-sphinx==0.1.0
 canonical-sphinx-extensions==0.0.23
@@ -16,13 +16,13 @@ cffi==1.17.1
 charset-normalizer==3.3.2
 click==8.1.7
 colorama==0.4.6
-craft-application==4.2.4
+craft-application==4.2.5
 craft-archives==2.0.0
 craft-cli==2.7.0
 craft-grammar==2.0.1
 craft-parts==2.1.1
 craft-platforms==0.3.1
-craft-providers==2.0.1
+craft-providers==2.0.4
 cssutils==2.11.1
 dict2css==0.3.0.post1
 distro==1.9.0
@@ -103,9 +103,9 @@ sphinxcontrib-jsmath==1.0.1
 sphinxcontrib-qthelp==2.0.0
 sphinxcontrib-serializinghtml==2.0.0
 sphinxext-opengraph==0.9.1
-starlette==0.39.0
+starlette==0.39.2
 tabulate==0.9.0
-tomli==2.0.1
+tomli==2.0.2
 typing_extensions==4.12.2
 uc-micro-py==1.0.3
 urllib3==1.26.20
