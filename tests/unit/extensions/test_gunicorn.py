@@ -36,7 +36,6 @@ def flask_input_yaml_fixture():
 
 @pytest.fixture
 def django_extension(mock_extensions, monkeypatch):
-    monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "1")
     extensions.register("django-framework", extensions.DjangoFramework)
 
 
