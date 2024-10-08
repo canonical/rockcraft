@@ -16,7 +16,6 @@
 import textwrap
 
 import pytest
-
 from rockcraft import extensions
 from rockcraft.errors import ExtensionError
 
