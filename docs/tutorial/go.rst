@@ -76,7 +76,7 @@ endpoint. You may need a new terminal for this, if you are using Multipass use
     :end-before: [docs:curl-go-end]
     :dedent: 2
 
-The Go application should respond with ``Hello World``.
+The Go application should respond with ``Hello, world!``.
 
 The Go application looks good, so stop it for now using :kbd:`Ctrl` + :kbd:`C`.
 
@@ -138,9 +138,11 @@ extension:
     on an ``amd64`` platform, the name of the ``.rock`` file will be different
     for you.
 
-    By default, the ``go-framework`` will use the ``bare`` base. You can improve
-    the developer experience changing the base to ``ubuntu@24.04``, but the
-    image size will increase.
+    By default, the ``go-framework`` will use the ``bare`` base.
+    The ``bare`` base is recommended for production applications because
+    the image size will be smaller, and the risk of security issues lower.
+    However, you may want to change the base to ``ubuntu@24.04`` during the
+    development process to benefit from the extra utilities provided.
 
 
 Run the Go rock with Docker
