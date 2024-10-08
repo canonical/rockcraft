@@ -38,7 +38,7 @@ execute: |
   sed -i "s/name: .*/name: django-hello-world/g" rockcraft.yaml
 
   # [docs:pack]
-  ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS=true rockcraft pack
+  rockcraft pack
   # [docs:pack-end]
 
   # [docs:ls-rock]
@@ -82,7 +82,7 @@ execute: |
   sed -i "s/version: .*/version: 0.1-chiselled/g" rockcraft.yaml
 
   # [docs:chisel-pack]
-  ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS=true rockcraft pack
+  rockcraft pack
   # [docs:chisel-pack-end]
 
   # [docs:ls-bare-rock]
@@ -120,7 +120,7 @@ execute: |
   sed -i "s/version: .*/version: 0.2/g" rockcraft.yaml
 
   # [docs:docker-run-update]
-  ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS=true rockcraft pack
+  rockcraft pack
   sudo rockcraft.skopeo --insecure-policy copy \
     oci-archive:django-hello-world_0.2_amd64.rock \
     docker-daemon:django-hello-world:0.2
