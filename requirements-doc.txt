@@ -69,7 +69,7 @@ pyspelling==2.10
 pyxdg==0.28
 PyYAML==6.0.2
 regex==2024.9.11
-requests==2.31.0
+requests==2.32.3
 requests-unixsocket==0.3.0
 ruamel.yaml==0.18.6
 ruamel.yaml.clib==0.2.8
