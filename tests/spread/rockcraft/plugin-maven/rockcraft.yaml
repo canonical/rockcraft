@@ -1,0 +1,35 @@
+name: bare-build-2404
+base: bare
+build-base: ubuntu@24.04
+
+version: '0.1'
+summary: A rock that bundles a Maven project.
+description: A rock that bundles a Python project.
+license: GPL-3.0
+platforms:
+  amd64:
+
+services:
+  test:
+    command: /usr/lib/jvm/java-21-openjdk-${CRAFT_ARCH_BUILD_FOR}/bin/java -jar /jar/sample-0.0.1-SNAPSHOT.jar
+    override: replace
+    startup: enabled
+
+parts:
+  maven-sample:
+    plugin: maven
+    source: sample
+    stage-packages:
+     - openjdk-21-jre-headless_core
+     - base-files_base
+    build-packages:
+      - maven
+      - openjdk-21-jdk-headless
+    # replace chiselled image with jlink
+    override-stage: |
+      craftctl default
+      rm -rf ${CRAFT_STAGE}/usr/lib/jvm/java-21-openjdk-${CRAFT_ARCH_BUILD_FOR}
+      jlink --no-header-files --no-man-pages --strip-debug \
+        --add-modules java.base,java.xml,java.logging,jdk.net \
+        --output ${CRAFT_STAGE}/usr/lib/jvm/java-21-openjdk-${CRAFT_ARCH_BUILD_FOR}
+      touch ${CRAFT_STAGE}/usr/lib/jvm/java-21-openjdk-${CRAFT_ARCH_BUILD_FOR}/lib/jvm.cfg-default
