@@ -79,9 +79,9 @@ def _python_usrmerge_fix(step_info: StepInfo) -> None:
         # Can't inspect the files without a StepState.
         return
 
-    if state.part_properties["plugin"] != "python":
+    if state.part_properties["plugin"] not in ("python", "poetry"):
         # Be conservative and don't try to fix the files if they didn't come
-        # from the Python plugin.
+        # from a Python plugin.
         return
 
     if "lib64" not in state.files:
