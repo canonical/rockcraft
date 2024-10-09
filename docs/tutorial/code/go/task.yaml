@@ -17,7 +17,6 @@ execute: |
 
   # [docs:mod-init-go]
   go mod init go-hello-world
-  go mod tidy
   # [docs:mod-init-go-end]
 
   # [docs:go-build]
