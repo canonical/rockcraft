@@ -66,7 +66,8 @@ endpoint. You may need a new terminal for this, if you are using Multipass use
 
 The Flask application should respond with ``Hello, world!``.
 
-The Flask application looks good, so stop it for now using ``ctrl+C``.
+The Flask application looks good, so let's stop it for now by pressing
+:kbd:`Ctrl` + :kbd:`C`.
 
 Pack the Flask application into a rock
 ======================================
@@ -205,7 +206,8 @@ You should expect to see something similar to this:
     2024-06-21T03:41:45.078Z [flask] [2024-06-21 03:41:45 +0000] [18] [INFO] Booting worker with pid: 18
 
 You can also choose to follow the logs by using the ``-f`` option with the
-``pebble logs`` command above. To stop following the logs, press ``ctrl+c``.
+``pebble logs`` command above. To stop following the logs, press :kbd:`Ctrl` +
+:kbd:`C`.
 
 .. note::
 

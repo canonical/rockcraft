@@ -68,7 +68,8 @@ The Django application should respond with
     it difficult to read on a terminal. Visit ``http://localhost:8000`` using a
     browser to see the fully rendered page.
 
-The Django application looks good, so you can stop it for now using ``ctrl+C``.
+The Django application looks good, so let's stop it for now by pressing
+:kbd:`Ctrl` + :kbd:`C`.
 
 Pack the Django application into a rock
 =======================================
@@ -108,9 +109,6 @@ Pack the rock:
 .. note::
 
     Depending on your network, this step can take a couple of minutes to finish.
-
-    ``ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS`` is required whilst the Django
-    extension is experimental.
 
 Once Rockcraft has finished packing the Django rock, you'll find a new file in
 your working directory (an `OCI <OCI_image_spec_>`_ archive) with the ``.rock``
@@ -211,7 +209,8 @@ You should expect to see something similar to this:
     2024-08-20T06:34:36.116Z [django] [2024-08-20 06:34:36 +0000] [18] [INFO] Booting worker with pid: 18
 
 You can also choose to follow the logs by using the ``-f`` option with the
-``pebble logs`` command above. To stop following the logs, press ``ctrl+c``.
+``pebble logs`` command above. To stop following the logs, press :kbd:`Ctrl` +
+:kbd:`C`.
 
 Cleanup
 ~~~~~~~
