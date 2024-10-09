@@ -1,4 +1,4 @@
-name: bare-build-2404
+name: plugin-maven
 base: bare
 build-base: ubuntu@24.04
 
@@ -25,11 +25,11 @@ parts:
     build-packages:
       - maven
       - openjdk-21-jdk-headless
-    # replace chiselled image with jlink
+    # replace chiselled image modules with jlink output
     override-stage: |
       craftctl default
-      rm -rf ${CRAFT_STAGE}/usr/lib/jvm/java-21-openjdk-${CRAFT_ARCH_BUILD_FOR}
+      rm -rf out
       jlink --no-header-files --no-man-pages --strip-debug \
-        --add-modules java.base,java.xml,java.logging,jdk.net \
-        --output ${CRAFT_STAGE}/usr/lib/jvm/java-21-openjdk-${CRAFT_ARCH_BUILD_FOR}
-      touch ${CRAFT_STAGE}/usr/lib/jvm/java-21-openjdk-${CRAFT_ARCH_BUILD_FOR}/lib/jvm.cfg-default
+        --add-modules java.base \
+        --output out
+      cp out/lib/modules ${CRAFT_STAGE}/usr/lib/jvm/java-21-openjdk-${CRAFT_ARCH_BUILD_FOR}/lib
