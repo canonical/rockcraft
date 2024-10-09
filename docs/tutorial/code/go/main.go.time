@@ -9,13 +9,13 @@ import (
 
 func helloWorldHandler(w http.ResponseWriter, req *http.Request) {
 	log.Printf("new hello world request")
-	fmt.Fprintf(w, "Hello, world!\n")
+	fmt.Fprintln(w, "Hello, world!")
 }
 
 func timeHandler(w http.ResponseWriter, req *http.Request) {
 	log.Printf("new time request")
 	now := time.Now()
-	fmt.Fprintf(w, now.Format("2006-01-02 15:04:05") + "\n")
+	fmt.Fprintln(w, now.Format(time.DateTime))
 }
 
 func main() {
