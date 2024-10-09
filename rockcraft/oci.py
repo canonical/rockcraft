@@ -389,6 +389,21 @@ class Image:
         _config_image(image_path, cmd_params)
         emit.progress(f"CMD set to {opt_args}")
 
+    def set_default_path(self, base: str) -> None:
+        """Set the default PATH on the image (only for bare rocks)."""
+        if base != "bare":
+            emit.debug(f"Not setting a PATH on the image as base is {base!r}")
+            return
+
+        # Follow Pebble's lead here: if PATH is empty, use the standard one.
+        # This means that containers that bypass the pebble entrypoint will
+        # have the same behavior as PATH-less pebble services.
+        pebble_path = Pebble.DEFAULT_ENV_PATH
+        image_path = self.path / self.image_name
+
+        emit.debug(f"Setting bare-based rock PATH to {pebble_path!r}")
+        _config_image(image_path, ["--config.env", f"PATH={pebble_path}"])
+
     def set_pebble_layer(
         self,
         services: dict[str, Any],

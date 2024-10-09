@@ -151,6 +151,9 @@ class Pebble:
         **_BASE_PART_SPEC,
         "stage": [PEBBLE_BINARY_PATH_PREVIOUS],
     }
+    # This is the value that Pebble sets to the PATH env var if it's empty.
+    # (https://github.com/canonical/pebble/blob/master/internals/overlord/cmdstate/request.go#L91)
+    DEFAULT_ENV_PATH = "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
     def define_pebble_layer(
         self,
