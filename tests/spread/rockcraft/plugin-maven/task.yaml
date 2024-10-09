@@ -6,6 +6,8 @@ execute: |
 
   # Build the rock & load it into docker
   run_rockcraft pack
+  ls
+  echo expecting ${ROCK_FILE}
   test -f ${ROCK_FILE}
   rockcraft.skopeo copy oci-archive:${ROCK_FILE} docker-daemon:${IMAGE}
   docker images
