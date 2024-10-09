@@ -11,7 +11,7 @@ execute: |
   docker images
   rm ${ROCK_FILE}
 
-  # Run the packaged project, both via the console script and via "python -m"
+  # Run the packaged project
   docker run --rm $IMAGE exec hello | MATCH "hello world"
 
   docker system prune -a -f
