@@ -23,13 +23,13 @@ click==8.1.7
 codespell==2.3.0
 colorama==0.4.6
 coverage==7.6.1
-craft-application==4.2.4
+craft-application==4.2.6
 craft-archives==2.0.0
 craft-cli==2.7.0
 craft-grammar==2.0.1
-craft-parts==2.1.1
+craft-parts==2.1.2
 craft-platforms==0.3.1
-craft-providers==2.0.1
+craft-providers==2.0.4
 cryptography==43.0.1
 cssutils==2.11.1
 dict2css==0.3.0.post1
@@ -102,9 +102,9 @@ pyxdg==0.28
 PyYAML==6.0.2
 readme_renderer==44.0
 regex==2024.9.11
-requests==2.31.0
+requests==2.32.3
 requests-toolbelt==1.0.0
-requests-unixsocket==0.3.0
+requests-unixsocket2==0.4.2
 rfc3986==2.0.0
 rich==13.8.1
 ruamel.yaml==0.18.6
@@ -152,7 +152,7 @@ types-tabulate==0.9.0.20240106
 types-urllib3==1.26.25.14
 typing_extensions==4.12.2
 uc-micro-py==1.0.3
-urllib3==1.26.20
+urllib3==2.2.2
 uvicorn==0.30.6
 virtualenv==20.26.5
 wadllib==1.3.9
