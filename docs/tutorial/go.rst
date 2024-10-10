@@ -39,12 +39,6 @@ install ``go``.
     :end-before: [docs:install-go-end]
     :dedent: 2
 
-Create a ``main.go`` file, copy the following text into it and then
-save it:
-
-.. literalinclude:: code/go/main.go
-    :language: go
-
 Initialise the new go module:
 
 .. literalinclude:: code/go/task.yaml
@@ -53,6 +47,11 @@ Initialise the new go module:
     :end-before: [docs:mod-init-go-end]
     :dedent: 2
 
+Create a ``main.go`` file, copy the following text into it and then
+save it:
+
+.. literalinclude:: code/go/main.go
+    :language: go
 
 Build the Go application so it can be run:
 
