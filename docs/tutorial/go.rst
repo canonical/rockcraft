@@ -319,7 +319,7 @@ following:
 .. collapse:: If using Multipass...
 
     If we created an instance using Multipass, we can also clean it up.
-    Start by exiting itg:
+    Start by exiting it:
 
     .. code-block:: bash
 
