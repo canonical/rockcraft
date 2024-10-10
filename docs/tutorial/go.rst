@@ -39,7 +39,7 @@ install ``go``.
     :end-before: [docs:install-go-end]
     :dedent: 2
 
-Initialise the new go module:
+Initialise the new Go module:
 
 .. literalinclude:: code/go/task.yaml
     :language: bash
@@ -84,8 +84,8 @@ Pack the Go application into a rock
 
 
 First, we'll need a ``rockcraft.yaml`` file. Rockcraft will automate its
-creation and tailoring for a Go application by using the
-``go`` profile:
+creation and tailor it for a Go application by using the
+``go-framework`` profile:
 
 .. literalinclude:: code/go/task.yaml
     :language: bash
@@ -119,7 +119,7 @@ Pack the rock:
 
     Depending on the network, this step can take a couple of minutes to finish.
 
-    ``ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS`` is required whilst the Go
+    ``ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS`` is required whilst the ``go-framework``
     extension is experimental.
 
 Once Rockcraft has finished packing the Go rock, we'll find a new file in
