@@ -319,7 +319,7 @@ following:
 .. collapse:: If using Multipass...
 
     If we created an instance using Multipass, we can also clean it up.
-    Start by exiting it:
+    Start by exiting itg:
 
     .. code-block:: bash
 
@@ -331,6 +331,16 @@ following:
 
         multipass delete rock-dev
         multipass purge
+
+----
+
+Next steps
+==========
+
+* :ref:`Rockcraft tutorials<tutorial>`.
+* :ref:`go-framework reference<go-framework-reference>`.
+* :ref:`why_use_rockcraft`.
+* :ref:`What is a Rock?<rocks_explanation>`.
 
 ----
 
