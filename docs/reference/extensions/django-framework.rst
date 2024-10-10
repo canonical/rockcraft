@@ -29,6 +29,19 @@ There are 2 requirements to be able to use the ``django-framework`` extension:
    ``./<Rock name with - replaced by _>/<Rock name with - replaced by _>/manage.py``
    relative to the ``rockcraft.yaml`` file.
 
+``parts`` > ``django-framework/dependencies:`` > ``stage-packages``
+===================================================================
+
+You can use this key to specify any dependencies required for your Django application. For example, below we use it to specify `libpq-dev`:
+
+.. code-block:: yaml
+
+  parts:
+    django-framework/dependencies:
+      stage-packages:
+        # list required packages or slices for your Django application below.
+        - libpq-dev
+
 Useful links
 ============
 
