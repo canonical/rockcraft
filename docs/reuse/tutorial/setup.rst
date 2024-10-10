@@ -68,7 +68,7 @@ We'll use Docker to run the rock. We can install it as a ``snap``:
     :end-before: [docs:install-docker-end]
     :dedent: 2
 
-By default, Docker is only accessible with root privileges (sudo). We want
+By default, Docker is only accessible with root privileges (``sudo``). We want
 to be able to use Docker commands as a regular user:
 
 .. literalinclude:: /reuse/tutorial/code/task.yaml
