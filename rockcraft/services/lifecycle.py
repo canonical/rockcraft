@@ -16,7 +16,7 @@
 
 """Rockcraft Lifecycle service."""
 from pathlib import Path
-from typing import cast
+from typing import Any, cast
 
 from craft_application import LifecycleService
 from craft_parts.infos import StepInfo
@@ -43,7 +43,6 @@ class RockcraftLifecycleService(LifecycleService):
 
         # Configure extra args to the LifecycleManager
         project = cast(Project, self._project)
-        project_vars = {"version": project.version}
         parts = project.parts
 
         services = cast(RockcraftServiceFactory, self._services)
@@ -53,7 +52,7 @@ class RockcraftLifecycleService(LifecycleService):
 
         if needs_chisel:
             self._manager_kwargs.update(
-                extra_build_snaps=["chisel/latest/candidate"],
+                extra_build_snaps=["chisel/latest/stable"],
             )
         self._manager_kwargs.update(
             base_layer_dir=image_info.base_layer_dir,
