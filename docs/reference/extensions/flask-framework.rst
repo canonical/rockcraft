@@ -33,13 +33,12 @@ There are 2 requirements to be able to use the ``flask-framework`` extension:
 You can use this key to specify any dependencies required for your Flask 
 application. For example, below we use it to specify `libpq-dev`:
 
-```text
-parts:
-    flask-framework/dependencies:
-      stage-packages:
-        # list required packages or slices for your flask app below.
-        - libpq-dev
-```
+.. code-block:: yaml
+    parts:
+        flask-framework/dependencies:
+          stage-packages:
+            # list required packages or slices for your flask app below.
+            - libpq-dev
 
 ``parts`` > ``flask-framework/install-app`` > ``prime``
 =======================================================
