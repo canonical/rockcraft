@@ -253,9 +253,9 @@ In ``rockcraft.yaml``, change the ``base`` to ``bare`` and add
     the ``bare`` base. The command also adds a ``build-base`` which is required
     when using the ``bare`` base.
 
-So that we can compare the size after chiselling, **open the**
-``rockcraft.yaml`` file and change the ``version`` (e.g. to ``0.1-chiselled``).
-Pack the rock with the new ``bare`` :ref:`base <bases_explanation>`:
+So that we can compare the size after chiselling, open the ``rockcraft.yaml``
+file and change the ``version`` (e.g. to ``0.1-chiselled``). Pack the rock with
+the new ``bare`` :ref:`base <bases_explanation>`:
 
 .. literalinclude:: code/flask/task.yaml
     :language: bash
@@ -308,8 +308,8 @@ image:
 
 .. _update-flask-application:
 
-Update Flask application
-========================
+Update the Flask application
+============================
 
 As a final step, let's update our application. For example,
 we want to add a new ``/time`` endpoint which returns the current time.
@@ -320,7 +320,7 @@ look like the following:
 .. literalinclude:: code/flask/time_app.py
     :language: python
 
-Since we are creating a new version of the application, **open the**
+Since we are creating a new version of the application, open the
 ``rockcraft.yaml`` file and change the ``version`` (e.g. to ``0.2``).
 
 .. note::

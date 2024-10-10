@@ -27,7 +27,7 @@ There are 2 requirements to be able to use the ``fastapi-framework`` extension:
    * ``app.py``
    * ``main.py``
    * ``__init__.py``, ``app.py`` or ``main.py`` within the ``app`` or ``src``
-     directory or within a directory with the name of the Rock as declared in
+     directory or within a directory with the name of the rock as declared in
      ``rockcraft.yaml``.
 
 ``parts`` > ``fastapi-framework/install-app`` > ``prime``
