@@ -67,7 +67,7 @@ Run the Go application using ``./go-hello-world`` to verify that
 it works.
 
 Test the Go application by using ``curl`` to send a request to the root
-endpoint. You may need a new terminal for this, if you are using Multipass use
+endpoint. We may need a new terminal for this, if we are using Multipass use
 ``multipass shell rock-dev`` to get another terminal:
 
 .. literalinclude:: code/go/task.yaml
@@ -94,15 +94,15 @@ creation and tailoring for a Go application by using the
     :end-before: [docs:create-rockcraft-yaml-end]
     :dedent: 2
 
-The ``rockcraft.yaml`` file will automatically be created in your working
+The ``rockcraft.yaml`` file will automatically be created in the project working
 directory. Open it in a text editor and check that the ``name`` is
 ``go-hello-world``. Ensure that ``platforms`` includes the architecture of
-your host. For example, if your host uses the ARM
+the host. For example, if the host uses the ARM
 architecture, include ``arm64`` in ``platforms``.
 
 .. note::
     For this tutorial, we'll use the ``name`` ``go-hello-world`` and assume
-    you are running on an ``amd64`` platform. Check the architecture of your
+    we are running on an ``amd64`` platform. Check the architecture of the
     system using ``dpkg --print-architecture``.
 
     The ``name``, ``version`` and ``platform`` all influence the name of the
@@ -118,13 +118,13 @@ Pack the rock:
 
 .. note::
 
-    Depending on your network, this step can take a couple of minutes to finish.
+    Depending on the network, this step can take a couple of minutes to finish.
 
     ``ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS`` is required whilst the Go
     extension is experimental.
 
-Once Rockcraft has finished packing the Go rock, you'll find a new file in
-your working directory (an `OCI <OCI_image_spec_>`_ archive) with the ``.rock``
+Once Rockcraft has finished packing the Go rock, we'll find a new file in
+the working directory (an `OCI <OCI_image_spec_>`_ archive) with the ``.rock``
 extension:
 
 .. literalinclude:: code/go/task.yaml
@@ -134,14 +134,13 @@ extension:
     :dedent: 2
 
 .. note::
-    If you changed the ``name`` or ``version`` in ``rockcraft.yaml`` or are not
-    on an ``amd64`` platform, the name of the ``.rock`` file will be different
-    for you.
+    If we changed the ``name`` or ``version`` in ``rockcraft.yaml`` or are not
+    on an ``amd64`` platform, the name of the ``.rock`` file will be different.
 
     By default, the ``go-framework`` will use the ``bare`` base.
     The ``bare`` base is recommended for production applications because
     the image size will be smaller, and the risk of security issues lower.
-    However, you may want to change the base to ``ubuntu@24.04`` during the
+    However, we may want to change the base to ``ubuntu@24.04`` during the
     development process to benefit from the extra utilities provided.
 
 
@@ -149,8 +148,8 @@ Run the Go rock with Docker
 ===========================
 
 
-We already have the rock as an `OCI <OCI_image_spec_>`_ archive. Now we
-need to load it into Docker:
+We already have the rock as an `OCI <OCI_image_spec_>`_ archive. Load the
+image into Docker:
 
 .. literalinclude:: code/go/task.yaml
     :language: bash
@@ -180,7 +179,7 @@ size:
     The size of the image reported by Docker is the uncompressed size which is
     larger than the size of the compressed ``.rock`` file.
 
-Now we're finally ready to run the rock and test your containerised Go
+Now we're finally ready to run the rock and test the containerised Go
 application:
 
 .. literalinclude:: code/go/task.yaml
@@ -204,7 +203,7 @@ The Go application should again respond with ``Hello, world!``.
 View the application logs
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-When deploying the Go rock, you can always get the application logs via
+When deploying the Go rock, we can always get the application logs via
 ``pebble``:
 
 .. literalinclude:: code/go/task.yaml
@@ -213,9 +212,9 @@ When deploying the Go rock, you can always get the application logs via
     :end-before: [docs:get-logs-end]
     :dedent: 2
 
-As a result, :ref:`pebble_explanation_page` will give you the logs for the
+As a result, :ref:`pebble_explanation_page` will give the logs for the
 ``go`` service running inside the container.
-You should expect to see something similar to this:
+We should expect to see something similar to this:
 
 ..  code-block:: text
     :class: log-snippets
@@ -223,7 +222,7 @@ You should expect to see something similar to this:
     2024-10-04T08:51:35.826Z [go] 2024/10/04 08:51:35 starting hello world application
     2024-10-04T08:51:39.974Z [go] 2024/10/04 08:51:39 new hello world request
 
-You can also choose to follow the logs by using the ``-f`` option with the
+We can also choose to follow the logs by using the ``-f`` option with the
 ``pebble logs`` command above. To stop following the logs, press :kbd:`Ctrl` + :kbd:`C`.
 
 
@@ -258,9 +257,9 @@ Since we are creating a new version of the application, **open the**
 
 .. note::
 
-    ``rockcraft pack`` will create a new image with the updated code even if you
+    ``rockcraft pack`` will create a new image with the updated code even if we
     don't change the version. It is recommended to change the version whenever
-    you make changes to the application in the image.
+    we make changes to the application in the image.
 
 Pack and run the rock using similar commands as before:
 
@@ -288,7 +287,7 @@ The updated application should respond with the current date and time (e.g.
 
 .. note::
 
-    If you are not getting the current date and time from the ``/time``
+    If we are not getting the current date and time from the ``/time``
     endpoint, check the :ref:`troubleshooting-go` steps below.
 
 
@@ -304,12 +303,12 @@ We can now stop the container and remove the corresponding image:
     :dedent: 2
 
 
-Reset your environment
+Reset the environment
 ======================
 
 We've reached the end of this tutorial.
 
-If you'd like to reset your working environment, you can simply run the
+If we'd like to reset the working environment, we can simply run the
 following:
 
 .. literalinclude:: code/go/task.yaml
@@ -320,14 +319,14 @@ following:
 
 .. collapse:: If using Multipass...
 
-    If you created an instance using Multipass, you can also clean it up.
+    If we created an instance using Multipass, we can also clean it up.
     Start by exiting it:
 
     .. code-block:: bash
 
         exit
 
-    And then you can proceed with its deletion:
+    And then we can proceed with its deletion:
 
     .. code-block:: bash
 
@@ -343,8 +342,8 @@ Troubleshooting
 
 **Application updates not taking effect?**
 
-Upon changing your Go application and re-packing the rock, if you believe
-your changes are not taking effect, try running ``rockcraft clean`` and pack
+Upon changing the Go application and re-packing the rock, if
+the changes are not taking effect, try running ``rockcraft clean`` and pack
 the rock again with ``rockcraft pack``.
 
 .. _`lxd-docker-connectivity-issue`: https://documentation.ubuntu.com/lxd/en/latest/howto/network_bridge_firewalld/#prevent-connectivity-issues-with-lxd-and-docker
