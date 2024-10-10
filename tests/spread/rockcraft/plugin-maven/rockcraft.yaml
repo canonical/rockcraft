@@ -9,12 +9,6 @@ license: GPL-3.0
 platforms:
   amd64:
 
-services:
-  test:
-    command: /usr/lib/jvm/java-21-openjdk-${CRAFT_ARCH_BUILD_FOR}/bin/java -jar /jar/sample-0.0.1-SNAPSHOT.jar
-    override: replace
-    startup: enabled
-
 parts:
   maven-sample:
     plugin: maven
