@@ -68,6 +68,15 @@ We'll use Docker to run the rock. We can install it as a ``snap``:
     :end-before: [docs:install-docker-end]
     :dedent: 2
 
+By default, Docker is only accessible with root privileges (sudo). We want
+to be able to use Docker commands as a regular user:
+
+.. literalinclude:: /reuse/tutorial/code/task.yaml
+    :language: bash
+    :start-after: [docs:docker-regular-user]
+    :end-before: [docs:docker-regular-user-end]
+    :dedent: 2
+
 .. warning::
    There is a `known connectivity issue with LXD and Docker
    <lxd-docker-connectivity-issue_>`_. If we see a

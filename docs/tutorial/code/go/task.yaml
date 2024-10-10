@@ -46,17 +46,17 @@ execute: |
   # [docs:ls-rock-end]
 
   # [docs:skopeo-copy]
-  sudo rockcraft.skopeo --insecure-policy \
+  rockcraft.skopeo --insecure-policy \
     copy oci-archive:go-hello-world_0.1_amd64.rock \
     docker-daemon:go-hello-world:0.1
   # [docs:skopeo-copy-end]
 
   # [docs:docker-images]
-  sudo docker images go-hello-world:0.1
+  docker images go-hello-world:0.1
   # [docs:docker-images-end]
 
   # [docs:docker-run]
-  sudo docker run --rm -d -p 8000:8000 \
+  docker run --rm -d -p 8000:8000 \
     --name go-hello-world go-hello-world:0.1
   # [docs:docker-run-end]
 
@@ -67,12 +67,12 @@ execute: |
   [ "$(curl localhost:8000)" = "Hello, world!" ]
 
   # [docs:get-logs]
-  sudo docker exec go-hello-world pebble logs go
+  docker exec go-hello-world pebble logs go
   # [docs:get-logs-end]
 
   # [docs:stop-docker]
-  sudo docker stop go-hello-world
-  sudo docker rmi go-hello-world:0.1
+  docker stop go-hello-world
+  docker rmi go-hello-world:0.1
   # [docs:stop-docker-end]
 
   ## Part 2 of the tutorial
@@ -82,11 +82,11 @@ execute: |
 
   # [docs:docker-run-update]
   ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS=true rockcraft pack
-  sudo rockcraft.skopeo --insecure-policy \
+  rockcraft.skopeo --insecure-policy \
     copy oci-archive:go-hello-world_0.2_amd64.rock \
     docker-daemon:go-hello-world:0.2
-  sudo docker images go-hello-world:0.2
-  sudo docker run --rm -d -p 8000:8000 \
+  docker images go-hello-world:0.2
+  docker run --rm -d -p 8000:8000 \
     --name go-hello-world go-hello-world:0.2
   # [docs:docker-run-update-end]
   retry -n 5 --wait 2 curl --fail localhost:8000
@@ -97,8 +97,8 @@ execute: |
   [ "$(curl localhost:8000/time)" != "Hello, world!" ]
 
   # [docs:stop-docker-updated]
-  sudo docker stop go-hello-world
-  sudo docker rmi go-hello-world:0.2
+  docker stop go-hello-world
+  docker rmi go-hello-world:0.2
   # [docs:stop-docker-updated-end]
 
   # [docs:cleanup]
