@@ -225,8 +225,8 @@ We can also choose to follow the logs by using the ``-f`` option with the
 ``pebble logs`` command above. To stop following the logs, press :kbd:`Ctrl` + :kbd:`C`.
 
 
-Cleanup
-~~~~~~~
+Stop the application
+~~~~~~~~~~~~~~~~~~~~
 
 Now we have a fully functional rock for a Go application! This concludes
 the first part of this tutorial, so we'll stop the container and remove the
