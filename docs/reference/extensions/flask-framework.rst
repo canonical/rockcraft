@@ -63,11 +63,11 @@ Some files, if they exist, are included by default. These include:
 ``app``, ``app.py``, ``migrate``, ``migrate.sh``, ``migrate.py``, ``static``,
 ``templates``.
 
-**Regarding the ``migrate.sh`` file:** 
+**Regarding the migrate.sh file:** 
 
 If your app depends on a database it is common to run a database migration
 script before app startup which, for example, creates or modifies tables. 
-This can be done by including the `migrate.sh` script in the root of your 
+This can be done by including the ``migrate.sh`` script in the root of your 
 project. It will be executed with the same environment variables and context 
 as the Flask application.
 
