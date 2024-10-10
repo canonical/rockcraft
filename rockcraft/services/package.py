@@ -157,6 +157,8 @@ def _pack(
     if project.services and project.entrypoint_service in project.services:
         new_image.set_cmd(project.services[project.entrypoint_service].command)
 
+    new_image.set_default_path(project.base)
+
     dumped = project.marshal()
     services = cast(dict[str, typing.Any], dumped.get("services", {}))
     checks = cast(dict[str, typing.Any], dumped.get("checks", {}))

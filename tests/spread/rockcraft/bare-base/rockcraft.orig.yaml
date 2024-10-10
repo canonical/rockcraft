@@ -3,7 +3,7 @@ version: latest
 summary: A tiny rock
 description: Building a tiny rock from a bare base, with just one package
 license: Apache-2.0
-build-base: ubuntu@22.04
+build-base: placeholder-base
 base: bare
 services:
   hello:
@@ -18,3 +18,4 @@ parts:
     plugin: nil
     stage-packages:
       - hello
+      - base-files # for the usrmerge symlinks in ubuntu@24.04 and newer
