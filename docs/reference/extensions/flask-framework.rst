@@ -27,6 +27,20 @@ There are 2 requirements to be able to use the ``flask-framework`` extension:
    there must be an ``app.py`` file at the root of the project with the name
    of the Flask object is set to ``app``
 
+``parts`` > ``flask-framework/dependencies`` > ``stage-packages``
+=================================================================
+
+You can use this key to specify any dependencies required for your Flask 
+application. For example, below we use it to specify `libpq-dev`:
+
+```text
+parts:
+    flask-framework/dependencies:
+      stage-packages:
+        # list required packages or slices for your flask app below.
+        - libpq-dev
+```
+
 ``parts`` > ``flask-framework/install-app`` > ``prime``
 =======================================================
 
@@ -48,6 +62,20 @@ notation. For example:
 Some files, if they exist, are included by default. These include:
 ``app``, ``app.py``, ``migrate``, ``migrate.sh``, ``migrate.py``, ``static``,
 ``templates``.
+
+**Regarding the `migrate.sh` file:** 
+
+If your app depends on a database it is common to run a database migration
+script before app startup which, for example, creates or modifies tables. 
+This can be done by including the `migrate.sh` script in the root of your 
+project. It will be executed with the same environment variables and context 
+as the Flask application.
+
+If the migration script fails, the app won't be started and the app charm 
+will go into blocked state. The migration script will be run on every unit 
+and it is assumed that it is idempotent (can be run multiple times) and that 
+it can be run on multiple units at the same time without causing issues. 
+This can be achieved by, for example, locking any tables during the migration.
 
 Useful links
 ============
