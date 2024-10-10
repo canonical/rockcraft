@@ -32,7 +32,7 @@ There are 2 requirements to be able to use the ``django-framework`` extension:
 ``parts`` > ``django-framework/dependencies:`` > ``stage-packages``
 ===================================================================
 
-You can use this key to specify any dependencies required for your Django 
+You can use this key to specify any dependencies required for your Django
 application. For example, below we use it to specify ``libpq-dev``:
 
 .. code-block:: yaml
