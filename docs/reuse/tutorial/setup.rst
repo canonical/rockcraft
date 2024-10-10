@@ -1,5 +1,5 @@
-We recommend starting from a clean Ubuntu 22.04 installation. If you don't have
-one available, you can create one using `Multipass`_:
+We recommend starting from a clean Ubuntu installation. If we don't have
+one available, we can create one using `Multipass`_:
 
 .. tabs::
 
@@ -11,9 +11,9 @@ one available, you can create one using `Multipass`_:
 
             snap services multipass
 
-        If you see the ``multipass`` service but it isn't "active", then you'll
-        need to run ``sudo snap start multipass``. On the other hand, if you get
-        an error saying ``snap "multipass" not found``, then you must install
+        If we see the ``multipass`` service but it isn't "active", then we'll
+        need to run ``sudo snap start multipass``. On the other hand, if we get
+        an error saying ``snap "multipass" not found``, then we must install
         `Multipass <install-multipass_>`_:
 
         .. code-block:: bash
@@ -30,11 +30,11 @@ one available, you can create one using `Multipass`_:
         See `Multipass installation instructions <install-multipass_>`_, switch
         to macOS in the drop down.
 
-Then you can create the VM with the following command:
+Then we can create the VM with the following command:
 
 .. code-block:: text
 
-    multipass launch --disk 10G --name rock-dev 22.04
+    multipass launch --disk 10G --name rock-dev 24.04
 
 Finally, once the VM is up, open a shell into it:
 
@@ -52,7 +52,7 @@ and initialised:
    sudo snap install lxd
    lxd init --auto
 
-In order to create the rock, you'll need to install Rockcraft:
+In order to create the rock, we'll need to install Rockcraft:
 
 .. literalinclude:: /reuse/tutorial/code/task.yaml
     :language: bash
@@ -60,7 +60,7 @@ In order to create the rock, you'll need to install Rockcraft:
     :end-before: [docs:install-rockcraft-end]
     :dedent: 2
 
-We'll use Docker to run the rock. You can install it as a ``snap``:
+We'll use Docker to run the rock. We can install it as a ``snap``:
 
 .. literalinclude:: /reuse/tutorial/code/task.yaml
     :language: bash
@@ -68,15 +68,24 @@ We'll use Docker to run the rock. You can install it as a ``snap``:
     :end-before: [docs:install-docker-end]
     :dedent: 2
 
+By default, Docker is only accessible with root privileges (``sudo``). We want
+to be able to use Docker commands as a regular user:
+
+.. literalinclude:: /reuse/tutorial/code/task.yaml
+    :language: bash
+    :start-after: [docs:docker-regular-user]
+    :end-before: [docs:docker-regular-user-end]
+    :dedent: 2
+
 .. warning::
    There is a `known connectivity issue with LXD and Docker
-   <lxd-docker-connectivity-issue_>`_. If you see a
+   <lxd-docker-connectivity-issue_>`_. If we see a
    networking issue such as "*A network related operation failed in a context
-   of no network access*", make sure you apply one of the fixes suggested
+   of no network access*", make sure to apply one of the suggested fixes
    `here <lxd-docker-connectivity-issue_>`_.
 
-Note that you'll also need a text editor. You can either install one of your
-choice or simply use one of the already existing editors in your Ubuntu
+Note that we'll also need a text editor. We can either install one of our
+choice or simply use one of the already existing editors in the Ubuntu
 environment (like ``vi``).
 
 .. _`lxd-docker-connectivity-issue`: https://documentation.ubuntu.com/lxd/en/latest/howto/network_bridge_firewalld/#prevent-connectivity-issues-with-lxd-and-docker

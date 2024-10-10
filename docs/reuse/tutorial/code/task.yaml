@@ -16,3 +16,11 @@ execute: |
   # [docs:install-docker]
   sudo snap install docker
   # [docs:install-docker-end]
+
+  # [docs:docker-regular-user]
+  sudo addgroup --system docker
+  sudo adduser $USER docker
+  newgrp docker
+  sudo snap disable docker
+  sudo snap enable docker
+  # [docs:docker-regular-user-end]
