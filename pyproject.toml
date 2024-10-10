@@ -41,6 +41,7 @@ ignore = [
     "docs/how-to/code",
     "docs/tutorial/code/flask",
     "docs/tutorial/code/django",
+    "docs/tutorial/code/fastapi",
     "tests/spread/general/extension-django/example_django"
 ]
 

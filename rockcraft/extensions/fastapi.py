@@ -205,6 +205,7 @@ class FastAPIFramework(Extension):
         """
         places_to_look = (
             (".", "app.py"),
+            (".", "main.py"),
             *(
                 (src_dir, src_file)
                 for src_dir in ("app", "src", self.name)
