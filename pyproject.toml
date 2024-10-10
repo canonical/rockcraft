@@ -1,6 +1,6 @@
 [build-system]
 requires = [
-    "setuptools~=69.0.3",
+    "setuptools~=70.0.0",
     "setuptools_scm[toml]>=7.1"
 ]
 build-backend = "setuptools.build_meta"
@@ -36,7 +36,13 @@ line_length = 88
 extend-exclude = "docs/sphinx-starter-pack"
 
 [tool.pyright]
-ignore = ["docs/sphinx-starter-pack"]
+ignore = [
+    "docs/sphinx-starter-pack",
+    "docs/how-to/code",
+    "docs/tutorial/code/flask",
+    "docs/tutorial/code/django",
+    "tests/spread/general/extension-django/example_django"
+]
 
 [tool.mypy]
 python_version = "3.10"
@@ -67,28 +73,9 @@ strict = false
 module = ["craft_archives"]
 ignore_missing_imports = true
 
-[tool.pylint.messages_control]
-disable = "too-many-ancestors,too-few-public-methods,fixme,unspecified-encoding,use-implicit-booleaness-not-comparison,unnecessary-lambda-assignment,line-too-long,cyclic-import"
-
-[tool.pylint.similarities]
-min-similarity-lines=12
-
-[tool.pylint.format]
-max-line-length = "88"
-max-locals = 16
-
-[tool.pylint.MASTER]
-extension-pkg-whitelist = [
-    "pydantic"
-]
-load-plugins = "pylint_pytest"
-ignore-paths = [
-  "rockcraft/_version.py"
-]
-
 [tool.ruff]
 line-length = 88
-target-version = "py38"
+target-version = "py310"
 src = ["rockcraft", "tests"]
 extend-exclude = [
     "docs",
@@ -96,7 +83,7 @@ extend-exclude = [
     "rockcraft/_version.py"
 ]
 # Follow ST063 - Maintaining and updating linting specifications for updating these.
-select = [  # Base linting rule selections.
+lint.select = [  # Base linting rule selections.
     # See the internal document for discussion:
     # https://docs.google.com/document/d/1i1n8pDmFmWi4wTDpk-JfnWCVUThPJiggyPi2DYwBBu4/edit
     # All sections here are stable in ruff and shouldn't randomly introduce
@@ -119,7 +106,7 @@ select = [  # Base linting rule selections.
     "RET",  # Simpler logic after return, raise, continue or break
     "UP018", "C408",  # Convert type calls to literals. The latest pylint enforces this, but ruff has auto-fixes.
 ]
-extend-select = [
+lint.extend-select = [
     # These sets are still frequently getting new rules.
     # Therefore, they're getting frozen with the current rules so we can
     # upgrade ruff without breaking linting.
@@ -145,7 +132,7 @@ extend-select = [
     "RUF005",  # Encourages unpacking rather than concatenation
     "RUF100",  # #noqa directive that doesn't flag anything.
 ]
-ignore = [
+lint.ignore = [
     #"E203",  # Whitespace before ":"  -- Commented because ruff doesn't currently check E203
     "E501",  # Line too long (reason: black will automatically fix this for us)
     "D105",  # Missing docstring in magic method (reason: magic methods already have definitions)
@@ -157,14 +144,36 @@ ignore = [
 
 ]
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.flake8-annotations]
+allow-star-arg-any = true
+
+[tool.ruff.lint.pydocstyle]
+ignore-decorators = [  # Functions with these decorators don't have to have docstrings.
+    "typing.overload",  # Default configuration
+    # The next four are all variations on override, so child classes don't have to repeat parent classes' docstrings.
+    "overrides.override",
+    "overrides.overrides",
+    "typing.override",
+    "typing_extensions.override",
+]
+
+[tool.ruff.lint.pylint]
+max-args = 8
+
+[tool.ruff.lint.pep8-naming]
+# Allow Pydantic's `@validator` decorator to trigger class method treatment.
+classmethod-decorators = ["pydantic.validator", "pydantic.root_validator"]
+
+[tool.ruff.lint. per-file-ignores]
 "tests/**.py" = [  # Some things we want for the moin project are unnecessary in tests.
     "D",  # Ignore docstring rules in tests
     "ANN", # Ignore type annotations in tests
     "S101",  # Allow assertions in tests
-    "S103", # Allow `os.chmod` setting a permissive mask `0o555` on file or directory
-    "S108", # Allow Probable insecure usage of temporary file or directory
+    "S103",  # Allow `os.chmod` setting a permissive mask `0o555` on file or directory
+    "S105",  # Allow (fake) secrets in tests.
+    "S108",  # Allow Probable insecure usage of temporary file or directory
     "PLR0913",  # Allow many arguments for test functions
+    "PLR2004",  # Allow magic values in tests
 ]
 # isort leaves init files alone by default, this makes ruff ignore them too.
 "__init__.py" = ["I001"]

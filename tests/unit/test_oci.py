@@ -23,10 +23,11 @@ from pathlib import Path
 from unittest.mock import ANY, call, mock_open, patch
 
 import pytest
-
-import tests
 from rockcraft import errors, oci
 from rockcraft.architectures import SUPPORTED_ARCHS
+from rockcraft.pebble import Pebble
+
+import tests
 
 MOCK_NEW_USER = {
     "user": "foo",
@@ -301,7 +302,7 @@ class TestImage:
             "tag",
         ]
         assert mock_run.mock_calls == [
-            call(expected_cmd + ["--history.created_by", " ".join(expected_cmd)])
+            call([*expected_cmd, "--history.created_by", " ".join(expected_cmd)])
         ]
 
     def test_add_new_user(
@@ -561,55 +562,75 @@ class TestImage:
             )
         ]
 
-    def test_set_entrypoint_default(self, mock_run):
-        image = oci.Image("a:b", Path("/c"))
-
-        image.set_entrypoint()
-
-        assert mock_run.mock_calls == [
-            call(
-                [
-                    "umoci",
-                    "config",
-                    "--image",
-                    "/c/a:b",
-                    "--clear=config.entrypoint",
-                    "--config.entrypoint",
-                    "/bin/pebble",
-                    "--config.entrypoint",
-                    "enter",
-                    "--config.entrypoint",
-                    "--verbose",
-                    "--clear=config.cmd",
-                ],
+    @pytest.mark.parametrize(
+        ("service", "build_base", "pebble_binary", "verbose", "service_config"),
+        [
+            (
+                None,
+                "ubuntu@22.04",
+                Pebble.PEBBLE_BINARY_PATH_PREVIOUS,
+                [],
+                [],
             ),
-        ]
-
-    def test_set_entrypoint_withservice(self, mock_run):
-        image = oci.Image("a:b", Path("/tmp"))
-        image.set_entrypoint("test-service")
-
-        assert mock_run.mock_calls == [
-            call(
+            (
+                None,
+                "ubuntu@24.04",
+                Pebble.PEBBLE_BINARY_PATH,
+                [],
+                [],
+            ),
+            (
+                "test-service",
+                "ubuntu@22.04",
+                Pebble.PEBBLE_BINARY_PATH_PREVIOUS,
+                [],
                 [
-                    "umoci",
-                    "config",
-                    "--image",
-                    "/tmp/a:b",
-                    "--clear=config.entrypoint",
-                    "--config.entrypoint",
-                    "/bin/pebble",
-                    "--config.entrypoint",
-                    "enter",
-                    "--config.entrypoint",
-                    "--verbose",
                     "--config.entrypoint",
                     "--args",
                     "--config.entrypoint",
                     "test-service",
-                    "--clear=config.cmd",
                 ],
             ),
+            (
+                "test-service",
+                "ubuntu@24.04",
+                Pebble.PEBBLE_BINARY_PATH,
+                [],
+                [
+                    "--config.entrypoint",
+                    "--args",
+                    "--config.entrypoint",
+                    "test-service",
+                ],
+            ),
+        ],
+    )
+    def test_set_entrypoint_default(
+        self, mock_run, service, build_base, pebble_binary, verbose, service_config
+    ):
+        image = oci.Image("a:b", Path("/tmp"))
+
+        image.set_entrypoint(service, build_base)
+
+        arg_list = [
+            "umoci",
+            "config",
+            "--image",
+            "/tmp/a:b",
+            "--clear=config.entrypoint",
+            "--config.entrypoint",
+            f"/{pebble_binary}",
+            "--config.entrypoint",
+            "enter",
+        ]
+        arg_list.extend(verbose)
+
+        arg_list.extend(service_config)
+
+        arg_list.append("--clear=config.cmd")
+
+        assert mock_run.mock_calls == [
+            call(arg_list),
         ]
 
     def test_set_cmd_empty(self, mock_run):
@@ -812,7 +833,7 @@ class TestImage:
         ]
         assert mock_run.mock_calls == [
             call(
-                expected_cmd + ["--history.created_by", " ".join(expected_cmd)],
+                [*expected_cmd, "--history.created_by", " ".join(expected_cmd)],
             )
         ]
         mock_rmtree.assert_called_once_with(Path(mock_control_data_path))
@@ -930,3 +951,33 @@ class TestImage:
             )
         ]
         assert mock_loads.called
+
+    def test_set_path_bare(self, mock_run):
+        image = oci.Image("a:b", Path("/c"))
+
+        image.set_default_path("bare")
+
+        expected = "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+        assert mock_run.mock_calls == [
+            call(
+                [
+                    "umoci",
+                    "config",
+                    "--image",
+                    "/c/a:b",
+                    "--config.env",
+                    f"PATH={expected}",
+                ]
+            )
+        ]
+
+    @pytest.mark.parametrize(
+        "base",
+        ["ubuntu@24.04", "ubuntu@22.04", "ubuntu@20.04"],
+    )
+    def test_set_path_non_bare(self, mock_run, base):
+        image = oci.Image("a:b", Path("/c"))
+
+        image.set_default_path(base)
+
+        assert not mock_run.called

@@ -1,0 +1,33 @@
+summary: bare base build test
+environment:
+  BASE/24_04: "ubuntu@24.04"
+  PEBBLE_DIR/24_04: "/usr/bin"
+
+  BASE/22_04: "ubuntu@22.04"
+  PEBBLE_DIR/22_04: "/bin"
+
+execute: |
+  sed "s/placeholder-base/$BASE/" rockcraft.orig.yaml  > rockcraft.yaml
+
+  run_rockcraft pack
+
+  test -f bare-base-test_latest_amd64.rock
+  test ! -d parts -a ! -d stage -a ! -d prime
+
+  # test container execution
+  docker images
+  sudo rockcraft.skopeo --insecure-policy copy oci-archive:bare-base-test_latest_amd64.rock docker-daemon:bare-base-test:latest
+  rm bare-base-test_latest_amd64.rock
+  docker images bare-base-test:latest
+  id=$(docker run --rm -d bare-base-test --verbose)
+  grep_docker_log "$id" "ship it!"
+  docker exec "$id" pebble services | grep hello
+  docker exec "$id" pebble ls /usr/bin/hello
+  test "$(docker inspect "$id" -f '{{json .Config.Entrypoint}}')" = "[\"${PEBBLE_DIR}/pebble\",\"enter\"]"
+  
+  # Bare-based rocks should have the default Ubuntu path, as an empty PATH is a
+  # security issue when containers bypass the pebble entrypoint.
+  EXPECTED_PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+  test "$(docker inspect "$id" -f '{{json .Config.Env}}')" = "[\"PATH=${EXPECTED_PATH}\"]"
+
+  docker rm -f "$id"

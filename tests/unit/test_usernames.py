@@ -16,7 +16,6 @@
 
 import pydantic
 import pytest
-
 from rockcraft import usernames
 
 
@@ -40,18 +39,18 @@ def test_structure(check):
 
 
 def test_bad_prefix():
-    with pytest.raises(pydantic.error_wrappers.ValidationError):
+    with pytest.raises(pydantic.ValidationError):
         usernames.GlobalUser(username="badprefix_foo_", uid=584795)
 
 
 def test_bad_suffix():
-    with pytest.raises(pydantic.error_wrappers.ValidationError):
+    with pytest.raises(pydantic.ValidationError):
         usernames.GlobalUser(username="_foo_badsuffix", uid=584795)
 
 
 def test_bad_uid():
-    with pytest.raises(pydantic.error_wrappers.ValidationError):
+    with pytest.raises(pydantic.ValidationError):
         usernames.GlobalUser(username="_foo_", uid=5)
 
-    with pytest.raises(pydantic.error_wrappers.ValidationError):
+    with pytest.raises(pydantic.ValidationError):
         usernames.GlobalUser(username="_foo_", uid=58479500)

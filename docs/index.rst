@@ -1,9 +1,9 @@
-Welcome to Rockcraft's documentation!
-===========================================
+Rockcraft documentation
+=======================
 
-**Rockcraft is a tool to create** :ref:`rocks_explanation` -- a new generation
-of secure, stable and `OCI-compliant container images <OCI_image_spec_>`_,
-based on Ubuntu.
+**Rockcraft is a tool to create** :ref:`rocks <rocks_explanation>` -- a new
+generation of secure, stable and `OCI-compliant container images
+<OCI_image_spec_>`_, based on Ubuntu.
 
 **Rockcraft is for anyone who wants to build production-grade container images,
 regardless of their experience as a software developer** -- from independent
@@ -22,7 +22,7 @@ allowing complex operations to be declared at build time.
    :maxdepth: 1
    :hidden:
 
-   tutorials/index
+   tutorial/index
    how-to/index
    reference/index
    explanation/index
@@ -30,24 +30,28 @@ allowing complex operations to be declared at build time.
 
 .. grid:: 1 1 2 2
 
-   .. grid-item-card:: :ref:`Tutorials <tutorials>`
+   .. grid-item-card:: :ref:`Tutorial <tutorial>`
 
-      **Get started** with a hands-on introduction to Rockcraft
+      **Get started** - become familiar with Rockcraft by containerising different software applications as rocks.
 
    .. grid-item-card:: :ref:`How-to guides <how-to>`
 
-      **Step-by-step guides** covering key operations and common tasks
+      **Step-by-step guides** - learn key operations, ranging from :ref:`creating
+      and cutting slices <how-to-chisel>` to :ref:`migrating and publishing
+      rocks <how-to-rocks>`.
 
 .. grid:: 1 1 2 2
    :reverse:
 
    .. grid-item-card:: :ref:`Reference <reference>`
 
-      **Technical information** about the ``rockcraft.yaml`` format
+      **Technical information** - understand how to use every field in
+      ``rockcraft.yaml``.
 
    .. grid-item-card:: :ref:`Explanation <explanation>`
 
-      **Discussion and clarification** of key topics
+      **Discussion and clarification** - explore Rockcraft's lifecycle and how a
+      rock gets packed under the hood.
 
 
 Project and community
@@ -58,6 +62,7 @@ that warmly welcomes community projects, contributions, suggestions, fixes
 and constructive feedback.
 
 * `Ubuntu Rocks Discourse <https://discourse.ubuntu.com/c/rocks/117>`_
+* `Rocks Community on Matrix <https://matrix.to/#/#rocks:ubuntu.com>`_
 * `Ubuntu Code of Conduct <https://ubuntu.com/community/code-of-conduct>`_
 * `Canonical contributor license agreement
   <https://ubuntu.com/legal/contributors>`_

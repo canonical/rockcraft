@@ -18,10 +18,10 @@ from pathlib import Path
 
 import pytest
 import yaml
-
 from rockcraft.application import APP_METADATA, Rockcraft
 from rockcraft.services import RockcraftServiceFactory
 from rockcraft.services.image import ImageInfo, RockcraftImageService
+
 from tests.util import jammy_only
 
 pytestmark = [jammy_only, pytest.mark.usefixtures("reset_callbacks")]

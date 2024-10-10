@@ -1,0 +1,151 @@
+###########################################
+# IMPORTANT
+# Comments matter!
+# The docs use the wrapping comments as
+# markers for including said instructions
+# as snippets in the docs.
+###########################################
+summary: Getting started with Django tutorial
+
+environment:
+
+execute: |
+  # [docs:create-venv]
+  sudo apt-get update && sudo apt-get install python3-venv -y
+  python3 -m venv .venv
+  source .venv/bin/activate
+  pip install -r requirements.txt
+  # [docs:create-venv-end]
+
+  # [docs:create-project]
+  django-admin startproject django_hello_world
+  # [docs:create-project-end]
+
+  cd django_hello_world
+  python manage.py runserver &
+  retry -n 5 --wait 2 curl localhost:8000
+
+  # [docs:curl-django]
+  curl localhost:8000
+  # [docs:curl-django-end]
+
+  kill $!
+
+  # [docs:create-rockcraft-yaml]
+  cd ..
+  rockcraft init --profile django-framework
+  # [docs:create-rockcraft-yaml-end]
+  sed -i "s/name: .*/name: django-hello-world/g" rockcraft.yaml
+
+  # [docs:pack]
+  rockcraft pack
+  # [docs:pack-end]
+
+  # [docs:ls-rock]
+  ls *.rock -l --block-size=MB
+  # [docs:ls-rock-end]
+
+  # [docs:skopeo-copy]
+  sudo rockcraft.skopeo --insecure-policy \
+    copy oci-archive:django-hello-world_0.1_amd64.rock \
+    docker-daemon:django-hello-world:0.1
+  # [docs:skopeo-copy-end]
+
+  # [docs:docker-images]
+  sudo docker images django-hello-world:0.1
+  # [docs:docker-images-end]
+
+  # [docs:docker-run]
+  sudo docker run --rm -d -p 8000:8000 \
+    --name django-hello-world django-hello-world:0.1
+  # [docs:docker-run-end]
+  retry -n 5 --wait 2 curl localhost:8000
+
+  # [docs:curl-django-rock]
+  curl localhost:8000
+  # [docs:curl-django-rock-end]
+
+  # [docs:get-logs]
+  sudo docker exec django-hello-world pebble logs django
+  # [docs:get-logs-end]
+
+  # [docs:stop-docker]
+  sudo docker stop django-hello-world
+  sudo docker rmi django-hello-world:0.1
+  # [docs:stop-docker-end]
+
+  # [docs:change-base]
+  sed -i \
+    "s/base: .*/base: bare\nbuild-base: ubuntu@22.04/g" \
+    rockcraft.yaml
+  # [docs:change-base-end]
+  sed -i "s/version: .*/version: 0.1-chiselled/g" rockcraft.yaml
+
+  # [docs:chisel-pack]
+  rockcraft pack
+  # [docs:chisel-pack-end]
+
+  # [docs:ls-bare-rock]
+  ls *.rock -l --block-size=MB
+  # [docs:ls-bare-rock-end]
+
+  # [docs:docker-run-chisel]
+  sudo rockcraft.skopeo --insecure-policy \
+    copy oci-archive:django-hello-world_0.1-chiselled_amd64.rock \
+    docker-daemon:django-hello-world:0.1-chiselled
+  sudo docker images django-hello-world:0.1-chiselled
+  sudo docker run --rm -d -p 8000:8000 \
+    --name django-hello-world django-hello-world:0.1-chiselled
+  # [docs:docker-run-chisel-end]
+  retry -n 5 --wait 2 curl localhost:8000
+
+  # [docs:curl-django-bare-rock]
+  curl localhost:8000
+  # [docs:curl-django-bare-rock-end]
+
+  # [docs:stop-docker-chisel]
+  sudo docker stop django-hello-world
+  sudo docker rmi django-hello-world:0.1-chiselled
+  # [docs:stop-docker-chisel-end]
+
+  # [docs:create-time-app]
+  cd django_hello_world
+  django-admin startapp time_app
+  # [docs:create-time-app-end]
+  cat ../time_app_views.py > time_app/views.py
+  cat ../time_app_urls.py > time_app/urls.py
+  cat ../urls.py > django_hello_world/urls.py
+
+  cd ..
+  sed -i "s/version: .*/version: 0.2/g" rockcraft.yaml
+
+  # [docs:docker-run-update]
+  rockcraft pack
+  sudo rockcraft.skopeo --insecure-policy copy \
+    oci-archive:django-hello-world_0.2_amd64.rock \
+    docker-daemon:django-hello-world:0.2
+  sudo docker images django-hello-world:0.2
+  sudo docker run --rm -d -p 8000:8000 \
+    --name django-hello-world django-hello-world:0.2
+  # [docs:docker-run-update-end]
+  retry -n 5 --wait 2 curl localhost:8000/time/
+
+  # [docs:curl-time]
+  curl localhost:8000/time/
+  # [docs:curl-time-end]
+
+  # [docs:stop-docker-updated]
+  sudo docker stop django-hello-world
+  sudo docker rmi django-hello-world:0.2
+  # [docs:stop-docker-updated-end]
+
+  # [docs:cleanup]
+  # exit and delete the virtual environment
+  deactivate
+  rm -rf .venv django_hello_world
+  # delete all the files created during the tutorial
+  rm django-hello-world_0.1_amd64.rock \
+    django-hello-world_0.1-chiselled_amd64.rock \
+    django-hello-world_0.2_amd64.rock \
+    rockcraft.yaml requirements.txt
+  # [docs:cleanup-end]

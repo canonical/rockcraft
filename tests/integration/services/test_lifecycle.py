@@ -18,13 +18,16 @@ import textwrap
 from pathlib import Path
 
 import pytest
+from craft_application.util import repositories
 from craft_parts import overlays
 
-from rockcraft.services import lifecycle
 from tests.testing.project import create_project
 from tests.util import jammy_only
 
-pytestmark = [jammy_only, pytest.mark.usefixtures("reset_callbacks")]
+pytestmark = [
+    jammy_only,
+    pytest.mark.usefixtures("reset_callbacks", "enable_overlay_feature"),
+]
 
 # pyright: reportPrivateImportUsage=false
 
@@ -61,7 +64,7 @@ def test_package_repositories_in_overlay(new_dir, mocker, run_lifecycle):
 
     # Mock the installation of package repositories in the base system, as that
     # is undesired and will fail without root.
-    mocker.patch.object(lifecycle, "_install_package_repositories")
+    mocker.patch.object(repositories, "install_package_repositories")
 
     project = create_project(
         base="ubuntu@22.04",
@@ -80,7 +83,7 @@ def test_package_repositories_in_overlay(new_dir, mocker, run_lifecycle):
     assert overlay_apt.is_dir()
 
     # Checking that the files are present should be enough
-    assert (overlay_apt / "keyrings/craft-CE49EC21.gpg").is_file()
+    assert (overlay_apt / "keyrings/craft-9BE21867.gpg").is_file()
     assert (overlay_apt / "sources.list.d/craft-ppa-mozillateam_ppa.sources").is_file()
     assert (overlay_apt / "preferences.d/craft-archives").is_file()
 

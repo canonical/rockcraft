@@ -1,0 +1,29 @@
+###########################################
+# IMPORTANT
+# Comments matter!
+# The docs use the wrapping comments as 
+# markers for including said instructions 
+# as snippets in the docs.
+###########################################
+summary: test for the "Install packages slices into a rock" tutorial
+
+execute: |
+  # [docs:install-rockcraft]
+  snap install rockcraft --classic
+  # [docs:install-rockcraft-end]
+
+  # [docs:build-rock]
+  rockcraft pack
+  # [docs:build-rock-end]
+  
+  test -f chiselled-hello_latest_amd64.rock
+
+  # [docs:skopeo-copy]
+  sudo rockcraft.skopeo --insecure-policy copy oci-archive:chiselled-hello_latest_amd64.rock docker-daemon:chiselled-hello:latest
+  # [docs:skopeo-copy-end]
+
+  # [docs:docker-run]
+  docker run --rm chiselled-hello:latest exec hello -t
+  # [docs:docker-run-end]
+  
+  docker run --rm chiselled-hello:latest exec hello -t | grep "hello, world"

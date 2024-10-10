@@ -13,26 +13,18 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
+import pathlib
 import sys
+import textwrap
 from pathlib import Path
-from unittest.mock import DEFAULT, call, patch
+from unittest.mock import DEFAULT, call
 
 import pytest
 import yaml
 from craft_cli import emit
-
-from rockcraft import cli, services
-from rockcraft.application import Rockcraft
+from rockcraft import cli, extensions, services
+from rockcraft.application import APP_METADATA, Rockcraft
 from rockcraft.models import project
-
-
-@pytest.fixture()
-def lifecycle_init_mock():
-    """Mock for ui.init."""
-    patcher = patch("rockcraft.commands.init.init")
-    yield patcher.start()
-    patcher.stop()
 
 
 def test_run_pack_services(mocker, monkeypatch, tmp_path):
@@ -52,6 +44,7 @@ def test_run_pack_services(mocker, monkeypatch, tmp_path):
         setup=DEFAULT,
         prime_dir=fake_prime_dir,
         run=DEFAULT,
+        project_info=DEFAULT,
     )
 
     package_mocks = mocker.patch.multiple(
@@ -63,7 +56,7 @@ def test_run_pack_services(mocker, monkeypatch, tmp_path):
 
     cli.run()
 
-    lifecycle_mocks["run"].assert_called_once_with(step_name="prime", part_names=[])
+    lifecycle_mocks["run"].assert_called_once_with(step_name="prime")
 
     package_mocks["write_metadata"].assert_called_once_with(fake_prime_dir)
     package_mocks["pack"].assert_called_once_with(fake_prime_dir, Path())
@@ -72,22 +65,159 @@ def test_run_pack_services(mocker, monkeypatch, tmp_path):
     assert log_path.is_file()
 
 
-def test_run_init(mocker, lifecycle_init_mock):
+@pytest.mark.usefixtures("new_dir")
+def test_run_init(mocker):
     mock_ended_ok = mocker.spy(emit, "ended_ok")
     mocker.patch.object(sys, "argv", ["rockcraft", "init"])
+
     cli.run()
 
+    rockcraft_yaml_path = Path("rockcraft.yaml")
     rock_project = project.Project.unmarshal(
-        yaml.safe_load(
-            # pylint: disable=W0212
-            cli.commands.InitCommand._INIT_TEMPLATE_YAML
-        )
+        yaml.safe_load(rockcraft_yaml_path.read_text())
     )
 
     assert len(rock_project.summary) < 80
     assert len(rock_project.description.split()) < 100
-
-    assert lifecycle_init_mock.mock_calls == [
-        call(cli.commands.InitCommand._INIT_TEMPLATE_YAML)  # pylint: disable=W0212
-    ]
     assert mock_ended_ok.mock_calls == [call()]
+
+
+@pytest.mark.usefixtures("new_dir")
+def test_run_init_with_name(mocker):
+    mocker.patch.object(sys, "argv", ["rockcraft", "init", "--name=foobar"])
+
+    cli.run()
+
+    rockcraft_yaml_path = Path("rockcraft.yaml")
+    rock_project = project.Project.unmarshal(
+        yaml.safe_load(rockcraft_yaml_path.read_text())
+    )
+
+    assert rock_project.name == "foobar"
+
+
+@pytest.mark.usefixtures("new_dir")
+def test_run_init_with_invalid_name(mocker):
+    mocker.patch.object(sys, "argv", ["rockcraft", "init", "--name=f"])
+    return_code = cli.run()
+    assert return_code == 1
+
+
+@pytest.mark.usefixtures("new_dir")
+def test_run_init_fallback_name(mocker):
+    mocker.patch.object(sys, "argv", ["rockcraft", "init"])
+    mocker.patch("pathlib.Path.cwd", return_value=pathlib.Path("/f"))
+
+    cli.run()
+
+    rockcraft_yaml_path = Path("rockcraft.yaml")
+    rock_project = project.Project.unmarshal(
+        yaml.safe_load(rockcraft_yaml_path.read_text())
+    )
+
+    assert rock_project.name == "my-rock-name"
+
+
+def test_run_init_flask(mocker, emitter, monkeypatch, new_dir, tmp_path):
+    (new_dir / "requirements.txt").write_text("Flask", encoding="utf-8")
+    (new_dir / "app.py").write_text("app = object()", encoding="utf-8")
+
+    mocker.patch.object(
+        sys,
+        "argv",
+        ["rockcraft", "init", "--profile=flask-framework", "--name", "test-name"],
+    )
+
+    cli.run()
+
+    versioned_url = APP_METADATA.versioned_docs_url
+
+    rockcraft_yaml_path = Path("rockcraft.yaml")
+    rock_project_yaml = yaml.safe_load(rockcraft_yaml_path.read_text())
+
+    assert len(rock_project_yaml["summary"]) < 80
+    assert len(rock_project_yaml["description"].split()) < 100
+    assert rockcraft_yaml_path.read_text() == textwrap.dedent(
+        f"""\
+            name: test-name
+            # see {versioned_url}/explanation/bases/
+            # for more information about bases and using 'bare' bases for chiselled rocks
+            base: ubuntu@22.04 # the base environment for this Flask application
+            version: '0.1' # just for humans. Semantic versioning is recommended
+            summary: A summary of your Flask application # 79 char long summary
+            description: |
+                This is test-name's description. You have a paragraph or two to tell the
+                most important story about it. Keep it under 100 words though,
+                we live in tweetspace and your description wants to look good in the
+                container registries out there.
+            # the platforms this rock should be built on and run on.
+            # you can check your architecture with `dpkg --print-architecture`
+            platforms:
+                amd64:
+                # arm64:
+                # ppc64el:
+                # s390x:
+
+            # to ensure the flask-framework extension works properly, your Flask application
+            # should have an `app.py` file with an `app` object as the WSGI entrypoint.
+            # a `requirements.txt` file with at least the flask package should also exist.
+            # see {versioned_url}/reference/extensions/flask-framework
+            # for more information.
+            extensions:
+                - flask-framework
+
+            # uncomment the sections you need and adjust according to your requirements.
+            # parts:  # you need to uncomment this line to add or update any part.
+
+            #   flask-framework/install-app:
+            #     prime:
+            #       # by default, only the files in app/, templates/, static/, migrate, migrate.sh,
+            #       # migrate.py and app.py are copied into the image. You can modify the list
+            #       # below to override the default list and include or exclude specific
+            #       # files/directories in your project.
+            #       # note: prefix each entry with "flask/app/" followed by the local path.
+            #       - flask/app/.env
+            #       - flask/app/app.py
+            #       - flask/app/webapp
+            #       - flask/app/templates
+            #       - flask/app/static
+
+            # you may need Ubuntu packages to build a python dependency. Add them here if necessary.
+            #   flask-framework/dependencies:
+            #     build-packages:
+            #       # for example, if you need pkg-config and libxmlsec1-dev to build one
+            #       # of your packages:
+            #       - pkg-config
+            #       - libxmlsec1-dev
+
+            # you can add package slices or Debian packages to the image.
+            # package slices are subsets of Debian packages, which result
+            # in smaller and more secure images.
+            # see {versioned_url}/explanation/chisel/
+
+            # add this part if you want to add packages slices to your image.
+            # you can find a list of packages slices at https://github.com/canonical/chisel-releases
+            #   runtime-slices:
+            #     plugin: nil
+            #     stage-packages:
+            #       # list the required package slices for your flask application below.
+            #       # for example, for the slice libs of libpq5:
+            #       - libpq5_libs
+
+            # if you want to add a Debian package to your image, add the next part
+            #   runtime-debs:
+            #     plugin: nil
+            #     stage-packages:
+            #       # list required Debian packages for your flask application below.
+            #       - libpq5
+        """
+    )
+    emitter.assert_message(
+        textwrap.dedent(
+            f"""\
+        Created 'rockcraft.yaml'.
+        Go to {versioned_url}/reference/extensions/flask-framework to read more about the 'flask-framework' profile."""
+        )
+    )
+    monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "0")
+    project.Project.unmarshal(extensions.apply_extensions(tmp_path, rock_project_yaml))

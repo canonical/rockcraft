@@ -1,0 +1,20 @@
+summary: craftctl tool test
+
+execute: |
+  run_rockcraft pack
+
+  test -f craftctl-test_latest_craftctl.rock
+  test ! -d parts -a ! -d stage -a ! -d prime
+
+  uname -a
+  snap list
+
+  # test container execution
+  docker images
+  sudo rockcraft.skopeo --insecure-policy copy oci-archive:craftctl-test_latest_craftctl.rock docker-daemon:craftctl-test:latest
+  rm craftctl-test_latest_craftctl.rock
+  docker images craftctl-test:latest
+  docker run --rm --entrypoint /usr/bin/hello craftctl-test:latest
+  docker run --rm craftctl-test:latest help
+  docker run --rm craftctl-test:latest --help
+  

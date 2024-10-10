@@ -24,61 +24,38 @@ from typing import Any, Literal
 import pydantic
 import yaml
 from craft_application.errors import CraftValidationError
+from craft_application.models import CraftBaseModel
 from craft_cli import emit
 
 
-def _alias_generator(name: str) -> str:
-    """Convert underscores to dashes in aliases."""
-    return name.replace("_", "-")
-
-
-class HttpCheck(pydantic.BaseModel):
+class HttpCheck(CraftBaseModel):
     """Lightweight schema validation for a Pebble HTTP check."""
 
     url: pydantic.AnyHttpUrl
-    headers: dict[str, str] | None
-
-    class Config:  # pylint: disable=too-few-public-methods
-        """Pydantic model configuration."""
-
-        allow_population_by_field_name = True
-        extra = "forbid"
+    headers: dict[str, str] | None = None
 
 
-class TcpCheck(pydantic.BaseModel):
+class TcpCheck(CraftBaseModel):
     """Lightweight schema validation for a Pebble TCP check."""
 
     port: int
-    host: str | None
-
-    class Config:  # pylint: disable=too-few-public-methods
-        """Pydantic model configuration."""
-
-        allow_population_by_field_name = True
-        extra = "forbid"
+    host: str | None = None
 
 
-class ExecCheck(pydantic.BaseModel):
+class ExecCheck(CraftBaseModel):
     """Lightweight schema validation for a Pebble exec check."""
 
     command: str
-    service_context: str | None
-    environment: dict[str, str] | None
-    user: str | None
-    user_id: int | None
-    group: str | None
-    group_id: int | None
-    working_dir: str | None
-
-    class Config:  # pylint: disable=too-few-public-methods
-        """Pydantic model configuration."""
-
-        allow_population_by_field_name = True
-        alias_generator = _alias_generator
-        extra = "forbid"
+    service_context: str | None = None
+    environment: dict[str, str] | None = None
+    user: str | None = None
+    user_id: int | None = None
+    group: str | None = None
+    group_id: int | None = None
+    working_dir: str | None = None
 
 
-class Check(pydantic.BaseModel):
+class Check(CraftBaseModel):
     """Lightweight schema validation for a Pebble checks.
 
     Based on
@@ -86,15 +63,15 @@ class Check(pydantic.BaseModel):
     """
 
     override: Literal["merge", "replace"]
-    level: Literal["alive", "ready"] | None
-    period: str | None
-    timeout: str | None
-    threshold: int | None
-    http: HttpCheck | None
-    tcp: TcpCheck | None
-    exec: ExecCheck | None
+    level: Literal["alive", "ready"] | None = None
+    period: str | None = None
+    timeout: str | None = None
+    threshold: int | None = None
+    http: HttpCheck | None = None
+    tcp: TcpCheck | None = None
+    exec: ExecCheck | None = None
 
-    @pydantic.root_validator(pre=True)
+    @pydantic.model_validator(mode="before")
     @classmethod
     def _validates_check_type(cls, values: Mapping[str, Any]) -> Mapping[str, Any]:
         """Before validation, make sure only one of 'http', 'tcp' or 'exec' exist."""
@@ -116,15 +93,8 @@ class Check(pydantic.BaseModel):
 
         raise CraftValidationError(err)
 
-    class Config:  # pylint: disable=too-few-public-methods
-        """Pydantic model configuration."""
 
-        allow_population_by_field_name = True
-        alias_generator = _alias_generator
-        extra = "forbid"
-
-
-class Service(pydantic.BaseModel):
+class Service(CraftBaseModel):
     """Lightweight schema validation for a Pebble service.
 
     Based on
@@ -133,32 +103,25 @@ class Service(pydantic.BaseModel):
 
     override: Literal["merge", "replace"]
     command: str
-    summary: str | None
-    description: str | None
-    startup: Literal["enabled", "disabled"] | None
-    after: list[str] | None
-    before: list[str] | None
-    requires: list[str] | None
-    environment: dict[str, str] | None
-    user: str | None
-    user_id: int | None
-    group: str | None
-    group_id: int | None
-    working_dir: str | None
-    on_success: Literal["restart", "shutdown", "ignore"] | None
-    on_failure: Literal["restart", "shutdown", "ignore"] | None
-    on_check_failure: dict[str, Literal["restart", "shutdown", "ignore"]] | None
-    backoff_delay: str | None
-    backoff_factor: float | None
-    backoff_limit: str | None
-    kill_delay: str | None
-
-    class Config:  # pylint: disable=too-few-public-methods
-        """Pydantic model configuration."""
-
-        allow_population_by_field_name = True
-        alias_generator = _alias_generator
-        extra = "forbid"
+    summary: str | None = None
+    description: str | None = None
+    startup: Literal["enabled", "disabled"] | None = None
+    after: list[str] | None = None
+    before: list[str] | None = None
+    requires: list[str] | None = None
+    environment: dict[str, str] | None = None
+    user: str | None = None
+    user_id: int | None = None
+    group: str | None = None
+    group_id: int | None = None
+    working_dir: str | None = None
+    on_success: Literal["restart", "shutdown", "ignore"] | None = None
+    on_failure: Literal["restart", "shutdown", "ignore"] | None = None
+    on_check_failure: dict[str, Literal["restart", "shutdown", "ignore"]] | None = None
+    backoff_delay: str | None = None
+    backoff_factor: float | None = None
+    backoff_limit: str | None = None
+    kill_delay: str | None = None
 
 
 class Pebble:
@@ -166,14 +129,31 @@ class Pebble:
 
     PEBBLE_PATH = "var/lib/pebble/default"
     PEBBLE_LAYERS_PATH = f"{PEBBLE_PATH}/layers"
-    PEBBLE_BINARY_PATH = "bin/pebble"
-    PEBBLE_PART_SPEC = {
+    PEBBLE_BINARY_DIR = "usr/bin"
+    PEBBLE_BINARY_PATH = f"{PEBBLE_BINARY_DIR}/pebble"
+    PEBBLE_BINARY_PATH_PREVIOUS = "bin/pebble"
+    _BASE_PART_SPEC = {
         "plugin": "nil",
         "stage-snaps": ["pebble/latest/stable"],
-        "stage": [PEBBLE_BINARY_PATH],
         # We need this because "services" is Optional, but the directory must exist
-        "override-prime": f"craftctl default\nmkdir -p {PEBBLE_LAYERS_PATH}",
+        "override-prime": str(
+            "craftctl default\n"
+            f"mkdir -p {PEBBLE_LAYERS_PATH}\n"
+            f"chmod 777 {PEBBLE_PATH}"
+        ),
     }
+    PEBBLE_PART_SPEC = {
+        **_BASE_PART_SPEC,
+        "organize": {"bin": PEBBLE_BINARY_DIR},
+        "stage": [PEBBLE_BINARY_PATH],
+    }
+    PEBBLE_PART_SPEC_PREVIOUS = {
+        **_BASE_PART_SPEC,
+        "stage": [PEBBLE_BINARY_PATH_PREVIOUS],
+    }
+    # This is the value that Pebble sets to the PATH env var if it's empty.
+    # (https://github.com/canonical/pebble/blob/master/internals/overlord/cmdstate/request.go#L91)
+    DEFAULT_ENV_PATH = "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
     def define_pebble_layer(
         self,
@@ -199,7 +179,7 @@ class Pebble:
             pebble_layers_path_in_base + "/[0-9][0-9][0-9]-???*.yaml"
         ) + glob.glob(pebble_layers_path_in_base + "/[0-9][0-9][0-9]-???*.yml")
 
-        prefixes = list(map(lambda l: Path(l).name[:3], existing_pebble_layers))
+        prefixes = [Path(layer).name[:3] for layer in existing_pebble_layers]
         prefixes.sort()
         emit.progress(
             f"Found {len(existing_pebble_layers)} Pebble layers in the base's root filesystem"
@@ -225,3 +205,29 @@ class Pebble:
             )
 
         tmp_new_layer.chmod(0o777)
+
+    @staticmethod
+    def get_part_spec(build_base: str) -> dict[str, Any]:
+        """Get the part providing the pebble binary for a given build base."""
+        part_spec: dict[str, Any] = Pebble.PEBBLE_PART_SPEC
+
+        if Pebble._is_focal_or_jammy(build_base):
+            part_spec = Pebble.PEBBLE_PART_SPEC_PREVIOUS
+
+        return part_spec
+
+    @staticmethod
+    def get_entrypoint(build_base: str) -> list[str]:
+        """Get the rock's entry point for a given build base."""
+        is_legacy = Pebble._is_focal_or_jammy(build_base)
+
+        pebble_path = Pebble.PEBBLE_BINARY_PATH
+        if is_legacy:
+            # Previously pebble existed in /bin/pebble
+            pebble_path = Pebble.PEBBLE_BINARY_PATH_PREVIOUS
+
+        return [f"/{pebble_path}", "enter"]
+
+    @staticmethod
+    def _is_focal_or_jammy(build_base: str) -> bool:
+        return build_base in ("ubuntu@20.04", "ubuntu@22.04")

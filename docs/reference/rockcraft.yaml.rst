@@ -67,10 +67,12 @@ A longer, possibly multi-line description of the rock.
 
 The rock version, used to tag the OCI image and name the rock file.
 
+.. _rockcraft_yaml_base:
+
 ``base``
 --------
 
-**Type**: One of ``ubuntu@20.04 | ubuntu@22.04 | bare``
+**Type**: One of ``ubuntu@20.04 | ubuntu@22.04 | ubuntu@24.04 | bare``
 
 **Required**: Yes
 
@@ -84,10 +86,12 @@ which is typically used with static binaries or
    The notation "ubuntu:<channel>" is also supported for some channels, but this
    format is deprecated and should be avoided.
 
+.. _rockcraft_yaml_build_base:
+
 ``build-base``
 --------------
 
-**Type**: One of ``ubuntu@20.04 | ubuntu@22.04``
+**Type**: One of ``ubuntu@20.04 | ubuntu@22.04 | ubuntu@24.04 | devel``
 
 **Required**: Yes, if ``base`` is ``bare``
 
@@ -101,15 +105,23 @@ the value of ``base``.
    The notation "ubuntu:<channel>" is also supported for some channels, but this
    format is deprecated and should be avoided.
 
+.. note::
+   ``devel`` is a "special" value that means "the next Ubuntu version, currently
+   in development". This means that the contents of this system changes
+   frequently and should not be relied on for production rocks.
+
 ``license``
 -----------
 
 **Type**: string, in `SPDX format <https://spdx.org/licenses/>`_
 
-**Required**: Yes
+**Required**: No
 
-The license of the software packaged inside the rock. This must match the SPDX
-format, but is case insensitive (e.g. both ``MIT`` and ``mit`` are valid).
+The license of the software packaged inside the rock. This must either be
+"proprietary" or match the SPDX format. It is case insensitive (e.g. both
+``MIT`` and ``mit`` are valid).
+
+.. _rockcraft_yaml_run_user:
 
 ``run-user``
 ------------
@@ -157,7 +169,7 @@ others are optional.
 **Required**: No
 
 The optional name of the Pebble service to serve as the OCI entrypoint. If set,
-this makes Rockcraft extend ``["/bin/pebble", "enter", "--verbose"]`` with
+this makes Rockcraft extend ``["/bin/pebble", "enter"]`` with
 ``["--args", "<serviceName>"]``. The command of the Pebble service must
 contain an optional argument that will become the OCI CMD.
 
@@ -231,7 +243,7 @@ is a valid, supported architecture name.
 **Required**: Yes
 
 The set of parts that compose the rock's contents
-(see :ref:`Parts <ref_parts>`).
+(see :ref:`Parts <part_properties>`).
 
 
 .. note::
@@ -239,6 +251,18 @@ The set of parts that compose the rock's contents
    Rockcraft. All rocks have Pebble as their entrypoint, and thus you must use
    ``services`` to define your container application.
 
+``extensions``
+--------------
+
+**Type**: list[string]
+
+**Required**: No
+
+Extensions to enable when building the ROCK.
+
+Currently supported extensions:
+
+- ``flask-framework``
 
 Example
 =======
