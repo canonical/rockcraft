@@ -203,7 +203,7 @@ View the application logs
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 When deploying the Go rock, we can always get the application logs via
-``pebble``:
+:ref:`pebble_explanation_page`:
 
 .. literalinclude:: code/go/task.yaml
     :language: text
@@ -211,7 +211,7 @@ When deploying the Go rock, we can always get the application logs via
     :end-before: [docs:get-logs-end]
     :dedent: 2
 
-As a result, :ref:`pebble_explanation_page` will give the logs for the
+As a result, ``pebble`` will give the logs for the
 ``go`` service running inside the container.
 We should expect to see something similar to this:
 
