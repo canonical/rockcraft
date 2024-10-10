@@ -9,7 +9,7 @@ execute: |
   ls
   echo expecting ${ROCK_FILE}
   test -f ${ROCK_FILE}
-  rockcraft.skopeo copy oci-archive:${ROCK_FILE} docker-daemon:${IMAGE}
+  rockcraft.skopeo copy --insecure-policy  oci-archive:${ROCK_FILE} docker-daemon:${IMAGE}
   docker images
   rm ${ROCK_FILE}
 
