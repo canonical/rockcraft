@@ -14,6 +14,7 @@ python3 -m venv "$venv_dir"
 
 # shellcheck disable=SC1090,SC1091 # don't follow sources
 . "$venv_dir/bin/activate"
+pip install pip-tools
 
 # Pull in host python3-apt site package to avoid installation.
 site_pkgs="$(readlink -f "$venv_dir"/lib/python3.*/site-packages/)"
@@ -24,16 +25,13 @@ dpkg -x ./*.deb .
 cp -r usr/lib/python3/dist-packages/* "$site_pkgs"
 popd
 
-pip install -e .
-pip freeze --exclude-editable > requirements.txt
+pip-compile --upgrade --output-file requirements.txt
 requirements_fixups "requirements.txt"
 
-pip install -e .[doc]
-pip freeze --exclude-editable > requirements-doc.txt
+pip-compile --upgrade --extra doc --output-file requirements-doc.txt
 requirements_fixups "requirements-doc.txt"
 
-pip install -e .[dev]
-pip freeze --exclude-editable > requirements-dev.txt
+pip-compile --upgrade --extra dev --output-file requirements-dev.txt
 requirements_fixups "requirements-dev.txt"
 
 rm -rf "$venv_dir"
