@@ -1,5 +1,6 @@
 ACR
 ARGS
+ASGI
 Autotools
 autotools
 boolean
@@ -31,6 +32,8 @@ entrypoint
 entrypoints
 executables
 expressjs
+fastapi
+FastAPI
 Filesets
 fileset
 filesets
@@ -138,6 +141,7 @@ ubuntu
 unbuilt
 UID
 usrmerge
+Uvicorn
 VENV
 venv
 WSGI
