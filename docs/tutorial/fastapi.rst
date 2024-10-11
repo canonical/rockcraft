@@ -5,7 +5,7 @@ Build a rock for a FastAPI application
 
 In this tutorial, we'll create a simple FastAPI application and learn how to
 containerise it in a rock with Rockcraft's
-:literalref:`fastapi-framework <fastapi-framework-reference>` extension.
+:ref:`fastapi-framework <fastapi-framework-reference>` extension.
 
 Setup
 =====
