@@ -4,18 +4,17 @@ Build a rock for a FastAPI application
 --------------------------------------
 
 In this tutorial, we'll create a simple FastAPI application and learn how to
-containerise it in a rock, using Rockcraft's ``fastapi-framework``
-:ref:`extension <fastapi-framework-reference>`.
+containerise it in a rock with Rockcraft's
+:literalref:`fastapi-framework <fastapi-framework-reference>` extension.
 
 Setup
 =====
 
 .. include:: /reuse/tutorial/setup.rst
 
-.. note::
-    This tutorial requires the ``latest/edge`` channel of Rockcraft. Use
-    ``sudo snap refresh rockcraft --channel latest/edge`` to get the latest
-    edge version.
+Before we go any further, for this tutorial we'll need the most recent version
+of Rockcraft on the edge channel. Run ``sudo snap refresh rockcraft --channel
+latest/edge`` to switch to it.
 
 Finally, create a new directory for this tutorial and go inside it:
 
@@ -27,16 +26,17 @@ Finally, create a new directory for this tutorial and go inside it:
 Create the FastAPI application
 ==============================
 
-Start by creating the "Hello, world" FastAPI application that will be used for
-this tutorial.
+Let's start by creating the "Hello, world" FastAPI application that we'll use
+throughout this tutorial.
 
-Create a ``requirements.txt`` file, copy the following text into it and then
+Create a ``requirements.txt`` file, copy the following text into it, and then
 save it:
 
 .. literalinclude:: code/fastapi/requirements.txt
 
-In order to test the FastAPI application locally (before packing it into a
-rock), install ``python3-venv`` and create a virtual environment:
+It's fastest to test the FastAPI application locally, before we pack it into a
+rock, so let's install ``python3-venv`` and create a virtual environment we
+can work in:
 
 .. literalinclude:: code/fastapi/task.yaml
     :language: bash
@@ -44,7 +44,7 @@ rock), install ``python3-venv`` and create a virtual environment:
     :end-before: [docs:create-venv-end]
     :dedent: 2
 
-In the same directory, copy and save the following into a text file called
+In the same directory, put the following code into a new file,
 ``app.py``:
 
 .. literalinclude:: code/fastapi/app.py
