@@ -79,7 +79,7 @@ oauthlib==3.2.2
 overrides==7.7.0
 packaging==24.1
 pathspec==0.12.1
-pkginfo==1.10.0
+pkginfo==1.11.2
 platformdirs==4.3.6
 pluggy==1.5.0
 polib==1.2.0
