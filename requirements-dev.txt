@@ -1,4 +1,4 @@
-alabaster==0.7.16
+alabaster==1.0.0
 annotated-types==0.7.0
 anyio==4.6.0
 apeye==1.4.1
