@@ -16,8 +16,8 @@ Keywords
 --------
 
 In addition to the common :ref:`plugin <part-properties-plugin>` and
-:ref:`sources <part-properties-sources>` keywords, this plugin provides the following
-plugin-specific keywords:
+:ref:`sources <part-properties-sources>` keywords, this plugin
+provides the following plugin-specific keywords:
 
 maven-parameters
 ~~~~~~~~~~~~~~~~
@@ -29,12 +29,13 @@ Used to add additional parameters to the ``mvn package`` command line.
 Environment variables
 ---------------------
 
-This plugin reads the ``http_proxy`` and ``https_proxy`` variables from the environment
-to configure Maven proxy access. A comma-separated list of hosts that should not be
-accessed via proxy is read from the ``no_proxy`` environment variable.
+This plugin reads the ``http_proxy`` and ``https_proxy`` variables
+from the environment to configure Maven proxy access. A comma-separated
+list of hosts that should not be accessed via proxy is read from the
+```no_proxy`` environment variable.
 
-Please refer to `Configuring Apache Maven <https://maven.apache.org/configure.html>`_ for
-a list of environment variables used to configure Maven.
+Please refer to `Configuring Apache Maven <mvn>`_ for a list of
+environment variables used to configure Maven.
 
 
 .. _maven-details-begin:
@@ -42,10 +43,13 @@ a list of environment variables used to configure Maven.
 Dependencies
 ------------
 
-The plugin expects Maven to be available on the system as the ``mvn`` executable.
+The plugin expects Maven to be available on the system as the ``mvn``
+executable.
 
-Note that the Maven plugin does not make a Java runtime available in the target
-environment. This must be handled by the developer when defining the part, according to
-each application's runtime requirements.
+Note that the Maven plugin does not make a Java runtime available in
+the target environment. This must be handled by the developer when
+defining the part, according to each application's runtime requirements.
 
 .. _maven-details-end:
+
+.. _`mvn`: https://maven.apache.org/configure.html
