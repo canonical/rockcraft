@@ -1,4 +1,4 @@
-.. _craft_parts_maven_plugin:
+.. _rockcraft_maven_plugin:
 
 Maven plugin
 ============
@@ -34,11 +34,12 @@ from the environment to configure Maven proxy access. A comma-separated
 list of hosts that should not be accessed via proxy is read from the
 ```no_proxy`` environment variable.
 
-Please refer to `Configuring Apache Maven <mvn>`_ for a list of
+Please refer to `Configuring Apache Maven
+<https://maven.apache.org/configure.html>`_ for a list of
 environment variables used to configure Maven.
 
 
-.. _maven-details-begin:
+.. _rockcraft_maven-details-begin:
 
 Dependencies
 ------------
@@ -50,6 +51,6 @@ Note that the Maven plugin does not make a Java runtime available in
 the target environment. This must be handled by the developer when
 defining the part, according to each application's runtime requirements.
 
-.. _maven-details-end:
+.. _rockcraft_maven-details-end:
 
-.. _`mvn`: https://maven.apache.org/configure.html
+.. _`mvn`:
