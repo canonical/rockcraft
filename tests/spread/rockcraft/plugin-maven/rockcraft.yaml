@@ -21,6 +21,8 @@ parts:
       - maven
       - openjdk-21-jdk-headless
     # replace chiselled image modules with jlink output
+    # in order to ensure that only java.base module is present in
+    # runtime
     override-stage: |
       craftctl default
       rm -rf out
