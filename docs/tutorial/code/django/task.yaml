@@ -23,7 +23,7 @@ execute: |
 
   cd django_hello_world
   python manage.py runserver &
-  retry -n 5 --wait 2 curl localhost:8000
+  retry -n 5 --wait 2 curl --fail localhost:8000
 
   # [docs:curl-django]
   curl localhost:8000
@@ -59,7 +59,7 @@ execute: |
   sudo docker run --rm -d -p 8000:8000 \
     --name django-hello-world django-hello-world:0.1
   # [docs:docker-run-end]
-  retry -n 5 --wait 2 curl localhost:8000
+  retry -n 5 --wait 2 curl --fail localhost:8000
 
   # [docs:curl-django-rock]
   curl localhost:8000
@@ -97,7 +97,7 @@ execute: |
   sudo docker run --rm -d -p 8000:8000 \
     --name django-hello-world django-hello-world:0.1-chiselled
   # [docs:docker-run-chisel-end]
-  retry -n 5 --wait 2 curl localhost:8000
+  retry -n 5 --wait 2 curl --fail localhost:8000
 
   # [docs:curl-django-bare-rock]
   curl localhost:8000
@@ -128,7 +128,7 @@ execute: |
   sudo docker run --rm -d -p 8000:8000 \
     --name django-hello-world django-hello-world:0.2
   # [docs:docker-run-update-end]
-  retry -n 5 --wait 2 curl localhost:8000/time/
+  retry -n 5 --wait 2 curl --fail localhost:8000/time/
 
   # [docs:curl-time]
   curl localhost:8000/time/
@@ -142,7 +142,7 @@ execute: |
   # [docs:cleanup]
   # exit and delete the virtual environment
   deactivate
-  rm -rf .venv django_hello_world
+  rm -rf .venv django_hello_world __pycache__
   # delete all the files created during the tutorial
   rm django-hello-world_0.1_amd64.rock \
     django-hello-world_0.1-chiselled_amd64.rock \
