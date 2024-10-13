@@ -24,19 +24,22 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any, Literal
 
 import craft_cli
+import craft_platforms
 import pydantic
 import spdx_lookup  # type: ignore
 import yaml
 from craft_application.errors import CraftValidationError
 from craft_application.models import (
-    BuildPlanner as BaseBuildPlanner,
-)
-from craft_application.models import (
+    BuildInfo,
     Platform,
     get_validator_by_regex,
 )
+from craft_application.models import (
+    BuildPlanner as BaseBuildPlanner,
+)
 from craft_application.models import Project as BaseProject
 from craft_application.models.base import alias_generator
+from craft_platforms import rock
 from craft_providers import bases
 from craft_providers.errors import BaseConfigurationError
 from typing_extensions import Annotated, override
@@ -218,6 +221,27 @@ class BuildPlanner(BaseBuildPlanner):
     @classmethod
     def model_reference_slug(cls) -> str | None:
         return "/reference/rockcraft.yaml"
+
+    @override
+    def get_build_plan(self) -> list[BuildInfo]:
+        platforms = typing.cast(
+            craft_platforms.Platforms,
+            {name: platform.marshal() for name, platform in self.platforms.items()},
+        )
+        build_infos = rock.get_rock_build_plan(
+            base=self.base,
+            build_base=self.build_base,
+            platforms=platforms,
+        )
+        return [
+            BuildInfo(
+                platform=info.platform,
+                build_on=str(info.build_on),
+                build_for=str(info.build_for),
+                base=self.effective_base,
+            )
+            for info in build_infos
+        ]
 
 
 class Project(BuildPlanner, BaseProject):  # type: ignore[misc]

@@ -951,3 +951,33 @@ class TestImage:
             )
         ]
         assert mock_loads.called
+
+    def test_set_path_bare(self, mock_run):
+        image = oci.Image("a:b", Path("/c"))
+
+        image.set_default_path("bare")
+
+        expected = "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+        assert mock_run.mock_calls == [
+            call(
+                [
+                    "umoci",
+                    "config",
+                    "--image",
+                    "/c/a:b",
+                    "--config.env",
+                    f"PATH={expected}",
+                ]
+            )
+        ]
+
+    @pytest.mark.parametrize(
+        "base",
+        ["ubuntu@24.04", "ubuntu@22.04", "ubuntu@20.04"],
+    )
+    def test_set_path_non_bare(self, mock_run, base):
+        image = oci.Image("a:b", Path("/c"))
+
+        image.set_default_path(base)
+
+        assert not mock_run.called

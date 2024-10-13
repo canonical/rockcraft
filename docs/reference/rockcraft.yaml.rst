@@ -263,6 +263,9 @@ Extensions to enable when building the ROCK.
 Currently supported extensions:
 
 - ``flask-framework``
+- ``django-framework``
+- ``go-framework``
+- ``fastapi-framework``
 
 Example
 =======

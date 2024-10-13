@@ -1,11 +1,15 @@
 summary: django extension test
 
 environment:
-  ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS: "true"
+  SCENARIO/base_2204: ubuntu-22.04
+  SCENARIO/base_2404: ubuntu-24.04
 
 execute: |
-  
+
   run_rockcraft init --name example-django --profile django-framework
+
+  sed -i "s/base: .*/base: ${SCENARIO//-/@}/g" rockcraft.yaml
+
   run_rockcraft pack
 
   test -f example-django_0.1_amd64.rock
@@ -16,10 +20,10 @@ execute: |
   sudo rockcraft.skopeo --insecure-policy copy oci-archive:example-django_0.1_amd64.rock docker-daemon:example-django:latest
   # Ensure container exists
   docker images example-django | MATCH "example-django"
-  
+
   # ensure container doesn't exist
   docker rm -f example-django-container
-  
+
   # test the django project is ready to run inside the container
   docker run --rm --entrypoint /bin/python3 example-django -m gunicorn --chdir /django/app --check-config example_django.wsgi:application
   docker run --rm --entrypoint /bin/python3 example-django -c "import pathlib;assert pathlib.Path('/django/app/manage.py').is_file()"
@@ -34,3 +38,5 @@ restore: |
   rm -f example-django_0.1_amd64.rock
   docker rmi -f example-django
   docker rm -f example-django-container
+  rm -f "*.rock" rockcraft.yaml
+  docker system prune -a -f
