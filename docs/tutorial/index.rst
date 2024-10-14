@@ -26,4 +26,6 @@ code into container applications:
    4. Bundle a Node.js app within a rock <node-app.rst>
    5. Build a rock for a Flask application <flask.rst>
    6. Build a rock for a Django application <django.rst>
-   7. Build a rock for a Go application <go.rst>
+   7. Build a rock for a FastAPI application <fastapi.rst>
+   8. Build a rock for a Go application <go.rst>
+
