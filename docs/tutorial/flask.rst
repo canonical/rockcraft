@@ -82,10 +82,10 @@ creation and tailoring for a Flask application by using the
     :end-before: [docs:create-rockcraft-yaml-end]
     :dedent: 2
 
-The ``rockcraft.yaml`` file will automatically be created in the project's working
-directory. Open it in a text editor and check that the ``name`` is
-``flask-hello-world``. Ensure that ``platforms`` includes the host architecture. 
-For example, if the host uses the ARM
+The ``rockcraft.yaml`` file will automatically be created in the project's
+working directory. Open it in a text editor and check that the ``name`` is
+``flask-hello-world``. Ensure that ``platforms`` includes the host
+architecture. For example, if the host uses the ARM
 architecture, include ``arm64`` in ``platforms``.
 
 .. note::
