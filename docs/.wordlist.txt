@@ -94,6 +94,7 @@ Podman
 ppa
 pre
 pyfiglet
+PPAs
 PyPI
 reStructuredText
 rock's
