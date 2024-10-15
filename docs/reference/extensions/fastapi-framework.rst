@@ -30,11 +30,11 @@ There are 2 requirements to be able to use the ``fastapi-framework`` extension:
      directory or within a directory with the name of the rock as declared in
      ``rockcraft.yaml``.
 
-``rockcraft.yaml`` > ``parts`` > ``fastapi-framework/dependencies:`` > ``stage-packages``
-=========================================================================================
+``parts`` > ``fastapi-framework/dependencies:`` > ``stage-packages``
+====================================================================
 
-You can use this key to specify any dependencies required for your FastAPI application. 
-For example, below we use it to specify ``libpq-dev``:
+You can use this key to specify any dependencies required for your FastAPI 
+application. For example, below we use it to specify ``libpq-dev``:
 
 .. code-block:: yaml
 
@@ -67,18 +67,18 @@ Some files, if they exist, are included by default. These include:
 ``app``, ``src``, ``<rock name>``, ``app.py``, ``migrate``, ``migrate.sh``,
 ``migrate.py``, ``static``, ``templates``.
 
-**Regarding the migrate.sh file:** 
+**Regarding the migrate.sh file:**
 
 If your app depends on a database it is common to run a database migration
-script before app startup which, for example, creates or modifies tables. 
-This can be done by including the `migrate.sh` script in the root of your 
-project. It will be executed with the same environment variables and context 
+script before app startup which, for example, creates or modifies tables.
+This can be done by including the ``migrate.sh`` script in the root of your
+project. It will be executed with the same environment variables and context
 as the FastAPI application.
 
-If the migration script fails, the app won't be started and the app charm 
-will go into blocked state. The migration script will be run on every unit 
-and it is assumed that it is idempotent (can be run multiple times) and that 
-it can be run on multiple units at the same time without causing issues. This 
+If the migration script fails, the app won't be started and the app charm
+will go into blocked state. The migration script will be run on every unit
+and it is assumed that it is idempotent (can be run multiple times) and that
+it can be run on multiple units at the same time without causing issues. This
 can be achieved by, for example, locking any tables during the migration.
 
 Useful links
