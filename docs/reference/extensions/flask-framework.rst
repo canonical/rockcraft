@@ -23,9 +23,14 @@ There are 2 requirements to be able to use the ``flask-framework`` extension:
 
 1. There must be a ``requirements.txt`` file in the root of the project with
    ``Flask`` declared as a dependency
-2. The project must include a WSGI app with the path ``app:app``. This means
-   there must be an ``app.py`` file at the root of the project with the name
-   of the Flask object is set to ``app``
+2. The project must include a WSGI app in a variable called ``app`` in one of
+   the following files relative to the project root (in order of priority):
+
+   * ``app.py``
+   * ``main.py``
+   * ``__init__.py``, ``app.py`` or ``main.py`` within the ``app`` or ``src``
+     directory or within a directory with the name of the rock as declared in
+     ``rockcraft.yaml``.
 
 ``parts`` > ``flask-framework/install-app`` > ``prime``
 =======================================================
