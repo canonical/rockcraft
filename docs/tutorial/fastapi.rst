@@ -54,7 +54,7 @@ Run the FastAPI application using ``fastapi dev app.py --port 8000`` to verify
 that it works.
 
 Test the FastAPI application by using ``curl`` to send a request to the root
-endpoint. You may need a new terminal for this, if you are using Multipass use
+endpoint. We may need a new terminal for this, if we are using Multipass use
 ``multipass shell rock-dev`` to get another terminal:
 
 .. literalinclude:: code/fastapi/task.yaml
@@ -81,15 +81,15 @@ creation and tailoring for a FastAPI application by using the
     :end-before: [docs:create-rockcraft-yaml-end]
     :dedent: 2
 
-The ``rockcraft.yaml`` file will automatically be created in your working
-directory. Open it in a text editor and check that the ``name`` is
+The ``rockcraft.yaml`` file will automatically be created in the project's
+working directory. Open it in a text editor and check that the ``name`` is
 ``fastapi-hello-world``. Ensure that ``platforms`` includes the architecture of
-your host. For example, if your host uses the ARM
+the host. For example, if the host uses the ARM
 architecture, include ``arm64`` in ``platforms``.
 
 .. note::
     For this tutorial, we'll use the ``name`` ``fastapi-hello-world`` and assume
-    you are running on an ``amd64`` platform. Check the architecture of your
+    we are running on an ``amd64`` platform. Check the architecture of the
     system using ``dpkg --print-architecture``.
 
     The ``name``, ``version`` and ``platform`` all influence the name of the
@@ -105,14 +105,14 @@ Pack the rock:
 
 .. note::
 
-    Depending on your network, this step can take a couple of minutes to finish.
+    Depending on the network, this step can take a couple of minutes to finish.
 
     ``ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS`` is required whilst the FastAPI
     extension is experimental.
 
-Once Rockcraft has finished packing the FastAPI rock, you'll find a new file in
-your working directory (an `OCI <OCI_image_spec_>`_ archive) with the ``.rock``
-extension:
+Once Rockcraft has finished packing the FastAPI rock, we'll find a new file in
+the project's working directory (an `OCI <OCI_image_spec_>`_ archive) with
+the ``.rock`` extension:
 
 .. literalinclude:: code/fastapi/task.yaml
     :language: bash
@@ -124,12 +124,12 @@ The created rock is about 75MB in size. We will reduce its size later in this
 tutorial.
 
 .. note::
-    If you changed the ``name`` or ``version`` in ``rockcraft.yaml`` or are not
-    on an ``amd64`` platform, the name of the ``.rock`` file will be different
-    for you.
+    If we changed the ``name`` or ``version`` in ``rockcraft.yaml`` or are not
+    on an ``amd64`` platform, the name of the ``.rock`` file will be
+    different.
 
-    The size of your rock may vary depending on factors like the architecture
-    you are building on and the packages installed at the time of packing.
+    The size of the rock may vary depending on factors like the architecture
+    we are building on and the packages installed at the time of packing.
 
 Run the FastAPI rock with Docker
 ================================
@@ -164,7 +164,7 @@ size:
     The size of the image reported by Docker is the uncompressed size which is
     larger than the size of the compressed ``.rock`` file.
 
-Now we're finally ready to run the rock and test your containerised FastAPI
+Now we're finally ready to run the rock and test the containerised FastAPI
 application:
 
 .. literalinclude:: code/fastapi/task.yaml
@@ -187,7 +187,7 @@ The FastAPI application should again respond with ``{"message":"Hello World"}``.
 View the application logs
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-When deploying the FastAPI rock, you can always get the application logs via
+When deploying the FastAPI rock, we can always get the application logs via
 ``pebble``:
 
 .. literalinclude:: code/fastapi/task.yaml
@@ -196,9 +196,9 @@ When deploying the FastAPI rock, you can always get the application logs via
     :end-before: [docs:get-logs-end]
     :dedent: 2
 
-As a result, :ref:`pebble_explanation_page` will give you the logs for the
+As a result, :ref:`pebble_explanation_page` will give us the logs for the
 ``fastapi`` service running inside the container.
-You should expect to see something similar to this:
+We should expect to see something similar to this:
 
 ..  code-block:: text
     :class: log-snippets
@@ -209,7 +209,7 @@ You should expect to see something similar to this:
     2024-10-01T06:32:50.182Z [fastapi] INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
     2024-10-01T06:32:58.214Z [fastapi] INFO:     172.17.0.1:55232 - "GET / HTTP/1.1" 200 OK
 
-You can also choose to follow the logs by using the ``-f`` option with the
+We can also choose to follow the logs by using the ``-f`` option with the
 ``pebble logs`` command above. To stop following the logs, press :kbd:`Ctrl` +
 :kbd:`C`.
 
@@ -229,15 +229,15 @@ respective image for now:
 Chisel the rock
 ===============
 
-This is an optional but recommended step, especially if you're looking to
-deploy your rock into a production environment. With :ref:`chisel_explanation`
-you can produce lean and production-ready rocks by getting rid of all the
-contents that are not needed for your FastAPI application to run. This results
+This is an optional but recommended step, especially if we're looking to
+deploy the rock into a production environment. With :ref:`chisel_explanation`
+we can produce lean and production-ready rocks by getting rid of all the
+contents that are not needed for the FastAPI application to run. This results
 in a much smaller rock with a reduced attack surface.
 
 .. note::
     It is recommended to run chiselled images in production. For development,
-    you may prefer non-chiselled images as they will include additional
+    we may prefer non-chiselled images as they will include additional
     development tooling (such as for debugging).
 
 The first step towards chiselling the rock is to ensure we are using a
@@ -274,7 +274,7 @@ As before, verify that the new rock was created:
     :end-before: [docs:ls-bare-rock-end]
     :dedent: 2
 
-You'll verify that the new FastAPI rock is now approximately **35% smaller**
+We'll verify that the new FastAPI rock is now approximately **35% smaller**
 in size! And that's just because of the simple change of ``base``.
 
 And the functionality is still the same. As before, we can confirm this by
@@ -328,9 +328,9 @@ Since we are creating a new version of the application, open the
 
 .. note::
 
-    ``rockcraft pack`` will create a new image with the updated code even if you
+    ``rockcraft pack`` will create a new image with the updated code even if we
     don't change the version. It is recommended to change the version whenever
-    you make changes to the application in the image.
+    we make changes to the application in the image.
 
 Pack and run the rock using similar commands as before:
 
@@ -372,12 +372,12 @@ We can now stop the container and remove the corresponding image:
     :end-before: [docs:stop-docker-updated-end]
     :dedent: 2
 
-Reset your environment
+Reset the environment
 ======================
 
 We've reached the end of this tutorial.
 
-If you'd like to reset your working environment, you can simply run the
+If we'd like to reset the working environment, we can simply run the
 following:
 
 .. literalinclude:: code/fastapi/task.yaml
@@ -388,14 +388,14 @@ following:
 
 .. collapse:: If using Multipass...
 
-    If you created an instance using Multipass, you can also clean it up.
+    If we created an instance using Multipass, we can also clean it up.
     Start by exiting it:
 
     .. code-block:: bash
 
         exit
 
-    And then you can proceed with its deletion:
+    And then we can proceed with its deletion:
 
     .. code-block:: bash
 
