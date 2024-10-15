@@ -28,6 +28,7 @@ def flask_extension(mock_extensions):
 @pytest.fixture(name="flask_input_yaml")
 def flask_input_yaml_fixture():
     return {
+        "name": "foo-bar",
         "base": "ubuntu@22.04",
         "platforms": {"amd64": {}},
         "extensions": ["flask-framework"],
@@ -64,6 +65,7 @@ def test_flask_extension_default(tmp_path, flask_input_yaml, packages):
     assert source[-len(suffix) :].replace("\\", "/") == suffix
 
     assert applied == {
+        "name": "foo-bar",
         "base": "ubuntu@22.04",
         "parts": {
             "flask-framework/config-files": {
@@ -127,6 +129,73 @@ def test_flask_extension_default(tmp_path, flask_input_yaml, packages):
     }
 
 
+@pytest.mark.parametrize(
+    "files,organize,command",
+    [
+        (
+            {"app.py": "app = object()"},
+            {"app.py": "flask/app/app.py"},
+            "/bin/python3 -m gunicorn -c /flask/gunicorn.conf.py app:app",
+        ),
+        (
+            {"app/__init__.py": "app = object()"},
+            {"app": "flask/app/app"},
+            "/bin/python3 -m gunicorn -c /flask/gunicorn.conf.py app:app",
+        ),
+        (
+            {"app/__init__.py": "from .app import app"},
+            {"app": "flask/app/app"},
+            "/bin/python3 -m gunicorn -c /flask/gunicorn.conf.py app:app",
+        ),
+        (
+            {"app/app.py": "app = object()"},
+            {"app": "flask/app/app"},
+            "/bin/python3 -m gunicorn -c /flask/gunicorn.conf.py app.app:app",
+        ),
+        (
+            {"app/main.py": "app = object()"},
+            {"app": "flask/app/app"},
+            "/bin/python3 -m gunicorn -c /flask/gunicorn.conf.py app.main:app",
+        ),
+        (
+            {"app/app.py": "app = object()", "app/__init__.py": "from .app import app"},
+            {"app": "flask/app/app"},
+            "/bin/python3 -m gunicorn -c /flask/gunicorn.conf.py app:app",
+        ),
+        (
+            {"src/app.py": "app = object()"},
+            {"src": "flask/app/src"},
+            "/bin/python3 -m gunicorn -c /flask/gunicorn.conf.py src.app:app",
+        ),
+        (
+            {"foo_bar/app.py": "app = object()"},
+            {"foo_bar": "flask/app/foo_bar"},
+            "/bin/python3 -m gunicorn -c /flask/gunicorn.conf.py foo_bar.app:app",
+        ),
+        (
+            {"app.py": "app = object()", "foo_bar/app.py": "app = object()"},
+            {"app.py": "flask/app/app.py"},
+            "/bin/python3 -m gunicorn -c /flask/gunicorn.conf.py app:app",
+        ),
+    ],
+)
+@pytest.mark.usefixtures("flask_extension")
+def test_flask_extension_wsgi_entrypoints(
+    tmp_path, flask_input_yaml, files, organize, command
+):
+    (tmp_path / "requirements.txt").write_text("flask")
+    for file_path, content in files.items():
+        (tmp_path / file_path).parent.mkdir(parents=True, exist_ok=True)
+        (tmp_path / file_path).write_text(content)
+    applied = extensions.apply_extensions(tmp_path, flask_input_yaml)
+    install_app_part = applied["parts"]["flask-framework/install-app"]
+    assert install_app_part["organize"] == organize
+    assert applied["parts"]["flask-framework/install-app"]["stage"] == list(
+        install_app_part["organize"].values()
+    )
+    assert applied["services"]["flask"]["command"] == command
+
+
 @pytest.mark.usefixtures("flask_extension")
 def test_flask_extension_prime_override(tmp_path, flask_input_yaml):
     (tmp_path / "requirements.txt").write_text("flask")
@@ -138,7 +207,6 @@ def test_flask_extension_prime_override(tmp_path, flask_input_yaml):
         "flask-framework/install-app": {
             "prime": [
                 "flask/app/app.py",
-                "flask/app/requirements.txt",
                 "flask/app/static",
             ]
         }
@@ -147,17 +215,14 @@ def test_flask_extension_prime_override(tmp_path, flask_input_yaml):
     install_app_part = applied["parts"]["flask-framework/install-app"]
     assert install_app_part["prime"] == [
         "flask/app/app.py",
-        "flask/app/requirements.txt",
         "flask/app/static",
     ]
     assert install_app_part["organize"] == {
         "app.py": "flask/app/app.py",
-        "requirements.txt": "flask/app/requirements.txt",
         "static": "flask/app/static",
     }
     assert install_app_part["stage"] == [
         "flask/app/app.py",
-        "flask/app/requirements.txt",
         "flask/app/static",
     ]
 
@@ -182,14 +247,12 @@ def test_flask_framework_exclude_prime(tmp_path, flask_input_yaml):
     assert install_app_part["prime"] == ["- flask/app/test"]
     assert install_app_part["organize"] == {
         "app.py": "flask/app/app.py",
-        "requirements.txt": "flask/app/requirements.txt",
         "static": "flask/app/static",
         "test": "flask/app/test",
         "webapp": "flask/app/webapp",
     }
     assert install_app_part["stage"] == [
         "flask/app/app.py",
-        "flask/app/requirements.txt",
         "flask/app/static",
         "flask/app/test",
         "flask/app/webapp",
@@ -286,6 +349,7 @@ def test_flask_extension_bare(tmp_path):
     (tmp_path / "requirements.txt").write_text("flask")
     (tmp_path / "app.py").write_text("app = object()")
     flask_input_yaml = {
+        "name": "foo-bar",
         "extensions": ["flask-framework"],
         "base": "bare",
         "build-base": "ubuntu@22.04",
@@ -312,6 +376,7 @@ def test_flask_extension_bare(tmp_path):
 def test_flask_extension_no_requirements_txt_error(tmp_path):
     (tmp_path / "app.py").write_text("app = object()")
     flask_input_yaml = {
+        "name": "foo-bar",
         "extensions": ["flask-framework"],
         "base": "bare",
         "build-base": "ubuntu@22.04",
@@ -330,6 +395,7 @@ def test_flask_extension_requirements_txt_no_flask_error(tmp_path):
     (tmp_path / "app.py").write_text("app = object()")
     (tmp_path / "requirements.txt").write_text("")
     flask_input_yaml = {
+        "name": "foo-bar",
         "extensions": ["flask-framework"],
         "base": "bare",
         "build-base": "ubuntu@22.04",
@@ -357,6 +423,7 @@ def test_flask_extension_bad_app_py(tmp_path):
     (tmp_path / "app.py").write_text(bad_code)
     (tmp_path / "requirements.txt").write_text("flask")
     flask_input_yaml = {
+        "name": "foo-bar",
         "extensions": ["flask-framework"],
         "base": "bare",
         "build-base": "ubuntu@22.04",
@@ -365,15 +432,14 @@ def test_flask_extension_bad_app_py(tmp_path):
     with pytest.raises(ExtensionError) as exc:
         extensions.apply_extensions(tmp_path, flask_input_yaml)
 
-    expected = (
-        "- error parsing app.py: unterminated string literal (detected at line 5)"
-    )
+    expected = "- Syntax error in  python file in WSGI search path: unterminated string literal (detected at line 5) (app.py, line 5)"
     assert str(exc.value) == expected
 
 
 @pytest.mark.usefixtures("flask_extension")
 def test_flask_extension_no_requirements_txt_no_app_py_error(tmp_path):
     flask_input_yaml = {
+        "name": "foo-bar",
         "extensions": ["flask-framework"],
         "base": "bare",
         "build-base": "ubuntu@22.04",
@@ -383,7 +449,7 @@ def test_flask_extension_no_requirements_txt_no_app_py_error(tmp_path):
         extensions.apply_extensions(tmp_path, flask_input_yaml)
     assert str(exc.value) == (
         "- missing a requirements.txt file. The flask-framework extension requires this file with 'flask' specified as a dependency.\n"
-        "- flask application can not be imported from app:app, no app.py file found in the project root."
+        "- missing WSGI entrypoint in default search locations."
     )
 
 
@@ -392,6 +458,7 @@ def test_flask_extension_incorrect_prime_prefix_error(tmp_path):
     (tmp_path / "requirements.txt").write_text("flask")
     (tmp_path / "app.py").write_text("app = object()")
     flask_input_yaml = {
+        "name": "foo-bar",
         "extensions": ["flask-framework"],
         "base": "bare",
         "build-base": "ubuntu@22.04",
@@ -408,6 +475,7 @@ def test_flask_extension_incorrect_prime_prefix_error(tmp_path):
 @pytest.mark.usefixtures("flask_extension")
 def test_flask_extension_incorrect_wsgi_path_error(tmp_path):
     flask_input_yaml = {
+        "name": "foo-bar",
         "extensions": ["flask-framework"],
         "base": "bare",
         "build-base": "ubuntu@22.04",
@@ -418,13 +486,13 @@ def test_flask_extension_incorrect_wsgi_path_error(tmp_path):
 
     with pytest.raises(ExtensionError) as exc:
         extensions.apply_extensions(tmp_path, flask_input_yaml)
-    assert "app:app" in str(exc)
+    assert "missing WSGI entrypoint" in str(exc)
 
     (tmp_path / "app.py").write_text("flask")
 
     with pytest.raises(ExtensionError) as exc:
         extensions.apply_extensions(tmp_path, flask_input_yaml)
-    assert "app:app" in str(exc)
+    assert "missing WSGI entrypoint" in str(exc)
 
 
 @pytest.mark.usefixtures("flask_extension")
@@ -432,6 +500,7 @@ def test_flask_extension_flask_service_override_disable_wsgi_path_check(tmp_path
     (tmp_path / "requirements.txt").write_text("flask")
 
     flask_input_yaml = {
+        "name": "foo-bar",
         "extensions": ["flask-framework"],
         "base": "bare",
         "build-base": "ubuntu@22.04",

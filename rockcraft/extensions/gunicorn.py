@@ -20,12 +20,17 @@ import fnmatch
 import os.path
 import posixpath
 import re
-from typing import Any
+from pathlib import Path
+from typing import Any, Iterable
 
 from overrides import override
 
 from ..errors import ExtensionError
-from ._python_utils import has_global_variable
+from ._python_utils import (
+    find_entrypoint_with_variable,
+    find_file_with_variable,
+    has_global_variable,
+)
 from .extension import Extension, get_extensions_data_dir
 
 
@@ -61,6 +66,11 @@ class _GunicornBase(Extension):
     @abc.abstractmethod
     def gen_install_app_part(self) -> dict[str, Any]:
         """Generate the content of *-framework/install-app part."""
+
+    @property
+    def name(self) -> str:
+        """Return the normalized name of the rockcraft project."""
+        return self.yaml_data["name"].replace("-", "_").lower()
 
     def _gen_parts(self) -> dict:
         """Generate the parts associated with this extension."""
@@ -130,7 +140,6 @@ class _GunicornBase(Extension):
                 self.framework: {
                     "override": "replace",
                     "startup": "enabled",
-                    "command": f"/bin/python3 -m gunicorn -c /{self.framework}/gunicorn.conf.py {self.wsgi_path}",
                     "after": ["statsd-exporter"],
                     "user": "_daemon_",
                 },
@@ -147,6 +156,15 @@ class _GunicornBase(Extension):
                 },
             },
         }
+        # It the user has overridden the service command, do not try to add it.
+        if (
+            not self.yaml_data.get("services", {})
+            .get(self.framework, {})
+            .get("command")
+        ):
+            snippet["services"][self.framework][
+                "command"
+            ] = f"/bin/python3 -m gunicorn -c /{self.framework}/gunicorn.conf.py {self.wsgi_path}"
         snippet["parts"] = self._gen_parts()
         return snippet
 
@@ -168,7 +186,9 @@ class FlaskFramework(_GunicornBase):
     @override
     def wsgi_path(self) -> str:
         """Return the wsgi path of the wsgi application."""
-        return "app:app"
+        return find_entrypoint_with_variable(
+            self.project_root, self._wsgi_locations(), "app"
+        )
 
     @property
     @override
@@ -197,7 +217,14 @@ class FlaskFramework(_GunicornBase):
                 for f in source_files
                 if not any(
                     fnmatch.fnmatch(f, p)
-                    for p in ("node_modules", ".git", ".yarn", "*.rock")
+                    for p in (
+                        "node_modules",
+                        ".git",
+                        ".yarn",
+                        "*.rock",
+                        #  requirements.txt file is used for dependencies, not install
+                        "requirements.txt",
+                    )
                 )
             }
 
@@ -208,6 +235,25 @@ class FlaskFramework(_GunicornBase):
             "stage": list(renaming_map.values()),
             "prime": self._app_prime,
         }
+
+    def _wsgi_locations(self) -> Iterable[Path]:
+        """Return the possible locations for the WSGI entrypoint.
+
+        It will look for an `app` global variable in the following places:
+        1. `app.py`.
+        2. `main.py`.
+        3. Inside the directories `app`, `src` and rockcraft name, in the files
+           `__init__.py`, `app.py` or `main.py`.
+        """
+        return (
+            Path(".", "app.py"),
+            Path(".", "main.py"),
+            *(
+                Path(src_dir, src_file)
+                for src_dir in ("app", "src", self.name)
+                for src_file in ("__init__.py", "app.py", "main.py")
+            ),
+        )
 
     @property
     def _app_prime(self) -> list[str]:
@@ -242,21 +288,12 @@ class FlaskFramework(_GunicornBase):
 
     def _wsgi_path_error_messages(self) -> list[str]:
         """Ensure the extension can infer the WSGI path of the Flask application."""
-        app_file = self.project_root / "app.py"
-        if not app_file.exists():
-            return [
-                "flask application can not be imported from app:app, no app.py file found in the project root."
-            ]
         try:
-            has_app = has_global_variable(app_file, "app")
-        except SyntaxError as err:
-            return [f"error parsing app.py: {err.msg}"]
-
-        if not has_app:
-            return [
-                "flask application can not be imported from app:app in app.py in the project root."
-            ]
-
+            find_file_with_variable(self.project_root, self._wsgi_locations(), "app")
+        except FileNotFoundError:
+            return ["missing WSGI entrypoint in default search locations."]
+        except SyntaxError as e:
+            return [f"Syntax error in  python file in WSGI search path: {e}"]
         return []
 
     def _requirements_txt_error_messages(self) -> list[str]:
@@ -277,7 +314,11 @@ class FlaskFramework(_GunicornBase):
     def check_project(self) -> None:
         """Ensure this extension can apply to the current rockcraft project."""
         error_messages = self._requirements_txt_error_messages()
-        if not self.yaml_data.get("services", {}).get("flask", {}).get("command"):
+        if (
+            not self.yaml_data.get("services", {})
+            .get(self.framework, {})
+            .get("command")
+        ):
             error_messages += self._wsgi_path_error_messages()
         if error_messages:
             raise ExtensionError(
@@ -289,11 +330,6 @@ class FlaskFramework(_GunicornBase):
 
 class DjangoFramework(_GunicornBase):
     """An extension for constructing Python applications based on the Django framework."""
-
-    @property
-    def name(self) -> str:
-        """Return the normalized name of the rockcraft project."""
-        return self.yaml_data["name"].replace("-", "_").lower()
 
     @property
     def default_wsgi_path(self) -> str:

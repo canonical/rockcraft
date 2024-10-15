@@ -18,15 +18,15 @@
 
 import fnmatch
 import os
-import pathlib
 import posixpath
 import re
-from typing import Any
+from pathlib import Path
+from typing import Any, Iterable
 
 from overrides import override
 
 from ..errors import ExtensionError
-from ._python_utils import has_global_variable
+from ._python_utils import find_entrypoint_with_variable, find_file_with_variable
 from .extension import Extension
 
 
@@ -182,44 +182,37 @@ class FastAPIFramework(Extension):
                 )
         return user_prime
 
-    def _asgi_path(self) -> str:
-        asgi_location = self._find_asgi_location()
-        return (
-            ".".join(
-                part.removesuffix(".py")
-                for part in asgi_location.parts
-                if part != "__init__.py"
-            )
-            + ":app"
-        )
-
-    def _find_asgi_location(self) -> pathlib.Path:
-        """Return the path of the asgi entrypoint file.
+    def _asgi_locations(self) -> Iterable[Path]:
+        """Return the possible locations for the ASGI entrypoint.
 
         It will look for an `app` global variable in the following places:
         1. `app.py`.
-        2. Inside the directories `app`, `src` and rockcraft name, in the files
+        2. `main.py`.
+        3. Inside the directories `app`, `src` and rockcraft name, in the files
            `__init__.py`, `app.py` or `main.py`.
-
-        It will return the first instance found or raise FileNotFoundError.
         """
-        places_to_look = (
-            (".", "app.py"),
-            (".", "main.py"),
+        return (
+            Path(".", "app.py"),
+            Path(".", "main.py"),
             *(
-                (src_dir, src_file)
+                Path(src_dir, src_file)
                 for src_dir in ("app", "src", self.name)
                 for src_file in ("__init__.py", "app.py", "main.py")
             ),
         )
 
-        for src_dir, src_file in places_to_look:
-            full_path = self.project_root / src_dir / src_file
-            if full_path.exists():
-                if has_global_variable(full_path, "app"):
-                    return pathlib.Path(src_dir, src_file)
+    def _asgi_path(self) -> str:
+        """Return the asgi path of the asgi application."""
+        return find_entrypoint_with_variable(
+            self.project_root, self._asgi_locations(), "app"
+        )
 
-        raise FileNotFoundError("ASGI entrypoint not found")
+    def _find_asgi_location(self) -> Path:
+        """Return the path of the asgi entrypoint file.
+
+        It will return the first instance found or raise FileNotFoundError.
+        """
+        return find_file_with_variable(self.project_root, self._asgi_locations(), "app")
 
     def _check_project(self) -> None:
         """Ensure this extension can apply to the current rockcraft project."""
