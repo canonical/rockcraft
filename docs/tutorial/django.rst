@@ -125,7 +125,7 @@ tutorial.
 
 .. note::
     If we changed the ``name`` or ``version`` in ``rockcraft.yaml`` or are not
-    on an ``amd64`` platform, the name of the ``.rock`` file will be 
+    on an ``amd64`` platform, the name of the ``.rock`` file will be
     different.
 
     The size of the rock may vary depending on factors like the architecture
