@@ -1,5 +1,6 @@
 ACR
 ARGS
+ASGI
 Autotools
 autotools
 boolean
@@ -140,6 +141,7 @@ ubuntu
 unbuilt
 UID
 usrmerge
+Uvicorn
 VENV
 venv
 WSGI
