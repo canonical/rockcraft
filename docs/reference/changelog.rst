@@ -11,13 +11,13 @@ Changelog
 Core
 ====
 
-- **Note**: This release of Rockcraft updates Pydantic, the internal library
+- Rockcraft 1.6.0 updates Pydantic, the internal library
   used to process ``rockcraft.yaml`` files, to a new major version. This change
-  should not have any user-visible consequences but please report any issues at
-  :literalref:`https://github.com/canonical/rockcraft/issues`.
-- Managed (non-destructive) runs now correctly fail if the build plan is empty.
+  should not have any user-visible consequences, but please report any issues at
+`on GitHub <https://github.com/canonical/rockcraft/issues>`_.
+- Managed (non-destructive) runs now fail as expected if the build plan is empty.
   For example, trying to build a project with only ``amd64`` in its
-  ``platforms`` will now properly fail when buildings on a non-``amd64``
+  ``platforms`` will now fail when building on a non-amd64
   machine.
 - ``package-repositories`` entries now support ``series`` and ``pocket`` for
   ``apt`` repositories, and ``key-id`` for PPAs.
@@ -52,14 +52,14 @@ flask-framework
 
 - On ``bare``-based rocks, the extension now uses Chisel slices for the Python
   interpreter.
-- Add support for ``ubuntu@24.04``.
+- Add support for the ``ubuntu@24.04`` base.
 
 django-framework
 """"""""""""""""
 
 - The ``django-framework`` extension is now stable and no longer requires the
   ``ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS`` environment variable.
-- Add support for ``ubuntu@24.04``.
+- Add support for the ``ubuntu@24.04`` base.
 
 go-framework
 """"""""""""
@@ -76,7 +76,7 @@ Command line
   argument is passed.
 - The ``clean`` command now supports the ``--platform`` argument to filter which
   build environments to clean.
-- Positional arguments are now correctly display on the ``help`` output of
+- Positional arguments are now correctly displayed on the ``help`` output of
   commands.
 - The terminal cursor is now hidden during execution.
 
@@ -92,8 +92,8 @@ Documentation
 - Add reference documentation for the new ``poetry`` plugin and the new
   ``go-framework`` extension.
 - Add a how-to guide on adding internal users to rocks.
-- Improve the ``flask-framework`` tutorial page based on user feedback.
-- Add tutorial pages for the existing ``django-framework`` and the new
+- Improve the ``flask-framework`` tutorial based on user feedback.
+- Add tutorials for the existing ``django-framework`` and the new
   ``fastapi-framework`` extensions.
 
 For a complete list of commits, check out the `1.6.0`_ release on GitHub.
