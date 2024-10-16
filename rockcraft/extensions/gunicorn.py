@@ -285,9 +285,13 @@ class FlaskFramework(_GunicornBase):
                 )
                 if (self.project_root / f).exists()
             ]
-        if not self.yaml_data.get("services", {}).get(self.framework, {}).get("command"):
+        if (
+            not self.yaml_data.get("services", {})
+            .get(self.framework, {})
+            .get("command")
+        ):
             # add the entrypoint only if user prime is not exclude mode
-            if not(user_prime and user_prime[0] and user_prime[0][0] == "-"):
+            if not (user_prime and user_prime[0] and user_prime[0][0] == "-"):
                 new_prime = "flask/app/" + self._find_wsgi_location().parts[0]
                 if new_prime not in user_prime:
                     user_prime.append(new_prime)
