@@ -273,6 +273,7 @@ class FlaskFramework(_GunicornBase):
         if not user_prime:
             user_prime = [
                 f"flask/app/{f}"
+                # app and app.py are maintained for backward compatibility
                 for f in (
                     "app",
                     "app.py",
@@ -284,17 +285,27 @@ class FlaskFramework(_GunicornBase):
                 )
                 if (self.project_root / f).exists()
             ]
+        if not self.yaml_data.get("services", {}).get(self.framework, {}).get("command"):
+            # add the entrypoint only if user prime is not exclude mode
+            if not(user_prime and user_prime[0] and user_prime[0][0] == "-"):
+                new_prime = "flask/app/" + self._find_wsgi_location().parts[0]
+                if new_prime not in user_prime:
+                    user_prime.append(new_prime)
         return user_prime
 
     def _wsgi_path_error_messages(self) -> list[str]:
         """Ensure the extension can infer the WSGI path of the Flask application."""
         try:
-            find_file_with_variable(self.project_root, self._wsgi_locations(), "app")
+            self._find_wsgi_location()
         except FileNotFoundError:
             return ["missing WSGI entrypoint in default search locations."]
         except SyntaxError as e:
             return [f"Syntax error in  python file in WSGI search path: {e}"]
         return []
+
+    def _find_wsgi_location(self) -> Path:
+        """Return the path of the first wsgi entrypoint file or raise FileNotFoundError."""
+        return find_file_with_variable(self.project_root, self._wsgi_locations(), "app")
 
     def _requirements_txt_error_messages(self) -> list[str]:
         """Ensure the requirements.txt file is correct."""
