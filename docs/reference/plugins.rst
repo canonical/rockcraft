@@ -16,6 +16,7 @@ Rockcraft.
    /common/craft-parts/reference/plugins/cmake_plugin
    /common/craft-parts/reference/plugins/dump_plugin
    /common/craft-parts/reference/plugins/go_plugin
+   plugins/jlink_plugin
    /common/craft-parts/reference/plugins/make_plugin
    /common/craft-parts/reference/plugins/maven_plugin
    /common/craft-parts/reference/plugins/meson_plugin
