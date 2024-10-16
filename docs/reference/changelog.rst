@@ -13,10 +13,10 @@ Core
 
 - Rockcraft 1.6.0 updates Pydantic, the internal library
   used to process ``rockcraft.yaml`` files, to a new major version. This change
-  should not have any user-visible consequences, but please report any issues at
-`on GitHub <https://github.com/canonical/rockcraft/issues>`_.
-- Managed (non-destructive) runs now fail as expected if the build plan is empty.
-  For example, trying to build a project with only ``amd64`` in its
+  should not have any user-visible consequences, but please report any issues on
+  `GitHub <https://github.com/canonical/rockcraft/issues>`_.
+- Managed (non-destructive) runs now fail as expected if the build plan is
+  empty. For example, trying to build a project with only ``amd64`` in its
   ``platforms`` will now fail when building on a non-amd64
   machine.
 - ``package-repositories`` entries now support ``series`` and ``pocket`` for
@@ -89,12 +89,16 @@ Init
 Documentation
 =============
 
-- Add reference documentation for the new ``poetry`` plugin and the new
-  ``go-framework`` extension.
-- Add a how-to guide on adding internal users to rocks.
-- Improve the ``flask-framework`` tutorial based on user feedback.
-- Add tutorials for the existing ``django-framework`` and the new
-  ``fastapi-framework`` extensions.
+- Add :ref:`reference documentation <craft_parts_poetry_plugin>` for the new
+  ``poetry`` plugin.
+- Add a :ref:`how-to guide <add_internal_user_to_a_rock>` on adding internal
+  users to rocks.
+- Improve the ``flask-framework``
+  :ref:`tutorial <build-a-rock-for-a-flask-application>` based on user feedback.
+- Add a :ref:`tutorial <build-a-rock-for-a-django-application>` for the
+  ``django-framework`` extension.
+- Add a :ref:`tutorial <build-a-rock-for-a-fastapi-application>` for the
+  ``fastapi-framework`` extension.
 
 For a complete list of commits, check out the `1.6.0`_ release on GitHub.
 
