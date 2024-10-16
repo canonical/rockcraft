@@ -1,4 +1,6 @@
 ACR
+AMD
+amd
 ARGS
 ASGI
 Autotools
