@@ -177,11 +177,17 @@ def test_flask_extension_default(tmp_path, flask_input_yaml, packages):
             {"app.py": "flask/app/app.py"},
             "/bin/python3 -m gunicorn -c /flask/gunicorn.conf.py app:app",
         ),
-        # With files to include besides the entrypoint.
-        (
-            {"main.py": "app = object()", "app/app.py": "app = object()", "otherfile": ""},
-            {"main.py": "flask/app/main.py", "app": "flask/app/app"},
+        pytest.param(
+            {"main.py": "app = object()", "src/app.py": "app = object()"},
+            {"main.py": "flask/app/main.py"},
             "/bin/python3 -m gunicorn -c /flask/gunicorn.conf.py main:app",
+            id="With two entrypoints, take the first one",
+        ),
+        pytest.param(
+            {"src/app.py": "app = object()", "migrate.sh": "", "unknown": ""},
+            {"src": "flask/app/src", "migrate.sh": "flask/app/migrate.sh"},
+            "/bin/python3 -m gunicorn -c /flask/gunicorn.conf.py src.app:app",
+            id="Include other files beside the entrypoint",
         ),
     ],
 )
