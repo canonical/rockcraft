@@ -251,7 +251,7 @@ look like the following:
 .. literalinclude:: code/go/main.go.time
     :language: go
 
-Since we are creating a new version of the application, **open the**
+Since we are creating a new version of the application, open the
 ``rockcraft.yaml`` file and change the ``version`` (e.g. to ``0.2``).
 
 .. note::

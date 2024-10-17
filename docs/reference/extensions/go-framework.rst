@@ -8,7 +8,7 @@ rocks.
 
 The extension builds and copies the Go binary file to the rock,
 inside the ``/app`` directory. By default, the base ``bare`` is used,
-that generates a lightweight image.
+to generate a lightweight image.
 
 
 .. note::
@@ -31,7 +31,7 @@ be selected correctly, otherwise you can adjust it.
 
 You can use this field to specify a different binary to be used as the
 main application, without having to override the service command. For example,
-if your Go application container a ``main`` package in the directory
+if your Go application contains a ``main`` package in the directory
 ``cmd/anotherserver``, the name of the binary will be ``anotherserver``
 and you can override the main application to use the binary with the
 next snippet:
