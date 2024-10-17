@@ -97,6 +97,9 @@ linkcheck_ignore = [
     "https://github.com/canonical/pebble#layer-specification",
     "https://juju.is/cloud-native-kubernetes-usage-report-2021#selection-criteria-for-container-images",
     "https://matrix.to/#/#rocks:ubuntu.com",
+    # Ignore changelog links to Rockcraft releases, because the changelog entries
+    # are written before the actual release is tagged.
+    "https://github.com/canonical/rockcraft/releases/tag/.*",
 ]
 
 rst_epilog = """
