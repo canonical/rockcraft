@@ -384,7 +384,7 @@ We can now stop the container and remove the corresponding image:
     :dedent: 2
 
 Reset the environment
-======================
+=====================
 
 We've reached the end of this tutorial.
 
