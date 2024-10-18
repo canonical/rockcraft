@@ -1,0 +1,26 @@
+package main
+
+import (
+	"fmt"
+	"log"
+	"net/http"
+	"time"
+)
+
+func helloWorldHandler(w http.ResponseWriter, req *http.Request) {
+	log.Printf("new hello world request")
+	fmt.Fprintln(w, "Hello, world!")
+}
+
+func timeHandler(w http.ResponseWriter, req *http.Request) {
+	log.Printf("new time request")
+	now := time.Now()
+	fmt.Fprintln(w, now.Format(time.DateTime))
+}
+
+func main() {
+	log.Printf("starting hello world application")
+	http.HandleFunc("/", helloWorldHandler)
+	http.HandleFunc("/time", timeHandler)
+	http.ListenAndServe(":8000", nil)
+}
