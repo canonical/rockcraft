@@ -286,7 +286,7 @@ pyflakes==2.4.0
     # via
     #   autoflake
     #   flake8
-pygit2==1.14.1
+pygit2==1.16.0
     # via craft-application
 pygments==2.18.0
     # via
