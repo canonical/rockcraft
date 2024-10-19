@@ -91,7 +91,7 @@ pydantic-core==2.23.4
     # via pydantic
 pygit2==1.14.1
     # via craft-application
-pyparsing==3.1.4
+pyparsing==3.2.0
     # via httplib2
 pyxdg==0.28
     # via craft-parts
