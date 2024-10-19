@@ -267,7 +267,7 @@ pluggy==1.5.0
     #   tox
 polib==1.2.0
     # via sphinx-lint
-pycodestyle==2.8.0
+pycodestyle==2.12.1
     # via flake8
 pycparser==2.22
     # via cffi
