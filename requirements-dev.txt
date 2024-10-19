@@ -20,7 +20,7 @@ apeye-core==1.1.5
     # via apeye
 autodocsumm==0.2.13
     # via sphinx-toolbox
-autoflake==1.7.8
+autoflake==2.3.1
     # via rockcraft (setup.py)
 babel==2.16.0
     # via sphinx
