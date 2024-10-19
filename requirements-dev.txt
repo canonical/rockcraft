@@ -206,7 +206,7 @@ markupsafe==3.0.1
     # via
     #   jinja2
     #   sphinx-jinja2-compat
-mccabe==0.6.1
+mccabe==0.7.0
     # via
     #   flake8
     #   rockcraft (setup.py)
