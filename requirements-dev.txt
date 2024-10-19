@@ -221,7 +221,7 @@ more-itertools==10.5.0
     #   jaraco-functools
 msgpack==1.1.0
     # via cachecontrol
-mypy==1.11.2
+mypy==1.12.0
     # via rockcraft (setup.py)
 mypy-extensions==1.0.0
     # via
