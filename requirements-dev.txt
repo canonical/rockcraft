@@ -130,7 +130,7 @@ filelock==3.16.1
     #   sphinx-toolbox
     #   tox
     #   virtualenv
-flake8==4.0.1
+flake8==7.1.1
     # via rockcraft (setup.py)
 furo==2024.8.6
     # via canonical-sphinx
