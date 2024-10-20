@@ -64,7 +64,7 @@ craft-parts==2.1.2
     # via
     #   craft-application
     #   rockcraft (setup.py)
-craft-platforms==0.3.1
+craft-platforms==0.4.0
     # via
     #   craft-application
     #   rockcraft (setup.py)
