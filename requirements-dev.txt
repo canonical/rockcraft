@@ -10,7 +10,7 @@ annotated-types==0.7.0
     # via
     #   craft-platforms
     #   pydantic
-anyio==4.6.0
+anyio==4.6.2.post1
     # via
     #   starlette
     #   watchfiles
@@ -66,7 +66,7 @@ colorama==0.4.6
     # via
     #   sphinx-autobuild
     #   tox
-coverage==7.6.2
+coverage==7.6.3
     # via rockcraft (setup.py)
 craft-application==4.3.0
     # via rockcraft (setup.py)
@@ -92,7 +92,7 @@ craft-providers==2.0.4
     # via
     #   craft-application
     #   rockcraft (setup.py)
-cryptography==43.0.1
+cryptography==43.0.3
     # via secretstorage
 cssutils==2.11.1
     # via dict2css
@@ -202,7 +202,7 @@ markdown-it-py==3.0.0
     #   mdit-py-plugins
     #   myst-parser
     #   rich
-markupsafe==3.0.1
+markupsafe==3.0.2
     # via
     #   jinja2
     #   sphinx-jinja2-compat
@@ -423,7 +423,7 @@ sphinx-prompt==1.8.0
     # via sphinx-toolbox
 sphinx-reredirects==0.1.5
     # via canonical-sphinx
-sphinx-tabs==3.4.5
+sphinx-tabs==3.4.7
     # via
     #   canonical-sphinx
     #   sphinx-toolbox
@@ -468,7 +468,7 @@ twine==5.1.1
     # via rockcraft (setup.py)
 types-pyyaml==6.0.12.20240917
     # via rockcraft (setup.py)
-types-requests==2.32.0.20240914
+types-requests==2.32.0.20241016
     # via rockcraft (setup.py)
 types-setuptools==75.1.0.20240917
     # via rockcraft (setup.py)
