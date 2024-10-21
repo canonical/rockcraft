@@ -4,7 +4,7 @@ build-base: ubuntu@24.04
 
 version: '0.1'
 summary: A rock that bundles a Maven project.
-description: A rock that bundles a Python project.
+description: A rock that bundles a Maven project.
 license: GPL-3.0
 platforms:
   amd64:
