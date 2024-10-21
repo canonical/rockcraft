@@ -16,43 +16,11 @@
 
 """The Rockcraft Maven plugin."""
 import logging
-from textwrap import dedent
 
 from craft_parts.plugins import maven_plugin
 from overrides import override  # type: ignore[reportUnknownVariableType]
 
 logger = logging.getLogger(__name__)
-
-# Template for the sitecustomize module that we'll add to the payload so that
-# the pip-installed packages are found regardless of how the interpreter is
-# called.
-SITECUSTOMIZE_TEMPLATE = dedent(
-    """
-    # sitecustomize added by Rockcraft.
-    import site
-    import sys
-
-    major, minor = sys.version_info.major, sys.version_info.minor
-    site_dir = f"/lib/python{major}.{minor}/site-packages"
-    dist_dir = "/usr/lib/python3/dist-packages"
-
-    # Add the directory that contains the venv-installed packages.
-    site.addsitedir(site_dir)
-
-    if dist_dir in sys.path:
-        # Make sure that this site-packages dir comes *before* the base-provided
-        # dist-packages dir in sys.path.
-        path = sys.path
-        site_index = path.index(site_dir)
-        dist_index = path.index(dist_dir)
-
-        if dist_index < site_index:
-            path[dist_index], path[site_index] = path[site_index], path[dist_index]
-
-    EOF
-    """
-).strip()
-
 
 class MavenPlugin(maven_plugin.MavenPlugin):
     """A MavenPlugin plugin for Rockcraft.
