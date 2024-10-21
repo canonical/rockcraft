@@ -60,8 +60,7 @@ rundocs: ## start a documentation runserver
 
 .PHONY: dist
 dist: clean ## Build python package.
-	python setup.py sdist
-	python setup.py bdist_wheel
+	python -m build
 	ls -l dist
 
 .PHONY: freeze-requirements
@@ -70,7 +69,7 @@ freeze-requirements:  ## Re-freeze requirements.
 
 .PHONY: install
 install: clean ## Install python package.
-	python setup.py install
+	pip install -e .
 
 .PHONY: lint
 lint: test-black test-codespell test-mypy test-pyright test-ruff test-sphinx-lint test-shellcheck ## Run all linting tests.
