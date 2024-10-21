@@ -20,8 +20,6 @@ apeye-core==1.1.5
     # via apeye
 autodocsumm==0.2.13
     # via sphinx-toolbox
-autoflake==1.7.8
-    # via rockcraft (setup.py)
 babel==2.16.0
     # via sphinx
 backports-tarfile==1.2.0
@@ -130,8 +128,6 @@ filelock==3.16.1
     #   sphinx-toolbox
     #   tox
     #   virtualenv
-flake8==4.0.1
-    # via rockcraft (setup.py)
 furo==2024.8.6
     # via canonical-sphinx
 gitdb==4.0.11
@@ -208,7 +204,6 @@ markupsafe==3.0.1
     #   sphinx-jinja2-compat
 mccabe==0.6.1
     # via
-    #   flake8
     #   rockcraft (setup.py)
 mdit-py-plugins==0.4.2
     # via myst-parser
@@ -267,8 +262,6 @@ pluggy==1.5.0
     #   tox
 polib==1.2.0
     # via sphinx-lint
-pycodestyle==2.8.0
-    # via flake8
 pycparser==2.22
     # via cffi
 pydantic==2.9.2
@@ -282,10 +275,6 @@ pydantic-core==2.23.4
     # via pydantic
 pydocstyle==6.3.0
     # via rockcraft (setup.py)
-pyflakes==2.4.0
-    # via
-    #   autoflake
-    #   flake8
 pygit2==1.14.1
     # via craft-application
 pygments==2.18.0
@@ -455,7 +444,6 @@ tabulate==0.9.0
     #   sphinx-toolbox
 tomli==2.0.2
     # via
-    #   autoflake
     #   black
     #   mypy
     #   pyproject-api
