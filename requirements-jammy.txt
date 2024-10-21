@@ -1,1 +1,1 @@
-python-apt @  https://launchpad.net/ubuntu/+archive/primary/+sourcefiles/python-apt/2.4.0ubuntu2/python-apt_2.4.0ubuntu2.tar.xz ; sys_platform == 'linux'
+python-apt @  https://launchpad.net/ubuntu/+archive/primary/+sourcefiles/python-apt/2.4.0ubuntu2/python-apt_2.4.0ubuntu2.tar.xz --hash=sha256:cc01c1a6bec70017890cc91e3626642057f3a6d2efa5adf2a063ae1ffc93fd31 ; sys_platform == 'linux'
