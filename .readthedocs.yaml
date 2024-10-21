@@ -10,9 +10,15 @@ build:
   tools:
     python: "3.10"
   jobs:
+    post_system_dependencies:
+      - asdf plugin add uv
+      - asdf install uv latest
+      - asdf global uv latest
     post_checkout:
       - git fetch --tags --unshallow  # Also fetch tags
       - git describe                  # Make sure we get a proper version
+    pre_install:
+      - uv export --frozen --extra docs --output-file requirements-doc.txt
 
 # Build documentation in the docs/ directory with Sphinx
 sphinx:
