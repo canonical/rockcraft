@@ -40,5 +40,5 @@ class MavenPlugin(maven_plugin.MavenPlugin):
     @override
     def get_build_environment(self) -> dict[str, str]:
         env = super().get_build_environment()
-        env["PATH"] = "/usr/bin"
+        env["PATH"] = "/usr/bin:$PATH"
         return env
