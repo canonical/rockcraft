@@ -61,9 +61,10 @@ Build the Go application so it can be run:
     :end-before: [docs:go-build-end]
     :dedent: 2
 
-A new binary named ``go-hello-world`` should be in the current directory.
-Run the Go application using ``./go-hello-world`` to verify that
-it works.
+A new binary named ``go-hello-world`` should be in the current
+directory.  This binary is only needed for local testing, as
+Rockcraft will compile the Go application. Run the Go application using
+``./go-hello-world`` to verify that it works.
 
 Test the Go application by using ``curl`` to send a request to the root
 endpoint. We may need a new terminal for this, if we are using Multipass use

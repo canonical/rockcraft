@@ -6,9 +6,8 @@ go-framework
 The Go extension streamlines the process of building Go application
 rocks.
 
-The extension builds and copies the Go binary file to the rock,
-inside the ``/app`` directory. By default, the base ``bare`` is used,
-to generate a lightweight image.
+The extension builds and copies the Go binary file to the rock.
+By default, the base ``bare`` is used, to generate a lightweight image.
 
 
 .. note::
@@ -27,7 +26,7 @@ in the root directory of the project.
 
 If the main package is in the base directory and the rockcraft name
 attribute is equal to the go module name, the name of the binary will
-be selected correctly, otherwise you can adjust it.
+be selected correctly, otherwise you will need to adjust it.
 
 You can use this field to specify a different binary to be used as the
 main application, without having to override the service command. For example,
@@ -48,8 +47,9 @@ next snippet:
 =========================================================
 
 
-Some files, if they exist, are included by default. These include:
-``migrate``, ``migrate.sh``, ``templates/`` and ``static/``.
+Some files, if they exist, are included by default in the rock in the
+``/app`` directory.  These include: ``migrate``, ``migrate.sh``,
+``templates/`` and ``static/``.
 
 You can customise the files to include by overriding the ``stage`` property
 of the ``go-framework/assets`` part:
