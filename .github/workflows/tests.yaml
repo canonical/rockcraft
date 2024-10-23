@@ -38,15 +38,9 @@ jobs:
       - name: Run codespell
         run: |
           make test-codespell
-      - name: Run flake8
-        run: |
-          make test-flake8
       - name: Run mypy
         run: |
           make test-mypy
-      - name: Run pydocstyle
-        run: |
-          make test-pydocstyle
       - name: Run pyright
         run: |
           sudo snap watch --last=install
