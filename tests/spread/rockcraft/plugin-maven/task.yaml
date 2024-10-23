@@ -18,6 +18,6 @@ execute: |
 
   docker system prune -a -f
 
-  # Rebuild the java project
+  # Rebuild the java project to confirm that it rebuilds cleanly
   touch sample/src/main/java/test/Test.java
   rockcraft pack
