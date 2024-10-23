@@ -22,6 +22,7 @@ from overrides import override  # type: ignore[reportUnknownVariableType]
 
 logger = logging.getLogger(__name__)
 
+
 class MavenPlugin(maven_plugin.MavenPlugin):
     """A MavenPlugin plugin for Rockcraft.
 
