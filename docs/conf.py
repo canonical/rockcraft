@@ -45,6 +45,7 @@ html_context = {
     "product_page": "github.com/canonical/rockcraft",
     "discourse": "https://discourse.ubuntu.com/c/rocks/117",
     "github_url": "https://github.com/canonical/rockcraft",
+    "display_contributors": False,
 }
 
 extensions = [
@@ -96,6 +97,9 @@ linkcheck_ignore = [
     "https://github.com/canonical/pebble#layer-specification",
     "https://juju.is/cloud-native-kubernetes-usage-report-2021#selection-criteria-for-container-images",
     "https://matrix.to/#/#rocks:ubuntu.com",
+    # Ignore changelog links to Rockcraft releases, because the changelog entries
+    # are written before the actual release is tagged.
+    "https://github.com/canonical/rockcraft/releases/tag/.*",
 ]
 
 rst_epilog = """

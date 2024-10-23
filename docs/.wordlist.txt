@@ -1,5 +1,8 @@
 ACR
+AMD
+amd
 ARGS
+ASGI
 Autotools
 autotools
 boolean
@@ -31,6 +34,8 @@ entrypoint
 entrypoints
 executables
 expressjs
+fastapi
+FastAPI
 Filesets
 fileset
 filesets
@@ -91,6 +96,7 @@ Podman
 ppa
 pre
 pyfiglet
+PPAs
 PyPI
 reStructuredText
 rock's
@@ -138,6 +144,7 @@ ubuntu
 unbuilt
 UID
 usrmerge
+Uvicorn
 VENV
 venv
 WSGI
