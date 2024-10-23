@@ -47,9 +47,9 @@ next snippet:
 =========================================================
 
 
-Some files, if they exist, are included by default in the rock in the
-``/app`` directory.  These include: ``migrate``, ``migrate.sh``,
-``templates/`` and ``static/``.
+Some files, if they exist in the project root, are included by
+default in the rock in the ``/app`` directory.  These include:
+``migrate``, ``migrate.sh``, ``templates/`` and ``static/``.
 
 You can customise the files to include by overriding the ``stage`` property
 of the ``go-framework/assets`` part:
