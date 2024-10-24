@@ -14,3 +14,4 @@ initiating a new rock.
    flask-framework
    django-framework
    fastapi-framework
+   go-framework
