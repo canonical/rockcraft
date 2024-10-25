@@ -15,7 +15,7 @@ the root of the project:
 - ``static``
 - ``templates``
 
-To change this, the following snippet needs to be added to 
+To change this, the following snippet needs to be added to
 the ``rockcraft.yaml``:
 
 .. tabs::
@@ -37,6 +37,17 @@ the ``rockcraft.yaml``:
       the project root.
 
    .. group-tab:: Django
+
+      .. code-block:: yaml
+
+           parts:
+             django-framework/install-app:
+               prime:
+                 - django/app/.env
+                 - django/app/app.py
+                 - django/app/webapp
+                 - django/app/templates
+                 - django/app/static
 
    .. group-tab:: FastAPI
 
