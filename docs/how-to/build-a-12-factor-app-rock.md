@@ -112,7 +112,7 @@ following snippet to the `rockcraft.yaml`:
     1. Run `rockcraft pack` to create the new OCI image
     1. Run
       `rockcraft.skopeo --insecure-policy copy --dest-tls-verify=false oci-archive:<path to rock file> docker://localhost:32000/<rock name>:<rock version>`
-      to upload the OCI image to the registry
+      to upload the OCI image to the local Docker registry
     1. Run
       `juju refresh <app name> --path=<relative path to .charm file> --resource flask-app-image=<localhost:32000/<rock name>:<rock version>>`
       to deploy the new OCI image
