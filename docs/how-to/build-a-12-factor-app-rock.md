@@ -16,7 +16,8 @@ To change this, the following snippet needs to be added to the `rockcraft.yaml`:
 
 .. tabs::
 
-  .. tab:: Flask
+  .. group-tab:: Flask
+  
     ```yaml
     parts:
       flask-framework/install-app:
@@ -31,9 +32,10 @@ To change this, the following snippet needs to be added to the `rockcraft.yaml`:
     Note the `flask/app/` prefix that is required followed by the relative path to
     the project root.
 
-  .. tab:: Django
+  .. group-tab:: Django
 
-  .. tab:: FastAPI
+  .. group-tab:: FastAPI
+  
     ```yaml
     parts:
       fastapi-framework/install-app:
@@ -48,7 +50,8 @@ To change this, the following snippet needs to be added to the `rockcraft.yaml`:
     Note the `app/` prefix that is required followed by the relative path to
     the project root.
 
-  .. tab:: Go
+  .. group-tab:: Go
+  
     ```yaml
     parts:
       go-framework/assets:
@@ -67,7 +70,9 @@ If your app requires debs -- for example, to connect to a database -- add the
 following snippet to the `rockcraft.yaml`:
 
 .. tabs::
-  .. tab:: Flask
+
+  .. group-tab:: Flask
+  
     ```yaml
     parts:
       flask-framework/dependencies:
@@ -75,7 +80,9 @@ following snippet to the `rockcraft.yaml`:
           # list required packages or slices for your flask application below.
           - libpq-dev
     ```
-  .. tab:: Django
+    
+  .. group-tab:: Django
+  
     ```yaml
     parts:
       django-framework/dependencies:
@@ -83,7 +90,9 @@ following snippet to the `rockcraft.yaml`:
           # list required packages or slices for your Django application below.
           - libpq-dev
     ```
-  .. tab:: FastAPI
+    
+  .. group-tab:: FastAPI
+  
     ```yaml
     parts:
       fastapi-framework/dependencies:
@@ -91,7 +100,9 @@ following snippet to the `rockcraft.yaml`:
           # list required packages or slices for your FastAPI application below.
           - libpq-dev
     ```
-  .. tab:: Go
+    
+  .. group-tab:: Go
+  
     ```yaml
     parts:
       runtime-debs:
@@ -104,7 +115,9 @@ following snippet to the `rockcraft.yaml`:
 ## Update the OCI image
 
 .. tabs ::
-  .. tab:: Flask
+
+  .. group-tab:: Flask
+  
     After making a change to your app:
     
     1. Make sure that any new files will be included in the new OCI image. See
@@ -117,7 +130,8 @@ following snippet to the `rockcraft.yaml`:
       `juju refresh <app name> --path=<relative path to .charm file> --resource flask-app-image=<localhost:32000/<rock name>:<rock version>>`
       to deploy the new OCI image
 
-  .. tab:: Django
+  .. group-tab:: Django
+  
     After making a change to your app:
     
     1. Make sure that any new files will be included in the new OCI image. See
@@ -130,7 +144,8 @@ following snippet to the `rockcraft.yaml`:
       `juju refresh <app name> --path=<relative path to .charm file> --resource django-app-image=<localhost:32000/<rock name>:<rock version>>`
       to deploy the new OCI image
 
-  .. tab:: FastAPI
+  .. group-tab:: FastAPI
+  
     After making a change to your app:
     
     1. Make sure that any new files will be included in the new OCI image. See
@@ -143,7 +158,8 @@ following snippet to the `rockcraft.yaml`:
       `juju refresh <app name> --path=<relative path to .charm file> --resource app-image=<localhost:32000/<rock name>:<rock version>>`
       to deploy the new OCI image
 
-  .. tab:: Go
+  .. group-tab:: Go
+  
     After making a change to your app;
     
     1. Make sure that any new files will be included in the new OCI image. See
