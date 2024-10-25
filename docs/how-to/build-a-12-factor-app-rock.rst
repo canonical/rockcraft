@@ -15,7 +15,8 @@ the root of the project:
 - ``static``
 - ``templates``
 
-To change this, the following snippet needs to be added to the ``rockcraft.yaml``:
+To change this, the following snippet needs to be added to 
+the ``rockcraft.yaml``:
 
 .. tabs::
 
@@ -50,8 +51,8 @@ To change this, the following snippet needs to be added to the ``rockcraft.yaml`
                  - app/templates
                  - app/static
 
-     Note the ``app/`` prefix that is required followed by the relative path to
-     the project root.
+      Note the ``app/`` prefix that is required followed by the relative path to
+      the project root.
 
   .. group-tab:: Go
 
@@ -64,8 +65,8 @@ To change this, the following snippet needs to be added to the ``rockcraft.yaml`
                  - app/static
                  - app/migrate.sh
 
-       Note the ``app/`` prefix that is required followed by the relative path to
-       the project root.
+      Note the ``app/`` prefix that is required followed by the relative path to
+      the project root.
 
 Include additional debs in the OCI image
 ----------------------------------------
@@ -151,7 +152,7 @@ Update the OCI image
 
    .. group-tab:: Go
 
-      After making a change to your app;
+      After making a change to your app:
 
       1. Make sure that any new files will be included in the new OCI image.
       2. Run ``rockcraft pack`` to create the new OCI image.
