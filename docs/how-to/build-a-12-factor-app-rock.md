@@ -133,7 +133,7 @@ following snippet to the `rockcraft.yaml`:
   .. tab:: FastAPI
     After making a change to your app:
     
-    1. make sure that any new files will be included in the new OCI image. See
+    1. Make sure that any new files will be included in the new OCI image. See
       [Including extra files in the OCI image](#including-additional-debs-in-the-oci-image)
     1. Run `rockcraft pack` to create the new OCI image
     1. Run
