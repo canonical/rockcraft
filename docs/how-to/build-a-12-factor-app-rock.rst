@@ -4,18 +4,18 @@ How to build a 12-Factor app rock
 Include extra files in the OCI image
 ------------------------------------
 
-The following files are included in the image by default from 
+The following files are included in the image by default from
 the root of the project:
 
-- `app` (does not apply to the `go-framework`)
-- `app.py` (does not apply to the `go-framework`)
-- `migrate`
-- `migrate.sh`
-- `migrate.py` (does not apply to the `go-framework`)
-- `static`
-- `templates`
+- ``app`` (does not apply to the ``go-framework``)
+- ``app.py`` (does not apply to the ``go-framework``)
+- ``migrate``
+- ``migrate.sh``
+- ``migrate.py`` (does not apply to the ``go-framework``)
+- ``static``
+- ``templates``
 
-To change this, the following snippet needs to be added to the `rockcraft.yaml`:
+To change this, the following snippet needs to be added to the ``rockcraft.yaml``:
 
 .. tabs::
 
@@ -32,13 +32,13 @@ To change this, the following snippet needs to be added to the `rockcraft.yaml`:
                  - flask/app/templates
                  - flask/app/static
 
-      Note the `flask/app/` prefix that is required followed by the relative path to
+      Note the ``flask/app/`` prefix that is required followed by the relative path to
       the project root.
 
    .. group-tab:: Django
 
    .. group-tab:: FastAPI
-  
+
       .. code-block:: yaml
 
            parts:
@@ -49,12 +49,12 @@ To change this, the following snippet needs to be added to the `rockcraft.yaml`:
                  - app/webapp
                  - app/templates
                  - app/static
-    
-     Note the `app/` prefix that is required followed by the relative path to
+
+     Note the ``app/`` prefix that is required followed by the relative path to
      the project root.
 
   .. group-tab:: Go
-  
+
       .. code-block:: yaml
 
            parts:
@@ -63,15 +63,15 @@ To change this, the following snippet needs to be added to the `rockcraft.yaml`:
                  - app/templates
                  - app/static
                  - app/migrate.sh
-    
-       Note the `app/` prefix that is required followed by the relative path to
+
+       Note the ``app/`` prefix that is required followed by the relative path to
        the project root.
 
 Include additional debs in the OCI image
 ----------------------------------------
 
 If your app requires debs -- for example, to connect to a database -- add the
-following snippet to the `rockcraft.yaml`:
+following snippet to the ``rockcraft.yaml``:
 
 .. tabs::
 
@@ -115,7 +115,7 @@ following snippet to the `rockcraft.yaml`:
                stage-packages:
                  - postgresql-client
 
-      For the `go-framework`, a deb could be needed for example to use an external command in the migration process.
+      For the ``go-framework``, a deb could be needed for example to use an external command in the migration process.
 
 Update the OCI image
 --------------------
@@ -127,49 +127,33 @@ Update the OCI image
       After making a change to your app:
 
       1. Make sure that any new files will be included in the new OCI image.
-      1. Run `rockcraft pack` to create the new OCI image
-      1. Run
-      `rockcraft.skopeo --insecure-policy copy --dest-tls-verify=false oci-archive:<path to rock file> docker://localhost:32000/<rock name>:<rock version>`
-      to upload the OCI image to the local Docker registry
-      1. Run
-      `juju refresh <app name> --path=<relative path to .charm file> --resource flask-app-image=<localhost:32000/<rock name>:<rock version>>`
-      to deploy the new OCI image
+      2. Run ``rockcraft pack`` to create the new OCI image.
+      3. Run ``rockcraft.skopeo --insecure-policy copy --dest-tls-verify=false oci-archive:<path to rock file> docker://localhost:32000/<rock name>:<rock version>`` to upload the OCI image to the local Docker registry.
+      4. Run ``juju refresh <app name> --path=<relative path to .charm file> --resource flask-app-image=<localhost:32000/<rock name>:<rock version>>`` to deploy the new OCI image.
 
    .. group-tab:: Django
 
       After making a change to your app:
 
       1. Make sure that any new files will be included in the new OCI image.
-      1. Run `rockcraft pack` to create the new OCI image
-      1. Run
-      `rockcraft.skopeo --insecure-policy copy --dest-tls-verify=false oci-archive:<path to rock file> docker://localhost:32000/<rock name>:<rock version>`
-      to upload the OCI image to the registry
-      1. Run
-      `juju refresh <app name> --path=<relative path to .charm file> --resource django-app-image=<localhost:32000/<rock name>:<rock version>>`
-      to deploy the new OCI image
+      2. Run ``rockcraft pack`` to create the new OCI image.
+      3. Run ``rockcraft.skopeo --insecure-policy copy --dest-tls-verify=false oci-archive:<path to rock file> docker://localhost:32000/<rock name>:<rock version>`` to upload the OCI image to the registry.
+      4. Run ``juju refresh <app name> --path=<relative path to .charm file> --resource django-app-image=<localhost:32000/<rock name>:<rock version>>`` to deploy the new OCI image.
 
    .. group-tab:: FastAPI
 
       After making a change to your app:
 
       1. Make sure that any new files will be included in the new OCI image.
-      1. Run `rockcraft pack` to create the new OCI image
-      1. Run
-      `rockcraft.skopeo --insecure-policy copy --dest-tls-verify=false oci-archive:<path to rock file> docker://localhost:32000/<rock name>:<rock version>`
-      to upload the OCI image to the registry
-      1. Run
-      `juju refresh <app name> --path=<relative path to .charm file> --resource app-image=<localhost:32000/<rock name>:<rock version>>`
-      to deploy the new OCI image
+      2. Run ``rockcraft pack`` to create the new OCI image.
+      3. Run ``rockcraft.skopeo --insecure-policy copy --dest-tls-verify=false oci-archive:<path to rock file> docker://localhost:32000/<rock name>:<rock version>`` to upload the OCI image to the registry.
+      4. Run ``juju refresh <app name> --path=<relative path to .charm file> --resource app-image=<localhost:32000/<rock name>:<rock version>>`` to deploy the new OCI image.
 
    .. group-tab:: Go
 
       After making a change to your app;
 
       1. Make sure that any new files will be included in the new OCI image.
-      1. Run `rockcraft pack` to create the new OCI image
-      1. Run
-      `rockcraft.skopeo --insecure-policy copy --dest-tls-verify=false oci-archive:<path to rock file> docker://localhost:32000/<rock name>:<rock version>`
-      to upload the OCI image to the registry
-      1. Run
-      `juju refresh <app name> --path=<relative path to .charm file> --resource app-image=<localhost:32000/<rock name>:<rock version>>`
-      to deploy the new OCI image
+      2. Run ``rockcraft pack`` to create the new OCI image.
+      3. Run ``rockcraft.skopeo --insecure-policy copy --dest-tls-verify=false oci-archive:<path to rock file> docker://localhost:32000/<rock name>:<rock version>`` to upload the OCI image to the registry.
+      4. Run ``juju refresh <app name> --path=<relative path to .charm file> --resource app-image=<localhost:32000/<rock name>:<rock version>>`` to deploy the new OCI image.
