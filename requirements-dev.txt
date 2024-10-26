@@ -3,7 +3,7 @@ anyio==4.3.0
 astroid==3.2.1
 autoflake==1.7.8
 Babel==2.15.0
-backports.tarfile==1.1.1
+backports.tarfile==1.2.0
 beautifulsoup4==4.12.3
 black==24.4.2
 bracex==2.4
