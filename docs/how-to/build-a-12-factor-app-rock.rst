@@ -129,8 +129,8 @@ following snippet to the ``rockcraft.yaml``:
 
       For the ``go-framework``, a deb could be needed for example to use an external command in the migration process.
 
-Update the OCI image
---------------------
+Update and deploy the OCI image
+-------------------------------
 
 .. tabs ::
 
