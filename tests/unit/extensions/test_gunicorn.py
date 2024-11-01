@@ -309,41 +309,6 @@ def test_flask_extension_bare(tmp_path):
 
 
 @pytest.mark.usefixtures("flask_extension")
-def test_flask_extension_no_requirements_txt_error(tmp_path):
-    (tmp_path / "app.py").write_text("app = object()")
-    flask_input_yaml = {
-        "extensions": ["flask-framework"],
-        "base": "bare",
-        "build-base": "ubuntu@22.04",
-        "platforms": {"amd64": {}},
-    }
-    with pytest.raises(ExtensionError) as exc:
-        extensions.apply_extensions(tmp_path, flask_input_yaml)
-    assert (
-        str(exc.value)
-        == "- missing a requirements.txt file. The flask-framework extension requires this file with 'flask' specified as a dependency."
-    )
-
-
-@pytest.mark.usefixtures("flask_extension")
-def test_flask_extension_requirements_txt_no_flask_error(tmp_path):
-    (tmp_path / "app.py").write_text("app = object()")
-    (tmp_path / "requirements.txt").write_text("")
-    flask_input_yaml = {
-        "extensions": ["flask-framework"],
-        "base": "bare",
-        "build-base": "ubuntu@22.04",
-        "platforms": {"amd64": {}},
-    }
-    with pytest.raises(ExtensionError) as exc:
-        extensions.apply_extensions(tmp_path, flask_input_yaml)
-
-    assert (
-        str(exc.value) == "- missing flask package dependency in requirements.txt file."
-    )
-
-
-@pytest.mark.usefixtures("flask_extension")
 def test_flask_extension_bad_app_py(tmp_path):
     bad_code = textwrap.dedent(
         """
@@ -382,7 +347,6 @@ def test_flask_extension_no_requirements_txt_no_app_py_error(tmp_path):
     with pytest.raises(ExtensionError) as exc:
         extensions.apply_extensions(tmp_path, flask_input_yaml)
     assert str(exc.value) == (
-        "- missing a requirements.txt file. The flask-framework extension requires this file with 'flask' specified as a dependency.\n"
         "- flask application can not be imported from app:app, no app.py file found in the project root."
     )
 

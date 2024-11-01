@@ -223,7 +223,7 @@ class FastAPIFramework(Extension):
 
     def _check_project(self) -> None:
         """Ensure this extension can apply to the current rockcraft project."""
-        error_messages = self._requirements_txt_error_messages()
+        error_messages = []
         if not self.yaml_data.get("services", {}).get("fastapi", {}).get("command"):
             error_messages += self._asgi_entrypoint_error_messages()
         if error_messages:
@@ -232,26 +232,6 @@ class FastAPIFramework(Extension):
                 doc_slug="/reference/extensions/fastapi-framework",
                 logpath_report=False,
             )
-
-    def _requirements_txt_error_messages(self) -> list[str]:
-        """Ensure the requirements.txt file exists and has fastapi or starlette deps."""
-        requirements_file = self.project_root / "requirements.txt"
-        if not requirements_file.exists():
-            return [
-                "missing a requirements.txt file. The fastapi-framework extension requires this file with 'fastapi'/'starlette' specified as a dependency."
-            ]
-
-        requirements_lines = requirements_file.read_text(encoding="utf-8").splitlines()
-        if not any(
-            dep in line.lower()
-            for line in requirements_lines
-            for dep in ("fastapi", "starlette")
-        ):
-            return [
-                "missing fastapi or starlette package dependency in requirements.txt file."
-            ]
-
-        return []
 
     def _asgi_entrypoint_error_messages(self) -> list[str]:
         try:
