@@ -257,6 +257,7 @@ class Project(BuildPlanner, BaseProject):  # type: ignore[misc]
     services: dict[str, Service] | None = None
     checks: dict[str, Check] | None = None
     entrypoint_service: str | None = None
+    run_once_command: str | None = None
     platforms: dict[str, Platform | None]  # type: ignore[assignment]
 
     model_config = pydantic.ConfigDict(
@@ -387,6 +388,29 @@ class Project(BuildPlanner, BaseProject):  # type: ignore[misc]
             ) from ex
 
         return entrypoint_service
+
+    @pydantic.field_validator("run_once_command")
+    @classmethod
+    def _validate_run_once_command(
+        cls, run_once_command: str | None, info: pydantic.ValidationInfo
+    ) -> str | None:
+        """Verify that the entrypoint-service or the services dict are not set."""
+        if not run_once_command:
+            return run_once_command
+
+        craft_cli.emit.message(
+            "Warning: defining a run-once-command will result in a rock with an "
+            "atypical OCI Entrypoint. While that might be acceptable for testing and "
+            "personal use, it shall require prior approval before submitting to a "
+            "Canonical registry namespace."
+        )
+
+        if info.data.get("entrypoint-service") or info.data.get("services"):
+            raise ValueError(
+                "Cannot have run-once-command and entrypoint-service / services at the same time."
+            )
+
+        return run_once_command
 
     @pydantic.field_validator("environment")
     @classmethod

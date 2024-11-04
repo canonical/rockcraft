@@ -354,6 +354,17 @@ class Image:
         _config_image(image_path, params)
         emit.progress(f"Default user set to {user}")
 
+    def set_run_once_entrypoint(self, command: str) -> None:
+        """Set the OCI image entrypoint to the given command."""
+        emit.progress("Configuring entrypoint...")
+        image_path = self.path / self.image_name
+        params = ["--clear=config.entrypoint"]
+        for entry in shlex.split(command):
+            params.extend(["--config.entrypoint", entry])
+        params.extend(["--clear=config.cmd"])
+        _config_image(image_path, params)
+        emit.progress(f"Entrypoint set to {command}")
+
     def set_entrypoint(self, entrypoint_service: str | None, build_base: str) -> None:
         """Set the OCI image entrypoint. It is always Pebble."""
         emit.progress("Configuring entrypoint...")
