@@ -1,6 +1,9 @@
 How to build a 12-Factor app rock
 *********************************
 
+The following how-to guides provide instructions on managing
+and configuring rocks for 12-factor applications.
+
 Include extra files in the OCI image
 ------------------------------------
 
@@ -38,16 +41,7 @@ the ``rockcraft.yaml``:
 
    .. group-tab:: Django
 
-      .. code-block:: yaml
-
-           parts:
-             django-framework/install-app:
-               prime:
-                 - django/app/.env
-                 - django/app/app.py
-                 - django/app/webapp
-                 - django/app/templates
-                 - django/app/static
+      N/A
 
    .. group-tab:: FastAPI
 
