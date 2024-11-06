@@ -14,7 +14,7 @@ Setup
 
 .. note::
     This tutorial requires version ``1.5.2`` or later for Rockcraft. Check
-    the version using ``rockcraft --version``. If there is an older version
+    the version using ``rockcraft --version``. If there's an older version
     of Rockcraft installed, use
     ``sudo snap refresh rockcraft --channel latest/stable`` to get the latest
     stable version.
