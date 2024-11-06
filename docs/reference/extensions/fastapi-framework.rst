@@ -34,7 +34,7 @@ There are 2 requirements to be able to use the ``fastapi-framework`` extension:
 ====================================================================
 
 You can use this key to specify any dependencies required for your FastAPI
-application. For example, below we use it to specify ``libpq-dev``:
+application. In the following example we use it to specify ``libpq-dev``:
 
 .. code-block:: yaml
 

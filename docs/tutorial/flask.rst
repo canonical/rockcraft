@@ -55,7 +55,7 @@ In the same directory, copy and save the following into a text file called
 Run the Flask application using ``flask run -p 8000`` to verify that it works.
 
 Test the Flask application by using ``curl`` to send a request to the root
-endpoint. We will need a new terminal for this; if we are using Multipass use
+endpoint. We'll need a new terminal for this -- if we're using Multipass, run
 ``multipass shell rock-dev`` to get another terminal:
 
 .. literalinclude:: code/flask/task.yaml
@@ -90,7 +90,7 @@ architecture, include ``arm64`` in ``platforms``.
 
 .. note::
     For this tutorial, we'll use the ``name`` ``flask-hello-world`` and assume
-    we are running on an ``amd64`` platform. Check the architecture of the
+    we're running on the ``amd64`` platform. Check the architecture of the
     system using ``dpkg --print-architecture``.
 
     The ``name``, ``version`` and ``platform`` all influence the name of the
@@ -126,7 +126,7 @@ tutorial.
     on an ``amd64`` platform, the name of the ``.rock`` file will be different.
 
     The size of the rock may vary depending on factors like the architecture
-    we are building on and the packages installed at the time of packing.
+    we're building on and the packages installed at the time of packing.
 
 Run the Flask rock with Docker
 ==============================

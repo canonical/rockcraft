@@ -1,7 +1,7 @@
 How to build a 12-Factor app rock
 *********************************
 
-The following how-to guides provide instructions on managing
+The following how-to guide provides instructions on managing
 and configuring rocks for 12-factor applications.
 
 Include extra files in the OCI image
@@ -77,7 +77,7 @@ Include additional debs in the OCI image
 ----------------------------------------
 
 If your app requires debs -- for example, to connect to a database -- add the
-following snippet to the ``rockcraft.yaml``:
+following snippet to ``rockcraft.yaml``:
 
 .. tabs::
 
@@ -121,7 +121,7 @@ following snippet to the ``rockcraft.yaml``:
                stage-packages:
                  - postgresql-client
 
-      For the ``go-framework``, a deb could be needed for example to use an external command in the migration process.
+      For the ``go-framework`` extension, a deb could be needed for example to use an external command in the migration process.
 
 Update and deploy the OCI image
 -------------------------------

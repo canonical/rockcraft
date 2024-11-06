@@ -51,7 +51,7 @@ Change into the ``django_hello_world`` directory and run the Django application
 using ``python manage.py runserver`` to verify that it works.
 
 Test the Django application by using ``curl`` to send a request to the root
-endpoint. We may need a new terminal for this, if we are using Multipass use
+endpoint. We may need a new terminal for this -- if we're using Multipass, run
 ``multipass shell rock-dev`` to get another terminal:
 
 .. literalinclude:: code/django/task.yaml
@@ -92,7 +92,7 @@ include ``arm64`` in ``platforms``.
 
 .. note::
     For this tutorial, we'll use the ``name`` ``django-hello-world`` and assume
-    we are running on an ``amd64`` platform. Check the architecture of the
+    we're running on the ``amd64`` platform. Check the architecture of the
     system using ``dpkg --print-architecture``.
 
     The ``name``, ``version`` and ``platform`` all influence the name of the

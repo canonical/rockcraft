@@ -54,7 +54,7 @@ Run the FastAPI application using ``fastapi dev app.py --port 8000`` to verify
 that it works.
 
 Test the FastAPI application by using ``curl`` to send a request to the root
-endpoint. We may need a new terminal for this, if we are using Multipass use
+endpoint. We may need a new terminal for this -- if we're using Multipass, run
 ``multipass shell rock-dev`` to get another terminal:
 
 .. literalinclude:: code/fastapi/task.yaml
@@ -89,7 +89,7 @@ architecture, include ``arm64`` in ``platforms``.
 
 .. note::
     For this tutorial, we'll use the ``name`` ``fastapi-hello-world`` and assume
-    we are running on an ``amd64`` platform. Check the architecture of the
+    we're running on the  ``amd64`` platform. Check the architecture of the
     system using ``dpkg --print-architecture``.
 
     The ``name``, ``version`` and ``platform`` all influence the name of the
