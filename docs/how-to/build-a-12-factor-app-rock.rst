@@ -59,7 +59,7 @@ the ``rockcraft.yaml``:
       Note the ``app/`` prefix that is required followed by the relative path to
       the project root.
 
-  .. group-tab:: Go
+   .. group-tab:: Go
 
       .. code-block:: yaml
 
@@ -126,7 +126,7 @@ following snippet to the ``rockcraft.yaml``:
 Update and deploy the OCI image
 -------------------------------
 
-.. tabs ::
+.. tabs::
 
    .. group-tab:: Flask
 
