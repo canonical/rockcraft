@@ -162,9 +162,9 @@ Update and deploy the OCI image
             rockcraft.skopeo --insecure-policy copy --dest-tls-verify=false \
             oci-archive:<path to rock file> \
             docker://localhost:32000/<rock name>:<rock version>
-      
-      4. To deploy the new OCI image, run:
  
+      4. To deploy the new OCI image, run:
+
          .. code-block:: bash
 
             juju refresh <app name> --path=<relative path to .charm file> \
