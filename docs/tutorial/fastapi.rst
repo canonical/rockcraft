@@ -54,7 +54,7 @@ Run the FastAPI application using ``fastapi dev app.py --port 8000`` to verify
 that it works.
 
 Test the FastAPI application by using ``curl`` to send a request to the root
-endpoint. We may need a new terminal for this -- if we're using Multipass, run
+endpoint. We'll need a new terminal for this -- if we're using Multipass, run
 ``multipass shell rock-dev`` to get another terminal:
 
 .. literalinclude:: code/fastapi/task.yaml

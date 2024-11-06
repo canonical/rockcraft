@@ -51,7 +51,7 @@ Change into the ``django_hello_world`` directory and run the Django application
 using ``python manage.py runserver`` to verify that it works.
 
 Test the Django application by using ``curl`` to send a request to the root
-endpoint. We may need a new terminal for this -- if we're using Multipass, run
+endpoint. We'll need a new terminal for this -- if we're using Multipass, run
 ``multipass shell rock-dev`` to get another terminal:
 
 .. literalinclude:: code/django/task.yaml
