@@ -29,7 +29,7 @@ Finally, create a new directory for this tutorial and go inside it:
 Create the Flask application
 ============================
 
-Start by creating the "Hello, world" Flask application that we will use for
+Start by creating the "Hello, world" Flask application that we'll use for
 this tutorial.
 
 Create a ``requirements.txt`` file, copy the following text into it and then
