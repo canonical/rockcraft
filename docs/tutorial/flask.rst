@@ -14,7 +14,7 @@ Setup
 
 .. note::
     This tutorial requires version ``1.5.2`` or later for Rockcraft. Check
-    your version using ``rockcraft --version``. If you have an older version
+    the version using ``rockcraft --version``. If there's an older version
     of Rockcraft installed, use
     ``sudo snap refresh rockcraft --channel latest/stable`` to get the latest
     stable version.
@@ -29,7 +29,7 @@ Finally, create a new directory for this tutorial and go inside it:
 Create the Flask application
 ============================
 
-Start by creating the "Hello, world" Flask application that will be used for
+Start by creating the "Hello, world" Flask application that we'll use for
 this tutorial.
 
 Create a ``requirements.txt`` file, copy the following text into it and then
@@ -55,7 +55,7 @@ In the same directory, copy and save the following into a text file called
 Run the Flask application using ``flask run -p 8000`` to verify that it works.
 
 Test the Flask application by using ``curl`` to send a request to the root
-endpoint. You may need a new terminal for this, if you are using Multipass use
+endpoint. We'll need a new terminal for this -- if we're using Multipass, run
 ``multipass shell rock-dev`` to get another terminal:
 
 .. literalinclude:: code/flask/task.yaml
@@ -82,15 +82,15 @@ creation and tailoring for a Flask application by using the
     :end-before: [docs:create-rockcraft-yaml-end]
     :dedent: 2
 
-The ``rockcraft.yaml`` file will automatically be created in your working
-directory. Open it in a text editor and check that the ``name`` is
-``flask-hello-world``. Ensure that ``platforms`` includes the architecture of
-your host. For example, if your host uses the ARM
+The ``rockcraft.yaml`` file will automatically be created in the project's
+working directory. Open it in a text editor and check that the ``name`` is
+``flask-hello-world``. Ensure that ``platforms`` includes the host
+architecture. For example, if the host uses the ARM
 architecture, include ``arm64`` in ``platforms``.
 
 .. note::
     For this tutorial, we'll use the ``name`` ``flask-hello-world`` and assume
-    you are running on an ``amd64`` platform. Check the architecture of your
+    we're running on the ``amd64`` platform. Check the architecture of the
     system using ``dpkg --print-architecture``.
 
     The ``name``, ``version`` and ``platform`` all influence the name of the
@@ -106,11 +106,11 @@ Pack the rock:
 
 .. note::
 
-    Depending on your network, this step can take a couple of minutes to finish.
+    Depending on the network, this step can take a couple of minutes to finish.
 
-Once Rockcraft has finished packing the Flask rock, you'll find a new file in
-your working directory (an `OCI <OCI_image_spec_>`_ archive) with the ``.rock``
-extension:
+Once Rockcraft has finished packing the Flask rock, we'll find a new file in
+the project's working directory (an `OCI <OCI_image_spec_>`_ archive) with the
+``.rock`` extension:
 
 .. literalinclude:: code/flask/task.yaml
     :language: bash
@@ -122,12 +122,11 @@ The created rock is about 65MB in size. We will reduce its size later in this
 tutorial.
 
 .. note::
-    If you changed the ``name`` or ``version`` in ``rockcraft.yaml`` or are not
-    on an ``amd64`` platform, the name of the ``.rock`` file will be different
-    for you.
+    If we changed the ``name`` or ``version`` in ``rockcraft.yaml`` or are not
+    on an ``amd64`` platform, the name of the ``.rock`` file will be different.
 
-    The size of your rock may vary depending on factors like the architecture
-    you are building on and the packages installed at the time of packing.
+    The size of the rock may vary depending on factors like the architecture
+    we're building on and the packages installed at the time of packing.
 
 Run the Flask rock with Docker
 ==============================
@@ -162,7 +161,7 @@ size:
     The size of the image reported by Docker is the uncompressed size which is
     larger than the size of the compressed ``.rock`` file.
 
-Now we're finally ready to run the rock and test your containerised Flask
+Now we're finally ready to run the rock and test the containerised Flask
 application:
 
 .. literalinclude:: code/flask/task.yaml
@@ -185,7 +184,7 @@ The Flask application should again respond with ``Hello, world!``.
 View the application logs
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-When deploying the Flask rock, you can always get the application logs via
+When deploying the Flask rock, we can always get the application logs via
 ``pebble``:
 
 .. literalinclude:: code/flask/task.yaml
@@ -194,9 +193,9 @@ When deploying the Flask rock, you can always get the application logs via
     :end-before: [docs:get-logs-end]
     :dedent: 2
 
-As a result, :ref:`pebble_explanation_page` will give you the logs for the
+As a result, :ref:`pebble_explanation_page` will give us the logs for the
 ``flask`` service running inside the container.
-You should expect to see something similar to this:
+We expect to see something similar to this:
 
 ..  code-block:: text
     :class: log-snippets
@@ -206,7 +205,7 @@ You should expect to see something similar to this:
     2024-06-21T03:41:45.077Z [flask] [2024-06-21 03:41:45 +0000] [17] [INFO] Using worker: sync
     2024-06-21T03:41:45.078Z [flask] [2024-06-21 03:41:45 +0000] [18] [INFO] Booting worker with pid: 18
 
-You can also choose to follow the logs by using the ``-f`` option with the
+We can also choose to follow the logs by using the ``-f`` option with the
 ``pebble logs`` command above. To stop following the logs, press :kbd:`Ctrl` +
 :kbd:`C`.
 
@@ -226,15 +225,15 @@ respective image for now:
 Chisel the rock
 ===============
 
-This is an optional but recommended step, especially if you're looking to
-deploy your rock into a production environment. With :ref:`chisel_explanation`
-you can produce lean and production-ready rocks by getting rid of all the
-contents that are not needed for your Flask application to run. This results
+This is an optional but recommended step, especially if we're looking to
+deploy the rock into a production environment. With :ref:`chisel_explanation`
+we can produce lean and production-ready rocks by getting rid of all the
+contents that are not needed for the Flask application to run. This results
 in a much smaller rock with a reduced attack surface.
 
 .. note::
     It is recommended to run chiselled images in production. For development,
-    you may prefer non-chiselled images as they will include additional
+    we may prefer non-chiselled images as they will include additional
     development tooling (such as for debugging).
 
 The first step towards chiselling the rock is to ensure we are using a
@@ -271,7 +270,7 @@ As before, verify that the new rock was created:
     :end-before: [docs:ls-bare-rock-end]
     :dedent: 2
 
-You'll verify that the new Flask rock is now approximately **30% smaller**
+We'll verify that the new Flask rock is now approximately **30% smaller**
 in size! And that's just because of the simple change of ``base``.
 
 And the functionality is still the same. As before, we can confirm this by
@@ -325,9 +324,9 @@ Since we are creating a new version of the application, open the
 
 .. note::
 
-    ``rockcraft pack`` will create a new image with the updated code even if you
+    ``rockcraft pack`` will create a new image with the updated code even if we
     don't change the version. It is recommended to change the version whenever
-    you make changes to the application in the image.
+    we make changes to the application in the image.
 
 Pack and run the rock using similar commands as before:
 
@@ -369,12 +368,12 @@ We can now stop the container and remove the corresponding image:
     :end-before: [docs:stop-docker-updated-end]
     :dedent: 2
 
-Reset your environment
-======================
+Reset the environment
+=====================
 
 We've reached the end of this tutorial.
 
-If you'd like to reset your working environment, you can simply run the
+If we'd like to reset the working environment, we can simply run the
 following:
 
 .. literalinclude:: code/flask/task.yaml
@@ -385,14 +384,14 @@ following:
 
 .. collapse:: If using Multipass...
 
-    If you created an instance using Multipass, you can also clean it up.
+    If we created an instance using Multipass, we can also clean it up.
     Start by exiting it:
 
     .. code-block:: bash
 
         exit
 
-    And then you can proceed with its deletion:
+    And then we can proceed with its deletion:
 
     .. code-block:: bash
 
@@ -408,7 +407,7 @@ Troubleshooting
 
 **Application updates not taking effect?**
 
-Upon changing your Flask application and re-packing the rock, if you believe
+Upon changing the Flask application and re-packing the rock, if you believe
 your changes are not taking effect (e.g. the ``/time``
 :ref:`endpoint <update-flask-application>` is returning a
 404), try running ``rockcraft clean`` and pack the rock again with
