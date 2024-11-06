@@ -30,16 +30,9 @@ class MavenPlugin(maven_plugin.MavenPlugin):
     use and install the Java VM. Specifically:
 
     - Do not link java executable to /bin/java
-    - Do not include staging area in the PATH
     """
 
     @override
     def _get_java_link_commands(self) -> list[str]:
         """Get the bash commands to provide /bin/java symlink."""
         return []
-
-    @override
-    def get_build_environment(self) -> dict[str, str]:
-        env = super().get_build_environment()
-        env["PATH"] = "/usr/bin:$PATH"
-        return env

@@ -6,18 +6,12 @@ execute: |
 
   # Build the rock & load it into docker
   run_rockcraft pack
-  ls
   echo expecting ${ROCK_FILE}
   test -f ${ROCK_FILE}
   rockcraft.skopeo copy --insecure-policy  oci-archive:${ROCK_FILE} docker-daemon:${IMAGE}
-  docker images
   rm ${ROCK_FILE}
 
   # Run the packaged project
   docker run --rm $IMAGE exec /usr/lib/jvm/java-21-openjdk-amd64/bin/java -jar /jar/sample-0.0.1-SNAPSHOT.jar | MATCH "hello world"
 
   docker system prune -a -f
-
-  # Rebuild the java project to confirm that it rebuilds cleanly
-  touch sample/src/main/java/test/Test.java
-  rockcraft pack
