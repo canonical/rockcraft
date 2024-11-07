@@ -27,6 +27,20 @@ There are 2 requirements to be able to use the ``flask-framework`` extension:
    there must be an ``app.py`` file at the root of the project with the name
    of the Flask object is set to ``app``
 
+``parts`` > ``flask-framework/dependencies`` > ``stage-packages``
+=================================================================
+
+You can use this key to specify any dependencies required for your Flask
+application. In the following example we use it to specify ``libpq-dev``:
+
+.. code-block:: yaml
+
+  parts:
+    flask-framework/dependencies:
+      stage-packages:
+        # list required packages or slices for your flask app below.
+        - libpq-dev
+
 ``parts`` > ``flask-framework/install-app`` > ``prime``
 =======================================================
 
