@@ -71,7 +71,7 @@ class _GunicornBase(Extension):
             stage_packages = ["python3.10-venv_ensurepip"]
             build_environment = [{"PARTS_PYTHON_INTERPRETER": "python3.10"}]
 
-        parts: dict[str, Any] = {
+        sync_dependencies: dict[str, Any] = {
             f"{self.framework}-framework/dependencies": {
                 "plugin": "python",
                 "stage-packages": stage_packages,
@@ -79,7 +79,20 @@ class _GunicornBase(Extension):
                 "python-packages": ["gunicorn"],
                 "python-requirements": ["requirements.txt"],
                 "build-environment": build_environment,
-            },
+            }
+        }
+        async_dependencies: dict[str, Any] = {
+            f"{self.framework}-framework/async-dependencies": {
+                "plugin": "python",
+                "stage-packages": stage_packages,
+                "source": ".",
+                "python-packages": ["gunicorn[gevent]"],
+                "python-requirements": ["requirements.txt"],
+                "build-environment": build_environment,
+            }
+        }
+
+        parts: dict[str, Any] = {
             f"{self.framework}-framework/install-app": self.gen_install_app_part(),
             f"{self.framework}-framework/config-files": {
                 "plugin": "dump",
@@ -95,6 +108,16 @@ class _GunicornBase(Extension):
                 "source": "https://github.com/prometheus/statsd_exporter.git",
             },
         }
+        if f"{self.framework}-framework/async-dependencies" in self.yaml_data.get(
+            "parts", {}
+        ):
+            yaml_parts = self.yaml_data.get("parts", {})
+            if yaml_parts.get(f"{self.framework}-framework/dependencies", None):
+                raise ExtensionError(f"Cannot have both sync and async dependencies. https://documentation.ubuntu.com/rockcraft/en/latest/reference/extensions/{self.framework}-framework/#parts-{self.framework}-framework-async-dependencies")
+            parts = dict(async_dependencies, **parts)
+        else:
+            parts = dict(sync_dependencies, **parts)
+
         if self.yaml_data["base"] == "bare":
             parts[f"{self.framework}-framework/runtime"] = {
                 "plugin": "nil",

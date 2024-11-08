@@ -41,6 +41,24 @@ application. In the following example we use it to specify ``libpq-dev``:
         # list required packages or slices for your flask app below.
         - libpq-dev
 
+``parts`` > ``flask-framework/async-dependencies``
+=================================================================
+
+You can use this key to specify that you want to use async gunicorn workers in
+you Flask application. It also works just like `flask-framework/dependencies`.
+In the following example we use it to specify ``libpq-dev``:
+
+.. code-block:: yaml
+
+  parts:
+    flask-framework/async-dependencies:
+      stage-packages:
+        # list required packages or slices for your flask app below.
+        - libpq-dev
+
+.. warning::
+  You can only use 1 of the dependencies parts at a time.
+
 ``parts`` > ``flask-framework/install-app`` > ``prime``
 =======================================================
 

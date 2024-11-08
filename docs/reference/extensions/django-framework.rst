@@ -43,6 +43,24 @@ application. In the following example we use it to specify ``libpq-dev``:
         # list required packages or slices for your Django application below.
         - libpq-dev
 
+``parts`` > ``django-framework/async-dependencies``
+=================================================================
+
+You can use this key to specify that you want to use async gunicorn workers in
+you Django application. It also works just like `django-framework/dependencies`.
+In the following example we use it to specify ``libpq-dev``:
+
+.. code-block:: yaml
+
+  parts:
+    django-framework/async-dependencies:
+      stage-packages:
+        # list required packages or slices for your django app below.
+        - libpq-dev
+
+.. warning::
+  You can only use 1 of the dependencies parts at a time.
+
 Useful links
 ============
 
