@@ -47,7 +47,8 @@ application. In the following example we use it to specify ``libpq-dev``:
 =================================================================
 
 You can use this key to specify that you want to use async gunicorn workers in
-you Django application. It also works just like `django-framework/dependencies`.
+you Django application.
+It also works just like ``django-framework/dependencies``.
 In the following example we use it to specify ``libpq-dev``:
 
 .. code-block:: yaml

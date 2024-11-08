@@ -45,7 +45,7 @@ application. In the following example we use it to specify ``libpq-dev``:
 =================================================================
 
 You can use this key to specify that you want to use async gunicorn workers in
-you Flask application. It also works just like `flask-framework/dependencies`.
+you Flask application. It also works just like ``flask-framework/dependencies``.
 In the following example we use it to specify ``libpq-dev``:
 
 .. code-block:: yaml
