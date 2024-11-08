@@ -182,6 +182,11 @@ def test_run_init_flask(mocker, emitter, monkeypatch, new_dir, tmp_path):
             #       - flask/app/templates
             #       - flask/app/static
 
+            # uncomment this section to enable the async workers for Gunicorn.
+            #   flask-framework/async-dependencies:
+            #     plugin: python
+            #     source: .
+
             # you may need Ubuntu packages to build a python dependency. Add them here if necessary.
             #   flask-framework/dependencies:
             #     build-packages:
