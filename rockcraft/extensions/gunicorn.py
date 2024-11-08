@@ -113,7 +113,9 @@ class _GunicornBase(Extension):
         ):
             yaml_parts = self.yaml_data.get("parts", {})
             if yaml_parts.get(f"{self.framework}-framework/dependencies", None):
-                raise ExtensionError(f"Cannot have both sync and async dependencies. https://documentation.ubuntu.com/rockcraft/en/latest/reference/extensions/{self.framework}-framework/#parts-{self.framework}-framework-async-dependencies")
+                raise ExtensionError(
+                    f"Cannot have both sync and async dependencies. https://documentation.ubuntu.com/rockcraft/en/latest/reference/extensions/{self.framework}-framework/#parts-{self.framework}-framework-async-dependencies"
+                )
             parts = dict(async_dependencies, **parts)
         else:
             parts = dict(sync_dependencies, **parts)
