@@ -30,6 +30,21 @@ There are 2 requirements to be able to use the ``fastapi-framework`` extension:
      directory or within a directory with the name of the rock as declared in
      ``rockcraft.yaml``.
 
+``parts`` > ``fastapi-framework/dependencies:`` > ``stage-packages``
+====================================================================
+
+You can use this key to specify any dependencies required for your FastAPI
+application. In the following example we use it to specify ``libpq-dev``:
+
+.. code-block:: yaml
+
+  parts:
+    fastapi-framework/dependencies:
+      stage-packages:
+        # list required packages or slices for your FastAPI application below.
+        - libpq-dev
+
+
 ``parts`` > ``fastapi-framework/install-app`` > ``prime``
 =========================================================
 
