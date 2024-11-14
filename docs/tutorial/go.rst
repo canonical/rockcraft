@@ -77,7 +77,7 @@ endpoint. We may need a new terminal for this -- if using Multipass, run
 
 The Go application should respond with ``Hello, world!``.
 
-The Go application looks good, so stop it for now using :kbd:`Ctrl` + :kbd:`C`.
+The Go application looks good, so let's stop it for now with :kbd:`Ctrl` + :kbd:`C`.
 
 Pack the Go application into a rock
 ===================================
