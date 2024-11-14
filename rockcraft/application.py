@@ -16,19 +16,25 @@
 
 """Main Rockcraft Application."""
 
+from __future__ import annotations
+
+from pathlib import Path
 from typing import Any
 
-from craft_application import Application, AppMetadata, util
+from craft_application import Application, AppMetadata
+from craft_parts.plugins.plugins import PluginType
 from overrides import override  # type: ignore[reportUnknownVariableType]
 
-from rockcraft import models
+from rockcraft import models, plugins
 from rockcraft.models import project
 
 APP_METADATA = AppMetadata(
     name="rockcraft",
     summary="A tool to create OCI images",
     ProjectClass=project.Project,
+    BuildPlannerClass=project.BuildPlanner,
     source_ignore_patterns=["*.rock"],
+    docs_url="https://documentation.ubuntu.com/rockcraft/en/{version}",
 )
 
 
@@ -36,18 +42,41 @@ class Rockcraft(Application):
     """Rockcraft application definition."""
 
     @override
-    def _extra_yaml_transform(self, yaml_data: dict[str, Any]) -> dict[str, Any]:
-        return models.transform_yaml(self._work_dir, yaml_data)
+    def _extra_yaml_transform(
+        self,
+        yaml_data: dict[str, Any],
+        *,
+        build_on: str,
+        build_for: str | None,
+    ) -> dict[str, Any]:
+        return models.transform_yaml(Path.cwd(), yaml_data)
 
     @override
-    def _configure_services(self, platform: str | None, build_for: str | None) -> None:
-        if build_for is None:
-            build_for = util.get_host_architecture()
-
-        self.services.set_kwargs("image", work_dir=self._work_dir, build_for=build_for)
-        self.services.set_kwargs(
-            "package",
-            platform=platform,
-            build_for=build_for,
+    def _configure_services(self, provider_name: str | None) -> None:
+        self.services.update_kwargs(
+            "image",
+            work_dir=self._work_dir,
+            build_plan=self._build_plan,
         )
-        super()._configure_services(platform, build_for)
+        self.services.update_kwargs(
+            "package",
+            build_plan=self._build_plan,
+        )
+        super()._configure_services(provider_name)
+
+    @override
+    def _get_app_plugins(self) -> dict[str, PluginType]:
+        """Get the plugins for this application.
+
+        Should be overridden by applications that need to register plugins at startup.
+        """
+        return plugins.get_plugins()
+
+    @override
+    def _enable_craft_parts_features(self) -> None:
+        # pylint: disable=import-outside-toplevel
+        from craft_parts.features import Features
+
+        # enable the craft-parts Features that we use here, right before
+        # loading the project and validating its parts.
+        Features(enable_overlay=True)

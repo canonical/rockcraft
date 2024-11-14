@@ -1,0 +1,15 @@
+name: chiselled-python
+base: bare  # using a bare base
+build-base: ubuntu@22.04  # using Ubuntu Jammy only for the build environment
+version: "3.11"
+summary: Chiselled Python3.11 rock
+description: Example of a chiselled Python rock
+platforms:
+  amd64:
+run-user: _daemon_  # setting a non-root user for the rock
+parts:
+  install-python-slices:
+    plugin: nil
+    stage-packages:
+      - base-files_release-info # we only want the release information
+      - python3.11_core # we just need the Python core functionality

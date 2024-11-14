@@ -1,26 +1,5693 @@
 {
   "$id": "https://github.com/canonical/rockcraft/blob/main/schema/rockcraft.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Rockcraft project",
+  "$defs": {
+    "Check": {
+      "additionalProperties": false,
+      "description": "Lightweight schema validation for a Pebble checks.\n\nBased on\nhttps://github.com/canonical/pebble#layer-specification",
+      "properties": {
+        "override": {
+          "enum": [
+            "merge",
+            "replace"
+          ],
+          "title": "Override",
+          "type": "string"
+        },
+        "level": {
+          "anyOf": [
+            {
+              "enum": [
+                "alive",
+                "ready"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Level"
+        },
+        "period": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Period"
+        },
+        "timeout": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Timeout"
+        },
+        "threshold": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Threshold"
+        },
+        "http": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/HttpCheck"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "tcp": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TcpCheck"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "exec": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ExecCheck"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "override"
+      ],
+      "title": "Check",
+      "type": "object"
+    },
+    "ExecCheck": {
+      "additionalProperties": false,
+      "description": "Lightweight schema validation for a Pebble exec check.",
+      "properties": {
+        "command": {
+          "title": "Command",
+          "type": "string"
+        },
+        "service-context": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Service-Context"
+        },
+        "environment": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Environment"
+        },
+        "user": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "User"
+        },
+        "user-id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "User-Id"
+        },
+        "group": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Group"
+        },
+        "group-id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Group-Id"
+        },
+        "working-dir": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Working-Dir"
+        }
+      },
+      "required": [
+        "command"
+      ],
+      "title": "ExecCheck",
+      "type": "object"
+    },
+    "HttpCheck": {
+      "additionalProperties": false,
+      "description": "Lightweight schema validation for a Pebble HTTP check.",
+      "properties": {
+        "url": {
+          "format": "uri",
+          "minLength": 1,
+          "title": "Url",
+          "type": "string"
+        },
+        "headers": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Headers"
+        }
+      },
+      "required": [
+        "url"
+      ],
+      "title": "HttpCheck",
+      "type": "object"
+    },
+    "Platform": {
+      "additionalProperties": false,
+      "description": "Project platform definition.",
+      "properties": {
+        "build-on": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "minItems": 1,
+              "type": "array",
+              "uniqueItems": true
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Build-On"
+        },
+        "build-for": {
+          "oneOf": [
+            {
+              "title": "Build-For",
+              "minItems": 1,
+              "uniqueItems": true,
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "title": "Build-For",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "required": [
+        "build-on"
+      ],
+      "title": "Platform",
+      "type": "object"
+    },
+    "Service": {
+      "additionalProperties": false,
+      "description": "Lightweight schema validation for a Pebble service.\n\nBased on\nhttps://github.com/canonical/pebble#layer-specification",
+      "properties": {
+        "override": {
+          "enum": [
+            "merge",
+            "replace"
+          ],
+          "title": "Override",
+          "type": "string"
+        },
+        "command": {
+          "title": "Command",
+          "type": "string"
+        },
+        "summary": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Summary"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Description"
+        },
+        "startup": {
+          "anyOf": [
+            {
+              "enum": [
+                "enabled",
+                "disabled"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Startup"
+        },
+        "after": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "After"
+        },
+        "before": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Before"
+        },
+        "requires": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Requires"
+        },
+        "environment": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Environment"
+        },
+        "user": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "User"
+        },
+        "user-id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "User-Id"
+        },
+        "group": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Group"
+        },
+        "group-id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Group-Id"
+        },
+        "working-dir": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Working-Dir"
+        },
+        "on-success": {
+          "anyOf": [
+            {
+              "enum": [
+                "restart",
+                "shutdown",
+                "ignore"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "On-Success"
+        },
+        "on-failure": {
+          "anyOf": [
+            {
+              "enum": [
+                "restart",
+                "shutdown",
+                "ignore"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "On-Failure"
+        },
+        "on-check-failure": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "enum": [
+                  "restart",
+                  "shutdown",
+                  "ignore"
+                ],
+                "type": "string"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "On-Check-Failure"
+        },
+        "backoff-delay": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Backoff-Delay"
+        },
+        "backoff-factor": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Backoff-Factor"
+        },
+        "backoff-limit": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Backoff-Limit"
+        },
+        "kill-delay": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Kill-Delay"
+        }
+      },
+      "required": [
+        "override",
+        "command"
+      ],
+      "title": "Service",
+      "type": "object"
+    },
+    "TcpCheck": {
+      "additionalProperties": false,
+      "description": "Lightweight schema validation for a Pebble TCP check.",
+      "properties": {
+        "port": {
+          "title": "Port",
+          "type": "integer"
+        },
+        "host": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Host"
+        }
+      },
+      "required": [
+        "port"
+      ],
+      "title": "TcpCheck",
+      "type": "object"
+    },
+    "Part": {
+      "description": "The part specification data.",
+      "properties": {
+        "plugin": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Plugin",
+          "enum": [
+            "ant",
+            "autotools",
+            "cmake",
+            "dotnet",
+            "dump",
+            "go",
+            "make",
+            "maven",
+            "meson",
+            "nil",
+            "npm",
+            "poetry",
+            "python",
+            "qmake",
+            "rust",
+            "scons"
+          ]
+        },
+        "source": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source"
+        },
+        "source-checksum": {
+          "default": "",
+          "title": "Source-Checksum",
+          "type": "string"
+        },
+        "source-branch": {
+          "default": "",
+          "title": "Source-Branch",
+          "type": "string"
+        },
+        "source-commit": {
+          "default": "",
+          "title": "Source-Commit",
+          "type": "string"
+        },
+        "source-depth": {
+          "default": 0,
+          "title": "Source-Depth",
+          "type": "integer"
+        },
+        "source-subdir": {
+          "default": "",
+          "title": "Source-Subdir",
+          "type": "string"
+        },
+        "source-submodules": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source-Submodules"
+        },
+        "source-tag": {
+          "default": "",
+          "title": "Source-Tag",
+          "type": "string"
+        },
+        "source-type": {
+          "default": "",
+          "title": "Source-Type",
+          "type": "string"
+        },
+        "disable-parallel": {
+          "default": false,
+          "title": "Disable-Parallel",
+          "type": "boolean"
+        },
+        "after": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "After",
+          "type": "array"
+        },
+        "overlay-packages": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Overlay-Packages",
+          "type": "array"
+        },
+        "stage-snaps": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Stage-Snaps",
+          "type": "array"
+        },
+        "stage-packages": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Stage-Packages",
+          "type": "array"
+        },
+        "build-snaps": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Build-Snaps",
+          "type": "array"
+        },
+        "build-packages": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Build-Packages",
+          "type": "array"
+        },
+        "build-environment": {
+          "default": [],
+          "items": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object"
+          },
+          "title": "Build-Environment",
+          "type": "array"
+        },
+        "build-attributes": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Build-Attributes",
+          "type": "array"
+        },
+        "organize": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Organize",
+          "type": "object"
+        },
+        "overlay": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Overlay",
+          "type": "array"
+        },
+        "stage": {
+          "items": {
+            "description": "relative path",
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Stage",
+          "type": "array"
+        },
+        "prime": {
+          "items": {
+            "description": "relative path",
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Prime",
+          "type": "array"
+        },
+        "override-pull": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Override-Pull"
+        },
+        "overlay-script": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Overlay-Script"
+        },
+        "override-build": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Override-Build"
+        },
+        "override-stage": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Override-Stage"
+        },
+        "override-prime": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Override-Prime"
+        },
+        "permissions": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/Permissions"
+          },
+          "title": "Permissions",
+          "type": "array"
+        }
+      },
+      "title": "PartSpec",
+      "type": "object",
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "plugin": {
+                "const": "ant"
+              }
+            }
+          },
+          "then": {
+            "$comment": "common properties had to be repeated here or they would be considered invalid by the schema validator otherwise",
+            "properties": {
+              "plugin": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Plugin",
+                "enum": [
+                  "ant",
+                  "autotools",
+                  "cmake",
+                  "dotnet",
+                  "dump",
+                  "go",
+                  "make",
+                  "maven",
+                  "meson",
+                  "nil",
+                  "npm",
+                  "poetry",
+                  "python",
+                  "qmake",
+                  "rust",
+                  "scons"
+                ]
+              },
+              "source": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source"
+              },
+              "ant-build-targets": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Ant-Build-Targets",
+                "type": "array"
+              },
+              "ant-build-file": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Ant-Build-File"
+              },
+              "ant-properties": {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "default": {},
+                "title": "Ant-Properties",
+                "type": "object"
+              },
+              "source-checksum": {
+                "default": "",
+                "title": "Source-Checksum",
+                "type": "string"
+              },
+              "source-branch": {
+                "default": "",
+                "title": "Source-Branch",
+                "type": "string"
+              },
+              "source-commit": {
+                "default": "",
+                "title": "Source-Commit",
+                "type": "string"
+              },
+              "source-depth": {
+                "default": 0,
+                "title": "Source-Depth",
+                "type": "integer"
+              },
+              "source-subdir": {
+                "default": "",
+                "title": "Source-Subdir",
+                "type": "string"
+              },
+              "source-submodules": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source-Submodules"
+              },
+              "source-tag": {
+                "default": "",
+                "title": "Source-Tag",
+                "type": "string"
+              },
+              "source-type": {
+                "default": "",
+                "title": "Source-Type",
+                "type": "string"
+              },
+              "disable-parallel": {
+                "default": false,
+                "title": "Disable-Parallel",
+                "type": "boolean"
+              },
+              "after": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "After",
+                "type": "array"
+              },
+              "overlay-packages": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Overlay-Packages",
+                "type": "array"
+              },
+              "stage-snaps": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Stage-Snaps",
+                "type": "array"
+              },
+              "stage-packages": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Stage-Packages",
+                "type": "array"
+              },
+              "build-snaps": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Snaps",
+                "type": "array"
+              },
+              "build-packages": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Packages",
+                "type": "array"
+              },
+              "build-environment": {
+                "default": [],
+                "items": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object"
+                },
+                "title": "Build-Environment",
+                "type": "array"
+              },
+              "build-attributes": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Attributes",
+                "type": "array"
+              },
+              "organize": {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "title": "Organize",
+                "type": "object"
+              },
+              "overlay": {
+                "items": {
+                  "type": "string"
+                },
+                "title": "Overlay",
+                "type": "array"
+              },
+              "stage": {
+                "items": {
+                  "description": "relative path",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "title": "Stage",
+                "type": "array"
+              },
+              "prime": {
+                "items": {
+                  "description": "relative path",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "title": "Prime",
+                "type": "array"
+              },
+              "override-pull": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Pull"
+              },
+              "overlay-script": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Overlay-Script"
+              },
+              "override-build": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Build"
+              },
+              "override-stage": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Stage"
+              },
+              "override-prime": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Prime"
+              },
+              "permissions": {
+                "default": [],
+                "items": {
+                  "$ref": "#/$defs/Permissions"
+                },
+                "title": "Permissions",
+                "type": "array"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "plugin": {
+                "const": "autotools"
+              }
+            }
+          },
+          "then": {
+            "$comment": "common properties had to be repeated here or they would be considered invalid by the schema validator otherwise",
+            "properties": {
+              "plugin": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Plugin",
+                "enum": [
+                  "ant",
+                  "autotools",
+                  "cmake",
+                  "dotnet",
+                  "dump",
+                  "go",
+                  "make",
+                  "maven",
+                  "meson",
+                  "nil",
+                  "npm",
+                  "poetry",
+                  "python",
+                  "qmake",
+                  "rust",
+                  "scons"
+                ]
+              },
+              "source": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source"
+              },
+              "autotools-configure-parameters": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Autotools-Configure-Parameters",
+                "type": "array"
+              },
+              "autotools-bootstrap-parameters": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Autotools-Bootstrap-Parameters",
+                "type": "array"
+              },
+              "source-checksum": {
+                "default": "",
+                "title": "Source-Checksum",
+                "type": "string"
+              },
+              "source-branch": {
+                "default": "",
+                "title": "Source-Branch",
+                "type": "string"
+              },
+              "source-commit": {
+                "default": "",
+                "title": "Source-Commit",
+                "type": "string"
+              },
+              "source-depth": {
+                "default": 0,
+                "title": "Source-Depth",
+                "type": "integer"
+              },
+              "source-subdir": {
+                "default": "",
+                "title": "Source-Subdir",
+                "type": "string"
+              },
+              "source-submodules": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source-Submodules"
+              },
+              "source-tag": {
+                "default": "",
+                "title": "Source-Tag",
+                "type": "string"
+              },
+              "source-type": {
+                "default": "",
+                "title": "Source-Type",
+                "type": "string"
+              },
+              "disable-parallel": {
+                "default": false,
+                "title": "Disable-Parallel",
+                "type": "boolean"
+              },
+              "after": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "After",
+                "type": "array"
+              },
+              "overlay-packages": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Overlay-Packages",
+                "type": "array"
+              },
+              "stage-snaps": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Stage-Snaps",
+                "type": "array"
+              },
+              "stage-packages": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Stage-Packages",
+                "type": "array"
+              },
+              "build-snaps": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Snaps",
+                "type": "array"
+              },
+              "build-packages": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Packages",
+                "type": "array"
+              },
+              "build-environment": {
+                "default": [],
+                "items": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object"
+                },
+                "title": "Build-Environment",
+                "type": "array"
+              },
+              "build-attributes": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Attributes",
+                "type": "array"
+              },
+              "organize": {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "title": "Organize",
+                "type": "object"
+              },
+              "overlay": {
+                "items": {
+                  "type": "string"
+                },
+                "title": "Overlay",
+                "type": "array"
+              },
+              "stage": {
+                "items": {
+                  "description": "relative path",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "title": "Stage",
+                "type": "array"
+              },
+              "prime": {
+                "items": {
+                  "description": "relative path",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "title": "Prime",
+                "type": "array"
+              },
+              "override-pull": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Pull"
+              },
+              "overlay-script": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Overlay-Script"
+              },
+              "override-build": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Build"
+              },
+              "override-stage": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Stage"
+              },
+              "override-prime": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Prime"
+              },
+              "permissions": {
+                "default": [],
+                "items": {
+                  "$ref": "#/$defs/Permissions"
+                },
+                "title": "Permissions",
+                "type": "array"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "plugin": {
+                "const": "cmake"
+              }
+            }
+          },
+          "then": {
+            "$comment": "common properties had to be repeated here or they would be considered invalid by the schema validator otherwise",
+            "properties": {
+              "plugin": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Plugin",
+                "enum": [
+                  "ant",
+                  "autotools",
+                  "cmake",
+                  "dotnet",
+                  "dump",
+                  "go",
+                  "make",
+                  "maven",
+                  "meson",
+                  "nil",
+                  "npm",
+                  "poetry",
+                  "python",
+                  "qmake",
+                  "rust",
+                  "scons"
+                ]
+              },
+              "source": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source"
+              },
+              "cmake-parameters": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Cmake-Parameters",
+                "type": "array"
+              },
+              "cmake-generator": {
+                "default": "Unix Makefiles",
+                "title": "Cmake-Generator",
+                "type": "string"
+              },
+              "source-checksum": {
+                "default": "",
+                "title": "Source-Checksum",
+                "type": "string"
+              },
+              "source-branch": {
+                "default": "",
+                "title": "Source-Branch",
+                "type": "string"
+              },
+              "source-commit": {
+                "default": "",
+                "title": "Source-Commit",
+                "type": "string"
+              },
+              "source-depth": {
+                "default": 0,
+                "title": "Source-Depth",
+                "type": "integer"
+              },
+              "source-subdir": {
+                "default": "",
+                "title": "Source-Subdir",
+                "type": "string"
+              },
+              "source-submodules": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source-Submodules"
+              },
+              "source-tag": {
+                "default": "",
+                "title": "Source-Tag",
+                "type": "string"
+              },
+              "source-type": {
+                "default": "",
+                "title": "Source-Type",
+                "type": "string"
+              },
+              "disable-parallel": {
+                "default": false,
+                "title": "Disable-Parallel",
+                "type": "boolean"
+              },
+              "after": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "After",
+                "type": "array"
+              },
+              "overlay-packages": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Overlay-Packages",
+                "type": "array"
+              },
+              "stage-snaps": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Stage-Snaps",
+                "type": "array"
+              },
+              "stage-packages": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Stage-Packages",
+                "type": "array"
+              },
+              "build-snaps": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Snaps",
+                "type": "array"
+              },
+              "build-packages": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Packages",
+                "type": "array"
+              },
+              "build-environment": {
+                "default": [],
+                "items": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object"
+                },
+                "title": "Build-Environment",
+                "type": "array"
+              },
+              "build-attributes": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Attributes",
+                "type": "array"
+              },
+              "organize": {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "title": "Organize",
+                "type": "object"
+              },
+              "overlay": {
+                "items": {
+                  "type": "string"
+                },
+                "title": "Overlay",
+                "type": "array"
+              },
+              "stage": {
+                "items": {
+                  "description": "relative path",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "title": "Stage",
+                "type": "array"
+              },
+              "prime": {
+                "items": {
+                  "description": "relative path",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "title": "Prime",
+                "type": "array"
+              },
+              "override-pull": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Pull"
+              },
+              "overlay-script": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Overlay-Script"
+              },
+              "override-build": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Build"
+              },
+              "override-stage": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Stage"
+              },
+              "override-prime": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Prime"
+              },
+              "permissions": {
+                "default": [],
+                "items": {
+                  "$ref": "#/$defs/Permissions"
+                },
+                "title": "Permissions",
+                "type": "array"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "plugin": {
+                "const": "dotnet"
+              }
+            }
+          },
+          "then": {
+            "$comment": "common properties had to be repeated here or they would be considered invalid by the schema validator otherwise",
+            "properties": {
+              "plugin": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Plugin",
+                "enum": [
+                  "ant",
+                  "autotools",
+                  "cmake",
+                  "dotnet",
+                  "dump",
+                  "go",
+                  "make",
+                  "maven",
+                  "meson",
+                  "nil",
+                  "npm",
+                  "poetry",
+                  "python",
+                  "qmake",
+                  "rust",
+                  "scons"
+                ]
+              },
+              "source": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source"
+              },
+              "dotnet-build-configuration": {
+                "default": "Release",
+                "title": "Dotnet-Build-Configuration",
+                "type": "string"
+              },
+              "dotnet-self-contained-runtime-identifier": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Dotnet-Self-Contained-Runtime-Identifier"
+              },
+              "source-checksum": {
+                "default": "",
+                "title": "Source-Checksum",
+                "type": "string"
+              },
+              "source-branch": {
+                "default": "",
+                "title": "Source-Branch",
+                "type": "string"
+              },
+              "source-commit": {
+                "default": "",
+                "title": "Source-Commit",
+                "type": "string"
+              },
+              "source-depth": {
+                "default": 0,
+                "title": "Source-Depth",
+                "type": "integer"
+              },
+              "source-subdir": {
+                "default": "",
+                "title": "Source-Subdir",
+                "type": "string"
+              },
+              "source-submodules": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source-Submodules"
+              },
+              "source-tag": {
+                "default": "",
+                "title": "Source-Tag",
+                "type": "string"
+              },
+              "source-type": {
+                "default": "",
+                "title": "Source-Type",
+                "type": "string"
+              },
+              "disable-parallel": {
+                "default": false,
+                "title": "Disable-Parallel",
+                "type": "boolean"
+              },
+              "after": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "After",
+                "type": "array"
+              },
+              "overlay-packages": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Overlay-Packages",
+                "type": "array"
+              },
+              "stage-snaps": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Stage-Snaps",
+                "type": "array"
+              },
+              "stage-packages": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Stage-Packages",
+                "type": "array"
+              },
+              "build-snaps": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Snaps",
+                "type": "array"
+              },
+              "build-packages": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Packages",
+                "type": "array"
+              },
+              "build-environment": {
+                "default": [],
+                "items": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object"
+                },
+                "title": "Build-Environment",
+                "type": "array"
+              },
+              "build-attributes": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Attributes",
+                "type": "array"
+              },
+              "organize": {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "title": "Organize",
+                "type": "object"
+              },
+              "overlay": {
+                "items": {
+                  "type": "string"
+                },
+                "title": "Overlay",
+                "type": "array"
+              },
+              "stage": {
+                "items": {
+                  "description": "relative path",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "title": "Stage",
+                "type": "array"
+              },
+              "prime": {
+                "items": {
+                  "description": "relative path",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "title": "Prime",
+                "type": "array"
+              },
+              "override-pull": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Pull"
+              },
+              "overlay-script": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Overlay-Script"
+              },
+              "override-build": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Build"
+              },
+              "override-stage": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Stage"
+              },
+              "override-prime": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Prime"
+              },
+              "permissions": {
+                "default": [],
+                "items": {
+                  "$ref": "#/$defs/Permissions"
+                },
+                "title": "Permissions",
+                "type": "array"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "plugin": {
+                "const": "dump"
+              }
+            }
+          },
+          "then": {
+            "$comment": "common properties had to be repeated here or they would be considered invalid by the schema validator otherwise",
+            "properties": {
+              "plugin": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Plugin",
+                "enum": [
+                  "ant",
+                  "autotools",
+                  "cmake",
+                  "dotnet",
+                  "dump",
+                  "go",
+                  "make",
+                  "maven",
+                  "meson",
+                  "nil",
+                  "npm",
+                  "poetry",
+                  "python",
+                  "qmake",
+                  "rust",
+                  "scons"
+                ]
+              },
+              "source": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source"
+              },
+              "source-checksum": {
+                "default": "",
+                "title": "Source-Checksum",
+                "type": "string"
+              },
+              "source-branch": {
+                "default": "",
+                "title": "Source-Branch",
+                "type": "string"
+              },
+              "source-commit": {
+                "default": "",
+                "title": "Source-Commit",
+                "type": "string"
+              },
+              "source-depth": {
+                "default": 0,
+                "title": "Source-Depth",
+                "type": "integer"
+              },
+              "source-subdir": {
+                "default": "",
+                "title": "Source-Subdir",
+                "type": "string"
+              },
+              "source-submodules": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source-Submodules"
+              },
+              "source-tag": {
+                "default": "",
+                "title": "Source-Tag",
+                "type": "string"
+              },
+              "source-type": {
+                "default": "",
+                "title": "Source-Type",
+                "type": "string"
+              },
+              "disable-parallel": {
+                "default": false,
+                "title": "Disable-Parallel",
+                "type": "boolean"
+              },
+              "after": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "After",
+                "type": "array"
+              },
+              "overlay-packages": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Overlay-Packages",
+                "type": "array"
+              },
+              "stage-snaps": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Stage-Snaps",
+                "type": "array"
+              },
+              "stage-packages": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Stage-Packages",
+                "type": "array"
+              },
+              "build-snaps": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Snaps",
+                "type": "array"
+              },
+              "build-packages": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Packages",
+                "type": "array"
+              },
+              "build-environment": {
+                "default": [],
+                "items": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object"
+                },
+                "title": "Build-Environment",
+                "type": "array"
+              },
+              "build-attributes": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Attributes",
+                "type": "array"
+              },
+              "organize": {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "title": "Organize",
+                "type": "object"
+              },
+              "overlay": {
+                "items": {
+                  "type": "string"
+                },
+                "title": "Overlay",
+                "type": "array"
+              },
+              "stage": {
+                "items": {
+                  "description": "relative path",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "title": "Stage",
+                "type": "array"
+              },
+              "prime": {
+                "items": {
+                  "description": "relative path",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "title": "Prime",
+                "type": "array"
+              },
+              "override-pull": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Pull"
+              },
+              "overlay-script": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Overlay-Script"
+              },
+              "override-build": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Build"
+              },
+              "override-stage": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Stage"
+              },
+              "override-prime": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Prime"
+              },
+              "permissions": {
+                "default": [],
+                "items": {
+                  "$ref": "#/$defs/Permissions"
+                },
+                "title": "Permissions",
+                "type": "array"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "plugin": {
+                "const": "go"
+              }
+            }
+          },
+          "then": {
+            "$comment": "common properties had to be repeated here or they would be considered invalid by the schema validator otherwise",
+            "properties": {
+              "plugin": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Plugin",
+                "enum": [
+                  "ant",
+                  "autotools",
+                  "cmake",
+                  "dotnet",
+                  "dump",
+                  "go",
+                  "make",
+                  "maven",
+                  "meson",
+                  "nil",
+                  "npm",
+                  "poetry",
+                  "python",
+                  "qmake",
+                  "rust",
+                  "scons"
+                ]
+              },
+              "source": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source"
+              },
+              "go-buildtags": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Go-Buildtags",
+                "type": "array"
+              },
+              "go-generate": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Go-Generate",
+                "type": "array"
+              },
+              "source-checksum": {
+                "default": "",
+                "title": "Source-Checksum",
+                "type": "string"
+              },
+              "source-branch": {
+                "default": "",
+                "title": "Source-Branch",
+                "type": "string"
+              },
+              "source-commit": {
+                "default": "",
+                "title": "Source-Commit",
+                "type": "string"
+              },
+              "source-depth": {
+                "default": 0,
+                "title": "Source-Depth",
+                "type": "integer"
+              },
+              "source-subdir": {
+                "default": "",
+                "title": "Source-Subdir",
+                "type": "string"
+              },
+              "source-submodules": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source-Submodules"
+              },
+              "source-tag": {
+                "default": "",
+                "title": "Source-Tag",
+                "type": "string"
+              },
+              "source-type": {
+                "default": "",
+                "title": "Source-Type",
+                "type": "string"
+              },
+              "disable-parallel": {
+                "default": false,
+                "title": "Disable-Parallel",
+                "type": "boolean"
+              },
+              "after": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "After",
+                "type": "array"
+              },
+              "overlay-packages": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Overlay-Packages",
+                "type": "array"
+              },
+              "stage-snaps": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Stage-Snaps",
+                "type": "array"
+              },
+              "stage-packages": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Stage-Packages",
+                "type": "array"
+              },
+              "build-snaps": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Snaps",
+                "type": "array"
+              },
+              "build-packages": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Packages",
+                "type": "array"
+              },
+              "build-environment": {
+                "default": [],
+                "items": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object"
+                },
+                "title": "Build-Environment",
+                "type": "array"
+              },
+              "build-attributes": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Attributes",
+                "type": "array"
+              },
+              "organize": {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "title": "Organize",
+                "type": "object"
+              },
+              "overlay": {
+                "items": {
+                  "type": "string"
+                },
+                "title": "Overlay",
+                "type": "array"
+              },
+              "stage": {
+                "items": {
+                  "description": "relative path",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "title": "Stage",
+                "type": "array"
+              },
+              "prime": {
+                "items": {
+                  "description": "relative path",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "title": "Prime",
+                "type": "array"
+              },
+              "override-pull": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Pull"
+              },
+              "overlay-script": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Overlay-Script"
+              },
+              "override-build": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Build"
+              },
+              "override-stage": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Stage"
+              },
+              "override-prime": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Prime"
+              },
+              "permissions": {
+                "default": [],
+                "items": {
+                  "$ref": "#/$defs/Permissions"
+                },
+                "title": "Permissions",
+                "type": "array"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "plugin": {
+                "const": "make"
+              }
+            }
+          },
+          "then": {
+            "$comment": "common properties had to be repeated here or they would be considered invalid by the schema validator otherwise",
+            "properties": {
+              "plugin": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Plugin",
+                "enum": [
+                  "ant",
+                  "autotools",
+                  "cmake",
+                  "dotnet",
+                  "dump",
+                  "go",
+                  "make",
+                  "maven",
+                  "meson",
+                  "nil",
+                  "npm",
+                  "poetry",
+                  "python",
+                  "qmake",
+                  "rust",
+                  "scons"
+                ]
+              },
+              "source": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source"
+              },
+              "make-parameters": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Make-Parameters",
+                "type": "array"
+              },
+              "source-checksum": {
+                "default": "",
+                "title": "Source-Checksum",
+                "type": "string"
+              },
+              "source-branch": {
+                "default": "",
+                "title": "Source-Branch",
+                "type": "string"
+              },
+              "source-commit": {
+                "default": "",
+                "title": "Source-Commit",
+                "type": "string"
+              },
+              "source-depth": {
+                "default": 0,
+                "title": "Source-Depth",
+                "type": "integer"
+              },
+              "source-subdir": {
+                "default": "",
+                "title": "Source-Subdir",
+                "type": "string"
+              },
+              "source-submodules": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source-Submodules"
+              },
+              "source-tag": {
+                "default": "",
+                "title": "Source-Tag",
+                "type": "string"
+              },
+              "source-type": {
+                "default": "",
+                "title": "Source-Type",
+                "type": "string"
+              },
+              "disable-parallel": {
+                "default": false,
+                "title": "Disable-Parallel",
+                "type": "boolean"
+              },
+              "after": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "After",
+                "type": "array"
+              },
+              "overlay-packages": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Overlay-Packages",
+                "type": "array"
+              },
+              "stage-snaps": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Stage-Snaps",
+                "type": "array"
+              },
+              "stage-packages": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Stage-Packages",
+                "type": "array"
+              },
+              "build-snaps": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Snaps",
+                "type": "array"
+              },
+              "build-packages": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Packages",
+                "type": "array"
+              },
+              "build-environment": {
+                "default": [],
+                "items": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object"
+                },
+                "title": "Build-Environment",
+                "type": "array"
+              },
+              "build-attributes": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Attributes",
+                "type": "array"
+              },
+              "organize": {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "title": "Organize",
+                "type": "object"
+              },
+              "overlay": {
+                "items": {
+                  "type": "string"
+                },
+                "title": "Overlay",
+                "type": "array"
+              },
+              "stage": {
+                "items": {
+                  "description": "relative path",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "title": "Stage",
+                "type": "array"
+              },
+              "prime": {
+                "items": {
+                  "description": "relative path",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "title": "Prime",
+                "type": "array"
+              },
+              "override-pull": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Pull"
+              },
+              "overlay-script": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Overlay-Script"
+              },
+              "override-build": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Build"
+              },
+              "override-stage": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Stage"
+              },
+              "override-prime": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Prime"
+              },
+              "permissions": {
+                "default": [],
+                "items": {
+                  "$ref": "#/$defs/Permissions"
+                },
+                "title": "Permissions",
+                "type": "array"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "plugin": {
+                "const": "maven"
+              }
+            }
+          },
+          "then": {
+            "$comment": "common properties had to be repeated here or they would be considered invalid by the schema validator otherwise",
+            "properties": {
+              "plugin": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Plugin",
+                "enum": [
+                  "ant",
+                  "autotools",
+                  "cmake",
+                  "dotnet",
+                  "dump",
+                  "go",
+                  "make",
+                  "maven",
+                  "meson",
+                  "nil",
+                  "npm",
+                  "poetry",
+                  "python",
+                  "qmake",
+                  "rust",
+                  "scons"
+                ]
+              },
+              "source": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source"
+              },
+              "maven-parameters": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Maven-Parameters",
+                "type": "array"
+              },
+              "source-checksum": {
+                "default": "",
+                "title": "Source-Checksum",
+                "type": "string"
+              },
+              "source-branch": {
+                "default": "",
+                "title": "Source-Branch",
+                "type": "string"
+              },
+              "source-commit": {
+                "default": "",
+                "title": "Source-Commit",
+                "type": "string"
+              },
+              "source-depth": {
+                "default": 0,
+                "title": "Source-Depth",
+                "type": "integer"
+              },
+              "source-subdir": {
+                "default": "",
+                "title": "Source-Subdir",
+                "type": "string"
+              },
+              "source-submodules": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source-Submodules"
+              },
+              "source-tag": {
+                "default": "",
+                "title": "Source-Tag",
+                "type": "string"
+              },
+              "source-type": {
+                "default": "",
+                "title": "Source-Type",
+                "type": "string"
+              },
+              "disable-parallel": {
+                "default": false,
+                "title": "Disable-Parallel",
+                "type": "boolean"
+              },
+              "after": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "After",
+                "type": "array"
+              },
+              "overlay-packages": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Overlay-Packages",
+                "type": "array"
+              },
+              "stage-snaps": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Stage-Snaps",
+                "type": "array"
+              },
+              "stage-packages": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Stage-Packages",
+                "type": "array"
+              },
+              "build-snaps": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Snaps",
+                "type": "array"
+              },
+              "build-packages": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Packages",
+                "type": "array"
+              },
+              "build-environment": {
+                "default": [],
+                "items": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object"
+                },
+                "title": "Build-Environment",
+                "type": "array"
+              },
+              "build-attributes": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Attributes",
+                "type": "array"
+              },
+              "organize": {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "title": "Organize",
+                "type": "object"
+              },
+              "overlay": {
+                "items": {
+                  "type": "string"
+                },
+                "title": "Overlay",
+                "type": "array"
+              },
+              "stage": {
+                "items": {
+                  "description": "relative path",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "title": "Stage",
+                "type": "array"
+              },
+              "prime": {
+                "items": {
+                  "description": "relative path",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "title": "Prime",
+                "type": "array"
+              },
+              "override-pull": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Pull"
+              },
+              "overlay-script": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Overlay-Script"
+              },
+              "override-build": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Build"
+              },
+              "override-stage": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Stage"
+              },
+              "override-prime": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Prime"
+              },
+              "permissions": {
+                "default": [],
+                "items": {
+                  "$ref": "#/$defs/Permissions"
+                },
+                "title": "Permissions",
+                "type": "array"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "plugin": {
+                "const": "meson"
+              }
+            }
+          },
+          "then": {
+            "$comment": "common properties had to be repeated here or they would be considered invalid by the schema validator otherwise",
+            "properties": {
+              "plugin": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Plugin",
+                "enum": [
+                  "ant",
+                  "autotools",
+                  "cmake",
+                  "dotnet",
+                  "dump",
+                  "go",
+                  "make",
+                  "maven",
+                  "meson",
+                  "nil",
+                  "npm",
+                  "poetry",
+                  "python",
+                  "qmake",
+                  "rust",
+                  "scons"
+                ]
+              },
+              "source": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source"
+              },
+              "meson-parameters": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Meson-Parameters",
+                "type": "array"
+              },
+              "source-checksum": {
+                "default": "",
+                "title": "Source-Checksum",
+                "type": "string"
+              },
+              "source-branch": {
+                "default": "",
+                "title": "Source-Branch",
+                "type": "string"
+              },
+              "source-commit": {
+                "default": "",
+                "title": "Source-Commit",
+                "type": "string"
+              },
+              "source-depth": {
+                "default": 0,
+                "title": "Source-Depth",
+                "type": "integer"
+              },
+              "source-subdir": {
+                "default": "",
+                "title": "Source-Subdir",
+                "type": "string"
+              },
+              "source-submodules": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source-Submodules"
+              },
+              "source-tag": {
+                "default": "",
+                "title": "Source-Tag",
+                "type": "string"
+              },
+              "source-type": {
+                "default": "",
+                "title": "Source-Type",
+                "type": "string"
+              },
+              "disable-parallel": {
+                "default": false,
+                "title": "Disable-Parallel",
+                "type": "boolean"
+              },
+              "after": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "After",
+                "type": "array"
+              },
+              "overlay-packages": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Overlay-Packages",
+                "type": "array"
+              },
+              "stage-snaps": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Stage-Snaps",
+                "type": "array"
+              },
+              "stage-packages": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Stage-Packages",
+                "type": "array"
+              },
+              "build-snaps": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Snaps",
+                "type": "array"
+              },
+              "build-packages": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Packages",
+                "type": "array"
+              },
+              "build-environment": {
+                "default": [],
+                "items": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object"
+                },
+                "title": "Build-Environment",
+                "type": "array"
+              },
+              "build-attributes": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Attributes",
+                "type": "array"
+              },
+              "organize": {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "title": "Organize",
+                "type": "object"
+              },
+              "overlay": {
+                "items": {
+                  "type": "string"
+                },
+                "title": "Overlay",
+                "type": "array"
+              },
+              "stage": {
+                "items": {
+                  "description": "relative path",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "title": "Stage",
+                "type": "array"
+              },
+              "prime": {
+                "items": {
+                  "description": "relative path",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "title": "Prime",
+                "type": "array"
+              },
+              "override-pull": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Pull"
+              },
+              "overlay-script": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Overlay-Script"
+              },
+              "override-build": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Build"
+              },
+              "override-stage": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Stage"
+              },
+              "override-prime": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Prime"
+              },
+              "permissions": {
+                "default": [],
+                "items": {
+                  "$ref": "#/$defs/Permissions"
+                },
+                "title": "Permissions",
+                "type": "array"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "plugin": {
+                "const": "nil"
+              }
+            }
+          },
+          "then": {
+            "$comment": "common properties had to be repeated here or they would be considered invalid by the schema validator otherwise",
+            "properties": {
+              "plugin": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Plugin",
+                "enum": [
+                  "ant",
+                  "autotools",
+                  "cmake",
+                  "dotnet",
+                  "dump",
+                  "go",
+                  "make",
+                  "maven",
+                  "meson",
+                  "nil",
+                  "npm",
+                  "poetry",
+                  "python",
+                  "qmake",
+                  "rust",
+                  "scons"
+                ]
+              },
+              "source": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source"
+              },
+              "source-checksum": {
+                "default": "",
+                "title": "Source-Checksum",
+                "type": "string"
+              },
+              "source-branch": {
+                "default": "",
+                "title": "Source-Branch",
+                "type": "string"
+              },
+              "source-commit": {
+                "default": "",
+                "title": "Source-Commit",
+                "type": "string"
+              },
+              "source-depth": {
+                "default": 0,
+                "title": "Source-Depth",
+                "type": "integer"
+              },
+              "source-subdir": {
+                "default": "",
+                "title": "Source-Subdir",
+                "type": "string"
+              },
+              "source-submodules": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source-Submodules"
+              },
+              "source-tag": {
+                "default": "",
+                "title": "Source-Tag",
+                "type": "string"
+              },
+              "source-type": {
+                "default": "",
+                "title": "Source-Type",
+                "type": "string"
+              },
+              "disable-parallel": {
+                "default": false,
+                "title": "Disable-Parallel",
+                "type": "boolean"
+              },
+              "after": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "After",
+                "type": "array"
+              },
+              "overlay-packages": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Overlay-Packages",
+                "type": "array"
+              },
+              "stage-snaps": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Stage-Snaps",
+                "type": "array"
+              },
+              "stage-packages": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Stage-Packages",
+                "type": "array"
+              },
+              "build-snaps": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Snaps",
+                "type": "array"
+              },
+              "build-packages": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Packages",
+                "type": "array"
+              },
+              "build-environment": {
+                "default": [],
+                "items": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object"
+                },
+                "title": "Build-Environment",
+                "type": "array"
+              },
+              "build-attributes": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Attributes",
+                "type": "array"
+              },
+              "organize": {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "title": "Organize",
+                "type": "object"
+              },
+              "overlay": {
+                "items": {
+                  "type": "string"
+                },
+                "title": "Overlay",
+                "type": "array"
+              },
+              "stage": {
+                "items": {
+                  "description": "relative path",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "title": "Stage",
+                "type": "array"
+              },
+              "prime": {
+                "items": {
+                  "description": "relative path",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "title": "Prime",
+                "type": "array"
+              },
+              "override-pull": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Pull"
+              },
+              "overlay-script": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Overlay-Script"
+              },
+              "override-build": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Build"
+              },
+              "override-stage": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Stage"
+              },
+              "override-prime": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Prime"
+              },
+              "permissions": {
+                "default": [],
+                "items": {
+                  "$ref": "#/$defs/Permissions"
+                },
+                "title": "Permissions",
+                "type": "array"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "plugin": {
+                "const": "npm"
+              }
+            }
+          },
+          "then": {
+            "$comment": "common properties had to be repeated here or they would be considered invalid by the schema validator otherwise",
+            "properties": {
+              "plugin": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Plugin",
+                "enum": [
+                  "ant",
+                  "autotools",
+                  "cmake",
+                  "dotnet",
+                  "dump",
+                  "go",
+                  "make",
+                  "maven",
+                  "meson",
+                  "nil",
+                  "npm",
+                  "poetry",
+                  "python",
+                  "qmake",
+                  "rust",
+                  "scons"
+                ]
+              },
+              "source": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source"
+              },
+              "npm-include-node": {
+                "default": false,
+                "title": "Npm-Include-Node",
+                "type": "boolean"
+              },
+              "npm-node-version": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Npm-Node-Version"
+              },
+              "source-checksum": {
+                "default": "",
+                "title": "Source-Checksum",
+                "type": "string"
+              },
+              "source-branch": {
+                "default": "",
+                "title": "Source-Branch",
+                "type": "string"
+              },
+              "source-commit": {
+                "default": "",
+                "title": "Source-Commit",
+                "type": "string"
+              },
+              "source-depth": {
+                "default": 0,
+                "title": "Source-Depth",
+                "type": "integer"
+              },
+              "source-subdir": {
+                "default": "",
+                "title": "Source-Subdir",
+                "type": "string"
+              },
+              "source-submodules": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source-Submodules"
+              },
+              "source-tag": {
+                "default": "",
+                "title": "Source-Tag",
+                "type": "string"
+              },
+              "source-type": {
+                "default": "",
+                "title": "Source-Type",
+                "type": "string"
+              },
+              "disable-parallel": {
+                "default": false,
+                "title": "Disable-Parallel",
+                "type": "boolean"
+              },
+              "after": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "After",
+                "type": "array"
+              },
+              "overlay-packages": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Overlay-Packages",
+                "type": "array"
+              },
+              "stage-snaps": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Stage-Snaps",
+                "type": "array"
+              },
+              "stage-packages": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Stage-Packages",
+                "type": "array"
+              },
+              "build-snaps": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Snaps",
+                "type": "array"
+              },
+              "build-packages": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Packages",
+                "type": "array"
+              },
+              "build-environment": {
+                "default": [],
+                "items": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object"
+                },
+                "title": "Build-Environment",
+                "type": "array"
+              },
+              "build-attributes": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Attributes",
+                "type": "array"
+              },
+              "organize": {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "title": "Organize",
+                "type": "object"
+              },
+              "overlay": {
+                "items": {
+                  "type": "string"
+                },
+                "title": "Overlay",
+                "type": "array"
+              },
+              "stage": {
+                "items": {
+                  "description": "relative path",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "title": "Stage",
+                "type": "array"
+              },
+              "prime": {
+                "items": {
+                  "description": "relative path",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "title": "Prime",
+                "type": "array"
+              },
+              "override-pull": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Pull"
+              },
+              "overlay-script": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Overlay-Script"
+              },
+              "override-build": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Build"
+              },
+              "override-stage": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Stage"
+              },
+              "override-prime": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Prime"
+              },
+              "permissions": {
+                "default": [],
+                "items": {
+                  "$ref": "#/$defs/Permissions"
+                },
+                "title": "Permissions",
+                "type": "array"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "plugin": {
+                "const": "poetry"
+              }
+            }
+          },
+          "then": {
+            "$comment": "common properties had to be repeated here or they would be considered invalid by the schema validator otherwise",
+            "properties": {
+              "plugin": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Plugin",
+                "enum": [
+                  "ant",
+                  "autotools",
+                  "cmake",
+                  "dotnet",
+                  "dump",
+                  "go",
+                  "make",
+                  "maven",
+                  "meson",
+                  "nil",
+                  "npm",
+                  "poetry",
+                  "python",
+                  "qmake",
+                  "rust",
+                  "scons"
+                ]
+              },
+              "source": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source"
+              },
+              "poetry-with": {
+                "description": "optional dependency groups to include when installing.",
+                "items": {
+                  "type": "string"
+                },
+                "title": "Optional dependency groups",
+                "type": "array",
+                "uniqueItems": true
+              },
+              "source-checksum": {
+                "default": "",
+                "title": "Source-Checksum",
+                "type": "string"
+              },
+              "source-branch": {
+                "default": "",
+                "title": "Source-Branch",
+                "type": "string"
+              },
+              "source-commit": {
+                "default": "",
+                "title": "Source-Commit",
+                "type": "string"
+              },
+              "source-depth": {
+                "default": 0,
+                "title": "Source-Depth",
+                "type": "integer"
+              },
+              "source-subdir": {
+                "default": "",
+                "title": "Source-Subdir",
+                "type": "string"
+              },
+              "source-submodules": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source-Submodules"
+              },
+              "source-tag": {
+                "default": "",
+                "title": "Source-Tag",
+                "type": "string"
+              },
+              "source-type": {
+                "default": "",
+                "title": "Source-Type",
+                "type": "string"
+              },
+              "disable-parallel": {
+                "default": false,
+                "title": "Disable-Parallel",
+                "type": "boolean"
+              },
+              "after": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "After",
+                "type": "array"
+              },
+              "overlay-packages": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Overlay-Packages",
+                "type": "array"
+              },
+              "stage-snaps": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Stage-Snaps",
+                "type": "array"
+              },
+              "stage-packages": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Stage-Packages",
+                "type": "array"
+              },
+              "build-snaps": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Snaps",
+                "type": "array"
+              },
+              "build-packages": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Packages",
+                "type": "array"
+              },
+              "build-environment": {
+                "default": [],
+                "items": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object"
+                },
+                "title": "Build-Environment",
+                "type": "array"
+              },
+              "build-attributes": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Attributes",
+                "type": "array"
+              },
+              "organize": {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "title": "Organize",
+                "type": "object"
+              },
+              "overlay": {
+                "items": {
+                  "type": "string"
+                },
+                "title": "Overlay",
+                "type": "array"
+              },
+              "stage": {
+                "items": {
+                  "description": "relative path",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "title": "Stage",
+                "type": "array"
+              },
+              "prime": {
+                "items": {
+                  "description": "relative path",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "title": "Prime",
+                "type": "array"
+              },
+              "override-pull": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Pull"
+              },
+              "overlay-script": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Overlay-Script"
+              },
+              "override-build": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Build"
+              },
+              "override-stage": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Stage"
+              },
+              "override-prime": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Prime"
+              },
+              "permissions": {
+                "default": [],
+                "items": {
+                  "$ref": "#/$defs/Permissions"
+                },
+                "title": "Permissions",
+                "type": "array"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "plugin": {
+                "const": "python"
+              }
+            }
+          },
+          "then": {
+            "$comment": "common properties had to be repeated here or they would be considered invalid by the schema validator otherwise",
+            "properties": {
+              "plugin": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Plugin",
+                "enum": [
+                  "ant",
+                  "autotools",
+                  "cmake",
+                  "dotnet",
+                  "dump",
+                  "go",
+                  "make",
+                  "maven",
+                  "meson",
+                  "nil",
+                  "npm",
+                  "poetry",
+                  "python",
+                  "qmake",
+                  "rust",
+                  "scons"
+                ]
+              },
+              "source": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source"
+              },
+              "python-requirements": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Python-Requirements",
+                "type": "array"
+              },
+              "python-constraints": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Python-Constraints",
+                "type": "array"
+              },
+              "python-packages": {
+                "default": [
+                  "pip",
+                  "setuptools",
+                  "wheel"
+                ],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Python-Packages",
+                "type": "array"
+              },
+              "source-checksum": {
+                "default": "",
+                "title": "Source-Checksum",
+                "type": "string"
+              },
+              "source-branch": {
+                "default": "",
+                "title": "Source-Branch",
+                "type": "string"
+              },
+              "source-commit": {
+                "default": "",
+                "title": "Source-Commit",
+                "type": "string"
+              },
+              "source-depth": {
+                "default": 0,
+                "title": "Source-Depth",
+                "type": "integer"
+              },
+              "source-subdir": {
+                "default": "",
+                "title": "Source-Subdir",
+                "type": "string"
+              },
+              "source-submodules": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source-Submodules"
+              },
+              "source-tag": {
+                "default": "",
+                "title": "Source-Tag",
+                "type": "string"
+              },
+              "source-type": {
+                "default": "",
+                "title": "Source-Type",
+                "type": "string"
+              },
+              "disable-parallel": {
+                "default": false,
+                "title": "Disable-Parallel",
+                "type": "boolean"
+              },
+              "after": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "After",
+                "type": "array"
+              },
+              "overlay-packages": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Overlay-Packages",
+                "type": "array"
+              },
+              "stage-snaps": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Stage-Snaps",
+                "type": "array"
+              },
+              "stage-packages": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Stage-Packages",
+                "type": "array"
+              },
+              "build-snaps": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Snaps",
+                "type": "array"
+              },
+              "build-packages": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Packages",
+                "type": "array"
+              },
+              "build-environment": {
+                "default": [],
+                "items": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object"
+                },
+                "title": "Build-Environment",
+                "type": "array"
+              },
+              "build-attributes": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Attributes",
+                "type": "array"
+              },
+              "organize": {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "title": "Organize",
+                "type": "object"
+              },
+              "overlay": {
+                "items": {
+                  "type": "string"
+                },
+                "title": "Overlay",
+                "type": "array"
+              },
+              "stage": {
+                "items": {
+                  "description": "relative path",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "title": "Stage",
+                "type": "array"
+              },
+              "prime": {
+                "items": {
+                  "description": "relative path",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "title": "Prime",
+                "type": "array"
+              },
+              "override-pull": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Pull"
+              },
+              "overlay-script": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Overlay-Script"
+              },
+              "override-build": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Build"
+              },
+              "override-stage": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Stage"
+              },
+              "override-prime": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Prime"
+              },
+              "permissions": {
+                "default": [],
+                "items": {
+                  "$ref": "#/$defs/Permissions"
+                },
+                "title": "Permissions",
+                "type": "array"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "plugin": {
+                "const": "qmake"
+              }
+            }
+          },
+          "then": {
+            "$comment": "common properties had to be repeated here or they would be considered invalid by the schema validator otherwise",
+            "properties": {
+              "plugin": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Plugin",
+                "enum": [
+                  "ant",
+                  "autotools",
+                  "cmake",
+                  "dotnet",
+                  "dump",
+                  "go",
+                  "make",
+                  "maven",
+                  "meson",
+                  "nil",
+                  "npm",
+                  "poetry",
+                  "python",
+                  "qmake",
+                  "rust",
+                  "scons"
+                ]
+              },
+              "source": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source"
+              },
+              "qmake-parameters": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Qmake-Parameters",
+                "type": "array"
+              },
+              "qmake-project-file": {
+                "default": "",
+                "title": "Qmake-Project-File",
+                "type": "string"
+              },
+              "qmake-major-version": {
+                "default": 5,
+                "title": "Qmake-Major-Version",
+                "type": "integer"
+              },
+              "source-checksum": {
+                "default": "",
+                "title": "Source-Checksum",
+                "type": "string"
+              },
+              "source-branch": {
+                "default": "",
+                "title": "Source-Branch",
+                "type": "string"
+              },
+              "source-commit": {
+                "default": "",
+                "title": "Source-Commit",
+                "type": "string"
+              },
+              "source-depth": {
+                "default": 0,
+                "title": "Source-Depth",
+                "type": "integer"
+              },
+              "source-subdir": {
+                "default": "",
+                "title": "Source-Subdir",
+                "type": "string"
+              },
+              "source-submodules": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source-Submodules"
+              },
+              "source-tag": {
+                "default": "",
+                "title": "Source-Tag",
+                "type": "string"
+              },
+              "source-type": {
+                "default": "",
+                "title": "Source-Type",
+                "type": "string"
+              },
+              "disable-parallel": {
+                "default": false,
+                "title": "Disable-Parallel",
+                "type": "boolean"
+              },
+              "after": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "After",
+                "type": "array"
+              },
+              "overlay-packages": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Overlay-Packages",
+                "type": "array"
+              },
+              "stage-snaps": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Stage-Snaps",
+                "type": "array"
+              },
+              "stage-packages": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Stage-Packages",
+                "type": "array"
+              },
+              "build-snaps": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Snaps",
+                "type": "array"
+              },
+              "build-packages": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Packages",
+                "type": "array"
+              },
+              "build-environment": {
+                "default": [],
+                "items": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object"
+                },
+                "title": "Build-Environment",
+                "type": "array"
+              },
+              "build-attributes": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Attributes",
+                "type": "array"
+              },
+              "organize": {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "title": "Organize",
+                "type": "object"
+              },
+              "overlay": {
+                "items": {
+                  "type": "string"
+                },
+                "title": "Overlay",
+                "type": "array"
+              },
+              "stage": {
+                "items": {
+                  "description": "relative path",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "title": "Stage",
+                "type": "array"
+              },
+              "prime": {
+                "items": {
+                  "description": "relative path",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "title": "Prime",
+                "type": "array"
+              },
+              "override-pull": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Pull"
+              },
+              "overlay-script": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Overlay-Script"
+              },
+              "override-build": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Build"
+              },
+              "override-stage": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Stage"
+              },
+              "override-prime": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Prime"
+              },
+              "permissions": {
+                "default": [],
+                "items": {
+                  "$ref": "#/$defs/Permissions"
+                },
+                "title": "Permissions",
+                "type": "array"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "plugin": {
+                "const": "rust"
+              }
+            }
+          },
+          "then": {
+            "$comment": "common properties had to be repeated here or they would be considered invalid by the schema validator otherwise",
+            "properties": {
+              "plugin": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Plugin",
+                "enum": [
+                  "ant",
+                  "autotools",
+                  "cmake",
+                  "dotnet",
+                  "dump",
+                  "go",
+                  "make",
+                  "maven",
+                  "meson",
+                  "nil",
+                  "npm",
+                  "poetry",
+                  "python",
+                  "qmake",
+                  "rust",
+                  "scons"
+                ]
+              },
+              "source": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source"
+              },
+              "rust-features": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Rust-Features",
+                "type": "array"
+              },
+              "rust-path": {
+                "default": [
+                  "."
+                ],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Rust-Path",
+                "type": "array"
+              },
+              "rust-channel": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Rust-Channel"
+              },
+              "rust-use-global-lto": {
+                "default": false,
+                "title": "Rust-Use-Global-Lto",
+                "type": "boolean"
+              },
+              "rust-no-default-features": {
+                "default": false,
+                "title": "Rust-No-Default-Features",
+                "type": "boolean"
+              },
+              "rust-ignore-toolchain-file": {
+                "default": false,
+                "title": "Rust-Ignore-Toolchain-File",
+                "type": "boolean"
+              },
+              "rust-cargo-parameters": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Rust-Cargo-Parameters",
+                "type": "array"
+              },
+              "rust-inherit-ldflags": {
+                "default": false,
+                "title": "Rust-Inherit-Ldflags",
+                "type": "boolean"
+              },
+              "after": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "After",
+                "type": "array"
+              },
+              "source-checksum": {
+                "default": "",
+                "title": "Source-Checksum",
+                "type": "string"
+              },
+              "source-branch": {
+                "default": "",
+                "title": "Source-Branch",
+                "type": "string"
+              },
+              "source-commit": {
+                "default": "",
+                "title": "Source-Commit",
+                "type": "string"
+              },
+              "source-depth": {
+                "default": 0,
+                "title": "Source-Depth",
+                "type": "integer"
+              },
+              "source-subdir": {
+                "default": "",
+                "title": "Source-Subdir",
+                "type": "string"
+              },
+              "source-submodules": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source-Submodules"
+              },
+              "source-tag": {
+                "default": "",
+                "title": "Source-Tag",
+                "type": "string"
+              },
+              "source-type": {
+                "default": "",
+                "title": "Source-Type",
+                "type": "string"
+              },
+              "disable-parallel": {
+                "default": false,
+                "title": "Disable-Parallel",
+                "type": "boolean"
+              },
+              "overlay-packages": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Overlay-Packages",
+                "type": "array"
+              },
+              "stage-snaps": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Stage-Snaps",
+                "type": "array"
+              },
+              "stage-packages": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Stage-Packages",
+                "type": "array"
+              },
+              "build-snaps": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Snaps",
+                "type": "array"
+              },
+              "build-packages": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Packages",
+                "type": "array"
+              },
+              "build-environment": {
+                "default": [],
+                "items": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object"
+                },
+                "title": "Build-Environment",
+                "type": "array"
+              },
+              "build-attributes": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Attributes",
+                "type": "array"
+              },
+              "organize": {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "title": "Organize",
+                "type": "object"
+              },
+              "overlay": {
+                "items": {
+                  "type": "string"
+                },
+                "title": "Overlay",
+                "type": "array"
+              },
+              "stage": {
+                "items": {
+                  "description": "relative path",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "title": "Stage",
+                "type": "array"
+              },
+              "prime": {
+                "items": {
+                  "description": "relative path",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "title": "Prime",
+                "type": "array"
+              },
+              "override-pull": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Pull"
+              },
+              "overlay-script": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Overlay-Script"
+              },
+              "override-build": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Build"
+              },
+              "override-stage": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Stage"
+              },
+              "override-prime": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Prime"
+              },
+              "permissions": {
+                "default": [],
+                "items": {
+                  "$ref": "#/$defs/Permissions"
+                },
+                "title": "Permissions",
+                "type": "array"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "plugin": {
+                "const": "scons"
+              }
+            }
+          },
+          "then": {
+            "$comment": "common properties had to be repeated here or they would be considered invalid by the schema validator otherwise",
+            "properties": {
+              "plugin": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Plugin",
+                "enum": [
+                  "ant",
+                  "autotools",
+                  "cmake",
+                  "dotnet",
+                  "dump",
+                  "go",
+                  "make",
+                  "maven",
+                  "meson",
+                  "nil",
+                  "npm",
+                  "poetry",
+                  "python",
+                  "qmake",
+                  "rust",
+                  "scons"
+                ]
+              },
+              "source": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source"
+              },
+              "scons-parameters": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Scons-Parameters",
+                "type": "array"
+              },
+              "source-checksum": {
+                "default": "",
+                "title": "Source-Checksum",
+                "type": "string"
+              },
+              "source-branch": {
+                "default": "",
+                "title": "Source-Branch",
+                "type": "string"
+              },
+              "source-commit": {
+                "default": "",
+                "title": "Source-Commit",
+                "type": "string"
+              },
+              "source-depth": {
+                "default": 0,
+                "title": "Source-Depth",
+                "type": "integer"
+              },
+              "source-subdir": {
+                "default": "",
+                "title": "Source-Subdir",
+                "type": "string"
+              },
+              "source-submodules": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source-Submodules"
+              },
+              "source-tag": {
+                "default": "",
+                "title": "Source-Tag",
+                "type": "string"
+              },
+              "source-type": {
+                "default": "",
+                "title": "Source-Type",
+                "type": "string"
+              },
+              "disable-parallel": {
+                "default": false,
+                "title": "Disable-Parallel",
+                "type": "boolean"
+              },
+              "after": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "After",
+                "type": "array"
+              },
+              "overlay-packages": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Overlay-Packages",
+                "type": "array"
+              },
+              "stage-snaps": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Stage-Snaps",
+                "type": "array"
+              },
+              "stage-packages": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Stage-Packages",
+                "type": "array"
+              },
+              "build-snaps": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Snaps",
+                "type": "array"
+              },
+              "build-packages": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Packages",
+                "type": "array"
+              },
+              "build-environment": {
+                "default": [],
+                "items": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object"
+                },
+                "title": "Build-Environment",
+                "type": "array"
+              },
+              "build-attributes": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Attributes",
+                "type": "array"
+              },
+              "organize": {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "title": "Organize",
+                "type": "object"
+              },
+              "overlay": {
+                "items": {
+                  "type": "string"
+                },
+                "title": "Overlay",
+                "type": "array"
+              },
+              "stage": {
+                "items": {
+                  "description": "relative path",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "title": "Stage",
+                "type": "array"
+              },
+              "prime": {
+                "items": {
+                  "description": "relative path",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "title": "Prime",
+                "type": "array"
+              },
+              "override-pull": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Pull"
+              },
+              "overlay-script": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Overlay-Script"
+              },
+              "override-build": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Build"
+              },
+              "override-stage": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Stage"
+              },
+              "override-prime": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Prime"
+              },
+              "permissions": {
+                "default": [],
+                "items": {
+                  "$ref": "#/$defs/Permissions"
+                },
+                "title": "Permissions",
+                "type": "array"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      ]
+    },
+    "Permissions": {
+      "description": "Description of the ownership and permission settings for a set of files.\n\nA ``Permissions`` object specifies that a given pattern-like ``path`` should\nbe owned by ``owner`` with a given ``group``, and have the read/write/execute\nbits defined by ``mode``.\n\nNotes\n-----\n- ``path`` is optional and defaults to \"everything\";\n- ``owner`` and ``group`` are optional if both are omitted - that is, if\n  one of the pair is specified then both must be;\n- ``mode`` is a string containing an integer in base 8. For example, \"755\",\n  \"0755\" and \"0o755\" are all accepted and are the equivalent of calling\n  ``chmod 755 ...``.",
+      "properties": {
+        "path": {
+          "default": "*",
+          "title": "Path",
+          "type": "string"
+        },
+        "owner": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Owner"
+        },
+        "group": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Group"
+        },
+        "mode": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Mode"
+        }
+      },
+      "title": "Permissions",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
   "description": "Rockcraft project definition.",
-  "type": "object",
   "properties": {
     "name": {
-      "title": "Name",
-      "pattern": "^([a-z](?:-?[a-z0-9]){2,})$",
+      "description": "Valid names for rocks. It matches the accepted values for pebble layer files:\n\n- must start with a lowercase letter [a-z]\n- must contain only lowercase letters [a-z], numbers [0-9] or hyphens\n- must not end with a hyphen, and must not contain two or more consecutive hyphens\n",
+      "minLength": 1,
+      "title": "Project Name",
       "type": "string"
     },
     "title": {
-      "title": "Title",
-      "minLength": 2,
-      "maxLength": 40,
-      "type": "string"
+      "anyOf": [
+        {
+          "description": "A human-readable title.",
+          "examples": [
+            "Ubuntu Linux",
+            "Jupyter Lab Desktop",
+            "LXD",
+            "DigiKam",
+            "Apache Kafka",
+            "MySQL Router K8s charm"
+          ],
+          "maxLength": 40,
+          "minLength": 2,
+          "title": "Title",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Title"
     },
     "version": {
-      "title": "Version",
-      "maxLength": 32,
-      "pattern": "^[a-zA-Z0-9](?:[a-zA-Z0-9:.+~-]*[a-zA-Z0-9+~])?$",
-      "type": "string"
+      "anyOf": [
+        {
+          "description": "A string containing the version of the project",
+          "examples": [
+            "0.1",
+            "1.0.0",
+            "v1.0.0",
+            "24.04"
+          ],
+          "maxLength": 32,
+          "title": "version string",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Version"
     },
     "summary": {
       "title": "Summary",
@@ -31,619 +5698,227 @@
       "type": "string"
     },
     "base": {
-      "title": "Base",
       "enum": [
         "bare",
         "ubuntu@20.04",
         "ubuntu@22.04",
         "ubuntu@24.04"
       ],
+      "title": "Base",
       "type": "string"
     },
-    "contact": {
-      "title": "Contact",
+    "build-base": {
       "anyOf": [
         {
+          "enum": [
+            "ubuntu@20.04",
+            "ubuntu@22.04",
+            "ubuntu@24.04",
+            "devel"
+          ],
           "type": "string"
         },
         {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "uniqueItems": true
+          "type": "null"
         }
-      ]
-    },
-    "issues": {
-      "title": "Issues",
-      "anyOf": [
-        {
-          "type": "string"
-        },
-        {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "uniqueItems": true
-        }
-      ]
-    },
-    "source-code": {
-      "title": "Source-Code",
-      "minLength": 1,
-      "maxLength": 65536,
-      "format": "uri",
-      "type": "string"
-    },
-    "license": {
-      "title": "License",
-      "type": "string"
-    },
-    "parts": {
-      "title": "Parts",
-      "type": "object",
-      "additionalProperties": {
-        "$ref": "#/definitions/Part"
-      }
+      ],
+      "default": null,
+      "title": "Build-Base"
     },
     "platforms": {
+      "additionalProperties": {
+        "oneOf": [
+          {
+            "type": "null"
+          },
+          {
+            "$ref": "#/$defs/Platform"
+          }
+        ]
+      },
       "title": "Platforms",
       "type": "object"
     },
-    "build-base": {
-      "title": "Build-Base",
-      "enum": [
-        "ubuntu@20.04",
-        "ubuntu@22.04",
-        "devel"
+    "contact": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        {
+          "type": "null"
+        }
       ],
-      "type": "string"
+      "default": null,
+      "title": "Contact"
     },
-    "environment": {
-      "title": "Environment",
-      "type": "object",
-      "additionalProperties": {
-        "type": "string"
-      }
-    },
-    "run-user": {
-      "title": "Run-User",
-      "enum": [
-        "_daemon_"
+    "issues": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        {
+          "type": "null"
+        }
       ],
-      "type": "string"
+      "default": null,
+      "title": "Issues"
     },
-    "services": {
-      "title": "Services",
-      "type": "object",
+    "source-code": {
+      "anyOf": [
+        {
+          "format": "uri",
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Source-Code"
+    },
+    "license": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "License"
+    },
+    "adopt-info": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Adopt-Info"
+    },
+    "parts": {
       "additionalProperties": {
-        "$ref": "#/definitions/Service"
-      }
-    },
-    "checks": {
-      "title": "Checks",
-      "type": "object",
-      "additionalProperties": {
-        "$ref": "#/definitions/Check"
-      }
-    },
-    "entrypoint-service": {
-      "title": "Entrypoint-Service",
-      "type": "string"
+        "$ref": "#/$defs/Part"
+      },
+      "title": "Parts",
+      "type": "object"
     },
     "package-repositories": {
-      "title": "Package-Repositories",
-      "type": "array",
-      "items": {
-        "type": "object"
-      }
+      "anyOf": [
+        {
+          "items": {
+            "type": "object"
+          },
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Package-Repositories"
+    },
+    "environment": {
+      "anyOf": [
+        {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Environment"
+    },
+    "run-user": {
+      "anyOf": [
+        {
+          "const": "_daemon_",
+          "enum": [
+            "_daemon_"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Run-User"
+    },
+    "services": {
+      "anyOf": [
+        {
+          "additionalProperties": {
+            "$ref": "#/$defs/Service"
+          },
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Services"
+    },
+    "checks": {
+      "anyOf": [
+        {
+          "additionalProperties": {
+            "$ref": "#/$defs/Check"
+          },
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Checks"
+    },
+    "entrypoint-service": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Entrypoint-Service"
     }
   },
   "required": [
     "name",
-    "version",
     "summary",
     "description",
     "base",
-    "parts",
-    "license",
-    "platforms"
+    "platforms",
+    "parts"
   ],
-  "additionalProperties": false,
-  "definitions": {
-    "Service": {
-      "title": "Service",
-      "description": "Lightweight schema validation for a Pebble service.\n\nBased on\nhttps://github.com/canonical/pebble#layer-specification",
-      "type": "object",
-      "properties": {
-        "override": {
-          "title": "Override",
-          "enum": [
-            "merge",
-            "replace"
-          ],
-          "type": "string"
-        },
-        "command": {
-          "title": "Command",
-          "type": "string"
-        },
-        "summary": {
-          "title": "Summary",
-          "type": "string"
-        },
-        "description": {
-          "title": "Description",
-          "type": "string"
-        },
-        "startup": {
-          "title": "Startup",
-          "enum": [
-            "enabled",
-            "disabled"
-          ],
-          "type": "string"
-        },
-        "after": {
-          "title": "After",
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "before": {
-          "title": "Before",
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "requires": {
-          "title": "Requires",
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "environment": {
-          "title": "Environment",
-          "type": "object",
-          "additionalProperties": {
-            "type": "string"
-          }
-        },
-        "user": {
-          "title": "User",
-          "type": "string"
-        },
-        "user-id": {
-          "title": "User-Id",
-          "type": "integer"
-        },
-        "group": {
-          "title": "Group",
-          "type": "string"
-        },
-        "group-id": {
-          "title": "Group-Id",
-          "type": "integer"
-        },
-        "working-dir": {
-          "title": "Working-Dir",
-          "type": "string"
-        },
-        "on-success": {
-          "title": "On-Success",
-          "enum": [
-            "restart",
-            "shutdown",
-            "ignore"
-          ],
-          "type": "string"
-        },
-        "on-failure": {
-          "title": "On-Failure",
-          "enum": [
-            "restart",
-            "shutdown",
-            "ignore"
-          ],
-          "type": "string"
-        },
-        "on-check-failure": {
-          "title": "On-Check-Failure",
-          "type": "object",
-          "additionalProperties": {
-            "enum": [
-              "restart",
-              "shutdown",
-              "ignore"
-            ],
-            "type": "string"
-          }
-        },
-        "backoff-delay": {
-          "title": "Backoff-Delay",
-          "type": "string"
-        },
-        "backoff-factor": {
-          "title": "Backoff-Factor",
-          "type": "number"
-        },
-        "backoff-limit": {
-          "title": "Backoff-Limit",
-          "type": "string"
-        },
-        "kill-delay": {
-          "title": "Kill-Delay",
-          "type": "string"
-        }
-      },
-      "required": [
-        "override",
-        "command"
-      ],
-      "additionalProperties": false
-    },
-    "HttpCheck": {
-      "title": "HttpCheck",
-      "description": "Lightweight schema validation for a Pebble HTTP check.",
-      "type": "object",
-      "properties": {
-        "url": {
-          "title": "Url",
-          "minLength": 1,
-          "maxLength": 65536,
-          "format": "uri",
-          "type": "string"
-        },
-        "headers": {
-          "title": "Headers",
-          "type": "object",
-          "additionalProperties": {
-            "type": "string"
-          }
-        }
-      },
-      "required": [
-        "url"
-      ],
-      "additionalProperties": false
-    },
-    "TcpCheck": {
-      "title": "TcpCheck",
-      "description": "Lightweight schema validation for a Pebble TCP check.",
-      "type": "object",
-      "properties": {
-        "port": {
-          "title": "Port",
-          "type": "integer"
-        },
-        "host": {
-          "title": "Host",
-          "type": "string"
-        }
-      },
-      "required": [
-        "port"
-      ],
-      "additionalProperties": false
-    },
-    "ExecCheck": {
-      "title": "ExecCheck",
-      "description": "Lightweight schema validation for a Pebble exec check.",
-      "type": "object",
-      "properties": {
-        "command": {
-          "title": "Command",
-          "type": "string"
-        },
-        "service-context": {
-          "title": "Service-Context",
-          "type": "string"
-        },
-        "environment": {
-          "title": "Environment",
-          "type": "object",
-          "additionalProperties": {
-            "type": "string"
-          }
-        },
-        "user": {
-          "title": "User",
-          "type": "string"
-        },
-        "user-id": {
-          "title": "User-Id",
-          "type": "integer"
-        },
-        "group": {
-          "title": "Group",
-          "type": "string"
-        },
-        "group-id": {
-          "title": "Group-Id",
-          "type": "integer"
-        },
-        "working-dir": {
-          "title": "Working-Dir",
-          "type": "string"
-        }
-      },
-      "required": [
-        "command"
-      ],
-      "additionalProperties": false
-    },
-    "Check": {
-      "title": "Check",
-      "description": "Lightweight schema validation for a Pebble checks.\n\nBased on\nhttps://github.com/canonical/pebble#layer-specification",
-      "type": "object",
-      "properties": {
-        "override": {
-          "title": "Override",
-          "enum": [
-            "merge",
-            "replace"
-          ],
-          "type": "string"
-        },
-        "level": {
-          "title": "Level",
-          "enum": [
-            "alive",
-            "ready"
-          ],
-          "type": "string"
-        },
-        "period": {
-          "title": "Period",
-          "type": "string"
-        },
-        "timeout": {
-          "title": "Timeout",
-          "type": "string"
-        },
-        "threshold": {
-          "title": "Threshold",
-          "type": "integer"
-        },
-        "http": {
-          "$ref": "#/definitions/HttpCheck"
-        },
-        "tcp": {
-          "$ref": "#/definitions/TcpCheck"
-        },
-        "exec": {
-          "$ref": "#/definitions/ExecCheck"
-        }
-      },
-      "required": [
-        "override"
-      ],
-      "additionalProperties": false
-    },
-    "Part": {
-      "title": "PartSpec",
-      "description": "The part specification data.",
-      "type": "object",
-      "properties": {
-        "plugin": {
-          "title": "Plugin",
-          "type": "string"
-        },
-        "source": {
-          "title": "Source",
-          "type": "string"
-        },
-        "source-checksum": {
-          "title": "Source-Checksum",
-          "default": "",
-          "type": "string"
-        },
-        "source-branch": {
-          "title": "Source-Branch",
-          "default": "",
-          "type": "string"
-        },
-        "source-commit": {
-          "title": "Source-Commit",
-          "default": "",
-          "type": "string"
-        },
-        "source-depth": {
-          "title": "Source-Depth",
-          "default": 0,
-          "type": "integer"
-        },
-        "source-subdir": {
-          "title": "Source-Subdir",
-          "default": "",
-          "type": "string"
-        },
-        "source-submodules": {
-          "title": "Source-Submodules",
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "source-tag": {
-          "title": "Source-Tag",
-          "default": "",
-          "type": "string"
-        },
-        "source-type": {
-          "title": "Source-Type",
-          "default": "",
-          "type": "string"
-        },
-        "disable-parallel": {
-          "title": "Disable-Parallel",
-          "default": false,
-          "type": "boolean"
-        },
-        "after": {
-          "title": "After",
-          "default": [],
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "overlay-packages": {
-          "title": "Overlay-Packages",
-          "default": [],
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "stage-snaps": {
-          "title": "Stage-Snaps",
-          "default": [],
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "stage-packages": {
-          "title": "Stage-Packages",
-          "default": [],
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "build-snaps": {
-          "title": "Build-Snaps",
-          "default": [],
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "build-packages": {
-          "title": "Build-Packages",
-          "default": [],
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "build-environment": {
-          "title": "Build-Environment",
-          "default": [],
-          "type": "array",
-          "items": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "string"
-            }
-          }
-        },
-        "build-attributes": {
-          "title": "Build-Attributes",
-          "default": [],
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "organize": {
-          "title": "Organize",
-          "default": {},
-          "type": "object",
-          "additionalProperties": {
-            "type": "string"
-          }
-        },
-        "overlay": {
-          "title": "Overlay",
-          "default": [
-            "*"
-          ],
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "stage": {
-          "title": "Stage",
-          "default": [
-            "*"
-          ],
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "prime": {
-          "title": "Prime",
-          "default": [
-            "*"
-          ],
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "override-pull": {
-          "title": "Override-Pull",
-          "type": "string"
-        },
-        "overlay-script": {
-          "title": "Overlay-Script",
-          "type": "string"
-        },
-        "override-build": {
-          "title": "Override-Build",
-          "type": "string"
-        },
-        "override-stage": {
-          "title": "Override-Stage",
-          "type": "string"
-        },
-        "override-prime": {
-          "title": "Override-Prime",
-          "type": "string"
-        },
-        "permissions": {
-          "title": "Permissions",
-          "default": [],
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/Permissions"
-          }
-        }
-      },
-      "additionalProperties": false
-    },
-    "Permissions": {
-      "title": "Permissions",
-      "description": "Description of the ownership and permission settings for a set of files.\n\nA ``Permissions`` object specifies that a given pattern-like ``path`` should\nbe owned by ``owner`` with a given ``group``, and have the read/write/execute\nbits defined by ``mode``.\n\nNotes\n-----\n- ``path`` is optional and defaults to \"everything\";\n- ``owner`` and ``group`` are optional if both are omitted - that is, if\n  one of the pair is specified then both must be;\n- ``mode`` is a string containing an integer in base 8. For example, \"755\",\n  \"0755\" and \"0o755\" are all accepted and are the equivalent of calling\n  ``chmod 755 ...``.",
-      "type": "object",
-      "properties": {
-        "path": {
-          "title": "Path",
-          "default": "*",
-          "type": "string"
-        },
-        "owner": {
-          "title": "Owner",
-          "type": "integer"
-        },
-        "group": {
-          "title": "Group",
-          "type": "integer"
-        },
-        "mode": {
-          "title": "Mode",
-          "type": "string"
-        }
-      }
-    }
-  }
+  "title": "Rockcraft project",
+  "type": "object"
 }

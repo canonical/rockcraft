@@ -21,9 +21,9 @@ import pydantic
 import pytest
 import yaml
 from craft_application.errors import CraftValidationError
+from rockcraft.pebble import Check, ExecCheck, HttpCheck, Pebble, Service, TcpCheck
 
 import tests
-from rockcraft.pebble import Check, ExecCheck, HttpCheck, Pebble, Service, TcpCheck
 
 
 @tests.linux_only
@@ -33,10 +33,17 @@ class TestPebble:
     def test_attributes(self):
         assert Pebble.PEBBLE_PATH == "var/lib/pebble/default"
         assert Pebble.PEBBLE_LAYERS_PATH == "var/lib/pebble/default/layers"
-        assert Pebble.PEBBLE_BINARY_PATH == "bin/pebble"
+        assert Pebble.PEBBLE_BINARY_PATH == "usr/bin/pebble"
+        assert Pebble.PEBBLE_BINARY_PATH_PREVIOUS == "bin/pebble"
         assert all(
             field in Pebble.PEBBLE_PART_SPEC
-            for field in ["plugin", "stage-snaps", "stage", "override-prime"]
+            for field in [
+                "plugin",
+                "stage-snaps",
+                "organize",
+                "stage",
+                "override-prime",
+            ]
         )
 
     @pytest.mark.parametrize(
@@ -60,7 +67,7 @@ class TestPebble:
                             override="replace",
                             command="foo",
                             on_success="shutdown",
-                        ).dict(exclude_none=True, by_alias=True)
+                        ).model_dump(exclude_none=True, by_alias=True)
                     },
                 },
                 (
@@ -241,14 +248,14 @@ class TestPebble:
                     "on-check-failure": {"check": "bad value"},
                 },
                 r"^5 validation errors[\s\S]*"
-                r"override[\s\S]*unexpected value[\s\S]*'merge', 'replace'[\s\S]*"
-                r"startup[\s\S]*unexpected value[\s\S]*'enabled', 'disabled'[\s\S]*"
-                r"on-success[\s\S]*unexpected value[\s\S]*"
-                r"'restart', 'shutdown', 'ignore'[\s\S]*"
-                r"on-failure[\s\S]*unexpected value[\s\S]*"
-                r"'restart', 'shutdown', 'ignore'[\s\S]*"
-                r"on-check-failure[\s\S]*unexpected value[\s\S]*"
-                r"'restart', 'shutdown', 'ignore'[\s\S]*",
+                r"override[\s\S]*Input should be[\s\S]*'merge' or 'replace'[\s\S]*"
+                r"startup[\s\S]*Input should be[\s\S]*'enabled' or 'disabled'[\s\S]*"
+                r"on-success[\s\S]*Input should be[\s\S]*"
+                r"'restart', 'shutdown' or 'ignore'[\s\S]*"
+                r"on-failure[\s\S]*Input should be[\s\S]*"
+                r"'restart', 'shutdown' or 'ignore'[\s\S]*"
+                r"on-check-failure[\s\S]*Input should be[\s\S]*"
+                r"'restart', 'shutdown' or 'ignore'[\s\S]*",
             ),
             # Bad attribute types
             (
@@ -263,14 +270,14 @@ class TestPebble:
                     "backoff-factor": "not a float",
                 },
                 r"^8 validation errors[\s\S]*"
-                r"unexpected value; permitted: 'merge', 'replace'[\s\S]*"
-                r"str type expected[\s\S]*"
-                r"str type expected[\s\S]*"
-                r"value is not a valid list[\s\S]*"
-                r"value is not a valid dict[\s\S]*"
-                r"value is not a valid integer[\s\S]*"
-                r"unexpected value; permitted: 'restart', 'shutdown'[\s\S]*"
-                r"value is not a valid float[\s\S]*",
+                r"Input should be 'merge' or 'replace'[\s\S]*"
+                r"Input should be a valid string[\s\S]*"
+                r"Input should be a valid string[\s\S]*"
+                r"Input should be a valid list[\s\S]*"
+                r"Input should be a valid dictionary[\s\S]*"
+                r"Input should be a valid integer[\s\S]*"
+                r"Input should be 'restart', 'shutdown' or 'ignore'[\s\S]*"
+                r"Input should be a valid number[\s\S]*",
             ),
         ],
     )
@@ -290,8 +297,8 @@ class TestPebble:
                     "headers": "not a dict",
                 },
                 r"^2 validation errors[\s\S]*"
-                r"url[\s\S]*str type expected[\s\S]*"
-                r"headers[\s\S]*value is not a valid dict[\s\S]*",
+                r"URL input should be a string or URL[\s\S]*"
+                r"Input should be a valid dictionary[\s\S]*",
             ),
         ],
     )
@@ -311,8 +318,8 @@ class TestPebble:
                     "host": ["string list"],
                 },
                 r"^2 validation errors[\s\S]*"
-                r"port[\s\S]*value is not a valid integer[\s\S]*"
-                r"host[\s\S]*str type expected[\s\S]*",
+                r"port[\s\S]*Input should be a valid integer[\s\S]*"
+                r"host[\s\S]*Input should be a valid string[\s\S]*",
             ),
         ],
     )
@@ -338,14 +345,14 @@ class TestPebble:
                     "working-dir": ["string list"],
                 },
                 r"^8 validation errors[\s\S]*"
-                r"command[\s\S]*str type expected[\s\S]*"
-                r"service-context[\s\S]*str type expected[\s\S]*"
-                r"environment[\s\S]*value is not a valid dict[\s\S]*"
-                r"user[\s\S]*str type expected[\s\S]*"
-                r"user-id[\s\S]*value is not a valid integer[\s\S]*"
-                r"group[\s\S]*str type expected[\s\S]*"
-                r"group-id[\s\S]*value is not a valid integer[\s\S]*"
-                r"working-dir[\s\S]*str type expected[\s\S]*",
+                r"command[\s\S]*Input should be a valid string[\s\S]*"
+                r"service-context[\s\S]*Input should be a valid string[\s\S]*"
+                r"environment[\s\S]*Input should be a valid dictionary[\s\S]*"
+                r"user[\s\S]*Input should be a valid string[\s\S]*"
+                r"user-id[\s\S]*Input should be a valid integer[\s\S]*"
+                r"group[\s\S]*Input should be a valid string[\s\S]*"
+                r"group-id[\s\S]*Input should be a valid integer[\s\S]*"
+                r"working-dir[\s\S]*Input should be a valid string[\s\S]*",
             ),
         ],
     )
@@ -398,8 +405,8 @@ class TestPebble:
                 },
                 pydantic.ValidationError,
                 r"^2 validation errors[\s\S]*"
-                r"override[\s\S]*unexpected value[\s\S]*'merge', 'replace'[\s\S]*"
-                r"level[\s\S]*unexpected value[\s\S]*'alive', 'ready'[\s\S]*",
+                r"override[\s\S]*Input should be 'merge' or 'replace'[\s\S]*"
+                r"level[\s\S]*Input should be 'alive' or 'ready'[\s\S]*",
             ),
             # Bad attribute types
             (
@@ -413,15 +420,22 @@ class TestPebble:
                 },
                 pydantic.ValidationError,
                 r"^6 validation errors[\s\S]*"
-                r"unexpected value; permitted: 'merge', 'replace'[\s\S]*"
-                r"unexpected value; permitted: 'alive', 'ready'[\s\S]*"
-                r"str type expected[\s\S]*"
-                r"str type expected[\s\S]*"
-                r"value is not a valid integer[\s\S]*"
-                r"value is not a valid dict[\s\S]*",
+                r"Input should be 'merge' or 'replace'[\s\S]*"
+                r"Input should be 'alive' or 'ready'[\s\S]*"
+                r"Input should be a valid string[\s\S]*"
+                r"Input should be a valid string[\s\S]*"
+                r"Input should be a valid integer[\s\S]*"
+                r"Input should be a valid dictionary[\s\S]*",
             ),
         ],
     )
     def test_bad_checks(self, bad_check, exception, error):
         with pytest.raises(exception, match=error):
             _ = Check(**bad_check)
+
+    def test_http_check_dump(self):
+        check = HttpCheck.model_validate({"url": "http://www.example.com"})
+        dump = check.model_dump(exclude_none=True, mode="json")
+
+        assert dump["url"] == "http://www.example.com/"
+        assert isinstance(dump["url"], str)

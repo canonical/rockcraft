@@ -21,12 +21,15 @@ from collections.abc import Callable
 from pathlib import Path
 
 import pytest
-
 from rockcraft import oci
 from rockcraft.services.image import ImageInfo
+
 from tests.util import jammy_only
 
-pytestmark = jammy_only
+pytestmark = [
+    jammy_only,
+    pytest.mark.usefixtures("reset_callbacks", "enable_overlay_feature"),
+]
 
 
 def create_base_image(
@@ -111,7 +114,7 @@ def test_add_layer_with_symlink_in_base(new_dir):
     new_layer_dir = Path("new")
     new_layer_dir.mkdir()
 
-    for target in targets + ["tmp"]:
+    for target in [*targets, "tmp"]:
         new_target_dir = new_layer_dir / target
         new_target_dir.mkdir()
         (new_target_dir / f"new_{target}_file").write_text(f"new {target} file")

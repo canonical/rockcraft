@@ -1,0 +1,21 @@
+name: bare-base-test
+version: latest
+summary: A tiny rock
+description: Building a tiny rock from a bare base, with just one package
+license: Apache-2.0
+build-base: placeholder-base
+base: bare
+services:
+  hello:
+    override: merge
+    command: /usr/bin/hello -g "ship it!"
+    startup: enabled
+platforms:
+  amd64:
+
+parts:
+  hello:
+    plugin: nil
+    stage-packages:
+      - hello
+      - base-files # for the usrmerge symlinks in ubuntu@24.04 and newer

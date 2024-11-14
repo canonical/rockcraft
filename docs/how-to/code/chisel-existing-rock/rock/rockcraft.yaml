@@ -1,0 +1,14 @@
+name: python
+base: ubuntu@22.04  # based on Ubuntu Jammy
+version: "3.11"
+summary: Python3.11 rock
+description: Example of a Python rock
+platforms:
+  amd64:
+run-user: _daemon_  # setting a non-root user for the rock
+parts:
+  install-python:
+    plugin: nil
+    # install Python3.11
+    stage-packages:
+      - python3.11

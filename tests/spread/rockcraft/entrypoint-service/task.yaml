@@ -1,0 +1,22 @@
+summary: container entrypoint-service test
+
+execute: |
+  set -ex
+  run_rockcraft pack
+
+  test -f entrypoint-service-test_latest_amd64.rock
+
+  # test container execution
+  sudo rockcraft.skopeo --insecure-policy copy oci-archive:entrypoint-service-test_latest_amd64.rock docker-daemon:entrypoint-service-test:latest
+  rm entrypoint-service-test_latest*.rock  
+  docker images entrypoint-service-test:latest
+  id=$(docker run -d entrypoint-service-test)
+  test "$(docker inspect "$id" -f '{{json .Config.Entrypoint}}')" = '["/bin/pebble","enter","--args","test-service"]'
+  test "$(docker inspect "$id" -f '{{json .Config.Cmd}}')" = '["foo"]'
+  docker logs "$id" 2>&1 | grep "foo"
+  docker rm -f "$id"
+  id=$(sh -c 'docker run -d entrypoint-service-test bar \; --verbose')
+  test "$(docker inspect "$id" -f '{{json .Config.Entrypoint}}')" = '["/bin/pebble","enter","--args","test-service"]'
+  test "$(docker inspect "$id" -f '{{json .Config.Cmd}}')" = '["bar",";","--verbose"]'
+  docker logs "$id" 2>&1 | grep '\[test-service\] bar'
+  docker rm -f "$id"

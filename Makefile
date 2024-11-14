@@ -1,3 +1,5 @@
+RUFF := $(shell ruff --version 2> /dev/null)
+
 .PHONY: help
 help: ## Show this help.
 	@printf "%-40s %s\n" "Target" "Description"
@@ -6,8 +8,9 @@ help: ## Show this help.
 
 .PHONY: autoformat
 autoformat: ## Run automatic code formatters.
-	isort .
-	autoflake rockcraft/ tests/
+ifndef RUFF
+	$(error "Ruff not installed. Install it with `sudo snap install ruff` or using the official installation instructions: https://docs.astral.sh/ruff/installation/")
+endif
 	black .
 	ruff check --fix-only rockcraft tests
 
@@ -35,19 +38,13 @@ clean: ## Clean artefacts from building, testing, etc.
 
 .PHONY: coverage
 coverage: ## Run pytest with coverage report.
-	coverage run --source craft_sore -m pytest
+	coverage run --source rockcraft -m pytest tests/unit
 	coverage report -m
 	coverage html
-
-.PHONY: preparedocs
-preparedocs: ## move file from the sphinx-starter-pack to docs folder
-	cp docs/sphinx-starter-pack/.sphinx/_static/* docs/_static
-	mkdir -p docs/_templates
-	cp -R docs/sphinx-starter-pack/.sphinx/_templates/* docs/_templates
-	cp docs/sphinx-starter-pack/.sphinx/spellingcheck.yaml docs/spellingcheck.yaml
+	coverage xml -o results/coverage-unit.xml
 
 .PHONY: installdocs
-installdocs: preparedocs ## install documentation dependencies.
+installdocs:
 	$(MAKE) -C docs install
 
 .PHONY: docs
@@ -76,7 +73,7 @@ install: clean ## Install python package.
 	python setup.py install
 
 .PHONY: lint
-lint: test-black test-codespell test-flake8 test-isort test-mypy test-pydocstyle test-pyright test-pylint test-sphinx-lint test-shellcheck ## Run all linting tests.
+lint: test-black test-codespell test-mypy test-pyright test-ruff test-sphinx-lint test-shellcheck ## Run all linting tests.
 
 .PHONY: release
 release: dist ## Release with twine.
@@ -88,36 +85,27 @@ test-black:
 
 .PHONY: test-codespell
 test-codespell:
-	codespell .
-
-.PHONY: test-flake8
-test-flake8:
-	flake8 rockcraft tests
+	codespell rockcraft tests
 
 .PHONY: test-ruff
 test-ruff:
-	ruff rockcraft tests
+ifndef RUFF
+	$(error "Ruff not installed. Install it with `sudo snap install ruff` or using the official installation instructions: https://docs.astral.sh/ruff/installation/")
+endif
+	ruff check rockcraft tests
 
 .PHONY: test-integrations
 test-integrations: ## Run integration tests.
 	pytest tests/integration
 
-.PHONY: test-isort
-test-isort:
-	isort --check rockcraft tests
-
 .PHONY: test-mypy
 test-mypy:
 	mypy rockcraft tests
 
-.PHONY: test-pydocstyle
-test-pydocstyle:
-	pydocstyle rockcraft
-
 .PHONY: test-pylint
 test-pylint:
-	pylint rockcraft
-	pylint tests --disable=invalid-name,missing-module-docstring,missing-function-docstring,redefined-outer-name,too-many-arguments,too-many-public-methods,no-member,import-outside-toplevel
+	echo "rockcraft has replaced pylint with ruff. Please use `make test-ruff` instead."
+	make test-ruff
 
 .PHONY: test-pyright
 test-pyright:

@@ -22,7 +22,6 @@ from pathlib import Path
 
 import pytest
 from craft_parts.overlays import overlays
-
 from rockcraft import errors, layers
 
 

@@ -16,9 +16,12 @@ environment:
 apps:
   rockcraft:
     command: bin/python $SNAP/bin/rockcraft
+  skopeo:
+    command: bin/skopeo
 
 build-packages:
   - libapt-pkg-dev
+  - libffi-dev # for cffi (via pygit2)
   - libyaml-dev
   - python3.10-dev
   - pkg-config
@@ -50,6 +53,19 @@ parts:
     organize:
         "usr/bin/fuse-overlayfs": "libexec/rockcraft/fuse-overlayfs"
 
+  libgit2: # part came from snapcraft@5fbaab144842f
+    source: https://github.com/libgit2/libgit2/archive/refs/tags/v1.7.1.tar.gz
+    source-checksum: sha256/17d2b292f21be3892b704dddff29327b3564f96099a1c53b00edc23160c71327
+    plugin: cmake
+    cmake-parameters:
+      - -DCMAKE_INSTALL_PREFIX=/usr
+    build-packages:
+      - libssl-dev
+    build-attributes:
+      - enable-patchelf
+    prime:
+      - -usr/include
+
   rockcraft:
     source: .
     plugin: python
@@ -62,8 +78,11 @@ parts:
         - requirements.txt
     build-attributes:
         - enable-patchelf
+    build-packages:
+        - cargo
     build-environment:
         - "CFLAGS": "$(pkg-config python-3.10 yaml-0.1 --cflags)"
+        - "PIP_NO_BINARY": ":all:"
     organize:
         bin/craftctl: libexec/rockcraft/craftctl
     override-build: |
@@ -77,6 +96,7 @@ parts:
       sed -i -e '1 s|^#!/.*|#!/snap/rockcraft/current/bin/python -E|' $CRAFT_PART_INSTALL/bin/craftctl
     after:
       - rockcraft-libs
+      - libgit2
 
   umoci:
     plugin: make

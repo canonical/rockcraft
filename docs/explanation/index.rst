@@ -14,5 +14,10 @@ the motivations behind its development.
    chisel
    overlay-step
    rocks
+   bases
    pebble
    lifecycle-layer
+   filesets
+   /common/craft-parts/explanation/parts
+   lifecycle
+   /common/craft-parts/explanation/dump_plugin

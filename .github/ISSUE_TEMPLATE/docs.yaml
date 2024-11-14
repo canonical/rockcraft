@@ -32,7 +32,7 @@ body:
     attributes:
       label: Documentation location
       description: Location of the corresponding documentation page (e.g., file, section, URL), if applicable
-      placeholder: ex. https://canonical-rockcraft.readthedocs-hosted.com/en/latest/tutorials/hello-world/
+      placeholder: ex. https://documentation.ubuntu.com/rockcraft/stable/tutorial/hello-world/
     validations:
       required: false
   - type: textarea

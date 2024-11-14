@@ -19,11 +19,11 @@ execute: |
   git clone -b ubuntu-22.04 https://github.com/canonical/chisel-releases/
   # [docs:clone-chisel-releases-end]
 
-  # [docs:slice-exists]
-  grep -q "bins" chisel-releases/slices/openssl.yaml && echo "My slice exists"
-  # [docs:slice-exists-end]
-
   sudo snap install chisel --channel=latest/candidate
+
+  # [docs:slice-exists]
+  chisel find --release=./chisel-releases/ openssl_bins
+  # [docs:slice-exists-end]
 
   # [docs:cut]
   # Testing with Chisel directly:
@@ -42,7 +42,7 @@ execute: |
   # [docs:pack-end]
 
   # [docs:skopeo-copy]
-  sudo /snap/rockcraft/current/bin/skopeo --insecure-policy copy oci-archive:custom-openssl-rock_0.0.1_amd64.rock docker-daemon:chisel-openssl:latest
+  sudo rockcraft.skopeo --insecure-policy copy oci-archive:custom-openssl-rock_0.0.1_amd64.rock docker-daemon:chisel-openssl:latest
   # [docs:skopeo-copy-end]
 
   # [docs:docker-run]

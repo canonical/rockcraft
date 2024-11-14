@@ -1,5 +1,4 @@
-#
-# Copyright 2021 Canonical Ltd.
+# Copyright 2023-2024 Canonical Ltd.
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -15,19 +14,7 @@
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
 
-# Configuration file for the Sphinx documentation builder.
-#
-# This file only contains a selection of the most common options. For a full
-# list see the documentation:
-# https://www.sphinx-doc.org/en/master/usage/configuration.html
-
-# -- Path setup --------------------------------------------------------------
-
-# If extensions (or modules to document with autodoc) are in another directory,
-# add these directories to sys.path here. If the directory is relative to the
-# documentation root, make it absolute.
-#
-
+import datetime
 import os
 import pathlib
 import sys
@@ -39,179 +26,91 @@ sys.path.insert(0, str(project_dir.absolute()))
 
 import rockcraft  # noqa: E402
 
-# -- Project information -----------------------------------------------------
-
 project = "Rockcraft"
-copyright = "2021, Canonical Ltd."
-author = "Canonical Ltd."
+author = "Canonical Group Ltd"
+
+copyright = "2022-%s, %s" % (datetime.date.today().year, author)
 
 # The full version, including alpha/beta/rc tags
 release = rockcraft.__version__
 if ".post" in release:
     # The commit hash in the dev release version confuses the spellchecker
-    release = release[0 : release.find(".post")]
+    release = "dev"
 
-# Update with the favicon for your product
-html_favicon = "_static/favicon.png"
+# region Configuration for canonical-sphinx
+ogp_site_url = "https://canonical-rockcraft.readthedocs-hosted.com/"
+ogp_site_name = project
 
 html_context = {
-    # Change to the link to your product website (without "https://")
     "product_page": "github.com/canonical/rockcraft",
-    # Add your product tag to ".sphinx/_static" and change the path
-    # here (start with "_static"), default is the circle of friends
-    "product_tag": "_static/tag.png",
-    # Change to the discourse instance you want to be able to link to
-    # (use an empty value if you don't want to link)
     "discourse": "https://discourse.ubuntu.com/c/rocks/117",
-    # Change to the GitHub info for your project
     "github_url": "https://github.com/canonical/rockcraft",
-    # Change to the branch for this version of the documentation
-    "github_version": "main",
-    # Change to the folder that contains the documentation (usually "/" or "/docs/")
-    "github_folder": "/docs/",
-    # Change to an empty value if your GitHub repo doesn't have issues enabled
-    "github_issues": "enabled",
+    "display_contributors": False,
 }
 
-
-if "discourse" in html_context:
-    html_context["discourse_prefix"] = html_context["discourse"] + "/t/"
-
-# -- General configuration ---------------------------------------------------
-
-# Add any Sphinx extension module names here, as strings. They can be
-# extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
-# ones.
 extensions = [
-    "sphinx.ext.autodoc",
-    "sphinx.ext.ifconfig",
-    "sphinx.ext.napoleon",
-    "sphinx.ext.viewcode",
-    "sphinx_copybutton",
-    "sphinx_autodoc_typehints",  # must be loaded after napoleon
-    "sphinx-pydantic",
-    "sphinx_design",
+    "canonical_sphinx",
+    "notfound.extension",
 ]
+# endregion
+extensions.extend(
+    [
+        "sphinx.ext.autodoc",
+        "sphinx.ext.ifconfig",
+        "sphinx.ext.napoleon",
+        "sphinx.ext.viewcode",
+        "sphinx_autodoc_typehints",  # must be loaded after napoleon
+        "sphinxcontrib.details.directive",
+        "sphinx_toolbox.collapse",
+    ]
+)
 
-
-# List of patterns, relative to source directory, that match files and
-# directories to ignore when looking for source files.
-# This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = [
     "_build",
     "Thumbs.db",
     ".DS_Store",
     "env",
     "sphinx-starter-pack",
-    "common",
+    # Excluded here because they are either included explicitly in other
+    # documents (so they generate "duplicate label" errors) or they aren't
+    # used in this documentation at all (so they generate "unreferenced"
+    # errors).
+    "common/craft-parts/explanation/filesets.rst",
+    "common/craft-parts/explanation/lifecycle.rst",
+    "common/craft-parts/explanation/overlay_parameters.rst",
+    "common/craft-parts/explanation/overlays.rst",
+    "common/craft-parts/explanation/how_parts_are_built.rst",
+    "common/craft-parts/explanation/overlay_step.rst",
+    "common/craft-parts/how-to/craftctl.rst",
+    "common/craft-parts/reference/partition_specific_output_directory_variables.rst",
+    "common/craft-parts/reference/parts_steps.rst",
+    "common/craft-parts/reference/step_execution_environment.rst",
+    "common/craft-parts/reference/step_output_directories.rst",
+    "common/craft-parts/reference/plugins/poetry_plugin.rst",
+    "common/craft-parts/reference/plugins/python_plugin.rst",
+    # Extra non-craft-parts exclusions can be added after this comment
 ]
 
-# Links to ignore when checking links
 linkcheck_ignore = [
     "http://0.0.0.0:8080",
     "https://github.com/canonical/craft-actions#rockcraft-pack",
     "https://github.com/canonical/pebble#layer-specification",
     "https://juju.is/cloud-native-kubernetes-usage-report-2021#selection-criteria-for-container-images",
+    "https://matrix.to/#/#rocks:ubuntu.com",
+    # Ignore changelog links to Rockcraft releases, because the changelog entries
+    # are written before the actual release is tagged.
+    "https://github.com/canonical/rockcraft/releases/tag/.*",
 ]
 
 rst_epilog = """
 .. include:: /reuse/links.txt
 """
 
-# -- Options for HTML output -------------------------------------------------
+# region Options for extensions
 
-
-# Find the current builder
-builder = "dirhtml"
-if "-b" in sys.argv:
-    builder = sys.argv[sys.argv.index("-b") + 1]
-
-# Setting templates_path for epub makes the build fail
-if builder == "dirhtml" or builder == "html":
-    templates_path = ["_templates"]
-
-
-# The theme to use for HTML and HTML Help pages.  See the documentation for
-# a list of builtin themes.
-#
-html_theme = "furo"
-html_last_updated_fmt = ""
-html_permalinks_icon = "¶"
-html_theme_options = {
-    "light_css_variables": {
-        "color-sidebar-background-border": "none",
-        "font-stack": "Ubuntu, -apple-system, Segoe UI, Roboto, Oxygen, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif",
-        "font-stack--monospace": "Ubuntu Mono, Consolas, Monaco, Courier, monospace",
-        "color-foreground-primary": "#111",
-        "color-foreground-secondary": "var(--color-foreground-primary)",
-        "color-foreground-muted": "#333",
-        "color-background-secondary": "#FFF",
-        "color-background-hover": "#f2f2f2",
-        "color-brand-primary": "#111",
-        "color-brand-content": "#06C",
-        "color-api-background": "#cdcdcd",
-        "color-inline-code-background": "rgba(0,0,0,.03)",
-        "color-sidebar-link-text": "#111",
-        "color-sidebar-item-background--current": "#ebebeb",
-        "color-sidebar-item-background--hover": "#f2f2f2",
-        "toc-font-size": "var(--font-size--small)",
-        "color-admonition-title-background--note": "var(--color-background-primary)",
-        "color-admonition-title-background--tip": "var(--color-background-primary)",
-        "color-admonition-title-background--important": "var(--color-background-primary)",
-        "color-admonition-title-background--caution": "var(--color-background-primary)",
-        "color-admonition-title--note": "#24598F",
-        "color-admonition-title--tip": "#24598F",
-        "color-admonition-title--important": "#C7162B",
-        "color-admonition-title--caution": "#F99B11",
-        "color-highlighted-background": "#EbEbEb",
-        "color-link-underline": "var(--color-background-primary)",
-        "color-link-underline--hover": "var(--color-background-primary)",
-        "color-version-popup": "#772953",
-    },
-    "dark_css_variables": {
-        "color-foreground-secondary": "var(--color-foreground-primary)",
-        "color-foreground-muted": "#CDCDCD",
-        "color-background-secondary": "var(--color-background-primary)",
-        "color-background-hover": "#666",
-        "color-brand-primary": "#fff",
-        "color-brand-content": "#06C",
-        "color-sidebar-link-text": "#f7f7f7",
-        "color-sidebar-item-background--current": "#666",
-        "color-sidebar-item-background--hover": "#333",
-        "color-admonition-background": "transparent",
-        "color-admonition-title-background--note": "var(--color-background-primary)",
-        "color-admonition-title-background--tip": "var(--color-background-primary)",
-        "color-admonition-title-background--important": "var(--color-background-primary)",
-        "color-admonition-title-background--caution": "var(--color-background-primary)",
-        "color-admonition-title--note": "#24598F",
-        "color-admonition-title--tip": "#24598F",
-        "color-admonition-title--important": "#C7162B",
-        "color-admonition-title--caution": "#F99B11",
-        "color-highlighted-background": "#666",
-        "color-link-underline": "var(--color-background-primary)",
-        "color-link-underline--hover": "var(--color-background-primary)",
-        "color-version-popup": "#F29879",
-    },
-}
-
-
-# Add any paths that contain custom static files (such as style sheets) here,
-# relative to this directory. They are copied after the builtin static files,
-# so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ["_static"]
-
-# These paths are either relative to html_static_path
-# or fully qualified paths (eg. https://...)
-html_css_files = [
-    "css/custom.css",
-    "github_issue_links.css",
-    "custom.css",
-    "header.css",
-]
-
-html_js_files = ["header-nav.js"]
-if "github_issues" in html_context and html_context["github_issues"]:
-    html_js_files.append("github_issue_links.js")
+# Github config
+github_username = "canonical"
+github_repository = "rockcraft"
 
 # Do (not) include module names.
 add_module_names = True
@@ -223,8 +122,56 @@ always_document_param_types = True
 typehints_document_rtype = True
 linkcheck_anchors_ignore = ["slice-definitions"]
 
+linkcheck_retries = 3
+
 # Enable support for google-style instance attributes.
 napoleon_use_ivar = True
+
+# endregion
+
+# TODO: this is a boilerplate copy from the sphinx-docs. It should
+# be built on top of it instead of duplicating its content
+# Not found
+# The URL prefix for the notfound extension depends on whether the documentation uses versions.
+# For documentation on documentation.ubuntu.com, we also must add the slug.
+url_version = ""
+url_lang = ""
+slug = "rockcraft"
+
+# Determine if the URL uses versions and language
+if (
+    "READTHEDOCS_CANONICAL_URL" in os.environ
+    and os.environ["READTHEDOCS_CANONICAL_URL"]
+):
+    url_parts = os.environ["READTHEDOCS_CANONICAL_URL"].split("/")
+
+    if (
+        len(url_parts) >= 2
+        and "READTHEDOCS_VERSION" in os.environ
+        and os.environ["READTHEDOCS_VERSION"] == url_parts[-2]
+    ):
+        url_version = url_parts[-2] + "/"
+
+    if (
+        len(url_parts) >= 3
+        and "READTHEDOCS_LANGUAGE" in os.environ
+        and os.environ["READTHEDOCS_LANGUAGE"] == url_parts[-3]
+    ):
+        url_lang = url_parts[-3] + "/"
+
+# Set notfound_urls_prefix to the slug (if defined) and the version/language affix
+if slug:
+    notfound_urls_prefix = "/" + slug + "/" + url_lang + url_version
+elif len(url_lang + url_version) > 0:
+    notfound_urls_prefix = "/" + url_lang + url_version
+else:
+    notfound_urls_prefix = ""
+
+notfound_context = {
+    "title": "Page not found",
+    "body": "<p><strong>Sorry, but the documentation page that you are looking for was not found.</strong></p>\n\n<p>Documentation changes over time, and pages are moved around. We try to redirect you to the updated content where possible, but unfortunately, that didn't work this time (maybe because the content you were looking for does not exist in this version of the documentation).</p>\n<p>You can try to use the navigation to locate the content you're looking for, or search for a similar page.</p>\n",
+}
+# endregion
 
 
 def generate_cli_docs(nil):
@@ -238,7 +185,7 @@ def setup(app):
 
 # Setup libraries documentation snippets for use in rockcraft docs.
 common_docs_path = pathlib.Path(__file__).parent / "common"
-craft_parts_docs_path = pathlib.Path(craft_parts_docs.__file__).parent
+craft_parts_docs_path = pathlib.Path(craft_parts_docs.__file__).parent / "craft-parts"
 (common_docs_path / "craft-parts").unlink(missing_ok=True)
 (common_docs_path / "craft-parts").symlink_to(
     craft_parts_docs_path, target_is_directory=True

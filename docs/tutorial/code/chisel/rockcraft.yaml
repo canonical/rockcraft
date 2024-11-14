@@ -1,0 +1,16 @@
+name: chiselled-hello
+summary: Hello world from Chisel slices
+description: A "bare" rock containing the "hello" package binaries from Chisel slices.
+license: Apache-2.0
+
+version: "latest"
+base: bare
+build_base: "ubuntu@22.04"
+platforms:
+  amd64:
+
+parts:
+  hello:
+    plugin: nil
+    stage-packages:
+      - hello_bins
