@@ -119,12 +119,10 @@ Pack the rock:
     :end-before: [docs:pack-end]
     :dedent: 2
 
-.. note::
+Depending on the network, this step can take a couple of minutes to finish.
 
-    Depending on the network, this step can take a couple of minutes to finish.
-
-    ``ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS`` is required whilst the ``go-framework``
-    extension is experimental.
+``ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS`` is required while the ``go-framework``
+extension is experimental.
 
 Once Rockcraft has finished packing the Go rock, we'll find a new file in
 the working directory (an `OCI <OCI_image_spec_>`_ image) with the ``.rock``
