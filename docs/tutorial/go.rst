@@ -122,7 +122,7 @@ Pack the rock:
     extension is experimental.
 
 Once Rockcraft has finished packing the Go rock, we'll find a new file in
-the working directory (an `OCI <OCI_image_spec_>`_ archive) with the ``.rock``
+the working directory (an `OCI <OCI_image_spec_>`_ image) with the ``.rock``
 extension:
 
 .. literalinclude:: code/go/task.yaml
@@ -172,10 +172,6 @@ size:
 
     REPOSITORY       TAG       IMAGE ID       CREATED         SIZE
     go-hello-world   0.1       f3abf7ebc169   5 minutes ago   15.7MB
-
-.. note::
-    The size of the image reported by Docker is the uncompressed size which is
-    larger than the size of the compressed ``.rock`` file.
 
 Now we're finally ready to run the rock and test the containerised Go
 application:
