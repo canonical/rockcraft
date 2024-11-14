@@ -5,7 +5,7 @@ license: Apache-2.0
 
 version: "latest"
 base: bare
-build_base: "ubuntu@22.04"
+build-base: "ubuntu@22.04"
 platforms:
   amd64:
 
