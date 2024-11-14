@@ -202,7 +202,7 @@ The Go application should again respond with ``Hello, world!``.
 View the application logs
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-When deploying the Go rock, we can always get the application logs via
+When deploying the Go rock, we can always get the application logs with
 :ref:`pebble_explanation_page`:
 
 .. literalinclude:: code/go/task.yaml
