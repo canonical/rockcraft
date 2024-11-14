@@ -99,7 +99,7 @@ the host. For example, if the host uses the ARM
 architecture, include ``arm64`` in ``platforms``.
 
 .. note::
-    For this tutorial, we'll use the ``name`` ``go-hello-world`` and assume
+    For this tutorial, we name the rock ``go-hello-world`` and assume
     we are running on an ``amd64`` platform. Check the architecture of the
     system using ``dpkg --print-architecture``.
 
