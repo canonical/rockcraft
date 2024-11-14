@@ -84,7 +84,7 @@ Pack the Go application into a rock
 
 
 First, we'll need a ``rockcraft.yaml`` file. Rockcraft will automate its
-creation and tailor it for a Go application by using the
+creation and tailor it for a Go application when we tell it to use the
 ``go-framework`` profile:
 
 .. literalinclude:: code/go/task.yaml
