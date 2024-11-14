@@ -3,9 +3,8 @@
 Build a rock for a Go application
 ------------------------------------
 
-In this tutorial, we'll create a simple Go application and learn how to
-containerise it in a rock, using Rockcraft's ``go-framework``
-:ref:`extension <go-framework-reference>`.
+In this tutorial, we'll containerise a simple Go application into a rock using
+Rockcraft's ``go-framework`` :ref:`extension <go-framework-reference>`.
 
 Setup
 =====
