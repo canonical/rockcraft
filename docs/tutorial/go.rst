@@ -252,7 +252,7 @@ look like the following:
     :language: go
 
 Since we are creating a new version of the application, open the
-``rockcraft.yaml`` file and change the ``version`` (e.g. to ``0.2``).
+``rockcraft.yaml`` file and set ``version: "0.2"``.
 
 .. note::
 
