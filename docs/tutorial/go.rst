@@ -281,8 +281,7 @@ Finally, use ``curl`` to send a request to the ``/time`` endpoint:
     :end-before: [docs:curl-time-end]
     :dedent: 2
 
-The updated application should respond with the current date and time (e.g.
-``2024-06-21 09:47:56``).
+The updated application will respond with the current date and time.
 
 .. note::
 
