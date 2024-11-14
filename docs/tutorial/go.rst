@@ -12,10 +12,9 @@ Setup
 
 .. include:: /reuse/tutorial/setup.rst
 
-.. note::
-    This tutorial requires the ``latest/edge`` channel of Rockcraft. Use
-    ``sudo snap refresh rockcraft --channel latest/edge`` to get the latest
-    edge version.
+This tutorial requires the ``latest/edge`` channel of Rockcraft. Run
+``sudo snap refresh rockcraft --channel latest/edge`` to get the latest
+edge version.
 
 Finally, create a new directory for this tutorial and go inside it:
 
