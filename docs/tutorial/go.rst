@@ -61,8 +61,13 @@ Build the Go application so it can be run:
 
 A binary called ``go-hello-world`` is created in the current
 directory. This binary is only needed for local testing, as
-Rockcraft will compile the Go application. Run the Go application using
-``./go-hello-world`` to verify that it works.
+Rockcraft will compile the Go application when we pack the rock.
+
+Let's Run the Go application to verify that it works:
+
+.. code:: bash
+  
+  ./go-hello-world
 
 The application starts an HTTP server listening on port 8000
 that we can test by using ``curl`` to send a request to the root
