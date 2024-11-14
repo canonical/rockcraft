@@ -66,7 +66,7 @@ Rockcraft will compile the Go application. Run the Go application using
 
 The application starts an HTTP server listening on port 8000
 that we can test by using ``curl`` to send a request to the root
-endpoint. We may need a new terminal for this, if we are using Multipass use
+endpoint. We may need a new terminal for this -- if using Multipass, run
 ``multipass shell rock-dev`` to get another terminal:
 
 .. literalinclude:: code/go/task.yaml
