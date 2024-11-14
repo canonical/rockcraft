@@ -196,7 +196,7 @@ application's root endpoint which is running inside the container:
     :end-before: [docs:curl-go-rock-end]
     :dedent: 2
 
-The Go application should again respond with ``Hello, world!``.
+The Go application again responds with ``Hello, world!``.
 
 
 View the application logs
