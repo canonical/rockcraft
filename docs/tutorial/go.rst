@@ -93,8 +93,7 @@ creation and tailor it for a Go application when we tell it to use the
     :end-before: [docs:create-rockcraft-yaml-end]
     :dedent: 2
 
-The ``rockcraft.yaml`` file will automatically be created in the project working
-directory. Open it in a text editor and check that the ``name`` is
+Open ``rockcraft.yaml`` in a text editor and check that the ``name`` key is set to
 ``go-hello-world``. Ensure that ``platforms`` includes the architecture of
 the host. For example, if the host uses the ARM
 architecture, include ``arm64`` in ``platforms``.
