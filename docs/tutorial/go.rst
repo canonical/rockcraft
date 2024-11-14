@@ -59,7 +59,7 @@ Build the Go application so it can be run:
     :end-before: [docs:go-build-end]
     :dedent: 2
 
-A new binary named ``go-hello-world`` should be in the current
+A binary called ``go-hello-world`` is created in the current
 directory. This binary is only needed for local testing, as
 Rockcraft will compile the Go application. Run the Go application using
 ``./go-hello-world`` to verify that it works.
