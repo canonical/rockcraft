@@ -1,3 +1,10 @@
+ifneq ($(shell which snap),)
+	TOOL_INSTALLER := sudo $(shell which snap)
+else ifneq ($(shell which brew),)
+	TOOL_INSTALLER := $(shell which brew)
+else
+	TOOL_INSTALLER := uv
+endif
 RUFF := $(shell ruff --version 2> /dev/null)
 
 .PHONY: help
@@ -5,6 +12,10 @@ help: ## Show this help.
 	@printf "%-40s %s\n" "Target" "Description"
 	@printf "%-40s %s\n" "------" "-----------"
 	@fgrep " ## " $(MAKEFILE_LIST) | fgrep -v grep | awk -F ': .*## ' '{$$1 = sprintf("%-40s", $$1)} 1'
+
+.PHONY: setup
+setup: setup-uv ## Set up a development environment
+	uv sync --frozen
 
 .PHONY: autoformat
 autoformat: ## Run automatic code formatters.
@@ -60,8 +71,7 @@ rundocs: ## start a documentation runserver
 
 .PHONY: dist
 dist: clean ## Build python package.
-	python setup.py sdist
-	python setup.py bdist_wheel
+	python -m build
 	ls -l dist
 
 .PHONY: freeze-requirements
@@ -70,7 +80,7 @@ freeze-requirements:  ## Re-freeze requirements.
 
 .PHONY: install
 install: clean ## Install python package.
-	python setup.py install
+	pip install -e .
 
 .PHONY: lint
 lint: test-black test-codespell test-mypy test-pyright test-ruff test-sphinx-lint test-shellcheck ## Run all linting tests.
@@ -134,3 +144,14 @@ test-docs: installdocs ## Run docs tests.
 
 .PHONY: tests
 tests: lint test-integrations test-units test-docs ## Run all tests.
+
+.PHONY: setup-uv
+setup-uv: # Install uv
+ifneq ($(shell which uv),)
+else ifneq ($(shell which snap),)
+	sudo snap install --classic astral-uv
+else ifeq ($(OS),Windows_NT)
+	powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+else
+	curl -LsSf https://astral.sh/uv/install.sh | sh
+endif
