@@ -38,7 +38,6 @@ dev = [
     "canonical-sphinx[full]",
     "codespell",
     "coverage",
-    "mccabe<0.7.0",
     "mypy",
     "pyspelling",
     "pytest",
