@@ -154,16 +154,6 @@ extension:
     :end-before: [docs:ls-rock-end]
     :dedent: 2
 
-.. note::
-    If we changed the ``name`` or ``version`` in ``rockcraft.yaml`` or are not
-    on an ``amd64`` platform, the name of the ``.rock`` file will be different.
-
-    By default, the ``go-framework`` will use the ``bare`` base.
-    The ``bare`` base is recommended for production applications because
-    the image size will be smaller, and the risk of security issues lower.
-    However, we may want to change the base to ``ubuntu@24.04`` during the
-    development process to benefit from the extra utilities provided.
-
 
 Run the Go rock with Docker
 ===========================
