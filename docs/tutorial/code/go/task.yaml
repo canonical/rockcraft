@@ -37,8 +37,12 @@ execute: |
   # [docs:create-rockcraft-yaml-end]
   sed -i "s/name: .*/name: go-hello-world/g" rockcraft.yaml
 
+  # [docs:experimental]
+  export ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS=true
+  # [docs:experimental-end]
+
   # [docs:pack]
-  ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS=true rockcraft pack
+  rockcraft pack
   # [docs:pack-end]
 
   # [docs:ls-rock]
@@ -81,7 +85,7 @@ execute: |
   cp main.go.time main.go
 
   # [docs:docker-run-update]
-  ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS=true rockcraft pack
+  rockcraft pack
   rockcraft.skopeo --insecure-policy \
     copy oci-archive:go-hello-world_0.2_amd64.rock \
     docker-daemon:go-hello-world:0.2

@@ -15,20 +15,7 @@ This tutorial requires the ``latest/edge`` channel of Rockcraft. Run
 ``sudo snap refresh rockcraft --channel latest/edge`` to get the latest
 edge version.
 
-Finally, create a new directory for this tutorial and enter it:
-
-.. code-block:: bash
-
-   mkdir go-hello-world
-   cd go-hello-world
-
-Create the Go application
-==============================
-
-Start by creating the "Hello, world" Go application that will be used for
-this tutorial.
-
-In order to test the Go application locally (before packing it into a rock),
+In order to test the Go application locally, before packing it into a rock,
 install ``go``.
 
 .. literalinclude:: code/go/task.yaml
@@ -36,6 +23,20 @@ install ``go``.
     :start-after: [docs:install-go]
     :end-before: [docs:install-go-end]
     :dedent: 2
+
+
+Create the Go application
+==============================
+
+Start by creating the "Hello, world" Go application that will be used for
+this tutorial.
+
+Create a new directory for this tutorial and enter it:
+
+.. code-block:: bash
+
+   mkdir go-hello-world
+   cd go-hello-world
 
 Initialise the new Go module:
 
@@ -66,7 +67,7 @@ Rockcraft will compile the Go application when we pack the rock.
 Let's Run the Go application to verify that it works:
 
 .. code:: bash
-  
+
   ./go-hello-world
 
 The application starts an HTTP server listening on port 8000
@@ -82,7 +83,8 @@ endpoint. We may need a new terminal for this -- if using Multipass, run
 
 The Go application should respond with ``Hello, world!``.
 
-The Go application looks good, so let's stop it for now with :kbd:`Ctrl` + :kbd:`C`.
+The Go application looks good, so let's stop it for now
+with :kbd:`Ctrl` + :kbd:`C`.
 
 Pack the Go application into a rock
 ===================================
@@ -98,9 +100,9 @@ creation and tailor it for a Go application when we tell it to use the
     :end-before: [docs:create-rockcraft-yaml-end]
     :dedent: 2
 
-Open ``rockcraft.yaml`` in a text editor and check that the ``name`` key is set to
-``go-hello-world``. Ensure that ``platforms`` includes the architecture of
-the host. For example, if the host uses the ARM
+Open ``rockcraft.yaml`` in a text editor and check that the ``name``
+key is set to ``go-hello-world``. Ensure that ``platforms`` includes
+the architecture of the host. For example, if the host uses the ARM
 architecture, include ``arm64`` in ``platforms``.
 
 .. note::
@@ -111,6 +113,16 @@ architecture, include ``arm64`` in ``platforms``.
     The ``name``, ``version`` and ``platform`` all influence the name of the
     generated ``.rock`` file.
 
+
+As the ``go-framework`` extension is still experimental, export the
+environment variable ``ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS``:
+
+.. literalinclude:: code/go/task.yaml
+    :language: bash
+    :start-after: [docs:experimental]
+    :end-before: [docs:experimental-end]
+    :dedent: 2
+
 Pack the rock:
 
 .. literalinclude:: code/go/task.yaml
@@ -120,9 +132,6 @@ Pack the rock:
     :dedent: 2
 
 Depending on the network, this step can take a couple of minutes to finish.
-
-``ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS`` is required while the ``go-framework``
-extension is experimental.
 
 Once Rockcraft has finished packing the Go rock, we'll find a new file in
 the working directory (an `OCI <OCI_image_spec_>`_ image) with the ``.rock``
