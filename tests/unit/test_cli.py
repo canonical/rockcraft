@@ -159,7 +159,15 @@ def test_run_init_flask(mocker, emitter, monkeypatch, new_dir, tmp_path):
                 # s390x:
 
             # to ensure the flask-framework extension works properly, your Flask application
-            # should have an `app.py` file with an `app` object as the WSGI entrypoint.
+            # should have a WSGI entrypoint variable named `app`. This variable has to be defined
+            # in one of the following places:
+            #   1. `app.py` file in the base directory
+            #   2. `main.py` file in the base directory
+            #   3. In any of the following directories, the extension will look for the variable
+            #      in the files  __init__.py, app.py or main.py:
+            #     a. `app` directory.
+            #     b. `src` directory.
+            #     c. A directory with the same name as the project.
             # a `requirements.txt` file with at least the flask package should also exist.
             # see {versioned_url}/reference/extensions/flask-framework
             # for more information.
