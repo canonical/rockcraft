@@ -16,8 +16,8 @@ Keywords
 --------
 
 In addition to the common :ref:`plugin <part-properties-plugin>` and
-:ref:`sources <part-properties-sources>` keywords, this plugin provides the following
-plugin-specific keywords:
+:ref:`sources <part-properties-sources>` keywords, this plugin
+provides the following plugin-specific keywords:
 
 maven-parameters
 ~~~~~~~~~~~~~~~~
@@ -29,16 +29,18 @@ Used to add additional parameters to the ``mvn package`` command line.
 Environment variables
 ---------------------
 
-This plugin reads the ``http_proxy`` and ``https_proxy`` variables from the environment
-to configure Maven proxy access. A comma-separated list of hosts that should not be
-accessed via proxy is read from the ``no_proxy`` environment variable.
-The plugin writes the proxy configuration in ``$CRAFT_PART_BUILD/.parts/.m2/settings.xml``.
+This plugin reads the ``http_proxy`` and ``https_proxy`` variables
+from the environment to configure Maven proxy access. A
+comma-separated list of hosts that should not be accessed via proxy is
+read from the ``no_proxy`` environment variable. The plugin writes the
+proxy configuration in ``$CRAFT_PART_BUILD/.parts/.m2/settings.xml``.
 
 This plugin will set the ``JAVA_HOME`` environment variable to the
 path to the latest JDK found in the build environment.
 
-Please refer to `Configuring Apache Maven <https://maven.apache.org/configure.html>`_ for
-a list of environment variables used to configure Maven.
+Please refer to
+`Configuring Apache Maven <https://maven.apache.org/configure.html>`_
+for a list of environment variables used to configure Maven.
 
 
 .. _rockcraft_maven-details-begin:
@@ -46,12 +48,14 @@ a list of environment variables used to configure Maven.
 Dependencies
 ------------
 
-The plugin expects Maven to be available on the system as the ``mvn`` executable, unless
-a part named ``maven-deps`` is defined. In this case, the plugin will assume that this
-part will stage the ``mvn`` executable to be used in the build step.
+The plugin expects Maven to be available on the system as the ``mvn``
+executable, unless a part named ``maven-deps`` is defined. In this
+case, the plugin will assume that this part will stage the ``mvn``
+executable to be used in the build step.
 
-Note that the Maven plugin does not make a Java runtime available in the target
-environment. This must be handled by the developer when defining the part, according to
-each application's runtime requirements.
+Note that the Maven plugin does not make a Java runtime available in
+the target environment. This must be handled by the developer when
+defining the part, according to each application's runtime
+requirements.
 
 .. _rockcraft_maven-details-end:
