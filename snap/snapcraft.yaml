@@ -85,6 +85,8 @@ parts:
         - "PIP_NO_BINARY": ":all:"
     organize:
         bin/craftctl: libexec/rockcraft/craftctl
+        # Extensions currently expect to find data files in share/rockcraft/
+        "**/site-packages/extensions": share/rockcraft/extensions
     override-build: |
       ${SNAP}/libexec/snapcraft/craftctl default
 

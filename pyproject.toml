@@ -87,11 +87,8 @@ build-backend = "setuptools.build_meta"
 readme = {file = "README.rst"}
 
 [tool.setuptools.packages.find]
-include = ["rockcraft"]
-namespaces = false
-
-[tool.setuptools.package-data]
-"share.rockcraft" = ["extensions"]
+include = ["rockcraft", "extensions"]
+namespaces = true
 
 [tool.setuptools_scm]
 write_to = "rockcraft/_version.py"
