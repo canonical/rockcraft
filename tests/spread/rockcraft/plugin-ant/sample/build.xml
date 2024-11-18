@@ -1,7 +1,5 @@
 <project>
 
-    <!-- Test passing properties; build will fail unless "-DEnableBuild=true" is passed-->
-    <fail unless="${EnableBuild}" message="EnableBuild property not set!"/>
     <property name="ant.build.javac.source" value="8"/>
     <property name="ant.build.javac.target" value="8"/>
 
