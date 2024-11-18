@@ -483,7 +483,7 @@ def load_project(filename: Path) -> dict[str, Any]:
         msg = err.strerror
         if err.filename:
             msg = f"{msg}: {err.filename!r}."
-        raise ProjectLoadError(msg) from err
+        raise ProjectLoadError(msg) from err  # type: ignore
 
     return transform_yaml(filename.parent, yaml_data)
 
