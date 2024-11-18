@@ -17,5 +17,5 @@ parts:
      - openjdk-21-jre-headless_core
      - base-files_base
     build-packages:
-      - maven
+      - ant
       - openjdk-21-jdk-headless
