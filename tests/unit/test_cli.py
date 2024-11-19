@@ -184,8 +184,8 @@ def test_run_init_flask(mocker, emitter, monkeypatch, new_dir, tmp_path):
 
             # uncomment this section to enable the async workers for Gunicorn.
             #   flask-framework/async-dependencies:
-            #     plugin: python
-            #     source: .
+            #       python-packages:
+            #       - gunicorn[gevent]
 
             # you may need Ubuntu packages to build a python dependency. Add them here if necessary.
             #   flask-framework/dependencies:
@@ -222,6 +222,86 @@ def test_run_init_flask(mocker, emitter, monkeypatch, new_dir, tmp_path):
             f"""\
         Created 'rockcraft.yaml'.
         Go to {versioned_url}/reference/extensions/flask-framework to read more about the 'flask-framework' profile."""
+        )
+    )
+    monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "0")
+    project.Project.unmarshal(extensions.apply_extensions(tmp_path, rock_project_yaml))
+
+
+def test_run_init_django(mocker, emitter, monkeypatch, django_dir, tmp_path):
+
+    mocker.patch.object(
+        sys,
+        "argv",
+        ["rockcraft", "init", "--profile=django-framework", "--name", "test-name"],
+    )
+
+    cli.run()
+
+    versioned_url = APP_METADATA.versioned_docs_url
+
+    rockcraft_yaml_path = Path("rockcraft.yaml")
+    rock_project_yaml = yaml.safe_load(rockcraft_yaml_path.read_text())
+
+    assert len(rock_project_yaml["summary"]) < 80
+    assert len(rock_project_yaml["description"].split()) < 100
+    assert rockcraft_yaml_path.read_text() == textwrap.dedent(
+        f"""\
+                name: test-name
+                # see {versioned_url}/explanation/bases/
+                # for more information about bases and using 'bare' bases for chiselled rocks
+                base: ubuntu@22.04 # the base environment for this Django application
+                version: '0.1' # just for humans. Semantic versioning is recommended
+                summary: A summary of your Django application # 79 char long summary
+                description: |
+                    This is test-name's description. You have a paragraph or two to tell the
+                    most important story about it. Keep it under 100 words though,
+                    we live in tweetspace and your description wants to look good in the
+                    container registries out there.
+                # the platforms this rock should be built on and run on.
+                # you can check your architecture with `dpkg --print-architecture`
+                platforms:
+                    amd64:
+                    # arm64:
+                    # ppc64el:
+                    # s390x:
+
+                # to ensure the django-framework extension functions properly, your Django project
+                # should have a structure similar to the following with ./test_name/test_name/wsgi.py
+                # being the WSGI entry point and contain an application object.
+                # +-- test_name
+                # |   |-- test_name
+                # |   |   |-- wsgi.py
+                # |   |   +-- ...
+                # |   |-- manage.py
+                # |   |-- migrate.sh
+                # |   +-- some_app
+                # |       |-- views.py
+                # |       +-- ...
+                # |-- requirements.txt
+                # +-- rockcraft.yaml
+
+                extensions:
+                    - django-framework
+
+                # uncomment the sections you need and adjust according to your requirements.
+                # parts:
+                #   django-framework/dependencies:
+                #     stage-packages:
+                #       # list required packages or slices for your Django application below.
+                #       - libpq-dev
+                # uncomment this section to enable the async workers for Gunicorn.
+                #   django-framework/async-dependencies:
+                #       python-packages:
+                #       - gunicorn[gevent]
+
+        """
+    )
+    emitter.assert_message(
+        textwrap.dedent(
+            """\
+        Created 'rockcraft.yaml'."""
+            # Go to {versioned_url}/reference/extensions/django-framework to read more about the 'django-framework' profile.
         )
     )
     monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "0")

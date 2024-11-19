@@ -132,8 +132,8 @@ class InitCommand(AppCommand):
 
                 # uncomment this section to enable the async workers for Gunicorn.
                 #   flask-framework/async-dependencies:
-                #     plugin: python
-                #     source: .
+                #       python-packages:
+                #       - gunicorn[gevent]
 
                 # you may need Ubuntu packages to build a python dependency. Add them here if necessary.
                 #   flask-framework/dependencies:
@@ -215,8 +215,9 @@ class InitCommand(AppCommand):
                 #       - libpq-dev
                 # uncomment this section to enable the async workers for Gunicorn.
                 #   django-framework/async-dependencies:
-                #     plugin: python
-                #     source: .
+                #       python-packages:
+                #       - gunicorn[gevent]
+
             """
             )
         ),

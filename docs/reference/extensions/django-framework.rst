@@ -43,6 +43,9 @@ application. In the following example we use it to specify ``libpq-dev``:
         # list required packages or slices for your Django application below.
         - libpq-dev
 
+.. warning::
+  You can only use 1 of the dependencies parts at a time.
+
 ``parts`` > ``django-framework/async-dependencies``
 =================================================================
 
@@ -55,9 +58,10 @@ In the following example we use it to specify ``libpq-dev``:
 
   parts:
     django-framework/async-dependencies:
-      stage-packages:
-        # list required packages or slices for your django app below.
-        - libpq-dev
+      python-packages:
+        - gunicorn[gevent]
+
+If your project needs additional dependencies, you can add them to `stage-packages`.
 
 .. warning::
   You can only use 1 of the dependencies parts at a time.

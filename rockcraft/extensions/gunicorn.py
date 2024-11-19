@@ -111,11 +111,6 @@ class _GunicornBase(Extension):
         if f"{self.framework}-framework/async-dependencies" in self.yaml_data.get(
             "parts", {}
         ):
-            yaml_parts = self.yaml_data.get("parts", {})
-            if yaml_parts.get(f"{self.framework}-framework/dependencies", None):
-                raise ExtensionError(
-                    f"Cannot have both sync and async dependencies. https://documentation.ubuntu.com/rockcraft/en/latest/reference/extensions/{self.framework}-framework/#parts-{self.framework}-framework-async-dependencies"
-                )
             parts = dict(async_dependencies, **parts)
         else:
             parts = dict(sync_dependencies, **parts)
@@ -298,12 +293,25 @@ class FlaskFramework(_GunicornBase):
 
         return []
 
+    def _dependencies_error_messages(self) -> list[str]:
+        """Ensure only 1 of the dependencies parts is defined."""
+        yaml_parts = self.yaml_data.get("parts", {})
+
+        if yaml_parts.get(
+            f"{self.framework}-framework/async-dependencies", None
+        ) and yaml_parts.get(f"{self.framework}-framework/dependencies", None):
+            return [
+                f"Cannot have both sync and async dependencies. https://documentation.ubuntu.com/rockcraft/en/latest/reference/extensions/{self.framework}-framework/#parts-{self.framework}-framework-async-dependencies"
+            ]
+        return []
+
     @override
     def check_project(self) -> None:
         """Ensure this extension can apply to the current rockcraft project."""
         error_messages = self._requirements_txt_error_messages()
         if not self.yaml_data.get("services", {}).get("flask", {}).get("command"):
             error_messages += self._wsgi_path_error_messages()
+        error_messages += self._dependencies_error_messages()
         if error_messages:
             raise ExtensionError(
                 "\n".join("- " + message for message in error_messages),

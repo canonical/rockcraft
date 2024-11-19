@@ -41,6 +41,9 @@ application. In the following example we use it to specify ``libpq-dev``:
         # list required packages or slices for your flask app below.
         - libpq-dev
 
+.. warning::
+  You can only use 1 of the dependencies parts at a time.
+
 ``parts`` > ``flask-framework/async-dependencies``
 =================================================================
 
@@ -52,9 +55,10 @@ In the following example we use it to specify ``libpq-dev``:
 
   parts:
     flask-framework/async-dependencies:
-      stage-packages:
-        # list required packages or slices for your flask app below.
-        - libpq-dev
+      python-packages:
+        - gunicorn[gevent]
+
+If your project needs additional dependencies, you can add them to `stage-packages`.
 
 .. warning::
   You can only use 1 of the dependencies parts at a time.
