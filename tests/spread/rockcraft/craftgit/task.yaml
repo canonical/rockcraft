@@ -1,0 +1,7 @@
+summary: craft.git tool test
+
+execute: |
+  run_rockcraft pack
+
+  test -f craftgit-test_latest_amd64.rock
+  test ! -d parts -a ! -d stage -a ! -d prime
