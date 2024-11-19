@@ -61,7 +61,8 @@ In the following example we use it to specify ``libpq-dev``:
       python-packages:
         - gunicorn[gevent]
 
-If your project needs additional dependencies, you can add them to `stage-packages`.
+If your project needs additional dependencies, you can add them to
+``stage-packages``.
 
 .. warning::
   You can only use 1 of the dependencies parts at a time.
