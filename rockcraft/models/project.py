@@ -480,10 +480,10 @@ def load_project(filename: Path) -> dict[str, Any]:
         with open(filename, encoding="utf-8") as yaml_file:
             yaml_data = yaml.safe_load(yaml_file)
     except OSError as err:
-        msg = err.strerror
+        msg = err.strerror or "unknown"
         if err.filename:
             msg = f"{msg}: {err.filename!r}."
-        raise ProjectLoadError(msg) from err  # type: ignore
+        raise ProjectLoadError(msg) from err
 
     return transform_yaml(filename.parent, yaml_data)
 
