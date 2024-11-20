@@ -85,10 +85,12 @@ parts:
         - "PIP_NO_BINARY": ":all:"
     organize:
         bin/craftctl: libexec/rockcraft/craftctl
+        # Extensions currently expect to find data files in share/rockcraft/
+        "**/site-packages/extensions": share/rockcraft/extensions
     override-build: |
       ${SNAP}/libexec/snapcraft/craftctl default
 
-      version="$(python3 setup.py --version)"
+      version="$("${CRAFT_STAGE}/usr/bin/python3" -c "import rockcraft;print(rockcraft.__version__)")"
       ${SNAP}/libexec/snapcraft/craftctl set version="$version"
       [ -n "$(echo $version | grep "post")" ] && grade=devel || grade=stable
       ${SNAP}/libexec/snapcraft/craftctl set grade="${grade}"

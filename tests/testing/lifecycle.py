@@ -32,7 +32,7 @@ def run_mocked_lifecycle(
     mocker,
     base_layer_dir: pathlib.Path | None = None,
     step: str = "stage",
-    build_plan: list[models.BuildInfo]
+    build_plan: list[models.BuildInfo],
 ) -> RockcraftLifecycleService:
     """Run a project's lifecycle with a mocked base image."""
 
