@@ -1,9 +1,94 @@
+[project]
+name = "rockcraft"
+dynamic = ["version"]
+description = "Create rocks"
+license = {file = "LICENSE"}
+readme = "README.rst"
+requires-python = ">= 3.10"
+authors = [
+    { name = "Canonical Ltd.", email = "snapcraft@lists.snapcraft.io" },
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Operating System :: MacOS :: MacOS X",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+]
+dependencies = [
+    "craft-application>=4.0.0",
+    "craft-archives>=2.0.0",
+    "craft-cli",
+    "craft-parts>=2.1.2",
+    "craft-platforms~=0.3",
+    "craft-providers>=2.0.4",
+    "overrides",
+    "spdx-lookup",
+    "tabulate>=0.8.10",
+]
+
+[project.scripts]
+rockcraft = "rockcraft.cli:run"
+
+[project.optional-dependencies]
+dev = [
+    "black",
+    "canonical-sphinx[full]",
+    "codespell",
+    "coverage",
+    "mypy",
+    "pyspelling",
+    "pytest",
+    "pytest-check>=2.0",
+    "pytest-mock",
+    "pytest-subprocess",
+    "sphinx-autobuild",
+    "sphinx-autodoc-typehints",
+    "sphinx-lint",
+    "sphinx-toolbox",
+    "sphinxcontrib-details-directive",
+    "twine",
+    "types-pyyaml",
+    "types-requests",
+    "types-setuptools",
+    "types-tabulate>=0.9.0.2",
+    "wheel",
+]
+doc = [
+    "canonical-sphinx[full]",
+    "pyspelling",
+    "sphinx-autobuild",
+    "sphinx-autodoc-typehints",
+    "sphinx-lint",
+    "sphinx-toolbox",
+    "sphinxcontrib-details-directive",
+]
+release = [
+    "twine",
+    "wheel",
+]
+
+[project.urls]
+Documentation = "https://rockcraft.readthedocs.io/en/latest/"
+Homepage = "https://github.com/canonical/rockcraft"
+Issues = "https://github.com/canonical/rockcraft/issues"
+Source = "https://github.com/canonical/rockcraft.git"
+
 [build-system]
 requires = [
-    "setuptools~=70.0.0",
+    "setuptools>=69.0",
     "setuptools_scm[toml]>=7.1"
 ]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools.dynamic]
+readme = {file = "README.rst"}
+
+[tool.setuptools.packages.find]
+include = ["rockcraft", "extensions"]
+namespaces = true
 
 [tool.setuptools_scm]
 write_to = "rockcraft/_version.py"
@@ -34,6 +119,11 @@ line_length = 88
 # Use extend-exclude so that the default excludes (including those from .gitignore)
 # are not overwritten.
 extend-exclude = "docs/sphinx-starter-pack"
+
+[tool.codespell]
+quiet-level = 3
+skip = "./docs/_build,.direnv,.git,.mypy_cache,.pytest_cache,.venv,__pycache__,venv"
+ignore-words-list = "warmup,buildd,astroid"
 
 [tool.pyright]
 ignore = [
@@ -178,4 +268,3 @@ classmethod-decorators = ["pydantic.validator", "pydantic.root_validator"]
 ]
 # isort leaves init files alone by default, this makes ruff ignore them too.
 "__init__.py" = ["I001"]
-
