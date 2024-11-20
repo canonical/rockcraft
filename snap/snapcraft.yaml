@@ -65,14 +65,8 @@ parts:
     build-attributes:
       - enable-patchelf
     prime:
-      - "-usr/bin"
-      - "-usr/share/doc"
-      - "-usr/share/man"
-      # perl is part of the core22 / core24
-      - "-usr/share/perl"
-      - "-usr/lib/x86_64-linux-gnu/perl"
-      - "-usr/lib/x86_64-linux-gnu/libperl*"
-      - "-usr/lib/x86_64-linux-gnu/libgdbm*"
+      - "usr/lib/git-core"
+      - "usr/share/git-core"
 
   libgit2: # part came from snapcraft@5fbaab144842f
     source: https://github.com/libgit2/libgit2/archive/refs/tags/v1.7.1.tar.gz
