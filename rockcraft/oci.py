@@ -36,7 +36,6 @@ from rockcraft import errors, layers
 from rockcraft.architectures import SUPPORTED_ARCHS
 from rockcraft.constants import ROCK_CONTROL_DIR
 from rockcraft.pebble import Pebble
-from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
 from rockcraft.utils import get_snap_command_path
 
 logger = logging.getLogger(__name__)
