@@ -36,6 +36,7 @@ from rockcraft import errors, layers
 from rockcraft.architectures import SUPPORTED_ARCHS
 from rockcraft.constants import ROCK_CONTROL_DIR
 from rockcraft.pebble import Pebble
+from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
 from rockcraft.utils import get_snap_command_path
 
 logger = logging.getLogger(__name__)
@@ -352,7 +353,9 @@ class Image:
         image_path = self.path / self.image_name
         params = ["--clear=config.entrypoint", "--config.user", str(userid)]
         _config_image(image_path, params)
-        emit.progress(f"Default user set to {userid}")
+        usernames = [k for k, v in SUPPORTED_GLOBAL_USERNAMES.items() if v == userid]
+        username = usernames[0] if usernames else None
+        emit.progress(f"Default user set to {userid} ({username})")
 
     def set_entrypoint(self, entrypoint_service: str | None, build_base: str) -> None:
         """Set the OCI image entrypoint. It is always Pebble."""
