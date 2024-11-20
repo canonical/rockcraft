@@ -148,7 +148,7 @@ def _pack(
         )
 
         emit.progress(f"Setting the default OCI user to be {project.run_user}")
-        new_image.set_default_userid(userid)
+        new_image.set_default_user(userid, project.run_user)
 
     emit.progress("Adding Pebble entrypoint")
 
