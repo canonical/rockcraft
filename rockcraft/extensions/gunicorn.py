@@ -301,7 +301,7 @@ class FlaskFramework(_GunicornBase):
             f"{self.framework}-framework/async-dependencies", None
         ) and yaml_parts.get(f"{self.framework}-framework/dependencies", None):
             return [
-                f"Cannot have both sync and async dependencies. https://documentation.ubuntu.com/rockcraft/en/latest/reference/extensions/{self.framework}-framework/#parts-{self.framework}-framework-async-dependencies"
+                f"Cannot have both sync and async dependencies. https://bit.ly/{self.framework}-async-doc"
             ]
         return []
 
