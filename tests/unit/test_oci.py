@@ -543,10 +543,10 @@ class TestImage:
         ]
         assert digest == bytes([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15])
 
-    def test_set_default_user(self, mock_run):
+    def test_set_default_userid(self, mock_run):
         image = oci.Image("a:b", Path("/c"))
 
-        image.set_default_user("foo")
+        image.set_default_userid(584792)
 
         assert mock_run.mock_calls == [
             call(
@@ -557,7 +557,7 @@ class TestImage:
                     "/c/a:b",
                     "--clear=config.entrypoint",
                     "--config.user",
-                    "foo",
+                    "584792",
                 ]
             )
         ]
