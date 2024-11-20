@@ -74,8 +74,6 @@ MESSAGE_INVALID_NAME = (
     "and may not have two hyphens in a row."
 )
 
-DEPRECATED_COLON_BASES = ["ubuntu:20.04", "ubuntu:22.04"]
-
 
 ProjectName = Annotated[
     str,
@@ -133,7 +131,7 @@ class BuildPlanner(BaseBuildPlanner):
 
     @staticmethod
     def _check_deprecated_base(base_value: str | None, field_name: str) -> str | None:
-        if base_value in DEPRECATED_COLON_BASES:
+        if base_value and base_value.startswith("ubuntu:"):
             at_value = base_value.replace(":", "@")
             message = (
                 f'Warning: use of ":" in field "{field_name}" is deprecated. '
