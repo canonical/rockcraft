@@ -71,6 +71,9 @@ parts:
       - "usr/lib/x86_64-linux-gnu/libpsl*"
       - "usr/lib/x86_64-linux-gnu/librtmp*"
       - "usr/lib/x86_64-linux-gnu/libnghttp2*"
+      - "usr/lib/x86_64-linux-gnu/libldap*"
+      - "usr/lib/x86_64-linux-gnu/liblber*"
+      - "usr/lib/x86_64-linux-gnu/libsasl2*"
 
   libgit2: # part came from snapcraft@5fbaab144842f
     source: https://github.com/libgit2/libgit2/archive/refs/tags/v1.7.1.tar.gz
