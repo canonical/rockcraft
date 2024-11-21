@@ -10,12 +10,12 @@ It should take 25 minutes for you to complete.
 
 You won’t need to come prepared with intricate knowledge of software
 packaging, but familiarity with Linux paradigms, terminal operations,
-and ``go`` is required.
+and Go is required.
 
-Once you complete this tutorial, you’ll have a working ``rock`` for a
-``go`` application. You’ll gain familiarity with Rockcraft and the
+Once you complete this tutorial, you’ll have a working rock for a
+Go application. You’ll gain familiarity with Rockcraft and the
 ``go-framework`` extension, and have the experience to create
-``rocks`` for ``go`` applications.
+rocks for Go applications.
 
 Setup
 =====
