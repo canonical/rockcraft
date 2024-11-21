@@ -247,7 +247,7 @@ respective image for now:
     :dedent: 2
 
 
-Update Go application
+Update the Go application
 ========================================
 
 As a final step, let's update our application. For example,
