@@ -5856,6 +5856,9 @@
       "anyOf": [
         {
           "const": "_daemon_",
+          "enum": [
+            "_daemon_"
+          ],
           "type": "string"
         },
         {
