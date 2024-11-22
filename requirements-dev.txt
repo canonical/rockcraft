@@ -78,7 +78,7 @@ craft-cli==2.9.0
     #   rockcraft (setup.py)
 craft-grammar==2.0.1
     # via craft-application
-craft-parts==2.1.2
+craft-parts==2.1.3
     # via
     #   craft-application
     #   rockcraft (setup.py)
