@@ -62,6 +62,12 @@ class Rockcraft(Application):
             "package",
             build_plan=self._build_plan,
         )
+        self.services.update_kwargs(
+            "init",
+            default_name="my-rock-name",
+            name_regex=project.PROJECT_NAME_COMPILED_REGEX,
+            invalid_name_message=project.MESSAGE_INVALID_NAME,
+        )
         super()._configure_services(provider_name)
 
     @override

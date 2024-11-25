@@ -46,12 +46,6 @@ def _create_app() -> "Rockcraft":
     app = Rockcraft(app=APP_METADATA, services=services)
 
     app.add_command_group(
-        "Other",
-        [
-            commands.InitCommand,
-        ],
-    )
-    app.add_command_group(
         "Extensions",
         [
             commands.ExtensionsCommand,

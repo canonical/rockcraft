@@ -18,7 +18,7 @@ chardet==5.2.0
     # via python-debian
 charset-normalizer==3.4.0
     # via requests
-craft-application==4.4.0
+craft-application==4.5.0
     # via rockcraft (pyproject.toml)
 craft-archives==2.0.1
     # via

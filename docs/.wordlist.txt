@@ -41,6 +41,7 @@ fileset
 filesets
 filesystem
 filesystems
+filetree
 fs
 gc
 GiB
