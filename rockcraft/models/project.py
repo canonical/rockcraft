@@ -66,7 +66,7 @@ Valid names for rocks. It matches the accepted values for pebble layer files:
 - must contain only lowercase letters [a-z], numbers [0-9] or hyphens
 - must not end with a hyphen, and must not contain two or more consecutive hyphens
 """
-_PROJECT_NAME_COMPILED_REGEX = re.compile(PROJECT_NAME_REGEX)
+PROJECT_NAME_COMPILED_REGEX = re.compile(PROJECT_NAME_REGEX)
 
 MESSAGE_INVALID_NAME = (
     "invalid name for rock: Names can only use ASCII lowercase letters, numbers, and hyphens. "
@@ -80,7 +80,7 @@ DEPRECATED_COLON_BASES = ["ubuntu:20.04", "ubuntu:22.04"]
 ProjectName = Annotated[
     str,
     pydantic.BeforeValidator(
-        get_validator_by_regex(_PROJECT_NAME_COMPILED_REGEX, MESSAGE_INVALID_NAME)
+        get_validator_by_regex(PROJECT_NAME_COMPILED_REGEX, MESSAGE_INVALID_NAME)
     ),
     pydantic.Field(
         min_length=1,

@@ -21,6 +21,7 @@
 import json
 import os
 import sys
+from pathlib import Path
 
 import yaml
 from craft_parts import Part
@@ -29,24 +30,18 @@ from craft_parts.plugins import plugins
 script_dir = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.join(script_dir, "../../"))
 
-from rockcraft import cli  # noqa: E402
+import rockcraft  # noqa: E402
 from rockcraft.models.project import Project  # noqa: E402
 
 
 def generate_project_schema() -> str:
     """Generate the schema."""
-    # Initialize the default template with a name
-    context = {
-        "name": "my-rock-name",
-        "versioned_url": "www.example.com",
-    }
-    # pylint: disable=W0212
-    init_template = cli.commands.InitCommand._PROFILES[
-        cli.commands.InitCommand._DEFAULT_PROFILE
-    ].rockcraft_yaml.format(**context)
+    # Render the default template with a name
+    template = Path(rockcraft.__file__).parent / "templates/simple/rockcraft.yaml.j2"
+    contents = template.read_text().replace("{{name}}", "my-rock-name")
 
     # Initiate a project with all required fields
-    project = Project.unmarshal(yaml.safe_load(init_template))
+    project = Project.unmarshal(yaml.safe_load(contents))
 
     # initiate the schema with the $id and $schema fields
     initial_schema = {
