@@ -546,7 +546,7 @@ class TestImage:
     def test_set_default_user(self, mock_run):
         image = oci.Image("a:b", Path("/c"))
 
-        image.set_default_user("foo")
+        image.set_default_user(584792, "_daemon_")
 
         assert mock_run.mock_calls == [
             call(
@@ -557,7 +557,7 @@ class TestImage:
                     "/c/a:b",
                     "--clear=config.entrypoint",
                     "--config.user",
-                    "foo",
+                    "584792",
                 ]
             )
         ]

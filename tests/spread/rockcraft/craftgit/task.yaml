@@ -1,0 +1,9 @@
+summary: craft.git tool test
+
+execute: |
+  run_rockcraft pack
+
+  test -f craftgit-test_latest_amd64.rock
+
+restore: |
+  rm -v craftgit-test_latest_amd64.rock
