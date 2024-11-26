@@ -48,9 +48,9 @@ application. In the following example we use it to specify ``libpq-dev``:
 =================================================================
 
 You can use this key to specify that you want to use async gunicorn workers in
-you Flask application. It also works just like ``flask-framework/dependencies``.
-In the following example we use it to specify ``libpq-dev``:
+your Flask application. It also works just like ``flask-framework/dependencies``.
 
+Just uncomment the following lines:
 .. code-block:: yaml
 
   parts:
@@ -58,8 +58,8 @@ In the following example we use it to specify ``libpq-dev``:
       python-packages:
         - gunicorn[gevent]
 
-If your project needs additional dependencies, you can add them to
-``stage-packages``.
+If your project needs additional debs to run, you can add them to
+``stage-packages`` just like it is done in ``flask-framework/dependencies``.
 
 .. warning::
   You can only use 1 of the dependencies parts at a time.
