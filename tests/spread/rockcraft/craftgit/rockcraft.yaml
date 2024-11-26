@@ -1,0 +1,25 @@
+name: craftgit-test
+version: latest
+base: ubuntu@24.04
+summary: Echo
+description: Just a dummy build to check if craft.git from package works
+platforms:
+  amd64:
+
+parts:
+  craftgit-test:
+    plugin: nil
+    source: .
+    override-pull: |
+      echo "checking if craft.git from snap is available during pull"
+      which craft.git | grep "$SNAP/libexec/rockcraft/craft.git"
+      craft.git clone --depth 1 https://git.launchpad.net/ubuntu/+source/hello
+    override-build: |
+      echo "checking if craft.git from snap is available during build"
+      which craft.git | grep "$SNAP/libexec/rockcraft/craft.git"
+    override-stage: |
+      echo "checking if craft.git from snap is available during stage"
+      which craft.git | grep "$SNAP/libexec/rockcraft/craft.git"
+    override-prime: |
+      echo "checking if craft.git from snap is available during prime"
+      which craft.git | grep "$SNAP/libexec/rockcraft/craft.git"
