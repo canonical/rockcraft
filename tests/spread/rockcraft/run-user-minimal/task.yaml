@@ -15,7 +15,7 @@ execute: |
   # Ensure container exists
   docker images run-user-minimal-test | MATCH "run-user-minimal-test"
   docker inspect run-user-minimal-test --format '{{.Config.User}}' | \
-    MATCH "_daemon_"
+    MATCH "584792"
 
   # ensure username
   docker run --rm --entrypoint /bin/sh run-user-minimal-test \
