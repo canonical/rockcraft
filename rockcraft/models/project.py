@@ -29,8 +29,14 @@ import pydantic
 import spdx_lookup  # type: ignore
 import yaml
 from craft_application.errors import CraftValidationError
-from craft_application.models import BuildInfo, Platform, get_validator_by_regex
-from craft_application.models import BuildPlanner as BaseBuildPlanner
+from craft_application.models import (
+    BuildInfo,
+    Platform,
+    get_validator_by_regex,
+)
+from craft_application.models import (
+    BuildPlanner as BaseBuildPlanner,
+)
 from craft_application.models import Project as BaseProject
 from craft_application.models.base import alias_generator
 from craft_platforms import rock
