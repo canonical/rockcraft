@@ -62,6 +62,7 @@ def test_go_extension_default(tmp_path, go_input_yaml):
                 "stage-packages": [
                     "ca-certificates_data",
                 ],
+                "build-snaps": ["chisel/latest/stable"],
             },
         },
         "services": {

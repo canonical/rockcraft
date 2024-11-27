@@ -71,15 +71,12 @@ class Extension(abc.ABC):
         """Return the parts to add to parts."""
 
     @final
-    def is_chisel_needed(self) -> bool:
-        """Determine whether chisel is needed."""
-        has_slices = False
+    def is_chisel_installed(self) -> bool:
+        """Determine whether chisel is installed in any part."""
         has_chisel = False
         parts = self.get_root_snippet().get("parts", {})
 
         for data in parts.values():
-            if any("_" in p for p in data.get("stage-packages", [])):
-                has_slices = True
             if any(
                 s
                 for s in data.get("build-snaps", [])
@@ -88,24 +85,25 @@ class Extension(abc.ABC):
                 has_chisel = True
                 break
 
-        if has_slices and not has_chisel:
-            return True
-        return False
+        if not has_chisel:
+            return False
+        return True
 
     @final
     def get_root_snippet_extended(self) -> dict[str, Any]:
         """Inject chisel as build-snap if needed."""
         root_snippet = self.get_root_snippet()
-        if self.is_chisel_needed():
-            first_part = list(root_snippet["parts"].keys())[0]
-            if root_snippet["parts"][first_part].get("build-snaps"):
-                root_snippet["parts"][first_part]["build-snaps"].append(
-                    "chisel/latest/stable"
-                )
-            else:
-                root_snippet["parts"][first_part]["build-snaps"] = [
-                    "chisel/latest/stable"
-                ]
+        if not self.is_chisel_installed():
+            for part, data in root_snippet.get("parts", {}).items():
+                if any("_" in p for p in data.get("stage-packages", [])):
+                    if root_snippet["parts"][part].get("build-snaps"):
+                        root_snippet["parts"][part]["build-snaps"].append(
+                            "chisel/latest/stable"
+                        )
+                    else:
+                        root_snippet["parts"][part]["build-snaps"] = [
+                            "chisel/latest/stable"
+                        ]
         return root_snippet
 
     @final
