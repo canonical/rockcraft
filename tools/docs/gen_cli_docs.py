@@ -5,6 +5,7 @@ import os
 import pathlib
 import sys
 
+import craft_cli
 from craft_cli.dispatcher import Dispatcher, _CustomArgumentParser
 
 this_dir = pathlib.Path(os.path.split(__file__)[0])
@@ -70,6 +71,12 @@ def main(docs_dir):
     commands_ref_dir = docs_dir / "reference" / "commands"
     if not commands_ref_dir.exists():
         commands_ref_dir.mkdir()
+
+    craft_cli.emit.init(
+        mode=craft_cli.EmitterMode.BRIEF,
+        appname="rockcraft-docs",
+        greeting=f"Starting doc generation for Rockcraft.",
+    )
 
     # Create a dispatcher like Rockcraft does to get access to the same options.
     app = cli._create_app()
