@@ -514,13 +514,18 @@ def _add_pebble_data(yaml_data: dict[str, Any]) -> None:
         # Invalid project: let it return to fail in the regular validation flow.
         return
 
-    parts = yaml_data["parts"]
-    if "pebble" in parts:
-        # Project already has a pebble part: this is not supported.
-        raise CraftValidationError('Cannot override the default "pebble" part')
-
     # do not modify the original data with pre-validators
     model = BuildPlanner.unmarshal(copy.deepcopy(yaml_data))
     build_base = model.build_base if model.build_base else model.base
+    pebble_part = Pebble.get_part_spec(build_base)
 
-    parts["pebble"] = Pebble.get_part_spec(build_base)
+    parts = yaml_data["parts"]
+    if "pebble" in parts:
+        if parts["pebble"] == pebble_part:
+            # Project already has the correct pebble part.
+            return
+        # Project already has a pebble part, and it's different from ours;
+        # this is currently not supported.
+        raise CraftValidationError('Cannot override the default "pebble" part')
+
+    parts["pebble"] = pebble_part
