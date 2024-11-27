@@ -22,6 +22,7 @@ from unittest.mock import DEFAULT, call
 import pytest
 import yaml
 from craft_cli import emit
+
 from rockcraft import cli, extensions, services
 from rockcraft.application import APP_METADATA, Rockcraft
 from rockcraft.models import project
@@ -185,7 +186,7 @@ def test_run_init_flask(mocker, emitter, monkeypatch, new_dir, tmp_path):
             # uncomment this section to enable the async workers for Gunicorn.
             #   flask-framework/async-dependencies:
             #       python-packages:
-            #       - gunicorn[gevent]
+            #         - gunicorn[gevent]
 
             # you may need Ubuntu packages to build a python dependency. Add them here if necessary.
             #   flask-framework/dependencies:
@@ -293,7 +294,7 @@ def test_run_init_django(mocker, emitter, monkeypatch, django_dir, tmp_path):
                 # uncomment this section to enable the async workers for Gunicorn.
                 #   django-framework/async-dependencies:
                 #       python-packages:
-                #       - gunicorn[gevent]
+                #         - gunicorn[gevent]
 
         """
     )
@@ -301,8 +302,9 @@ def test_run_init_django(mocker, emitter, monkeypatch, django_dir, tmp_path):
         textwrap.dedent(
             """\
         Created 'rockcraft.yaml'."""
-            # Go to {versioned_url}/reference/extensions/django-framework to read more about the 'django-framework' profile.
         )
     )
     monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "0")
+    project.Project.unmarshal(extensions.apply_extensions(tmp_path, rock_project_yaml))
+    project.Project.unmarshal(extensions.apply_extensions(tmp_path, rock_project_yaml))
     project.Project.unmarshal(extensions.apply_extensions(tmp_path, rock_project_yaml))
