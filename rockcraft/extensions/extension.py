@@ -24,6 +24,7 @@ from pathlib import Path
 from typing import Any, final
 
 from craft_cli import emit
+from craft_parts.parts import Part
 
 from rockcraft import errors
 
@@ -69,6 +70,35 @@ class Extension(abc.ABC):
     @abc.abstractmethod
     def get_parts_snippet(self) -> dict[str, Any]:
         """Return the parts to add to parts."""
+
+    @final
+    def is_chisel_needed(self) -> bool:
+        """Determine whether chisel is needed."""
+        has_slices = False
+        has_chisel = False
+        parts = self.get_root_snippet().get("parts", {})
+
+        for part, data in parts.items():
+            if Part(part, data).has_slices:
+                has_slices = True
+            if Part(part, data).has_chisel_as_build_snap:
+                has_chisel = True
+                break
+
+        if has_slices and not has_chisel:
+            return True
+        return False
+
+    @final
+    def get_root_snippet_extended(self) -> dict[str, Any]:
+        """Inject chisel as build-snap if needed."""
+        root_snippet = self.get_root_snippet()
+        if self.is_chisel_needed():
+            if root_snippet["parts"][0].get("build-snaps"):
+                root_snippet["parts"][0]["build-snaps"].append("chisel/latest/stable")
+            else:
+                root_snippet["parts"][0]["build-snaps"] = ["chisel/latest/stable"]
+        return root_snippet
 
     @final
     def validate(self, extension_name: str) -> None:
