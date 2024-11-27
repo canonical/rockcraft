@@ -264,7 +264,7 @@ class InitCommand(AppCommand):
 
                 #   go-framework/assets:
                 #     stage:
-                #       # by default, only the files in templates/ and static/
+                #       # by default, only the files migrate, migrate.sh, templates/ and static/,
                 #       # are copied into the image. You can modify the list below to override
                 #       # the default list and include or exclude specific files/directories
                 #       # in your project.
