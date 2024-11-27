@@ -24,7 +24,6 @@ from pathlib import Path
 from typing import Any, final
 
 from craft_cli import emit
-from craft_parts.parts import Part
 
 from rockcraft import errors
 
@@ -78,10 +77,14 @@ class Extension(abc.ABC):
         has_chisel = False
         parts = self.get_root_snippet().get("parts", {})
 
-        for part, data in parts.items():
-            if Part(part, data).has_slices:
+        for data in parts.values():
+            if any("_" in p for p in data.get("stage-packages", [])):
                 has_slices = True
-            if Part(part, data).has_chisel_as_build_snap:
+            if any(
+                s
+                for s in data.get("build-snaps", [])
+                if s == "chisel" or s.startswith("chisel/")
+            ):
                 has_chisel = True
                 break
 
