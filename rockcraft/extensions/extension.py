@@ -94,10 +94,15 @@ class Extension(abc.ABC):
         """Inject chisel as build-snap if needed."""
         root_snippet = self.get_root_snippet()
         if self.is_chisel_needed():
-            if root_snippet["parts"][0].get("build-snaps"):
-                root_snippet["parts"][0]["build-snaps"].append("chisel/latest/stable")
+            first_part = list(root_snippet["parts"].keys())[0]
+            if root_snippet["parts"][first_part].get("build-snaps"):
+                root_snippet["parts"][first_part]["build-snaps"].append(
+                    "chisel/latest/stable"
+                )
             else:
-                root_snippet["parts"][0]["build-snaps"] = ["chisel/latest/stable"]
+                root_snippet["parts"][first_part]["build-snaps"] = [
+                    "chisel/latest/stable"
+                ]
         return root_snippet
 
     @final
