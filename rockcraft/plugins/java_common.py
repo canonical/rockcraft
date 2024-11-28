@@ -18,6 +18,7 @@
    This module provides a function to create a /usr/bin/java symlink.
 """
 
+
 def create_usr_bin_java() -> list[str]:
     """Get the bash commands to create /usr/bin/java symlink."""
     return [
