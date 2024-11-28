@@ -37,6 +37,7 @@ There are 2 requirements to be able to use the ``django-framework`` extension:
    relative to the ``rockcraft.yaml`` file.
 
 .. _django_sync_deps:
+
 ``parts`` > ``django-framework/dependencies:`` > ``stage-packages``
 ===================================================================
 
@@ -52,6 +53,7 @@ application. In the following example we use it to specify ``libpq-dev``:
         - libpq-dev
 
 .. _django_async_deps:
+
 ``parts`` > ``django-framework/async-dependencies``
 ===================================================
 

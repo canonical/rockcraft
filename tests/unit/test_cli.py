@@ -153,10 +153,10 @@ def test_run_init_flask(mocker, emitter, monkeypatch, new_dir, tmp_path):
             # the platforms this rock should be built on and run on.
             # you can check your architecture with `dpkg --print-architecture`
             platforms:
-                amd64:
-                # arm64:
-                # ppc64el:
-                # s390x:
+              amd64:
+              # arm64:
+              # ppc64el:
+              # s390x:
 
             # to ensure the flask-framework extension works properly, your Flask application
             # should have an `app.py` file with an `app` object as the WSGI entrypoint.
@@ -164,7 +164,7 @@ def test_run_init_flask(mocker, emitter, monkeypatch, new_dir, tmp_path):
             # see {versioned_url}/reference/extensions/flask-framework
             # for more information.
             extensions:
-                - flask-framework
+              - flask-framework
 
             # uncomment the sections you need and adjust according to your requirements.
             # parts:  # you need to uncomment this line to add or update any part.
@@ -184,8 +184,8 @@ def test_run_init_flask(mocker, emitter, monkeypatch, new_dir, tmp_path):
 
             # uncomment this section to enable the async workers for Gunicorn.
             #   flask-framework/async-dependencies:
-            #       python-packages:
-            #         - gunicorn[gevent]
+            #     python-packages:
+            #       - gunicorn[gevent]
 
             # you may need Ubuntu packages to build a python dependency. Add them here if necessary.
             #   flask-framework/dependencies:
@@ -261,10 +261,10 @@ def test_run_init_django(mocker, emitter, monkeypatch, django_dir, tmp_path):
                 # the platforms this rock should be built on and run on.
                 # you can check your architecture with `dpkg --print-architecture`
                 platforms:
-                    amd64:
-                    # arm64:
-                    # ppc64el:
-                    # s390x:
+                  amd64:
+                  # arm64:
+                  # ppc64el:
+                  # s390x:
 
                 # to ensure the django-framework extension functions properly, your Django project
                 # should have a structure similar to the following with ./test_name/test_name/wsgi.py
@@ -282,7 +282,7 @@ def test_run_init_django(mocker, emitter, monkeypatch, django_dir, tmp_path):
                 # +-- rockcraft.yaml
 
                 extensions:
-                    - django-framework
+                  - django-framework
 
                 # uncomment the sections you need and adjust according to your requirements.
                 # parts:
@@ -292,8 +292,8 @@ def test_run_init_django(mocker, emitter, monkeypatch, django_dir, tmp_path):
                 #       - libpq-dev
                 # uncomment this section to enable the async workers for Gunicorn.
                 #   django-framework/async-dependencies:
-                #       python-packages:
-                #         - gunicorn[gevent]
+                #     python-packages:
+                #       - gunicorn[gevent]
 
         """
     )

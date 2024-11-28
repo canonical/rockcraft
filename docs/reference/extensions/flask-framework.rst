@@ -35,6 +35,7 @@ There are 2 requirements to be able to use the ``flask-framework`` extension:
    of the Flask object is set to ``app``
 
 .. _flask_sync_deps:
+
 ``parts`` > ``flask-framework/dependencies`` > ``stage-packages``
 =================================================================
 
@@ -50,6 +51,7 @@ application. In the following example we use it to specify ``libpq-dev``:
         - libpq-dev
 
 .. _flask_async_deps:
+
 ``parts`` > ``flask-framework/async-dependencies``
 =================================================================
 

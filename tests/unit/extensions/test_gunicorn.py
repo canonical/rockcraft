@@ -68,7 +68,7 @@ def test_flask_extension_default(tmp_path, flask_input_yaml, packages):
         "parts": {
             "flask-framework/config-files": {
                 "organize": {
-                    "gunicorn.conf.py": "flask/gunicorn.conf.py",
+                    "gunicorn.conf.py": "flask/sync-gunicorn.conf.py",
                 },
                 "plugin": "dump",
             },
@@ -465,7 +465,7 @@ def test_django_extension_default(tmp_path, django_input_yaml):
         "name": "foo-bar",
         "parts": {
             "django-framework/config-files": {
-                "organize": {"gunicorn.conf.py": "django/gunicorn.conf.py"},
+                "organize": {"gunicorn.conf.py": "django/sync-gunicorn.conf.py"},
                 "plugin": "dump",
             },
             "django-framework/dependencies": {

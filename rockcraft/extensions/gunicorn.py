@@ -121,9 +121,11 @@ class _GunicornBase(Extension):
         if f"{self.framework}-framework/async-dependencies" in self.yaml_data.get(
             "parts", {}
         ):
-            parts = dict(async_dependencies, async_config_file, **parts)
+            parts = dict(async_dependencies, **parts)
+            parts = dict(async_config_file, **parts)
         else:
-            parts = dict(sync_dependencies, sync_config_file, **parts)
+            parts = dict(sync_dependencies, **parts)
+            parts = dict(sync_config_file, **parts)
 
         if self.yaml_data["base"] == "bare":
             parts[f"{self.framework}-framework/runtime"] = {
