@@ -10,13 +10,13 @@ platforms:
   amd64:
 
 parts:
-  ant-sample:
+  maven-sample:
     plugin: ant
     source: sample
     ant-build-targets: [compile, jar]
     stage-packages:
-     - base-files
-     - openjdk-21-jre-headless
+     - openjdk-21-jre-headless_core
+     - base-files_base
     build-packages:
       - ant
       - openjdk-21-jdk-headless

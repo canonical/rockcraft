@@ -15,8 +15,8 @@ parts:
     source: sample
     maven-parameters: [ "-B" ]
     stage-packages:
-     - openjdk-21-jre-headless
-     - base-files
+     - openjdk-21-jre-headless_core
+     - base-files_base
     build-packages:
       - maven
       - openjdk-21-jdk-headless
