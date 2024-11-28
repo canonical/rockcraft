@@ -25,5 +25,5 @@ def create_usr_bin_java() -> list[str]:
         "java_bin=$(find ${CRAFT_PART_INSTALL} -name java -type f -executable)",
         "test -d ${CRAFT_PART_INSTALL}/usr/bin && "
         "(test -f ${CRAFT_PART_INSTALL}/usr/bin/java || "
-        "ln -s -relative $java_bin ${CRAFT_PART_INSTALL}/usr/bin/java)",
+        "ln -s --relative $java_bin ${CRAFT_PART_INSTALL}/usr/bin/java)",
     ]
