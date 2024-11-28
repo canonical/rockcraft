@@ -16,6 +16,13 @@ server metrics.
     The Flask extension is compatible with the ``bare``, ``ubuntu@22.04``
     and ``ubuntu@24.04`` bases.
 
+Flask framework supports both synchronous and asyncronous. If you want
+asynchronous you have to add ``flask-framework/async-dependencies``
+read more :ref:`_flask_sync_deps`. If you define
+``flask-framework/async-dependencies`` you can not use
+``flask-framework/dependencies``. ``rockcraft pack`` will error if you try to
+use both at the same time.
+
 Project requirements
 ====================
 
@@ -27,6 +34,7 @@ There are 2 requirements to be able to use the ``flask-framework`` extension:
    there must be an ``app.py`` file at the root of the project with the name
    of the Flask object is set to ``app``
 
+.. _flask_sync_deps:
 ``parts`` > ``flask-framework/dependencies`` > ``stage-packages``
 =================================================================
 
@@ -41,18 +49,16 @@ application. In the following example we use it to specify ``libpq-dev``:
         # list required packages or slices for your flask app below.
         - libpq-dev
 
-.. warning::
-  You can only use 1 of the dependencies parts at a time.
-  (eg. `parts-flask-framework-async-dependencies`_ or
-  `parts-flask-framework-dependencies-stage-packages`_)
-
+.. _flask_async_deps:
 ``parts`` > ``flask-framework/async-dependencies``
 =================================================================
 
-You can use this key to specify that you want to use async gunicorn workers in
-your Flask application.
+In order to be able to use async Gunicorn workers you need to use
+``flask-framework/async-dependencies`` part instead of
+``flask-framework/dependencies`` part.
 
-Just uncomment the following lines:
+To use this just uncomment the following lines:
+
 .. code-block:: yaml
 
   parts:
@@ -61,12 +67,23 @@ Just uncomment the following lines:
         - gunicorn[gevent]
 
 If your project needs additional debs to run, you can add them to
-``stage-packages`` just like it is done in `flask-framework/dependencies`_.
+``stage-packages`` just like it is done in :ref:`_flask_sync_deps`:
+
+.. code-block:: yaml
+
+  parts:
+    flask-framework/async-dependencies:
+      python-packages:
+        - gunicorn[gevent]
+      stage-packages:
+        # list required packages or slices for your Flask application below.
+        - libpq-dev
 
 .. warning::
   You can only use 1 of the dependencies parts at a time.
-  (eg. `parts-flask-framework-async-dependencies`_ or
-  `parts-flask-framework-dependencies-stage-packages`_)
+  (eg. either ``flask-framework/async-dependencies`` or
+  ``flask-framework/dependencies``, to read more about synchronous dependencies
+  see :ref:`_flask_sync_deps`)
 
 ``parts`` > ``flask-framework/install-app`` > ``prime``
 =======================================================

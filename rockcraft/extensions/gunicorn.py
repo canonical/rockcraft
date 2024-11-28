@@ -91,16 +91,27 @@ class _GunicornBase(Extension):
                 "build-environment": build_environment,
             }
         }
-
-        parts: dict[str, Any] = {
-            f"{self.framework}-framework/install-app": self.gen_install_app_part(),
-            f"{self.framework}-framework/config-files": {
+        sync_config_file: dict[str, Any] = {
+                        f"{self.framework}-framework/config-files": {
                 "plugin": "dump",
                 "source": str(data_dir / f"{self.framework}-framework"),
                 "organize": {
-                    "gunicorn.conf.py": f"{self.framework}/gunicorn.conf.py",
+                    "gunicorn.conf.py": f"{self.framework}/sync-gunicorn.conf.py",
                 },
             },
+        }
+        async_config_file: dict[str, Any] = {
+                        f"{self.framework}-framework/config-files": {
+                "plugin": "dump",
+                "source": str(data_dir / f"{self.framework}-framework"),
+                "organize": {
+                    "gunicorn.conf.py": f"{self.framework}/async-gunicorn.conf.py",
+                },
+            },
+        }
+        parts: dict[str, Any] = {
+            f"{self.framework}-framework/install-app": self.gen_install_app_part(),
+
             f"{self.framework}-framework/statsd-exporter": {
                 "build-snaps": ["go"],
                 "source-tag": "v0.26.0",
@@ -111,9 +122,9 @@ class _GunicornBase(Extension):
         if f"{self.framework}-framework/async-dependencies" in self.yaml_data.get(
             "parts", {}
         ):
-            parts = dict(async_dependencies, **parts)
+            parts = dict(async_dependencies, async_config_file, **parts)
         else:
-            parts = dict(sync_dependencies, **parts)
+            parts = dict(sync_dependencies, sync_config_file, **parts)
 
         if self.yaml_data["base"] == "bare":
             parts[f"{self.framework}-framework/runtime"] = {

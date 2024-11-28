@@ -17,6 +17,13 @@ server metrics.
     The Django extension is compatible with the ``bare``, ``ubuntu@22.04``
     and ``ubuntu@24.04`` bases.
 
+Django framework supports both synchronous and asyncronous. If you want
+asynchronous you have to add ``django-framework/async-dependencies``
+read more :ref:`_django_sync_deps`. If you define
+``django-framework/async-dependencies`` you can not use
+``django-framework/dependencies``. ``rockcraft pack`` will error if you try to
+use both at the same time.
+
 Project requirements
 ====================
 
@@ -29,6 +36,7 @@ There are 2 requirements to be able to use the ``django-framework`` extension:
    ``./<Rock name with - replaced by _>/<Rock name with - replaced by _>/manage.py``
    relative to the ``rockcraft.yaml`` file.
 
+.. _django_sync_deps:
 ``parts`` > ``django-framework/dependencies:`` > ``stage-packages``
 ===================================================================
 
@@ -43,18 +51,16 @@ application. In the following example we use it to specify ``libpq-dev``:
         # list required packages or slices for your Django application below.
         - libpq-dev
 
-.. warning::
-  You can only use 1 of the dependencies parts at a time.
-  (eg. `parts-django-framework-async-dependencies`_ or
-  `parts-django-framework-dependencies-stage-packages`_)
-
+.. _django_async_deps:
 ``parts`` > ``django-framework/async-dependencies``
-=================================================================
+===================================================
 
-You can use this key to specify that you want to use async gunicorn workers in
-your Django application.
+In order to be able to use async Gunicorn workers you need to use
+``django-framework/async-dependencies`` part instead of
+``django-framework/dependencies`` part.
 
-Just uncomment the following lines:
+To use this just uncomment the following lines:
+
 .. code-block:: yaml
 
   parts:
@@ -63,12 +69,23 @@ Just uncomment the following lines:
         - gunicorn[gevent]
 
 If your project needs additional debs to run, you can add them to
-``stage-packages`` just like it is done in `django-framework/dependencies`_.
+``stage-packages`` just like it is done in :ref:`_django_sync_deps`:
+
+.. code-block:: yaml
+
+  parts:
+    django-framework/async-dependencies:
+      python-packages:
+        - gunicorn[gevent]
+      stage-packages:
+        # list required packages or slices for your Django application below.
+        - libpq-dev
 
 .. warning::
   You can only use 1 of the dependencies parts at a time.
-  (eg. `parts-django-framework-async-dependencies`_ or
-  `parts-django-framework-dependencies-stage-packages`_)
+  (eg. either ``django-framework/async-dependencies`` or
+  ``django-framework/dependencies``, to read more about synchronous dependencies
+  see :ref:`_django_sync_deps`)
 
 Useful links
 ============
