@@ -92,7 +92,7 @@ class _GunicornBase(Extension):
             }
         }
         sync_config_file: dict[str, Any] = {
-                        f"{self.framework}-framework/config-files": {
+            f"{self.framework}-framework/config-files": {
                 "plugin": "dump",
                 "source": str(data_dir / f"{self.framework}-framework"),
                 "organize": {
@@ -101,7 +101,7 @@ class _GunicornBase(Extension):
             },
         }
         async_config_file: dict[str, Any] = {
-                        f"{self.framework}-framework/config-files": {
+            f"{self.framework}-framework/config-files": {
                 "plugin": "dump",
                 "source": str(data_dir / f"{self.framework}-framework"),
                 "organize": {
@@ -111,7 +111,6 @@ class _GunicornBase(Extension):
         }
         parts: dict[str, Any] = {
             f"{self.framework}-framework/install-app": self.gen_install_app_part(),
-
             f"{self.framework}-framework/statsd-exporter": {
                 "build-snaps": ["go"],
                 "source-tag": "v0.26.0",
