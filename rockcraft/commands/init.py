@@ -101,10 +101,10 @@ class InitCommand(AppCommand):
                 # the platforms this rock should be built on and run on.
                 # you can check your architecture with `dpkg --print-architecture`
                 platforms:
-                    amd64:
-                    # arm64:
-                    # ppc64el:
-                    # s390x:
+                  amd64:
+                  # arm64:
+                  # ppc64el:
+                  # s390x:
 
                 # to ensure the flask-framework extension works properly, your Flask application
                 # should have an `app.py` file with an `app` object as the WSGI entrypoint.
@@ -112,7 +112,7 @@ class InitCommand(AppCommand):
                 # see {versioned_url}/reference/extensions/flask-framework
                 # for more information.
                 extensions:
-                    - flask-framework
+                  - flask-framework
 
                 # uncomment the sections you need and adjust according to your requirements.
                 # parts:  # you need to uncomment this line to add or update any part.
@@ -132,8 +132,8 @@ class InitCommand(AppCommand):
 
                 # uncomment this section to enable the async workers for Gunicorn.
                 #   flask-framework/async-dependencies:
-                #       python-packages:
-                #         - gunicorn[gevent]
+                #     python-packages:
+                #       - gunicorn[gevent]
 
                 # you may need Ubuntu packages to build a python dependency. Add them here if necessary.
                 #   flask-framework/dependencies:
@@ -184,10 +184,10 @@ class InitCommand(AppCommand):
                 # the platforms this rock should be built on and run on.
                 # you can check your architecture with `dpkg --print-architecture`
                 platforms:
-                    amd64:
-                    # arm64:
-                    # ppc64el:
-                    # s390x:
+                  amd64:
+                  # arm64:
+                  # ppc64el:
+                  # s390x:
 
                 # to ensure the django-framework extension functions properly, your Django project
                 # should have a structure similar to the following with ./{snake_name}/{snake_name}/wsgi.py
@@ -205,7 +205,7 @@ class InitCommand(AppCommand):
                 # +-- rockcraft.yaml
 
                 extensions:
-                    - django-framework
+                  - django-framework
 
                 # uncomment the sections you need and adjust according to your requirements.
                 # parts:
@@ -215,8 +215,8 @@ class InitCommand(AppCommand):
                 #       - libpq-dev
                 # uncomment this section to enable the async workers for Gunicorn.
                 #   django-framework/async-dependencies:
-                #       python-packages:
-                #         - gunicorn[gevent]
+                #     python-packages:
+                #       - gunicorn[gevent]
 
             """
             )
