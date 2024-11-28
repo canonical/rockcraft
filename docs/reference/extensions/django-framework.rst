@@ -19,7 +19,9 @@ server metrics.
 
 Django framework supports both synchronous and asyncronous. If you want
 asynchronous you have to add ``django-framework/async-dependencies``
-read more :ref:`_django_sync_deps`. If you define
+read more :ref:`django-sync-deps`.
+
+If you define
 ``django-framework/async-dependencies`` you can not use
 ``django-framework/dependencies``. ``rockcraft pack`` will error if you try to
 use both at the same time.
@@ -36,7 +38,7 @@ There are 2 requirements to be able to use the ``django-framework`` extension:
    ``./<Rock name with - replaced by _>/<Rock name with - replaced by _>/manage.py``
    relative to the ``rockcraft.yaml`` file.
 
-.. _django_sync_deps:
+.. _django-sync-deps:
 
 ``parts`` > ``django-framework/dependencies:`` > ``stage-packages``
 ===================================================================
@@ -52,7 +54,7 @@ application. In the following example we use it to specify ``libpq-dev``:
         # list required packages or slices for your Django application below.
         - libpq-dev
 
-.. _django_async_deps:
+.. _django-async-deps:
 
 ``parts`` > ``django-framework/async-dependencies``
 ===================================================
@@ -71,7 +73,7 @@ To use this just uncomment the following lines:
         - gunicorn[gevent]
 
 If your project needs additional debs to run, you can add them to
-``stage-packages`` just like it is done in :ref:`_django_sync_deps`:
+``stage-packages`` just like it is done in :ref:`django-sync-deps`:
 
 .. code-block:: yaml
 
@@ -87,7 +89,7 @@ If your project needs additional debs to run, you can add them to
   You can only use 1 of the dependencies parts at a time.
   (eg. either ``django-framework/async-dependencies`` or
   ``django-framework/dependencies``, to read more about synchronous dependencies
-  see :ref:`_django_sync_deps`)
+  see :ref:`django-sync-deps`)
 
 Useful links
 ============

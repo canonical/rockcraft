@@ -18,7 +18,7 @@ server metrics.
 
 Flask framework supports both synchronous and asyncronous. If you want
 asynchronous you have to add ``flask-framework/async-dependencies``
-read more :ref:`_flask_sync_deps`. If you define
+read more :ref:`flask-sync-deps`. If you define
 ``flask-framework/async-dependencies`` you can not use
 ``flask-framework/dependencies``. ``rockcraft pack`` will error if you try to
 use both at the same time.
@@ -34,7 +34,7 @@ There are 2 requirements to be able to use the ``flask-framework`` extension:
    there must be an ``app.py`` file at the root of the project with the name
    of the Flask object is set to ``app``
 
-.. _flask_sync_deps:
+.. _flask-sync-deps:
 
 ``parts`` > ``flask-framework/dependencies`` > ``stage-packages``
 =================================================================
@@ -50,7 +50,7 @@ application. In the following example we use it to specify ``libpq-dev``:
         # list required packages or slices for your flask app below.
         - libpq-dev
 
-.. _flask_async_deps:
+.. _flask-async-deps:
 
 ``parts`` > ``flask-framework/async-dependencies``
 =================================================================
@@ -69,7 +69,7 @@ To use this just uncomment the following lines:
         - gunicorn[gevent]
 
 If your project needs additional debs to run, you can add them to
-``stage-packages`` just like it is done in :ref:`_flask_sync_deps`:
+``stage-packages`` just like it is done in :ref:`flask-sync-deps`:
 
 .. code-block:: yaml
 
@@ -85,7 +85,7 @@ If your project needs additional debs to run, you can add them to
   You can only use 1 of the dependencies parts at a time.
   (eg. either ``flask-framework/async-dependencies`` or
   ``flask-framework/dependencies``, to read more about synchronous dependencies
-  see :ref:`_flask_sync_deps`)
+  see :ref:`flask-sync-deps`)
 
 ``parts`` > ``flask-framework/install-app`` > ``prime``
 =======================================================
