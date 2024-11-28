@@ -18,6 +18,7 @@
 import logging
 
 from craft_parts.plugins import ant_plugin
+from .java_common import create_usr_bin_java
 from overrides import override  # type: ignore[reportUnknownVariableType]
 
 logger = logging.getLogger(__name__)
@@ -35,4 +36,4 @@ class AntPlugin(ant_plugin.AntPlugin):
     @override
     def _get_java_link_commands(self) -> list[str]:
         """Get the bash commands to provide /bin/java symlink."""
-        return []
+        return create_usr_bin_java()

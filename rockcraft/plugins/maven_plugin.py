@@ -18,6 +18,7 @@
 import logging
 
 from craft_parts.plugins import maven_plugin
+from .java_common import create_usr_bin_java
 from overrides import override  # type: ignore[reportUnknownVariableType]
 
 logger = logging.getLogger(__name__)
@@ -34,5 +35,5 @@ class MavenPlugin(maven_plugin.MavenPlugin):
 
     @override
     def _get_java_link_commands(self) -> list[str]:
-        """Get the bash commands to provide /bin/java symlink."""
-        return []
+        """Get the bash commands to provide /usr/bin/java symlink."""
+        return create_usr_bin_java()
