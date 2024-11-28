@@ -18,8 +18,9 @@
 import logging
 
 from craft_parts.plugins import maven_plugin
-from .java_common import create_usr_bin_java
 from overrides import override  # type: ignore[reportUnknownVariableType]
+
+from .java_common import create_usr_bin_java
 
 logger = logging.getLogger(__name__)
 

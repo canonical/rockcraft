@@ -15,7 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """Common functionality for Java-based plugins.
 
-   This module provides a function to create a /usr/bin/java symlink.
+This module provides a function to create a /usr/bin/java symlink.
 """
 
 
