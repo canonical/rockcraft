@@ -10,7 +10,8 @@ After a successful build, this plugin will:
 * Create ``jar/`` directory in ``$CRAFT_PART_INSTALL``.
 * Hard link the ``.jar`` files generated in ``$CRAFT_PART_BUILD`` to
   ``$CRAFT_PART_INSTALL/jar``.
-
+* Find the ``java`` executable provided by the part and link it as
+  ``$CRAFT_PART_INSTALL/usr/bin/java`` if ``/usr/bin`` exists.
 
 Keywords
 --------
