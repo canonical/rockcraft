@@ -16,17 +16,7 @@ parts:
     maven-parameters: [ "-B" ]
     stage-packages:
      - openjdk-21-jre-headless
-     - base-files_base
+     - base-files
     build-packages:
       - maven
       - openjdk-21-jdk-headless
-    # replace chiselled image modules with jlink output
-    # in order to ensure that only java.base module is present in
-    # runtime
-    override-build: |
-      craftctl default
-      rm -rf out
-      jlink --no-header-files --no-man-pages --strip-debug \
-        --add-modules java.base \
-        --output out
-      cp out/lib/modules ${CRAFT_PART_INSTALL}/usr/lib/jvm/java-21-openjdk-${CRAFT_ARCH_BUILD_FOR}/lib
