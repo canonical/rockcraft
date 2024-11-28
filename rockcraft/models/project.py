@@ -508,7 +508,8 @@ def _add_pebble_data(yaml_data: dict[str, Any]) -> None:
     (eventually) used as the image's entrypoint.
 
     :param yaml_data: The project spec loaded from "rockcraft.yaml".
-    :raises CraftValidationError: If `yaml_data` already contains a "pebble" part.
+    :raises CraftValidationError: If `yaml_data` already contains a "pebble" part,
+      and said part's contents are different from the contents of the part we add.
     """
     if "parts" not in yaml_data:
         # Invalid project: let it return to fail in the regular validation flow.
@@ -526,6 +527,6 @@ def _add_pebble_data(yaml_data: dict[str, Any]) -> None:
             return
         # Project already has a pebble part, and it's different from ours;
         # this is currently not supported.
-        raise CraftValidationError('Cannot override the default "pebble" part')
+        raise CraftValidationError('Cannot change the default "pebble" part')
 
     parts["pebble"] = pebble_part
