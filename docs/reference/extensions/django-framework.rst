@@ -17,9 +17,9 @@ server metrics.
     The Django extension is compatible with the ``bare``, ``ubuntu@22.04``
     and ``ubuntu@24.04`` bases.
 
-Django framework supports both synchronous and asyncronous. If you want
+Django framework supports both synchronous and asynchronous. If you want
 asynchronous you have to add ``django-framework/async-dependencies``
-read more :ref:`django-sync-deps`.
+read more :ref:`django-framework/dependencies <django-sync-deps>`.
 
 If you define
 ``django-framework/async-dependencies`` you can not use
@@ -73,7 +73,7 @@ To use this just uncomment the following lines:
         - gunicorn[gevent]
 
 If your project needs additional debs to run, you can add them to
-``stage-packages`` just like it is done in :ref:`django-sync-deps`:
+``stage-packages`` just like it is done in :ref:`django-framework/dependencies <django-sync-deps>`:
 
 .. code-block:: yaml
 
@@ -89,7 +89,7 @@ If your project needs additional debs to run, you can add them to
   You can only use 1 of the dependencies parts at a time.
   (eg. either ``django-framework/async-dependencies`` or
   ``django-framework/dependencies``, to read more about synchronous dependencies
-  see :ref:`django-sync-deps`)
+  see :ref:`django-framework/dependencies <django-sync-deps>`)
 
 Useful links
 ============
