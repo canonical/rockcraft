@@ -42,6 +42,9 @@ class RockcraftServiceFactory(ServiceFactory):
     ProviderClass: type[  # type: ignore[reportIncompatibleVariableOverride]
         services.RockcraftProviderService
     ] = services.RockcraftProviderService
+    InitClass: type[  # type: ignore[reportIncompatibleVariableOverride]
+        services.RockcraftInitService
+    ] = services.RockcraftInitService
 
     if TYPE_CHECKING:
         image: services.RockcraftImageService = None  # type: ignore[assignment]
