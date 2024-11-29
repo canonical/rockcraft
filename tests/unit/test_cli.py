@@ -22,6 +22,7 @@ from unittest.mock import DEFAULT, call
 import pytest
 import yaml
 from craft_cli import emit
+
 from rockcraft import cli, extensions, services
 from rockcraft.application import APP_METADATA, Rockcraft
 from rockcraft.models import project
@@ -65,7 +66,14 @@ def test_run_pack_services(mocker, monkeypatch, tmp_path):
     assert log_path.is_file()
 
 
-@pytest.mark.usefixtures("new_dir")
+@pytest.fixture
+def valid_dir(new_dir, monkeypatch):
+    valid = pathlib.Path(new_dir) / "valid"
+    valid.mkdir()
+    monkeypatch.chdir(valid)
+
+
+@pytest.mark.usefixtures("valid_dir")
 def test_run_init(mocker):
     mock_ended_ok = mocker.spy(emit, "ended_ok")
     mocker.patch.object(sys, "argv", ["rockcraft", "init"])
@@ -82,7 +90,7 @@ def test_run_init(mocker):
     assert mock_ended_ok.mock_calls == [call()]
 
 
-@pytest.mark.usefixtures("new_dir")
+@pytest.mark.usefixtures("valid_dir")
 def test_run_init_with_name(mocker):
     mocker.patch.object(sys, "argv", ["rockcraft", "init", "--name=foobar"])
 
@@ -96,21 +104,22 @@ def test_run_init_with_name(mocker):
     assert rock_project.name == "foobar"
 
 
-@pytest.mark.usefixtures("new_dir")
+@pytest.mark.usefixtures("valid_dir")
 def test_run_init_with_invalid_name(mocker):
     mocker.patch.object(sys, "argv", ["rockcraft", "init", "--name=f"])
     return_code = cli.run()
     assert return_code == 1
 
 
-@pytest.mark.usefixtures("new_dir")
-def test_run_init_fallback_name(mocker):
+def test_run_init_fallback_name(mocker, new_dir, monkeypatch):
     mocker.patch.object(sys, "argv", ["rockcraft", "init"])
-    mocker.patch("pathlib.Path.cwd", return_value=pathlib.Path("/f"))
+    invalid_dir = pathlib.Path(new_dir) / "f"
+    invalid_dir.mkdir()
+    monkeypatch.chdir(invalid_dir)
 
     cli.run()
 
-    rockcraft_yaml_path = Path("rockcraft.yaml")
+    rockcraft_yaml_path = invalid_dir / "rockcraft.yaml"
     rock_project = project.Project.unmarshal(
         yaml.safe_load(rockcraft_yaml_path.read_text())
     )
@@ -153,10 +162,10 @@ def test_run_init_flask(mocker, emitter, monkeypatch, new_dir, tmp_path):
             # the platforms this rock should be built on and run on.
             # you can check your architecture with `dpkg --print-architecture`
             platforms:
-              amd64:
-              # arm64:
-              # ppc64el:
-              # s390x:
+                amd64:
+                # arm64:
+                # ppc64el:
+                # s390x:
 
             # to ensure the flask-framework extension works properly, your Flask application
             # should have an `app.py` file with an `app` object as the WSGI entrypoint.
@@ -164,7 +173,7 @@ def test_run_init_flask(mocker, emitter, monkeypatch, new_dir, tmp_path):
             # see {versioned_url}/reference/extensions/flask-framework
             # for more information.
             extensions:
-              - flask-framework
+                - flask-framework
 
             # uncomment the sections you need and adjust according to your requirements.
             # parts:  # you need to uncomment this line to add or update any part.
@@ -182,11 +191,6 @@ def test_run_init_flask(mocker, emitter, monkeypatch, new_dir, tmp_path):
             #       - flask/app/templates
             #       - flask/app/static
 
-            # uncomment this section to enable the async workers for Gunicorn.
-            #   flask-framework/async-dependencies:
-            #     python-packages:
-            #       - gunicorn[gevent]
-
             # you may need Ubuntu packages to build a python dependency. Add them here if necessary.
             #   flask-framework/dependencies:
             #     build-packages:
@@ -194,6 +198,11 @@ def test_run_init_flask(mocker, emitter, monkeypatch, new_dir, tmp_path):
             #       # of your packages:
             #       - pkg-config
             #       - libxmlsec1-dev
+
+            # uncomment this section to enable the async workers for Gunicorn.
+            #   flask-framework/async-dependencies:
+            #     python-packages:
+            #       - gunicorn[gevent]
 
             # you can add package slices or Debian packages to the image.
             # package slices are subsets of Debian packages, which result
@@ -220,7 +229,6 @@ def test_run_init_flask(mocker, emitter, monkeypatch, new_dir, tmp_path):
     emitter.assert_message(
         textwrap.dedent(
             f"""\
-        Created 'rockcraft.yaml'.
         Go to {versioned_url}/reference/extensions/flask-framework to read more about the 'flask-framework' profile."""
         )
     )
@@ -436,10 +444,10 @@ def test_run_init_django(mocker, emitter, monkeypatch, new_dir, tmp_path):
                 # the platforms this rock should be built on and run on.
                 # you can check your architecture with `dpkg --print-architecture`
                 platforms:
-                  amd64:
-                  # arm64:
-                  # ppc64el:
-                  # s390x:
+                    amd64:
+                    # arm64:
+                    # ppc64el:
+                    # s390x:
 
                 # to ensure the django-framework extension functions properly, your Django project
                 # should have a structure similar to the following with ./test_name/test_name/wsgi.py
@@ -457,7 +465,7 @@ def test_run_init_django(mocker, emitter, monkeypatch, new_dir, tmp_path):
                 # +-- rockcraft.yaml
 
                 extensions:
-                  - django-framework
+                    - django-framework
 
                 # uncomment the sections you need and adjust according to your requirements.
                 # parts:
@@ -465,6 +473,7 @@ def test_run_init_django(mocker, emitter, monkeypatch, new_dir, tmp_path):
                 #     stage-packages:
                 #       # list required packages or slices for your Django application below.
                 #       - libpq-dev
+
                 # uncomment this section to enable the async workers for Gunicorn.
                 #   django-framework/async-dependencies:
                 #     python-packages:

@@ -1,0 +1,59 @@
+name: {{name}}
+# see {{versioned_url}}/explanation/bases/
+# for more information about bases and using 'bare' bases for chiselled rocks
+base: bare # as an alternative, a ubuntu base can be used
+build-base: ubuntu@24.04 # build-base is required when the base is bare
+version: '0.1' # just for humans. Semantic versioning is recommended
+summary: A summary of your Go application # 79 char long summary
+description: |
+    This is {{name}}'s description. You have a paragraph or two to tell the
+    most important story about it. Keep it under 100 words though,
+    we live in tweetspace and your description wants to look good in the
+    container registries out there.
+# the platforms this rock should be built on and run on.
+# you can check your architecture with `dpkg --print-architecture`
+platforms:
+    amd64:
+    # arm64:
+    # ppc64el:
+    # s390x:
+
+# to ensure the go-framework extension functions properly, your Go project
+# should have a go.mod file. Check the parts section for the selection of
+# the default binary.
+# see {{versioned_url}}/reference/extensions/go-framework
+# for more information.
+# +-- {{snake_name}}
+# |   |-- go.mod
+# |   |-- migrate.sh
+
+extensions:
+    - go-framework
+
+# uncomment the sections you need and adjust according to your requirements.
+# parts:
+
+#   go-framework/install-app:
+#    # select a specific Go version. Otherwise the current stable one will be used.
+#    build-snaps:
+#    - go/1.22/stable
+#    organize:
+#    # if the main package is in the base directory and the rockcraft name
+#    # attribute is equal to the go module name, the name of the server will
+#    # be selected correctly, otherwise you can adjust it.
+#    # the file in /usr/local/bin/ with the name of the rockcraft project will be
+#    # the binary to run your server.
+#    # you can also include here other binary files to be included in the rock.
+#      bin/otherbinary: usr/local/bin/projectname
+
+#   go-framework/assets:
+#     stage:
+#       # by default, only the files migrate, migrate.sh, templates/ and static/
+#       # are copied into the image. You can modify the list below to override
+#       # the default list and include or exclude specific files/directories
+#       # in your project.
+#       # note: Prefix each entry with "app/" followed by the local path.
+#       - app/templates
+#       - app/static
+#       - app/otherdirectory
+#       - app/otherfile

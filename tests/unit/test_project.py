@@ -17,7 +17,6 @@
 import datetime
 import os
 import subprocess
-import textwrap
 from pathlib import Path
 from typing import Any
 
@@ -30,7 +29,7 @@ from craft_providers.bases import BaseName, ubuntu
 from rockcraft.errors import ProjectLoadError
 from rockcraft.models import Project
 from rockcraft.models.project import MESSAGE_INVALID_NAME, Platform, load_project
-from rockcraft.pebble import Service
+from rockcraft.pebble import Pebble, Service
 
 _ARCH_MAPPING = {"x86": "amd64", "x64": "amd64"}
 try:
@@ -555,14 +554,13 @@ def test_project_load(check, yaml_data, yaml_loaded_data, pebble_part, tmp_path)
     check.equal(project_yaml["environment"], expected_ordered_environment)
 
 
-def test_project_unmarshal_existing_pebble(tmp_path):
-    """Test that trying to load a project that already has a "pebble" part fails."""
-    yaml_data = textwrap.dedent(
+def pebble_project(pebble_spec) -> str:
+    yaml_data = yaml.safe_load(
         """
         name: pebble-part
         title: Rock with Pebble
         version: latest
-        base: ubuntu@20.04
+        base: ubuntu@24.04
         summary: Rock with Pebble
         description: Rock with Pebble
         license: Apache-2.0
@@ -579,6 +577,20 @@ def test_project_unmarshal_existing_pebble(tmp_path):
                 source-branch: new-pebble-work
     """
     )
+    yaml_data["parts"]["pebble"] = pebble_spec
+    return yaml.dump(yaml_data)
+
+
+def test_project_unmarshal_existing_pebble_different(tmp_path):
+    """Test that loading a project that already has a "pebble" part fails if that
+    part is different from what we'd create."""
+    yaml_data = pebble_project(
+        {
+            "plugin": "go",
+            "source": "https://github.com/fork/pebble.git",
+            "source-branch": "new-pebble-work",
+        }
+    )
     rockcraft_file = tmp_path / "rockcraft.yaml"
     rockcraft_file.write_text(
         yaml_data,
@@ -587,6 +599,21 @@ def test_project_unmarshal_existing_pebble(tmp_path):
 
     with pytest.raises(CraftValidationError):
         load_project(rockcraft_file)
+
+
+def test_project_unmarshal_existing_pebble_same(tmp_path):
+    """Test that loading a project that already has a "pebble" part works if that
+    part is the same as what we'd create."""
+
+    yaml_data = pebble_project(Pebble.get_part_spec("ubuntu@24.04"))
+    rockcraft_file = tmp_path / "rockcraft.yaml"
+    rockcraft_file.write_text(
+        yaml_data,
+        encoding="utf-8",
+    )
+
+    # Must not raise any errors
+    _ = load_project(rockcraft_file)
 
 
 def test_project_load_error():
