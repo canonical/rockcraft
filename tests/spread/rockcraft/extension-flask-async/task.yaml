@@ -85,7 +85,7 @@ execute: |
       curl -s "$URL"
 
       end_time=$(date +%s)
-      pass_time=$(($end_time - $start_time))
+      pass_time=$((end_time - start_time))
       echo "Request $i end time: $end_time == $pass_time"
       echo "Request $i end time: $end_time == $pass_time"
     ) &
@@ -93,9 +93,9 @@ execute: |
 
   wait
   end_time=$(date +%s)
-  overall_passtime=$(($end_time - $overall_start_time))
+  overall_passtime=$((end_time - overall_start_time))
   echo "Total pass time: $overall_passtime"
-  if ((3 < $overall_passtime)); then
+  if [ $((3 < overall_passtime)) -eq 1 ]; then
     echo "Error!"
     ASYNC_RESULT='FALSE'
     exit 2
