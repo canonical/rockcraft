@@ -71,46 +71,17 @@ class _GunicornBase(Extension):
             stage_packages = ["python3.10-venv_ensurepip"]
             build_environment = [{"PARTS_PYTHON_INTERPRETER": "python3.10"}]
 
-        sync_dependencies: dict[str, Any] = {
-            f"{self.framework}-framework/dependencies": {
-                "plugin": "python",
-                "stage-packages": stage_packages,
-                "source": ".",
-                "python-packages": ["gunicorn"],
-                "python-requirements": ["requirements.txt"],
-                "build-environment": build_environment,
-            }
-        }
-        async_dependencies: dict[str, Any] = {
-            f"{self.framework}-framework/async-dependencies": {
-                "plugin": "python",
-                "stage-packages": stage_packages,
-                "source": ".",
-                "python-packages": ["gunicorn[gevent]"],
-                "python-requirements": ["requirements.txt"],
-                "build-environment": build_environment,
-            }
-        }
-        sync_config_file: dict[str, Any] = {
-            f"{self.framework}-framework/config-files": {
-                "plugin": "dump",
-                "source": str(data_dir / f"{self.framework}-framework"),
-                "organize": {
-                    "sync-gunicorn.conf.py": f"{self.framework}/gunicorn.conf.py",
-                },
-                "stage": [f"{self.framework}/gunicorn.conf.py", "statsd-mapping.conf"],
-            },
-        }
-        async_config_file: dict[str, Any] = {
-            f"{self.framework}-framework/config-files": {
-                "plugin": "dump",
-                "source": str(data_dir / f"{self.framework}-framework"),
-                "organize": {
-                    "async-gunicorn.conf.py": f"{self.framework}/gunicorn.conf.py",
-                },
-                "stage": [f"{self.framework}/gunicorn.conf.py", "statsd-mapping.conf"],
-            },
-        }
+        dependencies_name: str = f"{self.framework}-framework/dependencies"
+        config_file: str = "sync-gunicorn.conf.py"
+        gunicorn_package: str = "gunicorn"
+
+        if f"{self.framework}-framework/async-dependencies" in self.yaml_data.get(
+            "parts", {}
+        ):
+            config_file:str = "async-gunicorn.conf.py"
+            gunicorn_package: str = "gunicorn[gevent]"
+            dependencies_name: str = f"{self.framework}-framework/async-dependencies"
+
         parts: dict[str, Any] = {
             f"{self.framework}-framework/install-app": self.gen_install_app_part(),
             f"{self.framework}-framework/statsd-exporter": {
@@ -119,15 +90,23 @@ class _GunicornBase(Extension):
                 "plugin": "go",
                 "source": "https://github.com/prometheus/statsd_exporter.git",
             },
+            f"{self.framework}-framework/config-files": {
+                "plugin": "dump",
+                "source": str(data_dir / f"{self.framework}-framework"),
+                "organize": {
+                    config_file: f"{self.framework}/gunicorn.conf.py",
+                },
+                "stage": [f"{self.framework}/gunicorn.conf.py", "statsd-mapping.conf"],
+            },
+            dependencies_name: {
+                "plugin": "python",
+                "stage-packages": stage_packages,
+                "source": ".",
+                "python-packages": [gunicorn_package],
+                "python-requirements": ["requirements.txt"],
+                "build-environment": build_environment,
+            }
         }
-        if f"{self.framework}-framework/async-dependencies" in self.yaml_data.get(
-            "parts", {}
-        ):
-            parts = dict(async_dependencies, **parts)
-            parts = dict(async_config_file, **parts)
-        else:
-            parts = dict(sync_dependencies, **parts)
-            parts = dict(sync_config_file, **parts)
 
         if self.yaml_data["base"] == "bare":
             parts[f"{self.framework}-framework/runtime"] = {
