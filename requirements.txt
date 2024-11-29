@@ -3,13 +3,13 @@ boolean.py==4.0
 certifi==2024.8.30
 cffi==1.17.1
 charset-normalizer==3.3.2
-craft-application==4.2.4
+git+https://github.com/canonical/craft-application.git@feature/pro-sources
 craft-archives==2.0.0
 craft-cli==2.7.0
 craft-grammar==2.0.1
-craft-parts==2.1.1
+git+https://github.com/canonical/craft-parts.git@feature/pro-sources
 craft-platforms==0.3.1
-craft-providers==2.0.1
+git+https://github.com/canonical/craft-providers.git@feature/pro-sources
 distro==1.9.0
 httplib2==0.22.0
 idna==3.10
