@@ -16,11 +16,16 @@ server metrics.
     The Flask extension is compatible with the ``bare``, ``ubuntu@22.04``
     and ``ubuntu@24.04`` bases.
 
-Flask framework supports both synchronous and asynchronous. If you want
-asynchronous you have to add ``flask-framework/async-dependencies``
-read more :ref:`flask-framework/dependencies <flask-sync-deps>`. If you define
-``flask-framework/async-dependencies`` you can not use
-``flask-framework/dependencies``. ``rockcraft pack`` will error if you try to
+The Flask extension supports both synchronous and asynchronous
+Gunicorn workers. If you want asynchronous workers, you have to add
+``flask-framework/async-dependencies`` to the ``rockcraft.yaml``.
+Read more :ref:`flask-framework/async-dependencies <flask-async-deps>`.
+
+If you define
+``flask-framework/async-dependencies`` you can not
+also include ``flask-framework/dependencies``.
+Running ``rockcraft pack`` will result in an ``Cannot have both sync and async
+ dependencies. https://bit.ly/flask-async-doc`` error if you try to
 use both at the same time.
 
 Project requirements
@@ -55,11 +60,12 @@ application. In the following example we use it to specify ``libpq-dev``:
 ``parts`` > ``flask-framework/async-dependencies``
 =================================================================
 
-In order to be able to use async Gunicorn workers you need to use
-``flask-framework/async-dependencies`` part instead of
-``flask-framework/dependencies`` part.
+In order to use asynchronous Gunicorn workers, you need
+to include ``flask-framework/async-dependencies`` in the
+``rockcraft.yaml`` while removing
+``flask-framework/dependencies``.
 
-To use this just uncomment the following lines:
+In the ``rockcraft.yaml``, add the following lines:
 
 .. code-block:: yaml
 
@@ -69,7 +75,7 @@ To use this just uncomment the following lines:
         - gunicorn[gevent]
 
 If your project needs additional debs to run, you can add them to
-``stage-packages`` just like it is done in :ref:`flask-framework/dependencies <flask-sync-deps>`:
+``stage-packages``.
 
 .. code-block:: yaml
 
@@ -82,10 +88,10 @@ If your project needs additional debs to run, you can add them to
         - libpq-dev
 
 .. warning::
-  You can only use 1 of the dependencies parts at a time.
-  (eg. either ``flask-framework/async-dependencies`` or
-  ``flask-framework/dependencies``, to read more about synchronous dependencies
-  see :ref:`flask-framework/dependencies <flask-sync-deps>`)
+  You can use either ``flask-framework/async-dependencies`` or
+  ``flask-framework/dependencies``, but not both at the same time.
+  To read more about synchronous dependencies,
+  see :ref:`flask-framework/dependencies <flask-sync-deps>`.
 
 ``parts`` > ``flask-framework/install-app`` > ``prime``
 =======================================================

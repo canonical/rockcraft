@@ -30,7 +30,6 @@ Dockerfiles
 DockerHub
 dotnet
 ECR
-eg
 emacs
 entrypoint
 entrypoints

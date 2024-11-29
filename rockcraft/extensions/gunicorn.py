@@ -96,8 +96,9 @@ class _GunicornBase(Extension):
                 "plugin": "dump",
                 "source": str(data_dir / f"{self.framework}-framework"),
                 "organize": {
-                    "gunicorn.conf.py": f"{self.framework}/sync-gunicorn.conf.py",
+                    "sync-gunicorn.conf.py": f"{self.framework}/gunicorn.conf.py",
                 },
+                "stage": [f"{self.framework}/gunicorn.conf.py", "statsd-mapping.conf"],
             },
         }
         async_config_file: dict[str, Any] = {
@@ -105,8 +106,9 @@ class _GunicornBase(Extension):
                 "plugin": "dump",
                 "source": str(data_dir / f"{self.framework}-framework"),
                 "organize": {
-                    "gunicorn.conf.py": f"{self.framework}/async-gunicorn.conf.py",
+                    "async-gunicorn.conf.py": f"{self.framework}/gunicorn.conf.py",
                 },
+                "stage": [f"{self.framework}/gunicorn.conf.py", "statsd-mapping.conf"],
             },
         }
         parts: dict[str, Any] = {
