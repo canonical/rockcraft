@@ -26,7 +26,7 @@ If you define
 ``django-framework/async-dependencies`` you can not
 also include ``django-framework/dependencies``.
 Running ``rockcraft pack`` will result in an ``Cannot have both sync and async
- dependencies. https://bit.ly/flask-async-doc`` error if you try to
+dependencies. https://bit.ly/flask-async-doc`` error if you try to
 use both at the same time.
 
 Project requirements
