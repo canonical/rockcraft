@@ -87,6 +87,7 @@ def test_run_init(mocker):
     assert len(rock_project.summary) < 80
     assert len(rock_project.description.split()) < 100
     assert mock_ended_ok.mock_calls == [call()]
+    assert rock_project.base == "ubuntu@24.04"
 
 
 @pytest.mark.usefixtures("valid_dir")
