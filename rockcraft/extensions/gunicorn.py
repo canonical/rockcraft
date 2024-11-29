@@ -78,9 +78,9 @@ class _GunicornBase(Extension):
         if f"{self.framework}-framework/async-dependencies" in self.yaml_data.get(
             "parts", {}
         ):
-            config_file: str = "async-gunicorn.conf.py"
-            gunicorn_package: str = "gunicorn[gevent]"
-            dependencies_name: str = f"{self.framework}-framework/async-dependencies"
+            dependencies_name = f"{self.framework}-framework/async-dependencies"
+            config_file = "async-gunicorn.conf.py"
+            gunicorn_package = "gunicorn[gevent]"
 
         parts: dict[str, Any] = {
             f"{self.framework}-framework/install-app": self.gen_install_app_part(),
