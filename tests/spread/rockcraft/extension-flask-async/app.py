@@ -11,6 +11,6 @@ def ok():
 
 
 @app.route("/io")
-def psudo_io():
+def pseudo_io():
     sleep(2)
     return "ok"
