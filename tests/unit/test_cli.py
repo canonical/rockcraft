@@ -481,8 +481,8 @@ def test_run_init_django(mocker, emitter, monkeypatch, new_dir, tmp_path):
     )
     emitter.assert_message(
         textwrap.dedent(
-            """\
-        Created 'rockcraft.yaml'."""
+            f"""\
+        Go to {versioned_url}/reference/extensions/django-framework to read more about the 'django-framework' profile."""
         )
     )
     monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "0")
