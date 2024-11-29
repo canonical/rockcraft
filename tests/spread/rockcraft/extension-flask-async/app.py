@@ -9,6 +9,7 @@ app = Flask(__name__)
 def ok():
     return "ok"
 
+
 @app.route("/io")
 def psudo_io():
     sleep(2)
