@@ -78,7 +78,7 @@ class _GunicornBase(Extension):
         if f"{self.framework}-framework/async-dependencies" in self.yaml_data.get(
             "parts", {}
         ):
-            config_file:str = "async-gunicorn.conf.py"
+            config_file: str = "async-gunicorn.conf.py"
             gunicorn_package: str = "gunicorn[gevent]"
             dependencies_name: str = f"{self.framework}-framework/async-dependencies"
 
@@ -105,7 +105,7 @@ class _GunicornBase(Extension):
                 "python-packages": [gunicorn_package],
                 "python-requirements": ["requirements.txt"],
                 "build-environment": build_environment,
-            }
+            },
         }
 
         if self.yaml_data["base"] == "bare":
