@@ -10,7 +10,7 @@ platforms:
   amd64:
 
 parts:
-  maven-sample:
+  ant-sample:
     plugin: ant
     source: sample
     ant-build-targets: [compile, jar]
