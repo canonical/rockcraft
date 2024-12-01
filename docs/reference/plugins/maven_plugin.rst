@@ -44,20 +44,13 @@ Please refer to
 `Configuring Apache Maven <https://maven.apache.org/configure.html>`_
 for a list of environment variables used to configure Maven.
 
-
 .. _rockcraft_maven-details-begin:
 
-Dependencies
-------------
-
-The plugin expects Maven to be available on the system as the ``mvn``
-executable, unless a part named ``maven-deps`` is defined. In this
-case, the plugin will assume that this part will stage the ``mvn``
-executable to be used in the build step.
-
-Note that the Maven plugin does not make a Java runtime available in
-the target environment. This must be handled by the developer when
-defining the part, according to each application's runtime
-requirements.
+.. include:: /common/craft-parts/reference/plugins/maven_plugin.rst
+   :start-after: .. _maven-details-begin:
+   :end-before: .. _maven-details-end:
 
 .. _rockcraft_maven-details-end:
+
+.. include:: /common/craft-parts/reference/plugins/maven_plugin.rst
+   :start-after: .. _maven-details-end:
