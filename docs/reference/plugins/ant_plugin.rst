@@ -19,8 +19,8 @@ Keywords
 --------
 
 In addition to the common :ref:`plugin <part-properties-plugin>` and
-:ref:`sources <part-properties-sources>` keywords, this plugin provides the following
-plugin-specific keywords:
+:ref:`sources <part-properties-sources>` keywords, this plugin provides
+the following plugin-specific keywords:
 
 ant-build-targets
 ~~~~~~~~~~~~~~~~~
@@ -45,10 +45,11 @@ A series of key: value pairs that are passed to ``ant`` as properties using the
 Environment variables
 ---------------------
 
-This plugin reads the ``http_proxy`` and ``https_proxy`` variables from the environment
-to configure proxy access.
+This plugin reads the ``http_proxy`` and ``https_proxy`` variables from
+the environment to configure proxy access.
 
-Please refer to `Running Apache Ant <https://ant.apache.org/manual/running.html>`_ for
+Please refer to
+`Running Apache Ant <https://ant.apache.org/manual/running.html>`_ for
 a list of environment variables used by Ant.
 
 .. _rockcraft_ant-details-begin:
