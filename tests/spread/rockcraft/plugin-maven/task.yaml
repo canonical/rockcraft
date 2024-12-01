@@ -13,3 +13,4 @@ execute: |
 
   # Run the packaged project
   docker run --rm $IMAGE exec /usr/bin/java -jar /jar/sample-0.0.1-SNAPSHOT.jar | MATCH "hello world"
+  docker run --rm $IMAGE exec /bin/java -jar /jar/sample-0.0.1-SNAPSHOT.jar | MATCH "hello world"
