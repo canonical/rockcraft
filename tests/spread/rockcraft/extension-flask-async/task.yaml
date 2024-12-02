@@ -46,9 +46,9 @@ execute: |
 
   # Ensure docker does not have this container image
   docker rmi --force "${IMAGE}"
-  # Install container
+  # Install image
   sudo rockcraft.skopeo --insecure-policy copy "oci-archive:${ROCK_FILE}" "docker-daemon:${IMAGE}"
-  # Ensure container exists
+  # Ensure image exists
   docker images "${IMAGE}" | MATCH "${NAME}"
 
   # ensure container doesn't exist
