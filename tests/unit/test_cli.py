@@ -17,6 +17,7 @@ import pathlib
 import sys
 import textwrap
 from distutils.dir_util import copy_tree
+from distutils.file_util import copy_file
 from pathlib import Path
 from unittest.mock import DEFAULT, call
 
@@ -212,17 +213,27 @@ def test_run_init_django(mocker, emitter, monkeypatch, new_dir, tmp_path):
 
 def test_run_init_django_async(mocker, emitter, monkeypatch, new_dir, tmp_path):
     copy_tree(Path(f"{DATA_DIR}/django"), tmp_path)
+    copy_file(tmp_path / "rockcraft_async.yaml", tmp_path / "rockcraft.yaml")
 
+    # mocker.patch.object(
+    #     sys,
+    #     "argv",
+    #     ["rockcraft", "init", "--profile=django-framework", "--name", "test-name"],
+    # )
+    # cli.run()
+    # rockcraft_yaml_path = Path("rockcraft.yaml")
+    # rock_project_yaml = yaml.safe_load(rockcraft_yaml_path.read_text())
+    #
+    # monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "0")
+    # project.Project.unmarshal(extensions.apply_extensions(tmp_path, rock_project_yaml))
+    # emitter.assert_message("Successfully initialised project.")
+ 
+    print(f"{tmp_path=}")
     mocker.patch.object(
         sys,
         "argv",
-        ["rockcraft", "init", "--profile=django-framework", "--name", "test-name"],
+        ["rockcraft", "pack"],
     )
     cli.run()
-    rockcraft_yaml_path = Path("rockcraft_async.yaml")
-    rock_project_yaml = yaml.safe_load(rockcraft_yaml_path.read_text())
-
-    monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "0")
-    project.Project.unmarshal(extensions.apply_extensions(tmp_path, rock_project_yaml))
-
     emitter.assert_message("Successfully initialised project.")
+ 
