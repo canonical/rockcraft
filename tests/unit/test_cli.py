@@ -227,7 +227,7 @@ def test_run_init_django_async(mocker, emitter, monkeypatch, new_dir, tmp_path):
     # monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "0")
     # project.Project.unmarshal(extensions.apply_extensions(tmp_path, rock_project_yaml))
     # emitter.assert_message("Successfully initialised project.")
- 
+
     print(f"{tmp_path=}")
     mocker.patch.object(
         sys,
@@ -236,4 +236,3 @@ def test_run_init_django_async(mocker, emitter, monkeypatch, new_dir, tmp_path):
     )
     cli.run()
     emitter.assert_message("Successfully initialised project.")
- 
