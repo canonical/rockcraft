@@ -29,6 +29,7 @@ from rockcraft.models import project
 
 DATA_DIR = pathlib.Path(__file__).parent.parent / "data"
 
+
 def test_run_pack_services(mocker, monkeypatch, tmp_path):
     # Pretend it's running inside the managed instance
     monkeypatch.setenv("CRAFT_MANAGED_MODE", "1")
@@ -147,7 +148,7 @@ def test_run_init_flask(mocker, emitter, monkeypatch, new_dir, tmp_path):
 
     assert len(rock_project_yaml["summary"]) < 80
     assert len(rock_project_yaml["description"].split()) < 100
-    expected_rockcraft_yaml_path = Path( tmp_path / "expected_rockcraft.yaml")
+    expected_rockcraft_yaml_path = Path(tmp_path / "expected_rockcraft.yaml")
     assert rockcraft_yaml_path.read_text() == expected_rockcraft_yaml_path.read_text()
 
     emitter.assert_message(
@@ -158,6 +159,7 @@ def test_run_init_flask(mocker, emitter, monkeypatch, new_dir, tmp_path):
     )
     monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "0")
     project.Project.unmarshal(extensions.apply_extensions(tmp_path, rock_project_yaml))
+
 
 def test_run_init_flask_async(mocker, emitter, monkeypatch, new_dir, tmp_path):
     copy_tree(Path(f"{DATA_DIR}/flask"), tmp_path)
@@ -176,8 +178,9 @@ def test_run_init_flask_async(mocker, emitter, monkeypatch, new_dir, tmp_path):
 
     emitter.assert_message("Successfully initialised project.")
 
+
 def test_run_init_django(mocker, emitter, monkeypatch, new_dir, tmp_path):
-    copy_tree(Path(f"{DATA_DIR}/django"), tmp_path )
+    copy_tree(Path(f"{DATA_DIR}/django"), tmp_path)
 
     mocker.patch.object(
         sys,
@@ -189,8 +192,8 @@ def test_run_init_django(mocker, emitter, monkeypatch, new_dir, tmp_path):
 
     versioned_url = APP_METADATA.versioned_docs_url
 
-    rockcraft_yaml_path = Path( tmp_path / "rockcraft.yaml")
-    expected_rockcraft_yaml_path = Path( tmp_path / "expected_rockcraft.yaml")
+    rockcraft_yaml_path = Path(tmp_path / "rockcraft.yaml")
+    expected_rockcraft_yaml_path = Path(tmp_path / "expected_rockcraft.yaml")
     rock_project_yaml = yaml.safe_load(rockcraft_yaml_path.read_text())
 
     assert len(rock_project_yaml["summary"]) < 80
@@ -206,8 +209,9 @@ def test_run_init_django(mocker, emitter, monkeypatch, new_dir, tmp_path):
     monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "0")
     project.Project.unmarshal(extensions.apply_extensions(tmp_path, rock_project_yaml))
 
+
 def test_run_init_django_async(mocker, emitter, monkeypatch, new_dir, tmp_path):
-    copy_tree(Path(f"{DATA_DIR}/django"), tmp_path )
+    copy_tree(Path(f"{DATA_DIR}/django"), tmp_path)
 
     mocker.patch.object(
         sys,
