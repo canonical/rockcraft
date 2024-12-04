@@ -41,8 +41,3 @@ extensions:
 #     stage-packages:
 #       # list required packages or slices for your Django application below.
 #       - libpq-dev
-
-# uncomment this section to enable the async workers for Gunicorn.
-#   django-framework/async-dependencies:
-#     python-packages:
-#       - gunicorn[gevent]

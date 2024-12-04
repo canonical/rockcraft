@@ -71,43 +71,30 @@ class _GunicornBase(Extension):
             stage_packages = ["python3.10-venv_ensurepip"]
             build_environment = [{"PARTS_PYTHON_INTERPRETER": "python3.10"}]
 
-        dependencies_name: str = f"{self.framework}-framework/dependencies"
-        config_file: str = "sync-gunicorn.conf.py"
-        gunicorn_package: str = "gunicorn"
-
-        if f"{self.framework}-framework/async-dependencies" in self.yaml_data.get(
-            "parts", {}
-        ):
-            dependencies_name = f"{self.framework}-framework/async-dependencies"
-            config_file = "async-gunicorn.conf.py"
-            gunicorn_package = "gunicorn[gevent]"
-
         parts: dict[str, Any] = {
+            f"{self.framework}-framework/dependencies": {
+                "plugin": "python",
+                "stage-packages": stage_packages,
+                "source": ".",
+                "python-packages": ["gunicorn"],
+                "python-requirements": ["requirements.txt"],
+                "build-environment": build_environment,
+            },
             f"{self.framework}-framework/install-app": self.gen_install_app_part(),
+            f"{self.framework}-framework/config-files": {
+                "plugin": "dump",
+                "source": str(data_dir / f"{self.framework}-framework"),
+                "organize": {
+                    "gunicorn.conf.py": f"{self.framework}/gunicorn.conf.py",
+                },
+            },
             f"{self.framework}-framework/statsd-exporter": {
                 "build-snaps": ["go"],
                 "source-tag": "v0.26.0",
                 "plugin": "go",
                 "source": "https://github.com/prometheus/statsd_exporter.git",
             },
-            f"{self.framework}-framework/config-files": {
-                "plugin": "dump",
-                "source": str(data_dir / f"{self.framework}-framework"),
-                "organize": {
-                    config_file: f"{self.framework}/gunicorn.conf.py",
-                },
-                "stage": [f"{self.framework}/gunicorn.conf.py", "statsd-mapping.conf"],
-            },
-            dependencies_name: {
-                "plugin": "python",
-                "stage-packages": stage_packages,
-                "source": ".",
-                "python-packages": [gunicorn_package],
-                "python-requirements": ["requirements.txt"],
-                "build-environment": build_environment,
-            },
         }
-
         if self.yaml_data["base"] == "bare":
             parts[f"{self.framework}-framework/runtime"] = {
                 "plugin": "nil",
@@ -124,6 +111,30 @@ class _GunicornBase(Extension):
                 "stage-packages": ["ca-certificates_data"],
             }
         return parts
+
+    def _check_async(self) -> str:
+        """Check if gevent package installed in requirements.txt.
+
+        Regex will match with exact `gevent` package and also
+        will match `gevent` with versions such as:
+          - gevent==*.*
+          - gevent ==0.*
+          - gevent <2.*
+          - gevent<2.*
+          - gevent >2.*
+          - gevent>2.*
+          - gevent@github.com/*
+          - gevent[some_extra]
+          - gevent [some_extra]
+        """
+        requirements_file = self.project_root / "requirements.txt"
+        with requirements_file.open() as f:
+            lines = f.readlines()
+            for line in lines:
+                for token in line.split():
+                    if re.match("^gevent[|[=|@|\\s|\n<|>]|(^gevent$)", token):
+                        return "gevent"
+        return "sync"
 
     @override
     def get_root_snippet(self) -> dict[str, Any]:
@@ -143,7 +154,7 @@ class _GunicornBase(Extension):
                 self.framework: {
                     "override": "replace",
                     "startup": "enabled",
-                    "command": f"/bin/python3 -m gunicorn -c /{self.framework}/gunicorn.conf.py {self.wsgi_path}",
+                    "command": f"/bin/python3 -m gunicorn -c /{self.framework}/gunicorn.conf.py {self.wsgi_path} -k [ {self._check_async()} ]",
                     "after": ["statsd-exporter"],
                     "user": "_daemon_",
                 },
@@ -286,25 +297,12 @@ class FlaskFramework(_GunicornBase):
 
         return []
 
-    def _dependencies_error_messages(self) -> list[str]:
-        """Ensure only 1 of the dependencies parts is defined."""
-        yaml_parts = self.yaml_data.get("parts", {})
-
-        if yaml_parts.get(
-            f"{self.framework}-framework/async-dependencies", None
-        ) and yaml_parts.get(f"{self.framework}-framework/dependencies", None):
-            return [
-                f"Cannot have both sync and async dependencies. https://bit.ly/{self.framework}-async-doc"
-            ]
-        return []
-
     @override
     def check_project(self) -> None:
         """Ensure this extension can apply to the current rockcraft project."""
         error_messages = self._requirements_txt_error_messages()
         if not self.yaml_data.get("services", {}).get("flask", {}).get("command"):
             error_messages += self._wsgi_path_error_messages()
-        error_messages += self._dependencies_error_messages()
         if error_messages:
             raise ExtensionError(
                 "\n".join("- " + message for message in error_messages),
