@@ -1,6 +1,6 @@
 summary: flask extension async test
 environment:
-  FLAVOUR: ubuntu-22.04
+  FLAVOUR: ubuntu-24.04
 execute: |
   NAME="flask-${FLAVOUR//./-}"
   ROCK_FILE="${NAME}_0.1_amd64.rock"
@@ -72,6 +72,47 @@ execute: |
     exit 2
   fi
   [ "$ASYNC_RESULT" == 'TRUE' ]
+
+  # stop the async flask container
+  docker stop "${NAME}-container" -f
+
+  # test the sync flask service
+  docker run --name "${NAME}-container" -d -p 8138:8000 "${IMAGE}" --args flask sync
+  retry -n 5 --wait 2 curl localhost:8138
+  [ "$(curl -sSf localhost:8138)" == "ok" ]
+
+  NUM_REQUESTS=5
+  URL='localhost:8138/io'
+  SYNC_RESULT='TRUE'
+
+  echo "Firing $NUM_REQUESTS requests to $URL..."
+
+  overall_start_time=$(date +%s)
+
+  for i in $(seq 1 $NUM_REQUESTS); do
+    (
+      start_time=$(date +%s)
+      echo "Request $i start time: $start_time"
+
+      curl -s "$URL"
+
+      end_time=$(date +%s)
+      pass_time=$((end_time - start_time))
+      echo "Request $i end time: $end_time == $pass_time"
+      echo "Request $i end time: $end_time == $pass_time"
+    ) &
+  done
+
+  wait
+  end_time=$(date +%s)
+  overall_passtime=$((end_time - overall_start_time))
+  echo "Total pass time: $overall_passtime"
+  if [ $((9 > overall_passtime)) -eq 1 ]; then
+    echo "Error!"
+    SYNC_RESULT='FALSE'
+    exit 2
+  fi
+  [ "$SYNC_RESULT" == 'TRUE' ]
 restore: |
   NAME="flask-${FLAVOUR//./-}"
   docker stop "${NAME}-container"

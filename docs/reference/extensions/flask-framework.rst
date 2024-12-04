@@ -18,15 +18,8 @@ server metrics.
 
 The Flask extension supports both synchronous and asynchronous
 Gunicorn workers. If you want asynchronous workers, you have to add
-``flask-framework/async-dependencies`` to the ``rockcraft.yaml``.
-Read more :ref:`flask-framework/async-dependencies <flask-async-deps>`.
-
-If you define
-``flask-framework/async-dependencies`` you can not
-also include ``flask-framework/dependencies``.
-Running ``rockcraft pack`` will result in an ``Cannot have both sync and async
-dependencies. https://bit.ly/flask-async-doc`` error if you try to
-use both at the same time.
+``gevent`` package to the ``requirements.txt`` file.
+Read more :ref:`Using Asynchronous Gunicorn workers <async-gunicorn-workers>`.
 
 Project requirements
 ====================
@@ -38,8 +31,6 @@ There are 2 requirements to be able to use the ``flask-framework`` extension:
 2. The project must include a WSGI app with the path ``app:app``. This means
    there must be an ``app.py`` file at the root of the project with the name
    of the Flask object is set to ``app``
-
-.. _flask-sync-deps:
 
 ``parts`` > ``flask-framework/dependencies`` > ``stage-packages``
 =================================================================
@@ -55,43 +46,24 @@ application. In the following example we use it to specify ``libpq-dev``:
         # list required packages or slices for your flask app below.
         - libpq-dev
 
-.. _flask-async-deps:
+.. _async-gunicorn-workers:
 
-``parts`` > ``flask-framework/async-dependencies``
-=================================================================
+Using Asynchronous Gunicorn workers
+===================================
 
-In order to use asynchronous Gunicorn workers, you need
-to include ``flask-framework/async-dependencies`` in the
-``rockcraft.yaml`` while removing
-``flask-framework/dependencies``.
+If you want to use asynchronous workers, you have to add ``gevent`` package to the
+``requirements.txt`` file. Rockcraft automatically detects this and updates the
+pebble plan to use the asynchronous workers. If you have ``gevent`` installed in your
+rock but decided to use ``sync`` workers instead you can use the ``--args``
+parameter of Docker to use ``sync`` workers instead of the default ``gevent``:
 
-In the ``rockcraft.yaml``, add the following lines:
-
-.. code-block:: yaml
-
-  parts:
-    flask-framework/async-dependencies:
-      python-packages:
-        - gunicorn[gevent]
-
-If your project needs additional debs to run, you can add them to
-``stage-packages``.
-
-.. code-block:: yaml
-
-  parts:
-    flask-framework/async-dependencies:
-      python-packages:
-        - gunicorn[gevent]
-      stage-packages:
-        # list required packages or slices for your Flask application below.
-        - libpq-dev
-
-.. warning::
-  You can use either ``flask-framework/async-dependencies`` or
-  ``flask-framework/dependencies``, but not both at the same time.
-  To read more about synchronous dependencies,
-  see :ref:`flask-framework/dependencies <flask-sync-deps>`.
+.. code-block:: shell
+  :caption: Use sync workers instead of gevent
+   $ docker run \
+       --name flask-container \
+       -d -p 8138:8000 \
+       flask-image:1.0 \
+       --args flask sync
 
 ``parts`` > ``flask-framework/install-app`` > ``prime``
 =======================================================

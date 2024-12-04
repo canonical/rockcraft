@@ -19,15 +19,8 @@ server metrics.
 
 The Django extension supports both synchronous and asynchronous
 Gunicorn workers. If you want asynchronous workers, you have to add
-``django-framework/async-dependencies`` to the ``rockcraft.yaml``.
-Read more :ref:`django-framework/async-dependencies <django-async-deps>`.
-
-If you define
-``django-framework/async-dependencies`` you can not
-also include ``django-framework/dependencies``.
-Running ``rockcraft pack`` will result in an ``Cannot have both sync and async
-dependencies. https://bit.ly/flask-async-doc`` error if you try to
-use both at the same time.
+``gevent`` package to the ``requirements.txt`` file.
+Read more :ref:`Using Asynchronous Gunicorn workers <async-gunicorn-workers>`.
 
 Project requirements
 ====================
@@ -41,7 +34,6 @@ There are 2 requirements to be able to use the ``django-framework`` extension:
    ``./<Rock name with - replaced by _>/<Rock name with - replaced by _>/manage.py``
    relative to the ``rockcraft.yaml`` file.
 
-.. _django-sync-deps:
 
 ``parts`` > ``django-framework/dependencies:`` > ``stage-packages``
 ===================================================================
@@ -57,44 +49,31 @@ application. In the following example we use it to specify ``libpq-dev``:
         # list required packages or slices for your Django application below.
         - libpq-dev
 
-.. _django-async-deps:
+.. _async-gunicorn-workers:
 
-``parts`` > ``django-framework/async-dependencies``
-===================================================
+Using Asynchronous Gunicorn workers
+===================================
 
-In order to use asynchronous Gunicorn workers, you need
-to include ``django-framework/async-dependencies`` in the
-``rockcraft.yaml`` while removing
-``django-framework/dependencies``.
+If you want to use asynchronous workers, you have to add ``gevent`` package to the
+``requirements.txt`` file. Rockcraft automatically detects this and updates the
+pebble plan to use the asynchronous workers. If you have ``gevent`` installed in your
+rock but decided to use ``sync`` workers instead you can use the ``--args``
+parameter of Docker to use ``sync`` workers instead of the default ``gevent``:
 
-In the ``rockcraft.yaml``, add the following lines:
+.. code-block:: shell
+  :caption: Use sync workers instead of gevent
+   $ docker run \
+       --name django-container \
+       -d -p 8138:8000 \
+       django-image:1.0 \
+       --args django sync
 
-.. code-block:: yaml
 
-  parts:
-    django-framework/async-dependencies:
-      python-packages:
-        - gunicorn[gevent]
+.. note::
+    The Django extension is compatible with the ``bare``, ``ubuntu@22.04`` and
+    ``ubuntu@24.04`` bases.
 
-If your project needs additional debs to run, you can add them to
-``stage-packages``.
-
-.. code-block:: yaml
-
-  parts:
-    django-framework/async-dependencies:
-      python-packages:
-        - gunicorn[gevent]
-      stage-packages:
-        # list required packages or slices for your Django application below.
-        - libpq-dev
-
-.. warning::
-  You can use either ``django-framework/async-dependencies`` or
-  ``django-framework/dependencies``, but not both at the same time.
-  To read more about synchronous dependencies,
-  see :ref:`django-framework/dependencies <django-sync-deps>`.
-
+Example rock
 
 Useful links
 ============
