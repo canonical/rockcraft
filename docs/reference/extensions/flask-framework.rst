@@ -21,8 +21,9 @@ Project requirements
 
 There are 2 requirements to be able to use the ``flask-framework`` extension:
 
-1. There must be a ``requirements.txt`` file in the root of the project with
-   ``Flask`` declared as a dependency
+1. ``Flask`` needs to be declared as a requirement either in a
+   ``requirements.txt`` file or within another ``pip`` supported
+   requirement (eg. via ``pyproject.toml``).
 2. The project must include a WSGI app with the path ``app:app``. This means
    there must be an ``app.py`` file at the root of the project with the name
    of the Flask object is set to ``app``

@@ -22,8 +22,9 @@ Project requirements
 
 There are 2 requirements to be able to use the ``django-framework`` extension:
 
-1. There must be a ``requirements.txt`` file in the root directory of the
-   project with ``Django`` declared as a dependency.
+1. ``Django`` needs to be declared as a requirement either in a
+   ``requirements.txt`` file or within another ``pip`` supported
+   requirement (eg. via ``pyproject.toml``).
 2. The project must be named the same as the ``name`` in ``rockcraft.yaml`` with
    any ``-`` replaced by ``_``, i.e., the ``manage.py`` must be located at
    ``./<Rock name with - replaced by _>/<Rock name with - replaced by _>/manage.py``

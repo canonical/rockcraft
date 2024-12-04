@@ -179,26 +179,12 @@ def test_fastapi_missing_asgi_entrypoint(tmp_path, fastapi_input_yaml):
 
 
 @pytest.mark.usefixtures("fastapi_extension")
-def test_fastapi_missing_requirements_txt(tmp_path, fastapi_input_yaml):
-    (tmp_path / "app.py").write_text("app = app")
-    with pytest.raises(ExtensionError) as exc:
-        extensions.apply_extensions(tmp_path, fastapi_input_yaml)
-    assert str(exc.value) == (
-        "- missing a requirements.txt file. The fastapi-framework extension requires this file with 'fastapi'/'starlette' specified as a dependency."
-    )
-
-
-@pytest.mark.usefixtures("fastapi_extension")
 def test_fastapi_check_no_correct_requirement_and_no_asgi_entrypoint(
     tmp_path, fastapi_input_yaml
 ):
-    (tmp_path / "requirements.txt").write_text("oneproject")
     with pytest.raises(ExtensionError) as exc:
         extensions.apply_extensions(tmp_path, fastapi_input_yaml)
-    assert str(exc.value) == (
-        "- missing fastapi or starlette package dependency in requirements.txt file.\n"
-        "- missing ASGI entrypoint"
-    )
+    assert str(exc.value) == ("- missing ASGI entrypoint")
 
 
 @pytest.mark.usefixtures("fastapi_extension")

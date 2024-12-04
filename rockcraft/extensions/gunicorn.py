@@ -77,7 +77,6 @@ class _GunicornBase(Extension):
                 "stage-packages": stage_packages,
                 "source": ".",
                 "python-packages": ["gunicorn"],
-                "python-requirements": ["requirements.txt"],
                 "build-environment": build_environment,
             },
             f"{self.framework}-framework/install-app": self.gen_install_app_part(),
@@ -95,6 +94,13 @@ class _GunicornBase(Extension):
                 "source": "https://github.com/prometheus/statsd_exporter.git",
             },
         }
+
+        # add the optional requirements.txt file
+        if (self.project_root / "requirements.txt").exists():
+            parts[f"{self.framework}-framework/dependencies"]["python-requirements"] = [
+                "requirements.txt"
+            ]
+
         if self.yaml_data["base"] == "bare":
             parts[f"{self.framework}-framework/runtime"] = {
                 "plugin": "nil",
@@ -259,24 +265,10 @@ class FlaskFramework(_GunicornBase):
 
         return []
 
-    def _requirements_txt_error_messages(self) -> list[str]:
-        """Ensure the requirements.txt file is correct."""
-        requirements_file = self.project_root / "requirements.txt"
-        if not requirements_file.exists():
-            return [
-                "missing a requirements.txt file. The flask-framework extension requires this file with 'flask' specified as a dependency."
-            ]
-
-        requirements_lines = requirements_file.read_text(encoding="utf-8").splitlines()
-        if not any(("flask" in line.lower() for line in requirements_lines)):
-            return ["missing flask package dependency in requirements.txt file."]
-
-        return []
-
     @override
     def check_project(self) -> None:
         """Ensure this extension can apply to the current rockcraft project."""
-        error_messages = self._requirements_txt_error_messages()
+        error_messages = []
         if not self.yaml_data.get("services", {}).get("flask", {}).get("command"):
             error_messages += self._wsgi_path_error_messages()
         if error_messages:
@@ -346,10 +338,5 @@ class DjangoFramework(_GunicornBase):
     @override
     def check_project(self) -> None:
         """Ensure this extension can apply to the current rockcraft project."""
-        if not (self.project_root / "requirements.txt").exists():
-            raise ExtensionError(
-                "missing requirements.txt file, django-framework extension "
-                "requires this file with Django specified as a dependency"
-            )
         if not self.yaml_data.get("services", {}).get("django", {}).get("command"):
             self._check_wsgi_path()
