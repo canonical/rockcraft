@@ -32,7 +32,7 @@ execute: |
   docker run --rm --entrypoint /bin/python3 "${IMAGE}" -c "import gevent;print(f'gevent: {gevent.__version__}')"
 
   # test that pebble service uses gevent
-  docker run --rm --entrypoint /bin/pebble "${IMAGE}" services flask | grep gevent
+  docker run --rm "${IMAGE}" plan | grep gevent
 
   # test the default flask service
   docker run --name "${NAME}-container" -d -p 8138:8000 "${IMAGE}"
