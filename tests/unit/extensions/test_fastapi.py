@@ -67,6 +67,7 @@ def test_fastapi_extension_default(tmp_path, fastapi_input_yaml, packages):
             "fastapi-framework/runtime": {
                 "plugin": "nil",
                 "stage-packages": ["ca-certificates_data"],
+                "build-snaps": ["chisel/latest/stable"],
             },
         },
         "services": {
@@ -219,11 +220,13 @@ def test_fastapi_extension_bare(tmp_path):
         "source": ".",
         "python-packages": ["uvicorn"],
         "python-requirements": ["requirements.txt"],
+        "build-snaps": ["chisel/latest/stable"],
     }
     assert applied["parts"]["fastapi-framework/runtime"] == {
         "plugin": "nil",
         "override-build": "mkdir -m 777 ${CRAFT_PART_INSTALL}/tmp",
         "stage-packages": ["bash_bins", "coreutils_bins", "ca-certificates_data"],
+        "build-snaps": ["chisel/latest/stable"],
     }
 
 
