@@ -113,27 +113,17 @@ class _GunicornBase(Extension):
         return parts
 
     def _check_async(self) -> str:
-        """Check if gevent package installed in requirements.txt.
-
-        Regex will match with exact `gevent` package and also
-        will match `gevent` with versions such as:
-          - gevent==*.*
-          - gevent ==0.*
-          - gevent <2.*
-          - gevent<2.*
-          - gevent >2.*
-          - gevent>2.*
-          - gevent@github.com/*
-          - gevent[some_extra]
-          - gevent [some_extra]
-        """
+        """Check if gevent package installed in requirements.txt."""
         requirements_file = self.project_root / "requirements.txt"
-        with requirements_file.open() as f:
-            lines = f.readlines()
-            for line in lines:
-                for token in line.split():
-                    if re.match("^gevent[|[=|@|\\s|\n<|>]|(^gevent$)", token):
-                        return "gevent"
+        requirements_text = requirements_file.read_text()
+        valid_package_names = re.compile(
+            r"^([A-Z0-9]|[A-Z0-9][A-Z0-9._-]*[A-Z0-9])", re.IGNORECASE
+        )
+        for line in requirements_text.splitlines():
+            if valid_package_names.match(line):
+                package_name = re.sub(r"[-_.]+", "-", line).lower().split("=")[0]
+                if package_name == "gevent":
+                    return "gevent"
         return "sync"
 
     @override
