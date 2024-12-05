@@ -23,6 +23,7 @@ import re
 from typing import Any
 
 from overrides import override
+from packaging.requirements import Requirement
 
 from ..errors import ExtensionError
 from ._python_utils import has_global_variable
@@ -116,14 +117,15 @@ class _GunicornBase(Extension):
         """Check if gevent package installed in requirements.txt."""
         requirements_file = self.project_root / "requirements.txt"
         requirements_text = requirements_file.read_text()
-        valid_package_names = re.compile(
-            r"^([A-Z0-9]|[A-Z0-9][A-Z0-9._-]*[A-Z0-9])", re.IGNORECASE
-        )
         for line in requirements_text.splitlines():
-            if valid_package_names.match(line):
-                package_name = re.sub(r"[-_.]+", "-", line).lower().split("=")[0]
-                if package_name == "gevent":
-                    return "gevent"
+            if not line.strip():
+                continue
+            line = line.strip()
+            if line.startswith('#'):
+                continue
+            req = Requirement(line)
+            if req.name == "gevent":
+                return "gevent"
         return "sync"
 
     @override
