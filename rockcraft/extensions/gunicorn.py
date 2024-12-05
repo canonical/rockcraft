@@ -121,7 +121,7 @@ class _GunicornBase(Extension):
             if not line.strip():
                 continue
             line = line.strip()
-            if line.startswith('#'):
+            if line.startswith("#"):
                 continue
             req = Requirement(line)
             if req.name == "gevent":
