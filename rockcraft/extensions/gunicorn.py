@@ -120,10 +120,10 @@ class _GunicornBase(Extension):
         for line in requirements_text.splitlines():
             if not line.strip():
                 continue
-            line = line.strip()
-            if line.startswith("#"):
+            clean_line = line.strip()
+            if clean_line.startswith("#"):
                 continue
-            req = Requirement(line)
+            req = Requirement(clean_line)
             if req.name == "gevent":
                 return "gevent"
         return "sync"
