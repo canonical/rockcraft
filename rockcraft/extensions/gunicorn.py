@@ -23,7 +23,7 @@ import re
 from typing import Any
 
 from overrides import override
-from packaging.requirements import Requirement
+from packaging.requirements import InvalidRequirement, Requirement
 
 from ..errors import ExtensionError
 from ._python_utils import has_global_variable
@@ -122,7 +122,7 @@ class _GunicornBase(Extension):
                 req = Requirement(line)
                 if req.name == "gevent":
                     return "gevent"
-            except Exception:
+            except InvalidRequirement:
                 pass
         return "sync"
 
