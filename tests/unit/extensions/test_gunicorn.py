@@ -107,7 +107,7 @@ def test_flask_extension_default(tmp_path, flask_input_yaml, packages):
             "flask": {
                 "after": ["statsd-exporter"],
                 "command": "/bin/python3 -m gunicorn -c "
-                "/flask/gunicorn.conf.py app:app",
+                "/flask/gunicorn.conf.py app:app -k [ sync ]",
                 "override": "replace",
                 "startup": "enabled",
                 "user": "_daemon_",
@@ -231,7 +231,7 @@ def test_flask_framework_add_service(tmp_path, flask_input_yaml):
     assert applied["services"] == {
         "flask": {
             "after": ["statsd-exporter"],
-            "command": "/bin/python3 -m gunicorn -c /flask/gunicorn.conf.py app:app",
+            "command": "/bin/python3 -m gunicorn -c /flask/gunicorn.conf.py app:app -k [ sync ]",
             "override": "replace",
             "startup": "enabled",
             "user": "_daemon_",
@@ -498,7 +498,7 @@ def test_django_extension_default(tmp_path, django_input_yaml):
         "services": {
             "django": {
                 "after": ["statsd-exporter"],
-                "command": "/bin/python3 -m gunicorn -c /django/gunicorn.conf.py foo_bar.wsgi:application",
+                "command": "/bin/python3 -m gunicorn -c /django/gunicorn.conf.py foo_bar.wsgi:application -k [ sync ]",
                 "override": "replace",
                 "startup": "enabled",
                 "user": "_daemon_",
