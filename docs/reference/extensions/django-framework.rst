@@ -20,7 +20,7 @@ server metrics.
 The Django extension supports both synchronous and asynchronous
 Gunicorn workers. If you want asynchronous workers, you have to add
 the ``gevent`` package to the ``requirements.txt`` file.
-Read more :ref:`Using Asynchronous Gunicorn workers <async-gunicorn-workers>`.
+Read more :ref:`Using asynchronous Gunicorn workers <async-gunicorn-workers>`.
 
 Project requirements
 ====================
@@ -51,7 +51,7 @@ application. In the following example we use it to specify ``libpq-dev``:
 
 .. _async-gunicorn-workers:
 
-Using Asynchronous Gunicorn workers
+Using asynchronous Gunicorn workers
 ===================================
 
 If you want to use asynchronous workers, you have to add the ``gevent`` package
@@ -72,8 +72,6 @@ so by using the ``--args`` parameter of Docker:
 .. note::
     The Django extension is compatible with the ``bare``, ``ubuntu@22.04`` and
     ``ubuntu@24.04`` bases.
-
-Example rock
 
 Useful links
 ============
