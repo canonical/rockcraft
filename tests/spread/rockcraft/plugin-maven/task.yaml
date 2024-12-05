@@ -1,0 +1,16 @@
+summary: Maven plugin tests
+execute: |
+  SCENARIO="plugin-maven"
+  ROCK_FILE="${SCENARIO}_0.1_amd64.rock"
+  IMAGE="${SCENARIO}:0.1"
+
+  # Build the rock & load it into docker
+  run_rockcraft pack
+  echo expecting ${ROCK_FILE}
+  test -f ${ROCK_FILE}
+  rockcraft.skopeo copy --insecure-policy  oci-archive:${ROCK_FILE} docker-daemon:${IMAGE}
+  rm ${ROCK_FILE}
+
+  # Run the packaged project
+  docker run --rm $IMAGE exec /usr/bin/java -jar /jar/sample-0.0.1-SNAPSHOT.jar | MATCH "hello world"
+  docker run --rm $IMAGE exec /bin/java -jar /jar/sample-0.0.1-SNAPSHOT.jar | MATCH "hello world"
