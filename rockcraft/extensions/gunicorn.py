@@ -118,14 +118,12 @@ class _GunicornBase(Extension):
         requirements_file = self.project_root / "requirements.txt"
         requirements_text = requirements_file.read_text()
         for line in requirements_text.splitlines():
-            if not line.strip():
-                continue
-            clean_line = line.strip()
-            if clean_line.startswith("#"):
-                continue
-            req = Requirement(clean_line)
-            if req.name == "gevent":
-                return "gevent"
+            try:
+                req = Requirement(line)
+                if req.name == "gevent":
+                    return "gevent"
+            except Exception:
+                pass
         return "sync"
 
     @override

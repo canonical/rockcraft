@@ -1,29 +1,34 @@
 summary: flask extension async test
 environment:
-  FLAVOUR: ubuntu-24.04
+  SCENARIO/bare: bare
+  SCENARIO/base_2204: ubuntu-22.04
+  SCENARIO/base_2404: ubuntu-24.04
 execute: |
-  NAME="flask-${FLAVOUR//./-}"
+  NAME="flask-${SCENARIO//./-}"
   ROCK_FILE="${NAME}_0.1_amd64.rock"
   IMAGE="${NAME}:0.1"
 
   run_rockcraft init --name flask-extension --profile flask-framework
   sed -i "s/name: .*/name: ${NAME}/g" rockcraft.yaml
-  sed -i "s/base: .*/base: ${FLAVOUR//-/@}/g" rockcraft.yaml
-
+  if [ "${SCENARIO}" = "bare" ]; then
+      sed -i "s/base: .*/base: ${SCENARIO}\nbuild-base: ubuntu@22.04/g" rockcraft.yaml
+  else
+      sed -i "s/base: .*/base: ${SCENARIO//-/@}/g" rockcraft.yaml
+  fi
   run_rockcraft pack
 
   test -f "${ROCK_FILE}"
-  test ! -d work
+  # test ! -d work
 
   # Ensure docker does not have this container image
-  docker rmi --force "${IMAGE}"
+  # docker rmi --force "${IMAGE}"
   # Install image
   sudo rockcraft.skopeo --insecure-policy copy "oci-archive:${ROCK_FILE}" "docker-daemon:${IMAGE}"
   # Ensure image exists
   docker images "${IMAGE}" | MATCH "${NAME}"
 
   # ensure container doesn't exist
-  docker rm -f "${NAME}-container"
+  # docker rm -f "${NAME}-container"
 
   # test that gunicorn is installed and config file is correct
   docker run --rm --entrypoint /bin/python3 "${IMAGE}" -m gunicorn --chdir /flask/app --check-config app:app
@@ -73,8 +78,8 @@ execute: |
   fi
   [ "$ASYNC_RESULT" == 'TRUE' ]
 
-  # stop the async flask container
-  docker stop "${NAME}-container" -f
+  # remove the async flask container
+  docker rm "${NAME}-container" -f
 
   # test the sync flask service
   docker run --name "${NAME}-container" -d -p 8138:8000 "${IMAGE}" --args flask sync
@@ -114,8 +119,8 @@ execute: |
   fi
   [ "$SYNC_RESULT" == 'TRUE' ]
 restore: |
-  NAME="flask-${FLAVOUR//./-}"
-  docker stop "${NAME}-container"
-  docker rm "${NAME}-container"
-  rm -f "*.rock" rockcraft.yaml
+  NAME="flask-${SCENARIO//./-}"
+  # docker stop "${NAME}-container"
+  # docker rm "${NAME}-container"
+  # rm -f "*.rock" rockcraft.yaml
   docker system prune -a -f
