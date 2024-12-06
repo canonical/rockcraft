@@ -21,8 +21,6 @@ import logging
 import os
 import pathlib
 import shutil
-import sys
-from distutils.util import strtobool  # pylint: disable=deprecated-module
 from typing import NamedTuple
 
 import rockcraft.errors
@@ -36,12 +34,6 @@ class OSPlatform(NamedTuple):
     system: str
     release: str
     machine: str
-
-
-def is_managed_mode() -> bool:
-    """Check if rockcraft is running in a managed environment."""
-    managed_flag = os.getenv("CRAFT_MANAGED_MODE", "n")
-    return strtobool(managed_flag) == 1
 
 
 def get_managed_environment_home_path() -> pathlib.Path:
@@ -65,31 +57,6 @@ def get_managed_environment_snap_channel() -> str | None:
     :returns: Channel string if specified, else None.
     """
     return os.getenv("ROCKCRAFT_INSTALL_SNAP_CHANNEL")
-
-
-def confirm_with_user(
-    prompt: str, default: bool = False  # noqa: FBT001,FBT002
-) -> bool:
-    """Query user for yes/no answer.
-
-    If stdin is not a tty, the default value is returned.
-
-    If user returns an empty answer, the default value is returned.
-    returns default value.
-
-    :returns: True if answer starts with [yY], False if answer starts with [nN],
-        otherwise the default.
-    """
-    if is_managed_mode():
-        raise RuntimeError("confirmation not yet supported in managed-mode")
-
-    if not sys.stdin.isatty():
-        return default
-
-    choices = " [Y/n]: " if default else " [y/N]: "
-
-    reply = input(prompt + choices).lower().strip()
-    return reply[0] == "y" if reply else default
 
 
 def _find_command_path_in_root(root: str, command_name: str) -> str | None:
