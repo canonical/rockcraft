@@ -29,7 +29,7 @@ from overrides import override
 class RemoteBuildService(remotebuild.RemoteBuildService):
     """Charmcraft remote build service."""
 
-    RecipeClass = launchpad.models.CharmRecipe
+    RecipeClass = launchpad.models.RockRecipe
 
     def fetch_logs(self, output_dir: pathlib.Path) -> Mapping[str, pathlib.Path | None]:
         """Fetch the logs for each build to the given directory.
@@ -65,7 +65,7 @@ class RemoteBuildService(remotebuild.RemoteBuildService):
     ) -> launchpad.models.Recipe:
         """Create a new recipe."""
         try:
-            return launchpad.models.CharmRecipe.new(
+            return launchpad.models.RockRecipe.new(
                 self.lp,
                 name,
                 self.lp.username,
@@ -74,16 +74,16 @@ class RemoteBuildService(remotebuild.RemoteBuildService):
             )
         except lazr.restfulclient.errors.BadRequest:
             return self.lp.get_recipe(
-                "CHARM",
+                "ROCK",
                 name=name,
                 owner=self.lp.username,
                 project=self._lp_project.name,
             )
 
-    @override
-    def _get_build_states(self) -> Mapping[str, launchpad.models.BuildState]:
-        self._refresh_builds()
-        return {
-            f"{build.distribution.name}@{build.distro_series.version} ({build.arch_tag})": build.get_state()
-            for build in self._builds
-        }
+    # @override
+    # def _get_build_states(self) -> Mapping[str, launchpad.models.BuildState]:
+    #     self._refresh_builds()
+    #     return {
+    #         f"{build.distribution.name}@{build.distro_series.version} ({build.arch_tag})": build.get_state()
+    #         for build in self._builds
+    #     }

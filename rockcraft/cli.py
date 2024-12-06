@@ -53,5 +53,6 @@ def _create_app() -> "Rockcraft":
             commands.ExpandExtensionsCommand,
         ],
     )
+    app.add_command_group("Lifecycle", [commands.RemoteBuild])
 
     return app

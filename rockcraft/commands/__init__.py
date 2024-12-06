@@ -21,9 +21,11 @@ from .extensions import (
     ExtensionsCommand,
     ListExtensionsCommand,
 )
+from .remote import RemoteBuild
 
 __all__ = [
     "ExpandExtensionsCommand",
     "ExtensionsCommand",
     "ListExtensionsCommand",
+    "RemoteBuild",
 ]
