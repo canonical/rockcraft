@@ -201,7 +201,7 @@ pydantic==2.10.1
     #   craft-providers
 pydantic-core==2.27.1
     # via pydantic
-pygit2==1.14.1
+pygit2==1.16.0
     # via craft-application
 pygments==2.18.0
     # via
