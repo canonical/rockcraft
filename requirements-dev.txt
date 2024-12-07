@@ -86,7 +86,7 @@ craft-providers==2.0.4
     # via
     #   craft-application
     #   rockcraft (pyproject.toml)
-cryptography==43.0.3
+cryptography==44.0.0
     # via secretstorage
 cssutils==2.11.1
     # via dict2css
