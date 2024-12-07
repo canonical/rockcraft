@@ -4,7 +4,7 @@
 #
 #    pip-compile --extra=dev --output-file=requirements-dev.txt
 #
-alabaster==0.7.16
+alabaster==1.0.0
     # via sphinx
 annotated-types==0.7.0
     # via
