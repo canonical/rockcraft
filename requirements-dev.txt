@@ -372,7 +372,7 @@ sphinx==7.4.7
     #   sphinxext-opengraph
 sphinx-autobuild==2024.10.3
     # via rockcraft (pyproject.toml)
-sphinx-autodoc-typehints==2.3.0
+sphinx-autodoc-typehints==2.5.0
     # via
     #   rockcraft (pyproject.toml)
     #   sphinx-toolbox
