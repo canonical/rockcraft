@@ -52,7 +52,7 @@ colorama==0.4.6
     # via sphinx-autobuild
 craft-application==4.5.0
     # via rockcraft (pyproject.toml)
-craft-archives==2.0.1
+craft-archives==2.0.2
     # via
     #   craft-application
     #   rockcraft (pyproject.toml)
@@ -62,7 +62,7 @@ craft-cli==2.10.1
     #   rockcraft (pyproject.toml)
 craft-grammar==2.0.1
     # via craft-application
-craft-parts==2.1.2
+craft-parts==2.1.4
     # via
     #   craft-application
     #   rockcraft (pyproject.toml)
@@ -310,7 +310,7 @@ sphinx-prompt==1.8.0
     # via sphinx-toolbox
 sphinx-reredirects==0.1.5
     # via canonical-sphinx
-sphinx-tabs==3.4.5
+sphinx-tabs==3.4.7
     # via
     #   canonical-sphinx
     #   sphinx-toolbox
