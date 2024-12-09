@@ -126,6 +126,7 @@ def test_flask_extension_default(tmp_path, flask_input_yaml, packages):
         },
     }
 
+
 @pytest.mark.usefixtures("flask_extension")
 def test_flask_extension_async(tmp_path, flask_input_yaml):
     (tmp_path / "requirements.txt").write_text("flask\ngevent")
@@ -201,6 +202,7 @@ def test_flask_extension_async(tmp_path, flask_input_yaml):
             },
         },
     }
+
 
 @pytest.mark.usefixtures("flask_extension")
 def test_flask_extension_prime_override(tmp_path, flask_input_yaml):
@@ -591,6 +593,7 @@ def test_django_extension_default(tmp_path, django_input_yaml):
             },
         },
     }
+
 
 @pytest.mark.usefixtures("django_extension")
 def test_django_extension_async(tmp_path, django_input_yaml):
