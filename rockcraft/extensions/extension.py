@@ -71,6 +71,42 @@ class Extension(abc.ABC):
         """Return the parts to add to parts."""
 
     @final
+    def is_chisel_installed(self) -> bool:
+        """Determine whether chisel is installed in any part."""
+        has_chisel = False
+        parts = self.get_root_snippet().get("parts", {})
+
+        for data in parts.values():
+            if any(
+                s
+                for s in data.get("build-snaps", [])
+                if s == "chisel" or s.startswith("chisel/")
+            ):
+                has_chisel = True
+                break
+
+        if not has_chisel:
+            return False
+        return True
+
+    @final
+    def get_root_snippet_extended(self) -> dict[str, Any]:
+        """Inject chisel as build-snap if needed."""
+        root_snippet = self.get_root_snippet()
+        if not self.is_chisel_installed():
+            for part, data in root_snippet.get("parts", {}).items():
+                if any("_" in p for p in data.get("stage-packages", [])):
+                    if root_snippet["parts"][part].get("build-snaps"):
+                        root_snippet["parts"][part]["build-snaps"].append(
+                            "chisel/latest/stable"
+                        )
+                    else:
+                        root_snippet["parts"][part]["build-snaps"] = [
+                            "chisel/latest/stable"
+                        ]
+        return root_snippet
+
+    @final
     def validate(self, extension_name: str) -> None:
         """Validate that the extension can be used with the current project.
 

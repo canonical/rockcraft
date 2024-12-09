@@ -24,7 +24,7 @@ execute: |
 
   cp openssl.yaml "${local_release}/slices"
 
-  snap install chisel --channel=latest/candidate
+  snap install chisel
 
   chisel cut --release "${local_release}" --root "${local_root}" openssl_bins
 
