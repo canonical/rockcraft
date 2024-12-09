@@ -20,7 +20,7 @@ charset-normalizer==3.4.0
     # via requests
 craft-application==4.5.0
     # via rockcraft (pyproject.toml)
-craft-archives==2.0.1
+craft-archives==2.0.2
     # via
     #   craft-application
     #   rockcraft (pyproject.toml)
@@ -30,7 +30,7 @@ craft-cli==2.10.1
     #   rockcraft (pyproject.toml)
 craft-grammar==2.0.1
     # via craft-application
-craft-parts==2.1.2
+craft-parts==2.1.4
     # via
     #   craft-application
     #   rockcraft (pyproject.toml)
