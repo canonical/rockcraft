@@ -55,7 +55,7 @@ If you want to use asynchronous workers, you have to add ``gevent`` package to
 the ``requirements.txt`` file. Rockcraft automatically detects this and updates
 the pebble plan to use the asynchronous workers. If you have ``gevent``
 installed in your rock but decided to use ``sync`` workers instead you can use
-the ``--args`` parameter of Docker to use ``sync`` workers instead of the
+the ``--args`` parameter of ``docker run`` to use ``sync`` workers instead of the
 default ``gevent``:
 
 .. code-block:: shell
