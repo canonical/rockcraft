@@ -157,6 +157,7 @@ def test_run_init_flask(mocker, emitter, monkeypatch, new_dir, tmp_path):
         Go to {versioned_url}/reference/extensions/flask-framework to read more about the 'flask-framework' profile."""
         )
     )
+    # apply extension logic to make sure `rockcraft.yaml` file is proper
     monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "0")
     project.Project.unmarshal(extensions.apply_extensions(tmp_path, rock_project_yaml))
 
@@ -188,5 +189,6 @@ def test_run_init_django(mocker, emitter, monkeypatch, new_dir, tmp_path):
         Go to {versioned_url}/reference/extensions/django-framework to read more about the 'django-framework' profile."""
         )
     )
+    # apply extension logic to make sure `rockcraft.yaml` file is proper
     monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "0")
     project.Project.unmarshal(extensions.apply_extensions(tmp_path, rock_project_yaml))

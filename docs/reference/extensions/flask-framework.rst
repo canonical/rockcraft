@@ -19,7 +19,7 @@ server metrics.
 The Flask extension supports both synchronous and asynchronous
 Gunicorn workers. If you want asynchronous workers, you have to add
 ``gevent`` package to the ``requirements.txt`` file.
-Read more :ref:`Using asynchronous Gunicorn workers <async-gunicorn-workers>`.
+Read more :ref:`Using asynchronous Gunicorn workers <flask-async-gunicorn-workers>`.
 
 Project requirements
 ====================
@@ -46,7 +46,7 @@ application. In the following example we use it to specify ``libpq-dev``:
         # list required packages or slices for your flask app below.
         - libpq-dev
 
-.. _async-gunicorn-workers:
+.. _flask-async-gunicorn-workers:
 
 Using asynchronous Gunicorn workers
 ===================================
