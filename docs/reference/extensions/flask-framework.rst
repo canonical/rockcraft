@@ -59,13 +59,12 @@ installed in your rock but decided to use ``sync`` workers instead you can use
 the ``--args`` parameter of ``docker run`` to use ``sync`` workers instead of
 the default ``gevent``:
 
-.. code-block:: shell
-  :caption: Use sync workers instead of gevent
-  $ docker run \
-    --name flask-container \
-    -d -p 8138:8000 \
-    flask-image:1.0 \
-    --args flask sync
+.. code-block:: bash
+   $ docker run \
+   --name flask-container \
+   -d -p 8138:8000 \
+   flask-image:1.0 \
+   --args flask sync
 
 ``parts`` > ``flask-framework/install-app`` > ``prime``
 =======================================================
