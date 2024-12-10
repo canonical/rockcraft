@@ -60,6 +60,7 @@ the ``--args`` parameter of ``docker run`` to use ``sync`` workers instead of
 the default ``gevent``:
 
 .. code-block:: bash
+
    docker run --name flask-container -d -p 8138:8000 flask-image:1.0 \
    --args flask sync
 
