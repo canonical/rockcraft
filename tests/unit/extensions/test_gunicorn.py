@@ -51,8 +51,14 @@ def django_input_yaml_fixture():
 
 @pytest.mark.usefixtures("flask_extension")
 @pytest.mark.parametrize("packages", ["other\nflask", "flask", "Flask", " flask == 99"])
-def test_flask_extension_default(tmp_path, flask_input_yaml, packages):
-    (tmp_path / "requirements.txt").write_text(packages)
+@pytest.mark.parametrize(
+    ("async_package", "expected_worker"), [("gevent", "gevent"), ("", "sync")]
+)
+def test_flask_extension_default(
+    tmp_path, flask_input_yaml, packages, async_package, expected_worker
+):
+    full_packages = "\n".join([packages, async_package])
+    (tmp_path / "requirements.txt").write_text(full_packages)
     (tmp_path / "app.py").write_text("app = object()")
     (tmp_path / "static").mkdir()
     (tmp_path / "node_modules").mkdir()
@@ -107,84 +113,7 @@ def test_flask_extension_default(tmp_path, flask_input_yaml, packages):
             "flask": {
                 "after": ["statsd-exporter"],
                 "command": "/bin/python3 -m gunicorn -c "
-                "/flask/gunicorn.conf.py app:app -k [ sync ]",
-                "override": "replace",
-                "startup": "enabled",
-                "user": "_daemon_",
-            },
-            "statsd-exporter": {
-                "command": (
-                    "/bin/statsd_exporter --statsd.mapping-config=/statsd-mapping.conf "
-                    "--statsd.listen-udp=localhost:9125 "
-                    "--statsd.listen-tcp=localhost:9125"
-                ),
-                "override": "merge",
-                "startup": "enabled",
-                "summary": "statsd exporter service",
-                "user": "_daemon_",
-            },
-        },
-    }
-
-
-@pytest.mark.usefixtures("flask_extension")
-def test_flask_extension_async(tmp_path, flask_input_yaml):
-    (tmp_path / "requirements.txt").write_text("flask\ngevent")
-    (tmp_path / "app.py").write_text("app = object()")
-    (tmp_path / "static").mkdir()
-    (tmp_path / "node_modules").mkdir()
-    (tmp_path / "test").write_text("test")
-    applied = extensions.apply_extensions(tmp_path, flask_input_yaml)
-    source = applied["parts"]["flask-framework/config-files"]["source"]
-    del applied["parts"]["flask-framework/config-files"]["source"]
-    suffix = "share/rockcraft/extensions/flask-framework"
-    assert source[-len(suffix) :].replace("\\", "/") == suffix
-
-    assert applied == {
-        "base": "ubuntu@22.04",
-        "parts": {
-            "flask-framework/config-files": {
-                "organize": {
-                    "gunicorn.conf.py": "flask/gunicorn.conf.py",
-                },
-                "plugin": "dump",
-            },
-            "flask-framework/dependencies": {
-                "plugin": "python",
-                "python-packages": ["gunicorn"],
-                "python-requirements": ["requirements.txt"],
-                "source": ".",
-                "stage-packages": ["python3-venv"],
-                "build-environment": [],
-            },
-            "flask-framework/install-app": {
-                "organize": {
-                    "app.py": "flask/app/app.py",
-                    "static": "flask/app/static",
-                },
-                "plugin": "dump",
-                "prime": ["flask/app/app.py", "flask/app/static"],
-                "source": ".",
-                "stage": ["flask/app/app.py", "flask/app/static"],
-            },
-            "flask-framework/runtime": {
-                "plugin": "nil",
-                "stage-packages": ["ca-certificates_data"],
-            },
-            "flask-framework/statsd-exporter": {
-                "build-snaps": ["go"],
-                "plugin": "go",
-                "source": "https://github.com/prometheus/statsd_exporter.git",
-                "source-tag": "v0.26.0",
-            },
-        },
-        "platforms": {"amd64": {}},
-        "run_user": "_daemon_",
-        "services": {
-            "flask": {
-                "after": ["statsd-exporter"],
-                "command": "/bin/python3 -m gunicorn -c "
-                "/flask/gunicorn.conf.py app:app -k [ gevent ]",
+                f"/flask/gunicorn.conf.py app:app -k [ {expected_worker} ]",
                 "override": "replace",
                 "startup": "enabled",
                 "user": "_daemon_",
@@ -524,8 +453,13 @@ def test_flask_extension_flask_service_override_disable_wsgi_path_check(tmp_path
 
 
 @pytest.mark.usefixtures("django_extension")
-def test_django_extension_default(tmp_path, django_input_yaml):
-    (tmp_path / "requirements.txt").write_text("django")
+@pytest.mark.parametrize(
+    ("packages", "expected_worker"), [("Django\ngevent", "gevent"), ("Django", "sync")]
+)
+def test_django_extension_default(
+    tmp_path, django_input_yaml, packages, expected_worker
+):
+    (tmp_path / "requirements.txt").write_text(packages)
     (tmp_path / "test").mkdir()
     (tmp_path / "foo_bar" / "foo_bar").mkdir(parents=True)
     (tmp_path / "foo_bar" / "foo_bar" / "wsgi.py").write_text("application = object()")
@@ -575,79 +509,7 @@ def test_django_extension_default(tmp_path, django_input_yaml):
         "services": {
             "django": {
                 "after": ["statsd-exporter"],
-                "command": "/bin/python3 -m gunicorn -c /django/gunicorn.conf.py foo_bar.wsgi:application -k [ sync ]",
-                "override": "replace",
-                "startup": "enabled",
-                "user": "_daemon_",
-            },
-            "statsd-exporter": {
-                "command": (
-                    "/bin/statsd_exporter --statsd.mapping-config=/statsd-mapping.conf "
-                    "--statsd.listen-udp=localhost:9125 "
-                    "--statsd.listen-tcp=localhost:9125"
-                ),
-                "override": "merge",
-                "startup": "enabled",
-                "summary": "statsd exporter service",
-                "user": "_daemon_",
-            },
-        },
-    }
-
-
-@pytest.mark.usefixtures("django_extension")
-def test_django_extension_async(tmp_path, django_input_yaml):
-    (tmp_path / "requirements.txt").write_text("django\ngevent")
-    (tmp_path / "test").mkdir()
-    (tmp_path / "foo_bar" / "foo_bar").mkdir(parents=True)
-    (tmp_path / "foo_bar" / "foo_bar" / "wsgi.py").write_text("application = object()")
-
-    applied = extensions.apply_extensions(tmp_path, django_input_yaml)
-
-    source = applied["parts"]["django-framework/config-files"]["source"]
-    del applied["parts"]["django-framework/config-files"]["source"]
-    suffix = "share/rockcraft/extensions/django-framework"
-    assert source[-len(suffix) :].replace("\\", "/") == suffix
-
-    assert applied == {
-        "base": "ubuntu@22.04",
-        "name": "foo-bar",
-        "parts": {
-            "django-framework/config-files": {
-                "organize": {"gunicorn.conf.py": "django/gunicorn.conf.py"},
-                "plugin": "dump",
-            },
-            "django-framework/dependencies": {
-                "plugin": "python",
-                "python-packages": ["gunicorn"],
-                "python-requirements": ["requirements.txt"],
-                "source": ".",
-                "stage-packages": ["python3-venv"],
-                "build-environment": [],
-            },
-            "django-framework/install-app": {
-                "organize": {"*": "django/app/", ".*": "django/app/"},
-                "plugin": "dump",
-                "source": "foo_bar",
-                "stage": ["-django/app/db.sqlite3"],
-            },
-            "django-framework/runtime": {
-                "plugin": "nil",
-                "stage-packages": ["ca-certificates_data"],
-            },
-            "django-framework/statsd-exporter": {
-                "build-snaps": ["go"],
-                "plugin": "go",
-                "source": "https://github.com/prometheus/statsd_exporter.git",
-                "source-tag": "v0.26.0",
-            },
-        },
-        "platforms": {"amd64": {}},
-        "run_user": "_daemon_",
-        "services": {
-            "django": {
-                "after": ["statsd-exporter"],
-                "command": "/bin/python3 -m gunicorn -c /django/gunicorn.conf.py foo_bar.wsgi:application -k [ gevent ]",
+                "command": f"/bin/python3 -m gunicorn -c /django/gunicorn.conf.py foo_bar.wsgi:application -k [ {expected_worker} ]",
                 "override": "replace",
                 "startup": "enabled",
                 "user": "_daemon_",
