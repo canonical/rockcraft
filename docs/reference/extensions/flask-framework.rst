@@ -19,7 +19,8 @@ server metrics.
 The Flask extension supports both synchronous and asynchronous
 Gunicorn workers. If you want asynchronous workers, you have to add
 ``gevent`` package to the ``requirements.txt`` file.
-Read more :ref:`Using asynchronous Gunicorn workers <flask-async-gunicorn-workers>`.
+Read more
+:ref:`Using asynchronous Gunicorn workers <flask-async-gunicorn-workers>`.
 
 Project requirements
 ====================
@@ -55,8 +56,8 @@ If you want to use asynchronous workers, you have to add ``gevent`` package to
 the ``requirements.txt`` file. Rockcraft automatically detects this and updates
 the pebble plan to use the asynchronous workers. If you have ``gevent``
 installed in your rock but decided to use ``sync`` workers instead you can use
-the ``--args`` parameter of ``docker run`` to use ``sync`` workers instead of the
-default ``gevent``:
+the ``--args`` parameter of ``docker run`` to use ``sync`` workers instead of
+the default ``gevent``:
 
 .. code-block:: shell
   :caption: Use sync workers instead of gevent

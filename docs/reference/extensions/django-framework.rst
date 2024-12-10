@@ -20,7 +20,8 @@ server metrics.
 The Django extension supports both synchronous and asynchronous
 Gunicorn workers. If you want asynchronous workers, you have to add
 the ``gevent`` package to the ``requirements.txt`` file.
-Read more :ref:`Using asynchronous Gunicorn workers <django-async-gunicorn-workers>`.
+Read more
+:ref:`Using asynchronous Gunicorn workers <django-async-gunicorn-workers>`.
 
 Project requirements
 ====================
