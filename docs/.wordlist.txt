@@ -3,6 +3,7 @@ AMD
 amd
 ARGS
 ASGI
+async
 Autotools
 autotools
 boolean
@@ -44,10 +45,12 @@ filesystems
 filetree
 fs
 gc
+gevent
 GiB
 GID
 github
 GPG
+gunicorn
 Gunicorn
 gzipped
 hardcoded
@@ -144,6 +147,7 @@ triaged
 ubuntu
 unbuilt
 UID
+uncomment
 usrmerge
 Uvicorn
 VENV
