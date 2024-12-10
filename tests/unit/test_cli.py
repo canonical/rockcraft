@@ -65,7 +65,14 @@ def test_run_pack_services(mocker, monkeypatch, tmp_path):
     assert log_path.is_file()
 
 
-@pytest.mark.usefixtures("new_dir")
+@pytest.fixture
+def valid_dir(new_dir, monkeypatch):
+    valid = pathlib.Path(new_dir) / "valid"
+    valid.mkdir()
+    monkeypatch.chdir(valid)
+
+
+@pytest.mark.usefixtures("valid_dir")
 def test_run_init(mocker):
     mock_ended_ok = mocker.spy(emit, "ended_ok")
     mocker.patch.object(sys, "argv", ["rockcraft", "init"])
@@ -80,9 +87,10 @@ def test_run_init(mocker):
     assert len(rock_project.summary) < 80
     assert len(rock_project.description.split()) < 100
     assert mock_ended_ok.mock_calls == [call()]
+    assert rock_project.base == "ubuntu@24.04"
 
 
-@pytest.mark.usefixtures("new_dir")
+@pytest.mark.usefixtures("valid_dir")
 def test_run_init_with_name(mocker):
     mocker.patch.object(sys, "argv", ["rockcraft", "init", "--name=foobar"])
 
@@ -96,21 +104,22 @@ def test_run_init_with_name(mocker):
     assert rock_project.name == "foobar"
 
 
-@pytest.mark.usefixtures("new_dir")
+@pytest.mark.usefixtures("valid_dir")
 def test_run_init_with_invalid_name(mocker):
     mocker.patch.object(sys, "argv", ["rockcraft", "init", "--name=f"])
     return_code = cli.run()
     assert return_code == 1
 
 
-@pytest.mark.usefixtures("new_dir")
-def test_run_init_fallback_name(mocker):
+def test_run_init_fallback_name(mocker, new_dir, monkeypatch):
     mocker.patch.object(sys, "argv", ["rockcraft", "init"])
-    mocker.patch("pathlib.Path.cwd", return_value=pathlib.Path("/f"))
+    invalid_dir = pathlib.Path(new_dir) / "f"
+    invalid_dir.mkdir()
+    monkeypatch.chdir(invalid_dir)
 
     cli.run()
 
-    rockcraft_yaml_path = Path("rockcraft.yaml")
+    rockcraft_yaml_path = invalid_dir / "rockcraft.yaml"
     rock_project = project.Project.unmarshal(
         yaml.safe_load(rockcraft_yaml_path.read_text())
     )
@@ -215,7 +224,6 @@ def test_run_init_flask(mocker, emitter, monkeypatch, new_dir, tmp_path):
     emitter.assert_message(
         textwrap.dedent(
             f"""\
-        Created 'rockcraft.yaml'.
         Go to {versioned_url}/reference/extensions/flask-framework to read more about the 'flask-framework' profile."""
         )
     )

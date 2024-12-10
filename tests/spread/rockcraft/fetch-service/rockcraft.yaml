@@ -1,0 +1,20 @@
+name: fetch-service
+description: Build a project using the fetch-service
+summary: "Fetch service testing"
+base: "bare"
+build-base: "ubuntu@24.04"
+version: "1.0"
+license: MIT
+platforms:
+  amd64:
+
+parts:
+  debs:
+    plugin: nil
+    stage-packages: [hello]
+
+  python:
+    plugin: python
+    stage-packages: [python3-venv]
+    python-packages: [black]
+    source: .

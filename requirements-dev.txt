@@ -62,7 +62,7 @@ colorama==0.4.6
     # via sphinx-autobuild
 coverage==7.6.8
     # via rockcraft (pyproject.toml)
-craft-application==4.4.0
+craft-application==4.5.0
     # via rockcraft (pyproject.toml)
 craft-archives==2.0.1
     # via
