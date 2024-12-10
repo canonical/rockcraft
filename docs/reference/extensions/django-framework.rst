@@ -63,12 +63,11 @@ so by using the ``--args`` parameter of ``docker run``:
 
 .. code-block:: shell
   :caption: Use sync workers instead of gevent
-   $ docker run \
-       --name django-container \
-       -d -p 8138:8000 \
-       django-image:1.0 \
-       --args django sync
-
+  $ docker run \
+    --name django-container \
+    -d -p 8138:8000 \
+    django-image:1.0 \
+    --args django sync
 
 .. note::
     The Django extension is compatible with the ``bare``, ``ubuntu@22.04`` and
