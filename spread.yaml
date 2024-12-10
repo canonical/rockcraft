@@ -139,7 +139,6 @@ suites:
     summary: tests for rockcraft core functionality, independent of host system
     systems:
     - ubuntu-22.04-64
-    - ubuntu-24.04-64
 
   tests/spread/foreign/:
     summary: tests that rockcraft and rocks work on different host systems

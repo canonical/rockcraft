@@ -16,8 +16,8 @@
 import pathlib
 import sys
 import textwrap
-from distutils.dir_util import copy_tree
 from pathlib import Path
+from shutil import copytree
 from unittest.mock import DEFAULT, call
 
 import pytest
@@ -131,7 +131,7 @@ def test_run_init_fallback_name(mocker, new_dir, monkeypatch):
 
 
 def test_run_init_flask(mocker, emitter, monkeypatch, new_dir, tmp_path):
-    copy_tree(Path(f"{DATA_DIR}/flask"), tmp_path)
+    copytree(Path(f"{DATA_DIR}/flask"), tmp_path, dirs_exist_ok=True)
 
     mocker.patch.object(
         sys,
@@ -163,7 +163,7 @@ def test_run_init_flask(mocker, emitter, monkeypatch, new_dir, tmp_path):
 
 
 def test_run_init_django(mocker, emitter, monkeypatch, new_dir, tmp_path):
-    copy_tree(Path(f"{DATA_DIR}/django"), tmp_path)
+    copytree(Path(f"{DATA_DIR}/django"), tmp_path, tmp_path, dirs_exist_ok=True)
 
     mocker.patch.object(
         sys,
