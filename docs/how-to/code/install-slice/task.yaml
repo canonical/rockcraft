@@ -19,7 +19,7 @@ execute: |
   git clone -b ubuntu-22.04 https://github.com/canonical/chisel-releases/
   # [docs:clone-chisel-releases-end]
 
-  sudo snap install chisel --channel=latest/candidate
+  sudo snap install chisel
 
   # [docs:slice-exists]
   chisel find --release=./chisel-releases/ openssl_bins
