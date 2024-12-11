@@ -23,6 +23,7 @@ import re
 from typing import Any
 
 from overrides import override
+from packaging.requirements import InvalidRequirement, Requirement
 
 from ..errors import ExtensionError
 from ._python_utils import has_global_variable
@@ -112,6 +113,19 @@ class _GunicornBase(Extension):
             }
         return parts
 
+    def _check_async(self) -> str:
+        """Check if gevent package installed in requirements.txt."""
+        requirements_file = self.project_root / "requirements.txt"
+        requirements_text = requirements_file.read_text()
+        for line in requirements_text.splitlines():
+            try:
+                req = Requirement(line)
+                if req.name == "gevent":
+                    return "gevent"
+            except InvalidRequirement:
+                pass
+        return "sync"
+
     @override
     def get_root_snippet(self) -> dict[str, Any]:
         """Fill in some default root components.
@@ -130,7 +144,7 @@ class _GunicornBase(Extension):
                 self.framework: {
                     "override": "replace",
                     "startup": "enabled",
-                    "command": f"/bin/python3 -m gunicorn -c /{self.framework}/gunicorn.conf.py {self.wsgi_path}",
+                    "command": f"/bin/python3 -m gunicorn -c /{self.framework}/gunicorn.conf.py {self.wsgi_path} -k [ {self._check_async()} ]",
                     "after": ["statsd-exporter"],
                     "user": "_daemon_",
                 },

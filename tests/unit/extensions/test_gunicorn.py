@@ -51,8 +51,14 @@ def django_input_yaml_fixture():
 
 @pytest.mark.usefixtures("flask_extension")
 @pytest.mark.parametrize("packages", ["other\nflask", "flask", "Flask", " flask == 99"])
-def test_flask_extension_default(tmp_path, flask_input_yaml, packages):
-    (tmp_path / "requirements.txt").write_text(packages)
+@pytest.mark.parametrize(
+    ("async_package", "expected_worker"), [("gevent", "gevent"), ("", "sync")]
+)
+def test_flask_extension_default(
+    tmp_path, flask_input_yaml, packages, async_package, expected_worker
+):
+    full_packages = "\n".join([packages, async_package])
+    (tmp_path / "requirements.txt").write_text(full_packages)
     (tmp_path / "app.py").write_text("app = object()")
     (tmp_path / "static").mkdir()
     (tmp_path / "node_modules").mkdir()
@@ -107,7 +113,7 @@ def test_flask_extension_default(tmp_path, flask_input_yaml, packages):
             "flask": {
                 "after": ["statsd-exporter"],
                 "command": "/bin/python3 -m gunicorn -c "
-                "/flask/gunicorn.conf.py app:app",
+                f"/flask/gunicorn.conf.py app:app -k [ {expected_worker} ]",
                 "override": "replace",
                 "startup": "enabled",
                 "user": "_daemon_",
@@ -231,7 +237,7 @@ def test_flask_framework_add_service(tmp_path, flask_input_yaml):
     assert applied["services"] == {
         "flask": {
             "after": ["statsd-exporter"],
-            "command": "/bin/python3 -m gunicorn -c /flask/gunicorn.conf.py app:app",
+            "command": "/bin/python3 -m gunicorn -c /flask/gunicorn.conf.py app:app -k [ sync ]",
             "override": "replace",
             "startup": "enabled",
             "user": "_daemon_",
@@ -447,8 +453,13 @@ def test_flask_extension_flask_service_override_disable_wsgi_path_check(tmp_path
 
 
 @pytest.mark.usefixtures("django_extension")
-def test_django_extension_default(tmp_path, django_input_yaml):
-    (tmp_path / "requirements.txt").write_text("django")
+@pytest.mark.parametrize(
+    ("packages", "expected_worker"), [("Django\ngevent", "gevent"), ("Django", "sync")]
+)
+def test_django_extension_default(
+    tmp_path, django_input_yaml, packages, expected_worker
+):
+    (tmp_path / "requirements.txt").write_text(packages)
     (tmp_path / "test").mkdir()
     (tmp_path / "foo_bar" / "foo_bar").mkdir(parents=True)
     (tmp_path / "foo_bar" / "foo_bar" / "wsgi.py").write_text("application = object()")
@@ -498,7 +509,7 @@ def test_django_extension_default(tmp_path, django_input_yaml):
         "services": {
             "django": {
                 "after": ["statsd-exporter"],
-                "command": "/bin/python3 -m gunicorn -c /django/gunicorn.conf.py foo_bar.wsgi:application",
+                "command": f"/bin/python3 -m gunicorn -c /django/gunicorn.conf.py foo_bar.wsgi:application -k [ {expected_worker} ]",
                 "override": "replace",
                 "startup": "enabled",
                 "user": "_daemon_",

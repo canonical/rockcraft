@@ -16,6 +16,12 @@ server metrics.
     The Flask extension is compatible with the ``bare``, ``ubuntu@22.04``
     and ``ubuntu@24.04`` bases.
 
+The Flask extension supports both synchronous and asynchronous
+Gunicorn workers. If you want asynchronous workers, you have to add
+``gevent`` package to the ``requirements.txt`` file.
+Read more
+:ref:`Using asynchronous Gunicorn workers <flask-async-gunicorn-workers>`.
+
 Project requirements
 ====================
 
@@ -40,6 +46,23 @@ application. In the following example we use it to specify ``libpq-dev``:
       stage-packages:
         # list required packages or slices for your flask app below.
         - libpq-dev
+
+.. _flask-async-gunicorn-workers:
+
+Using asynchronous Gunicorn workers
+===================================
+
+If you want to use asynchronous workers, you have to add ``gevent`` package to
+the ``requirements.txt`` file. Rockcraft automatically detects this and updates
+the pebble plan to use the asynchronous workers. If you have ``gevent``
+installed in your rock but decided to use ``sync`` workers instead you can use
+the ``--args`` parameter of ``docker run`` to use ``sync`` workers instead of
+the default ``gevent``:
+
+.. code-block:: bash
+
+   docker run --name flask-container -d -p 8000:8000 flask-image:1.0 \
+   --args flask sync
 
 ``parts`` > ``flask-framework/install-app`` > ``prime``
 =======================================================
