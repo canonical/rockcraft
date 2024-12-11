@@ -18,6 +18,8 @@
 
 from typing import TYPE_CHECKING
 
+from craft_application import commands as appcommands
+
 from . import commands
 from .services import RockcraftServiceFactory
 
@@ -53,5 +55,7 @@ def _create_app() -> "Rockcraft":
             commands.ExpandExtensionsCommand,
         ],
     )
+
+    app.add_command_group("Lifecycle", [appcommands.RemoteBuild])
 
     return app
