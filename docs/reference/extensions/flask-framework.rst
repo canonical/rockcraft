@@ -61,7 +61,7 @@ the default ``gevent``:
 
 .. code-block:: bash
 
-   docker run --name flask-container -d -p 8138:8000 flask-image:1.0 \
+   docker run --name flask-container -d -p 8000:8000 flask-image:1.0 \
    --args flask sync
 
 ``parts`` > ``flask-framework/install-app`` > ``prime``
