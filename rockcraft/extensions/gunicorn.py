@@ -91,7 +91,7 @@ class _GunicornBase(Extension):
             },
             f"{self.framework}-framework/statsd-exporter": {
                 "build-snaps": ["go"],
-                "source-tag": "v0.26.1",
+                "source-tag": "v0.26.0",
                 "plugin": "go",
                 "source": "https://github.com/prometheus/statsd_exporter.git",
             },
