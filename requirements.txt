@@ -6,6 +6,7 @@
 #
 annotated-types==0.7.0
     # via
+    #   craft-application
     #   craft-platforms
     #   pydantic
 boolean-py==4.0
@@ -20,7 +21,7 @@ charset-normalizer==3.4.0
     # via requests
 craft-application==4.6.0
     # via rockcraft (pyproject.toml)
-craft-archives==2.0.1
+craft-archives==2.0.2
     # via
     #   craft-application
     #   rockcraft (pyproject.toml)
@@ -30,7 +31,7 @@ craft-cli==2.12.0
     #   rockcraft (pyproject.toml)
 craft-grammar==2.0.1
     # via craft-application
-craft-parts==2.1.2
+craft-parts==2.1.4
     # via
     #   craft-application
     #   rockcraft (pyproject.toml)
@@ -61,7 +62,7 @@ lazr-restfulclient==0.14.6
     # via
     #   craft-archives
     #   launchpadlib
-lazr-uri==1.0.6
+lazr-uri==1.0.7
     # via
     #   craft-archives
     #   launchpadlib
@@ -86,7 +87,7 @@ platformdirs==4.3.6
     #   craft-cli
 pycparser==2.22
     # via cffi
-pydantic==2.10.1
+pydantic==2.10.3
     # via
     #   craft-application
     #   craft-archives
@@ -120,7 +121,7 @@ requests-unixsocket2==0.4.2
     # via
     #   craft-parts
     #   craft-providers
-six==1.16.0
+six==1.17.0
     # via lazr-restfulclient
 snap-helpers==0.4.2
     # via craft-application
