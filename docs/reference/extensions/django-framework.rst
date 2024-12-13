@@ -63,7 +63,7 @@ so by using the ``--args`` parameter of ``docker run``:
 
 .. code-block:: bash
 
-   docker run --name django-container -d -p 8138:8000 django-image:1.0 \
+   docker run --name django-container -d -p 8000:8000 django-image:1.0 \
    --args django sync
 
 .. note::
