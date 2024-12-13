@@ -18,13 +18,13 @@ chardet==5.2.0
     # via python-debian
 charset-normalizer==3.4.0
     # via requests
-craft-application @ git+https://github.com/canonical/craft-application@work/CRAFT-3748-remote-build-rocks
+craft-application==4.6.0
     # via rockcraft (pyproject.toml)
 craft-archives==2.0.1
     # via
     #   craft-application
     #   rockcraft (pyproject.toml)
-craft-cli==2.10.1
+craft-cli==2.12.0
     # via
     #   craft-application
     #   rockcraft (pyproject.toml)
