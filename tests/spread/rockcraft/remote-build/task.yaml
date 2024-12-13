@@ -16,7 +16,6 @@ prepare: |
   rockcraft init --name="remote-build"
   
   # commit the project
-  #git config --global --add safe.directory "$PWD"
   git init
   git add rockcraft.yaml
   git commit -m "Initial Commit"
