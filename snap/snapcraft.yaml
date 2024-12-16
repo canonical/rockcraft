@@ -155,9 +155,9 @@ parts:
         mkdir "$CRAFT_PART_INSTALL"/bin
         install -m755 skopeo "$CRAFT_PART_INSTALL"/bin/skopeo
     stage-packages:
-        - libgpgme11
+        - libgpgme11t64
         - libassuan0
-        - libbtrfs0
+        - libbtrfs0t64
         - libdevmapper1.02.1
     build-attributes:
         - enable-patchelf
