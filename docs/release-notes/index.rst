@@ -12,7 +12,7 @@ Current releases
 ----------------
 
 
-- <upcoming>.
+- :ref:`Rockcraft 1.7.0 <release-1.7.0>`
 
 .. _release_policy_and_schedule:
 
@@ -59,6 +59,8 @@ development keeps pace with the OS's new releases and support lifecycle.
 
 .. toctree::
    :maxdepth: 1
+
+   rockcraft-1-7-0
 
 
 .. release note template:
