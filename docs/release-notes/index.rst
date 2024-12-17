@@ -12,10 +12,7 @@ Current releases
 ----------------
 
 
-Rockcraft 1
-~~~~~~~~~~~
-
-- :ref:`release-1.6.0`.
+- <upcoming>.
 
 .. _release_policy_and_schedule:
 
