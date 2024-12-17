@@ -3,67 +3,34 @@
 Release notes
 =============
 
-This page lists past release notes for Starcraft, summarising new features, bug
+This page lists past release notes for Rockcraft, summarising new features, bug
 fixes and backwards-incompatible changes in each version. It also contains the
-release and support policies for Starcraft.
+release and support policies for Rockcraft.
 
 
 Current releases
 ----------------
 
 
-<latest release>
-~~~~~~~~~~~~~~~~
+Rockcraft 1
+~~~~~~~~~~~
 
-- <link to latest release, update, such as 8.2.0>
-- <link to latest release, update, such as 8.1.0>
-- <link to latest release, initial, such as 8.0.0>
-
-
-<parallel release>
-~~~~~~~~~~~~~~~~~~
-
-<If necessary, add guidance and caveats about these older releases, such as
-"Snapcraft 7 is available for building core18 snaps. When building for a newer
-base, use Snapcraft 8.">
-
-- <link to parallel release, update, such as 7.2.0>
-- <link to parallel release, update, such as 7.1.0>
-- <link to parallel release, initial, such as 7.0.0>
-
-
-Past releases
--------------
-
-
-<past release>
-~~~~~~~~~~~~~~
-
-- <link to past release, update, such as 6.2.0>
-- <link to past release, update, such as 6.1.0>
-- <link to past release, initial, such as 6.0.0>
-
+- :ref:`release-1.6.0`.
 
 .. _release_policy_and_schedule:
 
 Release policy and schedule
 ---------------------------
 
-<Apps: Canonical is committed to releasing Starcraft on a regular monthly
+Canonical is committed to releasing Rockcraft on a regular monthly
 cadence. Our goal is to have new features and fixes available as soon as
 possible. On the first Monday of the month, we publish a major or minor
-version of Starcraft to the candidate channel, where it undergoes testing and
+version of Rockcraft to the candidate channel, where it undergoes testing and
 feedback. If we determine the candidate is ready for mainstream use by the
 Monday of the week after, we release it as a stable version. During testing
-and feedback of a candidate, we prioritise fixes for critical issues.>
+and feedback of a candidate, we prioritise fixes for critical issues.
 
-<Libraries: Canonical is committed to supporting the <"latest major release" or
-"last two major releases"> of Starcraft. [Optional: We forward-port changes in
-older releases to the latest release, if they're compatible.] Starcraft is
-released when it achieves development milestones in its lifecycle. It doesn't
-follow a predefined release cadence.>
-
-Starcraft release naming follows the Semantic Versioning 2.0.0 scheme with
+Rockcraft release naming follows the Semantic Versioning 2.0.0 scheme with
 numbers for major, minor, and patch versions.
 
 .. list-table::
@@ -74,10 +41,7 @@ numbers for major, minor, and patch versions.
       - Significance
     * - Major
       - **3**.1.2
-      - <Apps: "A change that drops support for an earlier software base.">
-
-        <Libraries: "A change that breaks compatibility with the previous
-        version.">
+      - A change that drops support for an earlier software base.
     * - Minor
       - 3.\ **1**\ .2
       - A new feature within the major version.
@@ -89,12 +53,12 @@ numbers for major, minor, and patch versions.
 Long-term support
 -----------------
 
-Starcraft doesn't have long-term support (LTS) releases. However, we typically
+Rockcraft doesn't have long-term support (LTS) releases. However, we typically
 deliver a compatibility release shortly after Ubuntu LTS releases to ensure
 continuity.
 
-<Apps: Starcraft software bases are derived from Ubuntu LTS releases, and their
-development keeps pace with the OS's new releases and support lifecycle.>
+Rockcraft software bases are derived from Ubuntu LTS releases, and their
+development keeps pace with the OS's new releases and support lifecycle.
 
 .. toctree::
    :maxdepth: 1
