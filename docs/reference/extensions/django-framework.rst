@@ -18,10 +18,7 @@ server metrics.
     and ``ubuntu@24.04`` bases.
 
 The Django extension supports both synchronous and asynchronous
-Gunicorn workers. If you want asynchronous workers, you have to add
-the ``gevent`` package to the ``requirements.txt`` file.
-Read more
-:ref:`Using asynchronous Gunicorn workers <django-async-gunicorn-workers>`.
+Gunicorn workers.
 
 Project requirements
 ====================
@@ -35,6 +32,12 @@ There are 2 requirements to be able to use the ``django-framework`` extension:
    ``./<Rock name with - replaced by _>/<Rock name with - replaced by _>/manage.py``
    relative to the ``rockcraft.yaml`` file.
 
+For the project to make use of asynchronous Gunicorn workers:
+
+- The ``requirements.txt`` file must include ``gevent`` as a dependency.
+
+Read more
+:ref:`Gunicorn worker selection <django-gunicorn-worker-selection>`.
 
 ``parts`` > ``django-framework/dependencies:`` > ``stage-packages``
 ===================================================================
@@ -50,25 +53,22 @@ application. In the following example we use it to specify ``libpq-dev``:
         # list required packages or slices for your Django application below.
         - libpq-dev
 
-.. _django-async-gunicorn-workers:
+.. _django-gunicorn-worker-selection:
 
-Using asynchronous Gunicorn workers
-===================================
+Gunicorn worker selection
+=========================
 
-If you want to use asynchronous workers, you have to add the ``gevent`` package
-to the ``requirements.txt`` file. Rockcraft automatically detects this and
-updates the Pebble plan to use the asynchronous workers. If you have ``gevent``
-installed in your rock but decided to use ``sync`` workers instead you can do
-so by using the ``--args`` parameter of ``docker run``:
+If the project has gevent as a dependency, Rockcraft automatically updates the
+pebble plan to spawn asynchronous Gunicorn workers.
+
+When the project instead needs synchronous workers, you can override the worker
+type by adding ``--args django sync`` to the Docker command that launches the
+rock:
 
 .. code-block:: bash
 
    docker run --name django-container -d -p 8000:8000 django-image:1.0 \
    --args django sync
-
-.. note::
-    The Django extension is compatible with the ``bare``, ``ubuntu@22.04`` and
-    ``ubuntu@24.04`` bases.
 
 Useful links
 ============

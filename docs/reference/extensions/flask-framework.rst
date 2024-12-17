@@ -17,10 +17,7 @@ server metrics.
     and ``ubuntu@24.04`` bases.
 
 The Flask extension supports both synchronous and asynchronous
-Gunicorn workers. If you want asynchronous workers, you have to add
-``gevent`` package to the ``requirements.txt`` file.
-Read more
-:ref:`Using asynchronous Gunicorn workers <flask-async-gunicorn-workers>`.
+Gunicorn workers.
 
 Project requirements
 ====================
@@ -31,7 +28,14 @@ There are 2 requirements to be able to use the ``flask-framework`` extension:
    ``Flask`` declared as a dependency
 2. The project must include a WSGI app with the path ``app:app``. This means
    there must be an ``app.py`` file at the root of the project with the name
-   of the Flask object is set to ``app``
+   of the Flask object is set to ``app``.
+
+For the project to make use of asynchronous Gunicorn workers:
+
+- The ``requirements.txt`` file must include ``gevent`` as a dependency.
+
+Read more
+:ref:`Gunicorn worker selection <flask-gunicorn-worker-selection>`.
 
 ``parts`` > ``flask-framework/dependencies`` > ``stage-packages``
 =================================================================
@@ -47,17 +51,17 @@ application. In the following example we use it to specify ``libpq-dev``:
         # list required packages or slices for your flask app below.
         - libpq-dev
 
-.. _flask-async-gunicorn-workers:
+.. _flask-gunicorn-worker-selection:
 
-Using asynchronous Gunicorn workers
-===================================
+Gunicorn worker selection
+=========================
 
-If you want to use asynchronous workers, you have to add ``gevent`` package to
-the ``requirements.txt`` file. Rockcraft automatically detects this and updates
-the pebble plan to use the asynchronous workers. If you have ``gevent``
-installed in your rock but decided to use ``sync`` workers instead you can use
-the ``--args`` parameter of ``docker run`` to use ``sync`` workers instead of
-the default ``gevent``:
+If the project has gevent as a dependency, Rockcraft automatically updates the
+pebble plan to spawn asynchronous Gunicorn workers.
+
+When the project instead needs synchronous workers, you can override the worker
+type by adding ``--args flask sync`` to the Docker command that launches the
+rock:
 
 .. code-block:: bash
 
