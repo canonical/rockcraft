@@ -311,7 +311,7 @@ sphinx-prompt==1.8.0
     # via sphinx-toolbox
 sphinx-reredirects==0.1.5
     # via canonical-sphinx
-sphinx-tabs==3.4.5
+sphinx-tabs==3.4.7
     # via
     #   canonical-sphinx
     #   sphinx-toolbox
