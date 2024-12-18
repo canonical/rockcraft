@@ -54,6 +54,7 @@ hardcoded
 html
 https
 init
+integrations
 interoperable
 io
 js
