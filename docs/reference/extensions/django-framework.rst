@@ -36,8 +36,6 @@ For the project to make use of asynchronous Gunicorn workers:
 
 - The ``requirements.txt`` file must include ``gevent`` as a dependency.
 
-Read more
-:ref:`Gunicorn worker selection <django-gunicorn-worker-selection>`.
 
 ``parts`` > ``django-framework/dependencies:`` > ``stage-packages``
 ===================================================================
