@@ -71,10 +71,9 @@ updated for clarity and to better conform with documentation best practices.
 Maven and Ant plugins
 ~~~~~~~~~~~~~~~~~~~~~
 
-Updated the Maven and Ant plugins to generate the ``/usr/bin/java`` path to
-the Java runtime executable, instead of the ``/bin/java`` symlink which
+Changed the location of the Java runtime executable on rocks built using the
+Maven and Ant plugins from ``/bin/java`` to ``/usr/bin/java``, as the former
 conflicts with the user-merged Ubuntu base.
-
 
 Fixed bugs and issues
 ---------------------
