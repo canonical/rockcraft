@@ -26,6 +26,7 @@ allowing complex operations to be declared at build time.
    how-to/index
    reference/index
    explanation/index
+   release-notes/index
 
 
 .. grid:: 1 1 2 2
