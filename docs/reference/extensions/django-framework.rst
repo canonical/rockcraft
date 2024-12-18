@@ -17,6 +17,9 @@ server metrics.
     The Django extension is compatible with the ``bare``, ``ubuntu@22.04``
     and ``ubuntu@24.04`` bases.
 
+The Django extension supports both synchronous and asynchronous
+Gunicorn workers.
+
 Project requirements
 ====================
 
@@ -28,6 +31,11 @@ There are 2 requirements to be able to use the ``django-framework`` extension:
    any ``-`` replaced by ``_``, i.e., the ``manage.py`` must be located at
    ``./<Rock name with - replaced by _>/<Rock name with - replaced by _>/manage.py``
    relative to the ``rockcraft.yaml`` file.
+
+For the project to make use of asynchronous Gunicorn workers:
+
+- The ``requirements.txt`` file must include ``gevent`` as a dependency.
+
 
 ``parts`` > ``django-framework/dependencies:`` > ``stage-packages``
 ===================================================================
@@ -42,6 +50,23 @@ application. In the following example we use it to specify ``libpq-dev``:
       stage-packages:
         # list required packages or slices for your Django application below.
         - libpq-dev
+
+.. _django-gunicorn-worker-selection:
+
+Gunicorn worker selection
+=========================
+
+If the project has gevent as a dependency, Rockcraft automatically updates the
+pebble plan to spawn asynchronous Gunicorn workers.
+
+When the project instead needs synchronous workers, you can override the worker
+type by adding ``--args django sync`` to the Docker command that launches the
+rock:
+
+.. code-block:: bash
+
+   docker run --name django-container -d -p 8000:8000 django-image:1.0 \
+   --args django sync
 
 Useful links
 ============
