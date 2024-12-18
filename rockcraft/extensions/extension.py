@@ -87,8 +87,8 @@ class Extension(abc.ABC):
             "ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS"
         ):
             raise errors.ExtensionError(
-                f"Extension is experimental: {extension_name!r}",
-                docs_url="https://rockcraft.io/docs/supported-extensions",
+                f"Extension is experimental: {extension_name!r}, please run with ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS=True",
+                docs_url="https://documentation.ubuntu.com/rockcraft/en/latest/reference/extensions/",
             )
 
         if self.is_experimental(base):
