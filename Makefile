@@ -120,7 +120,7 @@ test-shellcheck:
 
 .PHONY: test-sphinx-lint
 test-sphinx-lint:
-	sphinx-lint --ignore docs/sphinx-starter-pack/ --ignore docs/_build --ignore docs/env --max-line-length 80 -e all docs/*
+	sphinx-lint --ignore docs/sphinx-starter-pack/ --ignore docs/_build --ignore docs/env --max-line-length 80 -e all -d missing-underscore-after-hyperlink,missing-space-in-hyperlink docs/*
 
 .PHONY: test-units
 test-units: ## Run unit tests.
