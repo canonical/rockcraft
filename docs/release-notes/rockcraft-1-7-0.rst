@@ -55,11 +55,11 @@ Support for remote builds
 
 We added support for remote builds, which leverage off-site compute for
 building rocks and can build for multiple architectures with a single command.
-Remote builds are hosted on Launchpad.
+For a description of the feature, see :ref:`ref-remote-builds`, or run
+``rockcraft remote-build --help``.
 
-This feature is experimental and subject to change, and more information is
-available by running ``rockcraft remote-build --help``. Feel free to provide
-feedback on the `Ubuntu Discourse`_ forum.
+This feature is new and experimental -- we welcome feedback on the
+`Ubuntu Discourse`_ forum.
 
 Minor features
 --------------
