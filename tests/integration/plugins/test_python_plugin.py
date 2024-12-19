@@ -153,8 +153,7 @@ def test_python_plugin_bare(tmp_path, run_lifecycle, plugin_name):
     ]
     # (Python 3.8 does not have Path.readlink())
     assert (
-        os.readlink(bin_dir / "python3")
-        == VALUES_FOR_HOST.symlink_target  # pyright: ignore[reportUnboundVariable]
+        os.readlink(bin_dir / "python3") == VALUES_FOR_HOST.symlink_target  # pyright: ignore[reportUnboundVariable]
     )
 
     # Check the shebang in the "hello" script

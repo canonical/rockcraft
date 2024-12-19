@@ -15,6 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 """The Rockcraft Maven plugin."""
+
 import logging
 
 from craft_parts.plugins import maven_plugin

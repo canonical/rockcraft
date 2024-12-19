@@ -269,9 +269,9 @@ class Image:
                 )
             )
 
-        user_files[
-            "passwd"
-        ] += f"{username}:x:{uid}:{uid}::/{Pebble.PEBBLE_PATH}:/usr/bin/false\n"
+        user_files["passwd"] += (
+            f"{username}:x:{uid}:{uid}::/{Pebble.PEBBLE_PATH}:/usr/bin/false\n"
+        )
         user_files["group"] += f"{username}:x:{uid}:\n"
 
         with tempfile.TemporaryDirectory() as tmpfs:
