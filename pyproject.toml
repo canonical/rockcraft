@@ -70,6 +70,19 @@ release = [
     "twine",
     "wheel",
 ]
+lint = [
+    "codespell[toml]",
+    "yamllint",
+]
+types = [
+    "mypy[reports]~=1.11",
+    "types-python-dateutil",
+    "types-PyYAML",
+    "types-requests<2.31.0.20240312",  # Frozen until we can get urllib3 v2
+    "types-setuptools",
+    "types-tabulate",
+    "types-urllib3",
+]
 apt-jammy = [
     # Stay on 2.4 for Jammy
     "python-apt~=2.4.0;sys_platform=='linux'",
