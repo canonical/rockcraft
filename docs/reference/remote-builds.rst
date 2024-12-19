@@ -41,7 +41,7 @@ which are planned to be addressed in the future:
 
 - The prospective rock must be open source and public, because the remote builds
   triggered by Rockcraft are publicly available.
-- All architectures defined in the project's ``platforms`` entry are built --
+- All architectures defined in the project's ``platforms`` key are built --
   there's currently no way to restrict the set of platforms to build remotely.
 
 
