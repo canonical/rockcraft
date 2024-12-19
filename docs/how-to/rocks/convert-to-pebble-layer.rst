@@ -26,7 +26,8 @@ Design the Pebble services
 --------------------------
 
 A `Pebble layer
-<https://github.com/canonical/pebble#layer-specification>`_
+<https://canonical-pebble.readthedocs-hosted.com/en/latest/reference/
+layer-specification/>`_
 is composed of metadata, checks and services. The latter is present in
 ``rockcraft.yaml`` as a `top-level field
 <https://canonical-rockcraft.readthedocs-hosted.com/en/latest/reference/

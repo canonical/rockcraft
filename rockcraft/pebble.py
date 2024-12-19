@@ -59,7 +59,7 @@ class Check(CraftBaseModel):
     """Lightweight schema validation for a Pebble checks.
 
     Based on
-    https://github.com/canonical/pebble#layer-specification
+    https://canonical-pebble.readthedocs-hosted.com/en/latest/reference/layer-specification/
     """
 
     override: Literal["merge", "replace"]
@@ -98,7 +98,7 @@ class Service(CraftBaseModel):
     """Lightweight schema validation for a Pebble service.
 
     Based on
-    https://github.com/canonical/pebble#layer-specification
+    https://canonical-pebble.readthedocs-hosted.com/en/latest/reference/layer-specification/
     """
 
     override: Literal["merge", "replace"]

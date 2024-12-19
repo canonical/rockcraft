@@ -4,7 +4,7 @@
   "$defs": {
     "Check": {
       "additionalProperties": false,
-      "description": "Lightweight schema validation for a Pebble checks.\n\nBased on\nhttps://github.com/canonical/pebble#layer-specification",
+      "description": "Lightweight schema validation for a Pebble checks.\n\nBased on\nhttps://canonical-pebble.readthedocs-hosted.com/en/latest/reference/layer-specification/",
       "properties": {
         "override": {
           "enum": [
@@ -286,7 +286,7 @@
     },
     "Service": {
       "additionalProperties": false,
-      "description": "Lightweight schema validation for a Pebble service.\n\nBased on\nhttps://github.com/canonical/pebble#layer-specification",
+      "description": "Lightweight schema validation for a Pebble service.\n\nBased on\nhttps://canonical-pebble.readthedocs-hosted.com/en/latest/reference/layer-specification/",
       "properties": {
         "override": {
           "enum": [

@@ -274,4 +274,4 @@ Example
     :language: yaml
 
 
-.. _`Pebble Layer Specification format`:  https://github.com/canonical/pebble#layer-specification
+.. _`Pebble Layer Specification format`:  https://canonical-pebble.readthedocs-hosted.com/en/latest/reference/layer-specification/
