@@ -5,13 +5,13 @@
 Remote builds
 *************
 
-Remote build is a feature in Rockcraft that offloads the build process to
-`Launchpad`_'s `build farm`_ to build multiple rocks simultaneously, and for
-different architectures than your running machine.
+Remote builds offload rock builds to the `build farm`_ hosted by `Launchpad`_.
+With remote builds, you can assemble multiple rocks simultaneously and build
+for all supported architectures.
 
 
-Pre-requisites
---------------
+Prerequisites
+-------------
 
 In order to perform remote builds, the following conditions must be met:
 
@@ -45,9 +45,9 @@ which are planned to be addressed in the future:
 
 - The prospective rock must be open source and public, because the remote builds
   will be publicly available.
-- All architectures defined on the project's ``platforms`` entry - either
-  explicitly via the ``build-on`` key or implicitly through the platform
-  shorthand - will be built. There is currently no way to restrict the set of
+- All architectures defined in the project's ``platforms`` entry -- either
+  explicitly through the ``build-on`` key or implicitly through the platform
+  shorthand -- are built. There's currently no way to restrict the set of
   platforms to build remotely.
 
 
