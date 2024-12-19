@@ -94,8 +94,12 @@ class ExpressJSFramework(Extension):
         """
         ...
 
-    def _gen_npm_plugin_part(self) -> dict:
-        """Generate the part using NPM plugin."""
+    def _gen_install_app_part(self) -> dict:
+        """Generate the install app part using NPM plugin."""
+        ...
+
+    def _gen_install_dependencies_part(self) -> dict:
+        """Generate the install dependencies part using dump plugin."""
         ...
 
     @property
