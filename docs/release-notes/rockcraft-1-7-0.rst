@@ -95,11 +95,10 @@ generated rock has been updated from the user name (``_daemon_``) to its
 numeric ID.
 
 
-12-factor extensions
-~~~~~~~~~~~~~~~~~~~~
+12-factor app extensions
+~~~~~~~~~~~~~~~~~~~~~~~~
 
-We added support for Gunicorn async workers on the Django and Flask 12-factor
-extensions.
+We added support for Gunicorn async workers on the Django and Flask extensions.
 
 
 12-factor app documentation
