@@ -129,13 +129,17 @@ Create a new YAML file named ``openssl.yaml``, with the following content:
 .. literalinclude:: ../code/create-slice/openssl.yaml
     :language: yaml
 
-Notice the unforeseen new slice ``config``. Because your OpenSSL binaries depend
-on the OpenSSL configuration files, and those were not yet present anywhere in
-the Chisel releases upstream, you also need to create that slice! You may also
-ask **"why not put those configuration files inside the "bins" slice"**? You
-could! But we recommend, as a best practice, to separate and group contents
-according to their nature, as you may tomorrow need to create a new slice
-definition that only needs the OpenSSL configurations and not the binaries.
+Notice the additional new slices ``config``, ``data`` and ``copyright``. The
+OpenSSL package includes files other than binaries, some of these files may be
+required depending on the specific use of OpenSSL. It is beneficial to separate
+and group the contents of a package according to their nature, allowing
+developers to select only the files they require. For example, one developer may
+require the ``bins`` and ``config`` slices of a package, while another only
+requires the ``config`` slice as a dependency of another package. Our
+`contribution guidelines`_ provides more details on best practices for creating
+new slices.
+
+
 
 And that's it. This is your brand new slice definitions file, which will allow
 Chisel to install **just** the OpenSSL binaries (and their dependencies) into
@@ -148,3 +152,6 @@ publish it upstream for others to use, please check the following guides.
   https://github.com/canonical/chisel-releases/blob/ubuntu-22.04/slices/libc6.yaml
 .. _libssl3:
   https://github.com/canonical/chisel-releases/blob/ubuntu-22.04/slices/libssl3.yaml
+.. _contribution guidelines:
+  https://github.com/canonical/chisel-releases/blob/main/CONTRIBUTING.md
+

@@ -1,5 +1,5 @@
 Rockcraft documentation
-===========================================
+=======================
 
 **Rockcraft is a tool to create** :ref:`rocks <rocks_explanation>` -- a new
 generation of secure, stable and `OCI-compliant container images
@@ -22,15 +22,16 @@ allowing complex operations to be declared at build time.
    :maxdepth: 1
    :hidden:
 
-   tutorials/index
+   tutorial/index
    how-to/index
    reference/index
    explanation/index
+   release-notes/index
 
 
 .. grid:: 1 1 2 2
 
-   .. grid-item-card:: :ref:`Tutorials <tutorials>`
+   .. grid-item-card:: :ref:`Tutorial <tutorial>`
 
       **Get started** - become familiar with Rockcraft by containerising different software applications as rocks.
 

@@ -16,17 +16,17 @@
 
 """An extension for the Gunicorn based Python WSGI application extensions."""
 import abc
-import ast
 import fnmatch
 import os.path
-import pathlib
 import posixpath
 import re
-from typing import Any, Dict, Tuple
+from typing import Any
 
 from overrides import override
+from packaging.requirements import InvalidRequirement, Requirement
 
 from ..errors import ExtensionError
+from ._python_utils import has_global_variable
 from .extension import Extension, get_extensions_data_dir
 
 
@@ -35,9 +35,9 @@ class _GunicornBase(Extension):
 
     @staticmethod
     @override
-    def get_supported_bases() -> Tuple[str, ...]:
+    def get_supported_bases() -> tuple[str, ...]:
         """Return supported bases."""
-        return "bare", "ubuntu@22.04", "ubuntu:22.04"
+        return "bare", "ubuntu@22.04", "ubuntu:22.04", "ubuntu@24.04"
 
     @staticmethod
     @override
@@ -56,11 +56,11 @@ class _GunicornBase(Extension):
         """Return the wsgi framework name, e.g. flask, django."""
 
     @abc.abstractmethod
-    def check_project(self):
+    def check_project(self) -> None:
         """Ensure this extension can apply to the current rockcraft project."""
 
     @abc.abstractmethod
-    def gen_install_app_part(self) -> Dict[str, Any]:
+    def gen_install_app_part(self) -> dict[str, Any]:
         """Generate the content of *-framework/install-app part."""
 
     def _gen_parts(self) -> dict:
@@ -72,7 +72,7 @@ class _GunicornBase(Extension):
             stage_packages = ["python3.10-venv_ensurepip"]
             build_environment = [{"PARTS_PYTHON_INTERPRETER": "python3.10"}]
 
-        parts: Dict[str, Any] = {
+        parts: dict[str, Any] = {
             f"{self.framework}-framework/dependencies": {
                 "plugin": "python",
                 "stage-packages": stage_packages,
@@ -113,8 +113,21 @@ class _GunicornBase(Extension):
             }
         return parts
 
+    def _check_async(self) -> str:
+        """Check if gevent package installed in requirements.txt."""
+        requirements_file = self.project_root / "requirements.txt"
+        requirements_text = requirements_file.read_text()
+        for line in requirements_text.splitlines():
+            try:
+                req = Requirement(line)
+                if req.name == "gevent":
+                    return "gevent"
+            except InvalidRequirement:
+                pass
+        return "sync"
+
     @override
-    def get_root_snippet(self) -> Dict[str, Any]:
+    def get_root_snippet(self) -> dict[str, Any]:
         """Fill in some default root components.
 
         Default values:
@@ -125,13 +138,13 @@ class _GunicornBase(Extension):
           - parts: see _GunicornBase._gen_parts
         """
         self.check_project()
-        snippet: Dict[str, Any] = {
+        snippet: dict[str, Any] = {
             "run_user": "_daemon_",
             "services": {
                 self.framework: {
                     "override": "replace",
                     "startup": "enabled",
-                    "command": f"/bin/python3 -m gunicorn -c /{self.framework}/gunicorn.conf.py {self.wsgi_path}",
+                    "command": f"/bin/python3 -m gunicorn -c /{self.framework}/gunicorn.conf.py {self.wsgi_path} -k [ {self._check_async()} ]",
                     "after": ["statsd-exporter"],
                     "user": "_daemon_",
                 },
@@ -152,32 +165,14 @@ class _GunicornBase(Extension):
         return snippet
 
     @override
-    def get_part_snippet(self) -> Dict[str, Any]:
+    def get_part_snippet(self) -> dict[str, Any]:
         """Return the part snippet to apply to existing parts."""
         return {}
 
     @override
-    def get_parts_snippet(self) -> Dict[str, Any]:
+    def get_parts_snippet(self) -> dict[str, Any]:
         """Return the parts to add to parts."""
         return {}
-
-    def has_global_variable(
-        self, source_file: pathlib.Path, variable_name: str
-    ) -> bool:
-        """Check the given Python source code has a global variable defined."""
-        tree = ast.parse(source_file.read_text(encoding="utf-8"))
-        for node in ast.iter_child_nodes(tree):
-            if isinstance(node, ast.Assign):
-                for target in node.targets:
-                    if isinstance(target, ast.Name) and target.id == variable_name:
-                        return True
-            if isinstance(node, ast.ImportFrom):
-                for name in node.names:
-                    if (name.asname is not None and name.asname == variable_name) or (
-                        name.asname is None and name.name == variable_name
-                    ):
-                        return True
-        return False
 
 
 class FlaskFramework(_GunicornBase):
@@ -202,7 +197,7 @@ class FlaskFramework(_GunicornBase):
         return False
 
     @override
-    def gen_install_app_part(self) -> Dict[str, Any]:
+    def gen_install_app_part(self) -> dict[str, Any]:
         source_files = [f.name for f in sorted(self.project_root.iterdir())]
         # if prime is not in exclude mode, use it to generate the stage and organize
         if self._app_prime and self._app_prime[0] and self._app_prime[0][0] != "-":
@@ -229,7 +224,7 @@ class FlaskFramework(_GunicornBase):
         }
 
     @property
-    def _app_prime(self):
+    def _app_prime(self) -> list[str]:
         """Return the prime list for the Flask project."""
         user_prime = (
             self.yaml_data.get("parts", {})
@@ -240,7 +235,7 @@ class FlaskFramework(_GunicornBase):
             raise ExtensionError(
                 "flask-framework extension requires the 'prime' entry in the "
                 "flask-framework/install-app part to start with flask/app",
-                docs_url="https://documentation.ubuntu.com/rockcraft/en/stable/reference/extensions/flask-framework",
+                doc_slug="/reference/extensions/flask-framework",
                 logpath_report=False,
             )
         if not user_prime:
@@ -259,7 +254,7 @@ class FlaskFramework(_GunicornBase):
             ]
         return user_prime
 
-    def _wsgi_path_error_messages(self):
+    def _wsgi_path_error_messages(self) -> list[str]:
         """Ensure the extension can infer the WSGI path of the Flask application."""
         app_file = self.project_root / "app.py"
         if not app_file.exists():
@@ -267,7 +262,7 @@ class FlaskFramework(_GunicornBase):
                 "flask application can not be imported from app:app, no app.py file found in the project root."
             ]
         try:
-            has_app = self.has_global_variable(app_file, "app")
+            has_app = has_global_variable(app_file, "app")
         except SyntaxError as err:
             return [f"error parsing app.py: {err.msg}"]
 
@@ -278,7 +273,7 @@ class FlaskFramework(_GunicornBase):
 
         return []
 
-    def _requirements_txt_error_messages(self):
+    def _requirements_txt_error_messages(self) -> list[str]:
         """Ensure the requirements.txt file is correct."""
         requirements_file = self.project_root / "requirements.txt"
         if not requirements_file.exists():
@@ -293,7 +288,7 @@ class FlaskFramework(_GunicornBase):
         return []
 
     @override
-    def check_project(self):
+    def check_project(self) -> None:
         """Ensure this extension can apply to the current rockcraft project."""
         error_messages = self._requirements_txt_error_messages()
         if not self.yaml_data.get("services", {}).get("flask", {}).get("command"):
@@ -301,7 +296,7 @@ class FlaskFramework(_GunicornBase):
         if error_messages:
             raise ExtensionError(
                 "\n".join("- " + message for message in error_messages),
-                docs_url="https://documentation.ubuntu.com/rockcraft/en/stable/reference/extensions/flask-framework",
+                doc_slug="/reference/extensions/flask-framework",
                 logpath_report=False,
             )
 
@@ -310,12 +305,12 @@ class DjangoFramework(_GunicornBase):
     """An extension for constructing Python applications based on the Django framework."""
 
     @property
-    def name(self):
+    def name(self) -> str:
         """Return the normalized name of the rockcraft project."""
         return self.yaml_data["name"].replace("-", "_").lower()
 
     @property
-    def default_wsgi_path(self):
+    def default_wsgi_path(self) -> str:
         """Return the default wsgi path for the Django project."""
         return f"{self.name}.wsgi:application"
 
@@ -331,32 +326,39 @@ class DjangoFramework(_GunicornBase):
         """Return the wsgi framework name, e.g. flask, django."""
         return "django"
 
+    @staticmethod
     @override
-    def gen_install_app_part(self) -> Dict[str, Any]:
+    def is_experimental(base: str | None) -> bool:
+        """Check if the extension is in an experimental state."""
+        return False
+
+    @override
+    def gen_install_app_part(self) -> dict[str, Any]:
         """Return the prime list for the Flask project."""
         if "django-framework/install-app" not in self.yaml_data.get("parts", {}):
             return {
                 "plugin": "dump",
                 "source": self.name,
                 "organize": {"*": "django/app/", ".*": "django/app/"},
+                "stage": ["-django/app/db.sqlite3"],
             }
         return {}
 
-    def _check_wsgi_path(self):
+    def _check_wsgi_path(self) -> None:
         wsgi_file = self.project_root / self.name / self.name / "wsgi.py"
         if not wsgi_file.exists():
             raise ExtensionError(
                 f"django application can not be imported from {self.default_wsgi_path}, "
                 f"no wsgi.py file found in the project directory ({str(wsgi_file.parent)})."
             )
-        if not self.has_global_variable(wsgi_file, "application"):
+        if not has_global_variable(wsgi_file, "application"):
             raise ExtensionError(
                 "django application can not be imported from {self.default_wsgi_path}, "
                 "no variable named application in application.py"
             )
 
     @override
-    def check_project(self):
+    def check_project(self) -> None:
         """Ensure this extension can apply to the current rockcraft project."""
         if not (self.project_root / "requirements.txt").exists():
             raise ExtensionError(

@@ -99,7 +99,7 @@ class RockcraftPackageService(PackageService):
         return models.BaseMetadata()
 
 
-def _pack(  # pylint: disable=too-many-arguments
+def _pack(
     *,
     prime_dir: pathlib.Path,
     project: Project,
@@ -138,16 +138,17 @@ def _pack(  # pylint: disable=too-many-arguments
 
     if project.run_user:
         emit.progress(f"Creating new user {project.run_user}")
+        userid = SUPPORTED_GLOBAL_USERNAMES[project.run_user]["uid"]
         new_image.add_user(
             prime_dir=prime_dir,
             base_layer_dir=base_layer_dir,
             tag=version,
             username=project.run_user,
-            uid=SUPPORTED_GLOBAL_USERNAMES[project.run_user]["uid"],
+            uid=userid,
         )
 
         emit.progress(f"Setting the default OCI user to be {project.run_user}")
-        new_image.set_default_user(project.run_user)
+        new_image.set_default_user(userid, project.run_user)
 
     emit.progress("Adding Pebble entrypoint")
 
@@ -157,9 +158,11 @@ def _pack(  # pylint: disable=too-many-arguments
     if project.services and project.entrypoint_service in project.services:
         new_image.set_cmd(project.services[project.entrypoint_service].command)
 
-    services = project.dict(exclude_none=True, by_alias=True).get("services", {})
+    new_image.set_default_path(project.base)
 
-    checks = project.dict(exclude_none=True, by_alias=True).get("checks", {})
+    dumped = project.marshal()
+    services = cast(dict[str, typing.Any], dumped.get("services", {}))
+    checks = cast(dict[str, typing.Any], dumped.get("checks", {}))
 
     if services or checks:
         new_image.set_pebble_layer(

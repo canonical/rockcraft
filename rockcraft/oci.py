@@ -104,8 +104,8 @@ class Image:
         _copy_image(
             source_image,
             f"oci:{image_target}",
-            copy_params=copy_params,
             *platform_params,
+            copy_params=copy_params,
         )
 
         return cls(image_name=image_name, path=image_dir), source_image
@@ -344,15 +344,16 @@ class Image:
         src_path = self.path / f"{name}:{tag}"
         _copy_image(f"oci:{str(src_path)}", f"oci-archive:{filename}:{tag}")
 
-    def set_default_user(self, user: str) -> None:
+    def set_default_user(self, userid: int, username: str) -> None:
         """Set the default runtime user for the OCI image.
 
-        :param user: name of the default user (must already exist)
+        :param userid: userid of the default user (must already exist)
+        :param username: username of the default user (must already exist)
         """
         image_path = self.path / self.image_name
-        params = ["--clear=config.entrypoint", "--config.user", user]
+        params = ["--clear=config.entrypoint", "--config.user", str(userid)]
         _config_image(image_path, params)
-        emit.progress(f"Default user set to {user}")
+        emit.progress(f"Default user set to {userid} ({username})")
 
     def set_entrypoint(self, entrypoint_service: str | None, build_base: str) -> None:
         """Set the OCI image entrypoint. It is always Pebble."""
@@ -381,13 +382,28 @@ class Image:
         except ValueError:
             emit.debug(
                 f"The entrypoint-service command '{command}' has no default "
-                + "arguments. CMD won't be set."
+                "arguments. CMD won't be set."
             )
             return
         for arg in opt_args:
             cmd_params.extend(["--config.cmd", arg])
         _config_image(image_path, cmd_params)
         emit.progress(f"CMD set to {opt_args}")
+
+    def set_default_path(self, base: str) -> None:
+        """Set the default PATH on the image (only for bare rocks)."""
+        if base != "bare":
+            emit.debug(f"Not setting a PATH on the image as base is {base!r}")
+            return
+
+        # Follow Pebble's lead here: if PATH is empty, use the standard one.
+        # This means that containers that bypass the pebble entrypoint will
+        # have the same behavior as PATH-less pebble services.
+        pebble_path = Pebble.DEFAULT_ENV_PATH
+        image_path = self.path / self.image_name
+
+        emit.debug(f"Setting bare-based rock PATH to {pebble_path!r}")
+        _config_image(image_path, ["--config.env", f"PATH={pebble_path}"])
 
     def set_pebble_layer(
         self,
@@ -521,9 +537,7 @@ def _copy_image(
         [
             "skopeo",
             "--insecure-policy",
-        ]
-        + list(system_params)
-        + [
+            *list(system_params),
             "copy",
             *copy_extra,
             source,
@@ -534,7 +548,7 @@ def _copy_image(
 
 def _config_image(image_path: Path, params: list[str]) -> None:
     """Configure the OCI image."""
-    _process_run(["umoci", "config", "--image", str(image_path)] + params)
+    _process_run(["umoci", "config", "--image", str(image_path), *params])
 
 
 def _add_layer_into_image(
@@ -553,7 +567,7 @@ def _add_layer_into_image(
         str(image_path),
         str(archived_content),
     ] + [arg_val for k, v in kwargs.items() for arg_val in [k, v]]
-    _process_run(cmd + ["--history.created_by", " ".join(cmd)])
+    _process_run([*cmd, "--history.created_by", " ".join(cmd)])
 
 
 def _inject_architecture_variant(image_path: Path, variant: str) -> None:

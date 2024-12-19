@@ -83,5 +83,5 @@ convert a Docker entrypoint to a Pebble layer.
 .. _Pebble: https://github.com/canonical/pebble
 .. _tini: https://github.com/krallin/tini
 .. _s6-overlay: https://github.com/just-containers/s6-overlay
-.. _imperative wrapper scripts (as suggested in the Docker documentation): https://docs.docker.com/config/containers/multi-service_container/#use-a-wrapper-script
+.. _imperative wrapper scripts (as suggested in the Docker documentation): https://docs.docker.com/engine/containers/multi-service_container/#use-a-wrapper-script
 .. _Pebble layer specification: https://github.com/canonical/pebble#layer-specification

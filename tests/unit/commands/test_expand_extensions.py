@@ -20,15 +20,14 @@ import textwrap
 from pathlib import Path
 
 import pytest
-from craft_application import util, errors
-
+from craft_application import errors, util
 from rockcraft import extensions
 from rockcraft.commands import ExpandExtensionsCommand
 
 from tests.unit.testing.extensions import (
+    FULL_EXTENSION_PROJECT,
     FULL_EXTENSION_YAML,
     FullExtension,
-    FULL_EXTENSION_PROJECT,
 )
 
 # The project with the extension (FullExtension) expanded
@@ -40,11 +39,12 @@ EXPECTED_EXPAND_EXTENSIONS = textwrap.dedent(
     summary: Project with extensions
     description: Project with extensions
     base: ubuntu@22.04
-    build-base: ubuntu@22.04
     platforms:
       amd64:
-        build_on: null
-        build_for: null
+        build-on:
+        - amd64
+        build-for:
+        - amd64
     license: Apache-2.0
     parts:
       foo:
@@ -108,7 +108,7 @@ def test_expand_extensions_error(setup_extensions, new_dir):
     expected_message = re.escape(
         "Bad rockcraft.yaml content:\n"
         "- plugin not registered: 'nonexistent' (in field 'parts.foo')\n"
-        "- unexpected value; permitted: 'merge', 'replace' (in field 'services.my-service.override')"
+        "- input should be 'merge' or 'replace' (in field 'services.my-service.override')"
     )
 
     cmd = ExpandExtensionsCommand(None)

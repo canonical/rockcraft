@@ -27,8 +27,7 @@ from craft_providers import Executor, Provider, base
 @pytest.fixture()
 def mock_instance():
     """Provide a mock instance (Executor)."""
-    _mock_instance = mock.Mock(spec=Executor)
-    return _mock_instance
+    return mock.Mock(spec=Executor)
 
 
 @pytest.fixture()
@@ -77,7 +76,6 @@ def fake_provider(mock_instance):
             project_name: str,
             project_path: Path,
             base_configuration: base.Base,
-            build_base: str | None = None,
             instance_name: str,
             allow_unstable: bool = False,
         ):

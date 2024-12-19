@@ -60,7 +60,7 @@ def test_lifecycle_args(
     mock_lifecycle.assert_called_once_with(
         {"parts": {}},
         application_name="rockcraft",
-        arch="x86_64",
+        arch="amd64",
         base="ubuntu@22.04",
         base_layer_dir=Path(),
         base_layer_hash=b"deadbeef",
@@ -99,7 +99,8 @@ def test_lifecycle_package_repositories(
     mock_callback.assert_called_once_with(repositories.install_overlay_repositories)
 
 
-def test_python_usrmerge_fix(tmp_path):
+@pytest.mark.parametrize("plugin_name", ["python", "poetry"])
+def test_python_usrmerge_fix(tmp_path, plugin_name):
     # The test setup is rather involved because we need to recreate/mock an
     # exact set of circumstances here:
 
@@ -114,7 +115,7 @@ def test_python_usrmerge_fix(tmp_path):
     )
 
     # 2) Create a part using the Python plugin;
-    part = Part("p1", {"source": ".", "plugin": "python"})
+    part = Part("p1", {"source": ".", "plugin": plugin_name})
     part_info = PartInfo(project_info=project_info, part=part)
 
     prime_dir = dirs.prime_dir

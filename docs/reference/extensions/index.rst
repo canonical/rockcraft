@@ -12,3 +12,6 @@ initiating a new rock.
    :maxdepth: 1
 
    flask-framework
+   django-framework
+   fastapi-framework
+   go-framework

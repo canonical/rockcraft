@@ -2,6 +2,7 @@ summary: flask extension test
 environment:
   SCENARIO/bare: bare
   SCENARIO/base_2204: ubuntu-22.04
+  SCENARIO/base_2404: ubuntu-24.04
 execute: |
   NAME="flask-${SCENARIO//./-}"
   ROCK_FILE="${NAME}_0.1_amd64.rock"

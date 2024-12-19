@@ -34,7 +34,7 @@ APP_METADATA = AppMetadata(
     ProjectClass=project.Project,
     BuildPlannerClass=project.BuildPlanner,
     source_ignore_patterns=["*.rock"],
-    docs_url="https://documentation.ubuntu.com/rockcraft/en/stable",
+    docs_url="https://documentation.ubuntu.com/rockcraft/en/{version}",
 )
 
 
@@ -53,14 +53,20 @@ class Rockcraft(Application):
 
     @override
     def _configure_services(self, provider_name: str | None) -> None:
-        self.services.set_kwargs(
+        self.services.update_kwargs(
             "image",
             work_dir=self._work_dir,
             build_plan=self._build_plan,
         )
-        self.services.set_kwargs(
+        self.services.update_kwargs(
             "package",
             build_plan=self._build_plan,
+        )
+        self.services.update_kwargs(
+            "init",
+            default_name="my-rock-name",
+            name_regex=project.PROJECT_NAME_COMPILED_REGEX,
+            invalid_name_message=project.MESSAGE_INVALID_NAME,
         )
         super()._configure_services(provider_name)
 

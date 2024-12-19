@@ -68,7 +68,7 @@ class RockcraftLifecycleService(LifecycleService):
         return True
 
 
-def _python_usrmerge_fix(step_info: StepInfo):
+def _python_usrmerge_fix(step_info: StepInfo) -> None:
     """Fix 'lib64' symlinks created by the Python plugin on ubuntu@24.04 projects."""
     if step_info.project_info.base != "ubuntu@24.04":
         # The issue only affects rocks with 24.04 bases.
@@ -79,9 +79,9 @@ def _python_usrmerge_fix(step_info: StepInfo):
         # Can't inspect the files without a StepState.
         return
 
-    if state.part_properties["plugin"] != "python":
+    if state.part_properties["plugin"] not in ("python", "poetry"):
         # Be conservative and don't try to fix the files if they didn't come
-        # from the Python plugin.
+        # from a Python plugin.
         return
 
     if "lib64" not in state.files:

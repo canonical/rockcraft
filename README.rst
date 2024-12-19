@@ -24,7 +24,7 @@ Install Rockcraft from the Snap Store
 Documentation
 -------------
 
-Documentation on the usage of the tool and tutorials can be found on
+Documentation on the usage of the tool and tutorial can be found on
 https://documentation.ubuntu.com/rockcraft/en/stable/
 
 
@@ -72,9 +72,9 @@ a number of integrated tests in :code:`tests/spread` can be run with `Spread`_. 
 
      $ spread tests/spread
      # Or run a specific test
-     $ spread tests/spread/tutorials/basic
+     $ spread tests/spread/tutorial/basic
      # Use "-v" for verbose, and "-debug" to get a shell if the test fails
-     $ spread -v -debug tests/spread/tutorials/basic
+     $ spread -v -debug tests/spread/tutorial/basic
 
 .. _Spread: https://github.com/snapcore/spread
 .. _general notes: https://github.com/snapcore/snapcraft/blob/main/TESTING.md#spread-tests-for-the-snapcraft-snap

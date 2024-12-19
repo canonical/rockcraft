@@ -85,7 +85,7 @@ class RecordingEmitter:
 
     def _check(self, expected, storage):
         """Really verify messages."""
-        for pos, recorded_msg in enumerate(storage):
+        for pos, recorded_msg in enumerate(storage):  # noqa: B007
             if recorded_msg == expected[0]:
                 break
         else:
@@ -111,21 +111,22 @@ def extra_project_params():
 
 @pytest.fixture()
 def default_project(extra_project_params):
-    from craft_application.models import VersionStr
-    from rockcraft.models.project import NameStr, Project
+    from rockcraft.models.project import Project
 
     parts = extra_project_params.pop("parts", {})
 
-    return Project(
-        name=NameStr("default"),
-        version=VersionStr("1.0"),
-        summary="default project",
-        description="default project",
-        base="ubuntu@22.04",
-        parts=parts,
-        license="MIT",
-        platforms={"amd64": None},
-        **extra_project_params,
+    return Project.unmarshal(
+        {
+            "name": "default",
+            "version": "1.0",
+            "summary": "default project",
+            "description": "default project",
+            "base": "ubuntu@22.04",
+            "parts": parts,
+            "license": "MIT",
+            "platforms": {"amd64": {"build-on": ["amd64"], "build-for": ["amd64"]}},
+            **extra_project_params,
+        }
     )
 
 
@@ -145,7 +146,7 @@ def default_factory(default_project, default_build_plan):
         app=APP_METADATA,
         project=default_project,
     )
-    factory.set_kwargs("image", work_dir=Path("work"), build_plan=default_build_plan)
+    factory.update_kwargs("image", work_dir=Path("work"), build_plan=default_build_plan)
     return factory
 
 

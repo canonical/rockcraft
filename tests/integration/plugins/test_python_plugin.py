@@ -26,7 +26,7 @@ from craft_parts.errors import OsReleaseVersionIdError
 from craft_parts.utils.os_utils import OsRelease
 from rockcraft import plugins
 from rockcraft.models.project import Project
-from rockcraft.plugins.python_plugin import SITECUSTOMIZE_TEMPLATE
+from rockcraft.plugins.python_common import SITECUSTOMIZE_TEMPLATE
 
 from tests.testing.project import create_project
 from tests.util import ubuntu_only
@@ -46,15 +46,18 @@ def setup_python_test(monkeypatch):
     # this test as regular users.
     monkeypatch.setenv("CRAFT_PARTS_PACKAGE_REFRESH", "0")
     plugins.register()
+    emit.set_mode(EmitterMode.VERBOSE)
 
 
-def create_python_project(base, extra_part_props=None) -> Project:
+def create_python_project(
+    base, extra_part_props=None, *, plugin: str = "python"
+) -> Project:
     source = Path(__file__).parent / "python_source"
     extra = extra_part_props or {}
 
     parts = {
         "my-part": {
-            "plugin": "python",
+            "plugin": plugin,
             "source": str(source),
             "stage-packages": ["python3-venv"],
             **extra,
@@ -106,9 +109,10 @@ except OsReleaseVersionIdError:
     VALUES_FOR_HOST = RELEASE_TO_VALUES["22.04"]
 
 
+@pytest.mark.parametrize("plugin_name", ["python", "poetry"])
 @pytest.mark.parametrize("base", tuple(UBUNTU_BASES))
-def test_python_plugin_ubuntu(base, tmp_path, run_lifecycle):
-    project = create_python_project(base=base)
+def test_python_plugin_ubuntu(base, tmp_path, run_lifecycle, plugin_name):
+    project = create_python_project(base=base, plugin=plugin_name)
     run_lifecycle(project=project, work_dir=tmp_path)
 
     bin_dir = tmp_path / "stage/bin"
@@ -135,8 +139,9 @@ def test_python_plugin_ubuntu(base, tmp_path, run_lifecycle):
     assert not pyvenv_cfg.is_file()
 
 
-def test_python_plugin_bare(tmp_path, run_lifecycle):
-    project = create_python_project(base="bare")
+@pytest.mark.parametrize("plugin_name", ["python", "poetry"])
+def test_python_plugin_bare(tmp_path, run_lifecycle, plugin_name):
+    project = create_python_project(base="bare", plugin=plugin_name)
     run_lifecycle(project=project, work_dir=tmp_path)
 
     bin_dir = tmp_path / "stage/bin"

@@ -1,5 +1,9 @@
 ACR
+AMD
+amd
 ARGS
+ASGI
+async
 Autotools
 autotools
 boolean
@@ -10,7 +14,7 @@ cli
 CMake
 cmake
 CMD
-CTRL
+Ctrl
 dataset
 Deadsnakes
 declaratively
@@ -31,17 +35,22 @@ entrypoint
 entrypoints
 executables
 expressjs
+fastapi
+FastAPI
 Filesets
 fileset
 filesets
 filesystem
 filesystems
+filetree
 fs
 gc
+gevent
 GiB
 GID
 github
 GPG
+gunicorn
 Gunicorn
 gzipped
 hardcoded
@@ -68,6 +77,7 @@ lto
 LTS
 LXD
 lxd
+macOS
 Multipass
 multipass
 nano
@@ -90,6 +100,7 @@ Podman
 ppa
 pre
 pyfiglet
+PPAs
 PyPI
 reStructuredText
 rock's
@@ -136,7 +147,9 @@ triaged
 ubuntu
 unbuilt
 UID
+uncomment
 usrmerge
+Uvicorn
 VENV
 venv
 WSGI

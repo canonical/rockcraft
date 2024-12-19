@@ -24,20 +24,20 @@ terminal commands need to provide this information in separate files that can
 be included in the project's test infrastructure.
 
 Categories of the documentation that use code snippets will each have their own
-directory with a ``code`` folder within. For example, :file:`tutorials/code`
-will hold code for the tutorials.
+directory with a ``code`` folder within. For example, :file:`tutorial/code`
+will hold code for the tutorial.
 
 Each page that provides technical information to the reader in the form of code
 snippets or commands, such as a tutorial or how-to guide, should have its own
 folder within the :file:`code` directory and contain a :file:`task.yaml` file
 for spread tests.
-For example, the :file:`tutorials/hello-world.rst` tutorial refers to code
-supplied in the :file:`tutorials/code/hello-world/task.yaml` file. Additional
+For example, the :file:`tutorial/hello-world.rst` tutorial refers to code
+supplied in the :file:`tutorial/code/hello-world/task.yaml` file. Additional
 YAML_ files can also be included when needed, as shown here:
 
 .. code:: text
 
-   tutorials
+   tutorial
    ├─ hello-world.rst
    └─ code
       └─ hello-world

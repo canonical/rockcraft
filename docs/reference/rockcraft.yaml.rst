@@ -121,6 +121,8 @@ The license of the software packaged inside the rock. This must either be
 "proprietary" or match the SPDX format. It is case insensitive (e.g. both
 ``MIT`` and ``mit`` are valid).
 
+.. _rockcraft_yaml_run_user:
+
 ``run-user``
 ------------
 
@@ -261,6 +263,9 @@ Extensions to enable when building the ROCK.
 Currently supported extensions:
 
 - ``flask-framework``
+- ``django-framework``
+- ``go-framework``
+- ``fastapi-framework``
 
 Example
 =======

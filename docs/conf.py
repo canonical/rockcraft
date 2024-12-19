@@ -45,6 +45,7 @@ html_context = {
     "product_page": "github.com/canonical/rockcraft",
     "discourse": "https://discourse.ubuntu.com/c/rocks/117",
     "github_url": "https://github.com/canonical/rockcraft",
+    "display_contributors": False,
 }
 
 extensions = [
@@ -78,13 +79,14 @@ exclude_patterns = [
     "common/craft-parts/explanation/lifecycle.rst",
     "common/craft-parts/explanation/overlay_parameters.rst",
     "common/craft-parts/explanation/overlays.rst",
-    "common/craft-parts/explanation/parts.rst",
     "common/craft-parts/explanation/how_parts_are_built.rst",
     "common/craft-parts/explanation/overlay_step.rst",
     "common/craft-parts/how-to/craftctl.rst",
+    "common/craft-parts/reference/partition_specific_output_directory_variables.rst",
     "common/craft-parts/reference/parts_steps.rst",
     "common/craft-parts/reference/step_execution_environment.rst",
     "common/craft-parts/reference/step_output_directories.rst",
+    "common/craft-parts/reference/plugins/poetry_plugin.rst",
     "common/craft-parts/reference/plugins/python_plugin.rst",
     # Extra non-craft-parts exclusions can be added after this comment
 ]
@@ -95,6 +97,9 @@ linkcheck_ignore = [
     "https://github.com/canonical/pebble#layer-specification",
     "https://juju.is/cloud-native-kubernetes-usage-report-2021#selection-criteria-for-container-images",
     "https://matrix.to/#/#rocks:ubuntu.com",
+    # Ignore changelog links to Rockcraft releases, because the changelog entries
+    # are written before the actual release is tagged.
+    "https://github.com/canonical/rockcraft/releases/tag/.*",
 ]
 
 rst_epilog = """
@@ -116,6 +121,8 @@ typehints_fully_qualified = False
 always_document_param_types = True
 typehints_document_rtype = True
 linkcheck_anchors_ignore = ["slice-definitions"]
+
+linkcheck_retries = 3
 
 # Enable support for google-style instance attributes.
 napoleon_use_ivar = True

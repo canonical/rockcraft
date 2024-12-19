@@ -21,10 +21,8 @@ from .extensions import (
     ExtensionsCommand,
     ListExtensionsCommand,
 )
-from .init import InitCommand
 
 __all__ = [
-    "InitCommand",
     "ExpandExtensionsCommand",
     "ExtensionsCommand",
     "ListExtensionsCommand",
