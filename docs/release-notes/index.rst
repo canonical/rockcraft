@@ -61,7 +61,7 @@ development keeps pace with the OS's new releases and support lifecycle.
    :maxdepth: 1
    :hidden:
 
-   rockcraft-1-7-0
+   Rockcraft 1.7.0 <rockcraft-1-7-0>
 
 
 .. release note template:

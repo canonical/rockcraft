@@ -102,8 +102,8 @@ We added support for Gunicorn async workers on the Django and Flask 12-factor
 extensions.
 
 
-12-factor documentation
-~~~~~~~~~~~~~~~~~~~~~~~
+12-factor app documentation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The documentation for the various 12-factor framework extensions has been
 updated for clarity and to better conform with documentation best practices.
