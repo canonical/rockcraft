@@ -15,4 +15,5 @@ Rockcraft's components, commands and keywords.
    Extensions <extensions/index>
    plugins
    parts_steps
+   remote-builds
    changelog
