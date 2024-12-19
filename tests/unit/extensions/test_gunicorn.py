@@ -99,6 +99,7 @@ def test_flask_extension_default(
             "flask-framework/runtime": {
                 "plugin": "nil",
                 "stage-packages": ["ca-certificates_data"],
+                "build-snaps": ["chisel/latest/stable"],
             },
             "flask-framework/statsd-exporter": {
                 "build-snaps": ["go"],
@@ -303,6 +304,7 @@ def test_flask_extension_bare(tmp_path):
         "plugin": "nil",
         "override-build": "mkdir -m 777 ${CRAFT_PART_INSTALL}/tmp",
         "stage-packages": ["bash_bins", "coreutils_bins", "ca-certificates_data"],
+        "build-snaps": ["chisel/latest/stable"],
     }
     assert applied["parts"]["flask-framework/dependencies"] == {
         "plugin": "python",
@@ -311,6 +313,7 @@ def test_flask_extension_bare(tmp_path):
         "source": ".",
         "stage-packages": ["python3.10-venv_ensurepip"],
         "build-environment": [{"PARTS_PYTHON_INTERPRETER": "python3.10"}],
+        "build-snaps": ["chisel/latest/stable"],
     }
 
 
@@ -496,6 +499,7 @@ def test_django_extension_default(
             "django-framework/runtime": {
                 "plugin": "nil",
                 "stage-packages": ["ca-certificates_data"],
+                "build-snaps": ["chisel/latest/stable"],
             },
             "django-framework/statsd-exporter": {
                 "build-snaps": ["go"],

@@ -54,7 +54,7 @@ def _apply_extension(
     extension: Extension,
 ) -> None:
     # Apply the root components of the extension (if any)
-    root_extension = extension.get_root_snippet()
+    root_extension = extension.get_root_snippet_extended()
     for property_name, property_value in root_extension.items():
         yaml_data[property_name] = _apply_extension_property(
             yaml_data.get(property_name), property_value
