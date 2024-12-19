@@ -109,8 +109,10 @@ parts:
         - enable-patchelf
     build-packages:
         - cargo
+    build-snaps:
+        - astral-uv
     build-environment:
-        - "CFLAGS": "$(pkg-config python-3.10 yaml-0.1 --cflags)"
+        - "CFLAGS": "$(pkg-config python-3.12 yaml-0.1 --cflags)"
         - "PIP_NO_BINARY": ":all:"
         - UV_FROZEN: "true"
         - UV_PYTHON: /usr/bin/python3
@@ -175,7 +177,7 @@ parts:
     plugin: nil
     stage-snaps:
       - chisel/latest/candidate
-    organize: 
+    organize:
       bin/chisel: libexec/rockcraft/chisel
     stage:
       - libexec/rockcraft/chisel
