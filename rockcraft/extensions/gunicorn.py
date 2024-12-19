@@ -15,6 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 """An extension for the Gunicorn based Python WSGI application extensions."""
+
 import abc
 import fnmatch
 import os.path

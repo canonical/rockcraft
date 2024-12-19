@@ -15,6 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 """Project definition and helpers."""
+
 import copy
 import re
 import shlex
@@ -309,7 +310,8 @@ class Project(BuildPlanner, BaseProject):  # type: ignore[misc]
     @pydantic.field_validator("license")
     @classmethod
     def _validate_license(
-        cls, license: str | None  # pylint: disable=redefined-builtin  # noqa: A002
+        cls,
+        license: str | None,  # pylint: disable=redefined-builtin  # noqa: A002
     ) -> str | None:
         """Make sure the provided license is valid and in SPDX format."""
         if not license:

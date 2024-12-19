@@ -30,7 +30,6 @@ to accomplish this is to add "python3-venv" as a stage-package.
 every use of Python in the resulting image should be via /bin/python3.
 """
 
-
 from textwrap import dedent
 
 import craft_parts
