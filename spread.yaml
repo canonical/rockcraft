@@ -11,7 +11,7 @@ include:
     - tools/
     - docs/
     - requirements-doc.txt
-    - requirements-jammy.txt
+    - requirements-noble.txt
     - Makefile
     - rockcraft/
 
@@ -84,11 +84,11 @@ prepare: |
     snap install docker --channel=core18/stable
   else
     snap install docker
-  fi  
+  fi
 
   # make sure docker is working
   retry -n 10 --wait 2 sh -c 'docker run --rm hello-world'
-  
+
   install_rockcraft
 
 restore-each: |
@@ -101,7 +101,7 @@ restore-each: |
         lxc --project=rockcraft delete --force "$instance"
       fi
     done
-  fi  
+  fi
 
 debug-each: |
   # output latest rockcraft log file on test failure
