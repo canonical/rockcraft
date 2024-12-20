@@ -54,6 +54,7 @@ parts:
 """
 
 
+@pytest.mark.slow
 def test_global_environment(
     new_dir,
     monkeypatch,

@@ -31,7 +31,7 @@ from rockcraft.plugins.python_common import SITECUSTOMIZE_TEMPLATE
 from tests.testing.project import create_project
 from tests.util import ubuntu_only
 
-pytestmark = ubuntu_only
+pytestmark = [ubuntu_only, pytest.mark.slow]
 
 # Extract the possible "base" values from the Literal annotation.
 ALL_BASES = typing.get_args(typing.get_type_hints(Project)["base"])
