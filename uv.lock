@@ -2342,7 +2342,7 @@ wheels = [
 
 [[package]]
 name = "rockcraft"
-version = "1.7.0.post13+gf40b0e8.d20241220"
+version = "1.7.0.post14+g77c72c3"
 source = { editable = "." }
 dependencies = [
     { name = "craft-application" },
