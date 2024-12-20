@@ -42,7 +42,7 @@ setup: install-uv setup-precommit ## Set up a development environment
 
 # Used for installing build dependencies in CI.
 .PHONY: install-build-deps
-install-build-deps: install-linux-build-deps install-macos-build-deps install-lint-build-deps
+install-build-deps: install-linux-build-deps install-lint-build-deps
 	# Ensure the system pip is new enough. If we get an error about breaking system packages, it is.
 	sudo pip install 'pip>=22.2' || true
 
