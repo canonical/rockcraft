@@ -527,7 +527,7 @@ toml = [
 
 [[package]]
 name = "craft-application"
-version = "4.7.0"
+version = "4.6.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "annotated-types" },
@@ -547,9 +547,9 @@ dependencies = [
     { name = "snap-helpers" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/93/07/ea6b687ec207ffca23d6de390b6fd73794e907014009ae7d6f5f70d92e3a/craft_application-4.7.0.tar.gz", hash = "sha256:02dde777bf3ca288009401f6e35fbc0b31eb5cc60cebd98055a3f75fcb3bf23f", size = 225607 }
+sdist = { url = "https://files.pythonhosted.org/packages/eb/e0/9d475fae0b4df40d3ca6caf4d0b3fe05a937a74aabb4aa5db3237c736dce/craft_application-4.6.0.tar.gz", hash = "sha256:b1bac30a394267731ef320b526afa6a456620d7769582ef777fecaca92806508", size = 225488 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/32/f3/6d82e8eb8215dfe96415d43fcc4ed47ce096ecb56278524cc92a06193a03/craft_application-4.7.0-py3-none-any.whl", hash = "sha256:b3b353694b720e3cfe86f40a73ad59801e177cff7bd876dfdd3d4cbc3a0bd6af", size = 144630 },
+    { url = "https://files.pythonhosted.org/packages/45/01/a07221e9f8efe4110184640b294d4f212d52471b72df5a209b327ace7076/craft_application-4.6.0-py3-none-any.whl", hash = "sha256:d90dc1ee50926103566f0ae6a2505ee99632cd53db084d2e3f4ec498d735e6cf", size = 144531 },
 ]
 
 [[package]]
@@ -599,7 +599,7 @@ wheels = [
 
 [[package]]
 name = "craft-parts"
-version = "2.2.1"
+version = "2.1.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "overrides" },
@@ -609,9 +609,9 @@ dependencies = [
     { name = "requests" },
     { name = "requests-unixsocket2" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/dd/11/443c81b7a7e33c7ec77f8e2cdca96a59f340e928ddda79cbc93b513e7b62/craft_parts-2.2.1.tar.gz", hash = "sha256:7a2751438dd9b26b2a2e15d79379f4fc5fb26cf6610da7fff4f0b451b843e4d3", size = 563795 }
+sdist = { url = "https://files.pythonhosted.org/packages/d3/93/bf658a4d73c17bfe8b26055ebc3d9aa06c090d3a94b9ed58ff595d3530d2/craft_parts-2.1.4.tar.gz", hash = "sha256:953e5a9e89055e80826d0d81d169a725e5105ecb68dbf4a6a3816e35e8900336", size = 341297 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/4a/1a/283a6775d86a0c7b5caf697314919172ad6f0c4a82716d3ff99f456d9e8c/craft_parts-2.2.1-py3-none-any.whl", hash = "sha256:12be64f7ba4f2909a26e1160e743613681be34634eca7206dc69a2159ca24ebc", size = 449056 },
+    { url = "https://files.pythonhosted.org/packages/45/e7/7f93ed5000a9cc8a72f03d92a2dcd137c336a77c0c5a17808a18af54767e/craft_parts-2.1.4-py3-none-any.whl", hash = "sha256:4a26bb0fc6abddbacced13827e02d037390450a6395366084d56938a67997806", size = 435192 },
 ]
 
 [[package]]
@@ -2342,7 +2342,7 @@ wheels = [
 
 [[package]]
 name = "rockcraft"
-version = "1.6.0.post37+g6069ed8"
+version = "1.7.0.post13+gf40b0e8.d20241220"
 source = { editable = "." }
 dependencies = [
     { name = "craft-application" },
@@ -2424,10 +2424,10 @@ requires-dist = [
     { name = "canonical-sphinx", extras = ["full"], marker = "extra == 'docs'" },
     { name = "codespell", extras = ["toml"], marker = "extra == 'lint'" },
     { name = "coverage", marker = "extra == 'dev'" },
-    { name = "craft-application", specifier = ">=4.0.0" },
+    { name = "craft-application", specifier = "~=4.6.0" },
     { name = "craft-archives", specifier = ">=2.0.0" },
     { name = "craft-cli" },
-    { name = "craft-parts", specifier = ">=2.1.2,!=2.1.3" },
+    { name = "craft-parts", specifier = "~=2.1.4" },
     { name = "craft-platforms", specifier = "~=0.3" },
     { name = "craft-providers", specifier = ">=2.0.4" },
     { name = "mypy", extras = ["reports"], marker = "extra == 'types'", specifier = "~=1.11" },
