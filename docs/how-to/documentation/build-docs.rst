@@ -29,5 +29,5 @@ on each file change, and will reload the browser view.
     :end-before: [docs:make-rundocs-end]
     :dedent: 2
 
-Note that ``make rundocs`` automatically activates the virtual environment,
+Note that ``make docs-auto`` automatically activates the virtual environment,
 as long as it already exists.
