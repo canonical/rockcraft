@@ -41,6 +41,7 @@ license: Apache-2.0
 
 platforms:
     amd64:
+    arm64:
 
 parts:
     foo:
