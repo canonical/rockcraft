@@ -1,8 +1,8 @@
 ###########################################
 # IMPORTANT
 # Comments matter!
-# The docs use the wrapping comments as 
-# markers for including said instructions 
+# The docs use the wrapping comments as
+# markers for including said instructions
 # as snippets in the docs.
 ###########################################
 summary: test the "Build the docs" guide
@@ -13,17 +13,19 @@ prepare: |
 execute: |
   pushd $PROJECT_PATH/
 
+  git init .
+
   # [docs:install-deps]
-  make installdocs
+  make setup-docs
   # [docs:install-deps-end]
-    
+
   # [docs:make-docs]
   make docs  # the home page can be found at docs/_build/html/index.html
   # [docs:make-docs-end]
 
   set +e
   timeout -s SIGINT 7 \
-  make rundocs
+  make docs-auto
   # [docs:make-rundocs-end]
   ret=$?
   set -e
