@@ -12,6 +12,9 @@ include:
     - docs/
     - requirements-noble.txt
     - Makefile
+    - common.mk
+    - uv.lock
+    - pyproject.toml
     - rockcraft/
 
 backends:
