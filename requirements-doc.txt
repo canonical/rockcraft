@@ -5,7 +5,7 @@ beautifulsoup4==4.12.3
 bracex==2.4
 canonical-sphinx==0.1.0
 canonical-sphinx-extensions==0.0.21
-certifi==2024.2.2
+certifi==2024.12.14
 cffi==1.16.0
 charset-normalizer==3.3.2
 click==8.1.7
