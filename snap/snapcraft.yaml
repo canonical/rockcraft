@@ -90,6 +90,7 @@ parts:
     plugin: cmake
     cmake-parameters:
       - -DCMAKE_INSTALL_PREFIX=/usr
+      - -DBUILD_TESTS=OFF
     build-packages:
       - libssl-dev
     build-attributes:
@@ -116,6 +117,7 @@ parts:
         - "PIP_NO_BINARY": ":all:"
         - UV_FROZEN: "true"
         - UV_PYTHON: /usr/bin/python3
+        - MAKEOPTS: -j$(nproc --all)
     organize:
         bin/craftctl: libexec/rockcraft/craftctl
         # Extensions currently expect to find data files in share/rockcraft/
