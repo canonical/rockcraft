@@ -15,6 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 """Rockcraft Lifecycle service."""
+
 from pathlib import Path
 from typing import cast
 

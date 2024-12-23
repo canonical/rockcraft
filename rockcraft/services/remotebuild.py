@@ -15,6 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 """Rockcraft Remote Build service."""
+
 from craft_application.launchpad import RockRecipe
 from craft_application.services import RemoteBuildService
 

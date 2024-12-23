@@ -1,136 +1,71 @@
-RUFF := $(shell ruff --version 2> /dev/null)
+PROJECT=rockcraft
 
-.PHONY: help
-help: ## Show this help.
-	@printf "%-40s %s\n" "Target" "Description"
-	@printf "%-40s %s\n" "------" "-----------"
-	@fgrep " ## " $(MAKEFILE_LIST) | fgrep -v grep | awk -F ': .*## ' '{$$1 = sprintf("%-40s", $$1)} 1'
-
-.PHONY: autoformat
-autoformat: ## Run automatic code formatters.
-ifndef RUFF
-	$(error "Ruff not installed. Install it with `sudo snap install ruff` or using the official installation instructions: https://docs.astral.sh/ruff/installation/")
+ifneq ($(wildcard /etc/os-release),)
+include /etc/os-release
+export
 endif
-	black .
-	ruff check --fix-only rockcraft tests
 
-.PHONY: clean
-clean: ## Clean artefacts from building, testing, etc.
-	rm -rf build/
-	rm -rf dist/
-	rm -rf .eggs/
-	find . -name '*.egg-info' -exec rm -rf {} +
-	find . -name '*.egg' -exec rm -f {} +
-	rm -rf docs/_build/
-	rm -f docs/rockcraft.*
-	rm -f docs/modules.rst
-	rm -rf docs/reference/commands
-	find . -name '*.pyc' -exec rm -f {} +
-	find . -name '*.pyo' -exec rm -f {} +
-	find . -name '*~' -exec rm -f {} +
-	find . -name '__pycache__' -exec rm -rf {} +
-	rm -rf .tox/
-	rm -f .coverage
-	rm -rf htmlcov/
-	rm -rf .pytest_cache
-	$(MAKE) -C docs clean
-	rm -rf .mypy_cache
+ifneq ($(VERSION_CODENAME),)
+SETUP_TESTS_EXTRA_ARGS=--extra apt-$(VERSION_CODENAME)
+endif
 
-.PHONY: coverage
-coverage: ## Run pytest with coverage report.
-	coverage run --source rockcraft -m pytest tests/unit
-	coverage report -m
-	coverage html
-	coverage xml -o results/coverage-unit.xml
+UV_FROZEN=true
 
-.PHONY: installdocs
-installdocs:
-	$(MAKE) -C docs install
+include common.mk
 
-.PHONY: docs
-docs: ## Generate documentation.
-	rm -f docs/rockcraft.rst
-	rm -f docs/modules.rst
-	$(MAKE) -C docs clean-doc
-	$(MAKE) -C docs html
-
-.PHONY: rundocs
-rundocs: ## start a documentation runserver
-	$(MAKE) -C docs run
-
-.PHONY: dist
-dist: clean ## Build python package.
-	python setup.py sdist
-	python setup.py bdist_wheel
-	ls -l dist
-
-.PHONY: freeze-requirements
-freeze-requirements:  ## Re-freeze requirements.
-	tools/freeze-requirements.sh
-
-.PHONY: install
-install: clean ## Install python package.
-	python setup.py install
+.PHONY: format
+format: format-ruff format-codespell  ## Run all automatic formatters
 
 .PHONY: lint
-lint: test-black test-codespell test-mypy test-pyright test-ruff test-sphinx-lint test-shellcheck ## Run all linting tests.
+lint: lint-ruff lint-codespell lint-mypy lint-pyright lint-shellcheck lint-docs lint-twine  ## Run all linters
 
-.PHONY: release
-release: dist ## Release with twine.
-	twine upload dist/*
+.PHONY: pack
+pack: pack-pip pack-snap  ## Build all packages
 
-.PHONY: test-black
-test-black:
-	black --check --diff .
-
-.PHONY: test-codespell
-test-codespell:
-	codespell rockcraft tests
-
-.PHONY: test-ruff
-test-ruff:
-ifndef RUFF
-	$(error "Ruff not installed. Install it with `sudo snap install ruff` or using the official installation instructions: https://docs.astral.sh/ruff/installation/")
+.PHONY: pack-snap
+pack-snap: snap/snapcraft.yaml  ##- Build snap package
+ifeq ($(shell which snapcraft),)
+	sudo snap install --classic snapcraft
 endif
-	ruff check rockcraft tests
+	snapcraft pack
 
-.PHONY: test-integrations
-test-integrations: ## Run integration tests.
-	pytest tests/integration
+.PHONY: publish
+publish: publish-pypi  ## Publish packages
 
-.PHONY: test-mypy
-test-mypy:
-	mypy rockcraft tests
+.PHONY: publish-pypi
+publish-pypi: clean package-pip lint-twine  ##- Publish Python packages to pypi
+	uv tool run twine upload dist/*
 
-.PHONY: test-pylint
-test-pylint:
-	echo "rockcraft has replaced pylint with ruff. Please use `make test-ruff` instead."
-	make test-ruff
+.PHONY: setup
+setup: install-uv setup-precommit ## Set up a development environment
+	uv sync --frozen $(SETUP_TESTS_EXTRA_ARGS) --extra docs --extra lint --extra types
 
-.PHONY: test-pyright
-test-pyright:
-	pyright .
+# Used for installing build dependencies in CI.
+.PHONY: install-build-deps
+install-build-deps: install-linux-build-deps install-lint-build-deps
+	# Ensure the system pip is new enough. If we get an error about breaking system packages, it is.
+	sudo pip install 'pip>=22.2' || true
 
-.PHONY: test-shellcheck
-test-shellcheck:
-	# shellcheck for shell scripts
-	git ls-files | file --mime-type -Nnf- | grep shellscript | cut -f1 -d: | xargs shellcheck
-	# shellcheck for bash commands inside spread task.yaml files
-	tools/external/utils/spread-shellcheck tests/spread/ spread.yaml
+.PHONY: install-lint-build-deps
+install-lint-build-deps:
+ifeq ($(shell which apt-get),)
+	$(warning apt-get not found. Please install lint dependencies yourself.)
+else
+	sudo $(APT) install python-apt-dev libapt-pkg-dev clang
+endif
 
-.PHONY: test-sphinx-lint
-test-sphinx-lint:
-	sphinx-lint --ignore docs/sphinx-starter-pack/ --ignore docs/_build --ignore docs/env --max-line-length 80 -e all -d missing-underscore-after-hyperlink,missing-space-in-hyperlink docs/*
-
-.PHONY: test-units
-test-units: ## Run unit tests.
-	pytest tests/unit
-
-.PHONY: test-docs
-test-docs: installdocs ## Run docs tests.
-	$(MAKE) -C docs linkcheck
-	$(MAKE) -C docs woke
-	$(MAKE) -C docs spelling
-
-.PHONY: tests
-tests: lint test-integrations test-units test-docs ## Run all tests.
+.PHONY: install-linux-build-deps
+install-linux-build-deps:
+ifneq ($(OS),Linux)
+else ifeq ($(shell which apt-get),)
+	$(warning apt-get not found. Please install dependencies yourself.)
+else
+	sudo $(APT) install libyaml-dev python3-dev python3-pip python3-setuptools \
+	  python3-venv python3-wheel fuse-overlayfs libapt-pkg-dev umoci
+endif
+ifneq ($(shell which snap),)
+	sudo snap install lxd
+endif
+ifneq ($(shell which lxd),)
+	sudo lxd init --auto
+endif

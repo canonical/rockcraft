@@ -15,6 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 """Fake Extensions for use in tests."""
+
 from typing import Any
 
 from craft_application import util

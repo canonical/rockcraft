@@ -15,6 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 """The Rockcraft Ant plugin."""
+
 import logging
 
 from craft_parts.plugins import ant_plugin

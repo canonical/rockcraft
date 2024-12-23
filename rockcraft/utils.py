@@ -16,7 +16,6 @@
 
 """Utilities for rockcraft."""
 
-
 import logging
 import os
 import pathlib

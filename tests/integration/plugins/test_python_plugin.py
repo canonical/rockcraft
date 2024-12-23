@@ -31,7 +31,7 @@ from rockcraft.plugins.python_common import SITECUSTOMIZE_TEMPLATE
 from tests.testing.project import create_project
 from tests.util import ubuntu_only
 
-pytestmark = ubuntu_only
+pytestmark = [ubuntu_only, pytest.mark.slow]
 
 # Extract the possible "base" values from the Literal annotation.
 ALL_BASES = typing.get_args(typing.get_type_hints(Project)["base"])
@@ -153,8 +153,7 @@ def test_python_plugin_bare(tmp_path, run_lifecycle, plugin_name):
     ]
     # (Python 3.8 does not have Path.readlink())
     assert (
-        os.readlink(bin_dir / "python3")
-        == VALUES_FOR_HOST.symlink_target  # pyright: ignore[reportUnboundVariable]
+        os.readlink(bin_dir / "python3") == VALUES_FOR_HOST.symlink_target  # pyright: ignore[reportUnboundVariable]
     )
 
     # Check the shebang in the "hello" script

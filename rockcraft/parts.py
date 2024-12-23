@@ -15,6 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 """Craft-parts lifecycle."""
+
 from typing import Any
 
 import craft_parts
