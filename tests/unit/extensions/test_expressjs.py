@@ -69,9 +69,7 @@ def test_expressjs_extension_default(
                 "plugin": "npm",
                 "npm-include-node": False,
                 "source": "app/",
-                "organise": {
-                    f"lib/node_modules/{expressjs_project_name}/package.json": "app/package.json",
-                },
+                "organise": {},
                 "override-prime": f"rm -rf lib/node_modules/{expressjs_project_name}",
             },
             "expressjs-framework/runtime-dependencies": {
@@ -127,7 +125,7 @@ def test_expressjs_invalid_package_json_scripts_error(
     "existing_files, missing_files, expected_organise",
     [
         pytest.param(
-            ["lib/node_modules/test-expressjs-project/app.js"],
+            ["app/app.js"],
             [],
             {"lib/node_modules/test-expressjs-project/app.js": "app/app.js"},
             id="single file defined",

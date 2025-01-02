@@ -36,6 +36,8 @@ class ExpressJSFramework(Extension):
         "routes",
         "views",
         "app.js",
+    ]
+    EXPRESS_PACKAGE_DIRS = [
         "package.json",
         "package-lock.json",
         "node_modules",
@@ -151,17 +153,17 @@ class ExpressJSFramework(Extension):
             .get("expressjs-framework/install-app", {})
             .get("prime", [])
         )
-        if not all(re.match(f"-? *{self.IMAGE_BASE_DIR}/", p) for p in user_prime):
+        if not all(re.match(f"-? *{self.IMAGE_BASE_DIR}", p) for p in user_prime):
             raise ExtensionError(
                 "expressjs-framework extension requires the 'prime' entry in the "
-                f"expressjs-framework/install-app part to start with {self.IMAGE_BASE_DIR}/",
+                f"expressjs-framework/install-app part to start with {self.IMAGE_BASE_DIR}",
                 doc_slug="/reference/extensions/expressjs-framework",
                 logpath_report=False,
             )
         if not user_prime:
             user_prime = self.EXPRESS_GENERATOR_DIRS
         project_relative_file_paths = [
-            prime_path.removeprefix(self.IMAGE_BASE_DIR) for prime_path in user_prime
+            prime_path.removeprefix(self.IMAGE_BASE_DIR) for prime_path in user_prime + self.EXPRESS_PACKAGE_DIRS
         ]
         lib_dir = f"lib/node_modules/{self._app_name}"
         return {
