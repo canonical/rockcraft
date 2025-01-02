@@ -1,0 +1,45 @@
+summary: expressjs extension test
+environment:
+  SCENARIO/bare: bare
+  SCENARIO/base_2404: ubuntu-24.04
+  ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS: "true"
+
+execute: |
+  NAME="expressjs-${SCENARIO//./-}"
+  ROCK_FILE="${NAME}_0.1_amd64.rock"
+  IMAGE="${NAME}:0.1"
+
+  run_rockcraft init --name "${NAME}" --profile expressjs-framework
+  sed -i "s/^name: .*/name: ${NAME}/g" rockcraft.yaml
+  sed -i "s/^base: .*/base: ${SCENARIO//-/@}/g" rockcraft.yaml
+  if [ "${SCENARIO}" != "bare" ]; then
+    sed -i "s/^build-base: .*/build-base: ${SCENARIO//-/@}/g" rockcraft.yaml
+  fi
+
+  run_rockcraft pack
+
+  test -f "${ROCK_FILE}"
+  test ! -d work
+
+  # Ensure docker does not have this container image
+  docker rmi --force "${IMAGE}"
+  # Install container
+  sudo rockcraft.skopeo --insecure-policy copy "oci-archive:${ROCK_FILE}" "docker-daemon:${IMAGE}"
+  # Ensure container exists
+  docker images "${IMAGE}" | MATCH "${NAME}"
+
+  # ensure container doesn't exist
+  docker rm -f "${NAME}-container"
+
+  # test the default expressjs service
+  docker run --name "${NAME}-container" -d -p 3000:8000 "${IMAGE}"
+  retry -n 5 --wait 2 curl localhost:3000
+  http_status=$(curl -s -o /dev/null -w "%{http_code}" localhost:3000)
+  [ "${http_status}" -eq 200 ]
+
+restore: |
+  NAME="expressjs-${SCENARIO//./-}"
+  docker stop "${NAME}-container"
+  docker rm "${NAME}-container"
+  rm -f "*.rock" rockcraft.yaml
+  docker system prune -a -f
