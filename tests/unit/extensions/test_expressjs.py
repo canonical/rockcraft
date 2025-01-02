@@ -40,8 +40,15 @@ def expressjs_project_name():
 
 
 @pytest.fixture
-def package_json_file(tmp_path, expressjs_project_name):
-    (tmp_path / "package.json").write_text(
+def app_path(tmp_path):
+    app_path = tmp_path / "app"
+    app_path.mkdir(parents=True, exist_ok=True)
+    return app_path
+
+
+@pytest.fixture
+def package_json_file(app_path, expressjs_project_name):
+    (app_path / "package.json").write_text(
         f"""{{
     "name": "{expressjs_project_name}",
     "scripts": {{
@@ -69,7 +76,9 @@ def test_expressjs_extension_default(
                 "plugin": "npm",
                 "npm-include-node": False,
                 "source": "app/",
-                "organise": {},
+                "organise": {
+                    "lib/node_modules/test-expressjs-project/package.json": "app/package.json",
+                },
                 "override-prime": f"rm -rf lib/node_modules/{expressjs_project_name}",
             },
             "expressjs-framework/runtime-dependencies": {
@@ -112,9 +121,9 @@ def test_expressjs_no_package_json_error(tmp_path, expressjs_input_yaml):
 )
 @pytest.mark.usefixtures("expressjs_extension")
 def test_expressjs_invalid_package_json_scripts_error(
-    tmp_path, expressjs_input_yaml, package_json_contents, error_message
+    tmp_path, app_path, expressjs_input_yaml, package_json_contents, error_message
 ):
-    (tmp_path / "package.json").write_text(package_json_contents)
+    (app_path / "package.json").write_text(package_json_contents)
     with pytest.raises(ExtensionError) as exc:
         extensions.apply_extensions(tmp_path, expressjs_input_yaml)
     assert str(exc.value) == error_message
@@ -127,7 +136,10 @@ def test_expressjs_invalid_package_json_scripts_error(
         pytest.param(
             ["app/app.js"],
             [],
-            {"lib/node_modules/test-expressjs-project/app.js": "app/app.js"},
+            {
+                "lib/node_modules/test-expressjs-project/app.js": "app/app.js",
+                "lib/node_modules/test-expressjs-project/package.json": "app/package.json",
+            },
             id="single file defined",
         ),
     ],
@@ -137,7 +149,7 @@ def test_expressjs_install_app_prime_to_organise_map(
     tmp_path, expressjs_input_yaml, existing_files, missing_files, expected_organise
 ):
     for file in existing_files:
-        (tmp_path / file).parent.mkdir(parents=True)
+        (tmp_path / file).parent.mkdir(parents=True, exist_ok=True)
         (tmp_path / file).touch()
     prime_files = [*existing_files, *missing_files]
     expressjs_input_yaml["parts"] = {

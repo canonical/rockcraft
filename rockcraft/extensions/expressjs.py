@@ -125,7 +125,7 @@ class ExpressJSFramework(Extension):
     @property
     def _app_package_json(self) -> dict:
         """Return the app package.json contents."""
-        package_json_file = self.project_root / "package.json"
+        package_json_file = self.project_root / self.IMAGE_BASE_DIR / "package.json"
         if not package_json_file.exists():
             raise ExtensionError(
                 "missing package.json file",
