@@ -163,7 +163,8 @@ class ExpressJSFramework(Extension):
         if not user_prime:
             user_prime = self.EXPRESS_GENERATOR_DIRS
         project_relative_file_paths = [
-            prime_path.removeprefix(self.IMAGE_BASE_DIR) for prime_path in user_prime + self.EXPRESS_PACKAGE_DIRS
+            prime_path.removeprefix(self.IMAGE_BASE_DIR)
+            for prime_path in user_prime + self.EXPRESS_PACKAGE_DIRS
         ]
         lib_dir = f"lib/node_modules/{self._app_name}"
         return {
