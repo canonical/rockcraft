@@ -28,8 +28,8 @@ from .extension import Extension
 class ExpressJSFramework(Extension):
     """An extension for constructing Javascript applications based on the ExpressJS framework."""
 
-    IMAGE_BASE_DIR = "app"
-    EXPRESS_GENERATOR_DIRS = (
+    IMAGE_BASE_DIR = "app/"
+    EXPRESS_GENERATOR_DIRS = [
         "bin",
         "public",
         "routes",
@@ -38,7 +38,7 @@ class ExpressJSFramework(Extension):
         "package.json",
         "package-lock.json",
         "node_modules",
-    )
+    ]
     RUNTIME_DEPENDENCIES = ["ca-certificates_data", "libpq5", "node"]
 
     @staticmethod
@@ -150,6 +150,7 @@ class ExpressJSFramework(Extension):
             .get("expressjs-framework/install-app", {})
             .get("prime", [])
         )
+        print(user_prime)
         if not all(re.match(f"-? *{self.IMAGE_BASE_DIR}/", p) for p in user_prime):
             raise ExtensionError(
                 "expressjs-framework extension requires the 'prime' entry in the "
@@ -158,14 +159,15 @@ class ExpressJSFramework(Extension):
                 logpath_report=False,
             )
         if not user_prime:
-            user_prime = [
-                f"{self.project_root}/{f}" for f in self.EXPRESS_GENERATOR_DIRS
-            ]
+            user_prime = self.EXPRESS_GENERATOR_DIRS
+        project_relative_file_paths = [
+            prime_path.removeprefix(self.IMAGE_BASE_DIR) for prime_path in user_prime
+        ]
         lib_dir = f"lib/node_modules/{self._app_name}"
         return {
             f"{lib_dir}/{f}": f"app/{f}"
-            for f in user_prime
-            if (self.project_root / f).exists()
+            for f in project_relative_file_paths
+            if (self.project_root / "app" / f).exists()
         }
 
     def _check_project(self):
@@ -178,10 +180,15 @@ class ExpressJSFramework(Extension):
         if (
             "scripts" not in self._app_package_json
             or "start" not in self._app_package_json["scripts"]
-            or "name" not in self._app_package_json
         ):
             raise ExtensionError(
                 "missing start script",
+                doc_slug="/reference/extensions/expressjs-framework",
+                logpath_report=False,
+            )
+        if "name" not in self._app_package_json:
+            raise ExtensionError(
+                "missing application name",
                 doc_slug="/reference/extensions/expressjs-framework",
                 logpath_report=False,
             )
