@@ -76,7 +76,7 @@ def test_expressjs_extension_default(
                 "plugin": "npm",
                 "npm-include-node": False,
                 "source": "app/",
-                "organise": {
+                "organize": {
                     "lib/node_modules/test-expressjs-project/package.json": "app/package.json",
                 },
                 "override-prime": f"rm -rf lib/node_modules/{expressjs_project_name}",
@@ -131,7 +131,7 @@ def test_expressjs_invalid_package_json_scripts_error(
 
 
 @pytest.mark.parametrize(
-    "existing_files, missing_files, expected_organise",
+    "existing_files, missing_files, expected_organize",
     [
         pytest.param(
             ["app/app.js"],
@@ -145,8 +145,8 @@ def test_expressjs_invalid_package_json_scripts_error(
     ],
 )
 @pytest.mark.usefixtures("expressjs_extension", "package_json_file")
-def test_expressjs_install_app_prime_to_organise_map(
-    tmp_path, expressjs_input_yaml, existing_files, missing_files, expected_organise
+def test_expressjs_install_app_prime_to_organize_map(
+    tmp_path, expressjs_input_yaml, existing_files, missing_files, expected_organize
 ):
     for file in existing_files:
         (tmp_path / file).parent.mkdir(parents=True, exist_ok=True)
@@ -157,6 +157,6 @@ def test_expressjs_install_app_prime_to_organise_map(
     }
     applied = extensions.apply_extensions(tmp_path, expressjs_input_yaml)
     assert (
-        applied["parts"]["expressjs-framework/install-app"]["organise"]
-        == expected_organise
+        applied["parts"]["expressjs-framework/install-app"]["organize"]
+        == expected_organize
     )
