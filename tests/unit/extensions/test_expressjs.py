@@ -81,6 +81,7 @@ def test_expressjs_extension_default(
                 },
                 "build-packages": ["nodejs"],
                 "override-prime": f"rm -rf lib/node_modules/{expressjs_project_name}",
+                "after": ["npm-deps"],
             },
             "expressjs-framework/runtime-debs": {
                 "plugin": "nil",
