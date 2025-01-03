@@ -81,13 +81,16 @@ def test_expressjs_extension_default(
                 },
                 "override-prime": f"rm -rf lib/node_modules/{expressjs_project_name}",
             },
-            "expressjs-framework/runtime-dependencies": {
+            "expressjs-framework/runtime-debs": {
                 "plugin": "nil",
                 "stage-packages": [
                     "ca-certificates_data",
-                    "libpq5",
                     "node",
                 ],
+            },
+            "expressjs-framework/runtime-slices": {
+                "plugin": "nil",
+                "stage-packages": ["libpq5"],
             },
         },
         "services": {
