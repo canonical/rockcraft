@@ -79,9 +79,8 @@ def test_expressjs_extension_default(
                 "organize": {
                     "lib/node_modules/test-expressjs-project/package.json": "app/package.json",
                 },
-                "build-packages": ["nodejs"],
+                "build-packages": ["nodejs", "npm"],
                 "override-prime": f"rm -rf lib/node_modules/{expressjs_project_name}",
-                "after": ["npm-deps"],
             },
             "expressjs-framework/runtime-debs": {
                 "plugin": "nil",
