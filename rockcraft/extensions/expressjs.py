@@ -42,8 +42,8 @@ class ExpressJSFramework(Extension):
         "package-lock.json",
         "node_modules",
     ]
-    RUNTIME_DEBS = ["node"]
-    RUNTIME_SLICES = ["ca-certificates_data", "libpq5"]
+    RUNTIME_DEBS = ["ca-certificates_data"]
+    RUNTIME_SLICES = ["node", "libpq5"]
 
     @staticmethod
     @override

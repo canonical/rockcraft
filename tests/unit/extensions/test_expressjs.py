@@ -84,12 +84,12 @@ def test_expressjs_extension_default(
             "expressjs-framework/runtime-debs": {
                 "plugin": "nil",
                 "stage-packages": [
-                    "node",
+                    "ca-certificates_data",
                 ],
             },
             "expressjs-framework/runtime-slices": {
                 "plugin": "nil",
-                "stage-packages": ["ca-certificates_data", "libpq5"],
+                "stage-packages": ["node", "libpq5"],
             },
         },
         "services": {
