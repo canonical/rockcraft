@@ -27,7 +27,6 @@ extensions:
     - expressjs-framework
 
 # uncomment the sections you need and adjust according to your requirements.
-
 # parts:  # you need to uncomment this line to add or update any part.
 #   expressjs-framework/install-app:
 #     prime:
@@ -48,7 +47,6 @@ extensions:
 #       - pkg-config
 #       - libxmlsec1-dev
 
-
 # you can add package slices or Debian packages to the image.
 # package slices are subsets of Debian packages, which result
 # in smaller and more secure images.
@@ -64,8 +62,8 @@ extensions:
 #       - libpq5_libs
 
 # if you want to add a Debian package to your image, add the next part
-runtime-debs:
-   plugin: nil
-   stage-packages:
-     # list required Debian packages for your expressjs application below.
-     - libpq5 # for Postgresql connection.
+# runtime-debs:
+#    plugin: nil
+#    stage-packages:
+#      # list required Debian packages for your expressjs application below.
+#      - libpq5 # for Postgresql connection.
