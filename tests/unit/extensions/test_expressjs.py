@@ -79,6 +79,7 @@ def test_expressjs_extension_default(
                 "organize": {
                     "lib/node_modules/test-expressjs-project/package.json": "app/package.json",
                 },
+                "build-snaps": ["node"],
                 "override-prime": f"rm -rf lib/node_modules/{expressjs_project_name}",
             },
             "expressjs-framework/runtime-debs": {

@@ -115,6 +115,7 @@ class ExpressJSFramework(Extension):
             "source": "app/",
             "organize": self._app_organize,
             "override-prime": f"rm -rf lib/node_modules/{self._app_name}",
+            "build-snaps": ["node"],
         }
 
     def _gen_runtime_debs_part(self) -> dict:
