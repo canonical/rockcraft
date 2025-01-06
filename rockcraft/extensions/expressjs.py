@@ -114,7 +114,7 @@ class ExpressJSFramework(Extension):
             "npm-include-node": False,
             "source": "app/",
             "organize": self._app_organize,
-            "override-prime": f"rm -rf lib/node_modules/{self._app_name}",
+            "override-prime": f"rm -rf lib/node_modules/{self._app_name}\ncraftctl default",
             "build-packages": ["nodejs", "npm"],
         }
 
