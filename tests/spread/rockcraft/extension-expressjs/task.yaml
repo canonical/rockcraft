@@ -24,7 +24,8 @@ execute: |
   # Ensure docker does not have this container image
   docker rmi --force "${IMAGE}"
   # Install container
-  sudo rockcraft.skopeo --insecure-policy copy "oci-archive:${ROCK_FILE}" "docker-daemon:${IMAGE}"
+  sudo rockcraft.skopeo --insecure-policy copy "oci-archive:${ROCK_FILE}" \
+  "docker-daemon:${IMAGE}"
   # Ensure container exists
   docker images "${IMAGE}" | MATCH "${NAME}"
 
@@ -32,9 +33,9 @@ execute: |
   docker rm -f "${NAME}-container"
 
   # test the default expressjs service
-  docker run --name "${NAME}-container" -d -p 3000:8000 "${IMAGE}"
-  retry -n 5 --wait 2 curl localhost:3000
-  http_status=$(curl -s -o /dev/null -w "%{http_code}" localhost:3000)
+  docker run --name "${NAME}-container" -d -p 8137:3000 "${IMAGE}"
+  retry -n 5 --wait 2 curl localhost:8137
+  http_status=$(curl -s -o /dev/null -w "%{http_code}" localhost:8137)
   [ "${http_status}" -eq 200 ]
 
 restore: |

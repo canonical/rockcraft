@@ -42,14 +42,19 @@ class ExpressJSFramework(Extension):
         "package-lock.json",
         "node_modules",
     ]
-    RUNTIME_DEBS = ["ca-certificates_data"]
-    RUNTIME_SLICES = ["nodejs", "npm", "libpq5"]
+    RUNTIME_DEBS = [
+        "ca-certificates_data",
+        "bash_bins",
+        "coreutils_bins",
+        "libc6_libs",
+        "libnode109_libs",
+    ]
 
     @staticmethod
     @override
     def get_supported_bases() -> tuple[str, ...]:
         """Return supported bases."""
-        return "bare", "ubuntu@22.04", "ubuntu@24.04"
+        return "bare", "ubuntu@24.04"
 
     @staticmethod
     @override
@@ -86,8 +91,6 @@ class ExpressJSFramework(Extension):
 
         snippet["parts"] = {
             "expressjs-framework/install-app": self._gen_install_app_part(),
-            "expressjs-framework/runtime-debs": self._gen_runtime_debs_part(),
-            "expressjs-framework/runtime-slices": self._gen_runtime_slices_part(),
         }
         return snippet
 
@@ -111,25 +114,24 @@ class ExpressJSFramework(Extension):
         """Generate the install app part using NPM plugin."""
         return {
             "plugin": "npm",
-            "npm-include-node": False,
+            "npm-include-node": True,
+            "npm-node-version": self._install_app_node_version,
             "source": "app/",
             "organize": self._app_organize,
-            "override-prime": f"rm -rf lib/node_modules/{self._app_name}\ncraftctl default",
-            "build-packages": ["nodejs", "npm"],
-        }
-
-    def _gen_runtime_debs_part(self) -> dict:
-        """Generate the runtime debs part."""
-        return {
-            "plugin": "nil",
+            "override-prime": (
+                "craftctl default\n"
+                f"rm -rf ${{CRAFT_PRIME}}/lib/node_modules/{self._app_name}\n"
+                "echo 'script-shell=bash' >> ${CRAFT_PRIME}/app/.npmrc"
+            ),
             "stage-packages": self.RUNTIME_DEBS,
         }
 
-    def _gen_runtime_slices_part(self) -> dict:
-        """Generate the runtime slices part."""
-        # Runtime slices have been separated from runtime debs since rockcraft does not support
-        # mixing the two. See https://github.com/canonical/rockcraft/issues/183.
-        return {"plugin": "nil", "stage-packages": self.RUNTIME_SLICES}
+    # def _gen_runtime_debs_part(self) -> dict:
+    #     """Generate the runtime debs part."""
+    #     return {
+    #         "plugin": "nil",
+    #         "stage-packages": self.RUNTIME_DEBS,
+    #     }
 
     @property
     def _app_package_json(self) -> dict:
@@ -150,6 +152,13 @@ class ExpressJSFramework(Extension):
         return self._app_package_json["name"]
 
     @property
+    def _user_install_app_part(self) -> dict:
+        """Return the user defined install app part."""
+        return self.yaml_data.get("parts", {}).get(
+            "expressjs-framework/install-app", {}
+        )
+
+    @property
     def _app_organize(self) -> dict:
         """Return the organized mapping for the ExpressJS project.
 
@@ -157,11 +166,8 @@ class ExpressJSFramework(Extension):
         express-generator (https://expressjs.com/en/starter/generator.html) tool by default if no
         user prime paths are provided. Use only user prime paths otherwise.
         """
-        user_prime: list[str] = (
-            self.yaml_data.get("parts", {})
-            .get("expressjs-framework/install-app", {})
-            .get("prime", [])
-        )
+        user_prime: list[str] = self._user_install_app_part.get("prime", [])
+
         if not all(re.match(f"-? *{self.IMAGE_BASE_DIR}", p) for p in user_prime):
             raise ExtensionError(
                 "expressjs-framework extension requires the 'prime' entry in the "
@@ -176,11 +182,20 @@ class ExpressJSFramework(Extension):
             for prime_path in user_prime + self.EXPRESS_PACKAGE_DIRS
         ]
         lib_dir = f"lib/node_modules/{self._app_name}"
-        return {
+        file_mappings = {
             f"{lib_dir}/{f}": f"app/{f}"
             for f in project_relative_file_paths
             if (self.project_root / "app" / f).exists()
         }
+        file_mappings[f"{lib_dir}/node_modules"] = "app/node_modules"
+        return file_mappings
+
+    @property
+    def _install_app_node_version(self) -> str:
+        node_version = self._user_install_app_part.get("npm-node-version", "node")
+        if not node_version:
+            return "node"
+        return node_version
 
     def _check_project(self) -> None:
         """Ensure this extension can apply to the current rockcraft project.

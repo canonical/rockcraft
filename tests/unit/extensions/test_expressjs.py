@@ -74,24 +74,25 @@ def test_expressjs_extension_default(
         "parts": {
             "expressjs-framework/install-app": {
                 "plugin": "npm",
-                "npm-include-node": False,
+                "npm-node-version": "node",
+                "npm-include-node": True,
                 "source": "app/",
                 "organize": {
-                    "lib/node_modules/test-expressjs-project/package.json": "app/package.json",
+                    f"lib/node_modules/{expressjs_project_name}/package.json": "app/package.json",
+                    f"lib/node_modules/{expressjs_project_name}/node_modules": "app/node_modules",
                 },
-                "build-packages": ["nodejs", "npm"],
-                "override-prime": f"rm -rf lib/node_modules/{expressjs_project_name}\ncraftctl "
-                "default",
-            },
-            "expressjs-framework/runtime-debs": {
-                "plugin": "nil",
+                "override-prime": (
+                    "craftctl default\n"
+                    f"rm -rf ${{CRAFT_PRIME}}/lib/node_modules/{expressjs_project_name}\n"
+                    "echo 'script-shell=bash' >> ${CRAFT_PRIME}/app/.npmrc"
+                ),
                 "stage-packages": [
                     "ca-certificates_data",
+                    "bash_bins",
+                    "coreutils_bins",
+                    "libc6_libs",
+                    "libnode109_libs",
                 ],
-            },
-            "expressjs-framework/runtime-slices": {
-                "plugin": "nil",
-                "stage-packages": ["nodejs", "npm", "libpq5"],
             },
         },
         "services": {
@@ -135,6 +136,32 @@ def test_expressjs_invalid_package_json_scripts_error(
 
 
 @pytest.mark.parametrize(
+    "input_version, expected_version",
+    [
+        pytest.param("20.12.2", "20.12.2", id="exact version"),
+        pytest.param("20.12", "20.12", id="major minor version"),
+        pytest.param("20", "20", id="major version"),
+        pytest.param("lts/iron", "lts/iron", id="LTS code name"),
+        pytest.param("node", "node", id="latest mainline"),
+        pytest.param("", "node", id="default"),
+    ],
+)
+@pytest.mark.usefixtures("expressjs_extension", "package_json_file")
+def test_expressjs_override_node_version(
+    tmp_path, expressjs_input_yaml, input_version, expected_version
+):
+    expressjs_input_yaml["parts"] = {
+        "expressjs-framework/install-app": {"npm-node-version": input_version}
+    }
+    print(expressjs_input_yaml)
+    applied = extensions.apply_extensions(tmp_path, expressjs_input_yaml)
+    assert (
+        applied["parts"]["expressjs-framework/install-app"]["npm-node-version"]
+        == expected_version
+    )
+
+
+@pytest.mark.parametrize(
     "existing_files, missing_files, expected_organize",
     [
         pytest.param(
@@ -143,6 +170,7 @@ def test_expressjs_invalid_package_json_scripts_error(
             {
                 "lib/node_modules/test-expressjs-project/app.js": "app/app.js",
                 "lib/node_modules/test-expressjs-project/package.json": "app/package.json",
+                "lib/node_modules/test-expressjs-project/node_modules": "app/node_modules",
             },
             id="single file defined",
         ),
