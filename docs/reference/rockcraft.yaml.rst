@@ -262,6 +262,7 @@ Extensions to enable when building the ROCK.
 
 Currently supported extensions:
 
+- ``expressjs-framework``
 - ``flask-framework``
 - ``django-framework``
 - ``go-framework``
