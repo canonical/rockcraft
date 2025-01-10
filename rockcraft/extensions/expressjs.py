@@ -42,8 +42,8 @@ class ExpressJSFramework(Extension):
         "package-lock.json",
     ]
     BUILD_GENERATED_DIRS = ["node_modules", ".npmrc"]
-    RUNTIME_SLICES = [
-        "ca-certificates_data",
+    RUNTIME_SLICES = ["ca-certificates_data"]
+    BARE_RUNTIME_SLICES = [
         "bash_bins",
         "coreutils_bins",
         "libc6_libs",
@@ -68,7 +68,7 @@ class ExpressJSFramework(Extension):
 
         Default values:
           - run_user: _daemon_
-          - build-base: ubuntu:22.04 (only if user specify bare without a build-base)
+          - build-base: ubuntu:24.04
           - platform: amd64
           - services: a service to run the ExpressJS server
           - parts: see ExpressJSFramework._gen_parts
@@ -131,10 +131,18 @@ class ExpressJSFramework(Extension):
 
     def _gen_runtime_part(self) -> dict:
         """Generate the runtime debs part."""
+        runtime_packages = [*self.RUNTIME_SLICES]
+        if self._rock_base == "bare":
+            runtime_packages += [*self.BARE_RUNTIME_SLICES]
         return {
             "plugin": "nil",
-            "stage-packages": self.RUNTIME_SLICES,
+            "stage-packages": runtime_packages,
         }
+
+    @property
+    def _rock_base(self) -> str:
+        """Return the base of the rockcraft project."""
+        return self.yaml_data["base"]
 
     @property
     def _app_package_json(self) -> dict:

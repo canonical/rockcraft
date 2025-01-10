@@ -93,13 +93,7 @@ def test_expressjs_extension_default(
             },
             "expressjs-framework/runtime": {
                 "plugin": "nil",
-                "stage-packages": [
-                    "ca-certificates_data",
-                    "bash_bins",
-                    "coreutils_bins",
-                    "libc6_libs",
-                    "libnode109_libs",
-                ],
+                "stage-packages": ["ca-certificates_data"],
             },
         },
         "services": {
@@ -199,4 +193,33 @@ def test_expressjs_install_app_prime_to_organize_map(
     assert (
         applied["parts"]["expressjs-framework/install-app"]["organize"]
         == expected_organize
+    )
+
+
+@pytest.mark.parametrize(
+    "rock_base, expected_runtime_packages",
+    [
+        pytest.param(
+            "bare",
+            [
+                "ca-certificates_data",
+                "bash_bins",
+                "coreutils_bins",
+                "libc6_libs",
+                "libnode109_libs",
+            ],
+            id="bare",
+        ),
+        pytest.param("ubuntu@24.04", ["ca-certificates_data"], id="ubuntu@24.04"),
+    ],
+)
+@pytest.mark.usefixtures("expressjs_extension", "package_json_file")
+def test_expressjs_gen_runtime_part(
+    tmp_path, expressjs_input_yaml, rock_base, expected_runtime_packages
+):
+    expressjs_input_yaml["base"] = rock_base
+    applied = extensions.apply_extensions(tmp_path, expressjs_input_yaml)
+    assert (
+        applied["parts"]["expressjs-framework/runtime"]["stage-packages"]
+        == expected_runtime_packages
     )
