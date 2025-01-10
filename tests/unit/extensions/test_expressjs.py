@@ -90,9 +90,6 @@ def test_expressjs_extension_default(
                     "craftctl default\n"
                     f"rm -rf ${{CRAFT_PRIME}}/lib/node_modules/{expressjs_project_name}\n"
                 ),
-            },
-            "expressjs-framework/runtime": {
-                "plugin": "nil",
                 "stage-packages": ["ca-certificates_data"],
             },
         },
@@ -220,6 +217,6 @@ def test_expressjs_gen_runtime_part(
     expressjs_input_yaml["base"] = rock_base
     applied = extensions.apply_extensions(tmp_path, expressjs_input_yaml)
     assert (
-        applied["parts"]["expressjs-framework/runtime"]["stage-packages"]
+        applied["parts"]["expressjs-framework/install-app"]["stage-packages"]
         == expected_runtime_packages
     )

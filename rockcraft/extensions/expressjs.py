@@ -90,8 +90,7 @@ class ExpressJSFramework(Extension):
         }
 
         snippet["parts"] = {
-            "expressjs-framework/install-app": self._gen_install_app_part(),
-            "expressjs-framework/runtime": self._gen_runtime_part(),
+            "expressjs-framework/install-app": self._gen_install_app_part()
         }
         return snippet
 
@@ -113,6 +112,9 @@ class ExpressJSFramework(Extension):
 
     def _gen_install_app_part(self) -> dict:
         """Generate the install app part using NPM plugin."""
+        runtime_packages = [*self.RUNTIME_SLICES]
+        if self._rock_base == "bare":
+            runtime_packages += [*self.BARE_RUNTIME_SLICES]
         return {
             "plugin": "npm",
             "npm-include-node": True,
@@ -127,15 +129,6 @@ class ExpressJSFramework(Extension):
                 "craftctl default\n"
                 f"rm -rf ${{CRAFT_PRIME}}/lib/node_modules/{self._app_name}\n"
             ),
-        }
-
-    def _gen_runtime_part(self) -> dict:
-        """Generate the runtime debs part."""
-        runtime_packages = [*self.RUNTIME_SLICES]
-        if self._rock_base == "bare":
-            runtime_packages += [*self.BARE_RUNTIME_SLICES]
-        return {
-            "plugin": "nil",
             "stage-packages": runtime_packages,
         }
 
