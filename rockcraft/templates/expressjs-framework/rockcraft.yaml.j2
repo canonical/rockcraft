@@ -1,7 +1,7 @@
 name: {{name}}
 # see {{versioned_url}}/explanation/bases/
 # for more information about bases and using 'bare' bases for chiselled rocks
-base: bare # as an alternative, a ubuntu base can be used
+base: ubuntu@24.04 # as an alternative, a 'bare' base can be used
 build-base: ubuntu@24.04 # build-base is required when the base is bare
 version: '0.1' # just for humans. Semantic versioning is recommended
 summary: A summary of your ExpresssJS application # 79 char long summary
@@ -20,9 +20,8 @@ platforms:
 
 # to ensure the expressjs-framework extension works properly, your ExpressJS
 # application should be inside the app, src or a directory with the project
-# name, and have inside the app directory a `index.js` or `server.js` file with
-# the starting script  defined in the package.json's scripts section under the
-# "run" key.
+# name, and have inside the app directory a `app.js`file with the starting
+# script  defined in the package.json's scripts section under the "run" key.
 extensions:
     - expressjs-framework
 
@@ -31,21 +30,13 @@ extensions:
 #   expressjs-framework/install-app:
 #     prime:
 #       # by default, only the files in bin/, public/, routes/, views/, app.js,
-# 	 # package.json package-lock.json are copied into the image.
+# 	    # package.json package-lock.json are copied into the image.
 #       # You can modify the list below to override the default list and
 #       # include or exclude specific files/directories in your project.
 #       # note: prefix each entry with "app/" followed by the local path.
 #       - app/app
 #       - app/templates
 #       - app/static
-
-# you may need packages to build a npm package. Add them here if necessary.
-#   expressjs-framework/dependencies:
-#     build-packages:
-#       # for example, if you need pkg-config and libxmlsec1-dev to build one
-#       # of your packages:
-#       - pkg-config
-#       - libxmlsec1-dev
 
 # you can add package slices or Debian packages to the image.
 # package slices are subsets of Debian packages, which result
@@ -54,16 +45,9 @@ extensions:
 
 # add this part if you want to add packages slices to your image.
 # you can find a list of packages slices at https://github.com/canonical/chisel-releases
-#   runtime-slices:
+#   expressjs-framework/runtime:
 #     plugin: nil
 #     stage-packages:
 #       # list the required package slices for your expressjs application below.
 #       # for example, for the slice libs of libpq5:
 #       - libpq5_libs
-
-# if you want to add a Debian package to your image, add the next part
-#   runtime-debs:
-#      plugin: nil
-#      stage-packages:
-#        # list required Debian packages for your expressjs application below.
-#        - libpq5 # for Postgresql connection.
