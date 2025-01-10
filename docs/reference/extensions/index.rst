@@ -11,6 +11,7 @@ initiating a new rock.
 .. toctree::
    :maxdepth: 1
 
+   expressjs-framework
    flask-framework
    django-framework
    fastapi-framework
