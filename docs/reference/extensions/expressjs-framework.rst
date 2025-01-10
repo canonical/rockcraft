@@ -3,8 +3,8 @@
 expressjs-framework
 -------------------
 
-The ExpressJS extension streamlines the process of building ExpressJS application
-rocks.
+The ExpressJS extension streamlines the process of building ExpressJS
+application rocks.
 
 It facilitates the installation of ExpressJS application dependencies, including
 Node and NPM, inside the rock. Additionally, it transfers your project files to

@@ -72,14 +72,14 @@ creation and tailoring for a ExpressJS application by using the
 
 The ``rockcraft.yaml`` file will automatically be created in the project's
 working directory. Open it in a text editor and check that the ``name`` is
-``expressjs-hello-world``. Ensure that ``platforms`` includes the architecture of
-the host. For example, if the host uses the ARM
-architecture, include ``arm64`` in ``platforms``.
+``expressjs-hello-world``. Ensure that ``platforms`` includes the architecture
+of the host. For example, if the host uses the ARM architecture, include
+``arm64`` in ``platforms``.
 
 .. note::
-    For this tutorial, we'll use the ``name`` ``expressjs-hello-world`` and assume
-    we're running on the  ``amd64`` platform. Check the architecture of the
-    system using ``dpkg --print-architecture``.
+    For this tutorial, we'll use the ``name`` ``expressjs-hello-world`` and
+    assume we're running on the  ``amd64`` platform. Check the architecture of
+    the system using ``dpkg --print-architecture``.
 
     The ``name``, ``version`` and ``platform`` all influence the name of the
     generated ``.rock`` file.
