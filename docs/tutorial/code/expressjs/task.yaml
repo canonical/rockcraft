@@ -1,0 +1,136 @@
+###########################################
+# IMPORTANT
+# Comments matter!
+# The docs use the wrapping comments as
+# markers for including said instructions
+# as snippets in the docs.
+###########################################
+summary: Getting started with FastAPI tutorial
+
+environment:
+
+execute: |
+  # [docs:create-venv]
+  sudo apt update && sudo apt install npm
+  echo "y" | npx express-generator app
+  cd app && npm install
+  # [docs:create-venv-end]
+
+  npm start &
+  retry -n 5 --wait 2 curl --fail localhost:3000
+
+  # [docs:curl-expressjs]
+  curl localhost:3000
+  # [docs:curl-expressjs-end]
+
+  kill $!
+
+  # [docs:create-rockcraft-yaml]
+  rockcraft init --profile expressjs-framework
+  # [docs:create-rockcraft-yaml-end]
+  sed -i "s/name: .*/name: expressjs-hello-world/g" rockcraft.yaml
+
+  # [docs:pack]
+  ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS=true rockcraft pack
+  # [docs:pack-end]
+
+  # [docs:ls-rock]
+  ls *.rock -l --block-size=MB
+  # [docs:ls-rock-end]
+
+  # [docs:skopeo-copy]
+  sudo rockcraft.skopeo --insecure-policy \
+    copy oci-archive:expressjs-hello-world_0.1_amd64.rock \
+    docker-daemon:expressjs-hello-world:0.1
+  # [docs:skopeo-copy-end]
+
+  # [docs:docker-images]
+  sudo docker images expressjs-hello-world:0.1
+  # [docs:docker-images-end]
+
+  # [docs:docker-run]
+  sudo docker run --rm -d -p 3000:3000 \
+    --name expressjs-hello-world expressjs-hello-world:0.1
+  # [docs:docker-run-end]
+  retry -n 5 --wait 2 curl --fail localhost:3000
+
+  # [docs:curl-expressjs-rock]
+  curl localhost:3000
+  # [docs:curl-expressjs-rock-end]
+
+  # [docs:get-logs]
+  sudo docker exec expressjs-hello-world pebble logs expressjs
+  # [docs:get-logs-end]
+
+  # [docs:stop-docker]
+  sudo docker stop expressjs-hello-world
+  sudo docker rmi expressjs-hello-world:0.1
+  # [docs:stop-docker-end]
+
+  # [docs:change-base]
+  sed -i \
+    "s/base: .*/base: bare\nbuild-base: ubuntu@24.04/g" \
+    rockcraft.yaml
+  # [docs:change-base-end]
+  sed -i "s/version: .*/version: 0.1-chiselled/g" rockcraft.yaml
+
+  # [docs:chisel-pack]
+  ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS=true rockcraft pack
+  # [docs:chisel-pack-end]
+
+  # [docs:ls-bare-rock]
+  ls *.rock -l --block-size=MB
+  # [docs:ls-bare-rock-end]
+
+  # [docs:docker-run-chisel]
+  sudo rockcraft.skopeo --insecure-policy \
+    copy oci-archive:expressjs-hello-world_0.1-chiselled_amd64.rock \
+    docker-daemon:expressjs-hello-world:0.1-chiselled
+  sudo docker images expressjs-hello-world:0.1-chiselled
+  sudo docker run --rm -d -p 3000:3000 \
+    --name expressjs-hello-world expressjs-hello-world:0.1-chiselled
+  # [docs:docker-run-chisel-end]
+  retry -n 5 --wait 2 curl --fail localhost:3000
+
+  # [docs:curl-expressjs-bare-rock]
+  curl localhost:3000
+  # [docs:curl-expressjs-bare-rock-end]
+
+  # [docs:stop-docker-chisel]
+  sudo docker stop expressjs-hello-world
+  sudo docker rmi expressjs-hello-world:0.1-chiselled
+  # [docs:stop-docker-chisel-end]
+
+  cat time_app.py > app.py
+  sed -i "s/version: .*/version: 0.2/g" rockcraft.yaml
+
+  # [docs:docker-run-update]
+  ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS=true rockcraft pack
+  sudo rockcraft.skopeo --insecure-policy \
+    copy oci-archive:expressjs-hello-world_0.2_amd64.rock \
+    docker-daemon:expressjs-hello-world:0.2
+  sudo docker images expressjs-hello-world:0.2
+  sudo docker run --rm -d -p 3000:3000 \
+    --name expressjs-hello-world expressjs-hello-world:0.2
+  # [docs:docker-run-update-end]
+  retry -n 5 --wait 2 curl --fail localhost:3000/time
+
+  # [docs:curl-time]
+  curl localhost:3000/time
+  # [docs:curl-time-end]
+
+  # [docs:stop-docker-updated]
+  sudo docker stop expressjs-hello-world
+  sudo docker rmi expressjs-hello-world:0.2
+  # [docs:stop-docker-updated-end]
+
+  # [docs:cleanup]
+  # exit and delete the virtual environment
+  deactivate
+  rm -rf .venv __pycache__
+  # delete all the files created during the tutorial
+  rm expressjs-hello-world_0.1_amd64.rock \
+    expressjs-hello-world_0.1-chiselled_amd64.rock \
+    expressjs-hello-world_0.2_amd64.rock \
+    rockcraft.yaml app.py requirements.txt
+  # [docs:cleanup-end]
