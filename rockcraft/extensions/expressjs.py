@@ -40,9 +40,9 @@ class ExpressJSFramework(Extension):
     EXPRESS_PACKAGE_DIRS = [
         "package.json",
         "package-lock.json",
-        "node_modules",
     ]
-    RUNTIME_DEBS = [
+    BUILD_GENERATED_DIRS = ["node_modules", ".npmrc"]
+    RUNTIME_SLICES = [
         "ca-certificates_data",
         "bash_bins",
         "coreutils_bins",
@@ -91,6 +91,7 @@ class ExpressJSFramework(Extension):
 
         snippet["parts"] = {
             "expressjs-framework/install-app": self._gen_install_app_part(),
+            "expressjs-framework/runtime": self._gen_runtime_part(),
         }
         return snippet
 
@@ -118,20 +119,22 @@ class ExpressJSFramework(Extension):
             "npm-node-version": self._install_app_node_version,
             "source": "app/",
             "organize": self._app_organize,
+            "override-build": (
+                "craftctl default\n"
+                "npm config set script-shell=bash --location project"
+            ),
             "override-prime": (
                 "craftctl default\n"
                 f"rm -rf ${{CRAFT_PRIME}}/lib/node_modules/{self._app_name}\n"
-                "echo 'script-shell=bash' >> ${CRAFT_PRIME}/app/.npmrc"
             ),
-            "stage-packages": self.RUNTIME_DEBS,
         }
 
-    # def _gen_runtime_debs_part(self) -> dict:
-    #     """Generate the runtime debs part."""
-    #     return {
-    #         "plugin": "nil",
-    #         "stage-packages": self.RUNTIME_DEBS,
-    #     }
+    def _gen_runtime_part(self) -> dict:
+        """Generate the runtime debs part."""
+        return {
+            "plugin": "nil",
+            "stage-packages": self.RUNTIME_SLICES,
+        }
 
     @property
     def _app_package_json(self) -> dict:
@@ -182,13 +185,16 @@ class ExpressJSFramework(Extension):
             for prime_path in user_prime + self.EXPRESS_PACKAGE_DIRS
         ]
         lib_dir = f"lib/node_modules/{self._app_name}"
-        file_mappings = {
-            f"{lib_dir}/{f}": f"app/{f}"
+        app_dir = "app"
+        organize_mappings = {
+            f"{lib_dir}/{f}": f"{app_dir}/{f}"
             for f in project_relative_file_paths
-            if (self.project_root / "app" / f).exists()
+            if (self.project_root / app_dir / f).exists()
         }
-        file_mappings[f"{lib_dir}/node_modules"] = "app/node_modules"
-        return file_mappings
+        for file_or_dir in self.BUILD_GENERATED_DIRS:
+            organize_mappings[f"{lib_dir}/{file_or_dir}"] = f"{app_dir}/{file_or_dir}"
+
+        return organize_mappings
 
     @property
     def _install_app_node_version(self) -> str:

@@ -80,12 +80,19 @@ def test_expressjs_extension_default(
                 "organize": {
                     f"lib/node_modules/{expressjs_project_name}/package.json": "app/package.json",
                     f"lib/node_modules/{expressjs_project_name}/node_modules": "app/node_modules",
+                    f"lib/node_modules/{expressjs_project_name}/.npmrc": "app/.npmrc",
                 },
+                "override-build": (
+                    "craftctl default\n"
+                    "npm config set script-shell=bash --location project"
+                ),
                 "override-prime": (
                     "craftctl default\n"
                     f"rm -rf ${{CRAFT_PRIME}}/lib/node_modules/{expressjs_project_name}\n"
-                    "echo 'script-shell=bash' >> ${CRAFT_PRIME}/app/.npmrc"
                 ),
+            },
+            "expressjs-framework/runtime": {
+                "plugin": "nil",
                 "stage-packages": [
                     "ca-certificates_data",
                     "bash_bins",
@@ -168,6 +175,7 @@ def test_expressjs_override_node_version(
             ["app/app.js"],
             [],
             {
+                "lib/node_modules/test-expressjs-project/.npmrc": "app/.npmrc",
                 "lib/node_modules/test-expressjs-project/app.js": "app/app.js",
                 "lib/node_modules/test-expressjs-project/package.json": "app/package.json",
                 "lib/node_modules/test-expressjs-project/node_modules": "app/node_modules",
