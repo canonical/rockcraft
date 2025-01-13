@@ -84,7 +84,9 @@ def test_expressjs_extension_default(
                 },
                 "override-build": (
                     "craftctl default\n"
-                    "npm config set script-shell=bash --location project"
+                    "npm config set script-shell=bash --location project\n"
+                    "cp ${CRAFT_PART_BUILD}/.npmrc ${CRAFT_PART_INSTALL}/lib/node_modules/"
+                    f"{expressjs_project_name}/.npmrc"
                 ),
                 "override-prime": (
                     "craftctl default\n"

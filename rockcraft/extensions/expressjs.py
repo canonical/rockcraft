@@ -123,7 +123,9 @@ class ExpressJSFramework(Extension):
             "organize": self._app_organize,
             "override-build": (
                 "craftctl default\n"
-                "npm config set script-shell=bash --location project"
+                "npm config set script-shell=bash --location project\n"
+                "cp ${CRAFT_PART_BUILD}/.npmrc ${CRAFT_PART_INSTALL}/lib/node_modules/"
+                f"{self._app_name}/.npmrc"
             ),
             "override-prime": (
                 "craftctl default\n"
