@@ -10,20 +10,22 @@ summary: Getting started with FastAPI tutorial
 environment:
 
 execute: |
-  # [docs:create-venv]
-  sudo apt update && sudo apt install npm
+  # [docs:init-app]
+  sudo apt-get update -y && sudo apt-get install npm -y
+  npm install -g express-generator
   echo "y" | npx express-generator app
   cd app && npm install
-  # [docs:create-venv-end]
+  # [docs:init-app-end]
 
   npm start &
+  cd ..
   retry -n 5 --wait 2 curl --fail localhost:3000
 
   # [docs:curl-expressjs]
   curl localhost:3000
   # [docs:curl-expressjs-end]
 
-  kill $!
+  kill $(lsof -t -i:3000)
 
   # [docs:create-rockcraft-yaml]
   rockcraft init --profile expressjs-framework
@@ -68,9 +70,7 @@ execute: |
   # [docs:stop-docker-end]
 
   # [docs:change-base]
-  sed -i \
-    "s/base: .*/base: bare\nbuild-base: ubuntu@24.04/g" \
-    rockcraft.yaml
+  sed -i "s/base: bare/base: ubuntu@24.04/g" rockcraft.yaml
   # [docs:change-base-end]
   sed -i "s/version: .*/version: 0.1-chiselled/g" rockcraft.yaml
 
@@ -101,7 +101,9 @@ execute: |
   sudo docker rmi expressjs-hello-world:0.1-chiselled
   # [docs:stop-docker-chisel-end]
 
-  cat time_app.py > app.py
+  ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS=True rockcraft clean
+  mv time.js app/routes/
+  mv app.js app/
   sed -i "s/version: .*/version: 0.2/g" rockcraft.yaml
 
   # [docs:docker-run-update]
@@ -126,11 +128,9 @@ execute: |
 
   # [docs:cleanup]
   # exit and delete the virtual environment
-  deactivate
-  rm -rf .venv __pycache__
   # delete all the files created during the tutorial
   rm expressjs-hello-world_0.1_amd64.rock \
     expressjs-hello-world_0.1-chiselled_amd64.rock \
     expressjs-hello-world_0.2_amd64.rock \
-    rockcraft.yaml app.py requirements.txt
+    rockcraft.yaml
   # [docs:cleanup-end]

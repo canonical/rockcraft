@@ -34,8 +34,8 @@ Create the ExpressJS application by running the express-generator.
 
 .. literalinclude:: code/expressjs/task.yaml
     :language: bash
-    :start-after: [docs:create-venv]
-    :end-before: [docs:create-venv-end]
+    :start-after: [docs:init-app]
+    :end-before: [docs:init-app-end]
     :dedent: 2
 
 Run the ExpressJS application using ``npm start`` to verify
