@@ -70,7 +70,7 @@ execute: |
   # [docs:stop-docker-end]
 
   # [docs:change-base]
-  sed -i "s/base: bare/base: ubuntu@24.04/g" rockcraft.yaml
+  sed -i "s/base: ubuntu@24.04/base: bare/g" rockcraft.yaml
   # [docs:change-base-end]
   sed -i "s/version: .*/version: 0.1-chiselled/g" rockcraft.yaml
 
