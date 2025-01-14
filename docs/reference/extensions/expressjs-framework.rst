@@ -17,10 +17,12 @@ Node and NPM, inside the rock. Additionally, it transfers your project files to
 Project requirements
 ====================
 
-There is 1 requirement to be able to use the ``expressjs-framework`` extension:
+There are 3 requirements to be able to use the ``expressjs-framework``
+extension:
 
-1. There must be a ``package.json`` file in the ``app`` directory of the project
-    with ``start`` script defined.
+1. The application should reside in the ``app`` directory.
+2. The application should have a ``package.json`` file.
+3. The ``package.json`` file should defined the ``start`` script.
 
 ``parts`` > ``expressjs-framework/dependencies:`` > ``stage-packages``
 ======================================================================
@@ -57,7 +59,7 @@ example:
 Some files/directories, if they exist, are included by default. These include:
 ``<rock name>``, ``app.js``, ``migrate``, ``migrate.sh``, ``migrate.py``,
 ``bin``, ``public``, ``routes``, ``views``, ``package.json``,
-``package-lock.json``.
+``package-lock.json``, ``.npmrc``.
 
 Useful links
 ============

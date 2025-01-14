@@ -109,7 +109,7 @@ the ``.rock`` extension:
     :end-before: [docs:ls-rock-end]
     :dedent: 2
 
-The created rock is about 75MB in size. We will reduce its size later in this
+The created rock is about 92MB in size. We will reduce its size later in this
 tutorial.
 
 .. note::
@@ -240,8 +240,8 @@ In ``rockcraft.yaml``, change the ``base`` to ``bare`` and add
 
 .. note::
     The ``sed`` command replaces the current ``base`` in ``rockcraft.yaml`` with
-    the ``bare`` base. The command also adds a ``build-base`` which is required
-    when using the ``bare`` base.
+    the ``bare`` base. Note that ``build-base`` is also required when using the
+    ``bare`` base.
 
 So that we can compare the size after chiselling, open the ``rockcraft.yaml``
 file and change the ``version`` (e.g. to ``0.1-chiselled``). Pack the rock with
