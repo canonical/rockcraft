@@ -96,13 +96,12 @@ def test_expressjs_extension_default(
             },
         },
         "services": {
-            "app": {
-                "command": "npm start",
-                "on-failure": "shutdown",
-                "on-success": "shutdown",
+            "expressjs": {
                 "override": "replace",
                 "startup": "enabled",
+                "user": "_daemon_",
                 "working-dir": "/app",
+                "command": "npm start",
             },
         },
     }
