@@ -173,7 +173,30 @@ def test_expressjs_override_node_version(
                 "lib/node_modules/test-expressjs-project/package.json": "app/package.json",
                 "lib/node_modules/test-expressjs-project/node_modules": "app/node_modules",
             },
-            id="single file defined",
+            id="single file defined, no missing files",
+        ),
+        pytest.param(
+            ["app/app.js", "app/test.js"],
+            [],
+            {
+                "lib/node_modules/test-expressjs-project/.npmrc": "app/.npmrc",
+                "lib/node_modules/test-expressjs-project/app.js": "app/app.js",
+                "lib/node_modules/test-expressjs-project/test.js": "app/test.js",
+                "lib/node_modules/test-expressjs-project/package.json": "app/package.json",
+                "lib/node_modules/test-expressjs-project/node_modules": "app/node_modules",
+            },
+            id="multiple files defined, no missing files",
+        ),
+        pytest.param(
+            ["app/app.js"],
+            ["app/test.js"],
+            {
+                "lib/node_modules/test-expressjs-project/.npmrc": "app/.npmrc",
+                "lib/node_modules/test-expressjs-project/app.js": "app/app.js",
+                "lib/node_modules/test-expressjs-project/package.json": "app/package.json",
+                "lib/node_modules/test-expressjs-project/node_modules": "app/node_modules",
+            },
+            id="single file defined, missing test.js file",
         ),
     ],
 )
