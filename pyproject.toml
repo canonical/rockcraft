@@ -18,12 +18,12 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
 ]
 dependencies = [
-    "craft-application>=4.0.0",
     "craft-archives>=2.0.0",
     "craft-cli",
-    "craft-parts>=2.1.2",
+    "craft-parts @ git+https://github.com/clay-lake/craft-parts.git@feature/pro-sources",
+    "craft-providers @ git+https://github.com/clay-lake/craft-providers.git@feature/pro-sources",
+    "craft-application @ git+https://github.com/clay-lake/craft-application.git@feature/pro-sources",
     "craft-platforms~=0.3",
-    "craft-providers>=2.0.4",
     "overrides",
     "spdx-lookup",
     "tabulate>=0.8.10",
