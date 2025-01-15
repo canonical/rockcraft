@@ -304,18 +304,19 @@ Update the ExpressJS application
 As a final step, let's update our application. For example,
 we want to add a new ``/time`` endpoint which returns the current time.
 
-Start by opening the ``time.js`` file in a text editor and update the code to
+Start by creating the ``time.js`` file in a text editor and update the code to
 look like the following:
 
 .. literalinclude:: code/expressjs/time.js
-    :language: python
+    :language: javascript
 
-Place ``time.js`` file into the appropriate ``routes/`` directory. Import the
-time route from the the main ``app.js`` file and update the code to look like
-the following:
+Place ``time.js`` file into the appropriate ``app/routes/`` directory. Import
+the time route from the the main ``app.js`` file and update the code to look
+like the following:
 
 .. literalinclude:: code/expressjs/app.js
     :language: javascript
+    :emphasize-lines: 9,25
 
 Notice the addition of timerouter import and the registration of the ``/time``
 endpoint.
