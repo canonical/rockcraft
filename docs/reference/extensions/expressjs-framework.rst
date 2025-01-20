@@ -52,6 +52,9 @@ application. In the following example we use it to specify ``libpq-dev``:
   parts:
     expressjs-framework/runtime:
       stage-packages:
+        # when using the default provided node version, the npm package is
+        # required.
+        # - npm
         # list required packages or slices for your ExpressJS application below.
         - libpq-dev
 
