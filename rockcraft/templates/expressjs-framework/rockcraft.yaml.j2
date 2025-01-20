@@ -26,16 +26,12 @@ extensions:
 
 # uncomment the sections you need and adjust according to your requirements.
 # parts:  # you need to uncomment this line to add or update any part.
-#   expressjs-framework/install-app:
-#     prime:
-#       # by default, only the files in bin/, public/, routes/, views/, app.js,
-#       # package.json package-lock.json are copied into the image.
-#       # You can modify the list below to override the default list and
-#       # include or exclude specific files/directories in your project.
-#       # note: prefix each entry with "app/" followed by the local path.
-#       - app/app
-#       - app/templates
-#       - app/static
+#  expressjs-framework/install-app:
+#    # to specify the version of node to be installed, uncomment the following
+#    # line and set the version to the desired one.
+#    # see https://documentation.ubuntu.com/rockcraft/en/latest/common/craft-parts/reference/plugins/npm_plugin/
+#    npm-include-node: true
+#    npm-node-version: node
 
 # you can add package slices or Debian packages to the image.
 # package slices are subsets of Debian packages, which result
@@ -47,6 +43,9 @@ extensions:
 #   expressjs-framework/runtime:
 #     plugin: nil
 #     stage-packages:
+#       # when using the default provided node version, the npm package is
+#       # required.
+#       - npm
 #       # list the required package slices for your expressjs application below.
 #       # for example, for the slice libs of libpq5:
 #       - libpq5_libs
