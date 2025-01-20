@@ -97,6 +97,7 @@ def test_expressjs_extension_default(
                 "user": "_daemon_",
                 "working-dir": "/app",
                 "command": "npm start",
+                "environment": {"NODE_ENV": "production"},
             },
         },
     }
