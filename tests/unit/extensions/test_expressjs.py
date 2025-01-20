@@ -23,6 +23,7 @@ def expressjs_input_yaml_fixture():
     return {
         "name": "foo-bar",
         "base": "ubuntu@24.04",
+        "build-base": "ubuntu@24.04",
         "platforms": {"amd64": {}},
         "extensions": ["expressjs-framework"],
     }
@@ -66,6 +67,7 @@ def test_expressjs_extension_default(
 
     assert applied == {
         "base": "ubuntu@24.04",
+        "build-base": "ubuntu@24.04",
         "name": "foo-bar",
         "platforms": {
             "amd64": {},
@@ -74,26 +76,19 @@ def test_expressjs_extension_default(
         "parts": {
             "expressjs-framework/install-app": {
                 "plugin": "npm",
-                "npm-node-version": "node",
-                "npm-include-node": True,
                 "source": "app/",
-                "organize": {
-                    f"lib/node_modules/{expressjs_project_name}/package.json": "app/package.json",
-                    f"lib/node_modules/{expressjs_project_name}/node_modules": "app/node_modules",
-                    f"lib/node_modules/{expressjs_project_name}/.npmrc": "app/.npmrc",
-                },
                 "override-build": (
                     "craftctl default\n"
                     "npm config set script-shell=bash --location project\n"
                     "cp ${CRAFT_PART_BUILD}/.npmrc ${CRAFT_PART_INSTALL}/lib/node_modules/"
-                    f"{expressjs_project_name}/.npmrc"
+                    f"{expressjs_project_name}/.npmrc\n"
+                    f"ln -s /lib/node_modules/{expressjs_project_name} "
+                    "${CRAFT_PART_INSTALL}/app\n"
                 ),
-                "override-prime": (
-                    "craftctl default\n"
-                    f"rm -rf ${{CRAFT_PRIME}}/lib/node_modules/{expressjs_project_name}\n"
-                ),
-                "stage-packages": ["ca-certificates_data"],
+                "build-packages": ["nodejs", "npm"],
+                "stage-packages": ["ca-certificates_data", "nodejs_bins"],
             },
+            "expressjs-framework/runtime": {"plugin": "nil", "stage-packages": ["npm"]},
         },
         "services": {
             "expressjs": {
@@ -135,112 +130,87 @@ def test_expressjs_invalid_package_json_scripts_error(
 
 
 @pytest.mark.parametrize(
-    "input_version, expected_version",
-    [
-        pytest.param("20.12.2", "20.12.2", id="exact version"),
-        pytest.param("20.12", "20.12", id="major minor version"),
-        pytest.param("20", "20", id="major version"),
-        pytest.param("lts/iron", "lts/iron", id="LTS code name"),
-        pytest.param("node", "node", id="latest mainline"),
-        pytest.param("", "node", id="default"),
-    ],
-)
-@pytest.mark.usefixtures("expressjs_extension", "package_json_file")
-def test_expressjs_override_node_version(
-    tmp_path, expressjs_input_yaml, input_version, expected_version
-):
-    expressjs_input_yaml["parts"] = {
-        "expressjs-framework/install-app": {"npm-node-version": input_version}
-    }
-    print(expressjs_input_yaml)
-    applied = extensions.apply_extensions(tmp_path, expressjs_input_yaml)
-    assert (
-        applied["parts"]["expressjs-framework/install-app"]["npm-node-version"]
-        == expected_version
-    )
-
-
-@pytest.mark.parametrize(
-    "existing_files, missing_files, expected_organize",
+    "base, expected_build_packages, expected_stage_packages",
     [
         pytest.param(
-            ["app/app.js"],
-            [],
-            {
-                "lib/node_modules/test-expressjs-project/.npmrc": "app/.npmrc",
-                "lib/node_modules/test-expressjs-project/app.js": "app/app.js",
-                "lib/node_modules/test-expressjs-project/package.json": "app/package.json",
-                "lib/node_modules/test-expressjs-project/node_modules": "app/node_modules",
-            },
-            id="single file defined, no missing files",
+            "ubuntu@24.04",
+            ["nodejs", "npm"],
+            ["ca-certificates_data", "nodejs_bins"],
+            id="ubuntu@24.04",
         ),
-        pytest.param(
-            ["app/app.js", "app/test.js"],
-            [],
-            {
-                "lib/node_modules/test-expressjs-project/.npmrc": "app/.npmrc",
-                "lib/node_modules/test-expressjs-project/app.js": "app/app.js",
-                "lib/node_modules/test-expressjs-project/test.js": "app/test.js",
-                "lib/node_modules/test-expressjs-project/package.json": "app/package.json",
-                "lib/node_modules/test-expressjs-project/node_modules": "app/node_modules",
-            },
-            id="multiple files defined, no missing files",
-        ),
-        pytest.param(
-            ["app/app.js"],
-            ["app/test.js"],
-            {
-                "lib/node_modules/test-expressjs-project/.npmrc": "app/.npmrc",
-                "lib/node_modules/test-expressjs-project/app.js": "app/app.js",
-                "lib/node_modules/test-expressjs-project/package.json": "app/package.json",
-                "lib/node_modules/test-expressjs-project/node_modules": "app/node_modules",
-            },
-            id="single file defined, missing test.js file",
-        ),
-    ],
-)
-@pytest.mark.usefixtures("expressjs_extension", "package_json_file")
-def test_expressjs_install_app_prime_to_organize_map(
-    tmp_path, expressjs_input_yaml, existing_files, missing_files, expected_organize
-):
-    for file in existing_files:
-        (tmp_path / file).parent.mkdir(parents=True, exist_ok=True)
-        (tmp_path / file).touch()
-    prime_files = [*existing_files, *missing_files]
-    expressjs_input_yaml["parts"] = {
-        "expressjs-framework/install-app": {"prime": prime_files}
-    }
-    applied = extensions.apply_extensions(tmp_path, expressjs_input_yaml)
-    assert (
-        applied["parts"]["expressjs-framework/install-app"]["organize"]
-        == expected_organize
-    )
-
-
-@pytest.mark.parametrize(
-    "rock_base, expected_runtime_packages",
-    [
         pytest.param(
             "bare",
-            [
-                "ca-certificates_data",
-                "bash_bins",
-                "coreutils_bins",
-                "libc6_libs",
-                "libnode109_libs",
-            ],
+            ["nodejs", "npm"],
+            ["bash_bins", "ca-certificates_data", "nodejs_bins", "coreutils_bins"],
             id="bare",
         ),
-        pytest.param("ubuntu@24.04", ["ca-certificates_data"], id="ubuntu@24.04"),
     ],
 )
 @pytest.mark.usefixtures("expressjs_extension", "package_json_file")
-def test_expressjs_gen_runtime_part(
-    tmp_path, expressjs_input_yaml, rock_base, expected_runtime_packages
+def test_expressjs_install_app_default_node_install(
+    tmp_path,
+    expressjs_input_yaml,
+    base,
+    expected_build_packages,
+    expected_stage_packages,
 ):
-    expressjs_input_yaml["base"] = rock_base
+    expressjs_input_yaml["base"] = base
     applied = extensions.apply_extensions(tmp_path, expressjs_input_yaml)
+
+    assert applied["parts"]["expressjs-framework/install-app"]["build-packages"] == (
+        expected_build_packages
+    )
+    assert applied["parts"]["expressjs-framework/install-app"]["stage-packages"] == (
+        expected_stage_packages
+    )
+
+
+@pytest.mark.parametrize(
+    "base, expected_stage_packages",
+    [
+        pytest.param(
+            "ubuntu@24.04",
+            ["ca-certificates_data"],
+            id="24.04 base",
+        ),
+        pytest.param(
+            "bare",
+            ["bash_bins", "ca-certificates_data", "nodejs_bins", "coreutils_bins"],
+            id="bare base",
+        ),
+    ],
+)
+@pytest.mark.usefixtures("expressjs_extension", "package_json_file")
+def test_expressjs_install_app_user_defined_node_install(
+    tmp_path,
+    expressjs_input_yaml,
+    base,
+    expected_stage_packages,
+):
+    expressjs_input_yaml["base"] = base
+    expressjs_input_yaml["parts"] = {
+        "expressjs-framework/install-app": {
+            "npm-include-node": True,
+            "npm-node-version": "node",
+        }
+    }
+    applied = extensions.apply_extensions(tmp_path, expressjs_input_yaml)
+
+    assert applied["parts"]["expressjs-framework/install-app"]["build-packages"] == []
     assert (
         applied["parts"]["expressjs-framework/install-app"]["stage-packages"]
-        == expected_runtime_packages
+        == expected_stage_packages
     )
+
+
+@pytest.mark.usefixtures("expressjs_extension", "package_json_file")
+def test_expressjs_runtime_user_defined_node_install(tmp_path, expressjs_input_yaml):
+    expressjs_input_yaml["parts"] = {
+        "expressjs-framework/install-app": {
+            "npm-include-node": True,
+            "npm-node-version": "node",
+        }
+    }
+    applied = extensions.apply_extensions(tmp_path, expressjs_input_yaml)
+
+    assert applied["parts"]["expressjs-framework/runtime"]["stage-packages"] == []
