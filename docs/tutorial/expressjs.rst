@@ -38,8 +38,8 @@ Create the ExpressJS application by running the express-generator.
     :end-before: [docs:init-app-end]
     :dedent: 2
 
-Run the ExpressJS application using ``npm start`` to verify
-that it works.
+Run the ExpressJS application from within the ``app/`` directory using
+``npm start`` to verify that it works.
 
 Test the ExpressJS application by using ``curl`` to send a request to the root
 endpoint. We'll need a new terminal for this -- if we're using Multipass, run
@@ -109,7 +109,7 @@ the ``.rock`` extension:
     :end-before: [docs:ls-rock-end]
     :dedent: 2
 
-The created rock is about 92MB in size. We will reduce its size later in this
+The created rock is about 100MB in size. We will reduce its size later in this
 tutorial.
 
 .. note::
@@ -147,7 +147,7 @@ size:
     :class: log-snippets
 
     REPOSITORY              TAG       IMAGE ID       CREATED       SIZE
-    expressjs-hello-world   0.1       30c7e5aed202   2 weeks ago   193MB
+    expressjs-hello-world   0.1       30c7e5aed202   2 weeks ago   304MB
 
 .. note::
     The size of the image reported by Docker is the uncompressed size which is
@@ -261,7 +261,7 @@ As before, verify that the new rock was created:
     :end-before: [docs:ls-bare-rock-end]
     :dedent: 2
 
-We'll verify that the new ExpressJS rock is now approximately **20% smaller**
+We'll verify that the new ExpressJS rock is now approximately **15% smaller**
 in size! And that's just because of the simple change of ``base``.
 
 And the functionality is still the same. As before, we can confirm this by
