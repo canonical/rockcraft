@@ -43,6 +43,22 @@ class ExpressJSFramework(Extension):
         return True
 
     @override
+    def get_part_snippet(self) -> dict[str, Any]:
+        """Return the part snippet to apply to existing parts.
+
+        This is unused but is required by the ABC.
+        """
+        return {}
+
+    @override
+    def get_parts_snippet(self) -> dict[str, Any]:
+        """Return the parts to add to parts.
+
+        This is unused but is required by the ABC.
+        """
+        return {}
+
+    @override
     def get_root_snippet(self) -> dict[str, Any]:
         """Fill in some default root components.
 
@@ -63,6 +79,9 @@ class ExpressJSFramework(Extension):
                     "startup": "enabled",
                     "user": "_daemon_",
                     "working-dir": f"/{self.IMAGE_BASE_DIR}",
+                    "environment": {
+                        "NODE_ENV": "production",
+                    },
                 }
             },
         }
@@ -75,21 +94,28 @@ class ExpressJSFramework(Extension):
         }
         return snippet
 
-    @override
-    def get_part_snippet(self) -> dict[str, Any]:
-        """Return the part snippet to apply to existing parts.
+    def _check_project(self) -> None:
+        """Ensure this extension can apply to the current rockcraft project.
 
-        This is unused but is required by the ABC.
+        The ExpressJS framework assumes that:
+        - The npm start script exists.
+        - The application name is defined.
         """
-        return {}
-
-    @override
-    def get_parts_snippet(self) -> dict[str, Any]:
-        """Return the parts to add to parts.
-
-        This is unused but is required by the ABC.
-        """
-        return {}
+        if (
+            "scripts" not in self._app_package_json
+            or "start" not in self._app_package_json["scripts"]
+        ):
+            raise ExtensionError(
+                "missing start script",
+                doc_slug="/reference/extensions/expressjs-framework",
+                logpath_report=False,
+            )
+        if "name" not in self._app_package_json:
+            raise ExtensionError(
+                "missing application name",
+                doc_slug="/reference/extensions/expressjs-framework",
+                logpath_report=False,
+            )
 
     def _gen_install_app_part(self) -> dict:
         """Generate the install app part using NPM plugin."""
@@ -134,6 +160,26 @@ class ExpressJSFramework(Extension):
             return ["ca-certificates_data", "nodejs_bins"]
         return ["ca-certificates_data"]
 
+    def _gen_runtime_part(self) -> dict:
+        """Generate the runtime part."""
+        runtime_part: dict[str, Any] = {
+            "plugin": "nil",
+            "stage-packages": [] if self._user_npm_include_node else ["npm"],
+        }
+        return runtime_part
+
+    @property
+    def _user_install_app_part(self) -> dict:
+        """Return the user defined install app part."""
+        return self.yaml_data.get("parts", {}).get(
+            "expressjs-framework/install-app", {}
+        )
+
+    @property
+    def _user_npm_include_node(self) -> bool:
+        """Return the user defined npm include node flag."""
+        return self._user_install_app_part.get("npm-include-node", False)
+
     @property
     def _rock_base(self) -> str:
         """Return the base of the rockcraft project."""
@@ -156,46 +202,3 @@ class ExpressJSFramework(Extension):
     def _app_name(self) -> str:
         """Return the application name as defined on package.json."""
         return self._app_package_json["name"]
-
-    @property
-    def _user_install_app_part(self) -> dict:
-        """Return the user defined install app part."""
-        return self.yaml_data.get("parts", {}).get(
-            "expressjs-framework/install-app", {}
-        )
-
-    @property
-    def _user_npm_include_node(self) -> bool:
-        """Return the user defined npm include node flag."""
-        return self._user_install_app_part.get("npm-include-node", False)
-
-    def _gen_runtime_part(self) -> dict:
-        """Generate the runtime part."""
-        runtime_part: dict[str, Any] = {
-            "plugin": "nil",
-            "stage-packages": [] if self._user_npm_include_node else ["npm"],
-        }
-        return runtime_part
-
-    def _check_project(self) -> None:
-        """Ensure this extension can apply to the current rockcraft project.
-
-        The ExpressJS framework assumes that:
-        - The npm start script exists.
-        - The application name is defined.
-        """
-        if (
-            "scripts" not in self._app_package_json
-            or "start" not in self._app_package_json["scripts"]
-        ):
-            raise ExtensionError(
-                "missing start script",
-                doc_slug="/reference/extensions/expressjs-framework",
-                logpath_report=False,
-            )
-        if "name" not in self._app_package_json:
-            raise ExtensionError(
-                "missing application name",
-                doc_slug="/reference/extensions/expressjs-framework",
-                logpath_report=False,
-            )
