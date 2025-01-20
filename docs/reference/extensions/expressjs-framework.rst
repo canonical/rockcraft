@@ -24,8 +24,25 @@ extension:
 2. The application should have a ``package.json`` file.
 3. The ``package.json`` file should defined the ``start`` script.
 
-``parts`` > ``expressjs-framework/dependencies:`` > ``stage-packages``
+
+``parts`` > ``expressjs-framework/install-app`` > ``npm-include-node``
 ======================================================================
+
+You can use this field to specify the version of Node to be installed. For
+example:
+
+.. code-block:: yaml
+
+  parts:
+    expressjs-framework/install-app:
+      npm-include-node: true
+      npm-node-version: node
+
+A corressponding Ubuntu packaged Node version will be provided by default if
+not specified.
+
+``parts`` > ``expressjs-framework/runtime:`` > ``stage-packages``
+=================================================================
 
 You can use this key to specify any dependencies required for your ExpressJS
 application. In the following example we use it to specify ``libpq-dev``:
@@ -33,33 +50,10 @@ application. In the following example we use it to specify ``libpq-dev``:
 .. code-block:: yaml
 
   parts:
-    expressjs-framework/dependencies:
+    expressjs-framework/runtime:
       stage-packages:
         # list required packages or slices for your ExpressJS application below.
         - libpq-dev
-
-
-``parts`` > ``expressjs-framework/install-app`` > ``prime``
-===========================================================
-
-You can use this field to specify the files to be included or excluded from
-your rock upon ``rockcraft pack``. Follow the ``app/<filename>`` notation. For
-example:
-
-.. code-block:: yaml
-
-  parts:
-    expressjs-framework/install-app:
-      prime:
-        - app/.env
-        - app/script.js
-        - app/templates
-        - app/static
-
-Some files/directories, if they exist, are included by default. These include:
-``<rock name>``, ``app.js``, ``migrate``, ``migrate.sh``, ``migrate.py``,
-``bin``, ``public``, ``routes``, ``views``, ``package.json``,
-``package-lock.json``, ``.npmrc``.
 
 Useful links
 ============
