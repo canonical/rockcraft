@@ -197,7 +197,7 @@ def test_expressjs_install_app_user_defined_node_install(
     }
     applied = extensions.apply_extensions(tmp_path, expressjs_input_yaml)
 
-    assert applied["parts"]["expressjs-framework/install-app"]["build-packages"] == []
+    assert "build-packages" not in applied["parts"]["expressjs-framework/install-app"]
     assert (
         applied["parts"]["expressjs-framework/install-app"]["stage-packages"]
         == expected_stage_packages
@@ -214,4 +214,4 @@ def test_expressjs_runtime_user_defined_node_install(tmp_path, expressjs_input_y
     }
     applied = extensions.apply_extensions(tmp_path, expressjs_input_yaml)
 
-    assert applied["parts"]["expressjs-framework/runtime"]["stage-packages"] == []
+    assert "expressjs-framework/runtime" not in applied["parts"]

@@ -90,8 +90,10 @@ class ExpressJSFramework(Extension):
 
         snippet["parts"] = {
             "expressjs-framework/install-app": self._gen_install_app_part(),
-            "expressjs-framework/runtime": self._gen_runtime_part(),
         }
+        runtime_part = self._gen_runtime_part()
+        if runtime_part:
+            snippet["parts"]["expressjs-framework/runtime"] = runtime_part
         return snippet
 
     def _check_project(self) -> None:
@@ -122,8 +124,6 @@ class ExpressJSFramework(Extension):
         install_app_part: dict[str, Any] = {
             "plugin": "npm",
             "source": f"{self.IMAGE_BASE_DIR}/",
-            "build-packages": self._install_app_build_packages,
-            "stage-packages": self._install_app_stage_packages,
             "override-build": (
                 "craftctl default\n"
                 "npm config set script-shell=bash --location project\n"
@@ -132,6 +132,12 @@ class ExpressJSFramework(Extension):
                 f"ln -s /lib/node_modules/{self._app_name} ${{CRAFT_PART_INSTALL}}/app\n"
             ),
         }
+        build_packages = self._install_app_build_packages
+        if build_packages:
+            install_app_part["build-packages"] = build_packages
+        stage_packages = self._install_app_stage_packages
+        if stage_packages:
+            install_app_part["stage-packages"] = stage_packages
         if self._user_npm_include_node:
             install_app_part["npm-include-node"] = self._user_npm_include_node
             install_app_part["npm-node-version"] = self._user_install_app_part.get(
@@ -160,13 +166,14 @@ class ExpressJSFramework(Extension):
             return ["ca-certificates_data", "nodejs_bins"]
         return ["ca-certificates_data"]
 
-    def _gen_runtime_part(self) -> dict:
+    def _gen_runtime_part(self) -> dict | None:
         """Generate the runtime part."""
-        runtime_part: dict[str, Any] = {
+        if self._user_npm_include_node:
+            return None
+        return {
             "plugin": "nil",
-            "stage-packages": [] if self._user_npm_include_node else ["npm"],
+            "stage-packages": ["npm"],
         }
-        return runtime_part
 
     @property
     def _user_install_app_part(self) -> dict:
