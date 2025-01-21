@@ -32,20 +32,3 @@ extensions:
 #    # see https://documentation.ubuntu.com/rockcraft/en/latest/common/craft-parts/reference/plugins/npm_plugin/
 #    npm-include-node: true
 #    npm-node-version: node
-
-# you can add package slices or Debian packages to the image.
-# package slices are subsets of Debian packages, which result
-# in smaller and more secure images.
-# see https://documentation.ubuntu.com/rockcraft/en/latest/explanation/chisel/
-
-# add this part if you want to add packages slices to your image.
-# you can find a list of packages slices at https://github.com/canonical/chisel-releases
-#   expressjs-framework/runtime:
-#     plugin: nil
-#     stage-packages:
-#       # when using the default provided node version, the npm package is
-#       # required.
-#       - npm
-#       # list the required package slices for your expressjs application below.
-#       # for example, for the slice libs of libpq5:
-#       - libpq5_libs
