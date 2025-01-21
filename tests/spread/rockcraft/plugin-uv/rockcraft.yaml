@@ -1,0 +1,15 @@
+name: plugin-uv
+base: ubuntu@24.04
+version: '0.1'
+summary: Test the uv plugin
+description: Test the uv plugin
+platforms: 
+  amd64:
+
+parts:
+  my-part:
+    plugin: uv
+    source: src/
+    build-snaps:
+      - astral-uv
+

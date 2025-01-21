@@ -1,0 +1,24 @@
+summary: uv plugin test
+
+execute: |
+  ROCK_FILE="plugin-uv_0.1_amd64.rock"
+  IMAGE="plugin-uv:0.1"
+  
+  # Build the rock & load it into docker
+  run_rockcraft pack
+  test -f ${ROCK_FILE}
+  sudo rockcraft.skopeo --insecure-policy copy oci-archive:${ROCK_FILE} docker-daemon:${IMAGE}
+  docker images
+  rm ${ROCK_FILE}
+  
+  # Run the packaged project, both via the console script and via "python -m"
+  docker run --rm $IMAGE exec test-uv | MATCH "Hello from uv"
+  docker run --rm $IMAGE exec /bin/python3 -m test_uv | MATCH "Hello from uv"
+  docker run --rm $IMAGE exec /usr/bin/python3 -m test_uv | MATCH "Hello from uv"
+  docker run --rm $IMAGE exec python3 -m test_uv | MATCH "Hello from uv"
+  
+  # Run the extra Python package, installed as a dependency, to make sure it's found
+  docker run --rm $IMAGE exec black --version
+  docker run --rm $IMAGE exec /bin/python3 -m black --version
+  docker run --rm $IMAGE exec /usr/bin/python3 -m black --version
+  docker run --rm $IMAGE exec python3 -m black --version

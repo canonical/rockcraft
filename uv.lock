@@ -431,7 +431,7 @@ name = "click"
 version = "8.1.7"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "colorama", marker = "platform_system == 'Windows' or (extra == 'extra-9-rockcraft-apt-jammy' and extra == 'extra-9-rockcraft-apt-noble') or (extra == 'extra-9-rockcraft-apt-jammy' and extra == 'extra-9-rockcraft-apt-oracular') or (extra == 'extra-9-rockcraft-apt-jammy' and extra == 'extra-9-rockcraft-apt-plucky') or (extra == 'extra-9-rockcraft-apt-noble' and extra == 'extra-9-rockcraft-apt-oracular') or (extra == 'extra-9-rockcraft-apt-noble' and extra == 'extra-9-rockcraft-apt-plucky') or (extra == 'extra-9-rockcraft-apt-oracular' and extra == 'extra-9-rockcraft-apt-plucky')" },
+    { name = "colorama", marker = "sys_platform == 'win32' or (extra == 'extra-9-rockcraft-apt-jammy' and extra == 'extra-9-rockcraft-apt-noble') or (extra == 'extra-9-rockcraft-apt-jammy' and extra == 'extra-9-rockcraft-apt-oracular') or (extra == 'extra-9-rockcraft-apt-jammy' and extra == 'extra-9-rockcraft-apt-plucky') or (extra == 'extra-9-rockcraft-apt-noble' and extra == 'extra-9-rockcraft-apt-oracular') or (extra == 'extra-9-rockcraft-apt-noble' and extra == 'extra-9-rockcraft-apt-plucky') or (extra == 'extra-9-rockcraft-apt-oracular' and extra == 'extra-9-rockcraft-apt-plucky')" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/96/d3/f04c7bfcf5c1862a2a5b845c6b2b360488cf47af55dfa79c98f6a6bf98b5/click-8.1.7.tar.gz", hash = "sha256:ca9853ad459e787e2192211578cc907e7594e294c7ccc834310722b41b9ca6de", size = 336121 }
 wheels = [
@@ -599,7 +599,7 @@ wheels = [
 
 [[package]]
 name = "craft-parts"
-version = "2.1.4"
+version = "2.3.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "overrides" },
@@ -609,10 +609,7 @@ dependencies = [
     { name = "requests" },
     { name = "requests-unixsocket2" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/d3/93/bf658a4d73c17bfe8b26055ebc3d9aa06c090d3a94b9ed58ff595d3530d2/craft_parts-2.1.4.tar.gz", hash = "sha256:953e5a9e89055e80826d0d81d169a725e5105ecb68dbf4a6a3816e35e8900336", size = 341297 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/45/e7/7f93ed5000a9cc8a72f03d92a2dcd137c336a77c0c5a17808a18af54767e/craft_parts-2.1.4-py3-none-any.whl", hash = "sha256:4a26bb0fc6abddbacced13827e02d037390450a6395366084d56938a67997806", size = 435192 },
-]
+sdist = { url = "https://files.pythonhosted.org/packages/a7/2f/299694e04ea30f21ab1638ab54342f38a711b198f5fbf0bb9f5a085053d0/craft_parts-2.3.0.tar.gz", hash = "sha256:96516a8a4314659f53f6f2999a38250f8bc5308bb41ac74df9b23e330aaa34ae", size = 639970 }
 
 [[package]]
 name = "craft-platforms"
@@ -2342,7 +2339,6 @@ wheels = [
 
 [[package]]
 name = "rockcraft"
-version = "1.7.0.post14+g77c72c3"
 source = { editable = "." }
 dependencies = [
     { name = "craft-application" },
@@ -2427,7 +2423,7 @@ requires-dist = [
     { name = "craft-application", specifier = "~=4.6.0" },
     { name = "craft-archives", specifier = ">=2.0.0" },
     { name = "craft-cli" },
-    { name = "craft-parts", specifier = "~=2.1.4" },
+    { name = "craft-parts", specifier = "~=2.3.0" },
     { name = "craft-platforms", specifier = "~=0.3" },
     { name = "craft-providers", specifier = ">=2.0.4" },
     { name = "mypy", extras = ["reports"], marker = "extra == 'types'", specifier = "~=1.11" },

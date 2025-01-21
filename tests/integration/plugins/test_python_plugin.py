@@ -26,7 +26,7 @@ from craft_parts.errors import OsReleaseVersionIdError
 from craft_parts.utils.os_utils import OsRelease
 from rockcraft import plugins
 from rockcraft.models.project import Project
-from rockcraft.plugins.python_common import SITECUSTOMIZE_TEMPLATE
+from rockcraft.plugins.python_common import SITECUSTOMIZE_TEMPLATE, get_python_plugins
 
 from tests.testing.project import create_project
 from tests.util import ubuntu_only
@@ -83,7 +83,7 @@ class ExpectedValues:
 # A mapping from host Ubuntu to expected Python values; We need this mapping
 # because these integration tests run on the host machine as the "build base".
 RELEASE_TO_VALUES = {
-    "24.04": ExpectedValues(
+    "24.10": ExpectedValues(
         symlinks=["python", "python3", "python3.12"],
         symlink_target="../usr/bin/python3.12",
         version_dir="python3.12",
@@ -109,7 +109,7 @@ except OsReleaseVersionIdError:
     VALUES_FOR_HOST = RELEASE_TO_VALUES["22.04"]
 
 
-@pytest.mark.parametrize("plugin_name", ["python", "poetry"])
+@pytest.mark.parametrize("plugin_name", get_python_plugins().keys())
 @pytest.mark.parametrize("base", tuple(UBUNTU_BASES))
 def test_python_plugin_ubuntu(base, tmp_path, run_lifecycle, plugin_name):
     project = create_python_project(base=base, plugin=plugin_name)
@@ -139,7 +139,7 @@ def test_python_plugin_ubuntu(base, tmp_path, run_lifecycle, plugin_name):
     assert not pyvenv_cfg.is_file()
 
 
-@pytest.mark.parametrize("plugin_name", ["python", "poetry"])
+@pytest.mark.parametrize("plugin_name", get_python_plugins().keys())
 def test_python_plugin_bare(tmp_path, run_lifecycle, plugin_name):
     project = create_python_project(base="bare", plugin=plugin_name)
     run_lifecycle(project=project, work_dir=tmp_path)
