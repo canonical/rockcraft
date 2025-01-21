@@ -83,7 +83,7 @@ class ExpectedValues:
 # A mapping from host Ubuntu to expected Python values; We need this mapping
 # because these integration tests run on the host machine as the "build base".
 RELEASE_TO_VALUES = {
-    "24.10": ExpectedValues(
+    "24.04": ExpectedValues(
         symlinks=["python", "python3", "python3.12"],
         symlink_target="../usr/bin/python3.12",
         version_dir="python3.12",
