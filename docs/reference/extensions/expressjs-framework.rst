@@ -47,9 +47,23 @@ package repository.
 ``parts`` > ``expressjs-framework/runtime:`` > ``stage-packages``
 =================================================================
 
-Customizing additional runtime dependencies is not supported at the moment due
-to an issue with the
-`NPM plugin <https://github.com/canonical/rockcraft/issues/790>`_.
+You can use this key to specify any dependencies required for your ExpressJS
+application. In the following example we use it to specify ``libpq-dev``:
+
+.. code-block:: yaml
+
+  parts:
+    expressjs-framework/runtime:
+      stage-packages:
+        # when using the default provided node version, the npm package is
+        # required.
+        # - npm
+        # list required packages or slices for your ExpressJS application below.
+        - libpq-dev
+
+When using the NPM plugin installed Node and NPM, additional runtime packages
+is currently unsupported due to an issue with ``lib`` path permission error. See
+https://github.com/canonical/rockcraft/issues/790 for more information.
 
 Useful links
 ============
