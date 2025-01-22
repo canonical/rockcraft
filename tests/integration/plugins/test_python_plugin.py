@@ -49,9 +49,7 @@ def setup_python_test(monkeypatch):
     emit.set_mode(EmitterMode.VERBOSE)
 
 
-def create_python_project(
-    base, extra_part_props=None, *, plugin: str
-) -> Project:
+def create_python_project(base, extra_part_props=None, *, plugin: str) -> Project:
     source = Path(__file__).parent / "python_source" / plugin
     extra = extra_part_props or {}
 
@@ -112,7 +110,6 @@ except OsReleaseVersionIdError:
 @pytest.mark.parametrize("plugin_name", list(get_python_plugins().keys()))
 @pytest.mark.parametrize("base", tuple(UBUNTU_BASES))
 def test_python_plugin_ubuntu(base, tmp_path, run_lifecycle, plugin_name: str):
-    proj_src = Path(__file__).parent / "python_source" / plugin_name
     project = create_python_project(base=base, plugin=plugin_name)
     run_lifecycle(project=project, work_dir=tmp_path)
 
@@ -125,7 +122,7 @@ def test_python_plugin_ubuntu(base, tmp_path, run_lifecycle, plugin_name: str):
     # Check the shebang in the "hello" script
     expected_shebang = "#!/bin/python3"
     hello = bin_dir / "hello"
-    # assert hello.read_text().startswith(expected_shebang)
+    assert hello.read_text().startswith(expected_shebang)
 
     # Check the extra sitecustomize.py module that we add
     expected_text = SITECUSTOMIZE_TEMPLATE.replace("EOF", "")
@@ -184,7 +181,9 @@ def test_python_plugin_invalid_interpreter(tmp_path, run_lifecycle):
         "build-environment": [{"PARTS_PYTHON_INTERPRETER": "/full/path/python3"}]
     }
 
-    project = create_python_project(base="bare", plugin="python", extra_part_props=extra_part)
+    project = create_python_project(
+        base="bare", plugin="python", extra_part_props=extra_part
+    )
 
     with pytest.raises(errors.PartsLifecycleError):
         run_lifecycle(project=project, work_dir=tmp_path)

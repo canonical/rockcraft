@@ -16,9 +16,10 @@
 
 """The Rockcraft uv plugin."""
 
+from textwrap import dedent
+
 from craft_parts.plugins import uv_plugin
 from overrides import override  # type: ignore[reportUnknownVariableType]
-from textwrap import dedent
 
 from rockcraft.plugins import python_common
 
@@ -34,7 +35,7 @@ class UvPlugin(uv_plugin.UvPlugin):
     @override
     def _get_system_python_interpreter(self) -> str | None:
         """Overridden because Python must always be provided by the parts.
-        
+
         The uv plugin requires a name to reference Python, so we must depend
         on a relative python3 being installed."""
         return "python3"
@@ -43,7 +44,7 @@ class UvPlugin(uv_plugin.UvPlugin):
     def _get_script_interpreter(self) -> str:
         """Overridden because Python is always available in /bin."""
         return python_common.get_script_interpreter()
-    
+
     @override
     def _get_rewrite_shebangs_commands(self) -> list[str]:
         """Overridden because the original uv plugin does not rewrite shebangs."""
