@@ -32,8 +32,11 @@ class UvPlugin(uv_plugin.UvPlugin):
 
     @override
     def _get_system_python_interpreter(self) -> str | None:
-        """Overridden because Python must always be provided by the parts."""
-        return None
+        """Overridden because Python must always be provided by the parts.
+        
+        The uv plugin requires a name to reference Python, so we must depend
+        on a relative python3 being installed."""
+        return "python3"
 
     @override
     def _get_script_interpreter(self) -> str:
