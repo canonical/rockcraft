@@ -36,27 +36,20 @@ example:
   parts:
     expressjs-framework/install-app:
       npm-include-node: true
-      npm-node-version: node
+      npm-node-version: 20.12.2
 
-A corressponding Ubuntu packaged Node version will be provided by default if
-not specified.
+For more examples of npm-node-version options, see:
+https://documentation.ubuntu.com/rockcraft/en/1.5.3/common/craft-parts/reference/plugins/npm_plugin/#examples
+
+If you don't customise the version of node, it will be installed from the Ubuntu
+package repository.
 
 ``parts`` > ``expressjs-framework/runtime:`` > ``stage-packages``
 =================================================================
 
-You can use this key to specify any dependencies required for your ExpressJS
-application. In the following example we use it to specify ``libpq-dev``:
-
-.. code-block:: yaml
-
-  parts:
-    expressjs-framework/runtime:
-      stage-packages:
-        # when using the default provided node version, the npm package is
-        # required.
-        # - npm
-        # list required packages or slices for your ExpressJS application below.
-        - libpq-dev
+Customizing additional runtime dependencies is not supported at the moment due
+to an issue with the
+`NPM plugin <https://github.com/canonical/rockcraft/issues/790>`_.
 
 Useful links
 ============
