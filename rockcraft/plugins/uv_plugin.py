@@ -18,6 +18,7 @@
 
 from craft_parts.plugins import uv_plugin
 from overrides import override  # type: ignore[reportUnknownVariableType]
+from textwrap import dedent
 
 from rockcraft.plugins import python_common
 
@@ -42,6 +43,24 @@ class UvPlugin(uv_plugin.UvPlugin):
     def _get_script_interpreter(self) -> str:
         """Overridden because Python is always available in /bin."""
         return python_common.get_script_interpreter()
+    
+    @override
+    def _get_rewrite_shebangs_commands(self) -> list[str]:
+        """Overridden because the original uv plugin does not rewrite shebangs."""
+        script_interpreter = self._get_script_interpreter()
+        find_cmd = (
+            f'find "{self._part_info.part_install_dir}" -type f -executable -print0'
+        )
+        xargs_cmd = "xargs --no-run-if-empty -0"
+        sed_cmd = f'sed -i "1 s|^#\\!.*$|{script_interpreter}|"'
+        return [
+            dedent(
+                f"""\
+                {find_cmd} | {xargs_cmd} \\
+                    {sed_cmd}
+                """
+            )
+        ]
 
     @override
     def get_build_commands(self) -> list[str]:
