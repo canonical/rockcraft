@@ -3,7 +3,9 @@ name = "test_uv"
 version = "0.1.0"
 description = "Add your description here"
 requires-python = ">=3.10"
-dependencies = []
+dependencies = [
+    "black>=24.10.0",
+]
 
 [project.scripts]
 test-uv = "test_uv.__main__:main"
