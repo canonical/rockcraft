@@ -38,8 +38,7 @@ example:
       npm-include-node: true
       npm-node-version: 20.12.2
 
-For more examples of npm-node-version options, see:
-https://documentation.ubuntu.com/rockcraft/en/1.5.3/common/craft-parts/reference/plugins/npm_plugin/#examples
+For more examples of npm-node-version options, see: https://documentation.ubuntu.com/rockcraft/en/1.5.3/common/craft-parts/reference/plugins/npm_plugin/#examples
 
 If you don't customise the version of node, it will be installed from the Ubuntu
 package repository.
@@ -63,7 +62,8 @@ application. In the following example we use it to specify ``libpq-dev``:
 
 When using the NPM plugin installed Node and NPM, additional runtime packages
 is currently unsupported due to an issue with ``lib`` path permission error. See
-https://github.com/canonical/rockcraft/issues/790 for more information.
+[Issue #790](https://github.com/canonical/rockcraft/issues/790) for more
+information.
 
 Useful links
 ============

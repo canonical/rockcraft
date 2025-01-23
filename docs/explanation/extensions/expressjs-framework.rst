@@ -4,7 +4,7 @@ expressjs-framework
 ===================
 
 When using the expressjs-framework extension, there are four different cases for
-customizing the Ubuntu base and the Node version to be included.
+customising the Ubuntu base and the Node version to be included.
 The main difference is
 - whether the bare base is used or the Ubuntu 24.04 base is used.
 - whether the Node is installed from Ubuntu packages or the NPM plugin.
