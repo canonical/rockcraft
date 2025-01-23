@@ -12,7 +12,7 @@ environment:
 execute: |
   # [docs:init-app]
   sudo apt-get update -y && sudo apt-get install npm -y
-  npm install -g express-generator
+  npm install -g express-generator@4.16
   echo "y" | npx express-generator app
   cd app && npm install
   # [docs:init-app-end]
