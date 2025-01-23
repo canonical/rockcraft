@@ -14,9 +14,9 @@ Setup
 
 .. important::
 
-    Before we go any further, for this tutorial we'll need the most recent version
-    of Rockcraft on the edge channel. Run ``sudo snap refresh rockcraft --channel
-    latest/edge`` to switch to it.
+    Before we go any further, for this tutorial we'll need the most recent
+    version of Rockcraft on the edge channel. Run ``sudo snap refresh rockcraft
+    --channel latest/edge`` to switch to it.
 
 Finally, create a new directory for this tutorial and go inside it:
 
