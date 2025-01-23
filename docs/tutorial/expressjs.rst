@@ -31,7 +31,6 @@ throughout this tutorial.
 
 Create the ExpressJS application by running the express-generator.
 
-
 .. literalinclude:: code/expressjs/task.yaml
     :language: bash
     :start-after: [docs:init-app]
