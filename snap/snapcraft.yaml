@@ -25,6 +25,7 @@ platforms:
 apps:
   rockcraft:
     command: bin/python $SNAP/bin/rockcraft
+    completer: completion.sh
   skopeo:
     command: bin/skopeo
 
@@ -125,6 +126,10 @@ parts:
     override-build: |
       uv export --no-dev --no-emit-workspace --no-emit-package pywin32 --output-file uv-requirements.txt
       ${SNAP}/libexec/snapcraft/craftctl default
+
+      PYTHONPATH=/root/parts/$CRAFT_PART_NAME/install/lib/python3.12/site-packages \
+        python3 -m craft_cli.completion $CRAFT_PROJECT_NAME rockcraft.cli:get_app_info \
+        > $CRAFT_PART_INSTALL/completion.sh
 
       version="$("${CRAFT_STAGE}/usr/bin/python3" -c "import rockcraft;print(rockcraft.__version__)")"
       ${SNAP}/libexec/snapcraft/craftctl set version="$version"
