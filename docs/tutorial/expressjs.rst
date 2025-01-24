@@ -31,7 +31,7 @@ Create the ExpressJS application
 Let's start by creating the "Hello, world" ExpressJS application that we'll use
 throughout this tutorial.
 
-Create the ExpressJS application by running the express-generator.
+Create the ExpressJS application using the express-generator:
 
 .. literalinclude:: code/expressjs/task.yaml
     :language: bash
@@ -172,7 +172,8 @@ application's root endpoint which is running inside the container:
     :end-before: [docs:curl-expressjs-rock-end]
     :dedent: 2
 
-The ExpressJS application should again respond with ``Welcome to Express`` HTML.
+The ExpressJS application should again respond with the ``Welcome to Express``
+HTML.
 
 View the application logs
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -305,22 +306,17 @@ Update the ExpressJS application
 As a final step, let's update our application. For example,
 we want to add a new ``/time`` endpoint which returns the current time.
 
-Start by creating the ``time.js`` file in a text editor and update the code to
-look like the following:
+Start by creating the ``app/routes/time.js`` file in a text editor and paste the
+code from the snippet below:
 
 .. literalinclude:: code/expressjs/time.js
     :language: javascript
 
-Place ``time.js`` file into the appropriate ``app/routes/`` directory. Import
-the time route from the the main ``app.js`` file and update the code to look
-like the following:
+Place the code snippet below in ``app.js`` under routes registration section.
+It will register the new ``/time`` endpoint:
 
-.. literalinclude:: code/expressjs/app.js
+.. literalinclude:: code/expressjs/time_app.js
     :language: javascript
-    :emphasize-lines: 9,25
-
-Notice the addition of timerouter import and the registration of the ``/time``
-endpoint.
 
 Since we are creating a new version of the application, open the
 ``rockcraft.yaml`` file and change the ``version`` (e.g. to ``0.2``).

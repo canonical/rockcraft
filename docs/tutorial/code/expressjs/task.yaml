@@ -12,8 +12,8 @@ environment:
 execute: |
   # [docs:init-app]
   sudo apt-get update -y && sudo apt-get install npm -y
-  npm install -g express-generator@4.16
-  echo "y" | npx express-generator app
+  npm install -g express-generator@4
+  express app
   cd app && npm install
   # [docs:init-app-end]
 
@@ -25,6 +25,7 @@ execute: |
   curl localhost:3000
   # [docs:curl-expressjs-end]
 
+  kill $!
   kill $(lsof -t -i:3000)
 
   # [docs:create-rockcraft-yaml]
@@ -101,9 +102,11 @@ execute: |
   sudo docker rmi expressjs-hello-world:0.1-chiselled
   # [docs:stop-docker-chisel-end]
 
-  ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS=True rockcraft clean
   mv time.js app/routes/
-  mv app.js app/
+  original_line="var app = express();"
+  append_line="var timeRouter = require('./routes/time');\
+  app.use('/time', timeRouter);"
+  sed -i "s@$original_line@&\n$append_line@g" app.js
   sed -i "s/version: .*/version: 0.2/g" rockcraft.yaml
 
   # [docs:docker-run-update]
@@ -118,7 +121,7 @@ execute: |
   retry -n 5 --wait 2 curl --fail localhost:3000/time
 
   # [docs:curl-time]
-  curl localhost:3000/time
+  curl --fail localhost:3000/time
   # [docs:curl-time-end]
 
   # [docs:stop-docker-updated]
@@ -127,8 +130,9 @@ execute: |
   # [docs:stop-docker-updated-end]
 
   # [docs:cleanup]
-  # exit and delete the virtual environment
   # delete all the files created during the tutorial
+  sudo apt-get remove npm -y
+  rm -rf app
   rm expressjs-hello-world_0.1_amd64.rock \
     expressjs-hello-world_0.1-chiselled_amd64.rock \
     expressjs-hello-world_0.2_amd64.rock \

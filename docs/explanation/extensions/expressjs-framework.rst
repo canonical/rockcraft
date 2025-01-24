@@ -3,102 +3,98 @@
 expressjs-framework
 ===================
 
-When using the expressjs-framework extension, there are four different cases for
-customising the Ubuntu base and the Node version to be included.
-The main difference is
-- whether the bare base is used or the Ubuntu 24.04 base is used.
-- whether the Node is installed from Ubuntu packages or the NPM plugin.
+When using the ``expressjs-framework`` extension, there are four different cases
+for customising the Ubuntu base and the Node version to be included.
+The main differences are
+* whether the bare base is used or the Ubuntu 24.04 base is used.
+* whether the Node is installed from Ubuntu packages or the NPM plugin.
 
 Ubuntu base and Node combinations
 ---------------------------------
 
-Bare base and Node from Ubuntu packages
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. code-block:: yaml
-
-    base: bare
-    build-base: ubuntu@24.04
-    parts:
-        expressjs-framework/install-app:
-            plugin: npm
-            npm-include-node: false
-            build-packages:
-            - nodejs
-            - npm
-            stage-packages:
-            - bash_bins
-            - coreutils_bins
-            - nodejs_bins
-        expressjs-framework/runtime:
-            plugin: nil
-            stage-packages:
-            - npm
-
-In this case, the ``npm`` package is installed in a separate
-``expressjs-framework/runtime`` part. This is due to
-``expressjs-framework/install-app > stage-packages`` part only being able to
-install slices rather than packages as a design choice of Rockcraft. See the
-[issue comment](https://github.com/canonical/rockcraft/issues/785#issuecomment\
--2572990545) for more explanation.
-
-Bare base and Node from NPM plugin
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. code-block:: yaml
-
-    base: bare
-    build-base: ubuntu@24.04
-    parts:
-        expressjs-framework/install-app:
-            plugin: npm
-            npm-include-node: true
-            npm-node-version: 20.12
-            stage-packages:
-            - bash_bins
-            - coreutils_bins
-            - nodejs_bins
-
-In this case, the ``expressjs-framework/install-app > build-packages`` part is
-empty. The application is is installed using Node and NPM installed by the NPM
-plugin. The application is run using the NPM installed by the NPM plugin.
-
-24.04 base and Node from Ubuntu packages
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. code-block:: yaml
-
-    base: ubuntu@24.04
-    parts:
-        expressjs-framework/install-app:
-            plugin: npm
-            npm-include-node: false
-            build-packages:
-            - nodejs
-            - npm
-            stage-packages:
-            - nodejs_bins
-        expressjs-framework/runtime:
-            plugin: nil
-            stage-packages:
-            - npm
-
-In this case, the ``expressjs-framework/install-app > stage-packages`` part does
-not include the ``bash_bins`` and ``coreutils_bins`` slices as they are already
-included in the Ubuntu 24.04 base. The application is built and installed using
-Node and NPM from the Ubuntu packages.
+In this section of the document, we will discuss the possible combinations of
+Ubuntu bases and possible usages of NPM plugin.
 
 24.04 base and Node from NPM plugin
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+The following example uses the Ubuntu 24.04 base and Node from the NPM plugin.
+
 .. code-block:: yaml
 
     base: ubuntu@24.04
+    extensions:
+    - expressjs-framework
     parts:
         expressjs-framework/install-app:
-            plugin: npm
             npm-include-node: true
             npm-node-version: 20.12
 
 In this case, the application is installed and run via Node and NPM installed by
 the NPM plugin.
+
+24.04 base and Node from Ubuntu packages
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The following example uses the Ubuntu 24.04 base and Node from Ubuntu packages.
+
+.. code-block:: yaml
+
+    base: ubuntu@24.04
+    extensions:
+    - expressjs-framework
+    parts:
+        expressjs-framework/install-app:
+            npm-include-node: false
+
+In this case, the application is installed and run via Node and NPM installed by
+the Ubuntu packages. The NPM and Node versions are determined by the versions of
+NPM and NodeJS shipped with the Ubuntu base. See the NodeJS version shipped with
+the corressponding Ubuntu base from the chilsel-slices repository. This
+[link to the slices repository](https://github.com/canonical/chisel-releases/\
+blob/ubuntu-24.04/slices/nodejs.yaml) is an example of the NodeJS version
+shipped with the Ubuntu 24.04 base.
+
+Bare base and Node from NPM plugin
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The following example uses the bare base and Node from the NPM plugin.
+
+.. code-block:: yaml
+
+    base: bare
+    build-base: ubuntu@24.04
+    parts:
+        expressjs-framework/install-app:
+            npm-include-node: true
+            npm-node-version: 20.12
+
+In this case, the application is installed and run via Node and NPM installed by
+the NPM plugin. For different possible inputs for npm-node-version, refer to the
+[NPM plugin documentation](https://documentation.ubuntu.com/rockcraft/en/\
+latest/common/craft-parts/reference/plugins/npm_plugin).
+
+Bare base and Node from Ubuntu packages
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The following example uses the bare base and Node from Ubuntu packages.
+
+.. code-block:: yaml
+
+    base: bare
+    build-base: ubuntu@24.04
+    parts:
+        expressjs-framework/install-app:
+            npm-include-node: false
+
+In this case, the application is installed and run via Node and NPM installed by
+the Ubuntu packages. The NPM and Node versions are determined by the versions of
+NPM and NodeJS shipped with the Ubuntu base.
+See the NodeJS version shipped with
+the corressponding Ubuntu base from the chilsel-slices repository. This
+[link to the slices repository](https://github.com/canonical/chisel-releases/\
+blob/ubuntu-24.04/slices/nodejs.yaml) is an example of the NodeJS version
+shipped with the Ubuntu 24.04 base.
+See the NPM version shipped with the corressponding Ubuntu base from the Ubuntu
+packages archive from the [Ubuntu packages search](https://packages.ubuntu.com/search?suite=\
+default&section=all&arch=any&keywords=npm&searchon=names)
