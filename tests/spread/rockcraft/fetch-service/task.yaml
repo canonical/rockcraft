@@ -19,7 +19,7 @@ execute: |
   # the fetch-service
   MATCH '"component-name": "hello"' fetch-service*.json
   MATCH '"component-name": "black"' fetch-service*.json
-  
+
   # Check that the logfile was correctly set-up
   LOGFILE=$HOME/snap/fetch-service/common/craft-logs/fetch-service.log
   test -f "$LOGFILE"

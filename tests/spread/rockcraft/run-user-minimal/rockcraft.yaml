@@ -7,10 +7,10 @@ license: GPL-3.0
 base: ubuntu@22.04
 
 platforms:
-    amd64:
+  amd64:
 
 run-user: _daemon_
 
 parts:
-    my-part:
-        plugin: nil
+  my-part:
+    plugin: nil

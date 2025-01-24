@@ -3,9 +3,9 @@ name: TICS
 on:
   push:
     branches:
-    - main
-    # to easy test changes to the workflow
-    - tiobe
+      - main
+      # to easy test changes to the workflow
+      - tiobe
 
 jobs:
   CI:
@@ -32,7 +32,6 @@ jobs:
       - name: Install project
         run: |
           python -m pip install -e .
-
 
       - name: Run coverage
         run: |

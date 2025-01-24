@@ -1,9 +1,8 @@
-
 # Actual parts definition for the rockcraft + python cases that we are testing.
 # (this gets appended to all rockcraft.yaml files in the subdirectories in the
 # main task.yaml).
 
-version: '0.1'
+version: "0.1"
 summary: A rock that bundles a Python project.
 description: A rock that bundles a Python project.
 license: GPL-3.0
