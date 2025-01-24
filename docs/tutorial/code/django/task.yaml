@@ -131,7 +131,7 @@ execute: |
   retry -n 5 --wait 2 curl --fail localhost:8000/time/
 
   # [docs:curl-time]
-  curl localhost:8000/time/
+  curl --fail localhost:8000/time/
   # [docs:curl-time-end]
 
   # [docs:stop-docker-updated]

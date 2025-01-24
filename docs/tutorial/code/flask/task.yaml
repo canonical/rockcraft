@@ -1,8 +1,8 @@
 ###########################################
 # IMPORTANT
 # Comments matter!
-# The docs use the wrapping comments as 
-# markers for including said instructions 
+# The docs use the wrapping comments as
+# markers for including said instructions
 # as snippets in the docs.
 ###########################################
 summary: Getting started with Flask tutorial
@@ -118,7 +118,7 @@ execute: |
   retry -n 5 --wait 2 curl --fail localhost:8000/time
 
   # [docs:curl-time]
-  curl localhost:8000/time
+  curl --fail localhost:8000/time
   # [docs:curl-time-end]
 
   # [docs:stop-docker-updated]
