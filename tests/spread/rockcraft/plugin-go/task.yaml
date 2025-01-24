@@ -2,4 +2,3 @@ summary: check that the build-snap used by the go plugin does not interfere with
 
 execute: |
   run_rockcraft prime
-

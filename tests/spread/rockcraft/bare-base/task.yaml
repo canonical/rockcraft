@@ -24,7 +24,7 @@ execute: |
   docker exec "$id" pebble services | grep hello
   docker exec "$id" pebble ls /usr/bin/hello
   test "$(docker inspect "$id" -f '{{json .Config.Entrypoint}}')" = "[\"${PEBBLE_DIR}/pebble\",\"enter\"]"
-  
+
   # Bare-based rocks should have the default Ubuntu path, as an empty PATH is a
   # security issue when containers bypass the pebble entrypoint.
   EXPECTED_PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
