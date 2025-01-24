@@ -96,5 +96,5 @@ the corressponding Ubuntu base from the chilsel-slices repository. This
 blob/ubuntu-24.04/slices/nodejs.yaml) is an example of the NodeJS version
 shipped with the Ubuntu 24.04 base.
 See the NPM version shipped with the corressponding Ubuntu base from the Ubuntu
-packages archive from the [Ubuntu packages search](https://packages.ubuntu.com/search?suite=\
-default&section=all&arch=any&keywords=npm&searchon=names)
+packages archive from the [Ubuntu packages search](https://packages.ubuntu.com/\
+search?suite=default&section=all&arch=any&keywords=npm&searchon=names)
