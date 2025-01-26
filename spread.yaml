@@ -5,6 +5,7 @@ environment:
   PROJECT_PATH: /rockcraft
   SNAPD_TESTING_TOOLS: $PROJECT_PATH/tools/external/tools
   PATH: /snap/bin:$PATH:$SNAPD_TESTING_TOOLS:$PROJECT_PATH/tools/spread
+  UBUNTU_PRO_TOKEN: '$(HOST: echo "$UBUNTU_PRO_TOKEN")'
 
 include:
     - tests/
@@ -30,6 +31,11 @@ backends:
       - fedora-39-64:
           workers: 1
           storage: 40G
+  lxd:
+    systems:
+      - ubuntu-22.04:
+          workers: 4
+          storage: 10G
 
 prepare: |
   # if the 'tools' directory inside the submodule does not exist, then assume the submodule is empty
@@ -139,6 +145,7 @@ suites:
     summary: tests for rockcraft core functionality, independent of host system
     systems:
     - ubuntu-22.04-64
+    - ubuntu-22.04
 
   tests/spread/foreign/:
     summary: tests that rockcraft and rocks work on different host systems

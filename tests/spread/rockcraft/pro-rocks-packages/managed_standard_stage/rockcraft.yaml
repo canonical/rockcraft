@@ -1,0 +1,21 @@
+name: hello-world
+summary: Test various ways of installing pro packages into a rocks
+description: This rock contains the hello package.
+version: "latest"
+license: Apache-2.0
+
+base: bare
+build-base: ubuntu@22.04
+
+platforms:
+  amd64:  
+
+parts:
+  hello:
+    plugin: nil
+    stage-packages:
+      - hello
+
+    override-build: |
+      apt-get download hello
+      mv hello*.deb ${CRAFT_PART_INSTALL}

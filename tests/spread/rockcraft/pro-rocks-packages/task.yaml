@@ -1,0 +1,53 @@
+summary: |
+  Build rocks with various Ubuntu Pro features enabled.
+
+environment:
+  PKG_GLOB: hello_*+esm1_*.deb
+  SCENARIO/managed_pro_stage: managed_pro_stage
+  SCENARIO/managed_standard_stage: managed_standard_stage
+  PKG_GLOB/managed_standard_stage: hello_*.deb
+  SCENARIO/destructive_pro_stage: destructive_pro_stage
+  SCENARIO/managed_pro_overlay: managed_pro_overlay
+  SCENARIO/managed_pro_build: managed_pro_build
+
+prepare: |
+  sudo pro attach --no-auto-enable $UBUNTU_PRO_TOKEN 
+  sudo pro enable --assume-yes esm-apps
+
+execute: |
+
+  SCENARIO_DIR="${SCENARIO}"
+  TAG="latest"
+  IMAGE_DIR="image"
+  ROCK_FILE="hello-world_latest_*.rock"
+  BUNDLE_DIR="bundle"
+  PKG_DIR="package"
+  
+  # change into the scenario's directory
+  cd $SCENARIO_DIR
+
+  # build the rock
+  rockcraft pack --pro=esm-apps
+
+  # Unpack the rootfs into "rootfs"
+  mkdir -p $IMAGE_DIR
+  tar -xvf $ROCK_FILE -C $IMAGE_DIR
+  /snap/rockcraft/current/bin/umoci unpack --rootless --image $IMAGE_DIR:$TAG $BUNDLE_DIR
+
+  # check if the debian package matches the expected glob
+  test -e $BUNDLE_DIR/rootfs/$PKG_GLOB
+
+  # unpack and located the hello binary
+  dpkg -x $BUNDLE_DIR/rootfs/hello_*.deb $PKG_DIR
+  pushd $PKG_DIR
+  HELLO_PATH=$(find . -type f -executable -name hello)
+  popd
+
+  # check that the same hello binary is in the rootfs
+  diff $PKG_DIR/$HELLO_PATH $BUNDLE_DIR/rootfs/$HELLO_PATH
+
+  # cleanup!
+  rm -rf $ROCK_FILE $IMAGE_DIR $BUNDLE_DIR $PKG_DIR
+
+restore: |
+  sudo pro detach --assume-yes
