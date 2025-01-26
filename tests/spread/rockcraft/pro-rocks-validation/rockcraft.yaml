@@ -1,0 +1,15 @@
+name: bare
+summary: A minimal project file for executing lifecycle commands.
+description: A rock containing only The Bare Necessities 
+version: "latest"
+license: Apache-2.0
+
+base: bare
+build-base: ubuntu@22.04
+
+platforms:
+  amd64:  
+
+parts:
+  bare:
+    plugin: nil

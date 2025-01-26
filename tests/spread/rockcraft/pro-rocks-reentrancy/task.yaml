@@ -1,0 +1,30 @@
+summary: |
+  Test rockcraft's Pro reentrancy behavior.
+
+prepare: |
+  sudo pro attach --no-auto-enable $UBUNTU_PRO_TOKEN 
+  sudo pro enable --assume-yes esm-apps
+
+execute: |
+
+  # set the initial managed instance pro services.
+  rockcraft pull --pro=esm-apps
+
+  # reenter the instance with the same pro services. This should pass
+  rockcraft pull --pro=esm-apps
+
+  # reenter the instance with a different pro services. This should fail
+  rockcraft pull --pro=esm-infra || exit_code=$?
+  test 0 != $exit_code # fail if rockcraft is successful
+
+  # try to reenter the instance with the initial pro services
+  # to prove the pro services state has not changed. This should pass
+  rockcraft pull --pro=esm-apps
+
+  # finally, clean the existing instance, then build with the different
+  # pro services as before. This should now pass
+  rockcraft pull --pro=esm-infra
+
+
+restore: |
+  sudo pro detach --assume-yes
