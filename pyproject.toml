@@ -56,7 +56,6 @@ release = [
 ]
 lint = [
     "codespell[toml]",
-    "yamllint",
 ]
 types = [
     "mypy[reports]~=1.11",

@@ -1493,15 +1493,6 @@ wheels = [
 ]
 
 [[package]]
-name = "pathspec"
-version = "0.12.1"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/ca/bc/f35b8446f4531a7cb215605d100cd88b7ac6f44ab3fc94870c120ab3adbf/pathspec-0.12.1.tar.gz", hash = "sha256:a482d51503a1ab33b1c67a6c3813a26953dbdc71c31dacaef9a838c4e29f5712", size = 51043 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/cc/20/ff623b09d963f88bfde16306a54e12ee5ea43e9b597108672ff3a408aad6/pathspec-0.12.1-py3-none-any.whl", hash = "sha256:a0d503e138a4c123b27490a4f7beda6a01c6f288df0e4a8b79c7eb0dc7b4cc08", size = 31191 },
-]
-
-[[package]]
 name = "pexpect"
 version = "4.9.0"
 source = { registry = "https://pypi.org/simple" }
@@ -2389,7 +2380,6 @@ docs = [
 ]
 lint = [
     { name = "codespell", extra = ["toml"] },
-    { name = "yamllint" },
 ]
 release = [
     { name = "twine" },
@@ -2458,7 +2448,6 @@ requires-dist = [
     { name = "types-tabulate", marker = "extra == 'types'" },
     { name = "types-urllib3", marker = "extra == 'types'" },
     { name = "wheel", marker = "extra == 'release'" },
-    { name = "yamllint", marker = "extra == 'lint'" },
 ]
 
 [package.metadata.requires-dev]
@@ -3366,19 +3355,6 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/be/ab/2a3a0abb7bededfcd8ea23b4593fb816a9abf1a5dabc8f5256e7beb5086d/xattr-1.1.0-pp310-pypy310_pp73-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:dba4f80b9855cc98513ddf22b7ad8551bc448c70d3147799ea4f6c0b758fb466", size = 18046 },
     { url = "https://files.pythonhosted.org/packages/cb/e0/fde9f409fee8a4e64ec691fec8fc9563da19bedb1c2c7215336bba4fc581/xattr-1.1.0-pp310-pypy310_pp73-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:4cb70c16e7c3ae6ba0ab6c6835c8448c61d8caf43ea63b813af1f4dbe83dd156", size = 17759 },
     { url = "https://files.pythonhosted.org/packages/94/88/150a5eabb736ca53ed846a5831e3faab83f360557a47fbd4fd13e8efa187/xattr-1.1.0-pp310-pypy310_pp73-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:83652910ef6a368b77b00825ad67815e5c92bfab551a848ca66e9981d14a7519", size = 17669 },
-]
-
-[[package]]
-name = "yamllint"
-version = "1.35.1"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "pathspec" },
-    { name = "pyyaml" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/da/06/d8cee5c3dfd550cc0a466ead8b321138198485d1034130ac1393cc49d63e/yamllint-1.35.1.tar.gz", hash = "sha256:7a003809f88324fd2c877734f2d575ee7881dd9043360657cc8049c809eba6cd", size = 134583 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/09/28/2abf1ec14df2d584b9e7ce3b0be458838741e6aaff7a540374ba9af83916/yamllint-1.35.1-py3-none-any.whl", hash = "sha256:2e16e504bb129ff515b37823b472750b36b6de07963bd74b307341ef5ad8bdc3", size = 66738 },
 ]
 
 [[package]]

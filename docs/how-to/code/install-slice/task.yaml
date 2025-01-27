@@ -8,7 +8,7 @@
 summary: test the "Install a custom package slice" guide
 
 execute: |
-  # Both the local chisel-releases and root path must be in $HOME for the 
+  # Both the local chisel-releases and root path must be in $HOME for the
   # chisel snap to be able to access them.
   mv rockcraft.yaml "${HOME}/rockcraft.yaml.backup"
   pushd $HOME
@@ -52,4 +52,3 @@ execute: |
 restore: |
   pushd $HOME
   rm -fr chisel-releases/ my-custom-openssl-fs/ custom-openssl-rock_0.0.1_amd64.rock
-
