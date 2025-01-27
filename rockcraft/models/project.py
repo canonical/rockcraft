@@ -384,6 +384,86 @@ class Project(BaseProject):
     def model_reference_slug(cls) -> str | None:
         return "/reference/rockcraft.yaml"
 
+
+def load_project(filename: Path) -> dict[str, Any]:
+    """Load and unmarshal the project YAML file.
+
+    :param filename: The YAML file to load.
+
+    :returns: The populated project data.
+
+    :raises ProjectLoadError: If loading fails.
+    :raises CraftValidationError: If data validation fails.
+    """
+    try:
+        with open(filename, encoding="utf-8") as yaml_file:
+            yaml_data = yaml.safe_load(yaml_file)
+    except OSError as err:
+        msg = err.strerror or "unknown"
+        if err.filename:
+            msg = f"{msg}: {err.filename!r}."
+        raise ProjectLoadError(msg) from err
+
+    return transform_yaml(filename.parent, yaml_data)
+
+
+def transform_yaml(project_root: Path, yaml_data: dict[str, Any]) -> dict[str, Any]:
+    """Do Rockcraft-specific transformations on a project yaml.
+
+    :param project_root: The path that contains the "rockcraft.yaml" file.
+    :param yaml_data: The data dict loaded from the yaml file.
+    """
+    yaml_data = apply_extensions(project_root, yaml_data)
+
+    _add_apt_upgrade_data(yaml_data)
+    _add_pebble_data(yaml_data)
+
+    return yaml_data
+
+
+def _add_pebble_data(yaml_data: dict[str, Any]) -> None:
+    """Add pebble-specific contents to YAML-loaded data.
+
+    This function adds a special "pebble" part to a project's specification, to be
+    (eventually) used as the image's entrypoint.
+
+    :param yaml_data: The project spec loaded from "rockcraft.yaml".
+    :raises CraftValidationError: If `yaml_data` already contains a "pebble" part.
+    """
+    if "parts" not in yaml_data:
+        # Invalid project: let it return to fail in the regular validation flow.
+        return
+
+    parts = yaml_data["parts"]
+    if "pebble" in parts:
+        # Project already has a pebble part: this is not supported.
+        raise CraftValidationError('Cannot override the default "pebble" part')
+
+    # do not modify the original data with pre-validators
+    model = BuildPlanner.unmarshal(copy.deepcopy(yaml_data))
+    build_base = model.build_base if model.build_base else model.base
+
+    parts["pebble"] = Pebble.get_part_spec(build_base)
+
+
+def _add_apt_upgrade_data(yaml_data: dict[str, Any]) -> None:
+    part_name = "_apt-upgrade"
+    part_content = {
+        "plugin": "nil",
+        "overlay-script": "craftctl chroot apt-get -y upgrade ",
+    }
+
+    if "parts" not in yaml_data:
+        # Invalid project: let it return to fail in the regular validation flow.
+        return
+
+    parts = yaml_data["parts"]
+    if part_name in parts:
+        # Project already has a pebble part: this is not supported.
+        raise CraftValidationError(f'Cannot override the default "{part_name}" part')
+
+    parts[part_name] = part_content
+
     @pydantic.field_validator("platforms")
     @classmethod
     def _validate_all_platforms(
