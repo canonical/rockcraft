@@ -12,5 +12,5 @@ parts:
     source: src/
     build-snaps:
       - astral-uv
-    build-packages:
+    stage-packages:
       - python3
