@@ -12,7 +12,7 @@ execute: |
   sudo rockcraft.skopeo --insecure-policy copy oci-archive:apt-repo-static-test_latest_amd64.rock docker-daemon:apt-repo-static-test:latest
   # Ensure container exists
   docker images apt-repo-static-test | MATCH "apt-repo-static-test"
-  
+
   docker run --rm apt-repo-static-test exec /bin/bash-static /usr/bin/test-ppa | MATCH "hello!"
 
 restore: |

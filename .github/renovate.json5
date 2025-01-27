@@ -6,12 +6,16 @@
     "pydantic-yaml", // Updates with pydantic
     "mcr.microsoft.com/dotnet/runtime-deps", // This is intentionally dotnet 6
   ],
-  labels: ["dependencies"],  // For convenient searching in GitHub
+  labels: ["dependencies"], // For convenient searching in GitHub
   baseBranches: ["$default", "/^hotfix\\/.*/"],
   pip_requirements: {
-    fileMatch: ["^tox.ini$", "(^|/)requirements([\\w-]*)\\.txt$", "^.pre-commit-config.yaml$"]
+    fileMatch: [
+      "^tox.ini$",
+      "(^|/)requirements([\\w-]*)\\.txt$",
+      "^.pre-commit-config.yaml$",
+    ],
   },
-   packageRules: [
+  packageRules: [
     {
       // Internal package minor patch updates get top priority, with auto-merging
       groupName: "internal package minor releases",
@@ -21,7 +25,7 @@
       automerge: true,
       minimumReleaseAge: "0 seconds",
       schedule: ["at any time"],
-      matchBaseBranches: ["$default"],  // Only do minor releases on main
+      matchBaseBranches: ["$default"], // Only do minor releases on main
     },
     {
       // Same as above, but for hotfix branches, only for patch, and without auto-merging.
@@ -31,7 +35,7 @@
       prPriority: 10,
       minimumReleaseAge: "0 seconds",
       schedule: ["at any time"],
-      matchBaseBranches: ["/^hotfix\\/.*/"],  // All hotfix branches
+      matchBaseBranches: ["/^hotfix\\/.*/"], // All hotfix branches
     },
     {
       // Automerge patches, pin changes and digest changes.
@@ -40,7 +44,7 @@
       excludeDepPatterns: ["lint/.*", "types/.*"],
       matchUpdateTypes: ["patch", "pin", "digest"],
       prPriority: 3, // Patches should go first!
-      automerge: true
+      automerge: true,
     },
     {
       // Update all internal packages in one higher-priority PR
@@ -48,7 +52,7 @@
       matchDepPatterns: ["craft-.*", "snap-.*"],
       matchCategories: ["python"],
       prPriority: 2,
-      matchBaseBranches: ["$default"],  // Not for hotfix branches
+      matchBaseBranches: ["$default"], // Not for hotfix branches
     },
     {
       // GitHub Actions are higher priority to update than most dependencies since they don't tend to break things.
@@ -67,11 +71,7 @@
       // Minor changes can be grouped and automerged for dev dependencies, but are also deprioritised.
       groupName: "development dependencies (non-major)",
       groupSlug: "dev-dependencies",
-      matchDepPatterns: [
-        "dev/.*",
-        "lint/.*",
-        "types/.*"
-      ],
+      matchDepPatterns: ["dev/.*", "lint/.*", "types/.*"],
       matchPackagePatterns: [
         // Brought from charmcraft. May not be complete.
         // This helps group dependencies in requirements-dev.txt files.
@@ -96,7 +96,7 @@
       ],
       matchUpdateTypes: ["minor", "patch", "pin", "digest"],
       prPriority: -1,
-      automerge: true
+      automerge: true,
     },
     {
       // Documentation related updates
@@ -105,13 +105,13 @@
       matchPackageNames: ["Sphinx", "furo"],
       matchPackagePatterns: ["[Ss]phinx.*$"],
       matchDepPatterns: ["docs/.*"],
-      matchBaseBranches: ["$default"],  // Not for hotfix branches
+      matchBaseBranches: ["$default"], // Not for hotfix branches
     },
     {
       // Other major dependencies get deprioritised below minor dev dependencies.
       matchUpdateTypes: ["major"],
       prPriority: -2,
-      matchBaseBranches: ["$default"],  // Not for hotfix branches
+      matchBaseBranches: ["$default"], // Not for hotfix branches
     },
     {
       // Major dev dependencies are stone last, but grouped.
@@ -120,7 +120,7 @@
       matchDepTypes: ["devDependencies"],
       matchUpdateTypes: ["major"],
       prPriority: -3,
-      matchBaseBranches: ["$default"],  // Not for hotfix branches
+      matchBaseBranches: ["$default"], // Not for hotfix branches
       matchPackagePatterns: [
         // Generated from the dependency dashboard, may not be complete.
         "^(.*/)?autoflake$",
@@ -135,7 +135,7 @@
         "^(.*/)?responses$",
         "^(.*/)?ruff$",
         "^(.*/)?twine$",
-        "^(.*/)?types-"
+        "^(.*/)?types-",
       ],
     },
     {
@@ -143,8 +143,8 @@
       // and do them independently.
       matchPackageNames: ["pyright", "types/pyright"],
       prPriority: -4,
-      matchBaseBranches: ["$default"],  // Not for hotfix branches
-    }
+      matchBaseBranches: ["$default"], // Not for hotfix branches
+    },
   ],
   customManagers: [
     {
@@ -153,8 +153,8 @@
       customType: "regex",
       depTypeTemplate: "devDependencies",
       matchStrings: [
-        "# renovate: datasource=(?<datasource>\\S+)\n\\s+(?<depName>.*?)(\\[[\\w]*\\])*[=><]=?(?<currentValue>.*?)\n"
-      ]
+        "# renovate: datasource=(?<datasource>\\S+)\n\\s+(?<depName>.*?)(\\[[\\w]*\\])*[=><]=?(?<currentValue>.*?)\n",
+      ],
     },
     {
       // .pre-commit-config.yaml version updates
@@ -163,9 +163,9 @@
       datasourceTemplate: "pypi",
       depTypeTemplate: "lint",
       matchStrings: [
-        "- repo: .*/<(?<depName>\\S+)\\s*\\n\\s*rev:\s+\"?v?(?<currentValue>\\S*)\"?",
-      ]
-    }
+        '- repo: .*/<(?<depName>\\S+)\\s*\\n\\s*rev:\s+"?v?(?<currentValue>\\S*)"?',
+      ],
+    },
   ],
   timezone: "Etc/UTC",
   schedule: ["every weekend"],
@@ -176,5 +176,5 @@
   prHourlyLimit: 1, // No more than 1 PR per hour.
   minimumReleaseAge: "2 days",
   automergeStrategy: "squash", // Squash & rebase when auto-merging.
-  semanticCommitType: "build"  // use `build` as commit header type (i.e. `build(deps): <description>`)
+  semanticCommitType: "build", // use `build` as commit header type (i.e. `build(deps): <description>`)
 }

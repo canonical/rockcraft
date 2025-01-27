@@ -1,5 +1,4 @@
 name: bare-build-2204
 base: bare
 build-base: ubuntu@22.04
-
 # Remaining contents will come from "parts.yaml"

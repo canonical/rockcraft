@@ -4,7 +4,7 @@ execute: |
   run_rockcraft pack
 
   test -f ./*.rock
-  
+
   # Unpack the rock and verify that the lifecycle-based layer has no files in
   # common with the base Ubuntu layer.
   tar -xf ./*.rock

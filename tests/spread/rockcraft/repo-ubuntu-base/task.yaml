@@ -12,9 +12,9 @@ execute: |
   sudo rockcraft.skopeo --insecure-policy copy oci-archive:apt-repo-test_latest_amd64.rock docker-daemon:apt-repo-test:latest
   # Ensure container exists
   docker images apt-repo-test | MATCH "apt-repo-test"
-  
+
   docker run --rm apt-repo-test exec /usr/bin/python3.12 -c "import sys;print(sys.version)" | MATCH "3.12"
-  
+
 restore: |
   rm -f apt-repo-test_latest_amd64.rock
   docker rmi -f apt-repo-test
