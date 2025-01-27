@@ -17,6 +17,8 @@ import pytest
 from rockcraft import extensions
 from rockcraft.errors import ExtensionError
 
+_expressjs_project_name = "test-expressjs-project"
+
 
 @pytest.fixture(name="expressjs_input_yaml")
 def expressjs_input_yaml_fixture():
@@ -36,11 +38,6 @@ def expressjs_extension(mock_extensions, monkeypatch):
 
 
 @pytest.fixture
-def expressjs_project_name():
-    return "test-expressjs-project"
-
-
-@pytest.fixture
 def app_path(tmp_path):
     app_path = tmp_path / "app"
     app_path.mkdir(parents=True, exist_ok=True)
@@ -48,10 +45,10 @@ def app_path(tmp_path):
 
 
 @pytest.fixture
-def package_json_file(app_path, expressjs_project_name):
+def package_json_file(app_path):
     (app_path / "package.json").write_text(
         f"""{{
-    "name": "{expressjs_project_name}",
+    "name": "{_expressjs_project_name}",
     "scripts": {{
         "start": "node ./bin/www"
     }}
@@ -59,48 +56,225 @@ def package_json_file(app_path, expressjs_project_name):
     )
 
 
+@pytest.mark.parametrize(
+    "base, npm_include_node, node_version, expected_yaml_dict",
+    [
+        pytest.param(
+            "ubuntu@24.04",
+            False,
+            None,
+            {
+                "base": "ubuntu@24.04",
+                "build-base": "ubuntu@24.04",
+                "name": "foo-bar",
+                "platforms": {
+                    "amd64": {},
+                },
+                "run-user": "_daemon_",
+                "parts": {
+                    "expressjs-framework/install-app": {
+                        "plugin": "npm",
+                        "source": "app/",
+                        "npm-include-node": False,
+                        "npm-node-version": None,
+                        "override-build": (
+                            "craftctl default\n"
+                            "npm config set script-shell=bash --location project\n"
+                            "cp ${CRAFT_PART_BUILD}/.npmrc ${CRAFT_PART_INSTALL}/lib/node_modules/"
+                            f"{_expressjs_project_name}/.npmrc\n"
+                            f"ln -s /lib/node_modules/{_expressjs_project_name} "
+                            "${CRAFT_PART_INSTALL}/app\n"
+                        ),
+                        "build-packages": ["nodejs", "npm"],
+                        "stage-packages": ["ca-certificates_data", "nodejs_bins"],
+                    },
+                    "expressjs-framework/runtime": {
+                        "plugin": "nil",
+                        "stage-packages": ["npm"],
+                    },
+                },
+                "services": {
+                    "expressjs": {
+                        "override": "replace",
+                        "startup": "enabled",
+                        "user": "_daemon_",
+                        "working-dir": "/app",
+                        "command": "npm start",
+                        "environment": {"NODE_ENV": "production"},
+                    },
+                },
+            },
+            id="ubuntu@24.04",
+        ),
+        pytest.param(
+            "ubuntu@24.04",
+            True,
+            "1.0.0",
+            {
+                "base": "ubuntu@24.04",
+                "build-base": "ubuntu@24.04",
+                "name": "foo-bar",
+                "parts": {
+                    "expressjs-framework/install-app": {
+                        "npm-include-node": True,
+                        "npm-node-version": "1.0.0",
+                        "override-build": "craftctl default\n"
+                        "npm config set script-shell=bash --location project\n"
+                        "cp ${CRAFT_PART_BUILD}/.npmrc "
+                        "${CRAFT_PART_INSTALL}/lib/node_modules/test-expressjs-project/.npmrc\n"
+                        "ln -s /lib/node_modules/test-expressjs-project "
+                        "${CRAFT_PART_INSTALL}/app\n",
+                        "plugin": "npm",
+                        "source": "app/",
+                        "stage-packages": [
+                            "ca-certificates_data",
+                        ],
+                    },
+                },
+                "platforms": {
+                    "amd64": {},
+                },
+                "run-user": "_daemon_",
+                "services": {
+                    "expressjs": {
+                        "command": "npm start",
+                        "environment": {
+                            "NODE_ENV": "production",
+                        },
+                        "override": "replace",
+                        "startup": "enabled",
+                        "user": "_daemon_",
+                        "working-dir": "/app",
+                    },
+                },
+            },
+            id="ubuntu@24.04",
+        ),
+        pytest.param(
+            "bare",
+            False,
+            None,
+            {
+                "base": "bare",
+                "build-base": "ubuntu@24.04",
+                "name": "foo-bar",
+                "parts": {
+                    "expressjs-framework/install-app": {
+                        "build-packages": [
+                            "nodejs",
+                            "npm",
+                        ],
+                        "npm-include-node": False,
+                        "npm-node-version": None,
+                        "override-build": "craftctl default\n"
+                        "npm config set script-shell=bash --location project\n"
+                        "cp ${CRAFT_PART_BUILD}/.npmrc "
+                        "${CRAFT_PART_INSTALL}/lib/node_modules/test-expressjs-project/.npmrc\n"
+                        "ln -s /lib/node_modules/test-expressjs-project "
+                        "${CRAFT_PART_INSTALL}/app\n",
+                        "plugin": "npm",
+                        "source": "app/",
+                        "stage-packages": [
+                            "bash_bins",
+                            "ca-certificates_data",
+                            "nodejs_bins",
+                            "coreutils_bins",
+                        ],
+                    },
+                    "expressjs-framework/runtime": {
+                        "plugin": "nil",
+                        "stage-packages": [
+                            "npm",
+                        ],
+                    },
+                },
+                "platforms": {
+                    "amd64": {},
+                },
+                "run-user": "_daemon_",
+                "services": {
+                    "expressjs": {
+                        "command": "npm start",
+                        "environment": {
+                            "NODE_ENV": "production",
+                        },
+                        "override": "replace",
+                        "startup": "enabled",
+                        "user": "_daemon_",
+                        "working-dir": "/app",
+                    },
+                },
+            },
+            id="ubuntu@24.04",
+        ),
+        pytest.param(
+            "bare",
+            True,
+            "1.0.0",
+            {
+                "base": "bare",
+                "build-base": "ubuntu@24.04",
+                "name": "foo-bar",
+                "parts": {
+                    "expressjs-framework/install-app": {
+                        "npm-include-node": True,
+                        "npm-node-version": "1.0.0",
+                        "override-build": "craftctl default\n"
+                        "npm config set script-shell=bash --location project\n"
+                        "cp ${CRAFT_PART_BUILD}/.npmrc "
+                        "${CRAFT_PART_INSTALL}/lib/node_modules/test-expressjs-project/.npmrc\n"
+                        "ln -s /lib/node_modules/test-expressjs-project "
+                        "${CRAFT_PART_INSTALL}/app\n",
+                        "plugin": "npm",
+                        "source": "app/",
+                        "stage-packages": [
+                            "bash_bins",
+                            "ca-certificates_data",
+                            "nodejs_bins",
+                            "coreutils_bins",
+                        ],
+                    },
+                },
+                "platforms": {
+                    "amd64": {},
+                },
+                "run-user": "_daemon_",
+                "services": {
+                    "expressjs": {
+                        "command": "npm start",
+                        "environment": {
+                            "NODE_ENV": "production",
+                        },
+                        "override": "replace",
+                        "startup": "enabled",
+                        "user": "_daemon_",
+                        "working-dir": "/app",
+                    },
+                },
+            },
+            id="ubuntu@24.04",
+        ),
+    ],
+)
 @pytest.mark.usefixtures("expressjs_extension", "package_json_file")
 def test_expressjs_extension_default(
-    tmp_path, expressjs_project_name, expressjs_input_yaml
+    tmp_path,
+    expressjs_input_yaml,
+    base,
+    npm_include_node,
+    node_version,
+    expected_yaml_dict,
 ):
+    expressjs_input_yaml["base"] = base
+    expressjs_input_yaml["parts"] = {
+        "expressjs-framework/install-app": {
+            "npm-include-node": npm_include_node,
+            "npm-node-version": node_version,
+        }
+    }
     applied = extensions.apply_extensions(tmp_path, expressjs_input_yaml)
 
-    assert applied == {
-        "base": "ubuntu@24.04",
-        "build-base": "ubuntu@24.04",
-        "name": "foo-bar",
-        "platforms": {
-            "amd64": {},
-        },
-        "run-user": "_daemon_",
-        "parts": {
-            "expressjs-framework/install-app": {
-                "plugin": "npm",
-                "source": "app/",
-                "override-build": (
-                    "craftctl default\n"
-                    "npm config set script-shell=bash --location project\n"
-                    "cp ${CRAFT_PART_BUILD}/.npmrc ${CRAFT_PART_INSTALL}/lib/node_modules/"
-                    f"{expressjs_project_name}/.npmrc\n"
-                    f"ln -s /lib/node_modules/{expressjs_project_name} "
-                    "${CRAFT_PART_INSTALL}/app\n"
-                ),
-                "build-packages": ["nodejs", "npm"],
-                "stage-packages": ["ca-certificates_data", "nodejs_bins"],
-            },
-            "expressjs-framework/runtime": {"plugin": "nil", "stage-packages": ["npm"]},
-        },
-        "services": {
-            "expressjs": {
-                "override": "replace",
-                "startup": "enabled",
-                "user": "_daemon_",
-                "working-dir": "/app",
-                "command": "npm start",
-                "environment": {"NODE_ENV": "production"},
-            },
-        },
-    }
+    assert applied == expected_yaml_dict
 
 
 @pytest.mark.usefixtures("expressjs_extension")
@@ -112,106 +286,31 @@ def test_expressjs_no_package_json_error(tmp_path, expressjs_input_yaml):
 
 
 @pytest.mark.parametrize(
-    "package_json_contents, error_message",
+    "package_json_path, package_json_contents, error_message",
     [
-        ("{}", "missing start script"),
-        ('{"scripts":{}}', "missing start script"),
-        ('{"scripts":{"start":"node ./bin/www"}}', "missing application name"),
+        ("invalid-path", "", "missing package.json file"),
+        ("package.json", "[]", "invalid package.json file"),
+        ("package.json", "{", "failed to parse package.json file"),
+        ("package.json", "{}", "missing start script"),
+        ("package.json", '{"scripts":{}}', "missing start script"),
+        (
+            "package.json",
+            '{"scripts":{"start":"node ./bin/www"}}',
+            "missing application name",
+        ),
     ],
 )
 @pytest.mark.usefixtures("expressjs_extension")
 def test_expressjs_invalid_package_json_scripts_error(
-    tmp_path, app_path, expressjs_input_yaml, package_json_contents, error_message
+    tmp_path,
+    app_path,
+    expressjs_input_yaml,
+    package_json_path,
+    package_json_contents,
+    error_message,
 ):
-    (app_path / "package.json").write_text(package_json_contents)
+    (app_path / package_json_path).write_text(package_json_contents)
     with pytest.raises(ExtensionError) as exc:
         extensions.apply_extensions(tmp_path, expressjs_input_yaml)
     assert str(exc.value) == error_message
     assert str(exc.value.doc_slug) == "/reference/extensions/expressjs-framework"
-
-
-@pytest.mark.parametrize(
-    "base, expected_build_packages, expected_stage_packages",
-    [
-        pytest.param(
-            "ubuntu@24.04",
-            ["nodejs", "npm"],
-            ["ca-certificates_data", "nodejs_bins"],
-            id="ubuntu@24.04",
-        ),
-        pytest.param(
-            "bare",
-            ["nodejs", "npm"],
-            ["bash_bins", "ca-certificates_data", "nodejs_bins", "coreutils_bins"],
-            id="bare",
-        ),
-    ],
-)
-@pytest.mark.usefixtures("expressjs_extension", "package_json_file")
-def test_expressjs_install_app_default_node_install(
-    tmp_path,
-    expressjs_input_yaml,
-    base,
-    expected_build_packages,
-    expected_stage_packages,
-):
-    expressjs_input_yaml["base"] = base
-    applied = extensions.apply_extensions(tmp_path, expressjs_input_yaml)
-
-    assert applied["parts"]["expressjs-framework/install-app"]["build-packages"] == (
-        expected_build_packages
-    )
-    assert applied["parts"]["expressjs-framework/install-app"]["stage-packages"] == (
-        expected_stage_packages
-    )
-
-
-@pytest.mark.parametrize(
-    "base, expected_stage_packages",
-    [
-        pytest.param(
-            "ubuntu@24.04",
-            ["ca-certificates_data"],
-            id="24.04 base",
-        ),
-        pytest.param(
-            "bare",
-            ["bash_bins", "ca-certificates_data", "nodejs_bins", "coreutils_bins"],
-            id="bare base",
-        ),
-    ],
-)
-@pytest.mark.usefixtures("expressjs_extension", "package_json_file")
-def test_expressjs_install_app_user_defined_node_install(
-    tmp_path,
-    expressjs_input_yaml,
-    base,
-    expected_stage_packages,
-):
-    expressjs_input_yaml["base"] = base
-    expressjs_input_yaml["parts"] = {
-        "expressjs-framework/install-app": {
-            "npm-include-node": True,
-            "npm-node-version": "node",
-        }
-    }
-    applied = extensions.apply_extensions(tmp_path, expressjs_input_yaml)
-
-    assert "build-packages" not in applied["parts"]["expressjs-framework/install-app"]
-    assert (
-        applied["parts"]["expressjs-framework/install-app"]["stage-packages"]
-        == expected_stage_packages
-    )
-
-
-@pytest.mark.usefixtures("expressjs_extension", "package_json_file")
-def test_expressjs_runtime_user_defined_node_install(tmp_path, expressjs_input_yaml):
-    expressjs_input_yaml["parts"] = {
-        "expressjs-framework/install-app": {
-            "npm-include-node": True,
-            "npm-node-version": "node",
-        }
-    }
-    applied = extensions.apply_extensions(tmp_path, expressjs_input_yaml)
-
-    assert "expressjs-framework/runtime" not in applied["parts"]

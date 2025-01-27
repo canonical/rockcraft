@@ -43,22 +43,6 @@ class ExpressJSFramework(Extension):
         return True
 
     @override
-    def get_part_snippet(self) -> dict[str, Any]:
-        """Return the part snippet to apply to existing parts.
-
-        This is unused but is required by the ABC.
-        """
-        return {}
-
-    @override
-    def get_parts_snippet(self) -> dict[str, Any]:
-        """Return the parts to add to parts.
-
-        This is unused but is required by the ABC.
-        """
-        return {}
-
-    @override
     def get_root_snippet(self) -> dict[str, Any]:
         """Fill in some default root components.
 
@@ -96,6 +80,22 @@ class ExpressJSFramework(Extension):
             snippet["parts"]["expressjs-framework/runtime"] = runtime_part
         return snippet
 
+    @override
+    def get_part_snippet(self) -> dict[str, Any]:
+        """Return the part snippet to apply to existing parts.
+
+        This is unused but is required by the ABC.
+        """
+        return {}
+
+    @override
+    def get_parts_snippet(self) -> dict[str, Any]:
+        """Return the parts to add to parts.
+
+        This is unused but is required by the ABC.
+        """
+        return {}
+
     def _check_project(self) -> None:
         """Ensure this extension can apply to the current rockcraft project.
 
@@ -112,7 +112,9 @@ class ExpressJSFramework(Extension):
                 doc_slug="/reference/extensions/expressjs-framework",
                 logpath_report=False,
             )
-        if "name" not in self._app_package_json:
+        if "name" not in self._app_package_json or not isinstance(
+            self._app_package_json["name"], str
+        ):
             raise ExtensionError(
                 "missing application name",
                 doc_slug="/reference/extensions/expressjs-framework",
@@ -120,7 +122,12 @@ class ExpressJSFramework(Extension):
             )
 
     def _gen_install_app_part(self) -> dict:
-        """Generate the install app part using NPM plugin."""
+        """Generate the install app part using NPM plugin.
+
+        Set the script shell to bash and copy the .npmrc file to the app
+        directory. This is to ensure that the ExpressJS run in bare container
+        can use the shell to launch itself.
+        """
         install_app_part: dict[str, Any] = {
             "plugin": "npm",
             "source": f"{self.IMAGE_BASE_DIR}/",
@@ -132,10 +139,10 @@ class ExpressJSFramework(Extension):
                 f"ln -s /lib/node_modules/{self._app_name} ${{CRAFT_PART_INSTALL}}/app\n"
             ),
         }
-        build_packages = self._install_app_build_packages
+        build_packages = self._gen_app_build_packages()
         if build_packages:
             install_app_part["build-packages"] = build_packages
-        stage_packages = self._install_app_stage_packages
+        stage_packages = self._gen_app_stage_packages()
         if stage_packages:
             install_app_part["stage-packages"] = stage_packages
         if self._user_npm_include_node:
@@ -145,15 +152,13 @@ class ExpressJSFramework(Extension):
             )
         return install_app_part
 
-    @property
-    def _install_app_build_packages(self) -> list[str]:
+    def _gen_app_build_packages(self) -> list[str]:
         """Return the build packages for the install app part."""
         if self._user_npm_include_node:
             return []
         return ["nodejs", "npm"]
 
-    @property
-    def _install_app_stage_packages(self) -> list[str]:
+    def _gen_app_stage_packages(self) -> list[str]:
         """Return the stage packages for the install app part."""
         if self._rock_base == "bare":
             return [
@@ -203,7 +208,21 @@ class ExpressJSFramework(Extension):
                 logpath_report=False,
             )
         package_json_contents = package_json_file.read_text(encoding="utf-8")
-        return json.loads(package_json_contents)
+        try:
+            app_package_json = json.loads(package_json_contents)
+            if not isinstance(app_package_json, dict):
+                raise ExtensionError(
+                    "invalid package.json file",
+                    doc_slug="/reference/extensions/expressjs-framework",
+                    logpath_report=False,
+                )
+            return app_package_json
+        except json.JSONDecodeError as exc:
+            raise ExtensionError(
+                "failed to parse package.json file",
+                doc_slug="/reference/extensions/expressjs-framework",
+                logpath_report=False,
+            ) from exc
 
     @property
     def _app_name(self) -> str:
