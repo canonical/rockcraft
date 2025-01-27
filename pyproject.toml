@@ -21,7 +21,7 @@ classifiers = [
 dependencies = [
     "craft-application~=4.6.0",
     "craft-archives>=2.0.0",
-    "craft-cli",
+    "craft-cli>=2.15.0",
     "craft-parts~=2.1.4",
     "craft-platforms~=0.3",
     "craft-providers>=2.0.4",
