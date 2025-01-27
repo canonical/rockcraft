@@ -15,6 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 """Project definition and helpers."""
+
 import copy
 import re
 import shlex
@@ -309,7 +310,8 @@ class Project(BuildPlanner, BaseProject):  # type: ignore[misc]
     @pydantic.field_validator("license")
     @classmethod
     def _validate_license(
-        cls, license: str | None  # pylint: disable=redefined-builtin  # noqa: A002
+        cls,
+        license: str | None,  # pylint: disable=redefined-builtin  # noqa: A002
     ) -> str | None:
         """Make sure the provided license is valid and in SPDX format."""
         if not license:
@@ -496,6 +498,7 @@ def transform_yaml(project_root: Path, yaml_data: dict[str, Any]) -> dict[str, A
     """
     yaml_data = apply_extensions(project_root, yaml_data)
 
+    _add_apt_upgrade_data(yaml_data)
     _add_pebble_data(yaml_data)
 
     return yaml_data
@@ -524,3 +527,22 @@ def _add_pebble_data(yaml_data: dict[str, Any]) -> None:
     build_base = model.build_base if model.build_base else model.base
 
     parts["pebble"] = Pebble.get_part_spec(build_base)
+
+
+def _add_apt_upgrade_data(yaml_data: dict[str, Any]) -> None:
+    part_name = "_apt-upgrade"
+    part_content = {
+        "plugin": "nil",
+        "overlay-script": "craftctl chroot apt-get -y upgrade ",
+    }
+
+    if "parts" not in yaml_data:
+        # Invalid project: let it return to fail in the regular validation flow.
+        return
+
+    parts = yaml_data["parts"]
+    if part_name in parts:
+        # Project already has a pebble part: this is not supported.
+        raise CraftValidationError(f'Cannot override the default "{part_name}" part')
+
+    parts[part_name] = part_content
