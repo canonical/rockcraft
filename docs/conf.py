@@ -88,6 +88,7 @@ exclude_patterns = [
     "common/craft-parts/reference/step_output_directories.rst",
     "common/craft-parts/reference/plugins/poetry_plugin.rst",
     "common/craft-parts/reference/plugins/python_plugin.rst",
+    "common/craft-parts/reference/plugins/uv_plugin.rst",
     # Extra non-craft-parts exclusions can be added after this comment
 ]
 
