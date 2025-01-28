@@ -649,6 +649,18 @@
           "title": "Source-Checksum",
           "type": "string"
         },
+        "source-channel": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source-Channel"
+        },
         "source-branch": {
           "default": "",
           "title": "Source-Branch",
@@ -958,6 +970,18 @@
                 "title": "Source-Checksum",
                 "type": "string"
               },
+              "source-channel": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source-Channel"
+              },
               "source-branch": {
                 "default": "",
                 "title": "Source-Branch",
@@ -1255,6 +1279,18 @@
                 "title": "Source-Checksum",
                 "type": "string"
               },
+              "source-channel": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source-Channel"
+              },
               "source-branch": {
                 "default": "",
                 "title": "Source-Branch",
@@ -1548,6 +1584,18 @@
                 "default": "",
                 "title": "Source-Checksum",
                 "type": "string"
+              },
+              "source-channel": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source-Channel"
               },
               "source-branch": {
                 "default": "",
@@ -1847,6 +1895,18 @@
                 "title": "Source-Checksum",
                 "type": "string"
               },
+              "source-channel": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source-Channel"
+              },
               "source-branch": {
                 "default": "",
                 "title": "Source-Branch",
@@ -2127,6 +2187,18 @@
                 "default": "",
                 "title": "Source-Checksum",
                 "type": "string"
+              },
+              "source-channel": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source-Channel"
               },
               "source-branch": {
                 "default": "",
@@ -2425,6 +2497,18 @@
                 "title": "Source-Checksum",
                 "type": "string"
               },
+              "source-channel": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source-Channel"
+              },
               "source-branch": {
                 "default": "",
                 "title": "Source-Branch",
@@ -2705,6 +2789,18 @@
                 "default": "",
                 "title": "Source-Checksum",
                 "type": "string"
+              },
+              "source-channel": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source-Channel"
               },
               "source-branch": {
                 "default": "",
@@ -2995,6 +3091,18 @@
                 "title": "Source-Checksum",
                 "type": "string"
               },
+              "source-channel": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source-Channel"
+              },
               "source-branch": {
                 "default": "",
                 "title": "Source-Branch",
@@ -3283,6 +3391,18 @@
                 "default": "",
                 "title": "Source-Checksum",
                 "type": "string"
+              },
+              "source-channel": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source-Channel"
               },
               "source-branch": {
                 "default": "",
@@ -3573,6 +3693,18 @@
                 "title": "Source-Checksum",
                 "type": "string"
               },
+              "source-channel": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source-Channel"
+              },
               "source-branch": {
                 "default": "",
                 "title": "Source-Branch",
@@ -3853,6 +3985,18 @@
                 "default": "",
                 "title": "Source-Checksum",
                 "type": "string"
+              },
+              "source-channel": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source-Channel"
               },
               "source-branch": {
                 "default": "",
@@ -4151,6 +4295,18 @@
                 "default": "",
                 "title": "Source-Checksum",
                 "type": "string"
+              },
+              "source-channel": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source-Channel"
               },
               "source-branch": {
                 "default": "",
@@ -4457,6 +4613,18 @@
                 "default": "",
                 "title": "Source-Checksum",
                 "type": "string"
+              },
+              "source-channel": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source-Channel"
               },
               "source-branch": {
                 "default": "",
@@ -4767,6 +4935,18 @@
                 "title": "Source-Checksum",
                 "type": "string"
               },
+              "source-channel": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source-Channel"
+              },
               "source-branch": {
                 "default": "",
                 "title": "Source-Branch",
@@ -5065,6 +5245,18 @@
                 "default": "",
                 "title": "Source-Checksum",
                 "type": "string"
+              },
+              "source-channel": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source-Channel"
               },
               "source-branch": {
                 "default": "",
@@ -5413,6 +5605,18 @@
                 "title": "Source-Checksum",
                 "type": "string"
               },
+              "source-channel": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source-Channel"
+              },
               "source-branch": {
                 "default": "",
                 "title": "Source-Branch",
@@ -5693,6 +5897,18 @@
                 "default": "",
                 "title": "Source-Checksum",
                 "type": "string"
+              },
+              "source-channel": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source-Channel"
               },
               "source-branch": {
                 "default": "",
@@ -5992,6 +6208,18 @@
                 "default": "",
                 "title": "Source-Checksum",
                 "type": "string"
+              },
+              "source-channel": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source-Channel"
               },
               "source-branch": {
                 "default": "",
