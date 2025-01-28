@@ -333,7 +333,8 @@ dev = [
     "coverage>=7.6.8",
     "freezegun>=1.5.1",
     "hypothesis>=6.122.1",
-    "poetry>=1.8.5",  # Needed for testing the poetry plugin.
+    "poetry>=2.0.0",  # Needed for testing the poetry plugin.
+    "poetry-plugin-export",
     "pyfakefs>=5.7.2",
     "pylint>=3.3.2",
     "pytest>=8.3.4",
