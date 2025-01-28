@@ -1590,6 +1590,19 @@ wheels = [
 ]
 
 [[package]]
+name = "poetry-plugin-export"
+version = "1.9.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "poetry" },
+    { name = "poetry-core" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/2e/25/c6516829d49afce7f3852ef7dd708b3d19cf647a6b5b834c369a59af52fe/poetry_plugin_export-1.9.0.tar.gz", hash = "sha256:6fc8755cfac93c74752f85510b171983e2e47d782d4ab5be4ffc4f6945be7967", size = 30835 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/bf/41/05f9494adb6ad0640be758de67db255a91a46362996020dd8cd21d0fcf60/poetry_plugin_export-1.9.0-py3-none-any.whl", hash = "sha256:e2621dd8c260dd705a8227f076075246a7ff5c697e18ddb90ff68081f47ee642", size = 11309 },
+]
+
+[[package]]
 name = "polib"
 version = "1.2.0"
 source = { registry = "https://pypi.org/simple" }
@@ -2358,6 +2371,7 @@ dev = [
     { name = "freezegun" },
     { name = "hypothesis" },
     { name = "poetry" },
+    { name = "poetry-plugin-export" },
     { name = "pyfakefs" },
     { name = "pylint" },
     { name = "pytest" },
@@ -2412,7 +2426,8 @@ dev = [
     { name = "coverage", specifier = ">=7.6.8" },
     { name = "freezegun", specifier = ">=1.5.1" },
     { name = "hypothesis", specifier = ">=6.122.1" },
-    { name = "poetry", specifier = ">=1.8.5" },
+    { name = "poetry", specifier = ">=2.0.0" },
+    { name = "poetry-plugin-export" },
     { name = "pyfakefs", specifier = ">=5.7.2" },
     { name = "pylint", specifier = ">=3.3.2" },
     { name = "pytest", specifier = ">=8.3.4" },
