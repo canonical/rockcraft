@@ -37,7 +37,8 @@ class UvPlugin(uv_plugin.UvPlugin):
         """Overridden because Python must always be provided by the parts.
 
         The uv plugin requires a name to reference Python, so we must depend
-        on a relative python3 being installed."""
+        on a relative python3 being installed. Should return None once
+        https://github.com/canonical/craft-parts/issues/991 is closed."""
         return "python3"
 
     @override
