@@ -7,11 +7,16 @@
 ###########################################
 summary: test the "Build the docs" guide
 
+# Run this test first, as it needs a clean project tree
+priority: 100
+
 prepare: |
   tests.pkgs install python3-venv python3-dev libapt-pkg-dev
 
 execute: |
-  pushd $PROJECT_PATH/
+  mkdir $HOME/clean-rockcraft
+  cp -r $PROJECT_PATH/* $HOME/clean-rockcraft
+  pushd $HOME/clean-rockcraft
 
   git init .
 
@@ -34,3 +39,6 @@ execute: |
   then
     exit $ret
   fi
+
+restore: |
+  rm -rf $HOME/clean-rockcraft
