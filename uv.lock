@@ -429,11 +429,11 @@ wheels = [
 
 [[package]]
 name = "codespell"
-version = "2.4.0"
+version = "2.4.1"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/b0/2f/706691245790ae6c63252d48b7ff5e3635951d55b3ce3c0ac13d898bf70b/codespell-2.4.0.tar.gz", hash = "sha256:587d45b14707fb8ce51339ba4cce50ae0e98ce228ef61f3c5e160e34f681be58", size = 344743 }
+sdist = { url = "https://files.pythonhosted.org/packages/15/e0/709453393c0ea77d007d907dd436b3ee262e28b30995ea1aa36c6ffbccaf/codespell-2.4.1.tar.gz", hash = "sha256:299fcdcb09d23e81e35a671bbe746d5ad7e8385972e65dbb833a2eaac33c01e5", size = 344740 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/19/ce/39bfb82aa428a3ac4d94cc8c9faa3eadeadb2606eee3b584f68d9b575b43/codespell-2.4.0-py3-none-any.whl", hash = "sha256:b4c5b779f747dd481587aeecb5773301183f52b94b96ed51a28126d0482eec1d", size = 344508 },
+    { url = "https://files.pythonhosted.org/packages/20/01/b394922252051e97aab231d416c86da3d8a6d781eeadcdca1082867de64e/codespell-2.4.1-py3-none-any.whl", hash = "sha256:3dadafa67df7e4a3dbf51e0d7315061b80d265f9552ebd699b3dd6834b47e425", size = 344501 },
 ]
 
 [package.optional-dependencies]
@@ -516,7 +516,7 @@ toml = [
 
 [[package]]
 name = "craft-application"
-version = "4.6.0"
+version = "4.8.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "annotated-types" },
@@ -536,9 +536,9 @@ dependencies = [
     { name = "snap-helpers" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/eb/e0/9d475fae0b4df40d3ca6caf4d0b3fe05a937a74aabb4aa5db3237c736dce/craft_application-4.6.0.tar.gz", hash = "sha256:b1bac30a394267731ef320b526afa6a456620d7769582ef777fecaca92806508", size = 225488 }
+sdist = { url = "https://files.pythonhosted.org/packages/09/a4/03f588d549e60067f3093cd3541b283400a61e5893f0d740d47b9fdedb6e/craft_application-4.8.2.tar.gz", hash = "sha256:4070a035952bc3fa8aa16cc1b488814e92375dc6d27905c250e23cf42849bae7", size = 228126 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/45/01/a07221e9f8efe4110184640b294d4f212d52471b72df5a209b327ace7076/craft_application-4.6.0-py3-none-any.whl", hash = "sha256:d90dc1ee50926103566f0ae6a2505ee99632cd53db084d2e3f4ec498d735e6cf", size = 144531 },
+    { url = "https://files.pythonhosted.org/packages/5d/5a/385cdacac2ad5b41e5b481d9c25b71dc1c34188d183a376ba3e331653c88/craft_application-4.8.2-py3-none-any.whl", hash = "sha256:77ef9217211cf6d6d164288f65879f94f15c282ddf8f1ab58a324b645a7e88bf", size = 146039 },
 ]
 
 [[package]]
@@ -591,7 +591,7 @@ wheels = [
 
 [[package]]
 name = "craft-parts"
-version = "2.3.0"
+version = "2.4.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "overrides" },
@@ -601,7 +601,10 @@ dependencies = [
     { name = "requests" },
     { name = "requests-unixsocket2" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/a7/2f/299694e04ea30f21ab1638ab54342f38a711b198f5fbf0bb9f5a085053d0/craft_parts-2.3.0.tar.gz", hash = "sha256:96516a8a4314659f53f6f2999a38250f8bc5308bb41ac74df9b23e330aaa34ae", size = 639970 }
+sdist = { url = "https://files.pythonhosted.org/packages/b1/6c/ff0f9aa805da1670e408c644fbe5740d69056691de4953dbaa7546d80ce6/craft_parts-2.4.1.tar.gz", hash = "sha256:18f6c9a45fb99e5a366fcd9b827df8886d955dace9ded9f08759206f5e5ef729", size = 640144 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/5b/13/0dbcca9f1fb0b2b61809cb65fcba88d6b676f015f87628ca603161be47ed/craft_parts-2.4.1-py3-none-any.whl", hash = "sha256:22adf92b77c25868518fa426ad789aee794b17c0e8c0408d22e902c846d3d325", size = 449809 },
+]
 
 [[package]]
 name = "craft-platforms"
@@ -982,11 +985,11 @@ wheels = [
 
 [[package]]
 name = "isort"
-version = "5.13.2"
+version = "6.0.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/87/f9/c1eb8635a24e87ade2efce21e3ce8cd6b8630bb685ddc9cdaca1349b2eb5/isort-5.13.2.tar.gz", hash = "sha256:48fdfcb9face5d58a4f6dde2e72a1fb8dcaf8ab26f95ab49fab84c2ddefb0109", size = 175303 }
+sdist = { url = "https://files.pythonhosted.org/packages/1c/28/b382d1656ac0ee4cef4bf579b13f9c6c813bff8a5cb5996669592c8c75fa/isort-6.0.0.tar.gz", hash = "sha256:75d9d8a1438a9432a7d7b54f2d3b45cad9a4a0fdba43617d9873379704a8bdf1", size = 828356 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/d1/b3/8def84f539e7d2289a02f0524b944b15d7c75dab7628bedf1c4f0992029c/isort-5.13.2-py3-none-any.whl", hash = "sha256:8ca5e72a8d85860d5a3fa69b8745237f2939afe12dbf656afbcb47fe72d947a6", size = 92310 },
+    { url = "https://files.pythonhosted.org/packages/76/c7/d6017f09ae5b1206fbe531f7af3b6dac1f67aedcbd2e79f3b386c27955d6/isort-6.0.0-py3-none-any.whl", hash = "sha256:567954102bb47bb12e0fae62606570faacddd441e45683968c8d1734fb1af892", size = 94053 },
 ]
 
 [[package]]
@@ -1743,7 +1746,7 @@ wheels = [
 
 [[package]]
 name = "pylint"
-version = "3.3.3"
+version = "3.3.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "astroid" },
@@ -1755,9 +1758,9 @@ dependencies = [
     { name = "tomli", marker = "python_full_version < '3.11' or (extra == 'extra-9-rockcraft-apt-jammy' and extra == 'extra-9-rockcraft-apt-noble') or (extra == 'extra-9-rockcraft-apt-jammy' and extra == 'extra-9-rockcraft-apt-oracular') or (extra == 'extra-9-rockcraft-apt-jammy' and extra == 'extra-9-rockcraft-apt-plucky') or (extra == 'extra-9-rockcraft-apt-noble' and extra == 'extra-9-rockcraft-apt-oracular') or (extra == 'extra-9-rockcraft-apt-noble' and extra == 'extra-9-rockcraft-apt-plucky') or (extra == 'extra-9-rockcraft-apt-oracular' and extra == 'extra-9-rockcraft-apt-plucky')" },
     { name = "tomlkit" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/17/fd/e9a739afac274a39596bbe562e9d966db6f3917fdb2bd7322ffc56da0ba2/pylint-3.3.3.tar.gz", hash = "sha256:07c607523b17e6d16e2ae0d7ef59602e332caa762af64203c24b41c27139f36a", size = 1516550 }
+sdist = { url = "https://files.pythonhosted.org/packages/ab/b9/50be49afc91469f832c4bf12318ab4abe56ee9aa3700a89aad5359ad195f/pylint-3.3.4.tar.gz", hash = "sha256:74ae7a38b177e69a9b525d0794bd8183820bfa7eb68cc1bee6e8ed22a42be4ce", size = 1518905 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/91/e1/26d55acea92b1ea4d33672e48f09ceeb274e84d7d542a4fb9a32a556db46/pylint-3.3.3-py3-none-any.whl", hash = "sha256:26e271a2bc8bce0fc23833805a9076dd9b4d5194e2a02164942cb3cdc37b4183", size = 521918 },
+    { url = "https://files.pythonhosted.org/packages/0d/8b/eef15df5f4e7aa393de31feb96ca9a3d6639669bd59d589d0685d5ef4e62/pylint-3.3.4-py3-none-any.whl", hash = "sha256:289e6a1eb27b453b08436478391a48cd53bb0efb824873f949e709350f3de018", size = 522280 },
 ]
 
 [[package]]
@@ -2370,12 +2373,12 @@ requires-dist = [
     { name = "canonical-sphinx", extras = ["full"], marker = "extra == 'docs'" },
     { name = "codespell", extras = ["toml"], marker = "extra == 'lint'" },
     { name = "coverage", marker = "extra == 'dev'" },
-    { name = "craft-application", specifier = "~=4.6.0" },
-    { name = "craft-archives", specifier = ">=2.0.0" },
-    { name = "craft-cli", specifier = ">=2.15.0" },
-    { name = "craft-parts", specifier = "~=2.3.0" },
-    { name = "craft-platforms", specifier = "~=0.3" },
-    { name = "craft-providers", specifier = ">=2.0.4" },
+    { name = "craft-application" },
+    { name = "craft-archives" },
+    { name = "craft-cli" },
+    { name = "craft-parts" },
+    { name = "craft-platforms" },
+    { name = "craft-providers" },
     { name = "mypy", extras = ["reports"], marker = "extra == 'types'", specifier = "~=1.11" },
     { name = "overrides" },
     { name = "pyspelling", marker = "extra == 'docs'" },
@@ -2393,7 +2396,7 @@ requires-dist = [
     { name = "sphinx-lint", marker = "extra == 'docs'" },
     { name = "sphinx-toolbox", marker = "extra == 'docs'" },
     { name = "sphinxcontrib-details-directive", marker = "extra == 'docs'" },
-    { name = "tabulate", specifier = ">=0.8.10" },
+    { name = "tabulate" },
     { name = "twine", marker = "extra == 'release'" },
     { name = "types-python-dateutil", marker = "extra == 'types'" },
     { name = "types-pyyaml", marker = "extra == 'types'" },
@@ -2716,14 +2719,14 @@ wheels = [
 
 [[package]]
 name = "sphinx-notfound-page"
-version = "1.0.4"
+version = "1.1.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "sphinx" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/73/7d/c545883c714319380325a52c9f80d093c97e718d812fd8090e42b1a08508/sphinx_notfound_page-1.0.4.tar.gz", hash = "sha256:2a52f49cd367b5c4e64072de1591cc367714098500abf4ecb9a3ecb4fec25aae", size = 519228 }
+sdist = { url = "https://files.pythonhosted.org/packages/6a/b2/67603444a8ee97b4a8ea71b0a9d6bab1727ed65e362c87e02f818ee57b8a/sphinx_notfound_page-1.1.0.tar.gz", hash = "sha256:913e1754370bb3db201d9300d458a8b8b5fb22e9246a816643a819a9ea2b8067", size = 7392 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/87/c4/877a5beffb8dcaf35e919c4c3cad56732c76370d106126394f4ca211ad7f/sphinx_notfound_page-1.0.4-py3-none-any.whl", hash = "sha256:f7c26ae0df3cf3d6f38f56b068762e6203d0ebb7e1c804de1059598d7dd8b9d8", size = 8170 },
+    { url = "https://files.pythonhosted.org/packages/cd/d4/019fe439c840a7966012bbb95ccbdd81c5c10271749706793b43beb05145/sphinx_notfound_page-1.1.0-py3-none-any.whl", hash = "sha256:835dc76ff7914577a1f58d80a2c8418fb6138c0932c8da8adce4d9096fbcd389", size = 8167 },
 ]
 
 [[package]]
