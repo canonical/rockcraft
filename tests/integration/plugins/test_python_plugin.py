@@ -26,7 +26,7 @@ from craft_parts.errors import OsReleaseVersionIdError
 from craft_parts.utils.os_utils import OsRelease
 from rockcraft import plugins
 from rockcraft.models.project import Project
-from rockcraft.plugins.python_common import SITECUSTOMIZE_TEMPLATE
+from rockcraft.plugins.python_common import SITECUSTOMIZE_TEMPLATE, get_python_plugins
 
 from tests.testing.project import create_project
 from tests.util import ubuntu_only
@@ -49,10 +49,8 @@ def setup_python_test(monkeypatch):
     emit.set_mode(EmitterMode.VERBOSE)
 
 
-def create_python_project(
-    base, extra_part_props=None, *, plugin: str = "python"
-) -> Project:
-    source = Path(__file__).parent / "python_source"
+def create_python_project(base, extra_part_props=None, *, plugin: str) -> Project:
+    source = Path(__file__).parent / "python_source" / plugin
     extra = extra_part_props or {}
 
     parts = {
@@ -109,9 +107,9 @@ except OsReleaseVersionIdError:
     VALUES_FOR_HOST = RELEASE_TO_VALUES["22.04"]
 
 
-@pytest.mark.parametrize("plugin_name", ["python", "poetry"])
+@pytest.mark.parametrize("plugin_name", list(get_python_plugins().keys()))
 @pytest.mark.parametrize("base", tuple(UBUNTU_BASES))
-def test_python_plugin_ubuntu(base, tmp_path, run_lifecycle, plugin_name):
+def test_python_plugin_ubuntu(base, tmp_path, run_lifecycle, plugin_name: str):
     project = create_python_project(base=base, plugin=plugin_name)
     run_lifecycle(project=project, work_dir=tmp_path)
 
@@ -139,7 +137,7 @@ def test_python_plugin_ubuntu(base, tmp_path, run_lifecycle, plugin_name):
     assert not pyvenv_cfg.is_file()
 
 
-@pytest.mark.parametrize("plugin_name", ["python", "poetry"])
+@pytest.mark.parametrize("plugin_name", get_python_plugins().keys())
 def test_python_plugin_bare(tmp_path, run_lifecycle, plugin_name):
     project = create_python_project(base="bare", plugin=plugin_name)
     run_lifecycle(project=project, work_dir=tmp_path)
@@ -183,7 +181,9 @@ def test_python_plugin_invalid_interpreter(tmp_path, run_lifecycle):
         "build-environment": [{"PARTS_PYTHON_INTERPRETER": "/full/path/python3"}]
     }
 
-    project = create_python_project(base="bare", extra_part_props=extra_part)
+    project = create_python_project(
+        base="bare", plugin="python", extra_part_props=extra_part
+    )
 
     with pytest.raises(errors.PartsLifecycleError):
         run_lifecycle(project=project, work_dir=tmp_path)

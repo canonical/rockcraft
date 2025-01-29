@@ -618,6 +618,7 @@
             "dotnet",
             "dump",
             "go",
+            "go-use",
             "make",
             "maven",
             "meson",
@@ -627,7 +628,8 @@
             "python",
             "qmake",
             "rust",
-            "scons"
+            "scons",
+            "uv"
           ]
         },
         "source": {
@@ -897,6 +899,7 @@
                   "dotnet",
                   "dump",
                   "go",
+                  "go-use",
                   "make",
                   "maven",
                   "meson",
@@ -906,7 +909,8 @@
                   "python",
                   "qmake",
                   "rust",
-                  "scons"
+                  "scons",
+                  "uv"
                 ]
               },
               "source": {
@@ -1204,6 +1208,7 @@
                   "dotnet",
                   "dump",
                   "go",
+                  "go-use",
                   "make",
                   "maven",
                   "meson",
@@ -1213,7 +1218,8 @@
                   "python",
                   "qmake",
                   "rust",
-                  "scons"
+                  "scons",
+                  "uv"
                 ]
               },
               "source": {
@@ -1499,6 +1505,7 @@
                   "dotnet",
                   "dump",
                   "go",
+                  "go-use",
                   "make",
                   "maven",
                   "meson",
@@ -1508,7 +1515,8 @@
                   "python",
                   "qmake",
                   "rust",
-                  "scons"
+                  "scons",
+                  "uv"
                 ]
               },
               "source": {
@@ -1791,6 +1799,7 @@
                   "dotnet",
                   "dump",
                   "go",
+                  "go-use",
                   "make",
                   "maven",
                   "meson",
@@ -1800,7 +1809,8 @@
                   "python",
                   "qmake",
                   "rust",
-                  "scons"
+                  "scons",
+                  "uv"
                 ]
               },
               "source": {
@@ -2087,6 +2097,7 @@
                   "dotnet",
                   "dump",
                   "go",
+                  "go-use",
                   "make",
                   "maven",
                   "meson",
@@ -2096,7 +2107,8 @@
                   "python",
                   "qmake",
                   "rust",
-                  "scons"
+                  "scons",
+                  "uv"
                 ]
               },
               "source": {
@@ -2366,6 +2378,7 @@
                   "dotnet",
                   "dump",
                   "go",
+                  "go-use",
                   "make",
                   "maven",
                   "meson",
@@ -2375,7 +2388,8 @@
                   "python",
                   "qmake",
                   "rust",
-                  "scons"
+                  "scons",
+                  "uv"
                 ]
               },
               "source": {
@@ -2636,6 +2650,287 @@
           "if": {
             "properties": {
               "plugin": {
+                "const": "go-use"
+              }
+            }
+          },
+          "then": {
+            "$comment": "common properties had to be repeated here or they would be considered invalid by the schema validator otherwise",
+            "properties": {
+              "plugin": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Plugin",
+                "enum": [
+                  "ant",
+                  "autotools",
+                  "cmake",
+                  "dotnet",
+                  "dump",
+                  "go",
+                  "go-use",
+                  "make",
+                  "maven",
+                  "meson",
+                  "nil",
+                  "npm",
+                  "poetry",
+                  "python",
+                  "qmake",
+                  "rust",
+                  "scons",
+                  "uv"
+                ]
+              },
+              "source": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source"
+              },
+              "source-checksum": {
+                "default": "",
+                "title": "Source-Checksum",
+                "type": "string"
+              },
+              "source-branch": {
+                "default": "",
+                "title": "Source-Branch",
+                "type": "string"
+              },
+              "source-commit": {
+                "default": "",
+                "title": "Source-Commit",
+                "type": "string"
+              },
+              "source-depth": {
+                "default": 0,
+                "title": "Source-Depth",
+                "type": "integer"
+              },
+              "source-subdir": {
+                "default": "",
+                "title": "Source-Subdir",
+                "type": "string"
+              },
+              "source-submodules": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source-Submodules"
+              },
+              "source-tag": {
+                "default": "",
+                "title": "Source-Tag",
+                "type": "string"
+              },
+              "source-type": {
+                "default": "",
+                "title": "Source-Type",
+                "type": "string"
+              },
+              "disable-parallel": {
+                "default": false,
+                "title": "Disable-Parallel",
+                "type": "boolean"
+              },
+              "after": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "After",
+                "type": "array"
+              },
+              "overlay-packages": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Overlay-Packages",
+                "type": "array"
+              },
+              "stage-snaps": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Stage-Snaps",
+                "type": "array"
+              },
+              "stage-packages": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Stage-Packages",
+                "type": "array"
+              },
+              "build-snaps": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Snaps",
+                "type": "array"
+              },
+              "build-packages": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Packages",
+                "type": "array"
+              },
+              "build-environment": {
+                "default": [],
+                "items": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object"
+                },
+                "title": "Build-Environment",
+                "type": "array"
+              },
+              "build-attributes": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Attributes",
+                "type": "array"
+              },
+              "organize": {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "title": "Organize",
+                "type": "object"
+              },
+              "overlay": {
+                "items": {
+                  "type": "string"
+                },
+                "title": "Overlay",
+                "type": "array"
+              },
+              "stage": {
+                "items": {
+                  "description": "relative path",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "title": "Stage",
+                "type": "array"
+              },
+              "prime": {
+                "items": {
+                  "description": "relative path",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "title": "Prime",
+                "type": "array"
+              },
+              "override-pull": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Pull"
+              },
+              "overlay-script": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Overlay-Script"
+              },
+              "override-build": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Build"
+              },
+              "override-stage": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Stage"
+              },
+              "override-prime": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Prime"
+              },
+              "permissions": {
+                "default": [],
+                "items": {
+                  "$ref": "#/$defs/Permissions"
+                },
+                "title": "Permissions",
+                "type": "array"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "plugin": {
                 "const": "make"
               }
             }
@@ -2661,6 +2956,7 @@
                   "dotnet",
                   "dump",
                   "go",
+                  "go-use",
                   "make",
                   "maven",
                   "meson",
@@ -2670,7 +2966,8 @@
                   "python",
                   "qmake",
                   "rust",
-                  "scons"
+                  "scons",
+                  "uv"
                 ]
               },
               "source": {
@@ -2948,6 +3245,7 @@
                   "dotnet",
                   "dump",
                   "go",
+                  "go-use",
                   "make",
                   "maven",
                   "meson",
@@ -2957,7 +3255,8 @@
                   "python",
                   "qmake",
                   "rust",
-                  "scons"
+                  "scons",
+                  "uv"
                 ]
               },
               "source": {
@@ -3235,6 +3534,7 @@
                   "dotnet",
                   "dump",
                   "go",
+                  "go-use",
                   "make",
                   "maven",
                   "meson",
@@ -3244,7 +3544,8 @@
                   "python",
                   "qmake",
                   "rust",
-                  "scons"
+                  "scons",
+                  "uv"
                 ]
               },
               "source": {
@@ -3522,6 +3823,7 @@
                   "dotnet",
                   "dump",
                   "go",
+                  "go-use",
                   "make",
                   "maven",
                   "meson",
@@ -3531,7 +3833,8 @@
                   "python",
                   "qmake",
                   "rust",
-                  "scons"
+                  "scons",
+                  "uv"
                 ]
               },
               "source": {
@@ -3801,6 +4104,7 @@
                   "dotnet",
                   "dump",
                   "go",
+                  "go-use",
                   "make",
                   "maven",
                   "meson",
@@ -3810,7 +4114,8 @@
                   "python",
                   "qmake",
                   "rust",
-                  "scons"
+                  "scons",
+                  "uv"
                 ]
               },
               "source": {
@@ -4097,6 +4402,7 @@
                   "dotnet",
                   "dump",
                   "go",
+                  "go-use",
                   "make",
                   "maven",
                   "meson",
@@ -4106,7 +4412,8 @@
                   "python",
                   "qmake",
                   "rust",
-                  "scons"
+                  "scons",
+                  "uv"
                 ]
               },
               "source": {
@@ -4122,13 +4429,29 @@
                 "title": "Source"
               },
               "poetry-with": {
-                "description": "optional dependency groups to include when installing.",
+                "description": "dependency groups to include. By default, only the main dependencies are included.",
                 "items": {
                   "type": "string"
                 },
-                "title": "Optional dependency groups",
+                "title": "Dependency groups to include",
                 "type": "array",
                 "uniqueItems": true
+              },
+              "poetry-export-extra-args": {
+                "description": "extra arguments to pass to poetry export when creating requirements.txt.",
+                "items": {
+                  "type": "string"
+                },
+                "title": "Extra arguments for poetry export",
+                "type": "array"
+              },
+              "poetry-pip-extra-args": {
+                "description": "extra arguments to pass to pip install installing dependencies.",
+                "items": {
+                  "type": "string"
+                },
+                "title": "Extra arguments for pip install",
+                "type": "array"
               },
               "source-checksum": {
                 "default": "",
@@ -4385,6 +4708,7 @@
                   "dotnet",
                   "dump",
                   "go",
+                  "go-use",
                   "make",
                   "maven",
                   "meson",
@@ -4394,7 +4718,8 @@
                   "python",
                   "qmake",
                   "rust",
-                  "scons"
+                  "scons",
+                  "uv"
                 ]
               },
               "source": {
@@ -4692,6 +5017,7 @@
                   "dotnet",
                   "dump",
                   "go",
+                  "go-use",
                   "make",
                   "maven",
                   "meson",
@@ -4701,7 +5027,8 @@
                   "python",
                   "qmake",
                   "rust",
-                  "scons"
+                  "scons",
+                  "uv"
                 ]
               },
               "source": {
@@ -4989,6 +5316,7 @@
                   "dotnet",
                   "dump",
                   "go",
+                  "go-use",
                   "make",
                   "maven",
                   "meson",
@@ -4998,7 +5326,8 @@
                   "python",
                   "qmake",
                   "rust",
-                  "scons"
+                  "scons",
+                  "uv"
                 ]
               },
               "source": {
@@ -5326,6 +5655,7 @@
                   "dotnet",
                   "dump",
                   "go",
+                  "go-use",
                   "make",
                   "maven",
                   "meson",
@@ -5335,7 +5665,8 @@
                   "python",
                   "qmake",
                   "rust",
-                  "scons"
+                  "scons",
+                  "uv"
                 ]
               },
               "source": {
@@ -5357,6 +5688,305 @@
                 },
                 "title": "Scons-Parameters",
                 "type": "array"
+              },
+              "source-checksum": {
+                "default": "",
+                "title": "Source-Checksum",
+                "type": "string"
+              },
+              "source-branch": {
+                "default": "",
+                "title": "Source-Branch",
+                "type": "string"
+              },
+              "source-commit": {
+                "default": "",
+                "title": "Source-Commit",
+                "type": "string"
+              },
+              "source-depth": {
+                "default": 0,
+                "title": "Source-Depth",
+                "type": "integer"
+              },
+              "source-subdir": {
+                "default": "",
+                "title": "Source-Subdir",
+                "type": "string"
+              },
+              "source-submodules": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source-Submodules"
+              },
+              "source-tag": {
+                "default": "",
+                "title": "Source-Tag",
+                "type": "string"
+              },
+              "source-type": {
+                "default": "",
+                "title": "Source-Type",
+                "type": "string"
+              },
+              "disable-parallel": {
+                "default": false,
+                "title": "Disable-Parallel",
+                "type": "boolean"
+              },
+              "after": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "After",
+                "type": "array"
+              },
+              "overlay-packages": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Overlay-Packages",
+                "type": "array"
+              },
+              "stage-snaps": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Stage-Snaps",
+                "type": "array"
+              },
+              "stage-packages": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Stage-Packages",
+                "type": "array"
+              },
+              "build-snaps": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Snaps",
+                "type": "array"
+              },
+              "build-packages": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Packages",
+                "type": "array"
+              },
+              "build-environment": {
+                "default": [],
+                "items": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object"
+                },
+                "title": "Build-Environment",
+                "type": "array"
+              },
+              "build-attributes": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Attributes",
+                "type": "array"
+              },
+              "organize": {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "title": "Organize",
+                "type": "object"
+              },
+              "overlay": {
+                "items": {
+                  "type": "string"
+                },
+                "title": "Overlay",
+                "type": "array"
+              },
+              "stage": {
+                "items": {
+                  "description": "relative path",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "title": "Stage",
+                "type": "array"
+              },
+              "prime": {
+                "items": {
+                  "description": "relative path",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "title": "Prime",
+                "type": "array"
+              },
+              "override-pull": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Pull"
+              },
+              "overlay-script": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Overlay-Script"
+              },
+              "override-build": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Build"
+              },
+              "override-stage": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Stage"
+              },
+              "override-prime": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Override-Prime"
+              },
+              "permissions": {
+                "default": [],
+                "items": {
+                  "$ref": "#/$defs/Permissions"
+                },
+                "title": "Permissions",
+                "type": "array"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "plugin": {
+                "const": "uv"
+              }
+            }
+          },
+          "then": {
+            "$comment": "common properties had to be repeated here or they would be considered invalid by the schema validator otherwise",
+            "properties": {
+              "plugin": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Plugin",
+                "enum": [
+                  "ant",
+                  "autotools",
+                  "cmake",
+                  "dotnet",
+                  "dump",
+                  "go",
+                  "go-use",
+                  "make",
+                  "maven",
+                  "meson",
+                  "nil",
+                  "npm",
+                  "poetry",
+                  "python",
+                  "qmake",
+                  "rust",
+                  "scons",
+                  "uv"
+                ]
+              },
+              "source": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source"
+              },
+              "uv-extras": {
+                "description": "Optional extra dependencies to include when installing.",
+                "items": {
+                  "type": "string"
+                },
+                "title": "Optional extra dependencies",
+                "type": "array",
+                "uniqueItems": true
+              },
+              "uv-groups": {
+                "description": "Optional dependency groups to include when installing.",
+                "items": {
+                  "type": "string"
+                },
+                "title": "Optional dependency groups",
+                "type": "array",
+                "uniqueItems": true
               },
               "source-checksum": {
                 "default": "",
