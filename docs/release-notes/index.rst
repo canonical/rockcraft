@@ -11,8 +11,7 @@ It also contains the release and support policies for Rockcraft.
 Current releases
 ----------------
 
-
-- :ref:`Rockcraft 1.7.0 <release-1.7.0>`
+- :ref:`Rockcraft 1.8.0 <release-1.8.0>`
 
 .. _release_policy_and_schedule:
 
@@ -61,6 +60,7 @@ development keeps pace with the OS's new releases and support lifecycle.
    :maxdepth: 1
    :hidden:
 
+   Rockcraft 1.8.0 <rockcraft-1-8-0>
    Rockcraft 1.7.0 <rockcraft-1-7-0>
 
 
