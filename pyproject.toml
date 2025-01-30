@@ -20,9 +20,9 @@ classifiers = [
 dependencies = [
     "craft-archives>=2.0.0",
     "craft-cli",
-    "craft-parts @ git+https://github.com/clay-lake/craft-parts.git@feature/pro-sources",
-    "craft-providers @ git+https://github.com/clay-lake/craft-providers.git@feature/pro-sources",
-    "craft-application @ git+https://github.com/clay-lake/craft-application.git@feature/pro-sources",
+    "craft-parts @ git+https://github.com/canonical/craft-parts.git@feature/pro-sources",
+    "craft-providers @ git+https://github.com/canonical/craft-providers.git@feature/pro-sources",
+    "craft-application @ git+https://github.com/canonical/craft-application.git@feature/pro-sources",
     "craft-platforms~=0.3",
     "overrides",
     "spdx-lookup",
