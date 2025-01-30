@@ -3,9 +3,9 @@
 Release notes
 =============
 
-This page lists past release notes for Rockcraft, summarising new features, bug
-fixes and backwards-incompatible changes in each version. It also contains the
-release and support policies for Rockcraft.
+This page lists the notes for past releases of Rockcraft, which summarise new
+features, bug fixes and backwards-incompatible changes in each version.
+It also contains the release and support policies for Rockcraft.
 
 
 Current releases
@@ -124,12 +124,15 @@ development keeps pace with the OS's new releases and support lifecycle.
   <Paragraph 2: Present the new behaviour or feature. In words, *show* what the
   feature is and make a case for how the reader could benefit from it. Centre
   the user whenever possible ("you"), and speak on behalf of Canonical ("we").
-  Prefer general, simple usage over complex applications. Use past tense. For
-  example, "We understand that some authors may not want to have their snaps
-  publicly ranked. If you prefer to disable ranking for your snap, we added the
-  ``feedback`` key in Snapcraft recipes, which contains child keys for
-  controlling many of the rating and feedback features in the store. You can
-  declare ``voting: false`` to disable voting".>
+  Prefer general, simple usage over complex applications. Use past tense, or the
+  form "is now [x]" or "now [does x]". For example, "We understand that some
+  authors may not want to have their snaps publicly ranked. If you prefer to
+  disable ranking for your snap, we added the ``feedback`` key in Snapcraft
+  recipes, which contains child keys for controlling many of the rating and
+  feedback features in the store. You can declare ``voting: false`` to disable
+  voting." Another example: "The Maven and Ant plugins now generate the more
+  standard path to the Java runtime executable instead of an unconventional one,
+  making their locations more predictable.">
 
   <Paragraph 3, optional: Provide a call to action. This could take several
   forms, such as a call to immediately perform a relevant action in Starcraft,
@@ -150,8 +153,10 @@ development keeps pace with the OS's new releases and support lifecycle.
 
   <Add a short list of changes to the feature. Keep each item brief and for the
   most part descriptive. There's little need to sell the change or give a
-  detailed reason. Use past tense. For example, "- Made the error message for
-  ``method()`` more descriptive and recommend a likely remedy.">
+  detailed reason. Use past tense, or the form "is now [x]" or "now [does x]".
+  For example, "- Made the error message for ``method()`` more descriptive and
+  recommend a likely remedy."Another example: "- The GET method on the profiles
+  API now returns the user creation date.">
 
 
   Backwards-incompatible changes
@@ -210,7 +215,7 @@ development keeps pace with the OS's new releases and support lifecycle.
 
 
   <Feature D>
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~~~~~~~~~~~
 
   <Future deprecation: Use the same format as backwards-incompatible changes,
   but use future tense to describe what we *intend* and *plan* to do in
@@ -235,8 +240,8 @@ development keeps pace with the OS's new releases and support lifecycle.
 
   See individual issue links for any mitigations.
 
-  - <Ticket ID> <Title>
-  - <Ticket ID> <Title>
+  - `ID <link>`_ <Title>
+  - `ID <link>`_ <Title>
 
 
   Fixed bugs and issues
@@ -244,8 +249,8 @@ development keeps pace with the OS's new releases and support lifecycle.
 
   The following issues have been resolved in Starcraft 2.0:
 
-  - <Ticket ID> <Title>
-  - <Ticket ID> <Title>
+  - `ID <link>`_ <Title>
+  - `ID <link>`_ <Title>
 
 
   Contributors
@@ -254,4 +259,7 @@ development keeps pace with the OS's new releases and support lifecycle.
   We would like to express a big thank you to all the people who contributed to
   this release.
 
-  `@alex <>`_, `@blair <>`_, `@cam <>`_, `@devin <>`_
+  :literalref:`@alex<https://example.com/alex>`,
+  :literalref:`@blair<https://example.com/blair>`,
+  :literalref:`@cam<https://example.com/cam>`,
+  and :literalref:`@devin<https://example.com/devin>`
