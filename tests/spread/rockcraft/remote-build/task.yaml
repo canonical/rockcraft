@@ -1,0 +1,39 @@
+summary: Test the remote builder
+manual: true
+kill-timeout: 30m
+
+environment:
+  LAUNCHPAD_TOKEN: '$(HOST: echo "${LAUNCHPAD_TOKEN}")'
+
+prepare: |
+  if [[ -z "$LAUNCHPAD_TOKEN" ]]; then
+    echo "No credentials set in env LAUNCHPAD_TOKEN"
+    exit 1
+  fi
+
+  mkdir work
+  cd work
+  rockcraft init --name="remote-build"
+
+  # commit the project
+  git init
+  git add rockcraft.yaml
+  git commit -m "Initial Commit"
+
+  # set up launchpad token
+  CREDENTIALS_FILE="$HOME/.local/share/rockcraft/launchpad-credentials"
+  mkdir -p "$(dirname "$CREDENTIALS_FILE")"
+  echo -e "$LAUNCHPAD_TOKEN" >> "$CREDENTIALS_FILE"
+
+execute: |
+  cd work
+
+  rockcraft remote-build --launchpad-accept-public-upload
+
+  # The rock
+  test -f remote-build_0.1_amd64.rock
+  # The build log
+  test -f rockcraft-remote-build-*_amd64_*.txt
+
+restore: |
+  rm -f ./work/*.rock ./work/*.txt

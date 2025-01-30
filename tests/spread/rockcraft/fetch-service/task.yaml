@@ -1,0 +1,31 @@
+summary: Pack a rockcraft project using the fetch-service
+
+systems:
+  # Currently the integration only supports Ubuntu (openssl dependency)
+  - ubuntu-22.04*
+
+prepare: |
+  snap install --candidate fetch-service
+
+execute: |
+  rockcraft pack --enable-fetch-service permissive
+
+  test -f fetch-service*.rock
+
+  # Check that the session-report was generated
+  test -f fetch-service*.json
+
+  # Smoke-checks to verify that the 'hello' deb and the 'black' wheel went through
+  # the fetch-service
+  MATCH '"component-name": "hello"' fetch-service*.json
+  MATCH '"component-name": "black"' fetch-service*.json
+
+  # Check that the logfile was correctly set-up
+  LOGFILE=$HOME/snap/fetch-service/common/craft-logs/fetch-service.log
+  test -f "$LOGFILE"
+  MATCH "Starting service..." "$LOGFILE"
+  MATCH "https://pypi.org:443/simple/black/" "$LOGFILE"
+
+restore: |
+  rm fetch-service*.json
+  rm fetch-service*.rock

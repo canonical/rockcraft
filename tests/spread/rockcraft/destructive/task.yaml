@@ -3,16 +3,16 @@ summary: destructive-mode test
 execute: |
   # Check that work dirs *don't* exist
   test ! -d parts -a ! -d stage -a ! -d prime
-  
+
   run_rockcraft pack --destructive-mode
 
   test -f destructive-mode*.rock
-  
+
   # Check that work dirs *do* exist
   test -d parts -a -d stage -a -d prime
-  
+
   run_rockcraft clean --destructive-mode
-  
+
   # Check that work dirs *don't* exist again
   test ! -d parts -a ! -d stage -a ! -d prime
 

@@ -32,6 +32,7 @@ pytestmark = [
 # pyright: reportPrivateImportUsage=false
 
 
+@pytest.mark.slow
 def test_package_repositories_in_overlay(new_dir, mocker, run_lifecycle):
     # Mock overlay-related calls that need root; we won't be actually installing
     # any packages, just checking that the repositories are correctly installed
@@ -88,6 +89,7 @@ def test_package_repositories_in_overlay(new_dir, mocker, run_lifecycle):
     assert (overlay_apt / "preferences.d/craft-archives").is_file()
 
 
+@pytest.mark.slow
 def test_prune_prime_files(new_dir, mocker, run_lifecycle):
     """Test that primed files are "pruned"/removed based on the contents of the
     base layer."""

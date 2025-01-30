@@ -1,0 +1,15 @@
+[project]
+name = "test_uv"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = ">=3.10"
+dependencies = [
+    "black>=24.10.0",
+]
+
+[project.scripts]
+test-uv = "test_uv.__main__:main"
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"

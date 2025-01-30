@@ -1,7 +1,7 @@
 name: Spread (manual - large/flaky)
 on:
   pull_request:
-    types: [ labeled ]
+    types: [labeled]
   schedule:
     - cron: "0 2 * * 0,3" # run at 2 AM on Sundays and Wednesdays
 
@@ -43,9 +43,15 @@ jobs:
         with:
           name: snap
           path: tests
-      - name: Run spread (large/flaky)
+
+      - name: Run remote-build tests
+        env:
+          LAUNCHPAD_TOKEN: "${{ secrets.LAUNCHPAD_TOKEN }}"
+        run: spread tests/spread/rockcraft/remote-build
+      - name: Run large/flaky tests
+        id: flaky
         run: spread tests/spread/manual/
-        
+
       - name: Discard spread workers
         if: always()
         run: |

@@ -1,6 +1,6 @@
 # -*- Mode:Python; indent-tabs-mode:nil; tab-width:4 -*-
 #
-# Copyright 2021-2022 Canonical Ltd.
+# Copyright 2021-2025 Canonical Ltd.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 3 as
@@ -16,7 +16,10 @@
 
 """Command-line application entry point."""
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
+
+from craft_application import commands as appcommands
+from craft_cli import Dispatcher
 
 from . import commands
 from .services import RockcraftServiceFactory
@@ -46,12 +49,6 @@ def _create_app() -> "Rockcraft":
     app = Rockcraft(app=APP_METADATA, services=services)
 
     app.add_command_group(
-        "Other",
-        [
-            commands.InitCommand,
-        ],
-    )
-    app.add_command_group(
         "Extensions",
         [
             commands.ExtensionsCommand,
@@ -60,4 +57,14 @@ def _create_app() -> "Rockcraft":
         ],
     )
 
+    app.add_command_group("Lifecycle", [appcommands.RemoteBuild])
+
     return app
+
+
+def get_app_info() -> tuple[Dispatcher, dict[str, Any]]:
+    """Retrieve application info. Used by craft-cli's completion module."""
+    app = _create_app()
+    dispatcher = app._create_dispatcher()
+
+    return dispatcher, app.app_config

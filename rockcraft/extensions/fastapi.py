@@ -69,9 +69,9 @@ class FastAPIFramework(Extension):
             },
         }
         if not self.yaml_data.get("services", {}).get("fastapi", {}).get("command"):
-            snippet["services"]["fastapi"][
-                "command"
-            ] = f"/bin/python3 -m uvicorn {self._asgi_path()}"
+            snippet["services"]["fastapi"]["command"] = (
+                f"/bin/python3 -m uvicorn {self._asgi_path()}"
+            )
 
         snippet["parts"] = self._get_parts()
         return snippet

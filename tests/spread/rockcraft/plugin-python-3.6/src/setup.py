@@ -1,4 +1,4 @@
-from distutils.core import setup
+from distutils.core import setup  # pyright: ignore[reportMissingImports]
 
 setup(
     name="hello",

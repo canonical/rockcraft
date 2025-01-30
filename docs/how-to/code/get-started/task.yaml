@@ -1,8 +1,8 @@
 ###########################################
 # IMPORTANT
 # Comments matter!
-# The docs use the wrapping comments as 
-# markers for including said instructions 
+# The docs use the wrapping comments as
+# markers for including said instructions
 # as snippets in the docs.
 ###########################################
 summary: test the steps for getting started with Rockcraft
@@ -13,7 +13,7 @@ execute: |
   # [docs:snap-version-end]
 
   # [docs:lxd-version]
-  lxd --version  
+  lxd --version
   # [docs:lxd-version-end]
 
   # [docs:lxd-status]
