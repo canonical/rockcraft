@@ -57,9 +57,8 @@ of the error. For example, here's the output of ``rockcraft build`` when trying
 to compile curl with incorrect build options:
 
 
-.. code-block:: shell
+.. terminal::
 
-    rockcraft build
     Failed to run the build script for part 'curl'.
     Detailed information:
     :: + ./configure
@@ -74,17 +73,17 @@ to compile curl with incorrect build options:
     ::   --with-schannel
     ::   --with-secure-transport
     ::   --with-wolfssl
-    (...)
+    ...
 
-New uv plugin
-~~~~~~~~~~~~~
+uv plugin
+~~~~~~~~~
 
-We added a plugin to build Python projects that use `uv`_, a new package and
-project manager. See the :ref:`craft_parts_uv_plugin` reference page
+We added a plugin to build Python projects that use `uv`_, a performant package and
+project manager. See the :ref:`craft_parts_uv_plugin` reference
 for details.
 
-New jlink plugin
-~~~~~~~~~~~~~~~~
+JLink plugin
+~~~~~~~~~~~~
 
 We added a plugin that uses the `jlink`_ tool to create smaller, optimized
 Java runtimes specific for your rock's set of JARs. See the TODO
@@ -94,9 +93,9 @@ Java runtimes specific for your rock's set of JARs. See the TODO
 Bash completion
 ~~~~~~~~~~~~~~~
 
-We added a completion file to the Rockcraft snap, which allows command-line
+We added a completion file to the Rockcraft snap, which provides command-line
 completion of commands and options in Bash-compatible shells. Try it out by
-typing ``rockcraft`` and pressing :kbd:`Tab` on your terminal.
+typing ``rockcraft`` and pressing :kbd:`Tab` in your terminal.
 
 Contributors
 ------------

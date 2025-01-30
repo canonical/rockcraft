@@ -12,6 +12,7 @@ Current releases
 ----------------
 
 - :ref:`Rockcraft 1.8.0 <release-1.8.0>`
+- :ref:`Rockcraft 1.7.0 <release-1.7.0>`
 
 .. _release_policy_and_schedule:
 
