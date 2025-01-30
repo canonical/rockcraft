@@ -56,7 +56,6 @@ We improved the reporting of build-time errors to emphasize the precise cause
 of the error. For example, here's the output of ``rockcraft build`` when trying
 to compile curl with incorrect build options:
 
-
 .. terminal::
 
     Failed to run the build script for part 'curl'.
@@ -86,9 +85,8 @@ JLink plugin
 ~~~~~~~~~~~~
 
 We added a plugin that uses the `jlink`_ tool to create smaller, optimized
-Java runtimes specific for your rock's set of JARs. See the TODO
-
-.. :ref:`craft_parts_jlink_plugin` reference page for details.
+Java runtimes specific for your rock's JARs. See the
+:ref:`craft_parts_jlink_plugin` reference for details.
 
 Bash completion
 ~~~~~~~~~~~~~~~
@@ -105,6 +103,7 @@ this release.
 
 :literalref:`@benhoyt<https://github.com/@benhoyt>`,
 :literalref:`@bepri<https://github.com/@bepri>`,
+:literalref:`@vpa1977<https://github.com/@vpa1977>`,
 and :literalref:`@tigarmo<https://github.com/tigarmo>`.
 
 .. _jlink: https://docs.oracle.com/en/java/javase/21/docs/specs/man/jlink.html
