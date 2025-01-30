@@ -15,6 +15,8 @@ for any of Rockcraft's supported architectures.
     change.
 
 
+.. _sign-up-for-a-launchpad-account:
+
 Sign up for a Launchpad account
 -------------------------------
 
@@ -28,11 +30,11 @@ If you do not already have an account, you can sign up `here
 Define desired architectures
 ----------------------------
 
-Once you `start your remote build <#start-a-remote-build>`_, all architectures
-defined in the :ref:`platforms` key of your project file will be built.
-Rockcraft currently supports AMD64, ARM64, ARM hard float, IA-32, PowerPC 64-bit
-little-endian, RISC-V 64-bit and S390x. Your project file can contain any subset
-of these architectures.
+Once you :ref:`start your remote build <start-a-remote-build>`, all
+architectures defined in the :ref:`platforms` key of your project file will be
+built. Rockcraft currently supports AMD64, ARM64, ARM hard float, IA-32, PowerPC
+64-bit little-endian, RISC-V 64-bit and S390x. Your project file can contain any
+subset of these architectures.
 
 For example, if you need to build rocks for AMD64, ARM64 and RISC-V 64-bit
 architectures, your project file will include:
@@ -44,6 +46,8 @@ architectures, your project file will include:
       arm64:
       riscv64:
 
+
+.. _start-a-remote-build:
 
 Start a remote build
 --------------------
@@ -62,8 +66,8 @@ In the root directory of your project, you can now begin your remote build with:
 Due to build queue lengths varying per architecture, you may want to append the
 ``--launchpad-timeout=<seconds>`` option to stop monitoring the build locally
 after a certain amount of time has elapsed. Once timed out on your local
-machine, the build will continue on Launchpad and can be `recovered
-<#recover-interrupted-builds>`_ at any point.
+machine, the build will continue on Launchpad and can be :ref:`recovered
+<recover-interrupted-builds>` at any point.
 
 At this point, you will be asked to acknowledge that all remote builds are
 publicly available on Launchpad.
@@ -77,8 +81,8 @@ publicly available on Launchpad.
     All data sent to remote builders will be publicly available. Are you sure you
     want to continue? [y/N]:
 
-If you are not logged in or have not yet `registered for Launchpad
-<#sign-up-for-a-launchpad-account>`_, you will now be prompted to do so in your
+If you are not logged in or have not yet :ref:`registered for Launchpad
+<sign-up-for-a-launchpad-account>`, you will now be prompted to do so in your
 browser. If this is your first time initiating a remote build from your current
 machine, you will then be asked to authorize access to your Launchpad account.
 
@@ -103,6 +107,8 @@ Your completed build can also be viewed on Launchpad by navigating to:
 where ``<user>`` is your Launchpad username and ``<build-id>`` is the ID
 displayed when you started your build.
 
+
+.. _recover-interrupted-builds:
 
 Recover interrupted builds
 --------------------------
