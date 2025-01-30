@@ -3,12 +3,15 @@ summary: |
 
 environment:
   PKG_GLOB: hello_*+esm1_*.deb
-  SCENARIO/managed_pro_stage: managed_pro_stage
-  SCENARIO/managed_standard_stage: managed_standard_stage
-  PKG_GLOB/managed_standard_stage: hello_*.deb
-  SCENARIO/destructive_pro_stage: destructive_pro_stage
-  SCENARIO/managed_pro_overlay: managed_pro_overlay
-  SCENARIO/managed_pro_build: managed_pro_build
+  SCENARIO/managed_pro_stage_full: managed_pro_stage_full
+  SCENARIO/managed_pro_stage_chiseled: managed_pro_stage_chiseled
+  SCENARIO/destructive_pro_stage_full: destructive_pro_stage_full
+  SCENARIO/destructive_pro_stage_chiseled: destructive_pro_stage_chiseled
+  SCENARIO/managed_pro_overlay_full: managed_pro_overlay_full
+  SCENARIO/managed_pro_build_full: managed_pro_build_full
+
+  SCENARIO/managed_standard_stage_full: managed_standard_stage_full
+  PKG_GLOB/managed_standard_stage_full: hello_*.deb
 
 prepare: |
   sudo pro attach --no-auto-enable $UBUNTU_PRO_TOKEN 
