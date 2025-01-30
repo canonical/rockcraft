@@ -1,0 +1,23 @@
+summary: |
+  Test rockcraft's Pro validation behavior.
+
+execute: |
+
+  pushd non_bare
+  # Build an empty rock with a non-bare base to trigger apt update/upgrade
+  rockcraft build --verbosity=DEBUG >log 2>&1
+  rockcraft clean
+  # check for indicative strings in the log
+  grep "^.{23} ::Executing.*apt-get update.*apt-get -y upgrade.*in root" log
+  grep -P "^.{23} ::\d+ upgraded, \d+ newly installed, \d+ to remove and \d+ not upgraded." log
+  rm log
+  popd
+
+  pushd bare
+  # Build an empty rock with a bare base to confirm no apt update/upgrade
+  rockcraft build --verbosity=DEBUG >log 2>&1
+  rockcraft clean
+  # ensure none of the indicative strings are present in the log
+  ! grep "^.{23} ::Executing.*apt-get update.*apt-get -y upgrade.*in root" log
+  rm log
+  popd
