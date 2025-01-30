@@ -61,7 +61,7 @@ else ifeq ($(shell which apt-get),)
 	$(warning apt-get not found. Please install dependencies yourself.)
 else
 	sudo $(APT) install libyaml-dev python3-dev python3-pip python3-setuptools \
-	  python3-venv python3-wheel fuse-overlayfs libapt-pkg-dev umoci
+	  python3-venv python3-wheel fuse-overlayfs libapt-pkg-dev umoci libgit2-dev
 endif
 ifneq ($(shell which snap),)
 	sudo snap install lxd
