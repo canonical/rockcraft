@@ -53,3 +53,40 @@ jobs:
           for r in .spread-reuse.*.yaml; do
             spread -discard -reuse-pid="$(echo "$r" | grep -o -E '[0-9]+')"
           done
+
+  docs-tests:
+    runs-on: [self-hosted, spread-installed]
+    needs: [snap-build]
+    if: >
+      ${{
+        contains(github.event.pull_request.labels.*.name, 'run-manual-spread') ||
+        contains(github.event.pull_request.labels.*.name, 'documentation') ||
+        github.event_name == 'schedule' ||
+        github.ref == 'refs/heads/main'
+       }}
+
+    steps:
+      - name: Cleanup job workspace
+        run: |
+          rm -rf "${{ github.workspace }}"
+          mkdir "${{ github.workspace }}"
+      - name: Checkout rockcraft
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: true
+      - name: Download snap artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: snap
+          path: tests
+      - name: Run docs spread tests
+        run: spread docs/
+
+      - name: Discard spread workers
+        if: always()
+        run: |
+          shopt -s nullglob
+          for r in .spread-reuse.*.yaml; do
+            spread -discard -reuse-pid="$(echo "$r" | grep -o -E '[0-9]+')"
+          done
