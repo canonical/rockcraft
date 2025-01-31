@@ -8,6 +8,26 @@ on:
     - cron: "0 0 */2 * *"
 
 jobs:
+  decision:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    outputs:
+      docs: >
+        ${{
+          steps.filter.outputs.docs == 'true' ||
+          contains(github.event.pull_request.labels.*.name, 'run-manual-spread') ||
+          github.event_name == 'schedule' ||
+          github.ref == 'refs/heads/main'
+         }}
+    steps:
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            docs:
+              - 'docs/**'
+
   snap-build:
     runs-on: ubuntu-22.04
     steps:
@@ -45,6 +65,37 @@ jobs:
           path: tests
       - name: Run spread
         run: spread
+
+      - name: Discard spread workers
+        if: always()
+        run: |
+          shopt -s nullglob
+          for r in .spread-reuse.*.yaml; do
+            spread -discard -reuse-pid="$(echo "$r" | grep -o -E '[0-9]+')"
+          done
+
+  docs-tests:
+    runs-on: [self-hosted, spread-installed]
+    needs: [decision, snap-build]
+    if: ${{ needs.decision.outputs.docs == 'true' }}
+
+    steps:
+      - name: Cleanup job workspace
+        run: |
+          rm -rf "${{ github.workspace }}"
+          mkdir "${{ github.workspace }}"
+      - name: Checkout rockcraft
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: true
+      - name: Download snap artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: snap
+          path: tests
+      - name: Run docs spread tests
+        run: spread docs/
 
       - name: Discard spread workers
         if: always()
