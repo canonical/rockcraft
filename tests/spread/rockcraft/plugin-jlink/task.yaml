@@ -1,4 +1,5 @@
 summary: JLink plugin tests
+priority: 50
 environment:
   SCENARIO/base_2404: base-2404
   SCENARIO/bare_build_2004: bare-build-2404

@@ -1,4 +1,5 @@
 summary: a big test meant to check many aspects of rockcraft
+priority: 50
 
 execute: |
   echo "hi"
