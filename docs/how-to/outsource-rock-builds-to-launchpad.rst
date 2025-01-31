@@ -32,9 +32,9 @@ Define desired architectures
 
 Once you :ref:`start your remote build <start-a-remote-build>`, all
 architectures defined in the :ref:`platforms` key of your project file will be
-built. Rockcraft currently supports AMD64, ARM64, ARM hard float, IA-32, PowerPC
-64-bit little-endian, RISC-V 64-bit and S390x. Your project file can contain any
-subset of these architectures.
+built. Rockcraft currently supports AMD64, ARM64, ARM hard float, IA-32,
+little-endian PowerPC 64-bit, RISC-V 64-bit and S390x. Your project file can
+contain any subset of these architectures.
 
 For example, if you need to build rocks for AMD64, ARM64 and RISC-V 64-bit
 architectures, your project file will include:
@@ -63,12 +63,6 @@ In the root directory of your project, you can now begin your remote build with:
 
     rockcraft remote-build
 
-Due to build queue lengths varying per architecture, you may want to append the
-``--launchpad-timeout=<seconds>`` option to stop monitoring the build locally
-after a certain amount of time has elapsed. Once timed out on your local
-machine, the build will continue on Launchpad and can be :ref:`recovered
-<recover-interrupted-builds>` at any point.
-
 At this point, you will be asked to acknowledge that all remote builds are
 publicly available on Launchpad.
 
@@ -88,8 +82,11 @@ machine, you will then be asked to authorize access to your Launchpad account.
 
 Once authorized, your project will be uploaded to Launchpad and placed in the
 build queues for each architecture defined in your project file. Unless
-interrupted locally, the status of each build will be continuously monitored and
-reported back to you.
+interrupted or timed out, the status of each build will be continuously
+monitored and reported back to you.
+
+If you wish to stop monitoring the build at any time, you can :ref:`interrupt it
+<interrupt-a-build>`.
 
 
 Check the build results
@@ -106,6 +103,21 @@ Your completed build can also be viewed on Launchpad by navigating to:
 
 where ``<user>`` is your Launchpad username and ``<build-id>`` is the ID
 displayed when you started your build.
+
+
+.. _interrupt-a-build:
+
+Interrupt a build
+-----------------
+
+Due to build queue lengths varying per architecture, you may want to append the
+``--launchpad-timeout=<seconds>`` option to ``remote-build`` to stop monitoring
+the build locally after a certain amount of time has elapsed.
+
+If a build is in progress, it can also be interrupted using :kbd:`Ctrl` +
+:kbd:`C`, which will give you the option to cancel the build and perform
+cleanup. If cancelled, you will not have the option to :ref:`recover this build
+later <recover-interrupted-builds>`.
 
 
 .. _recover-interrupted-builds:
