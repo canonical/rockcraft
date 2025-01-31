@@ -190,8 +190,8 @@ when they fail. It uses Pebble's layer specification syntax, with each
 entry corresponding to a check. Each check can be one of three types:
 ``http``, ``tcp`` or ``exec``.
 
-.. _platforms:
 
+.. _platforms:
 
 ``platforms``
 -------------
