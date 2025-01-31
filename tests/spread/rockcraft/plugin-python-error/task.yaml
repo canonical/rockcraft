@@ -1,4 +1,5 @@
 summary: Check that invalid Python plugin cases fail the build
+priority: 50
 environment:
   BASE/base_2204: "ubuntu@22.04"
   BASE/bare: "bare"

@@ -1,4 +1,5 @@
 summary: go extension test
+priority: 50
 environment:
   SCENARIO/bare: bare
   SCENARIO/base_2404: ubuntu-24.04

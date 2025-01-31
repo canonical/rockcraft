@@ -1,4 +1,5 @@
 summary: Build rocks with Python 3.6 with bases bare and ubuntu@20.04
+priority: 50
 environment:
   BASE/base_2004: "ubuntu@20.04"
   BASE/bare: "bare"

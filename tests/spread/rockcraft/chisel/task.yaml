@@ -1,4 +1,5 @@
 summary: a test that checks rocks created with Chisel slices
+priority: 50
 
 execute: |
   run_rockcraft pack

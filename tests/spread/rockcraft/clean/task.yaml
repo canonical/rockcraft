@@ -1,4 +1,5 @@
 summary: rockcraft clean test
+priority: 50
 
 execute: |
   run_rockcraft pull
