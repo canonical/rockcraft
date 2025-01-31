@@ -77,8 +77,8 @@ to compile curl with incorrect build options:
 uv plugin
 ~~~~~~~~~
 
-We added a plugin to build Python projects that use `uv`_, a performant package and
-project manager. See the :ref:`craft_parts_uv_plugin` reference
+We added a plugin to build Python projects that use `uv`_, a performant package
+and project manager. See the :ref:`craft_parts_uv_plugin` reference
 for details.
 
 JLink plugin
