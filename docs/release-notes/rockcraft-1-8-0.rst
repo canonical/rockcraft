@@ -95,16 +95,25 @@ We added a completion file to the Rockcraft snap, which provides command-line
 completion of commands and options in Bash-compatible shells. Try it out by
 typing ``rockcraft`` and pressing :kbd:`Tab` in your terminal.
 
+
+Remote build how-to guide
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+We published :ref:`outsource-rock-builds-to-launchpad`, a how-to guide for
+remote rock builds.
+
+
 Contributors
 ------------
 
 We would like to express a big thank you to all the people who contributed to
 this release.
 
-:literalref:`@benhoyt<https://github.com/@benhoyt>`,
-:literalref:`@bepri<https://github.com/@bepri>`,
-:literalref:`@vpa1977<https://github.com/@vpa1977>`,
-and :literalref:`@tigarmo<https://github.com/tigarmo>`.
+:literalref:`@benhoyt<https://github.com/benhoyt>`,
+:literalref:`@bepri<https://github.com/bepri>`,
+:literalref:`@jahn-junior<https://github.com/jahn-junior>`,
+:literalref:`@tigarmo<https://github.com/tigarmo>`.
+and :literalref:`@vpa1977<https://github.com/vpa1977>`.
 
 .. _jlink: https://docs.oracle.com/en/java/javase/21/docs/specs/man/jlink.html
 .. _uv: https://docs.astral.sh/uv/
