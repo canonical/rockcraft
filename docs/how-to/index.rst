@@ -15,6 +15,7 @@ adapt the steps to fit your specific requirements.
 
    Get started - quick guide <get-started>
    Build a 12-factor app rock <build-a-12-factor-app-rock>
+   Outsource rock builds to Launchpad <outsource-rock-builds-to-launchpad>
 
 Chisel
 ------

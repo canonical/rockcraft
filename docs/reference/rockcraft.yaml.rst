@@ -191,6 +191,8 @@ entry corresponding to a check. Each check can be one of three types:
 ``http``, ``tcp`` or ``exec``.
 
 
+.. _platforms:
+
 ``platforms``
 -------------
 
