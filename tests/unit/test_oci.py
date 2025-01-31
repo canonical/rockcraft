@@ -42,52 +42,52 @@ MOCK_NEW_USER = {
 }
 
 
-@pytest.fixture()
+@pytest.fixture
 def mock_run(mocker):
     return mocker.patch("rockcraft.oci._process_run")
 
 
-@pytest.fixture()
+@pytest.fixture
 def mock_archive_layer(mocker):
     return mocker.patch("rockcraft.layers.archive_layer")
 
 
-@pytest.fixture()
+@pytest.fixture
 def mock_rmtree(mocker):
     return mocker.patch("shutil.rmtree")
 
 
-@pytest.fixture()
+@pytest.fixture
 def mock_mkdir(mocker):
     return mocker.patch("pathlib.Path.mkdir")
 
 
-@pytest.fixture()
+@pytest.fixture
 def mock_mkdtemp(mocker):
     return mocker.patch("tempfile.mkdtemp")
 
 
-@pytest.fixture()
+@pytest.fixture
 def mock_tmpdir(mocker):
     return mocker.patch("tempfile.TemporaryDirectory")
 
 
-@pytest.fixture()
+@pytest.fixture
 def mock_inject_variant(mocker):
     return mocker.patch("rockcraft.oci._inject_architecture_variant")
 
 
-@pytest.fixture()
+@pytest.fixture
 def mock_read_bytes(mocker):
     return mocker.patch("pathlib.Path.read_bytes")
 
 
-@pytest.fixture()
+@pytest.fixture
 def mock_write_bytes(mocker):
     return mocker.patch("pathlib.Path.write_bytes")
 
 
-@pytest.fixture()
+@pytest.fixture
 def mock_add_layer(mocker):
     return mocker.patch("rockcraft.oci.Image.add_layer")
 
@@ -313,7 +313,7 @@ class TestImage:
         tmp_path,
     ):
         fake_tmpfs = tmp_path / "mock-tmp"
-        mock_tmpdir.return_value = fake_tmpfs
+        mock_tmpdir.return_value.__enter__.return_value = str(fake_tmpfs)
 
         image = oci.Image("a:b", Path("/c"))
         image.add_user(
@@ -457,7 +457,7 @@ class TestImage:
                 (fake_prime_etc / f".wh.{filename}").touch()
 
         fake_tmp_new_layer = tmp_path / "mock-tmp"
-        mock_tmpdir.return_value = fake_tmp_new_layer
+        mock_tmpdir.return_value.__enter__.return_value = str(fake_tmp_new_layer)
 
         image = oci.Image("a:b", Path("/c"))
         image.add_user(
@@ -746,7 +746,7 @@ class TestImage:
         mock_define_pebble_layer.return_value = None
 
         fake_tmpfs = tmp_path / "mock-tmp-pebble-layer-path"
-        mock_tmpdir.return_value = fake_tmpfs
+        mock_tmpdir.return_value.__enter__.return_value = str(fake_tmpfs)
 
         image.set_pebble_layer(
             mock_services,
