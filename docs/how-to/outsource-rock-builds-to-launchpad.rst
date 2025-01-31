@@ -6,8 +6,8 @@ Outsource rock builds to Launchpad
 
 This guide will show you how to outsource your rock builds to Launchpad's `build
 farm <https://launchpad.net/builders>`_ using the ``remote-build`` command. By
-building remotely, you will be able to concurrently assemble your rocks
-for any of Rockcraft's supported architectures.
+building remotely, you can concurrently assemble your rocks for any of
+Rockcraft's supported architectures.
 
 .. important::
 
@@ -20,8 +20,8 @@ for any of Rockcraft's supported architectures.
 Sign up for a Launchpad account
 -------------------------------
 
-In order to use Rockcraft's ``remote-build`` command, you will need to register
-for an account on `Launchpad <https://launchpad.net>`_.
+To use Rockcraft's ``remote-build`` command, you will need to register for an
+account on `Launchpad <https://launchpad.net>`_.
 
 If you do not already have an account, you can sign up `here
 <https://login.launchpad.net>`_.
@@ -87,9 +87,9 @@ browser. If this is your first time initiating a remote build from your current
 machine, you will then be asked to authorize access to your Launchpad account.
 
 Once authorized, your project will be uploaded to Launchpad and placed in the
-build queues for each architecture defined in your project file.
-Unless a local timeout was specified, the status of each build will be
-continuously monitored and reported back to you.
+build queues for each architecture defined in your project file. Unless
+interrupted locally, the status of each build will be continuously monitored and
+reported back to you.
 
 
 Check the build results
