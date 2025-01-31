@@ -1,0 +1,3 @@
+base: bare
+build-base: ubuntu@24.04
+name: bare-build-2404
