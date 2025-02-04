@@ -22,7 +22,7 @@ dependencies = [
     "craft-application",
     "craft-archives",
     "craft-cli",
-    "craft-parts",
+    "craft-parts @ git+https://github.com/canonical/craft-parts@work/uv-plugin-system-interpreter/CRAFT-4010",
     "craft-platforms",
     "craft-providers",
     "overrides",
