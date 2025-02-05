@@ -6,7 +6,7 @@ license: Apache-2.0
 version: latest
 base: ubuntu@22.04
 
-services: 
+services:
   webserver:
     override: replace
     command: timeout 30 nginx -g 'daemon off;'
@@ -39,7 +39,7 @@ package-repositories:
   - type: apt
     url: https://nginx.org/packages/mainline/ubuntu
     key-id: 573BFD6B3D8FBC641079A6ABABF5BD827BD9BF62
-    suites: 
+    suites:
       - jammy
     components:
       - nginx

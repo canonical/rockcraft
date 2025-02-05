@@ -31,6 +31,7 @@ from craft_parts import (
     callbacks,
 )
 from craft_parts.state_manager.prime_state import PrimeState
+from rockcraft.plugins.python_common import get_python_plugins
 from rockcraft.services import lifecycle as lifecycle_module
 
 #  pylint: disable=protected-access
@@ -99,7 +100,7 @@ def test_lifecycle_package_repositories(
     mock_callback.assert_called_once_with(repositories.install_overlay_repositories)
 
 
-@pytest.mark.parametrize("plugin_name", ["python", "poetry"])
+@pytest.mark.parametrize("plugin_name", get_python_plugins())
 def test_python_usrmerge_fix(tmp_path, plugin_name):
     # The test setup is rather involved because we need to recreate/mock an
     # exact set of circumstances here:

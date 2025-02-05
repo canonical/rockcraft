@@ -191,6 +191,8 @@ entry corresponding to a check. Each check can be one of three types:
 ``http``, ``tcp`` or ``exec``.
 
 
+.. _platforms:
+
 ``platforms``
 -------------
 
@@ -274,4 +276,4 @@ Example
     :language: yaml
 
 
-.. _`Pebble Layer Specification format`:  https://github.com/canonical/pebble#layer-specification
+.. _`Pebble Layer Specification format`:  https://canonical-pebble.readthedocs-hosted.com/en/latest/reference/layer-specification/

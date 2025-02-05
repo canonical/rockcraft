@@ -41,6 +41,7 @@ license: Apache-2.0
 
 platforms:
     amd64:
+    arm64:
 
 parts:
     foo:
@@ -54,6 +55,7 @@ parts:
 """
 
 
+@pytest.mark.slow
 def test_global_environment(
     new_dir,
     monkeypatch,

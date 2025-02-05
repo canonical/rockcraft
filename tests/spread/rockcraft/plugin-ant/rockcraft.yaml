@@ -1,0 +1,22 @@
+name: plugin-ant
+base: bare
+build-base: ubuntu@24.04
+
+version: "0.1"
+summary: A rock that bundles an Ant project.
+description: A rock that bundles an Ant project.
+license: GPL-3.0
+platforms:
+  amd64:
+
+parts:
+  ant-sample:
+    plugin: ant
+    source: sample
+    ant-build-targets: [compile, jar]
+    stage-packages:
+      - openjdk-21-jre-headless_core
+      - base-files_base
+    build-packages:
+      - ant
+      - openjdk-21-jdk-headless

@@ -27,3 +27,5 @@ code into container applications:
    5. Build a rock for a Flask application <flask.rst>
    6. Build a rock for a Django application <django.rst>
    7. Build a rock for a FastAPI application <fastapi.rst>
+   8. Build a rock for a Go application <go.rst>
+

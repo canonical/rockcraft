@@ -88,13 +88,14 @@ exclude_patterns = [
     "common/craft-parts/reference/step_output_directories.rst",
     "common/craft-parts/reference/plugins/poetry_plugin.rst",
     "common/craft-parts/reference/plugins/python_plugin.rst",
+    "common/craft-parts/reference/plugins/uv_plugin.rst",
     # Extra non-craft-parts exclusions can be added after this comment
 ]
 
 linkcheck_ignore = [
     "http://0.0.0.0:8080",
     "https://github.com/canonical/craft-actions#rockcraft-pack",
-    "https://github.com/canonical/pebble#layer-specification",
+    "https://canonical-pebble.readthedocs-hosted.com/en/latest/reference/layer-specification/",
     "https://juju.is/cloud-native-kubernetes-usage-report-2021#selection-criteria-for-container-images",
     "https://matrix.to/#/#rocks:ubuntu.com",
     # Ignore changelog links to Rockcraft releases, because the changelog entries

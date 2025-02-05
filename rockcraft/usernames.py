@@ -16,7 +16,6 @@
 
 """List of allowed shared usernames/UIDs (analogously to SnapD)."""
 
-
 import pydantic
 
 

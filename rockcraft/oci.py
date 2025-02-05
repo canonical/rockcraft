@@ -269,9 +269,9 @@ class Image:
                 )
             )
 
-        user_files[
-            "passwd"
-        ] += f"{username}:x:{uid}:{uid}::/{Pebble.PEBBLE_PATH}:/usr/bin/false\n"
+        user_files["passwd"] += (
+            f"{username}:x:{uid}:{uid}::/{Pebble.PEBBLE_PATH}:/usr/bin/false\n"
+        )
         user_files["group"] += f"{username}:x:{uid}:\n"
 
         with tempfile.TemporaryDirectory() as tmpfs:
@@ -344,15 +344,16 @@ class Image:
         src_path = self.path / f"{name}:{tag}"
         _copy_image(f"oci:{str(src_path)}", f"oci-archive:{filename}:{tag}")
 
-    def set_default_user(self, user: str) -> None:
+    def set_default_user(self, userid: int, username: str) -> None:
         """Set the default runtime user for the OCI image.
 
-        :param user: name of the default user (must already exist)
+        :param userid: userid of the default user (must already exist)
+        :param username: username of the default user (must already exist)
         """
         image_path = self.path / self.image_name
-        params = ["--clear=config.entrypoint", "--config.user", user]
+        params = ["--clear=config.entrypoint", "--config.user", str(userid)]
         _config_image(image_path, params)
-        emit.progress(f"Default user set to {user}")
+        emit.progress(f"Default user set to {userid} ({username})")
 
     def set_entrypoint(self, entrypoint_service: str | None, build_base: str) -> None:
         """Set the OCI image entrypoint. It is always Pebble."""

@@ -25,7 +25,7 @@ slices:
 
   data:
     contents:
-      /usr/lib/ssl/cert.pem: {symlink: /etc/ssl/certs/ca-certificates.crt}
+      /usr/lib/ssl/cert.pem: { symlink: /etc/ssl/certs/ca-certificates.crt }
 
   copyright:
     contents:

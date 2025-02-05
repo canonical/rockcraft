@@ -30,21 +30,18 @@ https://documentation.ubuntu.com/rockcraft/en/stable/
 
 .. |snap| image:: https://snapcraft.io/rockcraft/badge.svg
     :alt: Snap Status
-    :scale: 100%
     :target: https://snapcraft.io/rockcraft
 
 .. |docs| image:: https://readthedocs.com/projects/canonical-rockcraft/badge/?version=stable
     :alt: Documentation Status
-    :scale: 100%
     :target: https://documentation.ubuntu.com/rockcraft/en/stable/?badge=stable
 
 .. |Snap Store| image:: https://snapcraft.io/static/images/badges/en/snap-store-black.svg
     :alt: Get it from the Snap Store
-    :scale: 100%
     :target: https://snapcraft.io/rockcraft
 
 
-  
+
 Testing
 -------
 
@@ -78,4 +75,3 @@ a number of integrated tests in :code:`tests/spread` can be run with `Spread`_. 
 
 .. _Spread: https://github.com/snapcore/spread
 .. _general notes: https://github.com/snapcore/snapcraft/blob/main/TESTING.md#spread-tests-for-the-snapcraft-snap
-

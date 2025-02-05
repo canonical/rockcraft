@@ -7,13 +7,15 @@ environment:
   PATH: /snap/bin:$PATH:$SNAPD_TESTING_TOOLS:$PROJECT_PATH/tools/spread
 
 include:
-    - tests/
-    - tools/
-    - docs/
-    - requirements-doc.txt
-    - requirements-jammy.txt
-    - Makefile
-    - rockcraft/
+  - tests/
+  - tools/
+  - docs/
+  - requirements-noble.txt
+  - Makefile
+  - common.mk
+  - uv.lock
+  - pyproject.toml
+  - rockcraft/
 
 backends:
   google:
@@ -84,11 +86,11 @@ prepare: |
     snap install docker --channel=core18/stable
   else
     snap install docker
-  fi  
+  fi
 
   # make sure docker is working
   retry -n 10 --wait 2 sh -c 'docker run --rm hello-world'
-  
+
   install_rockcraft
 
 restore-each: |
@@ -101,7 +103,7 @@ restore-each: |
         lxc --project=rockcraft delete --force "$instance"
       fi
     done
-  fi  
+  fi
 
 debug-each: |
   # output latest rockcraft log file on test failure
@@ -118,27 +120,27 @@ suites:
   docs/tutorial/code/:
     summary: tests tutorial from the docs
     systems:
-    - ubuntu-22.04-64
+      - ubuntu-22.04-64
 
   docs/how-to/code/:
     summary: tests how-to guides from the docs
     systems:
-    - ubuntu-22.04-64
+      - ubuntu-22.04-64
 
   docs/reference/code/:
     summary: tests reference code from the docs
     systems:
-    - ubuntu-22.04-64
+      - ubuntu-22.04-64
 
   docs/reuse/tutorial/code/:
     summary: tests reusable code from the docs
     systems:
-    - ubuntu-22.04-64
+      - ubuntu-22.04-64
 
   tests/spread/rockcraft/:
     summary: tests for rockcraft core functionality, independent of host system
     systems:
-    - ubuntu-22.04-64
+      - ubuntu-22.04-64
 
   tests/spread/foreign/:
     summary: tests that rockcraft and rocks work on different host systems
@@ -147,4 +149,4 @@ suites:
     summary: manually-triggered tests, like bigger tests and flaky ones
     manual: true
     systems:
-    - ubuntu-22.04-64
+      - ubuntu-22.04-64

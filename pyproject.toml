@@ -1,9 +1,107 @@
+[project]
+name = "rockcraft"
+dynamic = ["version"]
+description = "Create rocks"
+license = {file = "LICENSE"}
+readme = "README.rst"
+requires-python = ">= 3.10"
+authors = [
+    { name = "Canonical Ltd.", email = "snapcraft@lists.snapcraft.io" },
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Operating System :: MacOS :: MacOS X",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+    "craft-application",
+    "craft-archives",
+    "craft-cli",
+    "craft-parts",
+    "craft-platforms",
+    "craft-providers",
+    "overrides",
+    "spdx-lookup",
+    "tabulate",
+]
+
+[project.scripts]
+rockcraft = "rockcraft.cli:run"
+
+[project.optional-dependencies]
+dev = [
+    "coverage",
+    "pytest",
+    "pytest-check>=2.0",
+    "pytest-mock",
+    "pytest-subprocess",
+]
+docs = [
+    "canonical-sphinx[full]",
+    "pyspelling",
+    "sphinx-autobuild",
+    "sphinx-autodoc-typehints",
+    "sphinx-lint",
+    "sphinx-toolbox",
+    "sphinxcontrib-details-directive",
+]
+release = [
+    "twine",
+    "wheel",
+]
+lint = [
+    "codespell[toml]",
+]
+types = [
+    "mypy[reports]~=1.11",
+    "types-python-dateutil",
+    "types-PyYAML",
+    "types-requests<2.31.0.20240312",  # Frozen until we can get urllib3 v2
+    "types-setuptools",
+    "types-tabulate",
+    "types-urllib3",
+]
+apt-jammy = [
+    # Stay on 2.4 for Jammy
+    "python-apt~=2.4.0;sys_platform=='linux'",
+]
+apt-noble = [
+    # 2.7 for Noble
+    "python-apt~=2.7.0;sys_platform=='linux'",
+]
+apt-oracular = [
+    # 2.9 for Oracular+
+    "python-apt>=2.9.0;sys_platform=='linux'",
+]
+apt-plucky = [
+    # 2.9 for Oracular+
+    "python-apt>=2.9.0;sys_platform=='linux'",
+]
+
+[project.urls]
+Documentation = "https://rockcraft.readthedocs.io/en/latest/"
+Homepage = "https://github.com/canonical/rockcraft"
+Issues = "https://github.com/canonical/rockcraft/issues"
+Source = "https://github.com/canonical/rockcraft.git"
+
 [build-system]
 requires = [
-    "setuptools~=70.0.0",
+    "setuptools>=69.0",
     "setuptools_scm[toml]>=7.1"
 ]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools.dynamic]
+readme = {file = "README.rst"}
+
+[tool.setuptools.packages.find]
+include = ["rockcraft", "extensions"]
+namespaces = true
 
 [tool.setuptools_scm]
 write_to = "rockcraft/_version.py"
@@ -34,6 +132,11 @@ line_length = 88
 # Use extend-exclude so that the default excludes (including those from .gitignore)
 # are not overwritten.
 extend-exclude = "docs/sphinx-starter-pack"
+
+[tool.codespell]
+quiet-level = 3
+skip = "./docs/_build,.direnv,.git,.mypy_cache,.pytest_cache,.venv,__pycache__,venv"
+ignore-words-list = "warmup,buildd,astroid"
 
 [tool.pyright]
 ignore = [
@@ -179,3 +282,65 @@ classmethod-decorators = ["pydantic.validator", "pydantic.root_validator"]
 # isort leaves init files alone by default, this makes ruff ignore them too.
 "__init__.py" = ["I001"]
 
+[[tool.uv.index]]
+name = "python-apt-wheels"
+url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/"
+
+[tool.uv]
+constraint-dependencies = [
+    "tabulate>=0.8.8",
+    "matplotlib>=3.7.0",
+    "lxml>=5.0.0",
+    "numpy>=1.22.0",
+    "build>=0.1.0",
+    "iniconfig>=1.1.0",
+    "lxml>=5.0",
+    "pyparsing>=3.0.0",
+    "pyproject-hooks>=1.0.0",
+    "pyyaml>=5.0",
+    "markdown>=3.0",
+    "markupsafe>=2.0",
+    "regex>=2021.11.10",
+    "sphinx-basic-ng>=1.0.0b1",
+    "tornado>=4.0",
+    "webencodings>=0.4.0",
+    "launchpadlib>=1.11",
+    "lazr-uri>=1.0.6",
+    "libnacl>=2.0",
+    "oauthlib>=3.0",
+    "setuptools>=65",
+    "cffi>=1.15",
+    "pynacl>=1.4.0",
+    "keyring>=24",
+    "jaraco-classes>=3.2",
+    "pyxdg>=0.27",
+    "pytz>=2020",
+    "protobuf>=5.0",
+    "overrides>=7.3",
+    "requests-unixsocket>=0.3",
+]
+conflicts = [
+    [
+        { extra = "apt-jammy" },
+        { extra = "apt-noble" },
+        { extra = "apt-oracular" },
+        { extra = "apt-plucky" },
+    ]
+]
+
+[dependency-groups]
+dev = [
+    "coverage>=7.6.8",
+    "freezegun>=1.5.1",
+    "hypothesis>=6.122.1",
+    "poetry>=2.0.0",  # Needed for testing the poetry plugin.
+    "poetry-plugin-export",
+    "pyfakefs>=5.7.2",
+    "pylint>=3.3.2",
+    "pytest>=8.3.4",
+    "pytest-check>=2.4.1",
+    "pytest-cov>=6.0.0",
+    "pytest-mock>=3.14.0",
+    "pytest-subprocess>=1.5.2",
+    "responses>=0.25.3",
+]

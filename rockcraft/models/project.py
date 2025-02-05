@@ -15,6 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 """Project definition and helpers."""
+
 import copy
 import re
 import shlex
@@ -66,7 +67,7 @@ Valid names for rocks. It matches the accepted values for pebble layer files:
 - must contain only lowercase letters [a-z], numbers [0-9] or hyphens
 - must not end with a hyphen, and must not contain two or more consecutive hyphens
 """
-_PROJECT_NAME_COMPILED_REGEX = re.compile(PROJECT_NAME_REGEX)
+PROJECT_NAME_COMPILED_REGEX = re.compile(PROJECT_NAME_REGEX)
 
 MESSAGE_INVALID_NAME = (
     "invalid name for rock: Names can only use ASCII lowercase letters, numbers, and hyphens. "
@@ -80,7 +81,7 @@ DEPRECATED_COLON_BASES = ["ubuntu:20.04", "ubuntu:22.04"]
 ProjectName = Annotated[
     str,
     pydantic.BeforeValidator(
-        get_validator_by_regex(_PROJECT_NAME_COMPILED_REGEX, MESSAGE_INVALID_NAME)
+        get_validator_by_regex(PROJECT_NAME_COMPILED_REGEX, MESSAGE_INVALID_NAME)
     ),
     pydantic.Field(
         min_length=1,
@@ -309,7 +310,8 @@ class Project(BuildPlanner, BaseProject):  # type: ignore[misc]
     @pydantic.field_validator("license")
     @classmethod
     def _validate_license(
-        cls, license: str | None  # pylint: disable=redefined-builtin  # noqa: A002
+        cls,
+        license: str | None,  # pylint: disable=redefined-builtin  # noqa: A002
     ) -> str | None:
         """Make sure the provided license is valid and in SPDX format."""
         if not license:
@@ -480,10 +482,10 @@ def load_project(filename: Path) -> dict[str, Any]:
         with open(filename, encoding="utf-8") as yaml_file:
             yaml_data = yaml.safe_load(yaml_file)
     except OSError as err:
-        msg = err.strerror
+        msg = err.strerror or "unknown"
         if err.filename:
             msg = f"{msg}: {err.filename!r}."
-        raise ProjectLoadError(msg) from err
+        raise ProjectLoadError(str(msg)) from err
 
     return transform_yaml(filename.parent, yaml_data)
 
@@ -508,19 +510,25 @@ def _add_pebble_data(yaml_data: dict[str, Any]) -> None:
     (eventually) used as the image's entrypoint.
 
     :param yaml_data: The project spec loaded from "rockcraft.yaml".
-    :raises CraftValidationError: If `yaml_data` already contains a "pebble" part.
+    :raises CraftValidationError: If `yaml_data` already contains a "pebble" part,
+      and said part's contents are different from the contents of the part we add.
     """
     if "parts" not in yaml_data:
         # Invalid project: let it return to fail in the regular validation flow.
         return
 
-    parts = yaml_data["parts"]
-    if "pebble" in parts:
-        # Project already has a pebble part: this is not supported.
-        raise CraftValidationError('Cannot override the default "pebble" part')
-
     # do not modify the original data with pre-validators
     model = BuildPlanner.unmarshal(copy.deepcopy(yaml_data))
     build_base = model.build_base if model.build_base else model.base
+    pebble_part = Pebble.get_part_spec(build_base)
 
-    parts["pebble"] = Pebble.get_part_spec(build_base)
+    parts = yaml_data["parts"]
+    if "pebble" in parts:
+        if parts["pebble"] == pebble_part:
+            # Project already has the correct pebble part.
+            return
+        # Project already has a pebble part, and it's different from ours;
+        # this is currently not supported.
+        raise CraftValidationError('Cannot change the default "pebble" part')
+
+    parts["pebble"] = pebble_part

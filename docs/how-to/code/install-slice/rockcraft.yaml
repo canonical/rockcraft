@@ -1,18 +1,17 @@
 name: custom-openssl-rock
 base: bare
-build_base: "ubuntu@22.04"
-version: '0.0.1'
+build-base: "ubuntu@22.04"
+version: "0.0.1"
 summary: A chiselled rock with a custom OpenSSL slice
 description: |
-    A rock containing only the binaries (and corresponding dependencies) from the OpenSSL package.
-    Built from a custom Chisel release.
+  A rock containing only the binaries (and corresponding dependencies) from the OpenSSL package.
+  Built from a custom Chisel release.
 license: GPL-3.0
 platforms:
-    amd64:
+  amd64:
 parts:
-    build-context:
-        plugin: nil
-        source: chisel-releases/
-        source-type: local
-        override-build:
-            chisel cut --release ./ --root ${CRAFT_PART_INSTALL} openssl_bins
+  build-context:
+    plugin: nil
+    source: chisel-releases/
+    source-type: local
+    override-build: chisel cut --release ./ --root ${CRAFT_PART_INSTALL} openssl_bins

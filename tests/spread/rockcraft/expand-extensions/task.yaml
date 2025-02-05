@@ -1,0 +1,14 @@
+summary: test that the output expand-extensions can be packed
+
+execute: |
+  run_rockcraft init
+
+  run_rockcraft expand-extensions > new-rockcraft.yaml
+  mv new-rockcraft.yaml rockcraft.yaml
+
+  run_rockcraft pack
+
+  test -f expand-extensions*.rock
+
+restore: |
+  rm -f expand-extensions*.rock
