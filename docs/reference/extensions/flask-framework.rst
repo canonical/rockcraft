@@ -66,20 +66,6 @@ rock:
    docker run --name flask-container -d -p 8000:8000 flask-image:1.0 \
    --args flask sync
 
-``parts`` > ``flask-framework/dependencies`` > ``stage-packages``
-=================================================================
-
-You can use this key to specify any dependencies required for your Flask
-application. In the following example we use it to specify ``libpq-dev``:
-
-.. code-block:: yaml
-
-  parts:
-    flask-framework/dependencies:
-      stage-packages:
-        # list required packages or slices for your flask app below.
-        - libpq-dev
-
 ``parts`` > ``flask-framework/install-app`` > ``prime``
 =======================================================
 
