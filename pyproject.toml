@@ -20,11 +20,10 @@ classifiers = [
 ]
 dependencies = [
     "craft-application @ git+https://github.com/canonical/craft-application.git@feature/pro-sources",
-    "craft-archives",
     "craft-cli",
-    "craft-parts @ git+https://github.com/canonical/craft-application.git@feature/pro-sources",
+    "craft-parts @ git+https://github.com/canonical/craft-parts.git@feature/pro-sources",
     "craft-platforms",
-    "craft-providers @ git+https://github.com/canonical/craft-application.git@feature/pro-sources",
+    "craft-providers @ git+https://github.com/canonical/craft-providers.git@feature/pro-sources",
     "overrides",
     "spdx-lookup",
     "tabulate",
