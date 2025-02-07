@@ -45,6 +45,7 @@ html_context = {
     "product_page": "github.com/canonical/rockcraft",
     "discourse": "https://discourse.ubuntu.com/c/rocks/117",
     "github_url": "https://github.com/canonical/rockcraft",
+    "github_issues": "https://github.com/canonical/rockcraft/issues",
     "display_contributors": False,
 }
 
