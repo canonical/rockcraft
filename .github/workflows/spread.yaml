@@ -9,7 +9,7 @@ on:
 
 jobs:
   snap-build:
-    runs-on: ubuntu-22.04
+    runs-on: [self-hosted, amd64, large]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
