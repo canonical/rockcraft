@@ -193,10 +193,8 @@ craft_parts_docs_path = pathlib.Path(craft_parts_docs.__file__).parent / "craft-
     craft_parts_docs_path, target_is_directory=True
 )
 
-# By default, the documentation includes a feedback button at the top.
-# You can disable it by setting the following configuration to True.
-disable_feedback_button = False
-
-html_js_files = ['header-nav.js']
-if 'github_issues' in html_context and html_context['github_issues'] and not disable_feedback_button:
-    html_js_files.append('github_issue_links.js')
+# Workaround to enable extra scripts in page template
+html_js_files = [
+    'header-nav.js', # "More links" onclick events from canonical-sphinx-extensions
+    'github_issue_links.js', # Feedback button from canonical-sphinx-extensions
+]
