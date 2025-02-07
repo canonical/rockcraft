@@ -192,9 +192,3 @@ craft_parts_docs_path = pathlib.Path(craft_parts_docs.__file__).parent / "craft-
 (common_docs_path / "craft-parts").symlink_to(
     craft_parts_docs_path, target_is_directory=True
 )
-
-# Workaround to enable extra scripts in page template
-html_js_files = [
-    'header-nav.js', # "More links" onclick events from canonical-sphinx-extensions
-    'github_issue_links.js', # Feedback button from canonical-sphinx-extensions
-]
