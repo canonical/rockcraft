@@ -317,6 +317,8 @@ It will register the new ``/time`` endpoint:
 
 .. literalinclude:: code/expressjs/time_app.js
     :language: javascript
+    :start-after: [docs:append-lines]
+    :end-before: [docs:append-lines-end]
 
 Since we are creating a new version of the application, open the
 ``rockcraft.yaml`` file and change the ``version`` (e.g. to ``0.2``).

@@ -104,9 +104,10 @@ execute: |
 
   mv time.js app/routes/
   original_line="var app = express();"
-  append_line="var timeRouter = require('./routes/time');\
-  app.use('/time', timeRouter);"
-  sed -i "s@$original_line@&\n$append_line@g" app.js
+  # Remove comments from time_app.js
+  sed -i 's:^//.*::g' time_app.js
+  append_line="$(cat time_app.js | tr '\n' ' ')"
+  sed -i "s@$original_line@\n$append_line\n@g" app.js
   sed -i "s/version: .*/version: 0.2/g" rockcraft.yaml
 
   # [docs:docker-run-update]
