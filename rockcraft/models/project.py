@@ -536,7 +536,7 @@ def _add_pebble_data(yaml_data: dict[str, Any]) -> None:
 
 
 def _add_apt_upgrade_data(yaml_data: dict[str, Any]) -> None:
-    """Add hidden part to execute apt-get upgrade. on overlay"""
+    """Add hidden part to execute apt-get upgrade. on overlay."""
     part_name = "_apt-upgrade"
     part_content = {
         "plugin": "nil",
