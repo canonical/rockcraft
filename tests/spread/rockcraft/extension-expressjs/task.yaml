@@ -53,10 +53,10 @@ execute: |
   # test the expressjs service with a Node version specified
   node_version=20.18.2
   cat <<EOF >> rockcraft.yaml
-  parts:
-    expressjs-framework/install-app:
-      npm-include-node: true
-      npm-node-version: $node_version
+    parts:
+      expressjs-framework/install-app:
+        npm-include-node: true
+        npm-node-version: $node_version
   EOF
   run_test
 
