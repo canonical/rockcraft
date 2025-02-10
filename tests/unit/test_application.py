@@ -46,6 +46,8 @@ parts:
     plugin: nil
 """
 
+pytestmark = [pytest.mark.usefixtures("enable_overlay_feature")]
+
 
 def test_application_expand_environment(new_dir, default_application):
     project_file = Path(new_dir) / "rockcraft.yaml"
