@@ -51,13 +51,18 @@ execute: |
   run_test
 
   # test the expressjs service with a Node version specified
+  node_version=20.18.2
   cat <<EOF >> rockcraft.yaml
   parts:
     expressjs-framework/install-app:
       npm-include-node: true
-      npm-node-version: 20.18.2
+      npm-node-version: $node_version
   EOF
   run_test
+
+  container_id=$(docker ps -q -f name="${NAME}-container")
+  container_node_version=$(sudo docker exec $container_id node --version)
+  [ "$container_node_version" = "$node_version" ]
 
 restore: |
   NAME="expressjs-${SCENARIO//./-}"
