@@ -55,6 +55,19 @@ EXPECTED_EXPAND_EXTENSIONS = textwrap.dedent(
       full-extension/new-part:
         plugin: nil
         source: null
+      _apt-upgrade:
+        plugin: nil
+        overlay-script: craftctl chroot bash -c "apt-get update && apt-get -y upgrade"
+      pebble:
+        plugin: nil
+        stage-snaps:
+        - pebble/latest/stable
+        override-prime: |-
+          craftctl default
+          mkdir -p var/lib/pebble/default/layers
+          chmod 777 var/lib/pebble/default
+        stage:
+        - bin/pebble
     services:
       my-service:
         override: merge
@@ -64,6 +77,8 @@ EXPECTED_EXPAND_EXTENSIONS = textwrap.dedent(
         command: fake command
     """
 )
+
+pytestmark = [pytest.mark.usefixtures("enable_overlay_feature")]
 
 
 @pytest.fixture
