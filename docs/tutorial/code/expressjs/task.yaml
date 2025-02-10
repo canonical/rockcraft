@@ -22,7 +22,7 @@ execute: |
   retry -n 5 --wait 2 curl --fail localhost:3000
 
   # [docs:curl-expressjs]
-  curl localhost:3000
+  curl --fail localhost:3000
   # [docs:curl-expressjs-end]
 
   kill $!
@@ -58,7 +58,7 @@ execute: |
   retry -n 5 --wait 2 curl --fail localhost:3000
 
   # [docs:curl-expressjs-rock]
-  curl localhost:3000
+  curl --fail localhost:3000
   # [docs:curl-expressjs-rock-end]
 
   # [docs:get-logs]
@@ -94,7 +94,7 @@ execute: |
   retry -n 5 --wait 2 curl --fail localhost:3000
 
   # [docs:curl-expressjs-bare-rock]
-  curl localhost:3000
+  curl --fail localhost:3000
   # [docs:curl-expressjs-bare-rock-end]
 
   # [docs:stop-docker-chisel]
