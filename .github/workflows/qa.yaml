@@ -16,3 +16,6 @@ jobs:
     uses: canonical/starflow/.github/workflows/test-python.yaml@main
     with:
       lowest-python-version: ""
+      # Disable 3.11 and 3.13 while wheels for python-apt and pygit2 are not
+      # fully available.
+      fast-test-python-versions: '["3.10", "3.12"]'
