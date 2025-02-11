@@ -185,7 +185,7 @@ View the application logs
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 When deploying the Flask rock, we can always get the application logs via
-``pebble``:
+:ref:`pebble_explanation_page`:
 
 .. literalinclude:: code/flask/task.yaml
     :language: text
@@ -193,7 +193,7 @@ When deploying the Flask rock, we can always get the application logs via
     :end-before: [docs:get-logs-end]
     :dedent: 2
 
-As a result, :ref:`pebble_explanation_page` will give us the logs for the
+As a result, Pebble will give us the logs for the
 ``flask`` service running inside the container.
 We expect to see something similar to this:
 

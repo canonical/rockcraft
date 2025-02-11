@@ -3,8 +3,8 @@
 Extensions Explanation
 **********************
 
-This section of the documentation covers the concepts used by Rockcraft
-extensions and the decisions behind its development.
+This section of the documentation covers the concepts used by the Rockcraft
+extensions and the decisions behind their development.
 
 .. toctree::
    :maxdepth: 1

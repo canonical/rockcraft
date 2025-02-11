@@ -40,7 +40,11 @@ Create the ExpressJS application using the express-generator:
     :dedent: 2
 
 Run the ExpressJS application from within the ``app/`` directory using
-``npm start`` to verify that it works.
+.. code-block:: bash
+
+    npm start
+
+to verify that it works.
 
 Test the ExpressJS application by using ``curl`` to send a request to the root
 endpoint. We'll need a new terminal for this -- if we're using Multipass, run
@@ -179,7 +183,7 @@ View the application logs
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 When deploying the ExpressJS rock, we can always get the application logs via
-``pebble``:
+:ref:`pebble_explanation_page`:
 
 .. literalinclude:: code/expressjs/task.yaml
     :language: text
@@ -187,7 +191,7 @@ When deploying the ExpressJS rock, we can always get the application logs via
     :end-before: [docs:get-logs-end]
     :dedent: 2
 
-As a result, :ref:`pebble_explanation_page` will give us the logs for the
+As a result, Pebble will give us the logs for the
 ``expressjs`` service running inside the container.
 We should expect to see something similar to this:
 

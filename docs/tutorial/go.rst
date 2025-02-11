@@ -219,7 +219,7 @@ When deploying the Go rock, we can always get the application logs with
     :end-before: [docs:get-logs-end]
     :dedent: 2
 
-As a result, ``pebble`` will give the logs for the
+As a result, Pebble will give the logs for the
 ``go`` service running inside the container.
 We should expect to see something similar to this:
 

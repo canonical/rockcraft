@@ -188,7 +188,7 @@ View the application logs
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 When deploying the Django rock, we can always get the application logs via
-``pebble``:
+:ref:`pebble_explanation_page`:
 
 .. literalinclude:: code/django/task.yaml
     :language: text
@@ -196,7 +196,7 @@ When deploying the Django rock, we can always get the application logs via
     :end-before: [docs:get-logs-end]
     :dedent: 2
 
-As a result, :ref:`pebble_explanation_page` will give us the logs for the
+As a result, Pebble will give us the logs for the
 ``django`` service running inside the container.
 We should expect to see something similar to this:
 

@@ -22,7 +22,7 @@ extension:
 
 1. The application should reside in the ``app`` directory.
 2. The application should have a ``package.json`` file.
-3. The ``package.json`` file should defined the ``start`` script.
+3. The ``package.json`` file should define the ``start`` script.
 
 
 ``parts`` > ``expressjs-framework/install-app`` > ``npm-include-node``
@@ -38,9 +38,9 @@ example:
       npm-include-node: true
       npm-node-version: 20.12.2
 
-For more examples of npm-node-version options, see: https://documentation.\
-ubuntu.com/rockcraft/en/1.5.3/common/craft-parts/reference/plugins/npm_plugin/\
-#examples
+For more examples of npm-node-version options, see: `Rockcraft | NPM Plugin |
+Examples <https://documentation.ubuntu.com/rockcraft/en/1.5.3/common/\
+craft-parts/reference/plugins/npm_plugin/#examples>`_.
 
 If you don't customise the version of node, it will be installed from the Ubuntu
 package repository.
