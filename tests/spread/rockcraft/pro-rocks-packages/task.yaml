@@ -28,7 +28,7 @@ execute: |
   ROCK_FILE="hello-world_latest_*.rock"
   BUNDLE_DIR="bundle"
   PKG_DIR="package"
-  
+
   # change into the scenario's directory
   cd $SCENARIO_DIR
 
