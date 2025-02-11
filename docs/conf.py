@@ -63,6 +63,7 @@ extensions.extend(
         "sphinx_autodoc_typehints",  # must be loaded after napoleon
         "sphinxcontrib.details.directive",
         "sphinx_toolbox.collapse",
+        "sphinxext.rediraffe",
     ]
 )
 
@@ -130,6 +131,9 @@ linkcheck_retries = 3
 napoleon_use_ivar = True
 
 # endregion
+
+# Client-side page redirects.
+rediraffe_redirects = "redirects.txt"
 
 # TODO: this is a boilerplate copy from the sphinx-docs. It should
 # be built on top of it instead of duplicating its content

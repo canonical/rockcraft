@@ -49,6 +49,7 @@ docs = [
     "sphinx-lint",
     "sphinx-toolbox",
     "sphinxcontrib-details-directive",
+    "sphinxext-rediraffe==0.2.7",
 ]
 release = [
     "twine",
