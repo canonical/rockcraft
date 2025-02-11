@@ -44,6 +44,8 @@ jobs:
           name: snap
           path: tests
       - name: Run spread
+        env:
+          UBUNTU_PRO_TOKEN: ${{ secrets.UBUNTU_PRO_TOKEN }}
         run: spread
 
       - name: Discard spread workers
