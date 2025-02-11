@@ -25,6 +25,5 @@ execute: |
   # pro services as before. This should now pass
   rockcraft pull --pro=esm-infra
 
-
 restore: |
   sudo pro detach --assume-yes

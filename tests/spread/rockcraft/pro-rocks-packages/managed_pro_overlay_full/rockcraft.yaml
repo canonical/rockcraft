@@ -8,7 +8,7 @@ base: ubuntu@22.04
 build-base: ubuntu@22.04
 
 platforms:
-  amd64:  
+  amd64:
 
 parts:
   hello:
