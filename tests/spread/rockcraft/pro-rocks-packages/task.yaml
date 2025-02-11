@@ -3,10 +3,13 @@ summary: |
 
 environment:
   PKG_GLOB: hello_*+esm1_*.deb
+  PACK_ARGS: ""
   SCENARIO/managed_pro_stage_full: managed_pro_stage_full
   SCENARIO/managed_pro_stage_chiseled: managed_pro_stage_chiseled
   SCENARIO/destructive_pro_stage_full: destructive_pro_stage_full
+  PACK_ARGS/destructive_pro_stage_full: --destructive
   SCENARIO/destructive_pro_stage_chiseled: destructive_pro_stage_chiseled
+  PACK_ARGS/destructive_pro_stage_chiseled: --destructive
   SCENARIO/managed_pro_overlay_full: managed_pro_overlay_full
   SCENARIO/managed_pro_build_full: managed_pro_build_full
 
@@ -30,7 +33,7 @@ execute: |
   cd $SCENARIO_DIR
 
   # build the rock
-  rockcraft pack --pro=esm-apps
+  rockcraft pack --pro=esm-apps $PACK_ARGS
 
   # Unpack the rootfs into "rootfs"
   mkdir -p $IMAGE_DIR
