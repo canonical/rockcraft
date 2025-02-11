@@ -4,6 +4,8 @@ summary: |
 environment:
   PKG_GLOB: hello_*+esm1_*.deb
   PACK_ARGS: ""
+  ENV_PRO_ARG: "esm-apps"
+  BUILD_PRO_ARG: "--pro=esm-apps"
   SCENARIO/managed_pro_stage_full: managed_pro_stage_full
   SCENARIO/managed_pro_stage_chiseled: managed_pro_stage_chiseled
   SCENARIO/destructive_pro_stage_full: destructive_pro_stage_full
@@ -15,10 +17,11 @@ environment:
 
   SCENARIO/managed_standard_stage_full: managed_standard_stage_full
   PKG_GLOB/managed_standard_stage_full: hello_*.deb
+  BUILD_PRO_ARG/managed_standard_stage_full: "--pro=esm-apps"
 
 prepare: |
   sudo pro attach --no-auto-enable $UBUNTU_PRO_TOKEN 
-  sudo pro enable --assume-yes esm-apps
+  sudo pro enable --assume-yes $ENV_PRO_ARG
 
 execute: |
 
@@ -33,7 +36,7 @@ execute: |
   cd $SCENARIO_DIR
 
   # build the rock
-  rockcraft pack --pro=esm-apps $PACK_ARGS
+  rockcraft pack $BUILD_PRO_ARG $PACK_ARGS
 
   # Unpack the rootfs into "rootfs"
   mkdir -p $IMAGE_DIR
