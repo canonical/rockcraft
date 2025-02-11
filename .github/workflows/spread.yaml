@@ -53,10 +53,20 @@ jobs:
         with:
           name: snap
           path: tests
-      - name: Run spread
+
+      - name: Run Ubuntu Pro spread tests
         env:
           UBUNTU_PRO_TOKEN: ${{ secrets.UBUNTU_PRO_TOKEN }}
-        run: spread
+        run: |
+          if [ -z "$UBUNTU_PRO_TOKEN" ]; then
+            echo "Skipping Ubuntu Pro spread tests."
+            exit
+          fi
+          spread google:tests/spread/pro/
+
+      - name: Run spread
+        run: |
+          spread google:
 
       - name: Discard spread workers
         if: always()
