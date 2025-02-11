@@ -47,9 +47,12 @@ jobs:
       - name: Run remote-build tests
         env:
           LAUNCHPAD_TOKEN: "${{ secrets.LAUNCHPAD_TOKEN }}"
+          UBUNTU_PRO_TOKEN: ${{ secrets.UBUNTU_PRO_TOKEN }}
         run: spread tests/spread/rockcraft/remote-build
       - name: Run large/flaky tests
         id: flaky
+        env:
+          UBUNTU_PRO_TOKEN: ${{ secrets.UBUNTU_PRO_TOKEN }}
         run: spread tests/spread/manual/
 
       - name: Discard spread workers
