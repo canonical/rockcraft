@@ -288,7 +288,7 @@ and then using the same ``curl`` request:
     :end-before: [docs:curl-django-bare-rock-end]
     :dedent: 2
 
-Unsurprisingly, the Django application should still respond with
+The Django application should still respond with
 ``The install worked successfully! Congratulations!``.
 
 Cleanup

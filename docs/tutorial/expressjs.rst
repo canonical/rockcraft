@@ -287,7 +287,7 @@ and then using the same ``curl`` request:
     :end-before: [docs:curl-expressjs-bare-rock-end]
     :dedent: 2
 
-Unsurprisingly, the ExpressJS application should still respond with
+The ExpressJS application should still respond with
 ``Welcome to Express`` HTML.
 
 Cleanup

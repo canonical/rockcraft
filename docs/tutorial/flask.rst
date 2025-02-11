@@ -290,7 +290,7 @@ and then using the same ``curl`` request:
     :end-before: [docs:curl-flask-bare-rock-end]
     :dedent: 2
 
-Unsurprisingly, the Flask application should still respond with
+The Flask application should still respond with
 ``Hello, world!``.
 
 Cleanup

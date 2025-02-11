@@ -294,7 +294,7 @@ and then using the same ``curl`` request:
     :end-before: [docs:curl-fastapi-bare-rock-end]
     :dedent: 2
 
-Unsurprisingly, the FastAPI application should still respond with
+The FastAPI application should still respond with
 ``{"message":"Hello World"}``.
 
 Cleanup
