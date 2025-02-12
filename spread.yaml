@@ -36,7 +36,7 @@ backends:
   lxd:
     systems:
       - ubuntu-22.04:
-          workers: 4
+          workers: 1
           storage: 10G
 
 prepare: |
