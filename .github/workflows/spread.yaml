@@ -11,16 +11,6 @@ jobs:
   snap-build:
     runs-on: ubuntu-22.04
     steps:
-
-      - name: Token Test
-        env:
-          UBUNTU_PRO_TOKEN: ${{ secrets.UBUNTU_PRO_TOKEN }}
-        run: |
-          if [ -z "$UBUNTU_PRO_TOKEN" ]; then
-            echo "pro token not found"
-            exit 1
-          fi
-
       - name: Checkout code
         uses: actions/checkout@v4
         with:
