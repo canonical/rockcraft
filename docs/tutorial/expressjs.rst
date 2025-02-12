@@ -40,6 +40,7 @@ Create the ExpressJS application using the express-generator:
     :dedent: 2
 
 Run the ExpressJS application from within the ``app/`` directory using
+
 .. code-block:: bash
 
     npm start
