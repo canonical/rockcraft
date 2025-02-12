@@ -28,7 +28,7 @@ There are 2 requirements to be able to use the ``fastapi-framework`` extension:
    * ``main.py``
    * ``__init__.py``, ``app.py`` or ``main.py`` within the ``app`` or ``src``
      directory or within a directory with the name of the rock as declared in
-     ``rockcraft.yaml``.
+     the project file.
 
 ``parts`` > ``fastapi-framework/dependencies:`` > ``stage-packages``
 ====================================================================
@@ -37,6 +37,7 @@ You can use this key to specify any dependencies required for your FastAPI
 application. In the following example we use it to specify ``libpq-dev``:
 
 .. code-block:: yaml
+  :caption: rockcraft.yaml
 
   parts:
     fastapi-framework/dependencies:
@@ -53,6 +54,7 @@ your rock upon ``rockcraft pack``. Follow the ``app/<filename>`` notation. For
 example:
 
 .. code-block:: yaml
+  :caption: rockcraft.yaml
 
   parts:
     fastapi-framework/install-app:

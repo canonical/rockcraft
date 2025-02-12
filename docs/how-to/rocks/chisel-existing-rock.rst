@@ -18,9 +18,10 @@ A Python rock
 -------------
 
 Our starting point is an Ubuntu 22.04-based Python rock, described by the
-following *rockcraft.yaml* file:
+following project file:
 
 .. literalinclude:: ../code/chisel-existing-rock/rock/rockcraft.yaml
+    :caption: rockcraft.yaml
     :language: yaml
 
 This rock can be built by running:
@@ -51,13 +52,14 @@ When starting to prepare the rock for production, the main goal is to get rid
 of all the software that is not necessary at runtime, and the first step
 towards achieving that goal is to use a ``bare`` base.
 
-In a separate directory, copy the *rockcraft.yaml* from above and replace
-``base: ubuntu@22.04`` with ``base: bare``. With this change, you must also
-remember to tell Rockcraft which Ubuntu release to use for its build
+In a separate directory, copy the contents of ``rockcraft.yaml`` from above and
+replace ``base: ubuntu@22.04`` with ``base: bare``. With this change, you must
+also remember to tell Rockcraft which Ubuntu release to use for its build
 environment. Do this by adding ``build-base: ubuntu@22.04`` to the
-*rockcraft.yaml* file, which should now look like this:
+project file, which should now look like this:
 
 .. literalinclude:: ../code/chisel-existing-rock/bare-rock/rockcraft.yaml
+    :caption: rockcraft.yaml
     :language: yaml
 
 Pack this rock with the same ``rockcraft`` command as above:
@@ -95,10 +97,11 @@ Python components that are not needed for the final application.
 
 In this example, the Python application is a very simple "Hello, world", which
 means we need nothing else but the core Python modules. For that, copy the
-previous *rockcraft.yaml* file to a new directory and simply append the desired
+previous ``rockcraft.yaml`` to a new directory and simply append the desired
 package slice names to the list of ``stage-packages``, like this:
 
 .. literalinclude:: ../code/chisel-existing-rock/chiselled-rock/rockcraft.yaml
+    :caption: rockcraft.yaml
     :language: yaml
 
 Pack it with:
@@ -122,7 +125,7 @@ And the "Hello, world" script still works:
 few YAML lines and no code whatsoever! Then, by changing a couple of YAML
 fields (the ``base``), you've achieved a **~33% size reduction** while
 maintaining functionality. Finally, by appending two words (literally, just
-the slice names) to the *rockcraft.yaml*, you were able to reduce the rock's
+the slice names) to the project file, you were able to reduce the rock's
 size even further by an **additional ~37%** of its original size! In short:
 
 +---------------+------------------+-----------+

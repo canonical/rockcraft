@@ -129,11 +129,11 @@ development keeps pace with the OS's new releases and support lifecycle.
   form "is now [x]" or "now [does x]". For example, "We understand that some
   authors may not want to have their snaps publicly ranked. If you prefer to
   disable ranking for your snap, we added the ``feedback`` key in Snapcraft
-  recipes, which contains child keys for controlling many of the rating and
-  feedback features in the store. You can declare ``voting: false`` to disable
-  voting." Another example: "The Maven and Ant plugins now generate the more
-  standard path to the Java runtime executable instead of an unconventional one,
-  making their locations more predictable.">
+  project files, which contains child keys for controlling many of the rating
+  and feedback features in the store. You can declare ``voting: false`` to
+  disable voting." Another example: "The Maven and Ant plugins now generate the
+  more standard path to the Java runtime executable instead of an unconventional
+  one, making their locations more predictable.">
 
   <Paragraph 3, optional: Provide a call to action. This could take several
   forms, such as a call to immediately perform a relevant action in Starcraft,

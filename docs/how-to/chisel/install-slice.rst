@@ -64,11 +64,12 @@ Start by initialising a new Rockcraft project:
 After this command, you should find a new ``rockcraft.yaml`` file in your
 current path.
 
-Adjust the ``rockcraft.yaml`` file according to the following content (feel
+Adjust the project file according to the following content (feel
 free to adjust the metadata, but pay special attention to the ``parts``
 section):
 
 .. literalinclude:: ../code/install-slice/rockcraft.yaml
+    :caption: rockcraft.yaml
     :language: yaml
 
 The "build-context" part allows you to send the local ``chisel-releases``

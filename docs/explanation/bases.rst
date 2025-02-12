@@ -3,10 +3,10 @@
 Bases
 =====
 
-One mandatory field for every rock project is the
+One mandatory key for every rock project is the
 :ref:`base <rockcraft_yaml_base>`.
 
-This field defines the baseline system upon which the rock's contents shall be
+This key defines the baseline system upon which the rock's contents shall be
 layered on. Only Ubuntu and ``bare``
 :ref:`bases <rockcraft_yaml_base>` are supported.
 
@@ -54,8 +54,8 @@ Note that, when using the ``bare``
 as the :ref:`build environment <rockcraft_yaml_build_base>` for the rock.
 
 For example, if the goal is to have a tiny chiselled rock with software
-components coming from the Ubuntu 24.04 release, then the *rockcraft.yaml*
-file must have ``base: bare`` and ``build-base: ubuntu@24.04``.
+components coming from the Ubuntu 24.04 release, then the project file must have
+``base: bare`` and ``build-base: ubuntu@24.04``.
 
 The guide ":ref:`chisel_existing_rock`" provides a practical example on how to
 start from a rock with an Ubuntu :ref:`base <rockcraft_yaml_base>` and

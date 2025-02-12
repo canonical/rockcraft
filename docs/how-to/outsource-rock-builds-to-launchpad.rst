@@ -50,6 +50,7 @@ For example, if you need to build rocks for AMD64, ARM64 and RISC-V 64-bit
 architectures, your project file would declare:
 
 .. code-block:: yaml
+    :caption: rockcraft.yaml
 
     platforms:
       amd64:
