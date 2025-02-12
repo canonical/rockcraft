@@ -2,7 +2,6 @@ summary: |
   Build rocks with various Ubuntu Pro features enabled.
 
 environment:
-
   PKG_GLOB: hello_*+esm1_*.deb
   ENV_PRO_ARG: esm-apps
   PACK_ARGS: --pro=esm-apps

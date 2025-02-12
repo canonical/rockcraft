@@ -2,7 +2,7 @@ summary: |
   Test rockcraft's Pro reentrancy behavior.
 
 prepare: |
-  sudo pro attach --no-auto-enable $UBUNTU_PRO_TOKEN 
+  sudo pro attach --no-auto-enable $UBUNTU_PRO_TOKEN
 
 execute: |
 
