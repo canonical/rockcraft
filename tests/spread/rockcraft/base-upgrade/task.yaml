@@ -8,8 +8,8 @@ execute: |
   rockcraft build --verbosity=DEBUG >log 2>&1
   rockcraft clean
   # check for indicative strings in the log
-  grep "^.{23} ::Executing.*apt-get update.*apt-get -y upgrade.*in root" log
-  grep -P "^.{23} ::\d+ upgraded, \d+ newly installed, \d+ to remove and \d+ not upgraded." log
+  grep -P 'Executing.*apt.*upgrade.*in root /root/overlay/overlay' log
+  grep -P "upgraded, \d+ newly installed, \d+ to remove and \d+ not upgraded." log
   rm log
   popd
 
@@ -18,6 +18,6 @@ execute: |
   rockcraft build --verbosity=DEBUG >log 2>&1
   rockcraft clean
   # ensure none of the indicative strings are present in the log
-  ! grep "^.{23} ::Executing.*apt-get update.*apt-get -y upgrade.*in root" log
+  ! grep -P 'Executing.*apt.*upgrade.*in root /root/overlay/overlay' log
   rm log
   popd

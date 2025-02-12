@@ -464,7 +464,7 @@ def _add_apt_upgrade_data(yaml_data: dict[str, Any]) -> None:
         return
 
     parts = yaml_data["parts"]
-    if part_name in parts:
+    if parts.get(part_name) == part_content:
         # Project already has a pebble part: this is not supported.
         raise CraftValidationError(f'Cannot override the default "{part_name}" part')
 
