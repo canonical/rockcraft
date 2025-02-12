@@ -36,6 +36,7 @@ and you can override the main application to use the binary with the
 next snippet:
 
 .. code-block:: yaml
+  :caption: rockcraft.yaml
 
   parts:
     go-framework/install-app:
@@ -55,6 +56,7 @@ You can customise the files to include by overriding the ``stage`` property
 of the ``go-framework/assets`` part:
 
 .. code-block:: yaml
+  :caption: rockcraft.yaml
 
   parts:
     go-framework/assets:

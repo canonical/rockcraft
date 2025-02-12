@@ -15,12 +15,12 @@ accomplished.
    a given rock are the way they are.
 
 
-Consider the following snippet of a ``rockcraft.yaml`` that creates a rock
+Consider the following snippet of a project file that creates a rock
 containing a bare-bones Python 3.10 interpreter:
 
 .. code-block:: yaml
+   :caption: rockcraft.yaml
 
-   # (...)
    base: ubuntu@22.04
 
    parts:

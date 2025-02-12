@@ -122,8 +122,8 @@ The output should look as follows:
     https://aka.ms/dotnet/runtimes-sdk-info
 
 
-Convert Dockerfile to rockcraft.yaml file
------------------------------------------
+Convert Dockerfile to ``rockcraft.yaml`` file
+---------------------------------------------
 
 From a quick analysis of the reference Dockerfile above, the following
 requirements must be met:
@@ -138,10 +138,11 @@ from above, write the following into a text editor and save it as
 ``rockcraft.yaml``:
 
 .. literalinclude:: ../code/migrate-to-chiselled-rock/rockcraft.yaml
+    :caption: rockcraft.yaml
     :language: yaml
 
-Note the subtle chiselling of the .NET Runtime package in the ``rockcraft.yaml``
-file above. You are requesting Rockcraft to install the ``libs`` slice of the
+Note the subtle chiselling of the .NET Runtime package in ``rockcraft.yaml``.
+You are requesting Rockcraft to install the ``libs`` slice of the
 ``dotnet-runtime`` deb, which is defined in the
 `ubuntu-22.04 Chisel release
 <https://github.com/canonical/chisel-releases/blob/ubuntu-22.04/slices/>`_.
@@ -294,9 +295,9 @@ The output should be similar to:
 Conclusion
 ----------
 
-In this tutorial, you have migrated from an imperative container build recipe
-(Dockerfile) to a declarative one (``rockcraft.yaml``), without any overhead
-on the final recipe's size or complexity.
+In this tutorial, you have migrated from an imperative container build
+instructions (Dockerfile) to a declarative one (``rockcraft.yaml``), without any
+overhead on the final file's size or complexity.
 
 The resulting rock ended up being 63MB smaller than the reference one, while
 offering the same .NET Runtime functionality.

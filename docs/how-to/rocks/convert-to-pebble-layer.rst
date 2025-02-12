@@ -3,7 +3,7 @@ How to convert an entrypoint to a Pebble layer
 
 This guide will show you how to take an existing Docker image entrypoint
 and convert it into a Pebble layer, aka the list of one or more services
-which is defined in ``rockcraft.yaml`` and then taken by the rock's
+which is defined in the project file and then taken by the rock's
 Pebble entrypoint.
 
 
@@ -29,7 +29,7 @@ A `Pebble layer
 <https://canonical-pebble.readthedocs-hosted.com/en/latest/reference/
 layer-specification/>`_
 is composed of metadata, checks and services. The latter is present in
-``rockcraft.yaml`` as a `top-level field
+the project file as a `top-level key
 <https://canonical-rockcraft.readthedocs-hosted.com/en/latest/reference/
 rockcraft.yaml/#format-specification>`_
 and it represents the services which are loaded by the Pebble entrypoint when
@@ -40,6 +40,7 @@ one for ``nginx`` and another for ``nginx-debug``. The following ``services``
 snippet does just that:
 
 .. literalinclude:: ../code/convert-to-pebble-layer/rockcraft.yaml
+    :caption: rockcraft.yaml
     :language: yaml
     :start-after: Pebble entrypoint
 
@@ -50,17 +51,18 @@ different commands (``nginx`` and ``nginx-debug``).
 Build the rock
 --------------
 
-Copy the above snippet and incorporate it into the ``rockcraft.yaml`` file
+Copy the above snippet and incorporate it into the project file
 which will be used to build your rock, as shown below:
 
 .. literalinclude:: ../code/convert-to-pebble-layer/rockcraft.yaml
+    :caption: rockcraft.yaml
     :language: yaml
 
-This Rockcraft recipe is almost fully declarative, with the creation of the
+This project file is almost fully declarative, with the creation of the
 "nginx" user being the only scripted step.
 
 To reproduce what the reference NGINX Dockerfile is doing, notice the use of
-``package-repositories`` in this ``rockcraft.yaml`` file, allowing you to also
+``package-repositories`` in this project file, allowing you to also
 make use of NGINX's 3rd party package repository (even using the same
 GPG key ID as the one used in `the Dockerfile
 <https://github.com/nginxinc/docker-nginx/blob/
@@ -136,8 +138,8 @@ start the ``nginx`` service by typing:
     :end-before: [docs:service-start-end]
     :dedent: 2
 
-We could have chosen to make one of the two services run on startup by changing
-its corresponding ``startup`` field value to ``enabled``.
+We could have chosen to make one of the two services run on startup by setting
+its corresponding ``startup`` key to ``enabled``.
 
 Once you start one of the services, your container should be deployed and
 running the ``nginx`` or ``nginx-debug`` service, and you should be able to see

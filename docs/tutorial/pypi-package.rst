@@ -32,6 +32,7 @@ To create a new Rockcraft project, create a new directory and change into it:
 Next, create a file called ``rockcraft.yaml`` with the following contents:
 
 .. literalinclude:: code/pyfiglet/rockcraft.yaml
+    :caption: rockcraft.yaml
     :language: yaml
 
 
@@ -89,4 +90,3 @@ using bash, via:
     | '_ \| |
     | | | | |
     |_| |_|_|
-

@@ -46,8 +46,8 @@ allowing complex operations to be declared at build time.
 
    .. grid-item-card:: :ref:`Reference <reference>`
 
-      **Technical information** - understand how to use every field in
-      ``rockcraft.yaml``.
+      **Technical information** - understand how to use every key in a project
+      file.
 
    .. grid-item-card:: :ref:`Explanation <explanation>`
 
@@ -67,4 +67,3 @@ and constructive feedback.
 * `Ubuntu Code of Conduct <https://ubuntu.com/community/code-of-conduct>`_
 * `Canonical contributor license agreement
   <https://ubuntu.com/legal/contributors>`_
-
