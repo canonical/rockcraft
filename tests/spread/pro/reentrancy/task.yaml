@@ -3,7 +3,6 @@ summary: |
 
 prepare: |
   sudo pro attach --no-auto-enable $UBUNTU_PRO_TOKEN 
-  sudo pro enable --assume-yes esm-apps
 
 execute: |
 
@@ -23,6 +22,7 @@ execute: |
 
   # finally, clean the existing instance, then build with the different
   # pro services as before. This should now pass
+  rockcraft clean
   rockcraft pull --pro=esm-infra
 
 restore: |
