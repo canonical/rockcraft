@@ -8,7 +8,7 @@ for customising the Ubuntu base and the Node version to be included.
 The main differences are
 
 * whether the bare base is used or the Ubuntu 24.04 base is used.
-* whether the Node is installed from Ubuntu packages or the NPM plugin.
+* whether Node is installed from Ubuntu packages or the NPM plugin.
 
 Ubuntu base and Node combinations
 ---------------------------------
