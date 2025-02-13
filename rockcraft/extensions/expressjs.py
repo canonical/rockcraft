@@ -48,7 +48,7 @@ class ExpressJSFramework(Extension):
 
         Default values:
           - run_user: _daemon_
-          - build-base: ubuntu:24.04
+          - build-base: ubuntu@24.04
           - platform: amd64
           - services: a service to run the ExpressJS server
           - parts: see ExpressJSFramework._gen_parts
