@@ -39,7 +39,7 @@ example:
       npm-node-version: 20.12.2
 
 For more examples of npm-node-version options, see: `Rockcraft | NPM Plugin |
-Examples <https://documentation.ubuntu.com/rockcraft/en/1.5.3/common/\
+Examples <https://documentation.ubuntu.com/rockcraft/en/1.5.3/common/
 craft-parts/reference/plugins/npm_plugin/#examples>`_.
 
 If you don't customise the version of node, it will be installed from the Ubuntu
