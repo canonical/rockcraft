@@ -54,7 +54,7 @@ class DockerPluginEnvironmentValidator(validator.PluginEnvironmentValidator):
 
         :raises PluginEnvironmentValidationError: If the environment is invalid.
         """
-        for dependency in ["docker.io", "docker-buildx", "docker-compose-v2", "skopeo"]:
+        for dependency in ["docker", "skopeo"]:
             self.validate_dependency(
                 dependency=dependency,
                 plugin_name="docker",
@@ -89,7 +89,7 @@ class DockerPlugin(Plugin):
     @override
     def get_build_snaps(self) -> set[str]:
         """Return a set of required snaps to install in the build environment."""
-        return {"docker"}
+        return {"docker", "jq"}
 
     @override
     def get_build_packages(self) -> set[str]:
@@ -110,7 +110,7 @@ class DockerPlugin(Plugin):
             "docker",
             "build",
             "-t",
-            "{self._part_info.part_name}",
+            f"{self._part_info.part_name}:1",
             str(self._part_info.part_src_subdir),
         ]
         if options.meson_parameters:
@@ -119,10 +119,25 @@ class DockerPlugin(Plugin):
         skopeo_cmd = [
             "skopeo",
             "copy",
-            "docker://{self._part_info.part_name}",
-            "dir:{self._part_info.part_install_dir}",
+            f"docker-daemon:{self._part_info.part_name}:1",
+            f"dir:{self._part_info.part_install_dir}",
         ]
+
+        tar_cmd = [
+            f"cd {self._part_info.part_install_dir};",
+            "cat",
+            f"{self._part_info.part_install_dir}/manifest.json",
+            "|",
+            "jq '.layers[].digest | split(\":\") | nth(1)'",
+            "|",
+            'while IFS= read -r line; do line=${line%\\"}; line=${line#\\"}; [[ -n "$line" ]] && tar tvf $line; done;',
+            "rm ????????????????????????????????????????????????????????????????;",
+            "rm manifest.json;",
+        ]
+
         return [
             f"DESTDIR={self._part_info.part_install_dir} ",
+            " ".join(docker_cmd),
             " ".join(skopeo_cmd),
+            " ".join(tar_cmd),
         ]
