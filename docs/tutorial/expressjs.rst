@@ -149,8 +149,7 @@ Check that the image was successfully loaded into Docker:
 The output should list the ExpressJS container image, along with its tag, ID and
 size:
 
-..  code-block:: text
-    :class: log-snippets
+.. terminal::
 
     REPOSITORY              TAG       IMAGE ID       CREATED       SIZE
     expressjs-hello-world   0.1       30c7e5aed202   2 weeks ago   304MB
@@ -196,8 +195,7 @@ As a result, Pebble will give us the logs for the
 ``expressjs`` service running inside the container.
 We should expect to see something similar to this:
 
-..  code-block:: text
-    :class: log-snippets
+.. terminal::
 
     app@0.0.0 start
     node ./bin/www
