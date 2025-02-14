@@ -19,12 +19,13 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
 ]
 dependencies = [
-    "craft-application",
+    "craft-application~=4.9.1",
     "craft-archives",
     "craft-cli",
     "craft-parts",
     "craft-platforms",
     "craft-providers",
+    "craft-store",
     "overrides",
     "spdx-lookup",
     "tabulate",
