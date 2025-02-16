@@ -14,7 +14,7 @@ parts:
   hello:
     plugin: nil
     stage-packages:
-      - hello
+      - hello_bins
 
     override-build: |
       apt-get download hello
