@@ -10,8 +10,8 @@ environment:
   SCENARIO/managed_pro_stage_chiseled: managed_pro_stage_chiseled
   SCENARIO/destructive_pro_stage_full: destructive_pro_stage_full
   PACK_ARGS/destructive_pro_stage_full: --destructive --pro=esm-apps
-  # SCENARIO/destructive_pro_stage_chiseled: destructive_pro_stage_chiseled
-  # PACK_ARGS/destructive_pro_stage_chiseled: --destructive --pro=esm-apps
+  SCENARIO/destructive_pro_stage_chiseled: destructive_pro_stage_chiseled
+  PACK_ARGS/destructive_pro_stage_chiseled: --destructive --pro=esm-apps
   SCENARIO/managed_pro_overlay_full: managed_pro_overlay_full
   SCENARIO/managed_pro_build_full: managed_pro_build_full
   SCENARIO/managed_standard_stage_full: managed_standard_stage_full
