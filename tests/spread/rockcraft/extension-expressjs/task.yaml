@@ -15,7 +15,6 @@ execute: |
   cd app && npm install && cd ..
 
   run_rockcraft init --name "${NAME}" --profile expressjs-framework
-  sed -i "s/^name: .*/name: ${NAME}/g" rockcraft.yaml
   sed -i "s/^base: .*/base: ${SCENARIO//-/@}/g" rockcraft.yaml
   if [ "${SCENARIO}" != "bare" ]; then
     sed -i "s/^build-base: .*/build-base: ${SCENARIO//-/@}/g" rockcraft.yaml
