@@ -46,6 +46,7 @@ html_context = {
     "discourse": "https://discourse.ubuntu.com/c/rocks/117",
     "github_url": "https://github.com/canonical/rockcraft",
     "display_contributors": False,
+    "sequential_nav": "both",
 }
 
 extensions = [
