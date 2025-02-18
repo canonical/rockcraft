@@ -591,8 +591,8 @@ wheels = [
 
 [[package]]
 name = "craft-parts"
-version = "2.5.0"
-source = { registry = "https://pypi.org/simple" }
+version = "2.5.0.post3+gd517ba7"
+source = { git = "https://github.com/canonical/craft-parts?rev=work%2Fnpm-plugin-symlinks%2FCRAFT-4071#d517ba77c7121228cab4449e6f10e66aa7e9ce7e" }
 dependencies = [
     { name = "overrides" },
     { name = "pydantic" },
@@ -600,10 +600,6 @@ dependencies = [
     { name = "pyyaml" },
     { name = "requests" },
     { name = "requests-unixsocket2" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/2a/b2/b876f3d9e1fe110d6f09dbf2e25a2751a6fa91a9ddacd131b03b1027a689/craft_parts-2.5.0.tar.gz", hash = "sha256:334faf23d88a34d6bd845b8ef12616fc03f1dbf87f3d313074ff31275fbcb0ad", size = 641190 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/89/4e/198b776b648065a5d6f7fad7640cfdf3babaac4c8fbe1cbb40cd36038207/craft_parts-2.5.0-py3-none-any.whl", hash = "sha256:efa2de6df7e52d8200988dcb7f7ff33dc1d84b695467f0d332ac0dac246b8d25", size = 454202 },
 ]
 
 [[package]]
@@ -2394,7 +2390,7 @@ requires-dist = [
     { name = "craft-application" },
     { name = "craft-archives" },
     { name = "craft-cli" },
-    { name = "craft-parts" },
+    { name = "craft-parts", git = "https://github.com/canonical/craft-parts?rev=work%2Fnpm-plugin-symlinks%2FCRAFT-4071" },
     { name = "craft-platforms" },
     { name = "craft-providers" },
     { name = "mypy", extras = ["reports"], marker = "extra == 'types'", specifier = "~=1.11" },

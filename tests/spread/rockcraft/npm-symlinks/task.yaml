@@ -1,0 +1,9 @@
+summary: check that npm symlink fix worked
+
+environment:
+  BASE/22: ubuntu@22.04
+  BASE/24: ubuntu@24.04
+
+execute: |
+  sed "s/placeholder-text/$BASE/" rockcraft.orig.yaml > rockcraft.yaml
+  rockcraft pack
