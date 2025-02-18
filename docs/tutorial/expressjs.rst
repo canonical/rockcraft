@@ -82,6 +82,15 @@ working directory. Open it in a text editor and check that the ``name`` is
 of the host. For example, if the host uses the ARM architecture, include
 ``arm64`` in ``platforms``.
 
+For the sake of this tutorial, we'll initially switch the base from bare to
+ubuntu@24.04. We will switch it back to bare later on when we chisel the rock.
+
+.. literalinclude:: code/expressjs/task.yaml
+    :language: bash
+    :start-after: [docs:change-base-init]
+    :end-before: [docs:change-base-init-end]
+    :dedent: 2
+
 .. note::
     For this tutorial, we'll use the ``name`` ``expressjs-hello-world`` and
     assume we're running on the  ``amd64`` platform. Check the architecture of

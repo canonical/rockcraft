@@ -31,6 +31,11 @@ execute: |
   # [docs:create-rockcraft-yaml]
   rockcraft init --profile expressjs-framework
   # [docs:create-rockcraft-yaml-end]
+
+  # [docs:change-base-init]
+  sed -i "s/^base: bare/base: ubuntu@24.04/g" rockcraft.yaml
+  # [docs:change-base-init-end]
+
   sed -i "s/name: .*/name: expressjs-hello-world/g" rockcraft.yaml
 
   # [docs:pack]
