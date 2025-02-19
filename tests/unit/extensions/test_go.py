@@ -82,7 +82,7 @@ def test_go_extension_no_go_mod_file_error(tmp_path, go_input_yaml):
     with pytest.raises(ExtensionError) as exc:
         extensions.apply_extensions(tmp_path, go_input_yaml)
     assert str(exc.value) == "missing go.mod file"
-    assert str(exc.value.doc_slug) == "/reference/extensions/go-framework"
+    assert str(exc.value.doc_slug) == "/reference/extensions/go-framework.html"
 
 
 @pytest.mark.usefixtures("go_extension")

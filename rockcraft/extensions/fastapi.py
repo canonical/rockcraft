@@ -161,7 +161,7 @@ class FastAPIFramework(Extension):
             raise ExtensionError(
                 "fastapi-framework extension requires the 'prime' entry in the "
                 f"fastapi-framework/install-app part to start with {self.IMAGE_BASE_DIR}/",
-                doc_slug="/reference/extensions/fastapi-framework",
+                doc_slug="/reference/extensions/fastapi-framework.html",
                 logpath_report=False,
             )
         if not user_prime:
@@ -229,7 +229,7 @@ class FastAPIFramework(Extension):
         if error_messages:
             raise ExtensionError(
                 "\n".join("- " + message for message in error_messages),
-                doc_slug="/reference/extensions/fastapi-framework",
+                doc_slug="/reference/extensions/fastapi-framework.html",
                 logpath_report=False,
             )
 

@@ -98,7 +98,7 @@ class GoFramework(Extension):
         if not (self.project_root / "go.mod").exists():
             raise ExtensionError(
                 "missing go.mod file",
-                doc_slug="/reference/extensions/go-framework",
+                doc_slug="/reference/extensions/go-framework.html",
                 logpath_report=False,
             )
 
@@ -191,7 +191,7 @@ class GoFramework(Extension):
             raise ExtensionError(
                 "go-framework extension requires the 'stage' entry in the "
                 "go-framework/assets part to start with app",
-                doc_slug="/reference/extensions/go-framework",
+                doc_slug="/reference/extensions/go-framework.html",
                 logpath_report=False,
             )
         if not user_stage:
