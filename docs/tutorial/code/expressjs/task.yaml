@@ -112,7 +112,7 @@ execute: |
   # Remove comments from time_app.js
   sed -i 's:^//.*::g' time_app.js
   append_line="$(cat time_app.js | tr '\n' ' ')"
-  sed -i "s@$original_line@\n$append_line\n@g" app.js
+  sed -i "/$original_line/a$append_line" app/app.js
   sed -i "s/version: .*/version: 0.2/g" rockcraft.yaml
 
   # [docs:docker-run-update]
