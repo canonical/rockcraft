@@ -4,4 +4,4 @@
 # The old path must be a file that _doesn't exist_ in the source. The current path
 # must be a file that _does exist_ in the source.
 
-"release-notes/changelog.rst" "reference/changelog.rst"
+release-notes/changelog/ reference/changelog/
