@@ -25,6 +25,7 @@ dependencies = [
     "craft-parts",
     "craft-platforms",
     "craft-providers",
+    "craft-store",
     "overrides",
     "spdx-lookup",
     "tabulate",
