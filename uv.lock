@@ -1,4 +1,5 @@
 version = 1
+revision = 1
 requires-python = ">=3.10"
 resolution-markers = [
     "python_full_version >= '3.13'",
@@ -2419,12 +2420,13 @@ requires-dist = [
     { name = "twine", marker = "extra == 'release'" },
     { name = "types-python-dateutil", marker = "extra == 'types'" },
     { name = "types-pyyaml", marker = "extra == 'types'" },
-    { name = "types-requests", marker = "extra == 'types'", specifier = "<2.31.0.20240312" },
+    { name = "types-requests", marker = "extra == 'types'", specifier = "<2.32.0.20241017" },
     { name = "types-setuptools", marker = "extra == 'types'" },
     { name = "types-tabulate", marker = "extra == 'types'" },
     { name = "types-urllib3", marker = "extra == 'types'" },
     { name = "wheel", marker = "extra == 'release'" },
 ]
+provides-extras = ["dev", "docs", "release", "lint", "types", "apt-jammy", "apt-noble", "apt-oracular", "apt-plucky"]
 
 [package.metadata.requires-dev]
 dev = [

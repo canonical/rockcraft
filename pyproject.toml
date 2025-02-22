@@ -62,7 +62,7 @@ types = [
     "mypy[reports]~=1.11",
     "types-python-dateutil",
     "types-PyYAML",
-    "types-requests<2.31.0.20240312",  # Frozen until we can get urllib3 v2
+    "types-requests<2.32.0.20241017",  # Frozen until we can get urllib3 v2
     "types-setuptools",
     "types-tabulate",
     "types-urllib3",
