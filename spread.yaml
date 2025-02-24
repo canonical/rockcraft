@@ -17,6 +17,8 @@ include:
     - pyproject.toml
     - rockcraft/
 
+# The default spread timeout is 15 minutes. This is too short for some tests.
+kill-timeout: 25m
 backends:
   google:
     key: '$(HOST: echo "$SPREAD_GOOGLE_KEY")'
