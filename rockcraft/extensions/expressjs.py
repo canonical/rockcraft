@@ -161,23 +161,16 @@ class ExpressJSFramework(Extension):
     def _gen_app_stage_packages(self) -> list[str]:
         """Return the stage packages for the install app part."""
         if self._rock_base == "bare":
-            return [
-                "bash_bins",
-                "ca-certificates_data",
-                "nodejs_bins",
-                "coreutils_bins",
-            ]
+            return ["bash_bins", "ca-certificates_data", "coreutils_bins"]
         if not self._user_npm_include_node:
             return ["ca-certificates_data", "nodejs_bins"]
         return ["ca-certificates_data"]
 
     def _gen_runtime_part(self) -> dict | None:
         """Generate the runtime part."""
-        if self._user_npm_include_node:
-            return None
         return {
             "plugin": "nil",
-            "stage-packages": ["npm"],
+            "stage-packages": ["libstdc++6" if self._user_npm_include_node else "npm"],
         }
 
     @property

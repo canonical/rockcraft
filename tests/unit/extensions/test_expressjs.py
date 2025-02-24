@@ -126,8 +126,12 @@ def package_json_file(app_path):
                         "${CRAFT_PART_INSTALL}/app\n",
                         "plugin": "npm",
                         "source": "app/",
+                        "stage-packages": ["ca-certificates_data"],
+                    },
+                    "expressjs-framework/runtime": {
+                        "plugin": "nil",
                         "stage-packages": [
-                            "ca-certificates_data",
+                            "libstdc++6",
                         ],
                     },
                 },
@@ -177,7 +181,6 @@ def package_json_file(app_path):
                         "stage-packages": [
                             "bash_bins",
                             "ca-certificates_data",
-                            "nodejs_bins",
                             "coreutils_bins",
                         ],
                     },
@@ -230,8 +233,13 @@ def package_json_file(app_path):
                         "stage-packages": [
                             "bash_bins",
                             "ca-certificates_data",
-                            "nodejs_bins",
                             "coreutils_bins",
+                        ],
+                    },
+                    "expressjs-framework/runtime": {
+                        "plugin": "nil",
+                        "stage-packages": [
+                            "libstdc++6",
                         ],
                     },
                 },
