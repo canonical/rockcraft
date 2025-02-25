@@ -127,13 +127,7 @@ def package_json_file(app_path):
                         "plugin": "npm",
                         "source": "app/",
                         "stage-packages": ["ca-certificates_data"],
-                    },
-                    "expressjs-framework/runtime": {
-                        "plugin": "nil",
-                        "stage-packages": [
-                            "libstdc++6",
-                        ],
-                    },
+                    }
                 },
                 "platforms": {
                     "amd64": {},
@@ -187,6 +181,8 @@ def package_json_file(app_path):
                     "expressjs-framework/runtime": {
                         "plugin": "nil",
                         "stage-packages": [
+                            "libstdc++6",
+                            "zlib1g",
                             "npm",
                         ],
                     },
@@ -238,9 +234,7 @@ def package_json_file(app_path):
                     },
                     "expressjs-framework/runtime": {
                         "plugin": "nil",
-                        "stage-packages": [
-                            "libstdc++6",
-                        ],
+                        "stage-packages": ["libstdc++6", "zlib1g"],
                     },
                 },
                 "platforms": {

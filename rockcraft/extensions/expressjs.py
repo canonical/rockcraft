@@ -168,12 +168,14 @@ class ExpressJSFramework(Extension):
 
     def _gen_runtime_part(self) -> dict | None:
         """Generate the runtime part."""
-        return {
-            "plugin": "nil",
-            "stage-packages": (
-                ["libstdc++6", "zlib1g"] if self._user_npm_include_node else ["npm"]
-            ),
-        }
+        stage_packages = []
+        if self._rock_base == "bare":
+            stage_packages = ["libstdc++6", "zlib1g"]
+        if not self._user_npm_include_node:
+            stage_packages.append("npm")
+        if not stage_packages:
+            return None
+        return {"plugin": "nil", "stage-packages": stage_packages}
 
     @property
     def _user_install_app_part(self) -> dict:
