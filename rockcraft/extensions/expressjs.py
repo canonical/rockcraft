@@ -170,7 +170,9 @@ class ExpressJSFramework(Extension):
         """Generate the runtime part."""
         return {
             "plugin": "nil",
-            "stage-packages": ["libstdc++6" if self._user_npm_include_node else "npm"],
+            "stage-packages": (
+                ["libstdc++6", "zlib1g"] if self._user_npm_include_node else ["npm"]
+            ),
         }
 
     @property
