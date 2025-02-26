@@ -10,9 +10,8 @@ It facilitates the installation of ExpressJS application dependencies, including
 Node and NPM, inside the rock. Additionally, it transfers your project files to
 ``/app`` within the rock.
 
-.. note::
-    The ExpressJS extension is compatible with the ``bare`` and ``ubuntu@24.04``
-    bases.
+The ExpressJS extension is compatible with the ``bare`` and ``ubuntu@24.04``
+bases.
 
 Project requirements
 ====================
@@ -48,8 +47,7 @@ package repository.
 ``parts`` > ``expressjs-framework/runtime:`` > ``stage-packages``
 =================================================================
 
-Installing additional runtime packages is currently unsupported due to some
-limitations of the Rockcraft tool.
+Installing additional runtime packages is currently unsupported.
 
 Useful links
 ============

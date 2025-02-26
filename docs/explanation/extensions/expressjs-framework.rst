@@ -5,27 +5,25 @@ expressjs-framework
 
 When using the ``expressjs-framework`` extension, there are four different cases
 for customising the Ubuntu base and the Node version to be included.
-The main differences are:
+The main differences between the cases are:
 
-* whether the bare base is used or the Ubuntu 24.04 base is used.
-* whether Node is installed from Ubuntu packages or the NPM plugin.
+* Whether to use the bare base or Ubuntu 24.04 base.
+* Whether Node is installed from Ubuntu packages or the NPM plugin.
 
-Ubuntu base and Node combinations
----------------------------------
+The remainder of this page discusses the combinations of
+Ubuntu bases and sources for Node.js.
 
-In this section of the document, we will discuss the possible combinations of
-Ubuntu bases and possible usages of NPM plugin.
-
-24.04 base and Node from Ubuntu packages
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Ubuntu 24.04 base, Node.js from Ubuntu packages
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The following example uses the Ubuntu 24.04 base and Node from Ubuntu packages.
 
 .. code-block:: yaml
+    :caption: rockcraft.yaml
 
     base: ubuntu@24.04
     extensions:
-    - expressjs-framework
+        - expressjs-framework
 
 In this case, the application is installed and run via Node and NPM is installed
 by the Ubuntu packages. The NPM and Node versions are determined by the versions
@@ -35,16 +33,17 @@ with the corressponding Ubuntu base from the chilsel-slices repository. This
 blob/ubuntu-24.04/slices/nodejs.yaml>`_ is an example of the NodeJS version
 shipped with the Ubuntu 24.04 base.
 
-24.04 base and Node from NPM plugin
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Ubuntu 24.04 base, Node.js from NPM plugin
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The following example uses the Ubuntu 24.04 base and Node from the NPM plugin.
 
 .. code-block:: yaml
+    :caption: rockcraft.yaml
 
     base: ubuntu@24.04
     extensions:
-    - expressjs-framework
+        - expressjs-framework
     parts:
         expressjs-framework/install-app:
             npm-include-node: true
@@ -53,12 +52,13 @@ The following example uses the Ubuntu 24.04 base and Node from the NPM plugin.
 In this case, the application is installed and run via Node, and NPM is
 installed by the NPM plugin.
 
-Bare base and Node from Ubuntu packages
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Bare base, and Node.js from Ubuntu packages
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The following example uses the bare base and Node from Ubuntu packages.
 
 .. code-block:: yaml
+    :caption: rockcraft.yaml
 
     base: bare
     build-base: ubuntu@24.04
@@ -75,12 +75,13 @@ See the NPM version shipped with the corressponding Ubuntu base from the Ubuntu
 packages archive from the `Ubuntu packages search <https://packages.ubuntu.com/\
 search?suite=default&section=all&arch=any&keywords=npm&searchon=names>`_.
 
-Bare base and Node from NPM plugin
+Bare base, Node.js from NPM plugin
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The following example uses the bare base and Node from the NPM plugin.
 
 .. code-block:: yaml
+    :caption: rockcraft.yaml
 
     base: bare
     build-base: ubuntu@24.04

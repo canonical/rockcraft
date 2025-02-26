@@ -47,7 +47,7 @@ Run the ExpressJS application from within the ``app/`` directory using
 
 to verify that it works.
 
-Test the ExpressJS application by using ``curl`` to send a request to the root
+Test the ExpressJS application by using curl to send a request to the root
 endpoint. We'll need a new terminal for this -- if we're using Multipass, run
 ``multipass shell rock-dev`` to get another terminal:
 
@@ -66,8 +66,8 @@ The application looks good, so let's stop it for now by pressing :kbd:`Ctrl` +
 Pack the ExpressJS application into a rock
 ==========================================
 
-First, we'll need a ``rockcraft.yaml`` file. Rockcraft will automate its
-creation and tailoring for a ExpressJS application by using the
+First, we'll need a ``rockcraft.yaml`` project file. Rockcraft will automate
+its creation and tailoring for a ExpressJS application by using the
 ``expressjs-framework`` profile:
 
 .. literalinclude:: code/expressjs/task.yaml
@@ -76,8 +76,8 @@ creation and tailoring for a ExpressJS application by using the
     :end-before: [docs:create-rockcraft-yaml-end]
     :dedent: 2
 
-The ``rockcraft.yaml`` file will automatically be created in the project's
-working directory. Open it in a text editor and check that the ``name`` is
+The project will automatically be created in the project's working directory.
+Open it in a text editor and check that the ``name`` is
 ``expressjs-hello-world``. Ensure that ``platforms`` includes the architecture
 of the host. For example, if the host uses the ARM architecture, include
 ``arm64`` in ``platforms``.
@@ -138,8 +138,7 @@ tutorial.
 Run the ExpressJS rock with Docker
 ==================================
 
-We already have the rock as an `OCI <OCI_image_spec_>`_ archive. Now we
-need to load it into Docker:
+We already have the rock as an OCI archive. Now we need to load it into Docker:
 
 .. literalinclude:: code/expressjs/task.yaml
     :language: bash
@@ -176,7 +175,7 @@ application:
     :end-before: [docs:docker-run-end]
     :dedent: 2
 
-Use the same ``curl`` command as before to send a request to the ExpressJS
+Use the same curl command as before to send a request to the ExpressJS
 application's root endpoint which is running inside the container:
 
 .. literalinclude:: code/expressjs/task.yaml
@@ -232,9 +231,12 @@ Chisel the rock
 
 This is an optional but recommended step, especially if we're looking to
 deploy the rock into a production environment. With :ref:`chisel_explanation`
-we can produce lean and production-ready rocks by getting rid of all the
-contents that are not needed for the ExpressJS application to run. This results
-in a much smaller rock with a reduced attack surface.
+Since we're we're looking to deploy the rock into a production environment,
+we recommend chiselling the rock. With :ref:`chisel_explanation`
+
+we can produce lean and production-ready rocks by chipping away all the
+contents that the application doesn't need to run. This will result in a much
+smaller rock with a reduced attack surface.
 
 .. note::
     It is recommended to run chiselled images in production. For development,
@@ -252,14 +254,12 @@ In ``rockcraft.yaml``, change the ``base`` to ``bare`` and add
     :end-before: [docs:change-base-end]
     :dedent: 2
 
-.. note::
-    The ``sed`` command replaces the current ``base`` in ``rockcraft.yaml`` with
-    the ``bare`` base. Note that ``build-base`` is also required when using the
-    ``bare`` base.
+This sed command sets the current ``base`` key in ``rockcraft.yaml`` with
+``bare``. When using the bare base, we also need the ``build-base`` key.
 
 So that we can compare the size after chiselling, open the ``rockcraft.yaml``
 file and change the ``version`` (e.g. to ``0.1-chiselled``). Pack the rock with
-the new ``bare`` :ref:`base <bases_explanation>`:
+the new bare base:
 
 .. literalinclude:: code/expressjs/task.yaml
     :language: bash
@@ -275,11 +275,11 @@ As before, verify that the new rock was created:
     :end-before: [docs:ls-bare-rock-end]
     :dedent: 2
 
-We'll verify that the new ExpressJS rock is now approximately **15% smaller**
-in size! And that's just because of the simple change of ``base``.
+The updated ExpressJS rock is a respectable **15% smaller** in size. We achieved
+that from a simple change of ``base``.
 
-And the functionality is still the same. As before, we can confirm this by
-running the rock with Docker
+The functionality of the new rock is the same. Let's confirm this by running the
+rock with Docker
 
 .. literalinclude:: code/expressjs/task.yaml
     :language: text
@@ -315,25 +315,27 @@ image:
 Update the ExpressJS application
 ================================
 
-As a final step, let's update our application. For example,
-we want to add a new ``/time`` endpoint which returns the current time.
+For our final task, let's update our application. As an example,
+let's add a new ``/time`` endpoint that returns the current time.
 
 Start by creating the ``app/routes/time.js`` file in a text editor and paste the
 code from the snippet below:
 
 .. literalinclude:: code/expressjs/time.js
+    :caption: time.js
     :language: javascript
 
 Place the code snippet below in ``app.js`` under routes registration section.
 It will register the new ``/time`` endpoint:
 
 .. literalinclude:: code/expressjs/time_app.js
+    :caption: app.js
     :language: javascript
     :start-after: [docs:append-lines]
     :end-before: [docs:append-lines-end]
 
-Since we are creating a new version of the application, open the
-``rockcraft.yaml`` file and change the ``version`` (e.g. to ``0.2``).
+Since we are creating a new version of the application, set
+``version: '0.2'`` in the project file.
 
 .. note::
 
@@ -349,12 +351,10 @@ Pack and run the rock using similar commands as before:
     :end-before: [docs:docker-run-update-end]
     :dedent: 2
 
-.. note::
+The resulting ``.rock`` file will be named differently, as
+its new version will be part of the filename.
 
-    Note that the resulting ``.rock`` file will now be named differently, as
-    its new version will be part of the filename.
-
-Finally, use ``curl`` to send a request to the ``/time`` endpoint:
+Finally, use curl to send a request to the ``/time`` endpoint:
 
 .. literalinclude:: code/expressjs/task.yaml
     :language: text
@@ -365,7 +365,7 @@ Finally, use ``curl`` to send a request to the ``/time`` endpoint:
 The updated application should respond with the current date and time (e.g.
 ``Fri Jan 10 2025 03:11:44 GMT+0000 (Coordinated Universal Time)``).
 
-.. note::
+.. tip::
 
     If you are getting a ``404`` for the ``/time`` endpoint, check the
     :ref:`troubleshooting-expressjs` steps below.
