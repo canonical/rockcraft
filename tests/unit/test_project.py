@@ -425,12 +425,12 @@ def test_project_all_platforms_invalid(yaml_loaded_data):
     mock_platforms = {
         "mock": {"build-on": ["arm64a", "noarch"], "build-for": ["amd64"]}
     }
-    assert "'arm64a' is not a valid DebianArchitecture" in reload_project_platforms(
+    assert "'arm64a' is not a valid Debian architecture" in reload_project_platforms(
         mock_platforms
     )
 
     mock_platforms = {"mock": {"build-on": ["arm64", "arm64"], "build-for": ["noarch"]}}
-    assert "'noarch' is not a valid DebianArchitecture" in reload_project_platforms(
+    assert "'noarch' is not a valid Debian architecture" in reload_project_platforms(
         mock_platforms
     )
 
