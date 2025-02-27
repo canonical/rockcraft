@@ -70,6 +70,7 @@ parts:
     plugin: dump
     organize:
       craft.git: libexec/rockcraft/craft.git
+      # Put sitecustomize in site-packages
       sitecustomize.py: lib/python3.12/site-packages/sitecustomize.py
 
   git:
@@ -123,8 +124,6 @@ parts:
       - MAKEOPTS: -j$(nproc --all)
     organize:
       bin/craftctl: libexec/rockcraft/craftctl
-      # Put sitecustomize in site-packages
-      lib/python3.12/site-packages/rockcraft/sitecustomize.py: lib/python3.12/site-packages/sitecustomize.py
       # Extensions currently expect to find data files in share/rockcraft/
       "**/site-packages/extensions": share/rockcraft/extensions
     override-build: |
