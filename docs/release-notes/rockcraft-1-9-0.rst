@@ -54,7 +54,7 @@ Remote builds
 
 The ``remote-build`` command now displays builds that have been created but are still
 pending. Additionally, the Launchpad project can be specified through the new
-``--project`` command line parameter.
+``--project`` parameter.
 
 Cross-compilation
 ~~~~~~~~~~~~~~~~~
@@ -62,11 +62,11 @@ Cross-compilation
 Rockcraft projects that perform cross-compilation can now declare packages of the target
 architecture in the ``build-packages`` key.
 
-Documentation
-~~~~~~~~~~~~~
+Documentation improvements
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The terminology around the rockcraft.yaml project file has been cleaned up, and the
-"Give Feedback" button has been restored to its location at the top of the pages.
+The terminology around the ``rockcraft.yaml`` project file has been cleaned up, and the
+**Give Feedback** button has been restored to its location at the the top of the page.
 
 
 Contributors
