@@ -69,6 +69,8 @@ parts:
     plugin: dump
     organize:
       craft.git: libexec/rockcraft/craft.git
+      # Put sitecustomize in site-packages
+      sitecustomize.py: lib/python3.12/site-packages/sitecustomize.py
 
   git:
     plugin: nil
