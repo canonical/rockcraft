@@ -16,7 +16,8 @@ environment:
 platforms:
   amd64:
   arm64:
-  armhf:
+  # Disable armhf until the astral-uv snap is fixed.
+  # armhf:
   # riscv64 on core24 is not supported by the store at this moment.
   # riscv64:
   s390x:
