@@ -49,15 +49,15 @@ What's new
 
 Rockcraft 1.9.0 brings the following features, integrations, and improvements.
 
-Remote builds
-~~~~~~~~~~~~~
+Remote build improvements
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The ``remote-build`` command now displays builds that have been created but are still
 pending. Additionally, the Launchpad project can be specified through the new
 ``--project`` parameter.
 
-Cross-compilation
-~~~~~~~~~~~~~~~~~
+Improved support for build-packages for cross-compilation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Rockcraft projects that perform cross-compilation can now declare packages of the target
 architecture in the ``build-packages`` key.
