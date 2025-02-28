@@ -16,7 +16,7 @@ environment:
 platforms:
   amd64:
   arm64:
-  # Disable armhf until the astral-uv snap is fixed.
+  # Disable armhf until the astral-uv snap is fixed (https://github.com/lengau/uv-snap/issues/4)
   # armhf:
   # riscv64 on core24 is not supported by the store at this moment.
   # riscv64:
