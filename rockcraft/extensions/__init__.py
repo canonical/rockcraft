@@ -19,6 +19,7 @@
 from ._utils import apply_extensions
 from .fastapi import FastAPIFramework
 from .go import GoFramework
+from .expressjs import ExpressJSFramework
 from .gunicorn import DjangoFramework, FlaskFramework
 from .registry import get_extension_class, get_extension_names, register, unregister
 
@@ -31,6 +32,7 @@ __all__ = [
 ]
 
 register("django-framework", DjangoFramework)
+register("expressjs-framework", ExpressJSFramework)
 register("fastapi-framework", FastAPIFramework)
 register("flask-framework", FlaskFramework)
 register("go-framework", GoFramework)
