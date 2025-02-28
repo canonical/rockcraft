@@ -1,4 +1,5 @@
 summary: Pack a rockcraft project using the fetch-service
+priority: 50
 
 systems:
   # Currently the integration only supports Ubuntu (openssl dependency)

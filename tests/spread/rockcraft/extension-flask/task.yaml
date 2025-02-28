@@ -1,4 +1,5 @@
 summary: flask extension test
+priority: 50
 environment:
   SCENARIO/bare: bare
   SCENARIO/base_2204: ubuntu-22.04

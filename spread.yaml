@@ -119,21 +119,25 @@ debug-each: |
 suites:
   docs/tutorial/code/:
     summary: tests tutorial from the docs
+    manual: true
     systems:
       - ubuntu-22.04-64
 
   docs/how-to/code/:
     summary: tests how-to guides from the docs
+    manual: true
     systems:
       - ubuntu-22.04-64
 
   docs/reference/code/:
     summary: tests reference code from the docs
+    manual: true
     systems:
       - ubuntu-22.04-64
 
   docs/reuse/tutorial/code/:
     summary: tests reusable code from the docs
+    manual: true
     systems:
       - ubuntu-22.04-64
 
