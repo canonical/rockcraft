@@ -37,9 +37,9 @@ example:
       npm-include-node: true
       npm-node-version: 20.12.2
 
-For more examples of npm-node-version options, see: `Rockcraft | NPM Plugin |
-Examples <https://documentation.ubuntu.com/rockcraft/en/1.5.3/common/
-craft-parts/reference/plugins/npm_plugin/#examples>`_.
+For more examples of the ``npm-node-version`` key, see the
+`NPM plugin <httpshttps://documentation.ubuntu.com/rockcraft/en/latest/common/
+craft-parts/reference/plugins/npm_plugin/#examples>`_ documentation.
 
 If you don't customise the version of node, it will be installed from the Ubuntu
 package repository.
@@ -49,7 +49,7 @@ package repository.
 
 Installing additional runtime packages is currently unsupported.
 
-Useful links
-============
+See also
+========
 
 - :ref:`build-a-rock-for-an-expressjs-application`
