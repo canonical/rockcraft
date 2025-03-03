@@ -9,7 +9,7 @@ into a rock.
 Setup your environment
 ----------------------
 
-.. include:: /reuse/tutorial/setup.rst
+.. include:: /reuse/tutorial/setup_stable.rst
 
 Project setup
 -------------
