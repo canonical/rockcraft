@@ -78,6 +78,7 @@ def package_json_file(app_path):
                         "npm-include-node": False,
                         "npm-node-version": None,
                         "override-build": (
+                            "rm -rf node_modules\n"
                             "craftctl default\n"
                             "npm config set script-shell=bash --location project\n"
                             "cp ${CRAFT_PART_BUILD}/.npmrc ${CRAFT_PART_INSTALL}/lib/node_modules/"
@@ -118,7 +119,8 @@ def package_json_file(app_path):
                     "expressjs-framework/install-app": {
                         "npm-include-node": True,
                         "npm-node-version": "1.0.0",
-                        "override-build": "craftctl default\n"
+                        "override-build": "rm -rf node_modules\n"
+                        "craftctl default\n"
                         "npm config set script-shell=bash --location project\n"
                         "cp ${CRAFT_PART_BUILD}/.npmrc "
                         "${CRAFT_PART_INSTALL}/lib/node_modules/test-expressjs-project/.npmrc\n"
@@ -164,7 +166,8 @@ def package_json_file(app_path):
                         ],
                         "npm-include-node": False,
                         "npm-node-version": None,
-                        "override-build": "craftctl default\n"
+                        "override-build": "rm -rf node_modules\n"
+                        "craftctl default\n"
                         "npm config set script-shell=bash --location project\n"
                         "cp ${CRAFT_PART_BUILD}/.npmrc "
                         "${CRAFT_PART_INSTALL}/lib/node_modules/test-expressjs-project/.npmrc\n"
@@ -218,7 +221,8 @@ def package_json_file(app_path):
                     "expressjs-framework/install-app": {
                         "npm-include-node": True,
                         "npm-node-version": "1.0.0",
-                        "override-build": "craftctl default\n"
+                        "override-build": "rm -rf node_modules\n"
+                        "craftctl default\n"
                         "npm config set script-shell=bash --location project\n"
                         "cp ${CRAFT_PART_BUILD}/.npmrc "
                         "${CRAFT_PART_INSTALL}/lib/node_modules/test-expressjs-project/.npmrc\n"

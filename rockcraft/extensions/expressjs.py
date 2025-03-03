@@ -132,6 +132,7 @@ class ExpressJSFramework(Extension):
             "plugin": "npm",
             "source": f"{self.IMAGE_BASE_DIR}/",
             "override-build": (
+                "rm -rf node_modules\n"
                 "craftctl default\n"
                 "npm config set script-shell=bash --location project\n"
                 "cp ${CRAFT_PART_BUILD}/.npmrc ${CRAFT_PART_INSTALL}/lib/node_modules/"
