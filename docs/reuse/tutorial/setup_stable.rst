@@ -77,8 +77,7 @@ to be able to use Docker commands as a regular user:
     :end-before: [docs:docker-regular-user-end]
     :dedent: 2
 
-The ``newgrp`` command should open a new shell session. Use ``exit`` to
-exit from the new shell, and then restart Docker:
+Restart Docker:
 
 .. literalinclude:: /reuse/tutorial/code/stable/task.yaml
     :language: bash
