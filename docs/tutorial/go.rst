@@ -22,10 +22,6 @@ Setup
 
 .. include:: /reuse/tutorial/setup_edge.rst
 
-This tutorial requires the ``latest/edge`` channel of Rockcraft. Run
-``sudo snap refresh rockcraft --channel latest/edge`` to get the latest
-edge version.
-
 In order to test the Go application locally, before packing it into a rock,
 install ``go``.
 
