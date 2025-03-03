@@ -1,4 +1,4 @@
-.. _expressjs-framework-explanation:
+.. _configure-the-build-base-for-expressjs-app:
 
 expressjs-framework
 ===================
@@ -7,16 +7,14 @@ When using the ``expressjs-framework`` extension, there are four different cases
 for customising the Ubuntu base and the Node version to be included.
 The main differences between the cases are:
 
-* Whether to use the bare base or Ubuntu 24.04 base.
-* Whether Node is installed from Ubuntu packages or the NPM plugin.
+- Whether to use the bare base or Ubuntu 24.04 base.
+- Whether Node is installed from Ubuntu package archive or the NPM plugin.
 
 The remainder of this page discusses the combinations of
 Ubuntu bases and sources for Node.js.
 
-Ubuntu 24.04 base, Node.js from Ubuntu packages
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The following example uses the Ubuntu 24.04 base and Node from Ubuntu packages.
+Ubuntu 24.04 base, Node.js from Ubuntu package archive
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: yaml
     :caption: rockcraft.yaml
@@ -26,17 +24,16 @@ The following example uses the Ubuntu 24.04 base and Node from Ubuntu packages.
         - expressjs-framework
 
 In this case, the application is installed and run via Node and NPM is installed
-by the Ubuntu packages. The NPM and Node versions are determined by the versions
-of NPM and NodeJS shipped with the Ubuntu base. See the NodeJS version shipped
-with the corressponding Ubuntu base from the chilsel-slices repository. This
-`link to the slices repository <https://github.com/canonical/chisel-releases/\
-blob/ubuntu-24.04/slices/nodejs.yaml>`_ is an example of the NodeJS version
-shipped with the Ubuntu 24.04 base.
+from the Ubuntu package archive. The NPM and Node versions are determined by the
+versions of NPM and NodeJS shipped with the Ubuntu base. See the NodeJS version
+shipped with the corressponding Ubuntu base from the chilsel-slices repository.
+This `link to the slices repository
+<https://github.com/canonical/chisel-releases/blob/ubuntu-24.04/slices/
+nodejs.yaml>`_ is an example of the NodeJS version shipped with the Ubuntu 24.04
+base.
 
 Ubuntu 24.04 base, Node.js from NPM plugin
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The following example uses the Ubuntu 24.04 base and Node from the NPM plugin.
 
 .. code-block:: yaml
     :caption: rockcraft.yaml
@@ -49,13 +46,11 @@ The following example uses the Ubuntu 24.04 base and Node from the NPM plugin.
             npm-include-node: true
             npm-node-version: 20.12
 
-In this case, the application is installed and run via Node, and NPM is
-installed by the NPM plugin.
+In this case, the application is installed and run via NodeJS provided by the
+NPM plugin. The NPM is also installed by the NPM plugin.
 
-Bare base, and Node.js from Ubuntu packages
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The following example uses the bare base and Node from Ubuntu packages.
+Bare base, and Node.js from Ubuntu package archive
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: yaml
     :caption: rockcraft.yaml
@@ -64,8 +59,8 @@ The following example uses the bare base and Node from Ubuntu packages.
     build-base: ubuntu@24.04
 
 In this case, the application is installed and run via Node and NPM is
-installed by the Ubuntu packages. The NPM and Node versions are determined by
-the versions of NPM and NodeJS shipped with the Ubuntu base.
+installed from the Ubuntu package archive. The NPM and Node versions are
+determined by the versions of NPM and NodeJS shipped with the Ubuntu base.
 See the NodeJS version shipped with
 the corressponding Ubuntu base from the chilsel-slices repository. This
 `link to the slices repository <https://github.com/canonical/chisel-releases/\
@@ -78,8 +73,6 @@ search?suite=default&section=all&arch=any&keywords=npm&searchon=names>`_.
 Bare base, Node.js from NPM plugin
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following example uses the bare base and Node from the NPM plugin.
-
 .. code-block:: yaml
     :caption: rockcraft.yaml
 
@@ -90,7 +83,7 @@ The following example uses the bare base and Node from the NPM plugin.
             npm-include-node: true
             npm-node-version: 20.12
 
-In this case, the application is installed and run via Node and NPM is installed
-by the NPM plugin. For different possible inputs for npm-node-version, refer to
+In this case, the application is installed and run via NodeJS and NPM from the
+NPM plugin. For different possible inputs for npm-node-version, refer to
 the `NPM plugin documentation <https://documentation.ubuntu.com/rockcraft/en/\
 latest/common/craft-parts/reference/plugins/npm_plugin>`_.

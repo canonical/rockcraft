@@ -39,6 +39,17 @@ compiled a couple of guides for you to facilitate your contribution.
 
    documentation <documentation/index>
 
+Extensions
+----------
+
+Learn how to use and customize different Rockcraft extensionss in your
+rockcraft.yaml to best suit your use cases.
+
+.. toctree::
+   :maxdepth: 1
+
+   extensions <extensions/index>
+
 Rocks
 -----
 
