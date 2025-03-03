@@ -21,4 +21,3 @@ the motivations behind its development.
    /common/craft-parts/explanation/parts
    lifecycle
    /common/craft-parts/explanation/dump_plugin
-   Extensions <extensions/index>

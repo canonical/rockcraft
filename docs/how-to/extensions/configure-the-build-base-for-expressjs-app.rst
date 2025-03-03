@@ -62,10 +62,7 @@ In this case, the application is installed and run via Node and NPM is
 installed from the Ubuntu package archive. The NPM and Node versions are
 determined by the versions of NPM and NodeJS shipped with the Ubuntu base.
 See the NodeJS version shipped with
-the corressponding Ubuntu base from the chilsel-slices repository. This
-`link to the slices repository <https://github.com/canonical/chisel-releases/\
-blob/ubuntu-24.04/slices/nodejs.yaml>`_ is an example of the NodeJS version
-shipped with the Ubuntu 24.04 base.
+the corressponding Ubuntu base from the chilsel-slices repository.
 See the NPM version shipped with the corressponding Ubuntu base from the Ubuntu
 packages archive from the `Ubuntu packages search <https://packages.ubuntu.com/\
 search?suite=default&section=all&arch=any&keywords=npm&searchon=names>`_.
