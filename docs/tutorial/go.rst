@@ -20,7 +20,7 @@ rocks for Go applications.
 Setup
 =====
 
-.. include:: /reuse/tutorial/setup.rst
+.. include:: /reuse/tutorial/setup_edge.rst
 
 This tutorial requires the ``latest/edge`` channel of Rockcraft. Run
 ``sudo snap refresh rockcraft --channel latest/edge`` to get the latest

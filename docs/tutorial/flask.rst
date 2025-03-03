@@ -10,14 +10,7 @@ containerise it in a rock, using Rockcraft's ``flask-framework``
 Setup
 =====
 
-.. include:: /reuse/tutorial/setup.rst
-
-.. note::
-    This tutorial requires version ``1.5.2`` or later for Rockcraft. Check
-    the version using ``rockcraft --version``. If there's an older version
-    of Rockcraft installed, use
-    ``sudo snap refresh rockcraft --channel latest/stable`` to get the latest
-    stable version.
+.. include:: /reuse/tutorial/setup_stable.rst
 
 Finally, create a new directory for this tutorial and go inside it:
 
