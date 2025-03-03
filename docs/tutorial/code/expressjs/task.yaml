@@ -108,7 +108,7 @@ execute: |
 
   # [docs:cleanup]
   # delete all the files created during the tutorial
-  npm uninstall -g express-generator@4
+  sudo npm uninstall -g express-generator@4
   sudo apt-get remove npm -y
   rm -rf app
   rm expressjs-hello-world_0.1_amd64.rock \

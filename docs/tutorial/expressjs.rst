@@ -206,7 +206,7 @@ Now we have a fully functional rock for a Go application! This concludes
 the first part of this tutorial, so we'll stop the container and remove the
 respective image for now:
 
-.. literalinclude:: code/go/task.yaml
+.. literalinclude:: code/expressjs/task.yaml
     :language: bash
     :start-after: [docs:stop-docker]
     :end-before: [docs:stop-docker-end]
@@ -313,7 +313,7 @@ Next steps
 ==========
 
 * :ref:`Rockcraft tutorials<tutorial>`.
-* :ref:`go-framework reference<go-framework-reference>`.
+* :ref:`expressjs-framework reference<expressjs-framework-reference>`.
 * :ref:`why_use_rockcraft`.
 * :ref:`What is a Rock?<rocks_explanation>`.
 
