@@ -21,6 +21,9 @@ execute: |
   sudo addgroup --system docker
   sudo adduser $USER docker
   newgrp docker
+  # [docs:docker-regular-user-end]
+
+  # [docs:docker-enable]
   sudo snap disable docker
   sudo snap enable docker
-  # [docs:docker-regular-user-end]
+  # [docs:docker-enable-end]
