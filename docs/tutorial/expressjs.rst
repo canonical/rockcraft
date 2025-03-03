@@ -3,35 +3,44 @@
 Build a rock for an ExpressJS application
 -----------------------------------------
 
-In this tutorial, we'll create a simple ExpressJS application and learn how to
-containerise it in a rock with Rockcraft's
-:ref:`expressjs-framework <expressjs-framework-reference>` extension.
+In this tutorial, we'll containerise a simple ExpressJS application into a rock using
+Rockcraft's ``expressjs-framework`` :ref:`extension
+<expressjs-framework-reference>`.
+
+It should take 25 minutes for you to complete.
+
+You won’t need to come prepared with intricate knowledge of software
+packaging, but familiarity with Linux paradigms, terminal operations,
+and ExpressJS is required.
+
+Once you complete this tutorial, you’ll have a working rock for an ExpressJS
+application. You’ll gain familiarity with Rockcraft and the
+``expressjs-framework`` extension, and have the experience to create
+rocks for ExpressJS applications.
 
 Setup
 =====
 
 .. include:: /reuse/tutorial/setup.rst
 
-.. important::
+This tutorial requires the ``latest/edge`` channel of Rockcraft. Run
+``sudo snap refresh rockcraft --channel latest/edge`` to get the latest
+edge version.
 
-    Before we go any further, for this tutorial we'll need the most recent
-    version of Rockcraft on the edge channel. Run ``sudo snap refresh rockcraft
-    --channel latest/edge`` to switch to it.
+In order to test the ExpressJS application locally, before packing it into a
+rock, install ``npm`` and initialize the starter app.
 
-Finally, create a new directory for this tutorial and go inside it:
+.. literalinclude:: code/expressjs/task.yaml
+    :language: bash
+    :start-after: [docs:install-deps]
+    :end-before: [docs:install-deps-end]
+    :dedent: 2
 
-.. code-block:: bash
-
-   mkdir expressjs-hello-world
-   cd expressjs-hello-world
 
 Create the ExpressJS application
 ================================
 
-Let's start by creating the "Hello, world" ExpressJS application that we'll use
-throughout this tutorial.
-
-Create the ExpressJS application using the express-generator:
+Start by generating the ExpressJS starter template using the express-generator.
 
 .. literalinclude:: code/expressjs/task.yaml
     :language: bash
@@ -39,16 +48,15 @@ Create the ExpressJS application using the express-generator:
     :end-before: [docs:init-app-end]
     :dedent: 2
 
-Run the ExpressJS application from within the ``app/`` directory using
+Let's Run the Express application to verify that it works:
 
-.. code-block:: bash
+.. code:: bash
 
-    npm start
+  npm start
 
-to verify that it works.
-
-Test the ExpressJS application by using curl to send a request to the root
-endpoint. We'll need a new terminal for this -- if we're using Multipass, run
+The application starts an HTTP server listening on port 3000
+that we can test by using curl to send a request to the root
+endpoint. We may need a new terminal for this -- if using Multipass, run
 ``multipass shell rock-dev`` to get another terminal:
 
 .. literalinclude:: code/expressjs/task.yaml
@@ -57,17 +65,22 @@ endpoint. We'll need a new terminal for this -- if we're using Multipass, run
     :end-before: [docs:curl-expressjs-end]
     :dedent: 2
 
-The ExpressJS application should respond with a ``Welcome to Express`` HTML web
-page.
+The ExpressJS application should respond with *Welcome to Express* web page.
 
-The application looks good, so let's stop it for now by pressing :kbd:`Ctrl` +
-:kbd:`C`.
+.. note::
+    The response from the ExpressJS application includes HTML and CSS which
+    makes it difficult to read on a terminal. Visit ``http://localhost:3000``
+    using a browser to see the fully rendered page.
 
-Pack the ExpressJS application into a rock
-==========================================
+The ExpressJS application looks good, so let's stop it for now
+with :kbd:`Ctrl` + :kbd:`C`, then move out of the application directory
+``cd ..``.
 
-First, we'll need a ``rockcraft.yaml`` project file. Rockcraft will automate
-its creation and tailoring for a ExpressJS application by using the
+Pack the Express application into a rock
+========================================
+
+First, we'll need a ``rockcraft.yaml`` project file. Rockcraft will automate its
+creation and tailor it for a ExpressJS application when we tell it to use the
 ``expressjs-framework`` profile:
 
 .. literalinclude:: code/expressjs/task.yaml
@@ -76,28 +89,19 @@ its creation and tailoring for a ExpressJS application by using the
     :end-before: [docs:create-rockcraft-yaml-end]
     :dedent: 2
 
-The project will automatically be created in the project's working directory.
-Open it in a text editor and check that the ``name`` is
-``expressjs-hello-world``. Ensure that ``platforms`` includes the architecture
-of the host. For example, if the host uses the ARM architecture, include
-``arm64`` in ``platforms``.
+Open ``rockcraft.yaml`` in a text editor and check that the ``name``
+key is set to ``expressjs-hello-world``. Ensure that ``platforms`` includes
+the architecture of the host. For example, if the host uses the ARM
+architecture, include ``arm64`` in ``platforms``.
 
-For the sake of this tutorial, we'll initially switch the base from bare to
-ubuntu@24.04. We will switch it back to bare later on when we chisel the rock.
+As the ``expressjs-framework`` extension is still experimental, export the
+environment variable ``ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS``:
 
 .. literalinclude:: code/expressjs/task.yaml
     :language: bash
-    :start-after: [docs:change-base-init]
-    :end-before: [docs:change-base-init-end]
+    :start-after: [docs:experimental]
+    :end-before: [docs:experimental-end]
     :dedent: 2
-
-.. note::
-    For this tutorial, we'll use the ``name`` ``expressjs-hello-world`` and
-    assume we're running on the  ``amd64`` platform. Check the architecture of
-    the system using ``dpkg --print-architecture``.
-
-    The ``name``, ``version`` and ``platform`` all influence the name of the
-    generated ``.rock`` file.
 
 Pack the rock:
 
@@ -107,16 +111,11 @@ Pack the rock:
     :end-before: [docs:pack-end]
     :dedent: 2
 
-.. note::
+Depending on the network, this step can take a couple of minutes to finish.
 
-    Depending on the network, this step can take a couple of minutes to finish.
-
-    ``ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS`` is required whilst the
-    ExpressJS extension is experimental.
-
-Once Rockcraft has finished packing the ExpressJS rock, we'll find a new file in
-the project's working directory (an `OCI <OCI_image_spec_>`_ archive) with
-the ``.rock`` extension:
+Once Rockcraft has finished packing the Go rock, we'll find a new file in
+the working directory (an `OCI <OCI_image_spec_>`_ image) with the ``.rock``
+extension:
 
 .. literalinclude:: code/expressjs/task.yaml
     :language: bash
@@ -124,27 +123,18 @@ the ``.rock`` extension:
     :end-before: [docs:ls-rock-end]
     :dedent: 2
 
-The created rock is about 100MB in size. We will reduce its size later in this
-tutorial.
-
-.. note::
-    If we changed the ``name`` or ``version`` in ``rockcraft.yaml`` or are not
-    on an ``amd64`` platform, the name of the ``.rock`` file will be
-    different.
-
-    The size of the rock may vary depending on factors like the architecture
-    we are building on and the packages installed at the time of packing.
 
 Run the ExpressJS rock with Docker
 ==================================
 
-We already have the rock as an OCI archive. Now we need to load it into Docker:
+We already have the rock as an OCI archive. Load the image into Docker:
 
 .. literalinclude:: code/expressjs/task.yaml
     :language: bash
     :start-after: [docs:skopeo-copy]
     :end-before: [docs:skopeo-copy-end]
     :dedent: 2
+
 
 Check that the image was successfully loaded into Docker:
 
@@ -154,17 +144,13 @@ Check that the image was successfully loaded into Docker:
     :end-before: [docs:docker-images-end]
     :dedent: 2
 
-The output should list the ExpressJS container image, along with its tag, ID and
+The output should list the Go container image, along with its tag, ID and
 size:
 
 .. terminal::
 
     REPOSITORY              TAG       IMAGE ID       CREATED       SIZE
     expressjs-hello-world   0.1       30c7e5aed202   2 weeks ago   304MB
-
-.. note::
-    The size of the image reported by Docker is the uncompressed size which is
-    larger than the size of the compressed ``.rock`` file.
 
 Now we're finally ready to run the rock and test the containerised ExpressJS
 application:
@@ -175,7 +161,7 @@ application:
     :end-before: [docs:docker-run-end]
     :dedent: 2
 
-Use the same curl command as before to send a request to the ExpressJS
+Use the same ``curl`` command as before to send a request to the ExpressJS
 application's root endpoint which is running inside the container:
 
 .. literalinclude:: code/expressjs/task.yaml
@@ -184,13 +170,12 @@ application's root endpoint which is running inside the container:
     :end-before: [docs:curl-expressjs-rock-end]
     :dedent: 2
 
-The ExpressJS application should again respond with the ``Welcome to Express``
-HTML.
+The ExpressJS application again responds with *Welcome to Express* page.
 
 View the application logs
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-When deploying the ExpressJS rock, we can always get the application logs via
+When deploying the ExpressJS rock, we can always get the application logs with
 :ref:`pebble_explanation_page`:
 
 .. literalinclude:: code/expressjs/task.yaml
@@ -213,104 +198,20 @@ We can also choose to follow the logs by using the ``-f`` option with the
 ``pebble logs`` command above. To stop following the logs, press :kbd:`Ctrl` +
 :kbd:`C`.
 
-Cleanup
-~~~~~~~
 
-Now we have a fully functional rock for a ExpressJS application! This concludes
+Stop the application
+~~~~~~~~~~~~~~~~~~~~
+
+Now we have a fully functional rock for a Go application! This concludes
 the first part of this tutorial, so we'll stop the container and remove the
 respective image for now:
 
-.. literalinclude:: code/expressjs/task.yaml
+.. literalinclude:: code/go/task.yaml
     :language: bash
     :start-after: [docs:stop-docker]
     :end-before: [docs:stop-docker-end]
     :dedent: 2
 
-Chisel the rock
-===============
-
-This is an optional but recommended step, especially if we're looking to
-deploy the rock into a production environment. With :ref:`chisel_explanation`
-Since we're we're looking to deploy the rock into a production environment,
-we recommend chiselling the rock. With :ref:`chisel_explanation`
-
-we can produce lean and production-ready rocks by chipping away all the
-contents that the application doesn't need to run. This will result in a much
-smaller rock with a reduced attack surface.
-
-.. note::
-    It is recommended to run chiselled images in production. For development,
-    we may prefer non-chiselled images as they will include additional
-    development tooling (such as for debugging).
-
-The first step towards chiselling the rock is to ensure we are using a
-``bare`` :ref:`base <bases_explanation>`.
-In ``rockcraft.yaml``, change the ``base`` to ``bare`` and add
-``build-base: ubuntu@24.04``:
-
-.. literalinclude:: code/expressjs/task.yaml
-    :language: bash
-    :start-after: [docs:change-base]
-    :end-before: [docs:change-base-end]
-    :dedent: 2
-
-This sed command sets the current ``base`` key in ``rockcraft.yaml`` with
-``bare``. When using the bare base, we also need the ``build-base`` key.
-
-So that we can compare the size after chiselling, open the ``rockcraft.yaml``
-file and change the ``version`` (e.g. to ``0.1-chiselled``). Pack the rock with
-the new bare base:
-
-.. literalinclude:: code/expressjs/task.yaml
-    :language: bash
-    :start-after: [docs:chisel-pack]
-    :end-before: [docs:chisel-pack-end]
-    :dedent: 2
-
-As before, verify that the new rock was created:
-
-.. literalinclude:: code/expressjs/task.yaml
-    :language: bash
-    :start-after: [docs:ls-bare-rock]
-    :end-before: [docs:ls-bare-rock-end]
-    :dedent: 2
-
-The updated ExpressJS rock is a respectable **15% smaller** in size. We achieved
-that from a simple change of ``base``.
-
-The functionality of the new rock is the same. Let's confirm this by running the
-rock with Docker
-
-.. literalinclude:: code/expressjs/task.yaml
-    :language: text
-    :start-after: [docs:docker-run-chisel]
-    :end-before: [docs:docker-run-chisel-end]
-    :dedent: 2
-
-and then using the same ``curl`` request:
-
-.. literalinclude:: code/expressjs/task.yaml
-    :language: text
-    :start-after: [docs:curl-expressjs-bare-rock]
-    :end-before: [docs:curl-expressjs-bare-rock-end]
-    :dedent: 2
-
-The ExpressJS application should still respond with
-``Welcome to Express`` HTML.
-
-Cleanup
-~~~~~~~
-
-And that's it. We can now stop the container and remove the corresponding
-image:
-
-.. literalinclude:: code/expressjs/task.yaml
-    :language: bash
-    :start-after: [docs:stop-docker-chisel]
-    :end-before: [docs:stop-docker-chisel-end]
-    :dedent: 2
-
-.. _update-expressjs-application:
 
 Update the ExpressJS application
 ================================
@@ -325,7 +226,8 @@ code from the snippet below:
     :caption: time.js
     :language: javascript
 
-Place the code snippet below in ``app.js`` under routes registration section.
+Place the code snippet below in ``app/app.js`` under routes registration section
+along with other `app.use(...)` lines.
 It will register the new ``/time`` endpoint:
 
 .. literalinclude:: code/expressjs/time_app.js
@@ -336,12 +238,6 @@ It will register the new ``/time`` endpoint:
 
 Since we are creating a new version of the application, set
 ``version: '0.2'`` in the project file.
-
-.. note::
-
-    ``rockcraft pack`` will create a new image with the updated code even if we
-    don't change the version. It is recommended to change the version whenever
-    we make changes to the application in the image.
 
 Pack and run the rock using similar commands as before:
 
@@ -370,8 +266,8 @@ The updated application should respond with the current date and time (e.g.
     If you are getting a ``404`` for the ``/time`` endpoint, check the
     :ref:`troubleshooting-expressjs` steps below.
 
-Cleanup
-~~~~~~~
+Final Cleanup
+~~~~~~~~~~~~~
 
 We can now stop the container and remove the corresponding image:
 
@@ -413,6 +309,16 @@ following:
 
 ----
 
+Next steps
+==========
+
+* :ref:`Rockcraft tutorials<tutorial>`.
+* :ref:`go-framework reference<go-framework-reference>`.
+* :ref:`why_use_rockcraft`.
+* :ref:`What is a Rock?<rocks_explanation>`.
+
+----
+
 .. _troubleshooting-expressjs:
 
 Troubleshooting
@@ -420,11 +326,9 @@ Troubleshooting
 
 **Application updates not taking effect?**
 
-Upon changing your ExpressJS application and re-packing the rock, if you believe
-your changes are not taking effect (e.g. the ``/time``
-:ref:`endpoint <update-expressjs-application>` is returning a
-404), try running ``rockcraft clean`` and pack the rock again with
-``rockcraft pack``.
+Upon changing the ExpressJS application and re-packing the rock, if
+the changes are not taking effect, try running ``rockcraft clean`` and pack
+the rock again with ``rockcraft pack``.
 
 .. _`lxd-docker-connectivity-issue`: https://documentation.ubuntu.com/lxd/en/latest/howto/network_bridge_firewalld/#prevent-connectivity-issues-with-lxd-and-docker
 .. _`install-multipass`: https://multipass.run/docs/install-multipass

@@ -10,9 +10,12 @@ summary: Getting started with ExpressJS tutorial
 environment:
 
 execute: |
-  # [docs:init-app]
+  # [docs:install-deps]
   sudo apt-get update -y && sudo apt-get install npm -y
-  npm install -g express-generator@4
+  # [docs:install-deps-end]
+
+  # [docs:init-app]
+  sudo npm install -g express-generator@4
   express app
   cd app && npm install
   # [docs:init-app-end]
@@ -32,14 +35,14 @@ execute: |
   rockcraft init --profile expressjs-framework
   # [docs:create-rockcraft-yaml-end]
 
-  # [docs:change-base-init]
-  sed -i "s/^base: bare/base: ubuntu@24.04/g" rockcraft.yaml
-  # [docs:change-base-init-end]
-
   sed -i "s/name: .*/name: expressjs-hello-world/g" rockcraft.yaml
 
+  # [docs:experimental]
+  export ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS=true
+  # [docs:experimental-end]
+
   # [docs:pack]
-  ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS=true rockcraft pack
+  rockcraft pack
   # [docs:pack-end]
 
   # [docs:ls-rock]
@@ -75,38 +78,6 @@ execute: |
   sudo docker rmi expressjs-hello-world:0.1
   # [docs:stop-docker-end]
 
-  # [docs:change-base]
-  sed -i "s/^base: ubuntu@24.04/base: bare/g" rockcraft.yaml
-  # [docs:change-base-end]
-  sed -i "s/version: .*/version: 0.1-chiselled/g" rockcraft.yaml
-
-  # [docs:chisel-pack]
-  ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS=true rockcraft pack
-  # [docs:chisel-pack-end]
-
-  # [docs:ls-bare-rock]
-  ls *.rock -l --block-size=MB
-  # [docs:ls-bare-rock-end]
-
-  # [docs:docker-run-chisel]
-  sudo rockcraft.skopeo --insecure-policy \
-    copy oci-archive:expressjs-hello-world_0.1-chiselled_amd64.rock \
-    docker-daemon:expressjs-hello-world:0.1-chiselled
-  sudo docker images expressjs-hello-world:0.1-chiselled
-  sudo docker run --rm -d -p 3000:3000 \
-    --name expressjs-hello-world expressjs-hello-world:0.1-chiselled
-  # [docs:docker-run-chisel-end]
-  retry -n 5 --wait 2 curl --fail localhost:3000
-
-  # [docs:curl-expressjs-bare-rock]
-  curl --fail localhost:3000
-  # [docs:curl-expressjs-bare-rock-end]
-
-  # [docs:stop-docker-chisel]
-  sudo docker stop expressjs-hello-world
-  sudo docker rmi expressjs-hello-world:0.1-chiselled
-  # [docs:stop-docker-chisel-end]
-
   mv time.js app/routes/
   original_line="var app = express();"
   # Remove comments from time_app.js
@@ -116,7 +87,7 @@ execute: |
   sed -i "s/version: .*/version: 0.2/g" rockcraft.yaml
 
   # [docs:docker-run-update]
-  ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS=true rockcraft pack
+  rockcraft pack
   sudo rockcraft.skopeo --insecure-policy \
     copy oci-archive:expressjs-hello-world_0.2_amd64.rock \
     docker-daemon:expressjs-hello-world:0.2
@@ -137,10 +108,10 @@ execute: |
 
   # [docs:cleanup]
   # delete all the files created during the tutorial
+  npm uninstall -g express-generator@4
   sudo apt-get remove npm -y
   rm -rf app
   rm expressjs-hello-world_0.1_amd64.rock \
-    expressjs-hello-world_0.1-chiselled_amd64.rock \
     expressjs-hello-world_0.2_amd64.rock \
     rockcraft.yaml
   # [docs:cleanup-end]
