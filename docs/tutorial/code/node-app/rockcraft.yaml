@@ -1,3 +1,4 @@
+# Metadata to describe the rock
 name: my-node-app
 base: ubuntu@22.04
 version: "1.0"
@@ -8,6 +9,8 @@ license: GPL-3.0
 platforms:
   amd64:
 
+# Container entrypoint, as a Pebble service:
+# https://github.com/canonical/pebble
 services:
   app:
     override: replace
@@ -17,6 +20,8 @@ services:
     on-failure: shutdown
     working-dir: /lib/node_modules/node_web_app
 
+# Describe how to build the app created in the 
+# "src/" directory using the "npm" plugin:
 parts:
   app:
     plugin: npm

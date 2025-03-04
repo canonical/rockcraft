@@ -38,39 +38,16 @@ The second file is our sample app, a simple "hello world" server. Still inside
     :language: javascript
 
 Next, we'll setup the Rockcraft project. In the original empty folder, create
-an empty file called ``rockcraft.yaml``. Then add the following snippets, one
-after the other.
-
-Add the metadata that describes your rock, such as its name and licence:
-
-.. literalinclude:: code/node-app/rockcraft.yaml
-    :caption: rockcraft.yaml
-    :language: yaml
-    :start-at: name: my-node-app
-    :end-at: amd64:
-
-Add the container entrypoint, as a `Pebble`_ service:
+an empty file called ``rockcraft.yaml``. Then add the metadata to describe the
+rock (such as name and license), add the container entrypoint and the parts that
+describe how to build the app:
 
 .. literalinclude:: code/node-app/rockcraft.yaml
     :caption: rockcraft.yaml
     :language: yaml
-    :start-at: services:
-    :end-at: working-dir: /lib/node_modules/node_web_app
 
-Finally, add a part that describes how to build the app created in the ``src/``
-directory using the ``npm`` plugin:
-
-.. literalinclude:: code/node-app/rockcraft.yaml
-    :caption: rockcraft.yaml
-    :language: yaml
-    :start-at: parts:
-    :end-at: source: src/
-
-The whole file then looks like this:
-
-.. literalinclude:: code/node-app/rockcraft.yaml
-    :caption: rockcraft.yaml
-    :language: yaml
+You can check the `rockcraft.yaml reference </reference/rockcraft.yaml.html>`_ 
+for more information about the fields.
 
 After completing the previous steps, this is the resulting directory structure:
 
