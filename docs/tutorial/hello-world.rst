@@ -9,7 +9,13 @@ Setup your environment
 Project setup
 -------------
 
-Create a new directory and write the following into a text editor and
+Create a new directory and cd into it:
+
+.. code-block:: bash
+
+   mkdir hello-world && cd $_
+
+Then write the following into a text editor and
 save it as ``rockcraft.yaml``:
 
 .. literalinclude:: code/hello-world/rockcraft.yaml
