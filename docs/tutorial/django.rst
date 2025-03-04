@@ -16,8 +16,7 @@ Finally, create a new directory for this tutorial and go inside it:
 
 .. code-block:: bash
 
-   mkdir django-hello-world
-   cd django-hello-world
+   mkdir django-hello-world && cd $_
 
 Create the Django application
 =============================
@@ -47,8 +46,21 @@ Create a new project using ``django-admin``:
     :end-before: [docs:create-project-end]
     :dedent: 2
 
-Change into the ``django_hello_world`` directory and run the Django application
-using ``python manage.py runserver`` to verify that it works.
+After completing the previous steps, this is the resulting directory structure:
+
+.. code-block:: text
+
+    .
+    ├─ .venv/
+    ├─ django-hello-world/
+    |  ├─ django_hello_world/
+    |  └─ manage.py
+    └─ requirements.txt
+    
+    3 directories, 2 files
+
+Change into the ``django_hello_world`` directory by running ``cd django_hello_world`` and 
+run the Django application using ``python manage.py runserver`` to verify that it works.
 
 Test the Django application by using ``curl`` to send a request to the root
 endpoint. We'll need a new terminal for this -- if we're using Multipass, run

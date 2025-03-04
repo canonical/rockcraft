@@ -72,6 +72,18 @@ The whole file then looks like this:
     :caption: rockcraft.yaml
     :language: yaml
 
+After completing the previous steps, this is the resulting directory structure:
+
+.. code-block:: text
+
+    .
+    ├─ rockcraft.yaml
+    └─ src
+        ├─ package.json
+        └─ server.js
+    
+    2 directories, 3 files
+
 
 Pack the rock with Rockcraft
 ----------------------------

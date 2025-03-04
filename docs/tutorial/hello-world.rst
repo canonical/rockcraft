@@ -10,6 +10,7 @@ Project setup
 -------------
 
 Create a new directory and cd into it:
+
 .. code-block:: bash
 
    mkdir hello-world && cd $_
