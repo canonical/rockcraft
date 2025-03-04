@@ -58,7 +58,7 @@ After completing the previous steps, this is the resulting directory structure:
     ├─ .venv
     ├─ app.py
     └─ requirements.txt
-    
+
     1 directory, 2 files
 
 Run the FastAPI application using ``fastapi dev app.py --port 8000`` to verify

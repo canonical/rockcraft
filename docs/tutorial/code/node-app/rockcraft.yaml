@@ -20,7 +20,7 @@ services:
     on-failure: shutdown
     working-dir: /lib/node_modules/node_web_app
 
-# Describe how to build the app created in the 
+# Describe how to build the app created in the
 # "src/" directory using the "npm" plugin:
 parts:
   app:

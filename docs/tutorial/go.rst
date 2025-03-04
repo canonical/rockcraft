@@ -82,7 +82,7 @@ After completing the previous steps, this is the resulting directory structure:
     ├─ go-hello-world
     ├─ go.mod
     └─ main.go
-    
+
     3 files
 
 Let's Run the Go application to verify that it works:

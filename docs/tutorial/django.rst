@@ -56,11 +56,12 @@ After completing the previous steps, this is the resulting directory structure:
     |  ├─ django_hello_world/
     |  └─ manage.py
     └─ requirements.txt
-    
+
     3 directories, 2 files
 
-Change into the ``django_hello_world`` directory by running ``cd django_hello_world`` and 
-run the Django application using ``python manage.py runserver`` to verify that it works.
+Change into the ``django_hello_world`` directory by running
+``cd django_hello_world`` and run the Django application using
+``python manage.py runserver`` to verify that it works.
 
 Test the Django application by using ``curl`` to send a request to the root
 endpoint. We'll need a new terminal for this -- if we're using Multipass, run

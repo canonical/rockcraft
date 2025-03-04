@@ -59,7 +59,7 @@ After completing the previous steps, this is the resulting directory structure:
     ├─ .venv
     ├─ app.py
     └─ requirements.txt
-    
+
     1 directory, 2 files
 
 Run the Flask application using ``flask run -p 8000`` to verify that it works.

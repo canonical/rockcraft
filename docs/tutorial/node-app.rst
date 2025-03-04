@@ -46,7 +46,7 @@ describe how to build the app:
     :caption: rockcraft.yaml
     :language: yaml
 
-You can check the `rockcraft.yaml reference </reference/rockcraft.yaml.html>`_ 
+You can check the `rockcraft.yaml reference </reference/rockcraft.yaml.html>`_
 for more information about the fields.
 
 After completing the previous steps, this is the resulting directory structure:
@@ -58,7 +58,7 @@ After completing the previous steps, this is the resulting directory structure:
     └─ src
         ├─ package.json
         └─ server.js
-    
+
     2 directories, 3 files
 
 
