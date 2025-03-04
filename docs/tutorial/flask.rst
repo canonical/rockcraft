@@ -23,8 +23,7 @@ Finally, create a new directory for this tutorial and go inside it:
 
 .. code-block:: bash
 
-   mkdir flask-hello-world
-   cd flask-hello-world
+   mkdir flask-hello-world && cd $_
 
 Create the Flask application
 ============================

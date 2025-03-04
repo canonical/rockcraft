@@ -14,8 +14,14 @@ Setup your environment
 Project setup
 -------------
 
-Starting in an empty folder, create a ``src/`` subdirectory. Inside it, add two
-files:
+Starting in an empty folder, create a ``src/`` subdirectory.
+
+.. code-block:: bash
+
+   mkdir node-app && cd $_
+   mkdir src
+
+Once inside it, add two files:
 
 The first one is the ``package.json`` listing of dependencies, with the
 following contents:
