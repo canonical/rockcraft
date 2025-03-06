@@ -42,13 +42,12 @@ compiled a couple of guides for you to facilitate your contribution.
 Extensions
 ----------
 
-Learn how to use and customize different Rockcraft extensionss in your
-rockcraft.yaml to best suit your use cases.
+Learn how to use framework and platform extensions in your project.
 
 .. toctree::
    :maxdepth: 1
 
-   extensions <extensions/index>
+   Configure the build base for ExpressJS App <configure-the-build-base-for-expressjs-app>
 
 Rocks
 -----
