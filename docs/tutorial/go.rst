@@ -20,11 +20,7 @@ rocks for Go applications.
 Setup
 =====
 
-.. include:: /reuse/tutorial/setup.rst
-
-This tutorial requires the ``latest/edge`` channel of Rockcraft. Run
-``sudo snap refresh rockcraft --channel latest/edge`` to get the latest
-edge version.
+.. include:: /reuse/tutorial/setup_edge.rst
 
 In order to test the Go application locally, before packing it into a rock,
 install ``go``.
@@ -101,7 +97,7 @@ Pack the Go application into a rock
 ===================================
 
 
-First, we'll need a ``rockcraft.yaml`` file. Rockcraft will automate its
+First, we'll need a project file. Rockcraft will automate its
 creation and tailor it for a Go application when we tell it to use the
 ``go-framework`` profile:
 
@@ -257,9 +253,8 @@ look like the following:
 .. literalinclude:: code/go/main.go.time
     :language: go
 
-Since we are creating a new version of the application, open the
-
-``rockcraft.yaml`` file and set ``version: "0.2"``.
+Since we are creating a new version of the application, open the project
+file and set ``version: "0.2"``.
 
 .. note::
 

@@ -42,6 +42,7 @@ You can use this key to specify any dependencies required for your Flask
 application. In the following example we use it to specify ``libpq-dev``:
 
 .. code-block:: yaml
+  :caption: rockcraft.yaml
 
   parts:
     flask-framework/dependencies:
@@ -74,6 +75,7 @@ your rock upon ``rockcraft pack``. Follow the ``flask/app/<filename>``
 notation. For example:
 
 .. code-block:: yaml
+  :caption: rockcraft.yaml
 
   parts:
     flask-framework/install-app:

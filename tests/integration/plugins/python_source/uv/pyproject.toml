@@ -1,0 +1,13 @@
+[project]
+name = "uv-hello"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.scripts]
+hello = "hello.__main__:main"
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"

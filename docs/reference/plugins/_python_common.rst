@@ -15,6 +15,7 @@ Ubuntu 22.04. However, other versions can be used by explicitly declaring them -
 here's an example that uses ``python3.12-venv`` from the Deadsnakes ppa:
 
 .. code-block:: yaml
+  :caption: rockcraft.yaml
 
    package-repositories:
      - type: apt

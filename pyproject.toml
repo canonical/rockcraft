@@ -19,15 +19,15 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
 ]
 dependencies = [
-    "craft-application~=4.6.0",
-    "craft-archives>=2.0.0",
+    "craft-application",
+    "craft-archives",
     "craft-cli",
-    "craft-parts~=2.1.4",
-    "craft-platforms~=0.3",
-    "craft-providers>=2.0.4",
+    "craft-parts",
+    "craft-platforms",
+    "craft-providers",
     "overrides",
     "spdx-lookup",
-    "tabulate>=0.8.10",
+    "tabulate",
 ]
 
 [project.scripts]
@@ -49,6 +49,7 @@ docs = [
     "sphinx-lint",
     "sphinx-toolbox",
     "sphinxcontrib-details-directive",
+    "sphinxext-rediraffe==0.2.7",
 ]
 release = [
     "twine",
@@ -56,7 +57,6 @@ release = [
 ]
 lint = [
     "codespell[toml]",
-    "yamllint",
 ]
 types = [
     "mypy[reports]~=1.11",
@@ -82,6 +82,10 @@ apt-oracular = [
 apt-plucky = [
     # 2.9 for Oracular+
     "python-apt>=2.9.0;sys_platform=='linux'",
+]
+
+store = [
+    "craft-store",
 ]
 
 [project.urls]
@@ -286,6 +290,10 @@ classmethod-decorators = ["pydantic.validator", "pydantic.root_validator"]
 [[tool.uv.index]]
 name = "python-apt-wheels"
 url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/"
+explicit = true
+
+[tool.uv.sources]
+python-apt = { index = "python-apt-wheels" }
 
 [tool.uv]
 constraint-dependencies = [
@@ -334,7 +342,8 @@ dev = [
     "coverage>=7.6.8",
     "freezegun>=1.5.1",
     "hypothesis>=6.122.1",
-    "poetry>=1.8.5",  # Needed for testing the poetry plugin.
+    "poetry>=2.0.0",  # Needed for testing the poetry plugin.
+    "poetry-plugin-export",
     "pyfakefs>=5.7.2",
     "pylint>=3.3.2",
     "pytest>=8.3.4",

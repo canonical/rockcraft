@@ -1,30 +1,29 @@
 # .readthedocs.yaml
 # Read the Docs configuration file
 # See https://docs.readthedocs.io/en/stable/config-file/v2.html for details
----
+
 # Required
 version: 2
 
-build:
-  os: ubuntu-22.04
-  tools:
-    python: "3.10"
-  jobs:
-    post_checkout:
-      - git fetch --tags --unshallow  # Also fetch tags
-      - git describe                  # Make sure we get a proper version
-
 # Build documentation in the docs/ directory with Sphinx
 sphinx:
-  configuration: docs/conf.py
   builder: dirhtml
+  configuration: docs/conf.py
   fail_on_warning: true
 
-# Optionally set the version of Python
-# and requirements required to build your docs
-python:
-  install:
-    - method: pip
-      path: .
-      extra_requirements:
-        - docs
+build:
+  os: ubuntu-24.04
+  tools:
+    python: "3.12"
+  jobs:
+    post_checkout:
+      - git fetch --tags --unshallow # Also fetch tags
+      - git describe # Make sure we get a proper version
+    post_system_dependencies:
+      - asdf plugin add uv
+      - asdf install uv latest
+      - asdf global uv latest
+    create_environment:
+      - uv venv "${READTHEDOCS_VIRTUALENV_PATH}"
+    install:
+      - UV_PROJECT_ENVIRONMENT="${READTHEDOCS_VIRTUALENV_PATH}" uv sync --frozen --extra docs

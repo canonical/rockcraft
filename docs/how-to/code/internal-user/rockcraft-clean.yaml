@@ -1,7 +1,7 @@
 name: internal-user
 base: bare
 build-base: ubuntu@24.04
-version: 'latest'
+version: "latest"
 summary: Add an internal user inside a rock
 description: Add an internal user inside a rock, and run a service with it.
 platforms:

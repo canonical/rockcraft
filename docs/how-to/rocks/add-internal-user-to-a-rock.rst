@@ -3,10 +3,10 @@
 How to add a new internal user to a rock
 *****************************************
 
-You can declare :ref:`run-user <rockcraft_yaml_run_user>` in ``rockcraft.yaml``
-to specify which user you want to run a rock's services with. If you don't
-specify a user, the services run as root by default. The ``run-user`` key
-only accepts a limited number of users, which could be a constraint for certain
+You can declare :ref:`run-user <rockcraft_yaml_run_user>` in a rock's project
+file to specify which user you want to run a its services with. If you don't
+specify a user, the services run as root by default. The ``run-user`` key only
+accepts a limited number of users, which could be a constraint for certain
 container applications.
 
 Mandatory packages or slices
@@ -23,7 +23,7 @@ Creating the user and/or group
 
 Invoking the ``useradd`` and ``groupadd`` commands can take place in a part's
 :ref:`build <lifecycle>` step. This can be done by writing those commands in
-``override-build`` field. However, the changes made by those commands will be
+``override-build`` key. However, the changes made by those commands will be
 only applied on the build instance, and will not be available in the resulting
 rock. Hence, ``$CRAFT_PART_INSTALL`` should be passed as the root directory to
 those two commands.
@@ -31,8 +31,8 @@ those two commands.
 A full example
 --------------
 
-The following ``rockcraft.yaml`` illustrates how to use the ``useradd`` command
-in the ``override-build`` field inside a part.
+The following project file illustrates how to use the ``useradd`` command
+in the ``override-build`` key inside a part.
 
 For an example of how to access the user inside the rock, here's a simple
 Python web service. The script will return an HTTP response containing the
@@ -41,9 +41,10 @@ user that is running the web service:
 .. literalinclude:: ../code/internal-user/serve_user.py
     :language: python
 
-Then, add a service to ``rockcraft.yaml`` that runs the web service:
+Then, add a service to that runs the web service:
 
 .. literalinclude:: ../code/internal-user/rockcraft.yaml
+    :caption: rockcraft.yaml
     :language: yaml
     :start-after: [docs:rock-services]
     :end-before: [docs:rock-services-end]
@@ -53,13 +54,15 @@ new group. We will also copy the Python script to a ``cgi-bin`` folder, and
 give it the execute permission:
 
 .. literalinclude:: ../code/internal-user/rockcraft.yaml
+    :caption: rockcraft.yaml
     :language: yaml
     :start-after: [docs:rock-build]
     :end-before: [docs:rock-build-end]
 
-The final ``rockcraft.yaml`` file will look like this:
+The final project file will look like this:
 
 .. literalinclude:: ../code/internal-user/rockcraft-clean.yaml
+    :caption: rockcraft.yaml
     :language: yaml
 
 With the part and web service in place, build the rock:
@@ -93,4 +96,3 @@ The response should contain the new user name:
 .. code-block::
 
     Serving by myuser on port 8080
-

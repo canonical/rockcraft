@@ -15,6 +15,7 @@ adapt the steps to fit your specific requirements.
 
    Get started - quick guide <get-started>
    Build a 12-factor app rock <build-a-12-factor-app-rock>
+   Outsource rock builds to Launchpad <outsource-rock-builds-to-launchpad>
 
 Chisel
 ------
@@ -53,7 +54,7 @@ Rocks
 -----
 
 Learn about how to pack a rock, how to migrate a Dockerfile to a rock, or how
-to use services in your rockcraft.yaml. Those guides will help you explore all
+to use services in your project file. Those guides will help you explore all
 those aspects in Rockcraft and more.
 
 .. toctree::

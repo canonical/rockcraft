@@ -14,10 +14,10 @@ UV_FROZEN=true
 include common.mk
 
 .PHONY: format
-format: format-ruff format-codespell  ## Run all automatic formatters
+format: format-ruff format-codespell format-prettier  ## Run all automatic formatters
 
 .PHONY: lint
-lint: lint-ruff lint-codespell lint-mypy lint-pyright lint-shellcheck lint-docs lint-twine  ## Run all linters
+lint: lint-ruff lint-codespell lint-mypy lint-prettier lint-pyright lint-shellcheck lint-docs lint-twine  ## Run all linters
 
 .PHONY: pack
 pack: pack-pip pack-snap  ## Build all packages
@@ -61,7 +61,7 @@ else ifeq ($(shell which apt-get),)
 	$(warning apt-get not found. Please install dependencies yourself.)
 else
 	sudo $(APT) install libyaml-dev python3-dev python3-pip python3-setuptools \
-	  python3-venv python3-wheel fuse-overlayfs libapt-pkg-dev umoci
+	  python3-venv python3-wheel fuse-overlayfs libapt-pkg-dev umoci libgit2-dev
 endif
 ifneq ($(shell which snap),)
 	sudo snap install lxd

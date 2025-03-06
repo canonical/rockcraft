@@ -9,7 +9,6 @@ build-base: ubuntu@22.04
 platforms:
   amd64:
 
-
 parts:
   go:
     plugin: go

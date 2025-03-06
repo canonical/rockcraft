@@ -10,7 +10,7 @@ containerise it in a rock, using Rockcraft's ``django-framework``
 Setup
 =====
 
-.. include:: /reuse/tutorial/setup.rst
+.. include:: /reuse/tutorial/setup_stable.rst
 
 Finally, create a new directory for this tutorial and go inside it:
 
@@ -74,7 +74,7 @@ The Django application looks good, so let's stop it for now by pressing
 Pack the Django application into a rock
 =======================================
 
-First, we'll need a ``rockcraft.yaml`` file. Rockcraft will automate its
+First, we'll need a project file. Rockcraft will automate its
 creation and tailoring for a Django application by using the
 ``django-framework`` profile:
 
@@ -84,11 +84,11 @@ creation and tailoring for a Django application by using the
     :end-before: [docs:create-rockcraft-yaml-end]
     :dedent: 2
 
-The ``rockcraft.yaml`` file will automatically be created in the working
-directory. Open it in a text editor and check that the ``name`` is
+The project file will automatically be created in the working directory as
+``rockcraft.yaml``. Open it in a text editor and check that the ``name`` is
 ``django-hello-world``. Ensure that ``platforms`` includes the host
-architecture. For example, if the host uses the ARM architecture,
-include ``arm64`` in ``platforms``.
+architecture. For example, if the host uses the ARM architecture, include
+``arm64`` in ``platforms``.
 
 .. note::
     For this tutorial, we'll use the ``name`` ``django-hello-world`` and assume
@@ -124,7 +124,7 @@ The created rock is about 75MB in size. We will reduce its size later in this
 tutorial.
 
 .. note::
-    If we changed the ``name`` or ``version`` in ``rockcraft.yaml`` or are not
+    If we changed the ``name`` or ``version`` in the project file or are not
     on an ``amd64`` platform, the name of the ``.rock`` file will be
     different.
 
@@ -239,7 +239,7 @@ in a much smaller rock with a reduced attack surface.
 
 The first step towards chiselling the rock is to ensure we are using a
 ``bare`` :ref:`base <bases_explanation>`.
-In ``rockcraft.yaml``, change the ``base`` to ``bare`` and add
+In the project file, change the ``base`` to ``bare`` and add
 ``build-base: ubuntu@22.04``:
 
 .. literalinclude:: code/django/task.yaml
@@ -248,7 +248,7 @@ In ``rockcraft.yaml``, change the ``base`` to ``bare`` and add
     :end-before: [docs:change-base-end]
     :dedent: 2
 
-So that we can compare the size after chiselling, open the ``rockcraft.yaml``
+So that we can compare the size after chiselling, open the project
 file and change the ``version`` (e.g. to ``0.1-chiselled``). Pack the rock with
 the new ``bare`` :ref:`base <bases_explanation>`:
 
@@ -332,7 +332,7 @@ the following:
     :language: python
 
 Since we are creating a new version of the application, go back to the
-tutorial root directory using ``cd ..`` and open the ``rockcraft.yaml`` file and
+tutorial root directory using ``cd ..`` and open the project file and
 change the ``version`` (e.g. to ``0.2``).
 
 .. note::

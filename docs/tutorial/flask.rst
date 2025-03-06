@@ -10,14 +10,7 @@ containerise it in a rock, using Rockcraft's ``flask-framework``
 Setup
 =====
 
-.. include:: /reuse/tutorial/setup.rst
-
-.. note::
-    This tutorial requires version ``1.5.2`` or later for Rockcraft. Check
-    the version using ``rockcraft --version``. If there's an older version
-    of Rockcraft installed, use
-    ``sudo snap refresh rockcraft --channel latest/stable`` to get the latest
-    stable version.
+.. include:: /reuse/tutorial/setup_stable.rst
 
 Finally, create a new directory for this tutorial and go inside it:
 
@@ -72,7 +65,7 @@ The Flask application looks good, so let's stop it for now by pressing
 Pack the Flask application into a rock
 ======================================
 
-First, we'll need a ``rockcraft.yaml`` file. Rockcraft will automate its
+First, we'll need a project file. Rockcraft will automate its
 creation and tailoring for a Flask application by using the
 ``flask-framework`` profile:
 
@@ -82,11 +75,11 @@ creation and tailoring for a Flask application by using the
     :end-before: [docs:create-rockcraft-yaml-end]
     :dedent: 2
 
-The ``rockcraft.yaml`` file will automatically be created in the project's
-working directory. Open it in a text editor and check that the ``name`` is
-``flask-hello-world``. Ensure that ``platforms`` includes the host
-architecture. For example, if the host uses the ARM
-architecture, include ``arm64`` in ``platforms``.
+The project file will automatically be created in the project's working
+directory as ``rockcraft.yaml``. Open it in a text editor and check that the
+``name`` is ``flask-hello-world``. Ensure that ``platforms`` includes the host
+architecture. For example, if the host uses the ARM architecture, include
+``arm64`` in ``platforms``.
 
 .. note::
     For this tutorial, we'll use the ``name`` ``flask-hello-world`` and assume
@@ -122,7 +115,7 @@ The created rock is about 65MB in size. We will reduce its size later in this
 tutorial.
 
 .. note::
-    If we changed the ``name`` or ``version`` in ``rockcraft.yaml`` or are not
+    If we changed the ``name`` or ``version`` in the project file or are not
     on an ``amd64`` platform, the name of the ``.rock`` file will be different.
 
     The size of the rock may vary depending on factors like the architecture
@@ -236,7 +229,7 @@ in a much smaller rock with a reduced attack surface.
 
 The first step towards chiselling the rock is to ensure we are using a
 ``bare`` :ref:`base <bases_explanation>`.
-In ``rockcraft.yaml``, change the ``base`` to ``bare`` and add
+In the project file, change the ``base`` to ``bare`` and add
 ``build-base: ubuntu@22.04``:
 
 .. literalinclude:: code/flask/task.yaml
@@ -250,7 +243,7 @@ In ``rockcraft.yaml``, change the ``base`` to ``bare`` and add
     the ``bare`` base. The command also adds a ``build-base`` which is required
     when using the ``bare`` base.
 
-So that we can compare the size after chiselling, open the ``rockcraft.yaml``
+So that we can compare the size after chiselling, open the project
 file and change the ``version`` (e.g. to ``0.1-chiselled``). Pack the rock with
 the new ``bare`` :ref:`base <bases_explanation>`:
 
@@ -318,7 +311,7 @@ look like the following:
     :language: python
 
 Since we are creating a new version of the application, open the
-``rockcraft.yaml`` file and change the ``version`` (e.g. to ``0.2``).
+project file and change the ``version`` (e.g. to ``0.2``).
 
 .. note::
 

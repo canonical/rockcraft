@@ -7,15 +7,15 @@ environment:
   PATH: /snap/bin:$PATH:$SNAPD_TESTING_TOOLS:$PROJECT_PATH/tools/spread
 
 include:
-    - tests/
-    - tools/
-    - docs/
-    - requirements-noble.txt
-    - Makefile
-    - common.mk
-    - uv.lock
-    - pyproject.toml
-    - rockcraft/
+  - tests/
+  - tools/
+  - docs/
+  - requirements-noble.txt
+  - Makefile
+  - common.mk
+  - uv.lock
+  - pyproject.toml
+  - rockcraft/
 
 # The default spread timeout is 15 minutes. This is too short for some tests.
 kill-timeout: 25m
@@ -122,27 +122,27 @@ suites:
   docs/tutorial/code/:
     summary: tests tutorial from the docs
     systems:
-    - ubuntu-22.04-64
+      - ubuntu-22.04-64
 
   docs/how-to/code/:
     summary: tests how-to guides from the docs
     systems:
-    - ubuntu-22.04-64
+      - ubuntu-22.04-64
 
   docs/reference/code/:
     summary: tests reference code from the docs
     systems:
-    - ubuntu-22.04-64
+      - ubuntu-22.04-64
 
   docs/reuse/tutorial/code/:
     summary: tests reusable code from the docs
     systems:
-    - ubuntu-22.04-64
+      - ubuntu-22.04-64
 
   tests/spread/rockcraft/:
     summary: tests for rockcraft core functionality, independent of host system
     systems:
-    - ubuntu-22.04-64
+      - ubuntu-22.04-64
 
   tests/spread/foreign/:
     summary: tests that rockcraft and rocks work on different host systems
@@ -151,4 +151,4 @@ suites:
     summary: manually-triggered tests, like bigger tests and flaky ones
     manual: true
     systems:
-    - ubuntu-22.04-64
+      - ubuntu-22.04-64

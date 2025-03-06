@@ -34,6 +34,10 @@ from textwrap import dedent
 
 import craft_parts
 
+from .poetry_plugin import PoetryPlugin
+from .python_plugin import PythonPlugin
+from .uv_plugin import UvPlugin
+
 # Template for the sitecustomize module that we'll add to the payload so that
 # the pip-installed packages are found regardless of how the interpreter is
 # called.
@@ -128,3 +132,12 @@ def wrap_build_commands(parts_commands: list[str]) -> list[str]:
     )
 
     return commands
+
+
+def get_python_plugins() -> dict[str, craft_parts.plugins.plugins.PluginType]:
+    """Get a dict of all supported Python-based plugins."""
+    return {
+        "poetry": PoetryPlugin,
+        "python": PythonPlugin,
+        "uv": UvPlugin,
+    }

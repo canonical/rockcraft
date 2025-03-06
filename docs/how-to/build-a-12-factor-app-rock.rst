@@ -18,14 +18,14 @@ the root of the project:
 - ``static``
 - ``templates``
 
-To change this list, add the following snippet to the
-``rockcraft.yaml``:
+To change this list, add the following snippet to the project file:
 
 .. tabs::
 
    .. group-tab:: Flask
 
       .. code-block:: yaml
+         :caption: rockcraft.yaml
 
            parts:
              flask-framework/install-app:
@@ -46,6 +46,7 @@ To change this list, add the following snippet to the
    .. group-tab:: FastAPI
 
       .. code-block:: yaml
+         :caption: rockcraft.yaml
 
            parts:
              fastapi-framework/install-app:
@@ -62,6 +63,7 @@ To change this list, add the following snippet to the
    .. group-tab:: Go
 
       .. code-block:: yaml
+         :caption: rockcraft.yaml
 
            parts:
              go-framework/assets:
@@ -77,13 +79,14 @@ Include additional debs in the OCI image
 ----------------------------------------
 
 If your app requires debs -- for example, to connect to a database -- add the
-following snippet to ``rockcraft.yaml``:
+following snippet to the project file:
 
 .. tabs::
 
    .. group-tab:: Flask
 
       .. code-block:: yaml
+         :caption: rockcraft.yaml
 
            parts:
              flask-framework/dependencies:
@@ -94,6 +97,7 @@ following snippet to ``rockcraft.yaml``:
    .. group-tab:: Django
 
       .. code-block:: yaml
+         :caption: rockcraft.yaml
 
            parts:
              django-framework/dependencies:
@@ -104,6 +108,7 @@ following snippet to ``rockcraft.yaml``:
    .. group-tab:: FastAPI
 
       .. code-block:: yaml
+         :caption: rockcraft.yaml
 
            parts:
              fastapi-framework/dependencies:
@@ -114,6 +119,7 @@ following snippet to ``rockcraft.yaml``:
    .. group-tab:: Go
 
       .. code-block:: yaml
+         :caption: rockcraft.yaml
 
            parts:
              runtime-debs:

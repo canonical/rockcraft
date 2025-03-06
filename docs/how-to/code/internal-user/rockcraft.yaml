@@ -1,7 +1,7 @@
 name: internal-user
 base: bare
 build-base: ubuntu@24.04
-version: 'latest'
+version: "latest"
 summary: Add an internal user inside a rock
 description: Add an internal user inside a rock, and run a service with it.
 platforms:
@@ -26,7 +26,7 @@ parts:
       - base-passwd_data
       - base-files_base
       - python3.12_standard
-# [docs:rock-build]
+    # [docs:rock-build]
     override-build: |
       craftctl default
       groupadd --root ${CRAFT_PART_INSTALL} mygroup
@@ -34,4 +34,5 @@ parts:
       mkdir ${CRAFT_PART_INSTALL}/cgi-bin/
       cp serve_user.py ${CRAFT_PART_INSTALL}/cgi-bin/
       chmod +x ${CRAFT_PART_INSTALL}/cgi-bin/serve_user.py
+
 # [docs:rock-build-end]

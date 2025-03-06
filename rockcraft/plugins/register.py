@@ -21,8 +21,7 @@ from craft_parts.plugins.plugins import PluginType
 
 from .ant_plugin import AntPlugin
 from .maven_plugin import MavenPlugin
-from .poetry_plugin import PoetryPlugin
-from .python_plugin import PythonPlugin
+from .python_common import get_python_plugins
 
 
 def register() -> None:
@@ -34,7 +33,5 @@ def get_plugins() -> dict[str, PluginType]:
     """Get a dict of Rockcraft-specific plugins."""
     return {
         "ant": AntPlugin,
-        "poetry": PoetryPlugin,
-        "python": PythonPlugin,
         "maven": MavenPlugin,
-    }
+    } | get_python_plugins()

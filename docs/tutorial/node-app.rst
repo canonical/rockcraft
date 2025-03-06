@@ -9,7 +9,7 @@ into a rock.
 Setup your environment
 ----------------------
 
-.. include:: /reuse/tutorial/setup.rst
+.. include:: /reuse/tutorial/setup_stable.rst
 
 Project setup
 -------------
@@ -33,7 +33,7 @@ The second file is our sample app, a simple "hello world" server. Still inside
 
 Next, we'll setup the Rockcraft project. In the original empty folder, create
 an empty file called ``rockcraft.yaml``. Then add the following snippets, one
-after the other:
+after the other.
 
 Add the metadata that describes your rock, such as its name and licence:
 

@@ -98,17 +98,17 @@ class DevelProject(Project):
     base: str  # type: ignore
 
 
-@pytest.fixture()
+@pytest.fixture
 def yaml_data():
     return ROCKCRAFT_YAML
 
 
-@pytest.fixture()
+@pytest.fixture
 def yaml_loaded_data():
     return yaml.safe_load(ROCKCRAFT_YAML)
 
 
-@pytest.fixture()
+@pytest.fixture
 def pebble_part() -> dict[str, Any]:
     return {
         "pebble": {
@@ -425,15 +425,13 @@ def test_project_all_platforms_invalid(yaml_loaded_data):
     mock_platforms = {
         "mock": {"build-on": ["arm64a", "noarch"], "build-for": ["amd64"]}
     }
-    assert (
-        "Invalid architecture: 'arm64a' must be a valid debian architecture."
-        in reload_project_platforms(mock_platforms)
+    assert "'arm64a' is not a valid Debian architecture" in reload_project_platforms(
+        mock_platforms
     )
 
     mock_platforms = {"mock": {"build-on": ["arm64", "arm64"], "build-for": ["noarch"]}}
-    assert (
-        "Invalid architecture: 'noarch' must be a valid debian architecture."
-        in reload_project_platforms(mock_platforms)
+    assert "'noarch' is not a valid Debian architecture" in reload_project_platforms(
+        mock_platforms
     )
 
 

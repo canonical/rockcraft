@@ -14,7 +14,7 @@ prepare: |
   mkdir work
   cd work
   rockcraft init --name="remote-build"
-  
+
   # commit the project
   git init
   git add rockcraft.yaml

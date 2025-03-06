@@ -45,6 +45,7 @@ html_context = {
     "product_page": "github.com/canonical/rockcraft",
     "discourse": "https://discourse.ubuntu.com/c/rocks/117",
     "github_url": "https://github.com/canonical/rockcraft",
+    "github_issues": "https://github.com/canonical/rockcraft/issues",
     "display_contributors": False,
 }
 
@@ -62,6 +63,7 @@ extensions.extend(
         "sphinx_autodoc_typehints",  # must be loaded after napoleon
         "sphinxcontrib.details.directive",
         "sphinx_toolbox.collapse",
+        "sphinxext.rediraffe",
     ]
 )
 
@@ -88,6 +90,7 @@ exclude_patterns = [
     "common/craft-parts/reference/step_output_directories.rst",
     "common/craft-parts/reference/plugins/poetry_plugin.rst",
     "common/craft-parts/reference/plugins/python_plugin.rst",
+    "common/craft-parts/reference/plugins/uv_plugin.rst",
     # Extra non-craft-parts exclusions can be added after this comment
 ]
 
@@ -128,6 +131,9 @@ linkcheck_retries = 3
 napoleon_use_ivar = True
 
 # endregion
+
+# Client-side page redirects.
+rediraffe_redirects = "redirects.txt"
 
 # TODO: this is a boilerplate copy from the sphinx-docs. It should
 # be built on top of it instead of duplicating its content

@@ -16,7 +16,7 @@ By the end of this tutorial you will be able to run pyfiglet via docker:
 Setup your environment
 ----------------------
 
-.. include:: /reuse/tutorial/setup.rst
+.. include:: /reuse/tutorial/setup_stable.rst
 
 Project setup
 -------------
@@ -32,6 +32,7 @@ To create a new Rockcraft project, create a new directory and change into it:
 Next, create a file called ``rockcraft.yaml`` with the following contents:
 
 .. literalinclude:: code/pyfiglet/rockcraft.yaml
+    :caption: rockcraft.yaml
     :language: yaml
 
 
@@ -89,4 +90,3 @@ using bash, via:
     | '_ \| |
     | | | | |
     |_| |_|_|
-

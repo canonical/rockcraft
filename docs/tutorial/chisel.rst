@@ -8,7 +8,7 @@ in :doc:`/tutorial/hello-world`.
 Setup your environment
 ----------------------
 
-.. include:: /reuse/tutorial/setup.rst
+.. include:: /reuse/tutorial/setup_stable.rst
 
 Project setup
 -------------
@@ -19,6 +19,7 @@ Create a new directory, write the following into a text editor and save it as
 .. _chisel-example:
 
 .. literalinclude:: code/chisel/rockcraft.yaml
+    :caption: rockcraft.yaml
     :language: yaml
 
 Note that this Rockcraft file uses the ``hello_bins`` Chisel slice to generate

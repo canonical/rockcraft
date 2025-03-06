@@ -1,0 +1,29 @@
+###########################################
+# IMPORTANT
+# Comments matter!
+# The docs use the wrapping comments as
+# markers for including said instructions
+# as snippets in the docs.
+###########################################
+summary: common setup instructions
+
+execute: |
+  date
+  # [docs:install-rockcraft]
+  sudo snap install rockcraft --classic --channel latest/edge
+  # [docs:install-rockcraft-end]
+
+  # [docs:install-docker]
+  sudo snap install docker
+  # [docs:install-docker-end]
+
+  # [docs:docker-regular-user]
+  sudo addgroup --system docker
+  sudo adduser $USER docker
+  newgrp docker
+  # [docs:docker-regular-user-end]
+
+  # [docs:docker-enable]
+  sudo snap disable docker
+  sudo snap enable docker
+  # [docs:docker-enable-end]

@@ -6,11 +6,11 @@ rockcraft.yaml
 
 .. include:: rock_parts/toc.rst
 
-A Rockcraft project is defined in a YAML file named ``rockcraft.yaml``
-at the root of the project tree in the filesystem.
+A Rockcraft project is defined in a YAML file named ``rockcraft.yaml`` at the
+root of the project tree in the filesystem. This file is commonly known as the
+*project file*.
 
-This Reference section is for when you need to know which options can be
-used, and how, in this ``rockcraft.yaml`` file.
+This reference describes the configuration keys available in this file.
 
 
 Format specification
@@ -97,7 +97,7 @@ which is typically used with static binaries or
 
 The system and version that will be used during the rock's build, but not
 included in the final rock itself. It comprises the set of tools and libraries
-that Rockcraft will use when building the rock's contents. This field is
+that Rockcraft will use when building the rock's contents. This key is
 mandatory if ``base`` is ``bare``, but otherwise it is optional and defaults to
 the value of ``base``.
 
@@ -158,7 +158,7 @@ to the base image's OCI environment.
 
 A list of services for the Pebble entrypoint. It uses Pebble's layer
 specification syntax exactly, with each entry defining a Pebble service. For
-each service, the ``override`` and ``command`` fields are mandatory, but all
+each service, the ``override`` and ``command`` keys are mandatory, but all
 others are optional.
 
 ``entrypoint-service``
@@ -190,6 +190,8 @@ when they fail. It uses Pebble's layer specification syntax, with each
 entry corresponding to a check. Each check can be one of three types:
 ``http``, ``tcp`` or ``exec``.
 
+
+.. _platforms:
 
 ``platforms``
 -------------
@@ -247,7 +249,7 @@ The set of parts that compose the rock's contents
 
 
 .. note::
-   The fields ``entrypoint``, ``cmd`` and ``env`` are not supported in
+   The keys ``entrypoint``, ``cmd`` and ``env`` are not supported in
    Rockcraft. All rocks have Pebble as their entrypoint, and thus you must use
    ``services`` to define your container application.
 
@@ -272,6 +274,7 @@ Example
 =======
 
 .. literalinclude:: code/example/rockcraft.yaml
+    :caption: rockcraft.yaml
     :language: yaml
 
 
