@@ -113,7 +113,7 @@ Pack the rock:
 
 Depending on the network, this step can take a couple of minutes to finish.
 
-Once Rockcraft has finished packing the Go rock, we'll find a new file in
+Once Rockcraft has finished packing the ExpressJS rock, we'll find a new file in
 the working directory (an `OCI <OCI_image_spec_>`_ image) with the ``.rock``
 extension:
 
@@ -127,7 +127,7 @@ extension:
 Run the ExpressJS rock with Docker
 ==================================
 
-We already have the rock as an OCI archive. Load the image into Docker:
+We already have the rock as an OCI image. Load the image into Docker:
 
 .. literalinclude:: code/expressjs/task.yaml
     :language: bash
@@ -144,7 +144,7 @@ Check that the image was successfully loaded into Docker:
     :end-before: [docs:docker-images-end]
     :dedent: 2
 
-The output should list the Go container image, along with its tag, ID and
+The output should list the ExpressJS image, along with its tag, ID and
 size:
 
 .. terminal::
@@ -156,16 +156,16 @@ Now we're finally ready to run the rock and test the containerised ExpressJS
 application:
 
 .. literalinclude:: code/expressjs/task.yaml
-    :language: text
+    :language: bash
     :start-after: [docs:docker-run]
     :end-before: [docs:docker-run-end]
     :dedent: 2
 
-Use the same ``curl`` command as before to send a request to the ExpressJS
+Use the same curl command as before to send a request to the ExpressJS
 application's root endpoint which is running inside the container:
 
 .. literalinclude:: code/expressjs/task.yaml
-    :language: text
+    :language: bash
     :start-after: [docs:curl-expressjs-rock]
     :end-before: [docs:curl-expressjs-rock-end]
     :dedent: 2
@@ -179,7 +179,7 @@ When deploying the ExpressJS rock, we can always get the application logs with
 :ref:`pebble_explanation_page`:
 
 .. literalinclude:: code/expressjs/task.yaml
-    :language: text
+    :language: bash
     :start-after: [docs:get-logs]
     :end-before: [docs:get-logs-end]
     :dedent: 2
@@ -202,7 +202,7 @@ We can also choose to follow the logs by using the ``-f`` option with the
 Stop the application
 ~~~~~~~~~~~~~~~~~~~~
 
-Now we have a fully functional rock for a Go application! This concludes
+Now we have a fully functional rock for a ExpressJS application! This concludes
 the first part of this tutorial, so we'll stop the container and remove the
 respective image for now:
 
@@ -242,7 +242,7 @@ Since we are creating a new version of the application, set
 Pack and run the rock using similar commands as before:
 
 .. literalinclude:: code/expressjs/task.yaml
-    :language: text
+    :language: bash
     :start-after: [docs:docker-run-update]
     :end-before: [docs:docker-run-update-end]
     :dedent: 2
@@ -253,7 +253,7 @@ its new version will be part of the filename.
 Finally, use curl to send a request to the ``/time`` endpoint:
 
 .. literalinclude:: code/expressjs/task.yaml
-    :language: text
+    :language: bash
     :start-after: [docs:curl-time]
     :end-before: [docs:curl-time-end]
     :dedent: 2

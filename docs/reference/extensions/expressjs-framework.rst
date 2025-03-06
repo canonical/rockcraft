@@ -7,7 +7,7 @@ The ExpressJS extension streamlines the process of building ExpressJS
 application rocks.
 
 It facilitates the installation of ExpressJS application dependencies, including
-Node and NPM, inside the rock. Additionally, it transfers your project files to
+Node.js and NPM, inside the rock. Additionally, it transfers your project files to
 ``/app`` within the rock.
 
 The ExpressJS extension is compatible with the ``bare`` and ``ubuntu@24.04``
@@ -27,7 +27,7 @@ extension:
 ``parts`` > ``expressjs-framework/install-app`` > ``npm-include-node``
 ======================================================================
 
-You can use this field to specify the version of Node to be installed. For
+You can use this field to specify the version of Node.js to be installed. For
 example:
 
 .. code-block:: yaml
@@ -37,9 +37,8 @@ example:
       npm-include-node: true
       npm-node-version: 20.12.2
 
-For more examples of the ``npm-node-version`` key, see the
-`NPM plugin <httpshttps://documentation.ubuntu.com/rockcraft/en/latest/common/
-craft-parts/reference/plugins/npm_plugin/#examples>`_ documentation.
+For more examples of the ``npm-node-version`` key, see
+:ref:`craft_parts_npm_plugin`.
 
 If you don't customise the version of node, it will be installed from the Ubuntu
 package repository.
