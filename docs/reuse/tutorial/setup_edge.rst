@@ -54,15 +54,18 @@ and initialised:
 
 In order to create the rock, we'll need to install Rockcraft:
 
-.. literalinclude:: /reuse/tutorial/code/task.yaml
+.. literalinclude:: /reuse/tutorial/code/edge/task.yaml
     :language: bash
     :start-after: [docs:install-rockcraft]
     :end-before: [docs:install-rockcraft-end]
     :dedent: 2
 
+This tutorial requires the ``latest/edge`` channel of Rockcraft as the
+framework is currently experimental.
+
 We'll use Docker to run the rock. We can install it as a ``snap``:
 
-.. literalinclude:: /reuse/tutorial/code/task.yaml
+.. literalinclude:: /reuse/tutorial/code/edge/task.yaml
     :language: bash
     :start-after: [docs:install-docker]
     :end-before: [docs:install-docker-end]
@@ -71,10 +74,18 @@ We'll use Docker to run the rock. We can install it as a ``snap``:
 By default, Docker is only accessible with root privileges (``sudo``). We want
 to be able to use Docker commands as a regular user:
 
-.. literalinclude:: /reuse/tutorial/code/task.yaml
+.. literalinclude:: /reuse/tutorial/code/edge/task.yaml
     :language: bash
     :start-after: [docs:docker-regular-user]
     :end-before: [docs:docker-regular-user-end]
+    :dedent: 2
+
+Restart Docker:
+
+.. literalinclude:: /reuse/tutorial/code/stable/task.yaml
+    :language: bash
+    :start-after: [docs:docker-enable]
+    :end-before: [docs:docker-enable-end]
     :dedent: 2
 
 .. warning::

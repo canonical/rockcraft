@@ -16,7 +16,7 @@ By the end of this tutorial you will be able to run pyfiglet via docker:
 Setup your environment
 ----------------------
 
-.. include:: /reuse/tutorial/setup.rst
+.. include:: /reuse/tutorial/setup_stable.rst
 
 Project setup
 -------------
