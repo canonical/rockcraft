@@ -71,6 +71,10 @@ class GoFramework(Extension):
                 "stage-packages": ["ca-certificates_data"],
             },
         }
+        if self.yaml_data["base"] == "bare":
+            snippet["parts"]["go-framework/runtime"]["stage-packages"].extend(
+                ["bash_bins", "coreutils_bins"]
+            )
 
         assets_part = self._get_install_assets_part()
         if assets_part:
