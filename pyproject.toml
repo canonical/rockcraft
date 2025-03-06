@@ -25,7 +25,6 @@ dependencies = [
     "craft-parts",
     "craft-platforms",
     "craft-providers",
-    "craft-store",
     "overrides",
     "spdx-lookup",
     "tabulate",
@@ -83,6 +82,10 @@ apt-oracular = [
 apt-plucky = [
     # 2.9 for Oracular+
     "python-apt>=2.9.0;sys_platform=='linux'",
+]
+
+store = [
+    "craft-store",
 ]
 
 [project.urls]

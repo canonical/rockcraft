@@ -2491,7 +2491,6 @@ dependencies = [
     { name = "craft-parts" },
     { name = "craft-platforms" },
     { name = "craft-providers" },
-    { name = "craft-store" },
     { name = "overrides" },
     { name = "spdx-lookup" },
     { name = "tabulate" },
@@ -2534,6 +2533,9 @@ release = [
     { name = "twine" },
     { name = "wheel" },
 ]
+store = [
+    { name = "craft-store" },
+]
 types = [
     { name = "mypy", extra = ["reports"] },
     { name = "types-python-dateutil" },
@@ -2572,7 +2574,7 @@ requires-dist = [
     { name = "craft-parts" },
     { name = "craft-platforms" },
     { name = "craft-providers" },
-    { name = "craft-store" },
+    { name = "craft-store", marker = "extra == 'store'" },
     { name = "mypy", extras = ["reports"], marker = "extra == 'types'", specifier = "~=1.11" },
     { name = "overrides" },
     { name = "pyspelling", marker = "extra == 'docs'" },
@@ -2601,7 +2603,7 @@ requires-dist = [
     { name = "types-urllib3", marker = "extra == 'types'" },
     { name = "wheel", marker = "extra == 'release'" },
 ]
-provides-extras = ["dev", "docs", "release", "lint", "types", "apt-jammy", "apt-noble", "apt-oracular", "apt-plucky"]
+provides-extras = ["dev", "docs", "release", "lint", "types", "apt-jammy", "apt-noble", "apt-oracular", "apt-plucky", "store"]
 
 [package.metadata.requires-dev]
 dev = [
