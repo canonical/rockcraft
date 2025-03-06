@@ -68,7 +68,11 @@ class GoFramework(Extension):
             "go-framework/install-app": self._get_install_app_part(),
             "go-framework/runtime": {
                 "plugin": "nil",
-                "stage-packages": ["ca-certificates_data"],
+                "stage-packages": [
+                    "bash_bins",
+                    "coreutils_bins",
+                    "ca-certificates_data",
+                ],
             },
         }
 
