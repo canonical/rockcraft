@@ -20,11 +20,7 @@ rocks for Go applications.
 Setup
 =====
 
-.. include:: /reuse/tutorial/setup.rst
-
-This tutorial requires the ``latest/edge`` channel of Rockcraft. Run
-``sudo snap refresh rockcraft --channel latest/edge`` to get the latest
-edge version.
+.. include:: /reuse/tutorial/setup_edge.rst
 
 In order to test the Go application locally, before packing it into a rock,
 install ``go``.

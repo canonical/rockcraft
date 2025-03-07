@@ -84,6 +84,10 @@ apt-plucky = [
     "python-apt>=2.9.0;sys_platform=='linux'",
 ]
 
+store = [
+    "craft-store",
+]
+
 [project.urls]
 Documentation = "https://rockcraft.readthedocs.io/en/latest/"
 Homepage = "https://github.com/canonical/rockcraft"
