@@ -77,6 +77,24 @@ def test_go_extension_default(tmp_path, go_input_yaml):
 
 
 @pytest.mark.usefixtures("go_extension")
+def test_go_extension_bare(tmp_path):
+    (tmp_path / "go.mod").write_text("module projectname\n\ngo 1.22.4")
+    go_input_yaml = {
+        "name": "foo-bar",
+        "extensions": ["go-framework"],
+        "base": "bare",
+        "build-base": "ubuntu@24.04",
+        "platforms": {"amd64": {}},
+    }
+    applied = extensions.apply_extensions(tmp_path, go_input_yaml)
+
+    assert applied["parts"]["go-framework/runtime"] == {
+        "plugin": "nil",
+        "stage-packages": ["ca-certificates_data", "bash_bins", "coreutils_bins"],
+    }
+
+
+@pytest.mark.usefixtures("go_extension")
 def test_go_extension_no_go_mod_file_error(tmp_path, go_input_yaml):
     (tmp_path / "somefile").write_text("random text")
     with pytest.raises(ExtensionError) as exc:
