@@ -47,6 +47,7 @@ html_context = {
     "github_url": "https://github.com/canonical/rockcraft",
     "github_issues": "https://github.com/canonical/rockcraft/issues",
     "display_contributors": False,
+    "sequential_nav": "both",
 }
 
 extensions = [
