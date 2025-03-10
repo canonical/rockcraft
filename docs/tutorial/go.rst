@@ -176,8 +176,7 @@ Check that the image was successfully loaded into Docker:
 The output should list the Go container image, along with its tag, ID and
 size:
 
-..  code-block:: text
-    :class: log-snippets
+.. terminal::
 
     REPOSITORY       TAG       IMAGE ID       CREATED         SIZE
     go-hello-world   0.1       f3abf7ebc169   5 minutes ago   15.7MB
@@ -215,12 +214,11 @@ When deploying the Go rock, we can always get the application logs with
     :end-before: [docs:get-logs-end]
     :dedent: 2
 
-As a result, ``pebble`` will give the logs for the
+As a result, Pebble will give the logs for the
 ``go`` service running inside the container.
 We should expect to see something similar to this:
 
-..  code-block:: text
-    :class: log-snippets
+.. terminal::
 
     2024-10-04T08:51:35.826Z [go] 2024/10/04 08:51:35 starting hello world application
     2024-10-04T08:51:39.974Z [go] 2024/10/04 08:51:39 new hello world request

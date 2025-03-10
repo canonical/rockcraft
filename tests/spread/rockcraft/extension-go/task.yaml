@@ -10,7 +10,6 @@ execute: |
   IMAGE="${NAME}:0.1"
 
   run_rockcraft init --name "${NAME}" --profile go-framework
-  sed -i "s/^name: .*/name: ${NAME}/g" rockcraft.yaml
   sed -i "s/^base: .*/base: ${SCENARIO//-/@}/g" rockcraft.yaml
   if [ "${SCENARIO}" != "bare" ]; then
     sed -i "s/^build-base: .*/build-base: ${SCENARIO//-/@}/g" rockcraft.yaml
@@ -25,7 +24,8 @@ execute: |
   # Ensure docker does not have this container image
   docker rmi --force "${IMAGE}"
   # Install container
-  sudo rockcraft.skopeo --insecure-policy copy "oci-archive:${ROCK_FILE}" "docker-daemon:${IMAGE}"
+  sudo rockcraft.skopeo --insecure-policy copy "oci-archive:${ROCK_FILE}" \
+    "docker-daemon:${IMAGE}"
   # Ensure container exists
   docker images "${IMAGE}" | MATCH "${NAME}"
 
