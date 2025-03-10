@@ -48,7 +48,7 @@ Learn how to use framework and platform extensions in your project.
 .. toctree::
    :maxdepth: 1
 
-   configure-the-build-base-for-expressjs-app
+   configure-the-build-base-for-an-expressjs-app
 
 Rocks
 -----

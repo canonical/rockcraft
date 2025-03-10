@@ -3,8 +3,8 @@
 Build a rock for an ExpressJS application
 -----------------------------------------
 
-In this tutorial, we'll containerise a simple ExpressJS application into a rock using
-Rockcraft's ``expressjs-framework`` :ref:`extension
+In this tutorial, we'll containerise a simple ExpressJS application into a rock
+using Rockcraft's ``expressjs-framework`` :ref:`extension
 <expressjs-framework-reference>`.
 
 It should take 25 minutes for you to complete.

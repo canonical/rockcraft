@@ -1,4 +1,4 @@
-.. _configure-the-build-base-for-expressjs-app:
+.. _configure-the-build-base-for-an-expressjs-app:
 
 Configure the build base for an ExpressJS app
 =============================================
