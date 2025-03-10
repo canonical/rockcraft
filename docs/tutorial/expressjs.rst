@@ -21,7 +21,7 @@ rocks for ExpressJS applications.
 Setup
 =====
 
-.. include:: /reuse/tutorial/setup.rst
+.. include:: /reuse/tutorial/setup_stable.rst
 
 This tutorial requires the ``latest/edge`` channel of Rockcraft. Run
 ``sudo snap refresh rockcraft --channel latest/edge`` to get the latest
