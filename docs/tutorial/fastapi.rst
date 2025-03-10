@@ -16,8 +16,7 @@ Finally, create a new directory for this tutorial and go inside it:
 
 .. code-block:: bash
 
-   mkdir fastapi-hello-world
-   cd fastapi-hello-world
+   mkdir fastapi-hello-world && cd $_
 
 Create the FastAPI application
 ==============================
@@ -45,6 +44,18 @@ In the same directory, put the following code into a new file,
 
 .. literalinclude:: code/fastapi/app.py
     :language: python
+
+
+After completing the previous steps, this is the resulting directory structure:
+
+.. code-block:: text
+
+    .
+    ├─ .venv
+    ├─ app.py
+    └─ requirements.txt
+
+    1 directory, 2 files
 
 Run the FastAPI application using ``fastapi dev app.py --port 8000`` to verify
 that it works.

@@ -9,7 +9,7 @@ summary: test the "Create a rock from a PyPI package" guide
 
 execute: |
   # [docs:create-pyfiglet-dir]
-  mkdir pyfiglet-rock && cd pyfiglet-rock
+  mkdir pyfiglet-rock && cd $_
   # [docs:create-pyfiglet-dir-end]
 
   cp ../rockcraft.yaml .
