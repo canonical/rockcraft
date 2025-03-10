@@ -11,6 +11,9 @@ sphinx:
   configuration: docs/conf.py
   fail_on_warning: true
 
+formats:
+  - pdf
+
 build:
   os: ubuntu-24.04
   tools:
