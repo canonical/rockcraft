@@ -26,7 +26,7 @@ execute: |
   retry -n 5 --wait 2 curl --fail localhost:8000
 
   # [docs:curl-django]
-  curl localhost:8000
+  curl --fail localhost:8000
   # [docs:curl-django-end]
 
   kill $!
@@ -62,7 +62,7 @@ execute: |
   retry -n 5 --wait 2 curl --fail localhost:8000
 
   # [docs:curl-django-rock]
-  curl localhost:8000
+  curl --fail localhost:8000
   # [docs:curl-django-rock-end]
 
   # [docs:get-logs]
@@ -100,7 +100,7 @@ execute: |
   retry -n 5 --wait 2 curl --fail localhost:8000
 
   # [docs:curl-django-bare-rock]
-  curl localhost:8000
+  curl --fail localhost:8000
   # [docs:curl-django-bare-rock-end]
 
   # [docs:stop-docker-chisel]
@@ -131,7 +131,7 @@ execute: |
   retry -n 5 --wait 2 curl --fail localhost:8000/time/
 
   # [docs:curl-time]
-  curl localhost:8000/time/
+  curl --fail localhost:8000/time/
   # [docs:curl-time-end]
 
   # [docs:stop-docker-updated]

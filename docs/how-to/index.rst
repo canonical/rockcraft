@@ -40,6 +40,16 @@ compiled a couple of guides for you to facilitate your contribution.
 
    documentation <documentation/index>
 
+Extensions
+----------
+
+Learn how to use framework and platform extensions in your project.
+
+.. toctree::
+   :maxdepth: 1
+
+   configure-the-build-base-for-an-expressjs-app
+
 Rocks
 -----
 

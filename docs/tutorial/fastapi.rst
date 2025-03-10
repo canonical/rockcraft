@@ -150,8 +150,7 @@ Check that the image was successfully loaded into Docker:
 The output should list the FastAPI container image, along with its tag, ID and
 size:
 
-..  code-block:: text
-    :class: log-snippets
+.. terminal::
 
     REPOSITORY            TAG       IMAGE ID       CREATED       SIZE
     fastapi-hello-world   0.1       30c7e5aed202   2 weeks ago   193MB
@@ -184,7 +183,7 @@ View the application logs
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 When deploying the FastAPI rock, we can always get the application logs via
-``pebble``:
+:ref:`pebble_explanation_page`:
 
 .. literalinclude:: code/fastapi/task.yaml
     :language: text
@@ -192,12 +191,11 @@ When deploying the FastAPI rock, we can always get the application logs via
     :end-before: [docs:get-logs-end]
     :dedent: 2
 
-As a result, :ref:`pebble_explanation_page` will give us the logs for the
+As a result, Pebble will give us the logs for the
 ``fastapi`` service running inside the container.
 We should expect to see something similar to this:
 
-..  code-block:: text
-    :class: log-snippets
+.. terminal::
 
     2024-10-01T06:32:50.180Z [fastapi] INFO:     Started server process [12]
     2024-10-01T06:32:50.181Z [fastapi] INFO:     Waiting for application startup.
@@ -290,7 +288,7 @@ and then using the same ``curl`` request:
     :end-before: [docs:curl-fastapi-bare-rock-end]
     :dedent: 2
 
-Unsurprisingly, the FastAPI application should still respond with
+The FastAPI application should still respond with
 ``{"message":"Hello World"}``.
 
 Cleanup

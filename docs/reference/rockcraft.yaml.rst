@@ -268,6 +268,7 @@ Currently supported extensions:
 - ``django-framework``
 - ``go-framework``
 - ``fastapi-framework``
+- ``expressjs-framework``
 
 Example
 =======

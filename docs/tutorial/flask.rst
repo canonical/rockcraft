@@ -144,8 +144,7 @@ Check that the image was successfully loaded into Docker:
 The output should list the Flask container image, along with its tag, ID and
 size:
 
-..  code-block:: text
-    :class: log-snippets
+.. terminal::
 
     REPOSITORY          TAG       IMAGE ID       CREATED       SIZE
     flask-hello-world   0.1       c256056698ba   2 weeks ago   149MB
@@ -178,7 +177,7 @@ View the application logs
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 When deploying the Flask rock, we can always get the application logs via
-``pebble``:
+:ref:`pebble_explanation_page`:
 
 .. literalinclude:: code/flask/task.yaml
     :language: text
@@ -186,12 +185,11 @@ When deploying the Flask rock, we can always get the application logs via
     :end-before: [docs:get-logs-end]
     :dedent: 2
 
-As a result, :ref:`pebble_explanation_page` will give us the logs for the
+As a result, Pebble will give us the logs for the
 ``flask`` service running inside the container.
 We expect to see something similar to this:
 
-..  code-block:: text
-    :class: log-snippets
+.. terminal::
 
     2024-06-21T03:41:45.077Z [flask] [2024-06-21 03:41:45 +0000] [17] [INFO] Starting gunicorn 22.0.0
     2024-06-21T03:41:45.077Z [flask] [2024-06-21 03:41:45 +0000] [17] [INFO] Listening at: http://0.0.0.0:8000 (17)
@@ -283,7 +281,7 @@ and then using the same ``curl`` request:
     :end-before: [docs:curl-flask-bare-rock-end]
     :dedent: 2
 
-Unsurprisingly, the Flask application should still respond with
+The Flask application should still respond with
 ``Hello, world!``.
 
 Cleanup

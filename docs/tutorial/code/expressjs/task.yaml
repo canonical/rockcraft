@@ -1,0 +1,117 @@
+###########################################
+# IMPORTANT
+# Comments matter!
+# The docs use the wrapping comments as
+# markers for including said instructions
+# as snippets in the docs.
+###########################################
+summary: Getting started with ExpressJS tutorial
+
+environment:
+
+execute: |
+  # [docs:install-deps]
+  sudo apt-get update -y && sudo apt-get install npm -y
+  # [docs:install-deps-end]
+
+  # [docs:init-app]
+  sudo npm install -g express-generator@4
+  express app
+  cd app && npm install
+  # [docs:init-app-end]
+
+  npm start &
+  cd ..
+  retry -n 5 --wait 2 curl --fail localhost:3000
+
+  # [docs:curl-expressjs]
+  curl --fail localhost:3000
+  # [docs:curl-expressjs-end]
+
+  kill $!
+  kill $(lsof -t -i:3000)
+
+  # [docs:create-rockcraft-yaml]
+  rockcraft init --profile expressjs-framework
+  # [docs:create-rockcraft-yaml-end]
+
+  sed -i "s/name: .*/name: expressjs-hello-world/g" rockcraft.yaml
+
+  # [docs:experimental]
+  export ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS=true
+  # [docs:experimental-end]
+
+  # [docs:pack]
+  rockcraft pack
+  # [docs:pack-end]
+
+  # [docs:ls-rock]
+  ls *.rock -l --block-size=MB
+  # [docs:ls-rock-end]
+
+  # [docs:skopeo-copy]
+  sudo rockcraft.skopeo --insecure-policy \
+    copy oci-archive:expressjs-hello-world_0.1_amd64.rock \
+    docker-daemon:expressjs-hello-world:0.1
+  # [docs:skopeo-copy-end]
+
+  # [docs:docker-images]
+  sudo docker images expressjs-hello-world:0.1
+  # [docs:docker-images-end]
+
+  # [docs:docker-run]
+  sudo docker run --rm -d -p 3000:3000 \
+    --name expressjs-hello-world expressjs-hello-world:0.1
+  # [docs:docker-run-end]
+  retry -n 5 --wait 2 curl --fail localhost:3000
+
+  # [docs:curl-expressjs-rock]
+  curl --fail localhost:3000
+  # [docs:curl-expressjs-rock-end]
+
+  # [docs:get-logs]
+  sudo docker exec expressjs-hello-world pebble logs expressjs
+  # [docs:get-logs-end]
+
+  # [docs:stop-docker]
+  sudo docker stop expressjs-hello-world
+  sudo docker rmi expressjs-hello-world:0.1
+  # [docs:stop-docker-end]
+
+  mv time.js app/routes/
+  original_line="var app = express();"
+  # Remove comments from time_app.js
+  sed -i 's:^//.*::g' time_app.js
+  append_line="$(cat time_app.js | tr '\n' ' ')"
+  sed -i "/$original_line/a$append_line" app/app.js
+  sed -i "s/version: .*/version: 0.2/g" rockcraft.yaml
+
+  # [docs:docker-run-update]
+  rockcraft pack
+  sudo rockcraft.skopeo --insecure-policy \
+    copy oci-archive:expressjs-hello-world_0.2_amd64.rock \
+    docker-daemon:expressjs-hello-world:0.2
+  sudo docker images expressjs-hello-world:0.2
+  sudo docker run --rm -d -p 3000:3000 \
+    --name expressjs-hello-world expressjs-hello-world:0.2
+  # [docs:docker-run-update-end]
+  retry -n 5 --wait 2 curl --fail localhost:3000/time
+
+  # [docs:curl-time]
+  curl --fail localhost:3000/time
+  # [docs:curl-time-end]
+
+  # [docs:stop-docker-updated]
+  sudo docker stop expressjs-hello-world
+  sudo docker rmi expressjs-hello-world:0.2
+  # [docs:stop-docker-updated-end]
+
+  # [docs:cleanup]
+  # delete all the files created during the tutorial
+  sudo npm uninstall -g express-generator@4
+  sudo apt-get remove npm -y
+  rm -rf app
+  rm expressjs-hello-world_0.1_amd64.rock \
+    expressjs-hello-world_0.2_amd64.rock \
+    rockcraft.yaml
+  # [docs:cleanup-end]
