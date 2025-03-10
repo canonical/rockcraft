@@ -6,7 +6,7 @@ env:
 
 jobs:
   diff-schema:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout rockcraft
@@ -16,7 +16,7 @@ jobs:
 
       - name: Set up uv with caching
         id: setup-uv
-        uses: astral-sh/setup-uv@v3
+        uses: astral-sh/setup-uv@v5
         with:
           enable-cache: true
           cache-suffix: ${{ steps.runner-info.outputs.cache-hash }}
