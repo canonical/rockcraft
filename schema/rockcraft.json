@@ -615,6 +615,7 @@
             "ant",
             "autotools",
             "cmake",
+            "docker",
             "dotnet",
             "dump",
             "go",
