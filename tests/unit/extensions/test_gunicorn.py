@@ -77,6 +77,13 @@ def test_flask_extension_default(
                     "gunicorn.conf.py": "flask/gunicorn.conf.py",
                 },
                 "plugin": "dump",
+                "permissions": [
+                    {
+                        "path": "flask/gunicorn.conf.py",
+                        "owner": 584792,
+                        "group": 584792,
+                    },
+                ],
             },
             "flask-framework/dependencies": {
                 "plugin": "python",
@@ -99,6 +106,25 @@ def test_flask_extension_default(
             "flask-framework/runtime": {
                 "plugin": "nil",
                 "stage-packages": ["ca-certificates_data"],
+            },
+            "flask-framework/logging": {
+                "plugin": "nil",
+                "override-build": (
+                    "craftctl default\n"
+                    "mkdir -p $CRAFT_PART_INSTALL/opt/promtail\n"
+                    "mkdir -p $CRAFT_PART_INSTALL/etc/promtail\n"
+                    "mkdir -p $CRAFT_PART_INSTALL/var/log/flask"
+                ),
+                "permissions": [
+                    {"path": "opt/promtail", "owner": 584792, "group": 584792},
+                    {"path": "etc/promtail", "owner": 584792, "group": 584792},
+                    {"path": "flask", "owner": 584792, "group": 584792},
+                    {
+                        "path": "var/log/flask",
+                        "owner": 584792,
+                        "group": 584792,
+                    },
+                ],
             },
             "flask-framework/statsd-exporter": {
                 "build-snaps": ["go"],
@@ -478,6 +504,13 @@ def test_django_extension_default(
             "django-framework/config-files": {
                 "organize": {"gunicorn.conf.py": "django/gunicorn.conf.py"},
                 "plugin": "dump",
+                "permissions": [
+                    {
+                        "path": "django/gunicorn.conf.py",
+                        "owner": 584792,
+                        "group": 584792,
+                    },
+                ],
             },
             "django-framework/dependencies": {
                 "plugin": "python",
@@ -496,6 +529,25 @@ def test_django_extension_default(
             "django-framework/runtime": {
                 "plugin": "nil",
                 "stage-packages": ["ca-certificates_data"],
+            },
+            "django-framework/logging": {
+                "plugin": "nil",
+                "override-build": (
+                    "craftctl default\n"
+                    "mkdir -p $CRAFT_PART_INSTALL/opt/promtail\n"
+                    "mkdir -p $CRAFT_PART_INSTALL/etc/promtail\n"
+                    "mkdir -p $CRAFT_PART_INSTALL/var/log/django"
+                ),
+                "permissions": [
+                    {"path": "opt/promtail", "owner": 584792, "group": 584792},
+                    {"path": "etc/promtail", "owner": 584792, "group": 584792},
+                    {"path": "django", "owner": 584792, "group": 584792},
+                    {
+                        "path": "var/log/django",
+                        "owner": 584792,
+                        "group": 584792,
+                    },
+                ],
             },
             "django-framework/statsd-exporter": {
                 "build-snaps": ["go"],

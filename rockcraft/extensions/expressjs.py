@@ -78,6 +78,18 @@ class ExpressJSFramework(Extension):
         runtime_part = self._gen_runtime_part()
         if runtime_part:
             snippet["parts"]["expressjs-framework/runtime"] = runtime_part
+        snippet["parts"]["expressjs-framework/logging"] = {
+            "plugin": "nil",
+            "override-build": (
+                "craftctl default\n"
+                "mkdir -p $CRAFT_PART_INSTALL/opt/promtail\n"
+                "mkdir -p $CRAFT_PART_INSTALL/etc/promtail"
+            ),
+            "permissions": [
+                {"path": "opt/promtail", "owner": 584792, "group": 584792},
+                {"path": "etc/promtail", "owner": 584792, "group": 584792},
+            ],
+        }
         return snippet
 
     @override

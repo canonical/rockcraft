@@ -70,6 +70,18 @@ class GoFramework(Extension):
                 "plugin": "nil",
                 "stage-packages": ["ca-certificates_data"],
             },
+            "go-framework/logging": {
+                "plugin": "nil",
+                "override-build": (
+                    "craftctl default\n"
+                    "mkdir -p $CRAFT_PART_INSTALL/opt/promtail\n"
+                    "mkdir -p $CRAFT_PART_INSTALL/etc/promtail"
+                ),
+                "permissions": [
+                    {"path": "opt/promtail", "owner": 584792, "group": 584792},
+                    {"path": "etc/promtail", "owner": 584792, "group": 584792},
+                ],
+            },
         }
         if self.yaml_data["base"] == "bare":
             snippet["parts"]["go-framework/runtime"]["stage-packages"].extend(

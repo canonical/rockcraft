@@ -122,6 +122,18 @@ class FastAPIFramework(Extension):
                 "plugin": "nil",
                 "stage-packages": ["ca-certificates_data"],
             }
+        parts["fastapi-framework/logging"] = {
+            "plugin": "nil",
+            "override-build": (
+                "craftctl default\n"
+                "mkdir -p $CRAFT_PART_INSTALL/opt/promtail\n"
+                "mkdir -p $CRAFT_PART_INSTALL/etc/promtail"
+            ),
+            "permissions": [
+                {"path": "opt/promtail", "owner": 584792, "group": 584792},
+                {"path": "etc/promtail", "owner": 584792, "group": 584792},
+            ],
+        }
         return parts
 
     def _get_install_app_part(self) -> dict[str, Any]:

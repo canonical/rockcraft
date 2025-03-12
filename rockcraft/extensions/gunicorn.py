@@ -89,12 +89,38 @@ class _GunicornBase(Extension):
                 "organize": {
                     "gunicorn.conf.py": f"{self.framework}/gunicorn.conf.py",
                 },
+                "permissions": [
+                    {
+                        "path": f"{self.framework}/gunicorn.conf.py",
+                        "owner": 584792,
+                        "group": 584792,
+                    },
+                ],
             },
             f"{self.framework}-framework/statsd-exporter": {
                 "build-snaps": ["go"],
                 "source-tag": "v0.26.0",
                 "plugin": "go",
                 "source": "https://github.com/prometheus/statsd_exporter.git",
+            },
+            f"{self.framework}-framework/logging": {
+                "plugin": "nil",
+                "override-build": (
+                    "craftctl default\n"
+                    "mkdir -p $CRAFT_PART_INSTALL/opt/promtail\n"
+                    "mkdir -p $CRAFT_PART_INSTALL/etc/promtail\n"
+                    f"mkdir -p $CRAFT_PART_INSTALL/var/log/{self.framework}"
+                ),
+                "permissions": [
+                    {"path": "opt/promtail", "owner": 584792, "group": 584792},
+                    {"path": "etc/promtail", "owner": 584792, "group": 584792},
+                    {"path": self.framework, "owner": 584792, "group": 584792},
+                    {
+                        "path": f"var/log/{self.framework}",
+                        "owner": 584792,
+                        "group": 584792,
+                    },
+                ],
             },
         }
         if self.yaml_data["base"] == "bare":
@@ -335,7 +361,7 @@ class DjangoFramework(_GunicornBase):
 
     @override
     def gen_install_app_part(self) -> dict[str, Any]:
-        """Return the prime list for the Flask project."""
+        """Return the prime list for the Django project."""
         if "django-framework/install-app" not in self.yaml_data.get("parts", {}):
             return {
                 "plugin": "dump",
