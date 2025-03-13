@@ -95,6 +95,11 @@ class _GunicornBase(Extension):
                         "owner": 584792,
                         "group": 584792,
                     },
+                    {
+                        "path": self.framework,
+                        "owner": 584792,
+                        "group": 584792,
+                    },
                 ],
             },
             f"{self.framework}-framework/statsd-exporter": {
@@ -114,7 +119,6 @@ class _GunicornBase(Extension):
                 "permissions": [
                     {"path": "opt/promtail", "owner": 584792, "group": 584792},
                     {"path": "etc/promtail", "owner": 584792, "group": 584792},
-                    {"path": self.framework, "owner": 584792, "group": 584792},
                     {
                         "path": f"var/log/{self.framework}",
                         "owner": 584792,

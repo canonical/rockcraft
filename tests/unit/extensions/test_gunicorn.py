@@ -83,6 +83,11 @@ def test_flask_extension_default(
                         "owner": 584792,
                         "group": 584792,
                     },
+                    {
+                        "path": "flask",
+                        "owner": 584792,
+                        "group": 584792,
+                    },
                 ],
             },
             "flask-framework/dependencies": {
@@ -118,7 +123,6 @@ def test_flask_extension_default(
                 "permissions": [
                     {"path": "opt/promtail", "owner": 584792, "group": 584792},
                     {"path": "etc/promtail", "owner": 584792, "group": 584792},
-                    {"path": "flask", "owner": 584792, "group": 584792},
                     {
                         "path": "var/log/flask",
                         "owner": 584792,
@@ -510,6 +514,11 @@ def test_django_extension_default(
                         "owner": 584792,
                         "group": 584792,
                     },
+                    {
+                        "path": "django",
+                        "owner": 584792,
+                        "group": 584792,
+                    },
                 ],
             },
             "django-framework/dependencies": {
@@ -541,7 +550,6 @@ def test_django_extension_default(
                 "permissions": [
                     {"path": "opt/promtail", "owner": 584792, "group": 584792},
                     {"path": "etc/promtail", "owner": 584792, "group": 584792},
-                    {"path": "django", "owner": 584792, "group": 584792},
                     {
                         "path": "var/log/django",
                         "owner": 584792,
