@@ -82,12 +82,7 @@ def test_flask_extension_default(
                         "path": "flask/gunicorn.conf.py",
                         "owner": 584792,
                         "group": 584792,
-                    },
-                    {
-                        "path": "flask",
-                        "owner": 584792,
-                        "group": 584792,
-                    },
+                    }
                 ],
             },
             "flask-framework/dependencies": {
@@ -107,6 +102,13 @@ def test_flask_extension_default(
                 "prime": ["flask/app/app.py", "flask/app/static"],
                 "source": ".",
                 "stage": ["flask/app/app.py", "flask/app/static"],
+                "permissions": [
+                    {
+                        "path": "flask",
+                        "owner": 584792,
+                        "group": 584792,
+                    },
+                ],
             },
             "flask-framework/runtime": {
                 "plugin": "nil",
@@ -196,6 +198,13 @@ def test_flask_extension_prime_override(tmp_path, flask_input_yaml):
         "flask/app/requirements.txt",
         "flask/app/static",
     ]
+    assert install_app_part["permissions"] == [
+        {
+            "path": "flask",
+            "owner": 584792,
+            "group": 584792,
+        },
+    ]
 
 
 @pytest.mark.usefixtures("flask_extension")
@@ -229,6 +238,13 @@ def test_flask_framework_exclude_prime(tmp_path, flask_input_yaml):
         "flask/app/static",
         "flask/app/test",
         "flask/app/webapp",
+    ]
+    assert install_app_part["permissions"] == [
+        {
+            "path": "flask",
+            "owner": 584792,
+            "group": 584792,
+        },
     ]
 
 
@@ -315,6 +331,13 @@ def test_flask_extension_override_parts(tmp_path, flask_input_yaml):
         "stage-packages": ["python3-venv"],
         "build-environment": [],
     }
+    assert applied["parts"]["flask-framework/install-app"]["permissions"] == [
+        {
+            "path": "flask",
+            "owner": 584792,
+            "group": 584792,
+        },
+    ]
 
 
 @pytest.mark.usefixtures("flask_extension")
@@ -342,6 +365,13 @@ def test_flask_extension_bare(tmp_path):
         "stage-packages": ["python3.10-venv_ensurepip"],
         "build-environment": [{"PARTS_PYTHON_INTERPRETER": "python3.10"}],
     }
+    assert applied["parts"]["flask-framework/install-app"]["permissions"] == [
+        {
+            "path": "flask",
+            "owner": 584792,
+            "group": 584792,
+        },
+    ]
 
 
 @pytest.mark.usefixtures("flask_extension")
@@ -514,11 +544,6 @@ def test_django_extension_default(
                         "owner": 584792,
                         "group": 584792,
                     },
-                    {
-                        "path": "django",
-                        "owner": 584792,
-                        "group": 584792,
-                    },
                 ],
             },
             "django-framework/dependencies": {
@@ -534,6 +559,13 @@ def test_django_extension_default(
                 "plugin": "dump",
                 "source": "foo_bar",
                 "stage": ["-django/app/db.sqlite3"],
+                "permissions": [
+                    {
+                        "path": "django",
+                        "owner": 584792,
+                        "group": 584792,
+                    },
+                ],
             },
             "django-framework/runtime": {
                 "plugin": "nil",
@@ -612,6 +644,13 @@ def test_django_extension_override_install_app(tmp_path, django_input_yaml):
         "plugin": "dump",
         "source": ".",
         "organize": {"foobar": "django/app"},
+        "permissions": [
+            {
+                "path": "django",
+                "owner": 584792,
+                "group": 584792,
+            },
+        ],
     }
 
 

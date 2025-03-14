@@ -95,11 +95,6 @@ class _GunicornBase(Extension):
                         "owner": 584792,
                         "group": 584792,
                     },
-                    {
-                        "path": self.framework,
-                        "owner": 584792,
-                        "group": 584792,
-                    },
                 ],
             },
             f"{self.framework}-framework/statsd-exporter": {
@@ -252,6 +247,13 @@ class FlaskFramework(_GunicornBase):
             "organize": renaming_map,
             "stage": list(renaming_map.values()),
             "prime": self._app_prime,
+            "permissions": [
+                {
+                    "path": self.framework,
+                    "owner": 584792,
+                    "group": 584792,
+                },
+            ],
         }
 
     @property
@@ -372,8 +374,22 @@ class DjangoFramework(_GunicornBase):
                 "source": self.name,
                 "organize": {"*": "django/app/", ".*": "django/app/"},
                 "stage": ["-django/app/db.sqlite3"],
+                "permissions": [
+                    {
+                        "path": self.framework,
+                        "owner": 584792,
+                        "group": 584792,
+                    },
+                ],
             }
-        return {}
+        return {
+                "permissions": [
+                    {
+                        "path": self.framework,
+                        "owner": 584792,
+                        "group": 584792,
+                    },
+                ],}
 
     def _check_wsgi_path(self) -> None:
         wsgi_file = self.project_root / self.name / self.name / "wsgi.py"
