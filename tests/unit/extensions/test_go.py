@@ -56,11 +56,24 @@ def test_go_extension_default(tmp_path, go_input_yaml):
                 "build-snaps": ["go"],
                 "organize": {"bin/goprojectname": "usr/local/bin/goprojectname"},
                 "stage": ["usr/local/bin/goprojectname"],
+                "permissions": [{"owner": 584792, "group": 584792}],
             },
             "go-framework/runtime": {
                 "plugin": "nil",
                 "stage-packages": [
                     "ca-certificates_data",
+                ],
+            },
+            "go-framework/logging": {
+                "plugin": "nil",
+                "override-build": (
+                    "craftctl default\n"
+                    "mkdir -p $CRAFT_PART_INSTALL/opt/promtail\n"
+                    "mkdir -p $CRAFT_PART_INSTALL/etc/promtail"
+                ),
+                "permissions": [
+                    {"path": "opt/promtail", "owner": 584792, "group": 584792},
+                    {"path": "etc/promtail", "owner": 584792, "group": 584792},
                 ],
             },
         },
@@ -120,6 +133,10 @@ def test_go_extension_base_bare(tmp_path, go_input_yaml, build_environment):
     ]
     assert applied_build_environment == [{"CGO_ENABLED": "0"}, *build_environment]
 
+    assert "permissions" in applied["parts"]["go-framework/install-app"]
+    applied_permissions = applied["parts"]["go-framework/install-app"]["permissions"]
+    assert applied_permissions == [{"owner": 584792, "group": 584792}]
+
 
 @pytest.mark.usefixtures("go_extension")
 @pytest.mark.parametrize(
@@ -156,6 +173,9 @@ def test_go_extension_overrides_organize(
     assert sorted(applied["parts"]["go-framework/install-app"]["stage"]) == sorted(
         expected_organize.values()
     )
+    assert applied["parts"]["go-framework/install-app"]["permissions"] == [
+        {"owner": 584792, "group": 584792}
+    ]
 
 
 @pytest.mark.usefixtures("go_extension")

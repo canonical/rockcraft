@@ -105,7 +105,10 @@ class FastAPIFramework(Extension):
                 "python-packages": ["uvicorn"],
                 "python-requirements": ["requirements.txt"],
             },
-            "fastapi-framework/install-app": self._get_install_app_part(),
+            "fastapi-framework/install-app": {
+                **self._get_install_app_part(),
+                "permissions": [{"owner": 584792, "group": 584792}],
+            },
         }
         if self.yaml_data["base"] == "bare":
             parts["fastapi-framework/runtime"] = {
@@ -122,6 +125,18 @@ class FastAPIFramework(Extension):
                 "plugin": "nil",
                 "stage-packages": ["ca-certificates_data"],
             }
+        parts["fastapi-framework/logging"] = {
+            "plugin": "nil",
+            "override-build": (
+                "craftctl default\n"
+                "mkdir -p $CRAFT_PART_INSTALL/opt/promtail\n"
+                "mkdir -p $CRAFT_PART_INSTALL/etc/promtail"
+            ),
+            "permissions": [
+                {"path": "opt/promtail", "owner": 584792, "group": 584792},
+                {"path": "etc/promtail", "owner": 584792, "group": 584792},
+            ],
+        }
         return parts
 
     def _get_install_app_part(self) -> dict[str, Any]:
