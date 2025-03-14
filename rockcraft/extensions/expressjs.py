@@ -73,7 +73,10 @@ class ExpressJSFramework(Extension):
             snippet["services"]["expressjs"]["command"] = "npm start"
 
         snippet["parts"] = {
-            "expressjs-framework/install-app": self._gen_install_app_part(),
+            "expressjs-framework/install-app": {
+                **self._gen_install_app_part(),
+                "permissions": [{"owner": 584792, "group": 584792}],
+            },
         }
         runtime_part = self._gen_runtime_part()
         if runtime_part:

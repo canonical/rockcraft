@@ -82,7 +82,10 @@ class _GunicornBase(Extension):
                 "python-requirements": ["requirements.txt"],
                 "build-environment": build_environment,
             },
-            f"{self.framework}-framework/install-app": self.gen_install_app_part(),
+            f"{self.framework}-framework/install-app": {
+                **self.gen_install_app_part(),
+                "permissions": [{"owner": 584792, "group": 584792}],
+            },
             f"{self.framework}-framework/config-files": {
                 "plugin": "dump",
                 "source": str(data_dir / f"{self.framework}-framework"),
@@ -247,13 +250,6 @@ class FlaskFramework(_GunicornBase):
             "organize": renaming_map,
             "stage": list(renaming_map.values()),
             "prime": self._app_prime,
-            "permissions": [
-                {
-                    "path": self.framework,
-                    "owner": 584792,
-                    "group": 584792,
-                },
-            ],
         }
 
     @property
@@ -374,22 +370,8 @@ class DjangoFramework(_GunicornBase):
                 "source": self.name,
                 "organize": {"*": "django/app/", ".*": "django/app/"},
                 "stage": ["-django/app/db.sqlite3"],
-                "permissions": [
-                    {
-                        "path": self.framework,
-                        "owner": 584792,
-                        "group": 584792,
-                    },
-                ],
             }
-        return {
-                "permissions": [
-                    {
-                        "path": self.framework,
-                        "owner": 584792,
-                        "group": 584792,
-                    },
-                ],}
+        return {}
 
     def _check_wsgi_path(self) -> None:
         wsgi_file = self.project_root / self.name / self.name / "wsgi.py"

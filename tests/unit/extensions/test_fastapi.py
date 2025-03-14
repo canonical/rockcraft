@@ -63,6 +63,7 @@ def test_fastapi_extension_default(tmp_path, fastapi_input_yaml, packages):
                     "app.py": "app/app.py",
                 },
                 "stage": ["app/app.py"],
+                "permissions": [{"owner": 584792, "group": 584792}],
             },
             "fastapi-framework/runtime": {
                 "plugin": "nil",
@@ -161,6 +162,7 @@ def test_fastapi_extension_asgi_entrypoints(
         install_app_part["organize"].values()
     )
     assert applied["services"]["fastapi"]["command"] == command
+    assert install_app_part["permissions"] == [{"owner": 584792, "group": 584792}]
 
 
 @pytest.mark.usefixtures("fastapi_extension")
@@ -271,6 +273,7 @@ def test_fastapi_framework_exclude_prime(tmp_path, fastapi_input_yaml):
         "app/test",
         "app/webapp",
     ]
+    assert install_app_part["permissions"] == [{"owner": 584792, "group": 584792}]
 
 
 @pytest.mark.usefixtures("fastapi_extension")
@@ -294,6 +297,7 @@ def test_fastapi_framework_service_overridden(tmp_path, fastapi_input_yaml):
             "webapp.py": "app/webapp.py",
         },
         "stage": ["app/requirements.txt", "app/webapp.py"],
+        "permissions": [{"owner": 584792, "group": 584792}],
     }
 
 

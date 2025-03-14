@@ -105,7 +105,10 @@ class FastAPIFramework(Extension):
                 "python-packages": ["uvicorn"],
                 "python-requirements": ["requirements.txt"],
             },
-            "fastapi-framework/install-app": self._get_install_app_part(),
+            "fastapi-framework/install-app": {
+                **self._get_install_app_part(),
+                "permissions": [{"owner": 584792, "group": 584792}],
+            },
         }
         if self.yaml_data["base"] == "bare":
             parts["fastapi-framework/runtime"] = {

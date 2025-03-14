@@ -104,7 +104,6 @@ def test_flask_extension_default(
                 "stage": ["flask/app/app.py", "flask/app/static"],
                 "permissions": [
                     {
-                        "path": "flask",
                         "owner": 584792,
                         "group": 584792,
                     },
@@ -200,7 +199,6 @@ def test_flask_extension_prime_override(tmp_path, flask_input_yaml):
     ]
     assert install_app_part["permissions"] == [
         {
-            "path": "flask",
             "owner": 584792,
             "group": 584792,
         },
@@ -241,7 +239,6 @@ def test_flask_framework_exclude_prime(tmp_path, flask_input_yaml):
     ]
     assert install_app_part["permissions"] == [
         {
-            "path": "flask",
             "owner": 584792,
             "group": 584792,
         },
@@ -333,7 +330,6 @@ def test_flask_extension_override_parts(tmp_path, flask_input_yaml):
     }
     assert applied["parts"]["flask-framework/install-app"]["permissions"] == [
         {
-            "path": "flask",
             "owner": 584792,
             "group": 584792,
         },
@@ -367,7 +363,6 @@ def test_flask_extension_bare(tmp_path):
     }
     assert applied["parts"]["flask-framework/install-app"]["permissions"] == [
         {
-            "path": "flask",
             "owner": 584792,
             "group": 584792,
         },
@@ -561,7 +556,6 @@ def test_django_extension_default(
                 "stage": ["-django/app/db.sqlite3"],
                 "permissions": [
                     {
-                        "path": "django",
                         "owner": 584792,
                         "group": 584792,
                     },
@@ -646,7 +640,6 @@ def test_django_extension_override_install_app(tmp_path, django_input_yaml):
         "organize": {"foobar": "django/app"},
         "permissions": [
             {
-                "path": "django",
                 "owner": 584792,
                 "group": 584792,
             },

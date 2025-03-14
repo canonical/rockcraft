@@ -65,7 +65,10 @@ class GoFramework(Extension):
                 "plugin": "nil",
                 "override-build": "mkdir -p ${CRAFT_PART_INSTALL}/app",
             },
-            "go-framework/install-app": self._get_install_app_part(),
+            "go-framework/install-app": {
+                **self._get_install_app_part(),
+                "permissions": [{"owner": 584792, "group": 584792}],
+            },
             "go-framework/runtime": {
                 "plugin": "nil",
                 "stage-packages": ["ca-certificates_data"],

@@ -88,6 +88,7 @@ def package_json_file(app_path):
                         ),
                         "build-packages": ["nodejs", "npm"],
                         "stage-packages": ["ca-certificates_data", "nodejs_bins"],
+                        "permissions": [{"owner": 584792, "group": 584792}],
                     },
                     "expressjs-framework/runtime": {
                         "plugin": "nil",
@@ -141,6 +142,7 @@ def package_json_file(app_path):
                         "plugin": "npm",
                         "source": "app/",
                         "stage-packages": ["ca-certificates_data"],
+                        "permissions": [{"owner": 584792, "group": 584792}],
                     },
                     "expressjs-framework/logging": {
                         "plugin": "nil",
@@ -204,6 +206,7 @@ def package_json_file(app_path):
                             "ca-certificates_data",
                             "coreutils_bins",
                         ],
+                        "permissions": [{"owner": 584792, "group": 584792}],
                     },
                     "expressjs-framework/runtime": {
                         "plugin": "nil",
@@ -271,6 +274,7 @@ def package_json_file(app_path):
                             "ca-certificates_data",
                             "coreutils_bins",
                         ],
+                        "permissions": [{"owner": 584792, "group": 584792}],
                     },
                     "expressjs-framework/runtime": {
                         "plugin": "nil",
