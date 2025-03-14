@@ -53,7 +53,7 @@ execute: |
       echo "Error: Some files/folders inside /etc/promtail are not owned by _daemon_"
       exit 2
     fi
-  
+
     # Ensure image exists
     docker images "${IMAGE}" | MATCH "${NAME}"
 
