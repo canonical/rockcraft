@@ -16,8 +16,7 @@ Finally, create a new directory for this tutorial and go inside it:
 
 .. code-block:: bash
 
-   mkdir flask-hello-world
-   cd flask-hello-world
+   mkdir flask-hello-world && cd $_
 
 Create the Flask application
 ============================
@@ -44,6 +43,17 @@ In the same directory, copy and save the following into a text file called
 
 .. literalinclude:: code/flask/app.py
     :language: python
+
+After completing the previous steps, this is the resulting directory structure:
+
+.. code-block:: text
+
+    .
+    ├─ .venv
+    ├─ app.py
+    └─ requirements.txt
+
+    1 directory, 2 files
 
 Run the Flask application using ``flask run -p 8000`` to verify that it works.
 

@@ -42,8 +42,7 @@ Create a new directory for this tutorial and enter it:
 
 .. code-block:: bash
 
-   mkdir go-hello-world
-   cd go-hello-world
+   mkdir go-hello-world && cd $_
 
 Initialise the new Go module:
 
@@ -70,6 +69,17 @@ Build the Go application so it can be run:
 A binary called ``go-hello-world`` is created in the current
 directory. This binary is only needed for local testing, as
 Rockcraft will compile the Go application when we pack the rock.
+
+After completing the previous steps, this is the resulting directory structure:
+
+.. code-block:: text
+
+    .
+    ├─ go-hello-world
+    ├─ go.mod
+    └─ main.go
+
+    3 files
 
 Let's Run the Go application to verify that it works:
 

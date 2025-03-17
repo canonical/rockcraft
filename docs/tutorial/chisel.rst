@@ -13,7 +13,13 @@ Setup your environment
 Project setup
 -------------
 
-Create a new directory, write the following into a text editor and save it as
+Create a new directory and cd into it:
+
+.. code-block:: bash
+
+   mkdir chiselled-hello && cd $_
+
+Write the following into a text editor and save it as
 ``rockcraft.yaml``:
 
 .. _chisel-example:
