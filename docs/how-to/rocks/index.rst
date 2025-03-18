@@ -1,5 +1,11 @@
 .. _how-to-rocks:
 
+**************
+Rocks
+**************
+
+This section contains how-to guides regarding Rocks
+
 .. toctree::
    :maxdepth: 1
 

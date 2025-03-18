@@ -1,5 +1,11 @@
 .. _how-to-documentation:
 
+**************
+Documentation
+**************
+
+This section contains how-to guides regarding this documentation pages
+
 .. toctree::
    :maxdepth: 1
 

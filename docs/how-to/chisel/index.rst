@@ -1,5 +1,11 @@
 .. _how-to-chisel:
 
+**************
+Chisel
+**************
+
+This section contains how-to guides for Chisel
+
 .. toctree::
    :maxdepth: 1
 

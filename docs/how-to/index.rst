@@ -26,7 +26,7 @@ slices.
 .. toctree::
    :maxdepth: 1
 
-   chisel <chisel/index>
+   Chisel <chisel/index>
 
 Documentation
 -------------
@@ -38,7 +38,7 @@ compiled a couple of guides for you to facilitate your contribution.
 .. toctree::
    :maxdepth: 1
 
-   documentation <documentation/index>
+   Documentation <documentation/index>
 
 Rocks
 -----
@@ -50,4 +50,4 @@ those aspects in Rockcraft and more.
 .. toctree::
    :maxdepth: 1
 
-   rocks <rocks/index>
+   Rocks <rocks/index>
