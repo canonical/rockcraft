@@ -130,6 +130,14 @@ For example:
     :end-before: [docs:install-rockcraft-end]
     :dedent: 2
 
+.. note::
+    Note the use of :code:`--classic` in order for rockcraft to launch LXD
+    instances or run in :code:`--destructive` mode.
+
+Rockcraft is packed along other apps like `skopeo`_, `umoci`_ and
+`chisel`_. Both Chisel and Umoci are used internally, while skopeo
+is exposed externally and can be used via :code:`rockcraft.skopeo` to
+manage the OCI archives.
 
 Testing Rockcraft
 .................
@@ -151,3 +159,5 @@ The output will be similar to:
     rockcraft 0.0.1.dev1
 
 .. _snap store: https://snapcraft.io/rockcraft
+.. _skopeo: https://github.com/containers/skopeo
+.. _umoci: https://umo.ci/

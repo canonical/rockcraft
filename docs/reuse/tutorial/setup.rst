@@ -52,7 +52,8 @@ and initialised:
    sudo snap install lxd
    lxd init --auto
 
-In order to create the rock, we'll need to install Rockcraft:
+In order to create the rock, we'll need to install Rockcraft, following our
+`how-to guide <how-to-guide_>`_:
 
 .. literalinclude:: /reuse/tutorial/code/task.yaml
     :language: bash
@@ -90,3 +91,4 @@ environment (like ``vi``).
 
 .. _`lxd-docker-connectivity-issue`: https://documentation.ubuntu.com/lxd/en/latest/howto/network_bridge_firewalld/#prevent-connectivity-issues-with-lxd-and-docker
 .. _`install-multipass`: https://multipass.run/docs/install-multipass
+.. _`how-to-guide`: /how-to/get-started.html#installation-steps
