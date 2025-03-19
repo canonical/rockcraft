@@ -245,7 +245,7 @@ In the project file, change the ``base`` to ``bare`` and add
             version: '0.1'
             summary: A summary of your Flask application
             description: |
-    
+
     .. tab:: sed command
 
         .. literalinclude:: code/flask/task.yaml
