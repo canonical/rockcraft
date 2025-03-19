@@ -88,11 +88,21 @@ def package_json_file(app_path):
                         ),
                         "build-packages": ["nodejs", "npm"],
                         "stage-packages": ["ca-certificates_data", "nodejs_bins"],
-                        "permissions": [{"owner": 584792, "group": 584792}],
                     },
                     "expressjs-framework/runtime": {
                         "plugin": "nil",
                         "stage-packages": ["npm"],
+                    },
+                    "expressjs-framework/set-owner": {
+                        "plugin": "nil",
+                        "permissions": [
+                            {
+                                "path": "lib/node_modules/test-expressjs-project",
+                                "owner": 584792,
+                                "group": 584792,
+                            },
+                            {"path": "app", "owner": 584792, "group": 584792},
+                        ],
                     },
                     "expressjs-framework/logging": {
                         "plugin": "nil",
@@ -142,7 +152,17 @@ def package_json_file(app_path):
                         "plugin": "npm",
                         "source": "app/",
                         "stage-packages": ["ca-certificates_data"],
-                        "permissions": [{"owner": 584792, "group": 584792}],
+                    },
+                    "expressjs-framework/set-owner": {
+                        "plugin": "nil",
+                        "permissions": [
+                            {
+                                "path": "lib/node_modules/test-expressjs-project",
+                                "owner": 584792,
+                                "group": 584792,
+                            },
+                            {"path": "app", "owner": 584792, "group": 584792},
+                        ],
                     },
                     "expressjs-framework/logging": {
                         "plugin": "nil",
@@ -206,7 +226,6 @@ def package_json_file(app_path):
                             "ca-certificates_data",
                             "coreutils_bins",
                         ],
-                        "permissions": [{"owner": 584792, "group": 584792}],
                     },
                     "expressjs-framework/runtime": {
                         "plugin": "nil",
@@ -214,6 +233,17 @@ def package_json_file(app_path):
                             "libstdc++6",
                             "zlib1g",
                             "npm",
+                        ],
+                    },
+                    "expressjs-framework/set-owner": {
+                        "plugin": "nil",
+                        "permissions": [
+                            {
+                                "path": "lib/node_modules/test-expressjs-project",
+                                "owner": 584792,
+                                "group": 584792,
+                            },
+                            {"path": "app", "owner": 584792, "group": 584792},
                         ],
                     },
                     "expressjs-framework/logging": {
@@ -274,11 +304,21 @@ def package_json_file(app_path):
                             "ca-certificates_data",
                             "coreutils_bins",
                         ],
-                        "permissions": [{"owner": 584792, "group": 584792}],
                     },
                     "expressjs-framework/runtime": {
                         "plugin": "nil",
                         "stage-packages": ["libstdc++6", "zlib1g"],
+                    },
+                    "expressjs-framework/set-owner": {
+                        "plugin": "nil",
+                        "permissions": [
+                            {
+                                "path": "lib/node_modules/test-expressjs-project",
+                                "owner": 584792,
+                                "group": 584792,
+                            },
+                            {"path": "app", "owner": 584792, "group": 584792},
+                        ],
                     },
                     "expressjs-framework/logging": {
                         "plugin": "nil",

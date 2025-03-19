@@ -22,6 +22,7 @@ from typing import Any
 from overrides import override
 
 from ..errors import ExtensionError
+from .app_parts import gen_logging_part
 from .extension import Extension
 
 
@@ -73,26 +74,23 @@ class ExpressJSFramework(Extension):
             snippet["services"]["expressjs"]["command"] = "npm start"
 
         snippet["parts"] = {
-            "expressjs-framework/install-app": {
-                **self._gen_install_app_part(),
-                "permissions": [{"owner": 584792, "group": 584792}],
-            },
+            "expressjs-framework/install-app": self._gen_install_app_part(),
         }
         runtime_part = self._gen_runtime_part()
         if runtime_part:
             snippet["parts"]["expressjs-framework/runtime"] = runtime_part
-        snippet["parts"]["expressjs-framework/logging"] = {
+        snippet["parts"]["expressjs-framework/set-owner"] = {
             "plugin": "nil",
-            "override-build": (
-                "craftctl default\n"
-                "mkdir -p $CRAFT_PART_INSTALL/opt/promtail\n"
-                "mkdir -p $CRAFT_PART_INSTALL/etc/promtail"
-            ),
             "permissions": [
-                {"path": "opt/promtail", "owner": 584792, "group": 584792},
-                {"path": "etc/promtail", "owner": 584792, "group": 584792},
+                {
+                    "path": "lib/node_modules/test-expressjs-project",
+                    "owner": 584792,
+                    "group": 584792,
+                },
+                {"path": "app", "owner": 584792, "group": 584792},
             ],
         }
+        snippet["parts"]["expressjs-framework/logging"] = gen_logging_part()
         return snippet
 
     @override

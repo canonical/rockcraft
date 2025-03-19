@@ -28,6 +28,7 @@ from packaging.requirements import InvalidRequirement, Requirement
 
 from ..errors import ExtensionError
 from ._python_utils import has_global_variable
+from .app_parts import gen_logging_part
 from .extension import Extension, get_extensions_data_dir
 
 
@@ -106,24 +107,18 @@ class _GunicornBase(Extension):
                 "plugin": "go",
                 "source": "https://github.com/prometheus/statsd_exporter.git",
             },
-            f"{self.framework}-framework/logging": {
-                "plugin": "nil",
-                "override-build": (
-                    "craftctl default\n"
-                    "mkdir -p $CRAFT_PART_INSTALL/opt/promtail\n"
-                    "mkdir -p $CRAFT_PART_INSTALL/etc/promtail\n"
+            f"{self.framework}-framework/logging": gen_logging_part(
+                override_build_lines=[
                     f"mkdir -p $CRAFT_PART_INSTALL/var/log/{self.framework}"
-                ),
-                "permissions": [
-                    {"path": "opt/promtail", "owner": 584792, "group": 584792},
-                    {"path": "etc/promtail", "owner": 584792, "group": 584792},
+                ],
+                permissions=[
                     {
                         "path": f"var/log/{self.framework}",
                         "owner": 584792,
                         "group": 584792,
-                    },
+                    }
                 ],
-            },
+            ),
         }
         if self.yaml_data["base"] == "bare":
             parts[f"{self.framework}-framework/runtime"] = {

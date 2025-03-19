@@ -41,6 +41,11 @@ execute: |
       echo "Error: Some files/folders inside app are not owned by _daemon_"
       exit 2
     fi
+    docker run --rm --entrypoint /bin/bash "${IMAGE}" -c "find /lib/node_modules/app -exec ls -ld {} \;" | awk '$3 != "_daemon_" {print; exit 2}'
+    if [ $? -eq 2 ]; then
+      echo "Error: Some files/folders inside app are not owned by _daemon_"
+      exit 2
+    fi
 
     # ensure the loki log folder has the correct user
     docker run --rm --entrypoint /bin/bash "${IMAGE}" -c "find /opt/promtail -exec ls -ld {} \;" | awk '$3 != "_daemon_" {print; exit 2}'
