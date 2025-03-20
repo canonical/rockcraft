@@ -20,6 +20,7 @@ import copy
 from pathlib import Path
 from typing import Any, cast
 
+from ._constants import UBUNTU_PYTHON_VERSION_MAP
 from .extension import Extension
 from .registry import get_extension_class
 
@@ -116,3 +117,8 @@ def _remove_list_duplicates(seq: list[str]) -> list[str]:
             deduped.append(item)
 
     return deduped
+
+
+def find_ubuntu_base_python_version(base: str) -> str | None:
+    """Find the Python version for the given base."""
+    return UBUNTU_PYTHON_VERSION_MAP.get(base, None)
