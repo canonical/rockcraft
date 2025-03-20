@@ -83,7 +83,7 @@ class ExpressJSFramework(Extension):
             "plugin": "nil",
             "permissions": [
                 {
-                    "path": "lib/node_modules/test-expressjs-project",
+                    "path": f"lib/node_modules/{self._app_name}",
                     "owner": 584792,
                     "group": 584792,
                 },

@@ -49,6 +49,7 @@ def test_go_extension_default(tmp_path, go_input_yaml):
             "go-framework/base-layout": {
                 "override-build": "mkdir -p ${CRAFT_PART_INSTALL}/app",
                 "plugin": "nil",
+                "permissions": [{"owner": 584792, "group": 584792}],
             },
             "go-framework/install-app": {
                 "plugin": "go",
@@ -56,7 +57,6 @@ def test_go_extension_default(tmp_path, go_input_yaml):
                 "build-snaps": ["go"],
                 "organize": {"bin/goprojectname": "usr/local/bin/goprojectname"},
                 "stage": ["usr/local/bin/goprojectname"],
-                "permissions": [{"owner": 584792, "group": 584792}],
             },
             "go-framework/runtime": {
                 "plugin": "nil",
@@ -133,8 +133,8 @@ def test_go_extension_base_bare(tmp_path, go_input_yaml, build_environment):
     ]
     assert applied_build_environment == [{"CGO_ENABLED": "0"}, *build_environment]
 
-    assert "permissions" in applied["parts"]["go-framework/install-app"]
-    applied_permissions = applied["parts"]["go-framework/install-app"]["permissions"]
+    assert "permissions" in applied["parts"]["go-framework/base-layout"]
+    applied_permissions = applied["parts"]["go-framework/base-layout"]["permissions"]
     assert applied_permissions == [{"owner": 584792, "group": 584792}]
 
 
@@ -173,9 +173,6 @@ def test_go_extension_overrides_organize(
     assert sorted(applied["parts"]["go-framework/install-app"]["stage"]) == sorted(
         expected_organize.values()
     )
-    assert applied["parts"]["go-framework/install-app"]["permissions"] == [
-        {"owner": 584792, "group": 584792}
-    ]
 
 
 @pytest.mark.usefixtures("go_extension")
