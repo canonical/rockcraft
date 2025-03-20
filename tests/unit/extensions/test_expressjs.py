@@ -93,6 +93,29 @@ def package_json_file(app_path):
                         "plugin": "nil",
                         "stage-packages": ["npm"],
                     },
+                    "expressjs-framework/set-owner": {
+                        "plugin": "nil",
+                        "permissions": [
+                            {
+                                "path": "lib/node_modules/test-expressjs-project",
+                                "owner": 584792,
+                                "group": 584792,
+                            },
+                            {"path": "app", "owner": 584792, "group": 584792},
+                        ],
+                    },
+                    "expressjs-framework/logging": {
+                        "plugin": "nil",
+                        "override-build": (
+                            "craftctl default\n"
+                            "mkdir -p $CRAFT_PART_INSTALL/opt/promtail\n"
+                            "mkdir -p $CRAFT_PART_INSTALL/etc/promtail"
+                        ),
+                        "permissions": [
+                            {"path": "opt/promtail", "owner": 584792, "group": 584792},
+                            {"path": "etc/promtail", "owner": 584792, "group": 584792},
+                        ],
+                    },
                 },
                 "services": {
                     "expressjs": {
@@ -129,7 +152,30 @@ def package_json_file(app_path):
                         "plugin": "npm",
                         "source": "app/",
                         "stage-packages": ["ca-certificates_data"],
-                    }
+                    },
+                    "expressjs-framework/set-owner": {
+                        "plugin": "nil",
+                        "permissions": [
+                            {
+                                "path": "lib/node_modules/test-expressjs-project",
+                                "owner": 584792,
+                                "group": 584792,
+                            },
+                            {"path": "app", "owner": 584792, "group": 584792},
+                        ],
+                    },
+                    "expressjs-framework/logging": {
+                        "plugin": "nil",
+                        "override-build": (
+                            "craftctl default\n"
+                            "mkdir -p $CRAFT_PART_INSTALL/opt/promtail\n"
+                            "mkdir -p $CRAFT_PART_INSTALL/etc/promtail"
+                        ),
+                        "permissions": [
+                            {"path": "opt/promtail", "owner": 584792, "group": 584792},
+                            {"path": "etc/promtail", "owner": 584792, "group": 584792},
+                        ],
+                    },
                 },
                 "platforms": {
                     "amd64": {},
@@ -189,6 +235,29 @@ def package_json_file(app_path):
                             "npm",
                         ],
                     },
+                    "expressjs-framework/set-owner": {
+                        "plugin": "nil",
+                        "permissions": [
+                            {
+                                "path": "lib/node_modules/test-expressjs-project",
+                                "owner": 584792,
+                                "group": 584792,
+                            },
+                            {"path": "app", "owner": 584792, "group": 584792},
+                        ],
+                    },
+                    "expressjs-framework/logging": {
+                        "plugin": "nil",
+                        "override-build": (
+                            "craftctl default\n"
+                            "mkdir -p $CRAFT_PART_INSTALL/opt/promtail\n"
+                            "mkdir -p $CRAFT_PART_INSTALL/etc/promtail"
+                        ),
+                        "permissions": [
+                            {"path": "opt/promtail", "owner": 584792, "group": 584792},
+                            {"path": "etc/promtail", "owner": 584792, "group": 584792},
+                        ],
+                    },
                 },
                 "platforms": {
                     "amd64": {},
@@ -239,6 +308,29 @@ def package_json_file(app_path):
                     "expressjs-framework/runtime": {
                         "plugin": "nil",
                         "stage-packages": ["libstdc++6", "zlib1g"],
+                    },
+                    "expressjs-framework/set-owner": {
+                        "plugin": "nil",
+                        "permissions": [
+                            {
+                                "path": "lib/node_modules/test-expressjs-project",
+                                "owner": 584792,
+                                "group": 584792,
+                            },
+                            {"path": "app", "owner": 584792, "group": 584792},
+                        ],
+                    },
+                    "expressjs-framework/logging": {
+                        "plugin": "nil",
+                        "override-build": (
+                            "craftctl default\n"
+                            "mkdir -p $CRAFT_PART_INSTALL/opt/promtail\n"
+                            "mkdir -p $CRAFT_PART_INSTALL/etc/promtail"
+                        ),
+                        "permissions": [
+                            {"path": "opt/promtail", "owner": 584792, "group": 584792},
+                            {"path": "etc/promtail", "owner": 584792, "group": 584792},
+                        ],
                     },
                 },
                 "platforms": {

@@ -16,9 +16,9 @@ execute: |
 
   # Ensure docker does not have this container image
   docker rmi --force example-django
-  # Install container
+  # Install image
   sudo rockcraft.skopeo --insecure-policy copy oci-archive:example-django_0.1_amd64.rock docker-daemon:example-django:latest
-  # Ensure container exists
+  # Ensure image exists
   docker images example-django | MATCH "example-django"
 
   # ensure container doesn't exist
@@ -29,6 +29,23 @@ execute: |
   docker run --rm --entrypoint /bin/python3 example-django -c "import pathlib;assert pathlib.Path('/django/app/manage.py').is_file()"
   docker run --rm --entrypoint /bin/python3 example-django -c "import pathlib;assert pathlib.Path('/django/app/.foobar').is_file()"
 
+  # ensure the django folder has the correct user
+  docker run --rm --entrypoint /bin/bash "${IMAGE}" -c "find /django -exec ls -ld {} \;" | awk '$3 != "_daemon_" {print; exit 2}'
+  if [ $? -eq 2 ]; then
+    echo "Error: Some files/folders inside /django are not owned by _daemon_"
+    exit 2
+  fi
+  # ensure the loki log folder has the correct user
+  docker run --rm --entrypoint /bin/bash "${IMAGE}" -c "find /opt/promtail -exec ls -ld {} \;" | awk '$3 != "_daemon_" {print; exit 2}'
+  if [ $? -eq 2 ]; then
+    echo "Error: Some files/folders inside /opt/promtail are not owned by _daemon_"
+    exit 2
+  fi
+  docker run --rm --entrypoint /bin/bash "${IMAGE}" -c "find /etc/promtail -exec ls -ld {} \;" | awk '$3 != "_daemon_" {print; exit 2}'
+  if [ $? -eq 2 ]; then
+    echo "Error: Some files/folders inside /etc/promtail are not owned by _daemon_"
+    exit 2
+  fi
   # test the default django service
   docker run --name example-django-container -d -p 8138:8000 example-django
   retry -n 5 --wait 2 curl localhost:8138

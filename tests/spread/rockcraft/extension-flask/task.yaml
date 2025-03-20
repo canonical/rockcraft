@@ -35,8 +35,27 @@ execute: |
   docker run --rm --entrypoint /bin/python3 "${IMAGE}" -c "import pathlib;assert pathlib.Path('/flask/app/static/js/test.js').is_file()"
   docker run --rm --entrypoint /bin/python3 "${IMAGE}" -c "import pathlib;assert not pathlib.Path('/flask/app/node_modules').exists()"
 
+  # ensure the flask folder has the correct user
+  docker run --rm --entrypoint /bin/bash "${IMAGE}" -c "find /flask -exec ls -ld {} \;" | awk '$3 != "_daemon_" {print; exit 2}'
+  if [ $? -eq 2 ]; then
+    echo "Error: Some files/folders inside /flask are not owned by _daemon_"
+    exit 2
+  fi
+  # ensure the loki log folder has the correct user
+  docker run --rm --entrypoint /bin/bash "${IMAGE}" -c "find /opt/promtail -exec ls -ld {} \;" | awk '$3 != "_daemon_" {print; exit 2}'
+  if [ $? -eq 2 ]; then
+    echo "Error: Some files/folders inside /opt/promtail are not owned by _daemon_"
+    exit 2
+  fi
+  docker run --rm --entrypoint /bin/bash "${IMAGE}" -c "find /etc/promtail -exec ls -ld {} \;" | awk '$3 != "_daemon_" {print; exit 2}'
+  if [ $? -eq 2 ]; then
+    echo "Error: Some files/folders inside /etc/promtail are not owned by _daemon_"
+    exit 2
+  fi
+
   # test the default flask service
   docker run --name "${NAME}-container" -d -p 8137:8000 "${IMAGE}"
+
   retry -n 5 --wait 2 curl localhost:8137
   [ "$(curl -sSf localhost:8137)" == "ok" ]
 
