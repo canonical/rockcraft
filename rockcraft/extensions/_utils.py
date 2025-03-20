@@ -119,6 +119,10 @@ def _remove_list_duplicates(seq: list[str]) -> list[str]:
     return deduped
 
 
-def find_ubuntu_base_python_version(base: str) -> str | None:
+def find_ubuntu_base_python_version(base: str) -> str:
     """Find the Python version for the given base."""
-    return UBUNTU_PYTHON_VERSION_MAP.get(base, None)
+    if base not in UBUNTU_PYTHON_VERSION_MAP:
+        raise NotImplementedError(
+            f"Python version for base {base} is not yet supported."
+        )
+    return UBUNTU_PYTHON_VERSION_MAP[base]

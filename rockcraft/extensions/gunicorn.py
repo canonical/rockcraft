@@ -71,10 +71,11 @@ class _GunicornBase(Extension):
         stage_packages = ["python3-venv"]
         build_environment = []
         if self.yaml_data["base"] == "bare":
-            python_version = find_ubuntu_base_python_version(
-                base=self.yaml_data["build-base"]
-            )
-            if not python_version:
+            try:
+                python_version = find_ubuntu_base_python_version(
+                    base=self.yaml_data["build-base"]
+                )
+            except NotImplementedError:
                 raise ExtensionError(
                     "Unable to determine the Python version for the base",
                     doc_slug="/reference/extensions/gunicorn",
