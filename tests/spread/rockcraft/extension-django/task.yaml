@@ -1,14 +1,23 @@
 summary: django extension test
 
 environment:
-  SCENARIO/base_2204: ubuntu-22.04
-  SCENARIO/base_2404: ubuntu-24.04
+  BASE/bare_2204: bare
+  BASE/bare_2404: bare
+  BASE/base_2204: ubuntu@22.04
+  BASE/base_2404: ubuntu@24.04
+
+  BUILD_BASE/bare_2204: ubuntu@22.04
+  BUILD_BASE/bare_2404: ubuntu@24.04
+  BUILD_BASE/base_2204: ubuntu@22.04
+  BUILD_BASE/base_2404: ubuntu@24.04
 
 execute: |
 
   run_rockcraft init --name example-django --profile django-framework
 
-  sed -i "s/base: .*/base: ${SCENARIO//-/@}/g" rockcraft.yaml
+  # Replace base with ubuntu@<base>
+  sed -i "s/^base: .*/base: ${BASE}/g" rockcraft.yaml
+  echo "build-base: ${BUILD_BASE}" >> rockcraft.yaml
 
   run_rockcraft pack
 
