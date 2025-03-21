@@ -49,6 +49,10 @@ html_context = {
     "display_contributors": False,
 }
 
+html_theme_options = {
+    "source_edit_link": "https://github.com/canonical/rockcraft",
+}
+
 extensions = [
     "canonical_sphinx",
     "notfound.extension",
@@ -84,6 +88,7 @@ exclude_patterns = [
     "common/craft-parts/explanation/how_parts_are_built.rst",
     "common/craft-parts/explanation/overlay_step.rst",
     "common/craft-parts/how-to/craftctl.rst",
+    "common/craft-parts/how-to/use_parts.rst",
     "common/craft-parts/reference/partition_specific_output_directory_variables.rst",
     "common/craft-parts/reference/parts_steps.rst",
     "common/craft-parts/reference/step_execution_environment.rst",
