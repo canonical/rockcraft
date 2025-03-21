@@ -1,25 +1,23 @@
 summary: django extension test
 
 environment:
-  SCENARIO/bare_2204: bare-22.04
-  SCENARIO/bare_2404: bare-24.04
-  SCENARIO/base_2204: ubuntu-22.04
-  SCENARIO/base_2404: ubuntu-24.04
+  BASE/bare_2204: bare
+  BASE/bare_2404: bare
+  BASE/base_2204: ubuntu@22.04
+  BASE/base_2404: ubuntu@24.04
+
+  BUILD_BASE/bare_2204: ubuntu@22.04
+  BUILD_BASE/bare_2404: ubuntu@24.04
+  BUILD_BASE/base_2204: ubuntu@22.04
+  BUILD_BASE/base_2404: ubuntu@24.04
 
 execute: |
 
   run_rockcraft init --name example-django --profile django-framework
 
-  if [[ "${SCENARIO}" == bare* ]]; then
-    # Split SCENARIO by '-' and assign the last part to BUILD_BASE
-    IFS='-' read -ra parts <<< "$SCENARIO"
-    BUILD_BASE="${parts[-1]}"
-    echo "build-base: ubuntu@${BUILD_BASE}" >> rockcraft.yaml
-    sed -i "s/^base: .*/base: bare/g" rockcraft.yaml
-  else
-    # Replace base with ubuntu@<base>
-    sed -i "s/^base: .*/base: ${SCENARIO//-/@}/g" rockcraft.yaml
-  fi
+  # Replace base with ubuntu@<base>
+  sed -i "s/^base: .*/base: ${BASE}/g" rockcraft.yaml
+  echo "build-base: ${BUILD_BASE}" >> rockcraft.yaml
 
   run_rockcraft pack
 
