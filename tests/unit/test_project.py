@@ -635,6 +635,7 @@ def test_project_generate_metadata(yaml_loaded_data):
         "org.opencontainers.image.licenses": yaml_loaded_data["license"],
         "org.opencontainers.image.created": now,
         "org.opencontainers.image.base.digest": digest,
+        "org.opencontainers.image.description": f"{yaml_loaded_data['summary']}\n\n{yaml_loaded_data['description']}",
     }
     assert rock_metadata == {
         "name": yaml_loaded_data["name"],
