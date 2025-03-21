@@ -28,6 +28,7 @@ from packaging.requirements import InvalidRequirement, Requirement
 
 from ..errors import ExtensionError
 from ._python_utils import has_global_variable
+from ._utils import find_ubuntu_base_python_version
 from .extension import Extension, get_extensions_data_dir
 
 
@@ -70,8 +71,20 @@ class _GunicornBase(Extension):
         stage_packages = ["python3-venv"]
         build_environment = []
         if self.yaml_data["base"] == "bare":
-            stage_packages = ["python3.10-venv_ensurepip"]
-            build_environment = [{"PARTS_PYTHON_INTERPRETER": "python3.10"}]
+            try:
+                python_version = find_ubuntu_base_python_version(
+                    base=self.yaml_data["build-base"]
+                )
+            except NotImplementedError:
+                raise ExtensionError(
+                    "Unable to determine the Python version for the base",
+                    doc_slug="/reference/extensions/gunicorn",
+                    logpath_report=False,
+                )
+            stage_packages = [f"python{python_version}-venv_ensurepip"]
+            build_environment = [
+                {"PARTS_PYTHON_INTERPRETER": f"python{python_version}"}
+            ]
 
         parts: dict[str, Any] = {
             f"{self.framework}-framework/dependencies": {
