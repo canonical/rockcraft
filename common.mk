@@ -166,7 +166,7 @@ lint-docs:  ##- Lint the documentation
 ifneq ($(CI),)
 	@echo ::group::$@
 endif
-	uv run $(UV_DOCS_GROUPS) sphinx-lint --max-line-length 88 --ignore docs/reference/commands --ignore docs/_build --enable all $(DOCS) -d missing-underscore-after-hyperlink,missing-space-in-hyperlink
+	uv run $(UV_DOCS_GROUPS) sphinx-lint --max-line-length 88 --ignore docs/reference/commands --ignore docs/_build --ignore docs/sphinx-starter-pack --enable all $(DOCS) -d missing-underscore-after-hyperlink,missing-space-in-hyperlink
 ifneq ($(CI),)
 	@echo ::endgroup::
 endif
