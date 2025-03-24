@@ -3,21 +3,14 @@
 Release notes
 =============
 
-<<<<<<< HEAD
 This page lists the notes for past releases of Rockcraft, which summarise new
 features, bug fixes and backwards-incompatible changes in each version.
 It also contains the release and support policies for Rockcraft.
-=======
-This page lists the notes for past releases of Starcraft, which summarise new features,
-bug fixes and backwards-incompatible changes in each version. It also contains the
-release and support policies for Starcraft.
->>>>>>> starbase/main
 
 
 Current releases
 ----------------
 
-<<<<<<< HEAD
 - :ref:`Rockcraft 1.9.0 <release-1.9.0>`
 - :ref:`Rockcraft 1.8.0 <release-1.8.0>`
 - :ref:`Rockcraft 1.7.0 <release-1.7.0>`
@@ -36,47 +29,6 @@ Monday of the week after, we release it as a stable version. During testing
 and feedback of a candidate, we prioritise fixes for critical issues.
 
 Rockcraft release naming follows the Semantic Versioning 2.0.0 scheme with
-=======
-
-<latest release>
-~~~~~~~~~~~~~~~~
-
-- <link to latest release, update, such as 8.2.0>
-- <link to latest release, update, such as 8.1.0>
-- <link to latest release, initial, such as 8.0.0>
-
-
-<parallel release>
-~~~~~~~~~~~~~~~~~~
-
-<If necessary, add guidance and caveats about these older releases, such as
-"Snapcraft 7 is available for building core18 snaps. When building for a newer
-base, use Snapcraft 8.">
-
-- <link to parallel release, update, such as 7.2.0>
-- <link to parallel release, update, such as 7.1.0>
-- <link to parallel release, initial, such as 7.0.0>
-
-
-Past releases
--------------
-
-
-<past release>
-~~~~~~~~~~~~~~
-
-- <link to past release, update, such as 6.2.0>
-- <link to past release, update, such as 6.1.0>
-- <link to past release, initial, such as 6.0.0>
-
-
-.. _release-versioning:
-
-Release versioning
-------------------
-
-Starcraft version naming follows the Semantic Versioning 2.0.0 scheme with
->>>>>>> starbase/main
 numbers for major, minor, and patch versions.
 
 .. list-table::
@@ -87,14 +39,7 @@ numbers for major, minor, and patch versions.
       - Significance
     * - Major
       - **3**.1.2
-<<<<<<< HEAD
       - A change that drops support for an earlier software base.
-=======
-      - <Apps: "A change that drops support for an earlier software base.">
-
-        <Libraries: "A change that breaks compatibility with the previous
-        version.">
->>>>>>> starbase/main
     * - Minor
       - 3.\ **1**\ .2
       - A new feature within the major version.
@@ -106,7 +51,6 @@ numbers for major, minor, and patch versions.
 Long-term support
 -----------------
 
-<<<<<<< HEAD
 Rockcraft doesn't have long-term support (LTS) releases. However, we typically
 deliver a compatibility release shortly after Ubuntu LTS releases to ensure
 continuity.
@@ -121,17 +65,6 @@ development keeps pace with the OS's new releases and support lifecycle.
    Rockcraft 1.9.0 <rockcraft-1-9-0>
    Rockcraft 1.8.0 <rockcraft-1-8-0>
    Rockcraft 1.7.0 <rockcraft-1-7-0>
-=======
-Starcraft doesn't have long-term support (LTS) releases. However, we typically
-deliver a compatibility release shortly after Ubuntu LTS releases to ensure
-continuity.
-
-<Apps: Starcraft software bases are derived from Ubuntu LTS releases, and their
-development keeps pace with the OS's new releases and support lifecycle.>
-
-.. toctree::
-   :maxdepth: 1
->>>>>>> starbase/main
 
 
 .. release note template:
@@ -142,11 +75,6 @@ development keeps pace with the OS's new releases and support lifecycle.>
   15 October 2024
 
   Learn about the new features, changes, and fixes introduced in Starcraft 2.0.
-<<<<<<< HEAD
-  For information about the Starcraft release cycle, see the
-  :ref:`release_policy_and_schedule`.
-=======
->>>>>>> starbase/main
 
 
   Requirements and compatibility
@@ -194,20 +122,6 @@ development keeps pace with the OS's new releases and support lifecycle.>
   them to provide users and authors an avenue for discoverability and
   feedback.">
 
-<<<<<<< HEAD
-  <Paragraph 2: Present the new behaviour or feature. In words, *show* what the
-  feature is and make a case for how the reader could benefit from it. Centre
-  the user whenever possible ("you"), and speak on behalf of Canonical ("we").
-  Prefer general, simple usage over complex applications. Use past tense, or the
-  form "is now [x]" or "now [does x]". For example, "We understand that some
-  authors may not want to have their snaps publicly ranked. If you prefer to
-  disable ranking for your snap, we added the ``feedback`` key in Snapcraft
-  project files, which contains child keys for controlling many of the rating
-  and feedback features in the store. You can declare ``voting: false`` to
-  disable voting." Another example: "The Maven and Ant plugins now generate the
-  more standard path to the Java runtime executable instead of an unconventional
-  one, making their locations more predictable.">
-=======
   <Paragraph 2: Present the new behaviour or feature. In words, *show* what the feature
   is and make a case for how the reader could benefit from it. Centre the user whenever
   possible ("you"), and speak on behalf of Canonical ("we"). Prefer general, simple
@@ -219,7 +133,6 @@ development keeps pace with the OS's new releases and support lifecycle.>
   disable voting." Another example: "The Maven and Ant plugins now generate the more
   standard path to the Java runtime executable instead of an unconventional one, making
   their locations more predictable.">
->>>>>>> starbase/main
 
   <Paragraph 3, optional: Provide a call to action. This could take several
   forms, such as a call to immediately perform a relevant action in Starcraft,
@@ -238,21 +151,12 @@ development keeps pace with the OS's new releases and support lifecycle.>
   <Feature A>
   ~~~~~~~~~~~
 
-<<<<<<< HEAD
-  <Add a short list of changes to the feature. Keep each item brief and for the
-  most part descriptive. There's little need to sell the change or give a
-  detailed reason. Use past tense, or the form "is now [x]" or "now [does x]".
-  For example, "- Made the error message for ``method()`` more descriptive and
-  recommend a likely remedy."Another example: "- The GET method on the profiles
-  API now returns the user creation date.">
-=======
   <Add a short list of changes to the feature. Keep each item brief and for the most
   part descriptive. There's little need to sell the change or give a detailed reason.
   Use past tense, or the form "is now [x]" or "now [does x]". For example, "- Made the
   error message for ``method()`` more descriptive and recommend a likely remedy."
   Another example: "- The GET method on the profiles API now returns the user creation
   date.">
->>>>>>> starbase/main
 
 
   Backwards-incompatible changes

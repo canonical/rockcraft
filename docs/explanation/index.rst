@@ -1,6 +1,5 @@
 .. _explanation:
 
-<<<<<<< HEAD
 ***********
 Explanation
 ***********
@@ -22,10 +21,3 @@ the motivations behind its development.
    /common/craft-parts/explanation/parts
    lifecycle
    /common/craft-parts/explanation/dump_plugin
-=======
-Explanation
-===========
-
-.. toctree::
-   :maxdepth: 1
->>>>>>> starbase/main
