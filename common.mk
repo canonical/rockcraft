@@ -8,14 +8,30 @@ ifneq ($(OS),Windows_NT)
 	OS := $(shell uname)
 endif
 ifdef CI
+<<<<<<< HEAD
     APT := apt-get --yes
+=======
+	APT := apt-get --yes
+>>>>>>> starbase/main
 else
 	APT := apt-get
 endif
 
+<<<<<<< HEAD
 PRETTIER=npm exec --package=prettier -- prettier
 PRETTIER_FILES="**/*.{yaml,yml,json,json5,css,md}"
 
+=======
+PRETTIER=npm exec --package=prettier -- prettier --log-level warn
+PRETTIER_FILES="**/*.{yaml,yml,json,json5,css,md}"
+
+# Cutoff (in seconds) before a test is considered slow by pytest
+SLOW_CUTOFF_TIME ?= 1
+
+# By default we should not update the uv lock file here.
+export UV_FROZEN := true
+
+>>>>>>> starbase/main
 .DEFAULT_GOAL := help
 
 .ONESHELL:
@@ -44,6 +60,7 @@ help: ## Show this help.
 	}'
 
 .PHONY: setup
+<<<<<<< HEAD
 setup: install-uv setup-precommit ## Set up a development environment
 	uv sync --frozen --all-extras
 
@@ -58,13 +75,36 @@ setup-lint: install-uv install-shellcheck install-pyright install-lint-build-dep
 .PHONY: setup-docs
 setup-docs: install-uv  ##- Set up a documentation-only environment
 	uv sync --frozen --no-dev --no-install-workspace --extra docs
+=======
+setup: install-uv setup-precommit install-build-deps ## Set up a development environment
+	uv sync $(UV_TEST_GROUPS) $(UV_LINT_GROUPS) $(UV_DOCS_GROUPS)
+
+.PHONY: setup-tests
+setup-tests: install-uv install-build-deps ##- Set up a testing environment without linters
+	uv sync $(UV_TEST_GROUPS)
+
+.PHONY: setup-lint
+setup-lint: install-uv install-shellcheck install-pyright install-lint-build-deps  ##- Set up a linting-only environment
+	uv sync $(UV_LINT_GROUPS)
+
+.PHONY: setup-docs
+setup-docs: install-uv  ##- Set up a documentation-only environment
+	uv sync --no-dev $(UV_DOCS_GROUPS)
+>>>>>>> starbase/main
 
 .PHONY: setup-precommit
 setup-precommit: install-uv  ##- Set up pre-commit hooks in this repository.
 ifeq ($(shell which pre-commit),)
+<<<<<<< HEAD
 	uv tool install pre-commit
 endif
 	pre-commit install
+=======
+	uv tool run pre-commit install
+else
+	pre-commit install
+endif
+>>>>>>> starbase/main
 
 .PHONY: clean
 clean:  ## Clean up the development environment
@@ -101,7 +141,11 @@ ifneq ($(CI),)
 endif
 
 .PHONY: lint-codespell
+<<<<<<< HEAD
 lint-codespell:  ##- Check spelling with codespell
+=======
+lint-codespell: install-codespell  ##- Check spelling with codespell
+>>>>>>> starbase/main
 ifneq ($(CI),)
 	@echo ::group::$@
 endif
@@ -159,10 +203,14 @@ lint-docs:  ##- Lint the documentation
 ifneq ($(CI),)
 	@echo ::group::$@
 endif
+<<<<<<< HEAD
 	uv run --extra docs sphinx-lint --max-line-length 88 \
 	  --enable all $(DOCS) \
 	  --ignore docs/reference/commands/ --ignore docs/sphinx-starter-pack/ --ignore docs/_build/ \
 	  -d missing-underscore-after-hyperlink,missing-space-in-hyperlink
+=======
+	uv run $(UV_DOCS_GROUPS) sphinx-lint --max-line-length 88 --ignore docs/reference/commands --ignore docs/_build --enable all $(DOCS) -d missing-underscore-after-hyperlink,missing-space-in-hyperlink
+>>>>>>> starbase/main
 ifneq ($(CI),)
 	@echo ::endgroup::
 endif
@@ -196,6 +244,7 @@ test-coverage:  ## Generate coverage report
 	uv run coverage report -m
 	uv run coverage html
 
+<<<<<<< HEAD
 .PHONY: docs
 docs:  ## Build documentation
 	uv run --extra docs sphinx-build -b html -W $(DOCS) $(DOCS)/_build
@@ -203,13 +252,30 @@ docs:  ## Build documentation
 .PHONY: docs-auto
 docs-auto:  ## Build and host docs with sphinx-autobuild
 	uv run --extra docs sphinx-autobuild -b html --open-browser --port=8080 --watch $(PROJECT) -W $(DOCS) $(DOCS)/_build
+=======
+.PHONY: test-find-slow
+test-find-slow:  ##- Identify slow tests. Set cutoff time in seconds with SLOW_CUTOFF_TIME
+	uv run pytest --durations 0 --durations-min $(SLOW_CUTOFF_TIME)
+
+.PHONY: docs
+docs:  ## Build documentation
+	uv run $(UV_DOCS_GROUPS) sphinx-build -b html -W $(DOCS) $(DOCS)/_build
+
+.PHONY: docs-auto
+docs-auto:  ## Build and host docs with sphinx-autobuild
+	uv run --group docs sphinx-autobuild -b html --open-browser --port=8080 --watch $(PROJECT) -W $(DOCS) $(DOCS)/_build
+>>>>>>> starbase/main
 
 .PHONY: pack-pip
 pack-pip:  ##- Build packages for pip (sdist, wheel)
 ifneq ($(CI),)
 	@echo ::group::$@
 endif
+<<<<<<< HEAD
 	uv build .
+=======
+	uv build --quiet .
+>>>>>>> starbase/main
 ifneq ($(CI),)
 	@echo ::endgroup::
 endif
@@ -248,7 +314,11 @@ ifneq ($(shell which pyright),)
 else ifneq ($(shell which snap),)
 	sudo snap install --classic pyright
 else
+<<<<<<< HEAD
     # Workaround for a bug in npm
+=======
+	# Workaround for a bug in npm
+>>>>>>> starbase/main
 	[ -d "$(HOME)/.npm/_cacache" ] && chown -R `id -u`:`id -g` "$(HOME)/.npm" || true
 	uv tool install pyright
 endif
@@ -282,5 +352,9 @@ else ifneq ($(shell which snap),)
 else ifneq ($(shell which brew),)
 	brew install node
 else
+<<<<<<< HEAD
     $(error npm not installed. Please install it yourself.)
+=======
+	$(error npm not installed. Please install it yourself.)
+>>>>>>> starbase/main
 endif

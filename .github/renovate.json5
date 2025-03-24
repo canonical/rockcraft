@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   // Configuration file for RenovateBot: https://docs.renovatebot.com/configuration-options
   extends: ["config:recommended", ":semanticCommitTypeAll(build)"],
   ignoreDeps: [
@@ -177,4 +178,7 @@
   minimumReleaseAge: "2 days",
   automergeStrategy: "squash", // Squash & rebase when auto-merging.
   semanticCommitType: "build", // use `build` as commit header type (i.e. `build(deps): <description>`)
+=======
+  extends: ["github>canonical/starflow:renovate.json5"],
+>>>>>>> starbase/main
 }

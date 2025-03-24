@@ -14,8 +14,11 @@ jobs:
     uses: canonical/starflow/.github/workflows/lint-python.yaml@main
   test:
     uses: canonical/starflow/.github/workflows/test-python.yaml@main
+<<<<<<< HEAD
     with:
       lowest-python-version: ""
       # Disable 3.11 and 3.13 while wheels for python-apt and pygit2 are not
       # fully available.
       fast-test-python-versions: '["3.10", "3.12"]'
+=======
+>>>>>>> starbase/main

@@ -13,9 +13,12 @@ jobs:
   python-scans:
     name: Security scan
     uses: canonical/starflow/.github/workflows/scan-python.yaml@main
+<<<<<<< HEAD
     with:
       packages: python-apt-dev
       # requirements-noble.txt can't build on jammy
       requirements-find-args: "! -name requirements-noble.txt"
       osv-extra-args: "--config=source/osv-scanner.toml"
       uv-export: false
+=======
+>>>>>>> starbase/main
