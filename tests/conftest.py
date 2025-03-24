@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # -*- Mode:Python; indent-tabs-mode:nil; tab-width:4 -*-
 #
 # Copyright (C) 2021-2022 Canonical Ltd
@@ -16,13 +15,14 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
+import types
 from pathlib import Path
 
 import pytest
 import xdg  # type: ignore
 
 
-@pytest.fixture()
+@pytest.fixture
 def new_dir(tmpdir):
     """Change to a new temporary directory."""
 
@@ -54,7 +54,7 @@ def temp_xdg(tmpdir, mocker):
     mocker.patch.dict(os.environ, {"XDG_CONFIG_HOME": os.path.join(tmpdir, ".config")})
 
 
-@pytest.fixture()
+@pytest.fixture
 def reset_callbacks():
     """Fixture that resets the status of craft-part's various lifecycle callbacks,
     so that tests can start with a clean slate.
@@ -104,13 +104,13 @@ class RecordingEmitter:
         self._check(expected, self.raw)
 
 
-@pytest.fixture()
+@pytest.fixture
 def extra_project_params():
     """Configuration fixture for the Project used by the default services."""
     return {}
 
 
-@pytest.fixture()
+@pytest.fixture
 def default_project(extra_project_params):
     from rockcraft.models.project import Project
 
@@ -131,14 +131,14 @@ def default_project(extra_project_params):
     )
 
 
-@pytest.fixture()
+@pytest.fixture
 def default_build_plan(default_project):
     from rockcraft.models.project import BuildPlanner
 
     return BuildPlanner.unmarshal(default_project.marshal()).get_build_plan()
 
 
-@pytest.fixture()
+@pytest.fixture
 def default_factory(default_project, default_build_plan):
     from rockcraft.application import APP_METADATA
     from rockcraft.services import RockcraftServiceFactory
@@ -151,7 +151,7 @@ def default_factory(default_project, default_build_plan):
     return factory
 
 
-@pytest.fixture()
+@pytest.fixture
 def default_image_info():
     from rockcraft import oci
     from rockcraft.services.image import ImageInfo
@@ -163,14 +163,14 @@ def default_image_info():
     )
 
 
-@pytest.fixture()
+@pytest.fixture
 def default_application(default_factory, default_project):
     from rockcraft.application import APP_METADATA, Rockcraft
 
     return Rockcraft(APP_METADATA, default_factory)
 
 
-@pytest.fixture()
+@pytest.fixture
 def image_service(default_project, default_factory, tmp_path, default_build_plan):
     from rockcraft.application import APP_METADATA
     from rockcraft.services import RockcraftImageService
@@ -184,7 +184,7 @@ def image_service(default_project, default_factory, tmp_path, default_build_plan
     )
 
 
-@pytest.fixture()
+@pytest.fixture
 def provider_service(default_project, default_build_plan, default_factory, tmp_path):
     from rockcraft.application import APP_METADATA
     from rockcraft.services import RockcraftProviderService
@@ -198,7 +198,7 @@ def provider_service(default_project, default_build_plan, default_factory, tmp_p
     )
 
 
-@pytest.fixture()
+@pytest.fixture
 def package_service(default_project, default_factory, default_build_plan):
     from rockcraft.application import APP_METADATA
     from rockcraft.services import RockcraftPackageService
@@ -211,7 +211,7 @@ def package_service(default_project, default_factory, default_build_plan):
     )
 
 
-@pytest.fixture()
+@pytest.fixture
 def lifecycle_service(default_project, default_factory, default_build_plan):
     from rockcraft.application import APP_METADATA
     from rockcraft.services import RockcraftLifecycleService
@@ -226,14 +226,14 @@ def lifecycle_service(default_project, default_factory, default_build_plan):
     )
 
 
-@pytest.fixture()
+@pytest.fixture
 def mock_obtain_image(default_factory, mocker):
     """Mock and return the "obtain_image()" method of the default image service."""
     image_service = default_factory.image
     return mocker.patch.object(image_service, "obtain_image")
 
 
-@pytest.fixture()
+@pytest.fixture
 def run_lifecycle(mocker, default_build_plan):
     """Helper to call testing.run_mocked_lifecycle()."""
 
@@ -261,29 +261,12 @@ def reset_features():
     Features.reset()
 
 
-@pytest.fixture()
+@pytest.fixture
 def enable_overlay_feature(reset_features):
     """Enable the overlay feature."""
     from craft_parts import Features
 
     Features(enable_overlay=True)
-=======
-# Copyright 2023 Canonical Ltd.
-#
-# This program is free software: you can redistribute it and/or modify it
-# under the terms of the GNU Lesser General Public License version 3, as
-# published by the Free Software Foundation.
-#
-# This program is distributed in the hope that it will be useful, but WITHOUT
-# ANY WARRANTY; without even the implied warranties of MERCHANTABILITY,
-# SATISFACTORY QUALITY, or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-# General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License along
-# with this program.  If not, see <http://www.gnu.org/licenses/>.
-import types
-
-import pytest
 
 
 @pytest.fixture
@@ -296,12 +279,11 @@ def project_main_module() -> types.ModuleType:
     """
     try:
         # This should be the project's main package; downstream projects must update this.
-        import starcraft
+        import rockcraft
 
-        main_module = starcraft
+        main_module = rockcraft
     except ImportError:
         pytest.fail(
             "Failed to import the project's main module: check if it needs updating",
         )
     return main_module
->>>>>>> starbase/main
