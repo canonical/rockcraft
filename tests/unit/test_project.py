@@ -95,7 +95,7 @@ class DevelProject(Project):
     "development", but we want to test the behavior anyway.
     """
 
-    base: str
+    base: str  # type: ignore[reportIncompatibleVariableOverride]
 
 
 @pytest.fixture

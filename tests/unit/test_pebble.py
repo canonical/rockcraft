@@ -374,7 +374,7 @@ class TestPebble:
         _ = Check(**full_check)
 
     def test_minimal_check(self):
-        _ = Check(override="merge", exec={"command": "foo cmd"})
+        _ = Check.model_validate({"override": "merge", "exec": {"command": "foo cmd"}})
 
     @pytest.mark.parametrize(
         ("bad_check", "exception", "error"),
