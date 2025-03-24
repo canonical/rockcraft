@@ -64,10 +64,10 @@ class RockcraftPackageService(PackageService):
         image_info = image_service.obtain_image()
 
         if not self._build_plan:
-            raise errors.EmptyBuildPlanError()
+            raise errors.EmptyBuildPlanError
 
         if len(self._build_plan) > 1:
-            raise errors.MultipleBuildsError()
+            raise errors.MultipleBuildsError
 
         platform = self._build_plan[0].platform
         build_for = self._build_plan[0].build_for

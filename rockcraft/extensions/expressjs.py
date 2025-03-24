@@ -21,7 +21,8 @@ from typing import Any
 
 from overrides import override
 
-from ..errors import ExtensionError
+from rockcraft.errors import ExtensionError
+
 from .extension import Extension
 
 

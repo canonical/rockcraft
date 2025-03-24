@@ -435,7 +435,7 @@ def test_project_all_platforms_invalid(yaml_loaded_data):
     )
 
 
-@pytest.mark.parametrize("valid_name", ("aaa", "a00", "a-00", "a-a-a", "a-000-bbb"))
+@pytest.mark.parametrize("valid_name", ["aaa", "a00", "a-00", "a-a-a", "a-000-bbb"])
 def test_project_name_valid(yaml_loaded_data, valid_name):
     yaml_loaded_data["name"] = valid_name
 
@@ -444,7 +444,7 @@ def test_project_name_valid(yaml_loaded_data, valid_name):
 
 
 @pytest.mark.parametrize(
-    "invalid_name", ("AAA", "0aaa", "a", "a--a", "aa-", "a:a", "a/a", "a@a", "a_a")
+    "invalid_name", ["AAA", "0aaa", "a", "a--a", "aa-", "a:a", "a/a", "a@a", "a_a"]
 )
 def test_project_name_invalid(yaml_loaded_data, invalid_name):
     yaml_loaded_data["name"] = invalid_name

@@ -26,7 +26,8 @@ from typing import Any
 from overrides import override
 from packaging.requirements import InvalidRequirement, Requirement
 
-from ..errors import ExtensionError
+from rockcraft.errors import ExtensionError
+
 from ._python_utils import has_global_variable
 from ._utils import find_ubuntu_base_python_version
 from .extension import Extension, get_extensions_data_dir

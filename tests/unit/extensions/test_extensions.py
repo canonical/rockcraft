@@ -56,7 +56,7 @@ def test_experimental_no_env(fake_extensions, tmp_path, input_yaml):
     assert str(exc.value) == expected_message
 
 
-@pytest.mark.parametrize("base", ("ubuntu:20.04", "bare"))
+@pytest.mark.parametrize("base", ["ubuntu:20.04", "bare"])
 def test_wrong_base(fake_extensions, tmp_path, input_yaml, base):
     input_yaml["extensions"] = [FakeExtension.NAME]
     input_yaml["base"] = base

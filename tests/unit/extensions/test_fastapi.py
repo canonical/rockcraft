@@ -85,7 +85,7 @@ def test_fastapi_extension_default(tmp_path, fastapi_input_yaml, packages):
 
 
 @pytest.mark.parametrize(
-    "files,organize,command",
+    ("files", "organize", "command"),
     [
         (
             {"app.py": "app = object()"},

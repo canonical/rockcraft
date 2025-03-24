@@ -25,7 +25,8 @@ from typing import Any
 
 from overrides import override
 
-from ..errors import ExtensionError
+from rockcraft.errors import ExtensionError
+
 from ._python_utils import has_global_variable
 from .extension import Extension
 
@@ -215,9 +216,8 @@ class FastAPIFramework(Extension):
 
         for src_dir, src_file in places_to_look:
             full_path = self.project_root / src_dir / src_file
-            if full_path.exists():
-                if has_global_variable(full_path, "app"):
-                    return pathlib.Path(src_dir, src_file)
+            if full_path.exists() and has_global_variable(full_path, "app"):
+                return pathlib.Path(src_dir, src_file)
 
         raise FileNotFoundError("ASGI entrypoint not found")
 
