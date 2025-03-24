@@ -1,14 +1,8 @@
 settings:
   components:
-<<<<<<< HEAD
     - Rockcraft
   labels:
-    - Triaged
-=======
-    - Starbase
-  labels:
     - "Status: Triaged"
->>>>>>> starbase/main
   # Adds a comment with the JIRA ID
   add_gh_comment: true
   # Reflect changes on JIRA
@@ -22,12 +16,6 @@ settings:
     opened: Triaged
     closed: done
   label_mapping:
-<<<<<<< HEAD
-    enhancement: Story
-    bug: Bug
-    spike: Spike
-    epic: Epic
-=======
     "Type: Bug": Bug
     "Type: Cleanup": Task
     "Type: Documentation": Task
@@ -36,4 +24,3 @@ settings:
     "Type: Question": Spike
     "Type: Refactor": Task
     "Type: Research": Spike
->>>>>>> starbase/main
