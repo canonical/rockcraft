@@ -27,7 +27,7 @@ from tests.unit.testing.extensions import (
 )
 
 
-@pytest.fixture()
+@pytest.fixture
 def fake_extensions(mock_extensions):
     extensions.register(FakeExtension.NAME, FakeExtension)
     extensions.register(ExperimentalExtension.NAME, ExperimentalExtension)
@@ -35,7 +35,7 @@ def fake_extensions(mock_extensions):
     extensions.register(FullExtension.NAME, FullExtension)
 
 
-@pytest.fixture()
+@pytest.fixture
 def input_yaml():
     return {"base": "ubuntu@22.04"}
 

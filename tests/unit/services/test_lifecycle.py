@@ -37,7 +37,7 @@ from rockcraft.services import lifecycle as lifecycle_module
 #  pylint: disable=protected-access
 
 
-@pytest.fixture()
+@pytest.fixture
 def extra_project_params():
     return {"package_repositories": [{"type": "apt", "ppa": "ppa/ppa"}]}
 
@@ -74,7 +74,7 @@ def test_lifecycle_args(
         project_vars={"version": "1.0"},
         project_vars_part_name=None,
         work_dir=Path("work"),
-        rootfs_dir=Path("."),
+        rootfs_dir=Path(),
         track_stage_packages=True,
     )
 

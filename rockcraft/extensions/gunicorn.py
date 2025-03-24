@@ -296,7 +296,7 @@ class FlaskFramework(_GunicornBase):
             ]
 
         requirements_lines = requirements_file.read_text(encoding="utf-8").splitlines()
-        if not any(("flask" in line.lower() for line in requirements_lines)):
+        if not any("flask" in line.lower() for line in requirements_lines):
             return ["missing flask package dependency in requirements.txt file."]
 
         return []

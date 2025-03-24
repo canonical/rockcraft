@@ -22,7 +22,7 @@ import shlex
 import typing
 from collections.abc import Mapping
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Literal
+from typing import TYPE_CHECKING, Annotated, Any, Literal
 
 import craft_cli
 import craft_platforms
@@ -43,7 +43,7 @@ from craft_application.models.base import alias_generator
 from craft_platforms import rock
 from craft_providers import bases
 from craft_providers.errors import BaseConfigurationError
-from typing_extensions import Annotated, override
+from typing_extensions import override
 
 from rockcraft.architectures import SUPPORTED_ARCHS
 from rockcraft.errors import ProjectLoadError
