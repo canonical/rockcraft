@@ -39,7 +39,7 @@ class ExpressJSFramework(Extension):
 
     @staticmethod
     @override
-    def is_experimental(base: str | None) -> bool:
+    def is_experimental(base: str | None) -> bool:  # noqa: ARG004 (unused arg)
         """Check if the extension is in an experimental state."""
         return True
 
@@ -215,13 +215,14 @@ class ExpressJSFramework(Extension):
                     doc_slug="/reference/extensions/expressjs-framework",
                     logpath_report=False,
                 )
-            return app_package_json
         except json.JSONDecodeError as exc:
             raise ExtensionError(
                 "failed to parse package.json file",
                 doc_slug="/reference/extensions/expressjs-framework",
                 logpath_report=False,
             ) from exc
+        else:
+            return app_package_json
 
     @property
     def _app_name(self) -> str:

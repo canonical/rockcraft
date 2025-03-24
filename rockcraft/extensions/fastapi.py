@@ -44,7 +44,7 @@ class FastAPIFramework(Extension):
 
     @staticmethod
     @override
-    def is_experimental(base: str | None) -> bool:
+    def is_experimental(base: str | None) -> bool:  # noqa: ARG004 (unused arg)
         """Check if the extension is in an experimental state."""
         return True
 

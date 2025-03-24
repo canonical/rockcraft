@@ -72,10 +72,8 @@ def test_wrong_base(fake_extensions, tmp_path, input_yaml, base):
 def test_invalid_parts(fake_extensions, tmp_path, input_yaml):
     input_yaml["extensions"] = [InvalidPartExtension.NAME]
 
-    with pytest.raises(ValueError) as exc:
+    with pytest.raises(ValueError, match="Extension has invalid part names"):
         extensions.apply_extensions(tmp_path, input_yaml)
-
-    assert "Extension has invalid part names" in str(exc.value)
 
 
 def test_apply_extensions(fake_extensions, tmp_path, input_yaml):

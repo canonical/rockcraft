@@ -811,7 +811,7 @@ name = "importlib-metadata"
 version = "8.6.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "zipp" },
+    { name = "zipp", marker = "python_full_version < '3.12' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-oracular') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-oracular') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-oracular' and extra == 'group-9-rockcraft-dev-plucky')" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/33/08/c1395a292bb23fd03bdf572a1357c5a733d3eecbab877641ceacab23db6e/importlib_metadata-8.6.1.tar.gz", hash = "sha256:310b41d755445d74569f993ccfc22838295d9fe005425094fad953d7f15c8580", size = 55767 }
 wheels = [
@@ -2033,7 +2033,9 @@ types = [
     { name = "mypy", extra = ["reports"] },
     { name = "types-colorama" },
     { name = "types-pygments" },
+    { name = "types-pyyaml" },
     { name = "types-setuptools" },
+    { name = "types-tabulate" },
 ]
 
 [package.metadata]
@@ -2084,7 +2086,9 @@ types = [
     { name = "mypy", extras = ["reports"], specifier = "~=1.15.0" },
     { name = "types-colorama" },
     { name = "types-pygments" },
+    { name = "types-pyyaml" },
     { name = "types-setuptools" },
+    { name = "types-tabulate" },
 ]
 
 [[package]]
@@ -2597,6 +2601,15 @@ wheels = [
 ]
 
 [[package]]
+name = "types-pyyaml"
+version = "6.0.12.20241230"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/9a/f9/4d566925bcf9396136c0a2e5dc7e230ff08d86fa011a69888dd184469d80/types_pyyaml-6.0.12.20241230.tar.gz", hash = "sha256:7f07622dbd34bb9c8b264fe860a17e0efcad00d50b5f27e93984909d9363498c", size = 17078 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/e8/c1/48474fbead512b70ccdb4f81ba5eb4a58f69d100ba19f17c92c0c4f50ae6/types_PyYAML-6.0.12.20241230-py3-none-any.whl", hash = "sha256:fa4d32565219b68e6dee5f67534c722e53c00d1cfc09c435ef04d7353e1e96e6", size = 20029 },
+]
+
+[[package]]
 name = "types-setuptools"
 version = "76.0.0.20250313"
 source = { registry = "https://pypi.org/simple" }
@@ -2606,6 +2619,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/b8/0f/2d1d000c2be3919bcdea15e5da48456bf1e55c18d02c5509ea59dade1408/types_setuptools-76.0.0.20250313.tar.gz", hash = "sha256:b2be66f550f95f3cad2a7d46177b273c7e9c80df7d257fa57addbbcfc8126a9e", size = 43627 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/ca/89/ea9669a0a76b160ffb312d0b02b15bad053c1bc81d2a54e42e3a402ca754/types_setuptools-76.0.0.20250313-py3-none-any.whl", hash = "sha256:bf454b2a49b8cfd7ebcf5844d4dd5fe4c8666782df1e3663c5866fd51a47460e", size = 65845 },
+]
+
+[[package]]
+name = "types-tabulate"
+version = "0.9.0.20241207"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/3f/43/16030404a327e4ff8c692f2273854019ed36718667b2993609dc37d14dd4/types_tabulate-0.9.0.20241207.tar.gz", hash = "sha256:ac1ac174750c0a385dfd248edc6279fa328aaf4ea317915ab879a2ec47833230", size = 8195 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/5e/86/a9ebfd509cbe74471106dffed320e208c72537f9aeb0a55eaa6b1b5e4d17/types_tabulate-0.9.0.20241207-py3-none-any.whl", hash = "sha256:b8dad1343c2a8ba5861c5441370c3e35908edd234ff036d4298708a1d4cf8a85", size = 8307 },
 ]
 
 [[package]]

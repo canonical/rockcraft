@@ -185,9 +185,6 @@ def _pack(
         datetime.datetime.now(datetime.timezone.utc).isoformat(), base_digest
     )
     rock_metadata["architecture"] = build_for
-    # TODO: add variant to rock_metadata too
-    # if build_for_variant:
-    #     rock_metadata["variant"] = build_for_variant
     new_image.set_annotations(oci_annotations)
     new_image.set_control_data(rock_metadata)
     emit.progress("Metadata added")

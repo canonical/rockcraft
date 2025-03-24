@@ -27,7 +27,7 @@ from typing import TYPE_CHECKING, Annotated, Any, Literal
 import craft_cli
 import craft_platforms
 import pydantic
-import spdx_lookup  # type: ignore
+import spdx_lookup  # type: ignore[import-untyped]
 import yaml
 from craft_application.errors import CraftValidationError
 from craft_application.models import (
@@ -248,11 +248,10 @@ class BuildPlanner(BaseBuildPlanner):
 class Project(BuildPlanner, BaseProject):  # type: ignore[misc]
     """Rockcraft project definition."""
 
-    name: ProjectName  # type: ignore
-    # summary is Optional[str] in BaseProject
-    summary: str  # type: ignore
+    name: ProjectName  # type: ignore[reportIncompatibleVariableOverride]
+    # Type of summary is Optional[str] in BaseProject
+    summary: str  # type: ignore[reportIncompatibleVariableOverride]
     description: str  # type: ignore[reportIncompatibleVariableOverride]
-    # license is Optional[str] in BaseProject
     environment: dict[str, str] | None = None
     run_user: _RunUser = None
     services: dict[str, Service] | None = None
@@ -480,7 +479,7 @@ def load_project(filename: Path) -> dict[str, Any]:
     :raises CraftValidationError: If data validation fails.
     """
     try:
-        with open(filename, encoding="utf-8") as yaml_file:
+        with filename.open(encoding="utf-8") as yaml_file:
             yaml_data = yaml.safe_load(yaml_file)
     except OSError as err:
         msg = err.strerror or "unknown"

@@ -19,14 +19,14 @@ import types
 from pathlib import Path
 
 import pytest
-import xdg  # type: ignore
+import xdg
 
 
 @pytest.fixture
 def new_dir(tmpdir):
     """Change to a new temporary directory."""
 
-    cwd = os.getcwd()
+    cwd = Path.cwd()
     os.chdir(tmpdir)
 
     yield tmpdir
@@ -35,23 +35,21 @@ def new_dir(tmpdir):
 
 
 @pytest.fixture(autouse=True)
-def temp_xdg(tmpdir, mocker):
+def temp_xdg(tmp_path, mocker):
     """Use a temporary location for XDG directories."""
 
-    mocker.patch(
-        "xdg.BaseDirectory.xdg_config_home", new=os.path.join(tmpdir, ".config")
-    )
-    mocker.patch("xdg.BaseDirectory.xdg_data_home", new=os.path.join(tmpdir, ".local"))
-    mocker.patch("xdg.BaseDirectory.xdg_cache_home", new=os.path.join(tmpdir, ".cache"))
+    mocker.patch("xdg.BaseDirectory.xdg_config_home", new=str(tmp_path / ".config"))
+    mocker.patch("xdg.BaseDirectory.xdg_data_home", new=str(tmp_path / ".local"))
+    mocker.patch("xdg.BaseDirectory.xdg_cache_home", new=str(tmp_path / ".cache"))
     mocker.patch(
         "xdg.BaseDirectory.xdg_config_dirs",
-        new=[xdg.BaseDirectory.xdg_config_home],  # pyright: ignore
+        new=[xdg.BaseDirectory.xdg_config_home],
     )
     mocker.patch(
         "xdg.BaseDirectory.xdg_data_dirs",
-        new=[xdg.BaseDirectory.xdg_data_home],  # pyright: ignore
+        new=[xdg.BaseDirectory.xdg_data_home],
     )
-    mocker.patch.dict(os.environ, {"XDG_CONFIG_HOME": os.path.join(tmpdir, ".config")})
+    mocker.patch.dict(os.environ, {"XDG_CONFIG_HOME": str(tmp_path / ".config")})
 
 
 @pytest.fixture

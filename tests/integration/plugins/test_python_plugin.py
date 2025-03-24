@@ -13,7 +13,6 @@
 #
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
-import os
 import typing
 from dataclasses import dataclass
 from pathlib import Path
@@ -74,7 +73,7 @@ class ExpectedValues:
     """Expected venv Python values for a given Ubuntu host."""
 
     symlinks: list[str]
-    symlink_target: str
+    symlink_target: Path
     version_dir: str
 
 
@@ -83,17 +82,17 @@ class ExpectedValues:
 RELEASE_TO_VALUES = {
     "24.04": ExpectedValues(
         symlinks=["python", "python3", "python3.12"],
-        symlink_target="../usr/bin/python3.12",
+        symlink_target=Path("../usr/bin/python3.12"),
         version_dir="python3.12",
     ),
     "22.04": ExpectedValues(
         symlinks=["python", "python3", "python3.10"],
-        symlink_target="../usr/bin/python3.10",
+        symlink_target=Path("../usr/bin/python3.10"),
         version_dir="python3.10",
     ),
     "20.04": ExpectedValues(
         symlinks=["python", "python3"],
-        symlink_target="../usr/bin/python3.8",
+        symlink_target=Path("../usr/bin/python3.8"),
         version_dir="python3.8",
     ),
 }
@@ -149,9 +148,8 @@ def test_python_plugin_bare(tmp_path, run_lifecycle, plugin_name):
     assert sorted(bin_dir.glob("python*")) == [
         bin_dir / i for i in VALUES_FOR_HOST.symlinks
     ]
-    # (Python 3.8 does not have Path.readlink())
     assert (
-        os.readlink(bin_dir / "python3") == VALUES_FOR_HOST.symlink_target  # pyright: ignore[reportUnboundVariable]
+        (bin_dir / "python3").readlink() == VALUES_FOR_HOST.symlink_target  # pyright: ignore[reportUnboundVariable]
     )
 
     # Check the shebang in the "hello" script

@@ -95,7 +95,7 @@ class DevelProject(Project):
     "development", but we want to test the behavior anyway.
     """
 
-    base: str  # type: ignore
+    base: str
 
 
 @pytest.fixture
@@ -798,7 +798,5 @@ def test_provider_base(base, expected_base):
 
 
 def test_provider_base_error():
-    with pytest.raises(ValueError) as raised:
+    with pytest.raises(ValueError, match="Unknown base 'unknown'"):
         Project._providers_base("unknown")  # pylint: disable=protected-access
-
-    assert "Unknown base 'unknown'" in str(raised.value)

@@ -45,8 +45,10 @@ lint = [
 types = [
     "mypy[reports]~=1.15.0",
     "types-Pygments",
+    "types-PyYAML",
     "types-colorama",
     "types-setuptools",
+    "types-tabulate",
 ]
 docs = [
     "canonical-sphinx~=0.4.0",
@@ -262,7 +264,8 @@ src = ["rockcraft", "tests"]
 extend-exclude = [
     "docs",
     "__pycache__",
-    "rockcraft/_version.py"
+    "rockcraft/_version.py",
+    "tests/spread",
 ]
 
 [tool.ruff.format]
