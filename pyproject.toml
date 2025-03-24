@@ -1,10 +1,8 @@
 [project]
-<<<<<<< HEAD
 name = "rockcraft"
-dynamic = ["version"]
 description = "Create rocks"
+dynamic = ["version", "readme"]
 license = {file = "LICENSE"}
-readme = "README.rst"
 requires-python = ">= 3.10"
 authors = [
     { name = "Canonical Ltd.", email = "snapcraft@lists.snapcraft.io" },
@@ -15,22 +13,11 @@ classifiers = [
     "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     "Operating System :: MacOS :: MacOS X",
     "Operating System :: POSIX :: Linux",
-=======
-name = "starcraft"
-description = "The basis for Starcraft team packages"
-dynamic = ["version", "readme"]
-dependencies = [
-
-]
-classifiers = [
-    "Development Status :: 1 - Planning",
-    "License :: OSI Approved :: GNU General Public License (GPL)",
->>>>>>> starbase/main
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.12",
 ]
-<<<<<<< HEAD
+
 dependencies = [
     "craft-application",
     "craft-archives",
@@ -47,74 +34,13 @@ dependencies = [
 rockcraft = "rockcraft.cli:run"
 
 [project.optional-dependencies]
-dev = [
-    "coverage",
-    "pytest",
-    "pytest-check>=2.0",
-    "pytest-mock",
-    "pytest-subprocess",
-]
-docs = [
-    "canonical-sphinx[full]",
-    "pyspelling",
-    "sphinx-autobuild",
-    "sphinx-autodoc-typehints",
-    "sphinx-lint",
-    "sphinx-toolbox",
-    "sphinxcontrib-details-directive",
-    "sphinxext-rediraffe==0.2.7",
-]
-release = [
-    "twine",
-    "wheel",
-]
-lint = [
-    "codespell[toml]",
-]
-types = [
-    "mypy[reports]~=1.11",
-    "types-python-dateutil",
-    "types-PyYAML",
-    "types-requests<2.31.0.20240312",  # Frozen until we can get urllib3 v2
-    "types-setuptools",
-    "types-tabulate",
-    "types-urllib3",
-]
-apt-jammy = [
-    # Stay on 2.4 for Jammy
-    "python-apt~=2.4.0;sys_platform=='linux'",
-]
-apt-noble = [
-    # 2.7 for Noble
-    "python-apt~=2.7.0;sys_platform=='linux'",
-]
-apt-oracular = [
-    # 2.9 for Oracular+
-    "python-apt>=2.9.0;sys_platform=='linux'",
-]
-apt-plucky = [
-    # 2.9 for Oracular+
-    "python-apt>=2.9.0;sys_platform=='linux'",
-]
-
 store = [
     "craft-store",
 ]
 
-[project.urls]
-Documentation = "https://rockcraft.readthedocs.io/en/latest/"
-Homepage = "https://github.com/canonical/rockcraft"
-Issues = "https://github.com/canonical/rockcraft/issues"
-Source = "https://github.com/canonical/rockcraft.git"
-=======
-requires-python = ">=3.10"
-
-[project.scripts]
-starcraft-hello = "starcraft:hello"
-
 [dependency-groups]
 lint = [
-    # Left empty for scaffolding and Makefile compatibility
+    "codespell[toml]",
 ]
 types = [
     "mypy[reports]~=1.15.0",
@@ -141,6 +67,40 @@ dev = [
     "types-colorama",
     "types-setuptools",
 ]
+dev-jammy = [
+    # 2.4 for Jammy
+    "python-apt~=2.4.0;sys_platform=='linux'",
+]
+dev-noble = [
+    # 2.7 for Noble
+    "python-apt~=2.7.0;sys_platform=='linux'",
+]
+dev-oracular = [
+    # 2.9 for Oracular+
+    "python-apt>=2.9.0;sys_platform=='linux'",
+]
+dev-plucky = [
+    # 2.9 for Oracular+
+    "python-apt>=2.9.0;sys_platform=='linux'",
+]
+release = [
+    "twine",
+    "wheel",
+]
+
+[project.urls]
+Documentation = "https://rockcraft.readthedocs.io/en/latest/"
+Homepage = "https://github.com/canonical/rockcraft"
+Issues = "https://github.com/canonical/rockcraft/issues"
+Source = "https://github.com/canonical/rockcraft.git"
+
+[[tool.uv.index]]
+name = "python-apt-wheels"
+url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/"
+explicit = true
+
+[tool.uv.sources]
+python-apt = { index = "python-apt-wheels" }
 
 [tool.uv]
 constraint-dependencies = [
@@ -168,7 +128,14 @@ constraint-dependencies = [
     "wheel>=0.38",
 ]
 
->>>>>>> starbase/main
+conflicts = [
+    [
+        { group = "dev-jammy" },
+        { group = "dev-noble" },
+        { group = "dev-oracular" },
+        { group = "dev-plucky" },
+    ],
+]
 
 [build-system]
 requires = [
@@ -180,17 +147,8 @@ build-backend = "setuptools.build_meta"
 [tool.setuptools.dynamic]
 readme = {file = "README.rst"}
 
-<<<<<<< HEAD
-[tool.setuptools.packages.find]
-include = ["rockcraft", "extensions"]
-namespaces = true
-
 [tool.setuptools_scm]
 write_to = "rockcraft/_version.py"
-=======
-[tool.setuptools_scm]
-write_to = "starcraft/_version.py"
->>>>>>> starbase/main
 # the version comes from the latest annotated git tag formatted as 'X.Y.Z'
 # version scheme:
 #   - X.Y.Z.post<commits since tag>+g<hash>.d<%Y%m%d>
@@ -204,9 +162,7 @@ version_scheme = "post-release"
 # deviations from the default 'git describe' command:
 # - only match annotated tags
 # - only match tags formatted as 'X.Y.Z'
-<<<<<<< HEAD
-git_describe_command = "git describe --dirty --long --match '[0-9]*.[0-9]*.[0-9]*' --exclude '*[^0-9.]*'"
-=======
+
 git_describe_command = [
     "git",
     "describe",
@@ -219,15 +175,9 @@ git_describe_command = [
 ]
 
 [tool.setuptools.packages.find]
-include = ["*craft*"]
-namespaces = false
+include = ["rockcraft", "extensions"]
+namespaces = true
 
-[tool.codespell]
-ignore-words-list = "buildd,crate,keyserver,comandos,ro,dedent,dedented"
-skip = ".tox,.git,build,.*_cache,__pycache__,*.tar,*.snap,*.png,./node_modules,./docs/_build,.direnv,.venv,venv,.vscode"
-quiet-level = 3
-check-filenames = true
->>>>>>> starbase/main
 
 [tool.isort]
 multi_line_output = 3
@@ -237,26 +187,12 @@ use_parentheses = true
 ensure_newline_before_comments = true
 line_length = 88
 
-<<<<<<< HEAD
-[tool.black]
-# Use extend-exclude so that the default excludes (including those from .gitignore)
-# are not overwritten.
-extend-exclude = "docs/sphinx-starter-pack"
-
 [tool.codespell]
+ignore-words-list = "buildd,crate,keyserver,comandos,ro,dedent,dedented"
+skip = ".tox,.git,build,.*_cache,__pycache__,*.tar,*.snap,*.png,./node_modules,./docs/_build,.direnv,.venv,venv,.vscode"
 quiet-level = 3
-skip = "./docs/_build,.direnv,.git,.mypy_cache,.pytest_cache,.venv,__pycache__,venv"
-ignore-words-list = "warmup,buildd,astroid"
+check-filenames = true
 
-[tool.pyright]
-ignore = [
-    "docs/sphinx-starter-pack",
-    "docs/how-to/code",
-    "docs/tutorial/code/flask",
-    "docs/tutorial/code/django",
-    "docs/tutorial/code/fastapi",
-    "tests/spread/general/extension-django/example_django"
-=======
 [tool.pytest.ini_options]
 minversion = "7.0"
 testpaths = "tests"
@@ -282,7 +218,12 @@ exclude = [
     "**/__pycache__",
     # pyright might not like the annotations generated by setuptools_scm
     "**/_version.py",
->>>>>>> starbase/main
+    "docs/sphinx-starter-pack",
+    "docs/how-to/code",
+    "docs/tutorial/code/flask",
+    "docs/tutorial/code/django",
+    "docs/tutorial/code/fastapi",
+    "tests/spread/general/extension-django/example_django"
 ]
 
 [tool.mypy]
@@ -290,16 +231,12 @@ python_version = "3.10"
 exclude = [
     "build",
     "results",
-<<<<<<< HEAD
     "tests/spread"
-=======
->>>>>>> starbase/main
 ]
 warn_unused_configs = true
 warn_redundant_casts = true
 strict_equality = true
-<<<<<<< HEAD
-strict_concatenate = true
+extra_checks = true
 #warn_return_any = true
 disallow_subclassing_any = true
 disallow_untyped_decorators = true
@@ -307,16 +244,6 @@ disallow_untyped_decorators = true
 
 [[tool.mypy.overrides]]
 module = ["rockcraft"]
-=======
-extra_checks = true
-warn_return_any = true
-disallow_subclassing_any = true
-disallow_untyped_decorators = true
-disallow_any_generics = true
-
-[[tool.mypy.overrides]]
-module = ["starcraft.*"]
->>>>>>> starbase/main
 disallow_untyped_defs = true
 no_implicit_optional = true
 
@@ -324,7 +251,6 @@ no_implicit_optional = true
 module = ["tests.*"]
 strict = false
 
-<<<<<<< HEAD
 [[tool.mypy.overrides]]
 module = ["craft_archives"]
 ignore_missing_imports = true
@@ -338,14 +264,6 @@ extend-exclude = [
     "__pycache__",
     "rockcraft/_version.py"
 ]
-# Follow ST063 - Maintaining and updating linting specifications for updating these.
-lint.select = [  # Base linting rule selections.
-=======
-[tool.ruff]
-line-length = 88
-target-version = "py310"
-src = ["starcraft", "tests"]
-extend-exclude = ["docs"]
 
 [tool.ruff.format]
 docstring-code-format = true
@@ -356,42 +274,12 @@ quote-style = "double"
 # Follow ST063 - Maintaining and updating linting specifications for updating these.
 # Handy link: https://docs.astral.sh/ruff/rules/
 select = [  # Base linting rule selections.
->>>>>>> starbase/main
     # See the internal document for discussion:
     # https://docs.google.com/document/d/1i1n8pDmFmWi4wTDpk-JfnWCVUThPJiggyPi2DYwBBu4/edit
     # All sections here are stable in ruff and shouldn't randomly introduce
     # failures with ruff updates.
     "F",  # The rules built into Flake8
     "E", "W",  # pycodestyle errors and warnings
-<<<<<<< HEAD
-    "D",  # Implement pydocstyle checking as well.
-    "I",  # isort checking
-    "PLC", "PLE", "PLR", "PLW",  # Pylint
-    "N",  # PEP8 naming
-    "YTT",  # flake8-2020: Misuse of `sys.version` and `sys.version_info`
-    "BLE",  # Do not catch blind exceptions
-    "FBT",  # Disallow boolean positional arguments (make them keyword-only)
-    "A",  # Shadowing built-ins.
-    "C4", # Encourage comprehensions, which tend to be faster than alternatives.
-    "T10",  # Don't call the debugger in production code
-    "ISC",  # Implicit string concatenation that can cause subtle issues
-    "ICN",  # Only use common conventions for import aliases.
-    "Q",  # Consistent quotations
-    "RET",  # Simpler logic after return, raise, continue or break
-    "UP018", "C408",  # Convert type calls to literals. The latest pylint enforces this, but ruff has auto-fixes.
-]
-lint.extend-select = [
-    # These sets are still frequently getting new rules.
-    # Therefore, they're getting frozen with the current rules so we can
-    # upgrade ruff without breaking linting.
-    # Pyupgrade: https://github.com/charliermarsh/ruff#pyupgrade-up
-    "UP00", "UP01", "UP02", "UP030", "UP032", "UP033",
-    # "UP034",  # Very new, not yet enabled in ruff 0.0.227
-    # Annotations: https://github.com/charliermarsh/ruff#flake8-annotations-ann
-    "ANN0",  # Type annotations for arguments other than `self` and `cls`
-    "ANN2",  # Return type annotations
-    # flake8-bandit: security testing. https://github.com/charliermarsh/ruff#flake8-bandit-s
-=======
     "I",  # isort checking
     "N",  # PEP8 naming
     "D",  # Implement pydocstyle checking as well.
@@ -400,27 +288,11 @@ lint.extend-select = [
     "ANN",  # Type annotations.
     "ASYNC",  # Catching blocking calls in async functions
     # flake8-bandit: security testing. https://docs.astral.sh/ruff/rules/#flake8-bandit-s
->>>>>>> starbase/main
     # https://bandit.readthedocs.io/en/latest/plugins/index.html#complete-test-plugin-listing
     "S101", "S102",  # assert or exec
     "S103", "S108",  # File permissions and tempfiles - use #noqa to silence when appropriate.
     "S104",  # Network binds
     "S105", "S106", "S107",  # Hardcoded passwords
-<<<<<<< HEAD
-    "S113",  # Requests calls without timeouts
-    "S506",  # Unsafe YAML load
-    "S508", "S509",  # Insecure SNMP
-    "S701",  # jinja2 templates without autoescape
-    "B0",  # Common mistakes and typos.
-    "RUF001", "RUF002", "RUF003",  # Ambiguous unicode characters
-    "B026",  # Keyword arguments must come after starred arguments
-    "RUF005",  # Encourages unpacking rather than concatenation
-    "RUF100",  # #noqa directive that doesn't flag anything.
-]
-lint.ignore = [
-    #"E203",  # Whitespace before ":"  -- Commented because ruff doesn't currently check E203
-    "E501",  # Line too long (reason: black will automatically fix this for us)
-=======
     "S110",  # try-except-pass (use contextlib.suppress instead)
     "S113",  # Requests calls without timeouts
     "S3",  # Serialising, deserialising, hashing, crypto, etc.
@@ -477,16 +349,12 @@ lint.ignore = [
 ignore = [
     #"E203",  # Whitespace before ":"  -- Commented because ruff doesn't currently check E203
     "E501",  # Line too long (reason: ruff will automatically fix this for us)
->>>>>>> starbase/main
     "D105",  # Missing docstring in magic method (reason: magic methods already have definitions)
     "D107",  # Missing docstring in __init__ (reason: documented in class docstring)
     "D203",  # 1 blank line required before class docstring (reason: pep257 default)
     "D213",  # Multi-line docstring summary should start at the second line (reason: pep257 default)
     "D215",  # Section underline is over-indented (reason: pep257 default)
     "A003",  # Class attribute shadowing built-in (reason: Class attributes don't often get bare references)
-<<<<<<< HEAD
-
-=======
     "SIM117", # Use a single `with` statement with multiple contexts instead of nested `with` statements
               # (reason: this creates long lines that get wrapped and reduces readability)
 
@@ -497,18 +365,14 @@ ignore = [
 
     # Ignored due to common usage in current code
     "TRY003",  # Avoid specifying long messages outside the exception class
->>>>>>> starbase/main
 ]
 
 [tool.ruff.lint.flake8-annotations]
 allow-star-arg-any = true
 
-<<<<<<< HEAD
-=======
 [tool.ruff.lint.flake8-builtins]
 strict-checking = true
 
->>>>>>> starbase/main
 [tool.ruff.lint.pydocstyle]
 ignore-decorators = [  # Functions with these decorators don't have to have docstrings.
     "typing.overload",  # Default configuration
@@ -526,87 +390,6 @@ max-args = 8
 # Allow Pydantic's `@validator` decorator to trigger class method treatment.
 classmethod-decorators = ["pydantic.validator", "pydantic.root_validator"]
 
-<<<<<<< HEAD
-[tool.ruff.lint. per-file-ignores]
-"tests/**.py" = [  # Some things we want for the moin project are unnecessary in tests.
-    "D",  # Ignore docstring rules in tests
-    "ANN", # Ignore type annotations in tests
-    "S101",  # Allow assertions in tests
-    "S103",  # Allow `os.chmod` setting a permissive mask `0o555` on file or directory
-    "S105",  # Allow (fake) secrets in tests.
-    "S108",  # Allow Probable insecure usage of temporary file or directory
-    "PLR0913",  # Allow many arguments for test functions
-    "PLR2004",  # Allow magic values in tests
-]
-# isort leaves init files alone by default, this makes ruff ignore them too.
-"__init__.py" = ["I001"]
-
-[[tool.uv.index]]
-name = "python-apt-wheels"
-url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/"
-explicit = true
-
-[tool.uv.sources]
-python-apt = { index = "python-apt-wheels" }
-
-[tool.uv]
-constraint-dependencies = [
-    "tabulate>=0.8.8",
-    "matplotlib>=3.7.0",
-    "lxml>=5.0.0",
-    "numpy>=1.22.0",
-    "build>=0.1.0",
-    "iniconfig>=1.1.0",
-    "lxml>=5.0",
-    "pyparsing>=3.0.0",
-    "pyproject-hooks>=1.0.0",
-    "pyyaml>=5.0",
-    "markdown>=3.0",
-    "markupsafe>=2.0",
-    "regex>=2021.11.10",
-    "sphinx-basic-ng>=1.0.0b1",
-    "tornado>=4.0",
-    "webencodings>=0.4.0",
-    "launchpadlib>=1.11",
-    "lazr-uri>=1.0.6",
-    "libnacl>=2.0",
-    "oauthlib>=3.0",
-    "setuptools>=65",
-    "cffi>=1.15",
-    "pynacl>=1.4.0",
-    "keyring>=24",
-    "jaraco-classes>=3.2",
-    "pyxdg>=0.27",
-    "pytz>=2020",
-    "protobuf>=5.0",
-    "overrides>=7.3",
-    "requests-unixsocket>=0.3",
-]
-conflicts = [
-    [
-        { extra = "apt-jammy" },
-        { extra = "apt-noble" },
-        { extra = "apt-oracular" },
-        { extra = "apt-plucky" },
-    ]
-]
-
-[dependency-groups]
-dev = [
-    "coverage>=7.6.8",
-    "freezegun>=1.5.1",
-    "hypothesis>=6.122.1",
-    "poetry>=2.0.0",  # Needed for testing the poetry plugin.
-    "poetry-plugin-export",
-    "pyfakefs>=5.7.2",
-    "pylint>=3.3.2",
-    "pytest>=8.3.4",
-    "pytest-check>=2.4.1",
-    "pytest-cov>=6.0.0",
-    "pytest-mock>=3.14.0",
-    "pytest-subprocess>=1.5.2",
-    "responses>=0.25.3",
-=======
 [tool.ruff.lint.per-file-ignores]
 "tests/**.py" = [  # Some things we want for the main project are unnecessary in tests.
     "D",  # Ignore docstring rules in tests
@@ -622,5 +405,4 @@ dev = [
 "__init__.py" = [
     "I001",  # isort leaves init files alone by default, this makes ruff ignore them too.
     "F401",  # Allows unused imports in __init__ files.
->>>>>>> starbase/main
 ]
