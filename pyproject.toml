@@ -51,11 +51,12 @@ types = [
     "types-tabulate",
 ]
 docs = [
-    "canonical-sphinx~=0.4.0",
+    "canonical-sphinx[full]~=0.4.0",
     "sphinx-autobuild~=2024.2",
     "sphinx-pydantic==0.1.1",
     "sphinx-toolbox~=3.5",
     "sphinx-lint~=1.0",
+    "sphinxcontrib-details-directive",
     "sphinxext-rediraffe==0.2.7",
 ]
 dev = [
