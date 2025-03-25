@@ -57,7 +57,7 @@ class ListExtensionsCommand(AppCommand, abc.ABC):
     )
 
     @overrides
-    def run(self, parsed_args: argparse.Namespace) -> None:
+    def run(self, parsed_args: argparse.Namespace) -> None:  # noqa: ARG002 (unused arg)
         """Print the list of available extensions and their bases."""
         extension_presentation: dict[str, ExtensionModel] = {}
 
@@ -95,7 +95,7 @@ class ExpandExtensionsCommand(AppCommand, abc.ABC):
     )
 
     @overrides
-    def run(self, parsed_args: argparse.Namespace) -> None:
+    def run(self, parsed_args: argparse.Namespace) -> None:  # noqa: ARG002 (unused arg)
         """Print the project's specification with the extensions expanded."""
         project_path = Path("rockcraft.yaml")
         project = Project.from_yaml_data(load_project(project_path), project_path)

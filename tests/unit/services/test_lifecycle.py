@@ -37,7 +37,7 @@ from rockcraft.services import lifecycle as lifecycle_module
 #  pylint: disable=protected-access
 
 
-@pytest.fixture()
+@pytest.fixture
 def extra_project_params():
     return {"package_repositories": [{"type": "apt", "ppa": "ppa/ppa"}]}
 
@@ -74,7 +74,7 @@ def test_lifecycle_args(
         project_vars={"version": "1.0"},
         project_vars_part_name=None,
         work_dir=Path("work"),
-        rootfs_dir=Path("."),
+        rootfs_dir=Path(),
         track_stage_packages=True,
     )
 
@@ -130,9 +130,9 @@ def test_python_usrmerge_fix(tmp_path, plugin_name):
     step_info = StepInfo(part_info=part_info, step=Step.PRIME)
     step_info.state = PrimeState(part_properties=part.spec.marshal(), files={"lib64"})
 
-    assert sorted(os.listdir(prime_dir)) == ["lib", "lib64"]
+    assert sorted(os.listdir(prime_dir)) == ["lib", "lib64"]  # noqa: PTH208 (use Path.iterdir())
 
     lifecycle_module._python_usrmerge_fix(step_info)
 
     # After running the fix the "lib64" symlink must be gone
-    assert sorted(os.listdir(prime_dir)) == ["lib"]
+    assert sorted(os.listdir(prime_dir)) == ["lib"]  # noqa: PTH208 (use Path.iterdir())

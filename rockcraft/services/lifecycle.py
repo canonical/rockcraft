@@ -81,7 +81,7 @@ def _python_usrmerge_fix(step_info: StepInfo) -> None:
         # Can't inspect the files without a StepState.
         return
 
-    if state.part_properties["plugin"] not in get_python_plugins().keys():
+    if state.part_properties["plugin"] not in get_python_plugins():
         # Be conservative and don't try to fix the files if they didn't come
         # from a Python plugin.
         return

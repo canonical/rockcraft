@@ -37,6 +37,6 @@ def create_project(**kwargs) -> Project:
             "parts": kwargs.get("parts", {}),
             "license": kwargs.get("license", "MIT"),
             "platforms": kwargs.get("platforms", {"amd64": None}),
-            "package-repositories": kwargs.get("package_repositories", None),
+            "package-repositories": kwargs.get("package_repositories"),
         }
     )

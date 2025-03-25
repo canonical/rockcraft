@@ -1,3 +1,4 @@
+# noqa: INP001 (implicit namespace package)
 from setuptools import setup
 
 setup(

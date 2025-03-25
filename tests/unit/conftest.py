@@ -24,13 +24,13 @@ from craft_providers import Executor, Provider, base
 # pylint: disable=import-outside-toplevel
 
 
-@pytest.fixture()
+@pytest.fixture
 def mock_instance():
     """Provide a mock instance (Executor)."""
     return mock.Mock(spec=Executor)
 
 
-@pytest.fixture()
+@pytest.fixture
 def mock_extensions(monkeypatch):
     from rockcraft.extensions import registry
 
