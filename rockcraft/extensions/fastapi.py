@@ -23,7 +23,7 @@ import posixpath
 import re
 from typing import Any
 
-from overrides import override
+from overrides import override  # type: ignore[reportUnknownVariableType]
 
 from rockcraft.errors import ExtensionError
 
@@ -92,7 +92,7 @@ class FastAPIFramework(Extension):
         """Return the normalized name of the rockcraft project."""
         return self.yaml_data["name"].replace("-", "_").lower()
 
-    def _get_parts(self) -> dict:
+    def _get_parts(self) -> dict[str, Any]:
         """Generate the parts associated with this extension."""
         stage_packages = ["python3-venv"]
         if self.yaml_data["base"] == "bare":

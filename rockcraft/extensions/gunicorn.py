@@ -24,7 +24,7 @@ import posixpath
 import re
 from typing import Any
 
-from overrides import override
+from overrides import override  # type: ignore[reportUnknownVariableType]
 from packaging.requirements import InvalidRequirement, Requirement
 
 from rockcraft.errors import ExtensionError
@@ -67,7 +67,7 @@ class _GunicornBase(Extension):
     def gen_install_app_part(self) -> dict[str, Any]:
         """Generate the content of *-framework/install-app part."""
 
-    def _gen_parts(self) -> dict:
+    def _gen_parts(self) -> dict[str, Any]:
         """Generate the parts associated with this extension."""
         data_dir = get_extensions_data_dir()
         stage_packages = ["python3-venv"]

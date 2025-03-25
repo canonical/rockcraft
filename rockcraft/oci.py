@@ -284,7 +284,7 @@ class Image:
                 groupf.write(user_files["group"])
 
             if user_files["shadow"]:
-                days_since_epoch = (datetime.utcnow() - datetime(1970, 1, 1)).days
+                days_since_epoch = (datetime.utcnow() - datetime(1970, 1, 1)).days  # type: ignore[reportDeprecated]
 
                 # only add the shadow file if there's already one in the base image
                 with (tmpfs_etc / "shadow").open("a+") as shadowf:

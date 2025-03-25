@@ -20,7 +20,7 @@ import os
 import re
 from typing import Any
 
-from overrides import override
+from overrides import override  # type: ignore[reportUnknownVariableType]
 
 from rockcraft.errors import ExtensionError
 
@@ -60,6 +60,10 @@ class GoFramework(Extension):
             },
         }
 
+        stage_packages = ["ca-certificates_data"]
+        if self.yaml_data["base"] == "bare":
+            stage_packages.extend(["bash_bins", "coreutils_bins"])
+
         snippet["parts"] = {
             # This is needed in case there is no assets part, as the working directory is /app
             "go-framework/base-layout": {
@@ -69,13 +73,9 @@ class GoFramework(Extension):
             "go-framework/install-app": self._get_install_app_part(),
             "go-framework/runtime": {
                 "plugin": "nil",
-                "stage-packages": ["ca-certificates_data"],
+                "stage-packages": stage_packages,
             },
         }
-        if self.yaml_data["base"] == "bare":
-            snippet["parts"]["go-framework/runtime"]["stage-packages"].extend(
-                ["bash_bins", "coreutils_bins"]
-            )
 
         assets_part = self._get_install_assets_part()
         if assets_part:
@@ -212,7 +212,7 @@ class GoFramework(Extension):
             ]
         return user_stage
 
-    def _get_nested(self, obj: dict, paths: list[str]) -> dict:
+    def _get_nested(self, obj: dict[str, Any], paths: list[str]) -> dict[str, Any]:
         """Get a nested object using a path (a list of keys)."""
         for key in paths:
             obj = obj.get(key, {})
