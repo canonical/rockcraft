@@ -3,17 +3,23 @@
 ## Rockcraft and rocks
 
 Rockcraft is a tool that generates rocks, which are OCI container images. Rocks are
-typically composed of Ubuntu software and application-specific code, and as such they
-are susceptible to security issues and vulnerabilities. Authors should always maintain
-their rocks updated, but a security vulnerability on a rock is not considered an issue
-with Rockcraft itself, and should be reported to the rock's maintainer.
+typically composed of Ubuntu software and application code, and without regular
+maintenance and updates they can become vulnerable.
+
+A rock's author or maintainer is the sole party responsible for its security. Rock
+authors should be diligent and keep the software inside their rocks up-to-date with the
+latest releases, security patches, and security measures.
+
+Any vulnerabilities found in a rock should be reported to the rock's author or
+maintainer.
 
 ## Build isolation
 
 In typical operation, Rockcraft makes use of tools like [LXD] and [Multipass] to create
 isolated build environments. Rockcraft itself provides no extra security, relying on
-the tools themselves to ensure proper sandboxing. Security issues identified on these
-build environments should be reported to the corresponding project.
+these tools to provide secure sandboxing. The security of these build environments
+are the responsibility of these tools and should be reported to their respective
+project maintainers.
 
 Additionally, [destructive] builds are designed to give full access to the running host
 and are not isolated in any way.
