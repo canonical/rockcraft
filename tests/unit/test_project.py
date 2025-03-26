@@ -650,7 +650,7 @@ def test_project_generate_metadata(yaml_loaded_data):
     # Redo test with multi-line summary
     multi_line_summary = "one\n\ntwo\n\n\n\n\nthree"
     project = Project.unmarshal({**yaml_loaded_data, **{"summary": multi_line_summary}})
-    sanitized_summary = "one two three"
+    sanitized_summary = "one\ntwo\nthree"
 
     oci_annotations, rock_metadata = project.generate_metadata(
         now, bytes.fromhex(digest)
