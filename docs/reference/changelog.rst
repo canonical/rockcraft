@@ -93,7 +93,7 @@ Documentation
 
 - Add :ref:`reference documentation <craft_parts_poetry_plugin>` for the new
   ``poetry`` plugin.
-- Add a :ref:`how-to guide <add_internal_user_to_a_rock>` on adding internal
+- Add a :ref:`how-to guide <create_a_rootless_rock>` on adding internal
   users to rocks.
 - Improve the ``flask-framework``
   :ref:`tutorial <build-a-rock-for-a-flask-application>` based on user feedback.

@@ -34,6 +34,11 @@ backends:
       - fedora-39-64:
           workers: 1
           storage: 40G
+  lxd:
+    workers: 1
+    storage: 40G
+    systems:
+      - ubuntu-22.04
 
 prepare: |
   # if the 'tools' directory inside the submodule does not exist, then assume the submodule is empty
@@ -122,27 +127,27 @@ suites:
   docs/tutorial/code/:
     summary: tests tutorial from the docs
     systems:
-      - ubuntu-22.04-64
+      - ubuntu-22.04
 
   docs/how-to/code/:
     summary: tests how-to guides from the docs
     systems:
-      - ubuntu-22.04-64
+      - ubuntu-22.04
 
   docs/reference/code/:
     summary: tests reference code from the docs
     systems:
-      - ubuntu-22.04-64
+      - ubuntu-22.04
 
   docs/reuse/tutorial/code/:
     summary: tests reusable code from the docs
     systems:
-      - ubuntu-22.04-64
+      - ubuntu-22.04
 
   tests/spread/rockcraft/:
     summary: tests for rockcraft core functionality, independent of host system
     systems:
-      - ubuntu-22.04-64
+      - ubuntu-22.04
 
   tests/spread/foreign/:
     summary: tests that rockcraft and rocks work on different host systems
@@ -151,4 +156,4 @@ suites:
     summary: manually-triggered tests, like bigger tests and flaky ones
     manual: true
     systems:
-      - ubuntu-22.04-64
+      - ubuntu-22.04
