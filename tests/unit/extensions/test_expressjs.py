@@ -57,7 +57,7 @@ def package_json_file(app_path):
 
 
 @pytest.mark.parametrize(
-    "base, npm_include_node, node_version, expected_yaml_dict",
+    ("base", "npm_include_node", "node_version", "expected_yaml_dict"),
     [
         pytest.param(
             "ubuntu@24.04",
@@ -292,7 +292,7 @@ def test_expressjs_no_package_json_error(tmp_path, expressjs_input_yaml):
 
 
 @pytest.mark.parametrize(
-    "package_json_path, package_json_contents, error_message",
+    ("package_json_path", "package_json_contents", "error_message"),
     [
         ("invalid-path", "", "missing package.json file"),
         ("package.json", "[]", "invalid package.json file"),

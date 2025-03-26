@@ -125,7 +125,7 @@ def test_prune_prime_files(new_dir, mocker, run_lifecycle):
 
     # Prime dir must only have the "different_contents.txt" file, because
     # "same_contents.txt" was pruned (exists on base).
-    assert os.listdir(prime_dir) == ["different_contents.txt"]
+    assert os.listdir(prime_dir) == ["different_contents.txt"]  # noqa: PTH208 (use Path.iterdir())
 
     # The "different_contents.txt" file must be the one that the part created
     # (and not the one from the base).

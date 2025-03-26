@@ -64,10 +64,10 @@ class RockcraftPackageService(PackageService):
         image_info = image_service.obtain_image()
 
         if not self._build_plan:
-            raise errors.EmptyBuildPlanError()
+            raise errors.EmptyBuildPlanError
 
         if len(self._build_plan) > 1:
-            raise errors.MultipleBuildsError()
+            raise errors.MultipleBuildsError
 
         platform = self._build_plan[0].platform
         build_for = self._build_plan[0].build_for
@@ -185,9 +185,6 @@ def _pack(
         datetime.datetime.now(datetime.timezone.utc).isoformat(), base_digest
     )
     rock_metadata["architecture"] = build_for
-    # TODO: add variant to rock_metadata too
-    # if build_for_variant:
-    #     rock_metadata["variant"] = build_for_variant
     new_image.set_annotations(oci_annotations)
     new_image.set_control_data(rock_metadata)
     emit.progress("Metadata added")

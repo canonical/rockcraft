@@ -56,7 +56,7 @@ def create_base_image(
     extracted_dir = work_dir / "extracted"
     base_layer_dir = image.extract_to(extracted_dir, rootless=True)
     assert base_layer_dir.is_dir()
-    assert os.listdir(base_layer_dir) == []
+    assert list(base_layer_dir.iterdir()) == []
 
     # Call the client function to populate the empty layer
     populate_base_layer(base_layer_dir)
@@ -107,7 +107,7 @@ def test_add_layer_with_symlink_in_base(new_dir):
             (actual_dir / f"old_{target}_file").write_text(f"old {target} file")
 
             (base_layer_dir / target).symlink_to(f"usr/{target}")
-            assert os.listdir(base_layer_dir / target) == [f"old_{target}_file"]
+            assert os.listdir(base_layer_dir / target) == [f"old_{target}_file"]  # noqa: PTH208 (use Path.iterdir)
 
     image, base_layer_dir = create_base_image(Path(new_dir), populate_base_layer)
 
@@ -131,7 +131,7 @@ def test_add_layer_with_symlink_in_base(new_dir):
     ]
 
 
-@pytest.fixture()
+@pytest.fixture
 def extra_project_params():
     """Fixture used to configure the Project used by the default test services."""
     return {

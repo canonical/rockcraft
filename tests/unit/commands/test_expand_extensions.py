@@ -76,7 +76,7 @@ EXPECTED_EXPAND_EXTENSIONS = textwrap.dedent(
 )
 
 
-@pytest.fixture()
+@pytest.fixture
 def setup_extensions(mock_extensions):
     extensions.register(FullExtension.NAME, FullExtension)
 

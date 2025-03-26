@@ -42,7 +42,6 @@ def _create_app() -> "Rockcraft":
     from .application import APP_METADATA, Rockcraft
 
     services = RockcraftServiceFactory(
-        # type: ignore # type: ignore[call-arg]
         app=APP_METADATA,
     )
 
@@ -65,6 +64,6 @@ def _create_app() -> "Rockcraft":
 def get_app_info() -> tuple[Dispatcher, dict[str, Any]]:
     """Retrieve application info. Used by craft-cli's completion module."""
     app = _create_app()
-    dispatcher = app._create_dispatcher()
+    dispatcher = app._create_dispatcher()  # type: ignore[reportPrivateUsage] # noqa: SLF001 (private member accessed)
 
     return dispatcher, app.app_config

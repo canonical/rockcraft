@@ -40,6 +40,7 @@ if ".post" in release:
 # region Configuration for canonical-sphinx
 ogp_site_url = "https://canonical-rockcraft.readthedocs-hosted.com/"
 ogp_site_name = project
+ogp_image = "https://assets.ubuntu.com/v1/253da317-image-document-ubuntudocs.svg"
 
 html_context = {
     "product_page": "github.com/canonical/rockcraft",

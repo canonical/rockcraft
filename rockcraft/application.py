@@ -46,8 +46,8 @@ class Rockcraft(Application):
         self,
         yaml_data: dict[str, Any],
         *,
-        build_on: str,
-        build_for: str | None,
+        build_on: str,  # noqa: ARG002 (unused argument)
+        build_for: str | None,  # noqa: ARG002 (unused argument)
     ) -> dict[str, Any]:
         return models.transform_yaml(Path.cwd(), yaml_data)
 

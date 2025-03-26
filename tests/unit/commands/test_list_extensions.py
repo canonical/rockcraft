@@ -23,7 +23,7 @@ from rockcraft.commands import ExtensionsCommand, ListExtensionsCommand
 from tests.unit.testing.extensions import ExperimentalExtension, FakeExtension
 
 
-@pytest.fixture()
+@pytest.fixture
 def setup_extensions(mock_extensions):
     extensions.register(FakeExtension.NAME, FakeExtension)
     extensions.register(ExperimentalExtension.NAME, ExperimentalExtension)

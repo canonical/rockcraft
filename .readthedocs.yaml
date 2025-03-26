@@ -10,6 +10,10 @@ sphinx:
   builder: dirhtml
   configuration: docs/conf.py
   fail_on_warning: true
+# Optionally build your docs in additional formats such as PDF
+# formats:
+#  - pdf
+#  - epub
 
 build:
   os: ubuntu-24.04
@@ -26,4 +30,4 @@ build:
     create_environment:
       - uv venv "${READTHEDOCS_VIRTUALENV_PATH}"
     install:
-      - UV_PROJECT_ENVIRONMENT="${READTHEDOCS_VIRTUALENV_PATH}" uv sync --frozen --extra docs
+      - UV_PROJECT_ENVIRONMENT="${READTHEDOCS_VIRTUALENV_PATH}" uv sync --frozen --group docs
