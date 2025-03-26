@@ -441,7 +441,8 @@ class Project(BuildPlanner, BaseProject):  # type: ignore[misc]
             "org.opencontainers.image.ref.name": self.name,
             "org.opencontainers.image.created": generation_time,
             "org.opencontainers.image.base.digest": base_digest.hex(),
-            "org.opencontainers.image.description": f"{self.summary}\n\n{self.description}",
+            "org.opencontainers.image.description": re.sub(r"\n{2,}", " ", self.summary)
+            + f"\n\n{self.description}",
         }
         if self.license:
             annotations["org.opencontainers.image.licenses"] = self.license

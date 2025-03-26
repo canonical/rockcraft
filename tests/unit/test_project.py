@@ -647,6 +647,20 @@ def test_project_generate_metadata(yaml_loaded_data):
         "base-digest": digest,
     }
 
+    # Redo test with multi-line summary
+    multi_line_summary = "one\n\ntwo\n\n\n\n\nthree"
+    project = Project.unmarshal({**yaml_loaded_data, **{"summary": multi_line_summary}})
+    sanitized_summary = "one two three"
+
+    oci_annotations, rock_metadata = project.generate_metadata(
+        now, bytes.fromhex(digest)
+    )
+    assert oci_annotations["org.opencontainers.image.description"] == (
+        f"{sanitized_summary}\n\n{yaml_loaded_data['description']}"
+    )
+
+    assert rock_metadata["summary"] == yaml_loaded_data["summary"]
+
 
 def test_metadata_base_devel(yaml_loaded_data):
     yaml_loaded_data["base"] = "ubuntu@24.04"
