@@ -25,7 +25,7 @@ execute: |
   curl -s http://127.0.0.1:8080/cgi-bin/serve_user.py | grep "Serving by myuser"
   docker rm -f "$id"
   # [docs:check-user-end]
-  
+
   cd ../using-run-user
   cp ../serve_user.py .
 

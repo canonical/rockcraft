@@ -34,4 +34,5 @@ parts:
       mkdir ${CRAFT_PART_INSTALL}/cgi-bin/
       cp serve_user.py ${CRAFT_PART_INSTALL}/cgi-bin/
       chmod +x ${CRAFT_PART_INSTALL}/cgi-bin/serve_user.py
+
 # [docs:rock-build-end]
