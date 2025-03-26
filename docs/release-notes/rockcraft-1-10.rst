@@ -1,11 +1,11 @@
-.. _release-1.10.0:
+.. _release-1.10:
 
-Rockcraft 1.10.0 release notes
-==============================
+Rockcraft 1.10 release notes
+============================
 
 4 April 2025
 
-Learn about the new features, changes, and fixes introduced in Rockcraft 1.10.0.
+Learn about the new features, changes, and fixes introduced in Rockcraft 1.10.
 For information about the Rockcraft release cycle, see the
 :ref:`release_policy_and_schedule`.
 
@@ -47,7 +47,7 @@ Platform requirements
 What's new
 ----------
 
-Rockcraft 1.10.0 brings the following features, integrations, and improvements.
+Rockcraft 1.10 brings the following features, integrations, and improvements.
 
 
 ExpressJS extension
@@ -65,7 +65,7 @@ out the ExpressJS :ref:`tutorial <build-a-rock-for-an-expressjs-application>` an
 Minor features
 --------------
 
-Rockcraft 1.10.0 brings the following minor changes.
+Rockcraft 1.10 brings the following minor changes.
 
 Part sources
 ~~~~~~~~~~~~
@@ -83,7 +83,8 @@ containing the project's summary and description.
 Fixed bugs and issues
 ---------------------
 
-The following issues have been resolved in Rockcraft 1.10.0:
+Fixed in Rockcraft 1.10.0
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - `#831 <https://github.com/canonical/rockcraft/pull/831>`_ Add missing binaries for the
   ``go-framework`` extension when using bare bases.

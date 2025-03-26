@@ -1,11 +1,12 @@
 .. _release-1.7.0:
+.. _release-1.7:
 
-Rockcraft 1.7.0 release notes
-=============================
+Rockcraft 1.7 release notes
+===========================
 
 20 December 2024
 
-Learn about the new features, changes, and fixes introduced in Rockcraft 1.7.0.
+Learn about the new features, changes, and fixes introduced in Rockcraft 1.7.
 For information about the Rockcraft release cycle, see the
 :ref:`release_policy_and_schedule`.
 
@@ -47,7 +48,7 @@ Platform requirements
 What's new
 ----------
 
-Rockcraft 1.7.0 brings the following features, integrations, and improvements.
+Rockcraft 1.7 brings the following features, integrations, and improvements.
 
 
 Support for remote builds
@@ -64,7 +65,7 @@ This feature is new and experimental -- we welcome feedback on the
 Minor features
 --------------
 
-Rockcraft 1.7.0 brings the following minor changes.
+Rockcraft 1.7 brings the following minor changes.
 
 
 ``init`` command
@@ -118,7 +119,7 @@ former conflicts with the user-merged Ubuntu base.
 Fixed bugs and issues
 ---------------------
 
-The following issues have been resolved in Rockcraft 1.7.0:
+The following issues have been resolved in Rockcraft 1.7:
 
 - `#659`_ Kubernetes ``runAsNonRoot`` incompatibility with
   ``run-user: _daemon_``.
