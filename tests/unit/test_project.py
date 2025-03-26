@@ -659,7 +659,7 @@ def test_project_generate_metadata(yaml_loaded_data):
         f"{sanitized_summary}\n\n{yaml_loaded_data['description']}"
     )
 
-    assert rock_metadata["summary"] == yaml_loaded_data["summary"]
+    assert rock_metadata["summary"] == multi_line_summary
 
 
 def test_metadata_base_devel(yaml_loaded_data):
