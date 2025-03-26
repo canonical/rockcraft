@@ -23,8 +23,8 @@ Format specification
 
 **Required**: Yes
 
-The name of the rock. This value must conform with Pebble's format for layer
-files, meaning that the ``name``:
+The name of the rock. This value must conform with :ref:`pebble_explanation_page`'s
+format for layer files, meaning that the ``name``:
 
 - must start with a lowercase letter [a-z];
 - must contain only lowercase letters [a-z], numbers [0-9] or hyphens;

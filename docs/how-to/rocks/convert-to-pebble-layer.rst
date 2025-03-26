@@ -2,9 +2,9 @@ How to convert an entrypoint to a Pebble layer
 ***********************************************
 
 This guide will show you how to take an existing Docker image entrypoint
-and convert it into a Pebble layer, aka the list of one or more services
-which is defined in the project file and then taken by the rock's
-Pebble entrypoint.
+and convert it into a :ref:`pebble_explanation_page` layer, aka the
+list of one or more services which is defined in the project file and then
+taken by the rock's :ref:`pebble_explanation_page` entrypoint.
 
 
 Reference entrypoint

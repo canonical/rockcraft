@@ -56,7 +56,7 @@ Gunicorn worker selection
 =========================
 
 If the project has gevent as a dependency, Rockcraft automatically updates the
-pebble plan to spawn asynchronous Gunicorn workers.
+:ref:`pebble_explanation_page` plan to spawn asynchronous Gunicorn workers.
 
 When the project instead needs synchronous workers, you can override the worker
 type by adding ``--args flask sync`` to the Docker command that launches the
