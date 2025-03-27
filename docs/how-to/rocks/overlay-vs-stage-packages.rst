@@ -57,10 +57,9 @@ Example Using both approaches
 As explained at the beginning, both overlay and stage steps serve a similar purpose,
 so there are common use cases that can be approached both ways.
 
-In this example, we are going to create a simple ``curl`` rock using ``ubuntu@20.04``
-as base. This version of ubuntu does not contain the ``ca-certificates`` package
-which include the ssl certificates needed for ``curl`` to access secure sites using
-HTTP over TLS (HTTPS).
+In this example, we are going to create a simple ``curl`` rock. This package
+requires ssl certificates provided by the ``ca-certificates`` package in order
+to access secure sites using HTTP over TLS (HTTPS).
 
 .. tabs::
 
