@@ -1,12 +1,12 @@
 name: git
 base: bare
-build-base: ubuntu@24.04 
-version: 'latest' 
+build-base: ubuntu@24.04
+version: "latest"
 summary: A lightweight Git package for version control and CI/CD.
 description: |
   This project provides a lightweight Git package for version control 
   and CI/CD. It includes essential Git binaries and HTTP support.
-platforms: 
+platforms:
   amd64:
 
 parts:
