@@ -1,0 +1,77 @@
+###########################################
+# IMPORTANT
+# Comments matter!
+# The docs use the wrapping comments as
+# markers for including said instructions
+# as snippets in the docs.
+###########################################
+summary: test "Overlay vs Stage packages" guide
+
+execute: |
+  cd stage-example
+
+  # [docs:pack-rock-stage]
+  rockcraft pack
+  # [docs:pack-rock-stage-end]
+
+  # [docs:skopeo-stage]
+  sudo rockcraft.skopeo --insecure-policy copy oci-archive:git_latest_amd64.rock docker-daemon:git:latest
+  # [docs:skopeo-end]
+
+  # [docs:check-rock-stage]
+  docker run git:latest exec git clone https://github.com/lengau/charmcraft-rocks
+  # [docs:check-rock-stage]
+
+
+  rockcraft clean
+  cd ../overlay-example
+
+  # [docs:pack-rock-overlay]
+  rockcraft pack
+  # [docs:pack-rock-overlay-end]
+
+  # [docs:skopeo-overlay]
+  sudo rockcraft.skopeo --insecure-policy copy oci-archive:curl_latest_amd64.rock docker-daemon:curl:latest
+  # [docs:skopeo-end]
+
+  # [docs:check-rock-overlay]
+  docker run curl:latest exec curl -sw "%{http_code}" -o /dev/null https://canonical.com/ | grep 200
+  # [docs:check-rock-overlay]
+
+
+  rockcraft clean
+  cd ../shared-example
+  cp overlay.yaml rockcraft.yaml
+
+  # [docs:pack-rock-shared-overlay]
+  rockcraft pack
+  # [docs:pack-rock-shared-overlay-end]
+
+  # [docs:skopeo-shared-overlay]
+  sudo rockcraft.skopeo --insecure-policy copy oci-archive:ca-certs-example_0.1_amd64.rock docker-daemon:ca-certs-example:0.1
+  # [docs:skopeo-shared-overlay-end]
+
+  # [docs:check-rock-shared-overlay]
+  docker run ca-certs-example:0.1 exec curl -sw "%{http_code}" -o /dev/null https://canonical.com/ | grep 200
+  # [docs:check-rock-shared-overlay-end]
+
+  rockcraft clean
+  rm rockcraft.yaml
+
+
+  cp stage.yaml rockcraft.yaml
+
+  # [docs:pack-rock-shared-stage]
+  rockcraft pack
+  # [docs:pack-rock-shared-stage-end]
+
+  # [docs:skopeo-shared-stage]
+  sudo rockcraft.skopeo --insecure-policy copy oci-archive:ca-certs-example_0.1_amd64.rock docker-daemon:ca-certs-example:0.1
+  # [docs:skopeo-shared-stage-end]
+
+  # [docs:check-rock-shared-stage]
+  docker run ca-certs-example:0.1 exec curl -sw "%{http_code}" -o /dev/null https://canonical.com/ | grep 200
+  # [docs:check-rock-shared-stage-end]
+
+  rockcraft clean
+  rm rockcraft.yaml

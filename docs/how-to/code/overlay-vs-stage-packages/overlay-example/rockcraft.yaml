@@ -1,0 +1,16 @@
+name: curl
+summary: curl example.
+description: curl example.
+version: "latest"
+base: ubuntu@20.04
+license: Apache-2.0
+platforms:
+  amd64:
+
+parts:
+  apt-dependencies:
+    plugin: nil
+    overlay-packages:
+      - ca-certificates
+    stage-packages:
+      - curl

@@ -11,3 +11,4 @@
    Chisel an existing rock <chisel-existing-rock>
    Include local and remote files </common/craft-parts/how-to/include_files>
    Override a plugin's build </common/craft-parts/how-to/override_build>
+   When to use overlay vs stage packages <overlay-vs-stage-packages>
