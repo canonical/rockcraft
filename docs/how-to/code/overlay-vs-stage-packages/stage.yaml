@@ -4,12 +4,11 @@ description: ca-certs example.
 version: "0.1"
 base: bare
 build-base: ubuntu@24.04
-license: Apache-2.0
 platforms:
   amd64:
 
 parts:
-  apt-dependencies:
+  install-curl:
     plugin: nil
     stage-packages:
       - ca-certificates_data

@@ -2,13 +2,12 @@ name: ca-certs-example
 summary: ca-certs example.
 description: ca-certs example.
 version: "0.1"
-base: ubuntu@20.04
-license: Apache-2.0
+base: ubuntu@24.04
 platforms:
   amd64:
 
 parts:
-  apt-dependencies:
+  install-curl:
     plugin: nil
     overlay-packages:
       - ca-certificates

@@ -3,79 +3,66 @@
 Overlay packages vs Stage packages
 =====================================
 
-Stage and Overlay are both steps within the :ref:`rocks lifecycle <lifecycle>`
+Stage and Overlay are both steps within the :ref:`parts lifecycle <lifecycle>`
 and as such, they serve a similar purpose in terms of declaring which files
-to copy to the next step (``stage`` vs ``overlay``), which packages to
-install (``stage-packages`` vs ``overlay-packages``) and which instructions
-to run, if any (``override-stage`` vs ``overlay-scripts``).
+to copy to the next step, which packages to install or which instructions
+to run during the current step, if any.
 
 When to use each?
 *********************
 
-There are some differences when it comes to installing packages.
-During the Overlay step, when a package is installed, the `maintainer scripts`_
-are run as well. This behaviour puts a constraint in this step, since in order
-to build the maintainer scripts, ``overlay-packages`` needs to run on the scope
-of the ``base`` image, meaning that it cannot be used with bare bases
-(``base: bare``) as there would not be anything supporting ``dpkg`` or ``apt``
+There are some differences when it comes to installing packages:
+
+.. list-table::
+   :widths: 50 30 30
+   :header-rows: 1
+
+   * -
+     - ``stage-packages``
+     - ``overlay-packages``
+   * - Can be used with ``base: bare``
+     - Yes
+     - No\*
+   * - Supports `chisel slices`_
+     - Yes
+     - No
+   * - Execute the pkg's `maintainer scripts`_
+     - No, unless Chisel slices are used
+     - Yes
+   * - Execution context
+     - Sandboxed staging area in the build environment
+     - The Ubuntu ``base``
+   * - Modifies ``dpkg/status`` file
+     - No
+     - Yes
+
+\* The reason ``overlay-packages`` cannot be used with bare bases is due to
+the execution context. Since it runs on the Ubuntu ``base``, when ``bare`` is
+specified there would not be anything supporting ``dpkg`` or ``apt``
 for the maintainer scripts to run.
 
-On the other hand, ``stage-packages`` do not run the maintainer scripts, which
-makes it compatible with `chisel slices`_ and bare bases at the cost of manually
-implementing the logic of maintainer scripts afterwards, if needed, e.g.
-adding symlinks (not if using chisel slices) or adding a new internal user.
-
-Using stage packages
---------------------
-
-We will need to use stage packages every time we want to create a rock with a bare
-base. In this case, we would declare a ``build-base``, install any build dependencies
-in ``build-packages``, run the build step and then add to ``stage-packages`` any
-package or slice we want to install in our ``base: bare``.
-
-We can create a simple rock containing ``git``:
-
-.. literalinclude:: ../code/overlay-vs-stage-packages/stage-example/rockcraft.yaml
-    :caption: rockcraft.yaml
-    :language: yaml
-
-Using overlay packages
-----------------------
-
-When using any ``base`` other than ``bare``, overlay packages can be used to
-avoid installing the same packages in both build and stage, or when maintainer scripts
-are required to run. The ``ca-certificates`` package is a good example of this, as
-many other packages rely on symlinks created by the post installation script.
-
-.. literalinclude:: ../code/overlay-vs-stage-packages/overlay-example/rockcraft.yaml
-    :caption: rockcraft.yaml
-    :language: yaml
-
-Example Using both approaches
-*****************************
-
-As explained at the beginning, both overlay and stage steps serve a similar purpose,
-so there are common use cases that can be approached both ways.
+Side-by-side comparison
+-----------------------
 
 In this example, we are going to create a simple ``curl`` rock. This package
-requires ssl certificates provided by the ``ca-certificates`` package in order
+requires SSL certificates provided by the ``ca-certificates`` package in order
 to access secure sites using HTTP over TLS (HTTPS).
 
 .. tabs::
 
     .. group-tab:: Using overlay-packages
 
+
+        .. literalinclude:: ../code/overlay-vs-stage-packages/overlay.yaml
+            :caption: rockcraft.yaml
+            :language: yaml
+
         The maintainer scripts of ``ca-certificates`` create a series of symbolic links
         under ``/etc/ssl/certs`` that are required for curl to access HTTPS sites. This
         is not a problem when using ``overlay-packages`` in our rockcraft.yaml file, as
         the maintainer scripts are run during the package installation in the overlay
-        step:
-
-        .. literalinclude:: ../code/overlay-vs-stage-packages/shared-example/overlay.yaml
-            :caption: rockcraft.yaml
-            :language: yaml
-
-        Using the project file above, we can pack the rock:
+        step. Then, using the project file above we can pack the rock and copy it to
+        the docker daemon:
 
         .. literalinclude:: ../code/overlay-vs-stage-packages/task.yaml
             :language: bash
@@ -83,24 +70,32 @@ to access secure sites using HTTP over TLS (HTTPS).
             :end-before: [docs:pack-rock-shared-overlay-end]
             :dedent: 2
 
-        Then skopeo copy it into docker daemon:
-
-        .. literalinclude:: ../code/overlay-vs-stage-packages/task.yaml
-            :language: bash
-            :start-after: [docs:skopeo-shared-overlay]
-            :end-before: [docs:skopeo-shared-overlay-end]
-            :dedent: 2
-
-        Once copied to docker daemon, we can fetch any HTTPS site using the new image. In
-        this case, we are going to test that Canonical's website is reachable:
+        We can now fetch any HTTPS site using the new image. In this case, we are going
+        to test that Canonical's website is reachable:
 
         .. code-block:: shell
 
-            docker run ca-certs-example:0.1 exec curl https://canonical.com/
+            $ docker run ca-certs-example:0.1 exec curl https://canonical.com/
 
         The output should contain all the HTML code from Canonical's web page.
 
+        Additionally, you can also use `dive`_ to see the fs of the resulting
+        image:
+
+        .. code-block:: shell
+
+            $ dive ca-certs-example:0.1
+
+        Note that since we are using ``overlay-packages`` we are constrained to
+        use a Ubuntu base, which inevitably makes the resulting rock heavier than
+        if we were using ``base: bare``.
+
     .. group-tab:: Using stage-packages
+
+
+        .. literalinclude:: ../code/overlay-vs-stage-packages/stage.yaml
+            :caption: rockcraft.yaml
+            :language: yaml
 
         Since the maintainer scripts are required to run to have the symbolic links
         created when installing ``ca-certificates``, it would not be possible to use
@@ -110,18 +105,15 @@ to access secure sites using HTTP over TLS (HTTPS).
         However, there are `chisel slices`_ for both ``curl`` and ``ca-certificates``.
         Chisel slices already contain the symlinks needed and will copy them to the
         rock rootfs upon packing. This way, we can create a rockcraft project file
-        to obtain a baseless image and achieve the same result, like so:
-
-        .. literalinclude:: ../code/overlay-vs-stage-packages/shared-example/stage.yaml
-            :caption: rockcraft.yaml
-            :language: yaml
+        to obtain a baseless image and achieve the same result, like the one above.
 
         Note that we have specified the chisel slices ``ca-certificates_data`` and
         ``curl_bins`` instead of ``ca-certificates`` and ``curl`` in ``stage-packages``.
         If we had specified those packages instead of the chisel slices, the required
         symbolic links would not be created due to the maintainer scripts not running.
 
-        Once the rockcraft project file is created, we can pack the rock:
+        Once the rockcraft project file is created, we can pack the rock and copy it
+        to the docker daemon:
 
         .. literalinclude:: ../code/overlay-vs-stage-packages/task.yaml
             :language: bash
@@ -129,22 +121,25 @@ to access secure sites using HTTP over TLS (HTTPS).
             :end-before: [docs:pack-rock-shared-stage-end]
             :dedent: 2
 
-        Then skopeo copy it into docker daemon:
-
-        .. literalinclude:: ../code/overlay-vs-stage-packages/task.yaml
-            :language: bash
-            :start-after: [docs:skopeo-shared-stage]
-            :end-before: [docs:skopeo-shared-stage-end]
-            :dedent: 2
-
-        Once copied to docker daemon, we can fetch any HTTPS site using the new image. In
+        Now we can fetch any HTTPS site using the new image. In
         this case, we are going to test that Canonical's website is reachable:
 
         .. code-block:: shell
 
-            docker run ca-certs-example:0.1 exec curl https://canonical.com/
+            $ docker run ca-certs-example:0.1 exec curl https://canonical.com/
 
         The output should contain all the HTML code from Canonical's web page.
 
+        Additionally, you can also use `dive`_ to see the fs of the resulting
+        image:
+
+        .. code-block:: shell
+
+            $ dive ca-certs-example:0.1
+
+        Note that since this approach uses a ``bare`` base, it is expected that
+        the size of the resulting image is lower than if we were using any Ubuntu base.
+
 .. _maintainer scripts: https://wiki.debian.org/MaintainerScripts
 .. _chisel slices: https://documentation.ubuntu.com/rockcraft/en/latest/explanation/chisel
+.. _dive: https://github.com/wagoodman/dive
