@@ -6,7 +6,7 @@ dependencies = [
     "craft-application",
     "craft-archives",
     "craft-cli",
-    "craft-parts",
+    "craft-parts @ git+https://github.com/canonical/craft-parts@CRAFT-4070-Error-presentation-sometimes-omits-the-last-lines",
     "craft-platforms",
     "craft-providers",
     "overrides",
