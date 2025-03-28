@@ -8,7 +8,7 @@ five separate steps: pull, overlay, build, stage and prime.
 
 The overlay step is specific to rocks and is configured with overlay parameters.
 To learn more about pull, build, stage and prime see
-:doc:`/common/craft-parts/reference/part_properties`
+:doc:`/explanation/lifecycle`
 
 The overlay step provides the means to modify the base filesystem before the
 build step is applied. If ``overlay-packages`` is used, those packages will be

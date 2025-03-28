@@ -73,11 +73,11 @@ section):
     :language: yaml
 
 The "build-context" part allows you to send the local ``chisel-releases``
-folder into the builder. The "override-build" enables you to install your
+folder into the builder. The `override-build`_ enables you to install your
 custom slice.
 Please note that this level of customisation is only needed when you want to
 install from a custom Chisel release. If the desired slice definitions are
-already upstream, then you can simply use ``stage-packages``, as demonstrated
+already upstream, then you can simply use `stage-packages`_, as demonstrated
 in :ref:`here <chisel-example>`.
 
 Build your rock with:
@@ -162,3 +162,6 @@ The output of the Docker command will be OpenSSL's default help message:
 
 And that's it! You've now built your own rock from a custom Chisel release.
 Next step: share your slice definitions file with others!
+
+.. _override-build: /common/craft-parts/reference/part_properties.html#override-build
+.. _stage-packages: /common/craft-parts/reference/part_properties.html#stage-packages
