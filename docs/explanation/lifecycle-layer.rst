@@ -3,7 +3,7 @@ From prime step to OCI layer
 ============================
 
 Rockcraft is a tool that creates OCI images using the same concepts and
-mechanisms that create snaps and charms: the lifecycle language from
+mechanisms that create snaps and charms: the `lifecycle`_ language from
 Craft Parts. There is a significant difference between the way the Craft
 lifecycle works and the OCI specification, and one of Rockcraft's jobs is to
 bridge the gap between these two worlds. This page describes how this is
@@ -207,3 +207,4 @@ pruned or symbolic links that need to be taken into account.
 .. _tar archive: https://github.com/opencontainers/image-spec/blob/main/layer.md
 .. _usrmerge: https://wiki.debian.org/UsrMerge
 .. _Dive: https://github.com/wagoodman/dive
+.. _lifecycle: /explanation/lifecycle.html
