@@ -69,11 +69,11 @@ dev = [
 ]
 dev-jammy = [
     # 2.4 for Jammy
-    "python-apt~=2.4.0;sys_platform=='linux'",
+    "python-apt~=2.9.9;sys_platform=='linux'",
 ]
 dev-noble = [
     # 2.7 for Noble
-    "python-apt~=2.7.0;sys_platform=='linux'",
+    "python-apt~=2.9.9;sys_platform=='linux'",
 ]
 dev-oracular = [
     # 2.9 for Oracular+
