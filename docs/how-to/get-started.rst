@@ -150,7 +150,7 @@ The output will be similar to:
 
     rockcraft 0.0.1.dev1
 
-You can now check our simple :doc:`Hello World turorial </tutorial/hello-world>`
+You can now check our simple :doc:`Hello World tutorial </tutorial/hello-world>`
 to see Rockcraft in action!
 
 .. _snap store: https://snapcraft.io/rockcraft
