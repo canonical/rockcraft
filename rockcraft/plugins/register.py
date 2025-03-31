@@ -20,6 +20,7 @@ import craft_parts
 from craft_parts.plugins.plugins import PluginType
 
 from .ant_plugin import AntPlugin
+from .docker_plugin import DockerPlugin
 from .maven_plugin import MavenPlugin
 from .python_common import get_python_plugins
 
@@ -34,4 +35,5 @@ def get_plugins() -> dict[str, PluginType]:
     return {
         "ant": AntPlugin,
         "maven": MavenPlugin,
+        "docker": DockerPlugin,
     } | get_python_plugins()
