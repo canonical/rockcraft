@@ -79,17 +79,6 @@ class ExpressJSFramework(Extension):
         runtime_part = self._gen_runtime_part()
         if runtime_part:
             snippet["parts"]["expressjs-framework/runtime"] = runtime_part
-        snippet["parts"]["expressjs-framework/set-owner"] = {
-            "plugin": "nil",
-            "permissions": [
-                {
-                    "path": f"lib/node_modules/{self._app_name}",
-                    "owner": 584792,
-                    "group": 584792,
-                },
-                {"path": "app", "owner": 584792, "group": 584792},
-            ],
-        }
         snippet["parts"]["expressjs-framework/logging"] = gen_logging_part()
         return snippet
 
@@ -150,7 +139,9 @@ class ExpressJSFramework(Extension):
                 "npm config set script-shell=bash --location project\n"
                 "cp ${CRAFT_PART_BUILD}/.npmrc ${CRAFT_PART_INSTALL}/lib/node_modules/"
                 f"{self._app_name}/.npmrc\n"
+                f"chown -R 584792:584792 ${{CRAFT_PART_INSTALL}}/lib/node_modules/{self._app_name}\n"
                 f"ln -s /lib/node_modules/{self._app_name} ${{CRAFT_PART_INSTALL}}/app\n"
+                "chown -R 584792:584792 ${CRAFT_PART_INSTALL}/app\n"
             ),
         }
         build_packages = self._gen_app_build_packages()

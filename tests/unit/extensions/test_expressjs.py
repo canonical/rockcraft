@@ -77,32 +77,21 @@ def package_json_file(app_path):
                         "source": "app/",
                         "npm-include-node": False,
                         "npm-node-version": None,
-                        "override-build": (
-                            "rm -rf node_modules\n"
-                            "craftctl default\n"
-                            "npm config set script-shell=bash --location project\n"
-                            "cp ${CRAFT_PART_BUILD}/.npmrc ${CRAFT_PART_INSTALL}/lib/node_modules/"
-                            f"{_expressjs_project_name}/.npmrc\n"
-                            f"ln -s /lib/node_modules/{_expressjs_project_name} "
-                            "${CRAFT_PART_INSTALL}/app\n"
-                        ),
+                        "override-build": "rm -rf node_modules\n"
+                        "craftctl default\n"
+                        "npm config set script-shell=bash --location project\n"
+                        "cp ${CRAFT_PART_BUILD}/.npmrc ${CRAFT_PART_INSTALL}/lib/node_modules/"
+                        f"{_expressjs_project_name}/.npmrc\n"
+                        f"chown -R 584792:584792 ${{CRAFT_PART_INSTALL}}/lib/node_modules/{_expressjs_project_name}\n"
+                        f"ln -s /lib/node_modules/{_expressjs_project_name} "
+                        "${CRAFT_PART_INSTALL}/app\n"
+                        "chown -R 584792:584792 ${CRAFT_PART_INSTALL}/app\n",
                         "build-packages": ["nodejs", "npm"],
                         "stage-packages": ["ca-certificates_data", "nodejs_bins"],
                     },
                     "expressjs-framework/runtime": {
                         "plugin": "nil",
                         "stage-packages": ["npm"],
-                    },
-                    "expressjs-framework/set-owner": {
-                        "plugin": "nil",
-                        "permissions": [
-                            {
-                                "path": "lib/node_modules/test-expressjs-project",
-                                "owner": 584792,
-                                "group": 584792,
-                            },
-                            {"path": "app", "owner": 584792, "group": 584792},
-                        ],
                     },
                     "expressjs-framework/logging": {
                         "plugin": "nil",
@@ -147,22 +136,13 @@ def package_json_file(app_path):
                         "npm config set script-shell=bash --location project\n"
                         "cp ${CRAFT_PART_BUILD}/.npmrc "
                         "${CRAFT_PART_INSTALL}/lib/node_modules/test-expressjs-project/.npmrc\n"
+                        "chown -R 584792:584792 ${CRAFT_PART_INSTALL}/lib/node_modules/test-expressjs-project\n"
                         "ln -s /lib/node_modules/test-expressjs-project "
-                        "${CRAFT_PART_INSTALL}/app\n",
+                        "${CRAFT_PART_INSTALL}/app\n"
+                        "chown -R 584792:584792 ${CRAFT_PART_INSTALL}/app\n",
                         "plugin": "npm",
                         "source": "app/",
                         "stage-packages": ["ca-certificates_data"],
-                    },
-                    "expressjs-framework/set-owner": {
-                        "plugin": "nil",
-                        "permissions": [
-                            {
-                                "path": "lib/node_modules/test-expressjs-project",
-                                "owner": 584792,
-                                "group": 584792,
-                            },
-                            {"path": "app", "owner": 584792, "group": 584792},
-                        ],
                     },
                     "expressjs-framework/logging": {
                         "plugin": "nil",
@@ -217,8 +197,10 @@ def package_json_file(app_path):
                         "npm config set script-shell=bash --location project\n"
                         "cp ${CRAFT_PART_BUILD}/.npmrc "
                         "${CRAFT_PART_INSTALL}/lib/node_modules/test-expressjs-project/.npmrc\n"
+                        "chown -R 584792:584792 ${CRAFT_PART_INSTALL}/lib/node_modules/test-expressjs-project\n"
                         "ln -s /lib/node_modules/test-expressjs-project "
-                        "${CRAFT_PART_INSTALL}/app\n",
+                        "${CRAFT_PART_INSTALL}/app\n"
+                        "chown -R 584792:584792 ${CRAFT_PART_INSTALL}/app\n",
                         "plugin": "npm",
                         "source": "app/",
                         "stage-packages": [
@@ -233,17 +215,6 @@ def package_json_file(app_path):
                             "libstdc++6",
                             "zlib1g",
                             "npm",
-                        ],
-                    },
-                    "expressjs-framework/set-owner": {
-                        "plugin": "nil",
-                        "permissions": [
-                            {
-                                "path": "lib/node_modules/test-expressjs-project",
-                                "owner": 584792,
-                                "group": 584792,
-                            },
-                            {"path": "app", "owner": 584792, "group": 584792},
                         ],
                     },
                     "expressjs-framework/logging": {
@@ -295,8 +266,10 @@ def package_json_file(app_path):
                         "npm config set script-shell=bash --location project\n"
                         "cp ${CRAFT_PART_BUILD}/.npmrc "
                         "${CRAFT_PART_INSTALL}/lib/node_modules/test-expressjs-project/.npmrc\n"
+                        "chown -R 584792:584792 ${CRAFT_PART_INSTALL}/lib/node_modules/test-expressjs-project\n"
                         "ln -s /lib/node_modules/test-expressjs-project "
-                        "${CRAFT_PART_INSTALL}/app\n",
+                        "${CRAFT_PART_INSTALL}/app\n"
+                        "chown -R 584792:584792 ${CRAFT_PART_INSTALL}/app\n",
                         "plugin": "npm",
                         "source": "app/",
                         "stage-packages": [
@@ -308,17 +281,6 @@ def package_json_file(app_path):
                     "expressjs-framework/runtime": {
                         "plugin": "nil",
                         "stage-packages": ["libstdc++6", "zlib1g"],
-                    },
-                    "expressjs-framework/set-owner": {
-                        "plugin": "nil",
-                        "permissions": [
-                            {
-                                "path": "lib/node_modules/test-expressjs-project",
-                                "owner": 584792,
-                                "group": 584792,
-                            },
-                            {"path": "app", "owner": 584792, "group": 584792},
-                        ],
                     },
                     "expressjs-framework/logging": {
                         "plugin": "nil",
