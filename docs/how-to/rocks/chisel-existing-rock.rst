@@ -98,7 +98,7 @@ Python components that are not needed for the final application.
 In this example, the Python application is a very simple "Hello, world", which
 means we need nothing else but the core Python modules. For that, copy the
 previous ``rockcraft.yaml`` to a new directory and simply append the desired
-package slice names to the list of ``stage-packages``, like this:
+package slice names to the list of :ref:`stage_packages`, like this:
 
 .. literalinclude:: ../code/chisel-existing-rock/chiselled-rock/rockcraft.yaml
     :caption: rockcraft.yaml
