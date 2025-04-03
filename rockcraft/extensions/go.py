@@ -24,6 +24,8 @@ from overrides import override  # type: ignore[reportUnknownVariableType]
 
 from rockcraft.errors import ExtensionError
 
+from ..errors import ExtensionError
+from .app_parts import gen_logging_part
 from .extension import Extension
 
 
@@ -69,12 +71,14 @@ class GoFramework(Extension):
             "go-framework/base-layout": {
                 "plugin": "nil",
                 "override-build": "mkdir -p ${CRAFT_PART_INSTALL}/app",
+                "permissions": [{"owner": 584792, "group": 584792}],
             },
             "go-framework/install-app": self._get_install_app_part(),
             "go-framework/runtime": {
                 "plugin": "nil",
                 "stage-packages": stage_packages,
             },
+            "go-framework/logging": gen_logging_part(),
         }
 
         assets_part = self._get_install_assets_part()

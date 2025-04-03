@@ -28,6 +28,7 @@ from overrides import override  # type: ignore[reportUnknownVariableType]
 from rockcraft.errors import ExtensionError
 
 from ._python_utils import has_global_variable
+from .app_parts import gen_logging_part
 from .extension import Extension
 
 
@@ -106,7 +107,10 @@ class FastAPIFramework(Extension):
                 "python-packages": ["uvicorn"],
                 "python-requirements": ["requirements.txt"],
             },
-            "fastapi-framework/install-app": self._get_install_app_part(),
+            "fastapi-framework/install-app": {
+                **self._get_install_app_part(),
+                "permissions": [{"owner": 584792, "group": 584792}],
+            },
         }
         if self.yaml_data["base"] == "bare":
             parts["fastapi-framework/runtime"] = {
@@ -123,6 +127,7 @@ class FastAPIFramework(Extension):
                 "plugin": "nil",
                 "stage-packages": ["ca-certificates_data"],
             }
+        parts["fastapi-framework/logging"] = gen_logging_part()
         return parts
 
     def _get_install_app_part(self) -> dict[str, Any]:

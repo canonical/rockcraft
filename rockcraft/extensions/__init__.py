@@ -22,6 +22,7 @@ from .go import GoFramework
 from .expressjs import ExpressJSFramework
 from .gunicorn import DjangoFramework, FlaskFramework
 from .registry import get_extension_class, get_extension_names, register, unregister
+from .app_parts import gen_logging_part
 
 __all__ = [
     "get_extension_class",
@@ -29,6 +30,7 @@ __all__ = [
     "apply_extensions",
     "register",
     "unregister",
+    "gen_logging_part",
 ]
 
 register("django-framework", DjangoFramework)

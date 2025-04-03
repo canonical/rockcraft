@@ -23,14 +23,33 @@ execute: |
   # Ensure docker does not have this container image
   docker rmi --force "${IMAGE}"
 
-  # Install container
+  # Install image
   sudo rockcraft.skopeo --insecure-policy copy "oci-archive:${ROCK_FILE}" "docker-daemon:${IMAGE}"
 
-  # Ensure container exists
+  # Ensure image exists
   docker images "${IMAGE}" | MATCH "${NAME}"
 
   # ensure container doesn't exist
   docker rm -f "${NAME}-container"
+
+  # ensure the app folder has the correct user
+  docker run --rm --entrypoint /bin/bash "${IMAGE}" -c "find /app -exec ls -ld {} \;" | awk '$3 != "_daemon_" {print; exit 2}'
+  if [ $? -eq 2 ]; then
+    echo "Error: Some files/folders inside app are not owned by _daemon_"
+    exit 2
+  fi
+
+  # ensure the loki log folder has the correct user
+  docker run --rm --entrypoint /bin/bash "${IMAGE}" -c "find /opt/promtail -exec ls -ld {} \;" | awk '$3 != "_daemon_" {print; exit 2}'
+  if [ $? -eq 2 ]; then
+    echo "Error: Some files/folders inside /opt/promtail are not owned by _daemon_"
+    exit 2
+  fi
+  docker run --rm --entrypoint /bin/bash "${IMAGE}" -c "find /etc/promtail -exec ls -ld {} \;" | awk '$3 != "_daemon_" {print; exit 2}'
+  if [ $? -eq 2 ]; then
+    echo "Error: Some files/folders inside /etc/promtail are not owned by _daemon_"
+    exit 2
+  fi
 
   # test the default fastapi service
   docker run --name "${NAME}-container" -d -p 8137:8000 "${IMAGE}"
