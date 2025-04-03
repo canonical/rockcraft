@@ -81,8 +81,8 @@ services defined in :doc:`/reference/rockcraft.yaml`.
 convert a Docker entrypoint to a Pebble layer.
 
 
-.. _Pebble: https://documentation.ubuntu.com/rockcraft/en/latest/explanation/pebble/
-.. _Pebble docs: https://documentation.ubuntu.com/rockcraft/en/latest/explanation/pebble/
+.. _Pebble: https://documentation.ubuntu.com/pebble/
+.. _Pebble docs: https://documentation.ubuntu.com/pebble/
 .. _tini: https://github.com/krallin/tini
 .. _s6-overlay: https://github.com/just-containers/s6-overlay
 .. _imperative wrapper scripts (as suggested in the Docker documentation): https://docs.docker.com/engine/containers/multi-service_container/#use-a-wrapper-script
