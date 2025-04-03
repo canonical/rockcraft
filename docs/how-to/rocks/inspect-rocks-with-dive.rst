@@ -1,5 +1,5 @@
-Inspecting rocks with dive
-**************************
+Inspect rocks with dive
+***********************
 
 `Dive`_ is a tool for analyzing and inspecting OCI container images.
 It allows users to explore image layers, visualize how files are added,
