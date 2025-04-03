@@ -207,4 +207,3 @@ pruned or symbolic links that need to be taken into account.
 .. _tar archive: https://github.com/opencontainers/image-spec/blob/main/layer.md
 .. _usrmerge: https://wiki.debian.org/UsrMerge
 .. _Dive: https://github.com/wagoodman/dive
-.. _lifecycle: /explanation/lifecycle.html
