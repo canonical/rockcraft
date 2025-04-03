@@ -17,9 +17,11 @@
 """An extension for the NodeJS based Javascript application extension."""
 
 import json
-from typing import Any
+from typing import Any, cast
 
-from overrides import override
+from overrides import override  # type: ignore[reportUnknownVariableType]
+
+from rockcraft.errors import ExtensionError
 
 from ..errors import ExtensionError
 from .app_parts import gen_logging_part
@@ -39,7 +41,7 @@ class ExpressJSFramework(Extension):
 
     @staticmethod
     @override
-    def is_experimental(base: str | None) -> bool:
+    def is_experimental(base: str | None) -> bool:  # noqa: ARG004 (unused arg)
         """Check if the extension is in an experimental state."""
         return True
 
@@ -123,7 +125,7 @@ class ExpressJSFramework(Extension):
                 logpath_report=False,
             )
 
-    def _gen_install_app_part(self) -> dict:
+    def _gen_install_app_part(self) -> dict[str, Any]:
         """Generate the install app part using NPM plugin.
 
         Set the script shell to bash and copy the .npmrc file to the app
@@ -171,7 +173,7 @@ class ExpressJSFramework(Extension):
             return ["ca-certificates_data", "nodejs_bins"]
         return ["ca-certificates_data"]
 
-    def _gen_runtime_part(self) -> dict | None:
+    def _gen_runtime_part(self) -> dict[str, Any] | None:
         """Generate the runtime part."""
         stage_packages = []
         if self._rock_base == "bare":
@@ -183,7 +185,7 @@ class ExpressJSFramework(Extension):
         return {"plugin": "nil", "stage-packages": stage_packages}
 
     @property
-    def _user_install_app_part(self) -> dict:
+    def _user_install_app_part(self) -> dict[str, Any]:
         """Return the user defined install app part."""
         return self.yaml_data.get("parts", {}).get(
             "expressjs-framework/install-app", {}
@@ -200,7 +202,7 @@ class ExpressJSFramework(Extension):
         return self.yaml_data["base"]
 
     @property
-    def _app_package_json(self) -> dict:
+    def _app_package_json(self) -> dict[str, Any]:
         """Return the app package.json contents."""
         package_json_file = self.project_root / self.IMAGE_BASE_DIR / "package.json"
         if not package_json_file.exists():
@@ -218,13 +220,14 @@ class ExpressJSFramework(Extension):
                     doc_slug="/reference/extensions/expressjs-framework",
                     logpath_report=False,
                 )
-            return app_package_json
         except json.JSONDecodeError as exc:
             raise ExtensionError(
                 "failed to parse package.json file",
                 doc_slug="/reference/extensions/expressjs-framework",
                 logpath_report=False,
             ) from exc
+        else:
+            return cast(dict[str, Any], app_package_json)
 
     @property
     def _app_name(self) -> str:

@@ -68,9 +68,9 @@ def _find_command_path_in_root(root: str, command_name: str) -> str | None:
         "sbin",
         "bin",
     ):
-        path = os.path.join(root, bin_directory, command_name)
-        if os.path.exists(path):
-            return path
+        path = pathlib.Path(root) / bin_directory / command_name
+        if path.exists():
+            return str(path)
 
     return None
 

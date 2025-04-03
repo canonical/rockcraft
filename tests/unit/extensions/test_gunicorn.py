@@ -57,7 +57,7 @@ def django_input_yaml_fixture():
 def test_flask_extension_default(
     tmp_path, flask_input_yaml, packages, async_package, expected_worker
 ):
-    full_packages = "\n".join([packages, async_package])
+    full_packages = f"{packages}\n{async_package}"
     (tmp_path / "requirements.txt").write_text(full_packages)
     (tmp_path / "app.py").write_text("app = object()")
     (tmp_path / "static").mkdir()
@@ -336,14 +336,25 @@ def test_flask_extension_override_parts(tmp_path, flask_input_yaml):
     ]
 
 
+@pytest.mark.parametrize(
+    ("build_base", "expected_stage_packages", "expected_python_interpreter"),
+    [
+        ("ubuntu@22.04", ["python3.10-venv_ensurepip"], "python3.10"),
+        ("ubuntu:22.04", ["python3.10-venv_ensurepip"], "python3.10"),
+        ("ubuntu@24.04", ["python3.12-venv_ensurepip"], "python3.12"),
+        ("ubuntu:24.04", ["python3.12-venv_ensurepip"], "python3.12"),
+    ],
+)
 @pytest.mark.usefixtures("flask_extension")
-def test_flask_extension_bare(tmp_path):
+def test_flask_extension_bare(
+    tmp_path, build_base, expected_stage_packages, expected_python_interpreter
+):
     (tmp_path / "requirements.txt").write_text("flask")
     (tmp_path / "app.py").write_text("app = object()")
     flask_input_yaml = {
         "extensions": ["flask-framework"],
         "base": "bare",
-        "build-base": "ubuntu@22.04",
+        "build-base": build_base,
         "platforms": {"amd64": {}},
         "parts": {"flask/install-app": {"prime": ["-flask/app/.git"]}},
     }
@@ -358,8 +369,10 @@ def test_flask_extension_bare(tmp_path):
         "python-packages": ["gunicorn"],
         "python-requirements": ["requirements.txt"],
         "source": ".",
-        "stage-packages": ["python3.10-venv_ensurepip"],
-        "build-environment": [{"PARTS_PYTHON_INTERPRETER": "python3.10"}],
+        "stage-packages": expected_stage_packages,
+        "build-environment": [
+            {"PARTS_PYTHON_INTERPRETER": expected_python_interpreter}
+        ],
     }
     assert applied["parts"]["flask-framework/install-app"]["permissions"] == [
         {
@@ -653,6 +666,7 @@ def test_django_extension_incorrect_wsgi_path_error(tmp_path):
         "name": "foobar",
         "extensions": ["django-framework"],
         "base": "bare",
+        "build-base": "ubuntu@22.04",
     }
     (tmp_path / "requirements.txt").write_text("django")
 
@@ -681,6 +695,7 @@ def test_django_extension_django_service_override_disable_wsgi_path_check(tmp_pa
         "name": "foobar",
         "extensions": ["django-framework"],
         "base": "bare",
+        "build-base": "ubuntu@22.04",
         "services": {
             "django": {
                 "command": "/bin/python3 -m gunicorn -c /django/gunicorn.conf.py webapp:app"

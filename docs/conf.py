@@ -40,6 +40,7 @@ if ".post" in release:
 # region Configuration for canonical-sphinx
 ogp_site_url = "https://canonical-rockcraft.readthedocs-hosted.com/"
 ogp_site_name = project
+ogp_image = "https://assets.ubuntu.com/v1/253da317-image-document-ubuntudocs.svg"
 
 html_context = {
     "product_page": "github.com/canonical/rockcraft",
@@ -47,6 +48,10 @@ html_context = {
     "github_url": "https://github.com/canonical/rockcraft",
     "github_issues": "https://github.com/canonical/rockcraft/issues",
     "display_contributors": False,
+}
+
+html_theme_options = {
+    "source_edit_link": "https://github.com/canonical/rockcraft",
 }
 
 extensions = [
@@ -84,6 +89,7 @@ exclude_patterns = [
     "common/craft-parts/explanation/how_parts_are_built.rst",
     "common/craft-parts/explanation/overlay_step.rst",
     "common/craft-parts/how-to/craftctl.rst",
+    "common/craft-parts/how-to/use_parts.rst",
     "common/craft-parts/reference/partition_specific_output_directory_variables.rst",
     "common/craft-parts/reference/parts_steps.rst",
     "common/craft-parts/reference/step_execution_environment.rst",

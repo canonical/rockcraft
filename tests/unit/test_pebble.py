@@ -63,7 +63,7 @@ class TestPebble:
                     "summary": "mock summary",
                     "description": "mock description",
                     "services": {
-                        "mockServiceOne": Service(  # type: ignore
+                        "mockServiceOne": Service(
                             override="replace",
                             command="foo",
                             on_success="shutdown",
@@ -176,17 +176,19 @@ class TestPebble:
             "my-rock",
         )
 
-        out_pebble_layer = str(
-            f"{tmp_path}/{pebble_obj.PEBBLE_LAYERS_PATH}/"
-            f"{expected_new_layer_prefix}-my-rock.yaml"
+        out_pebble_layer = (
+            tmp_path
+            / pebble_obj.PEBBLE_LAYERS_PATH
+            / f"{expected_new_layer_prefix}-my-rock.yaml"
         )
-        check.is_true(os.path.exists(out_pebble_layer))
+
+        check.is_true(out_pebble_layer.exists())
         check.equal(oct((tmp_path / pebble_obj.PEBBLE_PATH).stat().st_mode)[-3:], "777")
         check.equal(
             oct(Path(out_pebble_layer).stat().st_mode)[-3:],
             "777",
         )
-        with open(out_pebble_layer) as f:
+        with out_pebble_layer.open() as f:
             content = f.read()
             check.equal(content, expected_layer_yaml)
             content = yaml.safe_load(content)
@@ -372,7 +374,7 @@ class TestPebble:
         _ = Check(**full_check)
 
     def test_minimal_check(self):
-        _ = Check(override="merge", exec={"command": "foo cmd"})  # pyright: ignore
+        _ = Check.model_validate({"override": "merge", "exec": {"command": "foo cmd"}})
 
     @pytest.mark.parametrize(
         ("bad_check", "exception", "error"),
