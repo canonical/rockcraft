@@ -11,3 +11,11 @@
    Chisel an existing rock <chisel-existing-rock>
    Include local and remote files </common/craft-parts/how-to/include_files>
    Override a plugin's build </common/craft-parts/how-to/override_build>
+
+   Django Rock <profiles/django>
+   ExpressJS Rock <profiles/expressjs>
+   FastAPI Rock <profiles/fastapi>
+   Flask Rock <profiles/flask>
+   Go Rock <profiles/go>
+   NodeJS Rock <profiles/node-app>
+   Pypi Rock <profiles/pypi-package>

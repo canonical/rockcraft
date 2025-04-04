@@ -1,0 +1,30 @@
+###########################################
+# IMPORTANT
+# Comments matter!
+# The docs use the wrapping comments as
+# markers for including said instructions
+# as snippets in the docs.
+###########################################
+summary: hello world tutorial
+
+execute: |
+
+  # [docs:build-and-copy-rock]
+  rockcraft pack
+  sudo rockcraft.skopeo --insecure-policy copy oci-archive:hello-nginx-baseless_latest_amd64.rock docker-daemon:hello-nginx-baseless:latest
+  # [docs:build-and-copy-rock-end]
+
+  rm hello-nginx-baseless_latest_amd64.rock
+
+  # [docs:docker-run]
+  docker run --rm -d -p 8000:80 --name hello-nginx-baseless hello-nginx-baseless:latest
+  # [docs:docker-run-end]
+
+  # [docs:test-rock]
+  curl http://127.0.0.1:8000/index.html
+  # [docs:test-rock-end]
+
+  curl http://127.0.0.1:8000/index.html | grep "Hello World! From a Rock!"
+
+  docker stop hello-nginx-baseless
+  docker rm hello-nginx-baseless

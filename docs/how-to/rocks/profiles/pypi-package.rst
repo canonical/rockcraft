@@ -23,7 +23,7 @@ Project setup
 
 To create a new Rockcraft project, create a new directory and change into it:
 
-.. literalinclude:: code/pyfiglet/task.yaml
+.. literalinclude:: ../../code/pyfiglet/task.yaml
     :language: bash
     :start-after: [docs:create-pyfiglet-dir]
     :end-before: [docs:create-pyfiglet-dir-end]
@@ -31,7 +31,7 @@ To create a new Rockcraft project, create a new directory and change into it:
 
 Next, create a file called ``rockcraft.yaml`` with the following contents:
 
-.. literalinclude:: code/pyfiglet/rockcraft.yaml
+.. literalinclude:: ../../code/pyfiglet/rockcraft.yaml
     :caption: rockcraft.yaml
     :language: yaml
 
@@ -49,7 +49,7 @@ Pack the rock with Rockcraft
 
 To build the rock, run:
 
-.. literalinclude:: code/pyfiglet/task.yaml
+.. literalinclude:: ../../code/pyfiglet/task.yaml
     :language: bash
     :start-after: [docs:build-rock]
     :end-before: [docs:build-rock-end]
@@ -60,7 +60,7 @@ Run the rock in Docker
 
 First, import the recently created rock into Docker:
 
-.. literalinclude:: code/pyfiglet/task.yaml
+.. literalinclude:: ../../code/pyfiglet/task.yaml
     :language: bash
     :start-after: [docs:skopeo-copy]
     :end-before: [docs:skopeo-copy-end]
@@ -69,7 +69,7 @@ First, import the recently created rock into Docker:
 
 Now run the ``pyfiglet`` command from the rock:
 
-.. literalinclude:: code/pyfiglet/task.yaml
+.. literalinclude:: ../../code/pyfiglet/task.yaml
     :language: bash
     :start-after: [docs:docker-run]
     :end-before: [docs:docker-run-end]
@@ -77,7 +77,7 @@ Now run the ``pyfiglet`` command from the rock:
 
 Which should print:
 
-.. literalinclude:: code/pyfiglet/expected_output.txt
+.. literalinclude:: ../../code/pyfiglet/expected_output.txt
     :language: text
 
 

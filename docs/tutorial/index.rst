@@ -14,18 +14,6 @@ tools and workflows for packing rocks.
    :maxdepth: 1
 
    1. Create a Hello World rock <hello-world>
-   2. Install slices in a rock <chisel.rst>
-
-The next steps walk you through examples of transforming applications source
-code into container applications:
-
-.. toctree::
-   :maxdepth: 1
-
-   3. Containerise a PyPI package <pypi-package.rst>
-   4. Bundle a Node.js app within a rock <node-app.rst>
-   5. Build a rock for a Flask application <flask.rst>
-   6. Build a rock for a Django application <django.rst>
-   7. Build a rock for a FastAPI application <fastapi.rst>
-   8. Build a rock for a Go application <go.rst>
-   9. Build a rock for an ExpressJS application <expressjs.rst>
+   2. Install packages in a rock <install-packages>
+   3. Create a baseless rock <baseless-rock>
+   4. Create a rootless rock <rootless-rock>

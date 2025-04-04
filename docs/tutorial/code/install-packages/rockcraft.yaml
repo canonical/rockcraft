@@ -1,0 +1,28 @@
+# Metadata section
+
+name: hello-nginx
+summary: Hello World
+description: A basic rock, served with Nginx.
+version: "latest"
+license: Apache-2.0
+
+base: ubuntu@22.04
+platforms:
+  amd64: # Make sure this value matches your computer's architecture
+
+# Parts section
+parts:
+  hello-html:
+    plugin: dump
+    source: .
+    organize:
+      index.html: /var/www/html/index.html
+      nginx.conf: /etc/nginx/conf.d/hello.conf
+    stage-packages:
+      - nginx
+
+services:
+  nginx:
+    override: replace
+    command: nginx -g 'daemon off;'
+    startup: enabled

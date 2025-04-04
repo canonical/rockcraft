@@ -25,7 +25,7 @@ Setup
 In order to test the Go application locally, before packing it into a rock,
 install ``go``.
 
-.. literalinclude:: code/go/task.yaml
+.. literalinclude:: ../../code/go/task.yaml
     :language: bash
     :start-after: [docs:install-go]
     :end-before: [docs:install-go-end]
@@ -47,7 +47,7 @@ Create a new directory for this tutorial and enter it:
 
 Initialise the new Go module:
 
-.. literalinclude:: code/go/task.yaml
+.. literalinclude:: ../../code/go/task.yaml
     :language: bash
     :start-after: [docs:mod-init-go]
     :end-before: [docs:mod-init-go-end]
@@ -56,12 +56,12 @@ Initialise the new Go module:
 Create a ``main.go`` file, copy the following text into it and then
 save it:
 
-.. literalinclude:: code/go/main.go
+.. literalinclude:: ../../code/go/main.go
     :language: go
 
 Build the Go application so it can be run:
 
-.. literalinclude:: code/go/task.yaml
+.. literalinclude:: ../../code/go/task.yaml
     :language: bash
     :start-after: [docs:go-build]
     :end-before: [docs:go-build-end]
@@ -82,7 +82,7 @@ that we can test by using ``curl`` to send a request to the root
 endpoint. We may need a new terminal for this -- if using Multipass, run
 ``multipass shell rock-dev`` to get another terminal:
 
-.. literalinclude:: code/go/task.yaml
+.. literalinclude:: ../../code/go/task.yaml
     :language: bash
     :start-after: [docs:curl-go]
     :end-before: [docs:curl-go-end]
@@ -101,7 +101,7 @@ First, we'll need a project file. Rockcraft will automate its
 creation and tailor it for a Go application when we tell it to use the
 ``go-framework`` profile:
 
-.. literalinclude:: code/go/task.yaml
+.. literalinclude:: ../../code/go/task.yaml
     :language: bash
     :start-after: [docs:create-rockcraft-yaml]
     :end-before: [docs:create-rockcraft-yaml-end]
@@ -124,7 +124,7 @@ architecture, include ``arm64`` in ``platforms``.
 As the ``go-framework`` extension is still experimental, export the
 environment variable ``ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS``:
 
-.. literalinclude:: code/go/task.yaml
+.. literalinclude:: ../../code/go/task.yaml
     :language: bash
     :start-after: [docs:experimental]
     :end-before: [docs:experimental-end]
@@ -132,7 +132,7 @@ environment variable ``ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS``:
 
 Pack the rock:
 
-.. literalinclude:: code/go/task.yaml
+.. literalinclude:: ../../code/go/task.yaml
     :language: bash
     :start-after: [docs:pack]
     :end-before: [docs:pack-end]
@@ -144,7 +144,7 @@ Once Rockcraft has finished packing the Go rock, we'll find a new file in
 the working directory (an `OCI <OCI_image_spec_>`_ image) with the ``.rock``
 extension:
 
-.. literalinclude:: code/go/task.yaml
+.. literalinclude:: ../../code/go/task.yaml
     :language: bash
     :start-after: [docs:ls-rock]
     :end-before: [docs:ls-rock-end]
@@ -158,7 +158,7 @@ Run the Go rock with Docker
 We already have the rock as an `OCI <OCI_image_spec_>`_ archive. Load the
 image into Docker:
 
-.. literalinclude:: code/go/task.yaml
+.. literalinclude:: ../../code/go/task.yaml
     :language: bash
     :start-after: [docs:skopeo-copy]
     :end-before: [docs:skopeo-copy-end]
@@ -167,7 +167,7 @@ image into Docker:
 
 Check that the image was successfully loaded into Docker:
 
-.. literalinclude:: code/go/task.yaml
+.. literalinclude:: ../../code/go/task.yaml
     :language: bash
     :start-after: [docs:docker-images]
     :end-before: [docs:docker-images-end]
@@ -184,7 +184,7 @@ size:
 Now we're finally ready to run the rock and test the containerised Go
 application:
 
-.. literalinclude:: code/go/task.yaml
+.. literalinclude:: ../../code/go/task.yaml
     :language: text
     :start-after: [docs:docker-run]
     :end-before: [docs:docker-run-end]
@@ -193,7 +193,7 @@ application:
 Use the same ``curl`` command as before to send a request to the Go
 application's root endpoint which is running inside the container:
 
-.. literalinclude:: code/go/task.yaml
+.. literalinclude:: ../../code/go/task.yaml
     :language: text
     :start-after: [docs:curl-go-rock]
     :end-before: [docs:curl-go-rock-end]
@@ -208,7 +208,7 @@ View the application logs
 When deploying the Go rock, we can always get the application logs with
 :ref:`pebble_explanation_page`:
 
-.. literalinclude:: code/go/task.yaml
+.. literalinclude:: ../../code/go/task.yaml
     :language: text
     :start-after: [docs:get-logs]
     :end-before: [docs:get-logs-end]
@@ -234,7 +234,7 @@ Now we have a fully functional rock for a Go application! This concludes
 the first part of this tutorial, so we'll stop the container and remove the
 respective image for now:
 
-.. literalinclude:: code/go/task.yaml
+.. literalinclude:: ../../code/go/task.yaml
     :language: bash
     :start-after: [docs:stop-docker]
     :end-before: [docs:stop-docker-end]
@@ -250,7 +250,7 @@ we want to add a new ``/time`` endpoint which returns the current time.
 Start by opening the ``main.go`` file in a text editor and update the code to
 look like the following:
 
-.. literalinclude:: code/go/main.go.time
+.. literalinclude:: ../../code/go/main.go.time
     :language: go
 
 Since we are creating a new version of the application, open the project
@@ -264,7 +264,7 @@ file and set ``version: "0.2"``.
 
 Pack and run the rock using similar commands as before:
 
-.. literalinclude:: code/go/task.yaml
+.. literalinclude:: ../../code/go/task.yaml
     :language: text
     :start-after: [docs:docker-run-update]
     :end-before: [docs:docker-run-update-end]
@@ -277,7 +277,7 @@ Pack and run the rock using similar commands as before:
 
 Finally, use ``curl`` to send a request to the ``/time`` endpoint:
 
-.. literalinclude:: code/go/task.yaml
+.. literalinclude:: ../../code/go/task.yaml
     :language: text
     :start-after: [docs:curl-time]
     :end-before: [docs:curl-time-end]
@@ -296,7 +296,7 @@ Cleanup
 
 We can now stop the container and remove the corresponding image:
 
-.. literalinclude:: code/go/task.yaml
+.. literalinclude:: ../../code/go/task.yaml
     :language: bash
     :start-after: [docs:stop-docker-updated]
     :end-before: [docs:stop-docker-updated-end]
@@ -311,7 +311,7 @@ We've reached the end of this tutorial.
 If we'd like to reset the working environment, we can simply run the
 following:
 
-.. literalinclude:: code/go/task.yaml
+.. literalinclude:: ../../code/go/task.yaml
     :language: bash
     :start-after: [docs:cleanup]
     :end-before: [docs:cleanup-end]

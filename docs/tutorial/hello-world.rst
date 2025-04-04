@@ -9,18 +9,27 @@ Setup your environment
 Project setup
 -------------
 
-Create a new directory and write the following into a text editor and
-save it as ``rockcraft.yaml``:
+Create a new directory and add a simple ``index.html`` file to it,
+which will be included inside our rock afterwards.
+
+.. literalinclude:: code/hello-world/index.html
+    :caption: index.html
+    :language: html
+
+Now write the following into a text editor and save it as
+``rockcraft.yaml``:
 
 .. literalinclude:: code/hello-world/rockcraft.yaml
     :caption: rockcraft.yaml
     :language: yaml
 
-This file instructs Rockcraft to build a rock that **only** has the ``hello``
-package (and its dependencies) inside. For more information about the ``parts``
-section, check :ref:`part_properties`. The remaining YAML keys correspond to
-metadata that help define and describe the rock. For more information about all
-available keys, check :doc:`/reference/rockcraft.yaml`.
+This file instructs Rockcraft to build a rock containing the ``index.html``
+file. To do so, we use the :ref:`dump plugin <dump_plugin_explanation>`
+to copy the files from the specified ``source`` into the staging area.
+
+For more information about the ``parts`` section, check :ref:`part_properties`.
+The remaining YAML keys correspond to metadata that help define and describe the rock.
+For more information about all available keys, check :doc:`/reference/rockcraft.yaml`.
 
 Pack the rock with Rockcraft
 ----------------------------
@@ -71,7 +80,8 @@ First, import the recently created rock into Docker:
     :end-before: [docs:skopeo-copy-end]
     :dedent: 2
 
-Now run the ``hello`` command from the rock:
+Now you can use ``cat`` to verify the ``index.html`` file has been copied into
+the rock:
 
 .. literalinclude:: code/hello-world/task.yaml
     :language: bash
@@ -79,9 +89,4 @@ Now run the ``hello`` command from the rock:
     :end-before: [docs:docker-run-end]
     :dedent: 2
 
-Which should print:
-
-..  code-block:: text
-    :class: log-snippets
-
-    hello, world
+It should output the ``index.html`` file created before.

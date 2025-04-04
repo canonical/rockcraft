@@ -20,14 +20,14 @@ files:
 The first one is the ``package.json`` listing of dependencies, with the
 following contents:
 
-.. literalinclude:: code/node-app/src/package.json
+.. literalinclude:: ../../code/node-app/src/package.json
     :caption: package.json
     :language: json
 
 The second file is our sample app, a simple "hello world" server. Still inside
 ``src/``, add the following contents to ``server.js``:
 
-.. literalinclude:: code/node-app/src/server.js
+.. literalinclude:: ../../code/node-app/src/server.js
     :caption: server.js
     :language: javascript
 
@@ -37,7 +37,7 @@ after the other.
 
 Add the metadata that describes your rock, such as its name and licence:
 
-.. literalinclude:: code/node-app/rockcraft.yaml
+.. literalinclude:: ../../code/node-app/rockcraft.yaml
     :caption: rockcraft.yaml
     :language: yaml
     :start-at: name: my-node-app
@@ -45,7 +45,7 @@ Add the metadata that describes your rock, such as its name and licence:
 
 Add the container entrypoint, as a `Pebble`_ service:
 
-.. literalinclude:: code/node-app/rockcraft.yaml
+.. literalinclude:: ../../code/node-app/rockcraft.yaml
     :caption: rockcraft.yaml
     :language: yaml
     :start-at: services:
@@ -54,7 +54,7 @@ Add the container entrypoint, as a `Pebble`_ service:
 Finally, add a part that describes how to build the app created in the ``src/``
 directory using the ``npm`` plugin:
 
-.. literalinclude:: code/node-app/rockcraft.yaml
+.. literalinclude:: ../../code/node-app/rockcraft.yaml
     :caption: rockcraft.yaml
     :language: yaml
     :start-at: parts:
@@ -62,7 +62,7 @@ directory using the ``npm`` plugin:
 
 The whole file then looks like this:
 
-.. literalinclude:: code/node-app/rockcraft.yaml
+.. literalinclude:: ../../code/node-app/rockcraft.yaml
     :caption: rockcraft.yaml
     :language: yaml
 
@@ -72,7 +72,7 @@ Pack the rock with Rockcraft
 
 To build the rock, run:
 
-.. literalinclude:: code/node-app/task.yaml
+.. literalinclude:: ../../code/node-app/task.yaml
     :language: bash
     :start-after: [docs:build-rock]
     :end-before: [docs:build-rock-end]
@@ -81,7 +81,7 @@ To build the rock, run:
 At the end of the process, a new rock file should be present in the current
 directory:
 
-.. literalinclude:: code/node-app/task.yaml
+.. literalinclude:: ../../code/node-app/task.yaml
     :language: bash
     :start-after: [docs:check-rock]
     :end-before: [docs:check-rock-end]
@@ -92,7 +92,7 @@ Run the rock in Docker
 
 First, import the recently created rock into Docker:
 
-.. literalinclude:: code/node-app/task.yaml
+.. literalinclude:: ../../code/node-app/task.yaml
     :language: bash
     :start-after: [docs:skopeo-copy]
     :end-before: [docs:skopeo-copy-end]
@@ -101,7 +101,7 @@ First, import the recently created rock into Docker:
 Since the rock bundles a web-app, we'll first start serving that app on local
 port 8000:
 
-.. literalinclude:: code/node-app/task.yaml
+.. literalinclude:: ../../code/node-app/task.yaml
     :language: bash
     :start-after: [docs:run-container]
     :end-before: [docs:run-container-end]
@@ -126,7 +126,7 @@ a regular Ubuntu system, open your web browser and go to
 If, instead, you're working in a Multipass VM, you can
 open another shell into the VM and access the app with curl:
 
-.. literalinclude:: code/node-app/task.yaml
+.. literalinclude:: ../../code/node-app/task.yaml
     :language: bash
     :prepend: multipass shell rock-dev
     :start-after: [docs:curl-localhost]
@@ -138,7 +138,7 @@ This should also print "Hello World from inside the rock!" to the terminal.
 You can now stop the running container by either interrupting it with
 :kbd:`Ctrl` + :kbd:`C` or by running the following in another terminal:
 
-.. literalinclude:: code/node-app/task.yaml
+.. literalinclude:: ../../code/node-app/task.yaml
     :language: bash
     :start-after: [docs:stop-container]
     :end-before: [docs:stop-container-end]
