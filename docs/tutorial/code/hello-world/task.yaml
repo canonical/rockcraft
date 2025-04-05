@@ -18,7 +18,6 @@ execute: |
   # [docs:skopeo-copy-end]
 
   rm hello_latest_amd64.rock
-  docker images hello:latest
 
   # [docs:docker-run]
   docker run --rm hello:latest exec cat /index.html

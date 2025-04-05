@@ -5,19 +5,19 @@
 # markers for including said instructions
 # as snippets in the docs.
 ###########################################
-summary: hello world tutorial
+summary: baseless rock tutorial
 
 execute: |
 
   # [docs:build-and-copy-rock]
   rockcraft pack
-  sudo rockcraft.skopeo --insecure-policy copy oci-archive:hello-nginx-baseless_latest_amd64.rock docker-daemon:hello-nginx-baseless:latest
+  sudo rockcraft.skopeo --insecure-policy copy oci-archive:chiselled-hello-nginx_latest_amd64.rock docker-daemon:chiselled-hello-nginx:latest
   # [docs:build-and-copy-rock-end]
 
-  rm hello-nginx-baseless_latest_amd64.rock
+  rm chiselled-hello-nginx_latest_amd64.rock
 
   # [docs:docker-run]
-  docker run --rm -d -p 8000:80 --name hello-nginx-baseless hello-nginx-baseless:latest
+  docker run --rm -d -p 8000:80 --name chiselled-hello-nginx chiselled-hello-nginx:latest
   # [docs:docker-run-end]
 
   # [docs:test-rock]
@@ -26,5 +26,4 @@ execute: |
 
   curl http://127.0.0.1:8000/index.html | grep "Hello World! From a Rock!"
 
-  docker stop hello-nginx-baseless
-  docker rm hello-nginx-baseless
+  docker stop chiselled-hello-nginx

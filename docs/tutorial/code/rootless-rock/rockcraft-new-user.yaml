@@ -1,5 +1,5 @@
 # Metadata section
-name: chiselled-hello-nginx
+name: hello-nginx-rootless
 summary: Hello World
 description: A basic rock, served with Nginx and chiselled.
 version: "latest"
@@ -8,7 +8,7 @@ license: Apache-2.0
 base: bare
 build-base: ubuntu@24.04
 platforms:
-  amd64: # Make sure this value matches your computer's architecture
+  amd64:
 
 # Parts section
 parts:
@@ -23,9 +23,20 @@ parts:
       - base-files_var
       - base-files_home
       - base-passwd_data
+    override-prime: |
+      craftctl default
+      groupadd --root ${CRAFT_PRIME} -g 4242 nginx
+      useradd -d /var/lib/nginx --root ${CRAFT_PRIME} -g nginx -u 4242 nginx
+      chown -R 4242:4242 \
+        ${CRAFT_PRIME}/run \
+        ${CRAFT_PRIME}/var/lib/nginx \
+        ${CRAFT_PRIME}/var/www/html \
+        ${CRAFT_PRIME}/var/log/nginx \
+        ${CRAFT_PRIME}/etc/nginx
 
 services:
   nginx:
     override: replace
     command: nginx -g 'daemon off;'
     startup: enabled
+    user: nginx

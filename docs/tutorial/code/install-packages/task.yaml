@@ -5,7 +5,7 @@
 # markers for including said instructions
 # as snippets in the docs.
 ###########################################
-summary: hello world tutorial
+summary: install packages tutorial
 
 execute: |
 
@@ -27,4 +27,3 @@ execute: |
   curl http://127.0.0.1:8000/index.html | grep "Hello World! From a Rock!"
 
   docker stop hello-nginx
-  docker rm hello-nginx
