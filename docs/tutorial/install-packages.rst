@@ -4,7 +4,7 @@ Install packages in a rock
 Project setup
 -------------
 
-We will use the setup from the previous section, where we created
+We will use the setup from the previous step, where we created
 a rock containing a simple ``index.html`` file. So this is the
 directory structure that will serve as a base for this section:
 

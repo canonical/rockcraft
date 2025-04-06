@@ -4,7 +4,7 @@ Create a rootless rock
 Project setup
 -------------
 
-In the previous section we created a baseless rock that
+In the previous step we created a baseless rock that
 served an ``index.html`` page with Nginx slices. This rock
 is inherently lighter and less vulnerable than its
 non-chiselled version. However, it is still running as ``root``,

@@ -17,13 +17,13 @@ execute: |
   rm chiselled-hello-nginx_latest_amd64.rock
 
   # [docs:docker-run]
-  docker run --rm -d -p 8000:80 --name chiselled-hello-nginx chiselled-hello-nginx:latest
+  docker run --rm -d -p 80:80 --name chiselled-hello-nginx chiselled-hello-nginx:latest
   # [docs:docker-run-end]
 
   # [docs:test-rock]
-  curl http://127.0.0.1:8000/index.html
+  curl http://localhost
   # [docs:test-rock-end]
 
-  curl http://127.0.0.1:8000/index.html | grep "Hello World! From a Rock!"
+  curl http://localhost | grep "Hello World! From a Rock!"
 
   docker stop chiselled-hello-nginx

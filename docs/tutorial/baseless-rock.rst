@@ -4,7 +4,7 @@ Create a baseless rock
 Project setup
 -------------
 
-We will keep expanding from the previous sections. In this case,
+We will keep expanding from the previous step. In this case,
 we are going to lower the disk usage of our rock by "chiselling"
 it into slices.
 

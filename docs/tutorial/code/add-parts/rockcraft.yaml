@@ -1,0 +1,61 @@
+# Metadata section
+name: hello-nginx-ssl
+summary: Hello World
+description: A basic rock, served with Nginx and chiselled.
+version: "latest"
+license: Apache-2.0
+
+base: bare
+build-base: ubuntu@24.04
+platforms:
+  amd64:
+
+# Parts section
+parts:
+  hello-html:
+    plugin: dump
+    source: .
+    organize:
+      index.html: /var/www/html/index.html
+      nginx.conf: /etc/nginx/conf.d/hello.conf
+    stage-packages:
+      - nginx_bins
+      - base-files_var
+      - base-files_home
+      - base-passwd_data
+    override-prime: |
+      craftctl default
+      groupadd --root ${CRAFT_PRIME} -g 4242 nginx
+      useradd -d /var/lib/nginx --root ${CRAFT_PRIME} -g nginx -u 4242 nginx
+      chown -R 4242:4242 \
+        ${CRAFT_PRIME}/run \
+        ${CRAFT_PRIME}/var/lib/nginx \
+        ${CRAFT_PRIME}/var/www/html \
+        ${CRAFT_PRIME}/var/log/nginx \
+        ${CRAFT_PRIME}/etc/nginx
+
+  minica-build:
+    plugin: go
+    source: https://github.com/jsha/minica.git
+    source-tag: v1.1.0
+    build-snaps:
+      - go/1.22/stable
+
+  ssl-certs:
+    after: [ minica-build ]
+    plugin: nil
+    override-build: |
+      craftctl default
+      mkdir -p ${CRAFT_PART_INSTALL}/var/www/letsencrypt
+      cd ${CRAFT_PART_INSTALL}/var/www/letsencrypt
+      minica --domains="hello-rock"
+    override-prime: |
+      craftctl default
+      chown -R 4242:4242 ${CRAFT_PRIME}/var/www/letsencrypt
+
+services:
+  nginx:
+    override: replace
+    command: nginx -g 'daemon off;'
+    startup: enabled
+    user: nginx
