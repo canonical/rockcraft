@@ -1,4 +1,4 @@
-name: internal-user
+name: rootless-rock
 base: bare
 build-base: ubuntu@24.04
 version: "latest"
