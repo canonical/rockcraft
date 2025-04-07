@@ -42,7 +42,7 @@ parts:
       - go/1.22/stable
 
   ssl-certs:
-    after: [ minica-build ]
+    after: [minica-build]
     plugin: nil
     override-build: |
       craftctl default
