@@ -1,0 +1,29 @@
+###########################################
+# IMPORTANT
+# Comments matter!
+# The docs use the wrapping comments as
+# markers for including said instructions
+# as snippets in the docs.
+###########################################
+summary: baseless rock tutorial
+
+execute: |
+
+  # [docs:build-and-copy-rock]
+  rockcraft pack
+  sudo rockcraft.skopeo --insecure-policy copy oci-archive:chiselled-hello-nginx_latest_amd64.rock docker-daemon:chiselled-hello-nginx:latest
+  # [docs:build-and-copy-rock-end]
+
+  rm chiselled-hello-nginx_latest_amd64.rock
+
+  # [docs:docker-run]
+  docker run --rm -d -p 80:80 --name chiselled-hello-nginx chiselled-hello-nginx:latest
+  # [docs:docker-run-end]
+
+  # [docs:test-rock]
+  curl http://localhost
+  # [docs:test-rock-end]
+
+  curl http://localhost | grep "Hello World! From a Rock!"
+
+  docker stop chiselled-hello-nginx

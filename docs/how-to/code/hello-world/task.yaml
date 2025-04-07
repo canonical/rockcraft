@@ -8,19 +8,33 @@
 summary: hello world tutorial
 
 execute: |
+  date
+  # [docs:install-rockcraft]
+  sudo snap install rockcraft --classic
+  # [docs:install-rockcraft-end]
 
   # [docs:build-rock]
   rockcraft pack
   # [docs:build-rock-end]
+
+  test -f hello_latest_amd64.rock
+  test ! -d parts -a ! -d stage -a ! -d prime
+
+  uname -a
+  snap list
+
+  # test container execution
+  docker images
 
   # [docs:skopeo-copy]
   sudo rockcraft.skopeo --insecure-policy copy oci-archive:hello_latest_amd64.rock docker-daemon:hello:latest
   # [docs:skopeo-copy-end]
 
   rm hello_latest_amd64.rock
+  docker images hello:latest
 
   # [docs:docker-run]
-  docker run --rm hello:latest exec cat /index.html
+  docker run --rm hello:latest exec hello -t
   # [docs:docker-run-end]
 
-  docker run --rm hello:latest exec cat /index.html | grep "Hello World! From a Rock!"
+  docker run --rm hello:latest exec hello -t | grep "hello, world"

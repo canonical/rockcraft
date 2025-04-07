@@ -30,7 +30,7 @@ edge version.
 In order to test the ExpressJS application locally, before packing it into a
 rock, install ``npm`` and initialize the starter app.
 
-.. literalinclude:: code/expressjs/task.yaml
+.. literalinclude:: ../../code/expressjs/task.yaml
     :language: bash
     :start-after: [docs:install-deps]
     :end-before: [docs:install-deps-end]
@@ -42,7 +42,7 @@ Create the ExpressJS application
 
 Start by generating the ExpressJS starter template using the express-generator.
 
-.. literalinclude:: code/expressjs/task.yaml
+.. literalinclude:: ../../code/expressjs/task.yaml
     :language: bash
     :start-after: [docs:init-app]
     :end-before: [docs:init-app-end]
@@ -59,7 +59,7 @@ that we can test by using curl to send a request to the root
 endpoint. We may need a new terminal for this -- if using Multipass, run
 ``multipass shell rock-dev`` to get another terminal:
 
-.. literalinclude:: code/expressjs/task.yaml
+.. literalinclude:: ../../code/expressjs/task.yaml
     :language: bash
     :start-after: [docs:curl-expressjs]
     :end-before: [docs:curl-expressjs-end]
@@ -83,7 +83,7 @@ First, we'll need a ``rockcraft.yaml`` project file. Rockcraft will automate its
 creation and tailor it for a ExpressJS application when we tell it to use the
 ``expressjs-framework`` profile:
 
-.. literalinclude:: code/expressjs/task.yaml
+.. literalinclude:: ../../code/expressjs/task.yaml
     :language: bash
     :start-after: [docs:create-rockcraft-yaml]
     :end-before: [docs:create-rockcraft-yaml-end]
@@ -97,7 +97,7 @@ architecture, include ``arm64`` in ``platforms``.
 As the ``expressjs-framework`` extension is still experimental, export the
 environment variable ``ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS``:
 
-.. literalinclude:: code/expressjs/task.yaml
+.. literalinclude:: ../../code/expressjs/task.yaml
     :language: bash
     :start-after: [docs:experimental]
     :end-before: [docs:experimental-end]
@@ -105,7 +105,7 @@ environment variable ``ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS``:
 
 Pack the rock:
 
-.. literalinclude:: code/expressjs/task.yaml
+.. literalinclude:: ../../code/expressjs/task.yaml
     :language: bash
     :start-after: [docs:pack]
     :end-before: [docs:pack-end]
@@ -117,7 +117,7 @@ Once Rockcraft has finished packing the ExpressJS rock, we'll find a new file in
 the working directory (an `OCI <OCI_image_spec_>`_ image) with the ``.rock``
 extension:
 
-.. literalinclude:: code/expressjs/task.yaml
+.. literalinclude:: ../../code/expressjs/task.yaml
     :language: bash
     :start-after: [docs:ls-rock]
     :end-before: [docs:ls-rock-end]
@@ -129,7 +129,7 @@ Run the ExpressJS rock with Docker
 
 We already have the rock as an OCI image. Load the image into Docker:
 
-.. literalinclude:: code/expressjs/task.yaml
+.. literalinclude:: ../../code/expressjs/task.yaml
     :language: bash
     :start-after: [docs:skopeo-copy]
     :end-before: [docs:skopeo-copy-end]
@@ -138,7 +138,7 @@ We already have the rock as an OCI image. Load the image into Docker:
 
 Check that the image was successfully loaded into Docker:
 
-.. literalinclude:: code/expressjs/task.yaml
+.. literalinclude:: ../../code/expressjs/task.yaml
     :language: bash
     :start-after: [docs:docker-images]
     :end-before: [docs:docker-images-end]
@@ -155,7 +155,7 @@ size:
 Now we're finally ready to run the rock and test the containerised ExpressJS
 application:
 
-.. literalinclude:: code/expressjs/task.yaml
+.. literalinclude:: ../../code/expressjs/task.yaml
     :language: bash
     :start-after: [docs:docker-run]
     :end-before: [docs:docker-run-end]
@@ -164,7 +164,7 @@ application:
 Use the same curl command as before to send a request to the ExpressJS
 application's root endpoint which is running inside the container:
 
-.. literalinclude:: code/expressjs/task.yaml
+.. literalinclude:: ../../code/expressjs/task.yaml
     :language: bash
     :start-after: [docs:curl-expressjs-rock]
     :end-before: [docs:curl-expressjs-rock-end]
@@ -178,7 +178,7 @@ View the application logs
 When deploying the ExpressJS rock, we can always get the application logs with
 :ref:`pebble_explanation_page`:
 
-.. literalinclude:: code/expressjs/task.yaml
+.. literalinclude:: ../../code/expressjs/task.yaml
     :language: bash
     :start-after: [docs:get-logs]
     :end-before: [docs:get-logs-end]
@@ -206,7 +206,7 @@ Now we have a fully functional rock for a ExpressJS application! This concludes
 the first part of this tutorial, so we'll stop the container and remove the
 respective image for now:
 
-.. literalinclude:: code/expressjs/task.yaml
+.. literalinclude:: ../../code/expressjs/task.yaml
     :language: bash
     :start-after: [docs:stop-docker]
     :end-before: [docs:stop-docker-end]
@@ -222,7 +222,7 @@ let's add a new ``/time`` endpoint that returns the current time.
 Start by creating the ``app/routes/time.js`` file in a text editor and paste the
 code from the snippet below:
 
-.. literalinclude:: code/expressjs/time.js
+.. literalinclude:: ../../code/expressjs/time.js
     :caption: time.js
     :language: javascript
 
@@ -230,7 +230,7 @@ Place the code snippet below in ``app/app.js`` under routes registration section
 along with other ``app.use(...)`` lines.
 It will register the new ``/time`` endpoint:
 
-.. literalinclude:: code/expressjs/time_app.js
+.. literalinclude:: ../../code/expressjs/time_app.js
     :caption: app.js
     :language: javascript
     :start-after: [docs:append-lines]
@@ -241,7 +241,7 @@ Since we are creating a new version of the application, set
 
 Pack and run the rock using similar commands as before:
 
-.. literalinclude:: code/expressjs/task.yaml
+.. literalinclude:: ../../code/expressjs/task.yaml
     :language: bash
     :start-after: [docs:docker-run-update]
     :end-before: [docs:docker-run-update-end]
@@ -252,7 +252,7 @@ its new version will be part of the filename.
 
 Finally, use curl to send a request to the ``/time`` endpoint:
 
-.. literalinclude:: code/expressjs/task.yaml
+.. literalinclude:: ../../code/expressjs/task.yaml
     :language: bash
     :start-after: [docs:curl-time]
     :end-before: [docs:curl-time-end]
@@ -271,7 +271,7 @@ Final Cleanup
 
 We can now stop the container and remove the corresponding image:
 
-.. literalinclude:: code/expressjs/task.yaml
+.. literalinclude:: ../../code/expressjs/task.yaml
     :language: bash
     :start-after: [docs:stop-docker-updated]
     :end-before: [docs:stop-docker-updated-end]
@@ -285,7 +285,7 @@ We've reached the end of this tutorial.
 If we'd like to reset the working environment, we can simply run the
 following:
 
-.. literalinclude:: code/expressjs/task.yaml
+.. literalinclude:: ../../code/expressjs/task.yaml
     :language: bash
     :start-after: [docs:cleanup]
     :end-before: [docs:cleanup-end]

@@ -26,7 +26,7 @@ slices.
 .. toctree::
    :maxdepth: 1
 
-   chisel <chisel/index>
+   Chisel <chisel/index>
 
 Documentation
 -------------
@@ -38,17 +38,7 @@ compiled a couple of guides for you to facilitate your contribution.
 .. toctree::
    :maxdepth: 1
 
-   documentation <documentation/index>
-
-Extensions
-----------
-
-Learn how to use framework and platform extensions in your project.
-
-.. toctree::
-   :maxdepth: 1
-
-   configure-the-build-base-for-an-expressjs-app
+   Documentation <documentation/index>
 
 Rocks
 -----
@@ -60,4 +50,14 @@ those aspects in Rockcraft and more.
 .. toctree::
    :maxdepth: 1
 
-   rocks <rocks/index>
+   Rocks <rocks/index>
+
+Extensions
+----------
+
+Learn how to use framework and platform extensions in your project.
+
+.. toctree::
+   :maxdepth: 1
+
+   configure-the-build-base-for-an-expressjs-app

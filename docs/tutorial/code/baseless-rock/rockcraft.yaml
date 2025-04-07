@@ -1,0 +1,31 @@
+# Metadata section
+name: chiselled-hello-nginx
+summary: Hello World
+description: A basic rock, served with Nginx and chiselled.
+version: "latest"
+license: Apache-2.0
+
+base: bare
+build-base: ubuntu@24.04
+platforms:
+  amd64: # Make sure this value matches your computer's architecture
+
+# Parts section
+parts:
+  hello-html:
+    plugin: dump
+    source: .
+    organize:
+      index.html: /var/www/html/index.html
+      nginx.conf: /etc/nginx/conf.d/hello.conf
+    stage-packages:
+      - nginx_bins
+      - base-files_var
+      - base-files_home
+      - base-passwd_data
+
+services:
+  nginx:
+    override: replace
+    command: nginx -g 'daemon off;'
+    startup: enabled
