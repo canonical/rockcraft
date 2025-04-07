@@ -19,7 +19,6 @@
 import abc
 import argparse
 import textwrap
-from pathlib import Path
 
 import tabulate
 from craft_application.commands import AppCommand
@@ -28,7 +27,6 @@ from overrides import overrides  # type: ignore[reportUnknownVariableType]
 from pydantic import BaseModel
 
 from rockcraft import extensions
-from rockcraft.models.project import Project, load_project
 
 
 class ExtensionModel(BaseModel):
@@ -97,7 +95,6 @@ class ExpandExtensionsCommand(AppCommand, abc.ABC):
     @overrides
     def run(self, parsed_args: argparse.Namespace) -> None:  # noqa: ARG002 (unused arg)
         """Print the project's specification with the extensions expanded."""
-        project_path = Path("rockcraft.yaml")
-        project = Project.from_yaml_data(load_project(project_path), project_path)
+        project = self._services.get("project").get()
 
         emit.message(project.to_yaml_string())
