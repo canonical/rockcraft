@@ -1,5 +1,11 @@
 .. _how-to-chisel:
 
+Chisel
+******
+
+Upgrade your Chisel slicing skills by learning how to cut, install and publish
+slices.
+
 .. toctree::
    :maxdepth: 1
 

@@ -1,4 +1,4 @@
-Adding Parts to a rock
+Add Parts to a rock
 **********************
 
 Project setup

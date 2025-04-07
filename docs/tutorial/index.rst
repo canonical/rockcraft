@@ -17,4 +17,4 @@ tools and workflows, then you will dive into more complex aspects when packing r
    2. Install packages in a rock <install-packages>
    3. Create a baseless rock <baseless-rock>
    4. Create a rootless rock <rootless-rock>
-   5. Adding parts to a rock <add-parts>
+   5. Add parts to a rock <add-parts>
