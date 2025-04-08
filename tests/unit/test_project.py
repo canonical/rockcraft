@@ -95,7 +95,7 @@ class DevelProject(Project):
     "development", but we want to test the behavior anyway.
     """
 
-    base: str  # type: ignore
+    base: str  # type: ignore[reportIncompatibleVariableOverride]
 
 
 @pytest.fixture
@@ -435,7 +435,7 @@ def test_project_all_platforms_invalid(yaml_loaded_data):
     )
 
 
-@pytest.mark.parametrize("valid_name", ("aaa", "a00", "a-00", "a-a-a", "a-000-bbb"))
+@pytest.mark.parametrize("valid_name", ["aaa", "a00", "a-00", "a-a-a", "a-000-bbb"])
 def test_project_name_valid(yaml_loaded_data, valid_name):
     yaml_loaded_data["name"] = valid_name
 
@@ -444,7 +444,7 @@ def test_project_name_valid(yaml_loaded_data, valid_name):
 
 
 @pytest.mark.parametrize(
-    "invalid_name", ("AAA", "0aaa", "a", "a--a", "aa-", "a:a", "a/a", "a@a", "a_a")
+    "invalid_name", ["AAA", "0aaa", "a", "a--a", "aa-", "a:a", "a/a", "a@a", "a_a"]
 )
 def test_project_name_invalid(yaml_loaded_data, invalid_name):
     yaml_loaded_data["name"] = invalid_name
@@ -647,6 +647,20 @@ def test_project_generate_metadata(yaml_loaded_data):
         "base-digest": digest,
     }
 
+    # Redo test with multi-line summary
+    multi_line_summary = "one\n\ntwo\n\n\n\n\nthree"
+    project = Project.unmarshal({**yaml_loaded_data, **{"summary": multi_line_summary}})
+    sanitized_summary = "one\ntwo\nthree"
+
+    oci_annotations, rock_metadata = project.generate_metadata(
+        now, bytes.fromhex(digest)
+    )
+    assert oci_annotations["org.opencontainers.image.description"] == (
+        f"{sanitized_summary}\n\n{yaml_loaded_data['description']}"
+    )
+
+    assert rock_metadata["summary"] == multi_line_summary
+
 
 def test_metadata_base_devel(yaml_loaded_data):
     yaml_loaded_data["base"] = "ubuntu@24.04"
@@ -798,7 +812,5 @@ def test_provider_base(base, expected_base):
 
 
 def test_provider_base_error():
-    with pytest.raises(ValueError) as raised:
+    with pytest.raises(ValueError, match="Unknown base 'unknown'"):
         Project._providers_base("unknown")  # pylint: disable=protected-access
-
-    assert "Unknown base 'unknown'" in str(raised.value)

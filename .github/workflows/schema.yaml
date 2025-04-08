@@ -28,7 +28,7 @@ jobs:
 
       - name: Run generator script
         run: |
-          uv run --frozen --no-dev --extra apt-jammy \
+          uv run --frozen --no-dev --group dev-jammy \
             python tools/schema/schema.py > generated_schema.json
 
       - name: Check with stored schema

@@ -57,7 +57,7 @@ def django_input_yaml_fixture():
 def test_flask_extension_default(
     tmp_path, flask_input_yaml, packages, async_package, expected_worker
 ):
-    full_packages = "\n".join([packages, async_package])
+    full_packages = f"{packages}\n{async_package}"
     (tmp_path / "requirements.txt").write_text(full_packages)
     (tmp_path / "app.py").write_text("app = object()")
     (tmp_path / "static").mkdir()
@@ -288,7 +288,7 @@ def test_flask_extension_override_parts(tmp_path, flask_input_yaml):
 
 
 @pytest.mark.parametrize(
-    "build_base, expected_stage_packages, expected_python_interpreter",
+    ("build_base", "expected_stage_packages", "expected_python_interpreter"),
     [
         ("ubuntu@22.04", ["python3.10-venv_ensurepip"], "python3.10"),
         ("ubuntu:22.04", ["python3.10-venv_ensurepip"], "python3.10"),

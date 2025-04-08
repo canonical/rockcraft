@@ -89,7 +89,6 @@ class RockcraftImageService(ProjectService):
         rootfs = base_image.extract_to(bundle_dir)
         emit.progress(f"Extracted {base_image.image_name}")
 
-        # TODO: check if destination image already exists, etc.
         project_base_image = base_image.copy_to(
             f"{project.name}:rockcraft-base", image_dir=image_dir
         )

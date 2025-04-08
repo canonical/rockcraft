@@ -123,7 +123,7 @@ def test_go_extension_base_bare(tmp_path, go_input_yaml, build_environment):
 
 @pytest.mark.usefixtures("go_extension")
 @pytest.mark.parametrize(
-    "organize, expected_organize",
+    ("organize", "expected_organize"),
     [
         ({}, {"bin/goprojectname": "usr/local/bin/goprojectname"}),
         (
@@ -160,7 +160,7 @@ def test_go_extension_overrides_organize(
 
 @pytest.mark.usefixtures("go_extension")
 @pytest.mark.parametrize(
-    "build_packages, build_snaps, expected_build_snaps",
+    ("build_packages", "build_snaps", "expected_build_snaps"),
     [
         ([], [], ["go"]),
         ([], ["go/1.22/stable"], ["go/1.22/stable"]),

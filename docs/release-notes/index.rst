@@ -11,9 +11,10 @@ It also contains the release and support policies for Rockcraft.
 Current releases
 ----------------
 
-- :ref:`Rockcraft 1.9.0 <release-1.9.0>`
-- :ref:`Rockcraft 1.8.0 <release-1.8.0>`
-- :ref:`Rockcraft 1.7.0 <release-1.7.0>`
+- :ref:`Rockcraft 1.10 <release-1.10>`
+- :ref:`Rockcraft 1.9 <release-1.9>`
+- :ref:`Rockcraft 1.8 <release-1.8>`
+- :ref:`Rockcraft 1.7 <release-1.7>`
 
 .. _release_policy_and_schedule:
 
@@ -62,9 +63,10 @@ development keeps pace with the OS's new releases and support lifecycle.
    :maxdepth: 1
    :hidden:
 
-   Rockcraft 1.9.0 <rockcraft-1-9-0>
-   Rockcraft 1.8.0 <rockcraft-1-8-0>
-   Rockcraft 1.7.0 <rockcraft-1-7-0>
+   Rockcraft 1.10 <rockcraft-1-10>
+   Rockcraft 1.9 <rockcraft-1-9>
+   Rockcraft 1.8 <rockcraft-1-8>
+   Rockcraft 1.7 <rockcraft-1-7>
 
 
 .. release note template:
@@ -75,8 +77,6 @@ development keeps pace with the OS's new releases and support lifecycle.
   15 October 2024
 
   Learn about the new features, changes, and fixes introduced in Starcraft 2.0.
-  For information about the Starcraft release cycle, see the
-  :ref:`release_policy_and_schedule`.
 
 
   Requirements and compatibility
@@ -124,18 +124,17 @@ development keeps pace with the OS's new releases and support lifecycle.
   them to provide users and authors an avenue for discoverability and
   feedback.">
 
-  <Paragraph 2: Present the new behaviour or feature. In words, *show* what the
-  feature is and make a case for how the reader could benefit from it. Centre
-  the user whenever possible ("you"), and speak on behalf of Canonical ("we").
-  Prefer general, simple usage over complex applications. Use past tense, or the
-  form "is now [x]" or "now [does x]". For example, "We understand that some
-  authors may not want to have their snaps publicly ranked. If you prefer to
-  disable ranking for your snap, we added the ``feedback`` key in Snapcraft
-  project files, which contains child keys for controlling many of the rating
-  and feedback features in the store. You can declare ``voting: false`` to
-  disable voting." Another example: "The Maven and Ant plugins now generate the
-  more standard path to the Java runtime executable instead of an unconventional
-  one, making their locations more predictable.">
+  <Paragraph 2: Present the new behaviour or feature. In words, *show* what the feature
+  is and make a case for how the reader could benefit from it. Centre the user whenever
+  possible ("you"), and speak on behalf of Canonical ("we"). Prefer general, simple
+  usage over complex applications. Use past tense, or the form "is now [x]" or "now
+  [does x]". For example, "We understand that some authors may not want to have their
+  snaps publicly ranked. If you prefer to disable ranking for your snap, we added the
+  ``feedback`` key in Snapcraft recipes, which contains child keys for controlling many
+  of the rating and feedback features in the store. You can declare ``voting: false`` to
+  disable voting." Another example: "The Maven and Ant plugins now generate the more
+  standard path to the Java runtime executable instead of an unconventional one, making
+  their locations more predictable.">
 
   <Paragraph 3, optional: Provide a call to action. This could take several
   forms, such as a call to immediately perform a relevant action in Starcraft,
@@ -154,12 +153,12 @@ development keeps pace with the OS's new releases and support lifecycle.
   <Feature A>
   ~~~~~~~~~~~
 
-  <Add a short list of changes to the feature. Keep each item brief and for the
-  most part descriptive. There's little need to sell the change or give a
-  detailed reason. Use past tense, or the form "is now [x]" or "now [does x]".
-  For example, "- Made the error message for ``method()`` more descriptive and
-  recommend a likely remedy."Another example: "- The GET method on the profiles
-  API now returns the user creation date.">
+  <Add a short list of changes to the feature. Keep each item brief and for the most
+  part descriptive. There's little need to sell the change or give a detailed reason.
+  Use past tense, or the form "is now [x]" or "now [does x]". For example, "- Made the
+  error message for ``method()`` more descriptive and recommend a likely remedy."
+  Another example: "- The GET method on the profiles API now returns the user creation
+  date.">
 
 
   Backwards-incompatible changes

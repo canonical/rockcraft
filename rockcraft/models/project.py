@@ -22,12 +22,12 @@ import shlex
 import typing
 from collections.abc import Mapping
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Literal
+from typing import TYPE_CHECKING, Annotated, Any, Literal
 
 import craft_cli
 import craft_platforms
 import pydantic
-import spdx_lookup  # type: ignore
+import spdx_lookup  # type: ignore[import-untyped]
 import yaml
 from craft_application.errors import CraftValidationError
 from craft_application.models import (
@@ -43,7 +43,7 @@ from craft_application.models.base import alias_generator
 from craft_platforms import rock
 from craft_providers import bases
 from craft_providers.errors import BaseConfigurationError
-from typing_extensions import Annotated, override
+from typing_extensions import override
 
 from rockcraft.architectures import SUPPORTED_ARCHS
 from rockcraft.errors import ProjectLoadError
@@ -248,11 +248,10 @@ class BuildPlanner(BaseBuildPlanner):
 class Project(BuildPlanner, BaseProject):  # type: ignore[misc]
     """Rockcraft project definition."""
 
-    name: ProjectName  # type: ignore
-    # summary is Optional[str] in BaseProject
-    summary: str  # type: ignore
+    name: ProjectName  # type: ignore[reportIncompatibleVariableOverride]
+    # Type of summary is Optional[str] in BaseProject
+    summary: str  # type: ignore[reportIncompatibleVariableOverride]
     description: str  # type: ignore[reportIncompatibleVariableOverride]
-    # license is Optional[str] in BaseProject
     environment: dict[str, str] | None = None
     run_user: _RunUser = None
     services: dict[str, Service] | None = None
@@ -442,7 +441,10 @@ class Project(BuildPlanner, BaseProject):  # type: ignore[misc]
             "org.opencontainers.image.ref.name": self.name,
             "org.opencontainers.image.created": generation_time,
             "org.opencontainers.image.base.digest": base_digest.hex(),
-            "org.opencontainers.image.description": f"{self.summary}\n\n{self.description}",
+            "org.opencontainers.image.description": re.sub(
+                r"\n{2,}", "\n", self.summary
+            )
+            + f"\n\n{self.description}",
         }
         if self.license:
             annotations["org.opencontainers.image.licenses"] = self.license
@@ -480,7 +482,7 @@ def load_project(filename: Path) -> dict[str, Any]:
     :raises CraftValidationError: If data validation fails.
     """
     try:
-        with open(filename, encoding="utf-8") as yaml_file:
+        with filename.open(encoding="utf-8") as yaml_file:
             yaml_data = yaml.safe_load(yaml_file)
     except OSError as err:
         msg = err.strerror or "unknown"

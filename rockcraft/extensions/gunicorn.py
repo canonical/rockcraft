@@ -17,16 +17,18 @@
 """An extension for the Gunicorn based Python WSGI application extensions."""
 
 import abc
+import contextlib
 import fnmatch
 import os.path
 import posixpath
 import re
 from typing import Any
 
-from overrides import override
+from overrides import override  # type: ignore[reportUnknownVariableType]
 from packaging.requirements import InvalidRequirement, Requirement
 
-from ..errors import ExtensionError
+from rockcraft.errors import ExtensionError
+
 from ._python_utils import has_global_variable
 from ._utils import find_ubuntu_base_python_version
 from .extension import Extension, get_extensions_data_dir
@@ -43,7 +45,7 @@ class _GunicornBase(Extension):
 
     @staticmethod
     @override
-    def is_experimental(base: str | None) -> bool:
+    def is_experimental(base: str | None) -> bool:  # noqa: ARG004 (unused arg)
         """Check if the extension is in an experimental state."""
         return True
 
@@ -65,7 +67,7 @@ class _GunicornBase(Extension):
     def gen_install_app_part(self) -> dict[str, Any]:
         """Generate the content of *-framework/install-app part."""
 
-    def _gen_parts(self) -> dict:
+    def _gen_parts(self) -> dict[str, Any]:
         """Generate the parts associated with this extension."""
         data_dir = get_extensions_data_dir()
         stage_packages = ["python3-venv"]
@@ -132,12 +134,10 @@ class _GunicornBase(Extension):
         requirements_file = self.project_root / "requirements.txt"
         requirements_text = requirements_file.read_text()
         for line in requirements_text.splitlines():
-            try:
+            with contextlib.suppress(InvalidRequirement):
                 req = Requirement(line)
                 if req.name == "gevent":
                     return "gevent"
-            except InvalidRequirement:
-                pass
         return "sync"
 
     @override
@@ -206,7 +206,7 @@ class FlaskFramework(_GunicornBase):
 
     @staticmethod
     @override
-    def is_experimental(base: str | None) -> bool:
+    def is_experimental(base: str | None) -> bool:  # noqa: ARG004 (unused arg)
         """Check if the extension is in an experimental state."""
         return False
 
@@ -296,7 +296,7 @@ class FlaskFramework(_GunicornBase):
             ]
 
         requirements_lines = requirements_file.read_text(encoding="utf-8").splitlines()
-        if not any(("flask" in line.lower() for line in requirements_lines)):
+        if not any("flask" in line.lower() for line in requirements_lines):
             return ["missing flask package dependency in requirements.txt file."]
 
         return []
@@ -342,7 +342,7 @@ class DjangoFramework(_GunicornBase):
 
     @staticmethod
     @override
-    def is_experimental(base: str | None) -> bool:
+    def is_experimental(base: str | None) -> bool:  # noqa: ARG004 (unused arg)
         """Check if the extension is in an experimental state."""
         return False
 

@@ -355,4 +355,4 @@ def test_prune_prime_files(tmp_path):
     layers.prune_prime_files(prime_dir, files, base_layer_dir)
 
     # "file1.txt" gets pruned, the other files remain.
-    assert sorted(os.listdir(prime_dir)) == ["file2.txt", "file3.txt"]
+    assert sorted(os.listdir(prime_dir)) == ["file2.txt", "file3.txt"]  # noqa: PTH208 (use Path.iterdir())

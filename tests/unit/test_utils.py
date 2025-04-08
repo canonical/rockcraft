@@ -20,17 +20,17 @@ import pytest
 from rockcraft import utils
 
 
-@pytest.fixture()
+@pytest.fixture
 def mock_isatty(mocker):
     return mocker.patch("rockcraft.utils.sys.stdin.isatty", return_value=True)
 
 
-@pytest.fixture()
+@pytest.fixture
 def mock_input(mocker):
     return mocker.patch("rockcraft.utils.input", return_value="")
 
 
-@pytest.fixture()
+@pytest.fixture
 def mock_is_managed_mode(mocker):
     return mocker.patch("rockcraft.utils.is_managed_mode", return_value=False)
 
