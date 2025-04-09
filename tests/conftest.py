@@ -21,6 +21,8 @@ from pathlib import Path
 from typing import Any
 from unittest import mock
 
+import craft_platforms
+import distro
 import pytest
 import xdg
 from craft_application.application import AppMetadata
@@ -28,6 +30,28 @@ from craft_application.services import ServiceFactory
 from overrides import override
 from rockcraft import services
 from rockcraft.application import APP_METADATA, Rockcraft
+
+DEFAULT_PROJECT_TEMPLATE = """\
+name: test-rock
+version: "0.1"
+summary: Rock on!
+description: Ramble off!
+base: {base}
+platforms:
+  64-bit-pc:
+    build-on: amd64  # Testing vectorisation of build-on
+    build-for: [amd64]
+  some-phone:
+    build-on: [amd64, arm64, s390x]
+    build-for: arm64  # Testing vectorisation of build-for
+  ppc64el:  # Testing expansion of architecture name.
+  risky:
+    build-on: [amd64, arm64, ppc64el, riscv64, s390x]
+    build-for: [riscv64]
+  s390x:
+    build-on: [amd64, arm64, armhf, i386, ppc64el, riscv64, s390x]
+    build-for: [s390x]
+"""
 
 
 @pytest.fixture
@@ -334,6 +358,28 @@ def fake_app(fake_services: services.RockcraftServiceFactory) -> Rockcraft:
 @pytest.fixture
 def fake_app_config(fake_app: Rockcraft) -> dict[str, Any]:
     return fake_app.app_config
+
+
+@pytest.fixture
+def fake_project_yaml(request: pytest.FixtureRequest):
+    if "base" in request.fixturenames:
+        base = request.getfixturevalue("base")
+    else:
+        base = craft_platforms.DistroBase.from_linux_distribution(
+            distro.LinuxDistribution(
+                include_lsb=False, include_uname=False, include_oslevel=False
+            )
+        )
+
+    return DEFAULT_PROJECT_TEMPLATE.format(base=f"{base.distribution}@{base.series}")
+
+
+@pytest.fixture
+def fake_project_file(in_project_path, fake_project_yaml):
+    project_file = in_project_path / "rockcraft.yaml"
+    project_file.write_text(fake_project_yaml)
+
+    return project_file
 
 
 @pytest.fixture

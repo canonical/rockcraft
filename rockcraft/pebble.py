@@ -243,7 +243,7 @@ def add_pebble_part(project: dict[str, Any]) -> None:
     :raises CraftValidationError: If `project` already contains a "pebble" part,
       and said part's contents are different from the contents of the part we add.
     """
-    build_base = project["build-base"]
+    build_base = project.get("build-base") or project["base"]
     pebble_part = Pebble.get_part_spec(build_base)
 
     parts = project["parts"]

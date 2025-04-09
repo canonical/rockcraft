@@ -13,10 +13,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-from pathlib import Path
 
 import pytest
-import yaml
 from rockcraft.pebble import Pebble
 
 ENVIRONMENT_YAML = """\
@@ -47,16 +45,49 @@ parts:
 """
 
 
-def test_application_expand_environment(new_dir, default_application):
-    project_file = Path(new_dir) / "rockcraft.yaml"
-    project_file.write_text(ENVIRONMENT_YAML)
-
-    project = default_application.project
+@pytest.mark.usefixtures("fake_project_file")
+@pytest.mark.parametrize(("base", "build_base"), [("ubuntu:20.04", None)])
+def test_application_expand_environment(new_dir, fake_app):
+    project = fake_app.project
 
     assert project.services["test"].environment == {
         "X": "ship it!",
         "CRAFT_VAR": "2.0",
     }
+
+
+PEBBLE_YAML_TEMPLATE = """\
+name: environment-test
+version: 2.0
+base: {base}
+build-base: {build_base}
+summary: Environment
+description: A rock with an environment but no real purpose
+license: Apache-2.0
+environment:
+  FOO: bar
+  X: "override me"
+services:
+  test:
+    override: replace
+    command: /usr/bin/env
+    startup: enabled
+    environment:
+      X: "ship it!"
+      CRAFT_VAR: $CRAFT_PROJECT_VERSION
+
+platforms:
+  amd64:
+
+parts:
+  part1:
+    plugin: nil
+"""
+
+
+@pytest.fixture
+def fake_project_yaml(base, build_base) -> str:
+    return PEBBLE_YAML_TEMPLATE.format(base=base, build_base=build_base or "")
 
 
 @pytest.mark.parametrize(
@@ -72,15 +103,8 @@ def test_application_expand_environment(new_dir, default_application):
         ("ubuntu@22.04", "ubuntu@22.04", Pebble.PEBBLE_PART_SPEC_PREVIOUS),
     ],
 )
-def test_application_pebble_part(
-    new_dir, default_application, base, build_base, expected_spec
-):
+@pytest.mark.usefixtures("fake_project_file")
+def test_application_pebble_part(new_dir, fake_app, base, build_base, expected_spec):
     """Test that loading the project through the application adds the Pebble part."""
-    project_file = Path(new_dir) / "rockcraft.yaml"
-    new_yaml = yaml.safe_load(ENVIRONMENT_YAML)
-    new_yaml["base"] = base
-    new_yaml["build-base"] = build_base
-    project_file.write_text(yaml.safe_dump(new_yaml))
-
-    project = default_application.project
+    project = fake_app.project
     assert project.parts["pebble"] == expected_spec
