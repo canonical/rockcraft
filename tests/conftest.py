@@ -16,10 +16,18 @@
 
 import os
 import types
+from collections.abc import Callable
 from pathlib import Path
+from typing import Any
+from unittest import mock
 
 import pytest
 import xdg
+from craft_application.application import AppMetadata
+from craft_application.services import ServiceFactory
+from overrides import override
+from rockcraft import services
+from rockcraft.application import APP_METADATA, Rockcraft
 
 
 @pytest.fixture
@@ -130,26 +138,6 @@ def default_project(extra_project_params):
 
 
 @pytest.fixture
-def default_build_plan(default_project):
-    from rockcraft.models.project import BuildPlanner
-
-    return BuildPlanner.unmarshal(default_project.marshal()).get_build_plan()
-
-
-@pytest.fixture
-def default_factory(default_project, default_build_plan):
-    from rockcraft.application import APP_METADATA
-    from rockcraft.services import RockcraftServiceFactory
-
-    factory = RockcraftServiceFactory(
-        app=APP_METADATA,
-        project=default_project,
-    )
-    factory.update_kwargs("image", work_dir=Path("work"), build_plan=default_build_plan)
-    return factory
-
-
-@pytest.fixture
 def default_image_info():
     from rockcraft import oci
     from rockcraft.services.image import ImageInfo
@@ -175,37 +163,21 @@ def image_service(default_project, default_factory, tmp_path, default_build_plan
 
     return RockcraftImageService(
         app=APP_METADATA,
-        project=default_project,
         services=default_factory,
-        work_dir=tmp_path,
-        build_plan=default_build_plan,
+        work_dir=tmp_path / "work",
+        project_dir=tmp_path,
     )
 
 
 @pytest.fixture
-def provider_service(default_project, default_build_plan, default_factory, tmp_path):
+def provider_service(default_factory, tmp_path):
     from rockcraft.application import APP_METADATA
     from rockcraft.services import RockcraftProviderService
 
     return RockcraftProviderService(
         app=APP_METADATA,
-        project=default_project,
         services=default_factory,
-        build_plan=default_build_plan,
         work_dir=tmp_path,
-    )
-
-
-@pytest.fixture
-def package_service(default_project, default_factory, default_build_plan):
-    from rockcraft.application import APP_METADATA
-    from rockcraft.services import RockcraftPackageService
-
-    return RockcraftPackageService(
-        app=APP_METADATA,
-        project=default_project,
-        services=default_factory,
-        build_plan=default_build_plan,
     )
 
 
@@ -285,3 +257,158 @@ def project_main_module() -> types.ModuleType:
             "Failed to import the project's main module: check if it needs updating",
         )
     return main_module
+
+
+@pytest.fixture
+def fake_lifecycle_service_class(
+    in_project_path: Path,
+) -> type[services.RockcraftLifecycleService]:
+    class FakeLifecycleService(services.RockcraftLifecycleService):
+        def __init__(
+            self,
+            app: AppMetadata,
+            services: ServiceFactory,
+            **kwargs: Any,
+        ):
+            super().__init__(
+                app,
+                services,
+                work_dir=kwargs.pop("work_dir", in_project_path / "work"),
+                cache_dir=kwargs.pop("cache_dir", in_project_path / "cache"),
+                platform=None,
+                **kwargs,
+            )
+
+    return FakeLifecycleService
+
+
+@pytest.fixture
+def fake_provider_service_class(
+    project_path: Path,
+) -> type[services.RockcraftProviderService]:
+    class FakeProviderService(services.RockcraftProviderService):
+        def __init__(
+            self,
+            app: AppMetadata,
+            services: ServiceFactory,
+            work_dir: Path,
+        ):
+            super().__init__(app, services, work_dir=project_path)
+
+    return FakeProviderService
+
+
+@pytest.fixture
+def fake_package_service_class() -> type[services.RockcraftPackageService]:
+    class FakePackageService(services.RockcraftPackageService):
+        pass
+
+    return FakePackageService
+
+
+@pytest.fixture
+def fake_remote_build_service_class(
+    mocker,
+) -> type[services.RockcraftRemoteBuildService]:
+    import lazr.restfulclient.resource
+
+    me = mock.Mock(lazr.restfulclient.resource.Entry)
+    me.name = "craft_test_user"
+
+    class FakeRemoteBuildService(services.RockcraftRemoteBuildService):
+        @override
+        def __init__(self, app: AppMetadata, services: ServiceFactory):
+            super().__init__(app=app, services=services)
+            self._is_setup = True
+
+    # The login should not do anything
+    mocker.patch("craft_application.launchpad.Launchpad.anonymous")
+    mocker.patch("craft_application.launchpad.Launchpad.login")
+
+    return FakeRemoteBuildService
+
+
+@pytest.fixture
+def fake_services(
+    tmp_path,
+    project_path,
+    fake_lifecycle_service_class,
+    fake_package_service_class,
+    fake_provider_service_class,
+    fake_remote_build_service_class,
+) -> services.RockcraftServiceFactory:
+    from rockcraft.services import RockcraftServiceFactory, register_rockcraft_services
+
+    # Register the defaults
+    register_rockcraft_services()
+
+    # Override defaults with the classes that need modifications for testing
+    RockcraftServiceFactory.register("package", fake_package_service_class)
+    RockcraftServiceFactory.register("lifecycle", fake_lifecycle_service_class)
+    RockcraftServiceFactory.register("remote_build", fake_remote_build_service_class)
+    RockcraftServiceFactory.register("provider", fake_provider_service_class)
+    RockcraftServiceFactory.register("image", services.RockcraftImageService)
+
+    factory = RockcraftServiceFactory(app=APP_METADATA)
+
+    factory.update_kwargs(
+        "lifecycle", work_dir=tmp_path, cache_dir=tmp_path / "cache", build_plan=[]
+    )
+    factory.update_kwargs("project", project_dir=project_path)
+    factory.update_kwargs("provider", work_dir=tmp_path)
+    factory.update_kwargs("image", project_dir=project_path, work_dir=tmp_path)
+
+    return factory
+
+
+@pytest.fixture
+def fake_app(fake_services: services.RockcraftServiceFactory) -> Rockcraft:
+    from rockcraft.cli import fill_command_groups
+
+    app = Rockcraft(app=APP_METADATA, services=fake_services)
+    fill_command_groups(app)
+
+    return app
+
+
+@pytest.fixture
+def fake_app_config(fake_app: Rockcraft) -> dict[str, Any]:
+    return fake_app.app_config
+
+
+@pytest.fixture
+def rock_project(tmp_path) -> Callable[..., dict[str, Any]]:
+    """Return a fixture that can write a rock project file."""
+    import yaml
+
+    def _write_project(
+        *,
+        filename: str | Path = "rockcraft.yaml",
+        **kwargs,
+    ) -> dict[str, Any]:
+        content = {
+            "name": "test-rock",
+            "version": "0.1",
+            "summary": "Rock on!",
+            "description": "Ramble on!",
+            "parts": {
+                "part1": {
+                    "plugin": "nil",
+                },
+            },
+            "platforms": {
+                "amd64": None,
+            },
+            "base": "bare",
+            # "build-base": "ubuntu@24.04",
+            **kwargs,
+        }
+        yaml_path = Path(filename)
+        yaml_path.parent.mkdir(parents=True, exist_ok=True)
+        yaml_path.write_text(
+            yaml.safe_dump(content, indent=2, sort_keys=False),
+            encoding="utf-8",
+        )
+        return content
+
+    return _write_project

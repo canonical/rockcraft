@@ -27,6 +27,7 @@ from overrides import overrides  # type: ignore[reportUnknownVariableType]
 from pydantic import BaseModel
 
 from rockcraft import extensions
+from rockcraft.models import Project
 
 
 class ExtensionModel(BaseModel):
@@ -95,6 +96,13 @@ class ExpandExtensionsCommand(AppCommand, abc.ABC):
     @overrides
     def run(self, parsed_args: argparse.Namespace) -> None:  # noqa: ARG002 (unused arg)
         """Print the project's specification with the extensions expanded."""
-        project = self._services.get("project").get()
+        project_service = self._services.get("project")
+        raw_project = project_service.get_raw()
+        project_path = project_service.resolve_project_file_path()
+
+        processed_data = extensions.apply_extensions(
+            project_root=project_path.parent, yaml_data=raw_project
+        )
+        project = Project.from_yaml_data(processed_data, project_path)
 
         emit.message(project.to_yaml_string())

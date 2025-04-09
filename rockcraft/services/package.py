@@ -42,10 +42,9 @@ class RockcraftPackageService(PackageService):
         """
         # This inner import is necessary to resolve a cyclic import
         # pylint: disable=import-outside-toplevel
-        from rockcraft.services import RockcraftServiceFactory
+        from rockcraft.services import RockcraftImageService
 
-        services = cast(RockcraftServiceFactory, self._services)
-        image_service = services.image
+        image_service = cast(RockcraftImageService, self._services.get("image"))
         image_info = image_service.obtain_image()
 
         build_plan = self._services.get("build_plan").plan()

@@ -33,6 +33,7 @@ class RockcraftLifecycleService(LifecycleService):
 
     @override
     def setup(self) -> None:
+        super().setup()
         """Initialize the LifecycleManager with previously-set arguments."""
         # pylint: disable=import-outside-toplevel
         # This inner import is necessary to resolve a cyclic import
@@ -52,8 +53,6 @@ class RockcraftLifecycleService(LifecycleService):
             project_name=project.name,
             rootfs_dir=image_info.base_layer_dir,
         )
-
-        super().setup()
 
     @override
     def post_prime(self, step_info: StepInfo) -> bool:

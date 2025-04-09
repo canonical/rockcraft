@@ -577,16 +577,12 @@ wheels = [
 
 [[package]]
 name = "craft-platforms"
-version = "0.6.0"
-source = { registry = "https://pypi.org/simple" }
+version = "0.7.0.post1+g8c960fe"
+source = { git = "https://github.com/canonical/craft-platforms?rev=work%2Frockcraft-build-plan-fix%2FCRAFT-4412#8c960feb9ddac7078348f8a694e6381bfe2ba2c9" }
 dependencies = [
     { name = "annotated-types" },
     { name = "distro" },
     { name = "typing-extensions" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/ab/7e/a9a54ac2025f5399689027fd317273f477c7c15478b2c59791aa48f34262/craft_platforms-0.6.0.tar.gz", hash = "sha256:7aa153bfff5a28cf4f8c8a7b3da29c259da3a9d9a2f9a2e7c52e118e5735a927", size = 173964 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/fc/a8/8a11759a28f90b8461ffb0651e21f2b677b4b0547d475a605772858449c4/craft_platforms-0.6.0-py3-none-any.whl", hash = "sha256:ebb1dc6bd1d8c4cbcdab573b9966b20844a9c32aea755ca51de64d4b2a1e646e", size = 24476 },
 ]
 
 [[package]]
@@ -2443,7 +2439,7 @@ requires-dist = [
     { name = "craft-archives" },
     { name = "craft-cli" },
     { name = "craft-parts" },
-    { name = "craft-platforms" },
+    { name = "craft-platforms", git = "https://github.com/canonical/craft-platforms?rev=work%2Frockcraft-build-plan-fix%2FCRAFT-4412" },
     { name = "craft-providers" },
     { name = "craft-store", marker = "extra == 'store'" },
     { name = "overrides" },

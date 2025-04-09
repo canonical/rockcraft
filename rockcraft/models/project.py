@@ -100,6 +100,8 @@ class Project(BaseProject):
     checks: dict[str, Check] | None = None
     entrypoint_service: str | None = None
     platforms: dict[str, Platform | None]  # type: ignore[assignment]
+    base: BaseT  # type: ignore[reportIncompatibleVariableOverride]
+    build_base: BuildBaseT = None  # type: ignore[reportIncompatibleVariableOverride]
 
     model_config = pydantic.ConfigDict(
         validate_assignment=True,
@@ -147,6 +149,47 @@ class Project(BaseProject):
             raise ValueError(unsupported_msg)
 
         return values
+
+    @pydantic.field_validator("build_base")
+    @classmethod
+    def _validate_build_base(
+        cls, value: str | None, info: pydantic.ValidationInfo
+    ) -> str | None:
+        """Build-base defaults to the base value if not specified.
+
+        :raises CraftValidationError: If base validation fails.
+        """
+        if not value:
+            base_value = info.data.get("base")
+            if base_value == "bare":
+                raise ValueError(
+                    'When "base" is "bare", a build-base must be specified.'
+                )
+            return base_value
+        return value
+
+    @pydantic.field_validator("base", mode="before")
+    @classmethod
+    def _validate_deprecated_base(cls, base_value: str | None) -> str | None:
+        return cls._check_deprecated_base(base_value, "base")
+
+    @pydantic.field_validator("build_base", mode="before")
+    @classmethod
+    def _validate_deprecated_build_base(cls, base_value: str | None) -> str | None:
+        return cls._check_deprecated_base(base_value, "build-base")
+
+    @staticmethod
+    def _check_deprecated_base(base_value: str | None, field_name: str) -> str | None:
+        if base_value in DEPRECATED_COLON_BASES:
+            at_value = base_value.replace(":", "@")
+            message = (
+                f'Warning: use of ":" in field "{field_name}" is deprecated. '
+                f'Prefer "{at_value}" instead.'
+            )
+            craft_cli.emit.message(message)
+            return at_value
+
+        return base_value
 
     @pydantic.field_validator("license")
     @classmethod

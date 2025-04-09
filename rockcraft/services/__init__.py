@@ -22,7 +22,10 @@ from rockcraft.services.lifecycle import RockcraftLifecycleService
 from rockcraft.services.package import RockcraftPackageService
 from rockcraft.services.provider import RockcraftProviderService
 from rockcraft.services.remotebuild import RockcraftRemoteBuildService
-from rockcraft.services.service_factory import RockcraftServiceFactory
+from rockcraft.services.service_factory import (
+    RockcraftServiceFactory,
+    register_rockcraft_services,
+)
 
 __all__ = [
     "RockcraftImageService",
@@ -32,4 +35,5 @@ __all__ = [
     "RockcraftProviderService",
     "RockcraftServiceFactory",
     "RockcraftRemoteBuildService",
+    "register_rockcraft_services",
 ]

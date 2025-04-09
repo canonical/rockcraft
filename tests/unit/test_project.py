@@ -24,12 +24,10 @@ import pydantic
 import pytest
 import yaml
 from craft_application.errors import CraftValidationError
-from craft_platforms import BuildInfo, DebianArchitecture, DistroBase
 from craft_providers.bases import ubuntu
-from rockcraft.errors import ProjectLoadError
 from rockcraft.models import Project
 from rockcraft.models.project import MESSAGE_INVALID_NAME, Platform
-from rockcraft.pebble import Pebble, Service
+from rockcraft.pebble import Service
 
 _ARCH_MAPPING = {"x86": "amd64", "x64": "amd64"}
 try:
@@ -562,6 +560,7 @@ def pebble_project(pebble_spec) -> str:
         title: Rock with Pebble
         version: latest
         base: ubuntu@24.04
+        build-base: devel
         summary: Rock with Pebble
         description: Rock with Pebble
         license: Apache-2.0
@@ -580,47 +579,6 @@ def pebble_project(pebble_spec) -> str:
     )
     yaml_data["parts"]["pebble"] = pebble_spec
     return yaml.dump(yaml_data)
-
-
-@pytest.mark.xfail(
-    strict=True, reason="Needs fixture adjustments to use the project service to load"
-)
-def test_project_unmarshal_existing_pebble_different(tmp_path):
-    """Test that loading a project that already has a "pebble" part fails if that
-    part is different from what we'd create."""
-    yaml_data = pebble_project(
-        {
-            "plugin": "go",
-            "source": "https://github.com/fork/pebble.git",
-            "source-branch": "new-pebble-work",
-        }
-    )
-    rockcraft_file = tmp_path / "rockcraft.yaml"
-    rockcraft_file.write_text(
-        yaml_data,
-        encoding="utf-8",
-    )
-
-    with pytest.raises(CraftValidationError):
-        load_project(rockcraft_file)
-
-
-@pytest.mark.xfail(
-    strict=True, reason="Needs fixture adjustments to use the project service to load"
-)
-def test_project_unmarshal_existing_pebble_same(tmp_path):
-    """Test that loading a project that already has a "pebble" part works if that
-    part is the same as what we'd create."""
-
-    yaml_data = pebble_project(Pebble.get_part_spec("ubuntu@24.04"))
-    rockcraft_file = tmp_path / "rockcraft.yaml"
-    rockcraft_file.write_text(
-        yaml_data,
-        encoding="utf-8",
-    )
-
-    # Must not raise any errors
-    _ = load_project(rockcraft_file)
 
 
 @pytest.mark.xfail(
@@ -733,82 +691,6 @@ entrypoint-service: test-service
 def test_project_yaml(yaml_loaded_data):
     project = Project.unmarshal(yaml_loaded_data)
     assert project.to_yaml_string() == EXPECTED_DUMPED_YAML
-
-
-@pytest.mark.xfail(
-    strict=True,
-    reason="Needs fixture adjustments to use the build planner service to load",
-)
-@pytest.mark.parametrize(
-    ("platforms", "expected_build_infos"),
-    [
-        (
-            {
-                "amd64": None,
-            },
-            [
-                BuildInfo(
-                    build_on=DebianArchitecture("amd64"),
-                    build_for=DebianArchitecture("amd64"),
-                    build_base=DistroBase("ubuntu", "20.04"),
-                    platform="amd64",
-                )
-            ],
-        ),
-        (
-            {
-                "amd64": {
-                    "build-on": ["amd64", "i386"],
-                    "build-for": ["amd64"],
-                },
-            },
-            [
-                BuildInfo(
-                    build_on=DebianArchitecture("amd64"),
-                    build_for=DebianArchitecture("amd64"),
-                    build_base=DistroBase("ubuntu", "20.04"),
-                    platform="amd64",
-                ),
-                BuildInfo(
-                    build_on=DebianArchitecture("i386"),
-                    build_for=DebianArchitecture("amd64"),
-                    build_base=DistroBase("ubuntu", "20.04"),
-                    platform="amd64",
-                ),
-            ],
-        ),
-        (
-            {
-                "amd64v2": {
-                    "build-on": ["amd64"],
-                    "build-for": "amd64",
-                },
-            },
-            [
-                BuildInfo(
-                    build_on=DebianArchitecture("amd64"),
-                    build_for=DebianArchitecture("amd64"),
-                    build_base=DistroBase("ubuntu", "20.04"),
-                    platform="amd64v2",
-                )
-            ],
-        ),
-    ],
-)
-def test_project_get_build_plan(yaml_loaded_data, platforms, expected_build_infos):
-    yaml_loaded_data["platforms"] = platforms
-    project = Project.unmarshal(yaml_loaded_data)
-    assert project.get_build_plan() == expected_build_infos
-
-
-def test_get_effective_devel_base(yaml_loaded_data):
-    yaml_loaded_data["base"] = "ubuntu@24.04"
-    yaml_loaded_data["build-base"] = "devel"
-    project = Project.unmarshal(yaml_loaded_data)
-
-    base = project.effective_base
-    assert base.name == "ubuntu"
-    assert base.version == "devel"
 
 
 @pytest.mark.parametrize(
