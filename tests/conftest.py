@@ -150,56 +150,9 @@ def default_image_info():
 
 
 @pytest.fixture
-def default_application(default_factory, default_project):
-    from rockcraft.application import APP_METADATA, Rockcraft
-
-    return Rockcraft(APP_METADATA, default_factory)
-
-
-@pytest.fixture
-def image_service(default_project, default_factory, tmp_path, default_build_plan):
-    from rockcraft.application import APP_METADATA
-    from rockcraft.services import RockcraftImageService
-
-    return RockcraftImageService(
-        app=APP_METADATA,
-        services=default_factory,
-        work_dir=tmp_path / "work",
-        project_dir=tmp_path,
-    )
-
-
-@pytest.fixture
-def provider_service(default_factory, tmp_path):
-    from rockcraft.application import APP_METADATA
-    from rockcraft.services import RockcraftProviderService
-
-    return RockcraftProviderService(
-        app=APP_METADATA,
-        services=default_factory,
-        work_dir=tmp_path,
-    )
-
-
-@pytest.fixture
-def lifecycle_service(default_project, default_factory, default_build_plan):
-    from rockcraft.application import APP_METADATA
-    from rockcraft.services import RockcraftLifecycleService
-
-    return RockcraftLifecycleService(
-        app=APP_METADATA,
-        project=default_project,
-        services=default_factory,
-        work_dir=Path("work/"),
-        cache_dir=Path("cache/"),
-        build_plan=default_build_plan,
-    )
-
-
-@pytest.fixture
-def mock_obtain_image(default_factory, mocker):
+def mock_obtain_image(fake_services, mocker):
     """Mock and return the "obtain_image()" method of the default image service."""
-    image_service = default_factory.image
+    image_service = fake_services.image
     return mocker.patch.object(image_service, "obtain_image")
 
 
@@ -362,6 +315,13 @@ def fake_services(
 
 
 @pytest.fixture
+def configured_project(fake_services: ServiceFactory, rock_project) -> None:
+    rock_project()
+    project_service = fake_services.get("project")
+    project_service.configure(platform=None, build_for=None)
+
+
+@pytest.fixture
 def fake_app(fake_services: services.RockcraftServiceFactory) -> Rockcraft:
     from rockcraft.cli import fill_command_groups
 
@@ -400,7 +360,7 @@ def rock_project(tmp_path) -> Callable[..., dict[str, Any]]:
                 "amd64": None,
             },
             "base": "bare",
-            # "build-base": "ubuntu@24.04",
+            "build-base": "ubuntu@24.04",
             **kwargs,
         }
         yaml_path = Path(filename)

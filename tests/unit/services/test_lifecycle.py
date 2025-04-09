@@ -42,11 +42,14 @@ def extra_project_params():
     return {"package_repositories": [{"type": "apt", "ppa": "ppa/ppa"}]}
 
 
+@pytest.mark.usefixtures("configured_project")
 def test_lifecycle_args(
-    lifecycle_service, default_factory, default_image_info, mocker, monkeypatch
+    default_image_info, mocker, monkeypatch, fake_services, rock_project
 ):
+    rock_project()
     monkeypatch.setenv("CRAFT_PARALLEL_BUILD_COUNT", "4")
-    image_service = default_factory.image
+    image_service = fake_services.get("image")
+    lifecycle_service = fake_services.get("lifecycle")
 
     mock_obtain_image = mocker.patch.object(
         image_service, "obtain_image", return_value=default_image_info
