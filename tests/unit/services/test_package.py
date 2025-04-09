@@ -30,7 +30,7 @@ def test_pack(fake_services: ServiceFactory, default_image_info, mocker):
     )
     mock_inner_pack = mocker.patch.object(package, "_pack")
 
-    fake_services.get("project").configure(platform="amd64", build_for="amd64")
+    fake_services.get("project").configure(platform="risky", build_for="riscv64")
     fake_services.get("package").pack(prime_dir=Path("prime"), dest=Path())
 
     # Check that the image service was queried for the ImageInfo
@@ -41,9 +41,9 @@ def test_pack(fake_services: ServiceFactory, default_image_info, mocker):
     mock_inner_pack.assert_called_once_with(
         base_digest=b"deadbeef",
         base_layer_dir=Path(),
-        build_for="amd64",
+        build_for="riscv64",
         prime_dir=Path("prime"),
         project=fake_services.get("project").get(),
         project_base_image=default_image_info.base_image,
-        rock_suffix="amd64",
+        rock_suffix="risky",
     )
