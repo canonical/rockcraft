@@ -237,29 +237,6 @@ def project_main_module() -> types.ModuleType:
 
 
 @pytest.fixture
-def fake_lifecycle_service_class(
-    in_project_path: Path,
-) -> type[services.RockcraftLifecycleService]:
-    class FakeLifecycleService(services.RockcraftLifecycleService):
-        def __init__(
-            self,
-            app: AppMetadata,
-            services: ServiceFactory,
-            **kwargs: Any,
-        ):
-            super().__init__(
-                app,
-                services,
-                work_dir=kwargs.pop("work_dir", in_project_path / "work"),
-                cache_dir=kwargs.pop("cache_dir", in_project_path / "cache"),
-                platform=None,
-                **kwargs,
-            )
-
-    return FakeLifecycleService
-
-
-@pytest.fixture
 def fake_provider_service_class(
     project_path: Path,
 ) -> type[services.RockcraftProviderService]:
@@ -307,12 +284,12 @@ def fake_remote_build_service_class(
 
 @pytest.fixture
 def fake_services(
-    tmp_path,
-    project_path,
-    fake_lifecycle_service_class,
+    in_project_path,
     fake_package_service_class,
     fake_provider_service_class,
     fake_remote_build_service_class,
+    mocker,
+    default_image_info,
 ) -> services.RockcraftServiceFactory:
     from rockcraft.services import RockcraftServiceFactory, register_rockcraft_services
 
@@ -321,19 +298,27 @@ def fake_services(
 
     # Override defaults with the classes that need modifications for testing
     RockcraftServiceFactory.register("package", fake_package_service_class)
-    RockcraftServiceFactory.register("lifecycle", fake_lifecycle_service_class)
     RockcraftServiceFactory.register("remote_build", fake_remote_build_service_class)
     RockcraftServiceFactory.register("provider", fake_provider_service_class)
     RockcraftServiceFactory.register("image", services.RockcraftImageService)
 
     factory = RockcraftServiceFactory(app=APP_METADATA)
 
+    factory.update_kwargs("project", project_dir=in_project_path)
+    factory.update_kwargs("provider", work_dir=in_project_path)
     factory.update_kwargs(
-        "lifecycle", work_dir=tmp_path, cache_dir=tmp_path / "cache", build_plan=[]
+        "image", project_dir=in_project_path, work_dir=in_project_path
     )
-    factory.update_kwargs("project", project_dir=project_path)
-    factory.update_kwargs("provider", work_dir=tmp_path)
-    factory.update_kwargs("image", project_dir=project_path, work_dir=tmp_path)
+    factory.update_kwargs(
+        "lifecycle", work_dir=in_project_path, cache_dir=in_project_path / "cache"
+    )
+
+    # Mock out image info to avoid a umoci call requiring root privileges
+    mocker.patch.object(
+        services.RockcraftImageService,
+        "_create_image_info",
+        return_value=default_image_info,
+    )
 
     return factory
 

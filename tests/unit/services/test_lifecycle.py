@@ -15,10 +15,11 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import os
 from pathlib import Path
+from typing import cast
 from unittest import mock
 
 import pytest
-from craft_application import util
+from craft_application import services, util
 from craft_application.util import repositories
 from craft_parts import (
     LifecycleManager,
@@ -44,50 +45,51 @@ def extra_project_params():
 
 @pytest.mark.usefixtures("configured_project")
 def test_lifecycle_args(
-    default_image_info, mocker, monkeypatch, fake_services, rock_project
+    default_image_info, mocker, monkeypatch, fake_services, rock_project, project_path
 ):
     rock_project()
     monkeypatch.setenv("CRAFT_PARALLEL_BUILD_COUNT", "4")
-    image_service = fake_services.get("image")
-    lifecycle_service = fake_services.get("lifecycle")
 
     mock_obtain_image = mocker.patch.object(
-        image_service, "obtain_image", return_value=default_image_info
+        fake_services.get("image"), "obtain_image", return_value=default_image_info
     )
     mock_lifecycle = mocker.patch.object(
         LifecycleManager, "__init__", return_value=None
     )
 
-    lifecycle_service.setup()
+    # Initialize the lifecycle service
+    fake_services.get("lifecycle")
 
     mock_obtain_image.assert_called_once_with()
     mock_lifecycle.assert_called_once_with(
-        {"parts": {}},
+        mock.ANY,
         application_name="rockcraft",
         arch="amd64",
-        base="ubuntu@22.04",
+        base="bare",
         base_layer_dir=Path(),
         base_layer_hash=b"deadbeef",
-        cache_dir=Path("cache"),
+        cache_dir=project_path / "cache",
         ignore_local_sources=["*.rock"],
-        package_repositories=[{"ppa": "ppa/ppa", "type": "apt"}],
         parallel_build_count=4,
         partitions=None,
-        project_name="default",
-        project_vars={"version": "1.0"},
+        project_name="test-rock",
+        project_vars={"version": "0.1"},
         project_vars_part_name=None,
-        work_dir=Path("work"),
+        work_dir=project_path,
         rootfs_dir=Path(),
         track_stage_packages=True,
     )
 
 
+@pytest.mark.usefixtures("configured_project")
 def test_lifecycle_package_repositories(
-    extra_project_params, lifecycle_service, default_project, mocker, default_build_plan
+    extra_project_params, fake_services, rock_project, mocker
 ):
-    base = default_build_plan[0].base
+    rock_project()
+    base = cast(services.ProjectService, fake_services.get("project")).get().base
     mocker.patch.object(util, "get_host_base", return_value=base)
     fake_repositories = extra_project_params["package_repositories"]
+    lifecycle_service = fake_services.get("lifecycle")
     lifecycle_service._lcm = mock.MagicMock(spec=LifecycleManager)
 
     # Installation of repositories in the build instance
