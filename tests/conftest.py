@@ -21,7 +21,6 @@ from typing import Any
 from unittest import mock
 
 import craft_platforms
-import distro
 import pytest
 import xdg
 from craft_application.application import AppMetadata
@@ -29,18 +28,6 @@ from craft_application.services import ServiceFactory
 from overrides import override
 from rockcraft import services
 from rockcraft.application import APP_METADATA, Rockcraft
-
-DEFAULT_PROJECT_TEMPLATE = """\
-name: test-rock
-version: "0.1"
-summary: Rock on!
-description: Ramble off!
-base: {base}
-platforms:
-  risky:
-    build-on: [amd64, arm64, ppc64el, riscv64, s390x]
-    build-for: [riscv64]
-"""
 
 
 @pytest.fixture
@@ -334,22 +321,90 @@ def fake_app_config(fake_app: Rockcraft) -> dict[str, Any]:
 
 
 @pytest.fixture
-def fake_project_yaml(request: pytest.FixtureRequest):
-    if "base" in request.fixturenames:
-        base = request.getfixturevalue("base")
-    else:
-        base = craft_platforms.DistroBase.from_linux_distribution(
-            distro.LinuxDistribution(
-                include_lsb=False, include_uname=False, include_oslevel=False
-            )
-        )
-
-    return DEFAULT_PROJECT_TEMPLATE.format(base=f"{base.distribution}@{base.series}")
+def default_project_dict() -> dict[str, Any]:
+    return {
+        "name": "test-rock",
+        "version": "0.1",
+        "summary": "Rock on!",
+        "description": "Ramble off!",
+        "base": "ubuntu@24.04",
+        "platforms": {
+            "risky": {
+                "build-on": ["amd64", "arm64", "ppc64el", "riscv64", "s390x"],
+                "build-for": ["riscv64"],
+            }
+        },
+    }
 
 
 @pytest.fixture
-def fake_project_file(in_project_path, fake_project_yaml):
+def fake_project_yaml(
+    request: pytest.FixtureRequest,
+    default_project_dict: dict[str, Any],
+    mocker,
+    # project_keys: dict[str, Any],
+) -> str:
+    from craft_application.util import dump_yaml
+
+    project = default_project_dict
+
+    # Optional overrides. See the `project_keys` fixture for more info.
+    if "project_keys" in request.fixturenames:
+        project_keys = request.getfixturevalue("project_keys")
+        project |= project_keys
+
+        if base := project_keys.get("base"):
+            base = craft_platforms.DistroBase.from_str(base)
+            mocker.patch.object(
+                craft_platforms.DistroBase, "from_linux_distribution", return_value=base
+            )
+
+    return dump_yaml(project)
+
+
+@pytest.fixture
+def fake_project_file(in_project_path, fake_project_yaml) -> Path:
     project_file = in_project_path / "rockcraft.yaml"
     project_file.write_text(fake_project_yaml)
 
     return project_file
+
+
+@pytest.fixture
+def project_keys(request: pytest.FixtureRequest) -> dict[str, Any]:
+    """Fixture to modify the default project as needed.
+
+    This is an indirect fixture to be parametrized. The values passed to it are
+    provided to the `fake_project_yaml` fixture to override the default project
+    keys.
+
+    Example usage:
+    @pytest.mark.usefixtures("fake_project_file", "project_keys")
+    @pytest.mark.parametrize(
+        "project_keys",
+        [
+            {
+                "platforms": {
+                    "amd64": None,
+                },
+            },
+            {
+                "platforms": {
+                    "default": {
+                        "build-on": "arm64",
+                        "build-for": "arm64",
+                    },
+                },
+            },
+        ]
+    )
+    def test_parse_project() -> None:
+        ...
+    """
+    if not hasattr(request, "param"):
+        raise ValueError(
+            "To use the project_keys fixture, supply a dictionary of keys to override "
+            'in the default project template with the "project_keys" parametrization. '
+            "See the docstring for more information and an example."
+        )
+    return request.param

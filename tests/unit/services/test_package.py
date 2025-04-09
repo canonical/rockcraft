@@ -21,7 +21,8 @@ from craft_application import ServiceFactory
 from rockcraft.services import RockcraftImageService, package
 
 
-@pytest.mark.usefixtures("fake_project_file")
+@pytest.mark.usefixtures("fake_project_file", "project_keys")
+@pytest.mark.parametrize("project_keys", [{"platforms": {"amd64": None}}])
 def test_pack(fake_services: ServiceFactory, default_image_info, mocker):
     image_service = cast(RockcraftImageService, fake_services.get("image"))
 

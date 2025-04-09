@@ -64,7 +64,7 @@ def test_lifecycle_args(
         mock.ANY,
         application_name="rockcraft",
         arch="amd64",
-        base="bare",
+        base="ubuntu@24.04",
         base_layer_dir=Path(),
         base_layer_hash=b"deadbeef",
         cache_dir=project_path / "cache",
@@ -80,7 +80,8 @@ def test_lifecycle_args(
     )
 
 
-@pytest.mark.usefixtures("configured_project")
+@pytest.mark.usefixtures("configured_project", "project_keys")
+@pytest.mark.parametrize("project_keys", [{"base": "ubuntu@24.04"}])
 def test_lifecycle_package_repositories(extra_project_params, fake_services, mocker):
     base = cast(services.ProjectService, fake_services.get("project")).get().base
     mocker.patch.object(util, "get_host_base", return_value=base)
