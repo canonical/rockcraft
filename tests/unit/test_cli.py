@@ -33,8 +33,8 @@ DATA_DIR = pathlib.Path(__file__).parent.parent / "data"
 pytestmark = [pytest.mark.usefixtures("fake_services")]
 
 
-def test_run_pack_services(mocker, monkeypatch, tmp_path, rock_project):
-    rock_project()
+@pytest.mark.usefixtures("fake_project_file")
+def test_run_pack_services(mocker, monkeypatch, tmp_path):
     # Pretend it's running inside the managed instance
     monkeypatch.setenv("CRAFT_MANAGED_MODE", "1")
 

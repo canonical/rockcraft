@@ -16,7 +16,6 @@
 
 import os
 import types
-from collections.abc import Callable
 from pathlib import Path
 from typing import Any
 from unittest import mock
@@ -324,8 +323,7 @@ def fake_services(
 
 
 @pytest.fixture
-def configured_project(fake_services: ServiceFactory, rock_project) -> None:
-    rock_project()
+def configured_project(fake_services: ServiceFactory, fake_project_file) -> None:
     project_service = fake_services.get("project")
     project_service.configure(platform=None, build_for=None)
 
@@ -365,41 +363,3 @@ def fake_project_file(in_project_path, fake_project_yaml):
     project_file.write_text(fake_project_yaml)
 
     return project_file
-
-
-@pytest.fixture
-def rock_project(tmp_path) -> Callable[..., dict[str, Any]]:
-    """Return a fixture that can write a rock project file."""
-    import yaml
-
-    def _write_project(
-        *,
-        filename: str | Path = "rockcraft.yaml",
-        **kwargs,
-    ) -> dict[str, Any]:
-        content = {
-            "name": "test-rock",
-            "version": "0.1",
-            "summary": "Rock on!",
-            "description": "Ramble on!",
-            "parts": {
-                "part1": {
-                    "plugin": "nil",
-                },
-            },
-            "platforms": {
-                "amd64": None,
-            },
-            "base": "bare",
-            "build-base": "ubuntu@24.04",
-            **kwargs,
-        }
-        yaml_path = Path(filename)
-        yaml_path.parent.mkdir(parents=True, exist_ok=True)
-        yaml_path.write_text(
-            yaml.safe_dump(content, indent=2, sort_keys=False),
-            encoding="utf-8",
-        )
-        return content
-
-    return _write_project

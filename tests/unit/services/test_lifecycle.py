@@ -45,9 +45,8 @@ def extra_project_params():
 
 @pytest.mark.usefixtures("configured_project")
 def test_lifecycle_args(
-    default_image_info, mocker, monkeypatch, fake_services, rock_project, project_path
+    default_image_info, mocker, monkeypatch, fake_services, project_path
 ):
-    rock_project()
     monkeypatch.setenv("CRAFT_PARALLEL_BUILD_COUNT", "4")
 
     mock_obtain_image = mocker.patch.object(
@@ -82,10 +81,7 @@ def test_lifecycle_args(
 
 
 @pytest.mark.usefixtures("configured_project")
-def test_lifecycle_package_repositories(
-    extra_project_params, fake_services, rock_project, mocker
-):
-    rock_project()
+def test_lifecycle_package_repositories(extra_project_params, fake_services, mocker):
     base = cast(services.ProjectService, fake_services.get("project")).get().base
     mocker.patch.object(util, "get_host_base", return_value=base)
     fake_repositories = extra_project_params["package_repositories"]

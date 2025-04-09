@@ -16,12 +16,13 @@
 from pathlib import Path
 from typing import cast
 
+import pytest
 from craft_application import ServiceFactory
 from rockcraft.services import RockcraftImageService, package
 
 
-def test_pack(fake_services: ServiceFactory, default_image_info, mocker, rock_project):
-    rock_project()
+@pytest.mark.usefixtures("fake_project_file")
+def test_pack(fake_services: ServiceFactory, default_image_info, mocker):
     image_service = cast(RockcraftImageService, fake_services.get("image"))
 
     mock_obtain_image = mocker.patch.object(
