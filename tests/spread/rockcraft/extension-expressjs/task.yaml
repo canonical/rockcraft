@@ -1,4 +1,6 @@
 summary: expressjs extension test
+
+kill-timeout: 45m
 environment:
   SCENARIO/bare: bare
   SCENARIO/base_2404: ubuntu-24.04

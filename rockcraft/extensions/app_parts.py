@@ -18,8 +18,9 @@
 
 
 def gen_logging_part(
-    override_build_lines: list[str] | None = None, permissions: list[dict] | None = None
-) -> dict:
+    override_build_lines: list[str] | None = None,
+    permissions: list[dict[str, str | int]] | None = None,
+) -> dict[str, str | list[dict[str, str | int]]]:
     """Generate a logging part for the application."""
     _override_build_lines = [
         "craftctl default",
@@ -28,7 +29,7 @@ def gen_logging_part(
     ]
     if override_build_lines:
         _override_build_lines.extend(override_build_lines)
-    _permissions = [
+    _permissions: list[dict[str, str | int]] = [
         {"path": "opt/promtail", "owner": 584792, "group": 584792},
         {"path": "etc/promtail", "owner": 584792, "group": 584792},
     ]

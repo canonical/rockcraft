@@ -30,8 +30,8 @@ from packaging.requirements import InvalidRequirement, Requirement
 from rockcraft.errors import ExtensionError
 
 from ._python_utils import has_global_variable
-from .app_parts import gen_logging_part
 from ._utils import find_ubuntu_base_python_version
+from .app_parts import gen_logging_part
 from .extension import Extension, get_extensions_data_dir
 
 

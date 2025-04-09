@@ -23,7 +23,6 @@ from overrides import override  # type: ignore[reportUnknownVariableType]
 
 from rockcraft.errors import ExtensionError
 
-from ..errors import ExtensionError
 from .app_parts import gen_logging_part
 from .extension import Extension
 
