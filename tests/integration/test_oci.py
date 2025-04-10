@@ -25,7 +25,6 @@ from rockcraft import oci
 from rockcraft.services.image import ImageInfo
 
 pytestmark = [
-    # jammy_only,
     pytest.mark.usefixtures("reset_callbacks", "enable_overlay_feature"),
 ]
 
@@ -129,6 +128,7 @@ def test_add_layer_with_symlink_in_base(new_dir):
     ]
 
 
+@pytest.mark.slow
 @pytest.mark.usefixtures("fake_project_file", "project_keys")
 @pytest.mark.parametrize(
     "project_keys",
@@ -190,6 +190,14 @@ def test_add_layer_with_overlay(new_dir, mocker, fake_services, mock_obtain_imag
         "bin/.wh..wh..opq",
         "bin/file_from_overlay_script",
         "file_from_override_build",
+        "usr",
+        "usr/bin",
+        "usr/bin/pebble",
+        "var",
+        "var/lib",
+        "var/lib/pebble",
+        "var/lib/pebble/default",
+        "var/lib/pebble/default/layers",
     ]
 
 
