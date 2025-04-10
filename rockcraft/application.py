@@ -40,8 +40,7 @@ class Rockcraft(Application):
     @override
     def _configure_services(self, provider_name: str | None) -> None:
         self.services.update_kwargs(
-            "image",
-            work_dir=self._work_dir,
+            "image", work_dir=self._work_dir, project_dir=self.project_dir
         )
         self.services.update_kwargs(
             "init",
