@@ -74,7 +74,7 @@ class RockcraftImageService(ProjectService):
 
         build_for = build_plan[0].build_for
         project = self._services.get("project").get()
-        base = cast(str, project.effective_base)
+        base = cast(str, project.base)
         if base == "bare":
             base_image, source_image = oci.Image.new_oci_image(
                 f"{base}@latest",
