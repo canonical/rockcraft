@@ -18,7 +18,7 @@ import datetime
 import os
 import subprocess
 from pathlib import Path
-from typing import Any
+from typing import cast
 
 import pydantic
 import pytest
@@ -28,6 +28,7 @@ from craft_providers.bases import ubuntu
 from rockcraft.models import Project
 from rockcraft.models.project import MESSAGE_INVALID_NAME, Platform
 from rockcraft.pebble import Service
+from rockcraft.services.project import RockcraftProjectService
 
 _ARCH_MAPPING = {"x86": "amd64", "x64": "amd64"}
 try:
@@ -63,9 +64,11 @@ package-repositories:
 
 platforms:
     {BUILD_ON_ARCH}:
+        build-on: [{BUILD_ON_ARCH}]
+        build-for: [{BUILD_ON_ARCH}]
     some-text:
         build-on: [{BUILD_ON_ARCH}]
-        build-for: {BUILD_ON_ARCH}
+        build-for: [{BUILD_ON_ARCH}]
     same-with-different-syntax:
         build-on: [{BUILD_ON_ARCH}]
         build-for: [{BUILD_ON_ARCH}]
@@ -93,7 +96,7 @@ class DevelProject(Project):
     "development", but we want to test the behavior anyway.
     """
 
-    base: str  # type: ignore[reportIncompatibleVariableOverride]
+    base: str  # type: ignore[assignment]
 
 
 @pytest.fixture
@@ -104,22 +107,6 @@ def yaml_data():
 @pytest.fixture
 def yaml_loaded_data():
     return yaml.safe_load(ROCKCRAFT_YAML)
-
-
-@pytest.fixture
-def pebble_part() -> dict[str, Any]:
-    return {
-        "pebble": {
-            "plugin": "nil",
-            "stage-snaps": ["pebble/latest/stable"],
-            "stage": ["bin/pebble"],
-            "override-prime": str(
-                "craftctl default\n"
-                "mkdir -p var/lib/pebble/default/layers\n"
-                "chmod 777 var/lib/pebble/default"
-            ),
-        }
-    }
 
 
 def load_project_yaml(yaml_loaded_data) -> Project:
@@ -532,20 +519,31 @@ def test_project_bare_overlay(yaml_loaded_data, packages, script):
     assert str(err.value) == expected
 
 
-@pytest.mark.xfail(
-    strict=True, reason="Needs fixture adjustments to use the project service to load"
+@pytest.mark.usefixtures("fake_project_file", "configured_project")
+@pytest.mark.parametrize(
+    "fake_project_yaml", [pytest.param(ROCKCRAFT_YAML, id="default")]
 )
-def test_project_load(check, yaml_data, yaml_loaded_data, pebble_part, tmp_path):
-    rockcraft_file = tmp_path / "rockcraft.yaml"
-    rockcraft_file.write_text(
-        yaml_data,
-        encoding="utf-8",
-    )
+def test_project_load(check, yaml_loaded_data, fake_services):
+    pebble_part = {
+        "pebble": {
+            "plugin": "nil",
+            "stage-snaps": ["pebble/latest/stable"],
+            "stage": ["bin/pebble"],
+            "override-prime": str(
+                "craftctl default\n"
+                "mkdir -p var/lib/pebble/default/layers\n"
+                "chmod 777 var/lib/pebble/default"
+            ),
+        }
+    }
+    project_service = cast(RockcraftProjectService, fake_services.get("project"))
 
+    project_yaml = project_service.get().marshal()
     # The Pebble part should be added to the loaded data
     yaml_loaded_data["parts"].update(pebble_part)
 
-    project_yaml = load_project(rockcraft_file)
+    assert project_yaml == yaml_loaded_data
+
     check.equal(project_yaml, yaml_loaded_data)
 
     # Test that the environment variables are loaded in the right order
@@ -579,15 +577,6 @@ def pebble_project(pebble_spec) -> str:
     )
     yaml_data["parts"]["pebble"] = pebble_spec
     return yaml.dump(yaml_data)
-
-
-@pytest.mark.xfail(
-    strict=True, reason="Needs fixture adjustments to use the project service to load"
-)
-def test_project_load_error():
-    with pytest.raises(ProjectLoadError) as err:
-        load_project(Path("does_not_exist.txt"))
-    assert str(err.value) == "No such file or directory: 'does_not_exist.txt'."
 
 
 def test_project_generate_metadata(yaml_loaded_data):
