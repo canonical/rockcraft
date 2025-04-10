@@ -15,6 +15,7 @@
 #  with this program.  If not, see <http://www.gnu.org/licenses/>.
 """Project-related utility functions for testing."""
 
+import craft_platforms
 from rockcraft.models import Project
 
 
@@ -36,7 +37,10 @@ def create_project(**kwargs) -> Project:
             "build-base": build_base,
             "parts": kwargs.get("parts", {}),
             "license": kwargs.get("license", "MIT"),
-            "platforms": kwargs.get("platforms", {"amd64": None}),
+            "platforms": kwargs.get(
+                "platforms",
+                {craft_platforms.DebianArchitecture.from_host().value: None},
+            ),
             "package-repositories": kwargs.get("package_repositories"),
         }
     )
