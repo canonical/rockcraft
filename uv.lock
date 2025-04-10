@@ -1,5 +1,4 @@
 version = 1
-revision = 1
 requires-python = ">=3.10"
 resolution-markers = [
     "python_full_version >= '3.13'",
@@ -565,8 +564,8 @@ wheels = [
 
 [[package]]
 name = "craft-parts"
-version = "2.7.0"
-source = { registry = "https://pypi.org/simple" }
+version = "2.1.3.post158+gc60f185"
+source = { git = "https://github.com/yanksyoon/craft-parts?branch=feat%2Fplugins#c60f185c5c1efa18ae2d830091913fafcd300335" }
 dependencies = [
     { name = "overrides" },
     { name = "pydantic" },
@@ -574,10 +573,6 @@ dependencies = [
     { name = "pyyaml" },
     { name = "requests" },
     { name = "requests-unixsocket2" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/e2/d8/9ba8f33084e5c39744dd0e4b6db85937d118f65ebbf149b4990176883e8e/craft_parts-2.7.0.tar.gz", hash = "sha256:aa9e9e88ad893e12046c86a484fd7acf064d03039b6ce9907597dc093835baa4", size = 648642 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/75/7d/24aeba828d96431eb1d1813747c65c8ebc00a58de4c55cd66d19c0469432/craft_parts-2.7.0-py3-none-any.whl", hash = "sha256:c230386314fb8d50e410372df1edec3d0d87a1ea53b2d5c92357f7755828b84b", size = 456889 },
 ]
 
 [[package]]
@@ -2447,7 +2442,7 @@ requires-dist = [
     { name = "craft-application" },
     { name = "craft-archives" },
     { name = "craft-cli" },
-    { name = "craft-parts" },
+    { name = "craft-parts", git = "https://github.com/yanksyoon/craft-parts?branch=feat%2Fplugins" },
     { name = "craft-platforms" },
     { name = "craft-providers" },
     { name = "craft-store", marker = "extra == 'store'" },
@@ -2455,7 +2450,6 @@ requires-dist = [
     { name = "spdx-lookup" },
     { name = "tabulate" },
 ]
-provides-extras = ["store"]
 
 [package.metadata.requires-dev]
 dev = [
