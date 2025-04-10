@@ -342,7 +342,6 @@ def fake_project_yaml(
     request: pytest.FixtureRequest,
     default_project_dict: dict[str, Any],
     mocker,
-    # project_keys: dict[str, Any],
 ) -> str:
     from craft_application.util import dump_yaml
 
