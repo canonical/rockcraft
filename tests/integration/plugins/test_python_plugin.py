@@ -108,11 +108,16 @@ except (OsReleaseVersionIdError, KeyError):
 
 @pytest.mark.parametrize("plugin_name", list(get_python_plugins().keys()))
 @pytest.mark.parametrize("base", tuple(UBUNTU_BASES))
-def test_python_plugin_ubuntu(base, tmp_path, run_lifecycle, plugin_name: str):
+def test_python_plugin_ubuntu(
+    fake_services, fake_project_file, base, in_project_path, plugin_name: str
+):
     project = create_python_project(base=base, plugin=plugin_name)
-    run_lifecycle(project=project, work_dir=tmp_path)
+    project.to_yaml_file(in_project_path / "rockcraft.yaml")
+    fake_services.get("project").configure(build_for=None, platform=None)
 
-    bin_dir = tmp_path / "stage/bin"
+    fake_services.get("lifecycle").run("stage")
+
+    bin_dir = in_project_path / "stage/bin"
 
     # Ubuntu base: the Python symlinks in bin/ must *not* exist, because of the
     # usrmerge handling
@@ -127,12 +132,12 @@ def test_python_plugin_ubuntu(base, tmp_path, run_lifecycle, plugin_name: str):
     expected_text = SITECUSTOMIZE_TEMPLATE.replace("EOF", "")
 
     version_dir = VALUES_FOR_HOST.version_dir  # pyright: ignore[reportUnboundVariable]
-    sitecustom = tmp_path / f"stage/usr/lib/{version_dir}/sitecustomize.py"
+    sitecustom = in_project_path / f"stage/usr/lib/{version_dir}/sitecustomize.py"
     assert sitecustom.read_text().strip() == expected_text.strip()
 
     # Check that the pyvenv.cfg file was removed, as it's not necessary with the
     # sitecustomize.py module.
-    pyvenv_cfg = tmp_path / "stage/pyvenv.cfg"
+    pyvenv_cfg = in_project_path / "stage/pyvenv.cfg"
     assert not pyvenv_cfg.is_file()
 
 

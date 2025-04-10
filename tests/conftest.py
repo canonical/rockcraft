@@ -17,7 +17,7 @@
 import os
 import types
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 from unittest import mock
 
 import craft_platforms
@@ -154,25 +154,6 @@ def mock_obtain_image(fake_services, mocker):
     """Mock and return the "obtain_image()" method of the default image service."""
     image_service = fake_services.image
     return mocker.patch.object(image_service, "obtain_image")
-
-
-@pytest.fixture
-def run_lifecycle(mocker, default_build_plan):
-    """Helper to call testing.run_mocked_lifecycle()."""
-
-    def _inner(**kwargs):
-        from craft_application.util import get_host_base
-
-        from tests.testing.lifecycle import run_mocked_lifecycle
-
-        for build_plan in default_build_plan:
-            build_plan.base = get_host_base()
-
-        return run_mocked_lifecycle(
-            mocker=mocker, build_plan=default_build_plan, **kwargs
-        )
-
-    return _inner
 
 
 @pytest.fixture(autouse=True)
@@ -350,13 +331,15 @@ def fake_project_yaml(
     # Optional overrides. See the `project_keys` fixture for more info.
     if "project_keys" in request.fixturenames:
         project_keys = request.getfixturevalue("project_keys")
-        project |= project_keys
 
-        if base := project_keys.get("base"):
-            base = craft_platforms.DistroBase.from_str(base)
-            mocker.patch.object(
-                craft_platforms.DistroBase, "from_linux_distribution", return_value=base
-            )
+        project |= project_keys
+    if "base" in request.fixturenames:
+        project["base"] = str(request.getfixturevalue("base"))
+
+    base = craft_platforms.DistroBase.from_str(cast(str, project.get("base")))
+    mocker.patch.object(
+        craft_platforms.DistroBase, "from_linux_distribution", return_value=base
+    )
 
     return dump_yaml(project)
 
