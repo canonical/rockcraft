@@ -7,7 +7,7 @@ dependencies = [
     "craft-archives",
     "craft-cli",
     "craft-parts",
-    "craft-platforms @ git+https://github.com/canonical/craft-platforms@work/rockcraft-build-plan-fix/CRAFT-4412",
+    "craft-platforms~=0.7.1",
     "craft-providers",
     "overrides",
     "spdx-lookup",
