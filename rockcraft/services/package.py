@@ -133,13 +133,16 @@ def _pack(
         emit.progress(f"Setting the default OCI user to be {project.run_user}")
         new_image.set_default_user(userid, project.run_user)
 
-    emit.progress("Adding Pebble entrypoint")
-
-    new_image.set_entrypoint(
-        project.entrypoint_service, project.build_base or project.base
-    )
-    if project.services and project.entrypoint_service in project.services:
-        new_image.set_cmd(project.services[project.entrypoint_service].command)
+    if project.run_once_command:
+        emit.progress("Adding run-once-command entrypoint")
+        new_image.set_run_once_entrypoint(project.run_once_command)
+    else:
+        emit.progress("Adding Pebble entrypoint")
+        new_image.set_entrypoint(
+            project.entrypoint_service, project.build_base or project.base
+        )
+        if project.services and project.entrypoint_service in project.services:
+            new_image.set_cmd(project.services[project.entrypoint_service].command)
 
     new_image.set_default_path(project.base)
 
