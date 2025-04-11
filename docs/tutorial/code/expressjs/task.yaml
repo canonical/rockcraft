@@ -7,6 +7,10 @@
 ###########################################
 summary: Getting started with ExpressJS tutorial
 
+# This test can fail and crash during 'restore'; run it last so it doesn't abort
+# tests that come after.
+priority: -200
+
 environment:
 
 execute: |

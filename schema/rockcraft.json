@@ -242,23 +242,16 @@
     },
     "Platform": {
       "additionalProperties": false,
-      "description": "Project platform definition.",
+      "description": "Project platform definition.\n\nThis model defines how the ``platforms`` key works for a project.",
       "properties": {
         "build-on": {
-          "anyOf": [
-            {
-              "items": {
-                "type": "string"
-              },
-              "minItems": 1,
-              "type": "array",
-              "uniqueItems": true
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "title": "Build-On"
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Build-On",
+          "type": "array",
+          "uniqueItems": true
         },
         "build-for": {
           "oneOf": [
@@ -279,7 +272,8 @@
         }
       },
       "required": [
-        "build-on"
+        "build-on",
+        "build-for"
       ],
       "title": "Platform",
       "type": "object"

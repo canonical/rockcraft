@@ -490,7 +490,7 @@ toml = [
 
 [[package]]
 name = "craft-application"
-version = "4.10.0"
+version = "5.0.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "annotated-types" },
@@ -510,9 +510,9 @@ dependencies = [
     { name = "snap-helpers" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/86/86/20bac2f1a4e45097c01040328ff8ffd5313533d03231db08435559c684c3/craft_application-4.10.0.tar.gz", hash = "sha256:7a9cda0e854877fb80464e03274e69b97540a618e0c53cbc500b6fce25b9b8c4", size = 315299 }
+sdist = { url = "https://files.pythonhosted.org/packages/8e/2f/ad297bdd8402d4e4932404fc08ed89f9eca3f35c0e620d09fc6e4ffbfb76/craft_application-5.0.1.tar.gz", hash = "sha256:a268ee6b70bb57320f35fe578aec52e0c4ca427b6df527b1752517911a358f6c", size = 340203 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/35/83/36b7a98d2cccae4f70c5edc73572ba44d6ab12eac2997924ac69394b7658/craft_application-4.10.0-py3-none-any.whl", hash = "sha256:7e6a595cf6855868332bd7cb19585fe8e8678440d9d604888599903fe36a0b8c", size = 147019 },
+    { url = "https://files.pythonhosted.org/packages/eb/43/70bf3ef434b6df2c928269a8dc6f2a0f2a27e62b2785d3f5b2e09955fc1f/craft_application-5.0.1-py3-none-any.whl", hash = "sha256:b0fb49a54bd9e37f911ce0f84f1fd13f99cf702ee6350bd0706fbaccfbe3916b", size = 171976 },
 ]
 
 [[package]]
@@ -535,19 +535,18 @@ wheels = [
 
 [[package]]
 name = "craft-cli"
-version = "2.15.0"
+version = "3.0.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "jinja2" },
     { name = "overrides" },
     { name = "platformdirs" },
     { name = "pywin32", marker = "sys_platform == 'win32' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-oracular') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-oracular') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-oracular' and extra == 'group-9-rockcraft-dev-plucky')" },
-    { name = "pyyaml" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/9e/a7/32b8170deaefb28a8ec4cbccbaa0fbc4fac019cf3edf3682079af271ffa9/craft_cli-2.15.0.tar.gz", hash = "sha256:83c94e521c597c0836eb4a649c68105827006731d2032ca925cf1aea27d9fc9c", size = 116960 }
+sdist = { url = "https://files.pythonhosted.org/packages/96/64/86c6310c29a2b58470ee2ddef188a03250bdb2cffa07229e55776b63ac8c/craft_cli-3.0.0.tar.gz", hash = "sha256:9dd847d62648fd312284e63237386ff99fc4d24f1adfa0100fe08b003abfe6d9", size = 120469 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/f8/1c/9786bc93f1d210eadf6513868d27b75996ab6c3a40013782a4be86f5a98e/craft_cli-2.15.0-py3-none-any.whl", hash = "sha256:4ed2f7e409acce8f66a60d7038645431b38b2320d2eb88e133b7b9af1ce9843a", size = 46437 },
+    { url = "https://files.pythonhosted.org/packages/8e/16/edbd11dd952300973231b0efa6af27469bcb3f6cc55647f6179c1135bfe4/craft_cli-3.0.0-py3-none-any.whl", hash = "sha256:8a3395ad8df17f70bd80752a60488b52f8fa1ef694576801bfec0b2e9f1f6c4e", size = 46521 },
 ]
 
 [[package]]
@@ -582,16 +581,16 @@ wheels = [
 
 [[package]]
 name = "craft-platforms"
-version = "0.6.0"
+version = "0.7.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "annotated-types" },
     { name = "distro" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/ab/7e/a9a54ac2025f5399689027fd317273f477c7c15478b2c59791aa48f34262/craft_platforms-0.6.0.tar.gz", hash = "sha256:7aa153bfff5a28cf4f8c8a7b3da29c259da3a9d9a2f9a2e7c52e118e5735a927", size = 173964 }
+sdist = { url = "https://files.pythonhosted.org/packages/d9/8a/9717ef8b6534a58a8920c4277b218a4798bd2e32ca0520009fd440914648/craft_platforms-0.7.1.tar.gz", hash = "sha256:e72f6b6029aa060f75089bd6120e3eee0b103e5a0c7c8912c17fa32e4f99854d", size = 182466 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/fc/a8/8a11759a28f90b8461ffb0651e21f2b677b4b0547d475a605772858449c4/craft_platforms-0.6.0-py3-none-any.whl", hash = "sha256:ebb1dc6bd1d8c4cbcdab573b9966b20844a9c32aea755ca51de64d4b2a1e646e", size = 24476 },
+    { url = "https://files.pythonhosted.org/packages/79/10/dff0e782c95b152a1b988a4d31990d43a722fbbb4ac0fc7bef24af4116ce/craft_platforms-0.7.1-py3-none-any.whl", hash = "sha256:2fc1cb066be3348d77119e880ff268ab8c83e46af41934bdacd761dfdbf41a14", size = 28438 },
 ]
 
 [[package]]
@@ -2444,11 +2443,11 @@ types = [
 
 [package.metadata]
 requires-dist = [
-    { name = "craft-application" },
+    { name = "craft-application", specifier = ">=5.0.1" },
     { name = "craft-archives" },
     { name = "craft-cli" },
     { name = "craft-parts" },
-    { name = "craft-platforms" },
+    { name = "craft-platforms", specifier = "~=0.7.1" },
     { name = "craft-providers" },
     { name = "craft-store", marker = "extra == 'store'" },
     { name = "overrides" },

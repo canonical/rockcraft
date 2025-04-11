@@ -20,12 +20,12 @@ from pathlib import Path
 import pytest
 from craft_application.util import repositories
 from craft_parts import overlays
+from rockcraft.services.image import ImageInfo
 
 from tests.testing.project import create_project
 from tests.util import jammy_only
 
 pytestmark = [
-    jammy_only,
     pytest.mark.usefixtures("reset_callbacks", "enable_overlay_feature"),
 ]
 
@@ -33,7 +33,10 @@ pytestmark = [
 
 
 @pytest.mark.slow
-def test_package_repositories_in_overlay(new_dir, mocker, run_lifecycle):
+@jammy_only
+@pytest.mark.usefixtures("project_keys")
+@pytest.mark.parametrize("project_keys", [{"platforms": {"amd64": None}}])
+def test_package_repositories_in_overlay(new_dir, project_path, mocker, fake_services):
     # Mock overlay-related calls that need root; we won't be actually installing
     # any packages, just checking that the repositories are correctly installed
     # in the overlay.
@@ -48,7 +51,6 @@ def test_package_repositories_in_overlay(new_dir, mocker, run_lifecycle):
             "overlay-packages": ["hello"],
         }
     }
-    work_dir = Path("work")
 
     base_layer_dir = Path(new_dir) / "base"
     base_layer_dir.mkdir()
@@ -72,11 +74,19 @@ def test_package_repositories_in_overlay(new_dir, mocker, run_lifecycle):
         parts=parts,
         package_repositories=package_repositories,
     )
-    lifecycle_service = run_lifecycle(
-        project=project,
-        work_dir=work_dir,
+    project.to_yaml_file(project_path / "rockcraft.yaml")
+    fake_services.get("project").configure(platform="amd64", build_for="amd64")
+    image_info = ImageInfo(
+        base_image=mocker.MagicMock(),
         base_layer_dir=base_layer_dir,
+        base_digest=b"deadbeef",
     )
+    mocker.patch.object(
+        fake_services.get("image"), "obtain_image", return_value=image_info
+    )
+
+    lifecycle_service = fake_services.get("lifecycle")
+    lifecycle_service.run("overlay")
     # pylint: disable=protected-access
     parts_lifecycle = lifecycle_service._lcm
 
@@ -90,12 +100,20 @@ def test_package_repositories_in_overlay(new_dir, mocker, run_lifecycle):
 
 
 @pytest.mark.slow
-def test_prune_prime_files(new_dir, mocker, run_lifecycle):
+def test_prune_prime_files(new_dir, project_path, mocker, fake_services):
     """Test that primed files are "pruned"/removed based on the contents of the
     base layer."""
 
     base_layer_dir = Path(new_dir) / "base"
     base_layer_dir.mkdir()
+    image_info = ImageInfo(
+        base_image=mocker.MagicMock(),
+        base_layer_dir=base_layer_dir,
+        base_digest=b"deadbeef",
+    )
+    mocker.patch.object(
+        fake_services.get("image"), "obtain_image", return_value=image_info
+    )
 
     # Add some files to the base layer.
     (base_layer_dir / "same_contents.txt").write_text("Same contents\n")
@@ -111,21 +129,21 @@ def test_prune_prime_files(new_dir, mocker, run_lifecycle):
     )
 
     parts = {"part1": {"plugin": "nil", "override-build": build_script}}
-    work_dir = Path("work")
 
     project = create_project(parts=parts)
-    lifecycle_service = run_lifecycle(
-        project=project,
-        step="prime",
-        work_dir=work_dir,
-        base_layer_dir=base_layer_dir,
-    )
+    project.to_yaml_file(project_path / "rockcraft.yaml")
+    fake_services.get("project").configure(platform=None, build_for=None)
+
+    lifecycle_service = fake_services.get("lifecycle")
+    lifecycle_service.run("prime")
 
     prime_dir = lifecycle_service.prime_dir
 
     # Prime dir must only have the "different_contents.txt" file, because
     # "same_contents.txt" was pruned (exists on base).
-    assert os.listdir(prime_dir) == ["different_contents.txt"]  # noqa: PTH208 (use Path.iterdir())
+    primed_files = {file.name for file in prime_dir.glob("*.txt")}
+    assert "same_contents.txt" not in primed_files
+    assert "different_contents.txt" in primed_files
 
     # The "different_contents.txt" file must be the one that the part created
     # (and not the one from the base).
