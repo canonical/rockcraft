@@ -31,7 +31,7 @@ from rockcraft.errors import ExtensionError
 
 from ._python_utils import has_global_variable
 from ._utils import find_ubuntu_base_python_version
-from .app_parts import gen_logging_part
+from .app_parts import GROUP_ID, USER_ID, gen_logging_part
 from .extension import Extension, get_extensions_data_dir
 
 
@@ -100,7 +100,7 @@ class _GunicornBase(Extension):
             },
             f"{self.framework}-framework/install-app": {
                 **self.gen_install_app_part(),
-                "permissions": [{"owner": 584792, "group": 584792}],
+                "permissions": [{"owner": USER_ID, "group": GROUP_ID}],
             },
             f"{self.framework}-framework/config-files": {
                 "plugin": "dump",
@@ -111,8 +111,8 @@ class _GunicornBase(Extension):
                 "permissions": [
                     {
                         "path": f"{self.framework}/gunicorn.conf.py",
-                        "owner": 584792,
-                        "group": 584792,
+                        "owner": USER_ID,
+                        "group": GROUP_ID,
                     },
                 ],
             },
@@ -129,8 +129,8 @@ class _GunicornBase(Extension):
                 permissions=[
                     {
                         "path": f"var/log/{self.framework}",
-                        "owner": 584792,
-                        "group": 584792,
+                        "owner": USER_ID,
+                        "group": GROUP_ID,
                     }
                 ],
             ),

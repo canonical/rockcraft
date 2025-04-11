@@ -16,6 +16,9 @@
 
 """Common extension application parts."""
 
+USER_ID = 584792
+GROUP_ID = 584792
+
 
 def gen_logging_part(
     override_build_lines: list[str] | None = None,
@@ -30,8 +33,8 @@ def gen_logging_part(
     if override_build_lines:
         _override_build_lines.extend(override_build_lines)
     _permissions: list[dict[str, str | int]] = [
-        {"path": "opt/promtail", "owner": 584792, "group": 584792},
-        {"path": "etc/promtail", "owner": 584792, "group": 584792},
+        {"path": "opt/promtail", "owner": USER_ID, "group": GROUP_ID},
+        {"path": "etc/promtail", "owner": USER_ID, "group": GROUP_ID},
     ]
     if permissions:
         _permissions.extend(permissions)
