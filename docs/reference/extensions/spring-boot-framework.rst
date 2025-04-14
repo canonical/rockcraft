@@ -18,7 +18,7 @@ By default, the base ``bare`` is used, to generate a lightweight image.
 Project requirements
 ====================
 
-To use the ``spring-boot-framework`` extension, there must be either
+To use the ``spring-boot-framework`` extension, there must be either:
 
 1. a ``pom.xml`` file
 2. a ``build.gradle`` file
