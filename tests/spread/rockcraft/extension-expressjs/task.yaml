@@ -24,11 +24,13 @@ execute: |
     # Install findutils for the bare scenario
     # This is a workaround for the fact that the bare scenario does not have
     # findutils installed by default, which is required for the test
-    echo "parts:" >> rockcraft.yaml
-    echo "  find-app:" >> rockcraft.yaml
-    echo "    plugin: nil" >> rockcraft.yaml
-    echo "    stage-packages:" >> rockcraft.yaml
-    echo "      - findutils" >> rockcraft.yaml
+    cat >> rockcraft.yaml <<EOL
+  parts:
+    find-app:
+      plugin: nil
+      stage-packages:
+        - findutils
+  EOL
   fi
    
   function run_test() {

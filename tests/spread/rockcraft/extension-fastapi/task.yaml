@@ -12,18 +12,16 @@ execute: |
   run_rockcraft init --name fastapi-extension --profile fastapi-framework
   sed -i "s/name: .*/name: ${NAME}/g" rockcraft.yaml
   if [ "${SCENARIO}" = "bare" ]; then
-      sed -i "s/base: .*/base: ${SCENARIO}\nbuild-base: ubuntu@24.04/g" rockcraft.yaml
-
-      # Install findutils for the bare scenario
-      # This is a workaround for the fact that the bare scenario does not have
-      # findutils installed by default, which is required for the test
-      echo "parts:" >> rockcraft.yaml
-      echo "  find-app:" >> rockcraft.yaml
-      echo "    plugin: nil" >> rockcraft.yaml
-      echo "    stage-packages:" >> rockcraft.yaml
-      echo "      - findutils" >> rockcraft.yaml
+    sed -i "s/base: .*/base: ${SCENARIO}\nbuild-base: ubuntu@24.04/g" rockcraft.yaml
+    cat >> rockcraft.yaml <<EOL
+  parts:
+    find-app:
+      plugin: nil
+      stage-packages:
+        - findutils
+  EOL
   else
-      sed -i "s/base: .*/base: ${SCENARIO//-/@}/g" rockcraft.yaml
+    sed -i "s/base: .*/base: ${SCENARIO//-/@}/g" rockcraft.yaml
   fi
   run_rockcraft pack
 
