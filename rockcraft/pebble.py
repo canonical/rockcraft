@@ -230,3 +230,29 @@ class Pebble:
     @staticmethod
     def _is_focal_or_jammy(build_base: str) -> bool:
         return build_base in ("ubuntu@20.04", "ubuntu@22.04")
+
+
+def add_pebble_part(project: dict[str, Any]) -> None:
+    """Add pebble-specific contents to YAML-loaded data.
+
+    This function adds a special "pebble" part to a project's specification, to be
+    (eventually) used as the image's entrypoint.
+
+    :param project: The project spec loaded from "rockcraft.yaml" by the project
+      service.
+    :raises CraftValidationError: If `project` already contains a "pebble" part,
+      and said part's contents are different from the contents of the part we add.
+    """
+    build_base = project.get("build-base") or project["base"]
+    pebble_part = Pebble.get_part_spec(build_base)
+
+    parts = project["parts"]
+    if "pebble" in parts:
+        if parts["pebble"] == pebble_part:
+            # Project already has the correct pebble part.
+            return
+        # Project already has a pebble part, and it's different from ours;
+        # this is currently not supported.
+        raise CraftValidationError('Cannot change the default "pebble" part')
+
+    parts["pebble"] = pebble_part

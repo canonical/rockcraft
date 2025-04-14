@@ -16,38 +16,36 @@
 
 """Rockcraft Service Factory."""
 
-from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from craft_application import ServiceFactory
-from craft_application import services as base_services
 
-from rockcraft import services
+# Add new services to this mapping to add them to the service factory
+# Internal service name : Stringified service class name
+_SERVICES: dict[str, str] = {
+    "init": "RockcraftInitService",
+    "lifecycle": "RockcraftLifecycleService",
+    "package": "RockcraftPackageService",
+    "provider": "RockcraftProviderService",
+    "project": "RockcraftProjectService",
+    "remote_build": "RockcraftRemoteBuildService",
+    "image": "RockcraftImageService",
+}
 
 
-@dataclass
 class RockcraftServiceFactory(ServiceFactory):
     """Rockcraft-specific Service Factory."""
 
-    # pylint: disable=invalid-name
-
-    # This is a Rockcraft-specific service for OCI image handling
-    ImageClass: type[services.RockcraftImageService] = services.RockcraftImageService
-
-    # These are overrides of default ServiceFactory services
-    LifecycleClass: type[  # type: ignore[reportIncompatibleVariableOverride]
-        services.RockcraftLifecycleService
-    ] = services.RockcraftLifecycleService
-    PackageClass: type[base_services.PackageService] = services.RockcraftPackageService
-    ProviderClass: type[  # type: ignore[reportIncompatibleVariableOverride]
-        services.RockcraftProviderService
-    ] = services.RockcraftProviderService
-    InitClass: type[  # type: ignore[reportIncompatibleVariableOverride]
-        services.RockcraftInitService
-    ] = services.RockcraftInitService
-    RemoteBuildClass: type[  # type: ignore[reportIncompatibleVariableOverride]
-        services.RockcraftRemoteBuildService
-    ] = services.RockcraftRemoteBuildService
-
     if TYPE_CHECKING:
-        image: services.RockcraftImageService = None  # type: ignore[assignment]
+        from rockcraft.services import RockcraftImageService
+
+        image: RockcraftImageService = None  # type: ignore[assignment]
+
+
+def register_rockcraft_services() -> None:
+    """Register Rockcraft-specific services."""
+    for name, service in _SERVICES.items():
+        module_name = name.replace("_", "")
+        RockcraftServiceFactory.register(
+            name, service, module=f"rockcraft.services.{module_name}"
+        )

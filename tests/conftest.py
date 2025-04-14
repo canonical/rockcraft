@@ -17,9 +17,17 @@
 import os
 import types
 from pathlib import Path
+from typing import Any, cast
+from unittest import mock
 
+import craft_platforms
 import pytest
 import xdg
+from craft_application.application import AppMetadata
+from craft_application.services import ServiceFactory
+from overrides import override
+from rockcraft import services
+from rockcraft.application import APP_METADATA, Rockcraft
 
 
 @pytest.fixture
@@ -123,30 +131,12 @@ def default_project(extra_project_params):
             "base": "ubuntu@22.04",
             "parts": parts,
             "license": "MIT",
-            "platforms": {"amd64": {"build-on": ["amd64"], "build-for": ["amd64"]}},
+            "platforms": {
+                "amd64": {"build-on": ["amd64", "arm64"], "build-for": ["amd64"]}
+            },
             **extra_project_params,
         }
     )
-
-
-@pytest.fixture
-def default_build_plan(default_project):
-    from rockcraft.models.project import BuildPlanner
-
-    return BuildPlanner.unmarshal(default_project.marshal()).get_build_plan()
-
-
-@pytest.fixture
-def default_factory(default_project, default_build_plan):
-    from rockcraft.application import APP_METADATA
-    from rockcraft.services import RockcraftServiceFactory
-
-    factory = RockcraftServiceFactory(
-        app=APP_METADATA,
-        project=default_project,
-    )
-    factory.update_kwargs("image", work_dir=Path("work"), build_plan=default_build_plan)
-    return factory
 
 
 @pytest.fixture
@@ -162,92 +152,10 @@ def default_image_info():
 
 
 @pytest.fixture
-def default_application(default_factory, default_project):
-    from rockcraft.application import APP_METADATA, Rockcraft
-
-    return Rockcraft(APP_METADATA, default_factory)
-
-
-@pytest.fixture
-def image_service(default_project, default_factory, tmp_path, default_build_plan):
-    from rockcraft.application import APP_METADATA
-    from rockcraft.services import RockcraftImageService
-
-    return RockcraftImageService(
-        app=APP_METADATA,
-        project=default_project,
-        services=default_factory,
-        work_dir=tmp_path,
-        build_plan=default_build_plan,
-    )
-
-
-@pytest.fixture
-def provider_service(default_project, default_build_plan, default_factory, tmp_path):
-    from rockcraft.application import APP_METADATA
-    from rockcraft.services import RockcraftProviderService
-
-    return RockcraftProviderService(
-        app=APP_METADATA,
-        project=default_project,
-        services=default_factory,
-        build_plan=default_build_plan,
-        work_dir=tmp_path,
-    )
-
-
-@pytest.fixture
-def package_service(default_project, default_factory, default_build_plan):
-    from rockcraft.application import APP_METADATA
-    from rockcraft.services import RockcraftPackageService
-
-    return RockcraftPackageService(
-        app=APP_METADATA,
-        project=default_project,
-        services=default_factory,
-        build_plan=default_build_plan,
-    )
-
-
-@pytest.fixture
-def lifecycle_service(default_project, default_factory, default_build_plan):
-    from rockcraft.application import APP_METADATA
-    from rockcraft.services import RockcraftLifecycleService
-
-    return RockcraftLifecycleService(
-        app=APP_METADATA,
-        project=default_project,
-        services=default_factory,
-        work_dir=Path("work/"),
-        cache_dir=Path("cache/"),
-        build_plan=default_build_plan,
-    )
-
-
-@pytest.fixture
-def mock_obtain_image(default_factory, mocker):
+def mock_obtain_image(fake_services, mocker):
     """Mock and return the "obtain_image()" method of the default image service."""
-    image_service = default_factory.image
+    image_service = fake_services.image
     return mocker.patch.object(image_service, "obtain_image")
-
-
-@pytest.fixture
-def run_lifecycle(mocker, default_build_plan):
-    """Helper to call testing.run_mocked_lifecycle()."""
-
-    def _inner(**kwargs):
-        from craft_application.util import get_host_base
-
-        from tests.testing.lifecycle import run_mocked_lifecycle
-
-        for build_plan in default_build_plan:
-            build_plan.base = get_host_base()
-
-        return run_mocked_lifecycle(
-            mocker=mocker, build_plan=default_build_plan, **kwargs
-        )
-
-    return _inner
 
 
 @pytest.fixture(autouse=True)
@@ -285,3 +193,202 @@ def project_main_module() -> types.ModuleType:
             "Failed to import the project's main module: check if it needs updating",
         )
     return main_module
+
+
+@pytest.fixture
+def fake_provider_service_class(
+    project_path: Path,
+) -> type[services.RockcraftProviderService]:
+    class FakeProviderService(services.RockcraftProviderService):
+        def __init__(
+            self,
+            app: AppMetadata,
+            services: ServiceFactory,
+            work_dir: Path,
+        ):
+            super().__init__(app, services, work_dir=project_path)
+
+    return FakeProviderService
+
+
+@pytest.fixture
+def fake_package_service_class() -> type[services.RockcraftPackageService]:
+    class FakePackageService(services.RockcraftPackageService):
+        pass
+
+    return FakePackageService
+
+
+@pytest.fixture
+def fake_remote_build_service_class(
+    mocker,
+) -> type[services.RockcraftRemoteBuildService]:
+    import lazr.restfulclient.resource
+
+    me = mock.Mock(lazr.restfulclient.resource.Entry)
+    me.name = "craft_test_user"
+
+    class FakeRemoteBuildService(services.RockcraftRemoteBuildService):
+        @override
+        def __init__(self, app: AppMetadata, services: ServiceFactory):
+            super().__init__(app=app, services=services)
+            self._is_setup = True
+
+    # The login should not do anything
+    mocker.patch("craft_application.launchpad.Launchpad.anonymous")
+    mocker.patch("craft_application.launchpad.Launchpad.login")
+
+    return FakeRemoteBuildService
+
+
+@pytest.fixture
+def fake_services(
+    in_project_path,
+    fake_package_service_class,
+    fake_provider_service_class,
+    fake_remote_build_service_class,
+    mocker,
+    default_image_info,
+) -> services.RockcraftServiceFactory:
+    from rockcraft.services import RockcraftServiceFactory, register_rockcraft_services
+
+    # Register the defaults
+    register_rockcraft_services()
+
+    # Override defaults with the classes that need modifications for testing
+    RockcraftServiceFactory.register("package", fake_package_service_class)
+    RockcraftServiceFactory.register("remote_build", fake_remote_build_service_class)
+    RockcraftServiceFactory.register("provider", fake_provider_service_class)
+    RockcraftServiceFactory.register("image", services.RockcraftImageService)
+
+    factory = RockcraftServiceFactory(app=APP_METADATA)
+
+    factory.update_kwargs("project", project_dir=in_project_path)
+    factory.update_kwargs("provider", work_dir=in_project_path)
+    factory.update_kwargs(
+        "image", project_dir=in_project_path, work_dir=in_project_path
+    )
+    factory.update_kwargs(
+        "lifecycle", work_dir=in_project_path, cache_dir=in_project_path / "cache"
+    )
+
+    # Mock out image info to avoid a umoci call requiring root privileges
+    mocker.patch.object(
+        services.RockcraftImageService,
+        "_create_image_info",
+        return_value=default_image_info,
+    )
+
+    return factory
+
+
+@pytest.fixture
+def configured_project(fake_services: ServiceFactory, fake_project_file) -> None:
+    project_service = fake_services.get("project")
+    project_service.configure(platform=None, build_for=None)
+
+
+@pytest.fixture
+def fake_app(fake_services: services.RockcraftServiceFactory) -> Rockcraft:
+    from rockcraft.cli import fill_command_groups
+
+    app = Rockcraft(app=APP_METADATA, services=fake_services)
+    fill_command_groups(app)
+
+    return app
+
+
+@pytest.fixture
+def fake_app_config(fake_app: Rockcraft) -> dict[str, Any]:
+    return fake_app.app_config
+
+
+@pytest.fixture
+def default_project_dict() -> dict[str, Any]:
+    return {
+        "name": "test-rock",
+        "version": "0.1",
+        "summary": "Rock on!",
+        "description": "Ramble off!",
+        "base": "ubuntu@24.04",
+        "platforms": {
+            "risky": {
+                "build-on": ["amd64", "arm64", "ppc64el", "riscv64", "s390x"],
+                "build-for": ["riscv64"],
+            }
+        },
+    }
+
+
+@pytest.fixture
+def fake_project_yaml(
+    request: pytest.FixtureRequest,
+    default_project_dict: dict[str, Any],
+    mocker,
+) -> str:
+    from craft_application.util import dump_yaml
+
+    project = default_project_dict
+
+    # Optional overrides. See the `project_keys` fixture for more info.
+    if "project_keys" in request.fixturenames:
+        project_keys = request.getfixturevalue("project_keys")
+
+        project |= project_keys
+    if "base" in request.fixturenames:
+        project["base"] = str(request.getfixturevalue("base"))
+
+    base = craft_platforms.DistroBase.from_str(cast(str, project.get("base")))
+    mocker.patch.object(
+        craft_platforms.DistroBase, "from_linux_distribution", return_value=base
+    )
+
+    return dump_yaml(project)
+
+
+@pytest.fixture
+def fake_project_file(in_project_path, fake_project_yaml) -> Path:
+    project_file = in_project_path / "rockcraft.yaml"
+    project_file.write_text(fake_project_yaml)
+
+    return project_file
+
+
+@pytest.fixture
+def project_keys(request: pytest.FixtureRequest) -> dict[str, Any]:
+    """Fixture to modify the default project as needed.
+
+    This is an indirect fixture to be parametrized. The values passed to it are
+    provided to the `fake_project_yaml` fixture to override the default project
+    keys.
+
+    Example usage:
+    @pytest.mark.usefixtures("fake_project_file", "project_keys")
+    @pytest.mark.parametrize(
+        "project_keys",
+        [
+            {
+                "platforms": {
+                    "amd64": None,
+                },
+            },
+            {
+                "platforms": {
+                    "default": {
+                        "build-on": "arm64",
+                        "build-for": "arm64",
+                    },
+                },
+            },
+        ]
+    )
+    def test_parse_project() -> None:
+        ...
+    """
+    if not hasattr(request, "param"):
+        raise ValueError(
+            "To use the project_keys fixture, supply a dictionary of keys to override "
+            'in the default project template with the "project_keys" parametrization. '
+            "See the docstring for more information and an example."
+        )
+    return request.param

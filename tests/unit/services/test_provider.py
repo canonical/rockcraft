@@ -15,7 +15,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-def test_packages(provider_service):
-    assert provider_service.packages == []
-    provider_service.setup()
+def test_packages(fake_services):
+    provider_service = fake_services.get("provider")
     assert provider_service.packages == ["gpg", "dirmngr"]

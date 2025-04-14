@@ -16,7 +16,6 @@
 
 import pytest
 from rockcraft import errors, extensions
-from rockcraft.models import load_project
 
 from tests.unit.testing.extensions import (
     FULL_EXTENSION_YAML,
@@ -25,6 +24,8 @@ from tests.unit.testing.extensions import (
     FullExtension,
     InvalidPartExtension,
 )
+
+pytestmark = [pytest.mark.usefixtures("fake_extensions")]
 
 
 @pytest.fixture
@@ -40,14 +41,14 @@ def input_yaml():
     return {"base": "ubuntu@22.04"}
 
 
-def test_experimental_with_env(fake_extensions, tmp_path, input_yaml, monkeypatch):
+def test_experimental_with_env(tmp_path, input_yaml, monkeypatch):
     monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "1")
     input_yaml["extensions"] = [ExperimentalExtension.NAME]
     project_root = tmp_path
     extensions.apply_extensions(project_root, input_yaml)
 
 
-def test_experimental_no_env(fake_extensions, tmp_path, input_yaml):
+def test_experimental_no_env(tmp_path, input_yaml):
     input_yaml["extensions"] = [ExperimentalExtension.NAME]
     with pytest.raises(errors.ExtensionError) as exc:
         extensions.apply_extensions(tmp_path, input_yaml)
@@ -57,7 +58,7 @@ def test_experimental_no_env(fake_extensions, tmp_path, input_yaml):
 
 
 @pytest.mark.parametrize("base", ["ubuntu:20.04", "bare"])
-def test_wrong_base(fake_extensions, tmp_path, input_yaml, base):
+def test_wrong_base(tmp_path, input_yaml, base):
     input_yaml["extensions"] = [FakeExtension.NAME]
     input_yaml["base"] = base
     with pytest.raises(errors.ExtensionError) as exc:
@@ -69,14 +70,14 @@ def test_wrong_base(fake_extensions, tmp_path, input_yaml, base):
     assert str(exc.value) == expected_message
 
 
-def test_invalid_parts(fake_extensions, tmp_path, input_yaml):
+def test_invalid_parts(tmp_path, input_yaml):
     input_yaml["extensions"] = [InvalidPartExtension.NAME]
 
     with pytest.raises(ValueError, match="Extension has invalid part names"):
         extensions.apply_extensions(tmp_path, input_yaml)
 
 
-def test_apply_extensions(fake_extensions, tmp_path, input_yaml):
+def test_apply_extensions(tmp_path, input_yaml):
     input_yaml["services"] = {"my-service": {"command": "foo", "override": "merge"}}
     input_yaml["extensions"] = [FullExtension.NAME]
     input_yaml["parts"] = {
@@ -107,12 +108,13 @@ def test_apply_extensions(fake_extensions, tmp_path, input_yaml):
     assert parts[f"{FullExtension.NAME}/new-part"] == {"plugin": "nil", "source": None}
 
 
-def test_project_load_extensions(fake_extensions, tmp_path):
+@pytest.mark.usefixtures("configured_project")
+@pytest.mark.parametrize("fake_project_yaml", [FULL_EXTENSION_YAML])
+def test_project_load_extensions(fake_services, tmp_path):
     """Test that load_project() correctly applies the extensions."""
-    rockcraft_yaml = tmp_path / "rockcraft.yaml"
-    rockcraft_yaml.write_text(FULL_EXTENSION_YAML)
-
-    project = load_project(rockcraft_yaml)
+    project = fake_services.get("project")._preprocess(
+        build_for="amd64", build_on="amd64", platform="amd64"
+    )
 
     # Root snippet extends the project's
     services = project["services"]
