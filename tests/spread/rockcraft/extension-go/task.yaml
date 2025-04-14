@@ -13,6 +13,15 @@ execute: |
   sed -i "s/^base: .*/base: ${SCENARIO//-/@}/g" rockcraft.yaml
   if [ "${SCENARIO}" != "bare" ]; then
     sed -i "s/^build-base: .*/build-base: ${SCENARIO//-/@}/g" rockcraft.yaml
+  else
+    # Install findutils for the bare scenario
+    # This is a workaround for the fact that the bare scenario does not have
+    # findutils installed by default, which is required for the test
+    echo "parts:" >> rockcraft.yaml
+    echo "  find-app:" >> rockcraft.yaml
+    echo "    plugin: nil" >> rockcraft.yaml
+    echo "    stage-packages:" >> rockcraft.yaml
+    echo "      - findutils" >> rockcraft.yaml
   fi
   sed -i "s/NAME/${NAME}/g" go.mod
 
@@ -32,7 +41,7 @@ execute: |
   # ensure the app and promtail folders have the correct user
   check_directory_ownership() {
     local directory="$1"
-    docker run --rm --entrypoint /bin/bash "${IMAGE}" -c "find ${directory}/ ! -user '_daemon_' || { echo 'Error: ${directory} or its contents are not owned by _daemon_'; exit 2; }"
+    docker run --rm --entrypoint /usr/bin/bash "${IMAGE}" -c "find ${directory}/ ! -user '_daemon_' || { echo 'Error: ${directory} or its contents are not owned by _daemon_'; exit 2; }"
   }
 
   check_directory_ownership "/app"

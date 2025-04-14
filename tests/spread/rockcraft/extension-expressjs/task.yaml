@@ -20,8 +20,17 @@ execute: |
   sed -i "s/^base: .*/base: ${SCENARIO//-/@}/g" rockcraft.yaml
   if [ "${SCENARIO}" != "bare" ]; then
     sed -i "s/^build-base: .*/build-base: ${SCENARIO//-/@}/g" rockcraft.yaml
+  else
+    # Install findutils for the bare scenario
+    # This is a workaround for the fact that the bare scenario does not have
+    # findutils installed by default, which is required for the test
+    echo "parts:" >> rockcraft.yaml
+    echo "  find-app:" >> rockcraft.yaml
+    echo "    plugin: nil" >> rockcraft.yaml
+    echo "    stage-packages:" >> rockcraft.yaml
+    echo "      - findutils" >> rockcraft.yaml
   fi
-
+   
   function run_test() {
     # rockcraft clean is required here because the cached layer writes to npmrc
     # multiple times, causing the app to crash on first run.
@@ -40,7 +49,7 @@ execute: |
     # ensure the app and promtail folders have the correct user
     check_directory_ownership() {
       local directory="$1"
-      docker run --rm --entrypoint /bin/bash "${IMAGE}" -c "find ${directory}/ ! -user '_daemon_' || { echo 'Error: ${directory} or its contents are not owned by _daemon_'; exit 2; }"
+      docker run --rm --entrypoint /usr/bin/bash "${IMAGE}" -c "find ${directory}/ ! -user '_daemon_' || { echo 'Error: ${directory} or its contents are not owned by _daemon_'; exit 2; }"
     }
 
     check_directory_ownership "/app"
@@ -63,10 +72,13 @@ execute: |
 
   run_test
 
+
+  if [ "${SCENARIO}" != "bare" ]; then
+    echo "parts:" >> rockcraft.yaml
+  fi
   # test the expressjs service with a Node version specified
   node_version=20.18.2
   cat <<EOF >> rockcraft.yaml
-  parts:
     expressjs-framework/install-app:
       npm-include-node: true
       npm-node-version: $node_version
