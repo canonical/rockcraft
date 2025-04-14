@@ -83,9 +83,9 @@ class SpringBootFramework(Extension):
 
     def _check_project(self) -> None:
         """Check if the project is a Spring Boot project."""
-        if not self.mvnw_path.exists() and not self.gradlew_path.exists():
+        if self.pom_xml_path.exists() and self.build_gradle_path.exists():
             raise ExtensionError(
-                "missing mvnw or gradlew executable file",
+                "both pom.xml and build.gradle files exist",
                 doc_slug="/reference/extensions/spring-boot-framework",
                 logpath_report=False,
             )
@@ -95,9 +95,9 @@ class SpringBootFramework(Extension):
                 doc_slug="/reference/extensions/spring-boot-framework",
                 logpath_report=False,
             )
-        if not self.mvnw_path.exists() and not self.gradlew_path.exists():
+        if not self.pom_xml_path.exists() and not self.build_gradle_path.exists():
             raise ExtensionError(
-                "missing mvnw or gradlew executable file",
+                "missing pom.xml and build.gradle file",
                 doc_slug="/reference/extensions/spring-boot-framework",
                 logpath_report=False,
             )
@@ -189,10 +189,11 @@ class SpringBootFramework(Extension):
     ) -> dict[str, Any]:
         """Generate plugin specific directives."""
         plugin_directives: dict[str, Any] = {}
+        if plugin == "gradle":
+            plugin_directives["gradle-task"] = "bootJar"
         if plugin == "gradle" and self.init_gradle_path:
             plugin_directives["gradle-init-script"] = str(self.init_gradle_path)
-            plugin_directives["gradle-task"] = "bootJar"
-        if plugin == "maven" and self.mvnw_path:
+        if plugin == "maven" and self.mvnw_path.exists():
             plugin_directives["maven-use-mvnw"] = "True"
         return plugin_directives
 
