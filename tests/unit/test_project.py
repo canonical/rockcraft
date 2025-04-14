@@ -18,18 +18,17 @@ import datetime
 import os
 import subprocess
 from pathlib import Path
-from typing import Any
+from typing import cast
 
 import pydantic
 import pytest
 import yaml
 from craft_application.errors import CraftValidationError
-from craft_application.models import BuildInfo
-from craft_providers.bases import BaseName, ubuntu
-from rockcraft.errors import ProjectLoadError
+from craft_providers.bases import ubuntu
 from rockcraft.models import Project
-from rockcraft.models.project import MESSAGE_INVALID_NAME, Platform, load_project
-from rockcraft.pebble import Pebble, Service
+from rockcraft.models.project import MESSAGE_INVALID_NAME, Platform
+from rockcraft.pebble import Service
+from rockcraft.services.project import RockcraftProjectService
 
 _ARCH_MAPPING = {"x86": "amd64", "x64": "amd64"}
 try:
@@ -65,9 +64,11 @@ package-repositories:
 
 platforms:
     {BUILD_ON_ARCH}:
+        build-on: [{BUILD_ON_ARCH}]
+        build-for: [{BUILD_ON_ARCH}]
     some-text:
         build-on: [{BUILD_ON_ARCH}]
-        build-for: {BUILD_ON_ARCH}
+        build-for: [{BUILD_ON_ARCH}]
     same-with-different-syntax:
         build-on: [{BUILD_ON_ARCH}]
         build-for: [{BUILD_ON_ARCH}]
@@ -95,7 +96,7 @@ class DevelProject(Project):
     "development", but we want to test the behavior anyway.
     """
 
-    base: str  # type: ignore[reportIncompatibleVariableOverride]
+    base: str  # type: ignore[assignment]
 
 
 @pytest.fixture
@@ -106,22 +107,6 @@ def yaml_data():
 @pytest.fixture
 def yaml_loaded_data():
     return yaml.safe_load(ROCKCRAFT_YAML)
-
-
-@pytest.fixture
-def pebble_part() -> dict[str, Any]:
-    return {
-        "pebble": {
-            "plugin": "nil",
-            "stage-snaps": ["pebble/latest/stable"],
-            "stage": ["bin/pebble"],
-            "override-prime": str(
-                "craftctl default\n"
-                "mkdir -p var/lib/pebble/default/layers\n"
-                "chmod 777 var/lib/pebble/default"
-            ),
-        }
-    }
 
 
 def load_project_yaml(yaml_loaded_data) -> Project:
@@ -534,17 +519,31 @@ def test_project_bare_overlay(yaml_loaded_data, packages, script):
     assert str(err.value) == expected
 
 
-def test_project_load(check, yaml_data, yaml_loaded_data, pebble_part, tmp_path):
-    rockcraft_file = tmp_path / "rockcraft.yaml"
-    rockcraft_file.write_text(
-        yaml_data,
-        encoding="utf-8",
-    )
+@pytest.mark.usefixtures("fake_project_file", "configured_project")
+@pytest.mark.parametrize(
+    "fake_project_yaml", [pytest.param(ROCKCRAFT_YAML, id="default")]
+)
+def test_project_load(check, yaml_loaded_data, fake_services):
+    pebble_part = {
+        "pebble": {
+            "plugin": "nil",
+            "stage-snaps": ["pebble/latest/stable"],
+            "stage": ["bin/pebble"],
+            "override-prime": str(
+                "craftctl default\n"
+                "mkdir -p var/lib/pebble/default/layers\n"
+                "chmod 777 var/lib/pebble/default"
+            ),
+        }
+    }
+    project_service = cast(RockcraftProjectService, fake_services.get("project"))
 
+    project_yaml = project_service.get().marshal()
     # The Pebble part should be added to the loaded data
     yaml_loaded_data["parts"].update(pebble_part)
 
-    project_yaml = load_project(rockcraft_file)
+    assert project_yaml == yaml_loaded_data
+
     check.equal(project_yaml, yaml_loaded_data)
 
     # Test that the environment variables are loaded in the right order
@@ -559,6 +558,7 @@ def pebble_project(pebble_spec) -> str:
         title: Rock with Pebble
         version: latest
         base: ubuntu@24.04
+        build-base: devel
         summary: Rock with Pebble
         description: Rock with Pebble
         license: Apache-2.0
@@ -577,47 +577,6 @@ def pebble_project(pebble_spec) -> str:
     )
     yaml_data["parts"]["pebble"] = pebble_spec
     return yaml.dump(yaml_data)
-
-
-def test_project_unmarshal_existing_pebble_different(tmp_path):
-    """Test that loading a project that already has a "pebble" part fails if that
-    part is different from what we'd create."""
-    yaml_data = pebble_project(
-        {
-            "plugin": "go",
-            "source": "https://github.com/fork/pebble.git",
-            "source-branch": "new-pebble-work",
-        }
-    )
-    rockcraft_file = tmp_path / "rockcraft.yaml"
-    rockcraft_file.write_text(
-        yaml_data,
-        encoding="utf-8",
-    )
-
-    with pytest.raises(CraftValidationError):
-        load_project(rockcraft_file)
-
-
-def test_project_unmarshal_existing_pebble_same(tmp_path):
-    """Test that loading a project that already has a "pebble" part works if that
-    part is the same as what we'd create."""
-
-    yaml_data = pebble_project(Pebble.get_part_spec("ubuntu@24.04"))
-    rockcraft_file = tmp_path / "rockcraft.yaml"
-    rockcraft_file.write_text(
-        yaml_data,
-        encoding="utf-8",
-    )
-
-    # Must not raise any errors
-    _ = load_project(rockcraft_file)
-
-
-def test_project_load_error():
-    with pytest.raises(ProjectLoadError) as err:
-        load_project(Path("does_not_exist.txt"))
-    assert str(err.value) == "No such file or directory: 'does_not_exist.txt'."
 
 
 def test_project_generate_metadata(yaml_loaded_data):
@@ -721,78 +680,6 @@ entrypoint-service: test-service
 def test_project_yaml(yaml_loaded_data):
     project = Project.unmarshal(yaml_loaded_data)
     assert project.to_yaml_string() == EXPECTED_DUMPED_YAML
-
-
-@pytest.mark.parametrize(
-    ("platforms", "expected_build_infos"),
-    [
-        (
-            {
-                "amd64": None,
-            },
-            [
-                BuildInfo(
-                    build_on="amd64",
-                    build_for="amd64",
-                    base=BaseName(name="ubuntu", version="20.04"),
-                    platform="amd64",
-                )
-            ],
-        ),
-        (
-            {
-                "amd64": {
-                    "build-on": ["amd64", "i386"],
-                    "build-for": ["amd64"],
-                },
-            },
-            [
-                BuildInfo(
-                    build_on="amd64",
-                    build_for="amd64",
-                    base=BaseName(name="ubuntu", version="20.04"),
-                    platform="amd64",
-                ),
-                BuildInfo(
-                    build_on="i386",
-                    build_for="amd64",
-                    base=BaseName(name="ubuntu", version="20.04"),
-                    platform="amd64",
-                ),
-            ],
-        ),
-        (
-            {
-                "amd64v2": {
-                    "build-on": ["amd64"],
-                    "build-for": "amd64",
-                },
-            },
-            [
-                BuildInfo(
-                    build_on="amd64",
-                    build_for="amd64",
-                    base=BaseName(name="ubuntu", version="20.04"),
-                    platform="amd64v2",
-                )
-            ],
-        ),
-    ],
-)
-def test_project_get_build_plan(yaml_loaded_data, platforms, expected_build_infos):
-    yaml_loaded_data["platforms"] = platforms
-    project = Project.unmarshal(yaml_loaded_data)
-    assert project.get_build_plan() == expected_build_infos
-
-
-def test_get_effective_devel_base(yaml_loaded_data):
-    yaml_loaded_data["base"] = "ubuntu@24.04"
-    yaml_loaded_data["build-base"] = "devel"
-    project = Project.unmarshal(yaml_loaded_data)
-
-    base = project.effective_base
-    assert base.name == "ubuntu"
-    assert base.version == "devel"
 
 
 @pytest.mark.parametrize(

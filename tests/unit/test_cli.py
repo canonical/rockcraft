@@ -29,7 +29,11 @@ from rockcraft.models import project
 
 DATA_DIR = pathlib.Path(__file__).parent.parent / "data"
 
+# All of the tests in this module require patched services
+pytestmark = [pytest.mark.usefixtures("fake_services")]
 
+
+@pytest.mark.usefixtures("fake_project_file")
 def test_run_pack_services(mocker, monkeypatch, tmp_path):
     # Pretend it's running inside the managed instance
     monkeypatch.setenv("CRAFT_MANAGED_MODE", "1")

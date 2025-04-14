@@ -21,7 +21,15 @@ import pydantic
 import pytest
 import yaml
 from craft_application.errors import CraftValidationError
-from rockcraft.pebble import Check, ExecCheck, HttpCheck, Pebble, Service, TcpCheck
+from rockcraft.pebble import (
+    Check,
+    ExecCheck,
+    HttpCheck,
+    Pebble,
+    Service,
+    TcpCheck,
+    add_pebble_part,
+)
 
 import tests
 
@@ -441,3 +449,38 @@ class TestPebble:
 
         assert dump["url"] == "http://www.example.com/"
         assert isinstance(dump["url"], str)
+
+
+def test_project_unmarshal_existing_pebble_different():
+    """Test that loading a project that already has a "pebble" part fails if that
+    part is different from what we'd create."""
+    build_base = "ubuntu@24.04"
+    yaml_data = {
+        "build-base": build_base,
+        "parts": {
+            "pebble": {
+                "plugin": "go",
+                "source": "https://github.com/fork/pebble.git",
+                "source-branch": "new-pebble-work",
+            }
+        },
+    }
+
+    with pytest.raises(
+        CraftValidationError, match='Cannot change the default "pebble" part'
+    ):
+        add_pebble_part(yaml_data)
+
+
+def test_project_unmarshal_existing_pebble_same():
+    """Test that loading a project that already has a "pebble" part works if that
+    part is the same as what we'd create."""
+
+    build_base = "ubuntu@24.04"
+    yaml_data = {
+        "build-base": build_base,
+        "parts": {"pebble": Pebble.get_part_spec(build_base)},
+    }
+
+    # Must not raise any errors
+    add_pebble_part(yaml_data)
