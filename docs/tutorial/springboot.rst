@@ -245,8 +245,8 @@ Update the Spring Boot application
 As a final step, let's update our application. For example,
 we want to add a new ``/time`` endpoint which returns the current time.
 
-Start by creating the ``src/main/java/com/example/demo/TimeController.java`` file in a text editor
-and paste in the code to look like the following:
+Start by creating the ``src/main/java/com/example/demo/TimeController.java``
+file in a text editor and paste in the code to look like the following:
 
 .. literalinclude:: code/spring-boot/TimeController.java
     :language: java

@@ -20,7 +20,7 @@ import os
 import pathlib
 from typing import Any, Literal
 
-from overrides import override
+from overrides import override  # type: ignore[reportUnknownVariableType]
 
 from rockcraft.errors import ExtensionError
 
@@ -155,7 +155,9 @@ class SpringBootFramework(Extension):
             .get("spring-boot-framework/install-app", {})
             .get("build-packages", [])
         )
-        plugin = "gradle" if self.build_gradle_path.exists() else "maven"
+        plugin: Literal["gradle", "maven"] = (
+            "gradle" if self.build_gradle_path.exists() else "maven"
+        )
         install_app_part = {
             "plugin": plugin,
             "source": ".",
