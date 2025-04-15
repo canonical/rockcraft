@@ -7,7 +7,7 @@
 ###########################################
 summary: Getting started with ExpressJS tutorial
 
-kill-timeout: 45m
+kill-timeout: 1h
 # This test can fail and crash during 'restore'; run it last so it doesn't abort
 # tests that come after.
 priority: -200
