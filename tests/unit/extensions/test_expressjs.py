@@ -88,6 +88,7 @@ def package_json_file(app_path):
                         ),
                         "build-packages": ["nodejs", "npm"],
                         "stage-packages": ["ca-certificates_data", "nodejs_bins"],
+                        "build-environment": [{"UV_USE_IO_URING": "0"}],
                     },
                     "expressjs-framework/runtime": {
                         "plugin": "nil",
@@ -129,6 +130,7 @@ def package_json_file(app_path):
                         "plugin": "npm",
                         "source": "app/",
                         "stage-packages": ["ca-certificates_data"],
+                        "build-environment": [{"UV_USE_IO_URING": "0"}],
                     }
                 },
                 "platforms": {
@@ -180,6 +182,7 @@ def package_json_file(app_path):
                             "ca-certificates_data",
                             "coreutils_bins",
                         ],
+                        "build-environment": [{"UV_USE_IO_URING": "0"}],
                     },
                     "expressjs-framework/runtime": {
                         "plugin": "nil",
@@ -235,6 +238,7 @@ def package_json_file(app_path):
                             "ca-certificates_data",
                             "coreutils_bins",
                         ],
+                        "build-environment": [{"UV_USE_IO_URING": "0"}],
                     },
                     "expressjs-framework/runtime": {
                         "plugin": "nil",
