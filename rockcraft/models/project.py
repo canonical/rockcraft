@@ -99,7 +99,6 @@ class Project(BaseProject):
     services: dict[str, Service] | None = None
     checks: dict[str, Check] | None = None
     entrypoint_service: str | None = None
-    platforms: dict[str, Platform | None]  # type: ignore[assignment]
     base: BaseT  # type: ignore[reportIncompatibleVariableOverride]
     build_base: BuildBaseT = None  # type: ignore[reportIncompatibleVariableOverride]
 
