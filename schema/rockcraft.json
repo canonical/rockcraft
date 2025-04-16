@@ -242,16 +242,23 @@
     },
     "Platform": {
       "additionalProperties": false,
-      "description": "Project platform definition.\n\nThis model defines how the ``platforms`` key works for a project.",
+      "description": "Project platform definition.\n\nThis model defines how a single value under the ``platforms`` key works for a project.",
       "properties": {
         "build-on": {
-          "items": {
-            "type": "string"
-          },
-          "minItems": 1,
-          "title": "Build-On",
-          "type": "array",
-          "uniqueItems": true
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array",
+              "uniqueItems": true
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "minLength": 1,
+          "title": "Build-On"
         },
         "build-for": {
           "oneOf": [
@@ -7223,6 +7230,51 @@
             "$ref": "#/$defs/Platform"
           }
         ]
+      },
+      "patternProperties": {
+        "(amd64|arm64|armhf|i386|ppc64el|riscv64|s390x)": {
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "properties": {
+                "build-on": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "items": {
+                        "type": "string"
+                      },
+                      "type": "array"
+                    }
+                  ],
+                  "title": "Build-On"
+                },
+                "build-for": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "items": {
+                        "type": "string"
+                      },
+                      "type": "array"
+                    }
+                  ],
+                  "title": "Build-For"
+                }
+              },
+              "required": [
+                "build-on"
+              ],
+              "type": "object"
+            }
+          ]
+        }
       },
       "title": "Platforms",
       "type": "object"
