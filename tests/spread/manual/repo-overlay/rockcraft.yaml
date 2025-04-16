@@ -3,7 +3,7 @@ name: repo-overlay
 summary: Package repositories in overlay
 license: Apache-2.0
 description: Install overlay-packages that come from `package-repositories`.
-version: 0.1
+version: "0.1"
 
 base: ubuntu@22.04
 platforms:

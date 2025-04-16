@@ -490,8 +490,8 @@ toml = [
 
 [[package]]
 name = "craft-application"
-version = "5.0.1"
-source = { registry = "https://pypi.org/simple" }
+version = "5.0.3.post3+g824a682"
+source = { git = "https://github.com/canonical/craft-application.git?rev=work%2FCRAFT-4421#824a68251d9c163c3f94091df172f58ccad3ecd0" }
 dependencies = [
     { name = "annotated-types" },
     { name = "craft-archives" },
@@ -509,10 +509,6 @@ dependencies = [
     { name = "requests" },
     { name = "snap-helpers" },
     { name = "typing-extensions" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/8e/2f/ad297bdd8402d4e4932404fc08ed89f9eca3f35c0e620d09fc6e4ffbfb76/craft_application-5.0.1.tar.gz", hash = "sha256:a268ee6b70bb57320f35fe578aec52e0c4ca427b6df527b1752517911a358f6c", size = 340203 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/eb/43/70bf3ef434b6df2c928269a8dc6f2a0f2a27e62b2785d3f5b2e09955fc1f/craft_application-5.0.1-py3-none-any.whl", hash = "sha256:b0fb49a54bd9e37f911ce0f84f1fd13f99cf702ee6350bd0706fbaccfbe3916b", size = 171976 },
 ]
 
 [[package]]
@@ -2443,7 +2439,7 @@ types = [
 
 [package.metadata]
 requires-dist = [
-    { name = "craft-application", specifier = ">=5.0.1" },
+    { name = "craft-application", git = "https://github.com/canonical/craft-application.git?rev=work%2FCRAFT-4421" },
     { name = "craft-archives" },
     { name = "craft-cli" },
     { name = "craft-parts" },

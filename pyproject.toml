@@ -3,7 +3,9 @@ name = "rockcraft"
 description = "Create rocks"
 dynamic = ["version", "readme"]
 dependencies = [
-    "craft-application>=5.0.1",
+    # "craft-application>=5.0.1",
+    # Undo before merge
+    "craft-application @ git+https://github.com/canonical/craft-application.git@work/CRAFT-4421",
     "craft-archives",
     "craft-cli",
     "craft-parts",
