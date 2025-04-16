@@ -1,3 +1,4 @@
+# pragma: no-schema-validate
 name: bare-build-2204
 base: bare
 build-base: ubuntu@22.04
