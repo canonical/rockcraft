@@ -3,7 +3,7 @@ version: latest
 summary: A destructively-built rock
 description: Building a rock in destructive mode
 license: Apache-2.0
-build-base: ubuntu@22.04 # FIXME: this should be 'ubuntu:22.04'
+build-base: ubuntu:22.04
 base: bare
 platforms:
   amd64:
