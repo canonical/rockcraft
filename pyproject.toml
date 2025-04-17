@@ -7,7 +7,7 @@ dependencies = [
     "craft-archives",
     "craft-cli",
     "craft-parts",
-    "craft-platforms~=0.7.1",
+    "craft-platforms~=0.8",
     "craft-providers",
     "overrides",
     "spdx-lookup",
