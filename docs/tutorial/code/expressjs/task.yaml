@@ -13,6 +13,7 @@ kill-timeout: 1h
 priority: -200
 
 environment:
+  UV_USE_IO_URING: "0"
 
 execute: |
   # [docs:install-deps]

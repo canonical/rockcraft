@@ -88,6 +88,7 @@ def package_json_file(app_path):
                         "chown -R 584792:584792 ${CRAFT_PART_INSTALL}/app\n",
                         "build-packages": ["nodejs", "npm"],
                         "stage-packages": ["ca-certificates_data", "nodejs_bins"],
+                        "build-environment": [{"UV_USE_IO_URING": "0"}],
                     },
                     "expressjs-framework/runtime": {
                         "plugin": "nil",
@@ -143,6 +144,7 @@ def package_json_file(app_path):
                         "plugin": "npm",
                         "source": "app/",
                         "stage-packages": ["ca-certificates_data"],
+                        "build-environment": [{"UV_USE_IO_URING": "0"}],
                     },
                     "expressjs-framework/logging": {
                         "plugin": "nil",
@@ -208,6 +210,7 @@ def package_json_file(app_path):
                             "ca-certificates_data",
                             "coreutils_bins",
                         ],
+                        "build-environment": [{"UV_USE_IO_URING": "0"}],
                     },
                     "expressjs-framework/runtime": {
                         "plugin": "nil",
@@ -277,6 +280,7 @@ def package_json_file(app_path):
                             "ca-certificates_data",
                             "coreutils_bins",
                         ],
+                        "build-environment": [{"UV_USE_IO_URING": "0"}],
                     },
                     "expressjs-framework/runtime": {
                         "plugin": "nil",
