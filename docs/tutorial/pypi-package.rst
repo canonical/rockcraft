@@ -49,27 +49,40 @@ To build the rock, run:
 
 
 
-Run the rock in Docker
-----------------------
+Run the rock
+------------
 
-First, import the recently created rock into Docker:
+.. tabs::
 
-.. literalinclude:: code/pyfiglet/task.yaml
-    :language: bash
-    :start-after: [docs:skopeo-copy]
-    :end-before: [docs:skopeo-copy-end]
-    :dedent: 2
+    .. group-tab:: Docker
 
+        First, import the recently created rock into Docker:
 
-Now run the ``pyfiglet`` command from the rock:
+        .. literalinclude:: code/pyfiglet/task.yaml
+            :language: bash
+            :start-after: [docs:skopeo-copy]
+            :end-before: [docs:skopeo-copy-end]
+            :dedent: 2
 
-.. literalinclude:: code/pyfiglet/task.yaml
-    :language: bash
-    :start-after: [docs:docker-run]
-    :end-before: [docs:docker-run-end]
-    :dedent: 2
+        Now run the ``hello`` command from the rock:
 
-Which should print:
+        .. literalinclude:: code/pyfiglet/task.yaml
+            :language: bash
+            :start-after: [docs:docker-run]
+            :end-before: [docs:docker-run-end]
+            :dedent: 2
+
+    .. group-tab:: Podman
+
+        Run the oci archive directly using:
+
+        .. literalinclude:: code/pyfiglet/task.yaml
+            :language: bash
+            :start-after: [docs:podman-run]
+            :end-before: [docs:podman-run-end]
+            :dedent: 2
+
+The output should be:
 
 .. literalinclude:: code/pyfiglet/expected_output.txt
     :language: text
@@ -84,6 +97,18 @@ using bash, via:
 .. code:: yaml
 
     $ docker run --rm -it pyfiglet:0.7.6 exec bash
+    root@14d1812a2681:/# pyfiglet hi
+     _     _
+    | |__ (_)
+    | '_ \| |
+    | | | | |
+    |_| |_|_|
+
+or using podman:
+
+.. code:: yaml
+
+    $ podman run --rm -it pyfiglet:0.7.6 exec bash
     root@14d1812a2681:/# pyfiglet hi
      _     _
     | |__ (_)

@@ -26,4 +26,9 @@ execute: |
   docker run --rm chiselled-hello:latest exec hello -t
   # [docs:docker-run-end]
 
+  # [docs:podman-run]
+  podman run --rm oci-archive:chiselled-hello_latest_amd64.rock exec hello -t
+  # [docs:podman-run-end]
+
   docker run --rm chiselled-hello:latest exec hello -t | grep "hello, world"
+  podman run --rm oci-archive:chiselled-hello_latest_amd64.rock exec hello -t | grep "hello, world"

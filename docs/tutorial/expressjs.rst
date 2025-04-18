@@ -124,42 +124,59 @@ extension:
     :dedent: 2
 
 
-Run the ExpressJS rock with Docker
-==================================
+Run the ExpressJS rock
+======================
 
-We already have the rock as an OCI image. Load the image into Docker:
+We already have the rock as an OCI image.
 
-.. literalinclude:: code/expressjs/task.yaml
-    :language: bash
-    :start-after: [docs:skopeo-copy]
-    :end-before: [docs:skopeo-copy-end]
-    :dedent: 2
+.. tabs::
+
+    .. group-tab:: Docker
+
+        Load the image into Docker:
+
+        .. literalinclude:: code/expressjs/task.yaml
+            :language: bash
+            :start-after: [docs:skopeo-copy]
+            :end-before: [docs:skopeo-copy-end]
+            :dedent: 2
 
 
-Check that the image was successfully loaded into Docker:
+        Check that the image was successfully loaded into Docker:
 
-.. literalinclude:: code/expressjs/task.yaml
-    :language: bash
-    :start-after: [docs:docker-images]
-    :end-before: [docs:docker-images-end]
-    :dedent: 2
+        .. literalinclude:: code/expressjs/task.yaml
+            :language: bash
+            :start-after: [docs:docker-images]
+            :end-before: [docs:docker-images-end]
+            :dedent: 2
 
-The output should list the ExpressJS image, along with its tag, ID and
-size:
+        The output should list the ExpressJS image, along with its tag, ID and
+        size:
 
-.. terminal::
+        .. terminal::
 
-    REPOSITORY              TAG       IMAGE ID       CREATED       SIZE
-    expressjs-hello-world   0.1       30c7e5aed202   2 weeks ago   304MB
+            REPOSITORY              TAG       IMAGE ID       CREATED       SIZE
+            expressjs-hello-world   0.1       30c7e5aed202   2 weeks ago   304MB
 
-Now we're finally ready to run the rock and test the containerised ExpressJS
-application:
+        Now we're finally ready to run the rock and test the containerised ExpressJS
+        application:
 
-.. literalinclude:: code/expressjs/task.yaml
-    :language: bash
-    :start-after: [docs:docker-run]
-    :end-before: [docs:docker-run-end]
-    :dedent: 2
+        .. literalinclude:: code/expressjs/task.yaml
+            :language: bash
+            :start-after: [docs:docker-run]
+            :end-before: [docs:docker-run-end]
+            :dedent: 2
+
+    .. group-tab:: Podman
+
+        Using podman, run the OCI archive directly:
+
+        .. literalinclude:: code/expressjs/task.yaml
+            :language: bash
+            :start-after: [docs:podman-run]
+            :end-before: [docs:podman-run-end]
+            :dedent: 2
+
 
 Use the same curl command as before to send a request to the ExpressJS
 application's root endpoint which is running inside the container:
@@ -178,11 +195,27 @@ View the application logs
 When deploying the ExpressJS rock, we can always get the application logs with
 :ref:`pebble_explanation_page`:
 
-.. literalinclude:: code/expressjs/task.yaml
-    :language: bash
-    :start-after: [docs:get-logs]
-    :end-before: [docs:get-logs-end]
-    :dedent: 2
+.. tabs::
+
+    .. group-tab:: Docker
+
+        With Docker:
+
+        .. literalinclude:: code/expressjs/task.yaml
+            :language: bash
+            :start-after: [docs:get-logs]
+            :end-before: [docs:get-logs-end]
+            :dedent: 2
+
+    .. group-tab:: Podman
+
+        With Podman:
+
+        .. literalinclude:: code/expressjs/task.yaml
+            :language: bash
+            :start-after: [docs:get-logs-podman]
+            :end-before: [docs:get-logs-podman-end]
+            :dedent: 2
 
 As a result, Pebble will give us the logs for the
 ``expressjs`` service running inside the container.
@@ -206,11 +239,27 @@ Now we have a fully functional rock for a ExpressJS application! This concludes
 the first part of this tutorial, so we'll stop the container and remove the
 respective image for now:
 
-.. literalinclude:: code/expressjs/task.yaml
-    :language: bash
-    :start-after: [docs:stop-docker]
-    :end-before: [docs:stop-docker-end]
-    :dedent: 2
+.. tabs::
+
+    .. group-tab:: Docker
+
+        With Docker:
+
+        .. literalinclude:: code/expressjs/task.yaml
+            :language: bash
+            :start-after: [docs:stop-docker]
+            :end-before: [docs:stop-docker-end]
+            :dedent: 2
+
+    .. group-tab:: Podman
+
+        With Podman:
+
+        .. literalinclude:: code/expressjs/task.yaml
+            :language: bash
+            :start-after: [docs:stop-podman]
+            :end-before: [docs:stop-podman-end]
+            :dedent: 2
 
 
 Update the ExpressJS application
@@ -241,11 +290,28 @@ Since we are creating a new version of the application, set
 
 Pack and run the rock using similar commands as before:
 
-.. literalinclude:: code/expressjs/task.yaml
-    :language: bash
-    :start-after: [docs:docker-run-update]
-    :end-before: [docs:docker-run-update-end]
-    :dedent: 2
+
+.. tabs::
+
+    .. group-tab:: Docker
+
+        With Docker:
+
+        .. literalinclude:: code/expressjs/task.yaml
+            :language: bash
+            :start-after: [docs:docker-run-update]
+            :end-before: [docs:docker-run-update-end]
+            :dedent: 2
+
+    .. group-tab:: Podman
+
+        With Podman:
+
+        .. literalinclude:: code/expressjs/task.yaml
+            :language: bash
+            :start-after: [docs:podman-run-update]
+            :end-before: [docs:podman-run-update-end]
+            :dedent: 2
 
 The resulting ``.rock`` file will be named differently, as
 its new version will be part of the filename.
@@ -271,11 +337,27 @@ Final Cleanup
 
 We can now stop the container and remove the corresponding image:
 
-.. literalinclude:: code/expressjs/task.yaml
-    :language: bash
-    :start-after: [docs:stop-docker-updated]
-    :end-before: [docs:stop-docker-updated-end]
-    :dedent: 2
+.. tabs::
+
+    .. group-tab:: Docker
+
+        With Docker:
+
+        .. literalinclude:: code/expressjs/task.yaml
+            :language: bash
+            :start-after: [docs:stop-docker-updated]
+            :end-before: [docs:stop-docker-updated-end]
+            :dedent: 2
+
+    .. group-tab:: Podman
+
+        With Podman:
+
+        .. literalinclude:: code/expressjs/task.yaml
+            :language: bash
+            :start-after: [docs:stop-podman-updated]
+            :end-before: [docs:stop-podman-updated-end]
+            :dedent: 2
 
 Reset the environment
 =====================

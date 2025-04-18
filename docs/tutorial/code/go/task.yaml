@@ -79,6 +79,20 @@ execute: |
   docker rmi go-hello-world:0.1
   # [docs:stop-docker-end]
 
+  # [docs:podman-run]
+  podman run --rm -d -p 8000:8000 \
+    --name go-hello-world oci-archive:go-hello-world_0.1_amd64.rock
+  # [docs:podman-run-end]
+  retry -n 5 --wait 2 curl --fail localhost:8000
+
+  # [docs:get-logs-podman]
+  podman exec go-hello-world pebble logs go
+  # [docs:get-logs-podman-end]
+
+  # [docs:stop-podman]
+  podman stop go-hello-world
+  # [docs:stop-podman-end]
+
   ## Part 2 of the tutorial
   sed -i "s/version: .*/version: 0.2/g" rockcraft.yaml
 
@@ -104,6 +118,17 @@ execute: |
   docker stop go-hello-world
   docker rmi go-hello-world:0.2
   # [docs:stop-docker-updated-end]
+
+  # [docs:podman-run-update]
+  rockcraft pack
+  podman run --rm -d -p 8000:8000 \
+    --name go-hello-world oci-archive:go-hello-world_0.2_amd64.rock
+  # [docs:podman-run-update-end]
+  retry -n 5 --wait 2 curl --fail localhost:8000
+
+  # [docs:stop-podman-updated]
+  podman stop go-hello-world
+  # [docs:stop-podman-updated-end]
 
   # [docs:cleanup]
   # delete all the files created during the tutorial

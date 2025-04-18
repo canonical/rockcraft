@@ -49,6 +49,10 @@ execute: |
   sudo docker images flask-hello-world:0.1
   # [docs:docker-images-end]
 
+  # [docs:podman-images]
+  sudo podman images flask-hello-world:0.1
+  # [docs:podman-images-end]
+
   # [docs:docker-run]
   sudo docker run --rm -d -p 8000:8000 \
     --name flask-hello-world flask-hello-world:0.1
@@ -63,10 +67,32 @@ execute: |
   sudo docker exec flask-hello-world pebble logs flask
   # [docs:get-logs-end]
 
+  # [docs:podman-get-logs]
+  sudo podman exec flask-hello-world pebble logs flask
+  # [docs:podman-get-logs-end]
+
   # [docs:stop-docker]
   sudo docker stop flask-hello-world
   sudo docker rmi flask-hello-world:0.1
   # [docs:stop-docker-end]
+
+  # [docs:podman-run]
+  sudo podman run --rm -d -p 8000:8000 \
+    --name flask-hello-world oci-archive:flask-hello-world_0.1_amd64.rock
+  # [docs:podman-run-end]
+  retry -n 5 --wait 2 curl --fail localhost:8000
+
+  # [docs:curl-flask-rock]
+  curl --fail localhost:8000
+  # [docs:curl-flask-rock-end]
+
+  # [docs:get-logs]
+  sudo podman exec flask-hello-world pebble logs flask
+  # [docs:get-logs-end]
+
+  # [docs:stop-podman]
+  sudo podman stop flask-hello-world
+  # [docs:stop-podman-end]
 
   # [docs:change-base]
   sed -i \
@@ -102,6 +128,20 @@ execute: |
   sudo docker rmi flask-hello-world:0.1-chiselled
   # [docs:stop-docker-chisel-end]
 
+  # [docs:podman-run-chisel]
+  sudo podman run --rm -d -p 8000:8000 \
+    --name flask-hello-world oci-archive:flask-hello-world_0.1-chiselled_amd64.rock
+  # [docs:podman-run-chisel-end]
+  retry -n 5 --wait 2 curl --fail localhost:8000
+
+  # [docs:curl-flask-bare-rock]
+  curl --fail localhost:8000
+  # [docs:curl-flask-bare-rock-end]
+
+  # [docs:stop-podman-chisel]
+  sudo podman stop flask-hello-world
+  # [docs:stop-podman-chisel-end]
+
   cat time_app.py > app.py
   sed -i "s/version: .*/version: 0.2/g" rockcraft.yaml
   rockcraft clean
@@ -125,6 +165,21 @@ execute: |
   sudo docker stop flask-hello-world
   sudo docker rmi flask-hello-world:0.2
   # [docs:stop-docker-updated-end]
+
+  # [docs:podman-run-update]
+  rockcraft pack
+  sudo podman run --rm -d -p 8000:8000 \
+    --name flask-hello-world oci-archive:flask-hello-world_0.2_amd64.rock
+  # [docs:podman-run-update-end]
+  retry -n 5 --wait 2 curl --fail localhost:8000/time
+
+  # [docs:curl-time]
+  curl --fail localhost:8000/time
+  # [docs:curl-time-end]
+
+  # [docs:stop-podman-updated]
+  sudo podman stop flask-hello-world
+  # [docs:stop-podman-updated-end]
 
   # [docs:cleanup]
   # exit and delete the virtual environment

@@ -59,26 +59,40 @@ The process might take a little while, but at the end, a new file named
 ``chiselled-hello_latest_amd64.rock`` will be present in the current directory.
 That's your chiselled-hello rock, in oci-archive format.
 
-Run the rock in Docker
-----------------------
+Run the rock
+------------
 
-First, import the recently created rock into Docker:
+.. tabs::
 
-.. literalinclude:: code/chisel/task.yaml
-    :language: bash
-    :start-after: [docs:skopeo-copy]
-    :end-before: [docs:skopeo-copy-end]
-    :dedent: 2
+    .. group-tab:: Docker
 
-Now you can run a container from the rock:
+        First, import the recently created rock into Docker:
 
-.. literalinclude:: code/chisel/task.yaml
-    :language: bash
-    :start-after: [docs:docker-run]
-    :end-before: [docs:docker-run-end]
-    :dedent: 2
+        .. literalinclude:: code/chisel/task.yaml
+            :language: bash
+            :start-after: [docs:skopeo-copy]
+            :end-before: [docs:skopeo-copy-end]
+            :dedent: 2
 
-Which should print:
+        Now run the ``hello`` command from the rock:
+
+        .. literalinclude:: code/chisel/task.yaml
+            :language: bash
+            :start-after: [docs:docker-run]
+            :end-before: [docs:docker-run-end]
+            :dedent: 2
+
+    .. group-tab:: Podman
+
+        Run the oci archive directly using:
+
+        .. literalinclude:: code/chisel/task.yaml
+            :language: bash
+            :start-after: [docs:podman-run]
+            :end-before: [docs:podman-run-end]
+            :dedent: 2
+
+The output should be:
 
 ..  code-block:: text
     :class: log-snippets

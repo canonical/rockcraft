@@ -112,31 +112,47 @@ The output will be:
 
 Test that the OpenSSL binaries have been correctly installed with the following:
 
-.. literalinclude:: ../code/install-slice/task.yaml
-    :language: bash
-    :start-after: [docs:skopeo-copy]
-    :end-before: [docs:skopeo-copy-end]
-    :dedent: 2
+.. tabs::
 
-The output will be:
+    .. group-tab:: Docker
 
-..  code-block:: text
-    :class: log-snippets
+        Copy the OCI archive to docker daemon:
 
-    Getting image source signatures
-    Copying blob 253d707d7e97 done
-    Copying blob 7044a53e1935 done
-    Copying config c114b59704 done
-    Writing manifest to image destination
-    Storing signatures
+        .. literalinclude:: ../code/install-slice/task.yaml
+            :language: bash
+            :start-after: [docs:skopeo-copy]
+            :end-before: [docs:skopeo-copy-end]
+            :dedent: 2
 
-And after:
+        The output will be:
 
-.. literalinclude:: ../code/install-slice/task.yaml
-    :language: bash
-    :start-after: [docs:docker-run]
-    :end-before: [docs:docker-run-end]
-    :dedent: 2
+        ..  code-block:: text
+            :class: log-snippets
+
+            Getting image source signatures
+            Copying blob 253d707d7e97 done
+            Copying blob 7044a53e1935 done
+            Copying config c114b59704 done
+            Writing manifest to image destination
+            Storing signatures
+
+        And after:
+
+        .. literalinclude:: ../code/install-slice/task.yaml
+            :language: bash
+            :start-after: [docs:docker-run]
+            :end-before: [docs:docker-run-end]
+            :dedent: 2
+
+    .. group-tab:: Podman
+
+        Run the oci archive directly using:
+
+        .. literalinclude:: ../code/install-slice/task.yaml
+            :language: bash
+            :start-after: [docs:podman-run]
+            :end-before: [docs:podman-run-end]
+            :dedent: 2
 
 The output of the Docker command will be OpenSSL's default help message:
 

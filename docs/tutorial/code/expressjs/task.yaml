@@ -78,6 +78,20 @@ execute: |
   sudo docker rmi expressjs-hello-world:0.1
   # [docs:stop-docker-end]
 
+  # [docs:podman-run]
+  sudo podman run --rm -d -p 3000:3000 \
+    --name expressjs-hello-world oci-archive:expressjs-hello-world_0.1_amd64.rock
+  # [docs:podman-run-end]
+  retry -n 5 --wait 2 curl --fail localhost:3000
+
+  # [docs:get-logs-podman]
+  sudo podman exec expressjs-hello-world pebble logs expressjs
+  # [docs:get-logs-podman-end]
+
+  # [docs:stop-podman]
+  sudo podman stop expressjs-hello-world
+  # [docs:stop-podman-end]
+
   mv time.js app/routes/
   original_line="var app = express();"
   # Remove comments from time_app.js
@@ -105,6 +119,17 @@ execute: |
   sudo docker stop expressjs-hello-world
   sudo docker rmi expressjs-hello-world:0.2
   # [docs:stop-docker-updated-end]
+
+  # [docs:podman-run-update]
+  rockcraft pack
+  sudo podman run --rm -d -p 3000:3000 \
+    --name expressjs-hello-world oci-archive:expressjs-hello-world_0.2_amd64.rock
+  # [docs:podman-run-update-end]
+  retry -n 5 --wait 2 curl --fail localhost:3000/time
+
+  # [docs:stop-podman-updated]
+  sudo podman stop expressjs-hello-world
+  # [docs:stop-podman-updated-end]
 
   # [docs:cleanup]
   # delete all the files created during the tutorial

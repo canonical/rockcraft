@@ -121,46 +121,66 @@ tutorial.
     The size of the rock may vary depending on factors like the architecture
     we're building on and the packages installed at the time of packing.
 
-Run the Flask rock with Docker
-==============================
+Run the Flask rock
+==================
 
-We already have the rock as an `OCI <OCI_image_spec_>`_ archive. Now we
-need to load it into Docker:
+We already have the rock as an `OCI <OCI_image_spec_>`_ archive.
 
-.. literalinclude:: code/flask/task.yaml
-    :language: bash
-    :start-after: [docs:skopeo-copy]
-    :end-before: [docs:skopeo-copy-end]
-    :dedent: 2
+.. tabs::
 
-Check that the image was successfully loaded into Docker:
+    .. group-tab:: Docker
 
-.. literalinclude:: code/flask/task.yaml
-    :language: bash
-    :start-after: [docs:docker-images]
-    :end-before: [docs:docker-images-end]
-    :dedent: 2
+        We can load the OCI archive into Docker via skopeo:
 
-The output should list the Flask container image, along with its tag, ID and
-size:
+        .. literalinclude:: code/flask/task.yaml
+            :language: bash
+            :start-after: [docs:skopeo-copy]
+            :end-before: [docs:skopeo-copy-end]
+            :dedent: 2
 
-.. terminal::
+        Check that the image was successfully loaded into Docker:
 
-    REPOSITORY          TAG       IMAGE ID       CREATED       SIZE
-    flask-hello-world   0.1       c256056698ba   2 weeks ago   149MB
+        .. literalinclude:: code/flask/task.yaml
+            :language: bash
+            :start-after: [docs:docker-images]
+            :end-before: [docs:docker-images-end]
+            :dedent: 2
 
-.. note::
-    The size of the image reported by Docker is the uncompressed size which is
-    larger than the size of the compressed ``.rock`` file.
+        The output should list the Flask container image, along with its tag, ID and
+        size:
 
-Now we're finally ready to run the rock and test the containerised Flask
-application:
+        .. terminal::
 
-.. literalinclude:: code/flask/task.yaml
-    :language: text
-    :start-after: [docs:docker-run]
-    :end-before: [docs:docker-run-end]
-    :dedent: 2
+            REPOSITORY          TAG       IMAGE ID       CREATED       SIZE
+            flask-hello-world   0.1       c256056698ba   2 weeks ago   149MB
+
+        .. note::
+            The size of the image reported is the uncompressed size which is
+            larger than the size of the compressed ``.rock`` file.
+
+        Now we're finally ready to run the rock and test the containerised Flask
+        application:
+
+        .. literalinclude:: code/flask/task.yaml
+            :language: text
+            :start-after: [docs:docker-run]
+            :end-before: [docs:docker-run-end]
+            :dedent: 2
+
+    .. group-tab:: Podman
+
+        Run the oci archive directly using:
+
+        .. literalinclude:: code/flask/task.yaml
+            :language: bash
+            :start-after: [docs:podman-run]
+            :end-before: [docs:podman-run-end]
+            :dedent: 2
+
+        .. note::
+            Podman is able to run OCI archives directly, but you can use
+            `podman load <archive>` then `podman image ls` to check the
+            uncompressed size of the rock
 
 Use the same ``curl`` command as before to send a request to the Flask
 application's root endpoint which is running inside the container:
@@ -179,11 +199,23 @@ View the application logs
 When deploying the Flask rock, we can always get the application logs via
 :ref:`pebble_explanation_page`:
 
-.. literalinclude:: code/flask/task.yaml
-    :language: text
-    :start-after: [docs:get-logs]
-    :end-before: [docs:get-logs-end]
-    :dedent: 2
+.. tabs::
+
+    .. group-tab:: Docker
+
+        .. literalinclude:: code/flask/task.yaml
+            :language: text
+            :start-after: [docs:get-logs]
+            :end-before: [docs:get-logs-end]
+            :dedent: 2
+
+    .. group-tab:: Podman
+
+        .. literalinclude:: code/flask/task.yaml
+            :language: text
+            :start-after: [docs:podman-get-logs]
+            :end-before: [docs:podman-get-logs-end]
+            :dedent: 2
 
 As a result, Pebble will give us the logs for the
 ``flask`` service running inside the container.
@@ -207,11 +239,23 @@ Now we have a fully functional rock for a Flask application! This concludes
 the first part of this tutorial, so we'll stop the container and remove the
 respective image for now:
 
-.. literalinclude:: code/flask/task.yaml
-    :language: bash
-    :start-after: [docs:stop-docker]
-    :end-before: [docs:stop-docker-end]
-    :dedent: 2
+.. tabs::
+
+    .. group-tab:: Docker
+
+        .. literalinclude:: code/flask/task.yaml
+            :language: bash
+            :start-after: [docs:stop-docker]
+            :end-before: [docs:stop-docker-end]
+            :dedent: 2
+
+    .. group-tab:: Podman
+
+        .. literalinclude:: code/flask/task.yaml
+            :language: bash
+            :start-after: [docs:stop-podman]
+            :end-before: [docs:stop-podman-end]
+            :dedent: 2
 
 Chisel the rock
 ===============
@@ -267,11 +311,23 @@ in size! And that's just because of the simple change of ``base``.
 And the functionality is still the same. As before, we can confirm this by
 running the rock with Docker
 
-.. literalinclude:: code/flask/task.yaml
-    :language: text
-    :start-after: [docs:docker-run-chisel]
-    :end-before: [docs:docker-run-chisel-end]
-    :dedent: 2
+.. tabs::
+
+    .. group-tab:: Docker
+
+        .. literalinclude:: code/flask/task.yaml
+            :language: text
+            :start-after: [docs:docker-run-chisel]
+            :end-before: [docs:docker-run-chisel-end]
+            :dedent: 2
+
+    .. group-tab:: Podman
+
+        .. literalinclude:: code/flask/task.yaml
+            :language: text
+            :start-after: [docs:podman-run-chisel]
+            :end-before: [docs:podman-run-chisel-end]
+            :dedent: 2
 
 and then using the same ``curl`` request:
 
@@ -290,11 +346,23 @@ Cleanup
 And that's it. We can now stop the container and remove the corresponding
 image:
 
-.. literalinclude:: code/flask/task.yaml
-    :language: bash
-    :start-after: [docs:stop-docker-chisel]
-    :end-before: [docs:stop-docker-chisel-end]
-    :dedent: 2
+.. tabs::
+
+    .. group-tab:: Docker
+
+        .. literalinclude:: code/flask/task.yaml
+            :language: bash
+            :start-after: [docs:stop-docker-chisel]
+            :end-before: [docs:stop-docker-chisel-end]
+            :dedent: 2
+
+    .. group-tab:: Podman
+
+        .. literalinclude:: code/flask/task.yaml
+            :language: bash
+            :start-after: [docs:stop-podman-chisel]
+            :end-before: [docs:stop-podman-chisel-end]
+            :dedent: 2
 
 .. _update-flask-application:
 
@@ -321,11 +389,23 @@ project file and change the ``version`` (e.g. to ``0.2``).
 
 Pack and run the rock using similar commands as before:
 
-.. literalinclude:: code/flask/task.yaml
-    :language: text
-    :start-after: [docs:docker-run-update]
-    :end-before: [docs:docker-run-update-end]
-    :dedent: 2
+.. tabs::
+
+    .. group-tab:: Docker
+
+        .. literalinclude:: code/flask/task.yaml
+            :language: text
+            :start-after: [docs:docker-run-update]
+            :end-before: [docs:docker-run-update-end]
+            :dedent: 2
+
+    .. group-tab:: Podman
+
+        .. literalinclude:: code/flask/task.yaml
+            :language: text
+            :start-after: [docs:podman-run-update]
+            :end-before: [docs:podman-run-update-end]
+            :dedent: 2
 
 .. note::
 
@@ -353,11 +433,23 @@ Cleanup
 
 We can now stop the container and remove the corresponding image:
 
-.. literalinclude:: code/flask/task.yaml
-    :language: bash
-    :start-after: [docs:stop-docker-updated]
-    :end-before: [docs:stop-docker-updated-end]
-    :dedent: 2
+.. tabs::
+
+    .. group-tab:: Docker
+
+        .. literalinclude:: code/flask/task.yaml
+            :language: bash
+            :start-after: [docs:stop-docker-updated]
+            :end-before: [docs:stop-docker-updated-end]
+            :dedent: 2
+
+    .. group-tab:: Podman
+
+        .. literalinclude:: code/flask/task.yaml
+            :language: bash
+            :start-after: [docs:stop-podman-updated]
+            :end-before: [docs:stop-podman-updated-end]
+            :dedent: 2
 
 Reset the environment
 =====================

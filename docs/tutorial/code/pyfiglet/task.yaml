@@ -22,11 +22,17 @@ execute: |
   sudo rockcraft.skopeo --insecure-policy copy oci-archive:pyfiglet_0.7.6_amd64.rock docker-daemon:pyfiglet:0.7.6
   # [docs:skopeo-copy-end]
 
-  rm pyfiglet_0.7.6_amd64.rock
-
   # [docs:docker-run]
   docker run --rm pyfiglet:0.7.6 exec pyfiglet it works!
   # [docs:docker-run-end]
 
+  # [docs:podman-run]
+  podman run --rm oci-archive:pyfiglet_0.7.6_amd64.rock exec pyfiglet it works!
+  # [docs:podman-run-end]
+
   docker run --rm  pyfiglet:0.7.6 exec pyfiglet it works! > obtained_output.txt
   diff ../expected_output.txt obtained_output.txt
+
+  podman run --rm oci-archive:pyfiglet_0.7.6_amd64.rock exec pyfiglet it works! > obtained_output.txt
+  diff ../expected_output.txt obtained_output.txt
+  rm pyfiglet_0.7.6_amd64.rock
