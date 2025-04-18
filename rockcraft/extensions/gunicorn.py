@@ -31,6 +31,7 @@ from rockcraft.errors import ExtensionError
 
 from ._python_utils import has_global_variable
 from ._utils import find_ubuntu_base_python_version
+from .app_parts import GROUP_ID, USER_ID, gen_logging_part
 from .extension import Extension, get_extensions_data_dir
 
 
@@ -97,13 +98,23 @@ class _GunicornBase(Extension):
                 "python-requirements": ["requirements.txt"],
                 "build-environment": build_environment,
             },
-            f"{self.framework}-framework/install-app": self.gen_install_app_part(),
+            f"{self.framework}-framework/install-app": {
+                **self.gen_install_app_part(),
+                "permissions": [{"owner": USER_ID, "group": GROUP_ID}],
+            },
             f"{self.framework}-framework/config-files": {
                 "plugin": "dump",
                 "source": str(data_dir / f"{self.framework}-framework"),
                 "organize": {
                     "gunicorn.conf.py": f"{self.framework}/gunicorn.conf.py",
                 },
+                "permissions": [
+                    {
+                        "path": f"{self.framework}/gunicorn.conf.py",
+                        "owner": USER_ID,
+                        "group": GROUP_ID,
+                    },
+                ],
             },
             f"{self.framework}-framework/statsd-exporter": {
                 "build-snaps": ["go"],
@@ -111,6 +122,18 @@ class _GunicornBase(Extension):
                 "plugin": "go",
                 "source": "https://github.com/prometheus/statsd_exporter.git",
             },
+            f"{self.framework}-framework/logging": gen_logging_part(
+                override_build_lines=[
+                    f"mkdir -p $CRAFT_PART_INSTALL/var/log/{self.framework}"
+                ],
+                permissions=[
+                    {
+                        "path": f"var/log/{self.framework}",
+                        "owner": USER_ID,
+                        "group": GROUP_ID,
+                    }
+                ],
+            ),
         }
         if self.yaml_data["base"] == "bare":
             parts[f"{self.framework}-framework/runtime"] = {
@@ -348,7 +371,7 @@ class DjangoFramework(_GunicornBase):
 
     @override
     def gen_install_app_part(self) -> dict[str, Any]:
-        """Return the prime list for the Flask project."""
+        """Return the prime list for the Django project."""
         if "django-framework/install-app" not in self.yaml_data.get("parts", {}):
             return {
                 "plugin": "dump",

@@ -22,6 +22,7 @@ platforms:
   amd64:
   armhf:
     build-on: ["armhf", "arm64"]
+    build-for: ["armhf", "arm64"]
   ibm:
     build-on: ["s390x"]
     build-for: s390x
