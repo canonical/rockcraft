@@ -49,6 +49,10 @@ execute: |
   docker run --rm chisel-openssl exec openssl
   # [docs:docker-run-end]
 
+  # [docs:podman-run]
+  podman run --rm oci-archive:custom-openssl-rock_0.0.1_amd64.rock
+  # [docs:podman-run-end]
+
 restore: |
   pushd $HOME
   rm -fr chisel-releases/ my-custom-openssl-fs/ custom-openssl-rock_0.0.1_amd64.rock

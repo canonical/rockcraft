@@ -74,6 +74,20 @@ execute: |
   sudo docker rmi django-hello-world:0.1
   # [docs:stop-docker-end]
 
+  # [docs:podman-run]
+  sudo podman run --rm -d -p 8000:8000 \
+    --name django-hello-world oci-archive:django-hello-world_0.1_amd64.rock
+  # [docs:podman-run-end]
+  retry -n 5 --wait 2 curl --fail localhost:8000
+
+  # [docs:get-logs-podman]
+  sudo podman exec django-hello-world pebble logs django
+  # [docs:get-logs-podman-end]
+
+  # [docs:stop-podman]
+  sudo podman stop django-hello-world
+  # [docs:stop-podman-end]
+
   # [docs:change-base]
   sed -i \
     "s/base: .*/base: bare\nbuild-base: ubuntu@22.04/g" \
@@ -108,6 +122,16 @@ execute: |
   sudo docker rmi django-hello-world:0.1-chiselled
   # [docs:stop-docker-chisel-end]
 
+  # [docs:podman-run-chisel]
+  sudo podman run --rm -d -p 8000:8000 \
+    --name django-hello-world oci-archive:django-hello-world_0.1-chiselled_amd64.rock
+  # [docs:podman-run-chisel-end]
+  retry -n 5 --wait 2 curl --fail localhost:8000
+
+  # [docs:stop-podman-chisel]
+  sudo podman stop django-hello-world
+  # [docs:stop-podman-chisel-end]
+
   # [docs:create-time-app]
   cd django_hello_world
   django-admin startapp time_app
@@ -138,6 +162,17 @@ execute: |
   sudo docker stop django-hello-world
   sudo docker rmi django-hello-world:0.2
   # [docs:stop-docker-updated-end]
+
+  # [docs:podman-run-update]
+  rockcraft pack
+  sudo podman run --rm -d -p 8000:8000 \
+    --name django-hello-world oci-archive:django-hello-world_0.2_amd64.rock
+  # [docs:podman-run-update-end]
+  retry -n 5 --wait 2 curl --fail localhost:8000/time/
+
+  # [docs:stop-podman-updated]
+  sudo podman stop django-hello-world
+  # [docs:stop-podman-updated-end]
 
   # [docs:cleanup]
   # exit and delete the virtual environment

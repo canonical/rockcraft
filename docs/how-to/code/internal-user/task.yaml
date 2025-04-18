@@ -22,3 +22,10 @@ execute: |
   curl -s http://127.0.0.1:8080/cgi-bin/serve_user.py | grep "Serving by myuser"
   docker rm -f "$id"
   # [docs:check-user-end]
+
+  # [docs:check-user-podman]
+  id=$(podman run -d -p 8080:8080 oci-archive:internal-user_latest_amd64.rock)
+  sleep5
+  curl -s http://127.0.0.1:8080/cgi-bin/serve_user.py | grep "Serving by myuser"
+  podman rm -f "$id"
+  # [docs:check-user-podman-end]
