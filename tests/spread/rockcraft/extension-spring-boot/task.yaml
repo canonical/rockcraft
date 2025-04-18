@@ -1,0 +1,74 @@
+summary: spring-boot extension test
+environment:
+  PROJECT_BASE: gradle
+  PROJECT_BASE/gradle: gradle
+  PROJECT_BASE/maven: maven
+
+  BASE: bare
+  BASE/bare: bare
+  BASE/base_2404: ubuntu@24.04
+  # BUILD_BASE 22.04 and below's default JDKs are not compatible with Java version 21 and below.
+  BUILD_BASE: ubuntu@24.04
+
+  ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS: "true"
+
+execute: |
+  NAME="spring-boot-${BASE//@/-}-${PROJECT_BASE}"
+  NAME="${NAME//./-}"
+  ROCK_FILE="${NAME}_0.1_amd64.rock"
+  IMAGE="${NAME}:0.1"
+  JAVA_VERSION=21
+  sudo snap install devpack-for-spring --edge --classic
+  devpack-for-spring boot start \
+    --path ${PROJECT_BASE}-app \
+    --project ${PROJECT_BASE}-project \
+    --language java \
+    --boot-version 3.4.4 \
+    --version 0.0.1 \
+    --group com.example \
+    --artifact demo \
+    --name demo \
+    --description "Demo project for Spring Boot" \
+    --package-name com.example.demo \
+    --dependencies web \
+    --packaging jar \
+    --java-version 21
+  cd ${PROJECT_BASE}-app
+  run_rockcraft init --name "${NAME}" --profile spring-boot-framework
+
+  # Replace base & build-base with ubuntu@<base>
+  sed -i "s/^base: .*/base: ${BASE}/g" rockcraft.yaml
+  sed -i "s/^build-base: .*/build-base: ${BUILD_BASE}/g" rockcraft.yaml
+
+  function run_test() {
+    # rockcraft clean is required here because the cached layer writes to npmrc
+    # multiple times, causing the app to crash on first run.
+    rockcraft clean
+    run_rockcraft pack
+    test -f "${ROCK_FILE}"
+    test ! -d work
+    # Ensure docker does not have this container image
+    docker rmi --force "${IMAGE}"
+    # Install container
+    sudo rockcraft.skopeo --insecure-policy copy "oci-archive:${ROCK_FILE}" \
+    "docker-daemon:${IMAGE}"
+    # Ensure container exists
+    docker images "${IMAGE}" | MATCH "${NAME}"
+    # Ensure container doesn't exist
+    docker rm -f "${NAME}-container"
+    # test the default spring-boot service
+    docker run --name "${NAME}-container" -d -p 8080:8080 "${IMAGE}"
+    retry -n 5 --wait 2 curl localhost:8080
+    http_status=$(curl -s -o /dev/null -w "%{http_code}" localhost:8080)
+    [ "${http_status}" -eq 404 ]
+  }
+
+  run_test
+
+restore: |
+  NAME="spring-boot-${BASE//@/-}-${PROJECT_BASE}"
+  NAME="${NAME//./-}"
+  docker stop "${NAME}-container"
+  docker rm "${NAME}-container"
+  rm -f "*.rock" rockcraft.yaml
+  docker system prune -a -f

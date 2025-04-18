@@ -127,7 +127,13 @@ parts:
       # Extensions currently expect to find data files in share/rockcraft/
       "**/site-packages/extensions": share/rockcraft/extensions
     override-build: |
-      uv export --no-dev --extra store --no-emit-workspace --no-emit-package pywin32 --output-file uv-requirements.txt
+      uv export \
+      --no-dev \
+      --extra store \
+      --no-emit-workspace \
+      --no-emit-package pywin32 \
+      --output-file uv-requirements.txt \
+      --no-hashes # uncomment this line for development
       ${SNAP}/libexec/snapcraft/craftctl default
 
       version="$("${CRAFT_STAGE}/usr/bin/python3" -c "import rockcraft;print(rockcraft.__version__)")"

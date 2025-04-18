@@ -412,3 +412,4 @@ explicit = true
 
 [tool.uv.sources]
 python-apt = { index = "python-apt-wheels" }
+craft-parts = { git = "https://github.com/yanksyoon/craft-parts", branch = "feat/plugins" }
