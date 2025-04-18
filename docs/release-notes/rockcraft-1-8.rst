@@ -1,11 +1,12 @@
 .. _release-1.8.0:
+.. _release-1.8:
 
-Rockcraft 1.8.0 release notes
-=============================
+Rockcraft 1.8 release notes
+===========================
 
 31 January 2025
 
-Learn about the new features, changes, and fixes introduced in Rockcraft 1.8.0.
+Learn about the new features, changes, and fixes introduced in Rockcraft 1.8.
 For information about the Rockcraft release cycle, see the
 :ref:`release_policy_and_schedule`.
 
@@ -47,7 +48,7 @@ Platform requirements
 What's new
 ----------
 
-Rockcraft 1.8.0 brings the following features, integrations, and improvements.
+Rockcraft 1.8 brings the following features, integrations, and improvements.
 
 Improved error reporting
 ~~~~~~~~~~~~~~~~~~~~~~~~

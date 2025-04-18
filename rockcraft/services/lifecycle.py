@@ -24,7 +24,6 @@ from craft_parts.infos import StepInfo
 from overrides import override  # type: ignore[reportUnknownVariableType]
 
 from rockcraft import layers
-from rockcraft.models.project import Project
 from rockcraft.plugins.python_common import get_python_plugins
 
 
@@ -39,7 +38,7 @@ class RockcraftLifecycleService(LifecycleService):
         from rockcraft.services import RockcraftServiceFactory
 
         # Configure extra args to the LifecycleManager
-        project = cast(Project, self._project)
+        project = self._services.get("project").get()
 
         services = cast(RockcraftServiceFactory, self._services)
         image_service = services.image
@@ -52,7 +51,6 @@ class RockcraftLifecycleService(LifecycleService):
             project_name=project.name,
             rootfs_dir=image_info.base_layer_dir,
         )
-
         super().setup()
 
     @override
@@ -81,7 +79,7 @@ def _python_usrmerge_fix(step_info: StepInfo) -> None:
         # Can't inspect the files without a StepState.
         return
 
-    if state.part_properties["plugin"] not in get_python_plugins().keys():
+    if state.part_properties["plugin"] not in get_python_plugins():
         # Be conservative and don't try to fix the files if they didn't come
         # from a Python plugin.
         return

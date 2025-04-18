@@ -35,6 +35,14 @@ Next, create a file called ``rockcraft.yaml`` with the following contents:
     :caption: rockcraft.yaml
     :language: yaml
 
+.. note::
+
+    This example uses ``python`` plugin along ``python-packages``, so ``pip`` is
+    invoked implicitly to install such packages. `PEP 668`_ changes the
+    behaviour of Python package managers like ``pip`` by introducing a special
+    marker (``EXTERNALLY-MANAGED``) that prevents ``pip`` from installing
+    packages outside a virtual environment. Thus, ``python3-venv`` is required
+    as a stage package.
 
 Pack the rock with Rockcraft
 ----------------------------

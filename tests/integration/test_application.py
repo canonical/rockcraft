@@ -78,7 +78,6 @@ def test_global_environment(
     monkeypatch.setattr(sys, "argv", ["rockcraft", "prime", "--destructive-mode"])
 
     services = RockcraftServiceFactory(
-        # type: ignore # type: ignore[call-arg]
         app=APP_METADATA,
     )
 

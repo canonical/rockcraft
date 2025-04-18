@@ -1,11 +1,12 @@
 .. _release-1.9.0:
+.. _release-1.9:
 
-Rockcraft 1.9.0 release notes
-=============================
+Rockcraft 1.9 release notes
+===========================
 
 28 February 2025
 
-Learn about the new features, changes, and fixes introduced in Rockcraft 1.9.0.
+Learn about the new features, changes, and fixes introduced in Rockcraft 1.9.
 For information about the Rockcraft release cycle, see the
 :ref:`release_policy_and_schedule`.
 
@@ -47,7 +48,7 @@ Platform requirements
 What's new
 ----------
 
-Rockcraft 1.9.0 brings the following features, integrations, and improvements.
+Rockcraft 1.9 brings the following features, integrations, and improvements.
 
 Remote build improvements
 ~~~~~~~~~~~~~~~~~~~~~~~~~

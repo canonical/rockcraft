@@ -21,7 +21,15 @@ import pydantic
 import pytest
 import yaml
 from craft_application.errors import CraftValidationError
-from rockcraft.pebble import Check, ExecCheck, HttpCheck, Pebble, Service, TcpCheck
+from rockcraft.pebble import (
+    Check,
+    ExecCheck,
+    HttpCheck,
+    Pebble,
+    Service,
+    TcpCheck,
+    add_pebble_part,
+)
 
 import tests
 
@@ -63,7 +71,7 @@ class TestPebble:
                     "summary": "mock summary",
                     "description": "mock description",
                     "services": {
-                        "mockServiceOne": Service(  # type: ignore
+                        "mockServiceOne": Service(
                             override="replace",
                             command="foo",
                             on_success="shutdown",
@@ -176,17 +184,19 @@ class TestPebble:
             "my-rock",
         )
 
-        out_pebble_layer = str(
-            f"{tmp_path}/{pebble_obj.PEBBLE_LAYERS_PATH}/"
-            f"{expected_new_layer_prefix}-my-rock.yaml"
+        out_pebble_layer = (
+            tmp_path
+            / pebble_obj.PEBBLE_LAYERS_PATH
+            / f"{expected_new_layer_prefix}-my-rock.yaml"
         )
-        check.is_true(os.path.exists(out_pebble_layer))
+
+        check.is_true(out_pebble_layer.exists())
         check.equal(oct((tmp_path / pebble_obj.PEBBLE_PATH).stat().st_mode)[-3:], "777")
         check.equal(
             oct(Path(out_pebble_layer).stat().st_mode)[-3:],
             "777",
         )
-        with open(out_pebble_layer) as f:
+        with out_pebble_layer.open() as f:
             content = f.read()
             check.equal(content, expected_layer_yaml)
             content = yaml.safe_load(content)
@@ -372,7 +382,7 @@ class TestPebble:
         _ = Check(**full_check)
 
     def test_minimal_check(self):
-        _ = Check(override="merge", exec={"command": "foo cmd"})  # pyright: ignore
+        _ = Check.model_validate({"override": "merge", "exec": {"command": "foo cmd"}})
 
     @pytest.mark.parametrize(
         ("bad_check", "exception", "error"),
@@ -439,3 +449,38 @@ class TestPebble:
 
         assert dump["url"] == "http://www.example.com/"
         assert isinstance(dump["url"], str)
+
+
+def test_project_unmarshal_existing_pebble_different():
+    """Test that loading a project that already has a "pebble" part fails if that
+    part is different from what we'd create."""
+    build_base = "ubuntu@24.04"
+    yaml_data = {
+        "build-base": build_base,
+        "parts": {
+            "pebble": {
+                "plugin": "go",
+                "source": "https://github.com/fork/pebble.git",
+                "source-branch": "new-pebble-work",
+            }
+        },
+    }
+
+    with pytest.raises(
+        CraftValidationError, match='Cannot change the default "pebble" part'
+    ):
+        add_pebble_part(yaml_data)
+
+
+def test_project_unmarshal_existing_pebble_same():
+    """Test that loading a project that already has a "pebble" part works if that
+    part is the same as what we'd create."""
+
+    build_base = "ubuntu@24.04"
+    yaml_data = {
+        "build-base": build_base,
+        "parts": {"pebble": Pebble.get_part_spec(build_base)},
+    }
+
+    # Must not raise any errors
+    add_pebble_part(yaml_data)

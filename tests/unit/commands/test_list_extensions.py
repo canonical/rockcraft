@@ -23,15 +23,16 @@ from rockcraft.commands import ExtensionsCommand, ListExtensionsCommand
 from tests.unit.testing.extensions import ExperimentalExtension, FakeExtension
 
 
-@pytest.fixture()
+@pytest.fixture
 def setup_extensions(mock_extensions):
     extensions.register(FakeExtension.NAME, FakeExtension)
     extensions.register(ExperimentalExtension.NAME, ExperimentalExtension)
 
 
+@pytest.mark.usefixtures("setup_extensions")
 @pytest.mark.parametrize("command_class", [ListExtensionsCommand, ExtensionsCommand])
-def test_list_extensions(setup_extensions, emitter, command_class):
-    command = command_class(None)
+def test_list_extensions(emitter, command_class, fake_app_config):
+    command = command_class(fake_app_config)
     command.run(argparse.Namespace())
     emitter.assert_message(
         dedent(

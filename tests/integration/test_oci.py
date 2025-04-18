@@ -24,10 +24,7 @@ import pytest
 from rockcraft import oci
 from rockcraft.services.image import ImageInfo
 
-from tests.util import jammy_only
-
 pytestmark = [
-    jammy_only,
     pytest.mark.usefixtures("reset_callbacks", "enable_overlay_feature"),
 ]
 
@@ -56,7 +53,7 @@ def create_base_image(
     extracted_dir = work_dir / "extracted"
     base_layer_dir = image.extract_to(extracted_dir, rootless=True)
     assert base_layer_dir.is_dir()
-    assert os.listdir(base_layer_dir) == []
+    assert list(base_layer_dir.iterdir()) == []
 
     # Call the client function to populate the empty layer
     populate_base_layer(base_layer_dir)
@@ -107,7 +104,7 @@ def test_add_layer_with_symlink_in_base(new_dir):
             (actual_dir / f"old_{target}_file").write_text(f"old {target} file")
 
             (base_layer_dir / target).symlink_to(f"usr/{target}")
-            assert os.listdir(base_layer_dir / target) == [f"old_{target}_file"]
+            assert os.listdir(base_layer_dir / target) == [f"old_{target}_file"]  # noqa: PTH208 (use Path.iterdir)
 
     image, base_layer_dir = create_base_image(Path(new_dir), populate_base_layer)
 
@@ -131,28 +128,30 @@ def test_add_layer_with_symlink_in_base(new_dir):
     ]
 
 
-@pytest.fixture()
-def extra_project_params():
-    """Fixture used to configure the Project used by the default test services."""
-    return {
-        "parts": {
-            "with-overlay": {
-                "plugin": "nil",
-                "override-build": "touch ${CRAFT_PART_INSTALL}/file_from_override_build",
-                "overlay-script": textwrap.dedent(
-                    """
+@pytest.mark.slow
+@pytest.mark.usefixtures("fake_project_file", "project_keys")
+@pytest.mark.parametrize(
+    "project_keys",
+    [
+        {
+            "parts": {
+                "with-overlay": {
+                    "plugin": "nil",
+                    "override-build": "touch ${CRAFT_PART_INSTALL}/file_from_override_build",
+                    "overlay-script": textwrap.dedent(
+                        """
                 cd ${CRAFT_OVERLAY}
                 unlink bin
                 mkdir bin
                 touch bin/file_from_overlay_script
                 """
-                ),
+                    ),
+                }
             }
         }
-    }
-
-
-def test_add_layer_with_overlay(new_dir, mocker, lifecycle_service, mock_obtain_image):
+    ],
+)
+def test_add_layer_with_overlay(new_dir, mocker, fake_services, mock_obtain_image):
     """Test "overwriting" directories in the base layer via overlays."""
 
     def populate_base_layer(base_layer_dir):
@@ -172,8 +171,9 @@ def test_add_layer_with_overlay(new_dir, mocker, lifecycle_service, mock_obtain_
     # without superuser privileges.
     mock_geteuid = mocker.patch.object(os, "geteuid", return_value=0)
 
+    fake_services.get("project").configure(build_for=None, platform=None)
     # Setup the service, to create the LifecycleManager.
-    lifecycle_service.setup()
+    lifecycle_service = fake_services.get("lifecycle")
     assert mock_geteuid.called
 
     # Run the lifecycle.
@@ -190,6 +190,14 @@ def test_add_layer_with_overlay(new_dir, mocker, lifecycle_service, mock_obtain_
         "bin/.wh..wh..opq",
         "bin/file_from_overlay_script",
         "file_from_override_build",
+        "usr",
+        "usr/bin",
+        "usr/bin/pebble",
+        "var",
+        "var/lib",
+        "var/lib/pebble",
+        "var/lib/pebble/default",
+        "var/lib/pebble/default/layers",
     ]
 
 

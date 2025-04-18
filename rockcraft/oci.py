@@ -277,17 +277,17 @@ class Image:
         with tempfile.TemporaryDirectory() as tmpfs:
             tmpfs_etc = Path(tmpfs) / "etc"
             tmpfs_etc.mkdir(parents=True, exist_ok=True)
-            with open(tmpfs_etc / "passwd", "a+") as passwdf:
+            with (tmpfs_etc / "passwd").open("a+") as passwdf:
                 passwdf.write(user_files["passwd"])
 
-            with open(tmpfs_etc / "group", "a+") as groupf:
+            with (tmpfs_etc / "group").open("a+") as groupf:
                 groupf.write(user_files["group"])
 
             if user_files["shadow"]:
-                days_since_epoch = (datetime.utcnow() - datetime(1970, 1, 1)).days
+                days_since_epoch = (datetime.utcnow() - datetime(1970, 1, 1)).days  # type: ignore[reportDeprecated]
 
                 # only add the shadow file if there's already one in the base image
-                with open(tmpfs_etc / "shadow", "a+") as shadowf:
+                with (tmpfs_etc / "shadow").open("a+") as shadowf:
                     shadowf.write(
                         user_files["shadow"]
                         + f"{username}:!:{days_since_epoch}::::::\n"

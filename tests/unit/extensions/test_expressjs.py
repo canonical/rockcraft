@@ -57,7 +57,7 @@ def package_json_file(app_path):
 
 
 @pytest.mark.parametrize(
-    "base, npm_include_node, node_version, expected_yaml_dict",
+    ("base", "npm_include_node", "node_version", "expected_yaml_dict"),
     [
         pytest.param(
             "ubuntu@24.04",
@@ -88,6 +88,7 @@ def package_json_file(app_path):
                         ),
                         "build-packages": ["nodejs", "npm"],
                         "stage-packages": ["ca-certificates_data", "nodejs_bins"],
+                        "build-environment": [{"UV_USE_IO_URING": "0"}],
                     },
                     "expressjs-framework/runtime": {
                         "plugin": "nil",
@@ -129,6 +130,7 @@ def package_json_file(app_path):
                         "plugin": "npm",
                         "source": "app/",
                         "stage-packages": ["ca-certificates_data"],
+                        "build-environment": [{"UV_USE_IO_URING": "0"}],
                     }
                 },
                 "platforms": {
@@ -180,6 +182,7 @@ def package_json_file(app_path):
                             "ca-certificates_data",
                             "coreutils_bins",
                         ],
+                        "build-environment": [{"UV_USE_IO_URING": "0"}],
                     },
                     "expressjs-framework/runtime": {
                         "plugin": "nil",
@@ -235,6 +238,7 @@ def package_json_file(app_path):
                             "ca-certificates_data",
                             "coreutils_bins",
                         ],
+                        "build-environment": [{"UV_USE_IO_URING": "0"}],
                     },
                     "expressjs-framework/runtime": {
                         "plugin": "nil",
@@ -292,7 +296,7 @@ def test_expressjs_no_package_json_error(tmp_path, expressjs_input_yaml):
 
 
 @pytest.mark.parametrize(
-    "package_json_path, package_json_contents, error_message",
+    ("package_json_path", "package_json_contents", "error_message"),
     [
         ("invalid-path", "", "missing package.json file"),
         ("package.json", "[]", "invalid package.json file"),

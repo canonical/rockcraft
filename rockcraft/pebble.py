@@ -16,7 +16,6 @@
 
 """Pebble metadata and configuration helpers."""
 
-import glob
 from collections.abc import Mapping
 from pathlib import Path
 from typing import Any, Literal
@@ -172,10 +171,12 @@ class Pebble:
         """
         # NOTE: the layer's filename prefix will always be "001-" when using
         # "bare" and "ubuntu" bases
-        pebble_layers_path_in_base = f"{ref_fs}/{self.PEBBLE_LAYERS_PATH}"
-        existing_pebble_layers = glob.glob(
-            pebble_layers_path_in_base + "/[0-9][0-9][0-9]-???*.yaml"
-        ) + glob.glob(pebble_layers_path_in_base + "/[0-9][0-9][0-9]-???*.yml")
+        pebble_layers_path_in_base = ref_fs / self.PEBBLE_LAYERS_PATH
+
+        existing_pebble_layers: list[Path] = [
+            *pebble_layers_path_in_base.glob("[0-9][0-9][0-9]-???*.yaml"),
+            *pebble_layers_path_in_base.glob("[0-9][0-9][0-9]-???*.yml"),
+        ]
 
         prefixes = [Path(layer).name[:3] for layer in existing_pebble_layers]
         prefixes.sort()
@@ -193,7 +194,7 @@ class Pebble:
         (target_dir / self.PEBBLE_PATH).chmod(0o777)
 
         tmp_new_layer = tmp_pebble_layers_path / new_layer_name
-        with open(tmp_new_layer, "w", encoding="utf-8") as layer_fd:
+        with tmp_new_layer.open("w", encoding="utf-8") as layer_fd:
             yaml.dump(
                 layer_content,
                 layer_fd,
@@ -229,3 +230,29 @@ class Pebble:
     @staticmethod
     def _is_focal_or_jammy(build_base: str) -> bool:
         return build_base in ("ubuntu@20.04", "ubuntu@22.04")
+
+
+def add_pebble_part(project: dict[str, Any]) -> None:
+    """Add pebble-specific contents to YAML-loaded data.
+
+    This function adds a special "pebble" part to a project's specification, to be
+    (eventually) used as the image's entrypoint.
+
+    :param project: The project spec loaded from "rockcraft.yaml" by the project
+      service.
+    :raises CraftValidationError: If `project` already contains a "pebble" part,
+      and said part's contents are different from the contents of the part we add.
+    """
+    build_base = project.get("build-base") or project["base"]
+    pebble_part = Pebble.get_part_spec(build_base)
+
+    parts = project["parts"]
+    if "pebble" in parts:
+        if parts["pebble"] == pebble_part:
+            # Project already has the correct pebble part.
+            return
+        # Project already has a pebble part, and it's different from ours;
+        # this is currently not supported.
+        raise CraftValidationError('Cannot change the default "pebble" part')
+
+    parts["pebble"] = pebble_part

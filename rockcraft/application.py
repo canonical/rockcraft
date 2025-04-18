@@ -18,21 +18,17 @@
 
 from __future__ import annotations
 
-from pathlib import Path
-from typing import Any
-
 from craft_application import Application, AppMetadata
 from craft_parts.plugins.plugins import PluginType
 from overrides import override  # type: ignore[reportUnknownVariableType]
 
-from rockcraft import models, plugins
+from rockcraft import plugins
 from rockcraft.models import project
 
 APP_METADATA = AppMetadata(
     name="rockcraft",
     summary="A tool to create OCI images",
     ProjectClass=project.Project,
-    BuildPlannerClass=project.BuildPlanner,
     source_ignore_patterns=["*.rock"],
     docs_url="https://documentation.ubuntu.com/rockcraft/en/{version}",
 )
@@ -42,25 +38,9 @@ class Rockcraft(Application):
     """Rockcraft application definition."""
 
     @override
-    def _extra_yaml_transform(
-        self,
-        yaml_data: dict[str, Any],
-        *,
-        build_on: str,
-        build_for: str | None,
-    ) -> dict[str, Any]:
-        return models.transform_yaml(Path.cwd(), yaml_data)
-
-    @override
     def _configure_services(self, provider_name: str | None) -> None:
         self.services.update_kwargs(
-            "image",
-            work_dir=self._work_dir,
-            build_plan=self._build_plan,
-        )
-        self.services.update_kwargs(
-            "package",
-            build_plan=self._build_plan,
+            "image", work_dir=self._work_dir, project_dir=self.project_dir
         )
         self.services.update_kwargs(
             "init",

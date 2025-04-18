@@ -57,7 +57,7 @@ def django_input_yaml_fixture():
 def test_flask_extension_default(
     tmp_path, flask_input_yaml, packages, async_package, expected_worker
 ):
-    full_packages = "\n".join([packages, async_package])
+    full_packages = f"{packages}\n{async_package}"
     (tmp_path / "requirements.txt").write_text(full_packages)
     (tmp_path / "app.py").write_text("app = object()")
     (tmp_path / "static").mkdir()
@@ -287,14 +287,25 @@ def test_flask_extension_override_parts(tmp_path, flask_input_yaml):
     }
 
 
+@pytest.mark.parametrize(
+    ("build_base", "expected_stage_packages", "expected_python_interpreter"),
+    [
+        ("ubuntu@22.04", ["python3.10-venv_ensurepip"], "python3.10"),
+        ("ubuntu:22.04", ["python3.10-venv_ensurepip"], "python3.10"),
+        ("ubuntu@24.04", ["python3.12-venv_ensurepip"], "python3.12"),
+        ("ubuntu:24.04", ["python3.12-venv_ensurepip"], "python3.12"),
+    ],
+)
 @pytest.mark.usefixtures("flask_extension")
-def test_flask_extension_bare(tmp_path):
+def test_flask_extension_bare(
+    tmp_path, build_base, expected_stage_packages, expected_python_interpreter
+):
     (tmp_path / "requirements.txt").write_text("flask")
     (tmp_path / "app.py").write_text("app = object()")
     flask_input_yaml = {
         "extensions": ["flask-framework"],
         "base": "bare",
-        "build-base": "ubuntu@22.04",
+        "build-base": build_base,
         "platforms": {"amd64": {}},
         "parts": {"flask/install-app": {"prime": ["-flask/app/.git"]}},
     }
@@ -309,8 +320,10 @@ def test_flask_extension_bare(tmp_path):
         "python-packages": ["gunicorn"],
         "python-requirements": ["requirements.txt"],
         "source": ".",
-        "stage-packages": ["python3.10-venv_ensurepip"],
-        "build-environment": [{"PARTS_PYTHON_INTERPRETER": "python3.10"}],
+        "stage-packages": expected_stage_packages,
+        "build-environment": [
+            {"PARTS_PYTHON_INTERPRETER": expected_python_interpreter}
+        ],
     }
 
 
@@ -411,26 +424,29 @@ def test_flask_extension_incorrect_prime_prefix_error(tmp_path):
     assert "flask/app" in str(exc)
 
 
+WSGI_FLASK_INPUT_YAML = {
+    "extensions": ["flask-framework"],
+    "base": "bare",
+    "build-base": "ubuntu@22.04",
+    "platforms": {"amd64": {}},
+    "parts": {"flask/install-app": {"prime": ["flask/app/requirement.txt"]}},
+}
+
+
 @pytest.mark.usefixtures("flask_extension")
 def test_flask_extension_incorrect_wsgi_path_error(tmp_path):
-    flask_input_yaml = {
-        "extensions": ["flask-framework"],
-        "base": "bare",
-        "build-base": "ubuntu@22.04",
-        "platforms": {"amd64": {}},
-        "parts": {"flask/install-app": {"prime": ["flask/app/requirement.txt"]}},
-    }
-    (tmp_path / "requirements.txt").write_text("flask")
-
-    with pytest.raises(ExtensionError) as exc:
-        extensions.apply_extensions(tmp_path, flask_input_yaml)
-    assert "app:app" in str(exc)
-
     (tmp_path / "app.py").write_text("flask")
 
-    with pytest.raises(ExtensionError) as exc:
-        extensions.apply_extensions(tmp_path, flask_input_yaml)
-    assert "app:app" in str(exc)
+    with pytest.raises(ExtensionError, match="can not be imported from app:app"):
+        extensions.apply_extensions(tmp_path, WSGI_FLASK_INPUT_YAML.copy())
+
+
+@pytest.mark.usefixtures("flask_extension")
+def test_flask_extension_incorrect_wsgi_path_error_no_app(tmp_path):
+    (tmp_path / "requirements.txt").write_text("flask")
+
+    with pytest.raises(ExtensionError, match="app:app, no app.py"):
+        extensions.apply_extensions(tmp_path, WSGI_FLASK_INPUT_YAML.copy())
 
 
 @pytest.mark.usefixtures("flask_extension")
@@ -555,30 +571,46 @@ def test_django_extension_override_install_app(tmp_path, django_input_yaml):
     }
 
 
+WSGI_DJANGO_INPUT_YAML = {
+    "name": "foobar",
+    "extensions": ["django-framework"],
+    "base": "bare",
+    "build-base": "ubuntu@22.04",
+}
+
+
 @pytest.mark.usefixtures("django_extension")
-def test_django_extension_incorrect_wsgi_path_error(tmp_path):
-    input_yaml = {
-        "name": "foobar",
-        "extensions": ["django-framework"],
-        "base": "bare",
-    }
+def test_django_extension_incorrect_wsgi_path_error_wsgi_missing(tmp_path):
     (tmp_path / "requirements.txt").write_text("django")
 
-    with pytest.raises(ExtensionError) as exc:
-        extensions.apply_extensions(tmp_path, input_yaml)
+    with pytest.raises(
+        ExtensionError, match=r"wsgi:application, no wsgi\.py file found"
+    ):
+        extensions.apply_extensions(tmp_path, WSGI_DJANGO_INPUT_YAML.copy())
 
-    assert "wsgi:application" in str(exc)
 
+@pytest.mark.usefixtures("django_extension")
+def test_django_extension_incorrect_wsgi_path_error_no_app(tmp_path):
+    (tmp_path / "requirements.txt").write_text("django")
     django_project_dir = tmp_path / "foobar" / "foobar"
     django_project_dir.mkdir(parents=True)
     (django_project_dir / "wsgi.py").write_text("app = object()")
 
-    with pytest.raises(ExtensionError):
-        extensions.apply_extensions(tmp_path, input_yaml)
+    with pytest.raises(
+        ExtensionError, match=r"wsgi:application, no variable named application"
+    ):
+        extensions.apply_extensions(tmp_path, WSGI_DJANGO_INPUT_YAML.copy())
 
+
+@pytest.mark.usefixtures("django_extension")
+def test_django_extension_wsgi_path_happy(tmp_path):
+    (tmp_path / "requirements.txt").write_text("django")
+    django_project_dir = tmp_path / "foobar" / "foobar"
+    django_project_dir.mkdir(parents=True)
+    (django_project_dir / "wsgi.py").write_text("app = object()")
     (django_project_dir / "wsgi.py").write_text("application = object()")
 
-    extensions.apply_extensions(tmp_path, input_yaml)
+    extensions.apply_extensions(tmp_path, WSGI_DJANGO_INPUT_YAML.copy())
 
 
 @pytest.mark.usefixtures("django_extension")
@@ -589,6 +621,7 @@ def test_django_extension_django_service_override_disable_wsgi_path_check(tmp_pa
         "name": "foobar",
         "extensions": ["django-framework"],
         "base": "bare",
+        "build-base": "ubuntu@22.04",
         "services": {
             "django": {
                 "command": "/bin/python3 -m gunicorn -c /django/gunicorn.conf.py webapp:app"

@@ -18,8 +18,8 @@ import hashlib
 import json
 import os
 import tarfile
-from collections import namedtuple
 from pathlib import Path
+from typing import NamedTuple
 from unittest.mock import ANY, call, mock_open, patch
 
 import pytest
@@ -147,7 +147,9 @@ class TestImage:
         ]
 
     def _get_arch_from_call(self, mock_call):
-        ArchData = namedtuple("ArchData", ["override_arch", "override_variant"])
+        class ArchData(NamedTuple):
+            override_arch: str
+            override_variant: str | None
 
         call_args = mock_call.args[0]
         override_arch_index = call_args.index("--override-arch")
@@ -334,7 +336,7 @@ class TestImage:
             MOCK_NEW_USER["group"],
         )
 
-        check.is_false(os.path.exists(fake_tmpfs / "etc/shadow"))
+        check.is_false((fake_tmpfs / "etc/shadow").exists())
         mock_add_layer.assert_called_once_with("mock-tag", fake_tmpfs)
 
         # Test with a conflicting user or ID.
@@ -347,9 +349,9 @@ class TestImage:
                 MOCK_NEW_USER["user"],
                 MOCK_NEW_USER["uid"] + 1,
             )
-            check.is_in(
-                "conflict with existing user/group in the base filesystem", str(err)
-            )
+        check.is_in(
+            "conflict with existing user/group in the base filesystem", str(err)
+        )
 
         with pytest.raises(errors.RockcraftError) as err:
             image.add_user(
@@ -359,7 +361,9 @@ class TestImage:
                 MOCK_NEW_USER["user"] + "bar",
                 MOCK_NEW_USER["uid"],
             )
-            check.is_in("conflict with existing user/group in the base filesystem", err)
+        check.is_in(
+            "conflict with existing user/group in the base filesystem", str(err)
+        )
 
     @pytest.mark.parametrize(
         (

@@ -7,6 +7,9 @@
 ###########################################
 summary: common setup instructions
 
+# Run this test last, as it manipulates the docker installation.
+priority: -100
+
 execute: |
   date
   # [docs:install-rockcraft]
@@ -27,3 +30,6 @@ execute: |
   sudo snap disable docker
   sudo snap enable docker
   # [docs:docker-enable-end]
+
+  # wait until docker is working again, for the tests that come after this
+  retry -n 10 --wait 2 sh -c 'docker run --rm hello-world'
