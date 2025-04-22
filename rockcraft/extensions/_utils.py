@@ -64,7 +64,7 @@ def _apply_extension(
     if "parts" not in yaml_data:
         yaml_data["parts"] = {}
 
-    parts = cast(dict[str, Any], yaml_data["parts"])
+    parts = cast("dict[str, Any]", yaml_data["parts"])
     for part_definition in parts.values():
         for property_name, property_value in part_extension.items():
             part_definition[property_name] = _apply_extension_property(
