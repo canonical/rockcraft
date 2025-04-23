@@ -1,10 +1,14 @@
 summary: spring-boot extension test
 environment:
-  PROJECT_BASE: gradle
-  PROJECT_BASE/maven: maven
+  PROJECT_BASE/gradle_bare: gradle
+  PROJECT_BASE/gradle_2404: gradle
+  PROJECT_BASE/maven_bare: maven
+  PROJECT_BASE/maven_2404: maven
 
-  BASE: bare
-  BASE/base_2404: ubuntu@24.04
+  BASE/gradle_bare: bare
+  BASE/gradle_2404: ubuntu@24.04
+  BASE/maven_bare: bare
+  BASE/maven_2404: ubuntu@24.04
   # BUILD_BASE 22.04 and below's default JDKs are not compatible with Java version 21 and below.
   BUILD_BASE: ubuntu@24.04
 
@@ -18,7 +22,7 @@ execute: |
   JAVA_VERSION=21
   sudo snap install devpack-for-spring --edge --classic
   devpack-for-spring boot start \
-    --path ${PROJECT_BASE}-app \
+    --path ${NAME}-app \
     --project ${PROJECT_BASE}-project \
     --language java \
     --boot-version 3.4.4 \
