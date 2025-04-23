@@ -414,4 +414,5 @@ explicit = true
 
 [tool.uv.sources]
 python-apt = { index = "python-apt-wheels" }
+# TODO: Revert back to craft-parts pypi lib, DO NOT MERGE
 craft-parts = { git = "https://github.com/yanksyoon/craft-parts", branch = "feat/plugins" }
