@@ -46,7 +46,7 @@ plugin respectively.
   parts:
     spring-boot-framework/install-app:
       plugin: maven
-      maven-use-mvnw: False # If mvnw file is present, True
+      maven-use-wrapper: False # If mvnw file is present, True
 
 
 .. code-block:: yaml

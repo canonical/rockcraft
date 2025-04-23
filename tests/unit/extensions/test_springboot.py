@@ -168,7 +168,7 @@ def use_gradle_init_script(tmp_path, request):
                         "plugin": "maven",
                         "source": ".",
                         "build-packages": ["default-jdk"],
-                        "maven-use-mvnw": "True",
+                        "maven-use-wrapper": "True",
                         "organize": {
                             "**/*.jar": "app/",
                         },
