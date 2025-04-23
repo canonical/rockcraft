@@ -12,6 +12,7 @@ summary: Getting started with ExpressJS tutorial
 priority: -200
 
 environment:
+  UV_USE_IO_URING: "0"
 
 execute: |
   # [docs:install-deps]

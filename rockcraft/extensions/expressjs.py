@@ -152,6 +152,14 @@ class ExpressJSFramework(Extension):
             install_app_part["npm-node-version"] = self._user_install_app_part.get(
                 "npm-node-version"
             )
+
+        # NOTE: There's currently a bad interaction between the nodejs version in the
+        # archives and the kernel, causing an infinite hang during 'npm install':
+        # - https://github.com/npm/cli/issues/4028
+        # - https://github.com/amazonlinux/amazon-linux-2023/issues/856
+        # For now we need to disable libuv's use of io_uring; this should be able to
+        # be reverted in a few months (as of April 2025).
+        install_app_part["build-environment"] = [{"UV_USE_IO_URING": "0"}]
         return install_app_part
 
     def _gen_app_build_packages(self) -> list[str]:
