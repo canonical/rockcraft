@@ -585,7 +585,6 @@ dependencies = [
     { name = "pyyaml" },
     { name = "requests" },
     { name = "requests-unixsocket2" },
-    { name = "tomli", marker = "python_full_version < '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-oracular') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-oracular') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-oracular' and extra == 'group-9-rockcraft-dev-plucky')" },
 ]
 
 [[package]]
@@ -2541,7 +2540,7 @@ requires-dist = [
     { name = "craft-application", specifier = ">=5.0.1" },
     { name = "craft-archives" },
     { name = "craft-cli" },
-    { name = "craft-parts" },
+    { name = "craft-parts", git = "https://github.com/yanksyoon/craft-parts?branch=feat%2Fplugins" },
     { name = "craft-platforms", specifier = "~=0.8" },
     { name = "craft-providers" },
     { name = "craft-store", marker = "extra == 'store'" },
