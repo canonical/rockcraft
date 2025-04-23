@@ -92,6 +92,7 @@ The ``spring-boot-framework`` uses the following configuration:
 
 .. code-block:: yaml
   :caption: rockcraft.yaml
+
   parts:
     spring-boot-framework/runtime:
       plugin: jlink
