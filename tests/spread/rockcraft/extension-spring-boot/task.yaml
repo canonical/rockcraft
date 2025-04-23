@@ -1,11 +1,9 @@
 summary: spring-boot extension test
 environment:
   PROJECT_BASE: gradle
-  PROJECT_BASE/gradle: gradle
   PROJECT_BASE/maven: maven
 
   BASE: bare
-  BASE/bare: bare
   BASE/base_2404: ubuntu@24.04
   # BUILD_BASE 22.04 and below's default JDKs are not compatible with Java version 21 and below.
   BUILD_BASE: ubuntu@24.04
