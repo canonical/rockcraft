@@ -41,8 +41,8 @@ this tutorial.
 
 .. literalinclude:: code/spring-boot/task.yaml
     :language: bash
-    :start-after: [docs:mod-init-spring-boot]
-    :end-before: [docs:mod-init-spring-boot-end]
+    :start-after: [docs:init-spring-boot]
+    :end-before: [docs:init-spring-boot-end]
     :dedent: 2
 
 
@@ -82,7 +82,7 @@ The Spring Boot application looks good, so let's stop it for now
 with :kbd:`Ctrl` + :kbd:`C`.
 
 Pack the Spring Boot application into a rock
-===================================
+============================================
 
 
 First, we'll need a project file. Rockcraft will automate its
