@@ -196,7 +196,7 @@ class SpringBootFramework(Extension):
         if plugin == "gradle" and self.init_gradle_path:
             plugin_directives["gradle-init-script"] = str(self.init_gradle_path)
         if plugin == "maven" and self.mvnw_path.exists():
-            plugin_directives["maven-use-mvnw"] = "True"
+            plugin_directives["maven-use-wrapper"] = "True"
         return plugin_directives
 
     def gen_runtime_app_part(self) -> dict[str, Any]:
