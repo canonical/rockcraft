@@ -196,3 +196,19 @@ parts:
       bin/chisel: libexec/rockcraft/chisel
     stage:
       - libexec/rockcraft/chisel
+
+  spread:
+    plugin: go
+    source: https://github.com/canonical/spread.git
+    source-commit: d6447c43754c8ca0741901e9db73d5fdb4d21c93 # 'main' as of 28-March-2025
+    build-snaps:
+      - go
+    build-attributes:
+      - enable-patchelf
+    build-environment:
+      - CGO_ENABLED: 0
+      - GOFLAGS: -trimpath -ldflags=-w -ldflags=-s
+    organize:
+      bin/spread: libexec/rockcraft/craft.spread
+    stage:
+      - libexec/rockcraft/
