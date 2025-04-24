@@ -147,6 +147,9 @@ dmypy.json
 # Visual Studio Code
 .vscode/
 
+# JetBrains IDEs
+/.idea/
+
 # Rockcraft-specific ignores after this line -----
 
 # rock
@@ -162,4 +165,3 @@ docs/.sphinx/.wordlist.dic
 docs/reference/commands
 
 .DS_Store
-.idea/

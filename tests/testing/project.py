@@ -16,16 +16,20 @@
 """Project-related utility functions for testing."""
 
 import craft_platforms
+import distro
 from rockcraft.models import Project
 
 
 def create_project(**kwargs) -> Project:
     """Utility function to create test Projects with defaults."""
-    base = kwargs.get("base", "ubuntu@22.04")
+    default_base = str(
+        craft_platforms.DistroBase.from_linux_distribution(distro.LinuxDistribution())
+    )
+    base = kwargs.get("base", default_base)
 
     build_base = kwargs.get("build_base")
-    if not build_base:
-        build_base = base if base != "bare" else "ubuntu@22.04"
+    if not build_base and base == "bare":
+        build_base = default_base
 
     return Project.unmarshal(
         {
