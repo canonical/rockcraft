@@ -29,7 +29,6 @@ execute: |
       stage-packages:
         - findutils
   EOL
-  fi
 
   run_rockcraft pack
 
