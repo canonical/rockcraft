@@ -50,8 +50,8 @@ restore() {
         ;;
     esac
 
-    # rm -Rf "$PROJECT_PATH"
-    # mkdir -p "$PROJECT_PATH"
+    rm -Rf "$PROJECT_PATH"
+    mkdir -p "$PROJECT_PATH"
 }
 
 prepare_each() {
