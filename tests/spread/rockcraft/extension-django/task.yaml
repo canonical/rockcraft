@@ -52,7 +52,11 @@ execute: |
   # ensure the django and promtail folders have the correct user
   check_directory_ownership() {
     local directory="$1"
-    docker run --rm --entrypoint /bin/bash example-django -c "find ${directory}/ ! -user '_daemon_' || { echo 'Error: ${directory} or its contents are not owned by _daemon_'; exit 2; }"
+      local shell="/bin/bash"
+      if [ "${BASE}" == "bare" ]; then
+        shell="/usr/bin/bash"
+      fi
+      docker run --rm --entrypoint ${shell} example-django -c "find ${directory}/ ! -user '_daemon_' || { echo 'Error: ${directory} or its contents are not owned by _daemon_'; exit 2; }"
   }
 
   check_directory_ownership "/django"
