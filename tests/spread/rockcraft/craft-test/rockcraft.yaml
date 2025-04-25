@@ -1,0 +1,20 @@
+name: craft-test
+base: ubuntu@24.04
+version: "0.1"
+summary: A project used to test 'rockcraft test'
+description: |
+  A project used to test 'rockcraft test'.
+platforms:
+  amd64:
+
+parts:
+  hello:
+    plugin: nil
+    stage-packages: [hello]
+
+services:
+  hello:
+    override: merge
+    command: /usr/bin/hello -g "hello from craft-test rock"
+    startup: enabled
+    on-success: shutdown
