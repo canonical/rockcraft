@@ -3,7 +3,7 @@ name = "rockcraft"
 description = "Create rocks"
 dynamic = ["version", "readme"]
 dependencies = [
-    "craft-application>=5.0.1",
+    "craft-application~=5.1",
     "craft-archives",
     "craft-cli",
     "craft-parts",

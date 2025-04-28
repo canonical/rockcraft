@@ -34,7 +34,7 @@ COMMAND_GROUPS: list[CommandGroup] = [
             commands.ExpandExtensionsCommand,
         ],
     ),
-    CommandGroup("Lifecycle", [appcommands.RemoteBuild]),
+    CommandGroup("Lifecycle", [appcommands.TestCommand, appcommands.RemoteBuild]),
 ]
 
 
