@@ -310,7 +310,9 @@ def use_gradlew_non_executable(tmp_path, request):
                 "run-user": "_daemon_",
                 "parts": {
                     "spring-boot-framework/gradle-init-script": {
-                        "override-build": "cp *init.gradle* ${CRAFT_STAGE}/"
+                        "override-build": "cp *init.gradle* ${CRAFT_STAGE}/",
+                        "plugin": "nil",
+                        "source": ".",
                     },
                     "spring-boot-framework/install-app": {
                         "after": [

@@ -79,6 +79,7 @@ class SpringBootFramework(Extension):
         }
 
         snippet["parts"] = {
+            **self.gen_gradle_init_script_part(),
             "spring-boot-framework/install-app": self.gen_install_app_part(),
             "spring-boot-framework/runtime": self.gen_runtime_app_part(),
         }
@@ -148,6 +149,23 @@ class SpringBootFramework(Extension):
     def _rock_base(self) -> str:
         """Return the base of the rockcraft project."""
         return self.yaml_data["base"]
+
+    def gen_gradle_init_script_part(self) -> dict[str, Any]:
+        """Generate the gradle-init-script part if required."""
+        user_init_script_part_override: str = (
+            self.yaml_data.get("parts", {})
+            .get("spring-boot-framework/gradle-init-script", {})
+            .get("override-build", "")
+        )
+        if not user_init_script_part_override:
+            return {}
+        return {
+            "spring-boot-framework/gradle-init-script": {
+                "plugin": "nil",
+                "source": ".",
+                "override-build": user_init_script_part_override,
+            }
+        }
 
     def gen_install_app_part(self) -> dict[str, Any]:
         """Generate the install-app part."""
