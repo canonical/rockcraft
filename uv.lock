@@ -502,7 +502,7 @@ toml = [
 
 [[package]]
 name = "craft-application"
-version = "5.0.1"
+version = "5.1.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "annotated-types" },
@@ -522,9 +522,9 @@ dependencies = [
     { name = "snap-helpers" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/8e/2f/ad297bdd8402d4e4932404fc08ed89f9eca3f35c0e620d09fc6e4ffbfb76/craft_application-5.0.1.tar.gz", hash = "sha256:a268ee6b70bb57320f35fe578aec52e0c4ca427b6df527b1752517911a358f6c", size = 340203 }
+sdist = { url = "https://files.pythonhosted.org/packages/0a/92/f4957affd458c68475e1d60b013e0a7934905f14b4a3835f5e7d38c9d770/craft_application-5.1.0.tar.gz", hash = "sha256:d398aed07fb0ae046b3083770383946f72f8b58881894159fccd312107b6f1c5", size = 354680 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/eb/43/70bf3ef434b6df2c928269a8dc6f2a0f2a27e62b2785d3f5b2e09955fc1f/craft_application-5.0.1-py3-none-any.whl", hash = "sha256:b0fb49a54bd9e37f911ce0f84f1fd13f99cf702ee6350bd0706fbaccfbe3916b", size = 171976 },
+    { url = "https://files.pythonhosted.org/packages/55/92/6bd5d4da468ba1f6b88724c8ac07c13e54cb542d712906d6a526c0c6524e/craft_application-5.1.0-py3-none-any.whl", hash = "sha256:9a3595d5a57697e56a56c7c41d06e230d91cac49d12dc7b3ff3442abd7537ef8", size = 174971 },
 ]
 
 [[package]]
@@ -2538,7 +2538,7 @@ types = [
 
 [package.metadata]
 requires-dist = [
-    { name = "craft-application", specifier = ">=5.0.1" },
+    { name = "craft-application", specifier = "~=5.1" },
     { name = "craft-archives" },
     { name = "craft-cli" },
     { name = "craft-parts", git = "https://github.com/yanksyoon/craft-parts?branch=feat%2Fplugins" },

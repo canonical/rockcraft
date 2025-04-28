@@ -1,3 +1,4 @@
+# pragma: no-schema-validate
 name: big
 version: latest
 summary: A big rock to test many features

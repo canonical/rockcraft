@@ -1,0 +1,12 @@
+summary: test the 'craft-test' project
+
+execute: |
+  # Load the rock into docker
+  ROCK=$(ls $PROJECT_PATH/craft-test*.rock)
+  sudo rockcraft.skopeo --insecure-policy copy "oci-archive:$ROCK" docker-daemon:craft-test:latest
+
+  # Run a container
+  docker run --rm craft-test:latest -v | MATCH "\[hello\] hello from craft-test rock"
+
+restore: |
+  docker image rm --force craft-test

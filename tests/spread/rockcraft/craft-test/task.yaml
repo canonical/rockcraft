@@ -1,0 +1,7 @@
+summary: Test 'rockcraft test'
+
+environment:
+  CI: "1"
+
+execute: |
+  rockcraft test -v 2>&1 | MATCH "Successful tasks: 1"
