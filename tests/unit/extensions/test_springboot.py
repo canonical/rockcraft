@@ -30,6 +30,20 @@ def spring_boot_input_yaml_fixture():
     }
 
 
+@pytest.fixture(name="use_gradle_init_script_part")
+def use_gradle_init_script_part_fixture(request, spring_boot_input_yaml):
+    if not request.param:
+        spring_boot_input_yaml.pop("parts", None)
+        return
+    gradle_init_script_part = {
+        "spring-boot-framework/gradle-init-script": {
+            "override-build": "cp *init.gradle* ${CRAFT_STAGE}/"
+        }
+    }
+    spring_boot_input_yaml["parts"] = gradle_init_script_part
+    return
+
+
 @pytest.fixture
 def spring_boot_extension(mock_extensions, monkeypatch):
     monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "1")
@@ -90,23 +104,13 @@ def use_gradlew_non_executable(tmp_path, request):
     (tmp_path / "gradlew").touch()
 
 
-@pytest.fixture
-def use_gradle_init_script(tmp_path, request):
-    gradle_init_script_path = tmp_path / "init.gradle"
-    if not request.param:
-        gradle_init_script_path.unlink(missing_ok=True)
-        return gradle_init_script_path
-    gradle_init_script_path.touch(exist_ok=True)
-    return gradle_init_script_path
-
-
 @pytest.mark.parametrize(
     (
         "use_pom_xml",
         "use_mvnw",
         "use_build_gradle",
         "use_gradlew",
-        "use_gradle_init_script",
+        "use_gradle_init_script_part",
         "expected",
     ),
     [
@@ -287,17 +291,28 @@ def use_gradle_init_script(tmp_path, request):
                 "platforms": {"amd64": {}},
                 "run-user": "_daemon_",
                 "parts": {
+                    "spring-boot-framework/gradle-init-script": {
+                        "override-build": "cp *init.gradle* ${CRAFT_STAGE}/"
+                    },
                     "spring-boot-framework/install-app": {
                         "plugin": "gradle",
                         "source": ".",
                         "gradle-task": "bootJar",
-                        "gradle-init-script": "init.gradle",
                         "build-packages": ["default-jdk"],
+                        "build-environment": [
+                            {
+                                "GRADLE_USER_HOME": "${CRAFT_PART_BUILD}/.gradle/",
+                            },
+                        ],
                         "organize": {
                             "**/*.jar": "app/",
                         },
-                        "override-build": "craftctl default\n"
-                        "find ${CRAFT_PART_INSTALL} -name '*-plain.jar' -type f -delete",
+                        "override-build": (
+                            "cp ${CRAFT_STAGE}/*init.gradle* ${CRAFT_PART_BUILD}/.gradle/\n"
+                            "rm -f ${CRAFT_STAGE}/*init.gradle*\n"
+                            "craftctl default\n"
+                            "find ${CRAFT_PART_INSTALL} -name '*-plain.jar' -type f -delete"
+                        ),
                     },
                     "spring-boot-framework/runtime": {
                         "plugin": "jlink",
@@ -322,7 +337,7 @@ def use_gradle_init_script(tmp_path, request):
         "use_mvnw",
         "use_build_gradle",
         "use_gradlew",
-        "use_gradle_init_script",
+        "use_gradle_init_script_part",
     ],
 )
 @pytest.mark.usefixtures("spring_boot_extension")
@@ -333,20 +348,10 @@ def test_spring_boot_extension_default(
     use_mvnw,
     use_build_gradle,
     use_gradlew,
-    use_gradle_init_script,
+    use_gradle_init_script_part,
     expected,
 ):
     applied = extensions.apply_extensions(tmp_path, spring_boot_input_yaml)
-    # prefix init script from tmp_path
-    if use_gradle_init_script.exists():
-        expected["parts"]["spring-boot-framework/install-app"]["gradle-init-script"] = (
-            str(
-                tmp_path
-                / expected["parts"]["spring-boot-framework/install-app"][
-                    "gradle-init-script"
-                ]
-            )
-        )
 
     assert applied == expected
 

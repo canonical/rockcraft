@@ -131,73 +131,89 @@ class SpringBootFramework(Extension):
         return self.project_root / "build.gradle"
 
     @property
-    def init_gradle_path(self) -> pathlib.Path | None:
-        """Return the path to the init.gradle file."""
-        return next(
-            (file for file in self.project_root.rglob("init.gradle") if file.is_file()),
-            None,
-        )
-
-    @property
     def _rock_base(self) -> str:
         """Return the base of the rockcraft project."""
         return self.yaml_data["base"]
 
     def gen_install_app_part(self) -> dict[str, Any]:
         """Generate the install-app part."""
-        if self.mvnw_path.exists() and self.gradlew_path.exists():
+        if self.pom_xml_path.exists() and self.build_gradle_path.exists():
             raise ExtensionError(
                 "Both mvnw and gradlew exist. Please remove one of them."
             )
 
-        user_build_packages_override = (
-            self.yaml_data.get("parts", {})
-            .get("spring-boot-framework/install-app", {})
-            .get("build-packages", [])
-        )
         plugin: Literal["gradle", "maven"] = (
             "gradle" if self.build_gradle_path.exists() else "maven"
         )
         install_app_part = {
-            "plugin": plugin,
             "source": ".",
-            "build-packages": (
-                user_build_packages_override
-                if user_build_packages_override
-                else self._gen_install_app_build_packages(plugin=plugin)
-            ),
-            "override-build": "craftctl default\n"
-            "find ${CRAFT_PART_INSTALL} -name '*-plain.jar' -type f -delete",
-            **self._gen_install_app_plugin_directives(plugin=plugin),
             "organize": {"**/*.jar": "app/"},
+            **(
+                self._gen_install_app_gradle_plugin()
+                if plugin == "gradle"
+                else self._gen_install_app_maven_plugin()
+            ),
         }
+
         if self._rock_base == "bare":
             install_app_part["stage-packages"] = ["zlib1g", "libstdc++6"]
         return install_app_part
 
-    def _gen_install_app_build_packages(
-        self, plugin: Literal["gradle", "maven"]
-    ) -> list[str]:
-        """Generate build packages for corresponding plugin."""
-        build_packages: list[str] = ["default-jdk"]
-        if plugin == "gradle" and not self.gradlew_path.exists():
-            build_packages.append("gradle")
-        if plugin == "maven" and not self.mvnw_path.exists():
-            build_packages.append("maven")
-        return build_packages
+    @property
+    def _user_install_app_build_packages_override(self) -> list[str]:
+        return (
+            self.yaml_data.get("parts", {})
+            .get("spring-boot-framework/install-app", {})
+            .get("build-packages", [])
+        )
 
-    def _gen_install_app_plugin_directives(
-        self, plugin: Literal["gradle", "maven"]
-    ) -> dict[str, Any]:
-        """Generate plugin specific directives."""
-        plugin_directives: dict[str, Any] = {}
-        if plugin == "gradle":
-            plugin_directives["gradle-task"] = "bootJar"
-        if plugin == "gradle" and self.init_gradle_path:
-            plugin_directives["gradle-init-script"] = str(self.init_gradle_path)
-        if plugin == "maven" and self.mvnw_path.exists():
-            plugin_directives["maven-use-wrapper"] = "True"
-        return plugin_directives
+    DEFAULT_BUILD_PACKAGES = ["default-jdk"]
+    DEFAULT_OVERRIDE_BUILD_COMMANDS = [
+        "craftctl default",
+        "find ${CRAFT_PART_INSTALL} -name '*-plain.jar' -type f -delete",
+    ]
+
+    def _gen_install_app_gradle_plugin(self) -> dict[str, Any]:
+        """Generate install app part using Gradle plugin."""
+        gradle_install_app_part: dict[str, Any] = {
+            "plugin": "gradle",
+            "gradle-task": "bootJar",
+        }
+
+        build_packages = [*self.DEFAULT_BUILD_PACKAGES]
+        if not self.gradlew_path.exists():
+            build_packages += ["gradle"]
+        gradle_install_app_part["build-packages"] = build_packages
+
+        override_build_cmds: list[str] = []
+        if self.yaml_data.get("parts", {}).get(
+            "spring-boot-framework/gradle-init-script", {}
+        ):
+            gradle_install_app_part["build-environment"] = [
+                {"GRADLE_USER_HOME": "${CRAFT_PART_BUILD}/.gradle/"}
+            ]
+            override_build_cmds += [
+                "cp ${CRAFT_STAGE}/*init.gradle* ${CRAFT_PART_BUILD}/.gradle/",
+                "rm -f ${CRAFT_STAGE}/*init.gradle*",
+            ]
+        override_build_cmds += self.DEFAULT_OVERRIDE_BUILD_COMMANDS
+        gradle_install_app_part["override-build"] = "\n".join(override_build_cmds)
+        return gradle_install_app_part
+
+    def _gen_install_app_maven_plugin(self) -> dict[str, Any]:
+        """Generate install app part using maven plugin."""
+        build_packages = [*self.DEFAULT_BUILD_PACKAGES]
+        if not self.mvnw_path.exists():
+            build_packages += ["maven"]
+        maven_install_app = {
+            "plugin": "maven",
+            "build-packages": self._user_install_app_build_packages_override
+            or build_packages,
+            "override-build": "\n".join(self.DEFAULT_OVERRIDE_BUILD_COMMANDS),
+        }
+        if self.mvnw_path.exists():
+            maven_install_app["maven-use-wrapper"] = "True"
+        return maven_install_app
 
     def gen_runtime_app_part(self) -> dict[str, Any]:
         """Return the runtime part."""
