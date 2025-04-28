@@ -576,8 +576,8 @@ wheels = [
 
 [[package]]
 name = "craft-parts"
-version = "2.1.3.post209+g7b28d88"
-source = { git = "https://github.com/yanksyoon/craft-parts?branch=feat%2Fplugins#7b28d8832eb930fb6623aca50e9f0d13db1dac3e" }
+version = "2.8.0"
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "overrides" },
     { name = "pydantic" },
@@ -586,6 +586,10 @@ dependencies = [
     { name = "requests" },
     { name = "requests-unixsocket2" },
     { name = "tomli", marker = "python_full_version < '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-oracular') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-oracular') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-oracular' and extra == 'group-9-rockcraft-dev-plucky')" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/38/af/3a36df71dd40f0267e5f7c5d2b0dbe92886a5170475e3a9876dbf88b2eb4/craft_parts-2.8.0.tar.gz", hash = "sha256:689c0baf4465eed5366bd02580867973cb3285ae3dc43dc9842c87ec37fbd7bc", size = 653143 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/06/0e/c6f4a2b148e35fe80a3bfbbd4f58d501a3d65b9a974fd4263f4144505e4f/craft_parts-2.8.0-py3-none-any.whl", hash = "sha256:e0a9d97d673859a7b67eed2df4a7e2202191b4aa87366c9a6831b82ee50dacf9", size = 460069 },
 ]
 
 [[package]]
@@ -2541,7 +2545,7 @@ requires-dist = [
     { name = "craft-application", specifier = "~=5.1" },
     { name = "craft-archives" },
     { name = "craft-cli" },
-    { name = "craft-parts", git = "https://github.com/yanksyoon/craft-parts?branch=feat%2Fplugins" },
+    { name = "craft-parts", specifier = ">=2.8.0" },
     { name = "craft-platforms", specifier = "~=0.8" },
     { name = "craft-providers" },
     { name = "craft-store", marker = "extra == 'store'" },
