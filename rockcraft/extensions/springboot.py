@@ -51,6 +51,20 @@ class SpringBootFramework(Extension):
         """Return the root snippet to apply."""
         self._check_project()
 
+        user_runtime_build_environment_override: list[dict[str, str]] = (
+            self.yaml_data.get("parts", {})
+            .get("spring-boot-framework/runtime", {})
+            .get("build-environment", [])
+        )
+        application_jar = next(
+            (
+                environment_dict["APPLICATION_JAR"]
+                for environment_dict in user_runtime_build_environment_override
+                if "APPLICATION_JAR" in environment_dict
+            ),
+            "*.jar",
+        )
+
         snippet: dict[str, Any] = {
             "run-user": "_daemon_",
             "services": {
@@ -59,7 +73,7 @@ class SpringBootFramework(Extension):
                     "startup": "enabled",
                     "user": "_daemon_",
                     "working-dir": "/app",
-                    "command": 'bash -c "java -jar *.jar"',
+                    "command": f'bash -c "java -jar {application_jar}"',
                 }
             },
         }

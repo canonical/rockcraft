@@ -33,7 +33,6 @@ def spring_boot_input_yaml_fixture():
 @pytest.fixture(name="use_gradle_init_script_part")
 def use_gradle_init_script_part_fixture(request, spring_boot_input_yaml):
     if not request.param:
-        spring_boot_input_yaml.pop("parts", None)
         return
     gradle_init_script_part = {
         "spring-boot-framework/gradle-init-script": {
@@ -41,6 +40,19 @@ def use_gradle_init_script_part_fixture(request, spring_boot_input_yaml):
         }
     }
     spring_boot_input_yaml["parts"] = gradle_init_script_part
+    return
+
+
+@pytest.fixture(name="use_application_jar_environment_override")
+def use_application_jar_environment_override_fixture(request, spring_boot_input_yaml):
+    if not request.param:
+        return
+    gradle_runtime_part = {
+        "spring-boot-framework/runtime": {
+            "build-environment": [{"APPLICATION_JAR": "test.jar"}]
+        }
+    }
+    spring_boot_input_yaml["parts"] = gradle_runtime_part
     return
 
 
@@ -111,11 +123,13 @@ def use_gradlew_non_executable(tmp_path, request):
         "use_build_gradle",
         "use_gradlew",
         "use_gradle_init_script_part",
+        "use_application_jar_environment_override",
         "expected",
     ),
     [
         (
             True,
+            False,
             False,
             False,
             False,
@@ -162,6 +176,7 @@ def use_gradlew_non_executable(tmp_path, request):
             False,
             False,
             False,
+            False,
             {
                 "base": "ubuntu@24.04",
                 "name": "springbootprojectname",
@@ -200,6 +215,7 @@ def use_gradlew_non_executable(tmp_path, request):
             False,
             False,
             True,
+            False,
             False,
             False,
             {
@@ -245,6 +261,7 @@ def use_gradlew_non_executable(tmp_path, request):
             True,
             True,
             False,
+            False,
             {
                 "base": "ubuntu@24.04",
                 "name": "springbootprojectname",
@@ -285,6 +302,7 @@ def use_gradlew_non_executable(tmp_path, request):
             True,
             True,
             True,
+            False,
             {
                 "base": "ubuntu@24.04",
                 "name": "springbootprojectname",
@@ -331,6 +349,50 @@ def use_gradlew_non_executable(tmp_path, request):
                 },
             },
         ),
+        (
+            False,
+            False,
+            True,
+            True,
+            False,
+            True,
+            {
+                "base": "ubuntu@24.04",
+                "name": "springbootprojectname",
+                "platforms": {"amd64": {}},
+                "run-user": "_daemon_",
+                "parts": {
+                    "spring-boot-framework/install-app": {
+                        "plugin": "gradle",
+                        "source": ".",
+                        "gradle-task": "bootJar",
+                        "build-packages": ["default-jdk"],
+                        "organize": {
+                            "**/*.jar": "app/",
+                        },
+                        "override-build": (
+                            "craftctl default\n"
+                            "find ${CRAFT_PART_INSTALL} -name '*-plain.jar' -type f -delete"
+                        ),
+                    },
+                    "spring-boot-framework/runtime": {
+                        "plugin": "jlink",
+                        "after": ["spring-boot-framework/install-app"],
+                        "build-packages": ["default-jdk"],
+                        "build-environment": [{"APPLICATION_JAR": "test.jar"}],
+                    },
+                },
+                "services": {
+                    "spring-boot": {
+                        "command": 'bash -c "java -jar test.jar"',
+                        "override": "replace",
+                        "startup": "enabled",
+                        "user": "_daemon_",
+                        "working-dir": "/app",
+                    }
+                },
+            },
+        ),
     ],
     indirect=[
         "use_pom_xml",
@@ -338,6 +400,7 @@ def use_gradlew_non_executable(tmp_path, request):
         "use_build_gradle",
         "use_gradlew",
         "use_gradle_init_script_part",
+        "use_application_jar_environment_override",
     ],
 )
 @pytest.mark.usefixtures("spring_boot_extension")
@@ -349,6 +412,7 @@ def test_spring_boot_extension_default(
     use_build_gradle,
     use_gradlew,
     use_gradle_init_script_part,
+    use_application_jar_environment_override,
     expected,
 ):
     applied = extensions.apply_extensions(tmp_path, spring_boot_input_yaml)
