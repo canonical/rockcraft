@@ -87,25 +87,39 @@ directory:
     :end-before: [docs:check-rock-end]
     :dedent: 2
 
-Run the rock in Docker
+Run the rock
 ----------------------
 
-First, import the recently created rock into Docker:
+.. tabs::
 
-.. literalinclude:: code/node-app/task.yaml
-    :language: bash
-    :start-after: [docs:skopeo-copy]
-    :end-before: [docs:skopeo-copy-end]
-    :dedent: 2
+    .. group-tab:: Docker
 
-Since the rock bundles a web-app, we'll first start serving that app on local
-port 8000:
+        First, import the recently created rock into Docker:
 
-.. literalinclude:: code/node-app/task.yaml
-    :language: bash
-    :start-after: [docs:run-container]
-    :end-before: [docs:run-container-end]
-    :dedent: 2
+        .. literalinclude:: code/node-app/task.yaml
+            :language: bash
+            :start-after: [docs:skopeo-copy]
+            :end-before: [docs:skopeo-copy-end]
+            :dedent: 2
+
+        Since the rock bundles a web-app, we'll first start serving that app on local
+        port 8000:
+
+        .. literalinclude:: code/node-app/task.yaml
+            :language: bash
+            :start-after: [docs:run-container]
+            :end-before: [docs:run-container-end]
+            :dedent: 2
+
+    .. group-tab:: Podman
+
+        Run the oci archive directly, and start serving the app on local port 8000:
+
+        .. literalinclude:: code/node-app/task.yaml
+            :language: bash
+            :start-after: [docs:podman-run]
+            :end-before: [docs:podman-run-end]
+            :dedent: 2
 
 The output will look similar to this, indicating that Pebble started the ``app``
 service:

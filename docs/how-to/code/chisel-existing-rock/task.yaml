@@ -20,7 +20,12 @@ execute: |
   docker run --rm python-rock:3.11-22.04 exec python3.11 -c 'print("Hello, world")'
   # [docs:run-rock-end]
 
+  # [docs:run-rock-podman]
+  podman run --rm oci-archive:python_3.11_amd64.rock exec python3.11 -c 'print("Hello, world")'
+  # [docs:run-rock-podman-end]
+
   docker run --rm python-rock:3.11-22.04 exec python3.11 -c 'print("Hello, world")' | grep "Hello, world"
+  podman run --rm oci-archive:python_3.11_amd64.rock exec python3.11 -c 'print("Hello, world")' | grep "Hello, world"
 
   popd
   pushd bare-rock
@@ -35,7 +40,12 @@ execute: |
   docker run --rm python-rock:3.11-bare exec python3.11 -c 'print("Hello, world")'
   # [docs:run-bare-rock-end]
 
+  # [docs:run-bare-rock-podman]
+  podman run --rm oci-archive:bare-python_3.11_amd64.rock exec python3.11 -c 'print("Hello, world")'
+  # [docs:run-bare-rock-podman-end]
+
   docker run --rm python-rock:3.11-bare exec python3.11 -c 'print("Hello, world")' | grep "Hello, world"
+  podman run --rm oci-archive:bare-python_3.11_amd64.rock exec python3.11 -c 'print("Hello, world")' | grep "Hello, world"
 
   popd
   pushd chiselled-rock
@@ -50,7 +60,12 @@ execute: |
   docker run --rm python-rock:3.11-chiselled exec python3.11 -c 'print("Hello, world")'
   # [docs:run-chiselled-rock-end]
 
+  # [docs:run-chiselled-rock-podman]
+  podman run --rm oci-archive:chiselled-python_3.11_amd64.rock exec python3.11 -c 'print("Hello, world")'
+  # [docs:run-chiselled-rock-podman-end]
+
   docker run --rm python-rock:3.11-chiselled exec python3.11 -c 'print("Hello, world")' | grep "Hello, world"
+  podman run --rm oci-archive:chiselled-python_3.11_amd64.rock exec python3.11 -c 'print("Hello, world")' | grep "Hello, world"
 
   ###
   docker rmi -f python-rock:3.11-22.04

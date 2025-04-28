@@ -131,45 +131,61 @@ tutorial.
     The size of the rock may vary depending on factors like the architecture
     we are building on and the packages installed at the time of packing.
 
-Run the Django rock with Docker
-===============================
+Run the Django rock
+====================
 
 We already have the rock as an `OCI <OCI_image_spec_>`_ archive. Now we'll
-need to load it into Docker:
+need to run it:
 
-.. literalinclude:: code/django/task.yaml
-    :language: bash
-    :start-after: [docs:skopeo-copy]
-    :end-before: [docs:skopeo-copy-end]
-    :dedent: 2
+.. tabs::
 
-Check that the image was successfully loaded into Docker:
+    .. group-tab:: Docker
 
-.. literalinclude:: code/django/task.yaml
-    :language: bash
-    :start-after: [docs:docker-images]
-    :end-before: [docs:docker-images-end]
-    :dedent: 2
+        We first load it into Docker:
 
-The output should list the Django container image, along with its tag, ID and
-size:
+        .. literalinclude:: code/django/task.yaml
+            :language: bash
+            :start-after: [docs:skopeo-copy]
+            :end-before: [docs:skopeo-copy-end]
+            :dedent: 2
 
-.. terminal::
+        Check that the image was successfully loaded into Docker:
 
-    REPOSITORY          TAG       IMAGE ID       CREATED       SIZE
-    django-hello-world  0.1       5cd019b51db9   6 days ago   184MB
+        .. literalinclude:: code/django/task.yaml
+            :language: bash
+            :start-after: [docs:docker-images]
+            :end-before: [docs:docker-images-end]
+            :dedent: 2
 
-.. note::
-    The size of the image reported by Docker is the uncompressed size which is
-    larger than the size of the compressed ``.rock`` file.
+        The output should list the Django container image, along with its tag, ID and
+        size:
 
-Now we're ready to run the rock and test the containerised Django application:
+        .. terminal::
 
-.. literalinclude:: code/django/task.yaml
-    :language: text
-    :start-after: [docs:docker-run]
-    :end-before: [docs:docker-run-end]
-    :dedent: 2
+            REPOSITORY          TAG       IMAGE ID       CREATED       SIZE
+            django-hello-world  0.1       5cd019b51db9   6 days ago   184MB
+
+        .. note::
+            The size of the image reported by Docker is the uncompressed size which is
+            larger than the size of the compressed ``.rock`` file.
+
+        Now we're ready to run the rock and test the containerised Django application:
+
+        .. literalinclude:: code/django/task.yaml
+            :language: text
+            :start-after: [docs:docker-run]
+            :end-before: [docs:docker-run-end]
+            :dedent: 2
+
+    .. group-tab:: Podman
+
+        We can run directly from the OCI Archive using Podman:
+
+        .. literalinclude:: code/django/task.yaml
+            :language: text
+            :start-after: [docs:podman-run]
+            :end-before: [docs:podman-run-end]
+            :dedent: 2
 
 Use the same ``curl`` command as before to send a request to the Django
 application's root endpoint which is running inside the container:
@@ -189,11 +205,27 @@ View the application logs
 When deploying the Django rock, we can always get the application logs via
 :ref:`pebble_explanation_page`:
 
-.. literalinclude:: code/django/task.yaml
-    :language: text
-    :start-after: [docs:get-logs]
-    :end-before: [docs:get-logs-end]
-    :dedent: 2
+.. tabs::
+
+    .. group-tab:: Docker
+
+        With Docker:
+
+        .. literalinclude:: code/django/task.yaml
+            :language: text
+            :start-after: [docs:get-logs]
+            :end-before: [docs:get-logs-end]
+            :dedent: 2
+
+    .. group-tab:: Podman
+
+        With Podman:
+
+        .. literalinclude:: code/django/task.yaml
+            :language: text
+            :start-after: [docs:get-logs-podman]
+            :end-before: [docs:get-logs-podman-end]
+            :dedent: 2
 
 As a result, Pebble will give us the logs for the
 ``django`` service running inside the container.
@@ -217,11 +249,23 @@ Now we have a fully functional rock for our Django application! This concludes
 the first part of this tutorial, so we can stop the container and remove the
 respective image for now:
 
-.. literalinclude:: code/django/task.yaml
-    :language: bash
-    :start-after: [docs:stop-docker]
-    :end-before: [docs:stop-docker-end]
-    :dedent: 2
+.. tabs::
+
+    .. group-tab:: Docker
+
+        .. literalinclude:: code/django/task.yaml
+            :language: bash
+            :start-after: [docs:stop-docker]
+            :end-before: [docs:stop-docker-end]
+            :dedent: 2
+
+    .. group-tab:: Podman
+
+        .. literalinclude:: code/django/task.yaml
+            :language: bash
+            :start-after: [docs:stop-podman]
+            :end-before: [docs:stop-podman-end]
+            :dedent: 2
 
 Chisel the rock
 ===============
@@ -270,13 +314,29 @@ We'll verify that the new Django rock is now approximately **15% smaller**
 in size! And that's just because of the simple change of ``base``.
 
 And the functionality is still the same. As before, we can confirm this by
-running the rock with Docker:
+running the rock with:
 
-.. literalinclude:: code/django/task.yaml
-    :language: text
-    :start-after: [docs:docker-run-chisel]
-    :end-before: [docs:docker-run-chisel-end]
-    :dedent: 2
+.. tabs::
+
+    .. group-tab:: Docker
+
+        With Docker:
+
+        .. literalinclude:: code/django/task.yaml
+            :language: text
+            :start-after: [docs:docker-run-chisel]
+            :end-before: [docs:docker-run-chisel-end]
+            :dedent: 2
+
+    .. group-tab:: Podman
+
+        With Podman:
+
+        .. literalinclude:: code/django/task.yaml
+            :language: text
+            :start-after: [docs:podman-run-chisel]
+            :end-before: [docs:podman-run-chisel-end]
+            :dedent: 2
 
 and then using the same ``curl`` request:
 
@@ -295,11 +355,24 @@ Cleanup
 And that's it. We can now stop the container and remove the corresponding
 image:
 
-.. literalinclude:: code/django/task.yaml
-    :language: bash
-    :start-after: [docs:stop-docker-chisel]
-    :end-before: [docs:stop-docker-chisel-end]
-    :dedent: 2
+.. tabs::
+
+    .. group-tab:: Docker
+
+        .. literalinclude:: code/django/task.yaml
+            :language: bash
+            :start-after: [docs:stop-docker-chisel]
+            :end-before: [docs:stop-docker-chisel-end]
+            :dedent: 2
+
+    .. group-tab:: Podman
+
+        .. literalinclude:: code/django/task.yaml
+            :language: bash
+            :start-after: [docs:stop-podman-chisel]
+            :end-before: [docs:stop-podman-chisel-end]
+            :dedent: 2
+
 
 .. _update-django-application:
 
@@ -343,11 +416,23 @@ change the ``version`` (e.g. to ``0.2``).
 
 Pack and run the rock using similar commands as before:
 
-.. literalinclude:: code/django/task.yaml
-    :language: text
-    :start-after: [docs:docker-run-update]
-    :end-before: [docs:docker-run-update-end]
-    :dedent: 2
+.. tabs::
+
+    .. group-tab:: Docker
+
+        .. literalinclude:: code/django/task.yaml
+            :language: text
+            :start-after: [docs:docker-run-update]
+            :end-before: [docs:docker-run-update-end]
+            :dedent: 2
+
+    .. group-tab:: Podman
+
+        .. literalinclude:: code/django/task.yaml
+            :language: text
+            :start-after: [docs:podman-run-update]
+            :end-before: [docs:podman-run-update-end]
+            :dedent: 2
 
 .. note::
 
@@ -375,11 +460,24 @@ Cleanup
 
 We can now stop the container and remove the corresponding image:
 
-.. literalinclude:: code/django/task.yaml
-    :language: bash
-    :start-after: [docs:stop-docker-updated]
-    :end-before: [docs:stop-docker-updated-end]
-    :dedent: 2
+
+.. tabs::
+
+    .. group-tab:: Docker
+
+        .. literalinclude:: code/django/task.yaml
+            :language: bash
+            :start-after: [docs:stop-docker-updated]
+            :end-before: [docs:stop-docker-updated-end]
+            :dedent: 2
+
+    .. group-tab:: Podman
+
+        .. literalinclude:: code/django/task.yaml
+            :language: bash
+            :start-after: [docs:stop-podman-updated]
+            :end-before: [docs:stop-podman-updated-end]
+            :dedent: 2
 
 Reset the environment
 =====================
