@@ -313,6 +313,9 @@ def use_gradlew_non_executable(tmp_path, request):
                         "override-build": "cp *init.gradle* ${CRAFT_STAGE}/"
                     },
                     "spring-boot-framework/install-app": {
+                        "after": [
+                            "spring-boot-framework/gradle-init-script",
+                        ],
                         "plugin": "gradle",
                         "source": ".",
                         "gradle-task": "bootJar",

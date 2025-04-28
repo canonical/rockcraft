@@ -206,6 +206,9 @@ class SpringBootFramework(Extension):
             gradle_install_app_part["build-environment"] = [
                 {"GRADLE_USER_HOME": "${CRAFT_PART_BUILD}/.gradle/"}
             ]
+            gradle_install_app_part["after"] = [
+                "spring-boot-framework/gradle-init-script"
+            ]
             override_build_cmds += [
                 "cp ${CRAFT_STAGE}/*init.gradle* ${CRAFT_PART_BUILD}/.gradle/",
                 "rm -f ${CRAFT_STAGE}/*init.gradle*",
