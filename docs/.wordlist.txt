@@ -149,8 +149,9 @@ toml
 toolchain
 triaged
 ubuntu
-unbuilt
 UID
+unbuilt
+umoci
 uncomment
 usrmerge
 Uvicorn
