@@ -461,20 +461,50 @@ def test_spring_boot_extension_check_project(
         "use_gradlew_non_executable",
         "use_pom_xml",
         "use_build_gradle",
+        "use_gradle_init_script_part",
+        "expected_error",
     ),
-    [(True, False, True, False), (False, True, False, True)],
-    indirect=True,
+    [
+        (False, False, True, True, False, "both pom.xml and build.gradle files exist"),
+        (
+            True,
+            True,
+            True,
+            False,
+            False,
+            "both mvnw and gradlew executable files exist",
+        ),
+        (False, False, False, False, False, "missing pom.xml and build.gradle file"),
+        (False, True, False, True, False, "mvnw or gradlew file is not executable"),
+        (
+            False,
+            False,
+            True,
+            False,
+            True,
+            "gradle init script part is enabled for non-gradle build",
+        ),
+    ],
+    indirect=[
+        "use_mvnw_non_executable",
+        "use_gradlew_non_executable",
+        "use_pom_xml",
+        "use_build_gradle",
+        "use_gradle_init_script_part",
+    ],
 )
 @pytest.mark.usefixtures("spring_boot_extension")
-def test_spring_boot_extensions_check_project_non_executable_wrappers(
+def test_spring_boot_extensions_check_project_errors(
     tmp_path,
     spring_boot_input_yaml,
     use_mvnw_non_executable,
     use_gradlew_non_executable,
     use_pom_xml,
     use_build_gradle,
+    use_gradle_init_script_part,
+    expected_error,
 ):
     with pytest.raises(ExtensionError) as exc:
         extensions.apply_extensions(tmp_path, spring_boot_input_yaml)
 
-    assert "mvnw or gradlew file is not executable" in str(exc.value)
+    assert expected_error in str(exc.value)

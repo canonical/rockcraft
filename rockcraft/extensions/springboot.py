@@ -125,6 +125,16 @@ class SpringBootFramework(Extension):
                 logpath_report=False,
             )
 
+        if (
+            self.user_gradle_init_script_part_override_build_override
+            and not self.build_gradle_path.exists()
+        ):
+            raise ExtensionError(
+                "gradle init script part is enabled for non-gradle build",
+                doc_slug="/reference/extensions/spring-boot-framework",
+                logpath_report=False,
+            )
+
     @property
     def mvnw_path(self) -> pathlib.Path:
         """Return the path to the mvnw file."""
@@ -150,20 +160,24 @@ class SpringBootFramework(Extension):
         """Return the base of the rockcraft project."""
         return self.yaml_data["base"]
 
-    def gen_gradle_init_script_part(self) -> dict[str, Any]:
-        """Generate the gradle-init-script part if required."""
-        user_init_script_part_override: str = (
+    @property
+    def user_gradle_init_script_part_override_build_override(self) -> str:
+        """Return the user's override-build part for gradle-init-script part."""
+        return (
             self.yaml_data.get("parts", {})
             .get("spring-boot-framework/gradle-init-script", {})
             .get("override-build", "")
         )
-        if not user_init_script_part_override:
+
+    def gen_gradle_init_script_part(self) -> dict[str, Any]:
+        """Generate the gradle-init-script part if required."""
+        if not self.user_gradle_init_script_part_override_build_override:
             return {}
         return {
             "spring-boot-framework/gradle-init-script": {
                 "plugin": "nil",
                 "source": ".",
-                "override-build": user_init_script_part_override,
+                "override-build": self.user_gradle_init_script_part_override_build_override,
             }
         }
 
