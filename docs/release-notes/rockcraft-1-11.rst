@@ -9,11 +9,6 @@ Learn about the new features, changes, and fixes introduced in Rockcraft 1.11.
 For information about the Rockcraft release cycle, see the
 :ref:`release_policy_and_schedule`.
 
-.. craft-application 4.10.0 -> 5.2.0
-   craft-parts 2.7.0 -> 2.9.0
-   Testing command/init
-   plugins: cargo-use, gradle, maven wrapper
-
 
 Requirements and compatibility
 ------------------------------
@@ -57,14 +52,12 @@ Rockcraft 1.11 brings the following features, integrations, and improvements.
 Test command
 ~~~~~~~~~~~~
 
-The new ``test`` command, and accompanying ``init`` profile, enable testing of
-generated rocks.  These tests leverage `Spread`_ to run in an isolated local `LXD`_ VM
-and in CI systems.
+A new command called ``test``, and its accompanying ``init`` profile, are available for
+testing rocks. They leverage `Spread`_ to run identically on local and remote systems.
 
-This new command is experimental and subject to change. To get started with testing an
-existing Rockcraft project file, run ``rockcraft init --profile=test``. For a
-description of the command and its options, run ``rockcraft test --help``.
-
+The command is experimental and subject to change. To try it on an existing rock
+project, run ``rockcraft init --profile=test`` at the root of your project directory.
+For a description of the command and its options, run ``rockcraft test --help``.
 
 Cargo-use plugin
 ~~~~~~~~~~~~~~~~
@@ -84,11 +77,11 @@ Minor features
 
 Rockcraft 1.11 brings the following minor changes.
 
-Support for maven wrappers
+Support for Maven wrappers
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The ``maven`` plugin now supports the ``maven-use-wrapper`` key to indicate that the
-build should use the wrapper provided by the source code. See the
+The Maven plugin now supports the ``maven-use-wrapper`` key to indicate that the build
+should use the wrapper provided by the source code. See the
 :ref:`craft_parts_maven_plugin` reference for details.
 
 Contributors
