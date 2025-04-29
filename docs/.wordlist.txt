@@ -150,8 +150,8 @@ toolchain
 triaged
 ubuntu
 UID
-unbuilt
 umoci
+unbuilt
 uncomment
 usrmerge
 Uvicorn
