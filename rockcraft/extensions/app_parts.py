@@ -16,8 +16,9 @@
 
 """Common extension application parts."""
 
-USER_ID = 584792
-GROUP_ID = 584792
+from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
+
+USER_UID: int = SUPPORTED_GLOBAL_USERNAMES["_daemon_"]["uid"]
 
 
 def gen_logging_part(
@@ -33,8 +34,8 @@ def gen_logging_part(
     if override_build_lines:
         _override_build_lines.extend(override_build_lines)
     _permissions: list[dict[str, str | int]] = [
-        {"path": "opt/promtail", "owner": USER_ID, "group": GROUP_ID},
-        {"path": "etc/promtail", "owner": USER_ID, "group": GROUP_ID},
+        {"path": "opt/promtail", "owner": USER_UID, "group": USER_UID},
+        {"path": "etc/promtail", "owner": USER_UID, "group": USER_UID},
     ]
     if permissions:
         _permissions.extend(permissions)

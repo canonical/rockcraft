@@ -28,11 +28,14 @@ from overrides import override  # type: ignore[reportUnknownVariableType]
 from packaging.requirements import InvalidRequirement, Requirement
 
 from rockcraft.errors import ExtensionError
+from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
 
 from ._python_utils import has_global_variable
 from ._utils import find_ubuntu_base_python_version
-from .app_parts import GROUP_ID, USER_ID, gen_logging_part
+from .app_parts import gen_logging_part
 from .extension import Extension, get_extensions_data_dir
+
+USER_UID: int = SUPPORTED_GLOBAL_USERNAMES["_daemon_"]["uid"]
 
 
 class _GunicornBase(Extension):
@@ -100,7 +103,7 @@ class _GunicornBase(Extension):
             },
             f"{self.framework}-framework/install-app": {
                 **self.gen_install_app_part(),
-                "permissions": [{"owner": USER_ID, "group": GROUP_ID}],
+                "permissions": [{"owner": USER_UID, "group": USER_UID}],
             },
             f"{self.framework}-framework/config-files": {
                 "plugin": "dump",
@@ -111,8 +114,8 @@ class _GunicornBase(Extension):
                 "permissions": [
                     {
                         "path": f"{self.framework}/gunicorn.conf.py",
-                        "owner": USER_ID,
-                        "group": GROUP_ID,
+                        "owner": USER_UID,
+                        "group": USER_UID,
                     },
                 ],
             },
@@ -129,8 +132,8 @@ class _GunicornBase(Extension):
                 permissions=[
                     {
                         "path": f"var/log/{self.framework}",
-                        "owner": USER_ID,
-                        "group": GROUP_ID,
+                        "owner": USER_UID,
+                        "group": USER_UID,
                     }
                 ],
             ),
