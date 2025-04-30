@@ -43,19 +43,6 @@ def use_gradle_init_script_part_fixture(request, spring_boot_input_yaml):
     return
 
 
-@pytest.fixture(name="use_application_jar_environment_override")
-def use_application_jar_environment_override_fixture(request, spring_boot_input_yaml):
-    if not request.param:
-        return
-    gradle_runtime_part = {
-        "spring-boot-framework/runtime": {
-            "build-environment": [{"APPLICATION_JAR": "test.jar"}]
-        }
-    }
-    spring_boot_input_yaml["parts"] = gradle_runtime_part
-    return
-
-
 @pytest.fixture
 def spring_boot_extension(mock_extensions, monkeypatch):
     monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "1")
@@ -123,7 +110,6 @@ def use_gradlew_non_executable(tmp_path, request):
         "use_build_gradle",
         "use_gradlew",
         "use_gradle_init_script_part",
-        "use_application_jar_environment_override",
         "expected",
     ),
     [
@@ -366,7 +352,6 @@ def use_gradlew_non_executable(tmp_path, request):
         "use_build_gradle",
         "use_gradlew",
         "use_gradle_init_script_part",
-        "use_application_jar_environment_override",
     ],
 )
 @pytest.mark.usefixtures("spring_boot_extension")
@@ -378,7 +363,6 @@ def test_spring_boot_extension_default(
     use_build_gradle,
     use_gradlew,
     use_gradle_init_script_part,
-    use_application_jar_environment_override,
     expected,
 ):
     applied = extensions.apply_extensions(tmp_path, spring_boot_input_yaml)
