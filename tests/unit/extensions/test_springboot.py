@@ -119,7 +119,6 @@ def use_gradlew_non_executable(tmp_path, request):
             False,
             False,
             False,
-            False,
             {
                 "base": "ubuntu@24.04",
                 "name": "springbootprojectname",
@@ -163,7 +162,6 @@ def use_gradlew_non_executable(tmp_path, request):
             False,
             False,
             False,
-            False,
             {
                 "base": "ubuntu@24.04",
                 "name": "springbootprojectname",
@@ -203,7 +201,6 @@ def use_gradlew_non_executable(tmp_path, request):
             False,
             False,
             True,
-            False,
             False,
             False,
             {
@@ -250,7 +247,6 @@ def use_gradlew_non_executable(tmp_path, request):
             True,
             True,
             False,
-            False,
             {
                 "base": "ubuntu@24.04",
                 "name": "springbootprojectname",
@@ -292,7 +288,6 @@ def use_gradlew_non_executable(tmp_path, request):
             True,
             True,
             True,
-            False,
             {
                 "base": "ubuntu@24.04",
                 "name": "springbootprojectname",
@@ -373,9 +368,30 @@ def test_spring_boot_extension_default(
 @pytest.mark.parametrize(
     ("use_pom_xml", "use_mvnw", "use_build_gradle", "use_gradlew", "expected_err"),
     [
-        (True, False, True, False, "both pom.xml and build.gradle files exist"),
-        (False, True, False, True, "both mvnw and gradlew executable files exist"),
-        (False, False, False, False, "missing pom.xml and build.gradle file"),
+        pytest.param(
+            True,
+            False,
+            True,
+            False,
+            "both pom.xml and build.gradle files exist",
+            id="unable to determine plugin",
+        ),
+        pytest.param(
+            False,
+            True,
+            False,
+            True,
+            "both mvnw and gradlew executable files exist",
+            id="both wrappers present",
+        ),
+        pytest.param(
+            False,
+            False,
+            False,
+            False,
+            "missing pom.xml and build.gradle file",
+            id="no build system detected",
+        ),
     ],
     indirect=[
         "use_pom_xml",
@@ -410,24 +426,50 @@ def test_spring_boot_extension_check_project(
         "expected_error",
     ),
     [
-        (False, False, True, True, False, "both pom.xml and build.gradle files exist"),
-        (
+        pytest.param(
+            False,
+            False,
+            True,
+            True,
+            False,
+            "both pom.xml and build.gradle files exist",
+            id="multiple build system detected",
+        ),
+        pytest.param(
             True,
             True,
             True,
             False,
             False,
             "both mvnw and gradlew executable files exist",
+            id="multiple build system wrappers detected",
         ),
-        (False, False, False, False, False, "missing pom.xml and build.gradle file"),
-        (False, True, False, True, False, "mvnw or gradlew file is not executable"),
-        (
+        pytest.param(
+            False,
+            False,
+            False,
+            False,
+            False,
+            "missing pom.xml and build.gradle file",
+            id="no build system detected",
+        ),
+        pytest.param(
+            False,
+            True,
+            False,
+            True,
+            False,
+            "mvnw or gradlew file is not executable",
+            id="non executable build system wrappers",
+        ),
+        pytest.param(
             False,
             False,
             True,
             False,
             True,
             "gradle init script part is enabled for non-gradle build",
+            id="gradle init script part defined for maven project",
         ),
     ],
     indirect=[
