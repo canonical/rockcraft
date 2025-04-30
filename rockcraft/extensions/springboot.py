@@ -197,7 +197,13 @@ class SpringBootFramework(Extension):
         }
 
         if self._rock_base == "bare":
-            install_app_part["stage-packages"] = ["zlib1g", "libstdc++6"]
+            install_app_part["stage-packages"] = [
+                "libnss3_nss",
+                "libc6_libs",
+                "libgcc-s1_libs",
+                "libstdc++6_libs",
+                "zlib1g_libs",
+            ]
         return install_app_part
 
     @property
