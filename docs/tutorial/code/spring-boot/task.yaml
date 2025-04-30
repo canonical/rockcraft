@@ -12,7 +12,7 @@ environment:
 execute: |
   set -x
   # [docs:install-devpack-for-spring]
-  sudo snap install devpack-for-spring --edge --classic
+  sudo snap install devpack-for-spring --classic
   sudo apt update && sudo apt install -y openjdk-21-jdk
   # [docs:install-devpack-for-spring-end]
 
@@ -61,11 +61,11 @@ execute: |
   # [docs:pack-end]
 
   # [docs:ls-rock]
-  ls *.rock -l --block-size=MB
+  ls *.rock -lh
   # [docs:ls-rock-end]
 
   # [docs:skopeo-copy]
-  rockcraft.skopeo --insecure-policy \
+  rockcraft.skopeo \
     copy oci-archive:spring-boot-hello-world_0.1_amd64.rock \
     docker-daemon:spring-boot-hello-world:0.1
   # [docs:skopeo-copy-end]
