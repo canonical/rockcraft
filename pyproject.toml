@@ -6,7 +6,7 @@ dependencies = [
     "craft-application~=5.1",
     "craft-archives",
     "craft-cli",
-    "craft-parts",
+    "craft-parts @ git+https://github.com/canonical/craft-parts@work/patch-uv-version",
     "craft-platforms~=0.8",
     "craft-providers",
     "overrides",
@@ -24,18 +24,14 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
 ]
 requires-python = ">= 3.10"
-license = {file = "LICENSE"}
-authors = [
-    { name = "Canonical Ltd.", email = "snapcraft@lists.snapcraft.io" },
-]
+license = { file = "LICENSE" }
+authors = [{ name = "Canonical Ltd.", email = "snapcraft@lists.snapcraft.io" }]
 
 [project.scripts]
 rockcraft = "rockcraft.cli:run"
 
 [dependency-groups]
-lint = [
-    "codespell[toml]",
-]
+lint = ["codespell[toml]"]
 types = [
     "mypy[reports]~=1.15.0",
     "types-Pygments",
@@ -56,7 +52,7 @@ docs = [
 dev = [
     "build>=0.7.0",
     "coverage[toml]~=7.4",
-    "poetry>=2.0.0",  # Needed for testing the poetry plugin.
+    "poetry>=2.0.0",         # Needed for testing the poetry plugin.
     "poetry-plugin-export",
     "pytest~=8.0",
     "pytest-check",
@@ -84,10 +80,7 @@ dev-plucky = [
     # 2.9 for Oracular+
     "python-apt>=2.9.0;sys_platform=='linux'",
 ]
-release = [
-    "twine",
-    "wheel",
-]
+release = ["twine", "wheel"]
 
 [tool.uv]
 constraint-dependencies = [
@@ -128,7 +121,7 @@ requires = ["setuptools>=69.0", "setuptools_scm[toml]>=7.1"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.dynamic]
-readme = {file = "README.rst"}
+readme = { file = "README.rst" }
 
 [tool.setuptools_scm]
 write_to = "rockcraft/_version.py"
@@ -203,16 +196,12 @@ exclude = [
     "docs/tutorial/code/flask",
     "docs/tutorial/code/django",
     "docs/tutorial/code/fastapi",
-    "tests/spread/general/extension-django/example_django"
+    "tests/spread/general/extension-django/example_django",
 ]
 
 [tool.mypy]
 python_version = "3.10"
-exclude = [
-    "build",
-    "results",
-    "tests/spread"
-]
+exclude = ["build", "results", "tests/spread"]
 warn_unused_configs = true
 warn_redundant_casts = true
 strict_equality = true
@@ -239,11 +228,7 @@ ignore_missing_imports = true
 line-length = 88
 target-version = "py310"
 src = ["rockcraft", "tests"]
-extend-exclude = [
-    "docs",
-    "rockcraft/_version.py",
-    "tests/spread",
-]
+extend-exclude = ["docs", "rockcraft/_version.py", "tests/spread"]
 
 [tool.ruff.format]
 docstring-code-format = true
@@ -397,9 +382,7 @@ classmethod-decorators = ["pydantic.validator", "pydantic.root_validator"]
 # Rockcraft-specific configuration after this line ----------
 
 [project.optional-dependencies]
-store = [
-    "craft-store",
-]
+store = ["craft-store"]
 
 [project.urls]
 Documentation = "https://rockcraft.readthedocs.io/en/latest/"
