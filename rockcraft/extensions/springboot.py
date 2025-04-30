@@ -183,11 +183,6 @@ class SpringBootFramework(Extension):
 
     def gen_install_app_part(self) -> dict[str, Any]:
         """Generate the install-app part."""
-        if self.pom_xml_path.exists() and self.build_gradle_path.exists():
-            raise ExtensionError(
-                "Both mvnw and gradlew exist. Please remove one of them."
-            )
-
         plugin: Literal["gradle", "maven"] = (
             "gradle" if self.build_gradle_path.exists() else "maven"
         )
