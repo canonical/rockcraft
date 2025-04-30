@@ -57,6 +57,7 @@ def test_run_pack_services(mocker, monkeypatch, tmp_path):
     package_mocks = mocker.patch.multiple(
         services.RockcraftPackageService, write_metadata=DEFAULT, pack=DEFAULT
     )
+    package_mocks["pack"].return_value = [tmp_path / "my-rock.rock"]
 
     command_line = ["rockcraft", "pack"]
     mocker.patch.object(sys, "argv", command_line)
