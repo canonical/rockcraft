@@ -127,7 +127,7 @@ def use_gradlew_non_executable(tmp_path, request):
         "expected",
     ),
     [
-        (
+        pytest.param(
             True,
             False,
             False,
@@ -169,8 +169,9 @@ def use_gradlew_non_executable(tmp_path, request):
                     }
                 },
             },
+            id="use maven from archive (mvnw file not present)",
         ),
-        (
+        pytest.param(
             True,
             True,
             False,
@@ -210,8 +211,9 @@ def use_gradlew_non_executable(tmp_path, request):
                     }
                 },
             },
+            id="use maven wrapper (mvnw file present)",
         ),
-        (
+        pytest.param(
             False,
             False,
             True,
@@ -254,8 +256,9 @@ def use_gradlew_non_executable(tmp_path, request):
                     }
                 },
             },
+            id="use gradle from archive (gradlew file not present)",
         ),
-        (
+        pytest.param(
             False,
             False,
             True,
@@ -295,8 +298,9 @@ def use_gradlew_non_executable(tmp_path, request):
                     }
                 },
             },
+            id="use gradlew (gradlew file present)",
         ),
-        (
+        pytest.param(
             False,
             False,
             True,
@@ -353,50 +357,7 @@ def use_gradlew_non_executable(tmp_path, request):
                     }
                 },
             },
-        ),
-        (
-            False,
-            False,
-            True,
-            True,
-            False,
-            True,
-            {
-                "base": "ubuntu@24.04",
-                "name": "springbootprojectname",
-                "platforms": {"amd64": {}},
-                "run-user": "_daemon_",
-                "parts": {
-                    "spring-boot-framework/install-app": {
-                        "plugin": "gradle",
-                        "source": ".",
-                        "gradle-task": "bootJar",
-                        "build-packages": ["default-jdk"],
-                        "organize": {
-                            "**/*.jar": "app/",
-                        },
-                        "override-build": (
-                            "craftctl default\n"
-                            "find ${CRAFT_PART_INSTALL} -name '*-plain.jar' -type f -delete"
-                        ),
-                    },
-                    "spring-boot-framework/runtime": {
-                        "plugin": "jlink",
-                        "after": ["spring-boot-framework/install-app"],
-                        "build-packages": ["default-jdk"],
-                        "build-environment": [{"APPLICATION_JAR": "test.jar"}],
-                    },
-                },
-                "services": {
-                    "spring-boot": {
-                        "command": 'bash -c "java -jar test.jar"',
-                        "override": "replace",
-                        "startup": "enabled",
-                        "user": "_daemon_",
-                        "working-dir": "/app",
-                    }
-                },
-            },
+            id="use gradle init script",
         ),
     ],
     indirect=[
