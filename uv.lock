@@ -577,8 +577,8 @@ wheels = [
 
 [[package]]
 name = "craft-parts"
-version = "2.9.0"
-source = { registry = "https://pypi.org/simple" }
+version = "2.9.0.post2+g0e3a32b"
+source = { git = "https://github.com/canonical/craft-parts?rev=work%2Fpatch-uv-version#0e3a32befa9e366e92babb8eaba764e45e678038" }
 dependencies = [
     { name = "overrides" },
     { name = "pydantic" },
@@ -587,10 +587,6 @@ dependencies = [
     { name = "requests" },
     { name = "requests-unixsocket2" },
     { name = "tomli", marker = "python_full_version < '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-oracular') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-oracular') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-oracular' and extra == 'group-9-rockcraft-dev-plucky')" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/a3/f2/c1d8395d3876e41152f932ab2c0783c89a416f7541b57ee0417e246b6b3c/craft_parts-2.9.0.tar.gz", hash = "sha256:cc98781a1315507b8b5c8164f6bc63407562b312198253033985463a94bab24a", size = 723428, upload_time = "2025-04-28T19:56:06.103Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/56/c0/1aa816702a23b6b4a86e1c3f31076b562b526907404fd0463bbd6ec1525b/craft_parts-2.9.0-py3-none-any.whl", hash = "sha256:d3cdc56432027bc29053bf2c762a2482443c4c48909690b69f2841ff872af8cb", size = 466511, upload_time = "2025-04-28T19:56:04.601Z" },
 ]
 
 [[package]]
@@ -1008,7 +1004,7 @@ name = "importlib-metadata"
 version = "8.7.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "zipp" },
+    { name = "zipp", marker = "python_full_version < '3.12' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-oracular') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-oracular') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-oracular' and extra == 'group-9-rockcraft-dev-plucky')" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/76/66/650a33bd90f786193e4de4b3ad86ea60b53c89b669a5c7be931fac31cdb0/importlib_metadata-8.7.0.tar.gz", hash = "sha256:d13b81ad223b890aa16c5471f2ac3056cf76c5f10f82d6f9292f0b415f389000", size = 56641, upload_time = "2025-04-27T15:29:01.736Z" }
 wheels = [
@@ -2559,7 +2555,7 @@ requires-dist = [
     { name = "craft-application", specifier = "~=5.1" },
     { name = "craft-archives" },
     { name = "craft-cli" },
-    { name = "craft-parts" },
+    { name = "craft-parts", git = "https://github.com/canonical/craft-parts?rev=work%2Fpatch-uv-version" },
     { name = "craft-platforms", specifier = "~=0.8" },
     { name = "craft-providers" },
     { name = "craft-store", marker = "extra == 'store'" },
