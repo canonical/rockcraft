@@ -283,9 +283,8 @@ class SpringBootFramework(Extension):
         if self._rock_base == "bare":
             runtime_part["stage-packages"] = [
                 "bash_bins",
-                "ca-certificates_data",
+                "base-files_chisel",
                 "coreutils_bins",
-                "base-files_tmp",
             ]
 
         return runtime_part
