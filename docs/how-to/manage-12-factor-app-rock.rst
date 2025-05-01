@@ -1,5 +1,5 @@
-How to build a 12-Factor app rock
-*********************************
+How to manage a 12-Factor app rock
+**********************************
 
 The following how-to guide provides instructions on managing
 and configuring rocks for 12-factor applications.
