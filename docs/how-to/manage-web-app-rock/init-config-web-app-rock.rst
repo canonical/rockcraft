@@ -19,10 +19,6 @@ Rockcraft automatically creates a ``rockcraft.yaml`` project file
 for the rock in your current directory. You will need to check the project
 file to verify that the rock's name and description are correct.
 
-.. seealso::
-
-    :ref:`ref_commands_init`
-
 .. tabs::
 
     .. group-tab:: Django
@@ -55,6 +51,9 @@ file to verify that the rock's name and description are correct.
 
             rockcraft init --profile go-framework
 
+.. seealso::
+
+    :ref:`ref_commands_init`
 
 Include extra files in the OCI image
 ------------------------------------
