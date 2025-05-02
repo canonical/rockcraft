@@ -1,3 +1,5 @@
+.. _configure-web-app-rock:
+
 Configure a 12-Factor app rock
 ******************************
 

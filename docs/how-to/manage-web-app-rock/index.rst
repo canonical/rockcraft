@@ -10,10 +10,7 @@ Initialization
 Use the pre-defined Rockcraft extension to cater the initial rock files to
 your specific web app framework.
 
-.. toctree::
-    :maxdepth: 2
-
-    Initialize a 12-factor app rock <init-web-app-rock>
+- :ref:`init-web-app-rock`
 
 Configuration
 -------------
@@ -21,10 +18,7 @@ Configuration
 Once your 12-factor app rock has been set up, you can customize many aspects
 of it using Rockcraft.
 
-.. toctree::
-    :maxdepth: 2
-
-    Configure a 12-factor app rock <configure-web-app-rock>
+- :ref:`configure-web-app-rock`
 
 Usage
 -----
@@ -32,7 +26,11 @@ Usage
 Now that you’ve initialized and configured your 12-factor app rock,
 you’re ready to use it.
 
-.. toctree::
-    :maxdepth: 2
+- :ref:`use-web-app-rock`
 
-    Use a 12-factor app rock <use-web-app-rock>
+.. toctree::
+    :hidden:
+
+    init-web-app-rock
+    configure-web-app-rock
+    use-web-app-rock

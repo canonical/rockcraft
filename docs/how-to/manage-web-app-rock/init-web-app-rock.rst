@@ -1,3 +1,5 @@
+.. _init-web-app-rock:
+
 Initialize a 12-factor app rock
 *******************************
 

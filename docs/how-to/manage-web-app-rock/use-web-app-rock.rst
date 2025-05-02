@@ -1,3 +1,5 @@
+.. _use-web-app-rock:
+
 Use a 12-factor app rock
 ************************
 
