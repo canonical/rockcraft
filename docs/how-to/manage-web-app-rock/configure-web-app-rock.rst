@@ -1,5 +1,5 @@
-How to configure a 12-Factor app rock
-*************************************
+Configure a 12-Factor app rock
+******************************
 
 The following how-to guide provides instructions on
 configuring rocks for 12-factor apps.

@@ -1,5 +1,5 @@
-How to use a 12-factor app rock
-*******************************
+Use a 12-factor app rock
+************************
 
 The following how-to guide provides instructions on
 using rocks for 12-factor apps.

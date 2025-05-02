@@ -1,5 +1,5 @@
-How to manage a 12-Factor app rock
-**********************************
+Manage a 12-Factor app rock
+***************************
 
 These guides walk you through all the ways you can manage 12-factor app rocks,
 from initialization to usage.

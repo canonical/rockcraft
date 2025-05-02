@@ -1,5 +1,5 @@
-How to initialize a 12-factor app rock
-**************************************
+Initialize a 12-factor app rock
+*******************************
 
 Use ``rockcraft init`` and specify the relevant profile:
 
