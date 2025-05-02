@@ -7,8 +7,8 @@ from initialization to usage.
 Initialization
 --------------
 
-Use the pre-defined Rockcraft extension to cater the initial rock files to
-your specific web app framework.
+To start, use one of the provided web framework extensions to pre-populate the
+initial Rockcraft project file.
 
 - :ref:`init-web-app-rock`
 
