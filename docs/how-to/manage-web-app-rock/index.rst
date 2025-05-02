@@ -15,8 +15,8 @@ initial Rockcraft project file.
 Configuration
 -------------
 
-Once your 12-factor app rock has been set up, you can customize many aspects
-of it using Rockcraft.
+Once your 12-factor app rock is initialized, you can arrange its contents
+using Rockcraft.
 
 - :ref:`configure-web-app-rock`
 
