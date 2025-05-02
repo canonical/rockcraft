@@ -14,7 +14,7 @@ adapt the steps to fit your specific requirements.
    :maxdepth: 1
 
    Get started - quick guide <get-started>
-   Manage a 12-factor app rock <manage-web-app-rock/index>
+   12-factor app rocks <manage-web-app-rock/index>
    Outsource rock builds to Launchpad <outsource-rock-builds-to-launchpad>
 
 Chisel
