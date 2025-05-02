@@ -8,17 +8,10 @@ Initialization
 --------------
 
 To start, use one of the provided web framework extensions to pre-populate the
-initial Rockcraft project file.
+initial Rockcraft project file. Once your 12-factor app rock is initialized,
+you can arrange its contents using Rockcraft.
 
-- :ref:`init-web-app-rock`
-
-Configuration
--------------
-
-Once your 12-factor app rock is initialized, you can arrange its contents
-using Rockcraft.
-
-- :ref:`configure-web-app-rock`
+- :ref:`init-config-web-app-rock`
 
 Usage
 -----
@@ -31,6 +24,5 @@ you’re ready to use it.
 .. toctree::
     :hidden:
 
-    init-web-app-rock
-    configure-web-app-rock
+    init-config-web-app-rock
     use-web-app-rock
