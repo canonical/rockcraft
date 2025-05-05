@@ -51,9 +51,8 @@ file to verify that the rock's name and description are correct.
 
             rockcraft init --profile go-framework
 
-.. seealso::
 
-    :ref:`ref_commands_init`
+For more information, see: :ref:`ref_commands_init`
 
 Include extra files in the OCI image
 ------------------------------------
