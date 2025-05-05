@@ -1,7 +1,7 @@
-.. _init-config-web-app-rock:
+.. _set-up-web-app-rock:
 
-Initialize and configure a 12-Factor app rock
-*********************************************
+Set up a 12-Factor app rock
+***************************
 
 The following how-to guide provides instructions on
 initializing and configuring rocks for 12-factor apps.
