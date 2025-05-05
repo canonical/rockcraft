@@ -881,7 +881,7 @@ class TestImage:
             ),
         ]
 
-    def test_inject_architecture_variant(self, mock_read_bytes, mock_write_bytes):
+    def test_inject_manifest(self, mock_read_bytes, mock_write_bytes):
         test_index = {"manifests": [{"digest": "sha256:foomanifest"}]}
         test_manifest = {"config": {"digest": "sha256:fooconfig"}}
         test_config = {}
@@ -899,10 +899,11 @@ class TestImage:
         new_test_manifest = {
             **test_manifest,
             **{
+                "mediaType": "application/vnd.oci.image.manifest.v1+json",
                 "config": {
                     "digest": f"sha256:{new_image_config_digest}",
                     "size": len(new_test_config_bytes),
-                }
+                },
             },
         }
         new_test_manifest_bytes = json.dumps(new_test_manifest).encode("utf-8")
@@ -921,7 +922,7 @@ class TestImage:
         }
 
         # pylint: disable=protected-access
-        oci._inject_manifest(Path("img"), test_variant, add_media_type=False)
+        oci._inject_manifest(Path("img"), test_variant, add_media_type=True)
         assert mock_read_bytes.call_count == 3
         assert mock_write_bytes.mock_calls == [
             call(new_test_config_bytes),
@@ -932,7 +933,6 @@ class TestImage:
     def test_stat(self, new_dir, mock_inject_manifest, mock_run, mocker):
         image_dir = Path("images/dir")
         mock_loads = mocker.patch("json.loads")
-        _ = mocker.patch("json.dumps")
 
         image, _ = oci.Image.new_oci_image(
             "bare@latest", image_dir=image_dir, arch="amd64"
@@ -951,6 +951,30 @@ class TestImage:
                     "--json",
                     "--image",
                     "images/dir/bare:latest",
+                ]
+            )
+        ]
+        assert mock_loads.called
+
+    def test_manifest(self, new_dir, mock_inject_manifest, mock_run, mocker):
+        image_dir = Path("images/dir")
+        mock_loads = mocker.patch("json.loads")
+
+        image, _ = oci.Image.new_oci_image(
+            "bare@latest", image_dir=image_dir, arch="amd64"
+        )
+
+        mock_run.reset_mock()
+
+        image.manifest()
+
+        assert mock_run.mock_calls == [
+            call(
+                [
+                    "skopeo",
+                    "inspect",
+                    "--raw",
+                    "oci:images/dir/bare:latest",
                 ]
             )
         ]
