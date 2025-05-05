@@ -73,8 +73,8 @@ def mock_tmpdir(mocker):
 
 
 @pytest.fixture
-def mock_inject_variant(mocker):
-    return mocker.patch("rockcraft.oci._inject_architecture_variant")
+def mock_inject_manifest(mocker):
+    return mocker.patch("rockcraft.oci._inject_manifest")
 
 
 @pytest.fixture
@@ -189,7 +189,7 @@ class TestImage:
         assert arch_data.override_variant == expected_variant
 
     @pytest.mark.parametrize("deb_arch", list(SUPPORTED_ARCHS))
-    def test_new_oci_image(self, mock_inject_variant, mock_run, deb_arch):
+    def test_new_oci_image(self, mock_inject_manifest, mock_run, deb_arch):
         """Test that new blank images are created with the correct GOARCH values."""
         expected = SUPPORTED_ARCHS[deb_arch]
 
@@ -216,12 +216,9 @@ class TestImage:
                 ]
             ),
         ]
-        if expected.go_variant is None:
-            mock_inject_variant.assert_not_called()
-        else:
-            mock_inject_variant.assert_called_once_with(
-                image_dir / "bare", expected.go_variant
-            )
+        mock_inject_manifest.assert_called_once_with(
+            image_dir / "bare", arch_variant=expected.go_variant, add_media_type=True
+        )
 
     def test_copy_to(self, mock_run):
         image = oci.Image("a:b", Path("/c"))
@@ -924,7 +921,7 @@ class TestImage:
         }
 
         # pylint: disable=protected-access
-        oci._inject_architecture_variant(Path("img"), test_variant)
+        oci._inject_manifest(Path("img"), test_variant, add_media_type=False)
         assert mock_read_bytes.call_count == 3
         assert mock_write_bytes.mock_calls == [
             call(new_test_config_bytes),
@@ -932,17 +929,20 @@ class TestImage:
             call(json.dumps(new_test_index).encode("utf-8")),
         ]
 
-    def test_stat(self, new_dir, mock_run, mocker):
+    def test_stat(self, new_dir, mock_inject_manifest, mock_run, mocker):
         image_dir = Path("images/dir")
+        mock_loads = mocker.patch("json.loads")
+        _ = mocker.patch("json.dumps")
+
         image, _ = oci.Image.new_oci_image(
             "bare@latest", image_dir=image_dir, arch="amd64"
         )
 
-        mock_loads = mocker.patch("json.loads")
         mock_run.reset_mock()
 
         image.stat()
 
+        assert mock_inject_manifest.call_count == 1
         assert mock_run.mock_calls == [
             call(
                 [

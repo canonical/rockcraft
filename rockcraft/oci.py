@@ -147,10 +147,11 @@ class Image:
         # umoci config, but not the variant. Need to do it manually
         _config_image(image_target, ["--architecture", mapping.go_arch, "--no-history"])
 
-        _inject_manifest_media_type(Path(image_target_no_tag))
-
-        if mapping.go_variant:
-            _inject_architecture_variant(Path(image_target_no_tag), mapping.go_variant)
+        _inject_manifest(
+            Path(image_target_no_tag),
+            arch_variant=mapping.go_variant,
+            add_media_type=True,
+        )
 
         # for new OCI images, the source image corresponds to the newly generated image
         return (
@@ -581,11 +582,14 @@ def _add_layer_into_image(
     _process_run([*cmd, "--history.created_by", " ".join(cmd)])
 
 
-def _inject_architecture_variant(image_path: Path, variant: str) -> None:
-    """Inject architecture variant into existing OCI Image config.
+def _inject_manifest(
+    image_path: Path, arch_variant: str | None = None, *, add_media_type: bool = True
+) -> None:
+    """Inject architecture variant and mediaType into existing OCI Image config.
 
-    :param image_path: path of the OCI image, in the format <image>:<tar>
-    :param variant: name of the variant to inject in the OCI config
+    :param image_path: path of the OCI image, without the tag
+    :param arch_variant: name of the variant to inject in the OCI config
+    :param add_media_type: whether to add the mediaType field to the manifest
     """
     # pylint: disable=too-many-locals
     blobs_path = image_path / "blobs" / "sha256"
@@ -599,74 +603,32 @@ def _inject_architecture_variant(image_path: Path, variant: str) -> None:
     manifest_path = blobs_path / manifest_digest
     manifest_content = json.loads(manifest_path.read_bytes())
 
-    # Get the current OCI Image Config
-    image_config_digest = manifest_content["config"]["digest"].split(":")[-1]
-    image_config_path = blobs_path / image_config_digest
-    image_config_content = json.loads(image_config_path.read_bytes())
+    if add_media_type and "mediaType" not in manifest_content:
+        # Set the mediaType
+        manifest_content["mediaType"] = "application/vnd.oci.image.manifest.v1+json"
 
-    # Set the variant
-    image_config_content["variant"] = variant
+    if arch_variant:
+        # Get the current OCI Image Config
+        image_config_digest = manifest_content["config"]["digest"].split(":")[-1]
+        image_config_path = blobs_path / image_config_digest
+        image_config_content = json.loads(image_config_path.read_bytes())
+        # Set the variant
+        image_config_content["variant"] = arch_variant
 
-    # The OCI image config has changed, so now we need to
-    # regenerate the digests
-    new_image_config_bytes = json.dumps(image_config_content).encode("utf-8")
-    new_image_config_digest = hashlib.sha256(new_image_config_bytes).hexdigest()
-    new_image_config_path = blobs_path / new_image_config_digest
-    new_image_config_path.write_bytes(new_image_config_bytes)
+        # The OCI image config has changed, so now we need to
+        # regenerate the digests
+        new_image_config_bytes = json.dumps(image_config_content).encode("utf-8")
+        new_image_config_digest = hashlib.sha256(new_image_config_bytes).hexdigest()
+        new_image_config_path = blobs_path / new_image_config_digest
+        new_image_config_path.write_bytes(new_image_config_bytes)
 
-    manifest_content["config"]["digest"] = f"sha256:{new_image_config_digest}"
-    manifest_content["config"]["size"] = len(new_image_config_bytes)
+        manifest_content["config"]["digest"] = f"sha256:{new_image_config_digest}"
+        manifest_content["config"]["size"] = len(new_image_config_bytes)
 
     new_manifest_bytes = json.dumps(manifest_content).encode("utf-8")
     new_manifest_digest = hashlib.sha256(new_manifest_bytes).hexdigest()
     new_manifest_path = blobs_path / new_manifest_digest
     new_manifest_path.write_bytes(new_manifest_bytes)
-
-    tl_index["manifests"][0]["digest"] = f"sha256:{new_manifest_digest}"
-    tl_index["manifests"][0]["size"] = len(new_manifest_bytes)
-    tl_index_path.write_bytes(json.dumps(tl_index).encode("utf-8"))
-
-
-def _inject_manifest_media_type(image_path: Path) -> None:
-    """Inject mediaType into existing OCI Image manifest.
-
-    :param image_path: path of the OCI image, without the tag
-    """
-    blobs_path = image_path / "blobs" / "sha256"
-    # Get the top level OCI index
-    tl_index_path = image_path / "index.json"
-    if not tl_index_path.exists():
-        emit.debug(
-            "The OCI image does not have a top level index, "
-            "skipping the mediaType injection"
-        )
-        return
-    tl_index = json.loads(tl_index_path.read_bytes())
-
-    # Since this is a 1-arch OCI image, the OCI top level index
-    # points to a manifest (otherwise it would be a manifest list)
-    manifest_digest = tl_index["manifests"][0]["digest"].split(":")[-1]
-    manifest_path = blobs_path / manifest_digest
-    manifest_content = json.loads(manifest_path.read_bytes())
-
-    if "mediaType" in manifest_content:
-        emit.debug(
-            "The OCI image manifest already has a mediaType field, "
-            "skipping the injection"
-        )
-        return
-
-    # Set the mediaType
-    manifest_content["mediaType"] = "application/vnd.oci.image.manifest.v1+json"
-    # The OCI image config has changed, so now we need to
-    # regenerate the digests
-    new_manifest_bytes = json.dumps(manifest_content).encode("utf-8")
-    new_manifest_digest = hashlib.sha256(new_manifest_bytes).hexdigest()
-    # Write to the manifest blob named with the new digest
-    new_manifest_path = blobs_path / new_manifest_digest
-    new_manifest_path.write_bytes(new_manifest_bytes)
-    # Remove the old manifest
-    manifest_path.unlink(missing_ok=True)
 
     tl_index["manifests"][0]["digest"] = f"sha256:{new_manifest_digest}"
     tl_index["manifests"][0]["size"] = len(new_manifest_bytes)
