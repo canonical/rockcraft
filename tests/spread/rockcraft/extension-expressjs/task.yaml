@@ -1,7 +1,15 @@
 summary: expressjs extension test
 environment:
-  SCENARIO/bare: bare
-  SCENARIO/base_2404: ubuntu-24.04
+  BASE/bare_2204: bare
+  BASE/bare_2404: bare
+  BASE/base_2204: ubuntu@22.04
+  BASE/base_2404: ubuntu@24.04
+
+  BUILD_BASE/bare_2204: ubuntu@22.04
+  BUILD_BASE/bare_2404: ubuntu@24.04
+  BUILD_BASE/base_2204: ubuntu@22.04
+  BUILD_BASE/base_2404: ubuntu@24.04
+
   ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS: "true"
   UV_USE_IO_URING: "0"
 
@@ -16,10 +24,9 @@ execute: |
   cd app && npm install && cd ..
 
   run_rockcraft init --name "${NAME}" --profile expressjs-framework
-  sed -i "s/^base: .*/base: ${SCENARIO//-/@}/g" rockcraft.yaml
-  if [ "${SCENARIO}" != "bare" ]; then
-    sed -i "s/^build-base: .*/build-base: ${SCENARIO//-/@}/g" rockcraft.yaml
-  fi
+  # Replace base & build-base with ubuntu@<base>
+  sed -i "s/^base: .*/base: ${BASE}/g" rockcraft.yaml
+  sed -i "s/^build-base: .*/build-base: ${BUILD_BASE}/g" rockcraft.yaml
 
   function run_test() {
     # rockcraft clean is required here because the cached layer writes to npmrc
