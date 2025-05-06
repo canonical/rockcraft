@@ -316,6 +316,7 @@ def use_gradlew_non_executable(tmp_path, request):
                             "**/*.jar": "app/",
                         },
                         "override-build": (
+                            "mkdir -p ${CRAFT_PART_BUILD}/.gradle/\n"
                             "cp ${CRAFT_STAGE}/*init.gradle* ${CRAFT_PART_BUILD}/.gradle/\n"
                             "rm -f ${CRAFT_STAGE}/*init.gradle*\n"
                             "craftctl default\n"

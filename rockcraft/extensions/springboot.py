@@ -229,6 +229,7 @@ class SpringBootFramework(Extension):
                 "spring-boot-framework/gradle-init-script"
             ]
             override_build_cmds += [
+                "mkdir -p ${CRAFT_PART_BUILD}/.gradle/",
                 "cp ${CRAFT_STAGE}/*init.gradle* ${CRAFT_PART_BUILD}/.gradle/",
                 "rm -f ${CRAFT_STAGE}/*init.gradle*",
             ]
