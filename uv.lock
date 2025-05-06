@@ -2559,7 +2559,7 @@ requires-dist = [
     { name = "craft-application", specifier = "~=5.1" },
     { name = "craft-archives" },
     { name = "craft-cli" },
-    { name = "craft-parts", git = "https://github.com/canonical/craft-parts?branch=main" },
+    { name = "craft-parts" },
     { name = "craft-platforms", specifier = "~=0.8" },
     { name = "craft-providers" },
     { name = "craft-store", marker = "extra == 'store'" },
@@ -2567,6 +2567,7 @@ requires-dist = [
     { name = "spdx-lookup" },
     { name = "tabulate" },
 ]
+provides-extras = ["store"]
 
 [package.metadata.requires-dev]
 dev = [

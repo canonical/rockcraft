@@ -6,7 +6,7 @@ dependencies = [
     "craft-application~=5.1",
     "craft-archives",
     "craft-cli",
-    "craft-parts>=2.8.0",
+    "craft-parts",
     "craft-platforms~=0.8",
     "craft-providers",
     "overrides",
@@ -414,5 +414,3 @@ explicit = true
 
 [tool.uv.sources]
 python-apt = { index = "python-apt-wheels" }
-# TODO: Revert back to craft-parts pypi lib, DO NOT MERGE
-craft-parts = { git = "https://github.com/canonical/craft-parts", branch = "main" }
