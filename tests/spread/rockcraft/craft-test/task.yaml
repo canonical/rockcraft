@@ -4,4 +4,12 @@ environment:
   CI: "1"
 
 execute: |
+  rockcraft init --profile=test
+
+  # The test profile defaults to 24.04; enable the 22.04 system
+  sed -i 's/#- ubuntu-22.04/- ubuntu-22.04/' spread.yaml
+
+  # Copy our actual test over the placeholder one
+  cp rock-test.yaml spread/general/test/task.yaml
+
   rockcraft test -v 2>&1 | MATCH "Successful tasks: 1"

@@ -10,6 +10,7 @@ the motivations behind its development.
 .. toctree::
    :maxdepth: 1
 
+   Cryptographic technology <cryptography>
    rockcraft
    chisel
    overlay-step
