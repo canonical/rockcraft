@@ -1,54 +1,78 @@
 # Rockcraft
 
-[![Snap Status](https://snapcraft.io/rockcraft/badge.svg)](https://snapcraft.io/rockcraft)
-[![Documentation Status](https://readthedocs.com/projects/canonical-rockcraft/badge/?version=stable)](https://documentation.ubuntu.com/rockcraft/en/stable/?badge=stable)
+[![Rockcraft][rockcraft-badge]][rockcraft-site]
+[![Documentation Status][rtd-badge]][rtd-stable]
 
-## Purpose
+**Rockcraft** is the command-line tool for the rock container format, which are
+OCI-compliant images based on Ubuntu. It handles all the repetitive and boilerplate
+steps of building a rock, directing your focus to what really matters – the rock's
+content. From independent software vendors to container users of any experience level,
+Rockcraft is for anyone who wants to build production-grade rocks.
 
-Tool to create OCI Images using the language from
-[Snapcraft](https://snapcraft.io) and [Charmcraft](https://juju.is).
+## Basic usage
 
-## Installing
+A rock's build configuration is stored in simple language as a project file called
+`rockcraft.yaml`.
 
-Install Rockcraft from the Snap Store
+From the root of your container's codebase, Rockcraft creates a minimal `rockcraft.yaml` with:
 
-[![Get it from the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-black.svg)](https://snapcraft.io/rockcraft)
+```bash
+rockcraft init
+```
+
+After you add all container's packages and dependencies to ``rockcraft.yaml``, bundle
+the rock with:
+
+```bash
+rockcraft pack
+```
+
+## Installation
+
+Rockcraft is available on all major Linux distributions, Windows, and macOS.
+
+Rockcraft has first-class support as a [snap](https://snapcraft.io/rockcraft). On
+snap-ready systems, you can install it on the command line with:
+
+```bash
+snap install rockcraft --classic
+```
 
 ## Documentation
 
-Documentation on the usage of the tool and tutorial can be found on
-<https://documentation.ubuntu.com/rockcraft/en/stable/>
+The [Rockcraft documentation](https://documentation.ubuntu.com/rockcraft) provides
+guidance and learning material about the full process of building a rock, debugging, the
+command reference, and much more.
 
-## Testing
+## Community and support
 
-In addition to unit tests in `tests/unit`, which can be run with
-`make test-units`, a number of integrated tests in `tests/spread` can be
-run with [Spread](https://github.com/snapcore/spread). See the [general
-notes](https://github.com/snapcore/snapcraft/blob/main/TESTING.md#spread-tests-for-the-snapcraft-snap)
-and take note of these `rockcraft`-specific instructions:
+Ask your questions about Rockcraft and what's on the horizon, and see who's working on
+what in the [Rockcraft Matrix channel](https://matrix.to/#/#rockcraft:ubuntu.com).
 
--   Initialize/update git submodules to fetch Spread-related helper
-    scripts:
+You can report any issues or bugs on the project's [GitHub
+repository](https://github.com/canonical/Rockcraft/issues).
 
-    ``` 
-    $ git submodule init
-    $ git submodule update
-    ```
+Rockcraft is covered by the [Ubuntu Code of
+Conduct](https://ubuntu.com/community/ethos/code-of-conduct).
 
--   Spread needs a `rockcraft` snap in order to run. Create one with
-    `snapcraft` via:
+## Contribute to Rockcraft
 
-    ``` 
-    $ snapcraft --use-lxd
-    $ cp <generated snap> tests/
-    ```
+Rockcraft is open source and part of the Canonical family. We would love your help.
 
--   Run Spread:
+If you're interested, start with the [contribution guide](HACKING.md).
 
-    ``` 
-    $ spread tests/spread
-    # Or run a specific test
-    $ spread tests/spread/tutorial/basic
-    # Use "-v" for verbose, and "-debug" to get a shell if the test fails
-    $ spread -v -debug tests/spread/tutorial/basic
-    ```
+We welcome any suggestions and help with the docs. The [Canonical Open Documentation
+Academy](https://github.com/canonical/open-documentation-academy) is the hub for doc
+development, including Rockcraft docs. No prior coding experience is required.
+
+## License and copyright
+
+Rockcraft is released under the [GPL-3.0 license](LICENSE).
+
+© 2023-2025 Canonical Ltd.
+
+
+[rockcraft-badge]: https://snapcraft.io/rockcraft/badge.svg
+[rockcraft-site]: https://snapcraft.io/rockcraft
+[rtd-badge]: https://readthedocs.com/projects/canonical-rockcraft/badge/?version=stable
+[rtd-stable]: https://documentation.ubuntu.com/rockcraft/en/stable/?badge=stable
