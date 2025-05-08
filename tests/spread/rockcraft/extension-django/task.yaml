@@ -19,15 +19,26 @@ execute: |
   sed -i "s/^base: .*/base: ${BASE}/g" rockcraft.yaml
   echo "build-base: ${BUILD_BASE}" >> rockcraft.yaml
 
+  # Install findutils for the bare scenario
+  # This is a workaround for the fact that the bare scenario does not have
+  # findutils installed by default, which is required for the test
+  cat >> rockcraft.yaml <<EOL
+  parts:
+    find-app:
+      plugin: nil
+      stage-packages:
+        - findutils
+  EOL
+
   run_rockcraft pack
 
   test -f example-django_0.1_amd64.rock
 
   # Ensure docker does not have this container image
   docker rmi --force example-django
-  # Install container
+  # Install image
   sudo rockcraft.skopeo --insecure-policy copy oci-archive:example-django_0.1_amd64.rock docker-daemon:example-django:latest
-  # Ensure container exists
+  # Ensure image exists
   docker images example-django | MATCH "example-django"
 
   # ensure container doesn't exist
@@ -37,6 +48,19 @@ execute: |
   docker run --rm --entrypoint /bin/python3 example-django -m gunicorn --chdir /django/app --check-config example_django.wsgi:application
   docker run --rm --entrypoint /bin/python3 example-django -c "import pathlib;assert pathlib.Path('/django/app/manage.py').is_file()"
   docker run --rm --entrypoint /bin/python3 example-django -c "import pathlib;assert pathlib.Path('/django/app/.foobar').is_file()"
+
+  # ensure the django and promtail folders have the correct user
+  check_directory_ownership() {
+    local directory="$1"
+    local shell="/bin/bash"
+    if [ "${BASE}" == "bare" ] && [ "${BUILD_BASE}" == "ubuntu@24.04" ]; then    shell="/usr/bin/bash"
+    fi
+    docker run --rm --entrypoint ${shell} example-django -c "find ${directory}/ ! -user '_daemon_' || { echo 'Error: ${directory} or its contents are not owned by _daemon_'; exit 2; }"
+  }
+
+  check_directory_ownership "/django"
+  check_directory_ownership "/opt/promtail"
+  check_directory_ownership "/etc/promtail"
 
   # test the default django service
   docker run --name example-django-container -d -p 8138:8000 example-django

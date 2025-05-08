@@ -23,8 +23,12 @@ from typing import Any
 from overrides import override  # type: ignore[reportUnknownVariableType]
 
 from rockcraft.errors import ExtensionError
+from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
 
+from .app_parts import gen_logging_part
 from .extension import Extension
+
+USER_UID: int = SUPPORTED_GLOBAL_USERNAMES["_daemon_"]["uid"]
 
 
 class GoFramework(Extension):
@@ -69,12 +73,14 @@ class GoFramework(Extension):
             "go-framework/base-layout": {
                 "plugin": "nil",
                 "override-build": "mkdir -p ${CRAFT_PART_INSTALL}/app",
+                "permissions": [{"owner": USER_UID, "group": USER_UID}],
             },
             "go-framework/install-app": self._get_install_app_part(),
             "go-framework/runtime": {
                 "plugin": "nil",
                 "stage-packages": stage_packages,
             },
+            "go-framework/logging": gen_logging_part(),
         }
 
         assets_part = self._get_install_assets_part()

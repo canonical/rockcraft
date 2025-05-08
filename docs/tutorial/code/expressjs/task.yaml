@@ -80,7 +80,7 @@ execute: |
 
   # [docs:stop-docker]
   sudo docker stop expressjs-hello-world
-  sudo docker rmi expressjs-hello-world:0.1
+  sudo docker rmi expressjs-hello-world:0.1 --force
   # [docs:stop-docker-end]
 
   mv time.js app/routes/
@@ -108,7 +108,7 @@ execute: |
 
   # [docs:stop-docker-updated]
   sudo docker stop expressjs-hello-world
-  sudo docker rmi expressjs-hello-world:0.2
+  sudo docker rmi expressjs-hello-world:0.2 --force
   # [docs:stop-docker-updated-end]
 
   # [docs:cleanup]
