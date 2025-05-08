@@ -13,6 +13,17 @@ execute: |
   sed -i "s/^base: .*/base: ${SCENARIO//-/@}/g" rockcraft.yaml
   if [ "${SCENARIO}" != "bare" ]; then
     sed -i "s/^build-base: .*/build-base: ${SCENARIO//-/@}/g" rockcraft.yaml
+  else
+    # Install findutils for the bare scenario
+    # This is a workaround for the fact that the bare scenario does not have
+    # findutils installed by default, which is required for the test
+    cat >> rockcraft.yaml <<EOL
+  parts:
+    find-app:
+      plugin: nil
+      stage-packages:
+        - findutils
+  EOL
   fi
   sed -i "s/NAME/${NAME}/g" go.mod
 
@@ -23,11 +34,21 @@ execute: |
 
   # Ensure docker does not have this container image
   docker rmi --force "${IMAGE}"
-  # Install container
+  # Install image
   sudo rockcraft.skopeo --insecure-policy copy "oci-archive:${ROCK_FILE}" \
     "docker-daemon:${IMAGE}"
-  # Ensure container exists
+  # Ensure image exists
   docker images "${IMAGE}" | MATCH "${NAME}"
+
+  # ensure the app and promtail folders have the correct user
+  check_directory_ownership() {
+    local directory="$1"
+    docker run --rm --entrypoint /usr/bin/bash "${IMAGE}" -c "find ${directory}/ ! -user '_daemon_' || { echo 'Error: ${directory} or its contents are not owned by _daemon_'; exit 2; }"
+  }
+
+  check_directory_ownership "/app"
+  check_directory_ownership "/opt/promtail"
+  check_directory_ownership "/etc/promtail"
 
   # ensure container doesn't exist
   docker rm -f "${NAME}-container"

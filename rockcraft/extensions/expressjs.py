@@ -22,8 +22,12 @@ from typing import Any, cast
 from overrides import override  # type: ignore[reportUnknownVariableType]
 
 from rockcraft.errors import ExtensionError
+from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
 
+from .app_parts import gen_logging_part
 from .extension import Extension
+
+USER_UID: int = SUPPORTED_GLOBAL_USERNAMES["_daemon_"]["uid"]
 
 
 class ExpressJSFramework(Extension):
@@ -79,6 +83,7 @@ class ExpressJSFramework(Extension):
         runtime_part = self._gen_runtime_part()
         if runtime_part:
             snippet["parts"]["expressjs-framework/runtime"] = runtime_part
+        snippet["parts"]["expressjs-framework/logging"] = gen_logging_part()
         return snippet
 
     @override
@@ -138,7 +143,11 @@ class ExpressJSFramework(Extension):
                 "npm config set script-shell=bash --location project\n"
                 "cp ${CRAFT_PART_BUILD}/.npmrc ${CRAFT_PART_INSTALL}/lib/node_modules/"
                 f"{self._app_name}/.npmrc\n"
+                # we can not user `permissions` block here because it doesn't work with symlinks
+                # bug: https://github.com/canonical/rockcraft/issues/660
+                f"chown -R {USER_UID}:{USER_UID} ${{CRAFT_PART_INSTALL}}/lib/node_modules/{self._app_name}\n"
                 f"ln -s /lib/node_modules/{self._app_name} ${{CRAFT_PART_INSTALL}}/app\n"
+                f"chown -R {USER_UID}:{USER_UID} ${{CRAFT_PART_INSTALL}}/app\n"
             ),
         }
         build_packages = self._gen_app_build_packages()

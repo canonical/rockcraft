@@ -1,4 +1,6 @@
 summary: expressjs extension test
+
+kill-timeout: 45m
 environment:
   SCENARIO/bare: bare
   SCENARIO/base_2404: ubuntu-24.04
@@ -19,8 +21,19 @@ execute: |
   sed -i "s/^base: .*/base: ${SCENARIO//-/@}/g" rockcraft.yaml
   if [ "${SCENARIO}" != "bare" ]; then
     sed -i "s/^build-base: .*/build-base: ${SCENARIO//-/@}/g" rockcraft.yaml
+  else
+    # Install findutils for the bare scenario
+    # This is a workaround for the fact that the bare scenario does not have
+    # findutils installed by default, which is required for the test
+    cat >> rockcraft.yaml <<EOL
+  parts:
+    find-app:
+      plugin: nil
+      stage-packages:
+        - findutils
+  EOL
   fi
-
+   
   function run_test() {
     # rockcraft clean is required here because the cached layer writes to npmrc
     # multiple times, causing the app to crash on first run.
@@ -35,7 +48,19 @@ execute: |
     # Install container
     sudo rockcraft.skopeo --insecure-policy copy "oci-archive:${ROCK_FILE}" \
     "docker-daemon:${IMAGE}"
-    # Ensure container exists
+
+    # ensure the app and promtail folders have the correct user
+    check_directory_ownership() {
+      local directory="$1"
+      docker run --rm --entrypoint /usr/bin/bash "${IMAGE}" -c "find ${directory}/ ! -user '_daemon_' || { echo 'Error: ${directory} or its contents are not owned by _daemon_'; exit 2; }"
+    }
+
+    check_directory_ownership "/app"
+    check_directory_ownership "/lib/node_modules/app"
+    check_directory_ownership "/opt/promtail"
+    check_directory_ownership "/etc/promtail"
+
+    # Ensure image exists
     docker images "${IMAGE}" | MATCH "${NAME}"
 
     # Ensure container doesn't exist
@@ -50,10 +75,13 @@ execute: |
 
   run_test
 
+
+  if [ "${SCENARIO}" != "bare" ]; then
+    echo "parts:" >> rockcraft.yaml
+  fi
   # test the expressjs service with a Node version specified
   node_version=20.18.2
   cat <<EOF >> rockcraft.yaml
-  parts:
     expressjs-framework/install-app:
       npm-include-node: true
       npm-node-version: $node_version
