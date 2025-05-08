@@ -8,3 +8,4 @@
 "release-notes/rockcraft-1-9-0.rst" "release-notes/rockcraft-1-9.rst"
 "release-notes/rockcraft-1-8-0.rst" "release-notes/rockcraft-1-8.rst"
 "release-notes/rockcraft-1-7-0.rst" "release-notes/rockcraft-1-7.rst"
+"how-to/build-a-12-factor-app-rock.rst" "how-to/web-app-rocks/index.rst"
