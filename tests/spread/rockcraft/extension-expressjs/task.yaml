@@ -3,6 +3,7 @@ environment:
   SCENARIO/bare: bare
   SCENARIO/base_2404: ubuntu-24.04
   ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS: "true"
+  UV_USE_IO_URING: "0"
 
 execute: |
   NAME="expressjs-${SCENARIO//./-}"
@@ -65,7 +66,7 @@ execute: |
 
 restore: |
   NAME="expressjs-${SCENARIO//./-}"
-  docker stop "${NAME}-container"
-  docker rm "${NAME}-container"
+  docker stop "${NAME}-container" || true
+  docker rm --force "${NAME}-container"
   rm -f "*.rock" rockcraft.yaml
   docker system prune -a -f

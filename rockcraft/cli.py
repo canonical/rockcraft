@@ -16,16 +16,32 @@
 
 """Command-line application entry point."""
 
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
 from craft_application import commands as appcommands
-from craft_cli import Dispatcher
+from craft_cli import CommandGroup, Dispatcher
 
 from . import commands
-from .services import RockcraftServiceFactory
+from .application import Rockcraft
+from .services import RockcraftServiceFactory, register_rockcraft_services
 
-if TYPE_CHECKING:
-    from .application import Rockcraft
+COMMAND_GROUPS: list[CommandGroup] = [
+    CommandGroup(
+        "Extensions",
+        [
+            commands.ExtensionsCommand,
+            commands.ListExtensionsCommand,
+            commands.ExpandExtensionsCommand,
+        ],
+    ),
+    CommandGroup("Lifecycle", [appcommands.TestCommand, appcommands.RemoteBuild]),
+]
+
+
+def fill_command_groups(app: Rockcraft) -> None:
+    """Fill in the command groups for an application instance."""
+    for group in COMMAND_GROUPS:
+        app.add_command_group(group.name, group.commands)
 
 
 def run() -> int:
@@ -41,22 +57,14 @@ def _create_app() -> "Rockcraft":
     # commands doesn't need to know *too much* of the application.
     from .application import APP_METADATA, Rockcraft
 
+    register_rockcraft_services()
     services = RockcraftServiceFactory(
         app=APP_METADATA,
     )
 
     app = Rockcraft(app=APP_METADATA, services=services)
 
-    app.add_command_group(
-        "Extensions",
-        [
-            commands.ExtensionsCommand,
-            commands.ListExtensionsCommand,
-            commands.ExpandExtensionsCommand,
-        ],
-    )
-
-    app.add_command_group("Lifecycle", [appcommands.RemoteBuild])
+    fill_command_groups(app)
 
     return app
 

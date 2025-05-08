@@ -1,7 +1,11 @@
 PROJECT=rockcraft
+# Define when more than the main package tree requires coverage
+# like is the case for snapcraft (snapcraft and snapcraft_legacy):
+# COVERAGE_SOURCE="starcraft"
 UV_TEST_GROUPS := "--group=dev"
 UV_DOCS_GROUPS := "--group=docs"
 UV_LINT_GROUPS := "--group=lint" "--group=types"
+UV_TICS_GROUPS := "--group=tics"
 
 # If you have dev dependencies that depend on your distro version, uncomment these:
 ifneq ($(wildcard /etc/os-release),)
@@ -11,6 +15,7 @@ ifdef VERSION_CODENAME
 UV_TEST_GROUPS += "--group=dev-$(VERSION_CODENAME)"
 UV_DOCS_GROUPS += "--group=dev-$(VERSION_CODENAME)"
 UV_LINT_GROUPS += "--group=dev-$(VERSION_CODENAME)"
+UV_TICS_GROUPS += "--group=dev-$(VERSION_CODENAME)"
 endif
 
 include common.mk
@@ -37,6 +42,17 @@ publish: publish-pypi  ## Publish packages
 .PHONY: publish-pypi
 publish-pypi: clean package-pip lint-twine  ##- Publish Python packages to pypi
 	uv tool run twine upload dist/*
+
+schema: install-uv  ## Generate the schema file.
+	mkdir -p schema
+	uv run python tools/schema/schema.py > schema/rockcraft.json
+
+validate-schema: install-ajv-cli
+	# Find all the rockcraft.yaml files that don't contain "# pragma: no-schema-validate"
+	find . -type f -name rockcraft.yaml -exec grep -HL '# pragma: no-schema-validate' '{}' '+' | \
+	xargs -I {} ajv validate --strict=false --spec=draft2020 -s schema/rockcraft.json -d {}
+    # The line below can be used to use the go-based jv command instead.
+    # xargs -I {} sh -c 'echo "\e[32mValidating {}\e[0m"; jv schema/rockcraft.json {}'
 
 # Find dependencies that need installing
 APT_PACKAGES :=
@@ -73,3 +89,11 @@ endif
 # If additional build dependencies need installing in order to build the linting env.
 .PHONY: install-lint-build-deps
 install-lint-build-deps:
+
+
+.PHONY: install-ajv-cli
+install-ajv-cli: install-npm
+ifneq ($(shell which ajv),)
+else
+	npm install -g ajv-cli
+endif

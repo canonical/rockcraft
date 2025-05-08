@@ -53,8 +53,6 @@ jobs:
       - name: Install ajv cli
         run: npm install -g ajv-cli
 
-      - name: Run ajv
+      - name: Validate rockcraft.yaml files against the schema
         run: |
-          ajv validate -s $ROCKCRAFT_JSON \
-            -d docs/reference/code/example/rockcraft.yaml \
-            --strict=false --spec=draft2020
+          make validate-schema

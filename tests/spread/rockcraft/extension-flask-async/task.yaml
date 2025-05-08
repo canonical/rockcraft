@@ -120,7 +120,7 @@ execute: |
   [ "$SYNC_RESULT" == 'TRUE' ]
 restore: |
   NAME="flask-${SCENARIO//./-}"
-  docker stop "${NAME}-container"
-  docker rm "${NAME}-container"
+  docker stop "${NAME}-container" || true
+  docker rm --force "${NAME}-container"
   rm -f "*.rock" rockcraft.yaml
   docker system prune -a -f

@@ -1,0 +1,35 @@
+project: {{ name }}
+
+backends:
+  craft:
+    type: craft
+    systems:
+      - ubuntu-24.04:
+      #- ubuntu-22.04:
+
+suites:
+  spread/general/:
+    summary: General integration tests
+
+    prepare: |
+      sudo snap install docker
+
+      # For 'rockcraft.skopeo'
+      sudo snap install --classic rockcraft
+
+      # Wait for docker daemon to come online
+      sudo apt install --yes retry
+      retry --times=10 --delay 2 -- docker run hello-world
+      sudo apt remove --yes retry
+
+      # Load the rock into docker
+      ROCK=$(ls $PROJECT_PATH/{{ name }}*.rock)
+      sudo rockcraft.skopeo --insecure-policy copy "oci-archive:$ROCK" docker-daemon:{{ name }}:latest
+
+    restore: |
+      docker image rm --force {{ name }}:latest
+
+exclude:
+  - .git
+
+kill-timeout: 1h

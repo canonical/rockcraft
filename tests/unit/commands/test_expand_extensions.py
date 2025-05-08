@@ -55,16 +55,6 @@ EXPECTED_EXPAND_EXTENSIONS = textwrap.dedent(
       full-extension/new-part:
         plugin: nil
         source: null
-      pebble:
-        plugin: nil
-        stage-snaps:
-        - pebble/latest/stable
-        override-prime: |-
-          craftctl default
-          mkdir -p var/lib/pebble/default/layers
-          chmod 777 var/lib/pebble/default
-        stage:
-        - bin/pebble
     services:
       my-service:
         override: merge
@@ -81,18 +71,20 @@ def setup_extensions(mock_extensions):
     extensions.register(FullExtension.NAME, FullExtension)
 
 
-def test_expand_extensions(setup_extensions, emitter, new_dir):
+@pytest.mark.usefixtures("tmp_path", "setup_extensions")
+def test_expand_extensions(emitter, fake_app_config):
     # ExpandExtensionsCommand loads "rockcraft.yaml" on the cwd
     project_file = Path("rockcraft.yaml")
     project_file.write_text(FULL_EXTENSION_YAML)
 
-    cmd = ExpandExtensionsCommand(None)
+    cmd = ExpandExtensionsCommand(fake_app_config)
     cmd.run(argparse.Namespace())
 
     emitter.assert_message(EXPECTED_EXPAND_EXTENSIONS)
 
 
-def test_expand_extensions_error(setup_extensions, new_dir):
+@pytest.mark.usefixtures("tmp_path", "setup_extensions")
+def test_expand_extensions_error(fake_app_config):
     wrong_yaml = copy.deepcopy(FULL_EXTENSION_PROJECT)
 
     # Misconfigure the plugin
@@ -111,6 +103,6 @@ def test_expand_extensions_error(setup_extensions, new_dir):
         "- input should be 'merge' or 'replace' (in field 'services.my-service.override')"
     )
 
-    cmd = ExpandExtensionsCommand(None)
+    cmd = ExpandExtensionsCommand(fake_app_config)
     with pytest.raises(errors.CraftValidationError, match=expected_message):
         cmd.run(argparse.Namespace())

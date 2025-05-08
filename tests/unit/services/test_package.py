@@ -14,19 +14,38 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from pathlib import Path
+from typing import cast
 
-from rockcraft.services import package
+import pytest
+from craft_application import ServiceFactory
+from craft_platforms import DebianArchitecture
+from rockcraft.services import RockcraftImageService, package
 
 
-def test_pack(package_service, default_factory, default_image_info, mocker):
-    image_service = default_factory.image
+@pytest.mark.usefixtures("fake_project_file", "project_keys")
+@pytest.mark.parametrize(
+    "project_keys",
+    [
+        {
+            "platforms": {
+                "bob": {
+                    "build-on": DebianArchitecture.from_host(),
+                    "build-for": "s390x",
+                }
+            },
+        },
+    ],
+)
+def test_pack(fake_services: ServiceFactory, default_image_info, mocker):
+    image_service = cast(RockcraftImageService, fake_services.get("image"))
 
     mock_obtain_image = mocker.patch.object(
         image_service, "obtain_image", return_value=default_image_info
     )
     mock_inner_pack = mocker.patch.object(package, "_pack")
 
-    package_service.pack(prime_dir=Path("prime"), dest=Path())
+    fake_services.get("project").configure(platform="bob", build_for="s390x")
+    fake_services.get("package").pack(prime_dir=Path("prime"), dest=Path())
 
     # Check that the image service was queried for the ImageInfo
     mock_obtain_image.assert_called_once_with()
@@ -36,9 +55,9 @@ def test_pack(package_service, default_factory, default_image_info, mocker):
     mock_inner_pack.assert_called_once_with(
         base_digest=b"deadbeef",
         base_layer_dir=Path(),
-        build_for="amd64",
+        build_for="s390x",
         prime_dir=Path("prime"),
-        project=default_factory.project,
+        project=fake_services.get("project").get(),
         project_base_image=default_image_info.base_image,
-        rock_suffix="amd64",
+        rock_suffix="bob",
     )

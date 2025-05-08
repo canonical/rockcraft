@@ -23,3 +23,11 @@ parts:
     npm-include-node: True
     npm-node-version: "21.1.0"
     source: src/
+    build-environment:
+      # NOTE: There's currently a bad interaction between the nodejs version in the
+      # archives and the kernel, causing an infinite hang during 'npm install':
+      # - https://github.com/npm/cli/issues/4028
+      # - https://github.com/amazonlinux/amazon-linux-2023/issues/856
+      # For now we need to disable libuv's use of io_uring; this should be able to
+      # be reverted in a few months (as of April 2025).
+      - UV_USE_IO_URING: "0"

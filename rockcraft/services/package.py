@@ -21,8 +21,7 @@ import pathlib
 import typing
 from typing import cast
 
-from craft_application import AppMetadata, PackageService, errors, models
-from craft_application.models import BuildInfo
+from craft_application import PackageService, errors, models
 from craft_cli import emit
 from overrides import override  # type: ignore[reportUnknownVariableType]
 
@@ -30,23 +29,9 @@ from rockcraft import oci
 from rockcraft.models import Project
 from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
 
-if typing.TYPE_CHECKING:
-    from rockcraft.services import RockcraftServiceFactory
-
 
 class RockcraftPackageService(PackageService):
     """Package service subclass for Rockcraft."""
-
-    def __init__(
-        self,
-        app: AppMetadata,
-        services: "RockcraftServiceFactory",
-        *,
-        project: models.Project,
-        build_plan: list[BuildInfo],
-    ) -> None:
-        super().__init__(app, services, project=project)
-        self._build_plan = build_plan
 
     @override
     def pack(self, prime_dir: pathlib.Path, dest: pathlib.Path) -> list[pathlib.Path]:
@@ -57,24 +42,22 @@ class RockcraftPackageService(PackageService):
         """
         # This inner import is necessary to resolve a cyclic import
         # pylint: disable=import-outside-toplevel
-        from rockcraft.services import RockcraftServiceFactory
+        from rockcraft.services import RockcraftImageService
 
-        services = cast(RockcraftServiceFactory, self._services)
-        image_service = services.image
+        image_service = cast(RockcraftImageService, self._services.get("image"))
         image_info = image_service.obtain_image()
 
-        if not self._build_plan:
-            raise errors.EmptyBuildPlanError
+        build_plan = self._services.get("build_plan").plan()
 
-        if len(self._build_plan) > 1:
+        if len(build_plan) > 1:
             raise errors.MultipleBuildsError
 
-        platform = self._build_plan[0].platform
-        build_for = self._build_plan[0].build_for
+        platform = build_plan[0].platform
+        build_for = build_plan[0].build_for
 
         archive_name = _pack(
             prime_dir=prime_dir,
-            project=cast(Project, self._project),
+            project=cast(Project, self._services.get("project").get()),
             project_base_image=image_info.base_image,
             base_digest=image_info.base_digest,
             rock_suffix=platform,

@@ -26,13 +26,11 @@ from .registry import get_extension_class
 
 
 def apply_extensions(project_root: Path, yaml_data: dict[str, Any]) -> dict[str, Any]:
-    """Apply all extensions.
+    """Apply all extensions, in-place.
 
     :param dict yaml_data: Loaded, unprocessed rockcraft.yaml
     :returns: Modified rockcraft.yaml data with extensions applied
     """
-    # Don't modify the dict passed in
-    yaml_data = copy.deepcopy(yaml_data)
     declared_extensions: list[str] = cast(list[str], yaml_data.get("extensions", []))
     if not declared_extensions:
         return yaml_data
@@ -66,7 +64,7 @@ def _apply_extension(
     if "parts" not in yaml_data:
         yaml_data["parts"] = {}
 
-    parts: dict[str, Any] = yaml_data["parts"]
+    parts = cast("dict[str, Any]", yaml_data["parts"])
     for part_definition in parts.values():
         for property_name, property_value in part_extension.items():
             part_definition[property_name] = _apply_extension_property(

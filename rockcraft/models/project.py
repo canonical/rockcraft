@@ -16,40 +16,28 @@
 
 """Project definition and helpers."""
 
-import copy
 import re
 import shlex
 import typing
 from collections.abc import Mapping
-from pathlib import Path
 from typing import TYPE_CHECKING, Annotated, Any, Literal
 
 import craft_cli
-import craft_platforms
 import pydantic
 import spdx_lookup  # type: ignore[import-untyped]
-import yaml
-from craft_application.errors import CraftValidationError
 from craft_application.models import (
-    BuildInfo,
     Platform,
     get_validator_by_regex,
 )
-from craft_application.models import (
-    BuildPlanner as BaseBuildPlanner,
-)
 from craft_application.models import Project as BaseProject
 from craft_application.models.base import alias_generator
-from craft_platforms import rock
 from craft_providers import bases
 from craft_providers.errors import BaseConfigurationError
 from typing_extensions import override
 
 from rockcraft.architectures import SUPPORTED_ARCHS
-from rockcraft.errors import ProjectLoadError
-from rockcraft.extensions import apply_extensions
 from rockcraft.parts import part_has_overlay
-from rockcraft.pebble import Check, Pebble, Service
+from rockcraft.pebble import Check, Service
 from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
 
 # pyright workaround
@@ -99,153 +87,7 @@ BuildBaseT = typing.Annotated[
 ]
 
 
-class BuildPlanner(BaseBuildPlanner):
-    """BuildPlanner for Rockcraft projects."""
-
-    platforms: dict[str, Platform]  # type: ignore[assignment]
-    base: BaseT  # type: ignore[reportIncompatibleVariableOverride]
-    build_base: BuildBaseT = None  # type: ignore[reportIncompatibleVariableOverride]
-
-    @pydantic.field_validator("build_base")
-    @classmethod
-    def _validate_build_base(
-        cls, value: str | None, info: pydantic.ValidationInfo
-    ) -> str | None:
-        """Build-base defaults to the base value if not specified.
-
-        :raises CraftValidationError: If base validation fails.
-        """
-        if not value:
-            base_value = info.data.get("base")
-            if base_value == "bare":
-                raise ValueError('When "base" is bare, a build-base must be specified.')
-            return base_value
-        return value
-
-    @pydantic.field_validator("base", mode="before")
-    @classmethod
-    def _validate_deprecated_base(cls, base_value: str | None) -> str | None:
-        return cls._check_deprecated_base(base_value, "base")
-
-    @pydantic.field_validator("build_base", mode="before")
-    @classmethod
-    def _validate_deprecated_build_base(cls, base_value: str | None) -> str | None:
-        return cls._check_deprecated_base(base_value, "build-base")
-
-    @staticmethod
-    def _check_deprecated_base(base_value: str | None, field_name: str) -> str | None:
-        if base_value in DEPRECATED_COLON_BASES:
-            at_value = base_value.replace(":", "@")
-            message = (
-                f'Warning: use of ":" in field "{field_name}" is deprecated. '
-                f'Prefer "{at_value}" instead.'
-            )
-            craft_cli.emit.message(message)
-            return at_value
-
-        return base_value
-
-    @pydantic.field_validator("platforms", mode="before")
-    @classmethod
-    def _vectorise_build_for(cls, platforms: dict[str, Any]) -> dict[str, Any]:
-        """Vectorise target architecture if needed."""
-        for platform in platforms.values():
-            if not platform:
-                continue
-            if isinstance(platform.get("build-for"), str):
-                platform["build-for"] = [platform["build-for"]]
-        return platforms
-
-    @pydantic.field_validator("platforms")
-    @classmethod
-    def _validate_all_platforms(
-        cls, platforms: dict[str, Platform]
-    ) -> dict[str, Platform]:
-        """Make sure all provided platforms are tangible and sane."""
-        for platform_label, platform in platforms.items():
-            error_prefix = f"Error for platform entry '{platform_label}'"
-
-            # build_on and build_for are validated
-            # let's also validate the platform label
-            build_on_one_of = platform.build_on or [platform_label]
-
-            # If the label maps to a valid architecture and
-            # `build-for` is present, then both need to have the same value,
-            # otherwise the project is invalid.
-            if platform.build_for:
-                build_target = platform.build_for[0]
-                if platform_label in SUPPORTED_ARCHS and platform_label != build_target:
-                    raise ValueError(
-                        str(
-                            f"{error_prefix}: if 'build-for' is provided and the "
-                            "platform entry label corresponds to a valid architecture, then "
-                            f"both values must match. {platform_label} != {build_target}"
-                        )
-                    )
-            else:
-                build_target = platform_label
-
-            # Both build and target architectures must be supported
-            if not any(b_o in SUPPORTED_ARCHS for b_o in build_on_one_of):
-                raise ValueError(
-                    str(
-                        f"{error_prefix}: trying to build rock in one of "
-                        f"{build_on_one_of}, but none of these build architectures is supported. "
-                        f"Supported architectures: {list(SUPPORTED_ARCHS.keys())}"
-                    )
-                )
-
-            if build_target not in SUPPORTED_ARCHS:
-                raise ValueError(
-                    str(
-                        f"{error_prefix}: trying to build rock for target "
-                        f"architecture {build_target}, which is not supported. "
-                        f"Supported architectures: {list(SUPPORTED_ARCHS.keys())}"
-                    )
-                )
-
-        return platforms
-
-    @property
-    def effective_base(self) -> bases.BaseName:
-        """Get the Base name for craft-providers."""
-        base = self.build_base if self.build_base else self.base
-
-        if base == "devel":
-            name, channel = "ubuntu", "devel"
-        else:
-            name, channel = base.split("@")
-
-        return bases.BaseName(name, channel)
-
-    @override
-    @classmethod
-    def model_reference_slug(cls) -> str | None:
-        return "/reference/rockcraft.yaml"
-
-    @override
-    def get_build_plan(self) -> list[BuildInfo]:
-        platforms = typing.cast(
-            craft_platforms.Platforms,
-            {name: platform.marshal() for name, platform in self.platforms.items()},
-        )
-        build_infos = rock.get_rock_build_plan(
-            base=self.base,
-            build_base=self.build_base,
-            platforms=platforms,
-        )
-        return [
-            BuildInfo(
-                platform=info.platform,
-                build_on=str(info.build_on),
-                build_for=str(info.build_for),
-                base=self.effective_base,
-            )
-            for info in build_infos
-        ]
-
-
-class Project(BuildPlanner, BaseProject):  # type: ignore[misc]
+class Project(BaseProject):
     """Rockcraft project definition."""
 
     name: ProjectName  # type: ignore[reportIncompatibleVariableOverride]
@@ -257,7 +99,8 @@ class Project(BuildPlanner, BaseProject):  # type: ignore[misc]
     services: dict[str, Service] | None = None
     checks: dict[str, Check] | None = None
     entrypoint_service: str | None = None
-    platforms: dict[str, Platform | None]  # type: ignore[assignment]
+    base: BaseT  # type: ignore[reportIncompatibleVariableOverride]
+    build_base: BuildBaseT = None  # type: ignore[reportIncompatibleVariableOverride]
 
     model_config = pydantic.ConfigDict(
         validate_assignment=True,
@@ -305,6 +148,47 @@ class Project(BuildPlanner, BaseProject):  # type: ignore[misc]
             raise ValueError(unsupported_msg)
 
         return values
+
+    @pydantic.field_validator("build_base")
+    @classmethod
+    def _validate_build_base(
+        cls, value: str | None, info: pydantic.ValidationInfo
+    ) -> str | None:
+        """Build-base defaults to the base value if not specified.
+
+        :raises CraftValidationError: If base validation fails.
+        """
+        if not value:
+            base_value = info.data.get("base")
+            if base_value == "bare":
+                raise ValueError(
+                    'When "base" is "bare", a build-base must be specified.'
+                )
+            return base_value
+        return value
+
+    @pydantic.field_validator("base", mode="before")
+    @classmethod
+    def _validate_deprecated_base(cls, base_value: str | None) -> str | None:
+        return cls._check_deprecated_base(base_value, "base")
+
+    @pydantic.field_validator("build_base", mode="before")
+    @classmethod
+    def _validate_deprecated_build_base(cls, base_value: str | None) -> str | None:
+        return cls._check_deprecated_base(base_value, "build-base")
+
+    @staticmethod
+    def _check_deprecated_base(base_value: str | None, field_name: str) -> str | None:
+        if base_value in DEPRECATED_COLON_BASES:
+            at_value = base_value.replace(":", "@")
+            message = (
+                f'Warning: use of ":" in field "{field_name}" is deprecated. '
+                f'Prefer "{at_value}" instead.'
+            )
+            craft_cli.emit.message(message)
+            return at_value
+
+        return base_value
 
     @pydantic.field_validator("license")
     @classmethod
@@ -470,68 +354,52 @@ class Project(BuildPlanner, BaseProject):  # type: ignore[misc]
     def model_reference_slug(cls) -> str | None:
         return "/reference/rockcraft.yaml"
 
+    @pydantic.field_validator("platforms")
+    @classmethod
+    def _validate_all_platforms(
+        cls, platforms: dict[str, Platform]
+    ) -> dict[str, Platform]:
+        """Make sure all provided platforms are tangible and sane."""
+        for platform_label, platform in platforms.items():
+            error_prefix = f"Error for platform entry '{platform_label}'"
 
-def load_project(filename: Path) -> dict[str, Any]:
-    """Load and unmarshal the project YAML file.
+            # build_on and build_for are validated
+            # let's also validate the platform label
+            build_on_one_of = platform.build_on or [platform_label]
 
-    :param filename: The YAML file to load.
+            # If the label maps to a valid architecture and
+            # `build-for` is present, then both need to have the same value,
+            # otherwise the project is invalid.
+            if platform.build_for:
+                build_target = platform.build_for[0]
+                if platform_label in SUPPORTED_ARCHS and platform_label != build_target:
+                    raise ValueError(
+                        str(
+                            f"{error_prefix}: if 'build-for' is provided and the "
+                            "platform entry label corresponds to a valid architecture, then "
+                            f"both values must match. {platform_label} != {build_target}"
+                        )
+                    )
+            else:
+                build_target = platform_label
 
-    :returns: The populated project data.
+            # Both build and target architectures must be supported
+            if not any(b_o in SUPPORTED_ARCHS for b_o in build_on_one_of):
+                raise ValueError(
+                    str(
+                        f"{error_prefix}: trying to build rock in one of "
+                        f"{build_on_one_of}, but none of these build architectures is supported. "
+                        f"Supported architectures: {list(SUPPORTED_ARCHS.keys())}"
+                    )
+                )
 
-    :raises ProjectLoadError: If loading fails.
-    :raises CraftValidationError: If data validation fails.
-    """
-    try:
-        with filename.open(encoding="utf-8") as yaml_file:
-            yaml_data = yaml.safe_load(yaml_file)
-    except OSError as err:
-        msg = err.strerror or "unknown"
-        if err.filename:
-            msg = f"{msg}: {err.filename!r}."
-        raise ProjectLoadError(str(msg)) from err
+            if build_target not in SUPPORTED_ARCHS:
+                raise ValueError(
+                    str(
+                        f"{error_prefix}: trying to build rock for target "
+                        f"architecture {build_target}, which is not supported. "
+                        f"Supported architectures: {list(SUPPORTED_ARCHS.keys())}"
+                    )
+                )
 
-    return transform_yaml(filename.parent, yaml_data)
-
-
-def transform_yaml(project_root: Path, yaml_data: dict[str, Any]) -> dict[str, Any]:
-    """Do Rockcraft-specific transformations on a project yaml.
-
-    :param project_root: The path that contains the "rockcraft.yaml" file.
-    :param yaml_data: The data dict loaded from the yaml file.
-    """
-    yaml_data = apply_extensions(project_root, yaml_data)
-
-    _add_pebble_data(yaml_data)
-
-    return yaml_data
-
-
-def _add_pebble_data(yaml_data: dict[str, Any]) -> None:
-    """Add pebble-specific contents to YAML-loaded data.
-
-    This function adds a special "pebble" part to a project's specification, to be
-    (eventually) used as the image's entrypoint.
-
-    :param yaml_data: The project spec loaded from "rockcraft.yaml".
-    :raises CraftValidationError: If `yaml_data` already contains a "pebble" part,
-      and said part's contents are different from the contents of the part we add.
-    """
-    if "parts" not in yaml_data:
-        # Invalid project: let it return to fail in the regular validation flow.
-        return
-
-    # do not modify the original data with pre-validators
-    model = BuildPlanner.unmarshal(copy.deepcopy(yaml_data))
-    build_base = model.build_base if model.build_base else model.base
-    pebble_part = Pebble.get_part_spec(build_base)
-
-    parts = yaml_data["parts"]
-    if "pebble" in parts:
-        if parts["pebble"] == pebble_part:
-            # Project already has the correct pebble part.
-            return
-        # Project already has a pebble part, and it's different from ours;
-        # this is currently not supported.
-        raise CraftValidationError('Cannot change the default "pebble" part')
-
-    parts["pebble"] = pebble_part
+        return platforms
