@@ -20,7 +20,7 @@ From the root of your container's codebase, Rockcraft creates a minimal `rockcra
 rockcraft init
 ```
 
-After you add all container's packages and dependencies to ``rockcraft.yaml``, bundle
+After you add all your container's packages and dependencies to the project file, bundle
 the rock with:
 
 ```bash
@@ -29,7 +29,7 @@ rockcraft pack
 
 ## Installation
 
-Rockcraft is available on all major Linux distributions, Windows, and macOS.
+Rockcraft is available on all major Linux distributions.
 
 Rockcraft has first-class support as a [snap](https://snapcraft.io/rockcraft). On
 snap-ready systems, you can install it on the command line with:
@@ -70,7 +70,6 @@ development, including Rockcraft docs. No prior coding experience is required.
 Rockcraft is released under the [GPL-3.0 license](LICENSE).
 
 © 2023-2025 Canonical Ltd.
-
 
 [rockcraft-badge]: https://snapcraft.io/rockcraft/badge.svg
 [rockcraft-site]: https://snapcraft.io/rockcraft

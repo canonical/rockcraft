@@ -42,11 +42,10 @@ to configure it for this repository.
 Tests can be run using `make test`, which will run all test forms. Specific types of
 tests can be run with other testing targets shown in `make help`.
 
-In addition to unit tests in `tests/unit`, which can be run with `make test-units`, a
-number of integrated tests in `tests/spread` can be run with
-[Spread](https://github.com/snapcore/spread). See the [general
+The tests are made remote-capable through [Spread](https://github.com/snapcore/spread)
+tests. See the [general
 notes](https://github.com/snapcore/snapcraft/blob/main/TESTING.md#spread-tests-for-the-snapcraft-snap)
-and heed these Rockcraft-specific instructions:
+on Spread testing, and heed the following guidance for this project in particular.
 
 Initialize and update Git submodules to fetch Spread-related helper scripts with:
 
@@ -59,7 +58,7 @@ Spread needs the Rockcraft snap. Duplicate it by running this at the root of the
 repository:
 
 ```bash
-snapcraft --use-lxd
+snapcraft pack
 cp <generated snap> tests/
 ```
 
