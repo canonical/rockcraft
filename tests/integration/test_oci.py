@@ -242,5 +242,5 @@ def test_image_manifest_has_media_type():
     )[0]
 
     # Check the media type of the manifest
-    manifest = image.manifest()
+    manifest = image.get_manifest()
     assert manifest["mediaType"] == "application/vnd.oci.image.manifest.v1+json"

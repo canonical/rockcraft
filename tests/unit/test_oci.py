@@ -73,8 +73,8 @@ def mock_tmpdir(mocker):
 
 
 @pytest.fixture
-def mock_inject_manifest(mocker):
-    return mocker.patch("rockcraft.oci._inject_manifest")
+def mock_inject_oci_fields(mocker):
+    return mocker.patch("rockcraft.oci._inject_oci_fields")
 
 
 @pytest.fixture
@@ -85,6 +85,11 @@ def mock_read_bytes(mocker):
 @pytest.fixture
 def mock_write_bytes(mocker):
     return mocker.patch("pathlib.Path.write_bytes")
+
+
+@pytest.fixture
+def mock_unlink(mocker):
+    return mocker.patch("pathlib.Path.unlink")
 
 
 @pytest.fixture
@@ -189,7 +194,7 @@ class TestImage:
         assert arch_data.override_variant == expected_variant
 
     @pytest.mark.parametrize("deb_arch", list(SUPPORTED_ARCHS))
-    def test_new_oci_image(self, mock_inject_manifest, mock_run, deb_arch):
+    def test_new_oci_image(self, mock_inject_oci_fields, mock_run, deb_arch):
         """Test that new blank images are created with the correct GOARCH values."""
         expected = SUPPORTED_ARCHS[deb_arch]
 
@@ -216,8 +221,8 @@ class TestImage:
                 ]
             ),
         ]
-        mock_inject_manifest.assert_called_once_with(
-            image_dir / "bare", arch_variant=expected.go_variant, add_media_type=True
+        mock_inject_oci_fields.assert_called_once_with(
+            image_dir / "bare:latest", arch_variant=expected.go_variant
         )
 
     def test_copy_to(self, mock_run):
@@ -881,8 +886,17 @@ class TestImage:
             ),
         ]
 
-    def test_inject_manifest(self, mock_read_bytes, mock_write_bytes):
-        test_index = {"manifests": [{"digest": "sha256:foomanifest"}]}
+    def test_inject_oci_fields(self, mock_read_bytes, mock_write_bytes, mock_unlink):
+        test_index = {
+            "manifests": [
+                {
+                    "digest": "sha256:foomanifest",
+                    "annotations": {
+                        "org.opencontainers.image.ref.name": "latest",
+                    },
+                }
+            ]
+        }
         test_manifest = {"config": {"digest": "sha256:fooconfig"}}
         test_config = {}
         mock_read_bytes.side_effect = [
@@ -915,6 +929,9 @@ class TestImage:
                 "manifests": [
                     {
                         "digest": f"sha256:{new_test_manifest_digest}",
+                        "annotations": {
+                            "org.opencontainers.image.ref.name": "latest",
+                        },
                         "size": len(new_test_manifest_bytes),
                     }
                 ]
@@ -922,15 +939,16 @@ class TestImage:
         }
 
         # pylint: disable=protected-access
-        oci._inject_manifest(Path("img"), test_variant, add_media_type=True)
+        oci._inject_oci_fields(Path("img:latest"), test_variant)
         assert mock_read_bytes.call_count == 3
         assert mock_write_bytes.mock_calls == [
             call(new_test_config_bytes),
             call(new_test_manifest_bytes),
             call(json.dumps(new_test_index).encode("utf-8")),
         ]
+        assert mock_unlink.call_count == 2
 
-    def test_stat(self, new_dir, mock_inject_manifest, mock_run, mocker):
+    def test_stat(self, new_dir, mock_inject_oci_fields, mock_run, mocker):
         image_dir = Path("images/dir")
         mock_loads = mocker.patch("json.loads")
 
@@ -942,7 +960,7 @@ class TestImage:
 
         image.stat()
 
-        assert mock_inject_manifest.call_count == 1
+        assert mock_inject_oci_fields.call_count == 1
         assert mock_run.mock_calls == [
             call(
                 [
@@ -956,7 +974,7 @@ class TestImage:
         ]
         assert mock_loads.called
 
-    def test_manifest(self, new_dir, mock_inject_manifest, mock_run, mocker):
+    def test_get_manifest(self, new_dir, mock_inject_oci_fields, mock_run, mocker):
         image_dir = Path("images/dir")
         mock_loads = mocker.patch("json.loads")
 
@@ -966,7 +984,7 @@ class TestImage:
 
         mock_run.reset_mock()
 
-        image.manifest()
+        image.get_manifest()
 
         assert mock_run.mock_calls == [
             call(
