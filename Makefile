@@ -74,6 +74,9 @@ endif
 ifeq ($(wildcard /usr/share/doc/umoci/copyright),)
 APT_PACKAGES += umoci
 endif
+ifeq ($(wildcard /usr/share/doc/skopeo/copyright),)
+APT_PACKAGES += skopeo
+endif
 
 # Used for installing build dependencies in CI.
 .PHONY: install-build-deps

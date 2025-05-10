@@ -73,8 +73,8 @@ def mock_tmpdir(mocker):
 
 
 @pytest.fixture
-def mock_inject_variant(mocker):
-    return mocker.patch("rockcraft.oci._inject_architecture_variant")
+def mock_inject_oci_fields(mocker):
+    return mocker.patch("rockcraft.oci._inject_oci_fields")
 
 
 @pytest.fixture
@@ -85,6 +85,11 @@ def mock_read_bytes(mocker):
 @pytest.fixture
 def mock_write_bytes(mocker):
     return mocker.patch("pathlib.Path.write_bytes")
+
+
+@pytest.fixture
+def mock_unlink(mocker):
+    return mocker.patch("pathlib.Path.unlink")
 
 
 @pytest.fixture
@@ -189,7 +194,7 @@ class TestImage:
         assert arch_data.override_variant == expected_variant
 
     @pytest.mark.parametrize("deb_arch", list(SUPPORTED_ARCHS))
-    def test_new_oci_image(self, mock_inject_variant, mock_run, deb_arch):
+    def test_new_oci_image(self, mock_inject_oci_fields, mock_run, deb_arch):
         """Test that new blank images are created with the correct GOARCH values."""
         expected = SUPPORTED_ARCHS[deb_arch]
 
@@ -216,12 +221,9 @@ class TestImage:
                 ]
             ),
         ]
-        if expected.go_variant is None:
-            mock_inject_variant.assert_not_called()
-        else:
-            mock_inject_variant.assert_called_once_with(
-                image_dir / "bare", expected.go_variant
-            )
+        mock_inject_oci_fields.assert_called_once_with(
+            image_dir / "bare:latest", arch_variant=expected.go_variant
+        )
 
     def test_copy_to(self, mock_run):
         image = oci.Image("a:b", Path("/c"))
@@ -884,8 +886,17 @@ class TestImage:
             ),
         ]
 
-    def test_inject_architecture_variant(self, mock_read_bytes, mock_write_bytes):
-        test_index = {"manifests": [{"digest": "sha256:foomanifest"}]}
+    def test_inject_oci_fields(self, mock_read_bytes, mock_write_bytes, mock_unlink):
+        test_index = {
+            "manifests": [
+                {
+                    "digest": "sha256:foomanifest",
+                    "annotations": {
+                        "org.opencontainers.image.ref.name": "latest",
+                    },
+                }
+            ]
+        }
         test_manifest = {"config": {"digest": "sha256:fooconfig"}}
         test_config = {}
         mock_read_bytes.side_effect = [
@@ -902,10 +913,11 @@ class TestImage:
         new_test_manifest = {
             **test_manifest,
             **{
+                "mediaType": "application/vnd.oci.image.manifest.v1+json",
                 "config": {
                     "digest": f"sha256:{new_image_config_digest}",
                     "size": len(new_test_config_bytes),
-                }
+                },
             },
         }
         new_test_manifest_bytes = json.dumps(new_test_manifest).encode("utf-8")
@@ -917,6 +929,9 @@ class TestImage:
                 "manifests": [
                     {
                         "digest": f"sha256:{new_test_manifest_digest}",
+                        "annotations": {
+                            "org.opencontainers.image.ref.name": "latest",
+                        },
                         "size": len(new_test_manifest_bytes),
                     }
                 ]
@@ -924,25 +939,28 @@ class TestImage:
         }
 
         # pylint: disable=protected-access
-        oci._inject_architecture_variant(Path("img"), test_variant)
+        oci._inject_oci_fields(Path("img:latest"), test_variant)
         assert mock_read_bytes.call_count == 3
         assert mock_write_bytes.mock_calls == [
             call(new_test_config_bytes),
             call(new_test_manifest_bytes),
             call(json.dumps(new_test_index).encode("utf-8")),
         ]
+        assert mock_unlink.call_count == 2
 
-    def test_stat(self, new_dir, mock_run, mocker):
+    def test_stat(self, new_dir, mock_inject_oci_fields, mock_run, mocker):
         image_dir = Path("images/dir")
+        mock_loads = mocker.patch("json.loads")
+
         image, _ = oci.Image.new_oci_image(
             "bare@latest", image_dir=image_dir, arch="amd64"
         )
 
-        mock_loads = mocker.patch("json.loads")
         mock_run.reset_mock()
 
         image.stat()
 
+        assert mock_inject_oci_fields.call_count == 1
         assert mock_run.mock_calls == [
             call(
                 [
@@ -951,6 +969,30 @@ class TestImage:
                     "--json",
                     "--image",
                     "images/dir/bare:latest",
+                ]
+            )
+        ]
+        assert mock_loads.called
+
+    def test_get_manifest(self, new_dir, mock_inject_oci_fields, mock_run, mocker):
+        image_dir = Path("images/dir")
+        mock_loads = mocker.patch("json.loads")
+
+        image, _ = oci.Image.new_oci_image(
+            "bare@latest", image_dir=image_dir, arch="amd64"
+        )
+
+        mock_run.reset_mock()
+
+        image.get_manifest()
+
+        assert mock_run.mock_calls == [
+            call(
+                [
+                    "skopeo",
+                    "inspect",
+                    "--raw",
+                    "oci:images/dir/bare:latest",
                 ]
             )
         ]

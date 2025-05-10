@@ -2559,7 +2559,7 @@ requires-dist = [
     { name = "craft-application", specifier = "~=5.1" },
     { name = "craft-archives" },
     { name = "craft-cli" },
-    { name = "craft-parts" },
+    { name = "craft-parts", specifier = ">=2.9.1" },
     { name = "craft-platforms", specifier = "~=0.8" },
     { name = "craft-providers" },
     { name = "craft-store", marker = "extra == 'store'" },
