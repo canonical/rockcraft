@@ -3,8 +3,8 @@
 [![Rockcraft][rockcraft-badge]][rockcraft-site]
 [![Documentation Status][rtd-badge]][rtd-stable]
 
-**Rockcraft** is the command-line tool for the rock container format, which are
-OCI-compliant images based on Ubuntu. It handles all the repetitive and boilerplate
+**Rockcraft** is the command-line tool for building rocks, which are
+OCI-compliant container images based on Ubuntu. It handles all the repetitive and boilerplate
 steps of building a rock, directing your focus to what really matters – the rock's
 content. From independent software vendors to container users of any experience level,
 Rockcraft is for anyone who wants to build production-grade rocks.
