@@ -164,6 +164,7 @@ class SpringBootFramework(Extension):
                 "plugin": "nil",
                 "source": ".",
                 "override-build": self.user_gradle_init_script_part_override_build_override,
+                "prime": [],
             }
         }
 
@@ -231,7 +232,6 @@ class SpringBootFramework(Extension):
             override_build_cmds += [
                 "mkdir -p ${CRAFT_PART_BUILD}/.gradle/",
                 "cp ${CRAFT_STAGE}/*init.gradle* ${CRAFT_PART_BUILD}/.gradle/",
-                "rm -f ${CRAFT_STAGE}/*init.gradle*",
             ]
         override_build_cmds += self.DEFAULT_OVERRIDE_BUILD_COMMANDS
         gradle_install_app_part["override-build"] = "\n".join(override_build_cmds)
