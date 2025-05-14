@@ -18,7 +18,7 @@ By default, the base ``bare`` is used, to generate a lightweight image.
 Project requirements
 ====================
 
-To use the ``spring-boot-framework`` extension, there must be either:
+To use the Spring Boot Framework extension, there must be either:
 
 1. a ``pom.xml`` file
 2. a ``build.gradle`` file
@@ -29,15 +29,15 @@ in the root directory of the project.
 ``parts`` > ``spring-boot-framework/install-app`` > ``plugin``
 ==============================================================
 
-The ``spring-boot-framework`` extension dynamically determines the plugin to be
-used to bulid the rock. Depending on the presence of ``pom.xml`` or
+The ``spring-boot-framework`` extension dynamically determines the plugin to
+use to bulid the rock. Depending on the presence of ``pom.xml`` or
 ``build.gradle`` file, the extension will use either `maven
 <https://documentation.ubuntu.com/rockcraft/en/latest/common/craft-parts/
 reference/plugins/maven_plugin/>`_
 or `gradle
 <https://documentation.ubuntu.com/rockcraft/en/latest/common/craft-parts/
 reference/plugins/gradle_plugin/>`_
-plugin respectively.
+plugin, respectively.
 
 .. code-block:: yaml
   :caption: rockcraft.yaml
@@ -76,17 +76,17 @@ If a different Java version is required, you can specify it in the
   parts:
     spring-boot-framework/install-app:
       build-packages:
-     - openjdk-17-jdk # specify the Java package to use
+        - openjdk-17-jdk # specify the Java package to use
 
 
 ``parts`` > ``spring-boot-framework/runtime``
 =============================================
 
-To provide an efficient runtime for Java, the `Jlink
+To provide an efficient runtime for Java, the extension calls the `Jlink
 <https://documentation.ubuntu.com/rockcraft/en/latest/common/craft-parts/
 reference/plugins/jlink_plugin/>`_
-plugin is used to trim out any unused parts of the JDK. This reduces the size
-of the rock and improves the performance.
+plugin to trim out any unused parts of the JDK. This reduces the size
+of the rock and improves performance.
 
 The ``spring-boot-framework`` uses the following configuration:
 
@@ -98,12 +98,12 @@ The ``spring-boot-framework`` uses the following configuration:
       plugin: jlink
       source: .
       build-packages:
-      - default-jdk
+        - default-jdk
       stage-packages: # these packages are required for bare base rocks.
-      - bash_bins
-      - ca-certificates_data
-      - coreutils_bins
-      - base-files_tmp
+        - bash_bins
+        - ca-certificates_data
+        - coreutils_bins
+        - base-files_tmp
 
 
 Useful links
