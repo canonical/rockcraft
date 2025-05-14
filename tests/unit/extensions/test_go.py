@@ -49,6 +49,7 @@ def test_go_extension_default(tmp_path, go_input_yaml):
             "go-framework/base-layout": {
                 "override-build": "mkdir -p ${CRAFT_PART_INSTALL}/app",
                 "plugin": "nil",
+                "permissions": [{"owner": 584792, "group": 584792}],
             },
             "go-framework/install-app": {
                 "plugin": "go",
@@ -61,6 +62,18 @@ def test_go_extension_default(tmp_path, go_input_yaml):
                 "plugin": "nil",
                 "stage-packages": [
                     "ca-certificates_data",
+                ],
+            },
+            "go-framework/logging": {
+                "plugin": "nil",
+                "override-build": (
+                    "craftctl default\n"
+                    "mkdir -p $CRAFT_PART_INSTALL/opt/promtail\n"
+                    "mkdir -p $CRAFT_PART_INSTALL/etc/promtail"
+                ),
+                "permissions": [
+                    {"path": "opt/promtail", "owner": 584792, "group": 584792},
+                    {"path": "etc/promtail", "owner": 584792, "group": 584792},
                 ],
             },
         },
@@ -119,6 +132,10 @@ def test_go_extension_base_bare(tmp_path, go_input_yaml, build_environment):
         "build-environment"
     ]
     assert applied_build_environment == [{"CGO_ENABLED": "0"}, *build_environment]
+
+    assert "permissions" in applied["parts"]["go-framework/base-layout"]
+    applied_permissions = applied["parts"]["go-framework/base-layout"]["permissions"]
+    assert applied_permissions == [{"owner": 584792, "group": 584792}]
 
 
 @pytest.mark.usefixtures("go_extension")

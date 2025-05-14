@@ -26,9 +26,13 @@ from typing import Any
 from overrides import override  # type: ignore[reportUnknownVariableType]
 
 from rockcraft.errors import ExtensionError
+from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
 
 from ._python_utils import has_global_variable
+from .app_parts import gen_logging_part
 from .extension import Extension
+
+USER_UID: int = SUPPORTED_GLOBAL_USERNAMES["_daemon_"]["uid"]
 
 
 class FastAPIFramework(Extension):
@@ -106,7 +110,10 @@ class FastAPIFramework(Extension):
                 "python-packages": ["uvicorn"],
                 "python-requirements": ["requirements.txt"],
             },
-            "fastapi-framework/install-app": self._get_install_app_part(),
+            "fastapi-framework/install-app": {
+                **self._get_install_app_part(),
+                "permissions": [{"owner": USER_UID, "group": USER_UID}],
+            },
         }
         if self.yaml_data["base"] == "bare":
             parts["fastapi-framework/runtime"] = {
@@ -123,6 +130,7 @@ class FastAPIFramework(Extension):
                 "plugin": "nil",
                 "stage-packages": ["ca-certificates_data"],
             }
+        parts["fastapi-framework/logging"] = gen_logging_part()
         return parts
 
     def _get_install_app_part(self) -> dict[str, Any]:

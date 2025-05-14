@@ -17,6 +17,7 @@
 """Extension processor and related utilities."""
 
 from ._utils import apply_extensions
+from .app_parts import gen_logging_part
 from .expressjs import ExpressJSFramework
 from .fastapi import FastAPIFramework
 from .go import GoFramework
@@ -30,6 +31,7 @@ __all__ = [
     "apply_extensions",
     "register",
     "unregister",
+    "gen_logging_part",
 ]
 
 register("django-framework", DjangoFramework)

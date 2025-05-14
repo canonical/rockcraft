@@ -6,7 +6,7 @@ dependencies = [
     "craft-application~=5.1",
     "craft-archives",
     "craft-cli",
-    "craft-parts",
+    "craft-parts>=2.9.1",
     "craft-platforms~=0.8",
     "craft-providers",
     "overrides",
