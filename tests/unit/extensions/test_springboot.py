@@ -298,6 +298,7 @@ def use_gradlew_non_executable(tmp_path, request):
                         "override-build": "cp *init.gradle* ${CRAFT_STAGE}/",
                         "plugin": "nil",
                         "source": ".",
+                        "prime": [],
                     },
                     "spring-boot-framework/install-app": {
                         "after": [
@@ -318,7 +319,6 @@ def use_gradlew_non_executable(tmp_path, request):
                         "override-build": (
                             "mkdir -p ${CRAFT_PART_BUILD}/.gradle/\n"
                             "cp ${CRAFT_STAGE}/*init.gradle* ${CRAFT_PART_BUILD}/.gradle/\n"
-                            "rm -f ${CRAFT_STAGE}/*init.gradle*\n"
                             "craftctl default\n"
                             "find ${CRAFT_PART_INSTALL} -name '*-plain.jar' -type f -delete"
                         ),

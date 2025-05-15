@@ -272,6 +272,7 @@ class SpringBootFramework(Extension):
             runtime_part["stage-packages"] = [
                 "bash_bins",
                 "base-files_chisel",
+                "base-files_tmp",
                 "coreutils_bins",
             ]
 
