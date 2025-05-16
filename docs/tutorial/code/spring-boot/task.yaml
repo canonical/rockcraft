@@ -8,7 +8,7 @@
 summary: Getting started with Spring Boot tutorial
 
 environment:
-
+kill-timeout: 25m
 execute: |
   set -x
   # [docs:install-devpack-for-spring]
@@ -66,6 +66,7 @@ execute: |
 
   # [docs:skopeo-copy]
   rockcraft.skopeo \
+    --insecure-policy \
     copy oci-archive:spring-boot-hello-world_0.1_amd64.rock \
     docker-daemon:spring-boot-hello-world:0.1
   # [docs:skopeo-copy-end]
