@@ -85,7 +85,7 @@ class ExpandExtensionsCommand(AppCommand, abc.ABC):
     """Expand the extensions in the snapcraft.yaml file."""
 
     name = "expand-extensions"
-    help_msg = "Expand extensions in snapcraft.yaml"
+    help_msg = "Expand extensions in rockcraft.yaml"
     overview = textwrap.dedent(
         """
         Extensions listed rockcraft.yaml will be
