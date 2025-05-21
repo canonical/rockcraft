@@ -151,44 +151,59 @@ extension:
     :dedent: 2
 
 
-Run the Go rock with Docker
-===========================
+Run the Go rock
+===============
 
 
-We already have the rock as an `OCI <OCI_image_spec_>`_ archive. Load the
-image into Docker:
+We already have the rock as an `OCI <OCI_image_spec_>`_ archive.
 
-.. literalinclude:: code/go/task.yaml
-    :language: bash
-    :start-after: [docs:skopeo-copy]
-    :end-before: [docs:skopeo-copy-end]
-    :dedent: 2
+.. tabs::
+
+    .. group-tab:: Docker
+
+        Load the image into Docker:
+
+        .. literalinclude:: code/go/task.yaml
+            :language: bash
+            :start-after: [docs:skopeo-copy]
+            :end-before: [docs:skopeo-copy-end]
+            :dedent: 2
 
 
-Check that the image was successfully loaded into Docker:
+        Check that the image was successfully loaded into Docker:
 
-.. literalinclude:: code/go/task.yaml
-    :language: bash
-    :start-after: [docs:docker-images]
-    :end-before: [docs:docker-images-end]
-    :dedent: 2
+        .. literalinclude:: code/go/task.yaml
+            :language: bash
+            :start-after: [docs:docker-images]
+            :end-before: [docs:docker-images-end]
+            :dedent: 2
 
-The output should list the Go container image, along with its tag, ID and
-size:
+        The output should list the Go container image, along with its tag, ID and
+        size:
 
-.. terminal::
+        .. terminal::
 
-    REPOSITORY       TAG       IMAGE ID       CREATED         SIZE
-    go-hello-world   0.1       f3abf7ebc169   5 minutes ago   15.7MB
+            REPOSITORY       TAG       IMAGE ID       CREATED         SIZE
+            go-hello-world   0.1       f3abf7ebc169   5 minutes ago   15.7MB
 
-Now we're finally ready to run the rock and test the containerised Go
-application:
+        Now we're finally ready to run the rock and test the containerised Go
+        application:
 
-.. literalinclude:: code/go/task.yaml
-    :language: text
-    :start-after: [docs:docker-run]
-    :end-before: [docs:docker-run-end]
-    :dedent: 2
+        .. literalinclude:: code/go/task.yaml
+            :language: text
+            :start-after: [docs:docker-run]
+            :end-before: [docs:docker-run-end]
+            :dedent: 2
+
+    .. group-tab:: Podman
+
+        Run the rock directly with Podman:
+
+        .. literalinclude:: code/go/task.yaml
+            :language: text
+            :start-after: [docs:podman-run]
+            :end-before: [docs:podman-run-end]
+            :dedent: 2
 
 Use the same ``curl`` command as before to send a request to the Go
 application's root endpoint which is running inside the container:
@@ -208,11 +223,27 @@ View the application logs
 When deploying the Go rock, we can always get the application logs with
 :ref:`pebble_explanation_page`:
 
-.. literalinclude:: code/go/task.yaml
-    :language: text
-    :start-after: [docs:get-logs]
-    :end-before: [docs:get-logs-end]
-    :dedent: 2
+.. tabs::
+
+    .. group-tab:: Docker
+
+        With Docker
+
+        .. literalinclude:: code/go/task.yaml
+            :language: text
+            :start-after: [docs:get-logs]
+            :end-before: [docs:get-logs-end]
+            :dedent: 2
+
+    .. group-tab:: Podman
+
+        With Podman
+
+        .. literalinclude:: code/go/task.yaml
+            :language: text
+            :start-after: [docs:get-logs-podman]
+            :end-before: [docs:get-logs-podman-end]
+            :dedent: 2
 
 As a result, Pebble will give the logs for the
 ``go`` service running inside the container.
@@ -234,12 +265,27 @@ Now we have a fully functional rock for a Go application! This concludes
 the first part of this tutorial, so we'll stop the container and remove the
 respective image for now:
 
-.. literalinclude:: code/go/task.yaml
-    :language: bash
-    :start-after: [docs:stop-docker]
-    :end-before: [docs:stop-docker-end]
-    :dedent: 2
+.. tabs::
 
+    .. group-tab:: Docker
+
+        With Docker:
+
+        .. literalinclude:: code/go/task.yaml
+            :language: bash
+            :start-after: [docs:stop-docker]
+            :end-before: [docs:stop-docker-end]
+            :dedent: 2
+
+    .. group-tab:: Podman
+
+        With Podman:
+
+        .. literalinclude:: code/go/task.yaml
+            :language: bash
+            :start-after: [docs:stop-podman]
+            :end-before: [docs:stop-podman-end]
+            :dedent: 2
 
 Update the Go application
 ========================================
@@ -264,16 +310,32 @@ file and set ``version: "0.2"``.
 
 Pack and run the rock using similar commands as before:
 
-.. literalinclude:: code/go/task.yaml
-    :language: text
-    :start-after: [docs:docker-run-update]
-    :end-before: [docs:docker-run-update-end]
-    :dedent: 2
+.. tabs::
 
-.. note::
+    .. group-tab:: Docker
 
-    Note that the resulting ``.rock`` file will now be named differently, as
-    its new version will be part of the filename.
+        With Docker:
+
+        .. literalinclude:: code/go/task.yaml
+            :language: text
+            :start-after: [docs:docker-run-update]
+            :end-before: [docs:docker-run-update-end]
+            :dedent: 2
+
+        .. note::
+
+            Note that the resulting ``.rock`` file will now be named differently, as
+            its new version will be part of the filename.
+
+    .. group-tab:: Podman
+
+        With Podman:
+
+        .. literalinclude:: code/go/task.yaml
+            :language: text
+            :start-after: [docs:podman-run-update]
+            :end-before: [docs:podman-run-update-end]
+            :dedent: 2
 
 Finally, use ``curl`` to send a request to the ``/time`` endpoint:
 
@@ -296,12 +358,27 @@ Cleanup
 
 We can now stop the container and remove the corresponding image:
 
-.. literalinclude:: code/go/task.yaml
-    :language: bash
-    :start-after: [docs:stop-docker-updated]
-    :end-before: [docs:stop-docker-updated-end]
-    :dedent: 2
+.. tabs::
 
+    .. group-tab:: Docker
+
+        With Docker:
+
+        .. literalinclude:: code/go/task.yaml
+            :language: bash
+            :start-after: [docs:stop-docker-updated]
+            :end-before: [docs:stop-docker-updated-end]
+            :dedent: 2
+
+    .. group-tab:: Podman
+
+        With Podman:
+
+        .. literalinclude:: code/go/task.yaml
+            :language: bash
+            :start-after: [docs:stop-podman-updated]
+            :end-before: [docs:stop-podman-updated-end]
+            :dedent: 2
 
 Reset the environment
 ======================

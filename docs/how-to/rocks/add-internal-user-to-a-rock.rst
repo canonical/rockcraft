@@ -73,25 +73,39 @@ With the part and web service in place, build the rock:
     :end-before: [docs:pack-rock-end]
     :dedent: 2
 
-Next, we will convert the rock from an OCI archive to a Docker image using
-Skopeo:
+.. tabs::
 
-.. literalinclude:: ../code/internal-user/task.yaml
-    :language: bash
-    :start-after: [docs:skopeo]
-    :end-before: [docs:skopeo-end]
-    :dedent: 2
+    .. group-tab:: Docker
 
-We can now check which internal user is running the service by running the
-image container:
+        Next, we will convert the rock from an OCI archive to a Docker image using
+        Skopeo:
 
-.. literalinclude:: ../code/internal-user/task.yaml
-    :language: bash
-    :start-after: [docs:check-user]
-    :end-before: [docs:check-user-end]
-    :dedent: 2
+        .. literalinclude:: ../code/internal-user/task.yaml
+            :language: bash
+            :start-after: [docs:skopeo]
+            :end-before: [docs:skopeo-end]
+            :dedent: 2
 
-The response should contain the new user name:
+        We can now check which internal user is running the service by running the
+        image container:
+
+        .. literalinclude:: ../code/internal-user/task.yaml
+            :language: bash
+            :start-after: [docs:check-user]
+            :end-before: [docs:check-user-end]
+            :dedent: 2
+
+        The response should contain the new user name:
+
+    .. group-tab:: Podman
+
+        Next, we can run the rock directly using Podman:
+
+        .. literalinclude:: ../code/internal-user/task.yaml
+            :language: bash
+            :start-after: [docs:check-user-podman]
+            :end-before: [docs:check-user-podman-end]
+            :dedent: 2
 
 .. code-block::
 

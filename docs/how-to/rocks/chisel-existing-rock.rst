@@ -34,13 +34,29 @@ This rock can be built by running:
 
 The resulting rock (``python_3.11_amd64.rock``) will have approximately
 **42MB** and have a functional Python3.11 interpreter. You can verify that by
-running a very simply "Hello, world" Python script in it, with Docker:
+running a very simply "Hello, world" Python script in it:
 
-.. literalinclude:: ../code/chisel-existing-rock/task.yaml
-    :language: bash
-    :start-after: [docs:run-rock]
-    :end-before: [docs:run-rock-end]
-    :dedent: 2
+.. tabs::
+
+    .. group-tab:: Docker
+
+        Using Docker:
+
+        .. literalinclude:: ../code/chisel-existing-rock/task.yaml
+            :language: bash
+            :start-after: [docs:run-rock]
+            :end-before: [docs:run-rock-end]
+            :dedent: 2
+
+    .. group-tab:: Podman
+
+        Using Podman:
+
+        .. literalinclude:: ../code/chisel-existing-rock/task.yaml
+            :language: bash
+            :start-after: [docs:run-rock-podman]
+            :end-before: [docs:run-rock-podman-end]
+            :dedent: 2
 
 This rock will also have other utilities like ``bash`` and ``apt`` which come
 from the rock's underlying Ubuntu 22.04 base.
@@ -74,12 +90,27 @@ This new rock (``bare-python_3.11_amd64.rock``) will now have about **28MB** -
 a ~33% size reduction - and also have a functional Python3.11 interpreter.
 Run the same "Hello, world" Python script as before to confirm:
 
-.. literalinclude:: ../code/chisel-existing-rock/task.yaml
-    :language: bash
-    :start-after: [docs:run-bare-rock]
-    :end-before: [docs:run-bare-rock-end]
-    :dedent: 2
+.. tabs::
 
+    .. group-tab:: Docker
+
+        With Docker:
+
+        .. literalinclude:: ../code/chisel-existing-rock/task.yaml
+            :language: bash
+            :start-after: [docs:run-bare-rock]
+            :end-before: [docs:run-bare-rock-end]
+            :dedent: 2
+
+    .. group-tab:: Podman
+
+        With Podman:
+
+        .. literalinclude:: ../code/chisel-existing-rock/task.yaml
+            :language: bash
+            :start-after: [docs:run-bare-rock-podman]
+            :end-before: [docs:run-bare-rock-podman-end]
+            :dedent: 2
 
 The question then is: *how is rockcraft able to produce an equally functional
 Python rock with such a drastic reduction in size?*
@@ -115,11 +146,27 @@ Pack it with:
 And the end result will be an astoundingly small Python rock with **13MB**!
 And the "Hello, world" script still works:
 
-.. literalinclude:: ../code/chisel-existing-rock/task.yaml
-    :language: bash
-    :start-after: [docs:run-chiselled-rock]
-    :end-before: [docs:run-chiselled-rock-end]
-    :dedent: 2
+.. tabs::
+
+    .. group-tab:: Docker
+
+        With Docker:
+
+        .. literalinclude:: ../code/chisel-existing-rock/task.yaml
+            :language: bash
+            :start-after: [docs:run-chiselled-rock]
+            :end-before: [docs:run-chiselled-rock-end]
+            :dedent: 2
+
+    .. group-tab:: Podman
+
+        With Podman:
+
+        .. literalinclude:: ../code/chisel-existing-rock/task.yaml
+            :language: bash
+            :start-after: [docs:run-chiselled-rock-podman]
+            :end-before: [docs:run-chiselled-rock-podman-end]
+            :dedent: 2
 
 **To conclude**, you've just created a general-purpose Python rock with just a
 few YAML lines and no code whatsoever! Then, by changing a couple of YAML

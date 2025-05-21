@@ -20,7 +20,6 @@ execute: |
   sudo rockcraft.skopeo --insecure-policy copy oci-archive:my-node-app_1.0_amd64.rock docker-daemon:my-node-app:1.0
   # [docs:skopeo-copy-end]
 
-  rm *.rock
   docker images my-node-app:1.0
 
   # When the container is started it launches the app listening on port 8080
@@ -47,7 +46,30 @@ execute: |
   docker stop my-node-app
   # [docs:stop-container-end]
 
+  cat <<EOF > run-container.sh
+  # [docs:podman-run]
+  podman run --name my-node-app -p 8000:8080 oci-archive:my-node-app_1.0_amd64.rock
+  # [docs:podman-run-end]
+  EOF
+
+  bash run-container.sh &
+
+  # Wait for a bit for the app to come online
+  retry -n 5 --wait 2 curl localhost:8000
+
+  # [docs:curl-localhost]
+  curl http://localhost:8000
+  # [docs:curl-localhost-end]
+
+  curl localhost:8000 | MATCH "Hello World from inside the rock"
+
+  # [docs:stop-container]
+  podman stop my-node-app
+  # [docs:stop-container-end]
+
 restore: |
   rm -f ./*.rock
   docker rm -f my-node-app
   docker rmi -f my-node-app:1.0
+  podman rm -f my-node-app
+  rm *.rock
