@@ -9,9 +9,6 @@ It facilitates the installation of Flask application dependencies, including
 Gunicorn, inside the rock. Additionally, it transfers your project files to
 ``/flask/app`` within the rock.
 
-A statsd-exporter is installed alongside the Gunicorn server to export Gunicorn
-server metrics.
-
 .. note::
     The Flask extension is compatible with the ``bare``, ``ubuntu@22.04``
     and ``ubuntu@24.04`` bases.
@@ -49,6 +46,31 @@ application. In the following example we use it to specify ``libpq-dev``:
       stage-packages:
         # list required packages or slices for your flask app below.
         - libpq-dev
+
+
+StatsD exporter
+===============
+
+A StatsD exporter is installed alongside the Gunicorn server to export Gunicorn
+server metrics. The `Gunicorn-provided metrics
+<https://docs.gunicorn.org/en/stable/instrumentation.html>`_
+are mapped to the names ``flask_response_code``, ``flask_requests`` and
+``flask_request_duration``.
+
+The  exporter listens on localhost at port 9125. You can push your
+own metrics to the statsd-exporter using any StatsD Client. For example,
+using the client ``pystatsd``:
+
+.. code-block:: python
+
+  import statsd
+  c = statsd.StatsClient('localhost', 9125)
+  c.incr('my_counter')
+
+
+See the `StatsD exporter documentation <https://github.com/prometheus/statsd_exporter>`_
+for more information.
+
 
 .. _flask-gunicorn-worker-selection:
 
