@@ -73,11 +73,11 @@ section):
     :language: yaml
 
 The "build-context" part allows you to send the local ``chisel-releases``
-folder into the builder. The "override-build" enables you to install your
+folder into the builder. The :ref:`override_build` enables you to install your
 custom slice.
 Please note that this level of customisation is only needed when you want to
 install from a custom Chisel release. If the desired slice definitions are
-already upstream, then you can simply use ``stage-packages``, as demonstrated
+already upstream, then you can simply use :ref:`stage_packages`, as demonstrated
 in :ref:`here <chisel-example>`.
 
 Build your rock with:
