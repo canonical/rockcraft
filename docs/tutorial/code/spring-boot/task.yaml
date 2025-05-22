@@ -1,0 +1,128 @@
+###########################################
+# IMPORTANT
+# Comments matter!
+# The docs use the wrapping comments as
+# markers for including said instructions
+# as snippets in the docs.
+###########################################
+summary: Getting started with Spring Boot tutorial
+
+environment:
+kill-timeout: 25m
+execute: |
+  set -x
+  # [docs:install-devpack-for-spring]
+  sudo snap install devpack-for-spring --classic
+  sudo apt update && sudo apt install -y openjdk-21-jdk
+  # [docs:install-devpack-for-spring-end]
+
+  # [docs:init-spring-boot]
+  devpack-for-spring boot start \
+    --path maven-app \
+    --project maven-project \
+    --language java \
+    --boot-version 3.4.4 \
+    --version 0.0.1 \
+    --group com.example \
+    --artifact demo \
+    --name demo \
+    --description "Demo project for Spring Boot" \
+    --package-name com.example.demo \
+    --dependencies web \
+    --packaging jar \
+    --java-version 21
+  cd maven-app
+  # [docs:init-spring-boot-end]
+
+  # [docs:spring-boot-build]
+  ./mvnw clean install
+  # [docs:spring-boot-build-end]
+
+  java -jar target/demo-0.0.1.jar &
+  retry -n 5 --wait 2 curl localhost:8080
+
+  # [docs:curl-spring-boot]
+  curl localhost:8080
+  # [docs:curl-spring-boot-end]
+
+  kill $!
+
+  # [docs:create-rockcraft-yaml]
+  rockcraft init --profile spring-boot-framework
+  # [docs:create-rockcraft-yaml-end]
+  sed -i "s/name: .*/name: spring-boot-hello-world/g" rockcraft.yaml
+
+  # [docs:experimental]
+  export ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS=true
+  # [docs:experimental-end]
+
+  # [docs:pack]
+  rockcraft pack
+  # [docs:pack-end]
+
+  # [docs:ls-rock]
+  ls *.rock -lh
+  # [docs:ls-rock-end]
+
+  # [docs:skopeo-copy]
+  rockcraft.skopeo \
+    --insecure-policy \
+    copy oci-archive:spring-boot-hello-world_0.1_amd64.rock \
+    docker-daemon:spring-boot-hello-world:0.1
+  # [docs:skopeo-copy-end]
+
+  # [docs:docker-images]
+  docker images spring-boot-hello-world:0.1
+  # [docs:docker-images-end]
+
+  # [docs:docker-run]
+  docker run --rm -d -p 8080:8080 \
+    --name spring-boot-hello-world spring-boot-hello-world:0.1
+  # [docs:docker-run-end]
+
+  retry -n 5 --wait 2 curl localhost:8080
+  # [docs:curl-spring-boot-rock]
+  curl localhost:8080
+  # [docs:curl-spring-boot-rock-end]
+  curl -s localhost:8080 | grep -q "Not Found"
+
+  # [docs:get-logs]
+  docker exec spring-boot-hello-world pebble logs spring-boot
+  # [docs:get-logs-end]
+
+  # [docs:stop-docker]
+  docker stop spring-boot-hello-world
+  docker rmi spring-boot-hello-world:0.1
+  # [docs:stop-docker-end]
+
+  ## Part 2 of the tutorial
+  sed -i "s/version: .*/version: 0.2/g" rockcraft.yaml
+
+  cp ../TimeController.java src/main/java/com/example/demo/TimeController.java
+
+  # [docs:docker-run-update]
+  ls -lah
+  rockcraft pack
+  rockcraft.skopeo --insecure-policy \
+    copy oci-archive:spring-boot-hello-world_0.2_amd64.rock \
+    docker-daemon:spring-boot-hello-world:0.2
+  docker images spring-boot-hello-world:0.2
+  docker run --rm -d -p 8080:8080 \
+    --name spring-boot-hello-world spring-boot-hello-world:0.2
+  # [docs:docker-run-update-end]
+  retry -n 5 --wait 2 curl --fail localhost:8080/time
+
+  # [docs:curl-time]
+  curl --fail localhost:8080/time
+  # [docs:curl-time-end]
+  curl -s localhost:8080/time | grep -q "timestamp"
+
+  # [docs:stop-docker-updated]
+  docker stop spring-boot-hello-world
+  docker rmi spring-boot-hello-world:0.2
+  # [docs:stop-docker-updated-end]
+
+  # [docs:cleanup]
+  # delete all the files created during the tutorial
+  cd .. && rm -rf maven-app
+  # [docs:cleanup-end]

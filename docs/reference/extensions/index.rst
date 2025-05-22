@@ -16,3 +16,4 @@ initiating a new rock.
    fastapi-framework
    go-framework
    expressjs-framework
+   spring-boot-framework

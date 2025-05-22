@@ -77,6 +77,13 @@ def test_flask_extension_default(
                     "gunicorn.conf.py": "flask/gunicorn.conf.py",
                 },
                 "plugin": "dump",
+                "permissions": [
+                    {
+                        "path": "flask/gunicorn.conf.py",
+                        "owner": 584792,
+                        "group": 584792,
+                    }
+                ],
             },
             "flask-framework/dependencies": {
                 "plugin": "python",
@@ -95,10 +102,34 @@ def test_flask_extension_default(
                 "prime": ["flask/app/app.py", "flask/app/static"],
                 "source": ".",
                 "stage": ["flask/app/app.py", "flask/app/static"],
+                "permissions": [
+                    {
+                        "owner": 584792,
+                        "group": 584792,
+                    },
+                ],
             },
             "flask-framework/runtime": {
                 "plugin": "nil",
                 "stage-packages": ["ca-certificates_data"],
+            },
+            "flask-framework/logging": {
+                "plugin": "nil",
+                "override-build": (
+                    "craftctl default\n"
+                    "mkdir -p $CRAFT_PART_INSTALL/opt/promtail\n"
+                    "mkdir -p $CRAFT_PART_INSTALL/etc/promtail\n"
+                    "mkdir -p $CRAFT_PART_INSTALL/var/log/flask"
+                ),
+                "permissions": [
+                    {"path": "opt/promtail", "owner": 584792, "group": 584792},
+                    {"path": "etc/promtail", "owner": 584792, "group": 584792},
+                    {
+                        "path": "var/log/flask",
+                        "owner": 584792,
+                        "group": 584792,
+                    },
+                ],
             },
             "flask-framework/statsd-exporter": {
                 "build-snaps": ["go"],
@@ -166,6 +197,12 @@ def test_flask_extension_prime_override(tmp_path, flask_input_yaml):
         "flask/app/requirements.txt",
         "flask/app/static",
     ]
+    assert install_app_part["permissions"] == [
+        {
+            "owner": 584792,
+            "group": 584792,
+        },
+    ]
 
 
 @pytest.mark.usefixtures("flask_extension")
@@ -199,6 +236,12 @@ def test_flask_framework_exclude_prime(tmp_path, flask_input_yaml):
         "flask/app/static",
         "flask/app/test",
         "flask/app/webapp",
+    ]
+    assert install_app_part["permissions"] == [
+        {
+            "owner": 584792,
+            "group": 584792,
+        },
     ]
 
 
@@ -285,6 +328,12 @@ def test_flask_extension_override_parts(tmp_path, flask_input_yaml):
         "stage-packages": ["python3-venv"],
         "build-environment": [],
     }
+    assert applied["parts"]["flask-framework/install-app"]["permissions"] == [
+        {
+            "owner": 584792,
+            "group": 584792,
+        },
+    ]
 
 
 @pytest.mark.parametrize(
@@ -330,6 +379,12 @@ def test_flask_extension_bare(
             {"PARTS_PYTHON_INTERPRETER": expected_python_interpreter}
         ],
     }
+    assert applied["parts"]["flask-framework/install-app"]["permissions"] == [
+        {
+            "owner": 584792,
+            "group": 584792,
+        },
+    ]
 
 
 @pytest.mark.usefixtures("flask_extension")
@@ -499,6 +554,13 @@ def test_django_extension_default(
             "django-framework/config-files": {
                 "organize": {"gunicorn.conf.py": "django/gunicorn.conf.py"},
                 "plugin": "dump",
+                "permissions": [
+                    {
+                        "path": "django/gunicorn.conf.py",
+                        "owner": 584792,
+                        "group": 584792,
+                    },
+                ],
             },
             "django-framework/dependencies": {
                 "plugin": "python",
@@ -513,10 +575,34 @@ def test_django_extension_default(
                 "plugin": "dump",
                 "source": "foo_bar",
                 "stage": ["-django/app/db.sqlite3"],
+                "permissions": [
+                    {
+                        "owner": 584792,
+                        "group": 584792,
+                    },
+                ],
             },
             "django-framework/runtime": {
                 "plugin": "nil",
                 "stage-packages": ["ca-certificates_data"],
+            },
+            "django-framework/logging": {
+                "plugin": "nil",
+                "override-build": (
+                    "craftctl default\n"
+                    "mkdir -p $CRAFT_PART_INSTALL/opt/promtail\n"
+                    "mkdir -p $CRAFT_PART_INSTALL/etc/promtail\n"
+                    "mkdir -p $CRAFT_PART_INSTALL/var/log/django"
+                ),
+                "permissions": [
+                    {"path": "opt/promtail", "owner": 584792, "group": 584792},
+                    {"path": "etc/promtail", "owner": 584792, "group": 584792},
+                    {
+                        "path": "var/log/django",
+                        "owner": 584792,
+                        "group": 584792,
+                    },
+                ],
             },
             "django-framework/statsd-exporter": {
                 "build-snaps": ["go"],
@@ -573,6 +659,12 @@ def test_django_extension_override_install_app(tmp_path, django_input_yaml):
         "plugin": "dump",
         "source": ".",
         "organize": {"foobar": "django/app"},
+        "permissions": [
+            {
+                "owner": 584792,
+                "group": 584792,
+            },
+        ],
     }
 
 
