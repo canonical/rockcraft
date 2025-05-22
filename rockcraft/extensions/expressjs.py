@@ -171,7 +171,7 @@ class ExpressJSFramework(Extension):
     def _gen_app_stage_packages(self) -> list[str]:
         """Return the stage packages for the install app part."""
         if self._rock_base == "bare":
-            return ["bash_bins", "ca-certificates_data", "coreutils_bins"]
+            return ["bash_bins", "ca-certificates_data", "coreutils_bins", "base-files"]
         if not self._user_npm_include_node:
             return ["ca-certificates_data", "nodejs_bins"]
         return ["ca-certificates_data"]

@@ -90,7 +90,12 @@ def test_go_extension_bare(tmp_path):
 
     assert applied["parts"]["go-framework/runtime"] == {
         "plugin": "nil",
-        "stage-packages": ["ca-certificates_data", "bash_bins", "coreutils_bins"],
+        "stage-packages": [
+            "ca-certificates_data",
+            "bash_bins",
+            "coreutils_bins",
+            "base-files",
+        ],
     }
 
 

@@ -116,6 +116,7 @@ class FastAPIFramework(Extension):
                     "bash_bins",
                     "coreutils_bins",
                     "ca-certificates_data",
+                    "base-files",
                 ],
             }
         else:

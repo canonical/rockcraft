@@ -62,7 +62,7 @@ class GoFramework(Extension):
 
         stage_packages = ["ca-certificates_data"]
         if self.yaml_data["base"] == "bare":
-            stage_packages.extend(["bash_bins", "coreutils_bins"])
+            stage_packages.extend(["bash_bins", "coreutils_bins", "base-files"])
 
         snippet["parts"] = {
             # This is needed in case there is no assets part, as the working directory is /app
