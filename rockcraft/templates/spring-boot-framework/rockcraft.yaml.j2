@@ -1,0 +1,50 @@
+name: {{name}}
+# see {{versioned_url}}/explanation/bases/
+# for more information about bases and using 'bare' bases for chiselled rocks
+base: bare # as an alternative, a ubuntu base can be used
+build-base: ubuntu@24.04 # build-base is required when the base is bare
+version: '0.1' # just for humans. Semantic versioning is recommended
+summary: A summary of your Go application # 79 char long summary
+description: |
+    This is {{name}}'s description. You have a paragraph or two to tell the
+    most important story about it. Keep it under 100 words though,
+    we live in tweetspace and your description wants to look good in the
+    container registries out there.
+# the platforms this rock should be built on and run on.
+# you can check your architecture with `dpkg --print-architecture`
+platforms:
+    amd64:
+    # arm64:
+    # ppc64el:
+    # s390x:
+
+# to ensure the spring-boot-framework extension functions properly, your
+# Spring Boot project should have either a mvnw or a gradlew file.
+# see {{versioned_url}}/reference/extensions/spring-boot-framework
+# for more information.
+# +-- {{snake_name}}
+# |   |-- gradlew # either one of the two files should be present
+# |   |-- mvnw  # either one of the two files should be present
+
+extensions:
+    - spring-boot-framework
+
+# uncomment the sections you need and adjust according to your requirements.
+# parts:
+
+#   spring-boot-framework/gradle-init-script
+#   override-build: |
+#      cp <PATH-TO-INIT-SCRIPT> ${CRAFT_STAGE}
+
+#   spring-boot-framework/install-app:
+#    # select a specific Java version to build the application. Otherwise the
+#    # default-jdk will be used.
+#    build-packages:
+#    - default-jdk
+
+#   spring-boot-framework/runtime:
+#    # select a specific Java version to run the application. Otherwise the
+#    # default-jdk will be used. Note that the JDK should be used so that Jlink
+#    # tool can be used to create a custom runtime image.
+#    build-packages:
+#    - default-jdk
