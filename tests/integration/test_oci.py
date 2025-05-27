@@ -231,3 +231,16 @@ def test_stat(new_dir):
     assert len(layer2_history) == 2
     # The first layer in the ``layer2_history`` list is layer1
     assert layer2_history[0] == layer1_history[0]
+
+
+def test_image_manifest_has_media_type():
+    """Test that the image manifest has the correct media type."""
+    image = oci.Image.new_oci_image(
+        image_name="bare@original",
+        image_dir=Path("images"),
+        arch="amd64",
+    )[0]
+
+    # Check the media type of the manifest
+    manifest = image.get_manifest()
+    assert manifest["mediaType"] == "application/vnd.oci.image.manifest.v1+json"
