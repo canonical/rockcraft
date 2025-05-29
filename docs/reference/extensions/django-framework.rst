@@ -54,9 +54,9 @@ StatsD exporter
 ===============
 
 A StatsD exporter is installed alongside the Gunicorn server to export Gunicorn
-server metrics. The `Gunicorn-provided metrics
+server metrics. Three of the `Gunicorn-provided metrics
 <https://docs.gunicorn.org/en/stable/instrumentation.html>`_
-are mapped to the names ``django_response_code``, ``django_requests`` and
+are mapped to new names: ``django_response_code``, ``django_requests`` and
 ``django_request_duration``.
 
 The  exporter listens on localhost at port 9125. You can push your
