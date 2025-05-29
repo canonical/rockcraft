@@ -8,7 +8,9 @@ dependencies = [
     "craft-cli~=3.0",
     "craft-parts~=2.10",
     "craft-platforms~=0.9",
-    "craft-providers~=2.3",
+    # craft-providers is pinned to 2.2 until this is fixed:
+    # https://github.com/canonical/craft-providers/issues/753
+    "craft-providers~=2.2.0",
     "overrides",
     "spdx-lookup",
     "tabulate",
