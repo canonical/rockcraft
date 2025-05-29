@@ -89,7 +89,7 @@ exclude_patterns = [
     "common/craft-parts/explanation/how_parts_are_built.rst",
     "common/craft-parts/explanation/overlay_step.rst",
     "common/craft-parts/explanation/gradle_plugin.rst",
-    "common/craft-parts/how-to/craftctl.rst",
+    "common/craft-parts/how-to/customise-the-build-with-craftctl.rst",
     "common/craft-parts/how-to/use_parts.rst",
     "common/craft-parts/reference/partition_specific_output_directory_variables.rst",
     "common/craft-parts/reference/parts_steps.rst",
