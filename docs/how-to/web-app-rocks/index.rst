@@ -1,3 +1,5 @@
+.. _manage-12-factor-app-rock:
+
 Manage a 12-Factor app rock
 ***************************
 
