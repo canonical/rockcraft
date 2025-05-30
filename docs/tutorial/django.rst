@@ -267,7 +267,8 @@ the ``rockcraft.yaml`` file should look similar to the following:
     name: django-hello-world
     # see https://documentation.ubuntu.com/rockcraft/en/1.6.0/explanation/bases/
     # for more information about bases and using 'bare' bases for chiselled rocks
-    base: ubuntu@22.04 # the base environment for this Django app
+    base: bare
+    build-base: ubuntu@22.04
     version: '0.1-chiselled' # just for humans. Semantic versioning is recommended
     summary: A summary of your Django app # 79 char long summary
     description: |

@@ -258,12 +258,13 @@ top of the ``rockcraft.yaml`` file looks similar to the following:
 
 .. code-block:: yaml
     :caption: ~/flask-hello-world/rockcraft.yaml
-    :emphasize-lines: 5
+    :emphasize-lines: 6
 
     name: flask-hello-world
     # see https://documentation.ubuntu.com/rockcraft/en/1.6.0/explanation/bases/
     # for more information about bases and using 'bare' bases for chiselled rocks
-    base: ubuntu@22.04 # the base environment for this Flask app
+    base: bare
+    build-base: ubuntu@22.04
     version: '0.1-chiselled' # just for humans. Semantic versioning is recommended
     summary: A summary of your Flask app # 79 char long summary
     description: |
