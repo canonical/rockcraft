@@ -29,6 +29,7 @@ Create a ``requirements.txt`` file, copy the following text into it and then
 save it:
 
 .. literalinclude:: code/flask/requirements.txt
+    :caption: ~/flask-hello-world/requirements.txt
 
 In order to test the Flask application locally (before packing it into a rock),
 install ``python3-venv`` and create a virtual environment:
@@ -43,6 +44,7 @@ In the same directory, copy and save the following into a text file called
 ``app.py``:
 
 .. literalinclude:: code/flask/app.py
+    :caption: ~/flask-hello-world/app.py
     :language: python
 
 Run the Flask application using ``flask run -p 8000`` to verify that it works.
@@ -333,6 +335,7 @@ Start by opening the ``app.py`` file in a text editor and update the code to
 look like the following:
 
 .. literalinclude:: code/flask/time_app.py
+    :caption: ~/flask-hello-world/app.py
     :language: python
 
 Since we are creating a new version of the application, open the

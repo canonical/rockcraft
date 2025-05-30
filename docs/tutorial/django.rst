@@ -29,6 +29,7 @@ Create a ``requirements.txt`` file, copy the following text into it and then
 save it:
 
 .. literalinclude:: code/django/requirements.txt
+    :caption: ~/django-hello-world/requirements.txt
 
 In order to test the Django application locally (before packing it into a rock),
 install ``python3-venv`` and create a virtual environment:
@@ -343,17 +344,20 @@ we want to add a new ``/time/`` endpoint which returns the current time.
 Open the file ``time_app/views.py`` and replace its contents with the following:
 
 .. literalinclude:: code/django/time_app_views.py
+    :caption: ~/django-hello-world/django_hello_world/time_app/views.py
     :language: python
 
 Create the file ``time_app/urls.py`` with the following contents:
 
 .. literalinclude:: code/django/time_app_urls.py
+    :caption: ~/django-hello-world/django_hello_world/time_app/urls.py
     :language: python
 
 Open the file ``django_hello_world/urls.py`` and replace its contents with
 the following:
 
 .. literalinclude:: code/django/urls.py
+    :caption: ~/django-hello-world/django_hello_world/django_hello_world/urls.py
     :language: python
 
 Since we are creating a new version of the application, go back to the

@@ -223,7 +223,7 @@ Start by creating the ``app/routes/time.js`` file in a text editor and paste the
 code from the snippet below:
 
 .. literalinclude:: code/expressjs/time.js
-    :caption: time.js
+    :caption: ~/app/routes/time.js
     :language: javascript
 
 Place the code snippet below in ``app/app.js`` under routes registration section
@@ -231,7 +231,7 @@ along with other ``app.use(...)`` lines.
 It will register the new ``/time`` endpoint:
 
 .. literalinclude:: code/expressjs/time_app.js
-    :caption: app.js
+    :caption: ~/app/app.js
     :language: javascript
     :start-after: [docs:append-lines]
     :end-before: [docs:append-lines-end]

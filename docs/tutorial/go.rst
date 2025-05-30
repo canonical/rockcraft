@@ -57,6 +57,7 @@ Create a ``main.go`` file, copy the following text into it and then
 save it:
 
 .. literalinclude:: code/go/main.go
+    :caption: ~/go-hello-world/main.go
     :language: go
 
 Build the Go application so it can be run:
@@ -251,6 +252,7 @@ Start by opening the ``main.go`` file in a text editor and update the code to
 look like the following:
 
 .. literalinclude:: code/go/main.go.time
+    :caption: ~/go-hello-world/main.go
     :language: go
 
 Since we are creating a new version of the application, open the project

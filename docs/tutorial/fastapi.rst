@@ -29,6 +29,7 @@ Create a ``requirements.txt`` file, copy the following text into it, and then
 save it:
 
 .. literalinclude:: code/fastapi/requirements.txt
+    :caption: ~/fastapi-hello-world/requirements.txt
 
 It's fastest to test the FastAPI application locally, before we pack it into a
 rock, so let's install ``python3-venv`` and create a virtual environment we
@@ -44,6 +45,7 @@ In the same directory, put the following code into a new file,
 ``app.py``:
 
 .. literalinclude:: code/fastapi/app.py
+    :caption: ~/fastapi-hello-world/app.py
     :language: python
 
 Run the FastAPI application using ``fastapi dev app.py --port 8000`` to verify
@@ -340,6 +342,7 @@ Start by opening the ``app.py`` file in a text editor and update the code to
 look like the following:
 
 .. literalinclude:: code/fastapi/time_app.py
+    :caption: ~/fastapi-hello-world/app.py
     :language: python
 
 Since we are creating a new version of the application, open the
