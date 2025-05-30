@@ -251,8 +251,33 @@ In the project file, change the ``base`` to ``bare`` and add
     when using the ``bare`` base.
 
 So that we can compare the size after chiselling, open the project
-file and change the ``version`` (e.g. to ``0.1-chiselled``). Pack the rock with
-the new ``bare`` :ref:`base <bases_explanation>`:
+file and change the ``version`` (e.g. to ``0.1-chiselled``).
+The top of the ``rockcraft.yaml`` file should look similar to the following:
+
+.. code-block:: yaml
+    :caption: ~/fastapi-hello-world/rockcraft.yaml
+    :emphasize-lines: 5
+
+    name: fastapi-hello-world
+    # see https://documentation.ubuntu.com/rockcraft/en/latest/explanation/bases/
+    # for more information about bases and using 'bare' bases for chiselled rocks
+    base: ubuntu@24.04 # the base environment for this FastAPI app
+    version: '0.1-chiselled' # just for humans. Semantic versioning is recommended
+    summary: A summary of your FastAPI app # 79 char long summary
+    description: |
+        This is fastapi project's description. You have a paragraph or two to tell the
+        most important story about it. Keep it under 100 words though,
+        we live in tweetspace and your description wants to look good in the
+        container registries out there.
+    # the platforms this rock should be built on and run on.
+    # you can check your architecture with `dpkg --print-architecture`
+    platforms:
+        amd64:
+        # arm64:
+        # ppc64el:
+        # s390x:
+
+Pack the rock with the new ``bare`` :ref:`base <bases_explanation>`:
 
 .. literalinclude:: code/fastapi/task.yaml
     :language: bash

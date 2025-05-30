@@ -253,6 +253,30 @@ file in a text editor and paste in the code to look like the following:
 
 Since we are creating a new version of the application, open the project
 file and set ``version: "0.2"``.
+The top of the ``rockcraft.yaml`` file should look similar to the following:
+
+.. code-block:: yaml
+    :caption: ~/rockcraft.yaml
+    :emphasize-lines: 6
+    name: spring-boot-hello-world
+    # see https://documentation.ubuntu.com/rockcraft/en/latest/explanation/bases/
+    # for more information about bases and using 'bare' bases for chiselled rocks
+    base: bare # as an alternative, a ubuntu base can be used
+    build-base: ubuntu@24.04 # build-base is required when the base is bare
+    version: '0.2' # just for humans. Semantic versioning is recommended
+    summary: A summary of your Go application # 79 char long summary
+    description: |
+        This is spring-boot-hello-world's description. You have a paragraph or two to tell the
+        most important story about it. Keep it under 100 words though,
+        we live in tweetspace and your description wants to look good in the
+        container registries out there.
+    # the platforms this rock should be built on and run on.
+    # you can check your architecture with `dpkg --print-architecture`
+    platforms:
+        amd64:
+        # arm64:
+        # ppc64el:
+        # s390x:
 
 .. note::
 
