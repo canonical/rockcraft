@@ -137,7 +137,11 @@ extension:
 Run the ExpressJS rock with Docker
 ==================================
 
-We already have the rock as an OCI image. Load the image into Docker:
+We already have the rock as an OCI image. Now we
+need to load it into Docker. Docker requires rocks to be imported into the
+daemon since they cannot be executed directly like an executable.
+
+Copy the rock:
 
 .. literalinclude:: code/expressjs/task.yaml
     :language: bash

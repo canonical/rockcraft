@@ -153,8 +153,11 @@ Run the Spring Boot rock with Docker
 ====================================
 
 
-We already have the rock as an `OCI <OCI_image_spec_>`_ archive. Load the
-image into Docker:
+We already have the rock as an `OCI <OCI_image_spec_>`_ archive. Now we
+need to load it into Docker. Docker requires rocks to be imported into the
+daemon since they cannot be executed directly like an executable.
+
+Copy the rock:
 
 .. literalinclude:: code/spring-boot/task.yaml
     :language: bash
