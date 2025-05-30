@@ -135,6 +135,12 @@ We already have the rock as an OCI image. Load the image into Docker:
     :end-before: [docs:skopeo-copy-end]
     :dedent: 2
 
+This command contains the following pieces:
+
+- ``--insecure-policy``: adopts a permissive policy that
+  removes the need for a dedicated policy file.
+- ``oci-archive``: specifies the rock we created for our Express app.
+- ``docker-daemon``: specifies the name of the image in the Docker registry.
 
 Check that the image was successfully loaded into Docker:
 
@@ -243,6 +249,7 @@ The top of the ``rockcraft.yaml`` file should look similar to the following:
 .. code-block:: yaml
     :caption: ~/rockcraft.yaml
     :emphasize-lines: 6
+
     name: expressjs-hello-world
     # see https://documentation.ubuntu.com/rockcraft/en/latest/explanation/bases/
     # for more information about bases and using 'bare' bases for chiselled rocks

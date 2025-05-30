@@ -152,6 +152,12 @@ image into Docker:
     :end-before: [docs:skopeo-copy-end]
     :dedent: 2
 
+This command contains the following pieces:
+
+- ``--insecure-policy``: adopts a permissive policy that
+  removes the need for a dedicated policy file.
+- ``oci-archive``: specifies the rock we created for our Spring Boot app.
+- ``docker-daemon``: specifies the name of the image in the Docker registry.
 
 Check that the image was successfully loaded into Docker:
 
@@ -253,12 +259,13 @@ file in a text editor and paste in the code to look like the following:
     :language: java
 
 Since we are creating a new version of the application, open the project
-file and set ``version: "0.2"``.
+file and set ``version: '0.2'``.
 The top of the ``rockcraft.yaml`` file should look similar to the following:
 
 .. code-block:: yaml
     :caption: ~/rockcraft.yaml
     :emphasize-lines: 6
+
     name: spring-boot-hello-world
     # see https://documentation.ubuntu.com/rockcraft/en/latest/explanation/bases/
     # for more information about bases and using 'bare' bases for chiselled rocks
