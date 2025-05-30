@@ -36,7 +36,17 @@ install ``devpack-for-spring`` and Java.
 Create the Spring Boot application
 ==================================
 
-Start by creating the Demo Spring Boot application that will be used for
+Start by creating the "Hello, world" Spring Boot application that will be used
+for this tutorial.
+
+Create a new directory for this tutorial and enter it:
+
+.. code-block:: bash
+
+   mkdir spring-boot-hello-world
+   cd spring-boot-hello-world
+
+Create the Demo Spring Boot application that will be used for
 this tutorial.
 
 .. literalinclude:: code/spring-boot/task.yaml
@@ -64,7 +74,7 @@ Let's Run the Spring Boot application to verify that it works:
 
   java -jar target/demo-0.0.1.jar
 
-The application starts an HTTP server listening on port 8000
+The application starts an HTTP server listening on port 8080
 that we can test by using ``curl`` to send a request to the root
 endpoint. We may need a new terminal for this -- if using Multipass, run
 ``multipass shell rock-dev`` to get another terminal:
@@ -255,7 +265,7 @@ Start by creating the ``src/main/java/com/example/demo/TimeController.java``
 file in a text editor and paste in the code to look like the following:
 
 .. literalinclude:: code/spring-boot/TimeController.java
-    :caption: ~/src/main/java/com/example/demo/TimeController.java
+    :caption: ~/spring-boot-hello-world/src/main/java/com/example/demo/TimeController.java
     :language: java
 
 Since we are creating a new version of the application, open the project
@@ -263,7 +273,7 @@ file and set ``version: '0.2'``.
 The top of the ``rockcraft.yaml`` file should look similar to the following:
 
 .. code-block:: yaml
-    :caption: ~/rockcraft.yaml
+    :caption: ~/spring-boot-hello-world/rockcraft.yaml
     :emphasize-lines: 6
 
     name: spring-boot-hello-world

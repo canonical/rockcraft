@@ -40,7 +40,17 @@ rock, install ``npm`` and initialize the starter app.
 Create the ExpressJS application
 ================================
 
-Start by generating the ExpressJS starter template using the express-generator.
+Start by creating the "Hello, world" Express application that will be used for
+this tutorial.
+
+Create a new directory for this tutorial and enter it:
+
+.. code-block:: bash
+
+   mkdir expressjs-hello-world
+   cd expressjs-hello-world
+
+Generate the ExpressJS starter template using the express-generator.
 
 .. literalinclude:: code/expressjs/task.yaml
     :language: bash
@@ -229,7 +239,7 @@ Start by creating the ``app/routes/time.js`` file in a text editor and paste the
 code from the snippet below:
 
 .. literalinclude:: code/expressjs/time.js
-    :caption: ~/app/routes/time.js
+    :caption: ~/expressjs-hello-world/app/routes/time.js
     :language: javascript
 
 Place the code snippet below in ``app/app.js`` under routes registration section
@@ -237,7 +247,7 @@ along with other ``app.use(...)`` lines.
 It will register the new ``/time`` endpoint:
 
 .. literalinclude:: code/expressjs/time_app.js
-    :caption: ~/app/app.js
+    :caption: ~/expressjs-hello-world/app/app.js
     :language: javascript
     :start-after: [docs:append-lines]
     :end-before: [docs:append-lines-end]
@@ -247,7 +257,7 @@ Since we are creating a new version of the application, set
 The top of the ``rockcraft.yaml`` file should look similar to the following:
 
 .. code-block:: yaml
-    :caption: ~/rockcraft.yaml
+    :caption: ~/expressjs-hello-world/rockcraft.yaml
     :emphasize-lines: 6
 
     name: expressjs-hello-world
