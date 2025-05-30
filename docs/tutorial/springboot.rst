@@ -265,7 +265,8 @@ Start by creating the ``src/main/java/com/example/demo/TimeController.java``
 file in a text editor and paste in the code to look like the following:
 
 .. literalinclude:: code/spring-boot/TimeController.java
-    :caption: ~/spring-boot-hello-world/src/main/java/com/example/demo/TimeController.java
+    :caption: ~/spring-boot-hello-world/src/main/java/com/example/demo/
+     TimeController.java
     :language: java
 
 Since we are creating a new version of the application, open the project

@@ -262,7 +262,7 @@ look like the following:
     :language: go
 
 Since we are creating a new version of the application, open the project
-file and set ``version: "0.2"``.
+file and set ``version: '0.2'``.
 The top of the ``rockcraft.yaml`` file should look similar to the following:
 
 .. code-block:: yaml

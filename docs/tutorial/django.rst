@@ -262,7 +262,7 @@ the ``rockcraft.yaml`` file should look similar to the following:
 
 .. code-block:: yaml
     :caption: ~/django-hello-world/rockcraft.yaml
-    :emphasize-lines: 5
+    :emphasize-lines: 6
 
     name: django-hello-world
     # see https://documentation.ubuntu.com/rockcraft/en/1.6.0/explanation/bases/

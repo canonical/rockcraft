@@ -265,7 +265,7 @@ The top of the ``rockcraft.yaml`` file should look similar to the following:
 
 .. code-block:: yaml
     :caption: ~/fastapi-hello-world/rockcraft.yaml
-    :emphasize-lines: 5
+    :emphasize-lines: 6
 
     name: fastapi-hello-world
     # see https://documentation.ubuntu.com/rockcraft/en/latest/explanation/bases/
