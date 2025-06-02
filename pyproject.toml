@@ -12,6 +12,8 @@ dependencies = [
     # https://github.com/canonical/craft-providers/issues/753
     "craft-providers~=2.2.0",
     "overrides",
+    # setuptools >= 80.9 has a noisy warning about pkg_resources
+    "setuptools~=80.8.0",
     "spdx-lookup",
     "tabulate",
 ]
