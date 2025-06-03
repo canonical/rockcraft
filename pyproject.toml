@@ -3,13 +3,17 @@ name = "rockcraft"
 description = "Create rocks"
 dynamic = ["version", "readme"]
 dependencies = [
-    "craft-application~=5.1",
-    "craft-archives",
-    "craft-cli",
-    "craft-parts>=2.9.1",
-    "craft-platforms~=0.8",
-    "craft-providers",
+    "craft-application~=5.3",
+    "craft-archives~=2.1",
+    "craft-cli~=3.0",
+    "craft-parts~=2.10",
+    "craft-platforms~=0.9",
+    # craft-providers is pinned to 2.2 until this is fixed:
+    # https://github.com/canonical/craft-providers/issues/753
+    "craft-providers~=2.2.0",
     "overrides",
+    # setuptools >= 80.9 has a noisy warning about pkg_resources
+    "setuptools~=80.8.0",
     "spdx-lookup",
     "tabulate",
 ]
