@@ -22,9 +22,17 @@ execute: |
   docker run -d --name nginx-pebble-service -p 8000:80 custom-nginx-rock:latest
   # [docs:docker-run-end]
 
+  # [docs:podman-run]
+  podman run -d --name nginx-pebble-service -p 8000:80 oci-archive:custom-nginx-rock_latest_amd64.rock
+  # [docs:podman-run-end]
+
   # [docs:service-start]
   docker exec nginx-pebble-service pebble start nginx
   # [docs:service-start-end]
+
+  # [docs:service-start-podman]
+  podman exec nginx-pebble-service pebble start nginx
+  # [docs:service-start-podman-end]
 
   # [docs:curl]
   curl localhost:8000

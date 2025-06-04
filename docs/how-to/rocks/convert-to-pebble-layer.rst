@@ -111,32 +111,58 @@ You should see something like this:
     Executed parts lifecycle
     Exported to OCI archive 'custom-nginx-rock_latest_amd64.rock'
 
-Then copy the resulting rock (from the OCI archive format) to the Docker daemon
-via:
+Then run the rock:
 
-.. literalinclude:: ../code/convert-to-pebble-layer/task.yaml
-    :language: bash
-    :start-after: [docs:skopeo]
-    :end-before: [docs:skopeo-end]
-    :dedent: 2
+.. tabs::
 
-And finally, run the container:
+    .. group-tab:: Docker
 
-.. literalinclude:: ../code/convert-to-pebble-layer/task.yaml
-    :language: bash
-    :start-after: [docs:docker-run]
-    :end-before: [docs:docker-run-end]
-    :dedent: 2
+        Copy the resulting rock (from the OCI archive format) to the Docker daemon
+        via:
 
-The Pebble daemon will start without any NGINX service, although you could
-still later on ask for either service to be started. For instance, you can
-start the ``nginx`` service by typing:
+        .. literalinclude:: ../code/convert-to-pebble-layer/task.yaml
+            :language: bash
+            :start-after: [docs:skopeo]
+            :end-before: [docs:skopeo-end]
+            :dedent: 2
 
-.. literalinclude:: ../code/convert-to-pebble-layer/task.yaml
-    :language: bash
-    :start-after: [docs:service-start]
-    :end-before: [docs:service-start-end]
-    :dedent: 2
+        And finally, run the container:
+
+        .. literalinclude:: ../code/convert-to-pebble-layer/task.yaml
+            :language: bash
+            :start-after: [docs:docker-run]
+            :end-before: [docs:docker-run-end]
+            :dedent: 2
+
+        The Pebble daemon will start without any NGINX service, although you could
+        still later on ask for either service to be started. For instance, you can
+        start the ``nginx`` service by typing:
+
+        .. literalinclude:: ../code/convert-to-pebble-layer/task.yaml
+            :language: bash
+            :start-after: [docs:service-start]
+            :end-before: [docs:service-start-end]
+            :dedent: 2
+
+    .. group-tab:: Podman
+
+        Run the container with podman:
+
+        .. literalinclude:: ../code/convert-to-pebble-layer/task.yaml
+            :language: bash
+            :start-after: [docs:podman-run]
+            :end-before: [docs:podman-run-end]
+            :dedent: 2
+
+        The Pebble daemon will start without any NGINX service, although you could
+        still later on ask for either service to be started. For instance, you can
+        start the ``nginx`` service by typing:
+
+        .. literalinclude:: ../code/convert-to-pebble-layer/task.yaml
+            :language: bash
+            :start-after: [docs:service-start-podman]
+            :end-before: [docs:service-start-podman-end]
+            :dedent: 2
 
 We could have chosen to make one of the two services run on startup by setting
 its corresponding ``startup`` key to ``enabled``.

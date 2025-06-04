@@ -68,6 +68,20 @@ execute: |
   sudo docker rmi fastapi-hello-world:0.1
   # [docs:stop-docker-end]
 
+  # [docs:podman-run]
+  sudo podman run --rm -d -p 8000:8000 \
+    --name fastapi-hello-world oci-archive:fastapi-hello-world_0.1_amd64.rock
+  # [docs:podman-run-end]
+  retry -n 5 --wait 2 curl --fail localhost:8000
+
+  # [docs:get-logs-podman]
+  sudo podman exec fastapi-hello-world pebble logs fastapi
+  # [docs:get-logs-podman-end]
+
+  # [docs:stop-podman]
+  sudo podman stop fastapi-hello-world
+  # [docs:stop-podman-end]
+
   # [docs:change-base]
   sed -i \
     "s/base: .*/base: bare\nbuild-base: ubuntu@24.04/g" \
@@ -102,6 +116,16 @@ execute: |
   sudo docker rmi fastapi-hello-world:0.1-chiselled
   # [docs:stop-docker-chisel-end]
 
+  # [docs:podman-run-chisel]
+  sudo podman run --rm -d -p 8000:8000 \
+    --name fastapi-hello-world oci-archive:fastapi-hello-world_0.1-chiselled_amd64.rock
+  # [docs:podman-run-chisel-end]
+  retry -n 5 --wait 2 curl --fail localhost:8000
+
+  # [docs:stop-podman-chisel]
+  sudo podman stop fastapi-hello-world
+  # [docs:stop-podman-chisel-end]
+
   cat time_app.py > app.py
   sed -i "s/version: .*/version: 0.2/g" rockcraft.yaml
 
@@ -124,6 +148,21 @@ execute: |
   sudo docker stop fastapi-hello-world
   sudo docker rmi fastapi-hello-world:0.2
   # [docs:stop-docker-updated-end]
+
+  # [docs:podman-run-update]
+  ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS=true rockcraft pack
+  sudo podman run --rm -d -p 8000:8000 \
+    --name fastapi-hello-world oci-archive:fastapi-hello-world_0.2_amd64.rock
+  # [docs:podman-run-update-end]
+  retry -n 5 --wait 2 curl --fail localhost:8000/time
+
+  # [docs:curl-time]
+  curl --fail localhost:8000/time
+  # [docs:curl-time-end]
+
+  # [docs:stop-podman-updated]
+  sudo podman stop fastapi-hello-world
+  # [docs:stop-podman-updated-end]
 
   # [docs:cleanup]
   # exit and delete the virtual environment
