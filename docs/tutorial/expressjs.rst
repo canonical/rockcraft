@@ -40,7 +40,17 @@ rock, install ``npm`` and initialize the starter app.
 Create the ExpressJS application
 ================================
 
-Start by generating the ExpressJS starter template using the express-generator.
+Start by creating the "Hello, world" Express application that will be used for
+this tutorial.
+
+Create a new directory for this tutorial and enter it:
+
+.. code-block:: bash
+
+   mkdir expressjs-hello-world
+   cd expressjs-hello-world
+
+Generate the ExpressJS starter template using the express-generator.
 
 .. literalinclude:: code/expressjs/task.yaml
     :language: bash
@@ -127,7 +137,11 @@ extension:
 Run the ExpressJS rock with Docker
 ==================================
 
-We already have the rock as an OCI image. Load the image into Docker:
+We already have the rock as an OCI image. Now we
+need to load it into Docker. Docker requires rocks to be imported into the
+daemon since they cannot be executed directly like an executable.
+
+Copy the rock:
 
 .. literalinclude:: code/expressjs/task.yaml
     :language: bash
@@ -135,6 +149,12 @@ We already have the rock as an OCI image. Load the image into Docker:
     :end-before: [docs:skopeo-copy-end]
     :dedent: 2
 
+This command contains the following pieces:
+
+- ``--insecure-policy``: adopts a permissive policy that
+  removes the need for a dedicated policy file.
+- ``oci-archive``: specifies the rock we created for our Express app.
+- ``docker-daemon``: specifies the name of the image in the Docker registry.
 
 Check that the image was successfully loaded into Docker:
 
@@ -223,7 +243,7 @@ Start by creating the ``app/routes/time.js`` file in a text editor and paste the
 code from the snippet below:
 
 .. literalinclude:: code/expressjs/time.js
-    :caption: time.js
+    :caption: ~/expressjs-hello-world/app/routes/time.js
     :language: javascript
 
 Place the code snippet below in ``app/app.js`` under routes registration section
@@ -231,13 +251,38 @@ along with other ``app.use(...)`` lines.
 It will register the new ``/time`` endpoint:
 
 .. literalinclude:: code/expressjs/time_app.js
-    :caption: app.js
+    :caption: ~/expressjs-hello-world/app/app.js
     :language: javascript
     :start-after: [docs:append-lines]
     :end-before: [docs:append-lines-end]
 
 Since we are creating a new version of the application, set
 ``version: '0.2'`` in the project file.
+The top of the ``rockcraft.yaml`` file should look similar to the following:
+
+.. code-block:: yaml
+    :caption: ~/expressjs-hello-world/rockcraft.yaml
+    :emphasize-lines: 6
+
+    name: expressjs-hello-world
+    # see https://documentation.ubuntu.com/rockcraft/en/latest/explanation/bases/
+    # for more information about bases and using 'bare' bases for chiselled rocks
+    base: bare # as an alternative, a ubuntu base can be used
+    build-base: ubuntu@24.04 # build-base is required when the base is bare
+    version: '0.2' # just for humans. Semantic versioning is recommended
+    summary: A summary of your ExpressJS app # 79 char long summary
+    description: |
+        This is expressjs-hello-world's description. You have a paragraph or two to tell the
+        most important story about it. Keep it under 100 words though,
+        we live in tweetspace and your description wants to look good in the
+        container registries out there.
+    # the platforms this rock should be built on and run on.
+    # you can check your architecture with `dpkg --print-architecture`
+    platforms:
+        amd64:
+        # arm64:
+        # ppc64el:
+        # s390x:
 
 Pack and run the rock using similar commands as before:
 
