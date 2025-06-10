@@ -275,7 +275,7 @@ The top of the ``rockcraft.yaml`` file should look similar to the following:
     # for more information about bases and using 'bare' bases for chiselled rocks
     base: bare
     build-base: ubuntu@24.04
-    version: '0.1-chiselled' # just for humans. Semantic versioning is recommended
+    version: '0.1-chiselled'
     summary: A summary of your FastAPI app # 79 char long summary
     description: |
         This is fastapi project's description. You have a paragraph or two to tell the

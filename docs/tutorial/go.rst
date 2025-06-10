@@ -277,7 +277,7 @@ The top of the ``rockcraft.yaml`` file should look similar to the following:
     # for more information about bases and using 'bare' bases for chiselled rocks
     base: bare # as an alternative, a ubuntu base can be used
     build-base: ubuntu@24.04 # build-base is required when the base is bare
-    version: '0.2' # just for humans. Semantic versioning is recommended
+    version: '0.2'
     summary: A summary of your Go app # 79 char long summary
     description: |
         This is go-hello-world's description. You have a paragraph or two to tell the
