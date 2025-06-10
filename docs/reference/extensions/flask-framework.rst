@@ -57,14 +57,15 @@ server metrics. Some of the `Gunicorn-provided metrics
 are mapped to new names:
 
 .. list-table::
-    * - StatsD metric
-       - Gunicorn metric
-    * - ``gunicorn.request.status.*``
-       - ``flask_response_code``
-    * - ``gunicorn.requests``
-       - ``flask_requests``
-    * - ``gunicorn.request.duration``
-       - ``flask_request_duration``
+
+  * - StatsD metric
+    - Gunicorn metric
+  * - ``gunicorn.request.status.*``
+    - ``flask_response_code``
+  * - ``gunicorn.requests``
+    - ``flask_requests``
+  * - ``gunicorn.request.duration``
+    - ``flask_request_duration``
 
 The  exporter listens on localhost at port 9125. You can push your
 own metrics to the exporter using any StatsD client. This snippet from an example
