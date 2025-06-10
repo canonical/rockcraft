@@ -40,17 +40,17 @@ rock, install ``npm`` and initialize the starter app.
 Create the ExpressJS application
 ================================
 
-Start by creating the "Hello, world" Express application that will be used for
+Start by creating the "Hello, world" Express application that we'll pack in
 this tutorial.
 
-Create a new directory for this tutorial and enter it:
+Create an empty project directory:
 
 .. code-block:: bash
 
    mkdir expressjs-hello-world
    cd expressjs-hello-world
 
-Generate the ExpressJS starter template using the express-generator.
+Next, create a skeleton for the project with the Express application generator:
 
 .. literalinclude:: code/expressjs/task.yaml
     :language: bash
@@ -139,7 +139,7 @@ Run the ExpressJS rock with Docker
 
 We already have the rock as an OCI image. Now we
 need to load it into Docker. Docker requires rocks to be imported into the
-daemon since they cannot be executed directly like an executable.
+daemon since they can't be run directly like an executable.
 
 Copy the rock:
 

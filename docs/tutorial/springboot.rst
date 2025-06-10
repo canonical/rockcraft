@@ -39,7 +39,7 @@ Create the Spring Boot application
 Start by creating the "Hello, world" Spring Boot application that will be used
 for this tutorial.
 
-Create a new directory for this tutorial and enter it:
+Create an empty project directory:
 
 .. code-block:: bash
 
@@ -155,7 +155,7 @@ Run the Spring Boot rock with Docker
 
 We already have the rock as an `OCI <OCI_image_spec_>`_ archive. Now we
 need to load it into Docker. Docker requires rocks to be imported into the
-daemon since they cannot be executed directly like an executable.
+daemon since they can't be run directly like an executable.
 
 Copy the rock:
 

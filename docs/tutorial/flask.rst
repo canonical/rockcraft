@@ -12,7 +12,7 @@ Setup
 
 .. include:: /reuse/tutorial/setup_stable.rst
 
-Finally, create a new directory for this tutorial and go inside it:
+Finally, create an empty project directory:
 
 .. code-block:: bash
 
@@ -128,7 +128,7 @@ Run the Flask rock with Docker
 
 We already have the rock as an `OCI <OCI_image_spec_>`_ archive. Now we
 need to load it into Docker. Docker requires rocks to be imported into the
-daemon since they cannot be executed directly like an executable.
+daemon since they can't be run directly like an executable.
 
 Copy the rock:
 
@@ -283,7 +283,7 @@ top of the ``rockcraft.yaml`` file looks similar to the following:
         # ppc64el:
         # s390x:
 
-Pack the rock with the new ``bare`` :ref:`base <bases_explanation>`:
+Pack the rock with the new ``bare`` base:
 
 .. literalinclude:: code/flask/task.yaml
     :language: bash

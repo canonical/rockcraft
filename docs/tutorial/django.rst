@@ -12,7 +12,7 @@ Setup
 
 .. include:: /reuse/tutorial/setup_stable.rst
 
-Finally, create a new directory for this tutorial and go inside it:
+Finally, create an empty project directory:
 
 .. code-block:: bash
 
@@ -137,7 +137,7 @@ Run the Django rock with Docker
 
 We already have the rock as an `OCI <OCI_image_spec_>`_ archive. Now we'll
 need to load it into Docker. Docker requires rocks to be imported into the
-daemon since they cannot be executed directly like an executable.
+daemon since they can't be run directly like an executable.
 
 Copy the rock:
 
@@ -287,7 +287,7 @@ the ``rockcraft.yaml`` file should look similar to the following:
         # ppc64el:
         # s390x:
 
-Pack the rock with the new ``bare`` :ref:`base <bases_explanation>`:
+Pack the rock with the new ``bare`` base:
 
 .. literalinclude:: code/django/task.yaml
     :language: bash
