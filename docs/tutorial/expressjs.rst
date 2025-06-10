@@ -1,9 +1,9 @@
 .. _build-a-rock-for-an-expressjs-application:
 
-Build a rock for an ExpressJS application
------------------------------------------
+Build a rock for an Express application
+---------------------------------------
 
-In this tutorial, we'll containerise a simple ExpressJS application into a rock
+In this tutorial, we'll containerise a simple Express application into a rock
 using Rockcraft's ``expressjs-framework`` :ref:`extension
 <expressjs-framework-reference>`.
 
@@ -11,12 +11,12 @@ It should take 25 minutes for you to complete.
 
 You won’t need to come prepared with intricate knowledge of software
 packaging, but familiarity with Linux paradigms, terminal operations,
-and ExpressJS is required.
+and Express is required.
 
-Once you complete this tutorial, you’ll have a working rock for an ExpressJS
+Once you complete this tutorial, you’ll have a working rock for an Express
 application. You’ll gain familiarity with Rockcraft and the
 ``expressjs-framework`` extension, and have the experience to create
-rocks for ExpressJS applications.
+rocks for Express applications.
 
 Setup
 =====
@@ -27,7 +27,7 @@ This tutorial requires the ``latest/edge`` channel of Rockcraft. Run
 ``sudo snap refresh rockcraft --channel latest/edge`` to get the latest
 edge version.
 
-In order to test the ExpressJS application locally, before packing it into a
+In order to test the Express application locally, before packing it into a
 rock, install ``npm`` and initialize the starter app.
 
 .. literalinclude:: code/expressjs/task.yaml
@@ -37,8 +37,8 @@ rock, install ``npm`` and initialize the starter app.
     :dedent: 2
 
 
-Create the ExpressJS application
-================================
+Create the Express application
+==============================
 
 Start by creating the "Hello, world" Express application that we'll pack in
 this tutorial.
@@ -75,14 +75,14 @@ endpoint. We may need a new terminal for this -- if using Multipass, run
     :end-before: [docs:curl-expressjs-end]
     :dedent: 2
 
-The ExpressJS application should respond with *Welcome to Express* web page.
+The Express application should respond with *Welcome to Express* web page.
 
 .. note::
-    The response from the ExpressJS application includes HTML and CSS which
+    The response from the Express application includes HTML and CSS which
     makes it difficult to read on a terminal. Visit ``http://localhost:3000``
     using a browser to see the fully rendered page.
 
-The ExpressJS application looks good, so let's stop it for now
+The Express application looks good, so let's stop it for now
 with :kbd:`Ctrl` + :kbd:`C`, then move out of the application directory
 ``cd ..``.
 
@@ -90,7 +90,7 @@ Pack the Express application into a rock
 ========================================
 
 First, we'll need a ``rockcraft.yaml`` project file. Rockcraft will automate its
-creation and tailor it for a ExpressJS application when we tell it to use the
+creation and tailor it for a Express application when we tell it to use the
 ``expressjs-framework`` profile:
 
 .. literalinclude:: code/expressjs/task.yaml
@@ -123,7 +123,7 @@ Pack the rock:
 
 Depending on the network, this step can take a couple of minutes to finish.
 
-Once Rockcraft has finished packing the ExpressJS rock, we'll find a new file in
+Once Rockcraft has finished packing the Express rock, we'll find a new file in
 the working directory (an `OCI <OCI_image_spec_>`_ image) with the ``.rock``
 extension:
 
@@ -134,8 +134,8 @@ extension:
     :dedent: 2
 
 
-Run the ExpressJS rock with Docker
-==================================
+Run the Express rock with Docker
+================================
 
 We already have the rock as an OCI image. Now we
 need to load it into Docker. Docker requires rocks to be imported into the
@@ -164,7 +164,7 @@ Check that the image was successfully loaded into Docker:
     :end-before: [docs:docker-images-end]
     :dedent: 2
 
-The output should list the ExpressJS image, along with its tag, ID and
+The output should list the Express image, along with its tag, ID and
 size:
 
 .. terminal::
@@ -172,7 +172,7 @@ size:
     REPOSITORY              TAG       IMAGE ID       CREATED       SIZE
     expressjs-hello-world   0.1       30c7e5aed202   2 weeks ago   304MB
 
-Now we're finally ready to run the rock and test the containerised ExpressJS
+Now we're finally ready to run the rock and test the containerised Express
 application:
 
 .. literalinclude:: code/expressjs/task.yaml
@@ -181,7 +181,7 @@ application:
     :end-before: [docs:docker-run-end]
     :dedent: 2
 
-Use the same curl command as before to send a request to the ExpressJS
+Use the same curl command as before to send a request to the Express
 application's root endpoint which is running inside the container:
 
 .. literalinclude:: code/expressjs/task.yaml
@@ -190,12 +190,12 @@ application's root endpoint which is running inside the container:
     :end-before: [docs:curl-expressjs-rock-end]
     :dedent: 2
 
-The ExpressJS application again responds with *Welcome to Express* page.
+The Express application again responds with *Welcome to Express* page.
 
 View the application logs
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-When deploying the ExpressJS rock, we can always get the application logs with
+When deploying the Express rock, we can always get the application logs with
 :ref:`pebble_explanation_page`:
 
 .. literalinclude:: code/expressjs/task.yaml
@@ -222,7 +222,7 @@ We can also choose to follow the logs by using the ``-f`` option with the
 Stop the application
 ~~~~~~~~~~~~~~~~~~~~
 
-Now we have a fully functional rock for a ExpressJS application! This concludes
+Now we have a fully functional rock for a Express application! This concludes
 the first part of this tutorial, so we'll stop the container and remove the
 respective image for now:
 
@@ -233,8 +233,8 @@ respective image for now:
     :dedent: 2
 
 
-Update the ExpressJS application
-================================
+Update the Express application
+==============================
 
 For our final task, let's update our application. As an example,
 let's add a new ``/time`` endpoint that returns the current time.
@@ -371,7 +371,7 @@ Troubleshooting
 
 **Application updates not taking effect?**
 
-Upon changing the ExpressJS application and re-packing the rock, if
+Upon changing the Express application and re-packing the rock, if
 the changes are not taking effect, try running ``rockcraft clean`` and pack
 the rock again with ``rockcraft pack``.
 
