@@ -53,15 +53,15 @@ application. In the following example we use it to specify ``libpq-dev``:
 StatsD exporter
 ===============
 
-A StatsD exporter is installed alongside the Gunicorn server to export Gunicorn
+A StatsD exporter is installed alongside the Gunicorn server to record
 server metrics. Three of the `Gunicorn-provided metrics
 <https://docs.gunicorn.org/en/stable/instrumentation.html>`_
 are mapped to new names: ``django_response_code``, ``django_requests`` and
 ``django_request_duration``.
 
 The  exporter listens on localhost at port 9125. You can push your
-own metrics to the statsd-exporter using any StatsD Client. For example,
-using the client ``pystatsd``:
+own metrics to the exporter using any StatsD client. This snippet from an example
+Django app uses pystatsd as a client:
 
 .. code-block:: python
 
