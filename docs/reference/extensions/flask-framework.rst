@@ -58,8 +58,8 @@ are mapped to new names:
 
 .. list-table::
 
-  * - StatsD metric
-    - Gunicorn metric
+  * - Gunicorn metric
+    - StatsD metric
   * - ``gunicorn.request.status.*``
     - ``flask_response_code``
   * - ``gunicorn.requests``
