@@ -12,7 +12,7 @@ Setup
 
 .. include:: /reuse/tutorial/setup_stable.rst
 
-Finally, create a new directory for this tutorial and go inside it:
+Finally, create an empty project directory:
 
 .. code-block:: bash
 
@@ -29,6 +29,7 @@ Create a ``requirements.txt`` file, copy the following text into it and then
 save it:
 
 .. literalinclude:: code/flask/requirements.txt
+    :caption: ~/flask-hello-world/requirements.txt
 
 In order to test the Flask application locally (before packing it into a rock),
 install ``python3-venv`` and create a virtual environment:
@@ -43,6 +44,7 @@ In the same directory, copy and save the following into a text file called
 ``app.py``:
 
 .. literalinclude:: code/flask/app.py
+    :caption: ~/flask-hello-world/app.py
     :language: python
 
 Run the Flask application using ``flask run -p 8000`` to verify that it works.
@@ -125,13 +127,23 @@ Run the Flask rock with Docker
 ==============================
 
 We already have the rock as an `OCI <OCI_image_spec_>`_ archive. Now we
-need to load it into Docker:
+need to load it into Docker. Docker requires rocks to be imported into the
+daemon since they can't be run directly like an executable.
+
+Copy the rock:
 
 .. literalinclude:: code/flask/task.yaml
     :language: bash
     :start-after: [docs:skopeo-copy]
     :end-before: [docs:skopeo-copy-end]
     :dedent: 2
+
+This command contains the following pieces:
+
+- ``--insecure-policy``: adopts a permissive policy that
+  removes the need for a dedicated policy file.
+- ``oci-archive``: specifies the rock we created for our Flask app.
+- ``docker-daemon``: specifies the name of the image in the Docker registry.
 
 Check that the image was successfully loaded into Docker:
 
@@ -244,8 +256,34 @@ In the project file, change the ``base`` to ``bare`` and add
     when using the ``bare`` base.
 
 So that we can compare the size after chiselling, open the project
-file and change the ``version`` (e.g. to ``0.1-chiselled``). Pack the rock with
-the new ``bare`` :ref:`base <bases_explanation>`:
+file and change the ``version`` (e.g. to ``0.1-chiselled``). The
+top of the ``rockcraft.yaml`` file looks similar to the following:
+
+.. code-block:: yaml
+    :caption: ~/flask-hello-world/rockcraft.yaml
+    :emphasize-lines: 6
+
+    name: flask-hello-world
+    # see https://documentation.ubuntu.com/rockcraft/en/1.6.0/explanation/bases/
+    # for more information about bases and using 'bare' bases for chiselled rocks
+    base: bare
+    build-base: ubuntu@22.04
+    version: '0.1-chiselled'
+    summary: A summary of your Flask app # 79 char long summary
+    description: |
+        This is flask-hello-world's description. You have a paragraph or two to tell the
+        most important story about it. Keep it under 100 words though,
+        we live in tweetspace and your description wants to look good in the
+        container registries out there.
+    # the platforms this rock should be built on and run on.
+    # you can check your architecture with `dpkg --print-architecture`
+    platforms:
+        amd64:
+        # arm64:
+        # ppc64el:
+        # s390x:
+
+Pack the rock with the new ``bare`` base:
 
 .. literalinclude:: code/flask/task.yaml
     :language: bash
@@ -308,6 +346,7 @@ Start by opening the ``app.py`` file in a text editor and update the code to
 look like the following:
 
 .. literalinclude:: code/flask/time_app.py
+    :caption: ~/flask-hello-world/app.py
     :language: python
 
 Since we are creating a new version of the application, open the
