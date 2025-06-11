@@ -38,7 +38,7 @@ Create the Go application
 Start by creating the "Hello, world" Go application that will be used for
 this tutorial.
 
-Create a new directory for this tutorial and enter it:
+Create an empty project directory:
 
 .. code-block:: bash
 
@@ -57,6 +57,7 @@ Create a ``main.go`` file, copy the following text into it and then
 save it:
 
 .. literalinclude:: code/go/main.go
+    :caption: ~/go-hello-world/main.go
     :language: go
 
 Build the Go application so it can be run:
@@ -155,8 +156,11 @@ Run the Go rock with Docker
 ===========================
 
 
-We already have the rock as an `OCI <OCI_image_spec_>`_ archive. Load the
-image into Docker:
+We already have the rock as an `OCI <OCI_image_spec_>`_ archive. Now we
+need to load it into Docker. Docker requires rocks to be imported into the
+daemon since they can't be run directly like an executable.
+
+Copy the rock:
 
 .. literalinclude:: code/go/task.yaml
     :language: bash
@@ -164,6 +168,12 @@ image into Docker:
     :end-before: [docs:skopeo-copy-end]
     :dedent: 2
 
+This command contains the following pieces:
+
+- ``--insecure-policy``: adopts a permissive policy that
+  removes the need for a dedicated policy file.
+- ``oci-archive``: specifies the rock we created for our Go app.
+- ``docker-daemon``: specifies the name of the image in the Docker registry.
 
 Check that the image was successfully loaded into Docker:
 
@@ -242,7 +252,7 @@ respective image for now:
 
 
 Update the Go application
-========================================
+=========================
 
 As a final step, let's update our application. For example,
 we want to add a new ``/time`` endpoint which returns the current time.
@@ -251,10 +261,36 @@ Start by opening the ``main.go`` file in a text editor and update the code to
 look like the following:
 
 .. literalinclude:: code/go/main.go.time
+    :caption: ~/go-hello-world/main.go
     :language: go
 
 Since we are creating a new version of the application, open the project
-file and set ``version: "0.2"``.
+file and set ``version: '0.2'``.
+The top of the ``rockcraft.yaml`` file should look similar to the following:
+
+.. code-block:: yaml
+    :caption: ~/go-hello-world/rockcraft.yaml
+    :emphasize-lines: 6
+
+    name: go-hello-world
+    # see https://documentation.ubuntu.com/rockcraft/en/latest/explanation/bases/
+    # for more information about bases and using 'bare' bases for chiselled rocks
+    base: bare # as an alternative, a ubuntu base can be used
+    build-base: ubuntu@24.04 # build-base is required when the base is bare
+    version: '0.2'
+    summary: A summary of your Go app # 79 char long summary
+    description: |
+        This is go-hello-world's description. You have a paragraph or two to tell the
+        most important story about it. Keep it under 100 words though,
+        we live in tweetspace and your description wants to look good in the
+        container registries out there.
+    # the platforms this rock should be built on and run on.
+    # you can check your architecture with `dpkg --print-architecture`
+    platforms:
+        amd64:
+        # arm64:
+        # ppc64el:
+        # s390x:
 
 .. note::
 
