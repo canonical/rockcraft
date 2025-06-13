@@ -191,11 +191,11 @@ notfound_context = {
 
 # region Autgenerate documentation
 
-project_dir = pathlib.Path("..").resolve()
+project_dir = pathlib.Path(__file__).parents[1].resolve()
 sys.path.insert(0, str(project_dir.absolute()))
 
 def generate_cli_docs(nil):
-    gen_cli_docs_path = (project_dir / "tools" / "docs" / "gen_cli_docs.py").resolve()
+    gen_cli_docs_path = (project_dir / "tools/docs/gen_cli_docs.py").resolve()
     os.system("%s %s" % (gen_cli_docs_path, project_dir / "docs"))
 
 def setup(app):
