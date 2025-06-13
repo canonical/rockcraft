@@ -20,22 +20,18 @@ import pathlib
 import sys
 
 import craft_parts_docs
-
-project_dir = pathlib.Path("..").resolve()
-sys.path.insert(0, str(project_dir.absolute()))
-
 import rockcraft  # noqa: E402
 
 project = "Rockcraft"
 author = "Canonical Group Ltd"
 
-copyright = "2022-%s, %s" % (datetime.date.today().year, author)
-
 # The full version, including alpha/beta/rc tags
 release = rockcraft.__version__
+# The commit hash in the dev release version confuses the spellchecker
 if ".post" in release:
-    # The commit hash in the dev release version confuses the spellchecker
     release = "dev"
+
+copyright = "2022-%s, %s" % (datetime.date.today().year, author)
 
 # region Configuration for canonical-sphinx
 ogp_site_url = "https://canonical-rockcraft.readthedocs-hosted.com/"
@@ -43,10 +39,13 @@ ogp_site_name = project
 ogp_image = "https://assets.ubuntu.com/v1/253da317-image-document-ubuntudocs.svg"
 
 html_context = {
-    "product_page": "github.com/canonical/rockcraft",
-    "discourse": "https://discourse.ubuntu.com/c/rocks/117",
+    "product_page": "", # Rockcraft doesn't have a marketing page
     "github_url": "https://github.com/canonical/rockcraft",
-    "github_issues": "https://github.com/canonical/rockcraft/issues",
+    "repo_default_branch": "main",
+    "repo_folder": "/docs/",
+    "github_issues": "enabled",
+    "matrix": "https://matrix.to/#/#rockcraft:ubuntu.com",
+    "discourse": "https://discourse.ubuntu.com/c/rocks/117",
     "display_contributors": False,
 }
 
@@ -57,6 +56,7 @@ html_theme_options = {
 extensions = [
     "canonical_sphinx",
     "notfound.extension",
+    "sphinx_sitemap",
 ]
 # endregion
 extensions.extend(
@@ -118,9 +118,17 @@ rst_epilog = """
 
 # region Options for extensions
 
-# Github config
-github_username = "canonical"
-github_repository = "rockcraft"
+# Client-side page redirects.
+rediraffe_redirects = "redirects.txt"
+
+# Sitemap configuration: https://sphinx-sitemap.readthedocs.io/
+html_baseurl = "https://documentation.ubuntu.com/rockcraft/"
+
+if "READTHEDOCS_VERSION" in os.environ:
+    version = os.environ["READTHEDOCS_VERSION"]
+    sitemap_url_scheme = "{version}{link}"
+else:
+    sitemap_url_scheme = "latest/{link}"
 
 # Do (not) include module names.
 add_module_names = True
@@ -136,11 +144,6 @@ linkcheck_retries = 3
 
 # Enable support for google-style instance attributes.
 napoleon_use_ivar = True
-
-# endregion
-
-# Client-side page redirects.
-rediraffe_redirects = "redirects.txt"
 
 # TODO: this is a boilerplate copy from the sphinx-docs. It should
 # be built on top of it instead of duplicating its content
@@ -186,15 +189,17 @@ notfound_context = {
 }
 # endregion
 
+# region Autgenerate documentation
+
+project_dir = pathlib.Path(__file__).parents[1].resolve()
+sys.path.insert(0, str(project_dir.absolute()))
 
 def generate_cli_docs(nil):
-    gen_cli_docs_path = (project_dir / "tools" / "docs" / "gen_cli_docs.py").resolve()
+    gen_cli_docs_path = (project_dir / "tools/docs/gen_cli_docs.py").resolve()
     os.system("%s %s" % (gen_cli_docs_path, project_dir / "docs"))
-
 
 def setup(app):
     app.connect("builder-inited", generate_cli_docs)
-
 
 # Setup libraries documentation snippets for use in rockcraft docs.
 common_docs_path = pathlib.Path(__file__).parent / "common"
@@ -203,3 +208,5 @@ craft_parts_docs_path = pathlib.Path(craft_parts_docs.__file__).parent / "craft-
 (common_docs_path / "craft-parts").symlink_to(
     craft_parts_docs_path, target_is_directory=True
 )
+
+# endregion
