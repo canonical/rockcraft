@@ -56,6 +56,7 @@ html_theme_options = {
 extensions = [
     "canonical_sphinx",
     "notfound.extension",
+    "sphinx_sitemap",
 ]
 # endregion
 extensions.extend(
@@ -120,6 +121,15 @@ rst_epilog = """
 # Client-side page redirects.
 rediraffe_redirects = "redirects.txt"
 
+# Sitemap configuration: https://sphinx-sitemap.readthedocs.io/
+html_baseurl = "https://documentation.ubuntu.com/rockcraft/"
+
+if "READTHEDOCS_VERSION" in os.environ:
+    version = os.environ["READTHEDOCS_VERSION"]
+    sitemap_url_scheme = "{version}{link}"
+else:
+    sitemap_url_scheme = "latest/{link}"
+
 # Do (not) include module names.
 add_module_names = True
 
@@ -134,9 +144,6 @@ linkcheck_retries = 3
 
 # Enable support for google-style instance attributes.
 napoleon_use_ivar = True
-
-# Client-side page redirects.
-rediraffe_redirects = "redirects.txt"
 
 # TODO: this is a boilerplate copy from the sphinx-docs. It should
 # be built on top of it instead of duplicating its content
