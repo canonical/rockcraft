@@ -172,6 +172,13 @@ def _pack(
     new_image.set_control_data(rock_metadata)
     emit.progress("Metadata added")
 
+    # Set the media type in the target images's manifest.
+    # This is different than calling _inject_oci_fields in oci.Image.new_oci_image,
+    # since _inject_oci_fields is called in the context of creating the base image.
+    emit.progress("Adding manifest media type")
+    new_image.set_media_type()
+    emit.progress("Manifest media type added")
+
     emit.progress("Exporting to OCI archive")
     archive_name = f"{project.name}_{project.version}_{rock_suffix}.rock"
     new_image.to_oci_archive(tag=version, filename=archive_name)
