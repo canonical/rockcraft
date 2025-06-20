@@ -10,7 +10,7 @@ dependencies = [
     "craft-platforms~=0.9",
     # craft-providers is pinned to 2.2 until this is fixed:
     # https://github.com/canonical/craft-providers/issues/753
-    "craft-providers~=2.2.0",
+    "craft-providers~=2.3",
     "overrides",
     # setuptools >= 80.9 has a noisy warning about pkg_resources
     "setuptools~=80.8.0",
