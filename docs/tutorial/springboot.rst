@@ -286,7 +286,7 @@ The top of the ``rockcraft.yaml`` file should look similar to the following:
     base: bare # as an alternative, a ubuntu base can be used
     build-base: ubuntu@24.04 # build-base is required when the base is bare
     version: '0.2'
-    summary: A summary of your Go application # 79 char long summary
+    summary: A summary of your Spring Boot application # 79 char long summary
     description: |
         This is spring-boot-hello-world's description. You have a paragraph or two to tell the
         most important story about it. Keep it under 100 words though,
