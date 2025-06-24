@@ -93,6 +93,9 @@ dev-plucky = [
     # 2.9 for Oracular+
     "python-apt>=2.9.0;sys_platform=='linux'",
 ]
+dev-questing = [
+    "python-apt~=3.0.0;sys_platform=='linux'",
+]
 release = [
     "twine",
     "wheel",
@@ -129,6 +132,7 @@ conflicts = [
         { group = "dev-noble" },
         { group = "dev-oracular" },
         { group = "dev-plucky" },
+        { group = "dev-questing" },
     ],
 ]
 
