@@ -357,6 +357,9 @@ ignore = [
 
     # Ignored due to common usage in current code
     "TRY003", # Avoid specifying long messages outside the exception class
+
+    # Rockcraft-specific rule ignores
+    "PLC0415",# Rockcraft in particular uses non top-level imports frequently.
 ]
 
 [tool.ruff.lint.flake8-annotations]
