@@ -15,6 +15,9 @@ sphinx:
 #  - pdf
 #  - epub
 
+formats:
+  - pdf
+
 build:
   os: ubuntu-24.04
   tools:
