@@ -6,7 +6,7 @@ Babel==2.15.0
 backports.tarfile==1.1.1
 beautifulsoup4==4.12.3
 black==24.4.2
-bracex==2.4
+bracex==2.6
 cachetools==5.3.3
 canonical-sphinx==0.1.0
 canonical-sphinx-extensions==0.0.21
