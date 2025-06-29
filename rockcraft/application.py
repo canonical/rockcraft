@@ -18,12 +18,18 @@
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING, cast
+
 from craft_application import Application, AppMetadata
 from craft_parts.plugins.plugins import PluginType
 from overrides import override  # type: ignore[reportUnknownVariableType]
 
 from rockcraft import plugins
 from rockcraft.models import project
+
+if TYPE_CHECKING:
+    import craft_cli
+    from craft_application.commands import ExtensibleCommand
 
 APP_METADATA = AppMetadata(
     name="rockcraft",
@@ -66,3 +72,17 @@ class Rockcraft(Application):
         # enable the craft-parts Features that we use here, right before
         # loading the project and validating its parts.
         Features(enable_overlay=True)
+
+    @property
+    @override
+    def command_groups(self) -> list[craft_cli.CommandGroup]:
+        groups = super().command_groups
+        from rockcraft.utils import extend_unsupported_bases
+
+        for group in groups:
+            if group.name == "Lifecycle":
+                extend_unsupported_bases(
+                    cast("list[type[ExtensibleCommand]]", group.commands)
+                )
+                break
+        return groups

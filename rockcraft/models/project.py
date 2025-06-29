@@ -80,9 +80,30 @@ ProjectName = Annotated[
     ),
 ]
 
-BaseT = Literal["bare", "ubuntu@20.04", "ubuntu@22.04", "ubuntu@24.04"]
+BaseT = Literal[
+    "bare",
+    "ubuntu@20.04",
+    "ubuntu@22.04",
+    "ubuntu@24.04",
+    "ubuntu@25.04",
+    "ubuntu@25.10",
+    # TODO: Remove these from production. They are for testing ESM.
+    "ubuntu@18.04",  # EOL, still ESM
+    "ubuntu@23.04",  # EOL, past ESM
+]
 BuildBaseT = typing.Annotated[
-    Literal["ubuntu@20.04", "ubuntu@22.04", "ubuntu@24.04", "devel"] | None,
+    Literal[
+        "ubuntu@20.04",
+        "ubuntu@22.04",
+        "ubuntu@24.04",
+        "ubuntu@25.04",
+        "ubuntu@25.10",
+        "devel",
+        # TODO: Remove these from production. They are for testing ESM.
+        "ubuntu@18.04",  # EOL, still ESM
+        "ubuntu@23.04",  # EOL, past ESM
+    ]
+    | None,
     pydantic.Field(validate_default=True),
 ]
 
