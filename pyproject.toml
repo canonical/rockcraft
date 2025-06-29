@@ -8,9 +8,8 @@ dependencies = [
     "craft-cli~=3.0",
     "craft-parts~=2.10",
     "craft-platforms~=0.9",
-    # craft-providers is pinned to 2.2 until this is fixed:
-    # https://github.com/canonical/craft-providers/issues/753
-    "craft-providers~=2.3",
+    # "craft-providers~=2.3",
+    "craft-providers @ git+https://github.com/canonical/craft-providers@work/ROCKCRAFT-245",
     "overrides",
     # setuptools >= 80.9 has a noisy warning about pkg_resources
     "setuptools~=80.8.0",
@@ -89,6 +88,9 @@ dev-plucky = [
     # 2.9 for Oracular+
     "python-apt>=2.9.0;sys_platform=='linux'",
 ]
+dev-questing = [
+    "python-apt~=3.0.0;sys_platform=='linux'",
+]
 release = [
     "twine",
     "wheel",
@@ -125,6 +127,7 @@ conflicts = [
         { group = "dev-noble" },
         { group = "dev-oracular" },
         { group = "dev-plucky" },
+        { group = "dev-questing" },
     ],
 ]
 
