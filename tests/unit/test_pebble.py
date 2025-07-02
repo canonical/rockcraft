@@ -47,7 +47,10 @@ class TestPebble:
             field in Pebble.PEBBLE_PART_SPEC
             for field in [
                 "plugin",
-                "stage-snaps",
+                "source",
+                "source-type",
+                "source-tag",
+                "build-snaps",
                 "organize",
                 "stage",
                 "override-prime",
