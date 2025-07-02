@@ -526,8 +526,11 @@ def test_project_bare_overlay(yaml_loaded_data, packages, script):
 def test_project_load(check, yaml_loaded_data, fake_services):
     pebble_part = {
         "pebble": {
-            "plugin": "nil",
-            "stage-snaps": ["pebble/latest/stable"],
+            "plugin": "go",
+            "source": "https://github.com/canonical/pebble.git",
+            "source-type": "git",
+            "source-tag": "v1.14.0",
+            "build-snaps": ["go/1.22-fips/stable"],
             "stage": ["bin/pebble"],
             "override-prime": str(
                 "craftctl default\n"
