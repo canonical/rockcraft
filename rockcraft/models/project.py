@@ -89,7 +89,7 @@ BaseT = Literal[
     "ubuntu@25.10",
     # TODO: Remove these from production. They are for testing ESM.
     "ubuntu@18.04",  # EOL, still ESM
-    "ubuntu@23.04",  # EOL, past ESM
+    "ubuntu@23.10",  # EOL, past ESM
 ]
 BuildBaseT = typing.Annotated[
     Literal[
@@ -101,7 +101,7 @@ BuildBaseT = typing.Annotated[
         "devel",
         # TODO: Remove these from production. They are for testing ESM.
         "ubuntu@18.04",  # EOL, still ESM
-        "ubuntu@23.04",  # EOL, past ESM
+        "ubuntu@23.10",  # EOL, past ESM
     ]
     | None,
     pydantic.Field(validate_default=True),

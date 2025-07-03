@@ -22,7 +22,7 @@ from typing import cast
 
 import distro
 from craft_application import LifecycleService
-from craft_parts import callbacks
+from craft_parts import ProjectInfo, callbacks
 from craft_parts.infos import StepInfo
 from overrides import override  # type: ignore[reportUnknownVariableType]
 
@@ -30,7 +30,7 @@ from rockcraft import layers, utils
 from rockcraft.plugins.python_common import get_python_plugins
 
 
-def _use_apt_old_releases(*args, **kwargs):
+def _use_apt_old_releases(*args, **kwargs) -> None:
     """Switch apt to use old-releases.ubuntu.com.
 
     For EOL releases, rather than archive.ubuntu.com and security.ubuntu.com.
@@ -50,7 +50,7 @@ def _use_apt_old_releases(*args, **kwargs):
     )
 
 
-def _configure_apt_overlay(path: Path, project_info) -> None:
+def _configure_apt_overlay(path: Path, project_info: ProjectInfo) -> None:
     subprocess.run(
         [
             "sed",
