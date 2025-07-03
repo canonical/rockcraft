@@ -137,6 +137,17 @@ if TYPE_CHECKING:
     from rockcraft.models.project import Project
 
 
+def is_eol(base: str) -> bool:
+    """Check if the given base is EOL."""
+    eol_data_file = resources.files("rockcraft").joinpath("data/ubuntu.json")
+    with eol_data_file.open("r") as f:
+        eol_data = json.load(f)
+    if base not in eol_data:
+        raise ValueError(f"Unknown Ubuntu version {base}")
+    version_data = eol_data[base]
+    return datetime.date.today() >= datetime.date.fromisoformat(version_data["eol-esm"])
+
+
 def _parse_unsupported_base(
     cmd: ExtensibleCommand, parser: argparse.ArgumentParser
 ) -> None:

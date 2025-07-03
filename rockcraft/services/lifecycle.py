@@ -16,15 +16,53 @@
 
 """Rockcraft Lifecycle service."""
 
+import subprocess
 from pathlib import Path
 from typing import cast
 
+import distro
 from craft_application import LifecycleService
+from craft_parts import callbacks
 from craft_parts.infos import StepInfo
 from overrides import override  # type: ignore[reportUnknownVariableType]
 
-from rockcraft import layers
+from rockcraft import layers, utils
 from rockcraft.plugins.python_common import get_python_plugins
+
+
+def _use_apt_old_releases(*args, **kwargs):
+    """Switch apt to use old-releases.ubuntu.com.
+
+    For EOL releases, rather than archive.ubuntu.com and security.ubuntu.com.
+    # TODO: This needs to support deb822 as well
+    """
+    subprocess.run(
+        [
+            "sed",
+            "-i",
+            "-e",
+            "s/archive.ubuntu.com/old-releases.ubuntu.com/",
+            "-e",
+            "s/security.ubuntu.com/old-releases.ubuntu.com/",
+            "/etc/apt/sources.list",
+        ],
+        check=False,
+    )
+
+
+def _configure_apt_overlay(path: Path, project_info) -> None:
+    subprocess.run(
+        [
+            "sed",
+            "-i",
+            "-e",
+            "s/archive.ubuntu.com/old-releases.ubuntu.com/",
+            "-e",
+            "s/security.ubuntu.com/old-releases.ubuntu.com/",
+            str(path / "etc/apt/sources.list"),
+        ],
+        check=False,
+    )
 
 
 class RockcraftLifecycleService(LifecycleService):
@@ -52,6 +90,10 @@ class RockcraftLifecycleService(LifecycleService):
             rootfs_dir=image_info.base_layer_dir,
         )
         super().setup()
+
+        if utils.is_eol(distro.version()):
+            callbacks.register_prologue(_use_apt_old_releases)
+            callbacks.register_configure_overlay(_configure_apt_overlay)
 
     @override
     def post_prime(self, step_info: StepInfo) -> bool:
