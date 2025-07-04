@@ -540,7 +540,12 @@ def _add_apt_upgrade_data(yaml_data: dict[str, Any]) -> None:
     part_name = "_apt-upgrade"
     part_content = {
         "plugin": "nil",
-        "overlay-script": 'craftctl chroot bash -c "apt-get update && apt-get -y upgrade"',
+        "overlay-script": 'craftctl chroot bash -c "'
+        "apt-get update && "
+        "apt-get -y upgrade && "
+        "apt-get clean && "
+        "rm -rf /var/lib/apt/lists/*"
+        '"',
     }
 
     if "base" in yaml_data and yaml_data["base"] == "bare":
