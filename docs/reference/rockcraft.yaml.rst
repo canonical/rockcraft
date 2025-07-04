@@ -245,7 +245,7 @@ is a valid, supported architecture name.
 **Required**: Yes
 
 The set of parts that compose the rock's contents
-(see :ref:`Parts <part_properties>`).
+(see :ref:`Parts <reference-part-properties>`).
 
 
 .. note::

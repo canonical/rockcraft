@@ -19,8 +19,9 @@ import os
 import pathlib
 import sys
 
+import craft_parts
 import craft_parts_docs
-import rockcraft  # noqa: E402
+import rockcraft
 
 project = "Rockcraft"
 author = "Canonical Group Ltd"
@@ -39,7 +40,7 @@ ogp_site_name = project
 ogp_image = "https://assets.ubuntu.com/v1/253da317-image-document-ubuntudocs.svg"
 
 html_context = {
-    "product_page": "", # Rockcraft doesn't have a marketing page
+    "product_page": "",  # Rockcraft doesn't have a marketing page
     "github_url": "https://github.com/canonical/rockcraft",
     "repo_default_branch": "main",
     "repo_folder": "/docs/",
@@ -56,6 +57,7 @@ html_theme_options = {
 extensions = [
     "canonical_sphinx",
     "notfound.extension",
+    "pydantic_kitbash",
     "sphinx_sitemap",
 ]
 # endregion
@@ -194,12 +196,18 @@ notfound_context = {
 project_dir = pathlib.Path(__file__).parents[1].resolve()
 sys.path.insert(0, str(project_dir.absolute()))
 
+model_dir = pathlib.Path(craft_parts.__file__).parent.resolve()
+sys.path.append(str(model_dir.absolute()))
+
+
 def generate_cli_docs(nil):
     gen_cli_docs_path = (project_dir / "tools/docs/gen_cli_docs.py").resolve()
     os.system("%s %s" % (gen_cli_docs_path, project_dir / "docs"))
 
+
 def setup(app):
     app.connect("builder-inited", generate_cli_docs)
+
 
 # Setup libraries documentation snippets for use in rockcraft docs.
 common_docs_path = pathlib.Path(__file__).parent / "common"
