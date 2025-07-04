@@ -3,10 +3,10 @@ name = "rockcraft"
 description = "Create rocks"
 dynamic = ["version", "readme"]
 dependencies = [
-    "craft-application~=5.3",
+    "craft-application~=5.4",
     "craft-archives~=2.1",
     "craft-cli~=3.0",
-    "craft-parts~=2.10",
+    "craft-parts~=2.16",
     "craft-platforms~=0.9",
     # craft-providers is pinned to 2.2 until this is fixed:
     # https://github.com/canonical/craft-providers/issues/753
