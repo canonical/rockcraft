@@ -26,7 +26,7 @@ platforms:
 apps:
   rockcraft:
     command: bin/python $SNAP/bin/rockcraft
-    completer: completion.sh
+    # completer: completion.sh
   skopeo:
     command: bin/skopeo
 
@@ -140,14 +140,14 @@ parts:
       - rockcraft-libs
       - libgit2
 
-  bash-completion:
-    after: [rockcraft]
-    plugin: nil
-    build-environment:
-      - PYTHONPATH: $CRAFT_STAGE/lib/python3.12/site-packages
-    override-build: |
-      python3 -m craft_cli.completion $CRAFT_PROJECT_NAME rockcraft.cli:get_app_info \
-        > $CRAFT_PART_INSTALL/completion.sh
+  # bash-completion:
+  #   after: [rockcraft]
+  #   plugin: nil
+  #   build-environment:
+  #     - PYTHONPATH: $CRAFT_STAGE/lib/python3.12/site-packages
+  #   override-build: |
+  #     python3 -m craft_cli.completion $CRAFT_PROJECT_NAME rockcraft.cli:get_app_info \
+  #       > $CRAFT_PART_INSTALL/completion.sh
 
   umoci:
     plugin: make
