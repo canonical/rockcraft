@@ -269,6 +269,7 @@ Currently supported extensions:
 - ``go-framework``
 - ``fastapi-framework``
 - ``expressjs-framework``
+- ``spring-boot-framework``
 
 Example
 =======
