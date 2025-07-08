@@ -14,6 +14,7 @@
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
 
+import os
 import datetime
 import os
 import pathlib
@@ -35,6 +36,7 @@ if ".post" in release:
 copyright = "2022-%s, %s" % (datetime.date.today().year, author)
 
 # region Configuration for canonical-sphinx
+
 ogp_site_url = "https://canonical-rockcraft.readthedocs-hosted.com/"
 ogp_site_name = project
 ogp_image = "https://assets.ubuntu.com/v1/253da317-image-document-ubuntudocs.svg"
@@ -44,7 +46,7 @@ html_context = {
     "github_url": "https://github.com/canonical/rockcraft",
     "repo_default_branch": "main",
     "repo_folder": "/docs/",
-    "github_issues": "enabled",
+    "github_issues": "https://github.com/canonical/rockcraft/issues",
     "matrix": "https://matrix.to/#/#rockcraft:ubuntu.com",
     "discourse": "https://discourse.ubuntu.com/c/rocks/117",
     "display_contributors": False,
@@ -60,6 +62,7 @@ extensions = [
     "pydantic_kitbash",
     "sphinx_sitemap",
 ]
+
 # endregion
 extensions.extend(
     [
@@ -125,7 +128,6 @@ rediraffe_redirects = "redirects.txt"
 
 # Sitemap configuration: https://sphinx-sitemap.readthedocs.io/
 html_baseurl = "https://documentation.ubuntu.com/rockcraft/"
-
 if "READTHEDOCS_VERSION" in os.environ:
     version = os.environ["READTHEDOCS_VERSION"]
     sitemap_url_scheme = "{version}{link}"

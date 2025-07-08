@@ -1,7 +1,7 @@
 [project]
 name = "rockcraft"
 description = "Create rocks"
-dynamic = ["version", "readme"]
+dynamic = ["version"]
 dependencies = [
     "craft-application~=5.4",
     "craft-archives~=2.1",
@@ -32,6 +32,7 @@ license = {file = "LICENSE"}
 authors = [
     { name = "Canonical Ltd.", email = "snapcraft@lists.snapcraft.io" },
 ]
+readme = { file = "README.md", content-type = "text/markdown" }
 
 [project.scripts]
 rockcraft = "rockcraft.cli:run"
@@ -41,7 +42,7 @@ lint = [
     "codespell[toml]",
 ]
 types = [
-    "mypy[reports]~=1.15.0",
+    "mypy[reports]~=1.16.0",
     "types-Pygments",
     "types-PyYAML",
     "types-colorama",
@@ -70,7 +71,7 @@ dev = [
     "pytest-check",
     "pytest-cov~=6.0",
     "pytest-mock~=3.12",
-    "mypy[reports]~=1.15.0",
+    "mypy[reports]~=1.16.0",
     "types-Pygments",
     "types-colorama",
     "types-setuptools",
@@ -135,9 +136,6 @@ conflicts = [
 requires = ["setuptools>=69.0", "setuptools_scm[toml]>=7.1"]
 build-backend = "setuptools.build_meta"
 
-[tool.setuptools.dynamic]
-readme = {file = "README.rst"}
-
 [tool.setuptools_scm]
 write_to = "rockcraft/_version.py"
 # the version comes from the latest annotated git tag formatted as 'X.Y.Z'
@@ -186,6 +184,7 @@ line_length = 88
 minversion = "7.0"
 testpaths = "tests"
 xfail_strict = true
+addopts = "--ignore=tests/spread"
 markers = ["slow: slow tests"]
 
 [tool.coverage.run]
@@ -352,6 +351,7 @@ ignore = [
     "A003",   # Class attribute shadowing built-in (reason: Class attributes don't often get bare references)
     "SIM117", # Use a single `with` statement with multiple contexts instead of nested `with` statements
     # (reason: this creates long lines that get wrapped and reduces readability)
+    "PLW1641", # eq-without-hash (most of our classes should be unhashable)
 
     # Ignored due to conflicts with ruff's formatter:
     # https://docs.astral.sh/ruff/formatter/#conflicting-lint-rules
