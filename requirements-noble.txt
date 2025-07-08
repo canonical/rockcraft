@@ -1,2 +1,1 @@
-python-apt @  https://launchpad.net/ubuntu/+archive/primary/+sourcefiles/python-apt/2.7.7ubuntu3/python-apt_2.7.7ubuntu3.tar.xz ; sys_platform == 'linux' \
-  --hash=sha256:4e9e0db35a2a6e91f703fe9e179edb44da753a22aed47ceff678fe6cf3461c43
+python-apt @  https://launchpad.net/ubuntu/+archive/primary/+sourcefiles/python-apt/2.7.7ubuntu3/python-apt_2.7.7ubuntu3.tar.xz
