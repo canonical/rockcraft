@@ -14,7 +14,6 @@
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #
 
-import os
 import datetime
 import os
 import pathlib
@@ -145,6 +144,9 @@ typehints_document_rtype = True
 linkcheck_anchors_ignore = ["slice-definitions"]
 
 linkcheck_retries = 3
+# Don't check links in the "common" subdirectory, as those are the responsibility of
+# the libraries.
+linkcheck_exclude_documents = ["^common/.*"]
 
 # Enable support for google-style instance attributes.
 napoleon_use_ivar = True
