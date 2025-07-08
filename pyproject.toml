@@ -50,7 +50,7 @@ types = [
 ]
 docs = [
     "canonical-sphinx[full]~=0.4.0",
-    "pydantic-kitbash>=0.0.6",
+    "pydantic-kitbash==0.0.6",
     "sphinx-autobuild~=2024.2",
     "sphinx-lint~=1.0",
     "sphinx-pydantic==0.1.1",
