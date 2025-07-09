@@ -614,18 +614,14 @@ wheels = [
 
 [[package]]
 name = "craft-providers"
-version = "2.3.1"
-source = { registry = "https://pypi.org/simple" }
+version = "2.3.1.post31+g738de13"
+source = { git = "https://github.com/canonical/craft-providers?rev=work%2FCRAFT-4377#738de13299c9774cfab4def34a2a91e7cf2e48a4" }
 dependencies = [
     { name = "packaging" },
     { name = "pydantic" },
     { name = "pyyaml" },
     { name = "requests" },
     { name = "requests-unixsocket2" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/a6/47/73461dd64daf6663f299618a603e1b084da4532f57cdcebb790e39486a07/craft_providers-2.3.1.tar.gz", hash = "sha256:27d91145ef0ebccfd60c700a369df543742c0d888309d0a04450cbc46b4defaf", size = 191464, upload-time = "2025-06-20T12:05:39.71Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/d6/70/35f3325c54b166193aca703abce2909fcb4a6499c87a7c7415b00a4743bf/craft_providers-2.3.1-py2.py3-none-any.whl", hash = "sha256:84d3884bcea94c193f57cf787984461c0d268273ea69e90aaf599e5208751ebf", size = 104559, upload-time = "2025-06-20T12:05:38.269Z" },
 ]
 
 [[package]]
@@ -2061,7 +2057,7 @@ wheels = [
 [[package]]
 name = "python-apt"
 version = "2.4.0+ubuntu4"
-source = { registry = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/" }
+source = { registry = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels" }
 resolution-markers = [
     "python_full_version >= '3.13'",
     "python_full_version == '3.12.*'",
@@ -2091,7 +2087,7 @@ wheels = [
 [[package]]
 name = "python-apt"
 version = "2.7.7+ubuntu3"
-source = { registry = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/" }
+source = { registry = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels" }
 resolution-markers = [
     "python_full_version >= '3.13'",
     "python_full_version == '3.12.*'",
@@ -2121,7 +2117,7 @@ wheels = [
 [[package]]
 name = "python-apt"
 version = "2.9.0+ubuntu1"
-source = { registry = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/" }
+source = { registry = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels" }
 resolution-markers = [
     "python_full_version >= '3.13'",
     "python_full_version == '3.12.*'",
@@ -2151,7 +2147,7 @@ wheels = [
 [[package]]
 name = "python-apt"
 version = "3.0.0"
-source = { registry = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/" }
+source = { registry = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels" }
 resolution-markers = [
     "python_full_version >= '3.13'",
     "python_full_version == '3.12.*'",
@@ -2531,16 +2527,16 @@ dev = [
     { name = "types-setuptools" },
 ]
 dev-jammy = [
-    { name = "python-apt", version = "2.4.0+ubuntu4", source = { registry = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/" }, marker = "sys_platform == 'linux'" },
+    { name = "python-apt", version = "2.4.0+ubuntu4", source = { registry = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels" }, marker = "sys_platform == 'linux'" },
 ]
 dev-noble = [
-    { name = "python-apt", version = "2.7.7+ubuntu3", source = { registry = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/" }, marker = "sys_platform == 'linux'" },
+    { name = "python-apt", version = "2.7.7+ubuntu3", source = { registry = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels" }, marker = "sys_platform == 'linux'" },
 ]
 dev-oracular = [
-    { name = "python-apt", version = "2.9.0+ubuntu1", source = { registry = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/" }, marker = "sys_platform == 'linux'" },
+    { name = "python-apt", version = "2.9.0+ubuntu1", source = { registry = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels" }, marker = "sys_platform == 'linux'" },
 ]
 dev-plucky = [
-    { name = "python-apt", version = "3.0.0", source = { registry = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/" }, marker = "sys_platform == 'linux'" },
+    { name = "python-apt", version = "3.0.0", source = { registry = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels" }, marker = "sys_platform == 'linux'" },
 ]
 docs = [
     { name = "canonical-sphinx", extra = ["full"] },
@@ -2580,7 +2576,7 @@ requires-dist = [
     { name = "craft-cli", specifier = "~=3.0" },
     { name = "craft-parts", specifier = "~=2.16" },
     { name = "craft-platforms", specifier = "~=0.9" },
-    { name = "craft-providers", specifier = "~=2.3" },
+    { name = "craft-providers", git = "https://github.com/canonical/craft-providers?rev=work%2FCRAFT-4377" },
     { name = "craft-store", marker = "extra == 'store'" },
     { name = "overrides" },
     { name = "setuptools", specifier = "~=80.8.0" },
@@ -2604,10 +2600,10 @@ dev = [
     { name = "types-pygments" },
     { name = "types-setuptools" },
 ]
-dev-jammy = [{ name = "python-apt", marker = "sys_platform == 'linux'", specifier = "~=2.4.0", index = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/" }]
-dev-noble = [{ name = "python-apt", marker = "sys_platform == 'linux'", specifier = "~=2.7.0", index = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/" }]
-dev-oracular = [{ name = "python-apt", marker = "sys_platform == 'linux'", specifier = ">=2.9.0,<2.9.9", index = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/" }]
-dev-plucky = [{ name = "python-apt", marker = "sys_platform == 'linux'", specifier = ">=2.9.0", index = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/" }]
+dev-jammy = [{ name = "python-apt", marker = "sys_platform == 'linux'", specifier = "~=2.4.0", index = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels" }]
+dev-noble = [{ name = "python-apt", marker = "sys_platform == 'linux'", specifier = "~=2.7.0", index = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels" }]
+dev-oracular = [{ name = "python-apt", marker = "sys_platform == 'linux'", specifier = ">=2.9.0,<2.9.9", index = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels" }]
+dev-plucky = [{ name = "python-apt", marker = "sys_platform == 'linux'", specifier = ">=2.9.0", index = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels" }]
 docs = [
     { name = "canonical-sphinx", extras = ["full"], specifier = "~=0.4.0" },
     { name = "pydantic-kitbash", specifier = ">=0.0.6" },

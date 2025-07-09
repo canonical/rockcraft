@@ -26,7 +26,7 @@ platforms:
 apps:
   rockcraft:
     command: bin/python $SNAP/bin/rockcraft
-    completer: completion.sh
+    # completer: completion.sh
   skopeo:
     command: bin/skopeo
 
@@ -127,7 +127,7 @@ parts:
       # Extensions currently expect to find data files in share/rockcraft/
       "**/site-packages/extensions": share/rockcraft/extensions
     override-build: |
-      uv export --no-dev --extra store --no-emit-workspace --no-emit-package pywin32 --output-file uv-requirements.txt
+      uv export --no-dev --no-hashes --extra store --no-emit-workspace --no-emit-package pywin32 --output-file uv-requirements.txt
       ${SNAP}/libexec/snapcraft/craftctl default
 
       version="$("${CRAFT_STAGE}/usr/bin/python3" -c "import rockcraft;print(rockcraft.__version__)")"
@@ -140,14 +140,14 @@ parts:
       - rockcraft-libs
       - libgit2
 
-  bash-completion:
-    after: [rockcraft]
-    plugin: nil
-    build-environment:
-      - PYTHONPATH: $CRAFT_STAGE/lib/python3.12/site-packages
-    override-build: |
-      python3 -m craft_cli.completion $CRAFT_PROJECT_NAME rockcraft.cli:get_app_info \
-        > $CRAFT_PART_INSTALL/completion.sh
+  # bash-completion:
+  #   after: [rockcraft]
+  #   plugin: nil
+  #   build-environment:
+  #     - PYTHONPATH: $CRAFT_STAGE/lib/python3.12/site-packages
+  #   override-build: |
+  #     python3 -m craft_cli.completion $CRAFT_PROJECT_NAME rockcraft.cli:get_app_info \
+  #       > $CRAFT_PART_INSTALL/completion.sh
 
   umoci:
     plugin: make
