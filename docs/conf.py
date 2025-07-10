@@ -114,6 +114,7 @@ linkcheck_ignore = [
     # Ignore changelog links to Rockcraft releases, because the changelog entries
     # are written before the actual release is tagged.
     "https://github.com/canonical/rockcraft/releases/tag/.*",
+    "https://github.com/canonical/spread#selecting-which-tasks-to-run",
 ]
 
 rst_epilog = """
