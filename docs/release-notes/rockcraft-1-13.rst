@@ -52,8 +52,8 @@ Rockcraft 1.13 brings the following features, integrations, and improvements.
 .NET plugin (v2)
 ~~~~~~~~~~~~~~~~
 
-The :ref:`craft_parts_dotnet_v2_plugin` is now available. We've introduced a new version
-of the plugin that is easier to use and configure.
+The :ref:`craft_parts_dotnet_v2_plugin` is now available. It's a new version
+of the plugin that's easier to use and configure.
 
 Minor features
 --------------
@@ -63,16 +63,23 @@ Rockcraft 1.13 brings the following minor changes.
 Improved ``test`` command
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The ``test`` command can now supports command-line expressions to select the tests to
-execute. Check out the `spread documentation`_ for more information about spread
-expressions.
+You can now select which tests to run in the ``test`` command by passing a selector.
+Selection takes this form:
+
+.. code-block:: bash
+
+    rockcraft test <selector> --debug
+
+The `spread documentation`_ details the selector syntax.
 
 Improved documentation for 12-factor app extensions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The tutorial and reference pages for the 12-factor app extensions have been improved
-based on user feedback. Additionally, we've added information about using the `StatsD`_
-exporter to the reference pages for the :ref:`django-framework-reference` and
+The tutorial and reference pages for all 12-factor app extensions were improved
+based on user feedback, with fixes to multiple steps that were showstoppers.
+
+We also added information about using the `StatsD`_
+exporter to the references for the :ref:`django-framework-reference` and
 :ref:`flask-framework-reference` extensions.
 
 Contributors
