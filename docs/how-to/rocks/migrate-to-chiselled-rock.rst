@@ -26,10 +26,8 @@ Project Setup
 -------------
 
 For this tutorial, the reference Docker image will be
-`Microsoft's .NET Runtime 6.0
-<https://github.com/dotnet/dotnet-docker/tree/main/src/runtime/6.0/jammy>`_.
-The target base Ubuntu release will be Jammy, and the target architecture will
-be ``amd64``.
+`Microsoft's .NET Runtime 6.0`_. The target base Ubuntu release will be Jammy, and the
+target architecture will be ``amd64``.
 
 Create a new directory, write the reference Dockerfile (pasted below) into a
 text editor and save it as ``Dockerfile``:
@@ -301,3 +299,5 @@ overhead on the final file's size or complexity.
 
 The resulting rock ended up being 63MB smaller than the reference one, while
 offering the same .NET Runtime functionality.
+
+.. _Microsoft's .NET Runtime 6.0: https://github.com/dotnet/dotnet-docker/tree/36e80c363f5fa5a4f20d004c759c932a4027c89b/src/runtime/6.0/jammy

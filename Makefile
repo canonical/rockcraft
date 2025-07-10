@@ -21,10 +21,10 @@ endif
 include common.mk
 
 .PHONY: format
-format: format-ruff format-codespell format-prettier  ## Run all automatic formatters
+format: format-ruff format-codespell format-prettier format-pre-commit  ## Run all automatic formatters
 
 .PHONY: lint
-lint: lint-ruff lint-codespell lint-mypy lint-prettier lint-pyright lint-shellcheck lint-docs lint-twine  ## Run all linters
+lint: lint-ruff lint-codespell lint-mypy lint-prettier lint-pyright lint-shellcheck lint-docs lint-twine lint-uv-lockfile  ## Run all linters
 
 .PHONY: pack
 pack: pack-pip pack-snap  ## Build all packages
@@ -35,13 +35,6 @@ ifeq ($(shell which snapcraft),)
 	sudo snap install --classic snapcraft
 endif
 	snapcraft pack
-
-.PHONY: publish
-publish: publish-pypi  ## Publish packages
-
-.PHONY: publish-pypi
-publish-pypi: clean package-pip lint-twine  ##- Publish Python packages to pypi
-	uv tool run twine upload dist/*
 
 schema: install-uv  ## Generate the schema file.
 	mkdir -p schema
