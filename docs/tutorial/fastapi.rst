@@ -145,12 +145,16 @@ Pack the rock:
     :end-before: [docs:pack-end]
     :dedent: 2
 
-.. note::
+.. warning::
+   There is a `known connectivity issue with LXD and Docker
+   <lxd-docker-connectivity-issue_>`_. If we see a
+   networking issue such as "*A network related operation failed in a context
+   of no network access*" or ``Client.Timeout``, make sure to apply one of the
+   suggested fixes `here <lxd-docker-connectivity-issue_>`_.
 
-    Depending on the network, this step can take a couple of minutes to finish.
-
-    ``ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS`` is required whilst the FastAPI
-    extension is experimental.
+Depending on the network, this step can take a couple of minutes to finish.
+``ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS`` is required whilst the FastAPI
+extension is experimental.
 
 Once Rockcraft has finished packing the FastAPI rock, we'll find a new file in
 the project's working directory (an `OCI <OCI_image_spec_>`_ archive) with

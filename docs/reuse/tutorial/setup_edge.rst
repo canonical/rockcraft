@@ -89,13 +89,6 @@ Restart Docker:
     :end-before: [docs:docker-enable-end]
     :dedent: 2
 
-.. warning::
-   There is a `known connectivity issue with LXD and Docker
-   <lxd-docker-connectivity-issue_>`_. If we see a
-   networking issue such as "*A network related operation failed in a context
-   of no network access*", make sure to apply one of the suggested fixes
-   `here <lxd-docker-connectivity-issue_>`_.
-
 Note that we'll also need a text editor. We can either install one of our
 choice or simply use one of the already existing editors in the Ubuntu
 environment (like ``vi``).

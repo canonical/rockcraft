@@ -182,6 +182,13 @@ Pack the rock:
     :end-before: [docs:pack-end]
     :dedent: 2
 
+.. warning::
+   There is a `known connectivity issue with LXD and Docker
+   <lxd-docker-connectivity-issue_>`_. If we see a
+   networking issue such as "*A network related operation failed in a context
+   of no network access*" or ``Client.Timeout``, make sure to apply one of the
+   suggested fixes `here <lxd-docker-connectivity-issue_>`_.
+
 Depending on the network, this step can take a couple of minutes to finish.
 
 Once Rockcraft has finished packing the Spring Boot rock, we'll find a new file in

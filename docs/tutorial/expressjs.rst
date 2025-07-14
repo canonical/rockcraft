@@ -58,7 +58,7 @@ Next, create a skeleton for the project with the Express app generator:
     :end-before: [docs:init-app-end]
     :dedent: 2
 
-Let's Run the Express app to verify that it works:
+Let's run the Express app to verify that it works:
 
 .. code:: bash
 
@@ -169,6 +169,13 @@ Pack the rock:
     :start-after: [docs:pack]
     :end-before: [docs:pack-end]
     :dedent: 2
+
+.. warning::
+   There is a `known connectivity issue with LXD and Docker
+   <lxd-docker-connectivity-issue_>`_. If we see a
+   networking issue such as "*A network related operation failed in a context
+   of no network access*" or ``Client.Timeout``, make sure to apply one of the
+   suggested fixes `here <lxd-docker-connectivity-issue_>`_.
 
 Depending on the network, this step can take a couple of minutes to finish.
 
