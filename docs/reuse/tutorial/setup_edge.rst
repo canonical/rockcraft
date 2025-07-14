@@ -52,7 +52,8 @@ and initialised:
    sudo snap install lxd
    lxd init --auto
 
-In order to create the rock, we'll need to install Rockcraft:
+In order to create the rock, we'll install Rockcraft with
+classic confinement, which grants it access to the whole file system:
 
 .. literalinclude:: /reuse/tutorial/code/edge/task.yaml
     :language: bash
