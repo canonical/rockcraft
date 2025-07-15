@@ -492,13 +492,13 @@ We can also clean the Multipass instance up.
 Start by exiting it:
 
 .. code-block:: bash
-    
+
     exit
 
 And then we can proceed with its deletion:
 
 .. code-block:: bash
-    
+
     multipass delete rock-dev
     multipass purge
 

@@ -153,7 +153,7 @@ Pack the rock:
    suggested fixes `here <lxd-docker-connectivity-issue_>`_.
 
 Depending on the network, this step can take a couple of minutes to finish.
-Since FastAPI is an experimental extension, 
+Since FastAPI is an experimental extension,
 ``ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS`` must be enabled.
 
 Once Rockcraft has finished packing the FastAPI rock, we'll find a new file in
