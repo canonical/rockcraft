@@ -81,7 +81,7 @@ which is an OCI-compliant container image based on Ubuntu.
 First, we'll need a ``rockcraft.yaml`` project file. We'll take advantage of a
 pre-defined extension in Rockcraft with the ``--profile`` flag that caters
 initial rock files for specific web app frameworks. Using the
-``django-framework`` profile, Rockcraft automates the creation of
+Django profile, Rockcraft automates the creation of
 ``rockcraft.yaml`` and tailors the file for a Django app. Change
 back into the ``~/django-hello-world`` directory and initialize the rock:
 

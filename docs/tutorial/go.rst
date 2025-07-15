@@ -23,7 +23,7 @@ Setup
 .. include:: /reuse/tutorial/setup_edge.rst
 
 In order to test the Go app locally, before packing it into a rock,
-install ``go``.
+install Go.
 
 .. literalinclude:: code/go/task.yaml
     :language: bash
@@ -103,7 +103,7 @@ which is an OCI-compliant container image based on Ubuntu.
 First, we'll need a ``rockcraft.yaml`` project file. We'll take advantage of a
 pre-defined extension in Rockcraft with the ``--profile`` flag that caters
 initial rock files for specific web app frameworks. Using the
-``go-framework`` profile, Rockcraft automates the creation of
+Go profile, Rockcraft automates the creation of
 ``rockcraft.yaml`` and tailors the file for a Go app.
 From the ``~/go-hello-world`` directory, initialize the rock:
 
@@ -278,7 +278,7 @@ When deploying the Go rock, we can always get the app logs with
     :dedent: 2
 
 As a result, Pebble will give the logs for the
-``go`` service running inside the container.
+Go service running inside the container.
 We should expect to see something similar to this:
 
 .. terminal::

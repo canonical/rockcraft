@@ -100,7 +100,7 @@ which is an OCI-compliant container image based on Ubuntu.
 First, we'll need a ``rockcraft.yaml`` project file. We'll take advantage of a
 pre-defined extension in Rockcraft with the ``--profile`` flag that caters
 initial rock files for specific web app frameworks. Using the
-``spring-boot-framework`` profile, Rockcraft automates the creation of
+Spring Boot profile, Rockcraft automates the creation of
 ``rockcraft.yaml`` and tailors the file for a Spring Boot app.
 From the ``~/spring-boot-hello-world`` directory, initialize the rock:
 

@@ -73,7 +73,7 @@ which is an OCI-compliant container image based on Ubuntu.
 First, we'll need a ``rockcraft.yaml`` project file. We'll take advantage of a
 pre-defined extension in Rockcraft with the ``--profile`` flag that caters
 initial rock files for specific web app frameworks. Using the
-``flask-framework`` profile, Rockcraft automates the creation of
+Flask profile, Rockcraft automates the creation of
 ``rockcraft.yaml`` and tailors the file for a Flask app.
 From the ``~/flask-hello-world`` directory, initialize the rock:
 

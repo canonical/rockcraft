@@ -28,7 +28,7 @@ This tutorial requires the ``latest/edge`` channel of Rockcraft. Run
 edge version.
 
 In order to test the Express app locally, before packing it into a
-rock, install ``npm`` and initialize the starter app.
+rock, install NPM and initialize the starter app.
 
 .. literalinclude:: code/expressjs/task.yaml
     :language: bash
@@ -95,7 +95,7 @@ which is an OCI-compliant container image based on Ubuntu.
 First, we'll need a ``rockcraft.yaml`` project file. We'll take advantage of a
 pre-defined extension in Rockcraft with the ``--profile`` flag that caters
 initial rock files for specific web app frameworks. Using the
-``expressjs-framework`` profile, Rockcraft automates the creation of
+Express profile, Rockcraft automates the creation of
 ``rockcraft.yaml`` and tailors the file for an Express app.
 From the ``~/expressjs-hello-world`` directory, initialize the rock:
 
