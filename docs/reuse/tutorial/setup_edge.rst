@@ -93,5 +93,4 @@ Note that we'll also need a text editor. We can either install one of our
 choice or simply use one of the already existing editors in the Ubuntu
 environment (like ``vi``).
 
-.. _`lxd-docker-connectivity-issue`: https://documentation.ubuntu.com/lxd/en/latest/howto/network_bridge_firewalld/#prevent-connectivity-issues-with-lxd-and-docker
 .. _`install-multipass`: https://multipass.run/docs/install-multipass
