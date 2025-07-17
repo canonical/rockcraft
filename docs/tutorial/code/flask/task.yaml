@@ -42,7 +42,7 @@ execute: |
   # [docs:skopeo-copy]
   sudo rockcraft.skopeo copy \
     --insecure-policy \
-    oci-archive:flask-hello-world_0.1_amd64.rock \
+    oci-archive:flask-hello-world_0.1_$(dpkg --print-architecture).rock \
     docker-daemon:flask-hello-world:0.1
   # [docs:skopeo-copy-end]
 
@@ -86,7 +86,7 @@ execute: |
 
   # [docs:docker-run-chisel]
   sudo rockcraft.skopeo --insecure-policy \
-    copy oci-archive:flask-hello-world_0.1-chiselled_amd64.rock \
+    copy oci-archive:flask-hello-world_0.1-chiselled_$(dpkg --print-architecture).rock \
     docker-daemon:flask-hello-world:0.1-chiselled
   sudo docker images flask-hello-world:0.1-chiselled
   sudo docker run --rm -d -p 8000:8000 \
@@ -110,7 +110,7 @@ execute: |
   # [docs:docker-run-update]
   rockcraft pack
   sudo rockcraft.skopeo --insecure-policy \
-    copy oci-archive:flask-hello-world_0.2_amd64.rock \
+    copy oci-archive:flask-hello-world_0.2_$(dpkg --print-architecture).rock \
     docker-daemon:flask-hello-world:0.2
   sudo docker images flask-hello-world:0.2
   sudo docker run --rm -d -p 8000:8000 \
@@ -132,8 +132,8 @@ execute: |
   deactivate
   rm -rf .venv __pycache__
   # delete all the files created during the tutorial
-  rm flask-hello-world_0.1_amd64.rock \
-    flask-hello-world_0.1-chiselled_amd64.rock \
-    flask-hello-world_0.2_amd64.rock \
+  rm flask-hello-world_0.1_$(dpkg --print-architecture).rock \
+    flask-hello-world_0.1-chiselled_$(dpkg --print-architecture).rock \
+    flask-hello-world_0.2_$(dpkg --print-architecture).rock \
     rockcraft.yaml app.py requirements.txt
   # [docs:cleanup-end]
