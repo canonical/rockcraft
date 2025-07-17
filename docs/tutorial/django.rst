@@ -155,8 +155,19 @@ Pack the rock:
    There is a `known connectivity issue with LXD and Docker
    <lxd-docker-connectivity-issue_>`_. If we see a
    networking issue such as "*A network related operation failed in a context
-   of no network access*" or ``Client.Timeout``, make sure to apply one of the
-   suggested fixes `here <lxd-docker-connectivity-issue_>`_.
+   of no network access*" or ``Client.Timeout``, allow egress network traffic
+   to flow from the LXD managed bridge using:
+
+   .. code-block::
+
+       iptables  -I DOCKER-USER -i <network_bridge> -j ACCEPT
+       ip6tables -I DOCKER-USER -i <network_bridge> -j ACCEPT
+       iptables  -I DOCKER-USER -o <network_bridge> -m conntrack \
+         --ctstate RELATED,ESTABLISHED -j ACCEPT
+       ip6tables -I DOCKER-USER -o <network_bridge> -m conntrack \
+         --ctstate RELATED,ESTABLISHED -j ACCEPT
+
+   Run ``lxc network list`` to show the existing LXD managed bridges.
 
 Depending on the network, this step can take a couple of minutes to finish.
 
