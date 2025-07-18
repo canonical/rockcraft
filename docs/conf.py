@@ -118,7 +118,7 @@ linkcheck_ignore = [
     "https://juju.is/cloud-native-kubernetes-usage-report-2021#selection-criteria-for-container-images",
     "https://matrix.to/#/#rocks:ubuntu.com",
     "https://matrix.to/#/#rockcraft:ubuntu.com",
-    "https://www.gnu.org/software/make/manual/make.html#DESTDIR",
+    "https://www.gnu.org/*",
     # Ignore changelog links to Rockcraft releases, because the changelog entries
     # are written before the actual release is tagged.
     "https://github.com/canonical/rockcraft/releases/tag/.*",
