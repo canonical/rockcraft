@@ -26,6 +26,7 @@ allowing complex operations to be declared at build time.
    how-to/index
    reference/index
    explanation/index
+   about-this-documentation
    release-notes/index
 
 
