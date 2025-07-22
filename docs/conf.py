@@ -103,19 +103,33 @@ exclude_patterns = [
     "common/craft-parts/reference/plugins/python_plugin.rst",
     "common/craft-parts/reference/plugins/uv_plugin.rst",
     # Extra non-craft-parts exclusions can be added after this comment
+    "reuse/*",
 ]
 
+# Linkcheck settings
+
+# This doesn't seem to have any effect
+linkcheck_retries = 3
+
+# URLs to skip
 linkcheck_ignore = [
     "http://0.0.0.0:8080",
     "https://github.com/canonical/craft-actions#rockcraft-pack",
     "https://canonical-pebble.readthedocs-hosted.com/en/latest/reference/layer-specification/",
     "https://juju.is/cloud-native-kubernetes-usage-report-2021#selection-criteria-for-container-images",
     "https://matrix.to/#/#rocks:ubuntu.com",
+    "https://matrix.to/#/#rockcraft:ubuntu.com",
+    "https://www.gnu.org/*",
     # Ignore changelog links to Rockcraft releases, because the changelog entries
     # are written before the actual release is tagged.
     "https://github.com/canonical/rockcraft/releases/tag/.*",
     "https://github.com/canonical/spread#selecting-which-tasks-to-run",
 ]
+
+# Don't check links in the "common" subdirectory, as those are the responsibility of
+# the libraries.
+linkcheck_exclude_documents = ["^common/.*"]
+linkcheck_anchors_ignore = ["slice-definitions"]
 
 rst_epilog = """
 .. include:: /reuse/links.txt
@@ -142,12 +156,6 @@ set_type_checking_flag = True
 typehints_fully_qualified = False
 always_document_param_types = True
 typehints_document_rtype = True
-linkcheck_anchors_ignore = ["slice-definitions"]
-
-linkcheck_retries = 3
-# Don't check links in the "common" subdirectory, as those are the responsibility of
-# the libraries.
-linkcheck_exclude_documents = ["^common/.*"]
 
 # Enable support for google-style instance attributes.
 napoleon_use_ivar = True
