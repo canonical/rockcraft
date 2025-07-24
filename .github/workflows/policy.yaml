@@ -19,6 +19,6 @@ jobs:
       # 2. Ignore requirements files in spread tests, as some of these intentionally
       #    contain vulnerable versions.
       # 3. Docs contain requirements.txt files that don't specify versions.
-      requirements-find-args: '! -name requirements-noble.txt ! -path "./tests/spread*" ! -path "./docs/**"'
+      requirements-find-args: "! -name 'requirements-noble.txt' ! -path './tests/spread*' -prune ! -path './docs*' -prune"
       trivy-extra-args: "--ignore-unfixed --skip-dirs tests/spread/"
       uv-export: false
