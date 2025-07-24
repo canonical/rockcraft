@@ -133,8 +133,11 @@ class Pebble:
     PEBBLE_BINARY_PATH = f"{PEBBLE_BINARY_DIR}/pebble"
     PEBBLE_BINARY_PATH_PREVIOUS = "bin/pebble"
     _BASE_PART_SPEC = {
-        "plugin": "nil",
-        "stage-snaps": ["pebble/latest/stable"],
+        "plugin": "go",
+        "source": "https://github.com/canonical/pebble.git",
+        "source-type": "git",
+        "source-tag": "v1.18.0",
+        "build-snaps": ["go/1.23-fips/stable"],
         # We need this because "services" is Optional, but the directory must exist
         "override-prime": str(
             f"craftctl default\nmkdir -p {PEBBLE_LAYERS_PATH}\nchmod 777 {PEBBLE_PATH}"

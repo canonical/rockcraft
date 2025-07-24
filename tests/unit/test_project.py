@@ -122,8 +122,11 @@ def apt_upgrade_part() -> dict[str, Any]:
 def pebble_part() -> dict[str, Any]:
     return {
         "pebble": {
-            "plugin": "nil",
-            "stage-snaps": ["pebble/latest/stable"],
+            "plugin": "go",
+            "source": "https://github.com/canonical/pebble.git",
+            "source-type": "git",
+            "source-tag": "v1.18.0",
+            "build-snaps": ["go/1.23-fips/stable"],
             "stage": ["bin/pebble"],
             "override-prime": str(
                 "craftctl default\n"
