@@ -1,0 +1,18 @@
+name: overlay-conflicts
+base: ubuntu@24.04
+version: "0.1"
+summary: Check overlay and stage conflicts
+description: Check overlay and stage conflicts
+license: GPL-3.0
+platforms:
+  amd64:
+
+parts:
+  A:
+    plugin: nil
+    override-build: |
+      echo "from part A" >> $CRAFT_PART_INSTALL/conflict.txt
+  B:
+    plugin: nil
+    overlay-script: |
+      echo "from part B" >> $CRAFT_OVERLAY/conflict.txt

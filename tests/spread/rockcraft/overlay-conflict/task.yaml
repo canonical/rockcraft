@@ -1,0 +1,4 @@
+summary: Check that actions done inside the overlay are logged
+
+execute: |
+  rockcraft pack
