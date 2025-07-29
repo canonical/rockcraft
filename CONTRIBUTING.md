@@ -75,9 +75,9 @@ If you authenticate your GitHub account with
 run:
 
 ```bash
-git clone git@github.com:<username>/rockcraft.git --recurse-submodules
+git clone git@github.com:<username>/rockcraft --recurse-submodules
 cd rockcraft
-git remote add upstream git@github.com:canonical/rockcraft.git
+git remote add upstream git@github.com:canonical/rockcraft
 git fetch upstream
 ```
 
@@ -88,7 +88,7 @@ instead:
 ```bash
 git clone https://github.com/<username>/rockcraft --recurse-submodules
 cd rockcraft
-git remote add upstream https://github.com/canonical/rockcraft.git
+git remote add upstream https://github.com/canonical/rockcraft
 git fetch upstream
 ```
 
@@ -232,7 +232,7 @@ All nontrivial code changes should be accompanied by a reasonable set of tests.
 Rockcraft's test suite includes unit, integration, and
 [Spread](https://github.com/canonical/spread/blob/master/README.md) tests. If you're not
 sure which tests you should add, go with your best judgement – additional tests can be
-added during the [review process](#follow-up-for-the-review).
+added during the review process.
 
 For low-complexity changes that require basic testing, run the fast tests:
 
