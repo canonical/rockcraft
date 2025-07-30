@@ -1,9 +1,9 @@
 .. _build-a-rock-for-a-fastapi-application:
 
-Build a rock for a FastAPI application
---------------------------------------
+Build a rock for a FastAPI app
+------------------------------
 
-In this tutorial, we'll create a simple FastAPI application and learn how to
+In this tutorial, we'll create a simple FastAPI app and learn how to
 containerise it in a rock with Rockcraft's
 :ref:`fastapi-framework <fastapi-framework-reference>` extension.
 
@@ -19,10 +19,10 @@ Finally, create an empty project directory:
    mkdir fastapi-hello-world
    cd fastapi-hello-world
 
-Create the FastAPI application
-==============================
+Create the FastAPI app
+======================
 
-Let's start by creating the "Hello, world" FastAPI application that we'll use
+Let's start by creating the "Hello, world" FastAPI app that we'll use
 throughout this tutorial.
 
 Create a ``requirements.txt`` file, copy the following text into it, and then
@@ -31,7 +31,7 @@ save it:
 .. literalinclude:: code/fastapi/requirements.txt
     :caption: ~/fastapi-hello-world/requirements.txt
 
-It's fastest to test the FastAPI application locally, before we pack it into a
+It's fastest to test the FastAPI app locally, before we pack it into a
 rock, so let's install ``python3-venv`` and create a virtual environment we
 can work in:
 
@@ -48,11 +48,11 @@ In the same directory, put the following code into a new file,
     :caption: ~/fastapi-hello-world/app.py
     :language: python
 
-Run the FastAPI application using ``fastapi dev app.py --port 8000`` to verify
+Run the FastAPI app using ``fastapi dev app.py --port 8000`` to verify
 that it works.
 
-Test the FastAPI application by using ``curl`` to send a request to the root
-endpoint. We'll need a new terminal for this -- if we're using Multipass, run
+Test the FastAPI app by using ``curl`` to send a request to the root
+endpoint. We'll need a new terminal for this -- run
 ``multipass shell rock-dev`` to get another terminal:
 
 .. literalinclude:: code/fastapi/task.yaml
@@ -61,17 +61,23 @@ endpoint. We'll need a new terminal for this -- if we're using Multipass, run
     :end-before: [docs:curl-fastapi-end]
     :dedent: 2
 
-The FastAPI application should respond with ``{"message":"Hello World"}``.
+The FastAPI app should respond with ``{"message":"Hello World"}``.
 
-The application looks good, so let's stop it for now by pressing :kbd:`Ctrl` +
+The app looks good, so let's stop it for now by pressing :kbd:`Ctrl` +
 :kbd:`C`.
 
-Pack the FastAPI application into a rock
-========================================
+Pack the FastAPI app into a rock
+================================
 
-First, we'll need a project file. Rockcraft will automate its
-creation and tailoring for a FastAPI application by using the
-``fastapi-framework`` profile:
+Now let's create a container image for our FastAPI app. We'll use a rock,
+which is an OCI-compliant container image based on Ubuntu.
+
+First, we'll need a ``rockcraft.yaml`` project file. We'll take advantage of a
+pre-defined extension in Rockcraft with the ``--profile`` flag that caters
+initial rock files for specific web app frameworks. Using the
+FastAPI profile, Rockcraft automates the creation of
+``rockcraft.yaml`` and tailors the file for a FastAPI app.
+From the ``~/fastapi-hello-world`` directory, initialize the rock:
 
 .. literalinclude:: code/fastapi/task.yaml
     :language: bash
@@ -80,10 +86,48 @@ creation and tailoring for a FastAPI application by using the
     :dedent: 2
 
 The project file will automatically be created in the project's working
-directory as ``rockcraft.yaml``. Open it in a text editor and check that the
-``name`` is ``fastapi-hello-world``. Ensure that ``platforms`` includes the
-architecture of the host. For example, if the host uses the ARM architecture,
-include ``arm64`` in ``platforms``.
+directory as ``rockcraft.yaml``.
+
+Check out the contents of ``rockcraft.yaml``:
+
+.. code-block:: bash
+
+    cat rockcraft.yaml
+
+The top of the file should look similar to the following snippet:
+
+.. code-block:: yaml
+    :caption: ~/fastapi-hello-world/rockcraft.yaml
+
+    name: fastapi-hello-world
+    # see https://documentation.ubuntu.com/rockcraft/en/latest/explanation/bases/
+    # for more information about bases and using 'bare' bases for chiselled rocks
+    base: ubuntu@24.04 # the base environment for this FastAPI app
+    version: '0.1' # just for humans. Semantic versioning is recommended
+    summary: A summary of your FastAPI app # 79 char long summary
+    description: |
+        This is fastapi project's description. You have a paragraph or two to tell the
+        most important story about it. Keep it under 100 words though,
+        we live in tweetspace and your description wants to look good in the
+        container registries out there.
+    # the platforms this rock should be built on and run on.
+    # you can check your architecture with `dpkg --print-architecture`
+    platforms:
+        amd64:
+        # arm64:
+        # ppc64el:
+        # s390x:
+
+Verify that the ``name`` is ``fastapi-hello-world``.
+
+The ``platforms`` key must match the architecture of your host. Check
+the architecture of your system:
+
+.. code-block:: bash
+
+    dpkg --print-architecture
+
+Edit the ``platforms`` key in ``rockcraft.yaml`` if required.
 
 .. note::
     For this tutorial, we'll use the ``name`` ``fastapi-hello-world`` and assume
@@ -101,12 +145,27 @@ Pack the rock:
     :end-before: [docs:pack-end]
     :dedent: 2
 
-.. note::
+.. warning::
+   There is a `known connectivity issue with LXD and Docker
+   <lxd-docker-connectivity-issue_>`_. If we see a
+   networking issue such as "*A network related operation failed in a context
+   of no network access*" or ``Client.Timeout``, allow egress network traffic
+   to flow from the LXD managed bridge using:
 
-    Depending on the network, this step can take a couple of minutes to finish.
+   .. code-block::
 
-    ``ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS`` is required whilst the FastAPI
-    extension is experimental.
+       iptables  -I DOCKER-USER -i <network_bridge> -j ACCEPT
+       ip6tables -I DOCKER-USER -i <network_bridge> -j ACCEPT
+       iptables  -I DOCKER-USER -o <network_bridge> -m conntrack \
+         --ctstate RELATED,ESTABLISHED -j ACCEPT
+       ip6tables -I DOCKER-USER -o <network_bridge> -m conntrack \
+         --ctstate RELATED,ESTABLISHED -j ACCEPT
+
+   Run ``lxc network list`` to show the existing LXD managed bridges.
+
+Depending on the network, this step can take a couple of minutes to finish.
+Since FastAPI is an experimental extension,
+``ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS`` must be enabled.
 
 Once Rockcraft has finished packing the FastAPI rock, we'll find a new file in
 the project's working directory (an `OCI <OCI_image_spec_>`_ archive) with
@@ -172,7 +231,7 @@ size:
     larger than the size of the compressed ``.rock`` file.
 
 Now we're finally ready to run the rock and test the containerised FastAPI
-application:
+app:
 
 .. literalinclude:: code/fastapi/task.yaml
     :language: text
@@ -181,7 +240,7 @@ application:
     :dedent: 2
 
 Use the same ``curl`` command as before to send a request to the FastAPI
-application's root endpoint which is running inside the container:
+app's root endpoint which is running inside the container:
 
 .. literalinclude:: code/fastapi/task.yaml
     :language: text
@@ -189,12 +248,12 @@ application's root endpoint which is running inside the container:
     :end-before: [docs:curl-fastapi-rock-end]
     :dedent: 2
 
-The FastAPI application should again respond with ``{"message":"Hello World"}``.
+The FastAPI app should again respond with ``{"message":"Hello World"}``.
 
-View the application logs
-~~~~~~~~~~~~~~~~~~~~~~~~~
+View the app logs
+~~~~~~~~~~~~~~~~~
 
-When deploying the FastAPI rock, we can always get the application logs via
+When deploying the FastAPI rock, we can always get the app logs via
 :ref:`pebble_explanation_page`:
 
 .. literalinclude:: code/fastapi/task.yaml
@@ -222,7 +281,7 @@ We can also choose to follow the logs by using the ``-f`` option with the
 Cleanup
 ~~~~~~~
 
-Now we have a fully functional rock for a FastAPI application! This concludes
+Now we have a fully functional rock for a FastAPI app! This concludes
 the first part of this tutorial, so we'll stop the container and remove the
 respective image for now:
 
@@ -238,7 +297,7 @@ Chisel the rock
 This is an optional but recommended step, especially if we're looking to
 deploy the rock into a production environment. With :ref:`chisel_explanation`
 we can produce lean and production-ready rocks by getting rid of all the
-contents that are not needed for the FastAPI application to run. This results
+contents that are not needed for the FastAPI app to run. This results
 in a much smaller rock with a reduced attack surface.
 
 .. note::
@@ -326,7 +385,7 @@ and then using the same ``curl`` request:
     :end-before: [docs:curl-fastapi-bare-rock-end]
     :dedent: 2
 
-The FastAPI application should still respond with
+The FastAPI app should still respond with
 ``{"message":"Hello World"}``.
 
 Cleanup
@@ -343,10 +402,10 @@ image:
 
 .. _update-fastapi-application:
 
-Update the FastAPI application
-==============================
+Update the FastAPI app
+======================
 
-As a final step, let's update our application. For example,
+As a final step, let's update our app. For example,
 we want to add a new ``/time`` endpoint which returns the current time.
 
 Start by opening the ``app.py`` file in a text editor and update the code to
@@ -356,14 +415,39 @@ look like the following:
     :caption: ~/fastapi-hello-world/app.py
     :language: python
 
-Since we are creating a new version of the application, open the
+Since we are creating a new version of the app, open the
 project file and change the ``version`` (e.g. to ``0.2``).
+The top of the ``rockcraft.yaml`` file should look similar to the following:
+
+.. code-block:: yaml
+    :caption: ~/fastapi-hello-world/rockcraft.yaml
+    :emphasize-lines: 6
+
+    name: fastapi-hello-world
+    # see https://documentation.ubuntu.com/rockcraft/en/latest/explanation/bases/
+    # for more information about bases and using 'bare' bases for chiselled rocks
+    base: bare
+    build-base: ubuntu@24.04
+    version: '0.2'
+    summary: A summary of your FastAPI app # 79 char long summary
+    description: |
+        This is fastapi project's description. You have a paragraph or two to tell the
+        most important story about it. Keep it under 100 words though,
+        we live in tweetspace and your description wants to look good in the
+        container registries out there.
+    # the platforms this rock should be built on and run on.
+    # you can check your architecture with `dpkg --print-architecture`
+    platforms:
+        amd64:
+        # arm64:
+        # ppc64el:
+        # s390x:
 
 .. note::
 
     ``rockcraft pack`` will create a new image with the updated code even if we
     don't change the version. It is recommended to change the version whenever
-    we make changes to the application in the image.
+    we make changes to the app in the image.
 
 Pack and run the rock using similar commands as before:
 
@@ -386,7 +470,7 @@ Finally, use ``curl`` to send a request to the ``/time`` endpoint:
     :end-before: [docs:curl-time-end]
     :dedent: 2
 
-The updated application should respond with the current date and time (e.g.
+The updated app should respond with the current date and time (e.g.
 ``{"value":"2024-10-01 06:53:54\n"}``).
 
 .. note::
@@ -419,21 +503,19 @@ following:
     :end-before: [docs:cleanup-end]
     :dedent: 2
 
-.. collapse:: If using Multipass...
+We can also clean the Multipass instance up.
+Start by exiting it:
 
-    If we created an instance using Multipass, we can also clean it up.
-    Start by exiting it:
+.. code-block:: bash
 
-    .. code-block:: bash
+    exit
 
-        exit
+And then we can proceed with its deletion:
 
-    And then we can proceed with its deletion:
+.. code-block:: bash
 
-    .. code-block:: bash
-
-        multipass delete rock-dev
-        multipass purge
+    multipass delete rock-dev
+    multipass purge
 
 ----
 
@@ -442,9 +524,9 @@ following:
 Troubleshooting
 ===============
 
-**Application updates not taking effect?**
+**App updates not taking effect?**
 
-Upon changing your FastAPI application and re-packing the rock, if you believe
+Upon changing your FastAPI app and re-packing the rock, if you believe
 your changes are not taking effect (e.g. the ``/time``
 :ref:`endpoint <update-fastapi-application>` is returning a
 404), try running ``rockcraft clean`` and pack the rock again with
