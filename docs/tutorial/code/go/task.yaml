@@ -52,7 +52,7 @@ execute: |
   # [docs:skopeo-copy]
   rockcraft.skopeo copy \
     --insecure-policy \
-    oci-archive:go-hello-world_0.1_amd64.rock \
+    oci-archive:go-hello-world_0.1_$(dpkg --print-architecture).rock \
     docker-daemon:go-hello-world:0.1
   # [docs:skopeo-copy-end]
 
@@ -88,7 +88,7 @@ execute: |
   # [docs:docker-run-update]
   rockcraft pack
   rockcraft.skopeo --insecure-policy \
-    copy oci-archive:go-hello-world_0.2_amd64.rock \
+    copy oci-archive:go-hello-world_0.2_$(dpkg --print-architecture).rock \
     docker-daemon:go-hello-world:0.2
   docker images go-hello-world:0.2
   docker run --rm -d -p 8000:8000 \
@@ -109,6 +109,6 @@ execute: |
   # [docs:cleanup]
   # delete all the files created during the tutorial
   rm go.mod rockcraft.yaml main.go go-hello-world \
-    go-hello-world_0.1_amd64.rock \
-    go-hello-world_0.2_amd64.rock
+    go-hello-world_0.1_$(dpkg --print-architecture).rock \
+    go-hello-world_0.2_$(dpkg --print-architecture).rock
   # [docs:cleanup-end]
