@@ -1,7 +1,8 @@
 .. _about-this-documentation:
+.. _contribute-to-this-documentation:
 
-About this documentation
-========================
+Contribute to this documentation
+================================
 
 The documentation is Rockcraft's first-person account of itself to the world. It
 provides knowledge and guidance to people who use, study, and develop the project.
@@ -33,7 +34,7 @@ author the documentation, there are a few paths you can take:
   <https://github.com/canonical/rockcraft>`_.
 * Bring your experience and ideas to the `Rockcraft Matrix channel
   <https://matrix.to/#/#rockcraft:ubuntu.com>`_.
-* Volunteer for a task in the :ref:`about-this-documentation-coda`.
+* Volunteer for a task in the :ref:`contribute-to-this-documentation-coda`.
 
 Your contributions to the project are valuable. The team sees authorship as being on
 equal footing with development.
@@ -46,6 +47,7 @@ recognition in the Rockcraft release that they work on.
 
 
 .. _about-this-documentation-coda:
+.. _contribute-to-this-documentation-coda:
 
 Canonical Open Documentation Academy
 ------------------------------------
