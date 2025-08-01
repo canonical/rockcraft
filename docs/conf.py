@@ -55,6 +55,17 @@ html_theme_options = {
     "source_edit_link": "https://github.com/canonical/rockcraft",
 }
 
+html_static_path = ["_static"]
+templates_path = ["_templates"]
+
+html_css_files = [
+    'css/cookie-banner.css'
+]
+
+html_js_files = [
+    'js/bundle.js',
+]
+
 extensions = [
     "canonical_sphinx",
     "notfound.extension",

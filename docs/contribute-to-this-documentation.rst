@@ -29,7 +29,7 @@ The Rockcraft team welcomes changes, suggestions, and questions. If you want to 
 author the documentation, there are a few paths you can take:
 
 * Make a change in the codebase. Learn how to do so in the project's `contributing guide
-  <https://github.com/canonical/rockcraft/blob/main/CONTRIBUTING.rst>`_.
+  <https://github.com/canonical/rockcraft/blob/main/CONTRIBUTING.md>`_.
 * Request a change or report a problem on `GitHub
   <https://github.com/canonical/rockcraft>`_.
 * Bring your experience and ideas to the `Rockcraft Matrix channel
