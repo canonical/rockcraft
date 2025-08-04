@@ -33,6 +33,8 @@ apps:
 build-packages:
   - libapt-pkg-dev
   - libffi-dev # for cffi (via pygit2)
+  - libxml2-dev # for craft-part's lxml
+  - libxslt1-dev
   - libyaml-dev
   - python3.12-dev
   - pkg-config
@@ -54,6 +56,8 @@ parts:
       - libpython3-stdlib
       - libpython3.12-stdlib
       - libpython3.12-minimal
+      - libxml2 # for craft-part's lxml
+      - libxslt1.1
       - python3-pip
       - python3-setuptools
       - python3-wheel
@@ -127,7 +131,7 @@ parts:
       # Extensions currently expect to find data files in share/rockcraft/
       "**/site-packages/extensions": share/rockcraft/extensions
     override-build: |
-      uv export --no-dev --extra store --no-emit-workspace --no-emit-package pywin32 --output-file uv-requirements.txt
+      uv export --no-hashes --no-dev --extra store --no-emit-workspace --no-emit-package pywin32 --output-file uv-requirements.txt
       ${SNAP}/libexec/snapcraft/craftctl default
 
       version="$("${CRAFT_STAGE}/usr/bin/python3" -c "import rockcraft;print(rockcraft.__version__)")"

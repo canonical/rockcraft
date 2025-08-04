@@ -6,7 +6,7 @@ dependencies = [
     "craft-application~=5.4",
     "craft-archives~=2.1",
     "craft-cli~=3.0",
-    "craft-parts~=2.16",
+    "craft-parts @ git+https://github.com/canonical/craft-parts@work/CRAFT-4620-overlay-stage-conflict",
     "craft-platforms~=0.9",
     # craft-providers is pinned to 2.2 until this is fixed:
     # https://github.com/canonical/craft-providers/issues/753
