@@ -97,6 +97,7 @@ exclude_patterns = [
     # documents (so they generate "duplicate label" errors) or they aren't
     # used in this documentation at all (so they generate "unreferenced"
     # errors).
+    "common/craft-parts/explanation/file-migration.rst",
     "common/craft-parts/explanation/filesets.rst",
     "common/craft-parts/explanation/lifecycle.rst",
     "common/craft-parts/explanation/overlay_parameters.rst",
