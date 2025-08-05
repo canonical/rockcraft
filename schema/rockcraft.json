@@ -930,7 +930,7 @@
           "default": null,
           "description": "The commands to run instead of the default behavior of the pull step.",
           "examples": [
-            "|\ncraftctl default\nrm $CRAFT_PART_SRC/pyproject.toml"
+            "|\n              craftctl default\n              rm $CRAFT_PART_SRC/pyproject.toml"
           ],
           "title": "Override-Pull"
         },
@@ -946,7 +946,7 @@
           "default": null,
           "description": "The commands to run after the part's overlay packages are installed.",
           "examples": [
-            "|\nrm -f ${CRAFT_OVERLAY}/usr/bin/vi ${CRAFT_OVERLAY}/usr/bin/vim*\nrm -f ${CRAFT_OVERLAY}/usr/bin/emacs*\nrm -f ${CRAFT_OVERLAY}/bin/nano"
+            "|\n              rm -f ${CRAFT_OVERLAY}/usr/bin/vi ${CRAFT_OVERLAY}/usr/bin/vim*\n              rm -f ${CRAFT_OVERLAY}/usr/bin/emacs*\n              rm -f ${CRAFT_OVERLAY}/bin/nano"
           ],
           "title": "Overlay-Script"
         },
@@ -962,7 +962,7 @@
           "default": null,
           "description": "The commands to run instead of the default behavior of the build step.",
           "examples": [
-            "|\ncd cmd/webhook\nmkdir $CRAFT_PART_INSTALL/ko-app\ngo build -o $CRAFT_PART_INSTALL/ko-app/webhook -a ."
+            "|\n              cd cmd/webhook\n              mkdir $CRAFT_PART_INSTALL/ko-app\n              go build -o $CRAFT_PART_INSTALL/ko-app/webhook -a ."
           ],
           "title": "Override-Build"
         },
@@ -978,7 +978,7 @@
           "default": null,
           "description": "The commands to run instead of the default behavior of the stage step.",
           "examples": [
-            "|\ncraftctl default\nchown -R 499 \"${CRAFT_PART_INSTALL}/entrypoint.sh\""
+            "|\n              craftctl default\n              chown -R 499 \"${CRAFT_PART_INSTALL}/entrypoint.sh\""
           ],
           "title": "Override-Stage"
         },
@@ -994,7 +994,7 @@
           "default": null,
           "description": "The commands to run instead of the default behavior of the prime step.",
           "examples": [
-            "|\ncraftctl default\nmkdir -p $CRAFT_PRIME/var/lib/mysql\nmkdir -p $CRAFT_PRIME/var/lib/mysqld"
+            "|\n              craftctl default\n              mkdir -p $CRAFT_PRIME/var/lib/mysql\n              mkdir -p $CRAFT_PRIME/var/lib/mysqld"
           ],
           "title": "Override-Prime"
         },
@@ -1375,7 +1375,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the pull step.",
                 "examples": [
-                  "|\ncraftctl default\nrm $CRAFT_PART_SRC/pyproject.toml"
+                  "|\n              craftctl default\n              rm $CRAFT_PART_SRC/pyproject.toml"
                 ],
                 "title": "Override-Pull"
               },
@@ -1391,7 +1391,7 @@
                 "default": null,
                 "description": "The commands to run after the part's overlay packages are installed.",
                 "examples": [
-                  "|\nrm -f ${CRAFT_OVERLAY}/usr/bin/vi ${CRAFT_OVERLAY}/usr/bin/vim*\nrm -f ${CRAFT_OVERLAY}/usr/bin/emacs*\nrm -f ${CRAFT_OVERLAY}/bin/nano"
+                  "|\n              rm -f ${CRAFT_OVERLAY}/usr/bin/vi ${CRAFT_OVERLAY}/usr/bin/vim*\n              rm -f ${CRAFT_OVERLAY}/usr/bin/emacs*\n              rm -f ${CRAFT_OVERLAY}/bin/nano"
                 ],
                 "title": "Overlay-Script"
               },
@@ -1407,7 +1407,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the build step.",
                 "examples": [
-                  "|\ncd cmd/webhook\nmkdir $CRAFT_PART_INSTALL/ko-app\ngo build -o $CRAFT_PART_INSTALL/ko-app/webhook -a ."
+                  "|\n              cd cmd/webhook\n              mkdir $CRAFT_PART_INSTALL/ko-app\n              go build -o $CRAFT_PART_INSTALL/ko-app/webhook -a ."
                 ],
                 "title": "Override-Build"
               },
@@ -1423,7 +1423,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the stage step.",
                 "examples": [
-                  "|\ncraftctl default\nchown -R 499 \"${CRAFT_PART_INSTALL}/entrypoint.sh\""
+                  "|\n              craftctl default\n              chown -R 499 \"${CRAFT_PART_INSTALL}/entrypoint.sh\""
                 ],
                 "title": "Override-Stage"
               },
@@ -1439,7 +1439,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the prime step.",
                 "examples": [
-                  "|\ncraftctl default\nmkdir -p $CRAFT_PRIME/var/lib/mysql\nmkdir -p $CRAFT_PRIME/var/lib/mysqld"
+                  "|\n              craftctl default\n              mkdir -p $CRAFT_PRIME/var/lib/mysql\n              mkdir -p $CRAFT_PRIME/var/lib/mysqld"
                 ],
                 "title": "Override-Prime"
               },
@@ -1808,7 +1808,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the pull step.",
                 "examples": [
-                  "|\ncraftctl default\nrm $CRAFT_PART_SRC/pyproject.toml"
+                  "|\n              craftctl default\n              rm $CRAFT_PART_SRC/pyproject.toml"
                 ],
                 "title": "Override-Pull"
               },
@@ -1824,7 +1824,7 @@
                 "default": null,
                 "description": "The commands to run after the part's overlay packages are installed.",
                 "examples": [
-                  "|\nrm -f ${CRAFT_OVERLAY}/usr/bin/vi ${CRAFT_OVERLAY}/usr/bin/vim*\nrm -f ${CRAFT_OVERLAY}/usr/bin/emacs*\nrm -f ${CRAFT_OVERLAY}/bin/nano"
+                  "|\n              rm -f ${CRAFT_OVERLAY}/usr/bin/vi ${CRAFT_OVERLAY}/usr/bin/vim*\n              rm -f ${CRAFT_OVERLAY}/usr/bin/emacs*\n              rm -f ${CRAFT_OVERLAY}/bin/nano"
                 ],
                 "title": "Overlay-Script"
               },
@@ -1840,7 +1840,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the build step.",
                 "examples": [
-                  "|\ncd cmd/webhook\nmkdir $CRAFT_PART_INSTALL/ko-app\ngo build -o $CRAFT_PART_INSTALL/ko-app/webhook -a ."
+                  "|\n              cd cmd/webhook\n              mkdir $CRAFT_PART_INSTALL/ko-app\n              go build -o $CRAFT_PART_INSTALL/ko-app/webhook -a ."
                 ],
                 "title": "Override-Build"
               },
@@ -1856,7 +1856,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the stage step.",
                 "examples": [
-                  "|\ncraftctl default\nchown -R 499 \"${CRAFT_PART_INSTALL}/entrypoint.sh\""
+                  "|\n              craftctl default\n              chown -R 499 \"${CRAFT_PART_INSTALL}/entrypoint.sh\""
                 ],
                 "title": "Override-Stage"
               },
@@ -1872,7 +1872,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the prime step.",
                 "examples": [
-                  "|\ncraftctl default\nmkdir -p $CRAFT_PRIME/var/lib/mysql\nmkdir -p $CRAFT_PRIME/var/lib/mysqld"
+                  "|\n              craftctl default\n              mkdir -p $CRAFT_PRIME/var/lib/mysql\n              mkdir -p $CRAFT_PRIME/var/lib/mysqld"
                 ],
                 "title": "Override-Prime"
               },
@@ -2225,7 +2225,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the pull step.",
                 "examples": [
-                  "|\ncraftctl default\nrm $CRAFT_PART_SRC/pyproject.toml"
+                  "|\n              craftctl default\n              rm $CRAFT_PART_SRC/pyproject.toml"
                 ],
                 "title": "Override-Pull"
               },
@@ -2241,7 +2241,7 @@
                 "default": null,
                 "description": "The commands to run after the part's overlay packages are installed.",
                 "examples": [
-                  "|\nrm -f ${CRAFT_OVERLAY}/usr/bin/vi ${CRAFT_OVERLAY}/usr/bin/vim*\nrm -f ${CRAFT_OVERLAY}/usr/bin/emacs*\nrm -f ${CRAFT_OVERLAY}/bin/nano"
+                  "|\n              rm -f ${CRAFT_OVERLAY}/usr/bin/vi ${CRAFT_OVERLAY}/usr/bin/vim*\n              rm -f ${CRAFT_OVERLAY}/usr/bin/emacs*\n              rm -f ${CRAFT_OVERLAY}/bin/nano"
                 ],
                 "title": "Overlay-Script"
               },
@@ -2257,7 +2257,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the build step.",
                 "examples": [
-                  "|\ncd cmd/webhook\nmkdir $CRAFT_PART_INSTALL/ko-app\ngo build -o $CRAFT_PART_INSTALL/ko-app/webhook -a ."
+                  "|\n              cd cmd/webhook\n              mkdir $CRAFT_PART_INSTALL/ko-app\n              go build -o $CRAFT_PART_INSTALL/ko-app/webhook -a ."
                 ],
                 "title": "Override-Build"
               },
@@ -2273,7 +2273,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the stage step.",
                 "examples": [
-                  "|\ncraftctl default\nchown -R 499 \"${CRAFT_PART_INSTALL}/entrypoint.sh\""
+                  "|\n              craftctl default\n              chown -R 499 \"${CRAFT_PART_INSTALL}/entrypoint.sh\""
                 ],
                 "title": "Override-Stage"
               },
@@ -2289,7 +2289,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the prime step.",
                 "examples": [
-                  "|\ncraftctl default\nmkdir -p $CRAFT_PRIME/var/lib/mysql\nmkdir -p $CRAFT_PRIME/var/lib/mysqld"
+                  "|\n              craftctl default\n              mkdir -p $CRAFT_PRIME/var/lib/mysql\n              mkdir -p $CRAFT_PRIME/var/lib/mysqld"
                 ],
                 "title": "Override-Prime"
               },
@@ -2655,7 +2655,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the pull step.",
                 "examples": [
-                  "|\ncraftctl default\nrm $CRAFT_PART_SRC/pyproject.toml"
+                  "|\n              craftctl default\n              rm $CRAFT_PART_SRC/pyproject.toml"
                 ],
                 "title": "Override-Pull"
               },
@@ -2671,7 +2671,7 @@
                 "default": null,
                 "description": "The commands to run after the part's overlay packages are installed.",
                 "examples": [
-                  "|\nrm -f ${CRAFT_OVERLAY}/usr/bin/vi ${CRAFT_OVERLAY}/usr/bin/vim*\nrm -f ${CRAFT_OVERLAY}/usr/bin/emacs*\nrm -f ${CRAFT_OVERLAY}/bin/nano"
+                  "|\n              rm -f ${CRAFT_OVERLAY}/usr/bin/vi ${CRAFT_OVERLAY}/usr/bin/vim*\n              rm -f ${CRAFT_OVERLAY}/usr/bin/emacs*\n              rm -f ${CRAFT_OVERLAY}/bin/nano"
                 ],
                 "title": "Overlay-Script"
               },
@@ -2687,7 +2687,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the build step.",
                 "examples": [
-                  "|\ncd cmd/webhook\nmkdir $CRAFT_PART_INSTALL/ko-app\ngo build -o $CRAFT_PART_INSTALL/ko-app/webhook -a ."
+                  "|\n              cd cmd/webhook\n              mkdir $CRAFT_PART_INSTALL/ko-app\n              go build -o $CRAFT_PART_INSTALL/ko-app/webhook -a ."
                 ],
                 "title": "Override-Build"
               },
@@ -2703,7 +2703,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the stage step.",
                 "examples": [
-                  "|\ncraftctl default\nchown -R 499 \"${CRAFT_PART_INSTALL}/entrypoint.sh\""
+                  "|\n              craftctl default\n              chown -R 499 \"${CRAFT_PART_INSTALL}/entrypoint.sh\""
                 ],
                 "title": "Override-Stage"
               },
@@ -2719,7 +2719,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the prime step.",
                 "examples": [
-                  "|\ncraftctl default\nmkdir -p $CRAFT_PRIME/var/lib/mysql\nmkdir -p $CRAFT_PRIME/var/lib/mysqld"
+                  "|\n              craftctl default\n              mkdir -p $CRAFT_PRIME/var/lib/mysql\n              mkdir -p $CRAFT_PRIME/var/lib/mysqld"
                 ],
                 "title": "Override-Prime"
               },
@@ -3089,7 +3089,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the pull step.",
                 "examples": [
-                  "|\ncraftctl default\nrm $CRAFT_PART_SRC/pyproject.toml"
+                  "|\n              craftctl default\n              rm $CRAFT_PART_SRC/pyproject.toml"
                 ],
                 "title": "Override-Pull"
               },
@@ -3105,7 +3105,7 @@
                 "default": null,
                 "description": "The commands to run after the part's overlay packages are installed.",
                 "examples": [
-                  "|\nrm -f ${CRAFT_OVERLAY}/usr/bin/vi ${CRAFT_OVERLAY}/usr/bin/vim*\nrm -f ${CRAFT_OVERLAY}/usr/bin/emacs*\nrm -f ${CRAFT_OVERLAY}/bin/nano"
+                  "|\n              rm -f ${CRAFT_OVERLAY}/usr/bin/vi ${CRAFT_OVERLAY}/usr/bin/vim*\n              rm -f ${CRAFT_OVERLAY}/usr/bin/emacs*\n              rm -f ${CRAFT_OVERLAY}/bin/nano"
                 ],
                 "title": "Overlay-Script"
               },
@@ -3121,7 +3121,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the build step.",
                 "examples": [
-                  "|\ncd cmd/webhook\nmkdir $CRAFT_PART_INSTALL/ko-app\ngo build -o $CRAFT_PART_INSTALL/ko-app/webhook -a ."
+                  "|\n              cd cmd/webhook\n              mkdir $CRAFT_PART_INSTALL/ko-app\n              go build -o $CRAFT_PART_INSTALL/ko-app/webhook -a ."
                 ],
                 "title": "Override-Build"
               },
@@ -3137,7 +3137,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the stage step.",
                 "examples": [
-                  "|\ncraftctl default\nchown -R 499 \"${CRAFT_PART_INSTALL}/entrypoint.sh\""
+                  "|\n              craftctl default\n              chown -R 499 \"${CRAFT_PART_INSTALL}/entrypoint.sh\""
                 ],
                 "title": "Override-Stage"
               },
@@ -3153,7 +3153,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the prime step.",
                 "examples": [
-                  "|\ncraftctl default\nmkdir -p $CRAFT_PRIME/var/lib/mysql\nmkdir -p $CRAFT_PRIME/var/lib/mysqld"
+                  "|\n              craftctl default\n              mkdir -p $CRAFT_PRIME/var/lib/mysql\n              mkdir -p $CRAFT_PRIME/var/lib/mysqld"
                 ],
                 "title": "Override-Prime"
               },
@@ -3506,7 +3506,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the pull step.",
                 "examples": [
-                  "|\ncraftctl default\nrm $CRAFT_PART_SRC/pyproject.toml"
+                  "|\n              craftctl default\n              rm $CRAFT_PART_SRC/pyproject.toml"
                 ],
                 "title": "Override-Pull"
               },
@@ -3522,7 +3522,7 @@
                 "default": null,
                 "description": "The commands to run after the part's overlay packages are installed.",
                 "examples": [
-                  "|\nrm -f ${CRAFT_OVERLAY}/usr/bin/vi ${CRAFT_OVERLAY}/usr/bin/vim*\nrm -f ${CRAFT_OVERLAY}/usr/bin/emacs*\nrm -f ${CRAFT_OVERLAY}/bin/nano"
+                  "|\n              rm -f ${CRAFT_OVERLAY}/usr/bin/vi ${CRAFT_OVERLAY}/usr/bin/vim*\n              rm -f ${CRAFT_OVERLAY}/usr/bin/emacs*\n              rm -f ${CRAFT_OVERLAY}/bin/nano"
                 ],
                 "title": "Overlay-Script"
               },
@@ -3538,7 +3538,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the build step.",
                 "examples": [
-                  "|\ncd cmd/webhook\nmkdir $CRAFT_PART_INSTALL/ko-app\ngo build -o $CRAFT_PART_INSTALL/ko-app/webhook -a ."
+                  "|\n              cd cmd/webhook\n              mkdir $CRAFT_PART_INSTALL/ko-app\n              go build -o $CRAFT_PART_INSTALL/ko-app/webhook -a ."
                 ],
                 "title": "Override-Build"
               },
@@ -3554,7 +3554,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the stage step.",
                 "examples": [
-                  "|\ncraftctl default\nchown -R 499 \"${CRAFT_PART_INSTALL}/entrypoint.sh\""
+                  "|\n              craftctl default\n              chown -R 499 \"${CRAFT_PART_INSTALL}/entrypoint.sh\""
                 ],
                 "title": "Override-Stage"
               },
@@ -3570,7 +3570,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the prime step.",
                 "examples": [
-                  "|\ncraftctl default\nmkdir -p $CRAFT_PRIME/var/lib/mysql\nmkdir -p $CRAFT_PRIME/var/lib/mysqld"
+                  "|\n              craftctl default\n              mkdir -p $CRAFT_PRIME/var/lib/mysql\n              mkdir -p $CRAFT_PRIME/var/lib/mysqld"
                 ],
                 "title": "Override-Prime"
               },
@@ -3939,7 +3939,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the pull step.",
                 "examples": [
-                  "|\ncraftctl default\nrm $CRAFT_PART_SRC/pyproject.toml"
+                  "|\n              craftctl default\n              rm $CRAFT_PART_SRC/pyproject.toml"
                 ],
                 "title": "Override-Pull"
               },
@@ -3955,7 +3955,7 @@
                 "default": null,
                 "description": "The commands to run after the part's overlay packages are installed.",
                 "examples": [
-                  "|\nrm -f ${CRAFT_OVERLAY}/usr/bin/vi ${CRAFT_OVERLAY}/usr/bin/vim*\nrm -f ${CRAFT_OVERLAY}/usr/bin/emacs*\nrm -f ${CRAFT_OVERLAY}/bin/nano"
+                  "|\n              rm -f ${CRAFT_OVERLAY}/usr/bin/vi ${CRAFT_OVERLAY}/usr/bin/vim*\n              rm -f ${CRAFT_OVERLAY}/usr/bin/emacs*\n              rm -f ${CRAFT_OVERLAY}/bin/nano"
                 ],
                 "title": "Overlay-Script"
               },
@@ -3971,7 +3971,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the build step.",
                 "examples": [
-                  "|\ncd cmd/webhook\nmkdir $CRAFT_PART_INSTALL/ko-app\ngo build -o $CRAFT_PART_INSTALL/ko-app/webhook -a ."
+                  "|\n              cd cmd/webhook\n              mkdir $CRAFT_PART_INSTALL/ko-app\n              go build -o $CRAFT_PART_INSTALL/ko-app/webhook -a ."
                 ],
                 "title": "Override-Build"
               },
@@ -3987,7 +3987,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the stage step.",
                 "examples": [
-                  "|\ncraftctl default\nchown -R 499 \"${CRAFT_PART_INSTALL}/entrypoint.sh\""
+                  "|\n              craftctl default\n              chown -R 499 \"${CRAFT_PART_INSTALL}/entrypoint.sh\""
                 ],
                 "title": "Override-Stage"
               },
@@ -4003,7 +4003,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the prime step.",
                 "examples": [
-                  "|\ncraftctl default\nmkdir -p $CRAFT_PRIME/var/lib/mysql\nmkdir -p $CRAFT_PRIME/var/lib/mysqld"
+                  "|\n              craftctl default\n              mkdir -p $CRAFT_PRIME/var/lib/mysql\n              mkdir -p $CRAFT_PRIME/var/lib/mysqld"
                 ],
                 "title": "Override-Prime"
               },
@@ -4356,7 +4356,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the pull step.",
                 "examples": [
-                  "|\ncraftctl default\nrm $CRAFT_PART_SRC/pyproject.toml"
+                  "|\n              craftctl default\n              rm $CRAFT_PART_SRC/pyproject.toml"
                 ],
                 "title": "Override-Pull"
               },
@@ -4372,7 +4372,7 @@
                 "default": null,
                 "description": "The commands to run after the part's overlay packages are installed.",
                 "examples": [
-                  "|\nrm -f ${CRAFT_OVERLAY}/usr/bin/vi ${CRAFT_OVERLAY}/usr/bin/vim*\nrm -f ${CRAFT_OVERLAY}/usr/bin/emacs*\nrm -f ${CRAFT_OVERLAY}/bin/nano"
+                  "|\n              rm -f ${CRAFT_OVERLAY}/usr/bin/vi ${CRAFT_OVERLAY}/usr/bin/vim*\n              rm -f ${CRAFT_OVERLAY}/usr/bin/emacs*\n              rm -f ${CRAFT_OVERLAY}/bin/nano"
                 ],
                 "title": "Overlay-Script"
               },
@@ -4388,7 +4388,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the build step.",
                 "examples": [
-                  "|\ncd cmd/webhook\nmkdir $CRAFT_PART_INSTALL/ko-app\ngo build -o $CRAFT_PART_INSTALL/ko-app/webhook -a ."
+                  "|\n              cd cmd/webhook\n              mkdir $CRAFT_PART_INSTALL/ko-app\n              go build -o $CRAFT_PART_INSTALL/ko-app/webhook -a ."
                 ],
                 "title": "Override-Build"
               },
@@ -4404,7 +4404,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the stage step.",
                 "examples": [
-                  "|\ncraftctl default\nchown -R 499 \"${CRAFT_PART_INSTALL}/entrypoint.sh\""
+                  "|\n              craftctl default\n              chown -R 499 \"${CRAFT_PART_INSTALL}/entrypoint.sh\""
                 ],
                 "title": "Override-Stage"
               },
@@ -4420,7 +4420,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the prime step.",
                 "examples": [
-                  "|\ncraftctl default\nmkdir -p $CRAFT_PRIME/var/lib/mysql\nmkdir -p $CRAFT_PRIME/var/lib/mysqld"
+                  "|\n              craftctl default\n              mkdir -p $CRAFT_PRIME/var/lib/mysql\n              mkdir -p $CRAFT_PRIME/var/lib/mysqld"
                 ],
                 "title": "Override-Prime"
               },
@@ -4791,7 +4791,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the pull step.",
                 "examples": [
-                  "|\ncraftctl default\nrm $CRAFT_PART_SRC/pyproject.toml"
+                  "|\n              craftctl default\n              rm $CRAFT_PART_SRC/pyproject.toml"
                 ],
                 "title": "Override-Pull"
               },
@@ -4807,7 +4807,7 @@
                 "default": null,
                 "description": "The commands to run after the part's overlay packages are installed.",
                 "examples": [
-                  "|\nrm -f ${CRAFT_OVERLAY}/usr/bin/vi ${CRAFT_OVERLAY}/usr/bin/vim*\nrm -f ${CRAFT_OVERLAY}/usr/bin/emacs*\nrm -f ${CRAFT_OVERLAY}/bin/nano"
+                  "|\n              rm -f ${CRAFT_OVERLAY}/usr/bin/vi ${CRAFT_OVERLAY}/usr/bin/vim*\n              rm -f ${CRAFT_OVERLAY}/usr/bin/emacs*\n              rm -f ${CRAFT_OVERLAY}/bin/nano"
                 ],
                 "title": "Overlay-Script"
               },
@@ -4823,7 +4823,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the build step.",
                 "examples": [
-                  "|\ncd cmd/webhook\nmkdir $CRAFT_PART_INSTALL/ko-app\ngo build -o $CRAFT_PART_INSTALL/ko-app/webhook -a ."
+                  "|\n              cd cmd/webhook\n              mkdir $CRAFT_PART_INSTALL/ko-app\n              go build -o $CRAFT_PART_INSTALL/ko-app/webhook -a ."
                 ],
                 "title": "Override-Build"
               },
@@ -4839,7 +4839,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the stage step.",
                 "examples": [
-                  "|\ncraftctl default\nchown -R 499 \"${CRAFT_PART_INSTALL}/entrypoint.sh\""
+                  "|\n              craftctl default\n              chown -R 499 \"${CRAFT_PART_INSTALL}/entrypoint.sh\""
                 ],
                 "title": "Override-Stage"
               },
@@ -4855,7 +4855,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the prime step.",
                 "examples": [
-                  "|\ncraftctl default\nmkdir -p $CRAFT_PRIME/var/lib/mysql\nmkdir -p $CRAFT_PRIME/var/lib/mysqld"
+                  "|\n              craftctl default\n              mkdir -p $CRAFT_PRIME/var/lib/mysql\n              mkdir -p $CRAFT_PRIME/var/lib/mysqld"
                 ],
                 "title": "Override-Prime"
               },
@@ -4950,6 +4950,14 @@
                   "type": "string"
                 },
                 "title": "Jlink-Jars",
+                "type": "array"
+              },
+              "jlink-extra-modules": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Jlink-Extra-Modules",
                 "type": "array"
               },
               "source-checksum": {
@@ -5216,7 +5224,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the pull step.",
                 "examples": [
-                  "|\ncraftctl default\nrm $CRAFT_PART_SRC/pyproject.toml"
+                  "|\n              craftctl default\n              rm $CRAFT_PART_SRC/pyproject.toml"
                 ],
                 "title": "Override-Pull"
               },
@@ -5232,7 +5240,7 @@
                 "default": null,
                 "description": "The commands to run after the part's overlay packages are installed.",
                 "examples": [
-                  "|\nrm -f ${CRAFT_OVERLAY}/usr/bin/vi ${CRAFT_OVERLAY}/usr/bin/vim*\nrm -f ${CRAFT_OVERLAY}/usr/bin/emacs*\nrm -f ${CRAFT_OVERLAY}/bin/nano"
+                  "|\n              rm -f ${CRAFT_OVERLAY}/usr/bin/vi ${CRAFT_OVERLAY}/usr/bin/vim*\n              rm -f ${CRAFT_OVERLAY}/usr/bin/emacs*\n              rm -f ${CRAFT_OVERLAY}/bin/nano"
                 ],
                 "title": "Overlay-Script"
               },
@@ -5248,7 +5256,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the build step.",
                 "examples": [
-                  "|\ncd cmd/webhook\nmkdir $CRAFT_PART_INSTALL/ko-app\ngo build -o $CRAFT_PART_INSTALL/ko-app/webhook -a ."
+                  "|\n              cd cmd/webhook\n              mkdir $CRAFT_PART_INSTALL/ko-app\n              go build -o $CRAFT_PART_INSTALL/ko-app/webhook -a ."
                 ],
                 "title": "Override-Build"
               },
@@ -5264,7 +5272,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the stage step.",
                 "examples": [
-                  "|\ncraftctl default\nchown -R 499 \"${CRAFT_PART_INSTALL}/entrypoint.sh\""
+                  "|\n              craftctl default\n              chown -R 499 \"${CRAFT_PART_INSTALL}/entrypoint.sh\""
                 ],
                 "title": "Override-Stage"
               },
@@ -5280,7 +5288,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the prime step.",
                 "examples": [
-                  "|\ncraftctl default\nmkdir -p $CRAFT_PRIME/var/lib/mysql\nmkdir -p $CRAFT_PRIME/var/lib/mysqld"
+                  "|\n              craftctl default\n              mkdir -p $CRAFT_PRIME/var/lib/mysql\n              mkdir -p $CRAFT_PRIME/var/lib/mysqld"
                 ],
                 "title": "Override-Prime"
               },
@@ -5641,7 +5649,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the pull step.",
                 "examples": [
-                  "|\ncraftctl default\nrm $CRAFT_PART_SRC/pyproject.toml"
+                  "|\n              craftctl default\n              rm $CRAFT_PART_SRC/pyproject.toml"
                 ],
                 "title": "Override-Pull"
               },
@@ -5657,7 +5665,7 @@
                 "default": null,
                 "description": "The commands to run after the part's overlay packages are installed.",
                 "examples": [
-                  "|\nrm -f ${CRAFT_OVERLAY}/usr/bin/vi ${CRAFT_OVERLAY}/usr/bin/vim*\nrm -f ${CRAFT_OVERLAY}/usr/bin/emacs*\nrm -f ${CRAFT_OVERLAY}/bin/nano"
+                  "|\n              rm -f ${CRAFT_OVERLAY}/usr/bin/vi ${CRAFT_OVERLAY}/usr/bin/vim*\n              rm -f ${CRAFT_OVERLAY}/usr/bin/emacs*\n              rm -f ${CRAFT_OVERLAY}/bin/nano"
                 ],
                 "title": "Overlay-Script"
               },
@@ -5673,7 +5681,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the build step.",
                 "examples": [
-                  "|\ncd cmd/webhook\nmkdir $CRAFT_PART_INSTALL/ko-app\ngo build -o $CRAFT_PART_INSTALL/ko-app/webhook -a ."
+                  "|\n              cd cmd/webhook\n              mkdir $CRAFT_PART_INSTALL/ko-app\n              go build -o $CRAFT_PART_INSTALL/ko-app/webhook -a ."
                 ],
                 "title": "Override-Build"
               },
@@ -5689,7 +5697,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the stage step.",
                 "examples": [
-                  "|\ncraftctl default\nchown -R 499 \"${CRAFT_PART_INSTALL}/entrypoint.sh\""
+                  "|\n              craftctl default\n              chown -R 499 \"${CRAFT_PART_INSTALL}/entrypoint.sh\""
                 ],
                 "title": "Override-Stage"
               },
@@ -5705,7 +5713,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the prime step.",
                 "examples": [
-                  "|\ncraftctl default\nmkdir -p $CRAFT_PRIME/var/lib/mysql\nmkdir -p $CRAFT_PRIME/var/lib/mysqld"
+                  "|\n              craftctl default\n              mkdir -p $CRAFT_PRIME/var/lib/mysql\n              mkdir -p $CRAFT_PRIME/var/lib/mysqld"
                 ],
                 "title": "Override-Prime"
               },
@@ -6071,7 +6079,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the pull step.",
                 "examples": [
-                  "|\ncraftctl default\nrm $CRAFT_PART_SRC/pyproject.toml"
+                  "|\n              craftctl default\n              rm $CRAFT_PART_SRC/pyproject.toml"
                 ],
                 "title": "Override-Pull"
               },
@@ -6087,7 +6095,7 @@
                 "default": null,
                 "description": "The commands to run after the part's overlay packages are installed.",
                 "examples": [
-                  "|\nrm -f ${CRAFT_OVERLAY}/usr/bin/vi ${CRAFT_OVERLAY}/usr/bin/vim*\nrm -f ${CRAFT_OVERLAY}/usr/bin/emacs*\nrm -f ${CRAFT_OVERLAY}/bin/nano"
+                  "|\n              rm -f ${CRAFT_OVERLAY}/usr/bin/vi ${CRAFT_OVERLAY}/usr/bin/vim*\n              rm -f ${CRAFT_OVERLAY}/usr/bin/emacs*\n              rm -f ${CRAFT_OVERLAY}/bin/nano"
                 ],
                 "title": "Overlay-Script"
               },
@@ -6103,7 +6111,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the build step.",
                 "examples": [
-                  "|\ncd cmd/webhook\nmkdir $CRAFT_PART_INSTALL/ko-app\ngo build -o $CRAFT_PART_INSTALL/ko-app/webhook -a ."
+                  "|\n              cd cmd/webhook\n              mkdir $CRAFT_PART_INSTALL/ko-app\n              go build -o $CRAFT_PART_INSTALL/ko-app/webhook -a ."
                 ],
                 "title": "Override-Build"
               },
@@ -6119,7 +6127,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the stage step.",
                 "examples": [
-                  "|\ncraftctl default\nchown -R 499 \"${CRAFT_PART_INSTALL}/entrypoint.sh\""
+                  "|\n              craftctl default\n              chown -R 499 \"${CRAFT_PART_INSTALL}/entrypoint.sh\""
                 ],
                 "title": "Override-Stage"
               },
@@ -6135,7 +6143,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the prime step.",
                 "examples": [
-                  "|\ncraftctl default\nmkdir -p $CRAFT_PRIME/var/lib/mysql\nmkdir -p $CRAFT_PRIME/var/lib/mysqld"
+                  "|\n              craftctl default\n              mkdir -p $CRAFT_PRIME/var/lib/mysql\n              mkdir -p $CRAFT_PRIME/var/lib/mysqld"
                 ],
                 "title": "Override-Prime"
               },
@@ -6496,7 +6504,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the pull step.",
                 "examples": [
-                  "|\ncraftctl default\nrm $CRAFT_PART_SRC/pyproject.toml"
+                  "|\n              craftctl default\n              rm $CRAFT_PART_SRC/pyproject.toml"
                 ],
                 "title": "Override-Pull"
               },
@@ -6512,7 +6520,7 @@
                 "default": null,
                 "description": "The commands to run after the part's overlay packages are installed.",
                 "examples": [
-                  "|\nrm -f ${CRAFT_OVERLAY}/usr/bin/vi ${CRAFT_OVERLAY}/usr/bin/vim*\nrm -f ${CRAFT_OVERLAY}/usr/bin/emacs*\nrm -f ${CRAFT_OVERLAY}/bin/nano"
+                  "|\n              rm -f ${CRAFT_OVERLAY}/usr/bin/vi ${CRAFT_OVERLAY}/usr/bin/vim*\n              rm -f ${CRAFT_OVERLAY}/usr/bin/emacs*\n              rm -f ${CRAFT_OVERLAY}/bin/nano"
                 ],
                 "title": "Overlay-Script"
               },
@@ -6528,7 +6536,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the build step.",
                 "examples": [
-                  "|\ncd cmd/webhook\nmkdir $CRAFT_PART_INSTALL/ko-app\ngo build -o $CRAFT_PART_INSTALL/ko-app/webhook -a ."
+                  "|\n              cd cmd/webhook\n              mkdir $CRAFT_PART_INSTALL/ko-app\n              go build -o $CRAFT_PART_INSTALL/ko-app/webhook -a ."
                 ],
                 "title": "Override-Build"
               },
@@ -6544,7 +6552,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the stage step.",
                 "examples": [
-                  "|\ncraftctl default\nchown -R 499 \"${CRAFT_PART_INSTALL}/entrypoint.sh\""
+                  "|\n              craftctl default\n              chown -R 499 \"${CRAFT_PART_INSTALL}/entrypoint.sh\""
                 ],
                 "title": "Override-Stage"
               },
@@ -6560,7 +6568,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the prime step.",
                 "examples": [
-                  "|\ncraftctl default\nmkdir -p $CRAFT_PRIME/var/lib/mysql\nmkdir -p $CRAFT_PRIME/var/lib/mysqld"
+                  "|\n              craftctl default\n              mkdir -p $CRAFT_PRIME/var/lib/mysql\n              mkdir -p $CRAFT_PRIME/var/lib/mysqld"
                 ],
                 "title": "Override-Prime"
               },
@@ -6921,7 +6929,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the pull step.",
                 "examples": [
-                  "|\ncraftctl default\nrm $CRAFT_PART_SRC/pyproject.toml"
+                  "|\n              craftctl default\n              rm $CRAFT_PART_SRC/pyproject.toml"
                 ],
                 "title": "Override-Pull"
               },
@@ -6937,7 +6945,7 @@
                 "default": null,
                 "description": "The commands to run after the part's overlay packages are installed.",
                 "examples": [
-                  "|\nrm -f ${CRAFT_OVERLAY}/usr/bin/vi ${CRAFT_OVERLAY}/usr/bin/vim*\nrm -f ${CRAFT_OVERLAY}/usr/bin/emacs*\nrm -f ${CRAFT_OVERLAY}/bin/nano"
+                  "|\n              rm -f ${CRAFT_OVERLAY}/usr/bin/vi ${CRAFT_OVERLAY}/usr/bin/vim*\n              rm -f ${CRAFT_OVERLAY}/usr/bin/emacs*\n              rm -f ${CRAFT_OVERLAY}/bin/nano"
                 ],
                 "title": "Overlay-Script"
               },
@@ -6953,7 +6961,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the build step.",
                 "examples": [
-                  "|\ncd cmd/webhook\nmkdir $CRAFT_PART_INSTALL/ko-app\ngo build -o $CRAFT_PART_INSTALL/ko-app/webhook -a ."
+                  "|\n              cd cmd/webhook\n              mkdir $CRAFT_PART_INSTALL/ko-app\n              go build -o $CRAFT_PART_INSTALL/ko-app/webhook -a ."
                 ],
                 "title": "Override-Build"
               },
@@ -6969,7 +6977,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the stage step.",
                 "examples": [
-                  "|\ncraftctl default\nchown -R 499 \"${CRAFT_PART_INSTALL}/entrypoint.sh\""
+                  "|\n              craftctl default\n              chown -R 499 \"${CRAFT_PART_INSTALL}/entrypoint.sh\""
                 ],
                 "title": "Override-Stage"
               },
@@ -6985,7 +6993,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the prime step.",
                 "examples": [
-                  "|\ncraftctl default\nmkdir -p $CRAFT_PRIME/var/lib/mysql\nmkdir -p $CRAFT_PRIME/var/lib/mysqld"
+                  "|\n              craftctl default\n              mkdir -p $CRAFT_PRIME/var/lib/mysql\n              mkdir -p $CRAFT_PRIME/var/lib/mysqld"
                 ],
                 "title": "Override-Prime"
               },
@@ -7338,7 +7346,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the pull step.",
                 "examples": [
-                  "|\ncraftctl default\nrm $CRAFT_PART_SRC/pyproject.toml"
+                  "|\n              craftctl default\n              rm $CRAFT_PART_SRC/pyproject.toml"
                 ],
                 "title": "Override-Pull"
               },
@@ -7354,7 +7362,7 @@
                 "default": null,
                 "description": "The commands to run after the part's overlay packages are installed.",
                 "examples": [
-                  "|\nrm -f ${CRAFT_OVERLAY}/usr/bin/vi ${CRAFT_OVERLAY}/usr/bin/vim*\nrm -f ${CRAFT_OVERLAY}/usr/bin/emacs*\nrm -f ${CRAFT_OVERLAY}/bin/nano"
+                  "|\n              rm -f ${CRAFT_OVERLAY}/usr/bin/vi ${CRAFT_OVERLAY}/usr/bin/vim*\n              rm -f ${CRAFT_OVERLAY}/usr/bin/emacs*\n              rm -f ${CRAFT_OVERLAY}/bin/nano"
                 ],
                 "title": "Overlay-Script"
               },
@@ -7370,7 +7378,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the build step.",
                 "examples": [
-                  "|\ncd cmd/webhook\nmkdir $CRAFT_PART_INSTALL/ko-app\ngo build -o $CRAFT_PART_INSTALL/ko-app/webhook -a ."
+                  "|\n              cd cmd/webhook\n              mkdir $CRAFT_PART_INSTALL/ko-app\n              go build -o $CRAFT_PART_INSTALL/ko-app/webhook -a ."
                 ],
                 "title": "Override-Build"
               },
@@ -7386,7 +7394,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the stage step.",
                 "examples": [
-                  "|\ncraftctl default\nchown -R 499 \"${CRAFT_PART_INSTALL}/entrypoint.sh\""
+                  "|\n              craftctl default\n              chown -R 499 \"${CRAFT_PART_INSTALL}/entrypoint.sh\""
                 ],
                 "title": "Override-Stage"
               },
@@ -7402,7 +7410,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the prime step.",
                 "examples": [
-                  "|\ncraftctl default\nmkdir -p $CRAFT_PRIME/var/lib/mysql\nmkdir -p $CRAFT_PRIME/var/lib/mysqld"
+                  "|\n              craftctl default\n              mkdir -p $CRAFT_PRIME/var/lib/mysql\n              mkdir -p $CRAFT_PRIME/var/lib/mysqld"
                 ],
                 "title": "Override-Prime"
               },
@@ -7772,7 +7780,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the pull step.",
                 "examples": [
-                  "|\ncraftctl default\nrm $CRAFT_PART_SRC/pyproject.toml"
+                  "|\n              craftctl default\n              rm $CRAFT_PART_SRC/pyproject.toml"
                 ],
                 "title": "Override-Pull"
               },
@@ -7788,7 +7796,7 @@
                 "default": null,
                 "description": "The commands to run after the part's overlay packages are installed.",
                 "examples": [
-                  "|\nrm -f ${CRAFT_OVERLAY}/usr/bin/vi ${CRAFT_OVERLAY}/usr/bin/vim*\nrm -f ${CRAFT_OVERLAY}/usr/bin/emacs*\nrm -f ${CRAFT_OVERLAY}/bin/nano"
+                  "|\n              rm -f ${CRAFT_OVERLAY}/usr/bin/vi ${CRAFT_OVERLAY}/usr/bin/vim*\n              rm -f ${CRAFT_OVERLAY}/usr/bin/emacs*\n              rm -f ${CRAFT_OVERLAY}/bin/nano"
                 ],
                 "title": "Overlay-Script"
               },
@@ -7804,7 +7812,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the build step.",
                 "examples": [
-                  "|\ncd cmd/webhook\nmkdir $CRAFT_PART_INSTALL/ko-app\ngo build -o $CRAFT_PART_INSTALL/ko-app/webhook -a ."
+                  "|\n              cd cmd/webhook\n              mkdir $CRAFT_PART_INSTALL/ko-app\n              go build -o $CRAFT_PART_INSTALL/ko-app/webhook -a ."
                 ],
                 "title": "Override-Build"
               },
@@ -7820,7 +7828,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the stage step.",
                 "examples": [
-                  "|\ncraftctl default\nchown -R 499 \"${CRAFT_PART_INSTALL}/entrypoint.sh\""
+                  "|\n              craftctl default\n              chown -R 499 \"${CRAFT_PART_INSTALL}/entrypoint.sh\""
                 ],
                 "title": "Override-Stage"
               },
@@ -7836,7 +7844,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the prime step.",
                 "examples": [
-                  "|\ncraftctl default\nmkdir -p $CRAFT_PRIME/var/lib/mysql\nmkdir -p $CRAFT_PRIME/var/lib/mysqld"
+                  "|\n              craftctl default\n              mkdir -p $CRAFT_PRIME/var/lib/mysql\n              mkdir -p $CRAFT_PRIME/var/lib/mysqld"
                 ],
                 "title": "Override-Prime"
               },
@@ -8214,7 +8222,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the pull step.",
                 "examples": [
-                  "|\ncraftctl default\nrm $CRAFT_PART_SRC/pyproject.toml"
+                  "|\n              craftctl default\n              rm $CRAFT_PART_SRC/pyproject.toml"
                 ],
                 "title": "Override-Pull"
               },
@@ -8230,7 +8238,7 @@
                 "default": null,
                 "description": "The commands to run after the part's overlay packages are installed.",
                 "examples": [
-                  "|\nrm -f ${CRAFT_OVERLAY}/usr/bin/vi ${CRAFT_OVERLAY}/usr/bin/vim*\nrm -f ${CRAFT_OVERLAY}/usr/bin/emacs*\nrm -f ${CRAFT_OVERLAY}/bin/nano"
+                  "|\n              rm -f ${CRAFT_OVERLAY}/usr/bin/vi ${CRAFT_OVERLAY}/usr/bin/vim*\n              rm -f ${CRAFT_OVERLAY}/usr/bin/emacs*\n              rm -f ${CRAFT_OVERLAY}/bin/nano"
                 ],
                 "title": "Overlay-Script"
               },
@@ -8246,7 +8254,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the build step.",
                 "examples": [
-                  "|\ncd cmd/webhook\nmkdir $CRAFT_PART_INSTALL/ko-app\ngo build -o $CRAFT_PART_INSTALL/ko-app/webhook -a ."
+                  "|\n              cd cmd/webhook\n              mkdir $CRAFT_PART_INSTALL/ko-app\n              go build -o $CRAFT_PART_INSTALL/ko-app/webhook -a ."
                 ],
                 "title": "Override-Build"
               },
@@ -8262,7 +8270,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the stage step.",
                 "examples": [
-                  "|\ncraftctl default\nchown -R 499 \"${CRAFT_PART_INSTALL}/entrypoint.sh\""
+                  "|\n              craftctl default\n              chown -R 499 \"${CRAFT_PART_INSTALL}/entrypoint.sh\""
                 ],
                 "title": "Override-Stage"
               },
@@ -8278,7 +8286,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the prime step.",
                 "examples": [
-                  "|\ncraftctl default\nmkdir -p $CRAFT_PRIME/var/lib/mysql\nmkdir -p $CRAFT_PRIME/var/lib/mysqld"
+                  "|\n              craftctl default\n              mkdir -p $CRAFT_PRIME/var/lib/mysql\n              mkdir -p $CRAFT_PRIME/var/lib/mysqld"
                 ],
                 "title": "Override-Prime"
               },
@@ -8659,7 +8667,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the pull step.",
                 "examples": [
-                  "|\ncraftctl default\nrm $CRAFT_PART_SRC/pyproject.toml"
+                  "|\n              craftctl default\n              rm $CRAFT_PART_SRC/pyproject.toml"
                 ],
                 "title": "Override-Pull"
               },
@@ -8675,7 +8683,7 @@
                 "default": null,
                 "description": "The commands to run after the part's overlay packages are installed.",
                 "examples": [
-                  "|\nrm -f ${CRAFT_OVERLAY}/usr/bin/vi ${CRAFT_OVERLAY}/usr/bin/vim*\nrm -f ${CRAFT_OVERLAY}/usr/bin/emacs*\nrm -f ${CRAFT_OVERLAY}/bin/nano"
+                  "|\n              rm -f ${CRAFT_OVERLAY}/usr/bin/vi ${CRAFT_OVERLAY}/usr/bin/vim*\n              rm -f ${CRAFT_OVERLAY}/usr/bin/emacs*\n              rm -f ${CRAFT_OVERLAY}/bin/nano"
                 ],
                 "title": "Overlay-Script"
               },
@@ -8691,7 +8699,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the build step.",
                 "examples": [
-                  "|\ncd cmd/webhook\nmkdir $CRAFT_PART_INSTALL/ko-app\ngo build -o $CRAFT_PART_INSTALL/ko-app/webhook -a ."
+                  "|\n              cd cmd/webhook\n              mkdir $CRAFT_PART_INSTALL/ko-app\n              go build -o $CRAFT_PART_INSTALL/ko-app/webhook -a ."
                 ],
                 "title": "Override-Build"
               },
@@ -8707,7 +8715,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the stage step.",
                 "examples": [
-                  "|\ncraftctl default\nchown -R 499 \"${CRAFT_PART_INSTALL}/entrypoint.sh\""
+                  "|\n              craftctl default\n              chown -R 499 \"${CRAFT_PART_INSTALL}/entrypoint.sh\""
                 ],
                 "title": "Override-Stage"
               },
@@ -8723,7 +8731,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the prime step.",
                 "examples": [
-                  "|\ncraftctl default\nmkdir -p $CRAFT_PRIME/var/lib/mysql\nmkdir -p $CRAFT_PRIME/var/lib/mysqld"
+                  "|\n              craftctl default\n              mkdir -p $CRAFT_PRIME/var/lib/mysql\n              mkdir -p $CRAFT_PRIME/var/lib/mysqld"
                 ],
                 "title": "Override-Prime"
               },
@@ -9094,7 +9102,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the pull step.",
                 "examples": [
-                  "|\ncraftctl default\nrm $CRAFT_PART_SRC/pyproject.toml"
+                  "|\n              craftctl default\n              rm $CRAFT_PART_SRC/pyproject.toml"
                 ],
                 "title": "Override-Pull"
               },
@@ -9110,7 +9118,7 @@
                 "default": null,
                 "description": "The commands to run after the part's overlay packages are installed.",
                 "examples": [
-                  "|\nrm -f ${CRAFT_OVERLAY}/usr/bin/vi ${CRAFT_OVERLAY}/usr/bin/vim*\nrm -f ${CRAFT_OVERLAY}/usr/bin/emacs*\nrm -f ${CRAFT_OVERLAY}/bin/nano"
+                  "|\n              rm -f ${CRAFT_OVERLAY}/usr/bin/vi ${CRAFT_OVERLAY}/usr/bin/vim*\n              rm -f ${CRAFT_OVERLAY}/usr/bin/emacs*\n              rm -f ${CRAFT_OVERLAY}/bin/nano"
                 ],
                 "title": "Overlay-Script"
               },
@@ -9126,7 +9134,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the build step.",
                 "examples": [
-                  "|\ncd cmd/webhook\nmkdir $CRAFT_PART_INSTALL/ko-app\ngo build -o $CRAFT_PART_INSTALL/ko-app/webhook -a ."
+                  "|\n              cd cmd/webhook\n              mkdir $CRAFT_PART_INSTALL/ko-app\n              go build -o $CRAFT_PART_INSTALL/ko-app/webhook -a ."
                 ],
                 "title": "Override-Build"
               },
@@ -9142,7 +9150,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the stage step.",
                 "examples": [
-                  "|\ncraftctl default\nchown -R 499 \"${CRAFT_PART_INSTALL}/entrypoint.sh\""
+                  "|\n              craftctl default\n              chown -R 499 \"${CRAFT_PART_INSTALL}/entrypoint.sh\""
                 ],
                 "title": "Override-Stage"
               },
@@ -9158,7 +9166,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the prime step.",
                 "examples": [
-                  "|\ncraftctl default\nmkdir -p $CRAFT_PRIME/var/lib/mysql\nmkdir -p $CRAFT_PRIME/var/lib/mysqld"
+                  "|\n              craftctl default\n              mkdir -p $CRAFT_PRIME/var/lib/mysql\n              mkdir -p $CRAFT_PRIME/var/lib/mysqld"
                 ],
                 "title": "Override-Prime"
               },
@@ -9569,7 +9577,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the pull step.",
                 "examples": [
-                  "|\ncraftctl default\nrm $CRAFT_PART_SRC/pyproject.toml"
+                  "|\n              craftctl default\n              rm $CRAFT_PART_SRC/pyproject.toml"
                 ],
                 "title": "Override-Pull"
               },
@@ -9585,7 +9593,7 @@
                 "default": null,
                 "description": "The commands to run after the part's overlay packages are installed.",
                 "examples": [
-                  "|\nrm -f ${CRAFT_OVERLAY}/usr/bin/vi ${CRAFT_OVERLAY}/usr/bin/vim*\nrm -f ${CRAFT_OVERLAY}/usr/bin/emacs*\nrm -f ${CRAFT_OVERLAY}/bin/nano"
+                  "|\n              rm -f ${CRAFT_OVERLAY}/usr/bin/vi ${CRAFT_OVERLAY}/usr/bin/vim*\n              rm -f ${CRAFT_OVERLAY}/usr/bin/emacs*\n              rm -f ${CRAFT_OVERLAY}/bin/nano"
                 ],
                 "title": "Overlay-Script"
               },
@@ -9601,7 +9609,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the build step.",
                 "examples": [
-                  "|\ncd cmd/webhook\nmkdir $CRAFT_PART_INSTALL/ko-app\ngo build -o $CRAFT_PART_INSTALL/ko-app/webhook -a ."
+                  "|\n              cd cmd/webhook\n              mkdir $CRAFT_PART_INSTALL/ko-app\n              go build -o $CRAFT_PART_INSTALL/ko-app/webhook -a ."
                 ],
                 "title": "Override-Build"
               },
@@ -9617,7 +9625,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the stage step.",
                 "examples": [
-                  "|\ncraftctl default\nchown -R 499 \"${CRAFT_PART_INSTALL}/entrypoint.sh\""
+                  "|\n              craftctl default\n              chown -R 499 \"${CRAFT_PART_INSTALL}/entrypoint.sh\""
                 ],
                 "title": "Override-Stage"
               },
@@ -9633,7 +9641,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the prime step.",
                 "examples": [
-                  "|\ncraftctl default\nmkdir -p $CRAFT_PRIME/var/lib/mysql\nmkdir -p $CRAFT_PRIME/var/lib/mysqld"
+                  "|\n              craftctl default\n              mkdir -p $CRAFT_PRIME/var/lib/mysql\n              mkdir -p $CRAFT_PRIME/var/lib/mysqld"
                 ],
                 "title": "Override-Prime"
               },
@@ -9994,7 +10002,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the pull step.",
                 "examples": [
-                  "|\ncraftctl default\nrm $CRAFT_PART_SRC/pyproject.toml"
+                  "|\n              craftctl default\n              rm $CRAFT_PART_SRC/pyproject.toml"
                 ],
                 "title": "Override-Pull"
               },
@@ -10010,7 +10018,7 @@
                 "default": null,
                 "description": "The commands to run after the part's overlay packages are installed.",
                 "examples": [
-                  "|\nrm -f ${CRAFT_OVERLAY}/usr/bin/vi ${CRAFT_OVERLAY}/usr/bin/vim*\nrm -f ${CRAFT_OVERLAY}/usr/bin/emacs*\nrm -f ${CRAFT_OVERLAY}/bin/nano"
+                  "|\n              rm -f ${CRAFT_OVERLAY}/usr/bin/vi ${CRAFT_OVERLAY}/usr/bin/vim*\n              rm -f ${CRAFT_OVERLAY}/usr/bin/emacs*\n              rm -f ${CRAFT_OVERLAY}/bin/nano"
                 ],
                 "title": "Overlay-Script"
               },
@@ -10026,7 +10034,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the build step.",
                 "examples": [
-                  "|\ncd cmd/webhook\nmkdir $CRAFT_PART_INSTALL/ko-app\ngo build -o $CRAFT_PART_INSTALL/ko-app/webhook -a ."
+                  "|\n              cd cmd/webhook\n              mkdir $CRAFT_PART_INSTALL/ko-app\n              go build -o $CRAFT_PART_INSTALL/ko-app/webhook -a ."
                 ],
                 "title": "Override-Build"
               },
@@ -10042,7 +10050,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the stage step.",
                 "examples": [
-                  "|\ncraftctl default\nchown -R 499 \"${CRAFT_PART_INSTALL}/entrypoint.sh\""
+                  "|\n              craftctl default\n              chown -R 499 \"${CRAFT_PART_INSTALL}/entrypoint.sh\""
                 ],
                 "title": "Override-Stage"
               },
@@ -10058,7 +10066,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the prime step.",
                 "examples": [
-                  "|\ncraftctl default\nmkdir -p $CRAFT_PRIME/var/lib/mysql\nmkdir -p $CRAFT_PRIME/var/lib/mysqld"
+                  "|\n              craftctl default\n              mkdir -p $CRAFT_PRIME/var/lib/mysql\n              mkdir -p $CRAFT_PRIME/var/lib/mysqld"
                 ],
                 "title": "Override-Prime"
               },
@@ -10429,7 +10437,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the pull step.",
                 "examples": [
-                  "|\ncraftctl default\nrm $CRAFT_PART_SRC/pyproject.toml"
+                  "|\n              craftctl default\n              rm $CRAFT_PART_SRC/pyproject.toml"
                 ],
                 "title": "Override-Pull"
               },
@@ -10445,7 +10453,7 @@
                 "default": null,
                 "description": "The commands to run after the part's overlay packages are installed.",
                 "examples": [
-                  "|\nrm -f ${CRAFT_OVERLAY}/usr/bin/vi ${CRAFT_OVERLAY}/usr/bin/vim*\nrm -f ${CRAFT_OVERLAY}/usr/bin/emacs*\nrm -f ${CRAFT_OVERLAY}/bin/nano"
+                  "|\n              rm -f ${CRAFT_OVERLAY}/usr/bin/vi ${CRAFT_OVERLAY}/usr/bin/vim*\n              rm -f ${CRAFT_OVERLAY}/usr/bin/emacs*\n              rm -f ${CRAFT_OVERLAY}/bin/nano"
                 ],
                 "title": "Overlay-Script"
               },
@@ -10461,7 +10469,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the build step.",
                 "examples": [
-                  "|\ncd cmd/webhook\nmkdir $CRAFT_PART_INSTALL/ko-app\ngo build -o $CRAFT_PART_INSTALL/ko-app/webhook -a ."
+                  "|\n              cd cmd/webhook\n              mkdir $CRAFT_PART_INSTALL/ko-app\n              go build -o $CRAFT_PART_INSTALL/ko-app/webhook -a ."
                 ],
                 "title": "Override-Build"
               },
@@ -10477,7 +10485,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the stage step.",
                 "examples": [
-                  "|\ncraftctl default\nchown -R 499 \"${CRAFT_PART_INSTALL}/entrypoint.sh\""
+                  "|\n              craftctl default\n              chown -R 499 \"${CRAFT_PART_INSTALL}/entrypoint.sh\""
                 ],
                 "title": "Override-Stage"
               },
@@ -10493,7 +10501,7 @@
                 "default": null,
                 "description": "The commands to run instead of the default behavior of the prime step.",
                 "examples": [
-                  "|\ncraftctl default\nmkdir -p $CRAFT_PRIME/var/lib/mysql\nmkdir -p $CRAFT_PRIME/var/lib/mysqld"
+                  "|\n              craftctl default\n              mkdir -p $CRAFT_PRIME/var/lib/mysql\n              mkdir -p $CRAFT_PRIME/var/lib/mysqld"
                 ],
                 "title": "Override-Prime"
               },
