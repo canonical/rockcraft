@@ -78,6 +78,7 @@ def fake_provider(mock_instance):
             base_configuration: base.Base,
             instance_name: str,
             allow_unstable: bool = False,
+            shutdown_delay_mins: int | None = None,
         ):
             yield mock_instance
 
