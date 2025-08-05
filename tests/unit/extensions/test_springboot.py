@@ -539,3 +539,23 @@ def test_spring_boot_extension_extra_assets_overridden(
         },
         "stage": ["app/foobar"],
     }
+
+
+@pytest.mark.usefixtures("spring_boot_extension")
+def test_spring_boot_extension_extra_assets_start_with_app(
+    tmp_path, spring_boot_input_yaml
+):
+    (tmp_path / "pom.xml").touch(exist_ok=True)
+    (tmp_path / "migrate").write_text("migrate")
+    (tmp_path / "migrate.sh").write_text("migrate")
+    spring_boot_input_yaml["parts"] = {
+        "spring-boot-framework/assets": {
+            "plugin": "dump",
+            "source": ".",
+            "stage": ["foobar_not_in_app"],
+        }
+    }
+    with pytest.raises(ExtensionError) as exc:
+        extensions.apply_extensions(tmp_path, spring_boot_input_yaml)
+
+    assert "start with app" in str(exc.value)

@@ -288,14 +288,10 @@ class SpringBootFramework(Extension):
     def gen_assets_part(self) -> dict[str, Any] | None:
         """Generate assets-stage part for extra assets in the project."""
         # if stage is not in exclude mode, use it to generate organize
-        if (
-            self._assets_stage
-            and self._assets_stage[0]
-            and self._assets_stage[0][0] != "-"
-        ):
-            renaming_map = {
-                os.path.relpath(file, "app"): file for file in self._assets_stage
-            }
+        assets_stage = self._get_assets_stage()
+
+        if assets_stage and assets_stage[0] and assets_stage[0][0] != "-":
+            renaming_map = {os.path.relpath(file, "app"): file for file in assets_stage}
         else:
             return None
 
@@ -303,11 +299,10 @@ class SpringBootFramework(Extension):
             "plugin": "dump",
             "source": ".",
             "organize": renaming_map,
-            "stage": self._assets_stage,
+            "stage": assets_stage,
         }
 
-    @property
-    def _assets_stage(self) -> list[str]:
+    def _get_assets_stage(self) -> list[str]:
         """Return the assets stage list for the Spring Boot project."""
         user_stage = (
             self.yaml_data.get("parts", {})
@@ -317,8 +312,8 @@ class SpringBootFramework(Extension):
 
         if not all(re.match("-? *app/", p) for p in user_stage):
             raise ExtensionError(
-                "The spring-boot-framework extension requires the 'stage' entry in the "
-                "spring-boot-framework/assets part to start with 'app/'",
+                "spring-boot-framework extension requires the 'stage' entry in the "
+                "spring-boot-framework/assets part to start with app",
                 doc_slug="/reference/extensions/spring-boot-framework",
                 logpath_report=False,
             )
