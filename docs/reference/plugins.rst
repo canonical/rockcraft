@@ -23,6 +23,7 @@ Rockcraft.
    /common/craft-parts/reference/plugins/jlink_plugin
    /common/craft-parts/reference/plugins/make_plugin
    plugins/maven_plugin
+   /common/craft-parts/reference/plugins/maven_use_plugin
    /common/craft-parts/reference/plugins/meson_plugin
    /common/craft-parts/reference/plugins/nil_plugin
    /common/craft-parts/reference/plugins/npm_plugin
