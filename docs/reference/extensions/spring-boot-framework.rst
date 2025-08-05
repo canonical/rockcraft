@@ -110,8 +110,8 @@ The ``spring-boot-framework`` uses the following configuration:
 =========================================================
 
 
-Some files, if they exist in the project root, are included by
-default in the rock in the ``/app`` directory.  These include:
+Some files, if they exist in the project root directory, are included by
+default in the rock in the ``/app`` directory.  These include
 ``migrate`` and ``migrate.sh``.
 
 You can customise the files to include by overriding the ``stage`` property
