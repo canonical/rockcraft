@@ -317,8 +317,8 @@ class SpringBootFramework(Extension):
 
         if not all(re.match("-? *app/", p) for p in user_stage):
             raise ExtensionError(
-                "spring-boot-framework extension requires the 'stage' entry in the "
-                "spring-boot-framework/assets part to start with app",
+                "The spring-boot-framework extension requires the 'stage' entry in the "
+                "spring-boot-framework/assets part to start with 'app/'",
                 doc_slug="/reference/extensions/spring-boot-framework",
                 logpath_report=False,
             )
