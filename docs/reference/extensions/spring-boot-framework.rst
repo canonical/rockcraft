@@ -106,6 +106,28 @@ The ``spring-boot-framework`` uses the following configuration:
         - base-files_tmp
 
 
+``parts`` > ``spring-boot-framework/assets`` > ``stage``
+=========================================================
+
+
+Some files, if they exist in the project root, are included by
+default in the rock in the ``/app`` directory.  These include:
+``migrate`` and ``migrate.sh``.
+
+You can customise the files to include by overriding the ``stage`` property
+of the ``spring-boot-framework/assets`` part:
+
+.. code-block:: yaml
+  :caption: rockcraft.yaml
+
+  parts:
+    go-framework/assets:
+      stage:
+        - app/migrate
+        - app/migrate.sh
+        - app/another_file_or_directory
+
+
 Useful links
 ============
 
