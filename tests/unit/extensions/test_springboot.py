@@ -558,4 +558,4 @@ def test_spring_boot_extension_extra_assets_start_with_app(
     with pytest.raises(ExtensionError) as exc:
         extensions.apply_extensions(tmp_path, spring_boot_input_yaml)
 
-    assert "start with app" in str(exc.value)
+    assert "start with 'app/'" in str(exc.value)
