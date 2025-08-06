@@ -68,7 +68,7 @@ def test_lifecycle_args(
         base_layer_dir=Path(),
         base_layer_hash=b"deadbeef",
         cache_dir=project_path / "cache",
-        ignore_local_sources=["*.rock"],
+        ignore_local_sources=[".craft", "*.rock"],
         parallel_build_count=4,
         partitions=None,
         project_name="test-rock",
