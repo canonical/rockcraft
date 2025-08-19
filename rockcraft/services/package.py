@@ -18,6 +18,8 @@
 
 import datetime
 import pathlib
+import re
+import shlex
 import typing
 from typing import cast
 
@@ -27,6 +29,7 @@ from overrides import override  # type: ignore[reportUnknownVariableType]
 
 from rockcraft import oci
 from rockcraft.models import Project
+from rockcraft.pebble import Pebble
 from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
 
 
@@ -132,15 +135,44 @@ def _pack(
 
         emit.progress(f"Setting the default OCI user to be {project.run_user}")
         new_image.set_default_user(userid, project.run_user)
+    
+    if project.entrypoint_command:
+        emit.progress("Setting OCI entrypoint")
 
-    emit.progress("Adding Pebble entrypoint")
+        # Check for additional args
+        regexp = re.match(r'^(.*?)\[\s*(.*?)\s*\]\s*$', project.entrypoint_command)
 
-    new_image.set_entrypoint(
-        project.entrypoint_service, project.build_base or project.base
-    )
-    if project.services and project.entrypoint_service in project.services:
-        new_image.set_cmd(project.services[project.entrypoint_service].command)
+        if regexp:
+            entrypoint = shlex.split(regexp.group(1) or "")
+            cmd = shlex.split(regexp.group(2) or "")            
+        else:
+            entrypoint = shlex.split(project.entrypoint_command)
+            cmd = []
 
+    else:    
+        emit.progress("Adding Pebble entrypoint")
+
+        entrypoint = Pebble.get_entrypoint(project.build_base or project.base)
+        cmd = []
+
+        if project.entrypoint_service:
+            entrypoint.extend(["--args", project.entrypoint_service])
+
+        if project.services and project.entrypoint_service in project.services:
+            command = project.services[project.entrypoint_service].command
+            command_sh_args = shlex.split(command or "")
+            try:
+                cmd = command_sh_args[
+                    command_sh_args.index("[") + 1 : command_sh_args.index("]")
+                ]
+            except ValueError:
+                emit.debug(
+                    f"The entrypoint-service command '{command}' has no default "
+                    "arguments. CMD won't be set."
+                )
+
+    new_image.set_entrypoint(entrypoint)
+    new_image.set_cmd(cmd)
     new_image.set_default_path(project.base)
 
     dumped = project.marshal()

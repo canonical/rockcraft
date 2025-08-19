@@ -99,6 +99,7 @@ class Project(BaseProject):
     services: dict[str, Service] | None = None
     checks: dict[str, Check] | None = None
     entrypoint_service: str | None = None
+    entrypoint_command: str | None = None
     base: BaseT  # type: ignore[reportIncompatibleVariableOverride]
     build_base: BuildBaseT = None  # type: ignore[reportIncompatibleVariableOverride]
 
@@ -272,6 +273,36 @@ class Project(BaseProject):
             ) from ex
 
         return entrypoint_service
+    
+    @pydantic.field_validator("entrypoint_command")
+    @classmethod
+    def _validate_entrypoint_command(
+        cls, entrypoint_command: str , info: pydantic.ValidationInfo
+    ) -> str | None:
+        
+        if info.data["entrypoint_service"]:
+            raise ValueError(
+                "entrypoint-command cannot be used along entrypoint-service."
+            )
+
+        if entrypoint_command is None:
+            raise ValueError(
+                "entrypoint-command cannot be null. Use '[]' instead."
+            )
+
+        craft_cli.emit.message(
+            "Warning: defining an entrypoint-command will result in a rock with an "
+            "atypical OCI Entrypoint. While that might be acceptable for testing and "
+            "personal use, it shall require prior approval before submitting to a "
+            "Canonical registry namespace."
+        )
+
+        if entrypoint_command.find("[") > entrypoint_command.find("]"):
+            raise IndexError(
+                "Bad syntax for the entrypoint-command's additional args"
+            )
+        
+        return entrypoint_command
 
     @pydantic.field_validator("environment")
     @classmethod
