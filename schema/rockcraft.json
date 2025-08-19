@@ -10893,6 +10893,18 @@
       ],
       "default": null,
       "title": "Entrypoint-Service"
+    },
+    "entrypoint-command": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Entrypoint-Command"
     }
   },
   "required": [
