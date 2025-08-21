@@ -85,6 +85,7 @@ class RockcraftPackageService(PackageService):
         return models.BaseMetadata()
 
 
+# ruff: noqa: PLR0915
 def _pack(
     *,
     prime_dir: pathlib.Path,
@@ -135,21 +136,21 @@ def _pack(
 
         emit.progress(f"Setting the default OCI user to be {project.run_user}")
         new_image.set_default_user(userid, project.run_user)
-    
+
     if project.entrypoint_command:
         emit.progress("Setting OCI entrypoint")
 
         # Check for additional args
-        regexp = re.match(r'^(.*?)\[\s*(.*?)\s*\]\s*$', project.entrypoint_command)
+        regexp = re.match(r"^(.*?)\[\s*(.*?)\s*\]\s*$", project.entrypoint_command)
 
         if regexp:
             entrypoint = shlex.split(regexp.group(1) or "")
-            cmd = shlex.split(regexp.group(2) or "")            
+            cmd = shlex.split(regexp.group(2) or "")
         else:
             entrypoint = shlex.split(project.entrypoint_command)
             cmd = []
 
-    else:    
+    else:
         emit.progress("Adding Pebble entrypoint")
 
         entrypoint = Pebble.get_entrypoint(project.build_base or project.base)

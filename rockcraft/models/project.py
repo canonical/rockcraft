@@ -273,21 +273,15 @@ class Project(BaseProject):
             ) from ex
 
         return entrypoint_service
-    
+
     @pydantic.field_validator("entrypoint_command")
     @classmethod
     def _validate_entrypoint_command(
-        cls, entrypoint_command: str , info: pydantic.ValidationInfo
+        cls, entrypoint_command: str, info: pydantic.ValidationInfo
     ) -> str | None:
-        
         if info.data["entrypoint_service"]:
             raise ValueError(
                 "entrypoint-command cannot be used along entrypoint-service."
-            )
-
-        if entrypoint_command is None:
-            raise ValueError(
-                "entrypoint-command cannot be null. Use '[]' instead."
             )
 
         craft_cli.emit.message(
@@ -298,10 +292,8 @@ class Project(BaseProject):
         )
 
         if entrypoint_command.find("[") > entrypoint_command.find("]"):
-            raise IndexError(
-                "Bad syntax for the entrypoint-command's additional args"
-            )
-        
+            raise IndexError("Bad syntax for the entrypoint-command's additional args.")
+
         return entrypoint_command
 
     @pydantic.field_validator("environment")
