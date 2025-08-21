@@ -8,8 +8,10 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-
+    runs-on: ${{ matrix.arch }}
+    strategy:
+      matrix:
+        arch: [ubuntu-latest, ubuntu-24.04-arm]
     steps:
       - name: Checkout rockcraft
         uses: actions/checkout@v4
