@@ -29,8 +29,8 @@ jobs:
       - name: Upload rockcraft snap
         uses: actions/upload-artifact@v4
         with:
-          name: snap
-          path: ${{ steps.build-rockcraft.outputs.snap }}.${{ matrix.arch }}
+          name: snap.${{ matrix.arch }}
+          path: ${{ steps.build-rockcraft.outputs.snap }}
 
       - name: Get branch name
         id: vars
