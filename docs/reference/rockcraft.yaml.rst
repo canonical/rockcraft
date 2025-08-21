@@ -178,6 +178,23 @@ contain an optional argument that will become the OCI CMD.
    environment has unalterable assumptions about the container image's
    entrypoint.
 
+``entrypoint-command``
+------------------------
+
+**Type**: string
+
+**Required**: No
+
+The optional ``entrypoint`` and ``CMD`` to override the default
+``["/bin/pebble", "enter"]`` entrypoint. It should be provided in the following
+format: ``entrypoint [ CMD ]``. If either ``entrypoint`` or ``CMD`` is omitted,
+Rockcraft will set it to ``null`` in the final image.
+
+.. warning::
+   This option must only be used in cases where the targeted deployment
+   environment has unalterable assumptions about the container image's
+   entrypoint.
+
 ``checks``
 ------------
 
