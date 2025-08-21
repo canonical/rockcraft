@@ -325,6 +325,55 @@ def test_project_entrypoint_service_absent(yaml_loaded_data):
     assert project.entrypoint_service is None
 
 
+@pytest.mark.parametrize("entrypoint_command", ["echo foo"])
+def test_project_entrypoint_command_conflict(yaml_loaded_data, entrypoint_command):
+    yaml_loaded_data["entrypoint-command"] = entrypoint_command
+    yaml_loaded_data["entrypoint-service"] = "test-service"
+
+    with pytest.raises(CraftValidationError) as err:
+        load_project_yaml(yaml_loaded_data)
+    expected = (
+        "Bad rockcraft.yaml content:\n"
+        "- entrypoint-command cannot be used along entrypoint-service. "
+        "(in field 'entrypoint-command')"
+    )
+    assert str(err.value) == expected
+
+
+@pytest.mark.parametrize("entrypoint_command", ["echo ] invalid ["])
+def test_project_entrypoint_command_invalid(yaml_loaded_data, entrypoint_command):
+    yaml_loaded_data.pop("entrypoint-service")  # Avoid conflict
+    yaml_loaded_data["entrypoint-command"] = entrypoint_command
+    with pytest.raises(IndexError) as err:
+        load_project_yaml(yaml_loaded_data)
+
+    expected = "Bad syntax for the entrypoint-command's additional args."
+    assert str(err.value) == expected
+
+
+@pytest.mark.parametrize(
+    "entrypoint_command", ["", "echo foo", "echo [ foo ]", "[ echo foo ]"]
+)
+def test_project_entrypoint_command_valid(
+    yaml_loaded_data, emitter, entrypoint_command
+):
+    yaml_loaded_data.pop("entrypoint-service")  # Avoid conflict
+    yaml_loaded_data["entrypoint-command"] = entrypoint_command
+    project = Project.unmarshal(yaml_loaded_data)
+    assert project.entrypoint_command == entrypoint_command
+    emitter.assert_message(
+        "Warning: defining an entrypoint-command will result in a rock with "
+        "an atypical OCI Entrypoint. While that might be acceptable for "
+        "testing and personal use, it shall require prior approval before "
+        "submitting to a Canonical registry namespace."
+    )
+
+
+def test_project_entrypoint_command_absent(yaml_loaded_data):
+    project = Project.unmarshal(yaml_loaded_data)
+    assert project.entrypoint_command is None
+
+
 def test_project_build_base(yaml_loaded_data):
     yaml_loaded_data["build-base"] = "ubuntu@22.04"
 
