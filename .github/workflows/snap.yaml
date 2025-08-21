@@ -8,8 +8,14 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      matrix:
+        include:
+          - runner: ubuntu-latest
+            arch: amd64
+          - runner: ubuntu-24.04-arm
+            arch: arm64
     steps:
       - name: Checkout rockcraft
         uses: actions/checkout@v4
@@ -23,7 +29,7 @@ jobs:
       - name: Upload rockcraft snap
         uses: actions/upload-artifact@v4
         with:
-          name: snap
+          name: snap.${{ matrix.arch }}
           path: ${{ steps.build-rockcraft.outputs.snap }}
 
       - name: Get branch name
