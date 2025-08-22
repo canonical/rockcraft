@@ -185,8 +185,8 @@ contain an optional argument that will become the OCI CMD.
 
 **Required**: No
 
-Replace the rock's default Pebble OCI entrypoint and CMD. 
-The value may be optionally suffixed with default entrypoint arguments, 
+Replace the rock's default Pebble OCI entrypoint and CMD.
+The value may be optionally suffixed with default entrypoint arguments,
 using the same syntax as the Pebble service command ("[ ]"). If provided,
 these default entrypoint arguments become the rock's OCI CMD.
 Example: ``echo [ Hello ]``
