@@ -6,7 +6,8 @@ dependencies = [
     "craft-application~=5.6",
     "craft-archives~=2.1",
     "craft-cli~=3.1",
-    "craft-parts~=2.20",
+    #"craft-parts~=2.20",
+    "craft-parts @ git+https://github.com/canonical/craft-parts@work/IMAGECRAFT-44-Implement-overlay-packages-when-parts-organize-into-the-overlay",
     "craft-platforms~=0.10",
     # craft-providers is pinned to 2.2 until this is fixed:
     # https://github.com/canonical/craft-providers/issues/753
