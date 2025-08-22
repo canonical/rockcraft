@@ -279,7 +279,7 @@ class Project(BaseProject):
     def _validate_entrypoint_command(
         cls, entrypoint_command: str, info: pydantic.ValidationInfo
     ) -> str | None:
-        if info.data["entrypoint_service"]:
+        if info.data.get("entrypoint_service", {}):
             raise ValueError(
                 "The option 'entrypoint-command' cannot be used along entrypoint-service."
             )
