@@ -185,19 +185,19 @@ contain an optional argument that will become the OCI CMD.
 
 **Required**: No
 
-The optional command to override the default ``pebble enter`` entrypoint.
-It must be provided in the following format: ``command [ args ]``. When provided,
-the rock's entrypoint becomes the entrypoint-command's value, minus the args
-within ``[ ]``, which will be seen as default arguments and thus defined as the
-rock's OCI Cmd.
+Replace the rock's default Pebble OCI entrypoint and CMD. 
+The value may be optionally suffixed with default entrypoint arguments, 
+using the same syntax as the Pebble service command ("[ ]"). If provided,
+these default entrypoint arguments become the rock's OCI CMD.
+Example: ``echo [ Hello ]``
+
+.. note::
+   This option cannot be used together with ``entrypoint-service``.
 
 .. warning::
-   This option cannot be used along ``entrypoint-service``
-
-.. warning::
-   This option must only be used in cases where the targeted deployment
-   environment has unalterable assumptions about the container image's
-   entrypoint.
+    This option must only be used if absolutely necessary, and within
+    certain categories of general-purpose rocks where Pebble services may not
+    be fitted (e.g. OS and base images such as Ubuntu.)
 
 ``checks``
 ------------
