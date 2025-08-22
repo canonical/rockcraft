@@ -18,7 +18,6 @@
 
 import datetime
 import pathlib
-import re
 import shlex
 import typing
 from typing import cast
@@ -122,7 +121,6 @@ def _pack(
         base_layer_dir=base_layer_dir,
     )
     emit.progress("Created new layer")
-
     if project.run_user:
         emit.progress(f"Creating new user {project.run_user}")
         userid = SUPPORTED_GLOBAL_USERNAMES[project.run_user]["uid"]
@@ -140,15 +138,19 @@ def _pack(
     if project.entrypoint_command:
         emit.progress("Setting OCI entrypoint")
 
-        # Check for additional args
-        regexp = re.match(r"^(.*?)\[\s*(.*?)\s*\]\s*$", project.entrypoint_command)
+        entrypoint: list[str] = []
+        cmd: list[str] = []
 
-        if regexp:
-            entrypoint = shlex.split(regexp.group(1) or "")
-            cmd = shlex.split(regexp.group(2) or "")
-        else:
-            entrypoint = shlex.split(project.entrypoint_command)
-            cmd = []
+        # Check arguments
+        in_brackets = False
+        for arg in shlex.split(project.entrypoint_command):
+            if arg == "[":
+                in_brackets = True
+                continue
+            if arg == "]":
+                in_brackets = False
+                continue
+            (cmd if in_brackets else entrypoint).append(arg)
 
     else:
         emit.progress("Adding Pebble entrypoint")

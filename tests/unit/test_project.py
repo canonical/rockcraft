@@ -340,19 +340,40 @@ def test_project_entrypoint_command_conflict(yaml_loaded_data, entrypoint_comman
     assert str(err.value) == expected
 
 
-@pytest.mark.parametrize("entrypoint_command", ["echo ] invalid ["])
-def test_project_entrypoint_command_invalid(yaml_loaded_data, entrypoint_command):
+@pytest.mark.parametrize(
+    ("entrypoint_command", "expected_msg"),
+    [
+        ("entrypoint [ cmd [ nested ] ]", "cannot nest [ ... ] groups."),
+        (
+            "entrypoint [ cmd ] [ extra ]",
+            "cannot have any arguments after [ ... ] group.",
+        ),
+    ],
+)
+def test_project_entrypoint_command_invalid(
+    yaml_loaded_data, entrypoint_command, expected_msg
+):
     yaml_loaded_data.pop("entrypoint-service")  # Avoid conflict
     yaml_loaded_data["entrypoint-command"] = entrypoint_command
-    with pytest.raises(IndexError) as err:
+    with pytest.raises(CraftValidationError) as err:
         load_project_yaml(yaml_loaded_data)
-
-    expected = "Bad syntax for the entrypoint-command's additional args."
+    expected = (
+        f"Bad rockcraft.yaml content:\n- {expected_msg} (in field 'entrypoint-command')"
+    )
     assert str(err.value) == expected
 
 
 @pytest.mark.parametrize(
-    "entrypoint_command", ["", "echo foo", "echo [ foo ]", "[ echo foo ]"]
+    "entrypoint_command",
+    [
+        "",
+        "echo foo",
+        "echo [ foo ]",
+        "[ echo foo ]",
+        "echo 'happy :-]'",
+        "echo 'sad :-['",
+        "echo '[ foo ]' [ bar ]",
+    ],
 )
 def test_project_entrypoint_command_valid(
     yaml_loaded_data, emitter, entrypoint_command

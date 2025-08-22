@@ -291,8 +291,21 @@ class Project(BaseProject):
             "Canonical registry namespace."
         )
 
-        if entrypoint_command.find("[") > entrypoint_command.find("]"):
-            raise IndexError("Bad syntax for the entrypoint-command's additional args.")
+        # Check arguments
+        args = shlex.split(entrypoint_command)
+        in_brackets, got_brackets = False, False
+
+        for arg in args:
+            if in_brackets:
+                if arg == "[":
+                    raise ValueError("Cannot nest [ ... ] groups.")
+                if arg == "]":
+                    in_brackets = False
+                continue
+            if got_brackets:
+                raise ValueError("Cannot have any arguments after [ ... ] group.")
+            if arg == "[":
+                in_brackets, got_brackets = True, True
 
         return entrypoint_command
 
