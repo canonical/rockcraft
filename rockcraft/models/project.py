@@ -281,7 +281,7 @@ class Project(BaseProject):
     ) -> str | None:
         if info.data["entrypoint_service"]:
             raise ValueError(
-                "entrypoint-command cannot be used along entrypoint-service."
+                "The option 'entrypoint-command' cannot be used along entrypoint-service."
             )
 
         craft_cli.emit.message(

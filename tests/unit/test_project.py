@@ -334,7 +334,7 @@ def test_project_entrypoint_command_conflict(yaml_loaded_data, entrypoint_comman
         load_project_yaml(yaml_loaded_data)
     expected = (
         "Bad rockcraft.yaml content:\n"
-        "- entrypoint-command cannot be used along entrypoint-service. "
+        "- the option 'entrypoint-command' cannot be used along entrypoint-service. "
         "(in field 'entrypoint-command')"
     )
     assert str(err.value) == expected
