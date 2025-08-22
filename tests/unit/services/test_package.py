@@ -19,6 +19,7 @@ from typing import cast
 import pytest
 from craft_application import ServiceFactory
 from craft_platforms import DebianArchitecture
+from rockcraft.models import Project
 from rockcraft.services import RockcraftImageService, package
 
 
@@ -60,4 +61,158 @@ def test_pack(fake_services: ServiceFactory, default_image_info, mocker):
         project=fake_services.get("project").get(),
         project_base_image=default_image_info.base_image,
         rock_suffix="bob",
+    )
+
+
+@pytest.mark.usefixtures("fake_project_file", "project_keys")
+@pytest.mark.parametrize(
+    ("project_keys", "expected_entrypoint", "expected_cmd"),
+    [
+        # Most common scenario
+        (
+            {
+                "run_user": "_daemon_",
+                "environment": {"test": "foo"},
+                "services": {"test": {"override": "replace", "command": "echo foo"}},
+            },
+            ["/usr/bin/pebble", "enter"],
+            [],
+        ),
+        # Entrypoint service set
+        (
+            {
+                "run_user": "_daemon_",
+                "environment": {"test": "foo"},
+                "services": {
+                    "test": {"override": "replace", "command": "echo [ foo ]"}
+                },
+                "entrypoint_service": "test",
+            },
+            ["/usr/bin/pebble", "enter", "--args", "test"],
+            ["foo"],
+        ),
+        # Entrypoint command set
+        (
+            {
+                "run_user": "_daemon_",
+                "environment": {"test": "foo"},
+                "services": {"test": {"override": "replace", "command": "echo foo"}},
+                "entrypoint_command": "echo [ foo ]",
+            },
+            ["echo"],
+            ["foo"],
+        ),
+        # Entrypoint command with no CMD
+        (
+            {
+                "run_user": "_daemon_",
+                "environment": {"test": "foo"},
+                "services": {"test": {"override": "replace", "command": "echo foo"}},
+                "entrypoint_command": "echo",
+            },
+            ["echo"],
+            [],
+        ),
+        # Entrypoint command with only CMD
+        (
+            {
+                "run_user": "_daemon_",
+                "environment": {"test": "foo"},
+                "services": {"test": {"override": "replace", "command": "echo foo"}},
+                "entrypoint_command": "[ echo foo ]",
+            },
+            [],
+            ["echo", "foo"],
+        ),
+        # Entrypoint command edge case
+        (
+            {
+                "run_user": "_daemon_",
+                "environment": {"test": "foo"},
+                "services": {"test": {"override": "replace", "command": "echo foo"}},
+                "entrypoint_command": "echo '[ foo ]' [ bar ]",
+            },
+            ["echo", "[ foo ]"],
+            ["bar"],
+        ),
+    ],
+)
+def test_inner_pack(
+    fake_services: ServiceFactory, mocker, expected_entrypoint, expected_cmd
+):
+    fake_services.get("project").configure(platform=None, build_for=None)
+    project = cast(Project, fake_services.get("project").get())
+
+    # Vars for reuse
+    tag = cast(str, project.version)
+    base_layer_dir = Path()
+    prime_dir = Path("prime")
+    annotations = {"annotation": "foo"}
+    metadata = {"metadata": "bar"}
+
+    # Mock the resulting image and the functions called
+    image = mocker.Mock()
+
+    image.add_user = mocker.Mock()
+    image.set_default_user = mocker.Mock()
+    image.set_entrypoint = mocker.Mock()
+    image.set_cmd = mocker.Mock()
+    image.set_default_path = mocker.Mock()
+    image.set_pebble_layer = mocker.Mock()
+    image.set_environment = mocker.Mock()
+    image.set_annotations = mocker.Mock()
+    image.set_control_data = mocker.Mock()
+    image.set_media_type = mocker.Mock()
+    image.to_oci_archive = mocker.Mock()
+    image.add_layer = mocker.Mock(return_value=image)
+
+    # Mock generate metadata function
+    mocker.patch.object(
+        Project, "generate_metadata", return_value=(annotations, metadata)
+    )
+
+    # Call the internal pack function
+    package._pack(
+        base_digest=b"deadbeef",
+        base_layer_dir=base_layer_dir,
+        build_for="amd64",
+        prime_dir=prime_dir,
+        project=project,
+        project_base_image=image,
+        rock_suffix="test-rock",
+    )
+
+    # Assertions
+    image.add_layer.assert_called_once_with(
+        tag=tag, new_layer_dir=prime_dir, base_layer_dir=base_layer_dir
+    )
+
+    image.add_user.assert_called_once_with(
+        prime_dir=prime_dir,
+        base_layer_dir=base_layer_dir,
+        tag=tag,
+        username=project.run_user,
+        uid=584792,
+    )
+    image.set_default_user.assert_called_once_with(584792, project.run_user)
+    image.set_entrypoint.assert_called_once_with(expected_entrypoint)
+    image.set_cmd.assert_called_once_with(expected_cmd)
+    image.set_default_path.assert_called_once_with(project.base)
+    image.set_pebble_layer.assert_called_once_with(
+        services=project.marshal().get("services", {}),
+        checks=project.marshal().get("checks", {}),
+        name=project.name,
+        tag=tag,
+        summary=project.summary,
+        description=project.description,
+        base_layer_dir=base_layer_dir,
+    )
+    image.set_environment.assert_called_once_with(project.environment)
+    image.set_annotations.assert_called_once_with(annotations)
+    image.set_control_data.assert_called_once_with(
+        {**metadata, "architecture": "amd64"}
+    )
+    image.set_media_type.assert_called_once_with()
+    image.to_oci_archive.assert_called_once_with(
+        tag=project.version, filename=f"{project.name}_{project.version}_test-rock.rock"
     )
