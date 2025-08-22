@@ -185,10 +185,14 @@ contain an optional argument that will become the OCI CMD.
 
 **Required**: No
 
-The optional ``entrypoint`` and ``CMD`` to override the default
-``["/bin/pebble", "enter"]`` entrypoint. It should be provided in the following
-format: ``entrypoint [ CMD ]``. If either ``entrypoint`` or ``CMD`` is omitted,
-Rockcraft will set it to ``null`` in the final image.
+The optional command to override the default ``pebble enter`` entrypoint.
+It must be provided in the following format: ``command [ args ]``. When provided,
+the rock's entrypoint becomes the entrypoint-command's value, minus the args
+within ``[ ]``, which will be seen as default arguments and thus defined as the
+rock's OCI Cmd.
+
+.. warning::
+   This option cannot be used along ``entrypoint-service``
 
 .. warning::
    This option must only be used in cases where the targeted deployment
