@@ -4,7 +4,7 @@ base: ubuntu@22.04
 summary: A rock with an entrypoint-command field
 description: A rock with an entrypoint-command field
 license: Apache-2.0
-entrypoint-command: "[]"
+entrypoint-command: "[ ]"
 
 platforms:
   amd64:

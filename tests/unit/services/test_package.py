@@ -124,6 +124,17 @@ def test_pack(fake_services: ServiceFactory, default_image_info, mocker):
             [],
             ["echo", "foo"],
         ),
+        # Empty entrypoint command
+        (
+            {
+                "run_user": "_daemon_",
+                "environment": {"test": "foo"},
+                "services": {"test": {"override": "replace", "command": "echo foo"}},
+                "entrypoint_command": "[ ]",
+            },
+            [],
+            [],
+        ),
         # Entrypoint command edge case
         (
             {
