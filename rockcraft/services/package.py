@@ -18,7 +18,6 @@
 
 import datetime
 import pathlib
-import shlex
 import typing
 from typing import cast
 
@@ -30,6 +29,7 @@ from rockcraft import oci
 from rockcraft.models import Project
 from rockcraft.pebble import Pebble
 from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
+from rockcraft.utils import parse_command
 
 
 class RockcraftPackageService(PackageService):
@@ -84,7 +84,6 @@ class RockcraftPackageService(PackageService):
         return models.BaseMetadata()
 
 
-# ruff: noqa: PLR0915
 def _pack(
     *,
     prime_dir: pathlib.Path,
@@ -137,21 +136,7 @@ def _pack(
 
     if project.entrypoint_command:
         emit.progress("Setting OCI entrypoint")
-
-        entrypoint: list[str] = []
-        cmd: list[str] = []
-
-        # Check arguments
-        in_brackets = False
-        for arg in shlex.split(project.entrypoint_command):
-            if arg == "[":
-                in_brackets = True
-                continue
-            if arg == "]":
-                in_brackets = False
-                continue
-            (cmd if in_brackets else entrypoint).append(arg)
-
+        entrypoint, cmd = parse_command(project.entrypoint_command)
     else:
         emit.progress("Adding Pebble entrypoint")
 
@@ -163,16 +148,7 @@ def _pack(
 
         if project.services and project.entrypoint_service in project.services:
             command = project.services[project.entrypoint_service].command
-            command_sh_args = shlex.split(command or "")
-            try:
-                cmd = command_sh_args[
-                    command_sh_args.index("[") + 1 : command_sh_args.index("]")
-                ]
-            except ValueError:
-                emit.debug(
-                    f"The entrypoint-service command '{command}' has no default "
-                    "arguments. CMD won't be set."
-                )
+            cmd = parse_command(command or "")[1]
 
     new_image.set_entrypoint(entrypoint)
     new_image.set_cmd(cmd)

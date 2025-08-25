@@ -17,7 +17,6 @@
 """Project definition and helpers."""
 
 import re
-import shlex
 import typing
 from collections.abc import Mapping
 from typing import TYPE_CHECKING, Annotated, Any, Literal
@@ -39,6 +38,7 @@ from rockcraft.architectures import SUPPORTED_ARCHS
 from rockcraft.parts import part_has_overlay
 from rockcraft.pebble import Check, Service
 from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
+from rockcraft.utils import parse_command
 
 # pyright workaround
 if TYPE_CHECKING:
@@ -256,21 +256,14 @@ class Project(BaseProject):
                 "valid Pebble service."
             )
 
-        command = info.data["services"][entrypoint_service].command
-        command_sh_args = shlex.split(command)
-        # optional arg is surrounded by brackets, so check that they exist in the
-        # right order
-        try:
-            if command_sh_args.index("[") >= command_sh_args.index("]"):
-                raise IndexError(
-                    "Bad syntax for the entrypoint-service command's additional args."
-                )
-        except ValueError as ex:
+        command, args = parse_command(info.data["services"][entrypoint_service].command)
+
+        if len(args) == 0:
             raise ValueError(
-                f"The Pebble service '{entrypoint_service}' has a command {command} "
+                f"The Pebble service '{entrypoint_service}' has a command {' '.join(command)} "
                 "without default arguments and thus cannot be used as the "
                 "entrypoint-service."
-            ) from ex
+            )
 
         return entrypoint_service
 
@@ -292,20 +285,7 @@ class Project(BaseProject):
         )
 
         # Check arguments
-        args = shlex.split(entrypoint_command)
-        in_brackets, got_brackets = False, False
-
-        for arg in args:
-            if in_brackets:
-                if arg == "[":
-                    raise ValueError("Cannot nest [ ... ] groups.")
-                if arg == "]":
-                    in_brackets = False
-                continue
-            if got_brackets:
-                raise ValueError("Cannot have any arguments after [ ... ] group.")
-            if arg == "[":
-                in_brackets, got_brackets = True, True
+        parse_command(entrypoint_command)
 
         return entrypoint_command
 

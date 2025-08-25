@@ -19,6 +19,7 @@
 import logging
 import os
 import pathlib
+import shlex
 import shutil
 from typing import NamedTuple
 
@@ -121,3 +122,37 @@ def get_snap_command_path(command_name: str) -> str:
         )
 
     return command_path
+
+
+def parse_command(command: str) -> tuple[list[str], list[str]]:
+    """Parse command using shlex and return the command and its arguments split in lists inside a tuple.
+
+    :param command: the command string to be parsed
+    :return: Tuple containing the command and its arguments split in lists
+
+    :raises ValueError: if command is invalid
+    :raises IndexError: if additional arguments' syntax is wrong
+    """
+    cmd: list[str] = []
+    args: list[str] = []
+
+    in_brackets, got_brackets = False, False
+    for arg in shlex.split(command):
+        if in_brackets:
+            if arg == "[":
+                raise ValueError("Cannot nest [ ... ] groups.")
+            if arg == "]":
+                in_brackets = False
+                continue
+            args.append(arg)
+            continue
+        if got_brackets:
+            raise ValueError("Cannot have any arguments after [ ... ] group.")
+        if arg == "[":
+            in_brackets, got_brackets = True, True
+        elif arg == "]":
+            raise IndexError("Bad syntax for the command's additional args.")
+        else:
+            cmd.append(arg)
+
+    return (cmd, args)

@@ -77,7 +77,10 @@ services:
         override: replace
         command: echo [ foo ]
         on-failure: restart
-
+    no-args-command-service:
+        override: replace
+        command: echo
+        on-failure: restart
 parts:
     foo:
         plugin: nil
@@ -132,6 +135,7 @@ def test_project_unmarshal(check, yaml_loaded_data):
         if attr == "services":
             # Services are classes and not Dicts upfront
             v["test-service"] = Service(**v["test-service"])
+            v["no-args-command-service"] = Service(**v["no-args-command-service"])
 
         check.equal(getattr(project, attr.replace("-", "_")), v)
 
@@ -305,16 +309,25 @@ def test_project_entrypoint_service_valid(
     )
 
 
-@pytest.mark.parametrize("entrypoint_service", ["baz"])
-def test_project_entrypoint_service_invalid(yaml_loaded_data, entrypoint_service):
+@pytest.mark.parametrize(
+    ("entrypoint_service", "expected_msg"),
+    [
+        ("baz", "the provided entrypoint-service 'baz' is not a valid Pebble service."),
+        (
+            "no-args-command-service",
+            "the Pebble service 'no-args-command-service' has a command echo without default arguments and thus cannot be used as the entrypoint-service.",
+        ),
+    ],
+)
+def test_project_entrypoint_service_invalid(
+    yaml_loaded_data, entrypoint_service, expected_msg
+):
     yaml_loaded_data["entrypoint-service"] = entrypoint_service
     with pytest.raises(CraftValidationError) as err:
         load_project_yaml(yaml_loaded_data)
 
     expected = (
-        "Bad rockcraft.yaml content:\n"
-        "- the provided entrypoint-service 'baz' is not a valid Pebble service. "
-        "(in field 'entrypoint-service')"
+        f"Bad rockcraft.yaml content:\n- {expected_msg} (in field 'entrypoint-service')"
     )
     assert str(err.value) == expected
 
@@ -746,6 +759,10 @@ services:
   test-service:
     override: replace
     command: echo [ foo ]
+    on-failure: restart
+  no-args-command-service:
+    override: replace
+    command: echo
     on-failure: restart
 entrypoint-service: test-service
 """
