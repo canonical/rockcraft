@@ -78,6 +78,17 @@ def test_pack(fake_services: ServiceFactory, default_image_info, mocker):
             ["/usr/bin/pebble", "enter"],
             [],
         ),
+        # Most common scenario (22.04 base, different pebble location)
+        (
+            {
+                "base": "ubuntu@22.04",
+                "run_user": "_daemon_",
+                "environment": {"test": "foo"},
+                "services": {"test": {"override": "replace", "command": "echo foo"}},
+            },
+            ["/bin/pebble", "enter"],
+            [],
+        ),
         # Entrypoint service set
         (
             {
