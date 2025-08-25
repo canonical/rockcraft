@@ -348,6 +348,10 @@ def test_project_entrypoint_command_conflict(yaml_loaded_data, entrypoint_comman
             "entrypoint [ cmd ] [ extra ]",
             "cannot have any arguments after [ ... ] group.",
         ),
+        (
+            "entrypoint 'unclosed string",
+            "no closing quotation",
+        ),
     ],
 )
 def test_project_entrypoint_command_invalid(
