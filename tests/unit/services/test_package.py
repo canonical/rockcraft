@@ -20,6 +20,7 @@ import pytest
 from craft_application import ServiceFactory
 from craft_platforms import DebianArchitecture
 from rockcraft.models import Project
+from rockcraft.oci import Image
 from rockcraft.services import RockcraftImageService, package
 
 
@@ -173,20 +174,8 @@ def test_inner_pack(
     metadata = {"metadata": "bar"}
 
     # Mock the resulting image and the functions called
-    image = mocker.Mock()
-
-    image.add_user = mocker.Mock()
-    image.set_default_user = mocker.Mock()
-    image.set_entrypoint = mocker.Mock()
-    image.set_cmd = mocker.Mock()
-    image.set_default_path = mocker.Mock()
-    image.set_pebble_layer = mocker.Mock()
-    image.set_environment = mocker.Mock()
-    image.set_annotations = mocker.Mock()
-    image.set_control_data = mocker.Mock()
-    image.set_media_type = mocker.Mock()
-    image.to_oci_archive = mocker.Mock()
-    image.add_layer = mocker.Mock(return_value=image)
+    image = mocker.create_autospec(Image, instance=True)
+    image.add_layer.return_value = image
 
     # Mock generate metadata function
     mocker.patch.object(
