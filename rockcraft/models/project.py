@@ -63,6 +63,13 @@ MESSAGE_INVALID_NAME = (
     "and may not have two hyphens in a row."
 )
 
+MESSAGE_ENTRYPOINT_CHANGED = (
+    "This operation will result in a rock with an "
+    "atypical OCI Entrypoint. While that might be acceptable for testing and "
+    "personal use, it shall require prior approval before submitting to a "
+    "Canonical registry namespace."
+)
+
 DEPRECATED_COLON_BASES = ["ubuntu:20.04", "ubuntu:22.04"]
 
 
@@ -244,10 +251,7 @@ class Project(BaseProject):
     ) -> str | None:
         """Verify that the entrypoint_service exists in the services dict."""
         craft_cli.emit.message(
-            "Warning: defining an entrypoint-service will result in a rock with an "
-            "atypical OCI Entrypoint. While that might be acceptable for testing and "
-            "personal use, it shall require prior approval before submitting to a "
-            "Canonical registry namespace."
+            f"Warning: 'entrypoint-service' is defined. {MESSAGE_ENTRYPOINT_CHANGED}"
         )
 
         if entrypoint_service not in info.data.get("services", {}):
@@ -278,10 +282,7 @@ class Project(BaseProject):
             )
 
         craft_cli.emit.message(
-            "Warning: defining an entrypoint-command will result in a rock with an "
-            "atypical OCI Entrypoint. While that might be acceptable for testing and "
-            "personal use, it shall require prior approval before submitting to a "
-            "Canonical registry namespace."
+            f"Warning: 'entrypoint-command' is defined. {MESSAGE_ENTRYPOINT_CHANGED}"
         )
 
         # Check arguments

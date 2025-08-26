@@ -302,7 +302,7 @@ def test_project_entrypoint_service_valid(
     project = Project.unmarshal(yaml_loaded_data)
     assert project.entrypoint_service == entrypoint_service
     emitter.assert_message(
-        "Warning: defining an entrypoint-service will result in a rock with "
+        "Warning: 'entrypoint-service' is defined. This operation will result in a rock with "
         "an atypical OCI Entrypoint. While that might be acceptable for "
         "testing and personal use, it shall require prior approval before "
         "submitting to a Canonical registry namespace."
@@ -400,7 +400,7 @@ def test_project_entrypoint_command_valid(
     project = Project.unmarshal(yaml_loaded_data)
     assert project.entrypoint_command == entrypoint_command
     emitter.assert_message(
-        "Warning: defining an entrypoint-command will result in a rock with "
+        "Warning: 'entrypoint-command' is defined. This operation will result in a rock with "
         "an atypical OCI Entrypoint. While that might be acceptable for "
         "testing and personal use, it shall require prior approval before "
         "submitting to a Canonical registry namespace."
