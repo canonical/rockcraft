@@ -185,14 +185,16 @@ contain an optional argument that will become the `OCI CMD`_.
 
 **Required**: No
 
-Replace the rock's default Pebble `OCI entrypoint`_ and CMD.
-The value may be optionally suffixed with default entrypoint arguments,
-using the same syntax as the Pebble service command ("[ ]"). If provided,
-these default entrypoint arguments become the rock's `OCI CMD`_.
-Example: ``echo [ Hello ]``
+Replaces the rock's default Pebble `OCI entrypoint`_ and `OCI CMD`_ properties.
+The value can be suffixed with default entrypoint arguments,
+using the same square bracket list delimiters ([]) as the Pebble service command.
+If provided, these default entrypoint arguments become the rock's OCI CMD. For example:
 
-.. note::
-   This option cannot be used together with ``entrypoint-service``.
+.. code-block::
+
+   echo [ Hello ]
+
+This key and the ``entrypoint-service`` are mutually incompatible and can't both be set.
 
 .. warning::
     This option must only be used if absolutely necessary, and within
