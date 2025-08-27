@@ -15,6 +15,7 @@ parts:
     source: src
     python-packages: [black]
     stage-packages: [python3-venv, python3-cpuinfo]
+    build-attributes: [not-usrmerged]
 
   check-pythonpath:
     plugin: dump

@@ -138,6 +138,7 @@ class Pebble:
         "override-prime": str(
             f"craftctl default\nmkdir -p {PEBBLE_LAYERS_PATH}\nchmod 777 {PEBBLE_PATH}"
         ),
+        "build-attributes": ["not-usrmerged"],
     }
     PEBBLE_PART_SPEC = {
         **_BASE_PART_SPEC,

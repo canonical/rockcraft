@@ -50,6 +50,7 @@ class RockcraftLifecycleService(LifecycleService):
             base=project.base,
             project_name=project.name,
             rootfs_dir=image_info.base_layer_dir,
+            usrmerged_by_default=True,
         )
         super().setup()
 
