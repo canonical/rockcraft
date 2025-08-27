@@ -17,5 +17,6 @@ jobs:
     with:
       lowest-python-version: ""
       fast-test-platforms: '[["jammy", "amd64"], ["noble", "amd64"]]'
-      fast-test-python-versions: '["3.10", "3.12"]'
+      fast-test-python-versions: '["3.12"]'
       slow-test-platforms: '[["jammy", "amd64"], ["noble", "amd64"]]'
+      slow-test-python-versions: '["3.12"]'

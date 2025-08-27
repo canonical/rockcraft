@@ -20,7 +20,7 @@ import re
 import shlex
 import typing
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Annotated, Any, Literal
+from typing import TYPE_CHECKING, Annotated, Any, Literal, override
 
 import craft_cli
 import pydantic
@@ -33,7 +33,6 @@ from craft_application.models import Project as BaseProject
 from craft_application.models.base import alias_generator
 from craft_providers import bases
 from craft_providers.errors import BaseConfigurationError
-from typing_extensions import override
 
 from rockcraft.architectures import SUPPORTED_ARCHS
 from rockcraft.parts import part_has_overlay

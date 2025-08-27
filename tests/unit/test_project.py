@@ -581,7 +581,7 @@ def pebble_project(pebble_spec) -> str:
 
 def test_project_generate_metadata(yaml_loaded_data):
     project = Project.unmarshal(yaml_loaded_data)
-    now = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    now = datetime.datetime.now(datetime.UTC).isoformat()
 
     digest = "a1b2c3"  # mock digest
     oci_annotations, rock_metadata = project.generate_metadata(
@@ -626,7 +626,7 @@ def test_metadata_base_devel(yaml_loaded_data):
     yaml_loaded_data["build-base"] = "devel"
     project = Project.unmarshal(yaml_loaded_data)
 
-    now = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    now = datetime.datetime.now(datetime.UTC).isoformat()
     digest = "a1b2c3"  # mock digest
 
     _, rock_metadata = project.generate_metadata(now, bytes.fromhex(digest))
