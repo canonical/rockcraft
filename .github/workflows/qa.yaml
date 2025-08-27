@@ -16,7 +16,7 @@ jobs:
     uses: canonical/starflow/.github/workflows/test-python.yaml@main
     with:
       lowest-python-version: ""
-      fast-test-platforms: '[["jammy", "amd64"], ["noble", "amd64"]]'
+      fast-test-platforms: '["ubuntu-24.04", "ubuntu-24.04-arm"]'
       fast-test-python-versions: '["3.12"]'
-      slow-test-platforms: '[["jammy", "amd64"], ["noble", "amd64"]]'
+      slow-test-platforms: '["ubuntu-24.04", "ubuntu-24.04-arm"]'
       slow-test-python-versions: '["3.12"]'
