@@ -25,7 +25,7 @@ from rockcraft import oci
 from rockcraft.services.image import ImageInfo
 
 pytestmark = [
-    pytest.mark.usefixtures("reset_callbacks", "enable_overlay_feature"),
+    pytest.mark.usefixtures("enable_overlay_feature"),
 ]
 
 
