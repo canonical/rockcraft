@@ -616,8 +616,8 @@ wheels = [
 
 [[package]]
 name = "craft-parts"
-version = "2.20.0.post9+ga31d5d9"
-source = { git = "https://github.com/canonical/craft-parts?rev=work%2FIMAGECRAFT-44-Implement-overlay-packages-when-parts-organize-into-the-overlay#a31d5d9ba4efcce0691e79ebb2997a8a01113110" }
+version = "2.20.0.post13+gfbf5411"
+source = { git = "https://github.com/canonical/craft-parts?rev=work%2FIMAGECRAFT-44-Implement-overlay-packages-when-parts-organize-into-the-overlay#fbf54117cf7096a09aa9797ca4ef331a7205d9c3" }
 dependencies = [
     { name = "lxml" },
     { name = "overrides" },
