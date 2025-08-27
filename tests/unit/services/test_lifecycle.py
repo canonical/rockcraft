@@ -35,8 +35,6 @@ from craft_parts.state_manager.prime_state import PrimeState
 from rockcraft.plugins.python_common import get_python_plugins
 from rockcraft.services import lifecycle as lifecycle_module
 
-#  pylint: disable=protected-access
-
 
 @pytest.fixture
 def extra_project_params():

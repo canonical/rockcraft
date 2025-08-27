@@ -24,7 +24,7 @@ from rockcraft.services.image import ImageInfo, RockcraftImageService
 
 from tests.util import jammy_only
 
-pytestmark = [jammy_only, pytest.mark.usefixtures("reset_callbacks")]
+pytestmark = [jammy_only]
 
 
 # A Rockcraft project whose build step writes some global CRAFT_* variables to
