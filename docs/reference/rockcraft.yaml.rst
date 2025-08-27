@@ -196,10 +196,9 @@ If provided, these default entrypoint arguments become the rock's OCI CMD. For e
 
 This key and the ``entrypoint-service`` are mutually incompatible and can't both be set.
 
-.. warning::
-    This option must only be used if absolutely necessary, and within
-    certain categories of general-purpose rocks where Pebble services may not
-    be fitted (e.g. OS and base images such as Ubuntu.)
+.. caution::
+    You should only set this key for certain categories of general-purpose rocks where
+    Pebble services aren't appropriate, such as the Ubuntu OS and base images.
 
 ``checks``
 ------------
