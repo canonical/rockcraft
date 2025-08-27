@@ -136,8 +136,8 @@ linkcheck_ignore = [
     # are written before the actual release is tagged.
     "https://github.com/canonical/rockcraft/releases/tag/.*",
     "https://github.com/canonical/spread#selecting-which-tasks-to-run",
-    # Ignore github permalinks' line anchors as linkchecker is not able to check them.
-    "https://github.com/opencontainers/image-spec/blob/2daaaaf0e7c16a6a147be91fde277f38573be672/config.md",
+    # Ignore opencontainer's anchors as linkchecker is not able to check them.
+    "https://specs.opencontainers.org/image-spec/config/",
 ]
 
 # Don't check links in the "common" subdirectory, as those are the responsibility of
