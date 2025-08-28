@@ -569,54 +569,18 @@ class TestImage:
         ]
 
     @pytest.mark.parametrize(
-        ("service", "build_base", "pebble_binary", "verbose", "service_config"),
+        ("entrypoint"),
         [
-            (
-                None,
-                "ubuntu@22.04",
-                Pebble.PEBBLE_BINARY_PATH_PREVIOUS,
-                [],
-                [],
-            ),
-            (
-                None,
-                "ubuntu@24.04",
-                Pebble.PEBBLE_BINARY_PATH,
-                [],
-                [],
-            ),
-            (
-                "test-service",
-                "ubuntu@22.04",
-                Pebble.PEBBLE_BINARY_PATH_PREVIOUS,
-                [],
-                [
-                    "--config.entrypoint",
-                    "--args",
-                    "--config.entrypoint",
-                    "test-service",
-                ],
-            ),
-            (
-                "test-service",
-                "ubuntu@24.04",
-                Pebble.PEBBLE_BINARY_PATH,
-                [],
-                [
-                    "--config.entrypoint",
-                    "--args",
-                    "--config.entrypoint",
-                    "test-service",
-                ],
-            ),
+            ([Pebble.PEBBLE_BINARY_PATH_PREVIOUS, "enter"],),
+            ([Pebble.PEBBLE_BINARY_PATH, "enter"],),
+            (["echo", "Test"],),
+            ([],),
         ],
     )
-    def test_set_entrypoint_default(
-        self, mock_run, service, build_base, pebble_binary, verbose, service_config
-    ):
+    def test_set_entrypoint_default(self, mock_run, entrypoint):
         image = oci.Image("a:b", Path("/tmp"))
 
-        image.set_entrypoint(service, build_base)
+        image.set_entrypoint(entrypoint)
 
         arg_list = [
             "umoci",
@@ -624,14 +588,10 @@ class TestImage:
             "--image",
             "/tmp/a:b",
             "--clear=config.entrypoint",
-            "--config.entrypoint",
-            f"/{pebble_binary}",
-            "--config.entrypoint",
-            "enter",
         ]
-        arg_list.extend(verbose)
 
-        arg_list.extend(service_config)
+        for e in entrypoint:
+            arg_list.extend(["--config.entrypoint", e])
 
         arg_list.append("--clear=config.cmd")
 
@@ -639,46 +599,24 @@ class TestImage:
             call(arg_list),
         ]
 
-    def test_set_cmd_empty(self, mock_run):
+    @pytest.mark.parametrize(("cmd"), [(["echo", "Test"]), ([])])
+    def test_set_cmd(self, mock_run, cmd):
         image = oci.Image("a:b", Path("/c"))
-        image.set_cmd()
+        image.set_cmd(cmd)
 
-        assert mock_run.mock_calls == []
-
-    def test_set_cmd_nonempty(self, mock_run):
-        image = oci.Image("a:b", Path("/c"))
-        image.set_cmd("echo [ foo ]")
-
-        assert mock_run.mock_calls == [
-            call(
-                [
-                    "umoci",
-                    "config",
-                    "--image",
-                    "/c/a:b",
-                    "--clear=config.cmd",
-                    "--config.cmd",
-                    "foo",
-                ]
-            ),
+        arg_list = [
+            "umoci",
+            "config",
+            "--image",
+            "/c/a:b",
+            "--clear=config.cmd",
         ]
 
-    def test_set_cmd_nonempty2(self, mock_run):
-        image = oci.Image("a:b", Path("/c"))
-        image.set_cmd("echo foo [ bar ]")
+        for arg in cmd:
+            arg_list.extend(["--config.cmd", arg])
 
         assert mock_run.mock_calls == [
-            call(
-                [
-                    "umoci",
-                    "config",
-                    "--image",
-                    "/c/a:b",
-                    "--clear=config.cmd",
-                    "--config.cmd",
-                    "bar",
-                ]
-            ),
+            call(arg_list),
         ]
 
     @pytest.mark.parametrize(
