@@ -1,4 +1,12 @@
 summary: Maven plugin tests
+
+environment:
+  BUILD_BASE/2404: ubuntu@24.04
+  BUILD_BASE/2504: ubuntu@25.04
+
+prepare: |
+  sed "s/BUILD_BASE/${BUILD_BASE}/" rockcraft-template.yaml > rockcraft.yaml
+
 execute: |
   SCENARIO="plugin-maven"
   ROCK_FILE="${SCENARIO}_0.1_amd64.rock"
@@ -14,3 +22,6 @@ execute: |
   # Run the packaged project
   docker run --rm $IMAGE exec /usr/bin/java -jar /jar/sample-0.0.1-SNAPSHOT.jar | MATCH "hello world"
   docker run --rm $IMAGE exec /bin/java -jar /jar/sample-0.0.1-SNAPSHOT.jar | MATCH "hello world"
+
+restore: |
+  rm rockcraft.yaml

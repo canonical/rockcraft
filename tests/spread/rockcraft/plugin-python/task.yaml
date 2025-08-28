@@ -3,8 +3,13 @@ environment:
   SCENARIO/base_2004: base-2004
   SCENARIO/base_2204: base-2204
   SCENARIO/base_2404: base-2404
+  SCENARIO/base_2504: base-2504
+  SCENARIO/base_2510: base-2510
   SCENARIO/bare_build_2004: bare-build-2004
   SCENARIO/bare_build_2204: bare-build-2204
+  SCENARIO/bare_build_2404: bare-build-2404
+  SCENARIO/bare_build_2504: bare-build-2504
+  SCENARIO/bare_build_2510: bare-build-2510
 execute: |
   SCENARIO_DIR="${SCENARIO}"
   ROCK_FILE="${SCENARIO}_0.1_amd64.rock"
