@@ -16,7 +16,7 @@ official Debian-based NGINX image's Dockerfile can be found `here
 73a5acae6945b75b433cafd0c9318e4378e72cbb/mainline/debian/Dockerfile>`_.
 
 In summary, this Dockerfile is basically installing NGINX into the image and
-then defining the OCI entrypoint to be a custom `shell script
+then defining the `OCI entrypoint`_ to be a custom `shell script
 <https://github.com/nginxinc/docker-nginx/blob/
 73a5acae6945b75b433cafd0c9318e4378e72cbb/mainline/debian/docker-entrypoint.sh>`_
 which parses the first argument given to it at container deployment time,
