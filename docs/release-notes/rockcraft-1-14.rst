@@ -87,11 +87,12 @@ Rockcraft 1.14 brings the following features, integrations, and improvements.
 New ``entrypoint-command`` project key
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This key defines the rock's OCI entrypoint, bypassing the Pebble-powered entrypoint
-defined by Rockcraft. This can be necessary for cases like OS and base images, where
+This key defines the rock's OCI entrypoint, bypassing the default Pebble-powered 
+entrypoint. It can be necessary for cases like OS and base images, where
 an application-centric Pebble service is inadequate.
 
-See the :ref:`documentation <rockcraft-yaml-entrypoint-command>` for details.
+See the :ref:`rockcraft.yaml reference <rockcraft-yaml-entrypoint-command>` for usage 
+details.
 
 Minor features
 --------------
@@ -108,21 +109,21 @@ Improved keyserver support in ``package-repositories``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 If an attempt to connect to the default keyserver to retrieve a public key fails, the
-package-repositories mechanism will now try to connect through the standard port 80
+``package-repositories`` mechanism will now try to connect through port 80
 while also respecting proxy addresses set via the standard ``http_proxy`` and
 ``https_proxy`` environment variables.
 
 New ``jlink-extra-modules`` key
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This new :ref:`craft_parts_jlink_plugin` key allows defining additional modules that
-should be included in the generated OpenJDK image.
+The new ``jlink-extra-modules`` key in the :ref:`craft_parts_jlink_plugin` defines 
+modules to add to the generated OpenJDK image.
 
-Improved conflict detection between the Overlay and Build steps
+Improved conflict detection between the overlay and build steps
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The collision resolution that takes place when the Stage step is executed now takes into
-account the contents of the Overlay.
+The collision resolution during the stage step now takes into account the contents
+of the overlay.
 
 Improved documentation for 12-factor app extensions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -133,8 +134,7 @@ based on user feedback, with fixes to multiple steps that were showstoppers.
 New ``maven-use`` plugin reference
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-We've added a new :ref:`reference page <craft_parts_maven_use_plugin>`
-for the ``maven-use`` plugin.
+In the documentation, we added a :ref:`craft_parts_maven_use_plugin` reference.
 
 Clarified contribution guidelines
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
