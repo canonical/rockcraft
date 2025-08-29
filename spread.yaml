@@ -31,9 +31,6 @@ backends:
       - ubuntu-22.04-64:
           workers: 4
           storage: 40G
-      - ubuntu-24.04-64:
-          workers: 4
-          storage: 40G
       - fedora-39-64:
           workers: 1
           storage: 40G
