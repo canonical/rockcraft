@@ -178,6 +178,8 @@ contain an optional argument that will become the `OCI CMD`_.
    environment has unalterable assumptions about the container image's
    entrypoint.
 
+.. _rockcraft-yaml-entrypoint-command:
+
 ``entrypoint-command``
 ------------------------
 
