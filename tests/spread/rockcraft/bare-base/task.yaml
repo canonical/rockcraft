@@ -25,6 +25,10 @@ execute: |
   grep_docker_log "$id" "ship it!"
   docker exec "$id" pebble services | grep hello
   docker exec "$id" pebble ls /usr/bin/hello
+  # Actually run the executables to ensure dynamic executables run.
+  # Without base-files, usrmerge prevents them from running on 24.04+
+  docker exec "$id" /usr/bin/hello | MATCH 'Hello, world!'
+  docker exec "$id" pebble exec hello | MATCH 'Hello, world!'
   test "$(docker inspect "$id" -f '{{json .Config.Entrypoint}}')" = "[\"${PEBBLE_DIR}/pebble\",\"enter\"]"
 
   # Bare-based rocks should have the default Ubuntu path, as an empty PATH is a
