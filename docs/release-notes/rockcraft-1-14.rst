@@ -65,8 +65,8 @@ New ``jlink-extra-modules`` key
 The new ``jlink-extra-modules`` key in the :ref:`craft_parts_jlink_plugin` defines
 modules to add to the generated OpenJDK image.
 
-``maven-use`` plugin reference
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Maven Use plugin reference
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 In the documentation, we added a :ref:`craft_parts_maven_use_plugin` reference.
 
