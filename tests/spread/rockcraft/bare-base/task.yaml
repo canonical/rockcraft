@@ -1,9 +1,8 @@
 summary: bare base build test
 environment:
   BASE/24_04: "ubuntu@24.04"
-  BASE/25_04: "ubuntu@25.04"
   BASE/25_10: "ubuntu@25.10"
-  PEBBLE_DIR/24_04,25_04,25_10: "/usr/bin"
+  PEBBLE_DIR/24_04,25_10: "/usr/bin"
 
   BASE/22_04: "ubuntu@22.04"
   PEBBLE_DIR/22_04: "/bin"

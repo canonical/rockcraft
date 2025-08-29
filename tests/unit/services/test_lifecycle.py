@@ -110,10 +110,8 @@ def test_lifecycle_package_repositories(extra_project_params, fake_services, moc
 
 
 @pytest.mark.parametrize("plugin_name", get_python_plugins())
-@pytest.mark.parametrize(
-    "base", ["bare", "ubuntu@24.04", "ubuntu@25.04", "ubuntu@25.10"]
-)
-@pytest.mark.parametrize("build_base", ["ubuntu@24.04", "ubuntu@25.04", "ubuntu@25.10"])
+@pytest.mark.parametrize("base", ["bare", "ubuntu@24.04", "ubuntu@25.10"])
+@pytest.mark.parametrize("build_base", ["ubuntu@24.04", "ubuntu@25.10"])
 def test_python_usrmerge_fix(tmp_path, plugin_name, base, build_base):
     # The test setup is rather involved because we need to recreate/mock an
     # exact set of circumstances here:

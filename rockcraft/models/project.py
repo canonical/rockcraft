@@ -92,7 +92,6 @@ BaseT = Literal[
     "ubuntu@20.04",
     "ubuntu@22.04",
     "ubuntu@24.04",
-    "ubuntu@25.04",
     "ubuntu@25.10",
 ]
 BuildBaseT = typing.Annotated[
@@ -100,7 +99,6 @@ BuildBaseT = typing.Annotated[
         "ubuntu@20.04",
         "ubuntu@22.04",
         "ubuntu@24.04",
-        "ubuntu@25.04",
         "ubuntu@25.10",
         "devel",
     ]
