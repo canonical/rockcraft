@@ -87,9 +87,22 @@ ProjectName = Annotated[
     ),
 ]
 
-BaseT = Literal["bare", "ubuntu@20.04", "ubuntu@22.04", "ubuntu@24.04"]
+BaseT = Literal[
+    "bare",
+    "ubuntu@20.04",
+    "ubuntu@22.04",
+    "ubuntu@24.04",
+    "ubuntu@25.10",
+]
 BuildBaseT = typing.Annotated[
-    Literal["ubuntu@20.04", "ubuntu@22.04", "ubuntu@24.04", "devel"] | None,
+    Literal[
+        "ubuntu@20.04",
+        "ubuntu@22.04",
+        "ubuntu@24.04",
+        "ubuntu@25.10",
+        "devel",
+    ]
+    | None,
     pydantic.Field(validate_default=True),
 ]
 

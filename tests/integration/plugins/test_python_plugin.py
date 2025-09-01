@@ -77,9 +77,17 @@ class ExpectedValues:
     version_dir: str
 
 
+_PY_313_VALUES = ExpectedValues(
+    symlinks=["python", "python3", "python3.13"],
+    symlink_target=Path("../usr/bin/python3.13"),
+    version_dir="python3.13",
+)
+
 # A mapping from host Ubuntu to expected Python values; We need this mapping
 # because these integration tests run on the host machine as the "build base".
 RELEASE_TO_VALUES = {
+    "25.10": _PY_313_VALUES,
+    "25.04": _PY_313_VALUES,
     "24.04": ExpectedValues(
         symlinks=["python", "python3", "python3.12"],
         symlink_target=Path("../usr/bin/python3.12"),

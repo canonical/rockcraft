@@ -35,6 +35,7 @@ APP_METADATA = AppMetadata(
     ProjectClass=project.Project,
     source_ignore_patterns=["*.rock"],
     docs_url="https://documentation.ubuntu.com/rockcraft/en/{version}",
+    check_supported_base=True,
 )
 
 

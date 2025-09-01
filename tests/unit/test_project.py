@@ -222,13 +222,14 @@ def test_project_base(yaml_loaded_data, base):
 def test_project_base_invalid(yaml_loaded_data):
     yaml_loaded_data["base"] = "ubuntu@19.04"
 
-    with pytest.raises(CraftValidationError) as err:
-        load_project_yaml(yaml_loaded_data)
-    assert str(err.value) == (
-        "Bad rockcraft.yaml content:\n"
-        "- input should be 'bare', 'ubuntu@20.04', 'ubuntu@22.04' or "
-        "'ubuntu@24.04' (in field 'base')"
+    match = (
+        r"^Bad rockcraft\.yaml content:\n"
+        r"- input should be 'bare', ('ubuntu@\d\d\.(04|10)'(, | or )?)+ "
+        r"\(in field 'base'\)"
     )
+
+    with pytest.raises(CraftValidationError, match=match):
+        load_project_yaml(yaml_loaded_data)
 
 
 def test_project_license_invalid(yaml_loaded_data):
