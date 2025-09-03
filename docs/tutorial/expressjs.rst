@@ -90,8 +90,7 @@ The Express app should respond with *Welcome to Express* web page.
         multipass info charm-dev | grep IP
 
 The Express app looks good, so let's stop it for now
-with :kbd:`Ctrl` + :kbd:`C`, then move out of the app directory
-``cd ..``.
+with :kbd:`Ctrl` + :kbd:`C`.
 
 Pack the Express app into a rock
 ================================
