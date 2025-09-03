@@ -513,6 +513,33 @@ And then we can proceed with its deletion:
     multipass delete rock-dev
     multipass purge
 
+Next steps
+==========
+
+By the end of this tutorial you built a rock and evolved it
+in a number of typical ways. But there is a lot more to explore:
+
+.. list-table::
+    :widths: 30 30
+    :header-rows: 1
+
+    * - If you are wondering...
+      - Visit...
+    * - "What's next?"
+      - :external+charmcraft:ref:`Write your first Kubernetes charm for a Flask app
+        <write-your-first-kubernetes-charm-for-a-flask-app>`
+    * - "How do I...?"
+      - :ref:`How to manage a 12-factor app rock <manage-12-factor-app-rock>`
+    * - "How do I get in touch?"
+      - `Matrix channel <https://matrix.to/#/#12-factor-charms:ubuntu.com>`_
+    * - "What is...?"
+      - :ref:`flask-framework extension in Rockcraft <flask-framework-reference>`
+
+        :ref:`What is a Rock? <rocks_explanation>`
+    * - "Why...?", "So what?"
+      - :external+12-factor:ref:`12-Factor app principles and support in Charmcraft
+        and Rockcraft <explanation>`
+
 ----
 
 .. _troubleshooting-flask:

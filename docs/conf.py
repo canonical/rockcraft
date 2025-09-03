@@ -85,6 +85,7 @@ extensions.extend(
         "sphinxcontrib.details.directive",
         "sphinx_toolbox.collapse",
         "sphinxext.rediraffe",
+        "sphinx.ext.intersphinx",
     ]
 )
 
@@ -151,6 +152,17 @@ rst_epilog = """
 """
 
 # region Options for extensions
+
+# Intersphinx extension
+# https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html#configuration
+
+intersphinx_mapping = {
+    "charmcraft": ("https://documentation.ubuntu.com/charmcraft/latest/", None),
+    "12-factor": ("https://canonical-12-factor-app-support.readthedocs-hosted.com/latest/", None),
+}
+# See also:
+# https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html#confval-intersphinx_disabled_reftypes
+intersphinx_disabled_reftypes = ["*"]
 
 # Client-side page redirects.
 rediraffe_redirects = "redirects.txt"
