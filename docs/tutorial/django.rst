@@ -75,7 +75,7 @@ The Django app should respond with
 
         python manage.py runserver 0.0.0.0:8000
     
-    Determine the IP address of your VM, outside of the VM, run:
+    Determine the IP address of your VM. Outside of the VM, run:
 
     .. code-block:: bash
 
