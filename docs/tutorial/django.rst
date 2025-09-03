@@ -66,8 +66,24 @@ The Django app should respond with
 
 .. note::
     The response from the Django app includes HTML and CSS which makes
-    it difficult to read on a terminal. Visit ``http://localhost:8000`` using a
-    browser to see the fully rendered page.
+    it difficult to read on a terminal. To see the fully rendered page
+    in a browser, update the ``ALLOWED_HOSTS`` environment variable in
+    ``~/django-hello-world/django_hello_world/settings.py`` to
+    ``ALLOWED_HOSTS = ['*']`` and run the Django app using
+
+    .. code-block:: bash
+
+        python manage.py runserver 0.0.0.0:8000
+    
+    Determine the IP address of your VM, outside of the VM, run:
+
+    .. code-block:: bash
+
+        multipass info charm-dev | grep IP
+
+    Visit ``http://<Multipass private IP>:8000``
+    using a browser to see the fully rendered page, replacing
+    ``<Multipass private IP>`` with your VM's private IP address.
 
 The Django app looks good, so let's stop it for now by pressing
 :kbd:`Ctrl` + :kbd:`C`.

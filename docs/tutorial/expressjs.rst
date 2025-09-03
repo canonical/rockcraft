@@ -79,8 +79,15 @@ The Express app should respond with *Welcome to Express* web page.
 
 .. note::
     The response from the Express app includes HTML and CSS which
-    makes it difficult to read on a terminal. Visit ``http://localhost:3000``
-    using a browser to see the fully rendered page.
+    makes it difficult to read on a terminal. Visit
+    ``http://<Multipass private IP>:3000`` using a browser to see the fully
+    rendered page, replacing ``<Multipass private IP>`` with your VM's
+    private IP address. To determine the IP address of your VM, outside of the
+    VM, run:
+
+    .. code-block:: bash
+
+        multipass info charm-dev | grep IP
 
 The Express app looks good, so let's stop it for now
 with :kbd:`Ctrl` + :kbd:`C`, then move out of the app directory
