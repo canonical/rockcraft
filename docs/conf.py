@@ -140,6 +140,7 @@ linkcheck_ignore = [
     "https://github.com/canonical/spread#selecting-which-tasks-to-run",
     # Ignore opencontainer's anchors as linkchecker is not able to check them.
     "https://specs.opencontainers.org/image-spec/config/",
+    "https://matrix.to/#/#12-factor-charms:ubuntu.com",
 ]
 
 # Don't check links in the "common" subdirectory, as those are the responsibility of
