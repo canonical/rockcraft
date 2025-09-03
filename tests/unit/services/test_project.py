@@ -63,7 +63,7 @@ def test_add_pebble_part_project_old_pebble(
         ("bare", "ubuntu@24.04"),
         ("bare", "devel"),
         ("ubuntu@24.04", None),
-        ("ubuntu@25.04", "devel"),
+        ("ubuntu@25.10", "devel"),
     ],
 )
 @pytest.mark.parametrize("parts", [{}, {"pebble": Pebble.PEBBLE_PART_SPEC.copy()}])
