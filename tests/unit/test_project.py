@@ -24,9 +24,10 @@ import pydantic
 import pytest
 import yaml
 from craft_application.errors import CraftValidationError
+from craft_application.models.constraints import MESSAGE_INVALID_NAME
 from craft_providers.bases import ubuntu
 from rockcraft.models import Project
-from rockcraft.models.project import MESSAGE_INVALID_NAME, Platform
+from rockcraft.models.project import Platform
 from rockcraft.pebble import Service
 from rockcraft.services.project import RockcraftProjectService
 
@@ -276,7 +277,7 @@ def test_project_title_empty_invalid_name(yaml_loaded_data):
 
     expected = (
         "Bad rockcraft.yaml content:\n"
-        "- invalid name for rock: Names can only use .* "
+        "- invalid name: Names can only use ASCII lowercase letters, numbers, and hyphens. They must have at least one letter, may not start or end with a hyphen, and may not have two hyphens in a row. "
         r"\(in field 'name'\)"
     )
     assert err.match(expected)
@@ -508,7 +509,9 @@ def test_project_all_platforms_invalid(yaml_loaded_data):
     )
 
 
-@pytest.mark.parametrize("valid_name", ["aaa", "a00", "a-00", "a-a-a", "a-000-bbb"])
+@pytest.mark.parametrize(
+    "valid_name", ["aaa", "a00", "0aaa", "a", "a-00", "a-a-a", "a-000-bbb"]
+)
 def test_project_name_valid(yaml_loaded_data, valid_name):
     yaml_loaded_data["name"] = valid_name
 
@@ -517,7 +520,7 @@ def test_project_name_valid(yaml_loaded_data, valid_name):
 
 
 @pytest.mark.parametrize(
-    "invalid_name", ["AAA", "0aaa", "a", "a--a", "aa-", "a:a", "a/a", "a@a", "a_a"]
+    "invalid_name", ["", "AAA", "a--a", "aa-", "a:a", "a/a", "a@a", "a_a"]
 )
 def test_project_name_invalid(yaml_loaded_data, invalid_name):
     yaml_loaded_data["name"] = invalid_name

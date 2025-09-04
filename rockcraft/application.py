@@ -21,6 +21,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from craft_application import Application, AppMetadata
+from craft_application.models import constraints
 from overrides import override  # type: ignore[reportUnknownVariableType]
 
 from rockcraft import plugins
@@ -50,8 +51,8 @@ class Rockcraft(Application):
         self.services.update_kwargs(
             "init",
             default_name="my-rock-name",
-            name_regex=project.PROJECT_NAME_COMPILED_REGEX,
-            invalid_name_message=project.MESSAGE_INVALID_NAME,
+            name_regex=constraints.PROJECT_NAME_COMPILED_REGEX,
+            invalid_name_message=constraints.MESSAGE_INVALID_NAME,
         )
         super()._configure_services(provider_name)
 
