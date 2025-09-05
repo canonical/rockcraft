@@ -5,6 +5,7 @@ environment:
   PROJECT_PATH: /rockcraft
   SNAPD_TESTING_TOOLS: $PROJECT_PATH/tools/external/tools
   PATH: /snap/bin:$PATH:$SNAPD_TESTING_TOOLS:$PROJECT_PATH/tools/spread
+  UBUNTU_PRO_TOKEN: '$(HOST: echo "$UBUNTU_PRO_TOKEN")'
 
 include:
   - tests/
@@ -143,6 +144,12 @@ suites:
 
   tests/spread/manual/:
     summary: manually-triggered tests, like bigger tests and flaky ones
+    manual: true
+    systems:
+      - ubuntu-22.04-64
+
+  tests/spread/pro/:
+    summary: manually-triggered when Ubuntu Pro token is available
     manual: true
     systems:
       - ubuntu-22.04-64

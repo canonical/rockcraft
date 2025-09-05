@@ -22,6 +22,7 @@ from typing_extensions import override
 
 from rockcraft.extensions._utils import apply_extensions
 from rockcraft.pebble import add_pebble_part
+from rockcraft.apt_update_part import add_apt_update_part
 
 
 class RockcraftProjectService(ProjectService):
@@ -36,3 +37,4 @@ class RockcraftProjectService(ProjectService):
         project_root = Path.cwd()
         apply_extensions(project_root=project_root, yaml_data=project)
         add_pebble_part(project)
+        add_apt_update_part(project)

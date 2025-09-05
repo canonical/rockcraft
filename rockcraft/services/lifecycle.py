@@ -61,7 +61,9 @@ class RockcraftLifecycleService(LifecycleService):
         base_layer_dir = step_info.rootfs_dir
         files: set[str]
 
-        files = step_info.state.files if step_info.state else set()
+        # Fix: overlay content is not included in step_info so we just list the prime_dir
+        files = {str(p.relative_to(prime_dir)) for p in prime_dir.rglob("*")}
+
         layers.prune_prime_files(prime_dir, files, base_layer_dir)
 
         _python_usrmerge_fix(step_info)

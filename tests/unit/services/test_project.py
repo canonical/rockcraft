@@ -20,6 +20,10 @@ import pytest
 from rockcraft.pebble import Pebble
 from rockcraft.services.project import RockcraftProjectService
 
+pytestmark = [
+    pytest.mark.usefixtures("enable_overlay_feature"),
+]
+
 
 @pytest.mark.parametrize(
     ("base", "build_base"),
