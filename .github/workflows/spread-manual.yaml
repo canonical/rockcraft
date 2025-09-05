@@ -50,8 +50,7 @@ jobs:
         run: spread tests/spread/rockcraft/remote-build
       - name: Run large/flaky tests
         id: flaky
-        env:
-        run: spread google:tests/spread/manual/
+        run: spread tests/spread/manual/
 
       - name: Discard spread workers
         if: always()

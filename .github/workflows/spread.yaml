@@ -55,8 +55,8 @@ jobs:
           spread google:tests/spread/pro/
 
       - name: Run spread
-        run: |
-          spread google:
+        run: spread
+
 
       - name: Discard spread workers
         if: always()
