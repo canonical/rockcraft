@@ -428,8 +428,11 @@ And then we can proceed with its deletion:
 Next steps
 ==========
 
-By the end of this tutorial you built a rock and evolved it
-in a number of typical ways. But there is a lot more to explore:
+Congratulations! You've reached the end of this tutorial. You created a
+Express app, packaged it into a rock, and practiced some typical development skills
+such as viewing logs and updating the app.
+
+But there is a lot more to explore:
 
 .. list-table::
     :widths: 30 30
@@ -439,13 +442,13 @@ in a number of typical ways. But there is a lot more to explore:
       - Visit...
     * - "What's next?"
       - :external+charmcraft:ref:`Write your first Kubernetes charm for an Express app
-        <write-your-first-kubernetes-charm-for-a-expressjs-app>`
+        in Charmcraft <write-your-first-kubernetes-charm-for-a-expressjs-app>`
     * - "How do I...?"
       - :ref:`How to manage a 12-factor app rock <manage-12-factor-app-rock>`
     * - "How do I get in touch?"
       - `Matrix channel <https://matrix.to/#/#12-factor-charms:ubuntu.com>`_
     * - "What is...?"
-      - :ref:`expressjs-framework extension in Rockcraft <expressjs-framework-reference>`
+      - :ref:`expressjs-framework extension <expressjs-framework-reference>`
 
         :ref:`What is a Rock? <rocks_explanation>`
     * - "Why...?", "So what?"

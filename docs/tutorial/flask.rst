@@ -516,8 +516,11 @@ And then we can proceed with its deletion:
 Next steps
 ==========
 
-By the end of this tutorial you built a rock and evolved it
-in a number of typical ways. But there is a lot more to explore:
+Congratulations! You've reached the end of this tutorial. You created a
+Flask app, packaged it into a rock, and practiced some typical development skills
+such as viewing logs and updating the app.
+
+But there is a lot more to explore:
 
 .. list-table::
     :widths: 30 30
@@ -527,13 +530,13 @@ in a number of typical ways. But there is a lot more to explore:
       - Visit...
     * - "What's next?"
       - :external+charmcraft:ref:`Write your first Kubernetes charm for a Flask app
-        <write-your-first-kubernetes-charm-for-a-flask-app>`
+        in Charmcraft <write-your-first-kubernetes-charm-for-a-flask-app>`
     * - "How do I...?"
       - :ref:`How to manage a 12-factor app rock <manage-12-factor-app-rock>`
     * - "How do I get in touch?"
       - `Matrix channel <https://matrix.to/#/#12-factor-charms:ubuntu.com>`_
     * - "What is...?"
-      - :ref:`flask-framework extension in Rockcraft <flask-framework-reference>`
+      - :ref:`flask-framework extension <flask-framework-reference>`
 
         :ref:`What is a Rock? <rocks_explanation>`
     * - "Why...?", "So what?"

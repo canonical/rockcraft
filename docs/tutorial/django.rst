@@ -66,10 +66,10 @@ The Django app should respond with
 
 .. note::
     The response from the Django app includes HTML and CSS which makes
-    it difficult to read on a terminal. To see the fully rendered page
-    in a browser, update the ``ALLOWED_HOSTS`` environment variable in
-    ``~/django-hello-world/django_hello_world/settings.py`` to
-    ``ALLOWED_HOSTS = ['*']`` and run the Django app using
+    it difficult to read on a terminal. To see the fully-rendered page
+    in a web browser, set ``ALLOWED_HOSTS = ['*']`` in
+    ``~/django-hello-world/django_hello_world/settings.py`` and run the Django app
+    using:
 
     .. code-block:: bash
 
@@ -82,7 +82,7 @@ The Django app should respond with
         multipass info charm-dev | grep IP
 
     Visit ``http://<Multipass private IP>:8000``
-    using a browser to see the fully rendered page, replacing
+    in a web browser to see the fully-rendered page, replacing
     ``<Multipass private IP>`` with your VM's private IP address.
 
 The Django app looks good, so let's stop it for now by pressing
@@ -553,8 +553,11 @@ And then we can proceed with its deletion:
 Next steps
 ==========
 
-By the end of this tutorial you built a rock and evolved it
-in a number of typical ways. But there is a lot more to explore:
+Congratulations! You've reached the end of this tutorial. You created a
+Django app, packaged it into a rock, and practiced some typical development skills
+such as viewing logs and updating the app.
+
+But there is a lot more to explore:
 
 .. list-table::
     :widths: 30 30
@@ -564,13 +567,13 @@ in a number of typical ways. But there is a lot more to explore:
       - Visit...
     * - "What's next?"
       - :external+charmcraft:ref:`Write your first Kubernetes charm for a Django app
-        <write-your-first-kubernetes-charm-for-a-django-app>`
+        in Charmcraft <write-your-first-kubernetes-charm-for-a-django-app>`
     * - "How do I...?"
       - :ref:`How to manage a 12-factor app rock <manage-12-factor-app-rock>`
     * - "How do I get in touch?"
       - `Matrix channel <https://matrix.to/#/#12-factor-charms:ubuntu.com>`_
     * - "What is...?"
-      - :ref:`django-framework extension in Rockcraft <django-framework-reference>`
+      - :ref:`django-framework extension <django-framework-reference>`
 
         :ref:`What is a Rock? <rocks_explanation>`
     * - "Why...?", "So what?"

@@ -158,6 +158,8 @@ rst_epilog = """
 # https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html#configuration
 
 intersphinx_mapping = {
+    # Use latest Charmcraft so we can link to 12-factor docs. Once those docs are
+    # in stable, we should switch this to stable.
     "charmcraft": ("https://documentation.ubuntu.com/charmcraft/latest/", None),
     "12-factor": ("https://canonical-12-factor-app-support.readthedocs-hosted.com/latest/", None),
 }
