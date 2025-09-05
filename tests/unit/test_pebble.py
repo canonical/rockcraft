@@ -66,7 +66,7 @@ class TestPebble:
             # Without any previous layers, the default layer prefix is 001.
             (
                 [],
-                "001",
+                "001-rockcraft",
                 {
                     "summary": "mock summary",
                     "description": "mock description",
@@ -100,7 +100,7 @@ class TestPebble:
             # Also make sure it works with multiple services.
             (
                 ["001-existing-layer1.yml", "003-existing-layer3.yaml"],
-                "004",
+                "004-rockcraft",
                 {
                     "summary": "mock summary",
                     "description": "mock description",
@@ -134,7 +134,7 @@ class TestPebble:
             # If there are more files that are not layers, they are ignored.
             (
                 ["2-bad-layer.yaml", "001-good-layer.yml", "not-a-layer"],
-                "002",
+                "002-rockcraft",
                 {
                     "summary": "mock summary",
                     "description": "mock description",

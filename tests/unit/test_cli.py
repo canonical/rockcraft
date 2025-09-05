@@ -121,14 +121,14 @@ def test_run_init_with_name(mocker):
 
 @pytest.mark.usefixtures("valid_dir")
 def test_run_init_with_invalid_name(mocker):
-    mocker.patch.object(sys, "argv", ["rockcraft", "init", "--name=f"])
+    mocker.patch.object(sys, "argv", ["rockcraft", "init", "--name=-f"])
     return_code = cli.run()
     assert return_code == 1
 
 
 def test_run_init_fallback_name(mocker, new_dir, monkeypatch):
     mocker.patch.object(sys, "argv", ["rockcraft", "init"])
-    invalid_dir = pathlib.Path(new_dir) / "f"
+    invalid_dir = pathlib.Path(new_dir) / "-f"
     invalid_dir.mkdir()
     monkeypatch.chdir(invalid_dir)
 
