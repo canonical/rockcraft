@@ -1,17 +1,19 @@
 [project]
 name = "rockcraft"
 description = "Create rocks"
-dynamic = ["version", "readme"]
+dynamic = ["version"]
 dependencies = [
-    "craft-application~=5.1",
-    "craft-archives",
-    "craft-cli",
-    "craft-parts>=2.9.1",
-    "craft-platforms~=0.8",
-    "craft-providers",
-    "overrides",
-    "spdx-lookup",
-    "tabulate",
+    "craft-application>=5.8.0",
+    "craft-archives>=2.2.0",
+    "craft-cli>=3.1.2",
+    "craft-parts>=2.20.1",
+    "craft-platforms>=0.10.0",
+    "craft-providers>=3.0.0",
+    "overrides>=7.7.0",
+    # setuptools >= 80.9 has a noisy warning about pkg_resources
+    "setuptools~=80.8.0",
+    "spdx-lookup>=0.3.3",
+    "tabulate>=0.9.0",
 ]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
@@ -28,6 +30,7 @@ license = {file = "LICENSE"}
 authors = [
     { name = "Canonical Ltd.", email = "snapcraft@lists.snapcraft.io" },
 ]
+readme = { file = "README.md", content-type = "text/markdown" }
 
 [project.scripts]
 rockcraft = "rockcraft.cli:run"
@@ -37,7 +40,7 @@ lint = [
     "codespell[toml]",
 ]
 types = [
-    "mypy[reports]~=1.15.0",
+    "mypy[reports]~=1.17.1",
     "types-Pygments",
     "types-PyYAML",
     "types-colorama",
@@ -45,11 +48,18 @@ types = [
     "types-tabulate",
 ]
 docs = [
-    "canonical-sphinx[full]~=0.4.0",
+    "canonical-sphinx[full]~=0.5.1",
+    "pydantic-kitbash",
     "sphinx-autobuild~=2024.2",
     "sphinx-pydantic==0.1.1",
-    "sphinx-toolbox~=3.5",
+    # sphinx-sitemap is pinned to 2.6 because https://github.com/jdillard/sphinx-sitemap/pull/95
+    # conflicts with our vendoring of craft-parts docs.
+    "sphinx-sitemap~=2.6.0",
+    "sphinx-toolbox~=4.0",
     "sphinx-lint~=1.0",
+    # sphinx-prompt >=1.9.0 needs Sphinx 8 but apparently doesn't declare it
+    # https://github.com/sbrunner/sphinx-prompt/releases/tag/1.9.0
+    "sphinx-prompt~=1.8.0",
     "sphinxcontrib-details-directive",
     "sphinxext-rediraffe==0.2.7",
 ]
@@ -62,7 +72,7 @@ dev = [
     "pytest-check",
     "pytest-cov~=6.0",
     "pytest-mock~=3.12",
-    "mypy[reports]~=1.15.0",
+    "mypy[reports]~=1.17.1",
     "types-Pygments",
     "types-colorama",
     "types-setuptools",
@@ -83,6 +93,9 @@ dev-oracular = [
 dev-plucky = [
     # 2.9 for Oracular+
     "python-apt>=2.9.0;sys_platform=='linux'",
+]
+dev-questing = [
+    "python-apt~=3.0.0;sys_platform=='linux'",
 ]
 release = [
     "twine",
@@ -120,15 +133,13 @@ conflicts = [
         { group = "dev-noble" },
         { group = "dev-oracular" },
         { group = "dev-plucky" },
+        { group = "dev-questing" },
     ],
 ]
 
 [build-system]
 requires = ["setuptools>=69.0", "setuptools_scm[toml]>=7.1"]
 build-backend = "setuptools.build_meta"
-
-[tool.setuptools.dynamic]
-readme = {file = "README.rst"}
 
 [tool.setuptools_scm]
 write_to = "rockcraft/_version.py"
@@ -178,6 +189,7 @@ line_length = 88
 minversion = "7.0"
 testpaths = "tests"
 xfail_strict = true
+addopts = "--ignore=tests/spread"
 markers = ["slow: slow tests"]
 
 [tool.coverage.run]
@@ -309,9 +321,9 @@ select = [ # Base linting rule selections.
     "SLF",    # Prevent accessing private class members.
     "SIM",    # Code simplification
     "TID",    # Tidy imports
-    # The team have chosen to only use type-checking blocks when necessary to prevent circular imports.
-    # As such, the only enabled type-checking checks are those that warn of an import that needs to be
-    # removed from a type-checking block.
+    "TC001",  # Checks for first-party imports that are only used for type annotations
+    "TC002",  # Checks for third-party imports that are only used for type annotations
+    "TC003",  # Checks for standard library imports that are only used for type annotations
     "TC004",  # Remove imports from type-checking guard blocks if used at runtime
     "TC005",  # Delete empty type-checking blocks
     "ARG",    # Unused arguments
@@ -344,6 +356,7 @@ ignore = [
     "A003",   # Class attribute shadowing built-in (reason: Class attributes don't often get bare references)
     "SIM117", # Use a single `with` statement with multiple contexts instead of nested `with` statements
     # (reason: this creates long lines that get wrapped and reduces readability)
+    "PLW1641", # eq-without-hash (most of our classes should be unhashable)
 
     # Ignored due to conflicts with ruff's formatter:
     # https://docs.astral.sh/ruff/formatter/#conflicting-lint-rules
@@ -352,6 +365,9 @@ ignore = [
 
     # Ignored due to common usage in current code
     "TRY003", # Avoid specifying long messages outside the exception class
+
+    # Rockcraft-specific rule ignores
+    "PLC0415",# Rockcraft in particular uses non top-level imports frequently.
 ]
 
 [tool.ruff.lint.flake8-annotations]

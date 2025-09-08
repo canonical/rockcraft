@@ -4,7 +4,7 @@ name: {{name}}
 base: bare # as an alternative, a ubuntu base can be used
 build-base: ubuntu@24.04 # build-base is required when the base is bare
 version: '0.1' # just for humans. Semantic versioning is recommended
-summary: A summary of your Go application # 79 char long summary
+summary: A summary of your Spring Boot application # 79 char long summary
 description: |
     This is {{name}}'s description. You have a paragraph or two to tell the
     most important story about it. Keep it under 100 words though,
@@ -48,3 +48,13 @@ extensions:
 #    # tool can be used to create a custom runtime image.
 #    build-packages:
 #    - default-jdk
+
+#   spring-boot-framework/assets:
+#     stage:
+#       # by default, only the files migrate and migrate.sh are copied into
+#       # the image. You can modify the list below to override the default list
+#       # and include or exclude specific files/directories in your project.
+#       # note: Prefix each entry with "app/" followed by the local path.
+#       - app/static
+#       - app/otherdirectory
+#       - app/otherfile

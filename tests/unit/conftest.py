@@ -15,13 +15,12 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import contextlib
+from collections.abc import Callable
 from pathlib import Path
 from unittest import mock
 
 import pytest
 from craft_providers import Executor, Provider, base
-
-# pylint: disable=import-outside-toplevel
 
 
 @pytest.fixture
@@ -78,6 +77,9 @@ def fake_provider(mock_instance):
             base_configuration: base.Base,
             instance_name: str,
             allow_unstable: bool = False,
+            shutdown_delay_mins: int | None = None,
+            use_base_instance: bool = True,
+            prepare_instance: Callable[[Executor], None] | None = None,
         ):
             yield mock_instance
 

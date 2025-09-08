@@ -26,7 +26,7 @@ from tests.testing.project import create_project
 from tests.util import jammy_only
 
 pytestmark = [
-    pytest.mark.usefixtures("reset_callbacks", "enable_overlay_feature"),
+    pytest.mark.usefixtures("enable_overlay_feature"),
 ]
 
 # pyright: reportPrivateImportUsage=false

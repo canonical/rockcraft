@@ -18,12 +18,16 @@
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from craft_application import Application, AppMetadata
-from craft_parts.plugins.plugins import PluginType
 from overrides import override  # type: ignore[reportUnknownVariableType]
 
 from rockcraft import plugins
 from rockcraft.models import project
+
+if TYPE_CHECKING:
+    from craft_parts.plugins.plugins import PluginType
 
 APP_METADATA = AppMetadata(
     name="rockcraft",
@@ -31,6 +35,7 @@ APP_METADATA = AppMetadata(
     ProjectClass=project.Project,
     source_ignore_patterns=["*.rock"],
     docs_url="https://documentation.ubuntu.com/rockcraft/en/{version}",
+    check_supported_base=True,
 )
 
 

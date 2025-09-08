@@ -97,7 +97,7 @@ class _GunicornBase(Extension):
                 "plugin": "python",
                 "stage-packages": stage_packages,
                 "source": ".",
-                "python-packages": ["gunicorn"],
+                "python-packages": ["gunicorn~=23.0"],
                 "python-requirements": ["requirements.txt"],
                 "build-environment": build_environment,
             },

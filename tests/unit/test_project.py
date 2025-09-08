@@ -77,7 +77,10 @@ services:
         override: replace
         command: echo [ foo ]
         on-failure: restart
-
+    no-args-command-service:
+        override: replace
+        command: echo
+        on-failure: restart
 parts:
     foo:
         plugin: nil
@@ -132,6 +135,7 @@ def test_project_unmarshal(check, yaml_loaded_data):
         if attr == "services":
             # Services are classes and not Dicts upfront
             v["test-service"] = Service(**v["test-service"])
+            v["no-args-command-service"] = Service(**v["no-args-command-service"])
 
         check.equal(getattr(project, attr.replace("-", "_")), v)
 
@@ -218,13 +222,14 @@ def test_project_base(yaml_loaded_data, base):
 def test_project_base_invalid(yaml_loaded_data):
     yaml_loaded_data["base"] = "ubuntu@19.04"
 
-    with pytest.raises(CraftValidationError) as err:
-        load_project_yaml(yaml_loaded_data)
-    assert str(err.value) == (
-        "Bad rockcraft.yaml content:\n"
-        "- input should be 'bare', 'ubuntu@20.04', 'ubuntu@22.04' or "
-        "'ubuntu@24.04' (in field 'base')"
+    match = (
+        r"^Bad rockcraft\.yaml content:\n"
+        r"- input should be 'bare', ('ubuntu@\d\d\.(04|10)'(, | or )?)+ "
+        r"\(in field 'base'\)"
     )
+
+    with pytest.raises(CraftValidationError, match=match):
+        load_project_yaml(yaml_loaded_data)
 
 
 def test_project_license_invalid(yaml_loaded_data):
@@ -298,23 +303,32 @@ def test_project_entrypoint_service_valid(
     project = Project.unmarshal(yaml_loaded_data)
     assert project.entrypoint_service == entrypoint_service
     emitter.assert_message(
-        "Warning: defining an entrypoint-service will result in a rock with "
+        "Warning: 'entrypoint-service' is defined. This operation will result in a rock with "
         "an atypical OCI Entrypoint. While that might be acceptable for "
         "testing and personal use, it shall require prior approval before "
         "submitting to a Canonical registry namespace."
     )
 
 
-@pytest.mark.parametrize("entrypoint_service", ["baz"])
-def test_project_entrypoint_service_invalid(yaml_loaded_data, entrypoint_service):
+@pytest.mark.parametrize(
+    ("entrypoint_service", "expected_msg"),
+    [
+        ("baz", "the provided entrypoint-service 'baz' is not a valid Pebble service."),
+        (
+            "no-args-command-service",
+            "the Pebble service 'no-args-command-service' has a command echo without default arguments and thus cannot be used as the entrypoint-service.",
+        ),
+    ],
+)
+def test_project_entrypoint_service_invalid(
+    yaml_loaded_data, entrypoint_service, expected_msg
+):
     yaml_loaded_data["entrypoint-service"] = entrypoint_service
     with pytest.raises(CraftValidationError) as err:
         load_project_yaml(yaml_loaded_data)
 
     expected = (
-        "Bad rockcraft.yaml content:\n"
-        "- the provided entrypoint-service 'baz' is not a valid Pebble service. "
-        "(in field 'entrypoint-service')"
+        f"Bad rockcraft.yaml content:\n- {expected_msg} (in field 'entrypoint-service')"
     )
     assert str(err.value) == expected
 
@@ -323,6 +337,80 @@ def test_project_entrypoint_service_absent(yaml_loaded_data):
     yaml_loaded_data.pop("entrypoint-service")
     project = Project.unmarshal(yaml_loaded_data)
     assert project.entrypoint_service is None
+
+
+@pytest.mark.parametrize("entrypoint_command", ["echo foo"])
+def test_project_entrypoint_command_conflict(yaml_loaded_data, entrypoint_command):
+    yaml_loaded_data["entrypoint-command"] = entrypoint_command
+    yaml_loaded_data["entrypoint-service"] = "test-service"
+
+    with pytest.raises(CraftValidationError) as err:
+        load_project_yaml(yaml_loaded_data)
+    expected = (
+        "Bad rockcraft.yaml content:\n"
+        "- the option 'entrypoint-command' cannot be used along 'entrypoint-service'. "
+        "(in field 'entrypoint-command')"
+    )
+    assert str(err.value) == expected
+
+
+@pytest.mark.parametrize(
+    ("entrypoint_command", "expected_msg"),
+    [
+        ("entrypoint [ cmd [ nested ] ]", "cannot nest [ ... ] groups."),
+        (
+            "entrypoint [ cmd ] [ extra ]",
+            "cannot have any arguments after [ ... ] group.",
+        ),
+        (
+            "entrypoint 'unclosed string",
+            "no closing quotation",
+        ),
+    ],
+)
+def test_project_entrypoint_command_invalid(
+    yaml_loaded_data, entrypoint_command, expected_msg
+):
+    yaml_loaded_data.pop("entrypoint-service")  # Avoid conflict
+    yaml_loaded_data["entrypoint-command"] = entrypoint_command
+    with pytest.raises(CraftValidationError) as err:
+        load_project_yaml(yaml_loaded_data)
+    expected = (
+        f"Bad rockcraft.yaml content:\n- {expected_msg} (in field 'entrypoint-command')"
+    )
+    assert str(err.value) == expected
+
+
+@pytest.mark.parametrize(
+    "entrypoint_command",
+    [
+        "",
+        "echo foo",
+        "echo [ foo ]",
+        "[ echo foo ]",
+        "echo 'happy :-]'",
+        "echo 'sad :-['",
+        "echo '[ foo ]' [ bar ]",
+    ],
+)
+def test_project_entrypoint_command_valid(
+    yaml_loaded_data, emitter, entrypoint_command
+):
+    yaml_loaded_data.pop("entrypoint-service")  # Avoid conflict
+    yaml_loaded_data["entrypoint-command"] = entrypoint_command
+    project = Project.unmarshal(yaml_loaded_data)
+    assert project.entrypoint_command == entrypoint_command
+    emitter.assert_message(
+        "Warning: 'entrypoint-command' is defined. This operation will result in a rock with "
+        "an atypical OCI Entrypoint. While that might be acceptable for "
+        "testing and personal use, it shall require prior approval before "
+        "submitting to a Canonical registry namespace."
+    )
+
+
+def test_project_entrypoint_command_absent(yaml_loaded_data):
+    project = Project.unmarshal(yaml_loaded_data)
+    assert project.entrypoint_command is None
 
 
 def test_project_build_base(yaml_loaded_data):
@@ -672,6 +760,10 @@ services:
   test-service:
     override: replace
     command: echo [ foo ]
+    on-failure: restart
+  no-args-command-service:
+    override: replace
+    command: echo
     on-failure: restart
 entrypoint-service: test-service
 """

@@ -1,9 +1,9 @@
 .. _build-a-rock-for-an-expressjs-application:
 
-Build a rock for an ExpressJS application
------------------------------------------
+Build a rock for an Express app
+-------------------------------
 
-In this tutorial, we'll containerise a simple ExpressJS application into a rock
+In this tutorial, we'll containerise a simple Express app into a rock
 using Rockcraft's ``expressjs-framework`` :ref:`extension
 <expressjs-framework-reference>`.
 
@@ -11,12 +11,12 @@ It should take 25 minutes for you to complete.
 
 You won’t need to come prepared with intricate knowledge of software
 packaging, but familiarity with Linux paradigms, terminal operations,
-and ExpressJS is required.
+and Express is required.
 
-Once you complete this tutorial, you’ll have a working rock for an ExpressJS
-application. You’ll gain familiarity with Rockcraft and the
+Once you complete this tutorial, you’ll have a working rock for an Express
+app. You’ll gain familiarity with Rockcraft and the
 ``expressjs-framework`` extension, and have the experience to create
-rocks for ExpressJS applications.
+rocks for Express apps.
 
 Setup
 =====
@@ -27,8 +27,8 @@ This tutorial requires the ``latest/edge`` channel of Rockcraft. Run
 ``sudo snap refresh rockcraft --channel latest/edge`` to get the latest
 edge version.
 
-In order to test the ExpressJS application locally, before packing it into a
-rock, install ``npm`` and initialize the starter app.
+In order to test the Express app locally, before packing it into a
+rock, install NPM and initialize the starter app.
 
 .. literalinclude:: code/expressjs/task.yaml
     :language: bash
@@ -37,10 +37,20 @@ rock, install ``npm`` and initialize the starter app.
     :dedent: 2
 
 
-Create the ExpressJS application
-================================
+Create the Express app
+======================
 
-Start by generating the ExpressJS starter template using the express-generator.
+Start by creating the "Hello, world" Express app that we'll pack in
+this tutorial.
+
+Create an empty project directory:
+
+.. code-block:: bash
+
+   mkdir expressjs-hello-world
+   cd expressjs-hello-world
+
+Next, create a skeleton for the project with the Express app generator:
 
 .. literalinclude:: code/expressjs/task.yaml
     :language: bash
@@ -48,15 +58,15 @@ Start by generating the ExpressJS starter template using the express-generator.
     :end-before: [docs:init-app-end]
     :dedent: 2
 
-Let's Run the Express application to verify that it works:
+Let's run the Express app to verify that it works:
 
 .. code:: bash
 
   npm start
 
-The application starts an HTTP server listening on port 3000
+The app starts an HTTP server listening on port 3000
 that we can test by using curl to send a request to the root
-endpoint. We may need a new terminal for this -- if using Multipass, run
+endpoint. We may need a new terminal for this -- run
 ``multipass shell rock-dev`` to get another terminal:
 
 .. literalinclude:: code/expressjs/task.yaml
@@ -65,23 +75,29 @@ endpoint. We may need a new terminal for this -- if using Multipass, run
     :end-before: [docs:curl-expressjs-end]
     :dedent: 2
 
-The ExpressJS application should respond with *Welcome to Express* web page.
+The Express app should respond with *Welcome to Express* web page.
 
 .. note::
-    The response from the ExpressJS application includes HTML and CSS which
+    The response from the Express app includes HTML and CSS which
     makes it difficult to read on a terminal. Visit ``http://localhost:3000``
     using a browser to see the fully rendered page.
 
-The ExpressJS application looks good, so let's stop it for now
-with :kbd:`Ctrl` + :kbd:`C`, then move out of the application directory
+The Express app looks good, so let's stop it for now
+with :kbd:`Ctrl` + :kbd:`C`, then move out of the app directory
 ``cd ..``.
 
-Pack the Express application into a rock
-========================================
+Pack the Express app into a rock
+================================
 
-First, we'll need a ``rockcraft.yaml`` project file. Rockcraft will automate its
-creation and tailor it for a ExpressJS application when we tell it to use the
-``expressjs-framework`` profile:
+Now let's create a container image for our Express app. We'll use a rock,
+which is an OCI-compliant container image based on Ubuntu.
+
+First, we'll need a ``rockcraft.yaml`` project file. We'll take advantage of a
+pre-defined extension in Rockcraft with the ``--profile`` flag that caters
+initial rock files for specific web app frameworks. Using the
+Express profile, Rockcraft automates the creation of
+``rockcraft.yaml`` and tailors the file for an Express app.
+From the ``~/expressjs-hello-world`` directory, initialize the rock:
 
 .. literalinclude:: code/expressjs/task.yaml
     :language: bash
@@ -89,10 +105,53 @@ creation and tailor it for a ExpressJS application when we tell it to use the
     :end-before: [docs:create-rockcraft-yaml-end]
     :dedent: 2
 
-Open ``rockcraft.yaml`` in a text editor and check that the ``name``
-key is set to ``expressjs-hello-world``. Ensure that ``platforms`` includes
-the architecture of the host. For example, if the host uses the ARM
-architecture, include ``arm64`` in ``platforms``.
+The ``rockcraft.yaml`` file will automatically be created and set the name
+based on your working directory.
+
+Check out the contents of ``rockcraft.yaml``:
+
+.. code-block:: bash
+
+    cat rockcraft.yaml
+
+The top of the file should look similar to the following snippet:
+
+.. code-block:: yaml
+    :caption: ~/expressjs-hello-world/rockcraft.yaml
+
+    name: expressjs-hello-world
+    # see https://documentation.ubuntu.com/rockcraft/en/latest/explanation/bases/
+    # for more information about bases and using 'bare' bases for chiselled rocks
+    base: bare # as an alternative, a ubuntu base can be used
+    build-base: ubuntu@24.04 # build-base is required when the base is bare
+    version: '0.1' # just for humans. Semantic versioning is recommended
+    summary: A summary of your ExpressJS app # 79 char long summary
+    description: |
+        This is expressjs-hello-world's description. You have a paragraph or two to tell the
+        most important story about it. Keep it under 100 words though,
+        we live in tweetspace and your description wants to look good in the
+        container registries out there.
+    # the platforms this rock should be built on and run on.
+    # you can check your architecture with `dpkg --print-architecture`
+    platforms:
+        amd64:
+        # arm64:
+        # ppc64el:
+        # s390x:
+
+    ...
+
+Verfiy that the ``name`` is ``expressjs-hello-world``.
+
+Ensure that ``platforms`` includes the architecture of your host. Check
+the architecture of your system:
+
+.. code-block:: bash
+
+    dpkg --print-architecture
+
+
+Edit the ``platforms`` key in ``rockcraft.yaml`` if required.
 
 As the ``expressjs-framework`` extension is still experimental, export the
 environment variable ``ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS``:
@@ -111,9 +170,27 @@ Pack the rock:
     :end-before: [docs:pack-end]
     :dedent: 2
 
+.. warning::
+   There is a `known connectivity issue with LXD and Docker
+   <lxd-docker-connectivity-issue_>`_. If we see a
+   networking issue such as "*A network related operation failed in a context
+   of no network access*" or ``Client.Timeout``, allow egress network traffic
+   to flow from the LXD managed bridge using:
+
+   .. code-block::
+
+       iptables  -I DOCKER-USER -i <network_bridge> -j ACCEPT
+       ip6tables -I DOCKER-USER -i <network_bridge> -j ACCEPT
+       iptables  -I DOCKER-USER -o <network_bridge> -m conntrack \
+         --ctstate RELATED,ESTABLISHED -j ACCEPT
+       ip6tables -I DOCKER-USER -o <network_bridge> -m conntrack \
+         --ctstate RELATED,ESTABLISHED -j ACCEPT
+
+   Run ``lxc network list`` to show the existing LXD managed bridges.
+
 Depending on the network, this step can take a couple of minutes to finish.
 
-Once Rockcraft has finished packing the ExpressJS rock, we'll find a new file in
+Once Rockcraft has finished packing the Express rock, we'll find a new file in
 the working directory (an `OCI <OCI_image_spec_>`_ image) with the ``.rock``
 extension:
 
@@ -124,10 +201,14 @@ extension:
     :dedent: 2
 
 
-Run the ExpressJS rock with Docker
-==================================
+Run the Express rock with Docker
+================================
 
-We already have the rock as an OCI image. Load the image into Docker:
+We already have the rock as an OCI image. Now we
+need to load it into Docker. Docker requires rocks to be imported into the
+daemon since they can't be run directly like an executable.
+
+Copy the rock:
 
 .. literalinclude:: code/expressjs/task.yaml
     :language: bash
@@ -135,6 +216,12 @@ We already have the rock as an OCI image. Load the image into Docker:
     :end-before: [docs:skopeo-copy-end]
     :dedent: 2
 
+This command contains the following pieces:
+
+- ``--insecure-policy``: adopts a permissive policy that
+  removes the need for a dedicated policy file.
+- ``oci-archive``: specifies the rock we created for our Express app.
+- ``docker-daemon``: specifies the name of the image in the Docker registry.
 
 Check that the image was successfully loaded into Docker:
 
@@ -144,7 +231,7 @@ Check that the image was successfully loaded into Docker:
     :end-before: [docs:docker-images-end]
     :dedent: 2
 
-The output should list the ExpressJS image, along with its tag, ID and
+The output should list the Express image, along with its tag, ID and
 size:
 
 .. terminal::
@@ -152,8 +239,8 @@ size:
     REPOSITORY              TAG       IMAGE ID       CREATED       SIZE
     expressjs-hello-world   0.1       30c7e5aed202   2 weeks ago   304MB
 
-Now we're finally ready to run the rock and test the containerised ExpressJS
-application:
+Now we're finally ready to run the rock and test the containerised Express
+app:
 
 .. literalinclude:: code/expressjs/task.yaml
     :language: bash
@@ -161,8 +248,8 @@ application:
     :end-before: [docs:docker-run-end]
     :dedent: 2
 
-Use the same curl command as before to send a request to the ExpressJS
-application's root endpoint which is running inside the container:
+Use the same curl command as before to send a request to the Express
+app's root endpoint which is running inside the container:
 
 .. literalinclude:: code/expressjs/task.yaml
     :language: bash
@@ -170,12 +257,12 @@ application's root endpoint which is running inside the container:
     :end-before: [docs:curl-expressjs-rock-end]
     :dedent: 2
 
-The ExpressJS application again responds with *Welcome to Express* page.
+The Express app again responds with *Welcome to Express* page.
 
-View the application logs
-~~~~~~~~~~~~~~~~~~~~~~~~~
+View the app logs
+~~~~~~~~~~~~~~~~~
 
-When deploying the ExpressJS rock, we can always get the application logs with
+When deploying the Express rock, we can always get the app logs with
 :ref:`pebble_explanation_page`:
 
 .. literalinclude:: code/expressjs/task.yaml
@@ -199,10 +286,10 @@ We can also choose to follow the logs by using the ``-f`` option with the
 :kbd:`C`.
 
 
-Stop the application
-~~~~~~~~~~~~~~~~~~~~
+Stop the app
+~~~~~~~~~~~~
 
-Now we have a fully functional rock for a ExpressJS application! This concludes
+Now we have a fully functional rock for a Express app! This concludes
 the first part of this tutorial, so we'll stop the container and remove the
 respective image for now:
 
@@ -213,17 +300,17 @@ respective image for now:
     :dedent: 2
 
 
-Update the ExpressJS application
-================================
+Update the Express app
+======================
 
-For our final task, let's update our application. As an example,
+For our final task, let's update our app. As an example,
 let's add a new ``/time`` endpoint that returns the current time.
 
 Start by creating the ``app/routes/time.js`` file in a text editor and paste the
 code from the snippet below:
 
 .. literalinclude:: code/expressjs/time.js
-    :caption: time.js
+    :caption: ~/expressjs-hello-world/app/routes/time.js
     :language: javascript
 
 Place the code snippet below in ``app/app.js`` under routes registration section
@@ -231,13 +318,38 @@ along with other ``app.use(...)`` lines.
 It will register the new ``/time`` endpoint:
 
 .. literalinclude:: code/expressjs/time_app.js
-    :caption: app.js
+    :caption: ~/expressjs-hello-world/app/app.js
     :language: javascript
     :start-after: [docs:append-lines]
     :end-before: [docs:append-lines-end]
 
-Since we are creating a new version of the application, set
+Since we are creating a new version of the app, set
 ``version: '0.2'`` in the project file.
+The top of the ``rockcraft.yaml`` file should look similar to the following:
+
+.. code-block:: yaml
+    :caption: ~/expressjs-hello-world/rockcraft.yaml
+    :emphasize-lines: 6
+
+    name: expressjs-hello-world
+    # see https://documentation.ubuntu.com/rockcraft/en/latest/explanation/bases/
+    # for more information about bases and using 'bare' bases for chiselled rocks
+    base: bare # as an alternative, a ubuntu base can be used
+    build-base: ubuntu@24.04 # build-base is required when the base is bare
+    version: '0.2'
+    summary: A summary of your ExpressJS app # 79 char long summary
+    description: |
+        This is expressjs-hello-world's description. You have a paragraph or two to tell the
+        most important story about it. Keep it under 100 words though,
+        we live in tweetspace and your description wants to look good in the
+        container registries out there.
+    # the platforms this rock should be built on and run on.
+    # you can check your architecture with `dpkg --print-architecture`
+    platforms:
+        amd64:
+        # arm64:
+        # ppc64el:
+        # s390x:
 
 Pack and run the rock using similar commands as before:
 
@@ -258,7 +370,7 @@ Finally, use curl to send a request to the ``/time`` endpoint:
     :end-before: [docs:curl-time-end]
     :dedent: 2
 
-The updated application should respond with the current date and time (e.g.
+The updated app should respond with the current date and time (e.g.
 ``Fri Jan 10 2025 03:11:44 GMT+0000 (Coordinated Universal Time)``).
 
 .. tip::
@@ -291,21 +403,19 @@ following:
     :end-before: [docs:cleanup-end]
     :dedent: 2
 
-.. collapse:: If using Multipass...
+We can also clean the Multipass instance up.
+Start by exiting it:
 
-    If we created an instance using Multipass, we can also clean it up.
-    Start by exiting it:
+.. code-block:: bash
 
-    .. code-block:: bash
+    exit
 
-        exit
+And then we can proceed with its deletion:
 
-    And then we can proceed with its deletion:
+.. code-block:: bash
 
-    .. code-block:: bash
-
-        multipass delete rock-dev
-        multipass purge
+    multipass delete rock-dev
+    multipass purge
 
 ----
 
@@ -324,9 +434,9 @@ Next steps
 Troubleshooting
 ===============
 
-**Application updates not taking effect?**
+**App updates not taking effect?**
 
-Upon changing the ExpressJS application and re-packing the rock, if
+Upon changing the Express app and re-packing the rock, if
 the changes are not taking effect, try running ``rockcraft clean`` and pack
 the rock again with ``rockcraft pack``.
 

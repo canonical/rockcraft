@@ -33,6 +33,8 @@ apps:
 build-packages:
   - libapt-pkg-dev
   - libffi-dev # for cffi (via pygit2)
+  - libxml2-dev # for lxml (craft-parts)
+  - libxslt1-dev
   - libyaml-dev
   - python3.12-dev
   - pkg-config
@@ -49,11 +51,14 @@ parts:
       - apt-transport-https
       - apt-utils
       - binutils
+      - fuse-overlayfs
       - gpg
       - gpgv
       - libpython3-stdlib
       - libpython3.12-stdlib
       - libpython3.12-minimal
+      - libxml2 # for lxml (craft-parts)
+      - libxslt1.1
       - python3-pip
       - python3-setuptools
       - python3-wheel
@@ -61,7 +66,6 @@ parts:
       - python3-minimal
       - python3-pkg-resources
       - python3.12-minimal
-      - fuse-overlayfs
     organize:
       "usr/bin/fuse-overlayfs": "libexec/rockcraft/fuse-overlayfs"
 

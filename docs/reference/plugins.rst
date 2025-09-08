@@ -11,6 +11,7 @@ Rockcraft.
    :maxdepth: 1
 
    /common/craft-parts/reference/plugins/dotnet_plugin
+   /common/craft-parts/reference/plugins/dotnet_v2_plugin
    plugins/ant_plugin
    /common/craft-parts/reference/plugins/autotools_plugin
    /common/craft-parts/reference/plugins/cargo_use_plugin
@@ -22,6 +23,7 @@ Rockcraft.
    /common/craft-parts/reference/plugins/jlink_plugin
    /common/craft-parts/reference/plugins/make_plugin
    plugins/maven_plugin
+   /common/craft-parts/reference/plugins/maven_use_plugin
    /common/craft-parts/reference/plugins/meson_plugin
    /common/craft-parts/reference/plugins/nil_plugin
    /common/craft-parts/reference/plugins/npm_plugin

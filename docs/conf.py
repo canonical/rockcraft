@@ -19,34 +19,35 @@ import os
 import pathlib
 import sys
 
+import craft_parts
 import craft_parts_docs
-
-project_dir = pathlib.Path("..").resolve()
-sys.path.insert(0, str(project_dir.absolute()))
-
-import rockcraft  # noqa: E402
+import rockcraft
 
 project = "Rockcraft"
 author = "Canonical Group Ltd"
 
-copyright = "2022-%s, %s" % (datetime.date.today().year, author)
-
 # The full version, including alpha/beta/rc tags
 release = rockcraft.__version__
+# The commit hash in the dev release version confuses the spellchecker
 if ".post" in release:
-    # The commit hash in the dev release version confuses the spellchecker
     release = "dev"
 
+copyright = "2022-%s, %s" % (datetime.date.today().year, author)
+
 # region Configuration for canonical-sphinx
+
 ogp_site_url = "https://canonical-rockcraft.readthedocs-hosted.com/"
 ogp_site_name = project
 ogp_image = "https://assets.ubuntu.com/v1/253da317-image-document-ubuntudocs.svg"
 
 html_context = {
-    "product_page": "github.com/canonical/rockcraft",
-    "discourse": "https://discourse.ubuntu.com/c/rocks/117",
+    "product_page": "",  # Rockcraft doesn't have a marketing page
     "github_url": "https://github.com/canonical/rockcraft",
+    "repo_default_branch": "main",
+    "repo_folder": "/docs/",
     "github_issues": "https://github.com/canonical/rockcraft/issues",
+    "matrix": "https://matrix.to/#/#rockcraft:ubuntu.com",
+    "discourse": "https://discourse.ubuntu.com/c/rocks/117",
     "display_contributors": False,
 }
 
@@ -54,10 +55,25 @@ html_theme_options = {
     "source_edit_link": "https://github.com/canonical/rockcraft",
 }
 
+html_static_path = ["_static"]
+templates_path = ["_templates"]
+
+# Static resources for Google Analytics
+html_css_files = [
+    'css/cookie-banner.css'
+]
+
+html_js_files = [
+    'js/bundle.js',
+]
+
 extensions = [
     "canonical_sphinx",
     "notfound.extension",
+    "pydantic_kitbash",
+    "sphinx_sitemap",
 ]
+
 # endregion
 extensions.extend(
     [
@@ -82,6 +98,7 @@ exclude_patterns = [
     # documents (so they generate "duplicate label" errors) or they aren't
     # used in this documentation at all (so they generate "unreferenced"
     # errors).
+    "common/craft-parts/explanation/file-migration.rst",
     "common/craft-parts/explanation/filesets.rst",
     "common/craft-parts/explanation/lifecycle.rst",
     "common/craft-parts/explanation/overlay_parameters.rst",
@@ -89,7 +106,7 @@ exclude_patterns = [
     "common/craft-parts/explanation/how_parts_are_built.rst",
     "common/craft-parts/explanation/overlay_step.rst",
     "common/craft-parts/explanation/gradle_plugin.rst",
-    "common/craft-parts/how-to/craftctl.rst",
+    "common/craft-parts/how-to/customise-the-build-with-craftctl.rst",
     "common/craft-parts/how-to/use_parts.rst",
     "common/craft-parts/reference/partition_specific_output_directory_variables.rst",
     "common/craft-parts/reference/parts_steps.rst",
@@ -99,18 +116,35 @@ exclude_patterns = [
     "common/craft-parts/reference/plugins/python_plugin.rst",
     "common/craft-parts/reference/plugins/uv_plugin.rst",
     # Extra non-craft-parts exclusions can be added after this comment
+    "reuse/*",
 ]
 
+# Linkcheck settings
+
+# This doesn't seem to have any effect
+linkcheck_retries = 3
+
+# URLs to skip
 linkcheck_ignore = [
     "http://0.0.0.0:8080",
     "https://github.com/canonical/craft-actions#rockcraft-pack",
     "https://canonical-pebble.readthedocs-hosted.com/en/latest/reference/layer-specification/",
     "https://juju.is/cloud-native-kubernetes-usage-report-2021#selection-criteria-for-container-images",
     "https://matrix.to/#/#rocks:ubuntu.com",
+    "https://matrix.to/#/#rockcraft:ubuntu.com",
+    "https://www.gnu.org/*",
     # Ignore changelog links to Rockcraft releases, because the changelog entries
     # are written before the actual release is tagged.
     "https://github.com/canonical/rockcraft/releases/tag/.*",
+    "https://github.com/canonical/spread#selecting-which-tasks-to-run",
+    # Ignore opencontainer's anchors as linkchecker is not able to check them.
+    "https://specs.opencontainers.org/image-spec/config/",
 ]
+
+# Don't check links in the "common" subdirectory, as those are the responsibility of
+# the libraries.
+linkcheck_exclude_documents = ["^common/.*"]
+linkcheck_anchors_ignore = ["slice-definitions"]
 
 rst_epilog = """
 .. include:: /reuse/links.txt
@@ -118,9 +152,16 @@ rst_epilog = """
 
 # region Options for extensions
 
-# Github config
-github_username = "canonical"
-github_repository = "rockcraft"
+# Client-side page redirects.
+rediraffe_redirects = "redirects.txt"
+
+# Sitemap configuration: https://sphinx-sitemap.readthedocs.io/
+html_baseurl = "https://documentation.ubuntu.com/rockcraft/"
+if "READTHEDOCS_VERSION" in os.environ:
+    version = os.environ["READTHEDOCS_VERSION"]
+    sitemap_url_scheme = "{version}{link}"
+else:
+    sitemap_url_scheme = "latest/{link}"
 
 # Do (not) include module names.
 add_module_names = True
@@ -130,17 +171,9 @@ set_type_checking_flag = True
 typehints_fully_qualified = False
 always_document_param_types = True
 typehints_document_rtype = True
-linkcheck_anchors_ignore = ["slice-definitions"]
-
-linkcheck_retries = 3
 
 # Enable support for google-style instance attributes.
 napoleon_use_ivar = True
-
-# endregion
-
-# Client-side page redirects.
-rediraffe_redirects = "redirects.txt"
 
 # TODO: this is a boilerplate copy from the sphinx-docs. It should
 # be built on top of it instead of duplicating its content
@@ -186,9 +219,17 @@ notfound_context = {
 }
 # endregion
 
+# region Autgenerate documentation
+
+project_dir = pathlib.Path(__file__).parents[1].resolve()
+sys.path.insert(0, str(project_dir.absolute()))
+
+model_dir = pathlib.Path(craft_parts.__file__).parent.resolve()
+sys.path.append(str(model_dir.absolute()))
+
 
 def generate_cli_docs(nil):
-    gen_cli_docs_path = (project_dir / "tools" / "docs" / "gen_cli_docs.py").resolve()
+    gen_cli_docs_path = (project_dir / "tools/docs/gen_cli_docs.py").resolve()
     os.system("%s %s" % (gen_cli_docs_path, project_dir / "docs"))
 
 
@@ -203,3 +244,5 @@ craft_parts_docs_path = pathlib.Path(craft_parts_docs.__file__).parent / "craft-
 (common_docs_path / "craft-parts").symlink_to(
     craft_parts_docs_path, target_is_directory=True
 )
+
+# endregion

@@ -17,7 +17,6 @@
 """Project definition and helpers."""
 
 import re
-import shlex
 import typing
 from collections.abc import Mapping
 from typing import TYPE_CHECKING, Annotated, Any, Literal
@@ -39,6 +38,7 @@ from rockcraft.architectures import SUPPORTED_ARCHS
 from rockcraft.parts import part_has_overlay
 from rockcraft.pebble import Check, Service
 from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
+from rockcraft.utils import parse_command
 
 # pyright workaround
 if TYPE_CHECKING:
@@ -63,6 +63,13 @@ MESSAGE_INVALID_NAME = (
     "and may not have two hyphens in a row."
 )
 
+MESSAGE_ENTRYPOINT_CHANGED = (
+    "This operation will result in a rock with an "
+    "atypical OCI Entrypoint. While that might be acceptable for testing and "
+    "personal use, it shall require prior approval before submitting to a "
+    "Canonical registry namespace."
+)
+
 DEPRECATED_COLON_BASES = ["ubuntu:20.04", "ubuntu:22.04"]
 
 
@@ -80,9 +87,22 @@ ProjectName = Annotated[
     ),
 ]
 
-BaseT = Literal["bare", "ubuntu@20.04", "ubuntu@22.04", "ubuntu@24.04"]
+BaseT = Literal[
+    "bare",
+    "ubuntu@20.04",
+    "ubuntu@22.04",
+    "ubuntu@24.04",
+    "ubuntu@25.10",
+]
 BuildBaseT = typing.Annotated[
-    Literal["ubuntu@20.04", "ubuntu@22.04", "ubuntu@24.04", "devel"] | None,
+    Literal[
+        "ubuntu@20.04",
+        "ubuntu@22.04",
+        "ubuntu@24.04",
+        "ubuntu@25.10",
+        "devel",
+    ]
+    | None,
     pydantic.Field(validate_default=True),
 ]
 
@@ -99,6 +119,7 @@ class Project(BaseProject):
     services: dict[str, Service] | None = None
     checks: dict[str, Check] | None = None
     entrypoint_service: str | None = None
+    entrypoint_command: str | None = None
     base: BaseT  # type: ignore[reportIncompatibleVariableOverride]
     build_base: BuildBaseT = None  # type: ignore[reportIncompatibleVariableOverride]
 
@@ -243,10 +264,7 @@ class Project(BaseProject):
     ) -> str | None:
         """Verify that the entrypoint_service exists in the services dict."""
         craft_cli.emit.message(
-            "Warning: defining an entrypoint-service will result in a rock with an "
-            "atypical OCI Entrypoint. While that might be acceptable for testing and "
-            "personal use, it shall require prior approval before submitting to a "
-            "Canonical registry namespace."
+            f"Warning: 'entrypoint-service' is defined. {MESSAGE_ENTRYPOINT_CHANGED}"
         )
 
         if entrypoint_service not in info.data.get("services", {}):
@@ -255,23 +273,35 @@ class Project(BaseProject):
                 "valid Pebble service."
             )
 
-        command = info.data["services"][entrypoint_service].command
-        command_sh_args = shlex.split(command)
-        # optional arg is surrounded by brackets, so check that they exist in the
-        # right order
-        try:
-            if command_sh_args.index("[") >= command_sh_args.index("]"):
-                raise IndexError(
-                    "Bad syntax for the entrypoint-service command's additional args."
-                )
-        except ValueError as ex:
+        command, args = parse_command(info.data["services"][entrypoint_service].command)
+
+        if len(args) == 0:
             raise ValueError(
-                f"The Pebble service '{entrypoint_service}' has a command {command} "
+                f"The Pebble service '{entrypoint_service}' has a command {' '.join(command)} "
                 "without default arguments and thus cannot be used as the "
                 "entrypoint-service."
-            ) from ex
+            )
 
         return entrypoint_service
+
+    @pydantic.field_validator("entrypoint_command")
+    @classmethod
+    def _validate_entrypoint_command(
+        cls, entrypoint_command: str, info: pydantic.ValidationInfo
+    ) -> str | None:
+        if info.data.get("entrypoint_service", None):
+            raise ValueError(
+                "The option 'entrypoint-command' cannot be used along 'entrypoint-service'."
+            )
+
+        craft_cli.emit.message(
+            f"Warning: 'entrypoint-command' is defined. {MESSAGE_ENTRYPOINT_CHANGED}"
+        )
+
+        # Check arguments
+        parse_command(entrypoint_command)
+
+        return entrypoint_command
 
     @pydantic.field_validator("environment")
     @classmethod

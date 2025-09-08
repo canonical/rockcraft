@@ -27,7 +27,9 @@ from overrides import override  # type: ignore[reportUnknownVariableType]
 
 from rockcraft import oci
 from rockcraft.models import Project
+from rockcraft.pebble import Pebble
 from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
+from rockcraft.utils import parse_command
 
 
 class RockcraftPackageService(PackageService):
@@ -118,7 +120,6 @@ def _pack(
         base_layer_dir=base_layer_dir,
     )
     emit.progress("Created new layer")
-
     if project.run_user:
         emit.progress(f"Creating new user {project.run_user}")
         userid = SUPPORTED_GLOBAL_USERNAMES[project.run_user]["uid"]
@@ -133,14 +134,24 @@ def _pack(
         emit.progress(f"Setting the default OCI user to be {project.run_user}")
         new_image.set_default_user(userid, project.run_user)
 
-    emit.progress("Adding Pebble entrypoint")
+    if project.entrypoint_command:
+        emit.progress("Setting OCI entrypoint")
+        entrypoint, cmd = parse_command(project.entrypoint_command)
+    else:
+        emit.progress("Adding Pebble entrypoint")
 
-    new_image.set_entrypoint(
-        project.entrypoint_service, project.build_base or project.base
-    )
-    if project.services and project.entrypoint_service in project.services:
-        new_image.set_cmd(project.services[project.entrypoint_service].command)
+        entrypoint = Pebble.get_entrypoint(project.build_base or project.base)
+        cmd = []
 
+        if project.entrypoint_service:
+            entrypoint.extend(["--args", project.entrypoint_service])
+
+        if project.services and project.entrypoint_service in project.services:
+            command = project.services[project.entrypoint_service].command
+            cmd = parse_command(command or "")[1]
+
+    new_image.set_entrypoint(entrypoint)
+    new_image.set_cmd(cmd)
     new_image.set_default_path(project.base)
 
     dumped = project.marshal()
@@ -171,6 +182,13 @@ def _pack(
     new_image.set_annotations(oci_annotations)
     new_image.set_control_data(rock_metadata)
     emit.progress("Metadata added")
+
+    # Set the media type in the target images's manifest.
+    # This is different than calling _inject_oci_fields in oci.Image.new_oci_image,
+    # since _inject_oci_fields is called in the context of creating the base image.
+    emit.progress("Adding manifest media type")
+    new_image.set_media_type()
+    emit.progress("Manifest media type added")
 
     emit.progress("Exporting to OCI archive")
     archive_name = f"{project.name}_{project.version}_{rock_suffix}.rock"

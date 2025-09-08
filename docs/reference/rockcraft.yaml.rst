@@ -168,15 +168,39 @@ others are optional.
 
 **Required**: No
 
-The optional name of the Pebble service to serve as the OCI entrypoint. If set,
+The optional name of the Pebble service to serve as the `OCI entrypoint`_. If set,
 this makes Rockcraft extend ``["/bin/pebble", "enter"]`` with
 ``["--args", "<serviceName>"]``. The command of the Pebble service must
-contain an optional argument that will become the OCI CMD.
+contain an optional argument that will become the `OCI CMD`_.
 
 .. warning::
    This option must only be used in cases where the targeted deployment
    environment has unalterable assumptions about the container image's
    entrypoint.
+
+.. _rockcraft-yaml-entrypoint-command:
+
+``entrypoint-command``
+------------------------
+
+**Type**: string
+
+**Required**: No
+
+Replaces the rock's default Pebble `OCI entrypoint`_ and `OCI CMD`_ properties.
+The value can be suffixed with default entrypoint arguments,
+using the same square bracket list delimiters ([]) as the Pebble service command.
+If provided, these default entrypoint arguments become the rock's OCI CMD. For example:
+
+.. code-block::
+
+   echo [ Hello ]
+
+This key and the ``entrypoint-service`` are mutually incompatible and can't both be set.
+
+.. caution::
+    You should only set this key for certain categories of general-purpose rocks where
+    Pebble services aren't appropriate, such as the Ubuntu OS and base images.
 
 ``checks``
 ------------
@@ -245,7 +269,7 @@ is a valid, supported architecture name.
 **Required**: Yes
 
 The set of parts that compose the rock's contents
-(see :ref:`Parts <part_properties>`).
+(see :ref:`Parts <reference-part-properties>`).
 
 
 .. note::
@@ -269,6 +293,7 @@ Currently supported extensions:
 - ``go-framework``
 - ``fastapi-framework``
 - ``expressjs-framework``
+- ``spring-boot-framework``
 
 Example
 =======

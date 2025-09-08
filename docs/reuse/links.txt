@@ -5,6 +5,8 @@
 .. _`OCI archive format`: https://github.com/opencontainers/image-spec/blob/main/layer.md#distributable-format
 .. _OCI_image_spec: https://github.com/opencontainers/image-spec/blob/main/spec.md
 .. _`OCI layers`: https://github.com/opencontainers/image-spec/blob/main/layer.md
+.. _`OCI entrypoint`: https://specs.opencontainers.org/image-spec/config/?v=v1.0.1#properties
+.. _`OCI CMD`: https://specs.opencontainers.org/image-spec/config/?v=v1.0.1#properties
 .. _LXD: https://canonical.com/lxd
 .. _Multipass: https://multipass.run/docs
 .. _`Open Container Initiative`: https://opencontainers.org/

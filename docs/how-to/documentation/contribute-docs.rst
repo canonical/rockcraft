@@ -85,7 +85,7 @@ setting up a virtual environment and building the documentation.
 .. _YAML: https://yaml.org/
 .. _`submit an issue`: https://github.com/canonical/rockcraft/issues/new/choose
 .. _`create a fork`: https://github.com/canonical/rockcraft/fork
-.. _`CONTRIBUTING`: https://github.com/canonical/rockcraft/blob/main/CONTRIBUTING.rst
+.. _`CONTRIBUTING`: https://github.com/canonical/rockcraft/blob/main/CONTRIBUTING.md
 
 
 Making a contribution

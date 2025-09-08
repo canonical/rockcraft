@@ -48,6 +48,7 @@ class RockcraftLifecycleService(LifecycleService):
             base_layer_dir=image_info.base_layer_dir,
             base_layer_hash=image_info.base_digest,
             base=project.base,
+            build_base=project.build_base,
             project_name=project.name,
             rootfs_dir=image_info.base_layer_dir,
         )
@@ -69,9 +70,9 @@ class RockcraftLifecycleService(LifecycleService):
 
 
 def _python_usrmerge_fix(step_info: StepInfo) -> None:
-    """Fix 'lib64' symlinks created by the Python plugin on ubuntu@24.04 projects."""
-    if step_info.project_info.base != "ubuntu@24.04":
-        # The issue only affects rocks with 24.04 bases.
+    """Fix 'lib64' symlinks created by the Python plugin on ubuntu@24.04+ projects."""
+    if step_info.project_info.build_base in ("ubuntu@20.04", "ubuntu@22.04"):
+        # The issue only affects rocks with 24.04 and newer build bases.
         return
 
     state = step_info.state

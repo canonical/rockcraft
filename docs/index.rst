@@ -26,6 +26,7 @@ allowing complex operations to be declared at build time.
    how-to/index
    reference/index
    explanation/index
+   contribute-to-this-documentation
    release-notes/index
 
 
@@ -64,6 +65,6 @@ and constructive feedback.
 
 * `Ubuntu Rocks Discourse <https://discourse.ubuntu.com/c/rocks/117>`_
 * `Rocks Community on Matrix <https://matrix.to/#/#rocks:ubuntu.com>`_
-* `Ubuntu Code of Conduct <https://ubuntu.com/community/code-of-conduct>`_
-* `Canonical contributor license agreement
+* `Ubuntu Code of Conduct <https://ubuntu.com/community/docs/ethos/code-of-conduct>`_
+* `Canonical Contributor License Agreement
   <https://ubuntu.com/legal/contributors>`_

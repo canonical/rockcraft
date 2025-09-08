@@ -22,6 +22,7 @@ from unittest.mock import DEFAULT, call
 
 import pytest
 import yaml
+from craft_application.services import StateService
 from craft_cli import emit
 from rockcraft import cli, extensions, services
 from rockcraft.application import APP_METADATA, Rockcraft
@@ -45,6 +46,12 @@ def test_run_pack_services(mocker, monkeypatch, tmp_path):
 
     fake_prime_dir = Path("/fake/prime/dir")
 
+    # In managed mode the StateService expects "/tmp/craft-state" to exist, but it
+    # doesn't in this case.
+    state_dir = tmp_path / "craft-state"
+    state_dir.mkdir()
+    mocker.patch.object(StateService, "_get_state_dir", return_value=state_dir)
+
     # Mock the relevant methods from the lifecycle and package services
     lifecycle_mocks = mocker.patch.multiple(
         services.RockcraftLifecycleService,
@@ -57,7 +64,7 @@ def test_run_pack_services(mocker, monkeypatch, tmp_path):
     package_mocks = mocker.patch.multiple(
         services.RockcraftPackageService, write_metadata=DEFAULT, pack=DEFAULT
     )
-    package_mocks["pack"].return_value = [tmp_path / "my-rock.rock"]
+    package_mocks["pack"].return_value = [tmp_path / "project/my-rock.rock"]
 
     command_line = ["rockcraft", "pack"]
     mocker.patch.object(sys, "argv", command_line)
