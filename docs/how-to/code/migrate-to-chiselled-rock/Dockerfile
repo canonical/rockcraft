@@ -13,7 +13,7 @@ RUN dotnet_version=6.0.16 \
     && rm dotnet.tar.gz
 
 # .NET runtime image
-FROM $REPO:6.0.24-jammy-amd64
+FROM $REPO:6.0.36-jammy-amd64
 
 # .NET Runtime version
 ENV DOTNET_VERSION=6.0.16
