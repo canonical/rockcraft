@@ -4,7 +4,7 @@ Dependencies
 
 Since none of the bases that are available for rocks contain a default Python
 installation, including a Python interpreter in Rockcraft projects is mandatory.
-Both the ``python`` and the ``poetry`` plugins also require the ``venv`` module
+The plugins ``python``, ``poetry`` and ``uv`` also require the ``venv`` module
 to create the virtual environment where Python packages are installed at build
 time.
 
@@ -24,6 +24,6 @@ here's an example that uses ``python3.12-venv`` from the Deadsnakes ppa:
 
    parts:
      my-part:
-       plugin: <python or poetry>
+       plugin: <python or poetry or uv>
        source: .
        stage-packages: [python3.12-venv]
