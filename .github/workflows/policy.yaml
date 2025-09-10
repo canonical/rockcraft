@@ -16,6 +16,6 @@ jobs:
     with:
       packages: python-apt-dev
       # requirements-noble.txt can't build on jammy
-      requirements-find-args: "! -name requirements-noble.txt"
+      requirements-find-args: "! -path '*/docs/tutorial/**' ! -path '*/tests/spread/**' ! -path '*/tests/data/**' ! -name requirements-noble.txt"
       osv-extra-args: "--config=source/osv-scanner.toml"
       uv-export: false
