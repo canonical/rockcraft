@@ -11,9 +11,9 @@ on:
 
 jobs:
   lint:
-    uses: canonical/starflow/.github/workflows/lint-python.yaml@main
+    uses: canonical/starflow/.github/workflows/lint-python.yaml@work/lint-setup-parallel
   test:
-    uses: canonical/starflow/.github/workflows/test-python.yaml@main
+    uses: canonical/starflow/.github/workflows/test-python.yaml@work/parallel-install
     with:
       lowest-python-version: ""
       fast-test-platforms: '[["jammy", "amd64"], ["noble", "amd64"]]'
