@@ -85,6 +85,7 @@ extensions.extend(
         "sphinxcontrib.details.directive",
         "sphinx_toolbox.collapse",
         "sphinxext.rediraffe",
+        "sphinx.ext.intersphinx",
     ]
 )
 
@@ -139,6 +140,7 @@ linkcheck_ignore = [
     "https://github.com/canonical/spread#selecting-which-tasks-to-run",
     # Ignore opencontainer's anchors as linkchecker is not able to check them.
     "https://specs.opencontainers.org/image-spec/config/",
+    "https://matrix.to/#/#12-factor-charms:ubuntu.com",
 ]
 
 # Don't check links in the "common" subdirectory, as those are the responsibility of
@@ -151,6 +153,19 @@ rst_epilog = """
 """
 
 # region Options for extensions
+
+# Intersphinx extension
+# https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html#configuration
+
+intersphinx_mapping = {
+    # Use latest Charmcraft so we can link to 12-factor docs. Once those docs are
+    # in stable, we should switch this to stable.
+    "charmcraft": ("https://documentation.ubuntu.com/charmcraft/latest/", None),
+    "12-factor": ("https://canonical-12-factor-app-support.readthedocs-hosted.com/latest/", None),
+}
+# See also:
+# https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html#confval-intersphinx_disabled_reftypes
+intersphinx_disabled_reftypes = ["*"]
 
 # Client-side page redirects.
 rediraffe_redirects = "redirects.txt"

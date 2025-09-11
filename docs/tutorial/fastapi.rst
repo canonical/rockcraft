@@ -137,6 +137,15 @@ Edit the ``platforms`` key in ``rockcraft.yaml`` if required.
     The ``name``, ``version`` and ``platform`` all influence the name of the
     generated ``.rock`` file.
 
+As the ``fastapi-framework`` extension is still experimental, export the
+environment variable ``ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS``:
+
+.. literalinclude:: code/fastapi/task.yaml
+    :language: bash
+    :start-after: [docs:experimental]
+    :end-before: [docs:experimental-end]
+    :dedent: 2
+
 Pack the rock:
 
 .. literalinclude:: code/fastapi/task.yaml
@@ -516,6 +525,36 @@ And then we can proceed with its deletion:
 
     multipass delete rock-dev
     multipass purge
+
+Next steps
+==========
+
+Congratulations! You've reached the end of this tutorial. You created a
+FastAPI app, packaged it into a rock, and practiced some typical development skills
+such as viewing logs and updating the app.
+
+But there is a lot more to explore:
+
+.. list-table::
+    :widths: 30 30
+    :header-rows: 1
+
+    * - If you are wondering...
+      - Visit...
+    * - "What's next?"
+      - :external+charmcraft:ref:`Write your first Kubernetes charm for a FastAPI app
+        in Charmcraft <write-your-first-kubernetes-charm-for-a-fastapi-app>`
+    * - "How do I...?"
+      - :ref:`How to manage a 12-factor app rock <manage-12-factor-app-rock>`
+    * - "How do I get in touch?"
+      - `Matrix channel <https://matrix.to/#/#12-factor-charms:ubuntu.com>`_
+    * - "What is...?"
+      - :ref:`fastapi-framework extension <fastapi-framework-reference>`
+
+        :ref:`What is a Rock? <rocks_explanation>`
+    * - "Why...?", "So what?"
+      - :external+12-factor:ref:`12-Factor app principles and support in Charmcraft
+        and Rockcraft <explanation>`
 
 ----
 

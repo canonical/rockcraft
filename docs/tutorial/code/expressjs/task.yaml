@@ -26,7 +26,6 @@ execute: |
   # [docs:init-app-end]
 
   npm start &
-  cd ..
   retry -n 5 --wait 2 curl --fail localhost:3000
 
   # [docs:curl-expressjs]
@@ -37,6 +36,7 @@ execute: |
   kill $(lsof -t -i:3000)
 
   # [docs:create-rockcraft-yaml]
+  cd ..
   rockcraft init --profile expressjs-framework
   # [docs:create-rockcraft-yaml-end]
 
