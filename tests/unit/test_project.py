@@ -510,7 +510,17 @@ def test_project_all_platforms_invalid(yaml_loaded_data):
 
 
 @pytest.mark.parametrize(
-    "valid_name", ["aaa", "a00", "0aaa", "a", "a-00", "a-a-a", "a-000-bbb"]
+    "valid_name",
+    [
+        "aaa",
+        "a00",
+        "0aaa",
+        "a",
+        "a-00",
+        "a-a-a",
+        "a-000-bbb",
+        "this-has-exactly-40-chars-so-it-is-valid",
+    ],
 )
 def test_project_name_valid(yaml_loaded_data, valid_name):
     yaml_loaded_data["name"] = valid_name
@@ -520,15 +530,29 @@ def test_project_name_valid(yaml_loaded_data, valid_name):
 
 
 @pytest.mark.parametrize(
-    "invalid_name", ["", "AAA", "a--a", "aa-", "a:a", "a/a", "a@a", "a_a"]
+    ("invalid_name", "expected_message"),
+    [
+        ("", MESSAGE_INVALID_NAME),
+        ("AAA", MESSAGE_INVALID_NAME),
+        ("a--a", MESSAGE_INVALID_NAME),
+        ("aa-", MESSAGE_INVALID_NAME),
+        ("a:a", MESSAGE_INVALID_NAME),
+        ("a/a", MESSAGE_INVALID_NAME),
+        ("a@a", MESSAGE_INVALID_NAME),
+        ("a_a", MESSAGE_INVALID_NAME),
+        (
+            "this-name-has-more-than-40-characters-and-then-is-invalid",
+            "value should have at most 40 items after validation, not 57",
+        ),
+    ],
 )
-def test_project_name_invalid(yaml_loaded_data, invalid_name):
+def test_project_name_invalid(yaml_loaded_data, invalid_name, expected_message):
     yaml_loaded_data["name"] = invalid_name
 
     with pytest.raises(CraftValidationError) as err:
         load_project_yaml(yaml_loaded_data)
 
-    expected_message = f"{MESSAGE_INVALID_NAME} (in field 'name')"
+    expected_message += " (in field 'name')"
     assert expected_message in str(err.value)
 
 
