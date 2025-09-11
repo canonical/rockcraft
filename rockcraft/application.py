@@ -47,12 +47,7 @@ class Rockcraft(Application):
         self.services.update_kwargs(
             "image", work_dir=self._work_dir, project_dir=self.project_dir
         )
-        self.services.update_kwargs(
-            "init",
-            default_name="my-rock-name",
-            name_regex=project.PROJECT_NAME_COMPILED_REGEX,
-            invalid_name_message=project.MESSAGE_INVALID_NAME,
-        )
+        self.services.update_kwargs("init", default_name="my-rock-name")
         super()._configure_services(provider_name)
 
     @override
