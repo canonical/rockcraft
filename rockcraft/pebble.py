@@ -185,7 +185,7 @@ class Pebble:
         )
 
         new_layer_prefix = f"{(int(prefixes[-1]) + 1):03}" if prefixes else "001"
-        new_layer_name = f"{new_layer_prefix}-{rock_name}.yaml"
+        new_layer_name = f"{new_layer_prefix}-rockcraft-{rock_name}.yaml"
 
         emit.progress(f"Preparing new Pebble layer file {new_layer_name}")
 
