@@ -17,17 +17,15 @@
 """Project definition and helpers."""
 
 import re
-import shlex
 import typing
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Annotated, Any, Literal
+from typing import TYPE_CHECKING, Any, Literal
 
 import craft_cli
 import pydantic
 import spdx_lookup  # type: ignore[import-untyped]
 from craft_application.models import (
     Platform,
-    get_validator_by_regex,
 )
 from craft_application.models import Project as BaseProject
 from craft_application.models.base import alias_generator
@@ -39,6 +37,7 @@ from rockcraft.architectures import SUPPORTED_ARCHS
 from rockcraft.parts import part_has_overlay
 from rockcraft.pebble import Check, Service
 from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
+from rockcraft.utils import parse_command
 
 # pyright workaround
 if TYPE_CHECKING:
@@ -47,42 +46,32 @@ else:
     _RunUser = Literal[tuple(SUPPORTED_GLOBAL_USERNAMES)] | None
 
 
-PROJECT_NAME_REGEX = r"^([a-z](?:-?[a-z0-9]){2,})$"
-_PROJECT_NAME_DESCRIPTION = """\
-Valid names for rocks. It matches the accepted values for pebble layer files:
-
-- must start with a lowercase letter [a-z]
-- must contain only lowercase letters [a-z], numbers [0-9] or hyphens
-- must not end with a hyphen, and must not contain two or more consecutive hyphens
-"""
-PROJECT_NAME_COMPILED_REGEX = re.compile(PROJECT_NAME_REGEX)
-
-MESSAGE_INVALID_NAME = (
-    "invalid name for rock: Names can only use ASCII lowercase letters, numbers, and hyphens. "
-    "They must start with a lowercase letter, may not end with a hyphen, "
-    "and may not have two hyphens in a row."
+MESSAGE_ENTRYPOINT_CHANGED = (
+    "This operation will result in a rock with an "
+    "atypical OCI Entrypoint. While that might be acceptable for testing and "
+    "personal use, it shall require prior approval before submitting to a "
+    "Canonical registry namespace."
 )
 
 DEPRECATED_COLON_BASES = ["ubuntu:20.04", "ubuntu:22.04"]
 
 
-ProjectName = Annotated[
-    str,
-    pydantic.BeforeValidator(
-        get_validator_by_regex(PROJECT_NAME_COMPILED_REGEX, MESSAGE_INVALID_NAME)
-    ),
-    pydantic.Field(
-        min_length=1,
-        strict=True,
-        pattern=PROJECT_NAME_REGEX,
-        description=_PROJECT_NAME_DESCRIPTION,
-        title="Project Name",
-    ),
+BaseT = Literal[
+    "bare",
+    "ubuntu@20.04",
+    "ubuntu@22.04",
+    "ubuntu@24.04",
+    "ubuntu@25.10",
 ]
-
-BaseT = Literal["bare", "ubuntu@20.04", "ubuntu@22.04", "ubuntu@24.04"]
 BuildBaseT = typing.Annotated[
-    Literal["ubuntu@20.04", "ubuntu@22.04", "ubuntu@24.04", "devel"] | None,
+    Literal[
+        "ubuntu@20.04",
+        "ubuntu@22.04",
+        "ubuntu@24.04",
+        "ubuntu@25.10",
+        "devel",
+    ]
+    | None,
     pydantic.Field(validate_default=True),
 ]
 
@@ -90,7 +79,6 @@ BuildBaseT = typing.Annotated[
 class Project(BaseProject):
     """Rockcraft project definition."""
 
-    name: ProjectName  # type: ignore[reportIncompatibleVariableOverride]
     # Type of summary is Optional[str] in BaseProject
     summary: str  # type: ignore[reportIncompatibleVariableOverride]
     description: str  # type: ignore[reportIncompatibleVariableOverride]
@@ -99,6 +87,7 @@ class Project(BaseProject):
     services: dict[str, Service] | None = None
     checks: dict[str, Check] | None = None
     entrypoint_service: str | None = None
+    entrypoint_command: str | None = None
     base: BaseT  # type: ignore[reportIncompatibleVariableOverride]
     build_base: BuildBaseT = None  # type: ignore[reportIncompatibleVariableOverride]
 
@@ -243,10 +232,7 @@ class Project(BaseProject):
     ) -> str | None:
         """Verify that the entrypoint_service exists in the services dict."""
         craft_cli.emit.message(
-            "Warning: defining an entrypoint-service will result in a rock with an "
-            "atypical OCI Entrypoint. While that might be acceptable for testing and "
-            "personal use, it shall require prior approval before submitting to a "
-            "Canonical registry namespace."
+            f"Warning: 'entrypoint-service' is defined. {MESSAGE_ENTRYPOINT_CHANGED}"
         )
 
         if entrypoint_service not in info.data.get("services", {}):
@@ -255,23 +241,35 @@ class Project(BaseProject):
                 "valid Pebble service."
             )
 
-        command = info.data["services"][entrypoint_service].command
-        command_sh_args = shlex.split(command)
-        # optional arg is surrounded by brackets, so check that they exist in the
-        # right order
-        try:
-            if command_sh_args.index("[") >= command_sh_args.index("]"):
-                raise IndexError(
-                    "Bad syntax for the entrypoint-service command's additional args."
-                )
-        except ValueError as ex:
+        command, args = parse_command(info.data["services"][entrypoint_service].command)
+
+        if len(args) == 0:
             raise ValueError(
-                f"The Pebble service '{entrypoint_service}' has a command {command} "
+                f"The Pebble service '{entrypoint_service}' has a command {' '.join(command)} "
                 "without default arguments and thus cannot be used as the "
                 "entrypoint-service."
-            ) from ex
+            )
 
         return entrypoint_service
+
+    @pydantic.field_validator("entrypoint_command")
+    @classmethod
+    def _validate_entrypoint_command(
+        cls, entrypoint_command: str, info: pydantic.ValidationInfo
+    ) -> str | None:
+        if info.data.get("entrypoint_service", None):
+            raise ValueError(
+                "The option 'entrypoint-command' cannot be used along 'entrypoint-service'."
+            )
+
+        craft_cli.emit.message(
+            f"Warning: 'entrypoint-command' is defined. {MESSAGE_ENTRYPOINT_CHANGED}"
+        )
+
+        # Check arguments
+        parse_command(entrypoint_command)
+
+        return entrypoint_command
 
     @pydantic.field_validator("environment")
     @classmethod
@@ -334,20 +332,6 @@ class Project(BaseProject):
             annotations["org.opencontainers.image.licenses"] = self.license
 
         return (annotations, metadata)
-
-    @override
-    @classmethod
-    def transform_pydantic_error(cls, error: pydantic.ValidationError) -> None:
-        BaseProject.transform_pydantic_error(error)
-
-        for error_dict in error.errors():
-            loc = str(error_dict["loc"][0]) if error_dict["loc"] else ""
-            loc_and_type = (loc, error_dict["type"])
-            if loc_and_type == ("name", "value_error.str.regex"):
-                # Note: The base Project class already changes the error message
-                # for the "name" regex, but we re-change it here because
-                # Rockcraft's name regex is slightly stricter.
-                error_dict["msg"] = MESSAGE_INVALID_NAME
 
     @override
     @classmethod

@@ -444,10 +444,32 @@ And then we can proceed with its deletion:
 Next steps
 ==========
 
-* :ref:`Rockcraft tutorials<tutorial>`.
-* :ref:`spring-boot-framework reference<spring-boot-framework-reference>`.
-* :ref:`why_use_rockcraft`.
-* :ref:`What is a Rock?<rocks_explanation>`.
+Congratulations! You've reached the end of this tutorial. You created a
+Spring Boot app, packaged it into a rock, and practiced some typical development skills
+such as viewing logs and updating the app.
+
+But there is a lot more to explore:
+
+.. list-table::
+    :widths: 30 30
+    :header-rows: 1
+
+    * - If you are wondering...
+      - Visit...
+    * - "What's next?"
+      - :external+charmcraft:ref:`Write your first Kubernetes charm for a Spring Boot
+        app in Charmcraft <write-your-first-kubernetes-charm-for-a-spring-boot-app>`
+    * - "How do I...?"
+      - :ref:`How to manage a 12-factor app rock <manage-12-factor-app-rock>`
+    * - "How do I get in touch?"
+      - `Matrix channel <https://matrix.to/#/#12-factor-charms:ubuntu.com>`_
+    * - "What is...?"
+      - :ref:`spring-boot-framework extension <spring-boot-framework-reference>`
+
+        :ref:`What is a Rock? <rocks_explanation>`
+    * - "Why...?", "So what?"
+      - :external+12-factor:ref:`12-Factor app principles and support in Charmcraft
+        and Rockcraft <explanation>`
 
 ----
 

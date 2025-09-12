@@ -1544,6 +1544,15 @@
                 "title": "Autotools-Bootstrap-Parameters",
                 "type": "array"
               },
+              "disable-parallel": {
+                "default": false,
+                "description": "Whether to disable CPU multithreading during the build step.",
+                "examples": [
+                  "true"
+                ],
+                "title": "Disable-Parallel",
+                "type": "boolean"
+              },
               "source-checksum": {
                 "default": "",
                 "description": "The checksum of the downloaded source, to ensure integrity.",
@@ -1641,15 +1650,6 @@
                 ],
                 "title": "Source-Type",
                 "type": "string"
-              },
-              "disable-parallel": {
-                "default": false,
-                "description": "Whether to disable CPU multithreading during the build step.",
-                "examples": [
-                  "true"
-                ],
-                "title": "Disable-Parallel",
-                "type": "boolean"
               },
               "after": {
                 "default": [],
@@ -10580,7 +10580,16 @@
   "description": "Rockcraft project definition.",
   "properties": {
     "name": {
-      "description": "Valid names for rocks. It matches the accepted values for pebble layer files:\n\n- must start with a lowercase letter [a-z]\n- must contain only lowercase letters [a-z], numbers [0-9] or hyphens\n- must not end with a hyphen, and must not contain two or more consecutive hyphens\n",
+      "description": "The name of the project. This is used when uploading, publishing, or installing.\n\nThe project name must consist only of lower-case ASCII letters (``a``-``z``), numerals\n(``0``-``9``), and hyphens (``-``). It must contain at least one letter, not start or\nend with a hyphen, and not contain two consecutive hyphens. The maximum length is 40\ncharacters.\n",
+      "examples": [
+        "ubuntu",
+        "jupyterlab-desktop",
+        "lxd",
+        "digikam",
+        "kafka",
+        "mysql-router-k8s"
+      ],
+      "maxLength": 40,
       "minLength": 1,
       "title": "Project Name",
       "type": "string"
@@ -10643,7 +10652,8 @@
         "bare",
         "ubuntu@20.04",
         "ubuntu@22.04",
-        "ubuntu@24.04"
+        "ubuntu@24.04",
+        "ubuntu@25.10"
       ],
       "title": "Base",
       "type": "string"
@@ -10655,6 +10665,7 @@
             "ubuntu@20.04",
             "ubuntu@22.04",
             "ubuntu@24.04",
+            "ubuntu@25.10",
             "devel"
           ],
           "type": "string"
@@ -10677,6 +10688,10 @@
           }
         ]
       },
+      "description": "Determines which architectures the project builds and runs on.",
+      "examples": [
+        "{amd64: {build-on: [amd64], build-for: [amd64]}, arm64: {build-on: [amd64, arm64], build-for: [arm64]}}"
+      ],
       "patternProperties": {
         "(amd64|arm64|armhf|i386|ppc64el|riscv64|s390x)": {
           "anyOf": [
@@ -10742,6 +10757,10 @@
         }
       ],
       "default": null,
+      "description": "The author's contact links and email addresses.",
+      "examples": [
+        "[contact@example.com, https://example.com/contact]"
+      ],
       "title": "Contact"
     },
     "issues": {
@@ -10761,6 +10780,10 @@
         }
       ],
       "default": null,
+      "description": "The links and email addresses for submitting issues, bugs, and feature requests.",
+      "examples": [
+        "[issues@example.com, https://example.com/issues]"
+      ],
       "title": "Issues"
     },
     "source-code": {
@@ -10775,6 +10798,10 @@
         }
       ],
       "default": null,
+      "description": "The links to the source code of the project.",
+      "examples": [
+        "[https://github.com/canonical/craft-application]"
+      ],
       "title": "Source-Code"
     },
     "license": {
@@ -10787,6 +10814,11 @@
         }
       ],
       "default": null,
+      "description": "The project's license as an SPDX expression",
+      "examples": [
+        "GPL-3.0+",
+        "Apache-2.0"
+      ],
       "title": "License"
     },
     "adopt-info": {
@@ -10799,12 +10831,20 @@
         }
       ],
       "default": null,
+      "description": "Selects a part to inherit metadata from.",
+      "examples": [
+        "foo-part"
+      ],
       "title": "Adopt-Info"
     },
     "parts": {
       "additionalProperties": {
         "$ref": "#/$defs/Part"
       },
+      "description": "The self-contained software pieces needed to create the final artifact.",
+      "examples": [
+        "{cloud-init:                 {plugin: python,                 source-type: git,                 source: https://git.launchpad.net/cloud-init}}"
+      ],
       "title": "Parts",
       "type": "object"
     },
@@ -10822,6 +10862,10 @@
         }
       ],
       "default": null,
+      "description": "The package repositories to use for build and stage packages.",
+      "examples": [
+        "[{type: apt,                components: [main],                suites: [xenial],                key-id: 78E1918602959B9C59103100F1831DDAFC42E99D,                url: http://ppa.launchpad.net/snappy-dev/snapcraft-daily/ubuntu}]"
+      ],
       "title": "Package-Repositories"
     },
     "environment": {
@@ -10893,6 +10937,18 @@
       ],
       "default": null,
       "title": "Entrypoint-Service"
+    },
+    "entrypoint-command": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Entrypoint-Command"
     }
   },
   "required": [

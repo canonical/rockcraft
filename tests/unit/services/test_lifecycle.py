@@ -35,8 +35,6 @@ from craft_parts.state_manager.prime_state import PrimeState
 from rockcraft.plugins.python_common import get_python_plugins
 from rockcraft.services import lifecycle as lifecycle_module
 
-#  pylint: disable=protected-access
-
 
 @pytest.fixture
 def extra_project_params():
@@ -65,6 +63,7 @@ def test_lifecycle_args(
         application_name="rockcraft",
         arch="riscv64",
         base="ubuntu@24.04",
+        build_base="ubuntu@24.04",
         base_layer_dir=Path(),
         base_layer_hash=b"deadbeef",
         cache_dir=project_path / "cache",
@@ -111,18 +110,21 @@ def test_lifecycle_package_repositories(extra_project_params, fake_services, moc
 
 
 @pytest.mark.parametrize("plugin_name", get_python_plugins())
-def test_python_usrmerge_fix(tmp_path, plugin_name):
+@pytest.mark.parametrize("base", ["bare", "ubuntu@24.04", "ubuntu@25.10"])
+@pytest.mark.parametrize("build_base", ["ubuntu@24.04", "ubuntu@25.10"])
+def test_python_usrmerge_fix(tmp_path, plugin_name, base, build_base):
     # The test setup is rather involved because we need to recreate/mock an
     # exact set of circumstances here:
 
-    # 1) Create a project with 24.04 base;
+    # 1) Create a project with the given base;
     dirs = ProjectDirs(work_dir=tmp_path)
     project_info = ProjectInfo(
         project_dirs=dirs,
         application_name="test",
         cache_dir=tmp_path,
         strict_mode=False,
-        base="ubuntu@24.04",
+        base=base,
+        build_base=build_base,
     )
 
     # 2) Create a part using the Python plugin;

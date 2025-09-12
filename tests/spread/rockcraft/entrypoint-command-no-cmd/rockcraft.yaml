@@ -1,0 +1,14 @@
+name: entrypoint-command-no-cmd-test
+version: latest
+base: ubuntu@22.04
+summary: A rock with an entrypoint-command field
+description: A rock with an entrypoint-command field
+license: Apache-2.0
+entrypoint-command: echo
+
+platforms:
+  amd64:
+
+parts:
+  part1:
+    plugin: nil
