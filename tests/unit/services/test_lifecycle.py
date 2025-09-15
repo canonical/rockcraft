@@ -35,6 +35,10 @@ from craft_parts.state_manager.prime_state import PrimeState
 from rockcraft.plugins.python_common import get_python_plugins
 from rockcraft.services import lifecycle as lifecycle_module
 
+pytestmark = [
+    pytest.mark.usefixtures("enable_overlay_feature"),
+]
+
 
 @pytest.fixture
 def extra_project_params():
@@ -90,6 +94,9 @@ def test_lifecycle_args(
     ],
 )
 def test_lifecycle_package_repositories(extra_project_params, fake_services, mocker):
+    # Mock os.geteuid() because  the LCM requires superuser privileges for overlays."
+    mocker.patch.object(os, "geteuid", return_value=0)
+
     base = cast(services.ProjectService, fake_services.get("project")).get().base
     mocker.patch.object(util, "get_host_base", return_value=base)
     fake_repositories = extra_project_params["package_repositories"]

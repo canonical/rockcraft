@@ -11,6 +11,11 @@ from rockcraft.models.project import Project
 from rockcraft.services import package
 
 
+pytestmark = [
+    pytest.mark.usefixtures("enable_overlay_feature"),
+]
+
+
 @pytest.mark.usefixtures("fake_project_file")
 def test_media_type_in_packed_image_manifest(fake_services: ServiceFactory):
     base_image = oci.Image.new_oci_image(

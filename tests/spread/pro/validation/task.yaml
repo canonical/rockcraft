@@ -1,0 +1,36 @@
+summary: |
+  Test rockcraft's Pro validation behavior.
+
+execute: |
+
+  # Note: run_rockcraft does not seem to work... so we will use the rockcraft command directly
+
+  # attempt to create a Pro instance without pro entitlement on the host. This should fail
+  rockcraft pull --pro=esm-apps  || exit_code=$?
+  test 0 != $exit_code # fail if the exit code indicates a pass
+  rockcraft clean
+
+  # same should happen if we build a pro rock in destructive mode
+  rockcraft pull --pro=esm-apps  --destructive-mode  || exit_code=$?
+  test 0 != $exit_code # fail if the exit code indicates a pass
+  rockcraft clean
+
+  # attempt to build a standard rock without pro entitlement on the host. This should pass
+  rockcraft pull --destructive-mode
+  rockcraft clean
+
+  # enable some pro services
+  sudo pro attach --no-auto-enable $UBUNTU_PRO_TOKEN 
+  sudo pro enable --assume-yes esm-apps
+
+  # attempt to build a pro rock with pro entitlement on the host. This should pass
+  rockcraft pull --pro=esm-apps  --destructive-mode
+  rockcraft clean
+
+  # attempt to build a pro rock with different pro entitlement on the host. This should fail
+  rockcraft pull --pro=esm-infra  --destructive-mode  || exit_code=$?
+  test 0 != $exit_code # fail if the exit code indicates a pass
+  rockcraft clean
+
+restore: |
+  sudo pro detach --assume-yes

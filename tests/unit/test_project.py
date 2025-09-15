@@ -18,7 +18,7 @@ import datetime
 import os
 import subprocess
 from pathlib import Path
-from typing import cast
+from typing import cast, Any
 
 import pydantic
 import pytest
@@ -111,6 +111,28 @@ def yaml_data():
 @pytest.fixture
 def yaml_loaded_data():
     return yaml.safe_load(ROCKCRAFT_YAML)
+
+
+@pytest.fixture
+def apt_upgrade_part() -> dict[str, Any]:
+    return {
+        "_apt-upgrade": {
+            "plugin": "nil",
+            "overlay-script": 'craftctl chroot bash -c "apt-get update && apt-get -y upgrade && apt-get clean && rm -rf /var/lib/apt/lists/*"',
+        }
+    }
+
+
+@pytest.fixture
+def pebble_part() -> dict[str, Any]:
+    return {
+        "pebble": {
+            "plugin": "nil",
+            "stage-snaps": ["pebble/latest/stable"],
+            "override-prime": "craftctl default\nmkdir -p var/lib/pebble/default/layers\nchmod 777 var/lib/pebble/default",
+            "stage": ["bin/pebble"],
+        }
+    }
 
 
 def load_project_yaml(yaml_loaded_data) -> Project:
@@ -638,24 +660,27 @@ def test_project_bare_overlay(yaml_loaded_data, packages, script):
 @pytest.mark.parametrize(
     "fake_project_yaml", [pytest.param(ROCKCRAFT_YAML, id="default")]
 )
-def test_project_load(check, yaml_loaded_data, fake_services):
-    pebble_part = {
-        "pebble": {
-            "plugin": "nil",
-            "stage-snaps": ["pebble/latest/stable"],
-            "stage": ["bin/pebble"],
-            "override-prime": str(
-                "craftctl default\n"
-                "mkdir -p var/lib/pebble/default/layers\n"
-                "chmod 777 var/lib/pebble/default"
-            ),
-        }
-    }
+def test_project_load(
+    check,
+    yaml_data,
+    yaml_loaded_data,
+    pebble_part,
+    apt_upgrade_part,
+    tmp_path,
+    fake_services,
+):
+    rockcraft_file = tmp_path / "rockcraft.yaml"
+    rockcraft_file.write_text(
+        yaml_data,
+        encoding="utf-8",
+    )
+
     project_service = cast(RockcraftProjectService, fake_services.get("project"))
 
     project_yaml = project_service.get().marshal()
     # The Pebble part should be added to the loaded data
     yaml_loaded_data["parts"].update(pebble_part)
+    yaml_loaded_data["parts"].update(apt_upgrade_part)
 
     assert project_yaml == yaml_loaded_data
 

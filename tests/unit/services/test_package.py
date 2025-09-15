@@ -24,6 +24,11 @@ from rockcraft.oci import Image
 from rockcraft.services import RockcraftImageService, package
 
 
+pytestmark = [
+    pytest.mark.usefixtures("enable_overlay_feature"),
+]
+
+
 @pytest.mark.usefixtures("fake_project_file", "project_keys")
 @pytest.mark.parametrize(
     "project_keys",

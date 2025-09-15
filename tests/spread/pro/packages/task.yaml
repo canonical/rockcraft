@@ -1,0 +1,62 @@
+summary: |
+  Build rocks with various Ubuntu Pro features enabled.
+
+environment:
+  PKG_GLOB: hello_*+esm1_*.deb
+  ENV_PRO_ARG: esm-apps
+  PACK_ARGS: --pro=esm-apps
+
+  SCENARIO/managed_pro_stage_full: managed_pro_stage_full
+  SCENARIO/managed_pro_stage_chiseled: managed_pro_stage_chiseled
+  SCENARIO/destructive_pro_stage_full: destructive_pro_stage_full
+  PACK_ARGS/destructive_pro_stage_full: --destructive --pro=esm-apps
+  SCENARIO/destructive_pro_stage_chiseled: destructive_pro_stage_chiseled
+  PACK_ARGS/destructive_pro_stage_chiseled: --destructive --pro=esm-apps
+  SCENARIO/managed_pro_overlay_full: managed_pro_overlay_full
+  SCENARIO/managed_pro_build_full: managed_pro_build_full
+  SCENARIO/managed_standard_stage_full: managed_standard_stage_full
+  PKG_GLOB/managed_standard_stage_full: hello_*.deb
+  PACK_ARGS/managed_standard_stage_full: ""
+
+prepare: |
+  sudo pro attach --no-auto-enable $UBUNTU_PRO_TOKEN 
+  sudo pro enable --assume-yes $ENV_PRO_ARG
+
+execute: |
+
+  SCENARIO_DIR="${SCENARIO}"
+  TAG="latest"
+  IMAGE_DIR="image"
+  ROCK_FILE="hello-world_latest_*.rock"
+  BUNDLE_DIR="bundle"
+  PKG_DIR="package"
+
+  # change into the scenario's directory
+  cd $SCENARIO_DIR
+
+  # build the rock
+  rockcraft pack $PACK_ARGS
+
+  # Unpack the rootfs into "rootfs"
+  mkdir -p $IMAGE_DIR
+  tar -xvf $ROCK_FILE -C $IMAGE_DIR
+  /snap/rockcraft/current/bin/umoci unpack --rootless --image $IMAGE_DIR:$TAG $BUNDLE_DIR
+
+  # check if the debian package matches the expected glob
+  test -e $BUNDLE_DIR/rootfs/$PKG_GLOB
+
+  # unpack and located the hello binary
+  dpkg -x $BUNDLE_DIR/rootfs/hello_*.deb $PKG_DIR
+  pushd $PKG_DIR
+  HELLO_PATH=$(find . -type f -executable -name hello)
+  popd
+
+  # check that the same hello binary is in the rootfs
+  diff $PKG_DIR/$HELLO_PATH $BUNDLE_DIR/rootfs/$HELLO_PATH
+
+  # cleanup!
+  rockcraft clean
+  rm -rf $ROCK_FILE $IMAGE_DIR $BUNDLE_DIR $PKG_DIR
+
+restore: |
+  sudo pro detach --assume-yes
