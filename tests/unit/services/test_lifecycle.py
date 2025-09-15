@@ -27,6 +27,8 @@ from craft_parts import (
     PartInfo,
     ProjectDirs,
     ProjectInfo,
+    ProjectVar,
+    ProjectVarInfo,
     Step,
     StepInfo,
     callbacks,
@@ -71,8 +73,9 @@ def test_lifecycle_args(
         parallel_build_count=4,
         partitions=None,
         project_name="test-rock",
-        project_vars={"version": "0.1"},
-        project_vars_part_name=None,
+        project_vars=ProjectVarInfo(
+            root={"version": ProjectVar(value="0.1", updated=False, part_name=None)}
+        ),
         work_dir=project_path,
         rootfs_dir=Path(),
         track_stage_packages=True,
