@@ -21,7 +21,7 @@ execute: |
   cp -r ../src .
 
   # Build the rock & load it into docker
-  run_rockcraft pack
+  run_rockcraft pack --ignore=unmaintained
   test -f ${ROCK_FILE}
   sudo rockcraft.skopeo --insecure-policy copy oci-archive:${ROCK_FILE} docker-daemon:${IMAGE}
   docker images
