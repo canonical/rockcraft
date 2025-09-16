@@ -139,12 +139,23 @@ class Pebble:
             f"craftctl default\nmkdir -p {PEBBLE_LAYERS_PATH}\nchmod 777 {PEBBLE_PATH}"
         ),
     }
+    # The part spec for 25.10 and newer; pebble is in "usr/bin/pebble" because of the
+    # usrmerged install dir.
     PEBBLE_PART_SPEC = {
+        **_BASE_PART_SPEC,
+        "stage": [PEBBLE_BINARY_PATH],
+        # need the build-attribute at the moment because the usrmerged install is not
+        # created for parts with the 'nil' plugin.
+        "build-attributes": ["enable-usrmerge"],
+    }
+    # The part spec used for 24.04, where we organize "bin/pebble" to "usr/bin/pebble"
+    PEBBLE_PART_SPEC_2404 = {
         **_BASE_PART_SPEC,
         "organize": {"bin": PEBBLE_BINARY_DIR},
         "stage": [PEBBLE_BINARY_PATH],
     }
-    PEBBLE_PART_SPEC_PREVIOUS = {
+    # The part spec for 22.04 and 20.04, where pebble is "bin/pebble"
+    PEBBLE_PART_SPEC_2204_2004 = {
         **_BASE_PART_SPEC,
         "stage": [PEBBLE_BINARY_PATH_PREVIOUS],
     }
@@ -210,8 +221,10 @@ class Pebble:
         """Get the part providing the pebble binary for a given build base."""
         part_spec: dict[str, Any] = Pebble.PEBBLE_PART_SPEC
 
-        if Pebble._is_focal_or_jammy(build_base):
-            part_spec = Pebble.PEBBLE_PART_SPEC_PREVIOUS
+        if Pebble._is_noble(build_base):
+            part_spec = Pebble.PEBBLE_PART_SPEC_2404
+        elif Pebble._is_focal_or_jammy(build_base):
+            part_spec = Pebble.PEBBLE_PART_SPEC_2204_2004
 
         return part_spec
 
@@ -230,6 +243,10 @@ class Pebble:
     @staticmethod
     def _is_focal_or_jammy(build_base: str) -> bool:
         return build_base in ("ubuntu@20.04", "ubuntu@22.04")
+
+    @staticmethod
+    def _is_noble(build_base: str) -> bool:
+        return build_base == "ubuntu@24.04"
 
 
 def add_pebble_part(project: dict[str, Any]) -> None:
