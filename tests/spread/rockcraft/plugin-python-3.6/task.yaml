@@ -11,7 +11,7 @@ execute: |
   sed "s/placeholder-base/$BASE/" rockcraft.orig.yaml  > rockcraft.yaml
 
   # Build the rock & load it into docker
-  run_rockcraft pack
+  run_rockcraft pack --ignore=unmaintained
   ROCK=$(ls ./*.rock)
   sudo rockcraft.skopeo --insecure-policy copy oci-archive:"${ROCK}" docker-daemon:${IMAGE}
   rm "${ROCK}"
