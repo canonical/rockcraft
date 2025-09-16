@@ -862,6 +862,11 @@
         },
         "build-attributes": {
           "default": [],
+          "description": "Identifiers that control specific behaviors during the build.",
+          "examples": [
+            "[enable-usrmerge]",
+            "[disable-usrmerge]"
+          ],
           "items": {
             "type": "string"
           },
@@ -1307,6 +1312,11 @@
               },
               "build-attributes": {
                 "default": [],
+                "description": "Identifiers that control specific behaviors during the build.",
+                "examples": [
+                  "[enable-usrmerge]",
+                  "[disable-usrmerge]"
+                ],
                 "items": {
                   "type": "string"
                 },
@@ -1740,6 +1750,11 @@
               },
               "build-attributes": {
                 "default": [],
+                "description": "Identifiers that control specific behaviors during the build.",
+                "examples": [
+                  "[enable-usrmerge]",
+                  "[disable-usrmerge]"
+                ],
                 "items": {
                   "type": "string"
                 },
@@ -2157,6 +2172,11 @@
               },
               "build-attributes": {
                 "default": [],
+                "description": "Identifiers that control specific behaviors during the build.",
+                "examples": [
+                  "[enable-usrmerge]",
+                  "[disable-usrmerge]"
+                ],
                 "items": {
                   "type": "string"
                 },
@@ -2587,6 +2607,11 @@
               },
               "build-attributes": {
                 "default": [],
+                "description": "Identifiers that control specific behaviors during the build.",
+                "examples": [
+                  "[enable-usrmerge]",
+                  "[disable-usrmerge]"
+                ],
                 "items": {
                   "type": "string"
                 },
@@ -3021,6 +3046,11 @@
               },
               "build-attributes": {
                 "default": [],
+                "description": "Identifiers that control specific behaviors during the build.",
+                "examples": [
+                  "[enable-usrmerge]",
+                  "[disable-usrmerge]"
+                ],
                 "items": {
                   "type": "string"
                 },
@@ -3438,6 +3468,11 @@
               },
               "build-attributes": {
                 "default": [],
+                "description": "Identifiers that control specific behaviors during the build.",
+                "examples": [
+                  "[enable-usrmerge]",
+                  "[disable-usrmerge]"
+                ],
                 "items": {
                   "type": "string"
                 },
@@ -3871,6 +3906,11 @@
               },
               "build-attributes": {
                 "default": [],
+                "description": "Identifiers that control specific behaviors during the build.",
+                "examples": [
+                  "[enable-usrmerge]",
+                  "[disable-usrmerge]"
+                ],
                 "items": {
                   "type": "string"
                 },
@@ -4288,6 +4328,11 @@
               },
               "build-attributes": {
                 "default": [],
+                "description": "Identifiers that control specific behaviors during the build.",
+                "examples": [
+                  "[enable-usrmerge]",
+                  "[disable-usrmerge]"
+                ],
                 "items": {
                   "type": "string"
                 },
@@ -4723,6 +4768,11 @@
               },
               "build-attributes": {
                 "default": [],
+                "description": "Identifiers that control specific behaviors during the build.",
+                "examples": [
+                  "[enable-usrmerge]",
+                  "[disable-usrmerge]"
+                ],
                 "items": {
                   "type": "string"
                 },
@@ -5156,6 +5206,11 @@
               },
               "build-attributes": {
                 "default": [],
+                "description": "Identifiers that control specific behaviors during the build.",
+                "examples": [
+                  "[enable-usrmerge]",
+                  "[disable-usrmerge]"
+                ],
                 "items": {
                   "type": "string"
                 },
@@ -5581,6 +5636,11 @@
               },
               "build-attributes": {
                 "default": [],
+                "description": "Identifiers that control specific behaviors during the build.",
+                "examples": [
+                  "[enable-usrmerge]",
+                  "[disable-usrmerge]"
+                ],
                 "items": {
                   "type": "string"
                 },
@@ -6011,6 +6071,11 @@
               },
               "build-attributes": {
                 "default": [],
+                "description": "Identifiers that control specific behaviors during the build.",
+                "examples": [
+                  "[enable-usrmerge]",
+                  "[disable-usrmerge]"
+                ],
                 "items": {
                   "type": "string"
                 },
@@ -6436,6 +6501,11 @@
               },
               "build-attributes": {
                 "default": [],
+                "description": "Identifiers that control specific behaviors during the build.",
+                "examples": [
+                  "[enable-usrmerge]",
+                  "[disable-usrmerge]"
+                ],
                 "items": {
                   "type": "string"
                 },
@@ -6861,6 +6931,11 @@
               },
               "build-attributes": {
                 "default": [],
+                "description": "Identifiers that control specific behaviors during the build.",
+                "examples": [
+                  "[enable-usrmerge]",
+                  "[disable-usrmerge]"
+                ],
                 "items": {
                   "type": "string"
                 },
@@ -7278,6 +7353,11 @@
               },
               "build-attributes": {
                 "default": [],
+                "description": "Identifiers that control specific behaviors during the build.",
+                "examples": [
+                  "[enable-usrmerge]",
+                  "[disable-usrmerge]"
+                ],
                 "items": {
                   "type": "string"
                 },
@@ -7712,6 +7792,11 @@
               },
               "build-attributes": {
                 "default": [],
+                "description": "Identifiers that control specific behaviors during the build.",
+                "examples": [
+                  "[enable-usrmerge]",
+                  "[disable-usrmerge]"
+                ],
                 "items": {
                   "type": "string"
                 },
@@ -8154,6 +8239,11 @@
               },
               "build-attributes": {
                 "default": [],
+                "description": "Identifiers that control specific behaviors during the build.",
+                "examples": [
+                  "[enable-usrmerge]",
+                  "[disable-usrmerge]"
+                ],
                 "items": {
                   "type": "string"
                 },
@@ -8599,6 +8689,11 @@
               },
               "build-attributes": {
                 "default": [],
+                "description": "Identifiers that control specific behaviors during the build.",
+                "examples": [
+                  "[enable-usrmerge]",
+                  "[disable-usrmerge]"
+                ],
                 "items": {
                   "type": "string"
                 },
@@ -9034,6 +9129,11 @@
               },
               "build-attributes": {
                 "default": [],
+                "description": "Identifiers that control specific behaviors during the build.",
+                "examples": [
+                  "[enable-usrmerge]",
+                  "[disable-usrmerge]"
+                ],
                 "items": {
                   "type": "string"
                 },
@@ -9509,6 +9609,11 @@
               },
               "build-attributes": {
                 "default": [],
+                "description": "Identifiers that control specific behaviors during the build.",
+                "examples": [
+                  "[enable-usrmerge]",
+                  "[disable-usrmerge]"
+                ],
                 "items": {
                   "type": "string"
                 },
@@ -9934,6 +10039,11 @@
               },
               "build-attributes": {
                 "default": [],
+                "description": "Identifiers that control specific behaviors during the build.",
+                "examples": [
+                  "[enable-usrmerge]",
+                  "[disable-usrmerge]"
+                ],
                 "items": {
                   "type": "string"
                 },
@@ -10369,6 +10479,11 @@
               },
               "build-attributes": {
                 "default": [],
+                "description": "Identifiers that control specific behaviors during the build.",
+                "examples": [
+                  "[enable-usrmerge]",
+                  "[disable-usrmerge]"
+                ],
                 "items": {
                   "type": "string"
                 },
