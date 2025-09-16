@@ -611,7 +611,7 @@ wheels = [
 
 [[package]]
 name = "craft-parts"
-version = "2.22.1"
+version = "2.23.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "lxml" },
@@ -623,9 +623,9 @@ dependencies = [
     { name = "semver" },
     { name = "tomli", marker = "python_full_version < '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-oracular') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-oracular') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-oracular' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-oracular' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-plucky' and extra == 'group-9-rockcraft-dev-questing')" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/02/8d/15f82ac980a29fb5f0f1316410dc070317f9d42595e81b8e8efe3ab6dece/craft_parts-2.22.1.tar.gz", hash = "sha256:b0d698cba4f9c2eb550ecd851dcf442f6ece433c81cc6d43d3fe9d14f1255082", size = 854451, upload-time = "2025-09-10T17:59:43.097Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/a8/81/96897a36449258bf58f2d052ba206a5bb486e640f891f2bbd75d09fe4550/craft_parts-2.23.0.tar.gz", hash = "sha256:44fc902a262ba584beebab644c4a25f31b724a4a7358604c11e02298be51cb0b", size = 861661, upload-time = "2025-09-15T16:55:29.41Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/9e/e4/6ae74682819841dd9f3df0bf61815d54dd9430d7d9160b3054eb73e4b070/craft_parts-2.22.1-py3-none-any.whl", hash = "sha256:c7dd7df90bf5a96ce0076c2bb57e865338a840b02d733f1e2b2bf45faacb2283", size = 513535, upload-time = "2025-09-10T17:59:41.219Z" },
+    { url = "https://files.pythonhosted.org/packages/c5/f6/3e165a6f97b0d6327f605dd226e70f3467e3647f091c0b59ed01342da7ba/craft_parts-2.23.0-py3-none-any.whl", hash = "sha256:6889eeac91a3b9a4fde8bc0ce0c5e47c79ee269c9ef27c7805333ea00fcb739e", size = 515859, upload-time = "2025-09-15T16:55:27.32Z" },
 ]
 
 [[package]]
@@ -2731,7 +2731,7 @@ requires-dist = [
     { name = "craft-application", specifier = ">=5.10.0" },
     { name = "craft-archives", specifier = ">=2.2.0" },
     { name = "craft-cli", specifier = ">=3.1.2" },
-    { name = "craft-parts", specifier = ">=2.22.1" },
+    { name = "craft-parts", specifier = ">=2.23.0" },
     { name = "craft-platforms", specifier = ">=0.10.0" },
     { name = "craft-providers", specifier = ">=3.1.0" },
     { name = "craft-store", marker = "extra == 'store'" },
