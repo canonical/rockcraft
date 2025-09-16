@@ -37,7 +37,9 @@ pytestmark = [ubuntu_only, pytest.mark.slow]
 ALL_BASES = typing.get_args(typing.get_type_hints(Project)["base"])
 
 BARE_BASES = {"bare"}
-UBUNTU_BASES = set(ALL_BASES) - BARE_BASES
+# Note: The Python plugin is broken momentarily for 25.10 because of the usrmerge
+# change. This will be addressed in ROCKCRAFT-259
+UBUNTU_BASES = set(ALL_BASES) - BARE_BASES - {"ubuntu@25.10"}
 
 
 @pytest.fixture(autouse=True)

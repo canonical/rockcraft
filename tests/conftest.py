@@ -324,7 +324,8 @@ def fake_project_yaml(
     if "base" in request.fixturenames:
         project["base"] = str(request.getfixturevalue("base"))
 
-    base = craft_platforms.DistroBase.from_str(cast(str, project.get("base")))
+    project_base = project.get("build-base") or project.get("base")
+    base = craft_platforms.DistroBase.from_str(cast(str, project_base))
     mocker.patch.object(
         craft_platforms.DistroBase, "from_linux_distribution", return_value=base
     )
