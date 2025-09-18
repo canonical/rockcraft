@@ -536,7 +536,7 @@ toml = [
 
 [[package]]
 name = "craft-application"
-version = "5.8.0"
+version = "5.10.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "annotated-types" },
@@ -557,9 +557,9 @@ dependencies = [
     { name = "snap-helpers" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/ca/a3/6e487bb73f3b74eee8a38691510796b7326211d4981547c0ed45d0325aee/craft_application-5.8.0.tar.gz", hash = "sha256:0d01b9792535b3dad51f3501f0f476daa3936b8b3c68ba8274f20cf5c25fd184", size = 428203, upload-time = "2025-08-28T15:27:34.599Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/ef/35/071cbf2f8c6d590727bc53a999afb95e7bc93b2d083d5ec459edd6eb62f7/craft_application-5.10.1.tar.gz", hash = "sha256:4dd12a308d88eb4dedae3995fe33c87c077449c91cd007615122e661d21c86c1", size = 436307, upload-time = "2025-09-12T18:39:40.755Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/ff/64/71ced1b59c27f45506c9fb0172461984b86c86052f761ec1fc212ec83755/craft_application-5.8.0-py3-none-any.whl", hash = "sha256:f5706d549a93c19cc4a832019806c5e8579c15297f5cdf5234ad96a6994cba2c", size = 186669, upload-time = "2025-08-28T15:27:32.829Z" },
+    { url = "https://files.pythonhosted.org/packages/d7/1a/b5e5a96a76b156a88dd9896dfc69723fc4a45911176645b8e8d8a2ceb172/craft_application-5.10.1-py3-none-any.whl", hash = "sha256:658f714bcc73b505e8cdd17fb2edcd12e0ca3534ce4691fde2642be14ff8360d", size = 188795, upload-time = "2025-09-12T18:39:38.662Z" },
 ]
 
 [[package]]
@@ -582,7 +582,7 @@ wheels = [
 
 [[package]]
 name = "craft-cli"
-version = "3.1.2"
+version = "3.2.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "jinja2" },
@@ -591,9 +591,9 @@ dependencies = [
     { name = "pywin32", marker = "sys_platform == 'win32' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-oracular') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-oracular') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-oracular' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-oracular' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-plucky' and extra == 'group-9-rockcraft-dev-questing')" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/79/f5/1ef63100f984130aefcaf11c896ad1116438d96bb2020ea934d0f02dd285/craft_cli-3.1.2.tar.gz", hash = "sha256:f5d7281f278ddd867fc67e63e48e96333d187005a7569a226434527c3ccfbd2b", size = 196022, upload-time = "2025-07-21T20:49:42.576Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/35/0a/f1612fe57295b6a69ff256dbd0826b90f70b27dda90988f972fa6f8968cc/craft_cli-3.2.0.tar.gz", hash = "sha256:557345bf1d82e93d6525f35837ddd2b216de4152f5572306ec59d805231d348b", size = 198962, upload-time = "2025-09-09T20:13:02.372Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/da/0d/388a3d82be0771fb55701553619e50a53a56970ea670c4c03193d2220e7a/craft_cli-3.1.2-py3-none-any.whl", hash = "sha256:9b3718eef5fc830afa8d2d0c0cd0eaec32360a862f028f93f308f7263d642305", size = 46758, upload-time = "2025-07-21T20:49:40.147Z" },
+    { url = "https://files.pythonhosted.org/packages/f0/b4/a1ced3b96007d84792a4b031d71f1007e274794747f2597f79e3071853f0/craft_cli-3.2.0-py3-none-any.whl", hash = "sha256:4889c0f4a8275703e86b7fa7ce6fbdb65f6fb47158d4f8d24b0fcbb63fa25afa", size = 46959, upload-time = "2025-09-09T20:13:00.659Z" },
 ]
 
 [[package]]
@@ -611,21 +611,21 @@ wheels = [
 
 [[package]]
 name = "craft-parts"
-version = "2.20.1"
+version = "2.22.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "lxml" },
-    { name = "overrides" },
     { name = "pydantic" },
     { name = "pyxdg" },
     { name = "pyyaml" },
     { name = "requests" },
     { name = "requests-unixsocket2" },
+    { name = "semver" },
     { name = "tomli", marker = "python_full_version < '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-oracular') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-oracular') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-oracular' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-oracular' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-plucky' and extra == 'group-9-rockcraft-dev-questing')" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/41/73/afe4ad1ec95f34c3e70667b2948376dc0559e8a35ef40eeef93004338960/craft_parts-2.20.1.tar.gz", hash = "sha256:08c9ee64addc2e392bb23d75b196a3f0e0146207c68b7881a90a5d7d88edfd8a", size = 799236, upload-time = "2025-08-20T17:05:02.997Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/02/8d/15f82ac980a29fb5f0f1316410dc070317f9d42595e81b8e8efe3ab6dece/craft_parts-2.22.1.tar.gz", hash = "sha256:b0d698cba4f9c2eb550ecd851dcf442f6ece433c81cc6d43d3fe9d14f1255082", size = 854451, upload-time = "2025-09-10T17:59:43.097Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/03/f2/e503068c7d735475b7306a1c521ca2caa6ca1626279199595bf468a9c8d4/craft_parts-2.20.1-py3-none-any.whl", hash = "sha256:415d252d7dd7c60301499426c5d4bce2226bffb625a4510901c851cc96d1fa66", size = 507215, upload-time = "2025-08-20T17:05:01.39Z" },
+    { url = "https://files.pythonhosted.org/packages/9e/e4/6ae74682819841dd9f3df0bf61815d54dd9430d7d9160b3054eb73e4b070/craft_parts-2.22.1-py3-none-any.whl", hash = "sha256:c7dd7df90bf5a96ce0076c2bb57e865338a840b02d733f1e2b2bf45faacb2283", size = 513535, upload-time = "2025-09-10T17:59:41.219Z" },
 ]
 
 [[package]]
@@ -644,18 +644,19 @@ wheels = [
 
 [[package]]
 name = "craft-providers"
-version = "3.0.0"
+version = "3.1.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "packaging" },
     { name = "pydantic" },
+    { name = "pylxd" },
     { name = "pyyaml" },
     { name = "requests" },
     { name = "requests-unixsocket2" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/99/2f/3b1a7062c2d9b94f926d96356b63678d50aa44a2657a313adf2df4150bf6/craft_providers-3.0.0.tar.gz", hash = "sha256:07f669abd7b16d8bd983851ea173e932a1a2244cc81a457370c0979f71612f9c", size = 297244, upload-time = "2025-08-15T17:18:45.771Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/22/85/e5939f44987d0a9ae7f87edce35d6c792e2924aebd6cdcc5caa5895524ee/craft_providers-3.1.0.tar.gz", hash = "sha256:5ec6ef0715497fbf9d7f477088b12d0cca5356965486d40fb80b629824d4391b", size = 307175, upload-time = "2025-09-08T18:52:36.533Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/8a/d8/96ba745562fe90a73088f551a9be319cbb992aa416339f616b16227f78b2/craft_providers-3.0.0-py3-none-any.whl", hash = "sha256:9254045b1c1b47235b549d582355f816ac8819eda74a2368c8f12cb5431d1828", size = 112646, upload-time = "2025-08-15T17:18:44.685Z" },
+    { url = "https://files.pythonhosted.org/packages/14/d2/d60fdfb0666c3837b95331db0c82acb0606b85260784bc612664700d9096/craft_providers-3.1.0-py3-none-any.whl", hash = "sha256:7e95eba732fa573a2f230afbfe9179b144bc6374e976c965a4ea25862af0aee1", size = 113283, upload-time = "2025-09-08T18:52:34.49Z" },
 ]
 
 [[package]]
@@ -2010,6 +2011,22 @@ wheels = [
 ]
 
 [[package]]
+name = "pylxd"
+version = "2.3.5"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "cryptography" },
+    { name = "python-dateutil" },
+    { name = "requests" },
+    { name = "requests-toolbelt" },
+    { name = "ws4py" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/9b/8e/6a31a694560adaba20df521c3102bdecec06a0fea9c73ff1466834e2df30/pylxd-2.3.5.tar.gz", hash = "sha256:d67973dd2dc1728e3e1b41cc973e11e6cbceae87878d193ac04cc2b65a7158ef", size = 71781, upload-time = "2024-10-01T21:02:16.841Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/9e/44/ea48223c7fd42376cc9c6cdff3a8bf3cd19045a3c3722a2fcc9655cfd8a3/pylxd-2.3.5-py3-none-any.whl", hash = "sha256:f74affdb8a852c6241593c6bc022be1d6e2e700d9bc5efb180aeb7e7697a268d", size = 98084, upload-time = "2024-10-01T21:02:14.924Z" },
+]
+
+[[package]]
 name = "pymacaroons"
 version = "0.13.0"
 source = { registry = "https://pypi.org/simple" }
@@ -2253,6 +2270,18 @@ wheels = [
     { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-3.0.0-cp312-cp312-manylinux_2_41_x86_64.whl" },
     { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-3.0.0-cp313-cp313-manylinux_2_41_x86_64.whl" },
     { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-3.0.0-cp314-cp314-manylinux_2_41_x86_64.whl" },
+]
+
+[[package]]
+name = "python-dateutil"
+version = "2.9.0.post0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "six" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/66/c0/0c8b6ad9f17a802ee498c46e004a0eb49bc148f2fd230864601a86dcf6db/python-dateutil-2.9.0.post0.tar.gz", hash = "sha256:37dd54208da7e1cd875388217d5e00ebd4179249f90fb72437e91a35459a0ad3", size = 342432, upload-time = "2024-03-01T18:36:20.211Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ec/57/56b9bcc3c9c6a792fcbaf139543cee77261f3651ca9da0c93f5c1221264b/python_dateutil-2.9.0.post0-py2.py3-none-any.whl", hash = "sha256:a8b2bc7bffae282281c8140a97d3aa9c14da0b136dfe83f850eea9a5f7470427", size = 229892, upload-time = "2024-03-01T18:36:18.57Z" },
 ]
 
 [[package]]
@@ -2699,12 +2728,12 @@ types = [
 
 [package.metadata]
 requires-dist = [
-    { name = "craft-application", specifier = ">=5.8.0" },
+    { name = "craft-application", specifier = ">=5.10.0" },
     { name = "craft-archives", specifier = ">=2.2.0" },
     { name = "craft-cli", specifier = ">=3.1.2" },
-    { name = "craft-parts", specifier = ">=2.20.1" },
+    { name = "craft-parts", specifier = ">=2.22.1" },
     { name = "craft-platforms", specifier = ">=0.10.0" },
-    { name = "craft-providers", specifier = ">=3.0.0" },
+    { name = "craft-providers", specifier = ">=3.1.0" },
     { name = "craft-store", marker = "extra == 'store'" },
     { name = "overrides", specifier = ">=7.7.0" },
     { name = "setuptools", specifier = "~=80.8.0" },
@@ -2830,6 +2859,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/53/a4/f48c9d79cb507ed1373477dbceaba7401fd8a23af63b837fa61f1dcd3691/SecretStorage-3.3.3.tar.gz", hash = "sha256:2403533ef369eca6d2ba81718576c5e0f564d5cca1b58f73a8b23e7d4eeebd77", size = 19739, upload-time = "2022-08-13T16:22:46.976Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/54/24/b4293291fa1dd830f353d2cb163295742fa87f179fcc8a20a306a81978b7/SecretStorage-3.3.3-py3-none-any.whl", hash = "sha256:f356e6628222568e3af06f2eba8df495efa13b3b63081dafd4f7d9a7b7bc9f99", size = 15221, upload-time = "2022-08-13T16:22:44.457Z" },
+]
+
+[[package]]
+name = "semver"
+version = "3.0.4"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/72/d1/d3159231aec234a59dd7d601e9dd9fe96f3afff15efd33c1070019b26132/semver-3.0.4.tar.gz", hash = "sha256:afc7d8c584a5ed0a11033af086e8af226a9c0b206f313e0301f8dd7b6b589602", size = 269730, upload-time = "2025-01-24T13:19:27.617Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a6/24/4d91e05817e92e3a61c8a21e08fd0f390f5301f1c448b137c57c4bc6e543/semver-3.0.4-py3-none-any.whl", hash = "sha256:9c824d87ba7f7ab4a1890799cec8596f15c1241cb473404ea1cb0c55e4b04746", size = 17912, upload-time = "2025-01-24T13:19:24.949Z" },
 ]
 
 [[package]]
@@ -3718,6 +3756,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/8a/98/2d9906746cdc6a6ef809ae6338005b3f21bb568bea3165cfc6a243fdc25c/wheel-0.45.1.tar.gz", hash = "sha256:661e1abd9198507b1409a20c02106d9670b2576e916d58f520316666abca6729", size = 107545, upload-time = "2024-11-23T00:18:23.513Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/0b/2c/87f3254fd8ffd29e4c02732eee68a83a1d3c346ae39bc6822dcbcb697f2b/wheel-0.45.1-py3-none-any.whl", hash = "sha256:708e7481cc80179af0e556bbf0cc00b8444c7321e2700b8d8580231d13017248", size = 72494, upload-time = "2024-11-23T00:18:21.207Z" },
+]
+
+[[package]]
+name = "ws4py"
+version = "0.6.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/cb/55/dd8a5e1f975d1549494fe8692fc272602f17e475fe70de910cdd53aec902/ws4py-0.6.0.tar.gz", hash = "sha256:9f87b19b773f0a0744a38f3afa36a803286dd3197f0bb35d9b75293ec7002d19", size = 53288, upload-time = "2024-12-19T10:43:23.641Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/89/62/dad08725f855f9695d1c2b34466cf0d1482d1168bb54d73d22b6b0124ba3/ws4py-0.6.0-py3-none-any.whl", hash = "sha256:1499c3fc103a65eb12d7b1ead7566f88487f6f678ab10ee4e53cf2411c068752", size = 45806, upload-time = "2024-12-19T10:43:22.146Z" },
 ]
 
 [[package]]

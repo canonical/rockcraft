@@ -136,3 +136,28 @@ def test_services_environment_expanded(fake_services):
         "X": "override me",
         "EXPANDED": "environment-test",
     }
+
+
+@pytest.mark.usefixtures("fake_project_file", "project_keys")
+@pytest.mark.parametrize(
+    "project_keys",
+    [
+        {
+            "base": "ubuntu@25.10",
+            "build-base": "devel",
+            "parts": {
+                "empty": {
+                    "plugin": "nil",
+                }
+            },
+        }
+    ],
+    indirect=True,
+)
+def test_project_service_devel_bases(fake_services):
+    project_service = fake_services.get("project")
+    project_service.configure(platform=None, build_for=None)
+
+    assert not project_service.is_effective_base_eol()
+    assert project_service.check_base_is_supported("pack") is None
+    assert project_service.base_eol_soon_date() is None

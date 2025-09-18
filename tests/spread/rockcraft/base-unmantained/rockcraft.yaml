@@ -1,0 +1,23 @@
+name: base-unmaintaned
+version: "1.0"
+summary: A 20.04 rock
+description: A 20.04 rock
+license: Apache-2.0
+
+base: ubuntu@20.04
+
+platforms:
+  amd64:
+
+parts:
+  hello:
+    plugin: nil
+    stage-packages:
+      - hello
+
+  slices:
+    plugin: nil
+    stage-packages:
+      # Also add a chisel slice, to ensure that chisel itself is also handling the
+      # unmaintained base correctly.
+      - hello_bins
