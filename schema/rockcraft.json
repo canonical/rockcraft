@@ -10582,16 +10582,13 @@
     "name": {
       "description": "The name of the project. This is used when uploading, publishing, or installing.\n\nThe project name must consist only of lower-case ASCII letters (``a``-``z``), numerals\n(``0``-``9``), and hyphens (``-``). It must contain at least one letter, not start or\nend with a hyphen, and not contain two consecutive hyphens. The maximum length is 40\ncharacters.\n",
       "examples": [
-        "ubuntu",
-        "jupyterlab-desktop",
-        "lxd",
-        "digikam",
-        "kafka",
-        "mysql-router-k8s"
+        "go",
+        "jq",
+        "postgresql"
       ],
       "maxLength": 40,
-      "minLength": 1,
-      "title": "Project Name",
+      "minLength": 2,
+      "title": "Rock Name",
       "type": "string"
     },
     "title": {
