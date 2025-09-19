@@ -23,7 +23,7 @@ from craft_application import LifecycleService
 from craft_parts.infos import StepInfo
 from overrides import override  # type: ignore[reportUnknownVariableType]
 
-from rockcraft import layers
+from rockcraft import bases, layers
 from rockcraft.plugins.python_common import get_python_plugins
 
 
@@ -45,11 +45,9 @@ class RockcraftLifecycleService(LifecycleService):
         image_info = image_service.obtain_image()
 
         base = project.effective_base
-        usrmerged_by_default = True
 
-        # Bases older than 25.10 do not get usermerged install dirs by default
-        if base in ("ubuntu@20.04", "ubuntu@22.04", "ubuntu@24.04"):
-            usrmerged_by_default = False
+        # Whether we usrmerge the install dirs by default is base-dependent.
+        usrmerged_by_default = base not in bases.PRE_USRMERGED_INSTALL
 
         self._manager_kwargs.update(
             base_layer_dir=image_info.base_layer_dir,
@@ -79,7 +77,7 @@ class RockcraftLifecycleService(LifecycleService):
 
 def _python_usrmerge_fix(step_info: StepInfo) -> None:
     """Fix 'lib64' symlinks created by the Python plugin on ubuntu@24.04+ projects."""
-    if step_info.project_info.build_base in ("ubuntu@20.04", "ubuntu@22.04"):
+    if step_info.project_info.build_base in bases.PYTHON_PRE_BAD_LIB64:
         # The issue only affects rocks with 24.04 and newer build bases.
         return
 

@@ -33,7 +33,7 @@ from rockcraft.services.project import RockcraftProjectService
     ],
 )
 @pytest.mark.parametrize(
-    "parts", [{}, {"pebble": Pebble.PEBBLE_PART_SPEC_2204_2004.copy()}]
+    "parts", [{}, {"pebble": Pebble.PEBBLE_PART_PEBBLE_IN_BIN.copy()}]
 )
 def test_add_pebble_part_project_jammy_focal(
     base,
@@ -54,7 +54,7 @@ def test_add_pebble_part_project_jammy_focal(
         platform="Unused",
     )
 
-    assert project["parts"]["pebble"] == Pebble.PEBBLE_PART_SPEC_2204_2004
+    assert project["parts"]["pebble"] == Pebble.PEBBLE_PART_PEBBLE_IN_BIN
 
 
 @pytest.mark.parametrize(
@@ -64,7 +64,9 @@ def test_add_pebble_part_project_jammy_focal(
         ("ubuntu@24.04", None),
     ],
 )
-@pytest.mark.parametrize("parts", [{}, {"pebble": Pebble.PEBBLE_PART_SPEC_2404.copy()}])
+@pytest.mark.parametrize(
+    "parts", [{}, {"pebble": Pebble.PEBBLE_PART_PEBBLE_ORGANIZED_USR_BIN.copy()}]
+)
 def test_add_pebble_part_noble(
     base,
     build_base,
@@ -84,7 +86,7 @@ def test_add_pebble_part_noble(
         platform="Unused",
     )
 
-    assert project["parts"]["pebble"] == Pebble.PEBBLE_PART_SPEC_2404
+    assert project["parts"]["pebble"] == Pebble.PEBBLE_PART_PEBBLE_ORGANIZED_USR_BIN
 
 
 @pytest.mark.parametrize(

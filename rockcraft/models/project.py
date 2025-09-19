@@ -29,10 +29,11 @@ from craft_application.models import (
 )
 from craft_application.models import Project as BaseProject
 from craft_application.models.base import alias_generator
-from craft_providers import bases
+from craft_providers import bases as providers_base
 from craft_providers.errors import BaseConfigurationError
 from typing_extensions import override
 
+from rockcraft import bases
 from rockcraft.architectures import SUPPORTED_ARCHS
 from rockcraft.parts import part_has_overlay
 from rockcraft.pebble import Check, Service
@@ -56,22 +57,9 @@ MESSAGE_ENTRYPOINT_CHANGED = (
 DEPRECATED_COLON_BASES = ["ubuntu:20.04", "ubuntu:22.04"]
 
 
-BaseT = Literal[
-    "bare",
-    "ubuntu@20.04",
-    "ubuntu@22.04",
-    "ubuntu@24.04",
-    "ubuntu@25.10",
-]
+BaseT = Literal[("bare", *bases.SUPPORTED)]
 BuildBaseT = typing.Annotated[
-    Literal[
-        "ubuntu@20.04",
-        "ubuntu@22.04",
-        "ubuntu@24.04",
-        "ubuntu@25.10",
-        "devel",
-    ]
-    | None,
+    Literal[(*bases.SUPPORTED, "devel")] | None,
     pydantic.Field(validate_default=True),
 ]
 
@@ -101,7 +89,7 @@ class Project(BaseProject):
 
     @override
     @classmethod
-    def _providers_base(cls, base: str) -> bases.BaseAlias | None:
+    def _providers_base(cls, base: str) -> providers_base.BaseAlias | None:
         """Get a BaseAlias from rockcraft's base.
 
         :param base: The base name.
@@ -113,11 +101,11 @@ class Project(BaseProject):
             return None
 
         if base == "devel":
-            return bases.get_base_alias(("ubuntu", "devel"))
+            return providers_base.get_base_alias(("ubuntu", "devel"))
 
         try:
             name, channel = base.split("@")
-            return bases.get_base_alias(bases.BaseName(name, channel))
+            return providers_base.get_base_alias(providers_base.BaseName(name, channel))
         except (ValueError, BaseConfigurationError) as err:
             raise ValueError(f"Unknown base {base!r}") from err
 

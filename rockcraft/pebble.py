@@ -26,6 +26,8 @@ from craft_application.errors import CraftValidationError
 from craft_application.models import CraftBaseModel
 from craft_cli import emit
 
+from rockcraft import bases
+
 
 class HttpCheck(CraftBaseModel):
     """Lightweight schema validation for a Pebble HTTP check."""
@@ -149,13 +151,13 @@ class Pebble:
         "build-attributes": ["enable-usrmerge"],
     }
     # The part spec used for 24.04, where we organize "bin/pebble" to "usr/bin/pebble"
-    PEBBLE_PART_SPEC_2404 = {
+    PEBBLE_PART_PEBBLE_ORGANIZED_USR_BIN = {
         **_BASE_PART_SPEC,
         "organize": {"bin": PEBBLE_BINARY_DIR},
         "stage": [PEBBLE_BINARY_PATH],
     }
     # The part spec for 22.04 and 20.04, where pebble is "bin/pebble"
-    PEBBLE_PART_SPEC_2204_2004 = {
+    PEBBLE_PART_PEBBLE_IN_BIN = {
         **_BASE_PART_SPEC,
         "stage": [PEBBLE_BINARY_PATH_PREVIOUS],
     }
@@ -221,17 +223,17 @@ class Pebble:
         """Get the part providing the pebble binary for a given build base."""
         part_spec: dict[str, Any] = Pebble.PEBBLE_PART_SPEC
 
-        if Pebble._is_noble(build_base):
-            part_spec = Pebble.PEBBLE_PART_SPEC_2404
-        elif Pebble._is_focal_or_jammy(build_base):
-            part_spec = Pebble.PEBBLE_PART_SPEC_2204_2004
+        if build_base in bases.PEBBLE_ORGANIZED_USR_BIN:
+            part_spec = Pebble.PEBBLE_PART_PEBBLE_ORGANIZED_USR_BIN
+        elif build_base in bases.PEBBLE_IN_BIN:
+            part_spec = Pebble.PEBBLE_PART_PEBBLE_IN_BIN
 
         return part_spec
 
     @staticmethod
     def get_entrypoint(build_base: str) -> list[str]:
         """Get the rock's entry point for a given build base."""
-        is_legacy = Pebble._is_focal_or_jammy(build_base)
+        is_legacy = build_base in bases.PEBBLE_IN_BIN
 
         pebble_path = Pebble.PEBBLE_BINARY_PATH
         if is_legacy:
@@ -239,14 +241,6 @@ class Pebble:
             pebble_path = Pebble.PEBBLE_BINARY_PATH_PREVIOUS
 
         return [f"/{pebble_path}", "enter"]
-
-    @staticmethod
-    def _is_focal_or_jammy(build_base: str) -> bool:
-        return build_base in ("ubuntu@20.04", "ubuntu@22.04")
-
-    @staticmethod
-    def _is_noble(build_base: str) -> bool:
-        return build_base == "ubuntu@24.04"
 
 
 def add_pebble_part(project: dict[str, Any]) -> None:
