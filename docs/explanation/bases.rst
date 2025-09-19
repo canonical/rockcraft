@@ -6,8 +6,8 @@ Bases
 =====
 
 Every rock is built from a *base*, which defines the baseline system that the rock's
-contents are layered on. The systems are always major Ubuntu releases. An empty, or
-*bare* base, is also available for lean images.
+contents are layered on. The systems are Ubuntu releases. An empty, or *bare* base, is
+also available for lean images.
 
 The base is declared in the project file by the :literalref:`base <rockcraft_yaml_base>`
 key.
@@ -33,10 +33,10 @@ Ubuntu bases are divided into *LTS* and *interim* bases. An LTS base contains an
 LTS release and has a 10-year support window. An interim base contains an interim Ubuntu
 release and is supported for nine months.
 
-Interim bases are less stable than LTS bases because they contain experimental features
-and have shorter lifespans. They are most suitable for container-based testing the
-Ubuntu release itself, using it as a proving ground for upcoming features and
-compatibility.
+Interim bases have shorter lifespans and contain upcoming or experimental features. For
+rocks, they are most suitable for testing software with short lifecycles. Commonly,
+images with these bases are used as test-beds for the software in the Ubuntu release
+itself.
 
 
 Bare bases
@@ -44,8 +44,8 @@ Bare bases
 
 As the name suggests, a *bare* base results in a rock with no baseline system. This
 definition is similar to the scratch Docker image, with the exception that a rock *can
-never be completely empty*, as it must always include a minimum baseline with
-:ref:`pebble_explanation_page` and :ref:`additional metadata <what-sets-rocks-apart>`.
+never be completely empty*, as it must always include a :ref:`pebble_explanation_page`
+and some :ref:`additional metadata <what-sets-rocks-apart>`.
 
 The bare base is extremely useful when the goal is to build a lean chiselled rock.
 Such rocks are typically preferred for production environments due to their optimized
