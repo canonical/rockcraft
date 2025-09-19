@@ -1,0 +1,16 @@
+summary: Usrmerged install dirs in 25.10+
+
+execute: |
+  run_rockcraft pack
+  sudo rockcraft.skopeo --insecure-policy copy oci-archive:usrmerged-install_1.0_amd64.rock docker-daemon:usrmerged-install:latest
+
+  # Check the pebble services, so we can check pebble itself
+  docker run usrmerged-install:latest -v | MATCH "\[go-hello\] hello world from go"
+  docker run usrmerged-install:latest -v | MATCH "\[overlay-hello\] Hello, world!"
+
+  # Exactly one file in /etc/config - "file.txt" from source-dump/
+  docker run usrmerged-install:latest exec bash -c "ls -1 /etc/config/ | wc -l"  | MATCH "^1$"
+  docker run usrmerged-install:latest exec bash -c "ls /etc/config/"  | MATCH "^file.txt$"
+
+  # File from the part with the 'nil' plugin and the explicit build-attribute
+  docker run usrmerged-install:latest exec cat /usr/bin/usrmerged.txt | MATCH "usrmerged"

@@ -48,7 +48,6 @@ class TestPebble:
             for field in [
                 "plugin",
                 "stage-snaps",
-                "organize",
                 "stage",
                 "override-prime",
             ]

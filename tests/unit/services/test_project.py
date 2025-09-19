@@ -33,9 +33,9 @@ from rockcraft.services.project import RockcraftProjectService
     ],
 )
 @pytest.mark.parametrize(
-    "parts", [{}, {"pebble": Pebble.PEBBLE_PART_SPEC_PREVIOUS.copy()}]
+    "parts", [{}, {"pebble": Pebble.PEBBLE_PART_SPEC_2204_2004.copy()}]
 )
-def test_add_pebble_part_project_old_pebble(
+def test_add_pebble_part_project_jammy_focal(
     base,
     build_base,
     parts,
@@ -54,20 +54,48 @@ def test_add_pebble_part_project_old_pebble(
         platform="Unused",
     )
 
-    assert project["parts"]["pebble"] == Pebble.PEBBLE_PART_SPEC_PREVIOUS
+    assert project["parts"]["pebble"] == Pebble.PEBBLE_PART_SPEC_2204_2004
 
 
 @pytest.mark.parametrize(
     ("base", "build_base"),
     [
         ("bare", "ubuntu@24.04"),
-        ("bare", "devel"),
         ("ubuntu@24.04", None),
+    ],
+)
+@pytest.mark.parametrize("parts", [{}, {"pebble": Pebble.PEBBLE_PART_SPEC_2404.copy()}])
+def test_add_pebble_part_noble(
+    base,
+    build_base,
+    parts,
+    fake_host_architecture: craft_platforms.DebianArchitecture,
+):
+    project = {
+        "base": base,
+        "build-base": build_base,
+        "parts": parts,
+    }
+
+    RockcraftProjectService._app_preprocess_project(
+        project=project,
+        build_on=fake_host_architecture.value,
+        build_for="Unused",
+        platform="Unused",
+    )
+
+    assert project["parts"]["pebble"] == Pebble.PEBBLE_PART_SPEC_2404
+
+
+@pytest.mark.parametrize(
+    ("base", "build_base"),
+    [
+        ("bare", "devel"),
         ("ubuntu@25.10", "devel"),
     ],
 )
 @pytest.mark.parametrize("parts", [{}, {"pebble": Pebble.PEBBLE_PART_SPEC.copy()}])
-def test_add_pebble_part_new_pebble(
+def test_add_pebble_part_questing_or_newer(
     base,
     build_base,
     parts,
@@ -136,3 +164,28 @@ def test_services_environment_expanded(fake_services):
         "X": "override me",
         "EXPANDED": "environment-test",
     }
+
+
+@pytest.mark.usefixtures("fake_project_file", "project_keys")
+@pytest.mark.parametrize(
+    "project_keys",
+    [
+        {
+            "base": "ubuntu@25.10",
+            "build-base": "devel",
+            "parts": {
+                "empty": {
+                    "plugin": "nil",
+                }
+            },
+        }
+    ],
+    indirect=True,
+)
+def test_project_service_devel_bases(fake_services):
+    project_service = fake_services.get("project")
+    project_service.configure(platform=None, build_for=None)
+
+    assert not project_service.is_effective_base_eol()
+    assert project_service.check_base_is_supported("pack") is None
+    assert project_service.base_eol_soon_date() is None

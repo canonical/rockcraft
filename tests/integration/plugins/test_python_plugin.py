@@ -23,6 +23,7 @@ from craft_application.models import DEVEL_BASE_INFOS
 from craft_cli import EmitterMode, emit
 from craft_parts.errors import OsReleaseVersionIdError
 from craft_parts.utils.os_utils import OsRelease
+from craft_providers.bases import get_base_alias
 from rockcraft import plugins
 from rockcraft.models.project import Project
 from rockcraft.plugins.python_common import SITECUSTOMIZE_TEMPLATE, get_python_plugins
@@ -36,7 +37,9 @@ pytestmark = [ubuntu_only, pytest.mark.slow]
 ALL_BASES = typing.get_args(typing.get_type_hints(Project)["base"])
 
 BARE_BASES = {"bare"}
-UBUNTU_BASES = set(ALL_BASES) - BARE_BASES
+# Note: The Python plugin is broken momentarily for 25.10 because of the usrmerge
+# change. This will be addressed in ROCKCRAFT-259
+UBUNTU_BASES = set(ALL_BASES) - BARE_BASES - {"ubuntu@25.10"}
 
 
 @pytest.fixture(autouse=True)
@@ -48,7 +51,7 @@ def setup_python_test(monkeypatch):
     emit.set_mode(EmitterMode.VERBOSE)
 
 
-def create_python_project(base, extra_part_props=None, *, plugin: str) -> Project:
+def create_python_project(base: str, extra_part_props=None, *, plugin: str) -> Project:
     source = Path(__file__).parent / "python_source" / plugin
     extra = extra_part_props or {}
 
@@ -62,8 +65,10 @@ def create_python_project(base, extra_part_props=None, *, plugin: str) -> Projec
     }
 
     build_base = None
-    if base in [info.current_devel_base for info in DEVEL_BASE_INFOS]:
-        build_base = "devel"
+    if base != "bare":
+        base_alias = get_base_alias(base_name=tuple(base.split("@")))  # pyright: ignore[reportCallIssue,reportArgumentType]
+        if base_alias in [info.current_devel_base for info in DEVEL_BASE_INFOS]:
+            build_base = "devel"
 
     return create_project(base=base, parts=parts, build_base=build_base)
 

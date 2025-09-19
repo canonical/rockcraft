@@ -14,9 +14,11 @@
 
 """Rockcraft Project service."""
 
+import datetime
 from pathlib import Path
 from typing import Any
 
+import craft_platforms
 from craft_application import ProjectService
 from typing_extensions import override
 
@@ -36,3 +38,13 @@ class RockcraftProjectService(ProjectService):
         project_root = Path.cwd()
         apply_extensions(project_root=project_root, yaml_data=project)
         add_pebble_part(project)
+
+    @staticmethod
+    @override
+    def _is_supported_on(
+        *, base: craft_platforms.DistroBase, date: datetime.date
+    ) -> bool:
+        """Temporary override for 'devel' bases."""
+        if base.series == "devel":
+            return True
+        return ProjectService._is_supported_on(base=base, date=date)  # noqa: SLF001 (private member access)

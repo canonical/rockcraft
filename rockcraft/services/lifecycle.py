@@ -44,6 +44,13 @@ class RockcraftLifecycleService(LifecycleService):
         image_service = services.image
         image_info = image_service.obtain_image()
 
+        base = project.effective_base
+        usrmerged_by_default = True
+
+        # Bases older than 25.10 do not get usermerged install dirs by default
+        if base in ("ubuntu@20.04", "ubuntu@22.04", "ubuntu@24.04"):
+            usrmerged_by_default = False
+
         self._manager_kwargs.update(
             base_layer_dir=image_info.base_layer_dir,
             base_layer_hash=image_info.base_digest,
@@ -51,6 +58,7 @@ class RockcraftLifecycleService(LifecycleService):
             build_base=project.build_base,
             project_name=project.name,
             rootfs_dir=image_info.base_layer_dir,
+            usrmerged_by_default=usrmerged_by_default,
         )
         super().setup()
 

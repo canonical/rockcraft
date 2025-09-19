@@ -18,8 +18,7 @@ from pathlib import Path
 
 import pytest
 import yaml
-from rockcraft.application import APP_METADATA, Rockcraft
-from rockcraft.services import RockcraftServiceFactory
+from rockcraft import cli
 from rockcraft.services.image import ImageInfo, RockcraftImageService
 
 from tests.util import jammy_only
@@ -77,11 +76,7 @@ def test_global_environment(
 
     monkeypatch.setattr(sys, "argv", ["rockcraft", "prime", "--destructive-mode"])
 
-    services = RockcraftServiceFactory(
-        app=APP_METADATA,
-    )
-
-    app = Rockcraft(app=APP_METADATA, services=services)
+    app = cli._create_app()
     app.run()
 
     variables_yaml = Path(new_dir) / "stage/variables.yaml"
