@@ -72,7 +72,7 @@ The rock version, used to tag the OCI image and name the rock file.
 ``base``
 --------
 
-**Type**: One of ``ubuntu@20.04 | ubuntu@22.04 | ubuntu@24.04 | bare``
+**Type**: One of ``ubuntu@20.04 | ubuntu@22.04 | ubuntu@24.04 | ubuntu@25.10 | bare``
 
 **Required**: Yes
 
@@ -91,7 +91,7 @@ which is typically used with static binaries or
 ``build-base``
 --------------
 
-**Type**: One of ``ubuntu@20.04 | ubuntu@22.04 | ubuntu@24.04 | devel``
+**Type**: One of ``ubuntu@20.04 | ubuntu@22.04 | ubuntu@24.04 | ubuntu@25.10 | devel``
 
 **Required**: Yes, if ``base`` is ``bare``
 
