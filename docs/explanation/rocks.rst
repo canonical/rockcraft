@@ -3,8 +3,8 @@
 Rocks
 =====
 
-Rocks are **Ubuntu LTS-based container images** that are designed to meet
-cloud-native software's security, stability, and reliability requirements.
+Rocks are Ubuntu-based container images that meet the security, stability, and
+reliability requirements of cloud-native software.
 
 Rocks comply with the `Open Container Initiative`_'s (OCI) `image format
 specification <OCI_image_spec_>`_, and can be stored in any OCI-compliant
@@ -33,7 +33,7 @@ What sets rocks apart?
     on, at execution time;
 * **User-centric experience**: rocks are described in a :ref:`declarative
   format<rockcraft.yaml_reference>` and **built on top of familiar and reliable
-  Ubuntu LTS images**, offering an open and up-to-date user experience;
+  Ubuntu images**, offering an open and up-to-date user experience;
 * **Seamless chiselling experience**: rocks can be effortlessly
   :ref:`chiselled<chisel_explanation>` using off-the-shelf primitives,
   harnessing all the advantages of "distroless" to deliver **compact

@@ -1,0 +1,61 @@
+name: usrmerged-install
+version: "1.0"
+summary: A rock with usrmerged parts
+description: A rock with usrmerged parts
+license: Apache-2.0
+
+base: ubuntu@25.10
+build-base: devel
+
+platforms:
+  amd64:
+
+parts:
+  base-files:
+    plugin: nil
+    stage-packages:
+      - base-files
+
+  base-files-slice:
+    plugin: nil
+    stage-packages:
+      - base-files_bin
+      - base-files_lib
+
+  go-hello:
+    plugin: go
+    source: source-go/
+    build-snaps:
+      - go
+
+  dump-files:
+    plugin: dump
+    source: source-dump/
+    organize:
+      "*": etc/config/
+
+  enable-usrmerge:
+    plugin: nil
+    build-attributes:
+      - enable-usrmerge
+    override-build: |
+      # will fail if ${CRAFT_PART_INSTALL} is not usrmerged
+      echo "usrmerged" >> ${CRAFT_PART_INSTALL}/usr/bin/usrmerged.txt
+
+  overlay-part:
+    plugin: nil
+    overlay-packages:
+      - hello
+
+services:
+  go-hello:
+    override: merge
+    command: /usr/bin/go-hello
+    startup: enabled
+    on-success: shutdown
+
+  overlay-hello:
+    override: merge
+    command: /usr/bin/hello
+    startup: enabled
+    on-success: shutdown

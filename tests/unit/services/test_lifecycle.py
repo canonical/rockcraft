@@ -79,6 +79,7 @@ def test_lifecycle_args(
         work_dir=project_path,
         rootfs_dir=Path(),
         track_stage_packages=True,
+        usrmerged_by_default=False,
     )
 
 
@@ -151,3 +152,48 @@ def test_python_usrmerge_fix(tmp_path, plugin_name, base, build_base):
 
     # After running the fix the "lib64" symlink must be gone
     assert sorted(os.listdir(prime_dir)) == ["lib"]  # noqa: PTH208 (use Path.iterdir())
+
+
+@pytest.mark.usefixtures("configured_project", "project_keys")
+@pytest.mark.parametrize(
+    ("project_keys", "expected_default"),
+    [
+        # Focal cases (no usrmerge)
+        pytest.param({"base": "ubuntu@20.04"}, False, id="focal"),
+        pytest.param(
+            {"base": "bare", "build-base": "ubuntu@20.04"}, False, id="focal-bare"
+        ),
+        # Jammy cases (no usrmerge)
+        pytest.param({"base": "ubuntu@22.04"}, False, id="jammy"),
+        pytest.param(
+            {"base": "bare", "build-base": "ubuntu@22.04"}, False, id="jammy-bare"
+        ),
+        # Noble cases (no usrmerge)
+        pytest.param({"base": "ubuntu@24.04"}, False, id="noble"),
+        pytest.param(
+            {"base": "bare", "build-base": "ubuntu@24.04"}, False, id="noble-bare"
+        ),
+        # Questing cases (currently devel) (yes usrmerge)
+        pytest.param({"base": "ubuntu@25.10", "build-base": "devel"}, True, id="devel"),
+        pytest.param({"base": "bare", "build-base": "devel"}, True, id="devel-bare"),
+    ],
+)
+def test_usrmerged_by_default(
+    default_image_info,
+    mocker,
+    fake_services,
+    expected_default,
+):
+    _mock_obtain_image = mocker.patch.object(
+        fake_services.get("image"), "obtain_image", return_value=default_image_info
+    )
+    mock_lifecycle = mocker.patch.object(
+        LifecycleManager, "__init__", return_value=None
+    )
+
+    # Initialize the lifecycle service
+    fake_services.get("lifecycle")
+
+    assert mock_lifecycle.called
+    call = mock_lifecycle.mock_calls[0]
+    assert call.kwargs["usrmerged_by_default"] == expected_default
