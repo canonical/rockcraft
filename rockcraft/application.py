@@ -20,7 +20,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from craft_application import Application, AppMetadata
+from craft_application import Application, AppMetadata, errors
 from overrides import override  # type: ignore[reportUnknownVariableType]
 
 from rockcraft import plugins
@@ -57,7 +57,8 @@ class Rockcraft(Application):
 
         Should be overridden by applications that need to register plugins at startup.
         """
-        return plugins.get_plugins()
+        build_base = self._get_build_base()
+        return plugins.get_plugins(build_base)
 
     @override
     def _enable_craft_parts_features(self) -> None:
@@ -67,3 +68,12 @@ class Rockcraft(Application):
         # enable the craft-parts Features that we use here, right before
         # loading the project and validating its parts.
         Features(enable_overlay=True)
+
+    def _get_build_base(self) -> str | None:
+        """Get the project's build-base, if the project file exists."""
+        try:
+            yaml_data = self.services.get("project").get_raw()
+        except errors.ProjectFileMissingError:
+            return None
+
+        return yaml_data.get("build-base") or yaml_data.get("base")

@@ -47,7 +47,7 @@ def setup_python_test(monkeypatch):
     # Keep craft-parts from trying to refresh apt's cache, so that we can run
     # this test as regular users.
     monkeypatch.setenv("CRAFT_PARTS_PACKAGE_REFRESH", "0")
-    plugins.register()
+    plugins.register("ubuntu@24.04")
     emit.set_mode(EmitterMode.VERBOSE)
 
 
@@ -119,7 +119,7 @@ except (OsReleaseVersionIdError, KeyError):
     VALUES_FOR_HOST = RELEASE_TO_VALUES["22.04"]
 
 
-@pytest.mark.parametrize("plugin_name", list(get_python_plugins().keys()))
+@pytest.mark.parametrize("plugin_name", list(get_python_plugins("ubuntu@24.04").keys()))
 @pytest.mark.parametrize("base", tuple(UBUNTU_BASES))
 def test_python_plugin_ubuntu(
     fake_services, fake_project_file, base, in_project_path, plugin_name: str
@@ -154,7 +154,7 @@ def test_python_plugin_ubuntu(
     assert not pyvenv_cfg.is_file()
 
 
-@pytest.mark.parametrize("plugin_name", get_python_plugins().keys())
+@pytest.mark.parametrize("plugin_name", get_python_plugins("ubuntu@24.04").keys())
 def test_python_plugin_bare(in_project_path, fake_services, plugin_name):
     project = create_python_project(base="bare", plugin=plugin_name)
     project.to_yaml_file(in_project_path / "rockcraft.yaml")
@@ -191,7 +191,7 @@ def test_python_plugin_bare(in_project_path, fake_services, plugin_name):
     assert not pyvenv_cfg.is_file()
 
 
-@pytest.mark.parametrize("plugin_name", get_python_plugins().keys())
+@pytest.mark.parametrize("plugin_name", get_python_plugins("ubuntu@24.04").keys())
 def test_python_plugin_invalid_interpreter(
     tmp_path, in_project_path, fake_services, plugin_name
 ):
