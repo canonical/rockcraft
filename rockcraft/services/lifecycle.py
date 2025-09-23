@@ -16,6 +16,7 @@
 
 """Rockcraft Lifecycle service."""
 
+import re
 from pathlib import Path
 from typing import cast
 
@@ -73,15 +74,16 @@ class RockcraftLifecycleService(LifecycleService):
         layers.prune_prime_files(prime_dir, files, base_layer_dir)
 
         _python_usrmerge_fix(step_info)
+        _python_v2_shebang_fix(step_info)
 
         return True
 
 
 def _python_usrmerge_fix(step_info: StepInfo) -> None:
-    """Fix 'lib64' symlinks created by the Python plugin on ubuntu@24.04+ projects."""
+    """Fix 'lib64' symlinks created by the Python plugin on ubuntu@24.04 projects."""
     build_base = step_info.project_info.build_base
-    if build_base in ("ubuntu@20.04", "ubuntu@22.04"):
-        # The issue only affects rocks with 24.04 and newer build bases.
+    if build_base != "ubuntu@24.04":
+        # The issue only affects rocks with 24.04 build base.
         return
 
     state = step_info.state
@@ -101,3 +103,55 @@ def _python_usrmerge_fix(step_info: StepInfo) -> None:
     lib64 = prime_dir / "lib64"
     if lib64.is_symlink() and lib64.readlink() == Path("lib"):
         lib64.unlink()
+
+
+def _python_v2_shebang_fix(step_info: StepInfo) -> None:
+    build_base = step_info.project_info.build_base
+    if build_base in ("ubuntu@20.04", "ubuntu@22.04", "ubuntu@24.04"):
+        # The issue only affects rocks with 25.10 and newer build bases.
+        return
+
+    state = step_info.state
+    if state is None:
+        # Can't inspect the files without a StepState.
+        return
+
+    if state.part_properties["plugin"] not in get_python_plugins(build_base):
+        # Be conservative and don't try to fix the files if they didn't come
+        # from a Python plugin.
+        return
+
+    prime_dir = step_info.prime_dir
+
+    # The Python interpreter can come from either the part's install dir, or from the
+    # stage.
+    install_dir = step_info.part_install_dir
+    install_re = re.compile(f"#!{install_dir}/.*/python3.*$")
+    stage_dir = step_info.stage_dir
+    stage_re = re.compile(f"#!{stage_dir}/.*/python3.*$")
+
+    regex_and_dirs = [(install_re, install_dir), (stage_re, stage_dir)]
+
+    for filename in state.files:
+        filepath = prime_dir / filename
+        if not filepath.is_file():
+            # File might have been pruned out
+            continue
+        newline = ""
+        remainder = ""
+        replaced = False
+        with filepath.open("r") as f:
+            # Read the first line and check whether it matches the install or stage dirs.
+            try:
+                line = f.readline()
+            except UnicodeDecodeError:
+                # File is not text; ignore it
+                continue
+            for base_re, base_dir in regex_and_dirs:
+                if base_re.match(line):
+                    newline = line.replace(str(base_dir), "")
+                    remainder = f.read()
+                    replaced = True
+                    break
+        if replaced:
+            filepath.write_text(newline + remainder)
