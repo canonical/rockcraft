@@ -113,7 +113,7 @@ def test_lifecycle_package_repositories(extra_project_params, fake_services, moc
     mock_callback.assert_called_once_with(repositories.install_overlay_repositories)
 
 
-@pytest.mark.parametrize("plugin_name", get_python_plugins())
+@pytest.mark.parametrize("plugin_name", get_python_plugins("ubuntu@24.04"))
 @pytest.mark.parametrize("base", ["bare", "ubuntu@24.04", "ubuntu@25.10"])
 @pytest.mark.parametrize("build_base", ["ubuntu@24.04", "ubuntu@25.10"])
 def test_python_usrmerge_fix(tmp_path, plugin_name, base, build_base):
