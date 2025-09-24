@@ -43,7 +43,7 @@ Add the metadata that describes your rock, such as its name and licence:
     :start-at: name: my-node-app
     :end-at: amd64:
 
-Add the container entrypoint, as a `Pebble`_ service:
+Add the container entrypoint, as a :ref:`pebble_explanation_page` service:
 
 .. literalinclude:: code/node-app/rockcraft.yaml
     :caption: rockcraft.yaml
@@ -151,5 +151,4 @@ The sample app code comes from the "Hello world example" Express tutorial,
 available at https://expressjs.com/en/starter/hello-world.html.
 
 
-.. _`Pebble`:  https://github.com/canonical/pebble
 .. _`NodeSource`: https://nodesource.com/
