@@ -61,3 +61,4 @@ those aspects in Rockcraft and more.
    :maxdepth: 1
 
    rocks <rocks/index>
+   specify-a-base
