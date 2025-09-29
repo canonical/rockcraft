@@ -1,0 +1,19 @@
+name: python-from-chisel-bare
+base: bare
+build-base: devel
+version: "0.1"
+summary: Testing Python plugin v2
+description: Testing Python plugin v2
+platforms:
+  amd64:
+
+parts:
+  my-part:
+    plugin: python
+    source: src/
+    stage-packages:
+      - python3_standard
+    python-packages:
+      - black
+    python-requirements:
+      - requirements.txt

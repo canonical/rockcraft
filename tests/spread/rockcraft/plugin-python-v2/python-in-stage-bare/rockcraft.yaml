@@ -1,0 +1,24 @@
+name: python-in-stage-bare
+base: bare
+build-base: devel
+version: "0.1"
+summary: Testing Python plugin v2
+description: Testing Python plugin v2
+platforms:
+  amd64:
+
+parts:
+  python-part:
+    plugin: nil
+    stage-packages:
+      - python3
+
+  my-part:
+    after:
+      - python-part
+    plugin: python
+    source: src/
+    python-packages:
+      - black
+    python-requirements:
+      - requirements.txt
