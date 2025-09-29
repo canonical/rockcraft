@@ -94,7 +94,7 @@ exclude_patterns = [
     "Thumbs.db",
     ".DS_Store",
     "env",
-    "sphinx-starter-pack",
+    "sphinx-docs-starter-pack",
     # Excluded here because they are either included explicitly in other
     # documents (so they generate "duplicate label" errors) or they aren't
     # used in this documentation at all (so they generate "unreferenced"
