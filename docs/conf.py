@@ -147,6 +147,8 @@ linkcheck_ignore = [
     # Ignore opencontainer's anchors as linkchecker is not able to check them.
     "https://specs.opencontainers.org/image-spec/config/",
     "https://matrix.to/#/#12-factor-charms:ubuntu.com",
+    # Docker is giving 403s for all their docs lately; revisit ASAP
+    "https://docs.docker.com",
 ]
 
 # Don't check links in the "common" subdirectory, as those are the responsibility of
