@@ -2,9 +2,9 @@
   "$id": "https://github.com/canonical/rockcraft/blob/main/schema/rockcraft.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$defs": {
-    "Check": {
+    "ExecCheck": {
       "additionalProperties": false,
-      "description": "Lightweight schema validation for a Pebble checks.\n\nBased on\nhttps://canonical-pebble.readthedocs-hosted.com/en/latest/reference/layer-specification/",
+      "description": "Model for a check that executes a command.",
       "properties": {
         "override": {
           "enum": [
@@ -40,6 +40,11 @@
             }
           ],
           "default": null,
+          "description": "How frequently to run this check.",
+          "examples": [
+            "10s",
+            "30m"
+          ],
           "title": "Period"
         },
         "timeout": {
@@ -52,11 +57,17 @@
             }
           ],
           "default": null,
+          "description": "The time before the check fails if not completed. Must be less than ``period``.",
+          "examples": [
+            "5s",
+            "2m"
+          ],
           "title": "Timeout"
         },
         "threshold": {
           "anyOf": [
             {
+              "minimum": 1,
               "type": "integer"
             },
             {
@@ -64,53 +75,29 @@
             }
           ],
           "default": null,
+          "description": "Number of consecutive errors before the check is considered failed.",
           "title": "Threshold"
         },
-        "http": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/HttpCheck"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null
-        },
-        "tcp": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/TcpCheck"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null
-        },
         "exec": {
-          "anyOf": [
-            {
-              "$ref": "#/$defs/ExecCheck"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null
+          "$ref": "#/$defs/ExecCheckOptions"
         }
       },
       "required": [
-        "override"
+        "override",
+        "exec"
       ],
-      "title": "Check",
+      "title": "ExecCheck",
       "type": "object"
     },
-    "ExecCheck": {
+    "ExecCheckOptions": {
       "additionalProperties": false,
       "description": "Lightweight schema validation for a Pebble exec check.",
       "properties": {
         "command": {
+          "description": "The command line to execute for this health check.",
+          "examples": [
+            "/usr/bin/health-check"
+          ],
           "title": "Command",
           "type": "string"
         },
@@ -124,6 +111,7 @@
             }
           ],
           "default": null,
+          "description": "Run the command in the context of this service.\nInherits the service's environment variables, user, group and working\ndirectory. The check's context will override the service's.\n",
           "title": "Service-Context"
         },
         "environment": {
@@ -139,6 +127,7 @@
             }
           ],
           "default": null,
+          "description": "A mapping of environment variables with which to run the check.",
           "title": "Environment"
         },
         "user": {
@@ -151,11 +140,13 @@
             }
           ],
           "default": null,
+          "description": "The user that will run the check.",
           "title": "User"
         },
         "user-id": {
           "anyOf": [
             {
+              "minimum": 0,
               "type": "integer"
             },
             {
@@ -163,6 +154,7 @@
             }
           ],
           "default": null,
+          "description": "The UID of the user that will run the check.",
           "title": "User-Id"
         },
         "group": {
@@ -175,11 +167,13 @@
             }
           ],
           "default": null,
+          "description": "The group name for the check process to run as.",
           "title": "Group"
         },
         "group-id": {
           "anyOf": [
             {
+              "minimum": 0,
               "type": "integer"
             },
             {
@@ -187,6 +181,7 @@
             }
           ],
           "default": null,
+          "description": "The GID of the group that will run the check.",
           "title": "Group-Id"
         },
         "working-dir": {
@@ -199,20 +194,113 @@
             }
           ],
           "default": null,
+          "description": "The working directory in which the command will run.",
           "title": "Working-Dir"
         }
       },
       "required": [
         "command"
       ],
-      "title": "ExecCheck",
+      "title": "ExecCheckOptions",
       "type": "object"
     },
     "HttpCheck": {
       "additionalProperties": false,
+      "description": "Model for a check that uses HTTP.",
+      "properties": {
+        "override": {
+          "enum": [
+            "merge",
+            "replace"
+          ],
+          "title": "Override",
+          "type": "string"
+        },
+        "level": {
+          "anyOf": [
+            {
+              "enum": [
+                "alive",
+                "ready"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Level"
+        },
+        "period": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "How frequently to run this check.",
+          "examples": [
+            "10s",
+            "30m"
+          ],
+          "title": "Period"
+        },
+        "timeout": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "The time before the check fails if not completed. Must be less than ``period``.",
+          "examples": [
+            "5s",
+            "2m"
+          ],
+          "title": "Timeout"
+        },
+        "threshold": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Number of consecutive errors before the check is considered failed.",
+          "title": "Threshold"
+        },
+        "http": {
+          "$ref": "#/$defs/HttpCheckOptions"
+        }
+      },
+      "required": [
+        "override",
+        "http"
+      ],
+      "title": "HttpCheck",
+      "type": "object"
+    },
+    "HttpCheckOptions": {
+      "additionalProperties": false,
       "description": "Lightweight schema validation for a Pebble HTTP check.",
       "properties": {
         "url": {
+          "description": "The URL to fetch",
+          "examples": [
+            "https://example.com/foo",
+            "http://localhost/health-check"
+          ],
           "format": "uri",
           "minLength": 1,
           "title": "Url",
@@ -231,13 +319,19 @@
             }
           ],
           "default": null,
+          "description": "Headers to send with the HTTP request.",
+          "examples": [
+            {
+              "X-Health-Check": "true"
+            }
+          ],
           "title": "Headers"
         }
       },
       "required": [
         "url"
       ],
-      "title": "HttpCheck",
+      "title": "HttpCheckOptions",
       "type": "object"
     },
     "Platform": {
@@ -305,6 +399,10 @@
           "type": "string"
         },
         "command": {
+          "examples": [
+            "/usr/bin/ls",
+            "/usr/bin/somedaemon --db=/db/path [ --port 8080 ]"
+          ],
           "title": "Command",
           "type": "string"
         },
@@ -474,6 +572,7 @@
               "enum": [
                 "restart",
                 "shutdown",
+                "failure-shutdown",
                 "ignore"
               ],
               "type": "string"
@@ -491,6 +590,7 @@
               "enum": [
                 "restart",
                 "shutdown",
+                "success-shutdown",
                 "ignore"
               ],
               "type": "string"
@@ -509,6 +609,7 @@
                 "enum": [
                   "restart",
                   "shutdown",
+                  "success-shutdown",
                   "ignore"
                 ],
                 "type": "string"
@@ -532,11 +633,17 @@
             }
           ],
           "default": null,
+          "description": "Initial backoff delay for the 'restart' exit action.",
+          "examples": [
+            "500ms",
+            "10s"
+          ],
           "title": "Backoff-Delay"
         },
         "backoff-factor": {
           "anyOf": [
             {
+              "minimum": 1.0,
               "type": "number"
             },
             {
@@ -544,6 +651,10 @@
             }
           ],
           "default": null,
+          "examples": [
+            "2.0",
+            "1.000001"
+          ],
           "title": "Backoff-Factor"
         },
         "backoff-limit": {
@@ -580,9 +691,99 @@
     },
     "TcpCheck": {
       "additionalProperties": false,
+      "description": "Model for a check that uses TCP.",
+      "properties": {
+        "override": {
+          "enum": [
+            "merge",
+            "replace"
+          ],
+          "title": "Override",
+          "type": "string"
+        },
+        "level": {
+          "anyOf": [
+            {
+              "enum": [
+                "alive",
+                "ready"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Level"
+        },
+        "period": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "How frequently to run this check.",
+          "examples": [
+            "10s",
+            "30m"
+          ],
+          "title": "Period"
+        },
+        "timeout": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "The time before the check fails if not completed. Must be less than ``period``.",
+          "examples": [
+            "5s",
+            "2m"
+          ],
+          "title": "Timeout"
+        },
+        "threshold": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Number of consecutive errors before the check is considered failed.",
+          "title": "Threshold"
+        },
+        "tcp": {
+          "$ref": "#/$defs/TcpCheckOptions"
+        }
+      },
+      "required": [
+        "override",
+        "tcp"
+      ],
+      "title": "TcpCheck",
+      "type": "object"
+    },
+    "TcpCheckOptions": {
+      "additionalProperties": false,
       "description": "Lightweight schema validation for a Pebble TCP check.",
       "properties": {
         "port": {
+          "description": "The TCP port to check is open.",
+          "maximum": 65535,
+          "minimum": 1,
           "title": "Port",
           "type": "integer"
         },
@@ -596,13 +797,19 @@
             }
           ],
           "default": null,
+          "description": "The hostname or IP address to check. Defaults to 'localhost'.",
+          "examples": [
+            "localhost",
+            "::1",
+            "127.0.0.1"
+          ],
           "title": "Host"
         }
       },
       "required": [
         "port"
       ],
-      "title": "TcpCheck",
+      "title": "TcpCheckOptions",
       "type": "object"
     },
     "Part": {
@@ -11030,7 +11237,17 @@
       "anyOf": [
         {
           "additionalProperties": {
-            "$ref": "#/$defs/Check"
+            "oneOf": [
+              {
+                "$ref": "#/$defs/HttpCheck"
+              },
+              {
+                "$ref": "#/$defs/TcpCheck"
+              },
+              {
+                "$ref": "#/$defs/ExecCheck"
+              }
+            ]
           },
           "type": "object"
         },
@@ -11039,6 +11256,7 @@
         }
       ],
       "default": null,
+      "description": "Health checks for this service.",
       "title": "Checks"
     },
     "entrypoint-service": {
@@ -11051,6 +11269,10 @@
         }
       ],
       "default": null,
+      "description": "The optional name of the Pebble service to serve as the entrypoint.",
+      "examples": [
+        "my-service"
+      ],
       "title": "Entrypoint-Service"
     },
     "entrypoint-command": {
@@ -11063,6 +11285,10 @@
         }
       ],
       "default": null,
+      "description": "Replaces the rock's default Pebble OCI entrypoint and CMD properties.",
+      "examples": [
+        "echo [ Hello ]"
+      ],
       "title": "Entrypoint-Command"
     }
   },

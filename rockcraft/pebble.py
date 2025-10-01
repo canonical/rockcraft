@@ -16,10 +16,12 @@
 
 """Pebble metadata and configuration helpers."""
 
+import textwrap
 from collections.abc import Mapping
 from pathlib import Path
-from typing import Any, Literal
+from typing import Annotated, Any, Literal
 
+import annotated_types
 import pydantic
 import yaml
 from craft_application.errors import CraftValidationError
@@ -27,34 +29,76 @@ from craft_application.models import CraftBaseModel
 from craft_cli import emit
 
 
-class HttpCheck(CraftBaseModel):
+class HttpCheckOptions(CraftBaseModel):
     """Lightweight schema validation for a Pebble HTTP check."""
 
-    url: pydantic.AnyHttpUrl
-    headers: dict[str, str] | None = None
+    url: pydantic.AnyHttpUrl = pydantic.Field(
+        description="The URL to fetch",
+        examples=["https://example.com/foo", "http://localhost/health-check"],
+    )
+    headers: dict[str, str] | None = pydantic.Field(
+        default=None,
+        description="Headers to send with the HTTP request.",
+        examples=[{"X-Health-Check": "true"}],
+    )
 
 
-class TcpCheck(CraftBaseModel):
+class TcpCheckOptions(CraftBaseModel):
     """Lightweight schema validation for a Pebble TCP check."""
 
-    port: int
-    host: str | None = None
+    port: int = pydantic.Field(
+        description="The TCP port to check is open.",
+        ge=1,
+        le=65535,
+    )
+    host: str | None = pydantic.Field(
+        default=None,
+        description="The hostname or IP address to check. Defaults to 'localhost'.",
+        examples=["localhost", "::1", "127.0.0.1"],
+    )
 
 
-class ExecCheck(CraftBaseModel):
+class ExecCheckOptions(CraftBaseModel):
     """Lightweight schema validation for a Pebble exec check."""
 
-    command: str
-    service_context: str | None = None
-    environment: dict[str, str] | None = None
-    user: str | None = None
-    user_id: int | None = None
-    group: str | None = None
-    group_id: int | None = None
-    working_dir: str | None = None
+    command: str = pydantic.Field(
+        description="The command line to execute for this health check.",
+        examples=["/usr/bin/health-check"],
+    )
+    service_context: str | None = pydantic.Field(
+        default=None,
+        description=textwrap.dedent(
+            """\
+                Run the command in the context of this service.
+                Inherits the service's environment variables, user, group and working
+                directory. The check's context will override the service's.
+            """
+        ),
+    )
+    environment: dict[str, str] | None = pydantic.Field(
+        default=None,
+        description="A mapping of environment variables with which to run the check.",
+    )
+    user: str | None = pydantic.Field(
+        default=None, description="The user that will run the check."
+    )
+    user_id: Annotated[int, annotated_types.Ge(0)] | None = pydantic.Field(
+        default=None,
+        description="The UID of the user that will run the check.",
+    )
+    group: str | None = pydantic.Field(
+        default=None, description="The group name for the check process to run as."
+    )
+    group_id: Annotated[int, annotated_types.Ge(0)] | None = pydantic.Field(
+        default=None,
+        description="The GID of the group that will run the check.",
+    )
+    working_dir: str | None = pydantic.Field(
+        default=None, description="The working directory in which the command will run."
+    )
 
 
-class Check(CraftBaseModel):
+class _BaseCheck(CraftBaseModel):
     """Lightweight schema validation for a Pebble checks.
 
     Based on
@@ -62,35 +106,78 @@ class Check(CraftBaseModel):
     """
 
     override: Literal["merge", "replace"]
+    """Control how this check is combined with another same-named check.
+
+    The value 'merge' will ensure that values in this layer specification are merged
+    over existing definitions, whereas 'replace' will entirely override the existing
+    check spec in the plan with the same name.
+    """
     level: Literal["alive", "ready"] | None = None
-    period: str | None = None
-    timeout: str | None = None
-    threshold: int | None = None
-    http: HttpCheck | None = None
-    tcp: TcpCheck | None = None
-    exec: ExecCheck | None = None
+    """Check level, used for filtering checks when calling the health endpoint.
 
-    @pydantic.model_validator(mode="before")
-    @classmethod
-    def _validates_check_type(cls, values: Mapping[str, Any]) -> Mapping[str, Any]:
-        """Before validation, make sure only one of 'http', 'tcp' or 'exec' exist."""
-        mutually_exclusive = ["http", "tcp", "exec"]
-        check_types = list(set(mutually_exclusive) & values.keys())
-        check_types.sort()
+    ``ready`` implies ``alive``, and not ``alive`` implies not ``ready``,
+    but not the other way around.
+    More information is available in the pebble documentation:
+    :external+pebble:doc:`reference/health-checks`
+    """
+    period: str | None = pydantic.Field(
+        default=None,
+        description="How frequently to run this check.",
+        examples=["10s", "30m"],
+    )
+    timeout: str | None = pydantic.Field(
+        default=None,
+        description="The time before the check fails if not completed. Must be less than ``period``.",
+        examples=["5s", "2m"],
+    )
+    threshold: Annotated[int, annotated_types.Ge(1)] | None = pydantic.Field(
+        default=None,
+        description="Number of consecutive errors before the check is considered failed.",
+    )
 
-        if len(check_types) > 1:
-            err = str(
-                f"Multiple check types specified ({', '.join(check_types)}). "
+
+class HttpCheck(_BaseCheck):
+    """Model for a check that uses HTTP."""
+
+    http: HttpCheckOptions
+
+
+class TcpCheck(_BaseCheck):
+    """Model for a check that uses TCP."""
+
+    tcp: TcpCheckOptions
+
+
+class ExecCheck(_BaseCheck):
+    """Model for a check that executes a command."""
+
+    exec: ExecCheckOptions
+
+
+def _get_check_tag(check: Mapping[str, Any]) -> str:
+    tags = ("http", "tcp", "exec")
+    check_types = check.keys() & tags
+    match len(check_types):
+        case 0:
+            raise CraftValidationError(
+                f"Must specify exactly one of {', '.join(tags)} for each check."
+            )
+        case 1:
+            return check_types.pop()
+        case _:
+            raise CraftValidationError(
+                f"Multiple check types specified ({', '.join(sorted(check_types))}). "
                 "Each check must have exactly one type."
             )
-        elif len(check_types) < 1:
-            err = str(
-                f"Must specify exactly one of {', '.join(list(mutually_exclusive))} for each check."
-            )
-        else:
-            return values
 
-        raise CraftValidationError(err)
+
+Check = Annotated[
+    Annotated[HttpCheck, pydantic.Tag("http")]
+    | Annotated[TcpCheck, pydantic.Tag("tcp")]
+    | Annotated[ExecCheck, pydantic.Tag("exec")],
+    pydantic.Discriminator(_get_check_tag),
+]
+"""Union model allowing the selection of exactly one check type."""
 
 
 class Service(CraftBaseModel):
@@ -101,26 +188,112 @@ class Service(CraftBaseModel):
     """
 
     override: Literal["merge", "replace"]
-    command: str
+    """Control how this service definition is combined with any other pre-existing
+    definition with the same name in the Pebble plan.
+
+    The value ``merge`` will ensure that values in this layer specification are merged
+    over existing definitions, whereas ``replace`` will entirely override an existing
+    service spec in the plan with the same name.
+    """
+    command: str = pydantic.Field(
+        examples=["/usr/bin/ls", "/usr/bin/somedaemon --db=/db/path [ --port 8080 ]"]
+    )
+    """The command to run the service.
+    This command is executed directly, not interpreted by a shell. May be optionally
+    suffixed by default arguments within square brackets, which may be overridden via
+    pebble's ``--args`` parameter.
+    """
     summary: str | None = None
+    """A short summary of the service."""
     description: str | None = None
+    """A detailed, potentially multi-line, description of the service."""
     startup: Literal["enabled", "disabled"] | None = None
+    """Whether the service is enabled automatically when the rock starts.
+
+    If not provided, defaults to ``disabled``."""
     after: list[str] | None = None
+    """The names of other services that this service should start after."""
     before: list[str] | None = None
+    """The names of other services that this service should start before."""
     requires: list[str] | None = None
+    """The names of other services that this service requires in order to start."""
     environment: dict[str, str] | None = None
+    """Environment variables to set for this process."""
     user: str | None = None
+    """Username for starting service as a different user.
+
+    It is an error if the user doesn't exist.
+    """
     user_id: int | None = None
+    """User ID for starting service as a different user.
+    If both user and user-id are specified, the user's UID must match user-id.
+    """
     group: str | None = None
+    """Group name for starting service as a different user.
+    It is an error if the group doesn't exist.
+    """
     group_id: int | None = None
+    """Group ID for starting service as a different user.
+    If both group and group-id are specified, the group's GID must match group-id.
+    """
     working_dir: str | None = None
-    on_success: Literal["restart", "shutdown", "ignore"] | None = None
-    on_failure: Literal["restart", "shutdown", "ignore"] | None = None
-    on_check_failure: dict[str, Literal["restart", "shutdown", "ignore"]] | None = None
-    backoff_delay: str | None = None
-    backoff_factor: float | None = None
+    """Working directory for the service command."""
+    on_success: Literal["restart", "shutdown", "failure-shutdown", "ignore"] | None = (
+        None
+    )
+    """Defines what happens when the service exits with exit code 0.
+
+    Possible values are:
+      - ``restart`` (default): restart the service after the backoff delay
+      - ``shutdown``: shut down and exit the Pebble daemon (with exit code 0)
+      - ``failure-shutdown``: shut down and exit Pebble with exit code 10
+      - ``ignore``: do nothing further
+    """
+    on_failure: Literal["restart", "shutdown", "success-shutdown", "ignore"] | None = (
+        None
+    )
+    """Defines what happens when the service exits with a nonzero exit code.
+
+    Possible values are:
+      - ``restart`` (default): restart the service after the backoff delay
+      - ``shutdown``: shut down and exit the Pebble daemon (with exit code 10)
+      - ``success-shutdown``: shut down and exit Pebble with exit code 0
+      - ``ignore``: do nothing further
+    """
+    on_check_failure: (
+        dict[str, Literal["restart", "shutdown", "success-shutdown", "ignore"]] | None
+    ) = None
+    """Defines what happens when the service exits with a nonzero exit code.
+
+    Possible values are:
+      - ``restart`` (default): restart the service after the backoff delay
+      - ``shutdown``: shut down and exit the Pebble daemon (with exit code 10)
+      - ``success-shutdown``: shut down and exit Pebble with exit code 0
+      - ``ignore``: do nothing further
+    """
+    backoff_delay: str | None = pydantic.Field(
+        default=None,
+        description="Initial backoff delay for the 'restart' exit action.",
+        examples=["500ms", "10s"],
+    )
+    backoff_factor: Annotated[float, annotated_types.Ge(1.0)] | None = pydantic.Field(
+        default=None, examples=["2.0", "1.000001"]
+    )
+    """Multiplication factor for backoff delay.
+    After each backoff, the current delay is multiplied by this factor to get the next
+    backoff delay. Must be greater than or equal to 1. Default is ``2.0``.
+    """
     backoff_limit: str | None = None
+    """Limit for the backoff delay.
+    When multiplying by backoff-factor to get the next backoff delay, if the result is
+    greater than this value, it is capped to this value.
+    Default is ``30s``.
+    """
     kill_delay: str | None = None
+    """The amount of time afforded to this service to handle SIGTERM and exit
+    gracefully before SIGKILL terminates it forcefully.
+    Default is ``5s``.
+    """
 
 
 class Pebble:

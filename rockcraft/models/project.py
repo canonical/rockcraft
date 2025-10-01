@@ -81,15 +81,76 @@ class Project(BaseProject):
 
     # Type of summary is Optional[str] in BaseProject
     summary: str  # type: ignore[reportIncompatibleVariableOverride]
+    """A short summary describing the rock."""
     description: str  # type: ignore[reportIncompatibleVariableOverride]
+    """A longer, possibly multi-line description of the rock."""
     environment: dict[str, str] | None = None
+    """A set of key-value pairs specifying the environment variables to be added
+    to the base image's OCI environment.
+    """
     run_user: _RunUser = None
+    """The default OCI user. It must be a supported shared user. Currently, the only
+    supported shared user is ``_daemon_`` (with UID/GID 584792).
+    If not specified, the user ``root`` (UID/GID 0) will be used.
+    """
     services: dict[str, Service] | None = None
-    checks: dict[str, Check] | None = None
-    entrypoint_service: str | None = None
-    entrypoint_command: str | None = None
+    """Follows the Pebble :external+pebble:doc:`reference/layer-specification`.
+
+    A mapping of ``name: service`` for the Pebble entrypoint. It uses Pebble's layer
+    specification syntax, with each entry defining a Pebble service. For
+    each service, the ``override`` and ``command`` keys are mandatory, but all
+    others are optional.
+    """
+    checks: dict[str, Check] | None = pydantic.Field(
+        default=None,
+        description="Health checks for this service.",
+    )
+    """A mapping of health checks that can be configured to restart Pebble services
+    when they fail. It uses Pebble's layer specification syntax, with each
+    entry corresponding to a check.
+    """
+    entrypoint_service: str | None = pydantic.Field(
+        default=None,
+        description="The optional name of the Pebble service to serve as the entrypoint.",
+        examples=["my-service"],
+    )
+    """The optional name of the Pebble service to serve as the `OCI entrypoint
+    <https://specs.opencontainers.org/image-spec/config/?v=v1.0.1#properties>`_.
+    If set, this makes Rockcraft extend ``["/bin/pebble", "enter"]`` with
+    ``["--args", "<serviceName>"]``. The command of the Pebble service must
+    contain an optional argument that will become the `OCI CMD
+    <https://specs.opencontainers.org/image-spec/config/?v=v1.0.1#properties>`_.
+
+    Mutually exclusive with `entrypoint-command <rockcraft-yaml-entrypoint-command>`_.
+    """
+    entrypoint_command: str | None = pydantic.Field(
+        default=None,
+        examples=["echo [ Hello ]"],
+        description="Replaces the rock's default Pebble OCI entrypoint and CMD properties.",
+    )
+    """Replaces the rock's default Pebble OCI ``entrypoint`` and ``CMD`` properties.
+    The value can be suffixed with default entrypoint arguments,
+    using the same square bracket list delimiters (``[]``) as the Pebble service
+    command.
+    If provided, these default entrypoint arguments become the rock's OCI CMD.
+
+    Mutually exclusive with `entrypoint-service <rockcraft-yaml-entrypoint-service>`_.
+    """
     base: BaseT  # type: ignore[reportIncompatibleVariableOverride]
+    """
+    The base system image that the rock's contents will be layered on. This is also
+    the system that will be mounted and made available when using Overlays. The
+    special value ``bare`` means that the rock will have no base system at all,
+    which is typically used with static binaries or
+    :ref:`Chisel slices <chisel_explanation>`.
+    """
     build_base: BuildBaseT = None  # type: ignore[reportIncompatibleVariableOverride]
+    """The system and version that will be used during the rock's build, but not
+    included in the final rock itself. It comprises the set of tools and libraries
+    that Rockcraft will use when building the rock's contents. This key is
+    mandatory if ``base`` is ``bare``, but otherwise it is optional and defaults to
+    the value of ``base``.
+    """
 
     model_config = pydantic.ConfigDict(
         validate_assignment=True,
