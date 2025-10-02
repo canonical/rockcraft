@@ -74,8 +74,8 @@ Pebble distinguishes itself from other similar tools (like `tini`_ and
 Creating services
 ~~~~~~~~~~~~~~~~~
 
-Rockcraft follows the :external+pebble:doc:`Pebble layer specification
-<reference/layer-specification>` to the letter, with Pebble services defined in
+Rockcraft follows the :external+pebble:ref:`Pebble layer specification
+<layer-specification>` to the letter, with Pebble services defined in
 :doc:`/reference/rockcraft.yaml`. :doc:`/how-to/rocks/convert-to-pebble-layer`
 provides an example of how to convert a Docker entrypoint to a Pebble layer.
 
