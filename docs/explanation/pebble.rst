@@ -74,14 +74,13 @@ Pebble distinguishes itself from other similar tools (like `tini`_ and
 Creating services
 ~~~~~~~~~~~~~~~~~
 
-Rockcraft follows the `Pebble layer specification`_ to the letter, with Pebble
-services defined in :doc:`/reference/rockcraft.yaml`.
-:doc:`/how-to/rocks/convert-to-pebble-layer` provides an example of how to
-convert a Docker entrypoint to a Pebble layer.
+Rockcraft follows the :external+pebble:doc:`Pebble layer specification
+<reference/layer-specification>` to the letter, with Pebble services defined in
+:doc:`/reference/rockcraft.yaml`. :doc:`/how-to/rocks/convert-to-pebble-layer`
+provides an example of how to convert a Docker entrypoint to a Pebble layer.
 
 
 .. _Pebble: https://github.com/canonical/pebble
 .. _tini: https://github.com/krallin/tini
 .. _s6-overlay: https://github.com/just-containers/s6-overlay
 .. _imperative wrapper scripts (as suggested in the Docker documentation): https://docs.docker.com/engine/containers/multi-service_container/#use-a-wrapper-script
-.. _Pebble layer specification: https://canonical-pebble.readthedocs-hosted.com/en/latest/reference/layer-specification/

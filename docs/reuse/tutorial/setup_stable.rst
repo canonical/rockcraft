@@ -90,4 +90,4 @@ Note that we'll also need a text editor. We can either install one of our
 choice or simply use one of the already existing editors in the Ubuntu
 environment (like ``vi``).
 
-.. _`install-multipass`: https://multipass.run/docs/install-multipass
+.. _`install-multipass`: https://documentation.ubuntu.com/multipass/stable/how-to-guides/install-multipass/

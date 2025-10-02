@@ -12,12 +12,12 @@ Reference entrypoint
 
 For this guide, the reference Docker image entrypoint will be NGINX. The
 official Debian-based NGINX image's Dockerfile can be found `here
-<https://github.com/nginxinc/docker-nginx/blob/
+<https://github.com/nginx/docker-nginx/blob/
 73a5acae6945b75b433cafd0c9318e4378e72cbb/mainline/debian/Dockerfile>`_.
 
 In summary, this Dockerfile is basically installing NGINX into the image and
 then defining the `OCI entrypoint`_ to be a custom `shell script
-<https://github.com/nginxinc/docker-nginx/blob/
+<https://github.com/nginx/docker-nginx/blob/
 73a5acae6945b75b433cafd0c9318e4378e72cbb/mainline/debian/docker-entrypoint.sh>`_
 which parses the first argument given to it at container deployment time,
 and then configures and launches NGINX accordingly.
@@ -25,13 +25,9 @@ and then configures and launches NGINX accordingly.
 Design the Pebble services
 --------------------------
 
-A `Pebble layer
-<https://canonical-pebble.readthedocs-hosted.com/en/latest/reference/
-layer-specification/>`_
+A :external+pebble:doc:`Pebble layer <reference/layer-specification>`
 is composed of metadata, checks and services. The latter is present in
-the project file as a `top-level key
-<https://canonical-rockcraft.readthedocs-hosted.com/en/latest/reference/
-rockcraft.yaml/#format-specification>`_
+the project file as a :ref:`top-level key <rockcraft.yaml_format-specification>`
 and it represents the services which are loaded by the Pebble entrypoint when
 deploying a rock.
 
@@ -65,7 +61,7 @@ To reproduce what the reference NGINX Dockerfile is doing, notice the use of
 ``package-repositories`` in this project file, allowing you to also
 make use of NGINX's 3rd party package repository (even using the same
 GPG key ID as the one used in `the Dockerfile
-<https://github.com/nginxinc/docker-nginx/blob/
+<https://github.com/nginx/docker-nginx/blob/
 73a5acae6945b75b433cafd0c9318e4378e72cbb/mainline/debian/Dockerfile>`_).
 
 **NOTE**: to add custom configuration files, you can use the ``dump`` plugin.

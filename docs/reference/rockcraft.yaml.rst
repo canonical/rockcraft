@@ -12,6 +12,7 @@ root of the project tree in the filesystem. This file is commonly known as the
 
 This reference describes the configuration keys available in this file.
 
+.. _rockcraft.yaml_format-specification:
 
 Format specification
 ====================

@@ -143,7 +143,7 @@ this release.
 :literalref:`@vpa1977<https://github.com/vpa1977>`
 and :literalref:`@yanksyoon<https://github.com/yanksyoon>`.
 
-.. _Ubuntu Discourse: https://discourse.ubuntu.com/c/rocks/rockcraft/118
+.. _Ubuntu Discourse: https://discourse.ubuntu.com/c/project/rockcraft/118
 
 .. _#659: https://github.com/canonical/rockcraft/issues/659
 .. _#749: https://github.com/canonical/rockcraft/issues/659

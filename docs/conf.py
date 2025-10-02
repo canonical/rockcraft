@@ -139,7 +139,6 @@ linkcheck_ignore = [
     r"^https://ubuntu.com",
     "http://0.0.0.0:8080",
     "https://github.com/canonical/craft-actions#rockcraft-pack",
-    "https://canonical-pebble.readthedocs-hosted.com/en/latest/reference/layer-specification/",
     "https://juju.is/cloud-native-kubernetes-usage-report-2021#selection-criteria-for-container-images",
     "https://matrix.to/#/#rocks:ubuntu.com",
     "https://matrix.to/#/#rockcraft:ubuntu.com",
@@ -166,10 +165,11 @@ rst_epilog = """
 # https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html#configuration
 
 intersphinx_mapping = {
+    "12-factor": ("https://canonical-12-factor-app-support.readthedocs-hosted.com/latest/", None),
     # Use latest Charmcraft so we can link to 12-factor docs. Once those docs are
     # in stable, we should switch this to stable.
     "charmcraft": ("https://documentation.ubuntu.com/charmcraft/latest/", None),
-    "12-factor": ("https://canonical-12-factor-app-support.readthedocs-hosted.com/latest/", None),
+    "pebble": ("https://documentation.ubuntu.com/pebble", None),
 }
 # See also:
 # https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html#confval-intersphinx_disabled_reftypes
