@@ -124,25 +124,31 @@ exclude_patterns = [
 
 # Linkcheck settings
 
-# This doesn't seem to have any effect
-linkcheck_retries = 3
-
-# URLs to skip
+linkcheck_retries = 20
+linkcheck_anchors_ignore = ["#", ":"]
+# We have many links on sites that frequently respond with 503s to GitHub runners.
+# https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-linkcheck_retries
 linkcheck_ignore = [
+    # Ignore releases, since we'll include the next release before it exists.
+    r"^https://github.com/canonical/[a-z]*craft[a-z-]*/releases/.*",
+    # Entire domains to ignore due to flakiness or issues
+    r"^https://www.gnu.org/",
+    r"^https://crates.io/",
+    r"^https://([\w-]*\.)?npmjs.org",
+    r"^https://rsync.samba.org",
+    r"^https://ubuntu.com",
     "http://0.0.0.0:8080",
     "https://github.com/canonical/craft-actions#rockcraft-pack",
     "https://canonical-pebble.readthedocs-hosted.com/en/latest/reference/layer-specification/",
     "https://juju.is/cloud-native-kubernetes-usage-report-2021#selection-criteria-for-container-images",
     "https://matrix.to/#/#rocks:ubuntu.com",
     "https://matrix.to/#/#rockcraft:ubuntu.com",
-    "https://www.gnu.org/*",
-    # Ignore changelog links to Rockcraft releases, because the changelog entries
-    # are written before the actual release is tagged.
-    "https://github.com/canonical/rockcraft/releases/tag/.*",
     "https://github.com/canonical/spread#selecting-which-tasks-to-run",
     # Ignore opencontainer's anchors as linkchecker is not able to check them.
     "https://specs.opencontainers.org/image-spec/config/",
     "https://matrix.to/#/#12-factor-charms:ubuntu.com",
+    # Docker is giving 403s for all their docs lately; revisit ASAP
+    "https://docs.docker.com",
 ]
 
 # Don't check links in the "common" subdirectory, as those are the responsibility of
