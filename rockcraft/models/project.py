@@ -121,7 +121,7 @@ class Project(BaseProject):
     contain an optional argument that will become the `OCI CMD
     <https://specs.opencontainers.org/image-spec/config/?v=v1.0.1#properties>`_.
 
-    Mutually exclusive with `entrypoint-command <rockcraft-yaml-entrypoint-command>`_.
+    Mutually exclusive with ``entrypoint-command``.
     """
     entrypoint_command: str | None = pydantic.Field(
         default=None,
@@ -134,7 +134,7 @@ class Project(BaseProject):
     command.
     If provided, these default entrypoint arguments become the rock's OCI CMD.
 
-    Mutually exclusive with `entrypoint-service <rockcraft-yaml-entrypoint-service>`_.
+    Mutually exclusive with ``entrypoint-service``.
     """
     base: BaseT  # type: ignore[reportIncompatibleVariableOverride]
     """
