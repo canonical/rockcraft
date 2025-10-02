@@ -16,6 +16,7 @@
 
 import datetime
 import os
+import re
 import subprocess
 from pathlib import Path
 from typing import cast
@@ -24,10 +25,9 @@ import pydantic
 import pytest
 import yaml
 from craft_application.errors import CraftValidationError
-from craft_application.models.constraints import MESSAGE_INVALID_NAME
 from craft_providers.bases import ubuntu
 from rockcraft.models import Project
-from rockcraft.models.project import Platform
+from rockcraft.models.project import MESSAGE_INVALID_NAME, Platform
 from rockcraft.pebble import Service
 from rockcraft.services.project import RockcraftProjectService
 
@@ -275,10 +275,8 @@ def test_project_title_empty_invalid_name(yaml_loaded_data):
     with pytest.raises(CraftValidationError) as err:
         load_project_yaml(yaml_loaded_data)
 
-    expected = (
-        "Bad rockcraft.yaml content:\n"
-        "- invalid name: Names can only use ASCII lowercase letters, numbers, and hyphens. They must have at least one letter, may not start or end with a hyphen, and may not have two hyphens in a row. "
-        r"\(in field 'name'\)"
+    expected = re.escape(
+        f"Bad rockcraft.yaml content:\n- {MESSAGE_INVALID_NAME} (in field 'name')"
     )
     assert err.match(expected)
 
@@ -515,7 +513,6 @@ def test_project_all_platforms_invalid(yaml_loaded_data):
         "aaa",
         "a00",
         "0aaa",
-        "a",
         "a-00",
         "a-a-a",
         "a-000-bbb",
@@ -533,6 +530,7 @@ def test_project_name_valid(yaml_loaded_data, valid_name):
     ("invalid_name", "expected_message"),
     [
         ("", MESSAGE_INVALID_NAME),
+        ("a", MESSAGE_INVALID_NAME),
         ("AAA", MESSAGE_INVALID_NAME),
         ("a--a", MESSAGE_INVALID_NAME),
         ("aa-", MESSAGE_INVALID_NAME),
