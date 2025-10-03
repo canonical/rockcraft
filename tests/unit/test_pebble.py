@@ -16,6 +16,7 @@
 
 import os
 from pathlib import Path
+from typing import Any
 
 import pydantic
 import pytest
@@ -23,11 +24,11 @@ import yaml
 from craft_application.errors import CraftValidationError
 from rockcraft.pebble import (
     Check,
-    ExecCheck,
-    HttpCheck,
+    ExecCheckOptions,
+    HttpCheckOptions,
     Pebble,
     Service,
-    TcpCheck,
+    TcpCheckOptions,
     add_pebble_part,
 )
 
@@ -244,10 +245,12 @@ class TestPebble:
     @pytest.mark.parametrize(
         ("bad_service", "error"),
         [
-            # Missing fields
-            ({}, r"^2 validation errors[\s\S]*override[\s\S]*command"),
-            # Bad attributes values
-            (
+            pytest.param(
+                {},
+                r"^2 validation errors[\s\S]*override[\s\S]*command",
+                id="missing-fields",
+            ),
+            pytest.param(
                 {
                     "override": "bad value",
                     "command": "free text allowed",
@@ -260,14 +263,14 @@ class TestPebble:
                 r"override[\s\S]*Input should be[\s\S]*'merge' or 'replace'[\s\S]*"
                 r"startup[\s\S]*Input should be[\s\S]*'enabled' or 'disabled'[\s\S]*"
                 r"on-success[\s\S]*Input should be[\s\S]*"
-                r"'restart', 'shutdown' or 'ignore'[\s\S]*"
+                r"'restart', 'shutdown', 'failure-shutdown' or 'ignore'[\s\S]*"
                 r"on-failure[\s\S]*Input should be[\s\S]*"
-                r"'restart', 'shutdown' or 'ignore'[\s\S]*"
+                r"'restart', 'shutdown', 'success-shutdown' or 'ignore'[\s\S]*"
                 r"on-check-failure[\s\S]*Input should be[\s\S]*"
-                r"'restart', 'shutdown' or 'ignore'[\s\S]*",
+                r"'restart', 'shutdown', 'success-shutdown' or 'ignore'[\s\S]*",
+                id="bad-values",
             ),
-            # Bad attribute types
-            (
+            pytest.param(
                 {
                     "override": ["merge"],
                     "command": ["not a string"],
@@ -285,14 +288,15 @@ class TestPebble:
                 r"Input should be a valid list[\s\S]*"
                 r"Input should be a valid dictionary[\s\S]*"
                 r"Input should be a valid integer[\s\S]*"
-                r"Input should be 'restart', 'shutdown' or 'ignore'[\s\S]*"
+                r"Input should be 'restart', 'shutdown', 'success-shutdown' or 'ignore'[\s\S]*"
                 r"Input should be a valid number[\s\S]*",
+                id="bad-types",
             ),
         ],
     )
     def test_bad_services(self, bad_service, error):
         with pytest.raises(pydantic.ValidationError, match=error):
-            _ = Service(**bad_service)
+            Service.model_validate(bad_service)
 
     @pytest.mark.parametrize(
         ("bad_http_check", "error"),
@@ -313,7 +317,7 @@ class TestPebble:
     )
     def test_bad_http_checks(self, bad_http_check, error):
         with pytest.raises(pydantic.ValidationError, match=error):
-            _ = HttpCheck(**bad_http_check)
+            HttpCheckOptions.model_validate(bad_http_check)
 
     @pytest.mark.parametrize(
         ("bad_tcp_check", "error"),
@@ -334,7 +338,7 @@ class TestPebble:
     )
     def test_bad_tcp_checks(self, bad_tcp_check, error):
         with pytest.raises(pydantic.ValidationError, match=error):
-            _ = TcpCheck(**bad_tcp_check)
+            TcpCheckOptions.model_validate(bad_tcp_check)
 
     @pytest.mark.parametrize(
         ("bad_exec_check", "error"),
@@ -367,46 +371,69 @@ class TestPebble:
     )
     def test_bad_exec_checks(self, bad_exec_check, error):
         with pytest.raises(pydantic.ValidationError, match=error):
-            _ = ExecCheck(**bad_exec_check)
+            ExecCheckOptions.model_validate(bad_exec_check)
 
-    def test_full_check(self):
+    @pytest.mark.parametrize(
+        "additional_fields",
+        [
+            {"http": {"url": "http://foo.bar"}},
+            {"tcp": {"port": 1}},
+            {"exec": {"command": "/bin/true"}},
+        ],
+    )
+    def test_full_check(self, additional_fields: dict[str, dict[str, Any]]):
         full_check = {
             "override": "merge",
             "level": "alive",
             "period": "1s",
             "timeout": "10s",
             "threshold": 3,
-            "http": {"url": "http://foo.bar"},
-        }
-        _ = Check(**full_check)
+        } | additional_fields
+        adapter = pydantic.TypeAdapter(Check)
+        adapter.validate_python(full_check)
 
-    def test_minimal_check(self):
-        _ = Check.model_validate({"override": "merge", "exec": {"command": "foo cmd"}})
+    @pytest.mark.parametrize(
+        "additional_fields",
+        [
+            {"http": {"url": "http://foo.bar"}},
+            {"tcp": {"port": 1}},
+            {"exec": {"command": "/bin/true"}},
+        ],
+    )
+    @pytest.mark.parametrize("override", ["merge", "replace"])
+    def test_minimal_check(
+        self, override: str, additional_fields: dict[str, dict[str, Any]]
+    ):
+        adapter = pydantic.TypeAdapter(Check)
+        adapter.validate_python({"override": override} | additional_fields)
 
     @pytest.mark.parametrize(
         ("bad_check", "exception", "error"),
         [
             # Missing check type fields
-            (
+            pytest.param(
                 {},
                 CraftValidationError,
                 r"Must specify exactly one of http, tcp, exec for each check.",
+                id="missing-check-type",
             ),
             # Missing mandatory fields
-            (
+            pytest.param(
                 {"exec": {"command": "foo"}},
                 pydantic.ValidationError,
                 r"^1 validation error[\s\S]*override[\s\S]*",
+                id="missing-mandatory-fields",
             ),
             # Too many check types
-            (
+            pytest.param(
                 {"override": "merge", "exec": {"command": "foo"}, "tcp": {"port": 1}},
                 CraftValidationError,
                 r"Multiple check types specified ([\s\S]*). "
                 r"Each check must have exactly one type.",
+                id="multiple-check-types",
             ),
             # Bad attributes values
-            (
+            pytest.param(
                 {
                     "override": "bad value",
                     "level": "bad value",
@@ -416,9 +443,10 @@ class TestPebble:
                 r"^2 validation errors[\s\S]*"
                 r"override[\s\S]*Input should be 'merge' or 'replace'[\s\S]*"
                 r"level[\s\S]*Input should be 'alive' or 'ready'[\s\S]*",
+                id="bad-attribute-values",
             ),
             # Bad attribute types
-            (
+            pytest.param(
                 {
                     "override": ["merge"],
                     "level": ["alive"],
@@ -435,15 +463,17 @@ class TestPebble:
                 r"Input should be a valid string[\s\S]*"
                 r"Input should be a valid integer[\s\S]*"
                 r"Input should be a valid dictionary[\s\S]*",
+                id="bad-attribute-types",
             ),
         ],
     )
     def test_bad_checks(self, bad_check, exception, error):
+        adapter = pydantic.TypeAdapter(Check)
         with pytest.raises(exception, match=error):
-            _ = Check(**bad_check)
+            adapter.validate_python(bad_check)
 
     def test_http_check_dump(self):
-        check = HttpCheck.model_validate({"url": "http://www.example.com"})
+        check = HttpCheckOptions.model_validate({"url": "http://www.example.com"})
         dump = check.model_dump(exclude_none=True, mode="json")
 
         assert dump["url"] == "http://www.example.com/"

@@ -1,8 +1,7 @@
 .. _rockcraft.yaml_reference:
 
-**************
 rockcraft.yaml
-**************
+==============
 
 .. include:: rock_parts/toc.rst
 
@@ -14,73 +13,41 @@ This reference describes the configuration keys available in this file.
 
 
 Format specification
-====================
+--------------------
 
-``name``
---------
+.. note::
+   The keys ``entrypoint``, ``cmd`` and ``env`` are not supported in
+   Rockcraft. All rocks have Pebble as their entrypoint, and thus you must use
+   ``services`` to define your container application.
 
-**Type**: string
+.. py:currentmodule:: craft_application.models.project
 
-**Required**: Yes
+.. kitbash-field:: Project name
 
-The name of the rock. This value must conform with Pebble's format for layer
-files, meaning that the ``name``:
+    The value must conform with Pebble's format for layer files.
 
-- must start with a lowercase letter [a-z];
-- must contain only lowercase letters [a-z], numbers [0-9] or hyphens;
-- must not end with a hyphen, and must not contain two or more consecutive
-  hyphens.
+.. kitbash-field:: Project title
 
-``title``
----------
+    The human-readable title of the rock. If omitted, defaults to ``name``.
 
-**Type**: string
+.. py:currentmodule:: rockcraft.models.project
 
-**Required**: No
+.. kitbash-field:: Project summary
 
-The human-readable title of the rock. If omitted, defaults to ``name``.
+.. kitbash-field:: Project description
 
-``summary``
------------
+.. py:currentmodule:: craft_application.models.project
+.. kitbash-field:: Project version
 
-**Type**: string
-
-**Required**: Yes
-
-A short summary describing the rock.
-
-``description``
----------------
-
-**Type**: string
-
-**Required**: Yes
-
-A longer, possibly multi-line description of the rock.
-
-``version``
------------
-
-**Type**: string
-
-**Required**: Yes
-
-The rock version, used to tag the OCI image and name the rock file.
+.. https://github.com/canonical/pydantic-kitbash/issues/76
+..    Used to tag the OCI image and name the rock file.
 
 .. _rockcraft_yaml_base:
+.. py:currentmodule:: rockcraft.models.project
+.. kitbash-field:: Project base
+    :override-type: ubuntu@20.04 | ubuntu@22.04 | ubuntu@24.04 | ubuntu@25.10 | bare
 
-``base``
---------
-
-**Type**: One of ``ubuntu@20.04 | ubuntu@22.04 | ubuntu@24.04 | ubuntu@25.10 | bare``
-
-**Required**: Yes
-
-The base system image that the rock's contents will be layered on. This is also
-the system that will be mounted and made available when using Overlays. The
-special value ``bare`` means that the rock will have no base system at all,
-which is typically used with static binaries or
-:ref:`Chisel slices <chisel_explanation>`.
+.. Type override due to https://github.com/canonical/pydantic-kitbash/issues/68
 
 .. note::
    The notation "ubuntu:<channel>" is also supported for some channels, but this
@@ -88,18 +55,10 @@ which is typically used with static binaries or
 
 .. _rockcraft_yaml_build_base:
 
-``build-base``
---------------
+.. kitbash-field:: Project build_base
+    :override-type: ubuntu@20.04 | ubuntu@22.04 | ubuntu@24.04 | ubuntu@25.10 | devel
 
-**Type**: One of ``ubuntu@20.04 | ubuntu@22.04 | ubuntu@24.04 | ubuntu@25.10 | devel``
-
-**Required**: Yes, if ``base`` is ``bare``
-
-The system and version that will be used during the rock's build, but not
-included in the final rock itself. It comprises the set of tools and libraries
-that Rockcraft will use when building the rock's contents. This key is
-mandatory if ``base`` is ``bare``, but otherwise it is optional and defaults to
-the value of ``base``.
+.. Type override due to https://github.com/canonical/pydantic-kitbash/issues/68
 
 .. note::
    The notation "ubuntu:<channel>" is also supported for some channels, but this
@@ -110,68 +69,34 @@ the value of ``base``.
    in development". This means that the contents of this system changes
    frequently and should not be relied on for production rocks.
 
-``license``
------------
+.. py:currentmodule:: craft_application.models.project
+.. kitbash-field:: Project license
 
-**Type**: string, in `SPDX format <https://spdx.org/licenses/>`_
+    The special value ``proprietary`` can also be used.
 
-**Required**: No
-
-The license of the software packaged inside the rock. This must either be
-"proprietary" or match the SPDX format. It is case insensitive (e.g. both
-``MIT`` and ``mit`` are valid).
+.. The blockquote above is due to https://github.com/canonical/pydantic-kitbash/issues/77
 
 .. _rockcraft_yaml_run_user:
 
-``run-user``
-------------
+.. py:currentmodule:: rockcraft.models.project
+.. kitbash-field:: Project run_user
 
-**Type**: string
-
-**Required**: No
-
-The default OCI user. It must be a supported shared user. Currently, the only
-supported shared user is "_daemon_" (with UID/GID 584792). It defaults to
-"root" (with UID 0).
-
-``environment``
----------------
-
-**Type**: dict
-
-**Required**: No
-
-A set of key-value pairs specifying the environment variables to be added
-to the base image's OCI environment.
+.. kitbash-field:: Project environment
 
 .. note::
-   String interpolation is not yet supported so any attempts to dynamically
-   define environment variables with ``$`` will end in a project
-   validation error.
+    String interpolation is not yet supported so any attempts to dynamically
+    define environment variables with ``$`` will end in a project
+    validation error.
 
-``services``
-------------
+.. kitbash-field:: Project services
 
-**Type**: dict, following the `Pebble Layer Specification format`_
+.. kitbash-model:: Service
+    :prepend-name: services.<service-name>
+    :skip-description:
 
-**Required**: No
+.. _rockcraft-yaml-entrypoint-service:
 
-A list of services for the Pebble entrypoint. It uses Pebble's layer
-specification syntax exactly, with each entry defining a Pebble service. For
-each service, the ``override`` and ``command`` keys are mandatory, but all
-others are optional.
-
-``entrypoint-service``
-------------------------
-
-**Type**: string
-
-**Required**: No
-
-The optional name of the Pebble service to serve as the `OCI entrypoint`_. If set,
-this makes Rockcraft extend ``["/bin/pebble", "enter"]`` with
-``["--args", "<serviceName>"]``. The command of the Pebble service must
-contain an optional argument that will become the `OCI CMD`_.
+.. kitbash-field:: Project entrypoint_service
 
 .. warning::
    This option must only be used in cases where the targeted deployment
@@ -180,105 +105,58 @@ contain an optional argument that will become the `OCI CMD`_.
 
 .. _rockcraft-yaml-entrypoint-command:
 
-``entrypoint-command``
-------------------------
-
-**Type**: string
-
-**Required**: No
-
-Replaces the rock's default Pebble `OCI entrypoint`_ and `OCI CMD`_ properties.
-The value can be suffixed with default entrypoint arguments,
-using the same square bracket list delimiters ([]) as the Pebble service command.
-If provided, these default entrypoint arguments become the rock's OCI CMD. For example:
-
-.. code-block::
-
-   echo [ Hello ]
-
-This key and the ``entrypoint-service`` are mutually incompatible and can't both be set.
+.. kitbash-field:: Project entrypoint_command
 
 .. caution::
     You should only set this key for certain categories of general-purpose rocks where
     Pebble services aren't appropriate, such as the Ubuntu OS and base images.
 
-``checks``
-------------
+.. kitbash-field:: Project checks
 
-**Type**: dict, following the `Pebble Layer Specification format`_
+    The ``http``, ``tcp`` and ``exec`` fields are mutually exclusive and determine the
+    check type.
 
-**Required**: No
+.. py:currentmodule:: rockcraft.pebble
+.. kitbash-model:: _BaseCheck
+    :prepend-name: checks.<check-name>
+    :skip-description:
 
-A list of health checks that can be configured to restart Pebble services
-when they fail. It uses Pebble's layer specification syntax, with each
-entry corresponding to a check. Each check can be one of three types:
-``http``, ``tcp`` or ``exec``.
+.. kitbash-model:: HttpCheckOptions
+    :prepend-name: checks.<check-name>.http
 
+.. kitbash-model:: TcpCheckOptions
+    :prepend-name: checks.<check-name>.tcp
+
+.. kitbash-model:: ExecCheckOptions
+    :prepend-name: checks.<check-name>.exec
 
 .. _platforms:
 
-``platforms``
--------------
-
-**Type**: dict
-
-**Required**: Yes
-
-The set of architecture-specific rocks to be built. Supported architectures are:
-``amd64``, ``arm64``, ``armhf``, ``i386``, ``ppc64el``, ``riscv64`` and ``s390x``.
-
-Entries in the ``platforms`` dict can be free-form strings, or the name of a
-supported architecture (in Debian format).
+.. py:currentmodule:: craft_application.models.project
+.. kitbash-field:: Project platforms
 
 .. warning::
    **All** target architectures must be compatible with the architecture of
    the host where Rockcraft is being executed (i.e. emulation is not supported
    at the moment).
 
-``platforms.<entry>.build-on``
-------------------------------
-
-**Type**: list[string]
-
-**Required**: Yes, if ``build-for`` is specified *or* if ``<entry>`` is not a
-supported architecture name.
-
-Host architectures where the rock can be built. Defaults to ``<entry>`` if that
-is a valid, supported architecture name.
-
-``platforms.<entry>.build-for``
--------------------------------
-
-**Type**: string | list[string]
-
-**Required**: Yes, if ``<entry>`` is not a supported architecture name.
-
-Target architecture the rock will be built for. Defaults to ``<entry>`` that
-is a valid, supported architecture name.
+.. kitbash-model:: Platform
+    :prepend-name: platforms.<platform-name>
 
 .. note::
    At the moment Rockcraft will only build for a single architecture, so
    if provided ``build-for`` must be a single string or a list with exactly one
    element.
 
-``parts``
----------
+.. kitbash-field:: Project parts
+    :override-type: dict[str, Part]
 
-**Type**: dict
-
-**Required**: Yes
-
-The set of parts that compose the rock's contents
-(see :ref:`Parts <reference-part-properties>`).
-
-
-.. note::
-   The keys ``entrypoint``, ``cmd`` and ``env`` are not supported in
-   Rockcraft. All rocks have Pebble as their entrypoint, and thus you must use
-   ``services`` to define your container application.
+    General part properties can be found in the :ref:`reference-part-properties`
+    reference. Specific plugin properties can be found in the relevant
+    :doc:`plugin reference <plugins>`
 
 ``extensions``
---------------
+~~~~~~~~~~~~~~
 
 **Type**: list[string]
 
@@ -296,7 +174,7 @@ Currently supported extensions:
 - ``spring-boot-framework``
 
 Example
-=======
+-------
 
 .. literalinclude:: code/example/rockcraft.yaml
     :caption: rockcraft.yaml
