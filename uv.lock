@@ -611,8 +611,8 @@ wheels = [
 
 [[package]]
 name = "craft-parts"
-version = "2.24.0"
-source = { registry = "https://pypi.org/simple" }
+version = "2.24.0.post3+gbe46ba89"
+source = { git = "https://github.com/canonical/craft-parts?rev=work%2FCRAFT-4804-More-robust-chroot-unmounting#be46ba8977c8111aab06d4d46ce73d4e4b9ac9da" }
 dependencies = [
     { name = "lxml" },
     { name = "pydantic" },
@@ -622,10 +622,6 @@ dependencies = [
     { name = "requests-unixsocket2" },
     { name = "semver" },
     { name = "tomli", marker = "python_full_version < '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-oracular') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-oracular') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-oracular' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-oracular' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-plucky' and extra == 'group-9-rockcraft-dev-questing')" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/df/83/6ec3b3726f43da5fe0372370aef70ecc4b670946e161106a4aca272efbea/craft_parts-2.24.0.tar.gz", hash = "sha256:644b613bb9d9feb18ff3ff46f7ebc113323ec3b16b4a6d69cf39a4389c801e53", size = 873023, upload-time = "2025-09-26T17:22:19.539Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/0f/22/563f922b2f1c301238e4a5af76801bfe56e7f4d703978f97564415314e78/craft_parts-2.24.0-py3-none-any.whl", hash = "sha256:18214b1da7a8c9e773d217315f91775c5d4442c25c79fe386fb9730969f15ea7", size = 521997, upload-time = "2025-09-26T17:22:17.216Z" },
 ]
 
 [[package]]
@@ -2731,7 +2727,7 @@ requires-dist = [
     { name = "craft-application", specifier = ">=5.10.0" },
     { name = "craft-archives", specifier = ">=2.2.0" },
     { name = "craft-cli", specifier = ">=3.1.2" },
-    { name = "craft-parts", specifier = ">=2.24.0" },
+    { name = "craft-parts", git = "https://github.com/canonical/craft-parts?rev=work%2FCRAFT-4804-More-robust-chroot-unmounting" },
     { name = "craft-platforms", specifier = ">=0.10.0" },
     { name = "craft-providers", specifier = ">=3.1.0" },
     { name = "craft-store", marker = "extra == 'store'" },
