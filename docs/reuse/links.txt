@@ -1,5 +1,5 @@
-.. _Charmcraft: https://juju.is/docs/sdk/charmcraft
-.. _Chisel: https://github.com/canonical/chisel
+.. _Charmcraft: https://documentation.ubuntu.com/charmcraft/
+.. _Chisel: https://documentation.ubuntu.com/chisel/
 .. _`Chisel releases`: https://github.com/canonical/chisel-releases
 .. _Docker: https://docs.docker.com/
 .. _`OCI archive format`: https://github.com/opencontainers/image-spec/blob/main/layer.md#distributable-format
@@ -8,9 +8,9 @@
 .. _`OCI entrypoint`: https://specs.opencontainers.org/image-spec/config/?v=v1.0.1#properties
 .. _`OCI CMD`: https://specs.opencontainers.org/image-spec/config/?v=v1.0.1#properties
 .. _LXD: https://canonical.com/lxd
-.. _Multipass: https://multipass.run/docs
+.. _Multipass: https://documentation.ubuntu.com/multipass
 .. _`Open Container Initiative`: https://opencontainers.org/
 .. _skopeo: https://github.com/containers/skopeo
-.. _Snapcraft: https://snapcraft.io/docs/snapcraft-overview
+.. _Snapcraft: https://documentation.ubuntu.com/snapcraft/
 
 .. Potentially use a glossary to create indirect references to explanations.

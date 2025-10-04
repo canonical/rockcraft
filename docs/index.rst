@@ -63,7 +63,7 @@ Rockcraft is a member of the Canonical family. It's an open source project
 that warmly welcomes community projects, contributions, suggestions, fixes
 and constructive feedback.
 
-* `Ubuntu Rocks Discourse <https://discourse.ubuntu.com/c/rocks/117>`_
+* `Ubuntu Rocks Discourse <https://discourse.ubuntu.com/c/project/rocks/117>`_
 * `Rocks Community on Matrix <https://matrix.to/#/#rocks:ubuntu.com>`_
 * `Ubuntu Code of Conduct <https://ubuntu.com/community/docs/ethos/code-of-conduct>`_
 * `Canonical Contributor License Agreement

@@ -99,7 +99,6 @@ and :literalref:`@tigarmo<https://github.com/tigarmo>`.
 
 
 .. _Gradle: https://gradle.org/
-.. _LXD: https://canonical.com/lxd
 .. _Rust: https://doc.rust-lang.org/stable/
-.. _Spread: https://github.com/snapcore/spread
+.. _Spread: https://github.com/canonical/spread
 .. _cargo registry: https://doc.rust-lang.org/cargo/reference/registries.html

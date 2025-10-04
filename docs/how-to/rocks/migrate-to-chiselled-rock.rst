@@ -4,7 +4,7 @@ Migrate a popular Docker image to a chiselled rock
 Prerequisites
 -------------
 - snap enabled system (https://snapcraft.io)
-- LXD installed (https://linuxcontainers.org/lxd/getting-started-cli/)
+- LXD installed (https://documentation.ubuntu.com/lxd/)
 - skopeo installed (https://github.com/containers/skopeo).
   Skopeo will also be automatically installed as a Rockcraft dependency
 - Docker installed (https://snapcraft.io/docker)
@@ -143,7 +143,7 @@ Note the subtle chiselling of the .NET Runtime package in ``rockcraft.yaml``.
 You are requesting Rockcraft to install the ``libs`` slice of the
 ``dotnet-runtime`` deb, which is defined in the
 `ubuntu-22.04 Chisel release
-<https://github.com/canonical/chisel-releases/blob/ubuntu-22.04/slices/>`_.
+<https://github.com/canonical/chisel-releases/tree/ubuntu-22.04/slices/>`_.
 
 
 Pack the Chiselled Rock with Rockcraft
