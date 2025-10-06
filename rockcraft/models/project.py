@@ -81,12 +81,18 @@ class Project(BaseProject):
 
     # Type of summary is Optional[str] in BaseProject
     summary: str  # type: ignore[reportIncompatibleVariableOverride]
-    """A short summary describing the rock."""
+    """A short description of the rock.
+    
+    The description must be one line.
+    """
     description: str  # type: ignore[reportIncompatibleVariableOverride]
-    """A longer, possibly multi-line description of the rock."""
+    """The full description of the project, describing in full what the rock is 
+    for and who may find it useful.
+    
+    The string can be one line or multi-line.
+    """
     environment: dict[str, str] | None = None
-    """A set of key-value pairs specifying the environment variables to be added
-    to the base image's OCI environment.
+    """Additional environment variables for the base image's OCI environment.
     """
     run_user: _RunUser = None
     """The default OCI user. It must be a supported shared user. Currently, the only
@@ -94,7 +100,7 @@ class Project(BaseProject):
     If not specified, the user ``root`` (UID/GID 0) will be used.
     """
     services: dict[str, Service] | None = None
-    """Follows the Pebble :external+pebble:doc:`reference/layer-specification`.
+    """A mapping of Pebble services for the rock`.
 
     A mapping of ``name: service`` for the Pebble entrypoint. It uses Pebble's layer
     specification syntax, with each entry defining a Pebble service. For
