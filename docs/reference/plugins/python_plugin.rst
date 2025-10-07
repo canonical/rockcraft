@@ -3,7 +3,7 @@
 
 .. admonition:: Legacy plugin
 
-    This plugin is superceded by the modern :doc:`python_v2_plugin`.
+    This plugin is superseded by the modern :doc:`python_v2_plugin`.
 
     It is selected by default when building with the ``ubuntu@25.04`` base or older.
 
