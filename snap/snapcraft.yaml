@@ -51,7 +51,6 @@ parts:
       - apt-transport-https
       - apt-utils
       - binutils
-      - fuse-overlayfs
       - gpg
       - gpgv
       - libpython3-stdlib
@@ -66,8 +65,22 @@ parts:
       - python3-minimal
       - python3-pkg-resources
       - python3.12-minimal
+
+  # Build our own version of fuse-overlayfs due to https://github.com/containers/fuse-overlayfs/issues/429
+  # The apt and Launchpad repositories as of 23/07/25 do not have a sufficiently new version to get this patch
+  fuse-overlayfs:
+    source: https://github.com/containers/fuse-overlayfs.git
+    source-tag: v1.15
+    plugin: autotools
+    build-attributes:
+      - enable-patchelf
+    build-packages:
+      - libfuse3-dev
+      - pkgconf
+    stage-packages:
+      - libfuse3-3
     organize:
-      "usr/bin/fuse-overlayfs": "libexec/rockcraft/fuse-overlayfs"
+      "usr/local/bin/fuse-overlayfs": "libexec/rockcraft/fuse-overlayfs"
 
   rockcraft-scripts:
     source: ./snap/local
