@@ -29,6 +29,7 @@ Rockcraft.
    /common/craft-parts/reference/plugins/npm_plugin
    plugins/poetry_plugin
    plugins/python_plugin
+   plugins/python_v2_plugin
    /common/craft-parts/reference/plugins/qmake_plugin
    /common/craft-parts/reference/plugins/rust_plugin
    /common/craft-parts/reference/plugins/scons_plugin
