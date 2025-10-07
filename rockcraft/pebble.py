@@ -105,14 +105,21 @@ class _BaseCheck(CraftBaseModel):
     https://canonical-pebble.readthedocs-hosted.com/en/latest/reference/layer-specification/
     """
 
-    override: Literal["merge", "replace"]
-    """Control how this check is combined with another same-named check.
+    override: Literal["merge", "replace"] = pydantic.Field(
+        description=textwrap.dedent(
+            """\
+            How this check is combined with another same-named check.
 
-    The value 'merge' will ensure that values in this layer specification are merged
-    over existing definitions, whereas 'replace' will entirely override the existing
-    check spec in the plan with the same name.
-    """
-    level: Literal["alive", "ready"] | None = None
+            The value 'merge' will ensure that values in this layer specification are
+            merged over existing definitions, whereas 'replace' will entirely override
+            the existing check spec in the plan with the same name.
+            """
+        ),
+    )
+    level: Literal["alive", "ready"] | None = pydantic.Field(
+        default=None,
+        description="Check level, used for filtering checks when calling the health endpoint.",
+    )
     """Check level, used for filtering checks when calling the health endpoint.
 
     ``ready`` implies ``alive``, and not ``alive`` implies not ``ready``,
@@ -187,57 +194,96 @@ class Service(CraftBaseModel):
     https://canonical-pebble.readthedocs-hosted.com/en/latest/reference/layer-specification/
     """
 
-    override: Literal["merge", "replace"]
-    """Control how this service definition is combined with any other pre-existing
-    definition with the same name in the Pebble plan.
+    override: Literal["merge", "replace"] = pydantic.Field(
+        description="Whether to replace pre-existing service definitions or merge them.",
+    )
+    """How this service definition is combined with another same-named service.
 
     The value ``merge`` will ensure that values in this layer specification are merged
     over existing definitions, whereas ``replace`` will entirely override an existing
     service spec in the plan with the same name.
     """
     command: str = pydantic.Field(
-        examples=["/usr/bin/ls", "/usr/bin/somedaemon --db=/db/path [ --port 8080 ]"]
+        description="The command used to run the service.",
+        examples=["/usr/bin/ls", "/usr/bin/somedaemon --db=/db/path [ --port 8080 ]"],
     )
     """The command to run the service.
+
     This command is executed directly, not interpreted by a shell. May be optionally
     suffixed by default arguments within square brackets, which may be overridden via
     pebble's ``--args`` parameter.
     """
-    summary: str | None = None
-    """A short summary of the service."""
-    description: str | None = None
-    """A detailed, potentially multi-line, description of the service."""
-    startup: Literal["enabled", "disabled"] | None = None
+    summary: str | None = pydantic.Field(
+        default=None,
+        description="A short summary of the service.",
+    )
+    description: str | None = pydantic.Field(
+        default=None,
+        description="A detailed, potentially multi-line, description of the service.",
+    )
+    startup: Literal["enabled", "disabled"] | None = pydantic.Field(
+        default=None,
+        description="Whether the service is enabled automatically when the rock starts.",
+    )
     """Whether the service is enabled automatically when the rock starts.
 
     If not provided, defaults to ``disabled``."""
-    after: list[str] | None = None
-    """The names of other services that this service should start after."""
-    before: list[str] | None = None
-    """The names of other services that this service should start before."""
-    requires: list[str] | None = None
-    """The names of other services that this service requires in order to start."""
-    environment: dict[str, str] | None = None
-    """Environment variables to set for this process."""
-    user: str | None = None
-    """Username for starting service as a different user.
+    after: list[str] | None = pydantic.Field(
+        default=None,
+        description="The names of other services that this service should start after.",
+    )
+    before: list[str] | None = pydantic.Field(
+        default=None,
+        description="The names of other services that this service should start before.",
+    )
+    requires: list[str] | None = pydantic.Field(
+        default=None,
+        description="The names of other services that this service requires in order to start.",
+    )
+    environment: dict[str, str] | None = pydantic.Field(
+        default=None,
+        description="Environment variables to set for this process.",
+    )
+    user: str | None = pydantic.Field(
+        default=None,
+        description=textwrap.dedent(
+            """\
+            Username for starting service as a different user.
 
-    It is an error if the user doesn't exist.
-    """
-    user_id: int | None = None
-    """User ID for starting service as a different user.
-    If both user and user-id are specified, the user's UID must match user-id.
-    """
-    group: str | None = None
-    """Group name for starting service as a different user.
-    It is an error if the group doesn't exist.
-    """
-    group_id: int | None = None
-    """Group ID for starting service as a different user.
-    If both group and group-id are specified, the group's GID must match group-id.
-    """
-    working_dir: str | None = None
-    """Working directory for the service command."""
+            It is an error if the user doesn't exist."""
+        ),
+    )
+    user_id: int | None = pydantic.Field(
+        default=None,
+        description=textwrap.dedent(
+            """\
+            User ID for starting service as a different user.
+
+            If both user and user-id are specified, the user's UID must match user-id.""",
+        ),
+    )
+    group: str | None = pydantic.Field(
+        default=None,
+        description=textwrap.dedent(
+            """\
+            Group name for starting service as a different user.
+
+            It is an error if the group doesn't exist.""",
+        ),
+    )
+    group_id: int | None = pydantic.Field(
+        default=None,
+        description=textwrap.dedent(
+            """\
+            Group ID for starting service as a different user.
+            If both group and group-id are specified, the group's GID must match
+            group-id.""",
+        ),
+    )
+    working_dir: str | None = pydantic.Field(
+        default=None,
+        description="Working directory for the service command.",
+    )
     on_success: Literal["restart", "shutdown", "failure-shutdown", "ignore"] | None = (
         None
     )
@@ -250,9 +296,12 @@ class Service(CraftBaseModel):
       - ``ignore``: do nothing further
     """
     on_failure: Literal["restart", "shutdown", "success-shutdown", "ignore"] | None = (
-        None
+        pydantic.Field(
+            default=None,
+            description="What to do when the service exits with an error.",
+        )
     )
-    """Defines what happens when the service exits with a nonzero exit code.
+    """What to do when the service exits with an error.
 
     Possible values are:
       - ``restart`` (default): restart the service after the backoff delay
@@ -262,8 +311,11 @@ class Service(CraftBaseModel):
     """
     on_check_failure: (
         dict[str, Literal["restart", "shutdown", "success-shutdown", "ignore"]] | None
-    ) = None
-    """Defines what happens when the service exits with a nonzero exit code.
+    ) = pydantic.Field(
+        default=None,
+        description="What to do when a health check fails.",
+    )
+    """What to do when a health check fails.
 
     Possible values are:
       - ``restart`` (default): restart the service after the backoff delay
@@ -277,23 +329,30 @@ class Service(CraftBaseModel):
         examples=["500ms", "10s"],
     )
     backoff_factor: Annotated[float, annotated_types.Ge(1.0)] | None = pydantic.Field(
-        default=None, examples=["2.0", "1.000001"]
+        default=None,
+        description="Multiplication factor for backoff delay.",
+        examples=["2.0", "1.000001"],
     )
     """Multiplication factor for backoff delay.
+
     After each backoff, the current delay is multiplied by this factor to get the next
-    backoff delay. Must be greater than or equal to 1. Default is ``2.0``.
+    backoff delay. Must be greater than or equal to 1.
     """
-    backoff_limit: str | None = None
-    """Limit for the backoff delay.
-    When multiplying by backoff-factor to get the next backoff delay, if the result is
-    greater than this value, it is capped to this value.
-    Default is ``30s``.
-    """
-    kill_delay: str | None = None
-    """The amount of time afforded to this service to handle SIGTERM and exit
-    gracefully before SIGKILL terminates it forcefully.
-    Default is ``5s``.
-    """
+    backoff_limit: str | None = pydantic.Field(
+        default=None,
+        description=textwrap.dedent(
+            """\
+            Limit for the backoff delay.
+            When multiplying by backoff-factor to get the next backoff delay, if the
+            result is greater than this value, it is capped to this value.""",
+        ),
+        examples=["30s", "1m"],
+    )
+    kill_delay: str | None = pydantic.Field(
+        default=None,
+        description="How long to wait after a SIGTERM and exit pebble uses SIGKILL.",
+        examples=["10s", "1m"],
+    )
 
 
 class Pebble:

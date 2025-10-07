@@ -7,6 +7,7 @@
       "description": "Model for a check that executes a command.",
       "properties": {
         "override": {
+          "description": "How this check is combined with another same-named check.\n\nThe value 'merge' will ensure that values in this layer specification are\nmerged over existing definitions, whereas 'replace' will entirely override\nthe existing check spec in the plan with the same name.\n",
           "enum": [
             "merge",
             "replace"
@@ -28,6 +29,7 @@
             }
           ],
           "default": null,
+          "description": "Check level, used for filtering checks when calling the health endpoint.",
           "title": "Level"
         },
         "period": {
@@ -209,6 +211,7 @@
       "description": "Model for a check that uses HTTP.",
       "properties": {
         "override": {
+          "description": "How this check is combined with another same-named check.\n\nThe value 'merge' will ensure that values in this layer specification are\nmerged over existing definitions, whereas 'replace' will entirely override\nthe existing check spec in the plan with the same name.\n",
           "enum": [
             "merge",
             "replace"
@@ -230,6 +233,7 @@
             }
           ],
           "default": null,
+          "description": "Check level, used for filtering checks when calling the health endpoint.",
           "title": "Level"
         },
         "period": {
@@ -391,6 +395,7 @@
       "description": "Lightweight schema validation for a Pebble service.\n\nBased on\nhttps://canonical-pebble.readthedocs-hosted.com/en/latest/reference/layer-specification/",
       "properties": {
         "override": {
+          "description": "Whether to replace pre-existing service definitions or merge them.",
           "enum": [
             "merge",
             "replace"
@@ -399,6 +404,7 @@
           "type": "string"
         },
         "command": {
+          "description": "The command used to run the service.",
           "examples": [
             "/usr/bin/ls",
             "/usr/bin/somedaemon --db=/db/path [ --port 8080 ]"
@@ -416,6 +422,7 @@
             }
           ],
           "default": null,
+          "description": "A short summary of the service.",
           "title": "Summary"
         },
         "description": {
@@ -428,6 +435,7 @@
             }
           ],
           "default": null,
+          "description": "A detailed, potentially multi-line, description of the service.",
           "title": "Description"
         },
         "startup": {
@@ -444,6 +452,7 @@
             }
           ],
           "default": null,
+          "description": "Whether the service is enabled automatically when the rock starts.",
           "title": "Startup"
         },
         "after": {
@@ -459,6 +468,7 @@
             }
           ],
           "default": null,
+          "description": "The names of other services that this service should start after.",
           "title": "After"
         },
         "before": {
@@ -474,6 +484,7 @@
             }
           ],
           "default": null,
+          "description": "The names of other services that this service should start before.",
           "title": "Before"
         },
         "requires": {
@@ -489,6 +500,7 @@
             }
           ],
           "default": null,
+          "description": "The names of other services that this service requires in order to start.",
           "title": "Requires"
         },
         "environment": {
@@ -504,6 +516,7 @@
             }
           ],
           "default": null,
+          "description": "Environment variables to set for this process.",
           "title": "Environment"
         },
         "user": {
@@ -516,6 +529,7 @@
             }
           ],
           "default": null,
+          "description": "Username for starting service as a different user.\n\nIt is an error if the user doesn't exist.",
           "title": "User"
         },
         "user-id": {
@@ -528,6 +542,7 @@
             }
           ],
           "default": null,
+          "description": "User ID for starting service as a different user.\n\nIf both user and user-id are specified, the user's UID must match user-id.",
           "title": "User-Id"
         },
         "group": {
@@ -540,6 +555,7 @@
             }
           ],
           "default": null,
+          "description": "Group name for starting service as a different user.\n\nIt is an error if the group doesn't exist.",
           "title": "Group"
         },
         "group-id": {
@@ -552,6 +568,7 @@
             }
           ],
           "default": null,
+          "description": "Group ID for starting service as a different user.\nIf both group and group-id are specified, the group's GID must match\ngroup-id.",
           "title": "Group-Id"
         },
         "working-dir": {
@@ -564,6 +581,7 @@
             }
           ],
           "default": null,
+          "description": "Working directory for the service command.",
           "title": "Working-Dir"
         },
         "on-success": {
@@ -600,6 +618,7 @@
             }
           ],
           "default": null,
+          "description": "What to do when the service exits with an error.",
           "title": "On-Failure"
         },
         "on-check-failure": {
@@ -621,6 +640,7 @@
             }
           ],
           "default": null,
+          "description": "What to do when a health check fails.",
           "title": "On-Check-Failure"
         },
         "backoff-delay": {
@@ -651,6 +671,7 @@
             }
           ],
           "default": null,
+          "description": "Multiplication factor for backoff delay.",
           "examples": [
             "2.0",
             "1.000001"
@@ -667,6 +688,11 @@
             }
           ],
           "default": null,
+          "description": "Limit for the backoff delay.\nWhen multiplying by backoff-factor to get the next backoff delay, if the\nresult is greater than this value, it is capped to this value.",
+          "examples": [
+            "30s",
+            "1m"
+          ],
           "title": "Backoff-Limit"
         },
         "kill-delay": {
@@ -679,6 +705,11 @@
             }
           ],
           "default": null,
+          "description": "How long to wait after a SIGTERM and exit pebble uses SIGKILL.",
+          "examples": [
+            "10s",
+            "1m"
+          ],
           "title": "Kill-Delay"
         }
       },
@@ -694,6 +725,7 @@
       "description": "Model for a check that uses TCP.",
       "properties": {
         "override": {
+          "description": "How this check is combined with another same-named check.\n\nThe value 'merge' will ensure that values in this layer specification are\nmerged over existing definitions, whereas 'replace' will entirely override\nthe existing check spec in the plan with the same name.\n",
           "enum": [
             "merge",
             "replace"
@@ -715,6 +747,7 @@
             }
           ],
           "default": null,
+          "description": "Check level, used for filtering checks when calling the health endpoint.",
           "title": "Level"
         },
         "period": {
@@ -10962,14 +10995,17 @@
       "title": "Version"
     },
     "summary": {
+      "description": "A short, single line description of the rock.",
       "title": "Summary",
       "type": "string"
     },
     "description": {
+      "description": "A full description of the rock, including potentially multiple paragraphs.\n\nThe description should say in full what the rock is for and who may find it\nuseful.\n",
       "title": "Description",
       "type": "string"
     },
     "base": {
+      "description": "The base system image for the rock.\n\nThis is also the system that will be mounted and made available when using\nOverlays. The special value ``bare`` means that the rock will have no base\nsystem at all, which is typically used with static binaries or Chisel\nslices.",
       "enum": [
         "bare",
         "ubuntu@20.04",
@@ -10997,6 +11033,7 @@
         }
       ],
       "default": null,
+      "description": "The system used to build the rock.",
       "title": "Build-Base"
     },
     "platforms": {
@@ -11203,6 +11240,7 @@
         }
       ],
       "default": null,
+      "description": "Additional environment variables for the base image's OCI environment.",
       "title": "Environment"
     },
     "run-user": {
@@ -11216,6 +11254,7 @@
         }
       ],
       "default": null,
+      "description": "The default OCI user (uses root if not defined).",
       "title": "Run-User"
     },
     "services": {
@@ -11231,6 +11270,7 @@
         }
       ],
       "default": null,
+      "description": "Services to run in the rock, using Pebble's layer specification syntax.\n\nMore details are available in the rockcraft documentation:\nhttps://documentation.ubuntu.com/rockcraft/stable/reference/rockcraft.yaml\n",
       "title": "Services"
     },
     "checks": {
@@ -11256,7 +11296,7 @@
         }
       ],
       "default": null,
-      "description": "Health checks for this service.",
+      "description": "Health checks for this rock.",
       "title": "Checks"
     },
     "entrypoint-service": {
@@ -11269,7 +11309,7 @@
         }
       ],
       "default": null,
-      "description": "The optional name of the Pebble service to serve as the entrypoint.",
+      "description": "The optional name of the Pebble service to serve as the entrypoint.\n\nMutually exclusive with `entrypoint-command`.",
       "examples": [
         "my-service"
       ],
@@ -11285,7 +11325,7 @@
         }
       ],
       "default": null,
-      "description": "Replaces the rock's default Pebble OCI entrypoint and CMD properties.",
+      "description": "Overrides the rock's default Pebble OCI entrypoint and CMD properties.\n\nThis operation will result in a rock with an atypical OCI Entrypoint. While that might be acceptable for testing and personal use, it shall require prior approval before submitting to a Canonical registry namespace.\n\nMutually exclusive with `entrypoint-service`.",
       "examples": [
         "echo [ Hello ]"
       ],
