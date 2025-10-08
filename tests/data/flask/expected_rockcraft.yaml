@@ -1,3 +1,6 @@
+# See https://documentation.ubuntu.com/rockcraft/en/latest/reference/extensions/flask-framework
+# For questions or help, visit https://matrix.to/#/#12-factor-charms:ubuntu.com
+
 name: test-name
 # see https://documentation.ubuntu.com/rockcraft/en/latest/explanation/bases/
 # for more information about bases and using 'bare' bases for chiselled rocks
