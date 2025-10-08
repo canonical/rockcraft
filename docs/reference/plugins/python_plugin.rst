@@ -3,11 +3,12 @@
 
 .. admonition:: Legacy plugin
 
-    This plugin is superseded by the modern :doc:`python_v2_plugin`.
+    This reference is for the **Python (v1)** plugin, which is used on base
+    ``ubuntu@25.04`` or lower.
 
-    It is selected by default when building with the ``ubuntu@25.04`` base or older.
-
-    For more information, see <LINK-TO-USRMERGE-EXPLANATION>.
+    For the modern version, see :doc:`python_v2_plugin`. For an explanation of why
+    there are two different versions of this plugin, see
+    <LINK-TO-USRMERGE-EXPLANATION>.
 
 .. include:: /common/craft-parts/reference/plugins/python_plugin.rst
     :start-after: .. _craft_parts_python_plugin-keywords:
