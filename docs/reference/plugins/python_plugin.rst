@@ -4,7 +4,7 @@
 .. admonition:: Legacy plugin
 
     This reference is for the **Python (v1)** plugin, which applies to base
-    ``ubuntu@25.04`` or lower.
+    ``ubuntu@24.04`` or lower.
 
     For base ``ubuntu@25.10`` and newer, Python parts build with
     :doc:`python_v2_plugin`. For an explanation of why there are two different versions
