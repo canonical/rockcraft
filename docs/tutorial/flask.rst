@@ -302,7 +302,7 @@ in a much smaller rock with a reduced attack surface.
     development tooling (such as for debugging).
 
 The first step towards chiselling the rock is to ensure we are using a
-``bare`` :ref:`base <bases_explanation>`.
+``bare`` :ref:`base <explanation-bases>`.
 In the project file, change the ``base`` to ``bare`` and add
 ``build-base: ubuntu@22.04``:
 
