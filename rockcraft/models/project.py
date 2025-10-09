@@ -17,7 +17,6 @@
 """Project definition and helpers."""
 
 import re
-import textwrap
 import typing
 from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any, Literal
@@ -118,11 +117,8 @@ class Project(BaseProject):
     )
     entrypoint_service: str | None = pydantic.Field(
         default=None,
-        description=textwrap.dedent(
-            """\
-            The optional name of the Pebble service to serve as the entrypoint.
-
-            Mutually exclusive with `entrypoint-command`.""",
+        description=(
+            "The optional name of the Pebble service to serve as the entrypoint."
         ),
         examples=["my-service"],
     )
@@ -138,13 +134,8 @@ class Project(BaseProject):
     entrypoint_command: str | None = pydantic.Field(
         default=None,
         examples=["echo [ Hello ]"],
-        description=textwrap.dedent(
-            f"""\
-            Overrides the rock's default Pebble OCI entrypoint and CMD properties.
-
-            {MESSAGE_ENTRYPOINT_CHANGED}
-
-            Mutually exclusive with `entrypoint-service`.""",
+        description=(
+            "Overrides the rock's default Pebble OCI entrypoint and CMD properties."
         ),
     )
     """Overrides the rock's default Pebble OCI ``entrypoint`` and ``CMD`` properties.

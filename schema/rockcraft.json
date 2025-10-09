@@ -7,7 +7,7 @@
       "description": "Model for a check that executes a command.",
       "properties": {
         "override": {
-          "description": "How this check is combined with another same-named check.\n\nThe value 'merge' will ensure that values in this layer specification are\nmerged over existing definitions, whereas 'replace' will entirely override\nthe existing check spec in the plan with the same name.\n",
+          "description": "How this check is combined with another same-named check.",
           "enum": [
             "merge",
             "replace"
@@ -113,7 +113,7 @@
             }
           ],
           "default": null,
-          "description": "Run the command in the context of this service.\nInherits the service's environment variables, user, group and working\ndirectory. The check's context will override the service's.\n",
+          "description": "Run the check as the given service's user and group, with that service's working directory and environment variables set.",
           "title": "Service-Context"
         },
         "environment": {
@@ -211,7 +211,7 @@
       "description": "Model for a check that uses HTTP.",
       "properties": {
         "override": {
-          "description": "How this check is combined with another same-named check.\n\nThe value 'merge' will ensure that values in this layer specification are\nmerged over existing definitions, whereas 'replace' will entirely override\nthe existing check spec in the plan with the same name.\n",
+          "description": "How this check is combined with another same-named check.",
           "enum": [
             "merge",
             "replace"
@@ -529,7 +529,7 @@
             }
           ],
           "default": null,
-          "description": "Username for starting service as a different user.\n\nIt is an error if the user doesn't exist.",
+          "description": "Run the service as this user.",
           "title": "User"
         },
         "user-id": {
@@ -542,7 +542,7 @@
             }
           ],
           "default": null,
-          "description": "User ID for starting service as a different user.\n\nIf both user and user-id are specified, the user's UID must match user-id.",
+          "description": "Run the service with this user ID.",
           "title": "User-Id"
         },
         "group": {
@@ -555,7 +555,7 @@
             }
           ],
           "default": null,
-          "description": "Group name for starting service as a different user.\n\nIt is an error if the group doesn't exist.",
+          "description": "Run the service as this group.",
           "title": "Group"
         },
         "group-id": {
@@ -568,7 +568,7 @@
             }
           ],
           "default": null,
-          "description": "Group ID for starting service as a different user.\nIf both group and group-id are specified, the group's GID must match\ngroup-id.",
+          "description": "Run the service with this group ID.",
           "title": "Group-Id"
         },
         "working-dir": {
@@ -688,7 +688,7 @@
             }
           ],
           "default": null,
-          "description": "Limit for the backoff delay.\nWhen multiplying by backoff-factor to get the next backoff delay, if the\nresult is greater than this value, it is capped to this value.",
+          "description": "Maximum backoff delay.",
           "examples": [
             "30s",
             "1m"
@@ -725,7 +725,7 @@
       "description": "Model for a check that uses TCP.",
       "properties": {
         "override": {
-          "description": "How this check is combined with another same-named check.\n\nThe value 'merge' will ensure that values in this layer specification are\nmerged over existing definitions, whereas 'replace' will entirely override\nthe existing check spec in the plan with the same name.\n",
+          "description": "How this check is combined with another same-named check.",
           "enum": [
             "merge",
             "replace"
@@ -11309,7 +11309,7 @@
         }
       ],
       "default": null,
-      "description": "The optional name of the Pebble service to serve as the entrypoint.\n\nMutually exclusive with `entrypoint-command`.",
+      "description": "The optional name of the Pebble service to serve as the entrypoint.",
       "examples": [
         "my-service"
       ],
@@ -11325,7 +11325,7 @@
         }
       ],
       "default": null,
-      "description": "Overrides the rock's default Pebble OCI entrypoint and CMD properties.\n\nThis operation will result in a rock with an atypical OCI Entrypoint. While that might be acceptable for testing and personal use, it shall require prior approval before submitting to a Canonical registry namespace.\n\nMutually exclusive with `entrypoint-service`.",
+      "description": "Overrides the rock's default Pebble OCI entrypoint and CMD properties.",
       "examples": [
         "echo [ Hello ]"
       ],

@@ -16,7 +16,6 @@
 
 """Pebble metadata and configuration helpers."""
 
-import textwrap
 from collections.abc import Mapping
 from pathlib import Path
 from typing import Annotated, Any, Literal
@@ -67,14 +66,17 @@ class ExecCheckOptions(CraftBaseModel):
     )
     service_context: str | None = pydantic.Field(
         default=None,
-        description=textwrap.dedent(
-            """\
-                Run the command in the context of this service.
-                Inherits the service's environment variables, user, group and working
-                directory. The check's context will override the service's.
-            """
+        description=(
+            "Run the check as the given service's user and group, with that service's "
+            "working directory and environment variables set."
         ),
     )
+    """Run the check in the context of the given service.
+
+    Inherits the service's environment variables, user, group and working directory.
+
+    Any values specified on the check directly will override that service context.
+    """
     environment: dict[str, str] | None = pydantic.Field(
         default=None,
         description="A mapping of environment variables with which to run the check.",
@@ -106,16 +108,13 @@ class _BaseCheck(CraftBaseModel):
     """
 
     override: Literal["merge", "replace"] = pydantic.Field(
-        description=textwrap.dedent(
-            """\
-            How this check is combined with another same-named check.
-
-            The value 'merge' will ensure that values in this layer specification are
-            merged over existing definitions, whereas 'replace' will entirely override
-            the existing check spec in the plan with the same name.
-            """
-        ),
+        description="How this check is combined with another same-named check.",
     )
+    """How this check is combined with another same-named check.
+
+    The value 'merge' will ensure that values in this layer specification are
+    merged over existing definitions, whereas 'replace' will entirely override
+    the existing check spec in the plan with the same name."""
     level: Literal["alive", "ready"] | None = pydantic.Field(
         default=None,
         description="Check level, used for filtering checks when calling the health endpoint.",
@@ -246,40 +245,36 @@ class Service(CraftBaseModel):
     )
     user: str | None = pydantic.Field(
         default=None,
-        description=textwrap.dedent(
-            """\
-            Username for starting service as a different user.
-
-            It is an error if the user doesn't exist."""
-        ),
+        description="Run the service as this user.",
     )
+    """Run the service as the given user.
+
+    The user must exist in the rock or this will cause a runtime failure.
+    """
     user_id: int | None = pydantic.Field(
-        default=None,
-        description=textwrap.dedent(
-            """\
-            User ID for starting service as a different user.
-
-            If both user and user-id are specified, the user's UID must match user-id.""",
-        ),
+        default=None, description="Run the service with this user ID."
     )
+    """Run the service with this user ID.
+
+    If both ``user-id`` and ``user`` are provided, they must refer to the same user.
+    The user ID must exist in the rock or this will cause a runtime failure.
+    """
     group: str | None = pydantic.Field(
         default=None,
-        description=textwrap.dedent(
-            """\
-            Group name for starting service as a different user.
+        description="Run the service as this group.",
+    )
+    """Run the service with the group ID of the given group.
 
-            It is an error if the group doesn't exist.""",
-        ),
-    )
+    The group must exist in the rock or this will cause a runtime failure.
+    """
     group_id: int | None = pydantic.Field(
-        default=None,
-        description=textwrap.dedent(
-            """\
-            Group ID for starting service as a different user.
-            If both group and group-id are specified, the group's GID must match
-            group-id.""",
-        ),
+        default=None, description="Run the service with this group ID."
     )
+    """Run the service with this group ID.
+
+    If both ``group-id`` and ``group`` are provided, they must refer to the same group.
+    The group ID must exist in the rock or this will cause a runtime failure.
+    """
     working_dir: str | None = pydantic.Field(
         default=None,
         description="Working directory for the service command.",
@@ -340,14 +335,17 @@ class Service(CraftBaseModel):
     """
     backoff_limit: str | None = pydantic.Field(
         default=None,
-        description=textwrap.dedent(
-            """\
-            Limit for the backoff delay.
-            When multiplying by backoff-factor to get the next backoff delay, if the
-            result is greater than this value, it is capped to this value.""",
-        ),
+        description="Maximum backoff delay.",
         examples=["30s", "1m"],
     )
+    """Maximum backoff delay.
+
+    When multiplying by ``backoff-factor`` to get the next ``backoff-delay``, if the
+    result is greater than this value, it is capped to this value.
+
+    For example, a service with ``backoff-delay`` of 2s, ``backoff-factor`` of 2 and
+    ``backoff-limit`` of 5s will delay for 2 seconds, then 4 seconds, then 5 seconds.
+    """
     kill_delay: str | None = pydantic.Field(
         default=None,
         description="How long to wait after a SIGTERM and exit pebble uses SIGKILL.",
