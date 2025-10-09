@@ -85,15 +85,12 @@ class Project(BaseProject):
         description="A short, single line description of the rock."
     )
     description: str = pydantic.Field(  # type: ignore[reportIncompatibleVariableOverride]
-        description=textwrap.dedent(
-            """\
-            A full description of the rock, including potentially multiple paragraphs.
-
-            The description should say in full what the rock is for and who may find it
-            useful.
-            """,
-        )
+        description="A full description of the rock, potentially including multiple paragraphs."
     )
+    """A full description of the rock, potentially including multiple paragraphs.
+
+    The description should say in full what the rock is for and who may find it useful.
+    """
     environment: dict[str, str] | None = pydantic.Field(
         default=None,
         description="Additional environment variables for the base image's OCI environment.",
@@ -108,14 +105,7 @@ class Project(BaseProject):
     """
     services: dict[str, Service] | None = pydantic.Field(
         default=None,
-        description=textwrap.dedent(
-            """\
-            Services to run in the rock, using Pebble's layer specification syntax.
-
-            More details are available in the rockcraft documentation:
-            https://documentation.ubuntu.com/rockcraft/stable/reference/rockcraft.yaml
-            """,
-        ),
+        description="Services to run in the rock, using Pebble's layer specification syntax.",
     )
     """Services to run in the rock.
 
@@ -166,15 +156,7 @@ class Project(BaseProject):
     Mutually exclusive with ``entrypoint-service``.
     """
     base: BaseT = pydantic.Field(  # type: ignore[reportIncompatibleVariableOverride]
-        description=textwrap.dedent(
-            """\
-            The base system image for the rock.
-
-            This is also the system that will be mounted and made available when using
-            Overlays. The special value ``bare`` means that the rock will have no base
-            system at all, which is typically used with static binaries or Chisel
-            slices.""",
-        ),
+        description="The base system image for the rock.",
     )
     """
     The base system image that the rock's contents will be layered on. This is also
