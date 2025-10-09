@@ -238,7 +238,7 @@ and then adapt it to your needs. For example:
                user: _daemon_
            ...
 
-      To limit to 1024 the maximum number of pending connections in ``Gunicorn``, add the following
+      To limit the maximum number of pending connections in ``Gunicorn`` to 1024, add the following
       lines to ``rockcraft.yaml``.
 
       .. code-block:: yaml
