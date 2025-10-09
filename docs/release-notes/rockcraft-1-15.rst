@@ -53,26 +53,26 @@ Support for interim Ubuntu bases
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Rockcraft now supports packing rocks targeting interim Ubuntu bases, starting with
-``ubuntu@25.10``. Since this version of Ubuntu is still in development, use of this base
-requires the use of the ``devel`` ``build-base`` to acknowledge that the base is
-unstable.
+``ubuntu@25.10``. Since this version of Ubuntu is in development at time of 
+release, to select this base you must also set ``build-base: devel``.
 
 Improved support for unmaintained bases
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Packing rocks with Ubuntu bases that have reached the end of their standard support
-now requires that the user acknowledge that the base is unmaintained. This includes base
-``ubuntu@20.04``, whose standard support ended on May 31st, 2025.
+When you pack rocks with Ubuntu bases that have reached the end of their standard 
+support, you must now acknowledge that the base is unmaintained. At the time of 
+release, this affects the ``ubuntu@20.04`` base. Standard support for it ended on 
+31 May, 2025.
 
 See <LINK TO HOWTO> for instructions on how to pack your rock under these circumstances.
 
-Improved Usrmerge support
+Improved usrmerge support
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The default plugin behavior has been updated to better interact with the "Usrmerged"
-nature of Ubuntu systems. The new behavior improves compatibility with Debian packages
-and Chisel slices and is enabled by default for Rockcraft projects with base
-``ubuntu@25.10`` and later.
+We have made strides in adapting the build process for the usrmerge implementation in 
+Ubuntu. Going forward, projects built on base ``ubuntu@25.10`` can handle usrmerge 
+conflicts better, making parts compatible with a broader share of Debian packages 
+and Chisel slices.
 
 See <LINK TO EXPLANATION> for details on the motivation for the change and ways to
 control the behavior on a per-project basis.
@@ -80,10 +80,10 @@ control the behavior on a per-project basis.
 New Python plugin
 ~~~~~~~~~~~~~~~~~
 
-The behavior of the Python plugin for Rockcraft projects with base ``ubuntu@25.10`` has
+The behavior of the Python plugin for Rockcraft projects with base ``ubuntu@25.10`` and higher has
 been significantly changed to address weaknesses in the previous implementation. The
 new plugin is largely compatible with the previous iteration but has better support for
-the Usrmerged nature of Ubuntu rocks.
+usrmerge.
 
 See <LINK TO REFERENCE> for a description of the behavior of the new plugin. This plugin
 is considered experimental while the ``ubuntu@25.10`` base is still in development.
@@ -102,13 +102,13 @@ Rockcraft 1.15 brings the following minor changes.
 Rockcraft project file
 ~~~~~~~~~~~~~~~~~~~~~~
 
-The minimum length of the ``name`` key has been updated from 3 characters to 1.
+The minimum length of the ``name`` key has been changed from 3 characters to 1.
 
 Lifecycle commands
 ~~~~~~~~~~~~~~~~~~
 
-When using the ``--debug`` option, the commands will now print the error before giving
-the user a shell into the build environment.
+When you run a lifecycle command with ``--debug``, Rockcraft will now print the error 
+before opening a shell into the build environment.
 
 ``stage-packages``
 ~~~~~~~~~~~~~~~~~~
