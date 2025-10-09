@@ -52,16 +52,16 @@ Rockcraft 1.15 brings the following features, integrations, and improvements.
 Support for interim Ubuntu bases
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Rockcraft now supports packing rocks targeting interim Ubuntu bases, starting with
-``ubuntu@25.10``. Since this version of Ubuntu is in development at time of 
+Rockcraft now supports packing rocks built with interim Ubuntu bases, starting with
+``ubuntu@25.10``. Since this version of Ubuntu is in development at time of
 release, to select this base you must also set ``build-base: devel``.
 
 Improved support for unmaintained bases
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-When you pack rocks with Ubuntu bases that have reached the end of their standard 
-support, you must now acknowledge that the base is unmaintained. At the time of 
-release, this affects the ``ubuntu@20.04`` base. Standard support for it ended on 
+When you pack rocks with Ubuntu bases that have reached the end of their standard
+support, you must now acknowledge that the base is unmaintained. At the time of
+release, this affects the ``ubuntu@20.04`` base. Standard support for it ended on
 31 May, 2025.
 
 See <LINK TO HOWTO> for instructions on how to pack your rock under these circumstances.
@@ -69,10 +69,10 @@ See <LINK TO HOWTO> for instructions on how to pack your rock under these circum
 Improved usrmerge support
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-We have made strides in adapting the build process for the usrmerge implementation in 
-Ubuntu. Going forward, projects built on base ``ubuntu@25.10`` can handle usrmerge 
-conflicts better, making parts compatible with a broader share of Debian packages 
-and Chisel slices.
+We have made strides in adapting the build process to the usrmerged filesystem commonly
+found in Linux distributions, Ubuntu included. Going forward, projects built on base
+``ubuntu@25.10`` can handle usrmerge conflicts better, making parts compatible with a
+broader share of Debian packages and Chisel slices.
 
 See <LINK TO EXPLANATION> for details on the motivation for the change and ways to
 control the behavior on a per-project basis.
@@ -80,10 +80,10 @@ control the behavior on a per-project basis.
 New Python plugin
 ~~~~~~~~~~~~~~~~~
 
-The behavior of the Python plugin for Rockcraft projects with base ``ubuntu@25.10`` and higher has
-been significantly changed to address weaknesses in the previous implementation. The
-new plugin is largely compatible with the previous iteration but has better support for
-usrmerge.
+The behavior of the Python plugin for Rockcraft projects with base ``ubuntu@25.10`` and
+higher has been significantly changed to address weaknesses in the previous
+implementation. The new plugin is largely compatible with the previous iteration but has
+better support for usrmerge.
 
 See <LINK TO REFERENCE> for a description of the behavior of the new plugin. This plugin
 is considered experimental while the ``ubuntu@25.10`` base is still in development.
@@ -107,7 +107,7 @@ The minimum length of the ``name`` key has been changed from 3 characters to 1.
 Lifecycle commands
 ~~~~~~~~~~~~~~~~~~
 
-When you run a lifecycle command with ``--debug``, Rockcraft will now print the error 
+When you run a lifecycle command with ``--debug``, Rockcraft will now print the error
 before opening a shell into the build environment.
 
 ``stage-packages``
@@ -137,15 +137,15 @@ Contributors
 We would like to express a big thank you to all the people who contributed to
 this release.
 
-:literalref:`@alesancor1<https://github.com/alesancor1>`,
-:literalref:`@bepri<https://github.com/bepri>`,
-:literalref:`@cjdcordeiro<https://github.com/cjdcordeiro>`,
-:literalref:`@erinecon<https://github.com/erinecon>`,
-:literalref:`@jahn-junior<https://github.com/jahn-junior>`,
-:literalref:`@javierdelapuente<https://github.com/javierdelapuente>`,
-:literalref:`@lengau<https://github.com/lengau>`,
-:literalref:`@medubelko<https://github.com/medubelko>`,
-:literalref:`@tigarmo<https://github.com/tigarmo>`,
-and :literalref:`@upils<https://github.com/upils>`.
+:literalref:`@alesancor1 <https://github.com/alesancor1>`,
+:literalref:`@bepri <https://github.com/bepri>`,
+:literalref:`@cjdcordeiro <https://github.com/cjdcordeiro>`,
+:literalref:`@erinecon <https://github.com/erinecon>`,
+:literalref:`@jahn-junior <https://github.com/jahn-junior>`,
+:literalref:`@javierdelapuente <https://github.com/javierdelapuente>`,
+:literalref:`@lengau <https://github.com/lengau>`,
+:literalref:`@medubelko <https://github.com/medubelko>`,
+:literalref:`@tigarmo <https://github.com/tigarmo>`,
+and :literalref:`@upils <https://github.com/upils>`.
 
 .. _CONTRIBUTING.md: https://github.com/canonical/rockcraft/blob/main/CONTRIBUTING.md
