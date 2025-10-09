@@ -265,7 +265,7 @@ and then adapt it to your needs. For example:
                user: _daemon_
                working-dir: /app
 
-      To limit to 1024 the maximum number of pending connections in ``uvicorn``, add the following
+      To limit the maximum number of pending connections in ``uvicorn`` to 1024, add the following
       lines to ``rockcraft.yaml``.
 
       .. code-block:: yaml
