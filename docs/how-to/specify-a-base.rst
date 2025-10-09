@@ -36,7 +36,7 @@ If you want to precisely control what's included in your rock and exclude the ba
 Ubuntu system, specify the bare base.
 
 Even with the bare base, Rockcraft needs the software in an Ubuntu image to pack the
-rock. This base is known as the *build* base. You must also set the special
+rock. This software is included as the *build base*. You must also set the special
 ``build-base`` key to an Ubuntu release.
 
 Declare the bare base and its build base with:
@@ -59,8 +59,8 @@ short-lived, meant for testing software during an interim base's comparatively s
 nine-month lifecycle, or that it was extremely long-lived, and persisted past the
 support window of its LTS base.
 
-If you try and build a rock on an unmaintained base, even if it first built when the
-base was supported, Rockcraft will by default halt the build.
+If you try and build a rock on an unmaintained base, even if it previously built when
+the base was supported, Rockcraft will halt the build by default.
 
 If you know the risks of unmaintained bases, you can force the build to continue with:
 
