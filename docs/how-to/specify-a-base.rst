@@ -11,9 +11,13 @@ Bases are either an :ref:`Ubuntu LTS or interim release
 <explanation-bases-lts-and-interim-bases>`, or the :ref:`bare base
 <explanation-bases-bare-bases>`.
 
+For less stable rocks, you must also specify the software base used to assemble the
+rock, which is separate from what's included in the rock. This is known as the *build
+base*.
 
-Ubuntu LTS and interim bases
-----------------------------
+
+For stable rocks
+----------------
 
 Specify an Ubuntu base with:
 
@@ -29,20 +33,19 @@ If instead you need access to the features and packages of an interim Ubuntu bas
 declare the interim release.
 
 
-Bare base
----------
+For lean rocks
+--------------
 
 If you want to precisely control what's included in your rock and exclude the baseline
 Ubuntu system, specify the bare base.
 
 Even with the bare base, Rockcraft needs the software in an Ubuntu image to pack the
-rock. This software is included as the *build base*. You must also set the special
-``build-base`` key to an Ubuntu release.
+rock, so you must set the build base to an Ubuntu release.
 
 Declare the bare base and its build base with:
 
 .. code-block:: yaml
-    :caption: snapcraft.yaml
+    :caption: rockcraft.yaml
 
     base: bare
     build-base: ubuntu@<version>
@@ -51,8 +54,8 @@ Your rock's contents might have dependencies that would normally be available in
 Ubuntu base. If they do, include them in your rock's parts.
 
 
-Unmaintained bases
-------------------
+For legacy rocks
+----------------
 
 Over time, a rock's base will reach its end-of-life. It could be that the rock was
 short-lived, meant for testing software during an interim base's comparatively short
@@ -67,3 +70,16 @@ If you know the risks of unmaintained bases, you can force the build to continue
 .. code-block:: bash
 
     rockcraft pack --ignore=unmaintained
+
+
+For experimental rocks
+----------------------
+
+In the weeks leading up to a new Ubuntu version, the unfinished release is available as
+a test base. Build on a test base by selecting it and the development build base:
+
+.. code-block:: yaml
+    :caption: rockcraft.yaml
+
+    base: ubuntu@64.04
+    build-base: devel
