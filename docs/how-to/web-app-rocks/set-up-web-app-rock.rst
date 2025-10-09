@@ -341,9 +341,7 @@ and then adapt it to your needs. For example:
                user: _daemon_
                working-dir: /app
 
-      To enable a debug mode with a flag, add the following lines
-      
-      to ``rockcraft.yaml``.
+      To enable a debug mode with a flag, add the following lines to ``rockcraft.yaml``.
 
       .. code-block:: yaml
          :caption: rockcraft.yaml
