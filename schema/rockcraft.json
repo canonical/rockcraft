@@ -11000,12 +11000,12 @@
       "type": "string"
     },
     "description": {
-      "description": "A full description of the rock, including potentially multiple paragraphs.\n\nThe description should say in full what the rock is for and who may find it\nuseful.\n",
+      "description": "A full description of the rock, potentially including multiple paragraphs.",
       "title": "Description",
       "type": "string"
     },
     "base": {
-      "description": "The base system image for the rock.\n\nThis is also the system that will be mounted and made available when using\nOverlays. The special value ``bare`` means that the rock will have no base\nsystem at all, which is typically used with static binaries or Chisel\nslices.",
+      "description": "The base system image for the rock.",
       "enum": [
         "bare",
         "ubuntu@20.04",
@@ -11270,7 +11270,7 @@
         }
       ],
       "default": null,
-      "description": "Services to run in the rock, using Pebble's layer specification syntax.\n\nMore details are available in the rockcraft documentation:\nhttps://documentation.ubuntu.com/rockcraft/stable/reference/rockcraft.yaml\n",
+      "description": "Services to run in the rock, using Pebble's layer specification syntax.",
       "title": "Services"
     },
     "checks": {
