@@ -1,7 +1,7 @@
-.. _add_internal_user_to_a_rock:
+.. _how-to-add-an-internal-user:
 
-How to add a new internal user to a rock
-*****************************************
+Add an internal user
+====================
 
 You can declare :ref:`run-user <rockcraft_yaml_run_user>` in a rock's project
 file to specify which user you want to run a its services with. If you don't

@@ -1,7 +1,10 @@
 .. _how-to-documentation:
 
-.. toctree::
-   :maxdepth: 1
+Documentation
+=============
 
-   Contribute to Rockcraft documentation <contribute-docs>
-   Build the documentation <build-docs>
+.. toctree::
+    :maxdepth: 1
+
+    contribute-docs
+    Build the documentation <build-docs>
