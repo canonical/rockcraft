@@ -1,7 +1,7 @@
-.. _how_to_build_docs:
+.. _how-to-build-the-documentation:
 
-How to build the documentation
-******************************
+Build the documentation
+=======================
 
 Use the provided ``Makefile`` to install the documentation requirements:
 
