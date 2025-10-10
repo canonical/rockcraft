@@ -88,12 +88,6 @@ better support for usrmerge.
 See <LINK TO REFERENCE> for a description of the behavior of the new plugin. This plugin
 is considered experimental while the ``ubuntu@25.10`` base is still in development.
 
-New ``disable-parallel`` key
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The :ref:`craft_parts_autotools_plugin` now supports the ``disable-parallel`` key to
-force builds using the plugin to run using a single job.
-
 Minor features
 --------------
 
@@ -123,6 +117,13 @@ Overlays
   project includes ``overlay-packages`` or ``overlay-script`` has been removed.
 - The detection of collisions between files coming from the overlay and from regular
   builds has been further improved.
+
+Autotools plugin
+~~~~~~~~~~~~~~~~
+
+The :ref:`craft_parts_autotools_plugin` now supports the
+:ref:`reference-part-properties-disable-parallel` key to force builds using the plugin
+to run using a single job.
 
 Documentation for 12-factor app extensions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
