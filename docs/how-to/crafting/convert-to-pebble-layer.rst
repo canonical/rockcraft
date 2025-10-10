@@ -1,5 +1,7 @@
-How to convert an entrypoint to a Pebble layer
-***********************************************
+.. _how-to-convert-an-entrypoint-to-a-pebble-layer:
+
+Convert an entrypoint to a Pebble layer
+=======================================
 
 This guide will show you how to take an existing Docker image entrypoint
 and convert it into a Pebble layer, aka the list of one or more services

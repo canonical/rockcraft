@@ -444,7 +444,7 @@ But there is a lot more to explore:
       - :external+charmcraft:ref:`Write your first Kubernetes charm for an Express app
         in Charmcraft <write-your-first-kubernetes-charm-for-a-expressjs-app>`
     * - "How do I...?"
-      - :ref:`How to manage a 12-factor app rock <manage-12-factor-app-rock>`
+      - :ref:`how-to-manage-a-12-factor-app-rock`
     * - "How do I get in touch?"
       - `Matrix channel <https://matrix.to/#/#12-factor-charms:ubuntu.com>`_
     * - "What is...?"
@@ -452,7 +452,7 @@ But there is a lot more to explore:
 
         :ref:`What is a Rock? <rocks_explanation>`
     * - "Why...?", "So what?"
-      - :external+12-factor:ref:`12-Factor app principles and support in Charmcraft
+      - :external+12factor:ref:`12-Factor app principles and support in Charmcraft
         and Rockcraft <explanation>`
 
 ----
