@@ -146,6 +146,13 @@ the following commands in your local repository to sync the submodule change:
     git submodule update --init --recursive
     git clean -ffd
 
+Documentation for bases
+~~~~~~~~~~~~~~~~~~~~~~~
+
+We've added a comprehensive guide on choosing a base for your Rockcraft projects.
+
+TODO: add the reference once PR 998 is merged
+
 Contributors
 ------------
 
