@@ -1,7 +1,7 @@
 Usrmerge
 ========
 
-Usrmerge is a collection of methods for combining the `/usr` directories in the Linux
+Usrmerge is a collection of methods for combining the /usr directories in the Linux
 filesystem hierarchy. Because there's no single cross-compatible solution recommended
 by the `Filesystem Hierarchy Standard`_, different Linux distributions have provided
 different solutions to this problem over time.
