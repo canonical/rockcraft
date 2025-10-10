@@ -206,6 +206,17 @@
       "title": "ExecCheckOptions",
       "type": "object"
     },
+    "FailureExitState": {
+      "description": "What to do on a failure exit.",
+      "enum": [
+        "restart",
+        "shutdown",
+        "success-shutdown",
+        "ignore"
+      ],
+      "title": "FailureExitState",
+      "type": "string"
+    },
     "HttpCheck": {
       "additionalProperties": false,
       "description": "Model for a check that uses HTTP.",
@@ -587,51 +598,32 @@
         "on-success": {
           "anyOf": [
             {
-              "enum": [
-                "restart",
-                "shutdown",
-                "failure-shutdown",
-                "ignore"
-              ],
-              "type": "string"
+              "$ref": "#/$defs/SuccessExitState"
             },
             {
               "type": "null"
             }
           ],
           "default": null,
-          "title": "On-Success"
+          "description": "What to do when the service exits with success."
         },
         "on-failure": {
           "anyOf": [
             {
-              "enum": [
-                "restart",
-                "shutdown",
-                "success-shutdown",
-                "ignore"
-              ],
-              "type": "string"
+              "$ref": "#/$defs/FailureExitState"
             },
             {
               "type": "null"
             }
           ],
           "default": null,
-          "description": "What to do when the service exits with an error.",
-          "title": "On-Failure"
+          "description": "What to do when the service exits with an error."
         },
         "on-check-failure": {
           "anyOf": [
             {
               "additionalProperties": {
-                "enum": [
-                  "restart",
-                  "shutdown",
-                  "success-shutdown",
-                  "ignore"
-                ],
-                "type": "string"
+                "$ref": "#/$defs/FailureExitState"
               },
               "type": "object"
             },
@@ -719,6 +711,17 @@
       ],
       "title": "Service",
       "type": "object"
+    },
+    "SuccessExitState": {
+      "description": "What to do on exit success.",
+      "enum": [
+        "restart",
+        "shutdown",
+        "failure-shutdown",
+        "ignore"
+      ],
+      "title": "SuccessExitState",
+      "type": "string"
     },
     "TcpCheck": {
       "additionalProperties": false,

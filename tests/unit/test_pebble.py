@@ -71,10 +71,12 @@ class TestPebble:
                     "summary": "mock summary",
                     "description": "mock description",
                     "services": {
-                        "mockServiceOne": Service(
-                            override="replace",
-                            command="foo",
-                            on_success="shutdown",
+                        "mockServiceOne": Service.unmarshal(
+                            {
+                                "override": "replace",
+                                "command": "foo",
+                                "on_success": "shutdown",
+                            }
                         ).marshal()
                     },
                 },
