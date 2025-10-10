@@ -12,7 +12,9 @@ Crafting
 
 The starting point of a rock is a Rockcraft project, which defines what goes into the
 rock and what machinery builds it. Once a project is complete, the rock can be packed
-either locally or remotely, and then published to an image registry.
+Every rock starts as a Rockcraft project, which defines the rock's contents and the
+machinery builds it. Once a project is complete, the rock can be packed, either locally
+or remotely, and published to an image registry.
 
 - :ref:`how-to-migrate-a-docker-image-to-a-chiselled-rock`
 - :ref:`how-to-publish-a-rock-to-a-registry`
