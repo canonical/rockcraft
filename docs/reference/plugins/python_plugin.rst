@@ -1,9 +1,16 @@
+.. _craft_parts_python_plugin:
+
+Python plugin (ubuntu@20.04)
+============================
+
+.. This starts the document immediately after the title line
 .. include:: /common/craft-parts/reference/plugins/python_plugin.rst
+    :start-after: =============
     :end-before: .. _craft_parts_python_plugin-keywords:
 
 .. admonition:: Base support
 
-    This reference is for the **Python (ubuntu20.04)** plugin, which applies to base
+    This reference is for the **Python (ubuntu@20.04)** plugin, which applies to base
     ``ubuntu@24.04`` or lower.
 
     For base ``ubuntu@25.10`` and newer, Python parts build with
