@@ -64,7 +64,8 @@ support, you must now acknowledge that the base is unmaintained. At the time of
 release, this affects the ``ubuntu@20.04`` base. Standard support for it ended on
 31 May, 2025.
 
-See <LINK TO HOWTO> for instructions on how to pack your rock under these circumstances.
+See :ref:`how-to-specify-a-base` for instructions on how to pack your rock under these
+circumstances.
 
 Improved usrmerge support
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -74,19 +75,19 @@ found in Linux distributions, Ubuntu included. Going forward, projects built on 
 ``ubuntu@25.10`` can handle usrmerge conflicts better, making parts compatible with a
 broader share of Debian packages and Chisel slices.
 
-See <LINK TO EXPLANATION> for details on the motivation for the change and ways to
-control the behavior on a per-project basis.
+See :ref:`explanation-usrmerge-implementation` for details on the motivation for the
+change and ways to control the behavior on a per-project basis.
 
 New Python plugin
 ~~~~~~~~~~~~~~~~~
 
 The behavior of the Python plugin for Rockcraft projects with base ``ubuntu@25.10`` and
 higher has been significantly changed to address weaknesses in the previous
-implementation. The new plugin is largely compatible with the previous iteration but has
-better support for usrmerge.
+implementation.
 
-See <LINK TO REFERENCE> for a description of the behavior of the new plugin. This plugin
-is considered experimental while the ``ubuntu@25.10`` base is still in development.
+The :ref:`new plugin <python_v2_plugin>` is largely compatible with the previous
+iteration but has better support for usrmerge. This plugin is considered experimental
+while the ``ubuntu@25.10`` base is still in development.
 
 Minor features
 --------------
@@ -150,9 +151,8 @@ the following commands in your local repository to sync the submodule change:
 Documentation for bases
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-We've added a comprehensive guide on choosing a base for your Rockcraft projects.
-
-TODO: add the reference once PR 998 is merged
+We've added a :ref:`comprehensive guide <how-to-specify-a-base>` on choosing a base for
+your Rockcraft projects.
 
 Contributors
 ------------
