@@ -1,7 +1,7 @@
 .. _python_v2_plugin:
 
 Python plugin (ubuntu\@25.10)
-============================
+=============================
 
 .. This starts the document immediately after the title line
 .. include:: /common/craft-parts/reference/plugins/python_v2_plugin.rst
