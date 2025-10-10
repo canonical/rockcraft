@@ -460,7 +460,7 @@ But there is a lot more to explore:
 
         :ref:`What is a Rock? <rocks_explanation>`
     * - "Why...?", "So what?"
-      - :external+12-factor:ref:`12-Factor app principles and support in Charmcraft
+      - :external+12factor:ref:`12-Factor app principles and support in Charmcraft
         and Rockcraft <explanation>`
 
 ----
