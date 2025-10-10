@@ -70,4 +70,4 @@ of the ``go-framework/assets`` part:
 Useful links
 ============
 
-- :ref:`build-a-rock-for-a-go-application`
+- :ref:`tutorial-build-a-rock-for-a-go-app`
