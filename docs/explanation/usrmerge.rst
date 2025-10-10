@@ -1,11 +1,11 @@
-.. _explanation-usrmerge:
+.. _explanation-usrmerge-implementation:
 
 Usrmerge implementation
 =======================
 
 Usrmerge is a collection of methods for combining the ``/usr`` directories in the Linux
 filesystem hierarchy. Because there's no single cross-compatible solution recommended
-by the `Filesystem Hierarchy Standard <https://refspecs.linuxfoundation.org/FHS_3.0/fhs/index.html>`,
+by the `Filesystem Hierarchy Standard <https://refspecs.linuxfoundation.org/FHS_3.0/fhs/index.html>`_,
 different Linux distributions have provided different solutions to this problem over
 time.
 
