@@ -97,10 +97,10 @@ class Project(BaseProject):
     run_user: _RunUser = pydantic.Field(
         default=None, description="The default OCI user (uses root if not defined)."
     )
-    """The default OCI user Must be a shared user.
+    """The default OCI user. Must be a shared user.
 
-    Currently, the only supported shared user is ``_daemon_`` (with UID/GID 584792).
-    If not specified, the user ``root`` (UID/GID 0) will be used.
+    Currently, the only supported shared user is ``_daemon_`` (UID/GID 584792).
+    If unset, the user ``root`` (UID/GID 0) is selected as the default OCI user.
     """
     services: dict[str, Service] | None = pydantic.Field(
         default=None,
@@ -140,19 +140,19 @@ class Project(BaseProject):
     )
     """Overrides the rock's default Pebble OCI ``entrypoint`` and ``CMD`` properties.
 
-    The value can be suffixed with default entrypoint arguments, using the same square
-    bracket list delimiters (``[]``) as the Pebble service command.
-    If provided, these default entrypoint arguments become the rock's OCI CMD.
+    The value can be suffixed with default entrypoint arguments using square
+    brackets (``[]``). These entrypoint arguments become the rock's OCI CMD.
 
-    Mutually exclusive with ``entrypoint-service``.
+    This key is mutually incompatible with ``entrypoint-service``.
     """
     base: BaseT = pydantic.Field(  # type: ignore[reportIncompatibleVariableOverride]
         description="The base system image for the rock.",
     )
     """
-    The base system image that the rock's contents will be layered on. This is also
-    the system that will be mounted and made available when using Overlays. The
-    special value ``bare`` means that the rock will have no base system at all,
+    The base system image that the rock's contents will be layered on.
+    
+    This system is mounted and made available when using overlays. The
+    special value ``bare`` means that the rock will have no base system,
     which is typically used with static binaries or
     :ref:`Chisel slices <chisel_explanation>`.
     """
@@ -160,10 +160,13 @@ class Project(BaseProject):
         default=None, description="The system used to build the rock."
     )
     """The system and version that will be used during the rock's build, but not
-    included in the final rock itself. It comprises the set of tools and libraries
-    that Rockcraft will use when building the rock's contents. This key is
-    mandatory if ``base`` is ``bare``, but otherwise it is optional and defaults to
-    the value of ``base``.
+    included in the final rock itself.
+    
+    The build base comprises the set of tools and libraries
+    that Rockcraft uses when building the rock's contents.
+    
+    This key is mandatory if ``base`` is ``bare``. Otherwise, it is optional and
+    defaults to the value of ``base``.
     """
 
     model_config = pydantic.ConfigDict(
