@@ -595,5 +595,4 @@ your changes are not taking effect (e.g. the ``/time/``
 404), try running ``rockcraft clean`` and pack the rock again with
 ``rockcraft pack``.
 
-.. _`lxd-docker-connectivity-issue`: https://documentation.ubuntu.com/lxd/en/latest/howto/network_bridge_firewalld/#prevent-connectivity-issues-with-lxd-and-docker
-.. _`install-multipass`: https://multipass.run/docs/install-multipass
+.. _`lxd-docker-connectivity-issue`: https://documentation.ubuntu.com/lxd/latest/howto/network_bridge_firewalld/#prevent-connectivity-issues-with-lxd-and-docker
