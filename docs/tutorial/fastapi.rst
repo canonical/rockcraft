@@ -1,4 +1,4 @@
-.. _build-a-rock-for-a-fastapi-application:
+.. _tutorial-build-a-rock-for-a-fastapi-app:
 
 Build a rock for a FastAPI app
 ------------------------------

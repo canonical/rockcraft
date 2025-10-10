@@ -1,4 +1,4 @@
-.. _build-a-rock-for-a-spring-boot-application:
+.. _tutorial-build-a-rock-for-a-spring-boot-app:
 
 Build a rock for a Spring Boot app
 ----------------------------------

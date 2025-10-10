@@ -104,4 +104,4 @@ rock:
 Useful links
 ============
 
-- :ref:`build-a-rock-for-a-django-application`
+- :ref:`tutorial-build-a-rock-for-a-django-app`

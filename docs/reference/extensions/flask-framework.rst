@@ -125,4 +125,4 @@ Some files, if they exist, are included by default. These include:
 Useful links
 ============
 
-- :ref:`build-a-rock-for-a-flask-application`
+- :ref:`tutorial-build-a-rock-for-a-flask-app`
