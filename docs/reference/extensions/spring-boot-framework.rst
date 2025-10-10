@@ -125,4 +125,4 @@ of the ``spring-boot-framework/assets`` part:
 Useful links
 ------------
 
-:ref:`build-a-rock-for-a-spring-boot-application`
+:ref:`tutorial-build-a-rock-for-a-spring-boot-app`

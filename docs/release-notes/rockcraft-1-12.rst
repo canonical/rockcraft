@@ -56,7 +56,7 @@ The new Spring Boot extension streamlines the process of building rocks that bun
 Spring Boot projects, using either Maven or Gradle as the build tool.
 
 This new extension is experimental and subject to change. For more information, check
-out the Spring Boot :ref:`tutorial <build-a-rock-for-a-spring-boot-application>` and
+out the Spring Boot :ref:`tutorial <tutorial-build-a-rock-for-a-spring-boot-app>` and
 :ref:`reference <reference-spring-boot-framework>`.
 
 

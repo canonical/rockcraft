@@ -1,5 +1,7 @@
-Containerise a PyPI package
-***************************
+.. _tutorial-pack-a-python-package:
+
+Pack a Python package
+=====================
 
 By the end of this tutorial you will be able to run pyfiglet via docker:
 

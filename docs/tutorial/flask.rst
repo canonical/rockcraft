@@ -1,4 +1,4 @@
-.. _build-a-rock-for-a-flask-application:
+.. _tutorial-build-a-rock-for-a-flask-app:
 
 Build a rock for a Flask app
 ----------------------------
