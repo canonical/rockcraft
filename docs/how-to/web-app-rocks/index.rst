@@ -1,7 +1,7 @@
-.. _manage-12-factor-app-rock:
+.. _how-to-manage-a-12-factor-app-rock:
 
 Manage a 12-Factor app rock
-***************************
+===========================
 
 These guides walk you through all the ways you can manage 12-factor app rocks,
 from initialization to usage.
@@ -28,3 +28,4 @@ you’re ready to use it.
 
     set-up-web-app-rock
     use-web-app-rock
+    configure-the-build-base-for-an-express-app

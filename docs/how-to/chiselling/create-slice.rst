@@ -1,9 +1,11 @@
-How to create a package slice for Chisel
-****************************************
+.. _how-to-create-a-package-slice-for-chisel:
+
+Create a package slice for Chisel
+=================================
 
 If your package doesn't yet have the slice definitions you actually need to
 **create your own slice definition** (which you can, later on, propose to be
-merged upstream for everyone else to use :ref:`publishslice` ).
+merged upstream for everyone else to use :ref:`how-to-publish-a-slice-definition`).
 
 **Let's assume you are trying to create a slice definition for installing the
 OpenSSL binary into your rock!**
@@ -154,4 +156,3 @@ publish it upstream for others to use, please check the following guides.
   https://github.com/canonical/chisel-releases/blob/ubuntu-22.04/slices/libssl3.yaml
 .. _contribution guidelines:
   https://github.com/canonical/chisel-releases/blob/main/CONTRIBUTING.md
-

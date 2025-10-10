@@ -1,7 +1,7 @@
-.. _chisel_existing_rock:
+.. _how-to-chisel-a-rock:
 
-How to chisel an existing rock
-******************************
+Chisel a rock
+=============
 
 Having additional utilities inside a rock can be useful for development and
 testing purposes. However, when moving to production, you want to make your

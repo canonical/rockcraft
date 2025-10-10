@@ -10,7 +10,7 @@ Using the analogy of a tool to carve and cut stone, Chisel is used in
 Rockcraft to sculpt minimal collections of files that only include what is
 needed for the rock to function properly.
 
-See :ref:`how_to_use_chisel` for information about using the tool.
+See :ref:`how-to-cut-existing-slices` for information about using the tool.
 
 Package slices
 --------------
