@@ -16,6 +16,7 @@
 
 """Pebble metadata and configuration helpers."""
 
+import enum
 from collections.abc import Mapping
 from pathlib import Path
 from typing import Annotated, Any, Literal
@@ -26,6 +27,32 @@ import yaml
 from craft_application.errors import CraftValidationError
 from craft_application.models import CraftBaseModel
 from craft_cli import emit
+
+
+class SuccessExitState(enum.Enum):
+    """What to do on exit success."""
+
+    RESTART = "restart"
+    """Restart the service after the backoff delay."""
+    SHUTDOWN = "shutdown"
+    """Shut down the pebble daemon (with exit code 0)"""
+    FAILURE_SHUTDOWN = "failure-shutdown"
+    """Shut down the pebble daemon (with exit code 10)"""
+    IGNORE = "ignore"
+    """Do nothing further."""
+
+
+class FailureExitState(enum.Enum):
+    """What to do on a failure exit."""
+
+    RESTART = "restart"
+    """Restart the service after the backoff delay."""
+    SHUTDOWN = "shutdown"
+    """Shut down the pebble daemon (with exit code 10)"""
+    SUCCESS_SHUTDOWN = "success-shutdown"
+    """Shut down the pebble daemon (with exit code 0)"""
+    IGNORE = "ignore"
+    """Do nothing further."""
 
 
 class HttpCheckOptions(CraftBaseModel):
@@ -279,45 +306,18 @@ class Service(CraftBaseModel):
         default=None,
         description="Working directory for the service command.",
     )
-    on_success: Literal["restart", "shutdown", "failure-shutdown", "ignore"] | None = (
-        None
+    on_success: SuccessExitState | None = pydantic.Field(
+        default=None,
+        description="What to do when the service exits with success.",
     )
-    """Defines what happens when the service exits with exit code 0.
-
-    Possible values are:
-      - ``restart`` (default): restart the service after the backoff delay
-      - ``shutdown``: shut down and exit the Pebble daemon (with exit code 0)
-      - ``failure-shutdown``: shut down and exit Pebble with exit code 10
-      - ``ignore``: do nothing further
-    """
-    on_failure: Literal["restart", "shutdown", "success-shutdown", "ignore"] | None = (
-        pydantic.Field(
-            default=None,
-            description="What to do when the service exits with an error.",
-        )
+    on_failure: FailureExitState | None = pydantic.Field(
+        default=None,
+        description="What to do when the service exits with an error.",
     )
-    """What to do when the service exits with an error.
-
-    Possible values are:
-      - ``restart`` (default): restart the service after the backoff delay
-      - ``shutdown``: shut down and exit the Pebble daemon (with exit code 10)
-      - ``success-shutdown``: shut down and exit Pebble with exit code 0
-      - ``ignore``: do nothing further
-    """
-    on_check_failure: (
-        dict[str, Literal["restart", "shutdown", "success-shutdown", "ignore"]] | None
-    ) = pydantic.Field(
+    on_check_failure: dict[str, FailureExitState] | None = pydantic.Field(
         default=None,
         description="What to do when a health check fails.",
     )
-    """What to do when a health check fails.
-
-    Possible values are:
-      - ``restart`` (default): restart the service after the backoff delay
-      - ``shutdown``: shut down and exit the Pebble daemon (with exit code 10)
-      - ``success-shutdown``: shut down and exit Pebble with exit code 0
-      - ``ignore``: do nothing further
-    """
     backoff_delay: str | None = pydantic.Field(
         default=None,
         description="Initial backoff delay for the 'restart' exit action.",

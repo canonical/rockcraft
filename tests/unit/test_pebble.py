@@ -75,7 +75,7 @@ class TestPebble:
                             override="replace",
                             command="foo",
                             on_success="shutdown",
-                        ).model_dump(exclude_none=True, by_alias=True)
+                        ).marshal()
                     },
                 },
                 (

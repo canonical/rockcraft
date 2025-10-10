@@ -150,7 +150,7 @@ class Project(BaseProject):
     )
     """
     The base system image that the rock's contents will be layered on.
-    
+
     This system is mounted and made available when using overlays. The
     special value ``bare`` means that the rock will have no base system,
     which is typically used with static binaries or
@@ -161,10 +161,10 @@ class Project(BaseProject):
     )
     """The system and version that will be used during the rock's build, but not
     included in the final rock itself.
-    
+
     The build base comprises the set of tools and libraries
     that Rockcraft uses when building the rock's contents.
-    
+
     This key is mandatory if ``base`` is ``bare``. Otherwise, it is optional and
     defaults to the value of ``base``.
     """
