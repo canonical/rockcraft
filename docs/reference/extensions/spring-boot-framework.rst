@@ -31,13 +31,10 @@ in the root directory of the project.
 
 The ``spring-boot-framework`` extension dynamically determines the plugin to
 use to bulid the rock. Depending on the presence of ``pom.xml`` or
-``build.gradle`` file, the extension will use either `maven
-<https://documentation.ubuntu.com/rockcraft/en/latest/common/craft-parts/
-reference/plugins/maven_plugin/>`_
-or `gradle
-<https://documentation.ubuntu.com/rockcraft/en/latest/common/craft-parts/
-reference/plugins/gradle_plugin/>`_
-plugin, respectively.
+``build.gradle`` file, the extension will use either the
+:doc:`maven </common/craft-parts/reference/plugins/maven_plugin>` or
+:doc:`gradle </common/craft-parts/reference/plugins/gradle_plugin>` plugin,
+respectively.
 
 .. code-block:: yaml
   :caption: rockcraft.yaml
@@ -82,9 +79,8 @@ If a different Java version is required, you can specify it in the
 ``parts`` > ``spring-boot-framework/runtime``
 =============================================
 
-To provide an efficient runtime for Java, the extension calls the `Jlink
-<https://documentation.ubuntu.com/rockcraft/en/latest/common/craft-parts/
-reference/plugins/jlink_plugin/>`_
+To provide an efficient runtime for Java, the extension calls the
+:doc:`Jlink </common/craft-parts/reference/plugins/jlink_plugin>`
 plugin to trim out any unused parts of the JDK. This reduces the size
 of the rock and improves performance.
 

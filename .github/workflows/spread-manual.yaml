@@ -7,7 +7,7 @@ on:
 
 jobs:
   snap-build:
-    if: ${{ github.event.label.name == 'run-manual-spread' || github.event_name == 'schedule' }}
+    if: "${{ github.event.label.name == 'PR: Run Manual Spread' || github.event_name == 'schedule' }}"
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout code
@@ -24,7 +24,7 @@ jobs:
           path: ${{ steps.rockcraft.outputs.snap }}
 
   snap-tests:
-    if: ${{ github.event.label.name == 'run-manual-spread' || github.event_name == 'schedule' }}
+    if: "${{ github.event.label.name == 'PR: Run Manual Spread' || github.event_name == 'schedule' }}"
     runs-on: [self-hosted, spread-installed]
     needs: [snap-build]
 
