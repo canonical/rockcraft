@@ -78,15 +78,15 @@ broader share of Debian packages and Chisel slices.
 See :ref:`explanation-usrmerge-implementation` for details on the motivation for the
 change and ways to control the behavior on a per-project basis.
 
-New Python plugin
-~~~~~~~~~~~~~~~~~
+Python plugin for ``ubuntu@25.10`` base
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The behavior of the Python plugin for Rockcraft projects with base ``ubuntu@25.10`` and
 higher has been significantly changed to address weaknesses in the previous
 implementation.
 
-The :ref:`new plugin <python_v2_plugin>` is largely compatible with the previous
-iteration but has better support for usrmerge. This plugin is considered experimental
+The :ref:`python_v2_plugin` is largely compatible with existing
+projects but has better support for usrmerge. It's considered experimental
 while the ``ubuntu@25.10`` base is still in development.
 
 Minor features
@@ -126,6 +126,12 @@ The :ref:`craft_parts_autotools_plugin` now supports the
 :ref:`reference-part-properties-disable-parallel` key to force builds using the plugin
 to run using a single job.
 
+Documentation for bases
+~~~~~~~~~~~~~~~~~~~~~~~
+
+We've added :ref:`<how-to-specify-a-base>`, a how-to guide that covers all the different
+cases for bases in a rock.
+
 Documentation for 12-factor app extensions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -147,12 +153,6 @@ the following commands in your local repository to sync the submodule change:
     git submodule sync
     git submodule update --init --recursive
     git clean -ffd
-
-Documentation for bases
-~~~~~~~~~~~~~~~~~~~~~~~
-
-We've added a :ref:`comprehensive guide <how-to-specify-a-base>` on choosing a base for
-your Rockcraft projects.
 
 Contributors
 ------------
