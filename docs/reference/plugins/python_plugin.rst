@@ -1,6 +1,6 @@
 .. _craft_parts_python_plugin:
 
-Python plugin (ubuntu@20.04)
+Python plugin (ubuntu\@20.04)
 ============================
 
 .. This starts the document immediately after the title line
