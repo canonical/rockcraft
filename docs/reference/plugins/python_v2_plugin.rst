@@ -15,7 +15,7 @@ Python plugin (ubuntu\@25.10)
 
     For base ``ubuntu@24.04`` and lower, Python parts build with the
     :doc:`python_plugin`. For an explanation of why there are two different versions
-    of this plugin, see <LINK-TO-USRMERGE-EXPLANATION>.
+    of this plugin, see :ref:`explanation-usrmerge-implementation`.
 
 .. include:: /common/craft-parts/reference/plugins/python_v2_plugin.rst
     :start-after: .. _python_v2_plugin-keywords:
