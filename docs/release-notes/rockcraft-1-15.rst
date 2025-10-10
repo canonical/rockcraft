@@ -129,7 +129,7 @@ to run using a single job.
 Documentation for bases
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-We've added :ref:`<how-to-specify-a-base>`, a how-to guide that covers all the different
+We've added :ref:`how-to-specify-a-base`, a how-to guide that covers all the different
 cases for bases in a rock.
 
 Documentation for 12-factor app extensions
