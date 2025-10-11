@@ -88,7 +88,7 @@ class ExecCheckOptions(CraftBaseModel):
     """Lightweight schema validation for a Pebble exec check."""
 
     command: str = pydantic.Field(
-        description="The command line to execute for this health check.",
+        description="The command to execute for this health check.",
         examples=["/usr/bin/health-check"],
     )
     service_context: str | None = pydantic.Field(

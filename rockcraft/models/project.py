@@ -95,7 +95,7 @@ class Project(BaseProject):
         description="Additional environment variables for the base image's OCI environment.",
     )
     run_user: _RunUser = pydantic.Field(
-        default=None, description="The default OCI user (uses root if not defined)."
+        default=None, description="The default OCI user. If unset, runs as root."
     )
     """The default OCI user. Must be a shared user.
 
