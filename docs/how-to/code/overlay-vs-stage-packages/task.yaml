@@ -1,0 +1,39 @@
+###########################################
+# IMPORTANT
+# Comments matter!
+# The docs use the wrapping comments as
+# markers for including said instructions
+# as snippets in the docs.
+###########################################
+summary: test "Overlay vs Stage packages" guide
+
+execute: |
+
+  cp overlay.yaml rockcraft.yaml
+
+  # [docs:pack-rock-shared-overlay]
+  rockcraft pack
+  sudo rockcraft.skopeo --insecure-policy copy oci-archive:ca-certs-example_0.1_amd64.rock docker-daemon:ca-certs-example:0.1
+  # [docs:pack-rock-shared-overlay-end]
+
+  # [docs:check-rock-shared-overlay]
+  docker run ca-certs-example:0.1 exec curl -sw "%{http_code}" -o /dev/null https://canonical.com/ | grep 200
+  # [docs:check-rock-shared-overlay-end]
+
+  rockcraft clean
+  rm rockcraft.yaml
+
+
+  cp stage.yaml rockcraft.yaml
+
+  # [docs:pack-rock-shared-stage]
+  rockcraft pack
+  sudo rockcraft.skopeo --insecure-policy copy oci-archive:ca-certs-example_0.1_amd64.rock docker-daemon:ca-certs-example:0.1
+  # [docs:pack-rock-shared-stage-end]
+
+  # [docs:skopeo-shared-stage]
+  docker run ca-certs-example:0.1 exec curl -sw "%{http_code}" -o /dev/null https://canonical.com/ | grep 200
+  # [docs:skopeo-shared-stage-end]
+
+  rockcraft clean
+  rm rockcraft.yaml
