@@ -1,0 +1,40 @@
+###########################################
+# IMPORTANT
+# Comments matter!
+# The docs use the wrapping comments as
+# markers for including said instructions
+# as snippets in the docs.
+###########################################
+summary: test "Creating a rootles rock" guide
+
+execute: |
+  cd manual-user-add
+  cp ../serve_user.py .
+
+  # [docs:pack-rock]
+  rockcraft pack
+  # [docs:pack-rock-end]
+
+  # [docs:skopeo]
+  sudo rockcraft.skopeo --insecure-policy copy oci-archive:rootless-rock_latest_amd64.rock docker-daemon:rootless-rock:latest
+  # [docs:skopeo-end]
+
+  # [docs:check-user]
+  id=$(docker run -d -p 8080:8080 rootless-rock:latest --verbose)
+  sleep 5
+  curl -s http://127.0.0.1:8080/cgi-bin/serve_user.py | grep "Serving by myuser"
+  docker rm -f "$id"
+  # [docs:check-user-end]
+
+  cd ../using-run-user
+  cp ../serve_user.py .
+
+  rockcraft clean && rockcraft pack
+  sudo rockcraft.skopeo --insecure-policy copy oci-archive:rootless-rock_latest_amd64.rock docker-daemon:rootless-rock:latest
+
+  # [docs:check-user-run-user]
+  id=$(docker run -d -p 8080:8080 rootless-rock:latest --verbose)
+  sleep 5
+  curl -s http://127.0.0.1:8080/cgi-bin/serve_user.py | grep "Serving by _daemon_"
+  docker rm -f "$id"
+  # [docs:check-user-run-user-end]

@@ -1,0 +1,31 @@
+name: rootless-rock
+base: bare
+build-base: ubuntu@24.04
+version: "latest"
+summary: Add an internal user inside a rock
+description: Add an internal user inside a rock, and run a service with it.
+run-user: _daemon_
+platforms:
+  amd64:
+
+services:
+  web-service:
+    override: replace
+    command: python3.12 -m http.server --cgi 8080
+    startup: enabled
+    working-dir: /
+
+parts:
+  my-part:
+    plugin: nil
+    source-type: local
+    source: .
+    stage-packages:
+      - base-passwd_data
+      - base-files_base
+      - python3.12_standard
+    override-build: |
+      craftctl default
+      mkdir ${CRAFT_PART_INSTALL}/cgi-bin/
+      cp serve_user.py ${CRAFT_PART_INSTALL}/cgi-bin/
+      chmod +x ${CRAFT_PART_INSTALL}/cgi-bin/serve_user.py
