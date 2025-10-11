@@ -126,9 +126,9 @@ example, consider again the contents of the previous rock's prime directory:
    $ ls bin/
    pebble
 
-So ``bin/`` is a regular directory and contains the ``pebble`` binary, to
-serve as the rock's entrypoint. However, consider the base directory structure
-of an Ubuntu system:
+So ``bin/`` is a regular directory and contains the :ref:`pebble_explanation_page`
+binary, to serve as the rock's entrypoint. However, consider the base directory
+structure of an Ubuntu system:
 
 .. code-block:: bash
 

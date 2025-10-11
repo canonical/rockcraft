@@ -6,13 +6,14 @@ Pebble
 .. important::
     **Pebble is the default entrypoint for all rocks!**
 
-Similar to other well-known process managers such as *supervisord*, *runit*, or
-*s6*, `Pebble`_ is a service manager that enables the seamless orchestration of
-a collection of local service processes as an organised set. The main difference
-is that `Pebble`_ has been designed with custom-tailored features that
-significantly enhance the overall container experience, making it the ideal
-candidate for the container's init process (also known as the entrypoint,
-with PID=1).
+    More information about it can be found at `Pebble docs`_.
+    This page will address how it works inside containers,
+    more specifically, rocks.
+
+Pebble is a lightweight service manager that has been designed with
+custom-tailored features to significantly enhance the overall container
+experience, making it the ideal candidate for the container's init process
+(also known as the entrypoint, with PID=1).
 
 Multiple processes in a container?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -80,7 +81,8 @@ Rockcraft follows the :external+pebble:ref:`Pebble layer specification
 provides an example of how to convert a Docker entrypoint to a Pebble layer.
 
 
-.. _Pebble: https://github.com/canonical/pebble
+.. _Pebble: https://documentation.ubuntu.com/pebble/
+.. _Pebble docs: https://documentation.ubuntu.com/pebble/
 .. _tini: https://github.com/krallin/tini
 .. _s6-overlay: https://github.com/just-containers/s6-overlay
 .. _imperative wrapper scripts (as suggested in the Docker documentation): https://docs.docker.com/engine/containers/multi-service_container/#use-a-wrapper-script
