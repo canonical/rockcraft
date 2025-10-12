@@ -124,3 +124,11 @@ FULL_EXTENSION_PROJECT = {
 
 
 FULL_EXTENSION_YAML = util.dump_yaml(FULL_EXTENSION_PROJECT)
+
+
+def malformed_full_extension_yaml(*, missing_keys: list[str]) -> str:
+    """Omit some keys from the YAML, like a user might during development."""
+    obj = FULL_EXTENSION_PROJECT.copy()
+    for key in missing_keys:
+        del obj[key]
+    return util.dump_yaml(obj)
