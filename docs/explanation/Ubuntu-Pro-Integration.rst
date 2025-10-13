@@ -8,17 +8,21 @@ Users subscribed to Ubuntu Pro can benefit from the enhanced security and
 compliance features it offers in Rockcraft as well. Rocks built with the
 `--pro` flag can be upgraded with Ubuntu Pro packages automatically.
 
-There are some requirements to be met to use this features:
-- The user must have an Ubuntu Pro subscription, and are only permitted to 
-  build with Ubuntu Pro services they are entitled to.
-- Ubuntu Pro must be enabled on the host system where the rock is built.
-- The `build-base` and `base` fields in the `rockcraft.yaml` must be the same.
-- The `build-base` field must be an Ubuntu LTS image.
-- Images built with FIPS features can only be run on Ubuntu hosts of the same
-  release and FIPS status.
-- When building Ubuntu Pro enabled rocks with destructive mode, the host
-  system must have the same version of Ubuntu as the rock's base, and have
-  the same Ubuntu Pro services enabled as the rock.
+Getting Started
+~~~~~~~~~~~~~~~
+
+There are some requirements to be met to use this feature:
+
+1. The user must have an Ubuntu Pro subscription, and are only permitted to 
+   build with Ubuntu Pro services they are entitled to.
+2. Ubuntu Pro must be enabled on the host system where the rock is built.
+3. The `build-base` and `base` fields in the `rockcraft.yaml` must be the same.
+4. The `build-base` field must be an Ubuntu LTS image.
+5. Images built with FIPS features can only be run on Ubuntu hosts of the same
+   release and FIPS status.
+6. When building Ubuntu Pro enabled rocks with destructive mode, the host
+   system must have the same version of Ubuntu as the rock's base, and have
+   the same Ubuntu Pro services enabled as the rock.
 
 To begin building images with Ubuntu Pro, the user must include the `--pro` flag
 when building Rocks. This includes all lifecycle commands such as `pull`, 
@@ -36,16 +40,16 @@ can be corrected by performing a `rockcraft clean` and starting the lifecycle ag
 
 
 Application Notes
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~
 
 When building rocks with Ubuntu Pro, the following changes are applied to the rock:
-- Packages installed either as `build-packages` or `stage-packages` are installed
-  from Ubuntu Pro repositories. This includes packages installed with chisel as 
-  well. 
-- Packages built from non-bare bases are upgraded with all Ubuntu Pro services passed
+
+* Packages installed either as `build-packages` or `stage-packages` are installed
+  from Ubuntu Pro repositories. This includes packages installed with chisel as well. 
+* Packages built from non-bare bases are upgraded with all Ubuntu Pro services passed
   to the `--pro` flag. In this process the Pro Services are transferred from the build
   environment to the rock's overlay. When building with destructive mode, any custom 
   sources such as PPAs will be preserved and may be installed in the rock during the
   build process.
-- Currently upstream chisel-release sources do not support installing `openssl` slices
+* Currently upstream chisel-release sources do not support installing `openssl` slices
   in FIPS environments.
