@@ -19,6 +19,7 @@ the motivations behind its development.
    pebble
    lifecycle-layer
    filesets
+   Ubuntu-Pro-Integration
    /common/craft-parts/explanation/parts
    lifecycle
    /common/craft-parts/explanation/dump_plugin
