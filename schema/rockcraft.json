@@ -96,7 +96,7 @@
       "description": "Lightweight schema validation for a Pebble exec check.",
       "properties": {
         "command": {
-          "description": "The command line to execute for this health check.",
+          "description": "The command to execute for this health check.",
           "examples": [
             "/usr/bin/health-check"
           ],
@@ -11257,7 +11257,7 @@
         }
       ],
       "default": null,
-      "description": "The default OCI user (uses root if not defined).",
+      "description": "The default OCI user. If unset, runs as root.",
       "title": "Run-User"
     },
     "services": {
