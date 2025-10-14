@@ -1,6 +1,6 @@
 :relatedlinks: https://ubuntu.com/about/release-cycle, [Ubuntu&#32;image&#32;on&#32;Docker&#32;Hub](https://hub.docker.com/_/ubuntu), [Ubuntu&#32;image&#32;on&#32;Amazon&#32;ECR](https://gallery.ecr.aws/ubuntu/ubuntu), [Scratch&#32;image&#32;on&#32;Docker&#32;Hub](https://hub.docker.com/_/scratch)
 
-.. _bases_explanation:
+.. _explanation-bases:
 
 Bases
 =====
@@ -26,6 +26,8 @@ Setting an Ubuntu base for a rock is especially useful when the goal is to build
 that can serve as a general-purpose environment, such as a development workspace.
 
 
+.. _explanation-bases-lts-and-interim-bases:
+
 LTS and interim bases
 ~~~~~~~~~~~~~~~~~~~~~
 
@@ -38,6 +40,8 @@ rocks, they are most suitable for testing software with short lifecycles. Common
 images with these bases are used as test-beds for the software in the Ubuntu release
 itself.
 
+
+.. _explanation-bases-bare-bases:
 
 Bare bases
 ----------
