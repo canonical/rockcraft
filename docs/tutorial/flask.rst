@@ -442,7 +442,7 @@ top of the ``rockcraft.yaml`` file should look similar to the following:
 
 .. note::
 
-    ``rockcraft pack`` will create a new image with the updated code even if we
+    ``rockcraft pack`` will overwrite the image with the updated code if we
     don't change the version. It is recommended to change the version whenever
     we make changes to the app in the image.
 
