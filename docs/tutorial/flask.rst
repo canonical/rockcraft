@@ -61,7 +61,8 @@ endpoint. We'll need a new terminal for this -- run
 
 The Flask app should respond with ``Hello, world!``.
 
-The Flask app looks good, so let's stop it for now by pressing
+The Flask app looks good, so let's close the second terminal and stop the app
+in the original terminal of the Multipass VM by pressing
 :kbd:`Ctrl` + :kbd:`C`.
 
 Pack the Flask app into a rock

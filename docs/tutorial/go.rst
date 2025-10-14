@@ -91,8 +91,9 @@ endpoint. We may need a new terminal for this -- run
 
 The Go app should respond with ``Hello, world!``.
 
-The Go app looks good, so let's stop it for now
-with :kbd:`Ctrl` + :kbd:`C`.
+The Go app looks good, so let's close the second terminal and stop the app
+in the original terminal of the Multipass VM by pressing
+:kbd:`Ctrl` + :kbd:`C`.
 
 Pack the Go app into a rock
 ===========================

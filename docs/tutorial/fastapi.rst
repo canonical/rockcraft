@@ -63,8 +63,9 @@ endpoint. We'll need a new terminal for this -- run
 
 The FastAPI app should respond with ``{"message":"Hello World"}``.
 
-The app looks good, so let's stop it for now by pressing :kbd:`Ctrl` +
-:kbd:`C`.
+The FastAPI app looks good, so let's close the second terminal and stop the app
+in the original terminal of the Multipass VM by pressing
+:kbd:`Ctrl` + :kbd:`C`.
 
 Pack the FastAPI app into a rock
 ================================

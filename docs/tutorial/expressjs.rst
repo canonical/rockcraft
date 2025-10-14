@@ -89,8 +89,9 @@ The Express app should respond with *Welcome to Express* web page.
 
         multipass info charm-dev | grep IP
 
-The Express app looks good, so let's stop it for now
-with :kbd:`Ctrl` + :kbd:`C`.
+The Express app looks good, so let's close the second terminal and stop the app
+in the original terminal of the Multipass VM by pressing
+:kbd:`Ctrl` + :kbd:`C`.
 
 Pack the Express app into a rock
 ================================

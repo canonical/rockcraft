@@ -88,8 +88,9 @@ endpoint. We may need a new terminal for this -- run
 The Spring Boot app should respond with
 ``{"timestamp":<timestamp>,"status":404,"error":"Not Found","path":"/"}``.
 
-The Spring Boot app looks good, so let's stop it for now
-with :kbd:`Ctrl` + :kbd:`C`.
+The Spring Boot app looks good, so let's close the second terminal and stop the
+app in the original terminal of the Multipass VM by pressing
+:kbd:`Ctrl` + :kbd:`C`.
 
 Pack the Spring Boot app into a rock
 ====================================

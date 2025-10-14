@@ -85,7 +85,8 @@ The Django app should respond with
     in a web browser to see the fully-rendered page, replacing
     ``<Multipass private IP>`` with your VM's private IP address.
 
-The Django app looks good, so let's stop it for now by pressing
+The Django app looks good, so let's close the second terminal and stop the app
+in the original terminal of the Multipass VM by pressing
 :kbd:`Ctrl` + :kbd:`C`.
 
 Pack the Django app into a rock
