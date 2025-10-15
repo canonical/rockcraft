@@ -1,4 +1,4 @@
-.. _build-a-rock-for-a-django-application:
+.. _tutorial-build-a-rock-for-a-django-app:
 
 Build a rock for a Django app
 -----------------------------

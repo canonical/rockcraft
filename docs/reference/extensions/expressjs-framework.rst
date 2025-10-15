@@ -51,4 +51,4 @@ Installing additional runtime packages is currently unsupported.
 See also
 ========
 
-- :ref:`build-a-rock-for-an-expressjs-application`
+- :ref:`tutorial-build-a-rock-for-an-express-app`

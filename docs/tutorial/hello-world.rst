@@ -1,5 +1,7 @@
+.. _tutorial-create-a-hello-world-rock:
+
 Create a "Hello World" rock
-***************************
+===========================
 
 Setup your environment
 ----------------------

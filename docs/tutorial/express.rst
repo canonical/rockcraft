@@ -1,4 +1,4 @@
-.. _build-a-rock-for-an-expressjs-application:
+.. _tutorial-build-a-rock-for-an-express-app:
 
 Build a rock for an Express app
 -------------------------------

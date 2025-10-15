@@ -1,4 +1,4 @@
-.. _build-a-rock-for-a-go-application:
+.. _tutorial-build-a-rock-for-a-go-app:
 
 Build a rock for a Go app
 -------------------------
