@@ -80,16 +80,94 @@ class Project(BaseProject):
     """Rockcraft project definition."""
 
     # Type of summary is Optional[str] in BaseProject
-    summary: str  # type: ignore[reportIncompatibleVariableOverride]
-    description: str  # type: ignore[reportIncompatibleVariableOverride]
-    environment: dict[str, str] | None = None
-    run_user: _RunUser = None
-    services: dict[str, Service] | None = None
-    checks: dict[str, Check] | None = None
-    entrypoint_service: str | None = None
-    entrypoint_command: str | None = None
-    base: BaseT  # type: ignore[reportIncompatibleVariableOverride]
-    build_base: BuildBaseT = None  # type: ignore[reportIncompatibleVariableOverride]
+    summary: str = pydantic.Field(  # type: ignore[reportIncompatibleVariableOverride]
+        description="A short, single line description of the rock."
+    )
+    description: str = pydantic.Field(  # type: ignore[reportIncompatibleVariableOverride]
+        description="A full description of the rock, potentially including multiple paragraphs."
+    )
+    """A full description of the rock, potentially including multiple paragraphs.
+
+    The description should say in full what the rock is for and who may find it useful.
+    """
+    environment: dict[str, str] | None = pydantic.Field(
+        default=None,
+        description="Additional environment variables for the base image's OCI environment.",
+    )
+    run_user: _RunUser = pydantic.Field(
+        default=None, description="The default OCI user. If unset, runs as root."
+    )
+    """The default OCI user. Must be a shared user.
+
+    Currently, the only supported shared user is ``_daemon_`` (UID/GID 584792).
+    If unset, the user ``root`` (UID/GID 0) is selected as the default OCI user.
+    """
+    services: dict[str, Service] | None = pydantic.Field(
+        default=None,
+        description="Services to run in the rock, using Pebble's layer specification syntax.",
+    )
+    """Services to run in the rock.
+
+    This field is added to the Pebble :external+pebble:ref:`layer specification
+    <layer-specification>`.
+    """
+    checks: dict[str, Check] | None = pydantic.Field(
+        default=None,
+        description="Health checks for this rock.",
+    )
+    entrypoint_service: str | None = pydantic.Field(
+        default=None,
+        description=(
+            "The optional name of the Pebble service to serve as the entrypoint."
+        ),
+        examples=["my-service"],
+    )
+    """The optional name of the Pebble service to serve as the `OCI entrypoint
+    <https://specs.opencontainers.org/image-spec/config/?v=v1.0.1#properties>`_.
+    If set, this makes Rockcraft extend ``["/bin/pebble", "enter"]`` with
+    ``["--args", "<serviceName>"]``. The command of the Pebble service must
+    contain an optional argument that will become the `OCI CMD
+    <https://specs.opencontainers.org/image-spec/config/?v=v1.0.1#properties>`_.
+
+    Mutually exclusive with ``entrypoint-command``.
+    """
+    entrypoint_command: str | None = pydantic.Field(
+        default=None,
+        examples=["echo [ Hello ]"],
+        description=(
+            "Overrides the rock's default Pebble OCI entrypoint and CMD properties."
+        ),
+    )
+    """Overrides the rock's default Pebble OCI ``entrypoint`` and ``CMD`` properties.
+
+    The value can be suffixed with default entrypoint arguments using square
+    brackets (``[]``). These entrypoint arguments become the rock's OCI CMD.
+
+    This key is mutually incompatible with ``entrypoint-service``.
+    """
+    base: BaseT = pydantic.Field(  # type: ignore[reportIncompatibleVariableOverride]
+        description="The base system image for the rock.",
+    )
+    """
+    The base system image that the rock's contents will be layered on.
+
+    :ref:`This system <bases_explanation>` is mounted and made available when using
+    overlays. The special value ``bare`` means that the rock will have no base system,
+    which is typically used with static binaries or
+    :ref:`Chisel slices <chisel_explanation>`.
+    """
+    build_base: BuildBaseT = pydantic.Field(  # type: ignore[reportIncompatibleVariableOverride]
+        default=None, description="The system used to build the rock."
+    )
+    """The system and version that will be used during the rock's build, but not
+    included in the final rock itself.
+
+    The :ref:`build base <bases_explanation>` comprises the set of tools and libraries
+    that Rockcraft uses when building the rock's contents.
+
+    This key is mandatory if ``base`` is ``bare``. Otherwise, it is optional and
+    defaults to the value of ``base``.
+    """
 
     model_config = pydantic.ConfigDict(
         validate_assignment=True,
