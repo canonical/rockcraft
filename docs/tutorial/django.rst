@@ -52,8 +52,8 @@ Change into the ``django_hello_world`` directory and run the Django app
 using ``python manage.py runserver`` to verify that it works.
 
 Test the Django app by using ``curl`` to send a request to the root
-endpoint. We'll need a new terminal for this -- run
-``multipass shell rock-dev`` to get another terminal:
+endpoint. We'll need a new shell of the VM for this -- run
+``multipass shell rock-dev`` to open a second shell:
 
 .. literalinclude:: code/django/task.yaml
     :language: bash
@@ -85,8 +85,8 @@ The Django app should respond with
     in a web browser to see the fully-rendered page, replacing
     ``<Multipass private IP>`` with your VM's private IP address.
 
-The Django app looks good, so let's close the second terminal and stop the app
-in the original terminal of the Multipass VM by pressing
+The Django app looks good, so let's close the second shell of the VM
+and stop the app in the original shell by pressing
 :kbd:`Ctrl` + :kbd:`C`.
 
 Pack the Django app into a rock

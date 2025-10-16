@@ -50,8 +50,8 @@ In the same directory, copy and save the following into a text file called
 Run the Flask app using ``flask run -p 8000`` to verify that it works.
 
 Test the Flask app by using ``curl`` to send a request to the root
-endpoint. We'll need a new terminal for this -- run
-``multipass shell rock-dev`` to get another terminal:
+endpoint. We'll need a new shell of the VM for this -- run
+``multipass shell rock-dev`` to open a second shell:
 
 .. literalinclude:: code/flask/task.yaml
     :language: bash
@@ -61,8 +61,8 @@ endpoint. We'll need a new terminal for this -- run
 
 The Flask app should respond with ``Hello, world!``.
 
-The Flask app looks good, so let's close the second terminal and stop the app
-in the original terminal of the Multipass VM by pressing
+The Flask app looks good, so let's close the second shell of the VM
+and stop the app in the original shell by pressing
 :kbd:`Ctrl` + :kbd:`C`.
 
 Pack the Flask app into a rock
