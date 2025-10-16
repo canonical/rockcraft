@@ -479,9 +479,9 @@ the ``rockcraft.yaml`` file should look similar to the following:
 
 .. note::
 
-    ``rockcraft pack`` will overwrite the image with the updated code if we
-    don't change the version. It is recommended to change the version whenever
-    we make changes to the app in the image.
+    If we repack the rock without changing the version, the new rock will have the
+    same name and overwrite the last one we built. It's a good practice to change
+    the version whenever we make changes to the app in the image.
 
 Pack and run the rock using similar commands as before:
 
