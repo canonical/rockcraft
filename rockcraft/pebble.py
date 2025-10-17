@@ -261,7 +261,7 @@ def add_pebble_part(project: dict[str, Any]) -> None:
       and said part's contents are different from the contents of the part we add.
     """
     # at least base should be required, but YAML has not been validated yet
-    build_base = project.get("build-base") or project.get("base", None)
+    build_base = project.get("build-base") or project.get("base")
     if build_base is None:
         # don't try to add the relevant pebble part if base is missing
         # (friendly error message will be presented later from pydantic)
