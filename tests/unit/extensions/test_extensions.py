@@ -23,6 +23,7 @@ from tests.unit.testing.extensions import (
     FakeExtension,
     FullExtension,
     InvalidPartExtension,
+    malformed_full_extension_yaml,
 )
 
 pytestmark = [pytest.mark.usefixtures("fake_extensions")]
@@ -109,7 +110,13 @@ def test_apply_extensions(tmp_path, input_yaml):
 
 
 @pytest.mark.usefixtures("configured_project")
-@pytest.mark.parametrize("fake_project_yaml", [FULL_EXTENSION_YAML])
+@pytest.mark.parametrize(
+    "fake_project_yaml",
+    [
+        FULL_EXTENSION_YAML,
+        malformed_full_extension_yaml(missing_keys=["base"]),
+    ],
+)
 def test_project_load_extensions(fake_services, tmp_path):
     """Test that load_project() correctly applies the extensions."""
     project = fake_services.get("project")._preprocess(

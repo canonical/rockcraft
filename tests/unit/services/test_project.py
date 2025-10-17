@@ -92,6 +92,9 @@ def test_add_pebble_part_noble(
     [
         ("bare", "devel"),
         ("ubuntu@25.10", "devel"),
+        # base is not allowed to be empty, but checking nonetheless since
+        # pebble part is added pre-YAML validation
+        (None, None),
     ],
 )
 @pytest.mark.parametrize("parts", [{}, {"pebble": Pebble.PEBBLE_PART_SPEC.copy()}])
