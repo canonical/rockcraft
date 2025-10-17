@@ -19,11 +19,11 @@ from rockcraft import errors, extensions
 
 from tests.unit.testing.extensions import (
     FULL_EXTENSION_YAML,
-    malformed_full_extension_yaml,
     ExperimentalExtension,
     FakeExtension,
     FullExtension,
     InvalidPartExtension,
+    malformed_full_extension_yaml,
 )
 
 pytestmark = [pytest.mark.usefixtures("fake_extensions")]
