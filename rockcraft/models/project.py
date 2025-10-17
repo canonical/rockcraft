@@ -19,13 +19,14 @@
 import re
 import typing
 from collections.abc import Mapping
-from typing import TYPE_CHECKING, Any, Literal
+from typing import TYPE_CHECKING, Annotated, Any, Literal
 
 import craft_cli
 import pydantic
 import spdx_lookup  # type: ignore[import-untyped]
 from craft_application.models import (
     Platform,
+    get_validator_by_regex,
 )
 from craft_application.models import Project as BaseProject
 from craft_application.models.base import alias_generator
@@ -76,9 +77,44 @@ BuildBaseT = typing.Annotated[
 ]
 
 
+# Rock names are minimum 2 characters, stricter than standard projects.
+# https://git.launchpad.net/review-tools/tree/reviewtools/schemas/rock.json
+MESSAGE_INVALID_NAME = (
+    "invalid name: Names can only use ASCII lowercase letters, numbers, and hyphens. "
+    "They must have at least one letter, may not start or end with a hyphen, "
+    "and may not have two hyphens in a row. It must be 2-40 characters long."
+)
+_PROJECT_NAME_DESCRIPTION = """\
+The name of the project. This is used when uploading, publishing, or installing.
+
+The project name must consist only of lower-case ASCII letters (``a``-``z``), numerals
+(``0``-``9``), and hyphens (``-``). It must contain at least one letter, not start or
+end with a hyphen, and not contain two consecutive hyphens. The maximum length is 40
+characters.
+"""
+ROCK_NAME_REGEX = r"^([a-z0-9][a-z0-9-]?)*[a-z]+([a-z0-9-]?[a-z0-9])+$"
+ROCK_NAME_COMPILED_REGEX = re.compile(ROCK_NAME_REGEX)
+RockName = Annotated[
+    str,
+    pydantic.BeforeValidator(
+        get_validator_by_regex(ROCK_NAME_COMPILED_REGEX, MESSAGE_INVALID_NAME)
+    ),
+    pydantic.Field(
+        min_length=2,
+        max_length=40,
+        strict=True,
+        pattern=ROCK_NAME_REGEX,
+        description=_PROJECT_NAME_DESCRIPTION,
+        title="Rock Name",
+        examples=["go", "jq", "postgresql"],
+    ),
+]
+
+
 class Project(BaseProject):
     """Rockcraft project definition."""
 
+    name: RockName
     # Type of summary is Optional[str] in BaseProject
     summary: str = pydantic.Field(  # type: ignore[reportIncompatibleVariableOverride]
         description="A short, single line description of the rock."
