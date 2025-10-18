@@ -13,7 +13,7 @@ canonical-sphinx-extensions==0.0.21
 certifi==2024.2.2
 cffi==1.16.0
 chardet==5.2.0
-charset-normalizer==3.3.2
+charset-normalizer==3.4.4
 click==8.1.7
 codespell==2.2.6
 colorama==0.4.6
