@@ -109,10 +109,7 @@ def test_apply_extensions(tmp_path, input_yaml):
 
 
 @pytest.mark.usefixtures("configured_project")
-@pytest.mark.parametrize(
-    "fake_project_yaml",
-    [FULL_EXTENSION_YAML],
-)
+@pytest.mark.parametrize("fake_project_yaml", [FULL_EXTENSION_YAML])
 def test_project_load_extensions(fake_services, tmp_path):
     """Test that load_project() correctly applies the extensions."""
     project = fake_services.get("project")._preprocess(
