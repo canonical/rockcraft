@@ -66,8 +66,8 @@ Let's run the Express app to verify that it works:
 
 The app starts an HTTP server listening on port 3000
 that we can test by using curl to send a request to the root
-endpoint. We'll need a new shell of the VM for this -- run
-``multipass shell rock-dev`` to open a second shell:
+endpoint. We'll need a new shell of the VM for this -- in a separate terminal,
+run ``multipass shell rock-dev`` again:
 
 .. literalinclude:: code/expressjs/task.yaml
     :language: bash
@@ -89,8 +89,8 @@ The Express app should respond with *Welcome to Express* web page.
 
         multipass info charm-dev | grep IP
 
-The Express app looks good, so let's close the second shell of the VM
-and stop the app in the original shell by pressing
+The Express app looks good, so let's close the terminal instance we used for
+testing and stop the app in the original terminal instance by pressing
 :kbd:`Ctrl` + :kbd:`C`.
 
 Pack the Express app into a rock

@@ -80,8 +80,8 @@ Let's Run the Go app to verify that it works:
 
 The app starts an HTTP server listening on port 8000
 that we can test by using ``curl`` to send a request to the root
-endpoint. We'll need a new shell of the VM for this -- run
-``multipass shell rock-dev`` to open a second shell:
+endpoint. We'll need a new shell of the VM for this -- in a separate terminal,
+run ``multipass shell rock-dev`` again:
 
 .. literalinclude:: code/go/task.yaml
     :language: bash
@@ -91,8 +91,8 @@ endpoint. We'll need a new shell of the VM for this -- run
 
 The Go app should respond with ``Hello, world!``.
 
-The Go app looks good, so let's close the second shell of the VM
-and stop the app in the original shell by pressing
+The Go app looks good, so let's close the terminal instance we used for
+testing and stop the app in the original terminal instance by pressing
 :kbd:`Ctrl` + :kbd:`C`.
 
 Pack the Go app into a rock
