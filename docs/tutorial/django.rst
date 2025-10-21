@@ -79,7 +79,7 @@ The Django app should respond with
 
     .. code-block:: bash
 
-        multipass info charm-dev | grep IP
+        multipass info rock-dev | grep IP
 
     Visit ``http://<Multipass private IP>:8000``
     in a web browser to see the fully-rendered page, replacing

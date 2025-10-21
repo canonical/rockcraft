@@ -87,7 +87,7 @@ The Express app should respond with *Welcome to Express* web page.
 
     .. code-block:: bash
 
-        multipass info charm-dev | grep IP
+        multipass info rock-dev | grep IP
 
 The Express app looks good, so let's close the terminal instance we used for
 testing and stop the app in the original terminal instance by pressing
