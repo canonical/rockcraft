@@ -3,19 +3,18 @@
 Tutorial
 ========
 
-The tutorials are lessons for newcomers to Rockcraft where learning takes place by
-working directly with the tool. Each tutorial has a tangible result at the end, so
-you'll have confirmation for completing them in something you can keep and revisit
-later. They are designed as controlled scenarios, so no prior setup is needed.
+The tutorials are guided lessons that help you develop skills by using Rockcraft. Each
+is self-contained and delivers a working result that marks a learning milestone and is
+an opportunity for further exploration. If you're a newcomer to Rockcraft, this is the
+best way to start.
 
-The first tutorial is a lesson that works through the main process of packaging a
-rock with Rockcraft. It will introduce you to key concepts and operations, starting from
-installation and setup and progressing to finalizing your first rock.
+The first tutorial works through the process of packaging a rock with Rockcraft. It will
+introduce you to key concepts and operations, from installation and setup to finalizing
+your first rock.
 
 :ref:`tutorial-create-a-hello-world-rock`
 
-In these application tutorials, you'll transform application source code into container
-applications:
+In the app tutorials, you'll build container apps.
 
 - :ref:`tutorial-pack-a-python-package`
 - :ref:`tutorial-bundle-a-nodejs-app-into-a-rock`
