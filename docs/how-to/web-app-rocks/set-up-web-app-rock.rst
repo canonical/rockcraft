@@ -234,7 +234,7 @@ example:
                  -k [ sync ]
                startup: enabled
                after:
-               - statsd-exporter
+                 - statsd-exporter
                user: _daemon_
            ...
 
