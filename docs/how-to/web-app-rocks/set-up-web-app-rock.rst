@@ -210,8 +210,8 @@ example:
                - statsd-exporter
              user: _daemon_
 
-      To limit the maximum number of pending connections in ``Gunicorn`` to 1024, add the following
-      lines to ``rockcraft.yaml``.
+      To limit the maximum number of pending connections in Gunicorn to 1024, add the
+      following lines to your project file.
 
       .. code-block:: yaml
          :caption: rockcraft.yaml
