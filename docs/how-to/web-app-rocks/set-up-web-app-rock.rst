@@ -289,7 +289,7 @@ example:
                user: _daemon_
                working-dir: /app
 
-      To pass the argument ``--example-arg`` to the main Go application, add the following lines
+      To pass the argument ``--example-arg`` to the main Go app, add the following lines
       to ``rockcraft.yaml``.
 
       .. code-block:: yaml
