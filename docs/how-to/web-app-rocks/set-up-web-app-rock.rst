@@ -216,27 +216,27 @@ example:
       .. code-block:: yaml
          :caption: rockcraft.yaml
 
-           services:
-             flask:
-               command: /bin/python3 -m gunicorn -c /flask/gunicorn.conf.py app:app --backlog 1024
-                 -k [ sync ]
+         services:
+           flask:
+             command: /bin/python3 -m gunicorn -c /flask/gunicorn.conf.py app:app --backlog 1024
+               -k [ sync ]
 
    .. group-tab:: Django
 
       .. code-block:: yaml
          :caption: Output of ``rockcraft expand-extensions``
 
-           ...
-           services:
-             django:
-               override: replace
-               command: /bin/python3 -m gunicorn -c /django/gunicorn.conf.py django_hello_world.wsgi:application
-                 -k [ sync ]
-               startup: enabled
-               after:
-                 - statsd-exporter
-               user: _daemon_
-           ...
+         # ...
+         services:
+           django:
+             override: replace
+             command: /bin/python3 -m gunicorn -c /django/gunicorn.conf.py django_hello_world.wsgi:application
+               -k [ sync ]
+             startup: enabled
+             after:
+               - statsd-exporter
+             user: _daemon_
+         # ...
 
       To limit the maximum number of pending connections in ``Gunicorn`` to 1024, add the following
       lines to ``rockcraft.yaml``.
@@ -244,26 +244,26 @@ example:
       .. code-block:: yaml
          :caption: rockcraft.yaml
 
-           services:
-             django:
-               command: /bin/python3 -m gunicorn -c /django/gunicorn.conf.py django_hello_world.wsgi:application
-                 --backlog 1024 -k [ sync ]
+         services:
+           django:
+             command: /bin/python3 -m gunicorn -c /django/gunicorn.conf.py django_hello_world.wsgi:application
+               --backlog 1024 -k [ sync ]
 
    .. group-tab:: FastAPI
 
       .. code-block:: yaml
          :caption: Output of ``rockcraft expand-extensions``
 
-           ...
-           services:
-             fastapi:
-               override: replace
-               command: /bin/python3 -m uvicorn app:app
-               startup: enabled
-               environment:
-                 UVICORN_HOST: 0.0.0.0
-               user: _daemon_
-               working-dir: /app
+         # ...
+         services:
+           fastapi:
+             override: replace
+             command: /bin/python3 -m uvicorn app:app
+             startup: enabled
+             environment:
+               UVICORN_HOST: 0.0.0.0
+             user: _daemon_
+             working-dir: /app
 
       To limit the maximum number of pending connections in ``uvicorn`` to 1024, add the following
       lines to ``rockcraft.yaml``.
@@ -271,23 +271,23 @@ example:
       .. code-block:: yaml
          :caption: rockcraft.yaml
 
-           services:
-             fastapi:
-               command: /bin/python3 -m uvicorn app:app --backlog 1024
+         services:
+           fastapi:
+             command: /bin/python3 -m uvicorn app:app --backlog 1024
 
    .. group-tab:: Go
 
       .. code-block:: yaml
          :caption: Output of ``rockcraft expand-extensions``
 
-           ...
-           services:
-             go:
-               override: replace
-               command: go-hello-world
-               startup: enabled
-               user: _daemon_
-               working-dir: /app
+         # ...
+         services:
+           go:
+             override: replace
+             command: go-hello-world
+             startup: enabled
+             user: _daemon_
+             working-dir: /app
 
       To pass the argument ``--example-arg`` to the main Go app, add the following lines
       to ``rockcraft.yaml``.
@@ -295,26 +295,26 @@ example:
       .. code-block:: yaml
          :caption: rockcraft.yaml
 
-           services:
-             go:
-               override: replace
-               command: go-hello-world --example-arg
+         services:
+           go:
+             override: replace
+             command: go-hello-world --example-arg
 
    .. group-tab:: Express
 
       .. code-block:: yaml
          :caption: Output of ``rockcraft expand-extensions``
 
-           ...
-           services:
-             expressjs:
-               override: replace
-               command: npm start
-               startup: enabled
-               environment:
-                 NODE_ENV: production
-               user: _daemon_
-               working-dir: /app
+         # ...
+         services:
+           expressjs:
+             override: replace
+             command: npm start
+             startup: enabled
+             environment:
+               NODE_ENV: production
+             user: _daemon_
+             working-dir: /app
 
 
       To pass the argument ``--example-arg`` to the ExpressJS script, add the following lines
@@ -323,29 +323,29 @@ example:
       .. code-block:: yaml
          :caption: rockcraft.yaml
 
-           services:
-             expressjs:
-               command: npm start -- --example-arg
+         services:
+           expressjs:
+             command: npm start -- --example-arg
 
    .. group-tab:: Spring Boot
 
       .. code-block:: yaml
          :caption: Output of ``rockcraft expand-extensions``
 
-           ...
-           services:
-             spring-boot:
-               override: replace
-               command: bash -c "java -jar *.jar"
-               startup: enabled
-               user: _daemon_
-               working-dir: /app
+         # ...
+         services:
+           spring-boot:
+             override: replace
+             command: bash -c "java -jar *.jar"
+             startup: enabled
+             user: _daemon_
+             working-dir: /app
 
       To enable a debug mode with a flag, add the following lines to ``rockcraft.yaml``.
 
       .. code-block:: yaml
          :caption: rockcraft.yaml
 
-           services:
-             spring-boot:
-               command: bash -c "java -jar *.jar --debug"
+         services:
+           spring-boot:
+             command: bash -c "java -jar *.jar --debug"
