@@ -199,16 +199,16 @@ example:
       .. code-block:: yaml
          :caption: Output of ``rockcraft expand-extensions``
 
-           ...
-           services:
-             flask:
-               override: replace
-               command: /bin/python3 -m gunicorn -c /flask/gunicorn.conf.py app:app -k [ sync ]
-               startup: enabled
-               after:
+         # ...
+
+         services:
+           flask:
+             override: replace
+             command: /bin/python3 -m gunicorn -c /flask/gunicorn.conf.py app:app -k [ sync ]
+             startup: enabled
+             after:
                - statsd-exporter
-               user: _daemon_
-           ...
+             user: _daemon_
 
       To limit the maximum number of pending connections in ``Gunicorn`` to 1024, add the following
       lines to ``rockcraft.yaml``.
