@@ -300,7 +300,7 @@ example:
                override: replace
                command: go-hello-world --example-arg
 
-   .. group-tab:: ExpressJS
+   .. group-tab:: Express
 
       .. code-block:: yaml
          :caption: Output of ``rockcraft expand-extensions``
