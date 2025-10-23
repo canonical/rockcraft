@@ -50,8 +50,8 @@ In the same directory, copy and save the following into a text file called
 Run the Flask app using ``flask run -p 8000`` to verify that it works.
 
 Test the Flask app by using ``curl`` to send a request to the root
-endpoint. We'll need a new terminal for this -- run
-``multipass shell rock-dev`` to get another terminal:
+endpoint. We'll need a new shell of the VM for this -- in a separate terminal,
+run ``multipass shell rock-dev`` again:
 
 .. literalinclude:: code/flask/task.yaml
     :language: bash
@@ -61,7 +61,8 @@ endpoint. We'll need a new terminal for this -- run
 
 The Flask app should respond with ``Hello, world!``.
 
-The Flask app looks good, so let's stop it for now by pressing
+The Flask app looks good, so let's close the terminal instance we used for
+testing and stop the app in the original terminal instance by pressing
 :kbd:`Ctrl` + :kbd:`C`.
 
 Pack the Flask app into a rock
@@ -441,9 +442,9 @@ top of the ``rockcraft.yaml`` file should look similar to the following:
 
 .. note::
 
-    ``rockcraft pack`` will create a new image with the updated code even if we
-    don't change the version. It is recommended to change the version whenever
-    we make changes to the app in the image.
+    If we repack the rock without changing the version, the new rock will have the
+    same name and overwrite the last one we built. It's a good practice to change
+    the version whenever we make changes to the app in the image.
 
 Pack and run the rock using similar commands as before:
 

@@ -52,8 +52,8 @@ Change into the ``django_hello_world`` directory and run the Django app
 using ``python manage.py runserver`` to verify that it works.
 
 Test the Django app by using ``curl`` to send a request to the root
-endpoint. We'll need a new terminal for this -- run
-``multipass shell rock-dev`` to get another terminal:
+endpoint. We'll need a new shell of the VM for this -- in a separate terminal,
+run ``multipass shell rock-dev`` again:
 
 .. literalinclude:: code/django/task.yaml
     :language: bash
@@ -79,13 +79,14 @@ The Django app should respond with
 
     .. code-block:: bash
 
-        multipass info charm-dev | grep IP
+        multipass info rock-dev | grep IP
 
     Visit ``http://<Multipass private IP>:8000``
     in a web browser to see the fully-rendered page, replacing
     ``<Multipass private IP>`` with your VM's private IP address.
 
-The Django app looks good, so let's stop it for now by pressing
+The Django app looks good, so let's close the terminal instance we used for
+testing and stop the app in the original terminal instance by pressing
 :kbd:`Ctrl` + :kbd:`C`.
 
 Pack the Django app into a rock
@@ -478,9 +479,9 @@ the ``rockcraft.yaml`` file should look similar to the following:
 
 .. note::
 
-    ``rockcraft pack`` will create a new image with the updated code even if we
-    don't change the version. It is recommended to change the version whenever
-    we make changes to the app in the image.
+    If we repack the rock without changing the version, the new rock will have the
+    same name and overwrite the last one we built. It's a good practice to change
+    the version whenever we make changes to the app in the image.
 
 Pack and run the rock using similar commands as before:
 
