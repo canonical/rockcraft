@@ -29,4 +29,4 @@ code into container applications:
    7. Build a rock for a FastAPI application <fastapi.rst>
    8. Build a rock for a Go application <go.rst>
    9. Build a rock for an Express application <expressjs.rst>
-   9. Build a rock for a Spring Boot application <springboot.rst>
+   10. Build a rock for a Spring Boot application <springboot.rst>

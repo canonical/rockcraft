@@ -1,5 +1,7 @@
-How to use Rockcraft's GitHub Action
-************************************
+.. _how-to-use-the-rockcraft-pack-github-action:
+
+Use the Rockcraft Pack GitHub Action
+====================================
 
 Within your GitHub repository, make sure you have
 `GitHub Actions enabled <https://docs.github.com/en/actions/get-started/quickstart>`_.

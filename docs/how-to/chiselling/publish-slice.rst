@@ -1,7 +1,7 @@
-.. _publishslice:
+.. _how-to-publish-a-slice-definition:
 
-How to publish a slice definition
-*********************************
+Publish a slice definition
+==========================
 
 At this stage, you have created some package slice definitions and you have a
 custom Chisel release in your local development environment. You have also
