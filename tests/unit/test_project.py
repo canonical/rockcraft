@@ -724,7 +724,7 @@ def test_project_generate_metadata(yaml_loaded_data):
     }
 
     # Regression test for https://github.com/canonical/rockcraft/issues/992
-    assert rock_metadata["architecture"].__class__.mro() == [str, object]
+    assert rock_metadata["architecture"].__class__ is str
 
     # Redo test with multi-line summary
     multi_line_summary = "one\n\ntwo\n\n\n\n\nthree"
