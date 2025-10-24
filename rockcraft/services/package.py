@@ -63,7 +63,7 @@ class RockcraftPackageService(PackageService):
             project_base_image=image_info.base_image,
             base_digest=image_info.base_digest,
             rock_suffix=platform,
-            build_for=build_for,
+            build_for=str(build_for),
             base_layer_dir=image_info.base_layer_dir,
         )
 

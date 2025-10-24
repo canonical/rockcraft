@@ -19,6 +19,7 @@ from typing import cast
 import pytest
 from craft_application import ServiceFactory
 from craft_platforms import DebianArchitecture
+from pytest_mock.plugin import MockerFixture
 from rockcraft.models import Project
 from rockcraft.oci import Image
 from rockcraft.services import RockcraftImageService, package
@@ -227,3 +228,36 @@ def test_inner_pack(
     image.to_oci_archive.assert_called_once_with(
         tag=project.version, filename=f"{project.name}_{project.version}_test-rock.rock"
     )
+
+
+@pytest.mark.usefixtures("fake_project_file", "project_keys")
+@pytest.mark.parametrize(
+    ("project_keys"),
+    [
+        pytest.param(
+            {"platforms": {str(arch): None for arch in DebianArchitecture}},
+        )
+    ],
+    indirect=True,
+)
+def test_pack_serialize_build_for(
+    fake_services: ServiceFactory,
+    mocker: MockerFixture,
+    new_dir: Path,
+    fake_host_architecture: DebianArchitecture,
+) -> None:
+    """Ensure that the information dumped to metadata.yaml is serializable.
+
+    Regression test for https://github.com/canonical/rockcraft/issues/992"""
+    fake_services.get("project").configure(
+        platform=fake_host_architecture, build_for=fake_host_architecture
+    )
+    mock_inner_pack = mocker.patch.object(package, "_pack")
+
+    fake_services.get("package").pack(prime_dir=new_dir / "prime", dest=new_dir)
+
+    mock_inner_pack.assert_called_once()
+    call = mock_inner_pack.call_args
+    # Assert that a plain string was given as a "build_for"
+    # Incorrect behavior would include something like DebianArchitecture in this list
+    assert call.kwargs.get("build_for").__class__.mro() == [str, object]
