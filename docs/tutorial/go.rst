@@ -281,7 +281,7 @@ View the app logs
 ~~~~~~~~~~~~~~~~~
 
 When deploying the Go rock, we can always get the app logs with
-:ref:`pebble_explanation_page`:
+:ref:`explanation-pebble`:
 
 .. literalinclude:: code/go/task.yaml
     :language: text
@@ -459,7 +459,7 @@ But there is a lot more to explore:
     * - "What is...?"
       - :ref:`go-framework extension <reference-go-framework>`
 
-        :ref:`What is a Rock? <rocks_explanation>`
+        :ref:`What is a Rock? <explanation-rocks>`
     * - "Why...?", "So what?"
       - :external+12-factor:ref:`12-Factor app principles and support in Charmcraft
         and Rockcraft <explanation>`

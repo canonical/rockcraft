@@ -24,7 +24,7 @@ Create a new directory, write the following into a text editor and save it as
 
 Note that this Rockcraft file uses the ``hello_bins`` Chisel slice to generate
 an image containing only files that are strictly necessary for the ``hello``
-binary. See :ref:`chisel_explanation` for details on the Chisel tool.
+binary. See :ref:`explanation-chisel` for details on the Chisel tool.
 
 
 Pack the rock with Rockcraft
