@@ -5,7 +5,7 @@ Build a rock for a Flask app
 
 In this tutorial, we'll create a simple Flask app and learn how to
 containerise it in a rock, using Rockcraft's ``flask-framework``
-:ref:`extension <flask-framework-reference>`.
+:ref:`extension <reference-flask-framework>`.
 
 Setup
 =====
@@ -537,7 +537,7 @@ But there is a lot more to explore:
     * - "How do I get in touch?"
       - `Matrix channel <https://matrix.to/#/#12-factor-charms:ubuntu.com>`_
     * - "What is...?"
-      - :ref:`flask-framework extension <flask-framework-reference>`
+      - :ref:`flask-framework extension <reference-flask-framework>`
 
         :ref:`What is a Rock? <rocks_explanation>`
     * - "Why...?", "So what?"

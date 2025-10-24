@@ -5,7 +5,7 @@ Build a rock for a Spring Boot app
 
 In this tutorial, we'll containerise a simple Spring Boot app into a
 rock using Rockcraft's ``spring-boot-framework``
-:ref:`extension <spring-boot-framework-reference>`.
+:ref:`extension <reference-spring-boot-framework>`.
 
 It should take 25 minutes for you to complete.
 
@@ -465,7 +465,7 @@ But there is a lot more to explore:
     * - "How do I get in touch?"
       - `Matrix channel <https://matrix.to/#/#12-factor-charms:ubuntu.com>`_
     * - "What is...?"
-      - :ref:`spring-boot-framework extension <spring-boot-framework-reference>`
+      - :ref:`spring-boot-framework extension <reference-spring-boot-framework>`
 
         :ref:`What is a Rock? <rocks_explanation>`
     * - "Why...?", "So what?"

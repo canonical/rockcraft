@@ -57,7 +57,7 @@ Spring Boot projects, using either Maven or Gradle as the build tool.
 
 This new extension is experimental and subject to change. For more information, check
 out the Spring Boot :ref:`tutorial <build-a-rock-for-a-spring-boot-application>` and
-:ref:`reference <spring-boot-framework-reference>`.
+:ref:`reference <reference-spring-boot-framework>`.
 
 
 Minor features
