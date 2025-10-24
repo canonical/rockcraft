@@ -1,5 +1,7 @@
-Migrate a popular Docker image to a chiselled rock
-**************************************************
+.. _how-to-migrate-a-docker-image-to-a-chiselled-rock:
+
+Migrate a Docker image to a chiselled rock
+==========================================
 
 Prerequisites
 -------------
