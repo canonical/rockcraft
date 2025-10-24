@@ -81,7 +81,7 @@ The base system image that the rock's contents will be layered on. This is also
 the system that will be mounted and made available when using Overlays. The
 special value ``bare`` means that the rock will have no base system at all,
 which is typically used with static binaries or
-:ref:`Chisel slices <chisel_explanation>`.
+:ref:`Chisel slices <explanation-chisel>`.
 
 .. note::
    The notation "ubuntu:<channel>" is also supported for some channels, but this

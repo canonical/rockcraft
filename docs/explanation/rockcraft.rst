@@ -1,4 +1,4 @@
-.. _why_use_rockcraft:
+.. _explanation-why-use-rockcraft:
 
 Why use Rockcraft?
 ==================

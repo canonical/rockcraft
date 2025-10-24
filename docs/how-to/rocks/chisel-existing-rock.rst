@@ -10,7 +10,7 @@ and thus reducing its attack surface, while retaining its functionality.
 
 For this, you'll want to ensure that your rock has a ``bare``
 :ref:`base <rockcraft_yaml_base>` and that its contents are
-:ref:`chiselled <chisel_explanation>`.
+:ref:`chiselled <explanation-chisel>`.
 
 For this guide, let's take the example of a Python runtime rock.
 

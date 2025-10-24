@@ -24,7 +24,7 @@ What sets rocks apart?
 * **Opinionated and consistent design**: all rocks follow the same design,
   aiming to minimise your full-stack disparity and adoption overhead, e.g.
 
-  * :ref:`pebble_explanation_page` **is the official entrypoint for all
+  * :ref:`explanation-pebble` **is the official entrypoint for all
     rocks**, providing a predictable and powerful abstraction layer
     between the user and the container application;
   * Rocks extend the OCI image information by including additional **metadata**
@@ -32,10 +32,10 @@ What sets rocks apart?
     applications to easily inspect the properties of the image they are running
     on, at execution time;
 * **User-centric experience**: rocks are described in a :ref:`declarative
-  format<rockcraft.yaml_reference>` and **built on top of familiar and reliable
+  format <rockcraft.yaml_reference>` and **built on top of familiar and reliable
   Ubuntu images**, offering an open and up-to-date user experience;
 * **Seamless chiselling experience**: rocks can be effortlessly
-  :ref:`chiselled<chisel_explanation>` using off-the-shelf primitives,
+  :ref:`chiselled <explanation-chisel>` using off-the-shelf primitives,
   harnessing all the advantages of "distroless" to deliver **compact
   and secure Ubuntu-based container images**.
 

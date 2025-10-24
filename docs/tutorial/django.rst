@@ -275,7 +275,7 @@ View the app logs
 ~~~~~~~~~~~~~~~~~
 
 When deploying the Django rock, we can always get the app logs via
-:ref:`pebble_explanation_page`:
+:ref:`explanation-pebble`:
 
 .. literalinclude:: code/django/task.yaml
     :language: text
@@ -315,7 +315,7 @@ Chisel the rock
 ===============
 
 This is an optional but recommended step, especially if we're looking to
-deploy the rock into a production environment. With :ref:`chisel_explanation`
+deploy the rock into a production environment. With :ref:`explanation-chisel`
 we can produce lean and production-ready rocks by getting rid of all the
 contents that are not needed for the Django app to run. This results
 in a much smaller rock with a reduced attack surface.

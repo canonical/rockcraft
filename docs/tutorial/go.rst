@@ -281,7 +281,7 @@ View the app logs
 ~~~~~~~~~~~~~~~~~
 
 When deploying the Go rock, we can always get the app logs with
-:ref:`pebble_explanation_page`:
+:ref:`explanation-pebble`:
 
 .. literalinclude:: code/go/task.yaml
     :language: text
