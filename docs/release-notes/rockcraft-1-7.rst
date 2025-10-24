@@ -56,7 +56,7 @@ Support for remote builds
 
 We added support for remote builds, which leverage off-site compute for
 building rocks and can build for multiple architectures with a single command.
-For a description of the feature, see :ref:`ref-remote-builds`, or run
+For a description of the feature, see :ref:`reference-remote-builds`, or run
 ``rockcraft remote-build --help``.
 
 This feature is new and experimental -- we welcome feedback on the
@@ -85,7 +85,7 @@ Go extension
 ~~~~~~~~~~~~
 
 A new :ref:`tutorial <build-a-rock-for-a-go-application>` and :ref:`reference
-<go-framework-reference>` are available for the go-framework extension.
+<reference-go-framework>` are available for the go-framework extension.
 
 
 OCI image configuration

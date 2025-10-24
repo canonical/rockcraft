@@ -5,7 +5,7 @@ Build a rock for a Django app
 
 In this tutorial, we'll create a simple Django app and learn how to
 containerise it in a rock, using Rockcraft's ``django-framework``
-:ref:`extension <django-framework-reference>`.
+:ref:`extension <reference-django-framework>`.
 
 Setup
 =====
@@ -574,7 +574,7 @@ But there is a lot more to explore:
     * - "How do I get in touch?"
       - `Matrix channel <https://matrix.to/#/#12-factor-charms:ubuntu.com>`_
     * - "What is...?"
-      - :ref:`django-framework extension <django-framework-reference>`
+      - :ref:`django-framework extension <reference-django-framework>`
 
         :ref:`What is a Rock? <rocks_explanation>`
     * - "Why...?", "So what?"

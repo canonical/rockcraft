@@ -5,7 +5,7 @@ Build a rock for an Express app
 
 In this tutorial, we'll containerise a simple Express app into a rock
 using Rockcraft's ``expressjs-framework`` :ref:`extension
-<expressjs-framework-reference>`.
+<reference-express-framework>`.
 
 It should take 25 minutes for you to complete.
 
@@ -455,7 +455,7 @@ But there is a lot more to explore:
     * - "How do I get in touch?"
       - `Matrix channel <https://matrix.to/#/#12-factor-charms:ubuntu.com>`_
     * - "What is...?"
-      - :ref:`expressjs-framework extension <expressjs-framework-reference>`
+      - :ref:`expressjs-framework extension <reference-express-framework>`
 
         :ref:`What is a Rock? <rocks_explanation>`
     * - "Why...?", "So what?"

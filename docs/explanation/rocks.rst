@@ -32,7 +32,7 @@ What sets rocks apart?
     applications to easily inspect the properties of the image they are running
     on, at execution time;
 * **User-centric experience**: rocks are described in a :ref:`declarative
-  format <rockcraft.yaml_reference>` and **built on top of familiar and reliable
+  format <reference-rockcraft-yaml>` and **built on top of familiar and reliable
   Ubuntu images**, offering an open and up-to-date user experience;
 * **Seamless chiselling experience**: rocks can be effortlessly
   :ref:`chiselled <explanation-chisel>` using off-the-shelf primitives,
