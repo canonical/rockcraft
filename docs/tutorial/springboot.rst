@@ -279,7 +279,7 @@ View the app logs
 ~~~~~~~~~~~~~~~~~
 
 When deploying the Spring Boot rock, we can always get the app logs with
-:ref:`explanation-pebble`:
+:ref:`pebble_explanation_page`:
 
 .. literalinclude:: code/spring-boot/task.yaml
     :language: text

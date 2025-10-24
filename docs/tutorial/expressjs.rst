@@ -270,7 +270,7 @@ View the app logs
 ~~~~~~~~~~~~~~~~~
 
 When deploying the Express rock, we can always get the app logs with
-:ref:`explanation-pebble`:
+:ref:`pebble_explanation_page`:
 
 .. literalinclude:: code/expressjs/task.yaml
     :language: bash

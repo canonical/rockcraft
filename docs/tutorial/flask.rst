@@ -252,7 +252,7 @@ View the app logs
 ~~~~~~~~~~~~~~~~~
 
 When deploying the Flask rock, we can always get the app logs via
-:ref:`explanation-pebble`:
+:ref:`pebble_explanation_page`:
 
 .. literalinclude:: code/flask/task.yaml
     :language: text
@@ -292,7 +292,7 @@ Chisel the rock
 ===============
 
 This is an optional but recommended step, especially if we're looking to
-deploy the rock into a production environment. With :ref:`explanation-chisel`
+deploy the rock into a production environment. With :ref:`chisel_explanation`
 we can produce lean and production-ready rocks by getting rid of all the
 contents that are not needed for the Flask app to run. This results
 in a much smaller rock with a reduced attack surface.

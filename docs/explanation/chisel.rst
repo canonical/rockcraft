@@ -1,4 +1,4 @@
-.. _explanation-chisel:
+.. _chisel_explanation:
 
 Chisel
 ======

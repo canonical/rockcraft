@@ -154,7 +154,7 @@ class Project(BaseProject):
     :ref:`This system <bases_explanation>` is mounted and made available when using
     overlays. The special value ``bare`` means that the rock will have no base system,
     which is typically used with static binaries or
-    :ref:`Chisel slices <explanation-chisel>`.
+    :ref:`Chisel slices <chisel_explanation>`.
     """
     build_base: BuildBaseT = pydantic.Field(  # type: ignore[reportIncompatibleVariableOverride]
         default=None, description="The system used to build the rock."

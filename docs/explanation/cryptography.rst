@@ -1,4 +1,4 @@
-.. _explanation-cryptographic-technology:
+.. _explanation_cryptographic-technology:
 
 Cryptographic technology in Rockcraft
 =====================================

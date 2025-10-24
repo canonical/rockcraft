@@ -1,4 +1,4 @@
-.. _explanation-overlay-step:
+.. _overlays:
 
 Overlay step
 ============
