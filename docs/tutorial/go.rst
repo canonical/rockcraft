@@ -4,7 +4,7 @@ Build a rock for a Go app
 -------------------------
 
 In this tutorial, we'll containerise a simple Go app into a rock using
-Rockcraft's ``go-framework`` :ref:`extension <go-framework-reference>`.
+Rockcraft's ``go-framework`` :ref:`extension <reference-go-framework>`.
 
 It should take 25 minutes for you to complete.
 
@@ -457,7 +457,7 @@ But there is a lot more to explore:
     * - "How do I get in touch?"
       - `Matrix channel <https://matrix.to/#/#12-factor-charms:ubuntu.com>`_
     * - "What is...?"
-      - :ref:`go-framework extension <go-framework-reference>`
+      - :ref:`go-framework extension <reference-go-framework>`
 
         :ref:`What is a Rock? <rocks_explanation>`
     * - "Why...?", "So what?"

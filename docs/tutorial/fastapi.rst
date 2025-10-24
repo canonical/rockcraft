@@ -5,7 +5,7 @@ Build a rock for a FastAPI app
 
 In this tutorial, we'll create a simple FastAPI app and learn how to
 containerise it in a rock with Rockcraft's
-:ref:`fastapi-framework <fastapi-framework-reference>` extension.
+:ref:`fastapi-framework <reference-fastapi-framework>` extension.
 
 Setup
 =====
@@ -550,7 +550,7 @@ But there is a lot more to explore:
     * - "How do I get in touch?"
       - `Matrix channel <https://matrix.to/#/#12-factor-charms:ubuntu.com>`_
     * - "What is...?"
-      - :ref:`fastapi-framework extension <fastapi-framework-reference>`
+      - :ref:`fastapi-framework extension <reference-fastapi-framework>`
 
         :ref:`What is a Rock? <rocks_explanation>`
     * - "Why...?", "So what?"

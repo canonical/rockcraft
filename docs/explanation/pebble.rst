@@ -77,7 +77,7 @@ Creating services
 
 Rockcraft follows the :external+pebble:ref:`Pebble layer specification
 <layer-specification>` to the letter, with Pebble services defined in
-:doc:`/reference/rockcraft.yaml`. :ref:`how-to-convert-an-entrypoint-to-a-pebble-layer`
+:ref:`reference-rockcraft-yaml`. :ref:`how-to-convert-an-entrypoint-to-a-pebble-layer`
 provides an example of how to convert a Docker entrypoint to a Pebble layer.
 
 

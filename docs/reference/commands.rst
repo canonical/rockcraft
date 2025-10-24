@@ -1,9 +1,12 @@
-Rockcraft commands
-==================
+.. _reference-commands:
+
+Commands
+========
 
 .. Use a hidden table of contents to ensure that documentation is read.
 
 .. include:: commands/toc.rst
+
 
 Lifecycle commands
 ------------------
@@ -13,10 +16,12 @@ provided, the command applies to all parts.
 
 .. include:: commands/lifecycle-commands.rst
 
+
 Extension commands
 ------------------
 
 .. include:: commands/extensions-commands.rst
+
 
 Other commands
 --------------

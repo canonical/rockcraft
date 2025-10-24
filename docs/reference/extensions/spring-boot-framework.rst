@@ -1,6 +1,6 @@
-.. _spring-boot-framework-reference:
+.. _reference-spring-boot-framework:
 
-spring-boot-framework
+Sprint Boot framework
 ---------------------
 
 The Spring Boot extension streamlines the process of building Spring Boot
@@ -9,25 +9,25 @@ application rocks.
 The extension packs and copies the Jar package file to the rock.
 By default, the base ``bare`` is used, to generate a lightweight image.
 
-
 .. note::
+
     The Spring Boot extension is compatible with the ``bare`` and
     ``ubuntu@24.04`` bases.
 
 
 Project requirements
-====================
+--------------------
 
 To use the Spring Boot Framework extension, there must be either:
 
-1. a ``pom.xml`` file
-2. a ``build.gradle`` file
+- a ``pom.xml`` file
+- a ``build.gradle`` file
 
 in the root directory of the project.
 
 
 ``parts`` > ``spring-boot-framework/install-app`` > ``plugin``
-==============================================================
+--------------------------------------------------------------
 
 The ``spring-boot-framework`` extension dynamically determines the plugin to
 use to bulid the rock. Depending on the presence of ``pom.xml`` or
@@ -57,7 +57,7 @@ respectively.
 
 
 ``parts`` > ``spring-boot-framework/install-app`` > ``build-packages``
-======================================================================
+----------------------------------------------------------------------
 
 By default, the ``spring-boot-framework`` uses ``default-jdk`` package to build
 the rock. Depending on the ``build-base``, a different Java JDK version is used.
@@ -77,7 +77,7 @@ If a different Java version is required, you can specify it in the
 
 
 ``parts`` > ``spring-boot-framework/runtime``
-=============================================
+---------------------------------------------
 
 To provide an efficient runtime for Java, the extension calls the
 :doc:`Jlink </common/craft-parts/reference/plugins/jlink_plugin>`
@@ -103,8 +103,7 @@ The ``spring-boot-framework`` uses the following configuration:
 
 
 ``parts`` > ``spring-boot-framework/assets`` > ``stage``
-=========================================================
-
+--------------------------------------------------------
 
 If ``migrate`` or ``migrate.sh`` exist in the project's root directory, they will be
 included in the rock's ``/app`` directory by default.
@@ -124,6 +123,6 @@ of the ``spring-boot-framework/assets`` part:
 
 
 Useful links
-============
+------------
 
-- :ref:`build-a-rock-for-a-spring-boot-application`
+:ref:`build-a-rock-for-a-spring-boot-application`
