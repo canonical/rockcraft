@@ -1,3 +1,5 @@
+.. _how-to-publish-a-rock-to-a-registry:
+
 Publish a rock to a registry
 ============================
 

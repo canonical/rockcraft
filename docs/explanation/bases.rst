@@ -66,6 +66,6 @@ For example, if the goal is to have a tiny chiselled rock with software
 components coming from the Ubuntu 24.04 release, then the project file must have
 ``base: bare`` and ``build-base: ubuntu@24.04``.
 
-:ref:`chisel_existing_rock` provides a practical example on how to start from a rock
-with an Ubuntu base and apply the changes necessary to build a chiselled rock with a
-bare base.
+:ref:`how-to-chisel-a-rock` provides a practical example on how to start from
+a rock with an Ubuntu base and apply the changes necessary to build a chiselled rock
+with a bare base.
