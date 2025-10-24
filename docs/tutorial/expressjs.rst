@@ -457,7 +457,7 @@ But there is a lot more to explore:
     * - "What is...?"
       - :ref:`expressjs-framework extension <reference-express-framework>`
 
-        :ref:`What is a Rock? <rocks_explanation>`
+        :ref:`What is a Rock? <explanation-rocks>`
     * - "Why...?", "So what?"
       - :external+12-factor:ref:`12-Factor app principles and support in Charmcraft
         and Rockcraft <explanation>`

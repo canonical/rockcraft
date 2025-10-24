@@ -11,9 +11,10 @@ Overview
 --------
 
 Rockcraft was created to build secure, stable container images. Read on for a bird's-eye
-view of what sets Rockcraft apart from similar tools.
+view of what sets Rockcraft and rocks apart from similar tools.
 
-:ref:`explanation-why-use-rockcraft`
+- :ref:`explanation-why-use-rockcraft`
+- :ref:`explanation-rocks`
 
 Rockcraft is commonly used alongside Chisel slices to pack the smallest set of files
 needed for a rock to run.

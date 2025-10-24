@@ -1,4 +1,4 @@
-.. _rocks_explanation:
+.. _explanation-rocks:
 
 Rocks
 =====
