@@ -63,7 +63,7 @@ class RockcraftPackageService(PackageService):
             project_base_image=image_info.base_image,
             base_digest=image_info.base_digest,
             rock_suffix=platform,
-            build_for=str(build_for),
+            build_for=build_for,
             base_layer_dir=image_info.base_layer_dir,
         )
 
@@ -176,9 +176,8 @@ def _pack(
     # Also include the "created" timestamp, just before packing the image
     emit.progress("Adding metadata")
     oci_annotations, rock_metadata = project.generate_metadata(
-        datetime.datetime.now(datetime.timezone.utc).isoformat(), base_digest
+        datetime.datetime.now(datetime.timezone.utc).isoformat(), base_digest, build_for
     )
-    rock_metadata["architecture"] = build_for
     new_image.set_annotations(oci_annotations)
     new_image.set_control_data(rock_metadata)
     emit.progress("Metadata added")

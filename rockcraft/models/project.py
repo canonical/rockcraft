@@ -29,6 +29,7 @@ from craft_application.models import (
 )
 from craft_application.models import Project as BaseProject
 from craft_application.models.base import alias_generator
+from craft_platforms import DebianArchitecture
 from craft_providers import bases
 from craft_providers.errors import BaseConfigurationError
 from typing_extensions import override
@@ -372,7 +373,10 @@ class Project(BaseProject):
         return environment
 
     def generate_metadata(
-        self, generation_time: str, base_digest: bytes
+        self,
+        generation_time: str,
+        base_digest: bytes,
+        architecture: DebianArchitecture | str,
     ) -> tuple[dict[str, Any], dict[str, Any]]:
         """Generate the rock's metadata (both the OCI annotation and internal metadata.
 
@@ -389,6 +393,7 @@ class Project(BaseProject):
             "created": generation_time,
             "base": self.base,
             "base-digest": base_digest.hex(),
+            "architecture": str(architecture),
         }
 
         if self.build_base == "devel":
