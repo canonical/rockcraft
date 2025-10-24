@@ -749,7 +749,9 @@ def test_metadata_base_devel(yaml_loaded_data):
     now = datetime.datetime.now(datetime.timezone.utc).isoformat()
     digest = "a1b2c3"  # mock digest
 
-    _, rock_metadata = project.generate_metadata(now, bytes.fromhex(digest))
+    _, rock_metadata = project.generate_metadata(
+        now, bytes.fromhex(digest), DebianArchitecture.from_host()
+    )
     assert rock_metadata["grade"] == "devel"
 
 
