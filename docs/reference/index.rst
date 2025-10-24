@@ -18,7 +18,7 @@ Rockcraft is operated from the command line, with a command for each function.
 Project file
 ------------
 
-The main object inside an Rockcraft project is a configurable project file. Read on
+The main object inside a Rockcraft project is a configurable project file. Read on
 for a complete reference of this file's structure and contents.
 
 :ref:`reference-rockcraft-yaml`
@@ -27,7 +27,7 @@ for a complete reference of this file's structure and contents.
 Parts
 -----
 
-Software is brought into an image through the declaration of parts. Each part must be
+Software is brought into a rock through the declaration of parts. Each part must be
 configured for the software's language and build systems.
 
 - :ref:`reference-parts-and-steps`
