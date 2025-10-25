@@ -84,7 +84,7 @@ The base of the Rockcraft snap was updated from core22 to core24.
 Go extension
 ~~~~~~~~~~~~
 
-A new :ref:`tutorial <build-a-rock-for-a-go-application>` and :ref:`reference
+A new :ref:`tutorial <tutorial-build-a-rock-for-a-go-app>` and :ref:`reference
 <reference-go-framework>` are available for the go-framework extension.
 
 

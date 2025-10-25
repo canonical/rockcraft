@@ -73,4 +73,4 @@ Some files, if they exist, are included by default. These include:
 Useful links
 ------------
 
-:ref:`build-a-rock-for-a-fastapi-application`
+:ref:`tutorial-build-a-rock-for-a-fastapi-app`
