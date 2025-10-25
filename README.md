@@ -12,7 +12,7 @@ Rockcraft is for anyone who wants to build production-grade rocks.
 ## Basic usage
 
 A rock's build configuration is stored in simple language as a project file called
-`rockcraft.yaml`.
+`rockcraft.yaml`. 
 
 From the root of your container's codebase, Rockcraft creates a minimal `rockcraft.yaml` with:
 
