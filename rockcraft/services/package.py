@@ -176,9 +176,8 @@ def _pack(
     # Also include the "created" timestamp, just before packing the image
     emit.progress("Adding metadata")
     oci_annotations, rock_metadata = project.generate_metadata(
-        datetime.datetime.now(datetime.timezone.utc).isoformat(), base_digest
+        datetime.datetime.now(datetime.timezone.utc).isoformat(), base_digest, build_for
     )
-    rock_metadata["architecture"] = build_for
     new_image.set_annotations(oci_annotations)
     new_image.set_control_data(rock_metadata)
     emit.progress("Metadata added")
