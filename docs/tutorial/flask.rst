@@ -1,11 +1,11 @@
-.. _build-a-rock-for-a-flask-application:
+.. _tutorial-build-a-rock-for-a-flask-app:
 
 Build a rock for a Flask app
 ----------------------------
 
 In this tutorial, we'll create a simple Flask app and learn how to
 containerise it in a rock, using Rockcraft's ``flask-framework``
-:ref:`extension <flask-framework-reference>`.
+:ref:`extension <reference-flask-framework>`.
 
 Setup
 =====
@@ -50,8 +50,8 @@ In the same directory, copy and save the following into a text file called
 Run the Flask app using ``flask run -p 8000`` to verify that it works.
 
 Test the Flask app by using ``curl`` to send a request to the root
-endpoint. We'll need a new terminal for this -- run
-``multipass shell rock-dev`` to get another terminal:
+endpoint. We'll need a new shell of the VM for this -- in a separate terminal,
+run ``multipass shell rock-dev`` again:
 
 .. literalinclude:: code/flask/task.yaml
     :language: bash
@@ -61,7 +61,8 @@ endpoint. We'll need a new terminal for this -- run
 
 The Flask app should respond with ``Hello, world!``.
 
-The Flask app looks good, so let's stop it for now by pressing
+The Flask app looks good, so let's close the terminal instance we used for
+testing and stop the app in the original terminal instance by pressing
 :kbd:`Ctrl` + :kbd:`C`.
 
 Pack the Flask app into a rock
@@ -251,7 +252,7 @@ View the app logs
 ~~~~~~~~~~~~~~~~~
 
 When deploying the Flask rock, we can always get the app logs via
-:ref:`pebble_explanation_page`:
+:ref:`explanation-pebble`:
 
 .. literalinclude:: code/flask/task.yaml
     :language: text
@@ -291,7 +292,7 @@ Chisel the rock
 ===============
 
 This is an optional but recommended step, especially if we're looking to
-deploy the rock into a production environment. With :ref:`chisel_explanation`
+deploy the rock into a production environment. With :ref:`explanation-chisel`
 we can produce lean and production-ready rocks by getting rid of all the
 contents that are not needed for the Flask app to run. This results
 in a much smaller rock with a reduced attack surface.
@@ -441,9 +442,9 @@ top of the ``rockcraft.yaml`` file should look similar to the following:
 
 .. note::
 
-    ``rockcraft pack`` will create a new image with the updated code even if we
-    don't change the version. It is recommended to change the version whenever
-    we make changes to the app in the image.
+    If we repack the rock without changing the version, the new rock will have the
+    same name and overwrite the last one we built. It's a good practice to change
+    the version whenever we make changes to the app in the image.
 
 Pack and run the rock using similar commands as before:
 
@@ -532,13 +533,13 @@ But there is a lot more to explore:
       - :external+charmcraft:ref:`Write your first Kubernetes charm for a Flask app
         in Charmcraft <write-your-first-kubernetes-charm-for-a-flask-app>`
     * - "How do I...?"
-      - :ref:`How to manage a 12-factor app rock <manage-12-factor-app-rock>`
+      - :ref:`how-to-manage-a-12-factor-app-rock`
     * - "How do I get in touch?"
       - `Matrix channel <https://matrix.to/#/#12-factor-charms:ubuntu.com>`_
     * - "What is...?"
-      - :ref:`flask-framework extension <flask-framework-reference>`
+      - :ref:`flask-framework extension <reference-flask-framework>`
 
-        :ref:`What is a Rock? <rocks_explanation>`
+        :ref:`What is a Rock? <explanation-rocks>`
     * - "Why...?", "So what?"
       - :external+12-factor:ref:`12-Factor app principles and support in Charmcraft
         and Rockcraft <explanation>`

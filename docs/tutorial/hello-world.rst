@@ -1,5 +1,7 @@
+.. _tutorial-create-a-hello-world-rock:
+
 Create a "Hello World" rock
-***************************
+===========================
 
 Setup your environment
 ----------------------
@@ -20,7 +22,7 @@ This file instructs Rockcraft to build a rock that **only** has the ``hello``
 package (and its dependencies) inside. For more information about the ``parts``
 section, check :ref:`reference-part-properties`. The remaining YAML keys correspond to
 metadata that help define and describe the rock. For more information about all
-available keys, check :doc:`/reference/rockcraft.yaml`.
+available keys, check :ref:`reference-rockcraft-yaml`.
 
 Pack the rock with Rockcraft
 ----------------------------

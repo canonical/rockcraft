@@ -1,5 +1,7 @@
-How to get started - quick guide
-********************************
+.. _how-to-quickstart-guide:
+
+Quickstart guide
+================
 
 See the :ref:`tutorial` for a full getting started guide.
 

@@ -79,8 +79,8 @@ The tutorial and reference pages for all 12-factor app extensions were improved
 based on user feedback, with fixes to multiple steps that were showstoppers.
 
 We also added information about using the `StatsD`_
-exporter to the references for the :ref:`django-framework-reference` and
-:ref:`flask-framework-reference` extensions.
+exporter to the references for the :ref:`reference-django-framework` and
+:ref:`reference-flask-framework` extensions.
 
 Contributors
 ------------

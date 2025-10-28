@@ -42,6 +42,8 @@ Finally, once the VM is up, open a shell into it:
 
     multipass shell rock-dev
 
+Unless stated otherwise, we will work entirely within the VM from now on.
+
 ----
 
 `LXD`_ will be required for building the rock. Make sure it is installed

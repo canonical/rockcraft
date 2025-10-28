@@ -1,5 +1,4 @@
-.. _outsource-rock-builds-to-launchpad:
-
+.. _how-to-outsource-rock-builds-to-launchpad:
 
 Outsource rock builds to Launchpad
 ==================================

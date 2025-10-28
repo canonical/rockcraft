@@ -1,7 +1,7 @@
 Rockcraft documentation
 =======================
 
-**Rockcraft is a tool to create** :ref:`rocks <rocks_explanation>` -- a new
+**Rockcraft is a tool to create** :ref:`rocks <explanation-rocks>` -- a new
 generation of secure, stable and `OCI-compliant container images
 <OCI_image_spec_>`_, based on Ubuntu.
 
@@ -39,8 +39,8 @@ allowing complex operations to be declared at build time.
    .. grid-item-card:: :ref:`How-to guides <how-to>`
 
       **Step-by-step guides** - learn key operations, ranging from :ref:`creating
-      and cutting slices <how-to-chisel>` to :ref:`migrating and publishing
-      rocks <how-to-rocks>`.
+      and cutting slices <how-to-chiselling>` to :ref:`migrating and publishing
+      rocks <how-to-crafting>`.
 
 .. grid:: 1 1 2 2
    :reverse:

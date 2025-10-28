@@ -48,13 +48,13 @@ Bare bases
 
 As the name suggests, a *bare* base results in a rock with no baseline system. This
 definition is similar to the scratch Docker image, with the exception that a rock *can
-never be completely empty*, as it must always include a :ref:`pebble_explanation_page`
+never be completely empty*, as it must always include a :ref:`explanation-pebble`
 and some :ref:`additional metadata <what-sets-rocks-apart>`.
 
 The bare base is especially useful when the goal is to build a lean chiselled rock.
 Such rocks are typically preferred for production environments due to their optimized
 deployment efficiency and reduced attack surface. The combination of the bare base with
-:ref:`Chisel <chisel_explanation>` slices will result in a minimalist container image
+:ref:`Chisel <explanation-chisel>` slices will result in a minimalist container image
 that meets the production environment's criteria while retaining its functionality.
 
 Even with a bare base, when Rockcraft assembles a rock, it needs Ubuntu as the operating
@@ -66,6 +66,6 @@ For example, if the goal is to have a tiny chiselled rock with software
 components coming from the Ubuntu 24.04 release, then the project file must have
 ``base: bare`` and ``build-base: ubuntu@24.04``.
 
-:ref:`chisel_existing_rock` provides a practical example on how to start from a rock
-with an Ubuntu base and apply the changes necessary to build a chiselled rock with a
-bare base.
+:ref:`how-to-chisel-a-rock` provides a practical example on how to start from
+a rock with an Ubuntu base and apply the changes necessary to build a chiselled rock
+with a bare base.
