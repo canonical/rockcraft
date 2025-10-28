@@ -393,6 +393,9 @@ class Project(BaseProject):
             "created": generation_time,
             "base": self.base,
             "base-digest": base_digest.hex(),
+            # `architecture` "looks like" a string since it inherits from it, but serialization
+            # represents it as a DebianArchitecture, which comes out wrong (see rockcraft#992)
+            # instead, explicitly cast it to just be an actual string
             "architecture": str(architecture),
         }
 
