@@ -1,11 +1,11 @@
-.. _build-a-rock-for-an-expressjs-application:
+.. _tutorial-build-a-rock-for-an-express-app:
 
 Build a rock for an Express app
 -------------------------------
 
 In this tutorial, we'll containerise a simple Express app into a rock
 using Rockcraft's ``expressjs-framework`` :ref:`extension
-<expressjs-framework-reference>`.
+<reference-express-framework>`.
 
 It should take 25 minutes for you to complete.
 
@@ -66,8 +66,8 @@ Let's run the Express app to verify that it works:
 
 The app starts an HTTP server listening on port 3000
 that we can test by using curl to send a request to the root
-endpoint. We may need a new terminal for this -- run
-``multipass shell rock-dev`` to get another terminal:
+endpoint. We'll need a new shell of the VM for this -- in a separate terminal,
+run ``multipass shell rock-dev`` again:
 
 .. literalinclude:: code/expressjs/task.yaml
     :language: bash
@@ -87,10 +87,11 @@ The Express app should respond with *Welcome to Express* web page.
 
     .. code-block:: bash
 
-        multipass info charm-dev | grep IP
+        multipass info rock-dev | grep IP
 
-The Express app looks good, so let's stop it for now
-with :kbd:`Ctrl` + :kbd:`C`.
+The Express app looks good, so let's close the terminal instance we used for
+testing and stop the app in the original terminal instance by pressing
+:kbd:`Ctrl` + :kbd:`C`.
 
 Pack the Express app into a rock
 ================================
@@ -269,7 +270,7 @@ View the app logs
 ~~~~~~~~~~~~~~~~~
 
 When deploying the Express rock, we can always get the app logs with
-:ref:`pebble_explanation_page`:
+:ref:`explanation-pebble`:
 
 .. literalinclude:: code/expressjs/task.yaml
     :language: bash
@@ -356,6 +357,12 @@ The top of the ``rockcraft.yaml`` file should look similar to the following:
         # arm64:
         # ppc64el:
         # s390x:
+
+.. note::
+
+    If we repack the rock without changing the version, the new rock will have the
+    same name and overwrite the last one we built. It's a good practice to change
+    the version whenever we make changes to the app in the image.
 
 Pack and run the rock using similar commands as before:
 
@@ -444,13 +451,13 @@ But there is a lot more to explore:
       - :external+charmcraft:ref:`Write your first Kubernetes charm for an Express app
         in Charmcraft <write-your-first-kubernetes-charm-for-a-expressjs-app>`
     * - "How do I...?"
-      - :ref:`How to manage a 12-factor app rock <manage-12-factor-app-rock>`
+      - :ref:`how-to-manage-a-12-factor-app-rock`
     * - "How do I get in touch?"
       - `Matrix channel <https://matrix.to/#/#12-factor-charms:ubuntu.com>`_
     * - "What is...?"
-      - :ref:`expressjs-framework extension <expressjs-framework-reference>`
+      - :ref:`expressjs-framework extension <reference-express-framework>`
 
-        :ref:`What is a Rock? <rocks_explanation>`
+        :ref:`What is a Rock? <explanation-rocks>`
     * - "Why...?", "So what?"
       - :external+12-factor:ref:`12-Factor app principles and support in Charmcraft
         and Rockcraft <explanation>`

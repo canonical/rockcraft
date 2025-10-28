@@ -1,7 +1,7 @@
-.. _configure-the-build-base-for-an-expressjs-app:
+.. _configure-the-build-base-for-an-express-app:
 
-Configure the build base for an ExpressJS app
-=============================================
+Configure the build base for an Express app
+===========================================
 
 When using the ``expressjs-framework`` extension, there are four different cases
 for customising the Ubuntu base and the Node.js version to be included.

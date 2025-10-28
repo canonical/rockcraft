@@ -1,10 +1,11 @@
-.. _pebble_explanation_page:
+.. _explanation-pebble:
 
 Pebble
 ======
 
 .. important::
-    **Pebble is the default entrypoint for all rocks!**
+
+    Pebble is the default entrypoint for all rocks.
 
 Similar to other well-known process managers such as *supervisord*, *runit*, or
 *s6*, `Pebble`_ is a service manager that enables the seamless orchestration of
@@ -21,10 +22,10 @@ Containers' best practices advocate the separation of concerns and the adoption
 of a single service per container. With the introduction of `Pebble`_ as the
 rocks' entrypoint, this principle is elevated to new heights:
 
-  *if multiple processes rely on shared dependencies and are tightly coupled
-  together (i.e. they serve a single purpose and cannot be executed
-  independently), then the best practice entails orchestrating them within the
-  same container, with Pebble as their manager.*
+    If multiple processes rely on shared dependencies and are tightly coupled
+    together (i.e. they serve a single purpose and cannot be executed
+    independently), then the best practice entails orchestrating them within the
+    same container, with Pebble as their manager.
 
 This new notion addresses existing pain points arising from the excessive
 separation of concerns, which results in numerous container images whose
@@ -67,7 +68,7 @@ Pebble distinguishes itself from other similar tools (like `tini`_ and
 * **embedded utilities**: regardless of the rock's contents, Pebble offers a
   comprehensive suite of commands for inspecting and interacting with the
   container. These commands are especially useful for :ref:`Chiselled Rocks
-  <chisel_explanation>`, as they encompass functionalities such as listing and
+  <explanation-chisel>`, as they encompass functionalities such as listing and
   deleting files, creating directories, and inspecting Pebble services,
   among others.
 
@@ -76,7 +77,7 @@ Creating services
 
 Rockcraft follows the :external+pebble:ref:`Pebble layer specification
 <layer-specification>` to the letter, with Pebble services defined in
-:doc:`/reference/rockcraft.yaml`. :doc:`/how-to/rocks/convert-to-pebble-layer`
+:ref:`reference-rockcraft-yaml`. :ref:`how-to-convert-an-entrypoint-to-a-pebble-layer`
 provides an example of how to convert a Docker entrypoint to a Pebble layer.
 
 

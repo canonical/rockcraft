@@ -69,6 +69,6 @@ portfolio, connect with likeminded people, and receive recognition for giving ba
 CODA coordinates work for open source projects everywhere, including Rockcraft. The best
 way to get started is to volunteer for a topic in the `task aggregator`_
 and read `Get started as a contributor
-<https://documentationacademy.org/docs/howto/get-started/>`_.
+<https://documentation.academy/docs/howto/get-started>`_.
 
 .. _task aggregator: https://github.com/canonical/open-documentation-academy/issues?q=is%3Aissue%20state%3Aopen%20rockcraft

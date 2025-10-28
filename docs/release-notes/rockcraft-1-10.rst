@@ -58,8 +58,8 @@ ExpressJS applications. This extension makes it easy to install your application
 dependencies, including the Node.js interpreter and NPM.
 
 This new extension is experimental and subject to change. For more information, check
-out the ExpressJS :ref:`tutorial <build-a-rock-for-an-expressjs-application>` and
-:ref:`reference <expressjs-framework-reference>`.
+out the Express :ref:`tutorial <tutorial-build-a-rock-for-an-express-app>` and
+:ref:`reference <reference-express-framework>`.
 
 
 Minor features

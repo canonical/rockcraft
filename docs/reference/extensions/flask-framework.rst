@@ -1,7 +1,7 @@
-.. _flask-framework-reference:
+.. _reference-flask-framework:
 
-flask-framework
----------------
+Flask framework
+===============
 
 The Flask extension streamlines the process of building Flask application rocks.
 
@@ -16,8 +16,9 @@ Gunicorn, inside the rock. Additionally, it transfers your project files to
 The Flask extension supports both synchronous and asynchronous
 Gunicorn workers.
 
+
 Project requirements
-====================
+--------------------
 
 There are 2 requirements to be able to use the ``flask-framework`` extension:
 
@@ -33,7 +34,7 @@ For the project to make use of asynchronous Gunicorn workers:
 
 
 ``parts`` > ``flask-framework/dependencies`` > ``stage-packages``
-=================================================================
+-----------------------------------------------------------------
 
 You can use this key to specify any dependencies required for your Flask
 application. In the following example we use it to specify ``libpq-dev``:
@@ -49,7 +50,7 @@ application. In the following example we use it to specify ``libpq-dev``:
 
 
 StatsD exporter
-===============
+---------------
 
 A StatsD exporter is installed alongside the Gunicorn server to record
 server metrics. Some of the `Gunicorn-provided metrics
@@ -85,7 +86,7 @@ for more information.
 .. _flask-gunicorn-worker-selection:
 
 Gunicorn worker selection
-=========================
+-------------------------
 
 If the project has gevent as a dependency, Rockcraft automatically updates the
 pebble plan to spawn asynchronous Gunicorn workers.
@@ -99,8 +100,9 @@ rock:
    docker run --name flask-container -d -p 8000:8000 flask-image:1.0 \
    --args flask sync
 
+
 ``parts`` > ``flask-framework/install-app`` > ``prime``
-=======================================================
+-------------------------------------------------------
 
 You can use this field to specify the files to be included or excluded from
 your rock upon ``rockcraft pack``. Follow the ``flask/app/<filename>``
@@ -122,7 +124,8 @@ Some files, if they exist, are included by default. These include:
 ``app``, ``app.py``, ``migrate``, ``migrate.sh``, ``migrate.py``, ``static``,
 ``templates``.
 
-Useful links
-============
 
-- :ref:`build-a-rock-for-a-flask-application`
+Useful links
+------------
+
+:ref:`tutorial-build-a-rock-for-a-flask-app`

@@ -1,10 +1,10 @@
-.. _build-a-rock-for-a-go-application:
+.. _tutorial-build-a-rock-for-a-go-app:
 
 Build a rock for a Go app
 -------------------------
 
 In this tutorial, we'll containerise a simple Go app into a rock using
-Rockcraft's ``go-framework`` :ref:`extension <go-framework-reference>`.
+Rockcraft's ``go-framework`` :ref:`extension <reference-go-framework>`.
 
 It should take 25 minutes for you to complete.
 
@@ -80,8 +80,8 @@ Let's Run the Go app to verify that it works:
 
 The app starts an HTTP server listening on port 8000
 that we can test by using ``curl`` to send a request to the root
-endpoint. We may need a new terminal for this -- run
-``multipass shell rock-dev`` to get another terminal:
+endpoint. We'll need a new shell of the VM for this -- in a separate terminal,
+run ``multipass shell rock-dev`` again:
 
 .. literalinclude:: code/go/task.yaml
     :language: bash
@@ -91,8 +91,9 @@ endpoint. We may need a new terminal for this -- run
 
 The Go app should respond with ``Hello, world!``.
 
-The Go app looks good, so let's stop it for now
-with :kbd:`Ctrl` + :kbd:`C`.
+The Go app looks good, so let's close the terminal instance we used for
+testing and stop the app in the original terminal instance by pressing
+:kbd:`Ctrl` + :kbd:`C`.
 
 Pack the Go app into a rock
 ===========================
@@ -280,7 +281,7 @@ View the app logs
 ~~~~~~~~~~~~~~~~~
 
 When deploying the Go rock, we can always get the app logs with
-:ref:`pebble_explanation_page`:
+:ref:`explanation-pebble`:
 
 .. literalinclude:: code/go/task.yaml
     :language: text
@@ -358,9 +359,9 @@ The top of the ``rockcraft.yaml`` file should look similar to the following:
 
 .. note::
 
-    ``rockcraft pack`` will create a new image with the updated code even if we
-    don't change the version. It is recommended to change the version whenever
-    we make changes to the app in the image.
+    If we repack the rock without changing the version, the new rock will have the
+    same name and overwrite the last one we built. It's a good practice to change
+    the version whenever we make changes to the app in the image.
 
 Pack and run the rock using similar commands as before:
 
@@ -452,13 +453,13 @@ But there is a lot more to explore:
       - :external+charmcraft:ref:`Write your first Kubernetes charm for a Go app
         in Charmcraft <write-your-first-kubernetes-charm-for-a-go-app>`
     * - "How do I...?"
-      - :ref:`How to manage a 12-factor app rock <manage-12-factor-app-rock>`
+      - :ref:`how-to-manage-a-12-factor-app-rock`
     * - "How do I get in touch?"
       - `Matrix channel <https://matrix.to/#/#12-factor-charms:ubuntu.com>`_
     * - "What is...?"
-      - :ref:`go-framework extension <go-framework-reference>`
+      - :ref:`go-framework extension <reference-go-framework>`
 
-        :ref:`What is a Rock? <rocks_explanation>`
+        :ref:`What is a Rock? <explanation-rocks>`
     * - "Why...?", "So what?"
       - :external+12-factor:ref:`12-Factor app principles and support in Charmcraft
         and Rockcraft <explanation>`

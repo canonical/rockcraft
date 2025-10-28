@@ -1,7 +1,7 @@
-.. _django-framework-reference:
+.. _reference-django-framework:
 
-django-framework
-----------------
+Django framework
+================
 
 The Django extension streamlines the process of building Django application
 rocks.
@@ -17,8 +17,9 @@ Gunicorn, inside the rock. Additionally, it transfers your project files to
 The Django extension supports both synchronous and asynchronous
 Gunicorn workers.
 
+
 Project requirements
-====================
+--------------------
 
 There are 2 requirements to be able to use the ``django-framework`` extension:
 
@@ -35,7 +36,7 @@ For the project to make use of asynchronous Gunicorn workers:
 
 
 ``parts`` > ``django-framework/dependencies:`` > ``stage-packages``
-===================================================================
+-------------------------------------------------------------------
 
 You can use this key to specify any dependencies required for your Django
 application. In the following example we use it to specify ``libpq-dev``:
@@ -51,7 +52,7 @@ application. In the following example we use it to specify ``libpq-dev``:
 
 
 StatsD exporter
-===============
+---------------
 
 A StatsD exporter is installed alongside the Gunicorn server to record
 server metrics. Some of the `Gunicorn-provided metrics
@@ -87,7 +88,7 @@ for more information.
 .. _django-gunicorn-worker-selection:
 
 Gunicorn worker selection
-=========================
+-------------------------
 
 If the project has gevent as a dependency, Rockcraft automatically updates the
 pebble plan to spawn asynchronous Gunicorn workers.
@@ -101,7 +102,8 @@ rock:
    docker run --name django-container -d -p 8000:8000 django-image:1.0 \
    --args django sync
 
-Useful links
-============
 
-- :ref:`build-a-rock-for-a-django-application`
+Useful links
+------------
+
+:ref:`tutorial-build-a-rock-for-a-django-app`
