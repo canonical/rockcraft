@@ -61,9 +61,6 @@ def archive_layer(
                 pass
             return
 
-        # Iterate on sorted keys, so that the directories are always listed before
-        # any files that they contain (otherwise tools like Docker might choke on
-        # the layer tarball).
         # Walk in reverse to avoid encountering not-yet created dirs
         for arcname in sorted(layer_paths, reverse=True):
             filepath = layer_paths[arcname]
@@ -91,6 +88,9 @@ def archive_layer(
             "--acls",
             "--xattrs",
             "--selinux",
+            # Tarball sorted files, so that the directories are always listed before
+            # any files that they contain (otherwise tools like Docker might choke on
+            # the layer tarball).
             *sorted(layer_contents),
         ]
         process.run(tar_command, cwd=tmppath, check=True)
