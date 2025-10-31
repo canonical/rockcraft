@@ -47,10 +47,8 @@ def archive_layer(
     candidates = _gather_layer_paths(new_layer_dir, base_layer_dir)
     layer_paths = _merge_layer_paths(candidates)
 
-    if not temp_tar_file.parent.exists():
-        temp_tar_file.parent.mkdir(parents=True)
-
     layer_contents: list[Path] = []
+    transforms: list[str] = []
     with TemporaryDirectory() as tmpdir:
         tmppath = Path(tmpdir)
         # Just create an empty tar file if there's nothing to put in the layer
@@ -61,20 +59,24 @@ def archive_layer(
                 pass
             return
 
-        # Walk in reverse to avoid encountering not-yet created dirs
-        for arcname in sorted(layer_paths, reverse=True):
-            filepath = layer_paths[arcname]
-            emit.debug(f"Adding to layer: {filepath} as {arcname!r}")
+        # # Walk in reverse to avoid encountering not-yet created dirs
+        # for arcname in sorted(layer_paths, reverse=True):
+        #     filepath = layer_paths[arcname]
+        #     emit.debug(f"Adding to layer: {filepath} as {arcname!r}")
 
-            # Construct a new file at `arcname` with the same contents as `filepath`.
-            # This emulates the `arcname` parameter of `tarfile.open()`, which is not
-            # present in GNU tar.
-            new_path = tmppath / arcname
-            layer_contents.append(new_path.relative_to(tmppath))
-            if new_path.is_dir() and new_path.exists():
-                continue
-            new_path.parent.mkdir(parents=True, exist_ok=True)
-            filepath.rename(new_path)
+        #     # Construct a new file at `arcname` with the same contents as `filepath`.
+        #     # This emulates the `arcname` parameter of `tarfile.open()`, which is not
+        #     # present in GNU tar.
+        #     new_path = tmppath / arcname
+        #     layer_contents.append(new_path.relative_to(tmppath))
+        #     if new_path.is_dir() and new_path.exists():
+        #         continue
+        #     new_path.parent.mkdir(parents=True, exist_ok=True)
+        #     filepath.rename(new_path)
+
+        for arcname, oldname in layer_paths.items():
+            oldname = str(oldname).removeprefix("/")
+            transforms.extend(["--transform", f"s|{str(oldname)}|{arcname}|"])
 
         # GNU tar is being used instead of Python's `tarfile` as it does not support
         # special file attributes like xattrs.
@@ -88,10 +90,11 @@ def archive_layer(
             "--acls",
             "--xattrs",
             "--selinux",
+            *transforms,
             # Tarball sorted files, so that the directories are always listed before
             # any files that they contain (otherwise tools like Docker might choke on
             # the layer tarball).
-            *sorted(layer_contents),
+            *sorted(str(p) for p in layer_paths.values()),
         ]
         process.run(tar_command, cwd=tmppath, check=True)
 
