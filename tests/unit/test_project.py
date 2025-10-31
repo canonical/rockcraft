@@ -25,6 +25,7 @@ import pytest
 import yaml
 from craft_application.errors import CraftValidationError
 from craft_application.models.constraints import MESSAGE_INVALID_NAME
+from craft_platforms import DebianArchitecture
 from craft_providers.bases import ubuntu
 from rockcraft.models import Project
 from rockcraft.models.project import Platform
@@ -700,7 +701,7 @@ def test_project_generate_metadata(yaml_loaded_data):
 
     digest = "a1b2c3"  # mock digest
     oci_annotations, rock_metadata = project.generate_metadata(
-        now, bytes.fromhex(digest)
+        now, bytes.fromhex(digest), DebianArchitecture.from_host()
     )
     assert oci_annotations == {
         "org.opencontainers.image.version": yaml_loaded_data["version"],
@@ -719,7 +720,11 @@ def test_project_generate_metadata(yaml_loaded_data):
         "created": now,
         "base": yaml_loaded_data["base"],
         "base-digest": digest,
+        "architecture": str(DebianArchitecture.from_host()),
     }
+
+    # Regression test for https://github.com/canonical/rockcraft/issues/992
+    assert rock_metadata["architecture"].__class__ is str
 
     # Redo test with multi-line summary
     multi_line_summary = "one\n\ntwo\n\n\n\n\nthree"
@@ -727,7 +732,7 @@ def test_project_generate_metadata(yaml_loaded_data):
     sanitized_summary = "one\ntwo\nthree"
 
     oci_annotations, rock_metadata = project.generate_metadata(
-        now, bytes.fromhex(digest)
+        now, bytes.fromhex(digest), DebianArchitecture.from_host()
     )
     assert oci_annotations["org.opencontainers.image.description"] == (
         f"{sanitized_summary}\n\n{yaml_loaded_data['description']}"
@@ -744,7 +749,9 @@ def test_metadata_base_devel(yaml_loaded_data):
     now = datetime.datetime.now(datetime.timezone.utc).isoformat()
     digest = "a1b2c3"  # mock digest
 
-    _, rock_metadata = project.generate_metadata(now, bytes.fromhex(digest))
+    _, rock_metadata = project.generate_metadata(
+        now, bytes.fromhex(digest), DebianArchitecture.from_host()
+    )
     assert rock_metadata["grade"] == "devel"
 
 
