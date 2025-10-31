@@ -218,8 +218,7 @@ example:
 
          services:
            flask:
-             command: /bin/python3 -m gunicorn -c /flask/gunicorn.conf.py app:app --backlog 1024
-               -k [ sync ]
+             command: /bin/python3 -m gunicorn -c /flask/gunicorn.conf.py app:app --backlog 1024 -k [ sync ]
 
    .. group-tab:: Django
 
@@ -230,8 +229,7 @@ example:
          services:
            django:
              override: replace
-             command: /bin/python3 -m gunicorn -c /django/gunicorn.conf.py django_hello_world.wsgi:application
-               -k [ sync ]
+             command: /bin/python3 -m gunicorn -c /django/gunicorn.conf.py django_hello_world.wsgi:application -k [ sync ]
              startup: enabled
              after:
                - statsd-exporter
@@ -246,8 +244,7 @@ example:
 
          services:
            django:
-             command: /bin/python3 -m gunicorn -c /django/gunicorn.conf.py django_hello_world.wsgi:application
-               --backlog 1024 -k [ sync ]
+             command: /bin/python3 -m gunicorn -c /django/gunicorn.conf.py django_hello_world.wsgi:application --backlog 1024 -k [ sync ]
 
    .. group-tab:: FastAPI
 
