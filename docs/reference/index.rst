@@ -12,7 +12,7 @@ Commands
 
 Rockcraft is operated from the command line, with a command for each function.
 
-:ref:`reference-commands`
+- :ref:`reference-commands`
 
 
 Project file
@@ -21,7 +21,7 @@ Project file
 The main object inside a Rockcraft project is a configurable project file. Read on
 for a complete reference of this file's structure and contents.
 
-:ref:`reference-rockcraft-yaml`
+- :ref:`reference-rockcraft-yaml`
 
 
 Parts

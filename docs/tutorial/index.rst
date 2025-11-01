@@ -12,7 +12,7 @@ The first tutorial works through the process of packaging a rock with Rockcraft.
 introduce you to key concepts and operations, from installation and setup to finalizing
 your first rock.
 
-:ref:`tutorial-create-a-hello-world-rock`
+- :ref:`tutorial-create-a-hello-world-rock`
 
 In the app tutorials, you'll build container apps.
 
@@ -22,7 +22,7 @@ In the app tutorials, you'll build container apps.
 In the Chisel tutorial, you'll reduce a rock's storage footprint by creating Chisel
 slices.
 
-:ref:`tutorial-shrink-a-rock-with-chisel`
+- :ref:`tutorial-shrink-a-rock-with-chisel`
 
 In the 12-factor web app tutorials, you'll assemble containers for 12-factor apps and
 their components.
