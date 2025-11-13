@@ -41,6 +41,7 @@ constraints = [
     { name = "webencodings", specifier = ">=0.4.0" },
     { name = "wheel", specifier = ">=0.38" },
 ]
+build-constraints = [{ name = "maturin", marker = "python_full_version < '3.14'", specifier = "<1.10.0" }]
 
 [[package]]
 name = "accessible-pygments"
