@@ -18,7 +18,7 @@
 
 import re
 import typing
-from collections.abc import Mapping
+from collections.abc import Iterable, Mapping
 from typing import TYPE_CHECKING, Any, Literal
 
 import craft_cli
@@ -29,8 +29,10 @@ from craft_application.models import (
 )
 from craft_application.models import Project as BaseProject
 from craft_application.models.base import alias_generator
+from craft_application.models.project import DevelBaseInfo
 from craft_platforms import DebianArchitecture
 from craft_providers import bases
+from craft_providers.bases import BuilddBaseAlias
 from craft_providers.errors import BaseConfigurationError
 from typing_extensions import override
 
@@ -63,6 +65,7 @@ BaseT = Literal[
     "ubuntu@22.04",
     "ubuntu@24.04",
     "ubuntu@25.10",
+    "ubuntu@26.04",
 ]
 BuildBaseT = typing.Annotated[
     Literal[
@@ -70,6 +73,7 @@ BuildBaseT = typing.Annotated[
         "ubuntu@22.04",
         "ubuntu@24.04",
         "ubuntu@25.10",
+        "ubuntu@26.04",
         "devel",
     ]
     | None,
@@ -473,3 +477,13 @@ class Project(BaseProject):
                 )
 
         return platforms
+
+    @classmethod
+    @override
+    def _get_devel_bases(cls) -> Iterable[DevelBaseInfo]:
+        return [
+            DevelBaseInfo(
+                current_devel_base=BuilddBaseAlias.RESOLUTE,
+                devel_base=BuilddBaseAlias.DEVEL,
+            )
+        ]
