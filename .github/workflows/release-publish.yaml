@@ -32,7 +32,7 @@ jobs:
           uv run -m build
           uv run twine check dist/*
       - name: Upload pypi packages artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: pypi-packages
           path: dist/
@@ -44,7 +44,7 @@ jobs:
       id-token: write
     steps:
       - name: Get packages
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: pypi-packages
           path: dist/
@@ -58,7 +58,7 @@ jobs:
     runs-on: [self-hosted]
     steps:
       - name: Get pypi artifacts
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: pypi-packages
       - name: Release
