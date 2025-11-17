@@ -94,7 +94,7 @@ endif
 .PHONY: clean
 clean:  ## Clean up the development environment
 	uv tool run pyclean .
-	rm -rf dist/ build/ docs/_build/ docs/_linkcheck *.snap .coverage*
+	rm -rf dist/ build/ docs/_build/ docs/_linkcheck *.snap .coverage* .venv
 
 .PHONY: autoformat
 autoformat: format  # Hidden alias for 'format'
