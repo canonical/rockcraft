@@ -99,8 +99,9 @@ def test_expand_extensions_error(fake_app_config):
 
     expected_message = re.escape(
         "Bad rockcraft.yaml content:\n"
-        "- plugin not registered: 'nonexistent' (in field 'parts.foo')\n"
-        "- input should be 'merge' or 'replace' (in field 'services.my-service.override')"
+        "- plugin not registered: 'nonexistent' (in field 'parts.foo', "
+        "input: {'plugin': 'nonexistent', 'stage-packages': ['new-package-1', 'old-package']})\n"
+        "- input should be 'merge' or 'replace' (in field 'services.my-service.override', input: 'invalid')"
     )
 
     cmd = ExpandExtensionsCommand(fake_app_config)

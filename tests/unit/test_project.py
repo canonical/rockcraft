@@ -204,7 +204,8 @@ def test_forbidden_env_var_interpolation(
             load_project_yaml(yaml_loaded_data)
         expected = (
             "Bad rockcraft.yaml content:\n"
-            f"- string interpolation not allowed for: {variable} (in field 'environment')"
+            f"- string interpolation not allowed for: {variable} "
+            f"(in field 'environment', input: {{'BAZ': 'value1', 'FOO': 'value3', 'BAR': 'value2', 'foo': '{variable}'}})"
         )
         check.equal(str(err.value), expected)
     else:
@@ -227,7 +228,7 @@ def test_project_base_invalid(yaml_loaded_data):
     match = (
         r"^Bad rockcraft\.yaml content:\n"
         r"- input should be 'bare', ('ubuntu@\d\d\.(04|10)'(, | or )?)+ "
-        r"\(in field 'base'\)"
+        r"\(in field 'base', input: 'ubuntu@19.04'\)"
     )
 
     with pytest.raises(CraftValidationError, match=match):
@@ -243,7 +244,7 @@ def test_project_license_invalid(yaml_loaded_data):
     expected = (
         "Bad rockcraft.yaml content:\n"
         f"- license {yaml_loaded_data['license']} not valid. "
-        "It must be either 'proprietary' or in SPDX format. (in field 'license')"
+        "It must be either 'proprietary' or in SPDX format. (in field 'license', input: 'apache 0.x')"
     )
     assert str(err.value) == expected
 
@@ -279,7 +280,7 @@ def test_project_title_empty_invalid_name(yaml_loaded_data):
     expected = (
         "Bad rockcraft.yaml content:\n"
         "- invalid name: Names can only use ASCII lowercase letters, numbers, and hyphens. They must have at least one letter, may not start or end with a hyphen, and may not have two hyphens in a row. "
-        r"\(in field 'name'\)"
+        r"\(in field 'name', input: 'my@rock'\)"
     )
     assert err.match(expected)
 
@@ -292,7 +293,7 @@ def test_project_entrypoint_service_empty(yaml_loaded_data, entrypoint_service):
     expected = (
         "Bad rockcraft.yaml content:\n"
         "- the provided entrypoint-service '' is not a valid Pebble service. "
-        "(in field 'entrypoint-service')"
+        "(in field 'entrypoint-service', input: '')"
     )
     assert str(err.value) == expected
 
@@ -329,9 +330,7 @@ def test_project_entrypoint_service_invalid(
     with pytest.raises(CraftValidationError) as err:
         load_project_yaml(yaml_loaded_data)
 
-    expected = (
-        f"Bad rockcraft.yaml content:\n- {expected_msg} (in field 'entrypoint-service')"
-    )
+    expected = f"Bad rockcraft.yaml content:\n- {expected_msg} (in field 'entrypoint-service', input: '{entrypoint_service}')"
     assert str(err.value) == expected
 
 
@@ -351,35 +350,39 @@ def test_project_entrypoint_command_conflict(yaml_loaded_data, entrypoint_comman
     expected = (
         "Bad rockcraft.yaml content:\n"
         "- the option 'entrypoint-command' cannot be used along 'entrypoint-service'. "
-        "(in field 'entrypoint-command')"
+        f"(in field 'entrypoint-command', input: '{entrypoint_command}')"
     )
     assert str(err.value) == expected
 
 
 @pytest.mark.parametrize(
-    ("entrypoint_command", "expected_msg"),
+    ("entrypoint_command", "expected_msg", "expected_input"),
     [
-        ("entrypoint [ cmd [ nested ] ]", "cannot nest [ ... ] groups."),
+        (
+            "entrypoint [ cmd [ nested ] ]",
+            "cannot nest [ ... ] groups.",
+            "input: 'entrypoint [ cmd [ nested ] ]'",
+        ),
         (
             "entrypoint [ cmd ] [ extra ]",
             "cannot have any arguments after [ ... ] group.",
+            "input: 'entrypoint [ cmd ] [ extra ]'",
         ),
         (
             "entrypoint 'unclosed string",
             "no closing quotation",
+            'input: "entrypoint \'unclosed string"',
         ),
     ],
 )
 def test_project_entrypoint_command_invalid(
-    yaml_loaded_data, entrypoint_command, expected_msg
+    yaml_loaded_data, entrypoint_command, expected_msg, expected_input
 ):
     yaml_loaded_data.pop("entrypoint-service")  # Avoid conflict
     yaml_loaded_data["entrypoint-command"] = entrypoint_command
     with pytest.raises(CraftValidationError) as err:
         load_project_yaml(yaml_loaded_data)
-    expected = (
-        f"Bad rockcraft.yaml content:\n- {expected_msg} (in field 'entrypoint-command')"
-    )
+    expected = f"Bad rockcraft.yaml content:\n- {expected_msg} (in field 'entrypoint-command', {expected_input})"
     assert str(err.value) == expected
 
 
@@ -553,7 +556,7 @@ def test_project_name_invalid(yaml_loaded_data, invalid_name, expected_message):
     with pytest.raises(CraftValidationError) as err:
         load_project_yaml(yaml_loaded_data)
 
-    expected_message += " (in field 'name')"
+    expected_message += f" (in field 'name', input: '{invalid_name}')"
     assert expected_message in str(err.value)
 
 
@@ -567,7 +570,7 @@ def test_project_version_invalid(yaml_loaded_data):
     # because it comes from craft-application and might change slightly. We just
     # want to ensure that the message refers to the version.
     expected_contents = "invalid version: Valid versions consist of"
-    expected_suffix = "(in field 'version')"
+    expected_suffix = "(in field 'version', input: 'invalid_version')"
 
     message = str(err.value)
     assert expected_contents in message
@@ -593,7 +596,7 @@ def test_project_extra_field(yaml_loaded_data):
         load_project_yaml(yaml_loaded_data)
     assert str(err.value) == (
         "Bad rockcraft.yaml content:\n"
-        "- extra inputs are not permitted (in field 'extra')"
+        "- extra inputs are not permitted (in field 'extra', input: 'invalid')"
     )
 
 
@@ -604,7 +607,7 @@ def test_project_parts_validation(yaml_loaded_data):
         load_project_yaml(yaml_loaded_data)
     assert str(err.value) == (
         "Bad rockcraft.yaml content:\n"
-        "- extra inputs are not permitted (in field 'parts.foo.invalid')"
+        "- extra inputs are not permitted (in field 'parts.foo.invalid', input: True)"
     )
 
 
@@ -630,7 +633,8 @@ def test_project_bare_overlay(yaml_loaded_data, packages, script):
     expected = (
         "Bad rockcraft.yaml content:\n"
         "- part 'foo' cannot use overlays with a 'bare' base"
-        " (there is no system to overlay). (in field 'parts')"
+        " (there is no system to overlay). (in field 'parts', "
+        f"input: {{'foo': {{'plugin': 'nil', 'overlay-script': {script!r}, 'overlay-packages': {packages}}}}})"
     )
     assert str(err.value) == expected
 
