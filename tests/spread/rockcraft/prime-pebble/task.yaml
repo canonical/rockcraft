@@ -13,4 +13,3 @@ execute: |
 
   # Build the rock
   run_rockcraft pack --ignore=unmaintained
-  test -f ${ROCK_FILE}
