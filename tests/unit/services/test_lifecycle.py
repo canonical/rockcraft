@@ -75,7 +75,13 @@ def test_lifecycle_args(
         partitions=None,
         project_name="test-rock",
         project_vars=ProjectVarInfo(
-            root={"version": ProjectVar(value="0.1", updated=False, part_name=None)}
+            root={
+                "version": ProjectVar(value="0.1", updated=False, part_name=None),
+                "summary": ProjectVar(value="Rock on!", updated=False, part_name=None),
+                "description": ProjectVar(
+                    value="Ramble off!", updated=False, part_name=None
+                ),
+            }
         ),
         work_dir=project_path,
         rootfs_dir=Path(),
