@@ -195,7 +195,7 @@ parts:
   skopeo:
     plugin: nil
     source: https://github.com/containers/skopeo.git
-    source-tag: v1.20.0
+    source-tag: v1.14.2
     override-build: |
       CGO=1 go build -ldflags -linkmode=external ./cmd/skopeo
       mkdir "$CRAFT_PART_INSTALL"/bin
@@ -208,7 +208,7 @@ parts:
     build-attributes:
       - enable-patchelf
     build-snaps:
-      - go/1.25/stable
+      - go/1.21/stable
     build-packages:
       - libgpgme-dev
       - libassuan-dev
