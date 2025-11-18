@@ -1,7 +1,7 @@
 .. _reference-spring-boot-framework:
 
-Sprint Boot framework
----------------------
+Spring Boot framework
+=====================
 
 The Spring Boot extension streamlines the process of building Spring Boot
 application rocks.
