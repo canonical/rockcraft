@@ -34,7 +34,7 @@ make them leaner.
 
 Rocks are especiallys suitable as containers for 12-factor apps and their components.
 
-:ref:`how-to-manage-a-12-factor-app-rock`
+- :ref:`how-to-manage-a-12-factor-app-rock`
 
 
 Documentation
