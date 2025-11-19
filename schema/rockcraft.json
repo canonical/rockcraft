@@ -11014,7 +11014,8 @@
         "ubuntu@20.04",
         "ubuntu@22.04",
         "ubuntu@24.04",
-        "ubuntu@25.10"
+        "ubuntu@25.10",
+        "ubuntu@26.04"
       ],
       "title": "Base",
       "type": "string"
@@ -11027,6 +11028,7 @@
             "ubuntu@22.04",
             "ubuntu@24.04",
             "ubuntu@25.10",
+            "ubuntu@26.04",
             "devel"
           ],
           "type": "string"
@@ -11107,8 +11109,8 @@
         ],
         "not": {
           "enum": [
-            "any",
-            "*"
+            "*",
+            "any"
           ]
         }
       },

@@ -13,7 +13,6 @@
 #
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
-import typing
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -33,13 +32,8 @@ from tests.util import ubuntu_only
 
 pytestmark = [ubuntu_only, pytest.mark.slow]
 
-# Extract the possible "base" values from the Literal annotation.
-ALL_BASES = typing.get_args(typing.get_type_hints(Project)["base"])
-
-BARE_BASES = {"bare"}
-# Note: The Python plugin is broken momentarily for 25.10 because of the usrmerge
-# change. This will be addressed in ROCKCRAFT-259
-UBUNTU_BASES = set(ALL_BASES) - BARE_BASES - {"ubuntu@25.10"}
+# These are the bases that use the PythonPlugin v1
+UBUNTU_BASES = {"ubuntu@20.04", "ubuntu@22.04", "ubuntu@24.04"}
 
 
 @pytest.fixture(autouse=True)
