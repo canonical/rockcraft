@@ -1,6 +1,7 @@
+# pragma: no-schema-validate
 name: python-from-chisel-ubuntu
-base: ubuntu@25.10
-build-base: devel
+base: PLACEHOLDER_BASE
+build-base: PLACEHOLDER_BUILD_BASE
 version: "0.1"
 summary: Testing Python plugin v2
 description: Testing Python plugin v2
