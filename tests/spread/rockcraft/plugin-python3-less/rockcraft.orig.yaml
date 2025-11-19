@@ -1,0 +1,24 @@
+name: plugin-python3-less
+base: placeholder-base
+build-base: ubuntu@20.04
+version: "0.1"
+summary: A project using Python but no python3
+description: A project using Python but no python3
+license: GPL-3.0
+platforms:
+  amd64:
+
+parts:
+  my-part:
+    plugin: python
+    source: src
+    stage-packages:
+      - python3.8-venv
+      - coreutils # for the 'test' binary
+    build-environment:
+      - PARTS_PYTHON_INTERPRETER: python3.8
+    stage:
+      # Explicitly remove the python3 symlink brought in by a python3.8-venv dependency
+      # and/or the virtual environment
+      - -bin/python3
+      - -usr/bin/python3

@@ -1,9 +1,9 @@
-summary: Build rocks with Python 3.6 with bases bare and ubuntu@20.04
+summary: Build rocks with Python but no 'python3'
 environment:
   BASE/base_2004: "ubuntu@20.04"
   BASE/bare: "bare"
 execute: |
-  IMAGE="plugin-python-36:latest"
+  IMAGE="plugin-python3-less:latest"
 
   # Make sure the yaml file has the "placeholder-base" string, and replace
   # it with the correct base.
@@ -16,5 +16,9 @@ execute: |
   sudo rockcraft.skopeo --insecure-policy copy oci-archive:"${ROCK}" docker-daemon:${IMAGE}
   rm "${ROCK}"
 
-  docker run --rm $IMAGE exec python3.6 --version | MATCH "Python 3.6"
+  # Make sure the 'python3' symlink does not, in fact, exist
+  docker run --rm $IMAGE exec test ! -f /usr/bin/python3
+  docker run --rm $IMAGE exec test ! -f /bin/python3
+
+  docker run --rm $IMAGE exec python3.8 --version | MATCH "Python 3.8"
   docker run --rm $IMAGE exec hello | MATCH "hello world"
