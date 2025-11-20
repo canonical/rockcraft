@@ -324,14 +324,7 @@ class Project(BaseProject):
                 "valid Pebble service."
             )
 
-        command, args = parse_command(info.data["services"][entrypoint_service].command)
-
-        if len(args) == 0:
-            raise ValueError(
-                f"The Pebble service '{entrypoint_service}' has a command {' '.join(command)} "
-                "without default arguments and thus cannot be used as the "
-                "entrypoint-service."
-            )
+        parse_command(info.data["services"][entrypoint_service].command)
 
         return entrypoint_service
 
