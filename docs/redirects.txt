@@ -10,3 +10,6 @@
 "release-notes/rockcraft-1-7-0.rst" "release-notes/rockcraft-1-7.rst"
 "how-to/build-a-12-factor-app-rock.rst" "how-to/web-app-rocks/index.rst"
 "about-this-documentation.rst" "contribute-to-this-documentation.rst"
+"tutorial/expressjs.rst" "tutorial/express.rst"
+"reference/extensions/expressjs-framework.rst" "reference/extensions/express-framework.rst"
+"how-to/web-app-rocks/configure-the-build-base-for-an-expressjs-app.rst" "how-to/web-app-rocks/configure-the-build-base-for-an-express-app.rst"
