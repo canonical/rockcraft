@@ -32,6 +32,10 @@ jobs:
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
+      # speed up build times by using wheels, when available
+      - name: Use wheels
+        run: |
+          yq e 'del(.parts.charmcraft."build-environment"[] | select(.UV_NO_BINARY == "true"))' -i snap/snapcraft.yaml
       - name: Build snap
         uses: canonical/action-build@v1
         id: rockcraft
