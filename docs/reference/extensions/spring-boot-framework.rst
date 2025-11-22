@@ -14,6 +14,7 @@ By default, the base ``bare`` is used, to generate a lightweight image.
     The Spring Boot extension is compatible with the ``bare`` and
     ``ubuntu@24.04`` bases.
 
+.. _reference-spring-boot-framework-project-requirements:
 
 Project requirements
 --------------------
@@ -25,6 +26,7 @@ To use the Spring Boot Framework extension, there must be either:
 
 in the root directory of the project.
 
+.. _reference-spring-boot-framework-plugin:
 
 ``parts`` > ``spring-boot-framework/install-app`` > ``plugin``
 --------------------------------------------------------------
@@ -55,6 +57,7 @@ respectively.
       plugin: gradle
       gradle-task: bootJar
 
+.. _reference-spring-boot-framework-build-packages:
 
 ``parts`` > ``spring-boot-framework/install-app`` > ``build-packages``
 ----------------------------------------------------------------------
@@ -75,6 +78,7 @@ If a different Java version is required, you can specify it in the
       build-packages:
         - openjdk-17-jdk # specify the Java package to use
 
+.. _reference-spring-boot-framework-runtime:
 
 ``parts`` > ``spring-boot-framework/runtime``
 ---------------------------------------------
@@ -101,6 +105,7 @@ The ``spring-boot-framework`` uses the following configuration:
         - coreutils_bins
         - base-files_tmp
 
+.. _reference-spring-boot-framework-stage:
 
 ``parts`` > ``spring-boot-framework/assets`` > ``stage``
 --------------------------------------------------------

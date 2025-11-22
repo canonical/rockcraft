@@ -17,6 +17,7 @@ Gunicorn, inside the rock. Additionally, it transfers your project files to
 The Django extension supports both synchronous and asynchronous
 Gunicorn workers.
 
+.. _reference-django-framework-project-requirements:
 
 Project requirements
 --------------------
@@ -34,6 +35,7 @@ For the project to make use of asynchronous Gunicorn workers:
 
 - The ``requirements.txt`` file must include ``gevent`` as a dependency.
 
+.. _reference-django-framework-stage-packages:
 
 ``parts`` > ``django-framework/dependencies:`` > ``stage-packages``
 -------------------------------------------------------------------
@@ -50,6 +52,7 @@ application. In the following example we use it to specify ``libpq-dev``:
          # list required packages or slices for your Django application below.
          - libpq-dev
 
+.. _reference-django-framework-statsd-exporter:
 
 StatsD exporter
 ---------------

@@ -14,6 +14,8 @@ Uvicorn, inside the rock. Additionally, it transfers your project files to
     The FastAPI extension is compatible with the ``bare`` and ``ubuntu@24.04``
     bases.
 
+.. _reference-fastapi-framework-project-requirements:
+
 Project requirements
 --------------------
 
@@ -30,6 +32,8 @@ There are 2 requirements to be able to use the ``fastapi-framework`` extension:
      directory or within a directory with the name of the rock as declared in
      the project file.
 
+.. _reference-fastapi-framework-stage-packages:
+
 ``parts`` > ``fastapi-framework/dependencies:`` > ``stage-packages``
 --------------------------------------------------------------------
 
@@ -45,6 +49,7 @@ application. In the following example we use it to specify ``libpq-dev``:
         # list required packages or slices for your FastAPI application below.
         - libpq-dev
 
+.. _reference-fastapi-framework-prime:
 
 ``parts`` > ``fastapi-framework/install-app`` > ``prime``
 ---------------------------------------------------------

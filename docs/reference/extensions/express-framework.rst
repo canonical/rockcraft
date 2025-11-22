@@ -13,6 +13,7 @@ to ``/app`` within the rock.
 The Express extension is compatible with the ``bare`` and ``ubuntu@24.04``
 bases.
 
+.. _reference-express-framework-project-requirements:
 
 Project requirements
 --------------------
@@ -24,6 +25,7 @@ extension:
 2. The application should have a ``package.json`` file.
 3. The ``package.json`` file should define the ``start`` script.
 
+.. _reference-express-framework-npm-include-node:
 
 ``parts`` > ``expressjs-framework/install-app`` > ``npm-include-node``
 ----------------------------------------------------------------------
@@ -44,6 +46,7 @@ For more examples of the ``npm-node-version`` key, see
 If you don't customise the version of node, it will be installed from the Ubuntu
 package repository.
 
+.. _reference-express-framework-stage-packages:
 
 ``parts`` > ``expressjs-framework/runtime:`` > ``stage-packages``
 -----------------------------------------------------------------

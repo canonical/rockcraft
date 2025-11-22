@@ -6,6 +6,8 @@ Set up a 12-Factor app rock
 The following how-to guide provides instructions on
 initializing and configuring rocks for 12-factor apps.
 
+.. _set-up-web-app-rock-init:
+
 Initialize a 12-factor app rock
 -------------------------------
 
@@ -53,6 +55,8 @@ file to verify that the rock's name and description are correct.
 
 
 For more information, see: :ref:`ref_commands_init`
+
+.. _set-up-web-app-rock-include-extra-files-oci:
 
 Include extra files in the OCI image
 ------------------------------------
@@ -125,6 +129,8 @@ To change this list, add the following snippet to the project file:
       Note the ``app/`` prefix that is required followed by the relative path to
       the project root.
 
+.. _set-up-web-app-rock-include-extra-debs-oci:
+
 Include additional debs in the OCI image
 ----------------------------------------
 
@@ -179,6 +185,7 @@ following snippet to the project file:
 
       For the ``go-framework`` extension, a deb could be needed for example to use an external command in the migration process.
 
+.. _set-up-web-app-rock-override-commands:
 
 Override commands
 -----------------

@@ -13,6 +13,7 @@ By default, the base ``bare`` is used, to generate a lightweight image.
     The Go extension is compatible with the ``bare`` and ``ubuntu@24.04``
     bases.
 
+.. _reference-go-framework-project-requirements:
 
 Project requirements
 --------------------
@@ -20,6 +21,7 @@ Project requirements
 To use the ``go-framework`` extension, there must be a ``go.mod`` file
 in the root directory of the project.
 
+.. _reference-go-framework-organize:
 
 ``parts`` > ``go-framework/install-app`` > ``organize``
 -------------------------------------------------------
@@ -43,6 +45,7 @@ next snippet:
      organize:
        bin/anotherserver: usr/local/bin/<rockcraft project name>
 
+.. _reference-go-framework-stage:
 
 ``parts`` > ``go-framework/assets`` > ``stage``
 -----------------------------------------------

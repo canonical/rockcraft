@@ -16,6 +16,7 @@ Gunicorn, inside the rock. Additionally, it transfers your project files to
 The Flask extension supports both synchronous and asynchronous
 Gunicorn workers.
 
+.. _reference-flask-framework-project-requirements:
 
 Project requirements
 --------------------
@@ -32,6 +33,7 @@ For the project to make use of asynchronous Gunicorn workers:
 
 - The ``requirements.txt`` file must include ``gevent`` as a dependency.
 
+.. _reference-flask-framework-stage-packages:
 
 ``parts`` > ``flask-framework/dependencies`` > ``stage-packages``
 -----------------------------------------------------------------
@@ -48,6 +50,7 @@ application. In the following example we use it to specify ``libpq-dev``:
         # list required packages or slices for your flask app below.
         - libpq-dev
 
+.. _reference-flask-framework-statsd-exporter:
 
 StatsD exporter
 ---------------
@@ -100,6 +103,7 @@ rock:
    docker run --name flask-container -d -p 8000:8000 flask-image:1.0 \
    --args flask sync
 
+.. _reference-flask-framework-prime:
 
 ``parts`` > ``flask-framework/install-app`` > ``prime``
 -------------------------------------------------------
