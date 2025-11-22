@@ -115,7 +115,7 @@ class ExpressJSFramework(Extension):
         ):
             raise ExtensionError(
                 "missing start script",
-                doc_slug="/reference/extensions/expressjs-framework",
+                doc_slug="/reference/extensions/express-framework",
                 logpath_report=False,
             )
         if "name" not in self._app_package_json or not isinstance(
@@ -123,7 +123,7 @@ class ExpressJSFramework(Extension):
         ):
             raise ExtensionError(
                 "missing application name",
-                doc_slug="/reference/extensions/expressjs-framework",
+                doc_slug="/reference/extensions/express-framework",
                 logpath_report=False,
             )
 
@@ -220,7 +220,7 @@ class ExpressJSFramework(Extension):
         if not package_json_file.exists():
             raise ExtensionError(
                 "missing package.json file",
-                doc_slug="/reference/extensions/expressjs-framework",
+                doc_slug="/reference/extensions/express-framework",
                 logpath_report=False,
             )
         package_json_contents = package_json_file.read_text(encoding="utf-8")
@@ -229,13 +229,13 @@ class ExpressJSFramework(Extension):
             if not isinstance(app_package_json, dict):
                 raise ExtensionError(
                     "invalid package.json file",
-                    doc_slug="/reference/extensions/expressjs-framework",
+                    doc_slug="/reference/extensions/express-framework",
                     logpath_report=False,
                 )
         except json.JSONDecodeError as exc:
             raise ExtensionError(
                 "failed to parse package.json file",
-                doc_slug="/reference/extensions/expressjs-framework",
+                doc_slug="/reference/extensions/express-framework",
                 logpath_report=False,
             ) from exc
         else:

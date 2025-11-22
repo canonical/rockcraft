@@ -34,7 +34,7 @@ APP_METADATA = AppMetadata(
     summary="A tool to create OCI images",
     ProjectClass=project.Project,
     source_ignore_patterns=["*.rock"],
-    docs_url="https://documentation.ubuntu.com/rockcraft/en/{version}",
+    docs_url="https://documentation.ubuntu.com/rockcraft/{version}",
     check_supported_base=True,
     artifact_type="rock",
 )

@@ -101,7 +101,7 @@ The top of the file should look similar to the following snippet:
     :caption: ~/fastapi-hello-world/rockcraft.yaml
 
     name: fastapi-hello-world
-    # see https://documentation.ubuntu.com/rockcraft/en/latest/explanation/bases/
+    # see https://documentation.ubuntu.com/rockcraft/latest/explanation/bases/
     # for more information about bases and using 'bare' bases for chiselled rocks
     base: ubuntu@24.04 # the base environment for this FastAPI app
     version: '0.1' # just for humans. Semantic versioning is recommended
@@ -340,7 +340,7 @@ The top of the ``rockcraft.yaml`` file should look similar to the following:
     :emphasize-lines: 6
 
     name: fastapi-hello-world
-    # see https://documentation.ubuntu.com/rockcraft/en/latest/explanation/bases/
+    # see https://documentation.ubuntu.com/rockcraft/latest/explanation/bases/
     # for more information about bases and using 'bare' bases for chiselled rocks
     base: bare
     build-base: ubuntu@24.04
@@ -434,7 +434,7 @@ The top of the ``rockcraft.yaml`` file should look similar to the following:
     :emphasize-lines: 6
 
     name: fastapi-hello-world
-    # see https://documentation.ubuntu.com/rockcraft/en/latest/explanation/bases/
+    # see https://documentation.ubuntu.com/rockcraft/latest/explanation/bases/
     # for more information about bases and using 'bare' bases for chiselled rocks
     base: bare
     build-base: ubuntu@24.04

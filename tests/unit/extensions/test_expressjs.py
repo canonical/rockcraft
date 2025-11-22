@@ -346,7 +346,7 @@ def test_expressjs_no_package_json_error(tmp_path, expressjs_input_yaml):
     with pytest.raises(ExtensionError) as exc:
         extensions.apply_extensions(tmp_path, expressjs_input_yaml)
     assert str(exc.value) == "missing package.json file"
-    assert str(exc.value.doc_slug) == "/reference/extensions/expressjs-framework"
+    assert str(exc.value.doc_slug) == "/reference/extensions/express-framework"
 
 
 @pytest.mark.parametrize(
@@ -377,4 +377,4 @@ def test_expressjs_invalid_package_json_scripts_error(
     with pytest.raises(ExtensionError) as exc:
         extensions.apply_extensions(tmp_path, expressjs_input_yaml)
     assert str(exc.value) == error_message
-    assert str(exc.value.doc_slug) == "/reference/extensions/expressjs-framework"
+    assert str(exc.value.doc_slug) == "/reference/extensions/express-framework"
