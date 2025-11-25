@@ -79,13 +79,13 @@ services:
         override: replace
         command: echo [ foo ]
         on-failure: restart
-    no-args-command-service:
-        override: replace
-        command: echo
-        on-failure: restart
     empty-args-command-service:
         override: replace
         command: echo [ ]
+        on-failure: restart
+    no-args-command-service:
+        override: replace
+        command: echo
         on-failure: restart
 parts:
     foo:
@@ -304,8 +304,7 @@ def test_project_entrypoint_service_empty(yaml_loaded_data, entrypoint_service):
 
 
 @pytest.mark.parametrize(
-    "entrypoint_service",
-    ["test-service", "no-args-command-service", "empty-args-command-service"],
+    "entrypoint_service", ["test-service", "empty-args-command-service"]
 )
 def test_project_entrypoint_service_valid(
     yaml_loaded_data, emitter, entrypoint_service
@@ -325,6 +324,10 @@ def test_project_entrypoint_service_valid(
     ("entrypoint_service", "expected_msg"),
     [
         ("baz", "the provided entrypoint-service 'baz' is not a valid Pebble service."),
+        (
+            "no-args-command-service",
+            "the Pebble service 'no-args-command-service' has a command echo without default arguments and thus cannot be used as the entrypoint-service.",
+        ),
     ],
 )
 def test_project_entrypoint_service_invalid(
@@ -803,13 +806,13 @@ services:
     override: replace
     command: echo [ foo ]
     on-failure: restart
-  no-args-command-service:
-    override: replace
-    command: echo
-    on-failure: restart
   empty-args-command-service:
     override: replace
     command: echo [ ]
+    on-failure: restart
+  no-args-command-service:
+    override: replace
+    command: echo
     on-failure: restart
 entrypoint-service: test-service
 """
