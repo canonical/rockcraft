@@ -142,6 +142,10 @@ parts:
       # Parallel make jobs for things like python-apt
       - MAKEOPTS: -j$(nproc --all)
       - UV_COMPILE_BYTECODE: "true"
+    uv-extras:
+      # Rockcraft itself doesn't interact with the Store at the moment, but
+      # craft-application plugins might.
+      - store
     organize:
       bin/craftctl: libexec/rockcraft/craftctl
       # Extensions currently expect to find data files in share/rockcraft/
