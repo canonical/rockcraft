@@ -18,7 +18,7 @@ jobs:
           sudo snap install --classic astral-uv
           sudo apt --yes install python3-venv
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Fetch tag annotations
         run: |
           # Note: we fetch the tags here instead of using actions/checkout's "fetch-tags"
