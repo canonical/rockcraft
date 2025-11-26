@@ -5,7 +5,6 @@ description: A rock with usrmerged parts
 license: Apache-2.0
 
 base: ubuntu@25.10
-build-base: devel
 
 platforms:
   amd64:

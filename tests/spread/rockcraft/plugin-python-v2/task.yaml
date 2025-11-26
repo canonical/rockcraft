@@ -2,14 +2,51 @@ summary: Python plugin v2 tests
 
 environment:
   # python3 comes from a stage-package deb
-  SCENARIO/python_in_install_ubuntu: "python-in-install-ubuntu"
-  SCENARIO/python_in_install_bare: "python-in-install-bare"
+  SCENARIO/python_in_install_ubuntu_2510: "python-in-install-ubuntu"
+  SCENARIO/python_in_install_bare_2510: "python-in-install-bare"
+  SCENARIO/python_in_install_ubuntu_2604: "python-in-install-ubuntu"
+  SCENARIO/python_in_install_bare_2604: "python-in-install-bare"
+
+  BASE/python_in_install_ubuntu_2510: "ubuntu@25.10"
+  BASE/python_in_install_bare_2510: "ubuntu@25.10"
+  BASE/python_in_install_ubuntu_2604: "ubuntu@26.04"
+  BASE/python_in_install_bare_2604: "ubuntu@26.04"
+  BUILD_BASE/python_in_install_ubuntu_2510: "ubuntu@25.10"
+  BUILD_BASE/python_in_install_bare_2510: "ubuntu@25.10"
+  BUILD_BASE/python_in_install_ubuntu_2604: "devel"
+  BUILD_BASE/python_in_install_bare_2604: "devel"
+
   # python3 comes from the stage dir
-  SCENARIO/python_in_stage_ubuntu: "python-in-stage-ubuntu"
-  SCENARIO/python_in_stage_bare: "python-in-stage-bare"
+  SCENARIO/python_in_stage_ubuntu_2510: "python-in-stage-ubuntu"
+  SCENARIO/python_in_stage_bare_2510: "python-in-stage-bare"
+  SCENARIO/python_in_stage_ubuntu_2604: "python-in-stage-ubuntu"
+  SCENARIO/python_in_stage_bare_2604: "python-in-stage-bare"
+
+  BASE/python_in_stage_ubuntu_2510: "ubuntu@25.10"
+  BASE/python_in_stage_bare_2510: "ubuntu@25.10"
+  BASE/python_in_stage_ubuntu_2604: "ubuntu@26.04"
+  BASE/python_in_stage_bare_2604: "ubuntu@26.04"
+  BUILD_BASE/python_in_stage_ubuntu_2510: "ubuntu@25.10"
+  BUILD_BASE/python_in_stage_bare_2510: "ubuntu@25.10"
+  BUILD_BASE/python_in_stage_ubuntu_2604: "devel"
+  BUILD_BASE/python_in_stage_bare_2604: "devel"
+
   # python3 comes from chisel slices
-  SCENARIO/python_from_chisel_ubuntu: "python-from-chisel-ubuntu"
-  SCENARIO/python_from_chisel_bare: "python-from-chisel-bare"
+  SCENARIO/python_from_chisel_ubuntu_2510: "python-from-chisel-ubuntu"
+  SCENARIO/python_from_chisel_bare_2510: "python-from-chisel-bare"
+  # NOTE: tests for 26.04 with chisel slices are currently disabled because
+  # chisel itself doesn't support 26.04 yet (no chisel-releases branch).
+  #SCENARIO/python_from_chisel_ubuntu_2604: "python-from-chisel-ubuntu"
+  #SCENARIO/python_from_chisel_bare_2604: "python-from-chisel-bare"
+
+  BASE/python_from_chisel_ubuntu_2510: "ubuntu@25.10"
+  BASE/python_from_chisel_bare_2510: "ubuntu@25.10"
+  #BASE/python_from_chisel_ubuntu_2604: "ubuntu@26.04"
+  #BASE/python_from_chisel_bare_2604: "ubuntu@26.04"
+  BUILD_BASE/python_from_chisel_ubuntu_2510: "ubuntu@25.10"
+  BUILD_BASE/python_from_chisel_bare_2510: "ubuntu@25.10"
+  #BUILD_BASE/python_from_chisel_ubuntu_2604: "devel"
+  #BUILD_BASE/python_from_chisel_bare_2604: "devel"
 
 prepare: cp -r src/ "$SCENARIO"/
 
@@ -17,6 +54,9 @@ execute: |
   cd "$SCENARIO"
 
   # Build the rock & load it into docker
+  sed -i "s/PLACEHOLDER_BASE/$BASE/" rockcraft.yaml
+  sed -i "s/PLACEHOLDER_BUILD_BASE/$BUILD_BASE/" rockcraft.yaml
+
   run_rockcraft pack
   ROCK_FILE="${SCENARIO}_0.1_amd64.rock"
   IMAGE="${SCENARIO}:0.1"
