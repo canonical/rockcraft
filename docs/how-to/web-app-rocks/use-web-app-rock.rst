@@ -6,6 +6,8 @@ Use a 12-factor app rock
 The following how-to guide provides instructions on
 using rocks for 12-factor apps.
 
+.. _use-web-app-rock-update-deploy-oci:
+
 Update and deploy the OCI image
 -------------------------------
 
