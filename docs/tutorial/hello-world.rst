@@ -18,11 +18,11 @@ save it as ``rockcraft.yaml``:
     :caption: rockcraft.yaml
     :language: yaml
 
-This file instructs Rockcraft to build a rock that **only** has the ``hello``
-package (and its dependencies) inside. For more information about the ``parts``
-section, check :ref:`reference-part-properties`. The remaining YAML keys correspond to
-metadata that help define and describe the rock. For more information about all
-available keys, check :ref:`reference-rockcraft-yaml`.
+This file instructs Rockcraft to build a rock that **only** has the ``hello`` package
+(and its dependencies) inside. For more information about the ``parts`` section, check
+:ref:`rockcraft-yaml-part-keys`. The remaining YAML keys correspond to metadata that
+help define and describe the rock. For more information about all available keys, check
+:ref:`reference-rockcraft-yaml`.
 
 Pack the rock with Rockcraft
 ----------------------------

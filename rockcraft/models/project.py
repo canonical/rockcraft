@@ -113,8 +113,8 @@ class Project(BaseProject):
     )
     """Services to run in the rock.
 
-    This field is added to the Pebble :external+pebble:ref:`layer specification
-    <layer-specification>`.
+    This map of services is added to the Pebble configuration layer conforming to the
+    :external+pebble:ref:`layer specification <layer-specification>`.
     """
     checks: dict[str, Check] | None = pydantic.Field(
         default=None,
@@ -156,7 +156,7 @@ class Project(BaseProject):
     """
     The base system image that the rock's contents will be layered on.
 
-    :ref:`This system <bases_explanation>` is mounted and made available when using
+    :ref:`This system <explanation-bases>` is mounted and made available when using
     overlays. The special value ``bare`` means that the rock will have no base system,
     which is typically used with static binaries or
     :ref:`Chisel slices <explanation-chisel>`.
@@ -167,7 +167,7 @@ class Project(BaseProject):
     """The system and version that will be used during the rock's build, but not
     included in the final rock itself.
 
-    The :ref:`build base <bases_explanation>` comprises the set of tools and libraries
+    The :ref:`build base <explanation-bases>` comprises the set of tools and libraries
     that Rockcraft uses when building the rock's contents.
 
     This key is mandatory if ``base`` is ``bare``. Otherwise, it is optional and
