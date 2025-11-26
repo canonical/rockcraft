@@ -126,7 +126,7 @@ The top of the file should look similar to the following snippet:
     :caption: ~/spring-boot-hello-world/rockcraft.yaml
 
     name: spring-boot-hello-world
-    # see https://documentation.ubuntu.com/rockcraft/en/latest/explanation/bases/
+    # see https://documentation.ubuntu.com/rockcraft/latest/explanation/bases/
     # for more information about bases and using 'bare' bases for chiselled rocks
     base: bare # as an alternative, a ubuntu base can be used
     build-base: ubuntu@24.04 # build-base is required when the base is bare
@@ -346,7 +346,7 @@ The top of the ``rockcraft.yaml`` file should look similar to the following:
     :emphasize-lines: 6
 
     name: spring-boot-hello-world
-    # see https://documentation.ubuntu.com/rockcraft/en/latest/explanation/bases/
+    # see https://documentation.ubuntu.com/rockcraft/latest/explanation/bases/
     # for more information about bases and using 'bare' bases for chiselled rocks
     base: bare # as an alternative, a ubuntu base can be used
     build-base: ubuntu@24.04 # build-base is required when the base is bare
