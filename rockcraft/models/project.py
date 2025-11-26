@@ -324,11 +324,9 @@ class Project(BaseProject):
                 "valid Pebble service."
             )
 
-        cmd_str = info.data["services"][entrypoint_service].command
-        command, args = parse_command(cmd_str)
+        command, args = parse_command(info.data["services"][entrypoint_service].command)
 
-        has_brackets = re.search(r"\[.*\]", cmd_str) is not None
-        if len(args) == 0 and not has_brackets:
+        if args is None:
             raise ValueError(
                 f"The Pebble service '{entrypoint_service}' has a command {' '.join(command)} "
                 "without default arguments and thus cannot be used as the "

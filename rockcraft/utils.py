@@ -124,7 +124,7 @@ def get_snap_command_path(command_name: str) -> str:
     return command_path
 
 
-def parse_command(command: str) -> tuple[list[str], list[str]]:
+def parse_command(command: str) -> tuple[list[str], list[str] | None]:
     """Parse command using shlex and return the command and its arguments split in lists inside a tuple.
 
     :param command: the command string to be parsed
@@ -134,7 +134,7 @@ def parse_command(command: str) -> tuple[list[str], list[str]]:
     :raises IndexError: if additional arguments' syntax is wrong
     """
     cmd: list[str] = []
-    args: list[str] = []
+    args: list[str] | None = None
 
     in_brackets, got_brackets = False, False
     for arg in shlex.split(command):
@@ -149,7 +149,7 @@ def parse_command(command: str) -> tuple[list[str], list[str]]:
         if got_brackets:
             raise ValueError("Cannot have any arguments after [ ... ] group.")
         if arg == "[":
-            in_brackets, got_brackets = True, True
+            args, in_brackets, got_brackets = [], True, True
         elif arg == "]":
             raise IndexError("Bad syntax for the command's additional args.")
         else:

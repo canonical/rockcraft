@@ -63,14 +63,14 @@ def test_get_managed_environment_snap_channel_none(monkeypatch):
 @pytest.mark.parametrize(
     ("command", "expected"),
     [
-        ("echo foo", (["echo", "foo"], [])),
+        ("echo foo", (["echo", "foo"], None)),
         ("echo [ foo ]", (["echo"], ["foo"])),
         ("echo '[ foo ]' [ bar ]", (["echo", "[ foo ]"], ["bar"])),
         ("echo [ foo [bar] ]", (["echo"], ["foo", "[bar]"])),
         ("[ echo foo ]", ([], ["echo", "foo"])),
         ("echo happy :-] [ sad :-[ ]", (["echo", "happy", ":-]"], ["sad", ":-["])),
         ("[ ]", ([], [])),
-        ("", ([], [])),
+        ("", ([], None)),
     ],
 )
 def test_parse_command(command, expected):

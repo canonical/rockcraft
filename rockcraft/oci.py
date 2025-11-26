@@ -380,13 +380,13 @@ class Image:
         _config_image(image_path, params)
         emit.progress(f"Entrypoint set to {entrypoint}")
 
-    def set_cmd(self, command: list[str]) -> None:
+    def set_cmd(self, command: list[str] | None = None) -> None:
         """Set the OCI image CMD."""
         emit.progress("Configuring CMD...")
         image_path = self.path / self.image_name
         cmd_params = ["--clear=config.cmd"]
 
-        for arg in command:
+        for arg in command or []:
             cmd_params.extend(["--config.cmd", arg])
         _config_image(image_path, cmd_params)
         emit.progress(f"CMD set to {command}")
