@@ -651,8 +651,8 @@ def test_project_load(check, yaml_loaded_data, fake_services):
             "stage": ["bin/pebble"],
             "override-prime": str(
                 "craftctl default\n"
-                "mkdir -p var/lib/pebble/default/layers\n"
-                "chmod 777 var/lib/pebble/default"
+                "/bin/mkdir -p var/lib/pebble/default/layers\n"
+                "/bin/chmod 777 var/lib/pebble/default"
             ),
         }
     }
