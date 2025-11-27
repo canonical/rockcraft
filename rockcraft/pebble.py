@@ -366,7 +366,7 @@ class Pebble:
         "stage-snaps": ["pebble/latest/stable"],
         # We need this because "services" is Optional, but the directory must exist
         "override-prime": str(
-            f"craftctl default\nmkdir -p {PEBBLE_LAYERS_PATH}\nchmod 777 {PEBBLE_PATH}"
+            f"craftctl default\n/bin/mkdir -p {PEBBLE_LAYERS_PATH}\n/bin/chmod 777 {PEBBLE_PATH}"
         ),
     }
     # The part spec for 25.10 and newer; pebble is in "usr/bin/pebble" because of the
