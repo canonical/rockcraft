@@ -63,6 +63,8 @@ def test_get_managed_environment_snap_channel_none(monkeypatch):
 @pytest.mark.parametrize(
     ("command", "expected"),
     [
+        ("echo", (["echo"], None)),
+        ("echo [ ]", (["echo"], [])),
         ("echo foo", (["echo", "foo"], None)),
         ("echo [ foo ]", (["echo"], ["foo"])),
         ("echo '[ foo ]' [ bar ]", (["echo", "[ foo ]"], ["bar"])),
