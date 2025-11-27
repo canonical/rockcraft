@@ -114,7 +114,7 @@ class ExpressJSFramework(Extension):
             or "start" not in self._app_package_json["scripts"]
         ):
             raise ExtensionError(
-                "missing start script",
+                "missing start script in package.json",
                 doc_slug="/reference/extensions/expressjs-framework",
                 logpath_report=False,
             )
@@ -122,7 +122,7 @@ class ExpressJSFramework(Extension):
             self._app_package_json["name"], str
         ):
             raise ExtensionError(
-                "missing application name",
+                "missing application name in package.json",
                 doc_slug="/reference/extensions/expressjs-framework",
                 logpath_report=False,
             )
@@ -217,9 +217,12 @@ class ExpressJSFramework(Extension):
     def _app_package_json(self) -> dict[str, Any]:
         """Return the app package.json contents."""
         package_json_file = self.project_root / self.IMAGE_BASE_DIR / "package.json"
+        missing_package_message = (
+            "missing package.json file, make sure it is in ``app/`` directory"
+        )
         if not package_json_file.exists():
             raise ExtensionError(
-                "missing package.json file",
+                missing_package_message,
                 doc_slug="/reference/extensions/expressjs-framework",
                 logpath_report=False,
             )
@@ -234,7 +237,7 @@ class ExpressJSFramework(Extension):
                 )
         except json.JSONDecodeError as exc:
             raise ExtensionError(
-                "failed to parse package.json file",
+                missing_package_message,
                 doc_slug="/reference/extensions/expressjs-framework",
                 logpath_report=False,
             ) from exc

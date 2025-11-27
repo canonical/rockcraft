@@ -265,7 +265,13 @@ class FastAPIFramework(Extension):
         try:
             self._find_asgi_location()
         except FileNotFoundError:
-            return ["missing ASGI entrypoint"]
+            return [
+                "missing ASGI entrypoint",
+                "We looked for an `app` global variable in the following places:",
+                "1. `app.py`.",
+                "2. Inside the directories `app`, `src` and rockcraft name, in the files",
+                "`__init__.py`, `app.py` or `main.py`.",
+            ]
         except SyntaxError as e:
             return [f"Syntax error in  python file in ASGI search path: {e}"]
         return []
