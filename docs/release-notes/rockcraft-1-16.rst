@@ -61,8 +61,8 @@ Stabilized base ``ubuntu@25.10``
 
 Base ``ubuntu@25.10`` is now fully supported and no longer requires ``build-base: devel``.
 
-Snap archictectures
-~~~~~~~~~~~~~~~~~~~
+Snap architectures
+~~~~~~~~~~~~~~~~~~
 
 The Rockcraft snap is once again available for the ``riscv64`` and ``armhf`` architectures.
 
