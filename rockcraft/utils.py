@@ -146,7 +146,7 @@ def parse_command(command: str) -> tuple[list[str], list[str] | None]:
             if arg == "]":
                 in_brackets = False
                 continue
-            args.append(arg)  # type: ignore[union-attr]
+            args.append(arg)
             continue
         if got_brackets:
             raise ValueError("Cannot have any arguments after [ ... ] group.")
