@@ -139,6 +139,8 @@ def parse_command(command: str) -> tuple[list[str], list[str] | None]:
     in_brackets, got_brackets = False, False
     for arg in shlex.split(command):
         if in_brackets:
+            if args is None:
+                args = []
             if arg == "[":
                 raise ValueError("Cannot nest [ ... ] groups.")
             if arg == "]":
@@ -149,7 +151,7 @@ def parse_command(command: str) -> tuple[list[str], list[str] | None]:
         if got_brackets:
             raise ValueError("Cannot have any arguments after [ ... ] group.")
         if arg == "[":
-            args, in_brackets, got_brackets = [], True, True
+            in_brackets, got_brackets = True, True
         elif arg == "]":
             raise IndexError("Bad syntax for the command's additional args.")
         else:
