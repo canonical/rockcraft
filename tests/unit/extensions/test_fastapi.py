@@ -14,6 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import pytest
+
 from rockcraft import extensions
 from rockcraft.errors import ExtensionError
 
@@ -211,7 +212,11 @@ def test_fastapi_check_no_correct_requirement_and_no_asgi_entrypoint(
         extensions.apply_extensions(tmp_path, fastapi_input_yaml)
     assert str(exc.value) == (
         "- missing fastapi or starlette package dependency in requirements.txt file.\n"
-        "- missing ASGI entrypoint"
+        "- missing ASGI entrypoint\n"
+        "  We looked for an `app` global variable in the following places:\n"
+        "  1. `app.py`.\n"
+        "  2. Inside the directories `app`, `src` and rockcraft name, in the files" 
+        "`__init__.py`, `app.py` or `main.py`."
     )
 
 
@@ -312,4 +317,5 @@ def test_fastapi_extension_incorrect_prime_prefix_error(tmp_path, fastapi_input_
 
     with pytest.raises(ExtensionError) as exc:
         extensions.apply_extensions(tmp_path, fastapi_input_yaml)
+    assert "start with app/" in str(exc)
     assert "start with app/" in str(exc)

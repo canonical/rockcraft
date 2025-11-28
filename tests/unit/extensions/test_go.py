@@ -15,6 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import pytest
+
 from rockcraft import extensions
 from rockcraft.errors import ExtensionError
 
@@ -112,7 +113,7 @@ def test_go_extension_no_go_mod_file_error(tmp_path, go_input_yaml):
     (tmp_path / "somefile").write_text("random text")
     with pytest.raises(ExtensionError) as exc:
         extensions.apply_extensions(tmp_path, go_input_yaml)
-    assert str(exc.value) == "missing go.mod file"
+    assert str(exc.value) == "missing go.mod file, it should be present in the project directory"
     assert str(exc.value.doc_slug) == "/reference/extensions/go-framework"
 
 

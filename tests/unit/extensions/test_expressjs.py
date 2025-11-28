@@ -14,6 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import pytest
+
 from rockcraft import extensions
 from rockcraft.errors import ExtensionError
 
@@ -345,22 +346,22 @@ def test_expressjs_extension_default(
 def test_expressjs_no_package_json_error(tmp_path, expressjs_input_yaml):
     with pytest.raises(ExtensionError) as exc:
         extensions.apply_extensions(tmp_path, expressjs_input_yaml)
-    assert str(exc.value) == "missing package.json file"
+    assert str(exc.value) == "missing package.json file, make sure it is in ``app/`` directory"
     assert str(exc.value.doc_slug) == "/reference/extensions/express-framework"
 
 
 @pytest.mark.parametrize(
     ("package_json_path", "package_json_contents", "error_message"),
     [
-        ("invalid-path", "", "missing package.json file"),
+        ("invalid-path", "", "missing package.json file, make sure it is in ``app/`` directory"),
         ("package.json", "[]", "invalid package.json file"),
-        ("package.json", "{", "failed to parse package.json file"),
-        ("package.json", "{}", "missing start script"),
-        ("package.json", '{"scripts":{}}', "missing start script"),
+        ("package.json", "{", "failed to parse package.json file, make sure it is a valid JSON"),
+        ("package.json", "{}", "missing start script in package.json"),
+        ("package.json", '{"scripts":{}}', "missing start script in package.json"),
         (
             "package.json",
             '{"scripts":{"start":"node ./bin/www"}}',
-            "missing application name",
+            "missing application name in package.json",
         ),
     ],
 )
@@ -377,4 +378,5 @@ def test_expressjs_invalid_package_json_scripts_error(
     with pytest.raises(ExtensionError) as exc:
         extensions.apply_extensions(tmp_path, expressjs_input_yaml)
     assert str(exc.value) == error_message
+    assert str(exc.value.doc_slug) == "/reference/extensions/express-framework"
     assert str(exc.value.doc_slug) == "/reference/extensions/express-framework"

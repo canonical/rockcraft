@@ -217,12 +217,9 @@ class ExpressJSFramework(Extension):
     def _app_package_json(self) -> dict[str, Any]:
         """Return the app package.json contents."""
         package_json_file = self.project_root / self.IMAGE_BASE_DIR / "package.json"
-        missing_package_message = (
-            "missing package.json file, make sure it is in ``app/`` directory"
-        )
         if not package_json_file.exists():
             raise ExtensionError(
-                missing_package_message,
+                "missing package.json file, make sure it is in ``app/`` directory",
                 doc_slug="/reference/extensions/express-framework",
                 logpath_report=False,
             )
@@ -237,7 +234,7 @@ class ExpressJSFramework(Extension):
                 )
         except json.JSONDecodeError as exc:
             raise ExtensionError(
-                missing_package_message,
+                "failed to parse package.json file, make sure it is a valid JSON",
                 doc_slug="/reference/extensions/express-framework",
                 logpath_report=False,
             ) from exc
