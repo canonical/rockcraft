@@ -128,7 +128,7 @@ def parse_command(command: str) -> tuple[list[str], list[str] | None]:
     """Parse command using shlex and return the command and its arguments split in lists inside a tuple.
 
     :param command: the command string to be parsed
-    :return: Tuple containing the command and its arguments split in lists
+    :return: Tuple containing ([command], [args]) where args is None if no bracket syntax was used, or a list (possibly empty) if bracket syntax was used
 
     :raises ValueError: if command is invalid
     :raises IndexError: if additional arguments' syntax is wrong
