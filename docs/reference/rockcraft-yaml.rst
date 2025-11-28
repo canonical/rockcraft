@@ -58,6 +58,28 @@ Top-level keys
     :override-type: dict[str, str]
 
 
+.. _rockcraft-yaml-extensions:
+
+extensions
+~~~~~~~~~~
+
+**Type**
+
+``list[str]``
+
+**Description**
+
+The :ref:`extensions <reference-extensions>` to use in this project. During packing, the
+boilerplate keys from the listed extensions will be added to the project file.
+
+**Examples**
+
+.. code-block:: yaml
+
+    extensions:
+      - expressjs-framework
+
+
 .. _rockcraft-yaml-platform-keys:
 
 Platform keys
