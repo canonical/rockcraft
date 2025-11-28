@@ -337,7 +337,7 @@ class Project(BaseProject):
 
         command, args = parse_command(info.data["services"][entrypoint_service].command)
 
-        if len(args) == 0:
+        if args is None:
             raise ValueError(
                 f"The Pebble service '{entrypoint_service}' has a command {' '.join(command)} "
                 "without default arguments and thus cannot be used as the "
