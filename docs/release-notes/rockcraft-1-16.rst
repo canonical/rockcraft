@@ -86,6 +86,16 @@ Restricted platform names
 
 The forward slash "/" character is now disallowed in platform names.
 
+Improved ``rockcraft.yaml`` Documentation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+We refreshed the :ref:`rockraft.yaml reference <reference-rockraft-yaml>`. The page
+covers all keys, and their descriptions and examples are now sourced from the codebase,
+so they will stay up-to-date as Rockcraft changes.
+
+The reference has also been reorganized to better reflect idiomatic project file
+structure and the new ``platforms`` keys.
+
 Documentation for 12-factor app extensions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
