@@ -396,7 +396,7 @@ class DjangoFramework(_GunicornBase):
         if not has_global_variable(wsgi_file, "application"):
             raise ExtensionError(
                 f"django application can not be imported from {self.default_wsgi_path}, "
-                "no variable named application in application.py",
+                "no variable named 'application' in wsgi.py",
                 doc_slug="/reference/extensions/django-framework",
                 logpath_report=False,
             )

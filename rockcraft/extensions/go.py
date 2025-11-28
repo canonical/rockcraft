@@ -108,7 +108,7 @@ class GoFramework(Extension):
         """Check go.mod file exist in project."""
         if not (self.project_root / "go.mod").exists():
             raise ExtensionError(
-                "missing go.mod file",
+                "missing go.mod file, it should be present in the project directory",
                 doc_slug="/reference/extensions/go-framework",
                 logpath_report=False,
             )
