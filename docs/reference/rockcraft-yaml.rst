@@ -22,6 +22,12 @@ Top-level keys
 
 .. kitbash-field:: craft_application.models.Project version
 
+.. kitbash-field:: rockcraft.models.Project base
+    :override-type: Literal['ubuntu@20.04', 'ubuntu@22.04', 'ubuntu@24.04', 'ubuntu@25.10', 'ubuntu@26.04']
+
+.. kitbash-field:: rockcraft.models.Project build_base
+    :override-type: Literal['ubuntu@20.04', 'ubuntu@22.04', 'ubuntu@24.04', 'ubuntu@25.10', 'ubuntu@26.04', 'devel']
+
 .. kitbash-field:: craft_application.models.Project source_code
     :override-type: str
 
@@ -51,10 +57,11 @@ Top-level keys
 .. kitbash-field:: rockcraft.models.Project checks
     :override-type: dict[str, str]
 
-.. kitbash-field:: rockcraft.models.Project base
 
-.. kitbash-field:: rockcraft.models.Project build_base
-    :override-type: Literal['ubuntu@20.04', 'ubuntu@22.04', 'ubuntu@24.04', 'ubuntu@25.10', 'ubuntu@26.04', 'devel']
+.. _rockcraft-yaml-platform-keys:
+
+Platform keys
+-------------
 
 .. kitbash-field:: craft_application.models.Project platforms
 
