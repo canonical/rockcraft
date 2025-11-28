@@ -49,58 +49,73 @@ What's new
 
 Rockcraft 1.16 brings the following features, integrations, and improvements.
 
-Support for base ``ubuntu@26.04``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+``ubuntu@26.04`` base
+~~~~~~~~~~~~~~~~~~~~~
 
 Rockcraft now supports ``ubuntu@26.04`` as a base. Since this version of Ubuntu is in
 development at time of release, to select this base you must also set
 ``build-base: devel``.
 
-Stabilized base ``ubuntu@25.10``
+
+Stabilized ``ubuntu@25.10`` base
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Base ``ubuntu@25.10`` is now fully supported and no longer requires ``build-base: devel``.
+The ``ubuntu@25.10`` base is now fully supported and no longer requires ``build-base:
+devel``.
 
-Snap architectures
-~~~~~~~~~~~~~~~~~~
 
-The Rockcraft snap is once again available for the ``riscv64`` and ``armhf`` architectures.
+Availability on RISC-V 64-bit and armhf
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-``jlink`` plugin
-~~~~~~~~~~~~~~~~
+Rockcraft is once again available on RISC-V 64-bit and armhf systems.
 
-The ``jlink`` plugin now supports the following new keys:
 
-- ``jlink-modules``, to declare the complete list of modules to include in the OpenJDK image;
-- ``jlink-multi-release``, to declare the specific OpenJDK release version to use for multi-release JARs.
+JLink plugin
+~~~~~~~~~~~~
 
-See the plugin's :ref:`documentation <craft_parts_jlink_plugin>` for more information.
+The :ref:`craft_parts_jlink_plugin` supports two new keys.
+
+- ``jlink-modules`` declares the complete list of modules to include in the OpenJDK
+  image
+- ``jlink-multi-release`` specifies the OpenJDK release version to use for multi-release
+  JARs
+
 
 Minor features
 --------------
 
 Rockcraft 1.16 brings the following minor changes.
 
-Restricted platform names
-~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The forward slash "/" character is now disallowed in platform names.
 
 Improved ``rockcraft.yaml`` Documentation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-We refreshed the :ref:`rockraft.yaml reference <reference-rockraft-yaml>`. The page
+We refreshed the rockraft.yaml reference. The page
 covers all keys, and their descriptions and examples are now sourced from the codebase,
 so they will stay up-to-date as Rockcraft changes.
 
 The reference has also been reorganized to better reflect idiomatic project file
 structure and the new ``platforms`` keys.
 
+
 Documentation for 12-factor app extensions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The :ref:`set-up-web-app-rock` how-to page now contains the steps needed to override
-the rock's default command provided by the extensions.
+:ref:`set-up-web-app-rock` now contains the steps needed to override the rock's default
+command that the 12-factor app extensions provide.
+
+
+Backwards-incompatible changes
+------------------------------
+
+The following changes are incompatible with previous versions of Starcraft.
+
+
+Removed character support in platform names
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Platform names no longer support forward slashes (/).
 
 
 Fixed bugs and issues
@@ -108,11 +123,15 @@ Fixed bugs and issues
 
 The following issues have been resolved in Rockcraft 1.16.
 
+
 Rockcraft 1.16.0
 ~~~~~~~~~~~~~~~~
 
-- `#992 <https://github.com/canonical/rockcraft/issues/992>`_ Architecture field in .rock/metadata.yaml is serialized incorrectly.
-- `#1022 <https://github.com/canonical/rockcraft/issues/1022>`_ entrypoint-service rejects empty argument list in 1.15 even though this previously worked
+- `#992 <https://github.com/canonical/rockcraft/issues/992>`_ Architecture field in
+  ``.rock/metadata.yaml`` is serialized incorrectly.
+- `#1022 <https://github.com/canonical/rockcraft/issues/1022>`_ ``entrypoint-service``
+  rejects empty argument list in 1.15 even though this previously worked
+
 
 Contributors
 ------------
@@ -129,5 +148,3 @@ this release.
 :literalref:`@medubelko <https://github.com/medubelko>`,
 :literalref:`@steinbro <https://github.com/steinbro>`,
 and :literalref:`@tigarmo <https://github.com/tigarmo>`.
-
-.. _CONTRIBUTING.md: https://github.com/canonical/rockcraft/blob/main/CONTRIBUTING.md
