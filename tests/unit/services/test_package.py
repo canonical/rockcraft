@@ -123,7 +123,7 @@ def test_pack(fake_services: ServiceFactory, default_image_info, mocker):
                 "entrypoint_command": "echo",
             },
             ["echo"],
-            [],
+            None,
         ),
         # Entrypoint command with only CMD
         (
