@@ -46,17 +46,7 @@ Top-level keys
 
 .. kitbash-field:: rockcraft.models.Project entrypoint_service
 
-.. caution::
-
-    Only set this key when the targeted deployment environment has a container image
-    entrypoint that is guaranteed to be static.
-
 .. kitbash-field:: rockcraft.models.Project entrypoint_command
-
-.. important::
-
-    You should only set this key for certain categories of general-purpose rocks where
-    Pebble services aren't appropriate, such as the Ubuntu OS and base images.
 
 .. kitbash-field:: rockcraft.models.Project checks
     :override-type: dict[str, str]
@@ -126,6 +116,9 @@ Part keys
     :prepend-name: parts.<part-name>
 
 .. Overlay step keys
+
+.. kitbash-field:: craft_parts.parts.PartSpec overlay_files
+    :prepend-name: parts.<part-name>
 
 .. kitbash-field:: craft_parts.parts.PartSpec overlay_packages
     :prepend-name: parts.<part-name>

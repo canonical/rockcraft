@@ -129,12 +129,18 @@ class Project(BaseProject):
     )
     """The optional name of the Pebble service to serve as the `OCI entrypoint
     <https://specs.opencontainers.org/image-spec/config/?v=v1.0.1#properties>`_.
+
+    .. caution::
+
+        Only set this key when the deployment environment has a container image
+        entrypoint that is guaranteed to be static.
+
     If set, this makes Rockcraft extend ``["/bin/pebble", "enter"]`` with
     ``["--args", "<serviceName>"]``. The command of the Pebble service must
     contain an optional argument that will become the `OCI CMD
     <https://specs.opencontainers.org/image-spec/config/?v=v1.0.1#properties>`_.
 
-    Mutually exclusive with ``entrypoint-command``.
+    This key is mutually incompatible with the ``entrypoint-command`` key.
     """
     entrypoint_command: str | None = pydantic.Field(
         default=None,
@@ -145,10 +151,15 @@ class Project(BaseProject):
     )
     """Overrides the rock's default Pebble OCI ``entrypoint`` and ``CMD`` properties.
 
+    .. important::
+
+        Only set this key for certain categories of general-purpose rocks where
+        Pebble services aren't appropriate, such as the Ubuntu OS and base images.
+
     The value can be suffixed with default entrypoint arguments using square
     brackets (``[]``). These entrypoint arguments become the rock's OCI CMD.
 
-    This key is mutually incompatible with ``entrypoint-service``.
+    This key is mutually incompatible with the ``entrypoint-service`` key.
     """
     base: BaseT = pydantic.Field(  # type: ignore[reportIncompatibleVariableOverride]
         description="The base system image for the rock.",
