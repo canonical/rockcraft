@@ -70,7 +70,7 @@ Rockcraft 1.10 brings the following minor changes.
 Part sources
 ~~~~~~~~~~~~
 
-The ``source-commit`` :ref:`key <reference-part-properties-source-commit>` now accepts
+The ``source-commit`` :ref:`key <rockcraft-yaml-source-commit>` now accepts
 short hashes in addition to the full hash of a Git commit.
 
 OCI Annotations

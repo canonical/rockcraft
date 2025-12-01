@@ -113,8 +113,8 @@ class Project(BaseProject):
     )
     """Services to run in the rock.
 
-    This field is added to the Pebble :external+pebble:ref:`layer specification
-    <layer-specification>`.
+    This map of services is added to the Pebble configuration layer conforming to the
+    :external+pebble:ref:`layer specification <layer-specification>`.
     """
     checks: dict[str, Check] | None = pydantic.Field(
         default=None,
@@ -129,12 +129,18 @@ class Project(BaseProject):
     )
     """The optional name of the Pebble service to serve as the `OCI entrypoint
     <https://specs.opencontainers.org/image-spec/config/?v=v1.0.1#properties>`_.
+
+    .. caution::
+
+        Only set this key when the deployment environment has a container image
+        entrypoint that is guaranteed to be static.
+
     If set, this makes Rockcraft extend ``["/bin/pebble", "enter"]`` with
     ``["--args", "<serviceName>"]``. The command of the Pebble service must
     contain an optional argument that will become the `OCI CMD
     <https://specs.opencontainers.org/image-spec/config/?v=v1.0.1#properties>`_.
 
-    Mutually exclusive with ``entrypoint-command``.
+    This key is mutually incompatible with the ``entrypoint-command`` key.
     """
     entrypoint_command: str | None = pydantic.Field(
         default=None,
@@ -145,10 +151,15 @@ class Project(BaseProject):
     )
     """Overrides the rock's default Pebble OCI ``entrypoint`` and ``CMD`` properties.
 
+    .. important::
+
+        Only set this key for certain categories of general-purpose rocks where
+        Pebble services aren't appropriate, such as the Ubuntu OS and base images.
+
     The value can be suffixed with default entrypoint arguments using square
     brackets (``[]``). These entrypoint arguments become the rock's OCI CMD.
 
-    This key is mutually incompatible with ``entrypoint-service``.
+    This key is mutually incompatible with the ``entrypoint-service`` key.
     """
     base: BaseT = pydantic.Field(  # type: ignore[reportIncompatibleVariableOverride]
         description="The base system image for the rock.",
@@ -156,7 +167,7 @@ class Project(BaseProject):
     """
     The base system image that the rock's contents will be layered on.
 
-    :ref:`This system <bases_explanation>` is mounted and made available when using
+    :ref:`This system <explanation-bases>` is mounted and made available when using
     overlays. The special value ``bare`` means that the rock will have no base system,
     which is typically used with static binaries or
     :ref:`Chisel slices <explanation-chisel>`.
@@ -167,7 +178,7 @@ class Project(BaseProject):
     """The system and version that will be used during the rock's build, but not
     included in the final rock itself.
 
-    The :ref:`build base <bases_explanation>` comprises the set of tools and libraries
+    The :ref:`build base <explanation-bases>` comprises the set of tools and libraries
     that Rockcraft uses when building the rock's contents.
 
     This key is mandatory if ``base`` is ``bare``. Otherwise, it is optional and

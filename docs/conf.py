@@ -19,7 +19,6 @@ import os
 import pathlib
 import sys
 
-import craft_parts
 import craft_parts_docs
 import rockcraft
 
@@ -111,6 +110,7 @@ exclude_patterns = [
     "common/craft-parts/reference/parts_steps.rst",
     "common/craft-parts/reference/step_execution_environment.rst",
     "common/craft-parts/reference/step_output_directories.rst",
+    "common/craft-parts/reference/part_properties.rst",
     "common/craft-parts/reference/plugins/poetry_plugin.rst",
     "common/craft-parts/reference/plugins/python_plugin.rst",
     "common/craft-parts/reference/plugins/python_v2_plugin.rst",
@@ -241,9 +241,6 @@ notfound_context = {
 
 project_dir = pathlib.Path(__file__).parents[1].resolve()
 sys.path.insert(0, str(project_dir.absolute()))
-
-model_dir = pathlib.Path(craft_parts.__file__).parent.resolve()
-sys.path.append(str(model_dir.absolute()))
 
 
 def generate_cli_docs(nil):
