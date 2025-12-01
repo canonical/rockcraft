@@ -184,7 +184,7 @@ parts:
   umoci:
     plugin: make
     source: https://github.com/opencontainers/umoci.git
-    source-tag: v0.4.7
+    source-tag: v0.6.0
     make-parameters:
       - umoci.static
     override-build: |
@@ -194,12 +194,12 @@ parts:
     build-packages:
       - make
     build-snaps:
-      - go/1.21/stable
+      - go
 
   skopeo:
     plugin: nil
     source: https://github.com/containers/skopeo.git
-    source-tag: v1.14.2
+    source-tag: v1.20.0
     override-build: |
       CGO=1 go build -ldflags -linkmode=external ./cmd/skopeo
       mkdir "$CRAFT_PART_INSTALL"/bin
@@ -212,7 +212,7 @@ parts:
     build-attributes:
       - enable-patchelf
     build-snaps:
-      - go/1.21/stable
+      - go
     build-packages:
       - libgpgme-dev
       - libassuan-dev
