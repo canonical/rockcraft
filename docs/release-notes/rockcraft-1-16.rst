@@ -91,7 +91,7 @@ Rockcraft 1.16 brings the following minor changes.
 Improved ``rockcraft.yaml`` Documentation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-We refreshed the rockcraft.yaml reference. The page
+We refreshed the rockcraft.yaml :ref:`reference <reference-rockcraft-yaml>`. The page
 covers all keys, and their descriptions and examples are now sourced from the codebase,
 so they will stay up-to-date as Rockcraft changes.
 
@@ -115,7 +115,7 @@ The following changes are incompatible with previous versions of Rockcraft.
 Removed character support in platform names
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Platform names no longer support forward slashes (/).
+:ref:`Platform <rockcraft-yaml-platform-keys>` names no longer support forward slashes (/).
 
 
 Fixed bugs and issues
