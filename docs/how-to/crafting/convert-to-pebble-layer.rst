@@ -29,7 +29,7 @@ Design the Pebble services
 
 A :external+pebble:doc:`Pebble layer <reference/layer-specification>`
 is composed of metadata, checks and services. The latter is present in
-the project file as a :ref:`top-level key <rockcraft-yaml-format-specification>`
+the project file as a :ref:`top-level key <rockcraft-yaml-top-level-keys>`
 and it represents the services which are loaded by the Pebble entrypoint when
 deploying a rock.
 
