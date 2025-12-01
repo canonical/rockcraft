@@ -91,7 +91,7 @@ Rockcraft 1.16 brings the following minor changes.
 Improved ``rockcraft.yaml`` Documentation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-We refreshed the rockraft.yaml reference. The page
+We refreshed the rockcraft.yaml reference. The page
 covers all keys, and their descriptions and examples are now sourced from the codebase,
 so they will stay up-to-date as Rockcraft changes.
 
@@ -109,7 +109,7 @@ command that the 12-factor app extensions provide.
 Backwards-incompatible changes
 ------------------------------
 
-The following changes are incompatible with previous versions of Starcraft.
+The following changes are incompatible with previous versions of Rockcraft.
 
 
 Removed character support in platform names
