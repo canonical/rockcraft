@@ -94,7 +94,7 @@ endif
 .PHONY: clean
 clean:  ## Clean up the development environment
 	uv tool run pyclean .
-	rm -rf dist/ build/ docs/_build/ docs/_linkcheck *.snap .coverage*
+	rm -rf dist/ build/ docs/_build/ docs/_linkcheck *.snap .coverage* .venv
 
 .PHONY: autoformat
 autoformat: format  # Hidden alias for 'format'
@@ -159,6 +159,16 @@ ifneq ($(shell which pyright),) # Prefer the system pyright
 else
 	uv tool run pyright --pythonpath .venv/bin/python
 endif
+ifneq ($(CI),)
+	@echo ::endgroup::
+endif
+
+.PHONY: lint-ty
+lint-ty: install-ty  ##- Check types with Astral ty (disabled by default)
+ifneq ($(CI),)
+	@echo ::group::$@
+endif
+	ty check --python .venv/bin/python $(SOURCES)
 ifneq ($(CI),)
 	@echo ::endgroup::
 endif
@@ -317,6 +327,17 @@ else ifneq ($(shell which brew),)
 	brew install shellcheck
 else
 	$(warning Shellcheck not installed. Please install it yourself.)
+endif
+
+.PHONY: install-ty
+install-ty:
+ifneq ($(shell which ty),)
+else ifneq ($(shell which snap),)
+	sudo snap install --classic --edge astral-ty
+	sudo snap alias astral-ty.ty ty
+else
+	make install-uv
+	uv tool install ty
 endif
 
 .PHONY: install-npm
