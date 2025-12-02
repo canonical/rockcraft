@@ -63,16 +63,16 @@ docs = [
     # https://github.com/sbrunner/sphinx-prompt/releases/tag/1.9.0
     "sphinx-prompt~=1.8.0",
     "sphinxcontrib-details-directive",
-    "sphinxext-rediraffe==0.2.7",
+    "sphinxext-rediraffe==0.3.0",
 ]
 dev = [
     "build>=0.7.0",
     "coverage[toml]~=7.4",
     "poetry>=2.0.0",  # Needed for testing the poetry plugin.
     "poetry-plugin-export",
-    "pytest~=8.0",
+    "pytest~=9.0",
     "pytest-check",
-    "pytest-cov~=6.0",
+    "pytest-cov~=7.0",
     "pytest-mock~=3.12",
     "mypy[reports]~=1.18.2",
     "types-Pygments",
