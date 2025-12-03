@@ -104,8 +104,8 @@ parts:
       - "-usr/lib/x86_64-linux-gnu/libgdbm*"
 
   libgit2: # part came from snapcraft@5fbaab144842f
-    source: https://github.com/libgit2/libgit2/archive/refs/tags/v1.7.1.tar.gz
-    source-checksum: sha256/17d2b292f21be3892b704dddff29327b3564f96099a1c53b00edc23160c71327
+    source: https://github.com/libgit2/libgit2/archive/refs/tags/v1.9.1.tar.gz
+    source-checksum: sha256/14cab3014b2b7ad75970ff4548e83615f74d719afe00aa479b4a889c1e13fc00
     plugin: cmake
     cmake-parameters:
       - -DCMAKE_INSTALL_PREFIX=/usr
@@ -175,6 +175,8 @@ parts:
     plugin: nil
     build-environment:
       - PYTHONPATH: $CRAFT_STAGE/lib/python3.12/site-packages
+      # so that rockcraft can find libgit2.so.1.9
+      - LD_LIBRARY_PATH: $CRAFT_STAGE/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR
     override-build: |
       python3 -m craft_cli.completion $CRAFT_PROJECT_NAME rockcraft.cli:get_app_info \
         > $CRAFT_PART_INSTALL/completion.sh
@@ -182,7 +184,7 @@ parts:
   umoci:
     plugin: make
     source: https://github.com/opencontainers/umoci.git
-    source-tag: v0.4.7
+    source-tag: v0.6.0
     make-parameters:
       - umoci.static
     override-build: |
@@ -192,12 +194,12 @@ parts:
     build-packages:
       - make
     build-snaps:
-      - go/1.21/stable
+      - go
 
   skopeo:
     plugin: nil
     source: https://github.com/containers/skopeo.git
-    source-tag: v1.14.2
+    source-tag: v1.20.0
     override-build: |
       CGO=1 go build -ldflags -linkmode=external ./cmd/skopeo
       mkdir "$CRAFT_PART_INSTALL"/bin
@@ -210,7 +212,7 @@ parts:
     build-attributes:
       - enable-patchelf
     build-snaps:
-      - go/1.21/stable
+      - go
     build-packages:
       - libgpgme-dev
       - libassuan-dev

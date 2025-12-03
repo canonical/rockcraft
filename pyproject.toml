@@ -8,12 +8,12 @@ dependencies = [
     "craft-application>=6.0.1",
     "craft-archives>=2.2.0",
     "craft-cli>=3.1.2",
-    "craft-parts>=2.26.0",
+    "craft-parts>=2.27.0",
     "craft-platforms>=0.10.0",
     "craft-providers>=3.1.0",
     "overrides>=7.7.0",
     # setuptools >= 80.9 has a noisy warning about pkg_resources
-    "setuptools~=80.8.0",
+    "setuptools~=80.9.0",
     "spdx-lookup>=0.3.3",
     "tabulate>=0.9.0",
 ]
@@ -63,16 +63,16 @@ docs = [
     # https://github.com/sbrunner/sphinx-prompt/releases/tag/1.9.0
     "sphinx-prompt~=1.8.0",
     "sphinxcontrib-details-directive",
-    "sphinxext-rediraffe==0.2.7",
+    "sphinxext-rediraffe==0.3.0",
 ]
 dev = [
     "build>=0.7.0",
     "coverage[toml]~=7.4",
     "poetry>=2.0.0",  # Needed for testing the poetry plugin.
     "poetry-plugin-export",
-    "pytest~=8.0",
+    "pytest~=9.0",
     "pytest-check",
-    "pytest-cov~=6.0",
+    "pytest-cov~=7.0",
     "pytest-mock~=3.12",
     "mypy[reports]~=1.18.2",
     "types-Pygments",

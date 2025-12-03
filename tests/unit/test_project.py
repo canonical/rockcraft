@@ -79,6 +79,10 @@ services:
         override: replace
         command: echo [ foo ]
         on-failure: restart
+    empty-args-command-service:
+        override: replace
+        command: echo [ ]
+        on-failure: restart
     no-args-command-service:
         override: replace
         command: echo
@@ -138,6 +142,7 @@ def test_project_unmarshal(check, yaml_loaded_data):
             # Services are classes and not Dicts upfront
             v["test-service"] = Service(**v["test-service"])
             v["no-args-command-service"] = Service(**v["no-args-command-service"])
+            v["empty-args-command-service"] = Service(**v["empty-args-command-service"])
 
         check.equal(getattr(project, attr.replace("-", "_")), v)
 
@@ -298,7 +303,9 @@ def test_project_entrypoint_service_empty(yaml_loaded_data, entrypoint_service):
     assert str(err.value) == expected
 
 
-@pytest.mark.parametrize("entrypoint_service", ["test-service"])
+@pytest.mark.parametrize(
+    "entrypoint_service", ["test-service", "empty-args-command-service"]
+)
 def test_project_entrypoint_service_valid(
     yaml_loaded_data, emitter, entrypoint_service
 ):
@@ -798,6 +805,10 @@ services:
   test-service:
     override: replace
     command: echo [ foo ]
+    on-failure: restart
+  empty-args-command-service:
+    override: replace
+    command: echo [ ]
     on-failure: restart
   no-args-command-service:
     override: replace
