@@ -114,16 +114,16 @@ class ExpressJSFramework(Extension):
             or "start" not in self._app_package_json["scripts"]
         ):
             raise ExtensionError(
-                "missing start script",
-                doc_slug="/reference/extensions/express-framework",
+                "missing 'scripts.start' field in package.json",
+                doc_slug="/reference/extensions/express-framework/#project-requirements",
                 logpath_report=False,
             )
         if "name" not in self._app_package_json or not isinstance(
             self._app_package_json["name"], str
         ):
             raise ExtensionError(
-                "missing application name",
-                doc_slug="/reference/extensions/express-framework",
+                "missing 'name' field in package.json",
+                doc_slug="/reference/extensions/express-framework/#project-requirements",
                 logpath_report=False,
             )
 
@@ -219,8 +219,8 @@ class ExpressJSFramework(Extension):
         package_json_file = self.project_root / self.IMAGE_BASE_DIR / "package.json"
         if not package_json_file.exists():
             raise ExtensionError(
-                "missing package.json file",
-                doc_slug="/reference/extensions/express-framework",
+                "missing package.json file in 'app' directory",
+                doc_slug="/reference/extensions/express-framework/#project-requirements",
                 logpath_report=False,
             )
         package_json_contents = package_json_file.read_text(encoding="utf-8")
@@ -229,13 +229,13 @@ class ExpressJSFramework(Extension):
             if not isinstance(app_package_json, dict):
                 raise ExtensionError(
                     "invalid package.json file",
-                    doc_slug="/reference/extensions/express-framework",
+                    doc_slug="/reference/extensions/express-framework/#project-requirements",
                     logpath_report=False,
                 )
         except json.JSONDecodeError as exc:
             raise ExtensionError(
-                "failed to parse package.json file",
-                doc_slug="/reference/extensions/express-framework",
+                "failed to parse package.json; it might contain invalid JSON",
+                doc_slug="/reference/extensions/express-framework/#project-requirements",
                 logpath_report=False,
             ) from exc
         else:

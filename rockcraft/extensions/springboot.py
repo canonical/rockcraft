@@ -91,28 +91,32 @@ class SpringBootFramework(Extension):
         """Check if the project is a Spring Boot project."""
         if self.pom_xml_path.exists() and self.build_gradle_path.exists():
             raise ExtensionError(
-                "both pom.xml and build.gradle files exist",
-                doc_slug="/reference/extensions/spring-boot-framework",
+                "both pom.xml and build.gradle files exist\n"
+                "you cannot have both Maven and Gradle build files in the same project",
+                doc_slug="/reference/extensions/spring-boot-framework/#project-requirements",
                 logpath_report=False,
             )
         if self.mvnw_path.exists() and self.gradlew_path.exists():
             raise ExtensionError(
-                "both mvnw and gradlew executable files exist",
-                doc_slug="/reference/extensions/spring-boot-framework",
+                "both mvnw and gradlew executable files exist\n"
+                "you cannot have both Maven and Gradle executables in the same project",
+                doc_slug="/reference/extensions/spring-boot-framework/#project-requirements",
                 logpath_report=False,
             )
         if not self.pom_xml_path.exists() and not self.build_gradle_path.exists():
             raise ExtensionError(
-                "missing pom.xml and build.gradle file",
-                doc_slug="/reference/extensions/spring-boot-framework",
+                "missing pom.xml and build.gradle file\n"
+                "you must have either a Maven pom.xml or a Gradle build.gradle file in your project",
+                doc_slug="/reference/extensions/spring-boot-framework/#project-requirements",
                 logpath_report=False,
             )
         if (self.mvnw_path.exists() and not os.access(self.mvnw_path, os.X_OK)) or (
             self.gradlew_path.exists() and not os.access(self.gradlew_path, os.X_OK)
         ):
             raise ExtensionError(
-                "mvnw or gradlew file is not executable",
-                doc_slug="/reference/extensions/spring-boot-framework",
+                "mvnw or gradlew file is not executable\n"
+                "the mvnw or gradlew file must have executable permissions",
+                doc_slug="/reference/extensions/spring-boot-framework/#project-requirements",
                 logpath_report=False,
             )
 
