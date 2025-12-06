@@ -1,3 +1,6 @@
 {
   extends: ["github>canonical/starflow:renovate.json5"],
+  excludeCommitPaths: [
+    "docs/*/**", // Don't update dependencies in docs spread tests
+  ],
 }
