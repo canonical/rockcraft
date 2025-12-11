@@ -97,7 +97,7 @@ class _GunicornBase(Extension):
                 "plugin": "python",
                 "stage-packages": stage_packages,
                 "source": ".",
-                "python-packages": ["gunicorn"],
+                "python-packages": ["gunicorn~=23.0"],
                 "python-requirements": ["requirements.txt"],
                 "build-environment": build_environment,
             },
@@ -308,7 +308,7 @@ class FlaskFramework(_GunicornBase):
 
         if not has_app:
             return [
-                "flask application can not be imported from app:app in app.py in the project root."
+                "the global variable 'app' was not found in app.py in the project root."
             ]
 
         return []
@@ -389,12 +389,16 @@ class DjangoFramework(_GunicornBase):
         if not wsgi_file.exists():
             raise ExtensionError(
                 f"django application can not be imported from {self.default_wsgi_path}, "
-                f"no wsgi.py file found in the project directory ({str(wsgi_file.parent)})."
+                f"no wsgi.py file found in the project directory ({str(wsgi_file.parent)}).",
+                doc_slug="/reference/extensions/django-framework/#project-requirements",
+                logpath_report=False,
             )
         if not has_global_variable(wsgi_file, "application"):
             raise ExtensionError(
                 f"django application can not be imported from {self.default_wsgi_path}, "
-                "no variable named application in application.py"
+                "no variable named 'application' in wsgi.py",
+                doc_slug="/reference/extensions/django-framework/#project-requirements",
+                logpath_report=False,
             )
 
     @override
@@ -403,7 +407,9 @@ class DjangoFramework(_GunicornBase):
         if not (self.project_root / "requirements.txt").exists():
             raise ExtensionError(
                 "missing requirements.txt file, django-framework extension "
-                "requires this file with Django specified as a dependency"
+                "requires this file with Django specified as a dependency",
+                doc_slug="/reference/extensions/django-framework/#project-requirements",
+                logpath_report=False,
             )
         if not self.yaml_data.get("services", {}).get("django", {}).get("command"):
             self._check_wsgi_path()

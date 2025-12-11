@@ -56,8 +56,8 @@ The new Spring Boot extension streamlines the process of building rocks that bun
 Spring Boot projects, using either Maven or Gradle as the build tool.
 
 This new extension is experimental and subject to change. For more information, check
-out the Spring Boot :ref:`tutorial <build-a-rock-for-a-spring-boot-application>` and
-:ref:`reference <spring-boot-framework-reference>`.
+out the Spring Boot :ref:`tutorial <tutorial-build-a-rock-for-a-spring-boot-app>` and
+:ref:`reference <reference-spring-boot-framework>`.
 
 
 Minor features
@@ -68,7 +68,7 @@ Rockcraft 1.12 brings the following minor changes.
 Support for non-root rocks in 12-factor extensions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You can now use the non-root :ref:`_daemon_ user <rockcraft_yaml_run_user>` with
+You can now set :ref:`run-user <rockcraft-yaml-run-user>` to ``_daemon_`` with
 extensions that support the :ref:`12-factor web app <set-up-web-app-rock>` methodology.
 
 12-factor web app documentation

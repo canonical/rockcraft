@@ -1,0 +1,22 @@
+summary: container entrypoint-command test
+
+execute: |
+  set -ex
+  run_rockcraft pack
+
+  test -f entrypoint-command-test_latest_amd64.rock
+
+  # test container execution
+  sudo rockcraft.skopeo --insecure-policy copy oci-archive:entrypoint-command-test_latest_amd64.rock docker-daemon:entrypoint-command-test:latest
+  rm entrypoint-command-test_latest*.rock  
+  docker images entrypoint-command-test:latest
+  id=$(docker run -d entrypoint-command-test)
+  test "$(docker inspect "$id" -f '{{json .Config.Entrypoint}}')" = '["echo"]'
+  test "$(docker inspect "$id" -f '{{json .Config.Cmd}}')" = '["foo"]'
+  docker logs "$id" 2>&1 | grep "foo"
+  docker rm -f "$id"
+  id=$(sh -c 'docker run -d entrypoint-command-test bar \; --verbose')
+  test "$(docker inspect "$id" -f '{{json .Config.Entrypoint}}')" = '["echo"]'
+  test "$(docker inspect "$id" -f '{{json .Config.Cmd}}')" = '["bar",";","--verbose"]'
+  docker logs "$id" 2>&1 | grep 'bar ; --verbose'
+  docker rm -f "$id"

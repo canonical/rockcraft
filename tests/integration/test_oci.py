@@ -25,7 +25,7 @@ from rockcraft import oci
 from rockcraft.services.image import ImageInfo
 
 pytestmark = [
-    pytest.mark.usefixtures("reset_callbacks", "enable_overlay_feature"),
+    pytest.mark.usefixtures("enable_overlay_feature"),
 ]
 
 
@@ -233,6 +233,7 @@ def test_stat(new_dir):
     assert layer2_history[0] == layer1_history[0]
 
 
+@pytest.mark.usefixtures("new_dir")
 def test_image_manifest_has_media_type():
     """Test that the image manifest has the correct media type."""
     image = oci.Image.new_oci_image(

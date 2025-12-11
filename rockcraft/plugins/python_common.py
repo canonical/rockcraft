@@ -33,10 +33,12 @@ every use of Python in the resulting image should be via /bin/python3.
 from textwrap import dedent
 
 import craft_parts
+from craft_parts.plugins.plugins import PluginType
+from craft_parts.plugins.python_v2.python_plugin import PythonPlugin as PythonPluginV2
 
-from .poetry_plugin import PoetryPlugin
-from .python_plugin import PythonPlugin
-from .uv_plugin import UvPlugin
+from .poetry_plugin import PoetryPlugin as PoetryPluginV1
+from .python_plugin import PythonPlugin as PythonPluginV1
+from .uv_plugin import UvPlugin as UvPluginV1
 
 # Template for the sitecustomize module that we'll add to the payload so that
 # the pip-installed packages are found regardless of how the interpreter is
@@ -134,10 +136,26 @@ def wrap_build_commands(parts_commands: list[str]) -> list[str]:
     return commands
 
 
-def get_python_plugins() -> dict[str, craft_parts.plugins.plugins.PluginType]:
-    """Get a dict of all supported Python-based plugins."""
-    return {
-        "poetry": PoetryPlugin,
-        "python": PythonPlugin,
-        "uv": UvPlugin,
+def get_python_plugins(base: str | None) -> dict[str, PluginType]:
+    """Get a dict of all supported Python-based plugins.
+
+    :param base: The project's base, if available. This should be the build base.
+      If `None`, the function will behave as if the base were the latest LTS.
+    """
+    plugins: dict[str, PluginType] = {
+        "poetry": PoetryPluginV1,
+        "python": PythonPluginV2,
+        "uv": UvPluginV1,
     }
+
+    # For now we'll consider the lack of base (e.g. when running a command without a
+    # project) as matching the behavior of the latest LTS, which in this case is Noble.
+    if base is None:
+        base = "ubuntu@24.04"
+
+    v1_bases = ("ubuntu@20.04", "ubuntu@22.04", "ubuntu@24.04")
+
+    if base in v1_bases:
+        plugins["python"] = PythonPluginV1
+
+    return plugins

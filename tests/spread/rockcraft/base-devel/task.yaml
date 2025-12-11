@@ -1,6 +1,8 @@
 summary: Build rocks using the "devel" build-base
 environment:
   BASE/base_2404: "ubuntu@24.04"
+  BASE/base_2510: "ubuntu@25.10"
+  BASE/base_2604: "ubuntu@26.04"
   BASE/bare: "bare"
 execute: |
   # Make sure the yaml file has the "placeholder-base" string, and replace

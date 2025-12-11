@@ -496,3 +496,66 @@ def test_spring_boot_extensions_check_project_errors(
         extensions.apply_extensions(tmp_path, spring_boot_input_yaml)
 
     assert expected_error in str(exc.value)
+
+
+@pytest.mark.usefixtures("spring_boot_extension")
+def test_spring_boot_extension_extra_assets(tmp_path, spring_boot_input_yaml):
+    (tmp_path / "pom.xml").touch(exist_ok=True)
+    (tmp_path / "migrate").write_text("migrate")
+    (tmp_path / "migrate.sh").write_text("migrate")
+    (tmp_path / "test").write_text("test")
+    applied = extensions.apply_extensions(tmp_path, spring_boot_input_yaml)
+    assert applied["parts"]["spring-boot-framework/assets"] == {
+        "plugin": "dump",
+        "source": ".",
+        "organize": {
+            "migrate": "app/migrate",
+            "migrate.sh": "app/migrate.sh",
+        },
+        "stage": ["app/migrate", "app/migrate.sh"],
+    }
+
+
+@pytest.mark.usefixtures("spring_boot_extension")
+def test_spring_boot_extension_extra_assets_overridden(
+    tmp_path, spring_boot_input_yaml
+):
+    (tmp_path / "pom.xml").touch(exist_ok=True)
+    (tmp_path / "migrate").write_text("migrate")
+    (tmp_path / "migrate.sh").write_text("migrate")
+    spring_boot_input_yaml["parts"] = {
+        "spring-boot-framework/assets": {
+            "plugin": "dump",
+            "source": ".",
+            "stage": ["app/foobar"],
+        }
+    }
+    applied = extensions.apply_extensions(tmp_path, spring_boot_input_yaml)
+    assert applied["parts"]["spring-boot-framework/assets"] == {
+        "plugin": "dump",
+        "source": ".",
+        "organize": {
+            "foobar": "app/foobar",
+        },
+        "stage": ["app/foobar"],
+    }
+
+
+@pytest.mark.usefixtures("spring_boot_extension")
+def test_spring_boot_extension_extra_assets_start_with_app(
+    tmp_path, spring_boot_input_yaml
+):
+    (tmp_path / "pom.xml").touch(exist_ok=True)
+    (tmp_path / "migrate").write_text("migrate")
+    (tmp_path / "migrate.sh").write_text("migrate")
+    spring_boot_input_yaml["parts"] = {
+        "spring-boot-framework/assets": {
+            "plugin": "dump",
+            "source": ".",
+            "stage": ["foobar_not_in_app"],
+        }
+    }
+    with pytest.raises(ExtensionError) as exc:
+        extensions.apply_extensions(tmp_path, spring_boot_input_yaml)
+
+    assert "start with 'app/'" in str(exc.value)

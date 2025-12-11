@@ -1,63 +1,57 @@
 .. _how-to:
 
 How-to guides
-*************
+=============
 
-If you have a specific goal but are already familiar with Rockcraft, our How-to
-guides have more in-depth detail than our tutorial and can be applied to a
-broader set of applications.
+These guides accompany you through crafting, chiselling, and publishing rocks with
+Rockcraft.
 
-They'll help you achieve an end result but may require you to understand and
-adapt the steps to fit your specific requirements.
 
-.. toctree::
-   :maxdepth: 1
+Crafting
+--------
 
-   Get started - quick guide <get-started>
-   Rocks for 12-factor apps <web-app-rocks/index>
-   Outsource rock builds to Launchpad <outsource-rock-builds-to-launchpad>
+The starting point of a rock is a Rockcraft project, which defines what goes into the
+rock and what machinery builds it. Once a project is complete, the rock can be packed
+either locally or remotely, and then published to an image registry.
 
-Chisel
-------
+- :ref:`how-to-migrate-a-docker-image-to-a-chiselled-rock`
+- :ref:`how-to-publish-a-rock-to-a-registry`
 
-Upgrade your Chisel slicing skills by learning how to cut, install and publish
-slices.
 
-.. toctree::
-   :maxdepth: 1
+Chiselling
+----------
 
-   chisel <chisel/index>
+Containers often contain redundant or unneeded software in their baseline systems.
+Chisel cuts software collections into manageable slices that can layered within rocks to
+make them leaner.
+
+- :ref:`how-to-chisel-a-rock`
+- :ref:`how-to-create-a-package-slice-for-chisel`
+
+
+12-factor web app rocks
+-----------------------
+
+Rocks are especiallys suitable as containers for 12-factor apps and their components.
+
+- :ref:`how-to-manage-a-12-factor-app-rock`
+
 
 Documentation
 -------------
 
-If you have found something missing in this documentation, or have useful
-information to add whether it is a tutorial, a guide or something else, we
-compiled a couple of guides for you to facilitate your contribution.
+The Rockcraft documentation is always evolving. We welcome people of all skill levels to
+contribute to it.
+
+- :ref:`how-to-contribute-to-rockcraft-documentation`
+- :ref:`how-to-build-the-documentation`
 
 .. toctree::
-   :maxdepth: 1
+    :hidden:
+    :maxdepth: 1
 
-   documentation <documentation/index>
-
-Extensions
-----------
-
-Learn how to use framework and platform extensions in your project.
-
-.. toctree::
-   :maxdepth: 1
-
-   configure-the-build-base-for-an-expressjs-app
-
-Rocks
------
-
-Learn about how to pack a rock, how to migrate a Dockerfile to a rock, or how
-to use services in your project file. Those guides will help you explore all
-those aspects in Rockcraft and more.
-
-.. toctree::
-   :maxdepth: 1
-
-   rocks <rocks/index>
+    get-started
+    crafting/index
+    chiselling/index
+    Rocks for 12-factor apps <web-app-rocks/index>
+    documentation/index

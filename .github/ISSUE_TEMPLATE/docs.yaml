@@ -1,46 +1,28 @@
 name: Documentation
-description: File a documentation request
+description: Submit a documentation request
 labels: "documentation"
 body:
-  - type: markdown
+  - type: checkboxes
+    id: check-existing-issues
     attributes:
-      value: >
-        Thanks for taking the time to fill out this documentation
-        request! Before submitting your request, please make sure there
-        isn't already a prior issue concerning this. If there is,
-        please join that discussion instead.
-  - type: dropdown
-    id: type
-    attributes:
-      label: Request type
-      description: Is this an issue that needs fixing or a request for enhancing the docs?
+      label: Check existing issues
       options:
-        - Fix
-        - Enhancement
-    validations:
-      required: true
+        - label: I've verified that this request isn't described by any existing issues.
+          required: true
   - type: textarea
     id: request-description
     attributes:
-      label: What needs to get done
-      description: >
-        Describe the request and why it should be done
+      label: Request
+      value: >
+        <!-- Describe your request and the problem it solves. Include any relevant
+        context, screenshots, or examples. -->
     validations:
       required: true
   - type: input
     id: page-name
     attributes:
-      label: Documentation location
-      description: Location of the corresponding documentation page (e.g., file, section, URL), if applicable
-      placeholder: ex. https://documentation.ubuntu.com/rockcraft/stable/tutorial/hello-world/
-    validations:
-      required: false
-  - type: textarea
-    id: additional-information
-    attributes:
-      label: Additional information
-      description: >
-        Include any additional context, screenshots, examples, or references that can
-        help understand the issue or improvement better
+      label: Document location
+      value: >
+        <!-- Provide the URL or file path of the relevant page. -->
     validations:
       required: false

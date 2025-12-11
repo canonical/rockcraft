@@ -1,7 +1,7 @@
-.. _bundle_a_nodejs_app_within_a_rock:
+.. _tutorial-bundle-a-nodejs-app-into-a-rock:
 
-Bundle a Node.js app within a rock
-**********************************
+Bundle a Node.js app into a rock
+================================
 
 This tutorial describes the steps needed to bundle a typical Node.js application
 into a rock.

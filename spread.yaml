@@ -10,7 +10,6 @@ include:
   - tests/
   - tools/
   - docs/
-  - requirements-noble.txt
   - Makefile
   - common.mk
   - uv.lock
@@ -29,7 +28,7 @@ backends:
           workers: 1
           storage: 40G
       - ubuntu-22.04-64:
-          workers: 4
+          workers: 6
           storage: 40G
       - fedora-39-64:
           workers: 1
@@ -82,13 +81,7 @@ prepare: |
   lxd waitready --timeout=30
   lxd init --auto
 
-  if [ "$SPREAD_SYSTEM" = "fedora-39-64" ]; then
-    # Latest docker snap needs a more recent version of snapd than Fedora ships
-    # https://github.com/canonical/rockcraft/pull/277
-    snap install docker --channel=core18/stable
-  else
-    snap install docker
-  fi
+  snap install docker
 
   # make sure docker is working
   retry -n 10 --wait 2 sh -c 'docker run --rm hello-world'

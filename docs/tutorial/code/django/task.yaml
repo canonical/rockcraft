@@ -46,8 +46,9 @@ execute: |
   # [docs:ls-rock-end]
 
   # [docs:skopeo-copy]
-  sudo rockcraft.skopeo --insecure-policy \
-    copy oci-archive:django-hello-world_0.1_amd64.rock \
+  sudo rockcraft.skopeo copy \
+    --insecure-policy \
+    oci-archive:django-hello-world_0.1_$(dpkg --print-architecture).rock \
     docker-daemon:django-hello-world:0.1
   # [docs:skopeo-copy-end]
 
@@ -91,7 +92,7 @@ execute: |
 
   # [docs:docker-run-chisel]
   sudo rockcraft.skopeo --insecure-policy \
-    copy oci-archive:django-hello-world_0.1-chiselled_amd64.rock \
+    copy oci-archive:django-hello-world_0.1-chiselled_$(dpkg --print-architecture).rock \
     docker-daemon:django-hello-world:0.1-chiselled
   sudo docker images django-hello-world:0.1-chiselled
   sudo docker run --rm -d -p 8000:8000 \
@@ -122,7 +123,7 @@ execute: |
   # [docs:docker-run-update]
   rockcraft pack
   sudo rockcraft.skopeo --insecure-policy copy \
-    oci-archive:django-hello-world_0.2_amd64.rock \
+    oci-archive:django-hello-world_0.2_$(dpkg --print-architecture).rock \
     docker-daemon:django-hello-world:0.2
   sudo docker images django-hello-world:0.2
   sudo docker run --rm -d -p 8000:8000 \
@@ -144,8 +145,8 @@ execute: |
   deactivate
   rm -rf .venv django_hello_world __pycache__
   # delete all the files created during the tutorial
-  rm django-hello-world_0.1_amd64.rock \
-    django-hello-world_0.1-chiselled_amd64.rock \
-    django-hello-world_0.2_amd64.rock \
+  rm django-hello-world_0.1_$(dpkg --print-architecture).rock \
+    django-hello-world_0.1-chiselled_$(dpkg --print-architecture).rock \
+    django-hello-world_0.2_$(dpkg --print-architecture).rock \
     rockcraft.yaml requirements.txt
   # [docs:cleanup-end]

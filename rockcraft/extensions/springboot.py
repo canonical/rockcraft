@@ -18,6 +18,7 @@
 
 import os
 import pathlib
+import re
 from typing import Any, Literal
 
 from overrides import override  # type: ignore[reportUnknownVariableType]
@@ -70,6 +71,10 @@ class SpringBootFramework(Extension):
             "spring-boot-framework/runtime": self.gen_runtime_app_part(),
         }
 
+        assets_part = self.gen_assets_part()
+        if assets_part:
+            snippet["parts"]["spring-boot-framework/assets"] = assets_part
+
         return snippet
 
     @override
@@ -86,28 +91,32 @@ class SpringBootFramework(Extension):
         """Check if the project is a Spring Boot project."""
         if self.pom_xml_path.exists() and self.build_gradle_path.exists():
             raise ExtensionError(
-                "both pom.xml and build.gradle files exist",
-                doc_slug="/reference/extensions/spring-boot-framework",
+                "both pom.xml and build.gradle files exist\n"
+                "you cannot have both Maven and Gradle build files in the same project",
+                doc_slug="/reference/extensions/spring-boot-framework/#project-requirements",
                 logpath_report=False,
             )
         if self.mvnw_path.exists() and self.gradlew_path.exists():
             raise ExtensionError(
-                "both mvnw and gradlew executable files exist",
-                doc_slug="/reference/extensions/spring-boot-framework",
+                "both mvnw and gradlew executable files exist\n"
+                "you cannot have both Maven and Gradle executables in the same project",
+                doc_slug="/reference/extensions/spring-boot-framework/#project-requirements",
                 logpath_report=False,
             )
         if not self.pom_xml_path.exists() and not self.build_gradle_path.exists():
             raise ExtensionError(
-                "missing pom.xml and build.gradle file",
-                doc_slug="/reference/extensions/spring-boot-framework",
+                "missing pom.xml and build.gradle file\n"
+                "you must have either a Maven pom.xml or a Gradle build.gradle file in your project",
+                doc_slug="/reference/extensions/spring-boot-framework/#project-requirements",
                 logpath_report=False,
             )
         if (self.mvnw_path.exists() and not os.access(self.mvnw_path, os.X_OK)) or (
             self.gradlew_path.exists() and not os.access(self.gradlew_path, os.X_OK)
         ):
             raise ExtensionError(
-                "mvnw or gradlew file is not executable",
-                doc_slug="/reference/extensions/spring-boot-framework",
+                "mvnw or gradlew file is not executable\n"
+                "the mvnw or gradlew file must have executable permissions",
+                doc_slug="/reference/extensions/spring-boot-framework/#project-requirements",
                 logpath_report=False,
             )
 
@@ -175,7 +184,9 @@ class SpringBootFramework(Extension):
         )
         install_app_part = {
             "source": ".",
-            "organize": {"**/*.jar": "app/"},
+            "organize": {
+                "**/*.jar": "app/",
+            },
             **(
                 self._gen_install_app_gradle_plugin()
                 if plugin == "gradle"
@@ -277,3 +288,46 @@ class SpringBootFramework(Extension):
             ]
 
         return runtime_part
+
+    def gen_assets_part(self) -> dict[str, Any] | None:
+        """Generate assets-stage part for extra assets in the project."""
+        # if stage is not in exclude mode, use it to generate organize
+        assets_stage = self._get_assets_stage()
+
+        if assets_stage and assets_stage[0] and assets_stage[0][0] != "-":
+            renaming_map = {os.path.relpath(file, "app"): file for file in assets_stage}
+        else:
+            return None
+
+        return {
+            "plugin": "dump",
+            "source": ".",
+            "organize": renaming_map,
+            "stage": assets_stage,
+        }
+
+    def _get_assets_stage(self) -> list[str]:
+        """Return the assets stage list for the Spring Boot project."""
+        user_stage = (
+            self.yaml_data.get("parts", {})
+            .get("spring-boot-framework/assets", {})
+            .get("stage", [])
+        )
+
+        if not all(re.match("-? *app/", p) for p in user_stage):
+            raise ExtensionError(
+                "The spring-boot-framework extension requires the 'stage' entry in the "
+                "spring-boot-framework/assets part to start with 'app/'",
+                doc_slug="/reference/extensions/spring-boot-framework",
+                logpath_report=False,
+            )
+        if not user_stage:
+            user_stage = [
+                f"app/{f}"
+                for f in (
+                    "migrate",
+                    "migrate.sh",
+                )
+                if (self.project_root / f).exists()
+            ]
+        return user_stage

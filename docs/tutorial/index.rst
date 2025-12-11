@@ -1,32 +1,50 @@
 .. _tutorial:
 
 Tutorial
-********
+========
 
-If you want to learn the basics from experience, then our tutorial will help
-you acquire the necessary competencies from real-life examples with fully
-reproducible steps.
+The tutorials are guided lessons that help you develop skills by using Rockcraft. Each
+is self-contained and delivers a working result that marks a learning milestone and is
+an opportunity for further exploration. If you're a newcomer to Rockcraft, this is the
+best way to start.
 
-The first steps of the tutorial will familiarise you with the basic operations,
-tools and workflows for packing rocks.
+The first tutorial works through the process of packaging a rock with Rockcraft. It will
+introduce you to key concepts and operations, from installation and setup to finalizing
+your first rock.
+
+- :ref:`tutorial-create-a-hello-world-rock`
+
+In the app tutorials, you'll build container apps.
+
+- :ref:`tutorial-pack-a-python-package`
+- :ref:`tutorial-bundle-a-nodejs-app-into-a-rock`
+
+In the Chisel tutorial, you'll reduce a rock's storage footprint by creating Chisel
+slices.
+
+- :ref:`tutorial-shrink-a-rock-with-chisel`
+
+In the 12-factor web app tutorials, you'll assemble containers for 12-factor apps and
+their components.
+
+- :ref:`tutorial-build-a-rock-for-a-flask-app`
+- :ref:`tutorial-build-a-rock-for-a-django-app`
+- :ref:`tutorial-build-a-rock-for-a-fastapi-app`
+- :ref:`tutorial-build-a-rock-for-a-go-app`
+- :ref:`tutorial-build-a-rock-for-an-express-app`
+- :ref:`tutorial-build-a-rock-for-a-spring-boot-app`
 
 .. toctree::
-   :maxdepth: 1
+    :hidden:
+    :maxdepth: 1
 
-   1. Create a Hello World rock <hello-world>
-   2. Install slices in a rock <chisel.rst>
-
-The next steps walk you through examples of transforming applications source
-code into container applications:
-
-.. toctree::
-   :maxdepth: 1
-
-   3. Containerise a PyPI package <pypi-package.rst>
-   4. Bundle a Node.js app within a rock <node-app.rst>
-   5. Build a rock for a Flask application <flask.rst>
-   6. Build a rock for a Django application <django.rst>
-   7. Build a rock for a FastAPI application <fastapi.rst>
-   8. Build a rock for a Go application <go.rst>
-   9. Build a rock for an ExpressJS application <expressjs.rst>
-   9. Build a rock for a SpringBoot application <springboot.rst>
+    hello-world
+    pypi-package
+    node-app
+    chisel
+    flask
+    django
+    fastapi
+    go
+    express
+    springboot

@@ -87,7 +87,7 @@ def test_flask_extension_default(
             },
             "flask-framework/dependencies": {
                 "plugin": "python",
-                "python-packages": ["gunicorn"],
+                "python-packages": ["gunicorn~=23.0"],
                 "python-requirements": ["requirements.txt"],
                 "source": ".",
                 "stage-packages": ["python3-venv"],
@@ -322,7 +322,7 @@ def test_flask_extension_override_parts(tmp_path, flask_input_yaml):
 
     assert applied["parts"]["flask-framework/dependencies"] == {
         "plugin": "python",
-        "python-packages": ["gunicorn"],
+        "python-packages": ["gunicorn~=23.0"],
         "python-requirements": ["requirements.txt", "requirements-jammy.txt"],
         "source": ".",
         "stage-packages": ["python3-venv"],
@@ -366,7 +366,7 @@ def test_flask_extension_bare(
     }
     assert applied["parts"]["flask-framework/dependencies"] == {
         "plugin": "python",
-        "python-packages": ["gunicorn"],
+        "python-packages": ["gunicorn~=23.0"],
         "python-requirements": ["requirements.txt"],
         "source": ".",
         "stage-packages": expected_stage_packages,
@@ -492,7 +492,10 @@ WSGI_FLASK_INPUT_YAML = {
 def test_flask_extension_incorrect_wsgi_path_error(tmp_path):
     (tmp_path / "app.py").write_text("flask")
 
-    with pytest.raises(ExtensionError, match="can not be imported from app:app"):
+    with pytest.raises(
+        ExtensionError,
+        match="the global variable 'app' was not found in app.py in the project root.",
+    ):
         extensions.apply_extensions(tmp_path, WSGI_FLASK_INPUT_YAML.copy())
 
 
@@ -559,7 +562,7 @@ def test_django_extension_default(
             },
             "django-framework/dependencies": {
                 "plugin": "python",
-                "python-packages": ["gunicorn"],
+                "python-packages": ["gunicorn~=23.0"],
                 "python-requirements": ["requirements.txt"],
                 "source": ".",
                 "stage-packages": ["python3-venv"],
@@ -689,7 +692,8 @@ def test_django_extension_incorrect_wsgi_path_error_no_app(tmp_path):
     (django_project_dir / "wsgi.py").write_text("app = object()")
 
     with pytest.raises(
-        ExtensionError, match=r"wsgi:application, no variable named application"
+        ExtensionError,
+        match=r"wsgi:application, no variable named 'application' in wsgi.py",
     ):
         extensions.apply_extensions(tmp_path, WSGI_DJANGO_INPUT_YAML.copy())
 
@@ -721,4 +725,6 @@ def test_django_extension_django_service_override_disable_wsgi_path_check(tmp_pa
         },
     }
 
+    extensions.apply_extensions(tmp_path, input_yaml)
+    extensions.apply_extensions(tmp_path, input_yaml)
     extensions.apply_extensions(tmp_path, input_yaml)

@@ -31,8 +31,12 @@ execute: |
   # [docs:create-rockcraft-yaml-end]
   sed -i "s/name: .*/name: fastapi-hello-world/g" rockcraft.yaml
 
+  # [docs:experimental]
+  export ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS=true
+  # [docs:experimental-end]
+
   # [docs:pack]
-  ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS=true rockcraft pack
+  rockcraft pack
   # [docs:pack-end]
 
   # [docs:ls-rock]
@@ -40,8 +44,9 @@ execute: |
   # [docs:ls-rock-end]
 
   # [docs:skopeo-copy]
-  sudo rockcraft.skopeo --insecure-policy \
-    copy oci-archive:fastapi-hello-world_0.1_amd64.rock \
+  sudo rockcraft.skopeo copy \
+    --insecure-policy \
+    oci-archive:fastapi-hello-world_0.1_$(dpkg --print-architecture).rock \
     docker-daemon:fastapi-hello-world:0.1
   # [docs:skopeo-copy-end]
 
@@ -76,7 +81,7 @@ execute: |
   sed -i "s/version: .*/version: 0.1-chiselled/g" rockcraft.yaml
 
   # [docs:chisel-pack]
-  ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS=true rockcraft pack
+  rockcraft pack
   # [docs:chisel-pack-end]
 
   # [docs:ls-bare-rock]
@@ -85,7 +90,7 @@ execute: |
 
   # [docs:docker-run-chisel]
   sudo rockcraft.skopeo --insecure-policy \
-    copy oci-archive:fastapi-hello-world_0.1-chiselled_amd64.rock \
+    copy oci-archive:fastapi-hello-world_0.1-chiselled_$(dpkg --print-architecture).rock \
     docker-daemon:fastapi-hello-world:0.1-chiselled
   sudo docker images fastapi-hello-world:0.1-chiselled
   sudo docker run --rm -d -p 8000:8000 \
@@ -106,9 +111,9 @@ execute: |
   sed -i "s/version: .*/version: 0.2/g" rockcraft.yaml
 
   # [docs:docker-run-update]
-  ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS=true rockcraft pack
+  rockcraft pack
   sudo rockcraft.skopeo --insecure-policy \
-    copy oci-archive:fastapi-hello-world_0.2_amd64.rock \
+    copy oci-archive:fastapi-hello-world_0.2_$(dpkg --print-architecture).rock \
     docker-daemon:fastapi-hello-world:0.2
   sudo docker images fastapi-hello-world:0.2
   sudo docker run --rm -d -p 8000:8000 \
@@ -130,8 +135,8 @@ execute: |
   deactivate
   rm -rf .venv __pycache__
   # delete all the files created during the tutorial
-  rm fastapi-hello-world_0.1_amd64.rock \
-    fastapi-hello-world_0.1-chiselled_amd64.rock \
-    fastapi-hello-world_0.2_amd64.rock \
+  rm fastapi-hello-world_0.1_$(dpkg --print-architecture).rock \
+    fastapi-hello-world_0.1-chiselled_$(dpkg --print-architecture).rock \
+    fastapi-hello-world_0.2_$(dpkg --print-architecture).rock \
     rockcraft.yaml app.py requirements.txt
   # [docs:cleanup-end]

@@ -20,7 +20,6 @@ import hashlib
 import json
 import logging
 import os
-import shlex
 import shutil
 import subprocess
 import tempfile
@@ -368,40 +367,32 @@ class Image:
         _config_image(image_path, params)
         emit.progress(f"Default user set to {userid} ({username})")
 
-    def set_entrypoint(self, entrypoint_service: str | None, build_base: str) -> None:
+    def set_entrypoint(self, entrypoint: list[str]) -> None:
         """Set the OCI image entrypoint. It is always Pebble."""
         emit.progress("Configuring entrypoint...")
         image_path = self.path / self.image_name
-        entrypoint = Pebble.get_entrypoint(build_base)
-        if entrypoint_service:
-            entrypoint.extend(["--args", entrypoint_service])
+
         params = ["--clear=config.entrypoint"]
         for entry in entrypoint:
             params.extend(["--config.entrypoint", entry])
+
         params.extend(["--clear=config.cmd"])
         _config_image(image_path, params)
         emit.progress(f"Entrypoint set to {entrypoint}")
 
-    def set_cmd(self, command: str | None = None) -> None:
-        """Set the OCI image CMD."""
+    def set_cmd(self, command: list[str] | None = None) -> None:
+        """Set the OCI image CMD.
+
+        :param command: List of CMD arguments to set, or None to clear CMD without setting new values
+        """
         emit.progress("Configuring CMD...")
         image_path = self.path / self.image_name
         cmd_params = ["--clear=config.cmd"]
-        command_sh_args = shlex.split(command or "")
-        try:
-            opt_args = command_sh_args[
-                command_sh_args.index("[") + 1 : command_sh_args.index("]")
-            ]
-        except ValueError:
-            emit.debug(
-                f"The entrypoint-service command '{command}' has no default "
-                "arguments. CMD won't be set."
-            )
-            return
-        for arg in opt_args:
+
+        for arg in command or []:
             cmd_params.extend(["--config.cmd", arg])
         _config_image(image_path, cmd_params)
-        emit.progress(f"CMD set to {opt_args}")
+        emit.progress(f"CMD set to {command}")
 
     def set_default_path(self, base: str) -> None:
         """Set the default PATH on the image (only for bare rocks)."""

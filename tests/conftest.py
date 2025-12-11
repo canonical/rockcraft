@@ -60,20 +60,6 @@ def temp_xdg(tmp_path, mocker):
     mocker.patch.dict(os.environ, {"XDG_CONFIG_HOME": str(tmp_path / ".config")})
 
 
-@pytest.fixture
-def reset_callbacks():
-    """Fixture that resets the status of craft-part's various lifecycle callbacks,
-    so that tests can start with a clean slate.
-    """
-    # pylint: disable=import-outside-toplevel
-
-    from craft_parts import callbacks
-
-    callbacks.unregister_all()
-    yield
-    callbacks.unregister_all()
-
-
 class RecordingEmitter:
     """Record what is shown using the emitter and provide a nice API for tests."""
 
@@ -338,7 +324,8 @@ def fake_project_yaml(
     if "base" in request.fixturenames:
         project["base"] = str(request.getfixturevalue("base"))
 
-    base = craft_platforms.DistroBase.from_str(cast(str, project.get("base")))
+    project_base = project.get("build-base") or project.get("base")
+    base = craft_platforms.DistroBase.from_str(cast(str, project_base))
     mocker.patch.object(
         craft_platforms.DistroBase, "from_linux_distribution", return_value=base
     )

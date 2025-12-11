@@ -1,0 +1,4 @@
+# pragma: no-schema-validate
+name: base-2510
+base: ubuntu@25.10
+# Remaining contents will come from "parts.yaml"

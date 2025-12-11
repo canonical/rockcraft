@@ -42,6 +42,8 @@ Finally, once the VM is up, open a shell into it:
 
     multipass shell rock-dev
 
+Unless stated otherwise, we will work entirely within the VM from now on.
+
 ----
 
 `LXD`_ will be required for building the rock. Make sure it is installed
@@ -52,7 +54,8 @@ and initialised:
    sudo snap install lxd
    lxd init --auto
 
-In order to create the rock, we'll need to install Rockcraft:
+In order to create the rock, we'll install Rockcraft with
+classic confinement, which grants it access to the whole file system:
 
 .. literalinclude:: /reuse/tutorial/code/stable/task.yaml
     :language: bash
@@ -85,16 +88,8 @@ Restart Docker:
     :end-before: [docs:docker-enable-end]
     :dedent: 2
 
-.. warning::
-   There is a `known connectivity issue with LXD and Docker
-   <lxd-docker-connectivity-issue_>`_. If we see a
-   networking issue such as "*A network related operation failed in a context
-   of no network access*", make sure to apply one of the suggested fixes
-   `here <lxd-docker-connectivity-issue_>`_.
-
 Note that we'll also need a text editor. We can either install one of our
 choice or simply use one of the already existing editors in the Ubuntu
 environment (like ``vi``).
 
-.. _`lxd-docker-connectivity-issue`: https://documentation.ubuntu.com/lxd/en/latest/howto/network_bridge_firewalld/#prevent-connectivity-issues-with-lxd-and-docker
-.. _`install-multipass`: https://multipass.run/docs/install-multipass
+.. _`install-multipass`: https://documentation.ubuntu.com/multipass/stable/how-to-guides/install-multipass/

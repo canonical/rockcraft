@@ -1,7 +1,7 @@
-.. _django-framework-reference:
+.. _reference-django-framework:
 
-django-framework
-----------------
+Django framework
+================
 
 The Django extension streamlines the process of building Django application
 rocks.
@@ -10,9 +10,6 @@ It facilitates the installation of Django application dependencies, including
 Gunicorn, inside the rock. Additionally, it transfers your project files to
 ``/django/app`` within the rock.
 
-A statsd-exporter is installed alongside the Gunicorn server to export Gunicorn
-server metrics.
-
 .. note::
     The Django extension is compatible with the ``bare``, ``ubuntu@22.04``
     and ``ubuntu@24.04`` bases.
@@ -20,8 +17,10 @@ server metrics.
 The Django extension supports both synchronous and asynchronous
 Gunicorn workers.
 
+.. _reference-django-framework-project-requirements:
+
 Project requirements
-====================
+--------------------
 
 There are 2 requirements to be able to use the ``django-framework`` extension:
 
@@ -36,9 +35,10 @@ For the project to make use of asynchronous Gunicorn workers:
 
 - The ``requirements.txt`` file must include ``gevent`` as a dependency.
 
+.. _reference-django-framework-stage-packages:
 
 ``parts`` > ``django-framework/dependencies:`` > ``stage-packages``
-===================================================================
+-------------------------------------------------------------------
 
 You can use this key to specify any dependencies required for your Django
 application. In the following example we use it to specify ``libpq-dev``:
@@ -52,10 +52,46 @@ application. In the following example we use it to specify ``libpq-dev``:
          # list required packages or slices for your Django application below.
          - libpq-dev
 
+.. _reference-django-framework-statsd-exporter:
+
+StatsD exporter
+---------------
+
+A StatsD exporter is installed alongside the Gunicorn server to record
+server metrics. Some of the `Gunicorn-provided metrics
+<https://docs.gunicorn.org/en/stable/instrumentation.html>`_
+are mapped to new names:
+
+.. list-table::
+
+  * - Gunicorn metric
+    - StatsD metric
+  * - ``gunicorn.request.status.*``
+    - ``django_response_code``
+  * - ``gunicorn.requests``
+    - ``django_requests``
+  * - ``gunicorn.request.duration``
+    - ``django_request_duration``
+
+The  exporter listens on localhost at port 9125. You can push your
+own metrics to the exporter using any StatsD client. This snippet from an example
+Django app uses pystatsd as a client:
+
+.. code-block:: python
+
+  import statsd
+  c = statsd.StatsClient('localhost', 9125)
+  c.incr('my_counter')
+
+
+See the `StatsD exporter documentation <https://github.com/prometheus/statsd_exporter>`_
+for more information.
+
+
 .. _django-gunicorn-worker-selection:
 
 Gunicorn worker selection
-=========================
+-------------------------
 
 If the project has gevent as a dependency, Rockcraft automatically updates the
 pebble plan to spawn asynchronous Gunicorn workers.
@@ -69,7 +105,8 @@ rock:
    docker run --name django-container -d -p 8000:8000 django-image:1.0 \
    --args django sync
 
-Useful links
-============
 
-- :ref:`build-a-rock-for-a-django-application`
+Useful links
+------------
+
+:ref:`tutorial-build-a-rock-for-a-django-app`

@@ -1,6 +1,7 @@
-************************************************
-How to contribute to Rockcraft documentation
-************************************************
+.. _how-to-contribute-to-rockcraft-documentation:
+
+Contribute to Rockcraft documentation
+=====================================
 
 Tools and markup
 ----------------
@@ -71,7 +72,7 @@ snippets and helps to ensure that the documentation stays up-to-date.
 Build the documentation
 -----------------------
 
-The :ref:`how_to_build_docs` guide contains step-by-step instructions for
+The :ref:`how-to-build-the-documentation` guide contains step-by-step instructions for
 setting up a virtual environment and building the documentation.
 
 .. _`Diátaxis framework`: https://diataxis.fr
@@ -85,7 +86,7 @@ setting up a virtual environment and building the documentation.
 .. _YAML: https://yaml.org/
 .. _`submit an issue`: https://github.com/canonical/rockcraft/issues/new/choose
 .. _`create a fork`: https://github.com/canonical/rockcraft/fork
-.. _`CONTRIBUTING`: https://github.com/canonical/rockcraft/blob/main/CONTRIBUTING.rst
+.. _`CONTRIBUTING`: https://github.com/canonical/rockcraft/blob/main/CONTRIBUTING.md
 
 
 Making a contribution
