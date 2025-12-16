@@ -51,7 +51,7 @@ types = [
 ]
 docs = [
     "canonical-sphinx[full]~=0.5.1",
-    "pydantic-kitbash",
+    "pydantic-kitbash~=0.1",
     "sphinx-autobuild~=2024.2",
     "sphinx-pydantic==0.1.1",
     # sphinx-sitemap is pinned to 2.6 because https://github.com/jdillard/sphinx-sitemap/pull/95
