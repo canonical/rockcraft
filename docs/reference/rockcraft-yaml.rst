@@ -37,10 +37,10 @@ Top-level keys
 .. kitbash-field:: rockcraft.models.Project issues
     :override-type: str | list[str]
 
+.. kitbash-field:: rockcraft.models.Project adopt_info
+
 .. kitbash-field:: rockcraft.models.Project package_repositories
   :override-type: list[dict[str, Any]]
-
-.. kitbash-field:: rockcraft.models.Project adopt_info
 
 .. kitbash-field:: rockcraft.models.Project environment
 
