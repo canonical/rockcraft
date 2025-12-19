@@ -67,7 +67,7 @@ Pebble distinguishes itself from other similar tools (like `tini`_ and
   entrypoint, a predictable and consistent user experience is guaranteed;
 * **embedded utilities**: regardless of the rock's contents, Pebble offers a
   comprehensive suite of commands for inspecting and interacting with the
-  container. These commands are especially useful for :ref:`Chiselled Rocks
+  container. These commands are especially useful for :ref:`chiseled rocks
   <explanation-chisel>`, as they encompass functionalities such as listing and
   deleting files, creating directories, and inspecting Pebble services,
   among others.
