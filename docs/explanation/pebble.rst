@@ -81,7 +81,7 @@ Rockcraft follows the :external+pebble:ref:`Pebble layer specification
 provides an example of how to convert a Docker entrypoint to a Pebble layer.
 
 
-.. _Pebble: https://github.com/canonical/pebble
+.. _Pebble: https://documentation.ubuntu.com/pebble/
 .. _tini: https://github.com/krallin/tini
 .. _s6-overlay: https://github.com/just-containers/s6-overlay
 .. _imperative wrapper scripts (as suggested in the Docker documentation): https://docs.docker.com/engine/containers/multi-service_container/#use-a-wrapper-script
