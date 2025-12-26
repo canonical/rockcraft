@@ -34,6 +34,21 @@ backends:
           workers: 1
           storage: 40G
 
+  google-arm:
+    type: google
+    key: '$(HOST: echo "$SPREAD_GOOGLE_KEY")'
+    location: snapd-spread/us-east1-b
+    halt-timeout: 2h
+    systems:
+      - ubuntu-22.04-arm64:
+          image: ubuntu-22.04-arm-64
+          workers: 4
+          storage: 40G
+      - ubuntu-24.04-arm64:
+          image: ubuntu-24.04-arm-64
+          workers: 4
+          storage: 40G
+
 prepare: |
   # if the 'tools' directory inside the submodule does not exist, then assume the submodule is empty
   if [[ ! -d "$SNAPD_TESTING_TOOLS" ]]; then
@@ -116,26 +131,31 @@ suites:
     summary: tests tutorial from the docs
     systems:
       - ubuntu-22.04-64
+      - ubuntu-24.04-arm64
 
   docs/how-to/code/:
     summary: tests how-to guides from the docs
     systems:
       - ubuntu-22.04-64
+      - ubuntu-24.04-arm64
 
   docs/reference/code/:
     summary: tests reference code from the docs
     systems:
       - ubuntu-22.04-64
+      - ubuntu-24.04-arm64
 
   docs/reuse/tutorial/code/:
     summary: tests reusable code from the docs
     systems:
       - ubuntu-22.04-64
+      - ubuntu-24.04-arm64
 
   tests/spread/rockcraft/:
     summary: tests for rockcraft core functionality, independent of host system
     systems:
       - ubuntu-22.04-64
+      - ubuntu-24.04-arm64
 
   tests/spread/foreign/:
     summary: tests that rockcraft and rocks work on different host systems
@@ -145,3 +165,4 @@ suites:
     manual: true
     systems:
       - ubuntu-22.04-64
+      - ubuntu-24.04-arm64
