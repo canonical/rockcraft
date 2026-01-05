@@ -12,39 +12,37 @@ rock's project file, ``rockcraft.yaml``.
 Top-level keys
 --------------
 
-.. kitbash-field:: craft_application.models.Project name
+.. kitbash-field:: rockcraft.models.Project name
 
-.. kitbash-field:: craft_application.models.Project title
+.. kitbash-field:: rockcraft.models.Project title
 
 .. kitbash-field:: rockcraft.models.Project summary
 
 .. kitbash-field:: rockcraft.models.Project description
 
-.. kitbash-field:: craft_application.models.Project version
+.. kitbash-field:: rockcraft.models.Project version
 
 .. kitbash-field:: rockcraft.models.Project base
-    :override-type: Literal['ubuntu@20.04', 'ubuntu@22.04', 'ubuntu@24.04', 'ubuntu@25.10', 'ubuntu@26.04']
 
 .. kitbash-field:: rockcraft.models.Project build_base
-    :override-type: Literal['ubuntu@20.04', 'ubuntu@22.04', 'ubuntu@24.04', 'ubuntu@25.10', 'ubuntu@26.04', 'devel']
 
-.. kitbash-field:: craft_application.models.Project source_code
+.. kitbash-field:: rockcraft.models.Project source_code
     :override-type: str
 
-.. kitbash-field:: craft_application.models.Project license
+.. kitbash-field:: rockcraft.models.Project license
 
-.. kitbash-field:: craft_application.models.Project contact
-    :override-type: list[str]
+.. kitbash-field:: rockcraft.models.Project contact
+    :override-type: str | list[str]
 
-.. kitbash-field:: craft_application.models.Project issues
-    :override-type: list[str]
+.. kitbash-field:: rockcraft.models.Project issues
+    :override-type: str | list[str]
 
-.. kitbash-field:: craft_application.models.Project adopt_info
+.. kitbash-field:: rockcraft.models.Project adopt_info
+
+.. kitbash-field:: rockcraft.models.Project package_repositories
+  :override-type: list[dict[str, Any]]
 
 .. kitbash-field:: rockcraft.models.Project environment
-
-.. kitbash-field:: craft_application.models.Project package_repositories
-    :override-type: list[repository]
 
 .. kitbash-field:: rockcraft.models.Project run_user
 
@@ -85,19 +83,25 @@ boilerplate keys from the listed extensions will be added to the project file.
 Platform keys
 -------------
 
-.. kitbash-field:: craft_application.models.Project platforms
+.. kitbash-field:: rockcraft.models.Project platforms
+    :override-type: dict[str, Platform]
 
 .. kitbash-field:: craft_application.models.Platform build_on
     :prepend-name: platforms.<platform-name>
+    :override-type: str | list[str]
 
 .. kitbash-field:: craft_application.models.Platform build_for
     :prepend-name: platforms.<platform-name>
+    :override-type: str | list[str]
 
 
 .. _rockcraft-yaml-part-keys:
 
 Part keys
 ---------
+
+.. kitbash-field:: rockcraft.models.Project parts
+    :override-type: dict[str, Part]
 
 .. Main keys
 
