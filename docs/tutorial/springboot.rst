@@ -188,8 +188,8 @@ Pack the rock:
    <lxd-docker-connectivity-issue_>`_. If we see a
    networking issue such as "*A network related operation failed in a context
    of no network access*" or ``Client.Timeout``, we need to allow egress network
-   traffic to flow from the LXD managed bridge. 
-   
+   traffic to flow from the LXD managed bridge.
+
    First, run ``lxc network list`` to show the existing LXD managed bridges. The
    bridge will be named something like ``lxdbr0``. Save the name to an
    environment variable:
