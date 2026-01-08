@@ -175,7 +175,7 @@ Pack the rock:
    of no network access*" or ``Client.Timeout``, we need to allow egress network
    traffic to flow from the managed LXD bridge.
 
-   First, run ``lxc network list`` to show the managed LXD bridges. The
+   First, run ``lxc network list`` to show the available networks. The
    bridge will have ``TYPE: bridge`` and ``MANAGED: YES``. Save the name to an
    environment variable:
 
