@@ -168,7 +168,7 @@ Pack the rock:
 
    .. code-block::
 
-       NETWORK_BRIDGE=<name of LXD managed bridge>
+       NETWORK_BRIDGE=<name of managed LXD bridge>
 
    Then, update the network traffic flow using:
 
