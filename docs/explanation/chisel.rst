@@ -48,7 +48,7 @@ Defining slices
 ~~~~~~~~~~~~~~~
 
 A package's slices can be defined via a YAML slice definitions file. Check
-:external+chisel:doc:`reference/chisel-releases/slice-definitions` in the Chisel documentation for more information
+:external+chisel:ref:`slice_definitions_ref` in the Chisel documentation for more information
 about this file's format.
 
 .. note::
