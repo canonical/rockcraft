@@ -41,7 +41,9 @@ Configure, build, harden, and publish rocks with Rockcraft.
    :ref:`Pebble as entrypoint <explanation-pebble>` • 
    :ref:`Convert an entrypoint to a Pebble layer <how-to-convert-an-entrypoint-to-a-pebble-layer>` • 
    :ref:`Define a non root user <how-to-add-an-internal-user>`
-* **Hardening:**  Overview • Chisel a rock •  Install a custom slice • Migrate a Docker image to a chiseled rock
+*  **Hardening:**  :ref:`Overview <_explanation-chisel>` • :ref:`Chisel a rock <how-to-chisel-a-rock>` • 
+   :ref:`Install a custom slice <_how-to-install-a-custom-package-slice>` • 
+   :ref:`Migrate a Docker image to a chiseled rock <_how-to-migrate-a-docker-image-to-a-chiselled-rock>`
 * **Remote builds:** Build remotely using Launchpad
 * **App rocks:** Build a rock for an app •  Set-up 12-Factor rocks • Use rocks for 12-Factor apps
 * **Pack:** Use the Rockcraft pack GitHub Action • Pack a Python package
