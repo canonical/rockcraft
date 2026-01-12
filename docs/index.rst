@@ -41,13 +41,16 @@ Configure, build, harden, and publish rocks with Rockcraft.
    :ref:`Pebble as entrypoint <explanation-pebble>` • 
    :ref:`Convert an entrypoint to a Pebble layer <how-to-convert-an-entrypoint-to-a-pebble-layer>` • 
    :ref:`Define a non root user <how-to-add-an-internal-user>`
-*  **Hardening:**  :ref:`Overview <_explanation-chisel>` • :ref:`Chisel a rock <how-to-chisel-a-rock>` • 
-   :ref:`Install a custom slice <_how-to-install-a-custom-package-slice>` • 
-   :ref:`Migrate a Docker image to a chiseled rock <_how-to-migrate-a-docker-image-to-a-chiselled-rock>`
-* **Remote builds:** Build remotely using Launchpad
-* **App rocks:** Build a rock for an app •  Set-up 12-Factor rocks • Use rocks for 12-Factor apps
-* **Pack:** Use the Rockcraft pack GitHub Action • Pack a Python package
-* **Publish:** Publish a rock to a registry 
+*  **Hardening:**  :ref:`Overview <explanation-chisel>` • :ref:`Chisel a rock <how-to-chisel-a-rock>` • 
+   :ref:`Install a custom slice <how-to-install-a-custom-package-slice>` • 
+   :ref:`Migrate a Docker image to a chiseled rock <how-to-migrate-a-docker-image-to-a-chiselled-rock>`
+* **Remote builds:** :ref:`Build remotely using Launchpad<how-to-outsource-rock-builds-to-launchpad>`
+*  **App rocks:** :ref:`Build a rock for an app <tutorial>` • 
+   :ref:`Set-up 12-Factor rocks <set-up-web-app-rock>`• 
+   :ref:`Use rocks for 12-Factor apps <use-web-app-rock>`
+*  **Pack:** :ref:`Use the Rockcraft pack GitHub Action<how-to-use-the-rockcraft-pack-github-action>` • 
+   :ref:`Pack a Python package <tutorial-pack-a-python-package>`
+* **Publish:** :ref:`Publish a rock to a registry <how-to-publish-a-rock-to-a-registry>`
 
 Rock components
 ~~~~~~~~~~~~~~~
