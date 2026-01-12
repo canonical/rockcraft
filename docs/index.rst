@@ -20,6 +20,39 @@ software vendors to cloud-native developers and occasional container users.
 Rockcraft handles all the repetitive and boilerplate steps of a build,
 directing your focus to what really matters: the image's content.
 
+In this documentation
+---------------------
+
+Getting started with Rockcraft
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Understand Rockcraft and build your first Rock.
+
+* **Tutorial:** :ref:`Build your first rock in 15 min <tutorial-create-a-hello-world-rock>`
+* **Basic concepts:** :ref:`Lifecycle details of a rock <craft-parts:lifecycle>`
+
+Building rocks
+~~~~~~~~~~~~~~
+
+Configure, build, harden, and publish rocks with Rockcraft.
+
+* **Set up your rock:** :ref:`reference-rockcraft-yaml` • Types of bases • Specify a base • Pebble as entrypoint • Convert an entrypoint to a Pebble layer • Define a non root user 
+* **Hardening:**  Overview • Chisel a rock •  Install a custom slice • Migrate a Docker image to a chiseled rock
+* **Remote builds:** Build remotely using Launchpad
+* **App rocks:** Build a rock for an app •  Set-up 12-Factor rocks • Use rocks for 12-Factor apps
+* **Pack:** Use the Rockcraft pack GitHub Action • Pack a Python package
+* **Publish:** Publish a rock to a registry 
+
+Rock components
+~~~~~~~~~~~~~~~
+
+Define how a rock is built and run.
+
+* **Steps:** Lifecycle commands • From prime step to OCI layer 
+* **Parts:** Understand Parts • Filesets • Permissions
+* **Extensions:** Extensions available  • Extension commands • Configure the build base for an Express app 
+* **Plugins:** Plugins available • Override a plugin's build • Include local files and remote resources using the dump plugin
+
 .. toctree::
    :maxdepth: 1
    :hidden:
