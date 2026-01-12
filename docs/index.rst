@@ -36,7 +36,11 @@ Building rocks
 
 Configure, build, harden, and publish rocks with Rockcraft.
 
-* **Set up your rock:** :ref:`reference-rockcraft-yaml` • Types of bases • Specify a base • Pebble as entrypoint • Convert an entrypoint to a Pebble layer • Define a non root user 
+*  **Set up your rock:** :ref:`reference-rockcraft-yaml` • 
+   :ref:`Types of bases <explanation-bases>` • :ref:`Specify a base <how-to-specify-a-base>` • 
+   :ref:`Pebble as entrypoint <explanation-pebble>` • 
+   :ref:`Convert an entrypoint to a Pebble layer <how-to-convert-an-entrypoint-to-a-pebble-layer>` • 
+   :ref:`Define a non root user <how-to-add-an-internal-user>`
 * **Hardening:**  Overview • Chisel a rock •  Install a custom slice • Migrate a Docker image to a chiseled rock
 * **Remote builds:** Build remotely using Launchpad
 * **App rocks:** Build a rock for an app •  Set-up 12-Factor rocks • Use rocks for 12-Factor apps
