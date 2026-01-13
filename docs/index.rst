@@ -62,46 +62,16 @@ Define how a rock is built and run.
 *  **Extensions:** :ref:`Extensions available <reference-extensions>` • :ref:`ref_extension_commands` • 
    :ref:`configure-the-build-base-for-an-express-app` 
 *  **Plugins:** :ref:`Plugins available <reference-plugins>` • 
-   :ref:`craft-parts:how-to-override-build` • 
    :ref:`Include local files and remote resources using the dump plugin <craft-parts:how_to_include_files_and_resources>`
 
-.. toctree::
-   :maxdepth: 1
-   :hidden:
+How this documentation is organized
+-----------------------------------
 
-   tutorial/index
-   how-to/index
-   reference/index
-   explanation/index
-   contribute-to-this-documentation
-   release-notes/index
-
-
-.. grid:: 1 1 2 2
-
-   .. grid-item-card:: :ref:`Tutorial <tutorial>`
-
-      **Get started** - become familiar with Rockcraft by containerising different software applications as rocks.
-
-   .. grid-item-card:: :ref:`How-to guides <how-to>`
-
-      **Step-by-step guides** - learn key operations, ranging from :ref:`creating
-      and cutting slices <how-to-chiselling>` to :ref:`migrating and publishing
-      rocks <how-to-crafting>`.
-
-.. grid:: 1 1 2 2
-   :reverse:
-
-   .. grid-item-card:: :ref:`Reference <reference>`
-
-      **Technical information** - understand how to use every key in a project
-      file.
-
-   .. grid-item-card:: :ref:`Explanation <explanation>`
-
-      **Discussion and clarification** - explore Rockcraft's lifecycle and how a
-      rock gets packed under the hood.
-
+*  The :ref:`Tutorial <tutorial>` takes you step-by-step through building your first rock.
+*  :ref:`How-to guides <how-to>` assume you have basic familiarity with Rockcraft. 
+   These include crafting rocks, building rocks for different apps and hardening.
+* :ref:`Reference <reference>` provides a guide to the .yaml files, commands and components.
+* :ref:`Explanation <explanation>` includes topic overviews, background and context and detailed discussion.
 
 Project and community
 =====================
@@ -115,3 +85,18 @@ and constructive feedback.
 * `Ubuntu Code of Conduct <https://ubuntu.com/community/docs/ethos/code-of-conduct>`_
 * `Canonical Contributor License Agreement
   <https://ubuntu.com/legal/contributors>`_
+
+
+This documentation uses the `Diátaxis documentation structure <https://diataxis.fr/>`_.
+
+
+.. toctree::
+   :maxdepth: 1
+   :hidden:
+
+   tutorial/index
+   how-to/index
+   reference/index
+   explanation/index
+   contribute-to-this-documentation
+   release-notes/index
