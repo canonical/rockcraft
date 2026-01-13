@@ -57,10 +57,13 @@ Rock components
 
 Define how a rock is built and run.
 
-* **Steps:** :ref:`ref_lifecycle_commands` • From prime step to OCI layer 
-* **Parts:** Understand Parts • Filesets • Permissions
-* **Extensions:** Extensions available  • :ref:`ref_extension_commands` • Configure the build base for an Express app 
-* **Plugins:** Plugins available • Override a plugin's build • Include local files and remote resources using the dump plugin
+* **Steps:** :ref:`ref_lifecycle_commands` • :ref:`expl_prime_step_OCI_layer` 
+* **Parts:** :ref:`Understand Parts <craft-parts:parts>` • :ref:`craft-parts:filesets_explanation` • :ref:`Permissions <reference-parts-and-steps>`
+*  **Extensions:** :ref:`Extensions available <reference-extensions>` • :ref:`ref_extension_commands` • 
+   :ref:`configure-the-build-base-for-an-express-app` 
+*  **Plugins:** :ref:`Plugins available <reference-plugins>` • 
+   :ref:`craft-parts:how-to-override-build` • 
+   :ref:`Include local files and remote resources using the dump plugin <craft-parts:how_to_include_files_and_resources>`
 
 .. toctree::
    :maxdepth: 1
