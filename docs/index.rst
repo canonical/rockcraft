@@ -41,9 +41,9 @@ Configure, build, harden, and publish rocks with Rockcraft.
    :ref:`Pebble as entrypoint <explanation-pebble>` • 
    :ref:`Convert an entrypoint to a Pebble layer <how-to-convert-an-entrypoint-to-a-pebble-layer>` • 
    :ref:`Define a non root user <how-to-add-an-internal-user>`
-*  **Hardening:**  :ref:`Overview <explanation-chisel>` • :ref:`Chisel a rock <how-to-chisel-a-rock>` • 
+*  **Hardening:**  :ref:`Overview <explanation-chisel>` • :ref:`Chisel rocks <how-to-chisel-a-rock>` • 
    :ref:`Install a custom slice <how-to-install-a-custom-package-slice>` • 
-   :ref:`Migrate a Docker image to a chiseled rock <how-to-migrate-a-docker-image-to-a-chiselled-rock>`
+   :ref:`Migrate Docker images to chiseled rocks <how-to-migrate-a-docker-image-to-a-chiselled-rock>`
 * **Remote builds:** :ref:`Build remotely using Launchpad<how-to-outsource-rock-builds-to-launchpad>`
 *  **App rocks:** :ref:`Build a rock for an app <tutorial>` • 
    :ref:`Set-up 12-Factor rocks <set-up-web-app-rock>`• 
@@ -59,9 +59,9 @@ Define how a rock is built and run.
 
 * **Steps:** :ref:`ref_lifecycle_commands` • :ref:`expl_prime_step_OCI_layer` 
 * **Parts:** :ref:`Understand Parts <craft-parts:parts>` • :ref:`craft-parts:filesets_explanation` • :ref:`Permissions <reference-parts-and-steps>`
-*  **Extensions:** :ref:`Extensions available <reference-extensions>` • :ref:`ref_extension_commands` • 
+*  **Extensions:** :ref:`Extensions available <reference-extensions>` • :ref:`Commands <ref_extension_commands>` • 
    :ref:`configure-the-build-base-for-an-express-app` 
-*  **Plugins:** :ref:`Plugins available <reference-plugins>` • 
+*  **Plugins:** :ref:`Plugins available <reference-plugins>` • :ref:`craft-parts:how-to-override-build` •
    :ref:`Include local files and remote resources using the dump plugin <craft-parts:how_to_include_files_and_resources>`
 
 How this documentation is organized
@@ -73,19 +73,41 @@ How this documentation is organized
 * :ref:`Reference <reference>` provides a guide to the .yaml files, commands and components.
 * :ref:`Explanation <explanation>` includes topic overviews, background and context and detailed discussion.
 
-Project and community
-=====================
-
 Rockcraft is a member of the Canonical family. It's an open source project
 that warmly welcomes community projects, contributions, suggestions, fixes
 and constructive feedback.
 
+Project and community
+---------------------
+
+Rockcraft is a member of the Ubuntu family. It’s an open source project that warmly welcomes 
+`community contributions <https://documentation.ubuntu.com/project/contributors/>`_
+
+Support
+~~~~~~~
+
 * `Ubuntu Rocks Discourse <https://discourse.ubuntu.com/c/project/rocks/117>`_
 * `Rocks Community on Matrix <https://matrix.to/#/#rocks:ubuntu.com>`_
-* `Ubuntu Code of Conduct <https://ubuntu.com/community/docs/ethos/code-of-conduct>`_
-* `Canonical Contributor License Agreement
-  <https://ubuntu.com/legal/contributors>`_
+* `Contribute to the project <https://github.com/canonical/rockcraft>`_
+* :ref:`Contribute to the documentation <contribute-to-this-documentation>`
 
+Releases
+~~~~~~~~
+
+* :ref:`release-notes`
+
+Governance and policies
+~~~~~~~~~~~~~~~~~~~~~~~
+
+* `Code of conduct <https://ubuntu.com/community/docs/ethos/code-of-conduct>`_
+* `Security policy <https://github.com/canonical/rockcraft/blob/main/SECURITY.md>`_
+
+Commercial support
+~~~~~~~~~~~~~~~~~~
+
+Thinking about using Rocks for your next project? `Get in touch! <https://canonical.com/#get-in-touch#>`_
+
+_____________________________
 
 This documentation uses the `Diátaxis documentation structure <https://diataxis.fr/>`_.
 
