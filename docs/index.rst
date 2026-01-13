@@ -57,9 +57,9 @@ Rock components
 
 Define how a rock is built and run.
 
-* **Steps:** Lifecycle commands • From prime step to OCI layer 
+* **Steps:** :ref:`ref_lifecycle_commands` • From prime step to OCI layer 
 * **Parts:** Understand Parts • Filesets • Permissions
-* **Extensions:** Extensions available  • Extension commands • Configure the build base for an Express app 
+* **Extensions:** Extensions available  • :ref:`ref_extension_commands` • Configure the build base for an Express app 
 * **Plugins:** Plugins available • Override a plugin's build • Include local files and remote resources using the dump plugin
 
 .. toctree::
