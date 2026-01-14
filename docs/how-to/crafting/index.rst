@@ -10,7 +10,7 @@ Crafting
     specify-a-base
     convert-to-pebble-layer
     add-internal-user-to-a-rock
-    /common/craft-parts/how-to/include_files
+    include-local-files-and-remote-resources
     override-the-default-build
     publish-a-rock
     rockcraft-pack-action
