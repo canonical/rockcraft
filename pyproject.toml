@@ -326,6 +326,10 @@ conflicts = [
         { extra = "apt-plucky" },
     ]
 ]
+build-constraint-dependencies = [
+    # needed until we have rustc >= 1.78
+    "maturin<1.10.0 ; python_version < '3.14'",
+]
 
 [dependency-groups]
 dev = [
