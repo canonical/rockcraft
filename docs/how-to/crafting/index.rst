@@ -11,7 +11,7 @@ Crafting
     convert-to-pebble-layer
     add-internal-user-to-a-rock
     include-local-files-and-remote-resources
-    override-the-default-build
+    override-a-plugins-build
     publish-a-rock
     rockcraft-pack-action
     outsource-rock-builds-to-launchpad
