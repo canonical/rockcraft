@@ -1,6 +1,6 @@
 .. |app| replace:: Rockcraft
 
-.. _how-to-override-the-default-build:
+.. _how-to-override-a-plugins-build:
 
 Override a plugin's build
 ==========================
