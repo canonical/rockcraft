@@ -133,6 +133,7 @@ intersphinx_mapping = {
     ),
     "charmcraft": ("https://documentation.ubuntu.com/charmcraft/stable/", None),
     "pebble": ("https://documentation.ubuntu.com/pebble", None),
+    "craft-parts": ("https://canonical-craft-parts.readthedocs-hosted.com/latest", None),
 }
 # See also:
 # https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html#confval-intersphinx_disabled_reftypes
