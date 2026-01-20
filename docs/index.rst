@@ -102,7 +102,7 @@ Governance and policies
 Commercial support
 ~~~~~~~~~~~~~~~~~~
 
-Thinking about using Rocks for your next project? `Get in touch! <https://canonical.com/\#get-in-touch\#>`_
+Thinking about using Rocks for your next project? `Get in touch!`_
 
 _____________________________
 
@@ -119,3 +119,5 @@ This documentation uses the `Diátaxis documentation structure <https://diataxis
    explanation/index
    contribute-to-this-documentation
    release-notes/index
+
+.. _Get in touch!: https://canonical.com/#get-in-touch#
