@@ -61,8 +61,8 @@ Define how a rock is built and run.
 * **Parts:** :ref:`Understand Parts <craft-parts:parts>` • :ref:`craft-parts:filesets_explanation` • :ref:`Permissions <reference-parts-and-steps>`
 *  **Extensions:** :ref:`Extensions available <reference-extensions>` • :ref:`Commands <ref_extension_commands>` • 
    :ref:`configure-the-build-base-for-an-express-app` 
-*  **Plugins:** :ref:`Plugins available <reference-plugins>` • :ref:`craft-parts:how-to-override-build` •
-   :ref:`Include local files and remote resources using the dump plugin <craft-parts:how_to_include_files_and_resources>`
+*  **Plugins:** :ref:`Plugins available <reference-plugins>` • :ref:`craft-parts:how-to-override-a-plugins-build` •
+   :ref:`Include local files and remote resources using the dump plugin <craft-parts:how-to-include-local-files-and-remote-resources>`
 
 How this documentation is organized
 -----------------------------------
