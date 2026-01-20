@@ -102,7 +102,7 @@ Governance and policies
 Commercial support
 ~~~~~~~~~~~~~~~~~~
 
-Thinking about using Rocks for your next project? `Get in touch! <https://canonical.com/#get-in-touch#>`_
+Thinking about using Rocks for your next project? `Get in touch! <https://canonical.com/\#get-in-touch\#>`_
 
 _____________________________
 
