@@ -306,7 +306,8 @@ git push -u origin <branch-name>
 
 Finally, [open a PR](https://github.com/canonical/rockcraft/compare) for it on GitHub.
 If your branch has one commit, GitHub will title the PR after it. If your branch has
-more than one commit, name the PR after the most significant. Once open, reviewers are
+more than one commit, name the PR after the most significant and ensure it
+follows the Conventional Commits style. Once open, reviewers are
 assigned automatically to your work.
 
 ### Follow up for the review
