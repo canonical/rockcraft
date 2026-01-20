@@ -73,15 +73,12 @@ How this documentation is organized
 * :ref:`Reference <reference>` provides a guide to the .yaml files, commands and components.
 * :ref:`Explanation <explanation>` includes topic overviews, background and context and detailed discussion.
 
-Rockcraft is a member of the Canonical family. It's an open source project
-that warmly welcomes community projects, contributions, suggestions, fixes
-and constructive feedback.
 
 Project and community
 ---------------------
 
-Rockcraft is a member of the Ubuntu family. It’s an open source project that warmly welcomes
-`community contributions <https://documentation.ubuntu.com/project/contributors/>`_
+Rockcraft is a member of the Ubuntu family. It’s an open source project that warmly welcomes 
+`community contributions <https://documentation.ubuntu.com/project/contributors/>`_.
 
 Support
 ~~~~~~~
