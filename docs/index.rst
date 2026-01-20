@@ -77,7 +77,7 @@ How this documentation is organized
 Project and community
 ---------------------
 
-Rockcraft is a member of the Ubuntu family. It’s an open source project that warmly welcomes 
+Rockcraft is a member of the Ubuntu family. It’s an open source project that warmly welcomes
 `community contributions <https://documentation.ubuntu.com/project/contributors/>`_.
 
 Support
