@@ -5,13 +5,13 @@ Rockcraft documentation
 generation of secure, stable and `OCI-compliant container images
 <OCI_image_spec_>`_, based on Ubuntu.
 
-**Rockcraft offers a truly declarative way for building efficient container images.** 
+**Rockcraft offers a truly declarative way for building efficient container images.**
 By making use of existing Ubuntu tools like LXD_ and Multipass_, Rockcraft
 is able to compartmentalise typical container image builds into multiple
 parts, each one being comprised of several independent lifecycle steps,
 allowing complex operations to be declared at build time.
 
-Rockcraft enables users to create automatically secure container images in sync with Ubuntu OS’s SLAs, 
+Rockcraft enables users to create automatically secure container images in sync with Ubuntu OS’s SLAs,
 whilst ensuring the smallest footprint possible.
 
 **Rockcraft is for anyone who wants to build production-grade container images,
@@ -36,19 +36,19 @@ Building rocks
 
 Configure, build, harden, and publish rocks with Rockcraft.
 
-*  **Set up your rock:** :ref:`reference-rockcraft-yaml` • 
-   :ref:`Types of bases <explanation-bases>` • :ref:`Specify a base <how-to-specify-a-base>` • 
-   :ref:`Pebble as entrypoint <explanation-pebble>` • 
-   :ref:`Convert an entrypoint to a Pebble layer <how-to-convert-an-entrypoint-to-a-pebble-layer>` • 
+*  **Set up your rock:** :ref:`reference-rockcraft-yaml` •
+   :ref:`Types of bases <explanation-bases>` • :ref:`Specify a base <how-to-specify-a-base>` •
+   :ref:`Pebble as entrypoint <explanation-pebble>` •
+   :ref:`Convert an entrypoint to a Pebble layer <how-to-convert-an-entrypoint-to-a-pebble-layer>` •
    :ref:`Define a non root user <how-to-add-an-internal-user>`
-*  **Hardening:**  :ref:`Overview <explanation-chisel>` • :ref:`Chisel rocks <how-to-chisel-a-rock>` • 
-   :ref:`Install a custom slice <how-to-install-a-custom-package-slice>` • 
+*  **Hardening:**  :ref:`Overview <explanation-chisel>` • :ref:`Chisel rocks <how-to-chisel-a-rock>` •
+   :ref:`Install a custom slice <how-to-install-a-custom-package-slice>` •
    :ref:`Migrate Docker images to chiseled rocks <how-to-migrate-a-docker-image-to-a-chiselled-rock>`
 * **Remote builds:** :ref:`Build remotely using Launchpad<how-to-outsource-rock-builds-to-launchpad>`
-*  **App rocks:** :ref:`Build a rock for an app <tutorial>` • 
-   :ref:`Set-up 12-Factor rocks <set-up-web-app-rock>`• 
+*  **App rocks:** :ref:`Build a rock for an app <tutorial>` •
+   :ref:`Set-up 12-Factor rocks <set-up-web-app-rock>`•
    :ref:`Use rocks for 12-Factor apps <use-web-app-rock>`
-*  **Pack:** :ref:`Use the Rockcraft pack GitHub Action<how-to-use-the-rockcraft-pack-github-action>` • 
+*  **Pack:** :ref:`Use the Rockcraft pack GitHub Action<how-to-use-the-rockcraft-pack-github-action>` •
    :ref:`Pack a Python package <tutorial-pack-a-python-package>`
 * **Publish:** :ref:`Publish a rock to a registry <how-to-publish-a-rock-to-a-registry>`
 
@@ -57,10 +57,10 @@ Rock components
 
 Define how a rock is built and run.
 
-* **Steps:** :ref:`ref_lifecycle_commands` • :ref:`expl_prime_step_OCI_layer` 
+* **Steps:** :ref:`ref_lifecycle_commands` • :ref:`expl_prime_step_OCI_layer`
 * **Parts:** :ref:`Understand Parts <craft-parts:parts>` • :ref:`craft-parts:filesets_explanation` • :ref:`Permissions <reference-parts-and-steps>`
-*  **Extensions:** :ref:`Extensions available <reference-extensions>` • :ref:`Commands <ref_extension_commands>` • 
-   :ref:`configure-the-build-base-for-an-express-app` 
+*  **Extensions:** :ref:`Extensions available <reference-extensions>` • :ref:`Commands <ref_extension_commands>` •
+   :ref:`configure-the-build-base-for-an-express-app`
 *  **Plugins:** :ref:`Plugins available <reference-plugins>` • :ref:`how-to-override-a-plugins-build` •
    :ref:`Include local files and remote resources using the dump plugin <how-to-include-local-files-and-remote-resources>`
 
@@ -68,7 +68,7 @@ How this documentation is organized
 -----------------------------------
 
 *  The :ref:`Tutorial <tutorial>` takes you step-by-step through building your first rock.
-*  :ref:`How-to guides <how-to>` assume you have basic familiarity with Rockcraft. 
+*  :ref:`How-to guides <how-to>` assume you have basic familiarity with Rockcraft.
    These include crafting rocks, building rocks for different apps and hardening.
 * :ref:`Reference <reference>` provides a guide to the .yaml files, commands and components.
 * :ref:`Explanation <explanation>` includes topic overviews, background and context and detailed discussion.
@@ -80,7 +80,7 @@ and constructive feedback.
 Project and community
 ---------------------
 
-Rockcraft is a member of the Ubuntu family. It’s an open source project that warmly welcomes 
+Rockcraft is a member of the Ubuntu family. It’s an open source project that warmly welcomes
 `community contributions <https://documentation.ubuntu.com/project/contributors/>`_
 
 Support
