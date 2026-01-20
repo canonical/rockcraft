@@ -159,19 +159,27 @@ Pack the rock:
    There is a `known connectivity issue with LXD and Docker
    <lxd-docker-connectivity-issue_>`_. If we see a
    networking issue such as "*A network related operation failed in a context
-   of no network access*" or ``Client.Timeout``, allow egress network traffic
-   to flow from the LXD managed bridge using:
+   of no network access*" or ``Client.Timeout``, we need to allow egress network
+   traffic to flow from the managed LXD bridge.
+
+   First, run ``lxc network list`` to show the available networks. The
+   bridge will have ``TYPE: bridge`` and ``MANAGED: YES``. Save the name to an
+   environment variable:
 
    .. code-block::
 
-       iptables  -I DOCKER-USER -i <network_bridge> -j ACCEPT
-       ip6tables -I DOCKER-USER -i <network_bridge> -j ACCEPT
-       iptables  -I DOCKER-USER -o <network_bridge> -m conntrack \
-         --ctstate RELATED,ESTABLISHED -j ACCEPT
-       ip6tables -I DOCKER-USER -o <network_bridge> -m conntrack \
-         --ctstate RELATED,ESTABLISHED -j ACCEPT
+       NETWORK_BRIDGE=<name of managed LXD bridge>
 
-   Run ``lxc network list`` to show the existing LXD managed bridges.
+   Then, update the network traffic flow using:
+
+   .. code-block::
+
+       sudo iptables  -I DOCKER-USER -i $NETWORK_BRIDGE -j ACCEPT
+       sudo ip6tables -I DOCKER-USER -i $NETWORK_BRIDGE -j ACCEPT
+       sudo iptables  -I DOCKER-USER -o $NETWORK_BRIDGE -m conntrack \
+         --ctstate RELATED,ESTABLISHED -j ACCEPT
+       sudo ip6tables -I DOCKER-USER -o $NETWORK_BRIDGE -m conntrack \
+         --ctstate RELATED,ESTABLISHED -j ACCEPT
 
 Depending on the network, this step can take a couple of minutes to finish.
 Since FastAPI is an experimental extension,
