@@ -19,7 +19,12 @@ environment:
   PACK_ARGS/managed_standard_stage_full: ""
 
 prepare: |
-  sudo pro attach --no-auto-enable $UBUNTU_PRO_TOKEN 
+  if [ -z "$UBUNTU_PRO_TOKEN" ]; then
+    echo "Error: Pro tests require UBUNTU_PRO_TOKEN to be set."
+    exit 1
+  fi
+
+  sudo pro attach --no-auto-enable $UBUNTU_PRO_TOKEN
   sudo pro enable --assume-yes $ENV_PRO_ARG
 
 execute: |
