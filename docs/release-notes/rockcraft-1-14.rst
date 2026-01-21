@@ -113,12 +113,12 @@ Contributors
 We would like to express a big thank you to all the people who contributed to
 this release.
 
-:literalref:`@alesancor1<https://github.com/alesancor1>`,
-:literalref:`@bepri<https://github.com/bepri>`,
-:literalref:`@erinecon<https://github.com/erinecon>`,
-:literalref:`@jahn-junior<https://github.com/jahn-junior>`,
-:literalref:`@javierdelapuente<https://github.com/javierdelapuente>`,
-:literalref:`@medubelko<https://github.com/medubelko>`,
-and :literalref:`@tigarmo<https://github.com/tigarmo>`.
+:literalref:`@alesancor1 <https://github.com/alesancor1>`,
+:literalref:`@bepri <https://github.com/bepri>`,
+:literalref:`@erinecon <https://github.com/erinecon>`,
+:literalref:`@jahn-junior <https://github.com/jahn-junior>`,
+:literalref:`@javierdelapuente <https://github.com/javierdelapuente>`,
+:literalref:`@medubelko <https://github.com/medubelko>`,
+and :literalref:`@tigarmo <https://github.com/tigarmo>`.
 
 .. _CONTRIBUTING.md: https://github.com/canonical/rockcraft/blob/main/CONTRIBUTING.md
