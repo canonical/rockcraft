@@ -70,8 +70,8 @@ Rockcraft 1.10 brings the following minor changes.
 Part sources
 ~~~~~~~~~~~~
 
-The :ref:`source-commit <PartSpec.source_commit>` now accepts short hashes in addition
-to the full hash of a Git commit.
+The :ref:`source-commit <PartSpec.source_commit>` key now accepts short hashes in
+addition to the full hash of a Git commit.
 
 OCI Annotations
 ~~~~~~~~~~~~~~~
