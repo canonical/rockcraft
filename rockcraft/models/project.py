@@ -436,7 +436,7 @@ class Project(BaseProject):
     @override
     @classmethod
     def model_reference_slug(cls) -> str | None:
-        return "/reference/rockcraft.yaml"
+        return "/reference/rockcraft-yaml"
 
     @pydantic.field_validator("platforms")
     @classmethod
