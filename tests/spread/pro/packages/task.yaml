@@ -19,8 +19,9 @@ environment:
   PACK_ARGS/managed_standard_stage_full: ""
 
 prepare: |
-  sudo pro attach --no-auto-enable $UBUNTU_PRO_TOKEN 
+  sudo pro attach --no-auto-enable $UBUNTU_PRO_TOKEN
   sudo pro enable --assume-yes $ENV_PRO_ARG
+  sudo pro config set lxd_guest_attach=available
 
 execute: |
 
