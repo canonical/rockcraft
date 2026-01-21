@@ -123,8 +123,8 @@ Autotools plugin
 ~~~~~~~~~~~~~~~~
 
 The :ref:`craft_parts_autotools_plugin` now supports the
-:ref:`rockcraft-yaml-disable-parallel` key to force builds using the plugin to run using
-a single job.
+:ref:`PartSpec.disable_parallel` key to force builds using the plugin to run using a
+single job.
 
 Documentation for bases
 ~~~~~~~~~~~~~~~~~~~~~~~

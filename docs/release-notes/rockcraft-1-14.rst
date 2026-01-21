@@ -56,8 +56,7 @@ This key defines the rock's OCI entrypoint, bypassing the default Pebble-powered
 entrypoint. It can be necessary for cases like OS and base images, where
 an application-centric Pebble service is inadequate.
 
-See the :ref:`rockcraft.yaml reference <rockcraft-yaml-entrypoint-command>` for usage
-details.
+See the :ref:`rockcraft.yaml reference <Project.entrypoint_command>` for usage details.
 
 New ``jlink-extra-modules`` key
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
