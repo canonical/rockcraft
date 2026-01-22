@@ -20,11 +20,13 @@ import re
 from pathlib import Path
 from typing import cast
 
+import craft_platforms
 from craft_application import LifecycleService
 from craft_parts.infos import StepInfo
+from craft_parts.plugins import Plugin
 from overrides import override  # type: ignore[reportUnknownVariableType]
 
-from rockcraft import layers
+from rockcraft import layers, plugins
 from rockcraft.plugins.python_common import get_python_plugins
 
 
@@ -77,6 +79,26 @@ class RockcraftLifecycleService(LifecycleService):
         _python_v2_shebang_fix(step_info)
 
         return True
+
+    @override
+    @staticmethod
+    def get_plugin_group(
+        build_info: craft_platforms.BuildInfo,
+    ) -> dict[str, type[Plugin]] | None:
+        """Get the plugin group for a given build.
+
+        If this returns a non-``None`` value, the LifecycleService sets the plugin
+        group to that group when running the given build. If ``None`` is returned, the
+        plugin groups feature is not used and an application must manually handle its
+        plugin groups.
+
+        The default implementation simply returns ``None``, as this is designed for an
+        application to override in order to get the relevant plugin groups.
+
+        :param build_info: The BuildInfo for the build.
+        :returns: A dictionary that is an appropriate plugin group or ``None``.
+        """
+        return plugins.get_plugin_group(str(build_info.build_base))
 
 
 def _python_usrmerge_fix(step_info: StepInfo) -> None:
