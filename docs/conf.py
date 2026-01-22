@@ -113,6 +113,7 @@ exclude_patterns = [
     "common/craft-parts/reference/plugins/python_plugin.rst",
     "common/craft-parts/reference/plugins/python_v2_plugin.rst",
     "common/craft-parts/reference/plugins/uv_plugin.rst",
+    "common/craft-parts/reference/plugins/ruby_plugin.rst",
     # Extra non-craft-parts exclusions can be added after this comment
     "reuse/*",
 ]
@@ -148,9 +149,9 @@ sitemap_url_scheme = "{link}"
 
 # Exclude generated pages from the sitemap:
 sitemap_excludes = [
-    '404/',
-    'genindex/',
-    'search/',
+    "404/",
+    "genindex/",
+    "search/",
 ]
 
 # Do (not) include module names.
