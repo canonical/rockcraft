@@ -4,9 +4,16 @@
 # The old path must be a file that _doesn't exist_ in the source. The current path
 # must be a file that _does exist_ in the source.
 
+"tutorial/expressjs.rst" "tutorial/express.rst"
+
+"how-to/build-a-12-factor-app-rock.rst" "how-to/web-app-rocks/index.rst"
+"about-this-documentation.rst" "contribute-to-this-documentation.rst"
+"how-to/web-app-rocks/configure-the-build-base-for-an-expressjs-app.rst" "how-to/web-app-rocks/configure-the-build-base-for-an-express-app.rst"
+
+"reference/extensions/expressjs-framework.rst" "reference/extensions/express-framework.rst"
+"reference/part_properties.rst" "reference/rockcraft-yaml.rst"
+
 "release-notes/changelog.rst" "reference/changelog.rst"
 "release-notes/rockcraft-1-9-0.rst" "release-notes/rockcraft-1-9.rst"
 "release-notes/rockcraft-1-8-0.rst" "release-notes/rockcraft-1-8.rst"
 "release-notes/rockcraft-1-7-0.rst" "release-notes/rockcraft-1-7.rst"
-"how-to/build-a-12-factor-app-rock.rst" "how-to/web-app-rocks/index.rst"
-"about-this-documentation.rst" "contribute-to-this-documentation.rst"

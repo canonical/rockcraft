@@ -1128,7 +1128,7 @@
           "type": "object"
         },
         "overlay": {
-          "description": "The files to copy from the part's overly filesystem to the stage directory.",
+          "description": "The files to copy from the part's overlay filesystem to the stage directory.",
           "examples": [
             "[bin, usr/bin]",
             "[-etc/cloud/cloud.cfg.d/90_dpkg.cfg]"
@@ -1578,7 +1578,7 @@
                 "type": "object"
               },
               "overlay": {
-                "description": "The files to copy from the part's overly filesystem to the stage directory.",
+                "description": "The files to copy from the part's overlay filesystem to the stage directory.",
                 "examples": [
                   "[bin, usr/bin]",
                   "[-etc/cloud/cloud.cfg.d/90_dpkg.cfg]"
@@ -2016,7 +2016,7 @@
                 "type": "object"
               },
               "overlay": {
-                "description": "The files to copy from the part's overly filesystem to the stage directory.",
+                "description": "The files to copy from the part's overlay filesystem to the stage directory.",
                 "examples": [
                   "[bin, usr/bin]",
                   "[-etc/cloud/cloud.cfg.d/90_dpkg.cfg]"
@@ -2438,7 +2438,7 @@
                 "type": "object"
               },
               "overlay": {
-                "description": "The files to copy from the part's overly filesystem to the stage directory.",
+                "description": "The files to copy from the part's overlay filesystem to the stage directory.",
                 "examples": [
                   "[bin, usr/bin]",
                   "[-etc/cloud/cloud.cfg.d/90_dpkg.cfg]"
@@ -2873,7 +2873,7 @@
                 "type": "object"
               },
               "overlay": {
-                "description": "The files to copy from the part's overly filesystem to the stage directory.",
+                "description": "The files to copy from the part's overlay filesystem to the stage directory.",
                 "examples": [
                   "[bin, usr/bin]",
                   "[-etc/cloud/cloud.cfg.d/90_dpkg.cfg]"
@@ -3312,7 +3312,7 @@
                 "type": "object"
               },
               "overlay": {
-                "description": "The files to copy from the part's overly filesystem to the stage directory.",
+                "description": "The files to copy from the part's overlay filesystem to the stage directory.",
                 "examples": [
                   "[bin, usr/bin]",
                   "[-etc/cloud/cloud.cfg.d/90_dpkg.cfg]"
@@ -3734,7 +3734,7 @@
                 "type": "object"
               },
               "overlay": {
-                "description": "The files to copy from the part's overly filesystem to the stage directory.",
+                "description": "The files to copy from the part's overlay filesystem to the stage directory.",
                 "examples": [
                   "[bin, usr/bin]",
                   "[-etc/cloud/cloud.cfg.d/90_dpkg.cfg]"
@@ -4172,7 +4172,7 @@
                 "type": "object"
               },
               "overlay": {
-                "description": "The files to copy from the part's overly filesystem to the stage directory.",
+                "description": "The files to copy from the part's overlay filesystem to the stage directory.",
                 "examples": [
                   "[bin, usr/bin]",
                   "[-etc/cloud/cloud.cfg.d/90_dpkg.cfg]"
@@ -4594,7 +4594,7 @@
                 "type": "object"
               },
               "overlay": {
-                "description": "The files to copy from the part's overly filesystem to the stage directory.",
+                "description": "The files to copy from the part's overlay filesystem to the stage directory.",
                 "examples": [
                   "[bin, usr/bin]",
                   "[-etc/cloud/cloud.cfg.d/90_dpkg.cfg]"
@@ -5034,7 +5034,7 @@
                 "type": "object"
               },
               "overlay": {
-                "description": "The files to copy from the part's overly filesystem to the stage directory.",
+                "description": "The files to copy from the part's overlay filesystem to the stage directory.",
                 "examples": [
                   "[bin, usr/bin]",
                   "[-etc/cloud/cloud.cfg.d/90_dpkg.cfg]"
@@ -5252,6 +5252,26 @@
                 },
                 "title": "Jlink-Extra-Modules",
                 "type": "array"
+              },
+              "jlink-modules": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Jlink-Modules",
+                "type": "array"
+              },
+              "jlink-multi-release": {
+                "anyOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ],
+                "default": "base",
+                "title": "Jlink-Multi-Release"
               },
               "source-checksum": {
                 "default": "",
@@ -5472,7 +5492,7 @@
                 "type": "object"
               },
               "overlay": {
-                "description": "The files to copy from the part's overly filesystem to the stage directory.",
+                "description": "The files to copy from the part's overlay filesystem to the stage directory.",
                 "examples": [
                   "[bin, usr/bin]",
                   "[-etc/cloud/cloud.cfg.d/90_dpkg.cfg]"
@@ -5902,7 +5922,7 @@
                 "type": "object"
               },
               "overlay": {
-                "description": "The files to copy from the part's overly filesystem to the stage directory.",
+                "description": "The files to copy from the part's overlay filesystem to the stage directory.",
                 "examples": [
                   "[bin, usr/bin]",
                   "[-etc/cloud/cloud.cfg.d/90_dpkg.cfg]"
@@ -6337,7 +6357,7 @@
                 "type": "object"
               },
               "overlay": {
-                "description": "The files to copy from the part's overly filesystem to the stage directory.",
+                "description": "The files to copy from the part's overlay filesystem to the stage directory.",
                 "examples": [
                   "[bin, usr/bin]",
                   "[-etc/cloud/cloud.cfg.d/90_dpkg.cfg]"
@@ -6767,7 +6787,7 @@
                 "type": "object"
               },
               "overlay": {
-                "description": "The files to copy from the part's overly filesystem to the stage directory.",
+                "description": "The files to copy from the part's overlay filesystem to the stage directory.",
                 "examples": [
                   "[bin, usr/bin]",
                   "[-etc/cloud/cloud.cfg.d/90_dpkg.cfg]"
@@ -7197,7 +7217,7 @@
                 "type": "object"
               },
               "overlay": {
-                "description": "The files to copy from the part's overly filesystem to the stage directory.",
+                "description": "The files to copy from the part's overlay filesystem to the stage directory.",
                 "examples": [
                   "[bin, usr/bin]",
                   "[-etc/cloud/cloud.cfg.d/90_dpkg.cfg]"
@@ -7619,7 +7639,7 @@
                 "type": "object"
               },
               "overlay": {
-                "description": "The files to copy from the part's overly filesystem to the stage directory.",
+                "description": "The files to copy from the part's overlay filesystem to the stage directory.",
                 "examples": [
                   "[bin, usr/bin]",
                   "[-etc/cloud/cloud.cfg.d/90_dpkg.cfg]"
@@ -8058,7 +8078,7 @@
                 "type": "object"
               },
               "overlay": {
-                "description": "The files to copy from the part's overly filesystem to the stage directory.",
+                "description": "The files to copy from the part's overlay filesystem to the stage directory.",
                 "examples": [
                   "[bin, usr/bin]",
                   "[-etc/cloud/cloud.cfg.d/90_dpkg.cfg]"
@@ -8505,7 +8525,7 @@
                 "type": "object"
               },
               "overlay": {
-                "description": "The files to copy from the part's overly filesystem to the stage directory.",
+                "description": "The files to copy from the part's overlay filesystem to the stage directory.",
                 "examples": [
                   "[bin, usr/bin]",
                   "[-etc/cloud/cloud.cfg.d/90_dpkg.cfg]"
@@ -8955,7 +8975,7 @@
                 "type": "object"
               },
               "overlay": {
-                "description": "The files to copy from the part's overly filesystem to the stage directory.",
+                "description": "The files to copy from the part's overlay filesystem to the stage directory.",
                 "examples": [
                   "[bin, usr/bin]",
                   "[-etc/cloud/cloud.cfg.d/90_dpkg.cfg]"
@@ -9395,7 +9415,7 @@
                 "type": "object"
               },
               "overlay": {
-                "description": "The files to copy from the part's overly filesystem to the stage directory.",
+                "description": "The files to copy from the part's overlay filesystem to the stage directory.",
                 "examples": [
                   "[bin, usr/bin]",
                   "[-etc/cloud/cloud.cfg.d/90_dpkg.cfg]"
@@ -9875,7 +9895,7 @@
                 "type": "object"
               },
               "overlay": {
-                "description": "The files to copy from the part's overly filesystem to the stage directory.",
+                "description": "The files to copy from the part's overlay filesystem to the stage directory.",
                 "examples": [
                   "[bin, usr/bin]",
                   "[-etc/cloud/cloud.cfg.d/90_dpkg.cfg]"
@@ -10305,7 +10325,7 @@
                 "type": "object"
               },
               "overlay": {
-                "description": "The files to copy from the part's overly filesystem to the stage directory.",
+                "description": "The files to copy from the part's overlay filesystem to the stage directory.",
                 "examples": [
                   "[bin, usr/bin]",
                   "[-etc/cloud/cloud.cfg.d/90_dpkg.cfg]"
@@ -10745,7 +10765,7 @@
                 "type": "object"
               },
               "overlay": {
-                "description": "The files to copy from the part's overly filesystem to the stage directory.",
+                "description": "The files to copy from the part's overlay filesystem to the stage directory.",
                 "examples": [
                   "[bin, usr/bin]",
                   "[-etc/cloud/cloud.cfg.d/90_dpkg.cfg]"

@@ -6,7 +6,7 @@
 *       @tigarmo
 
 # Documentation owners
-/docs/  @canonical/starcraft-authors @tigarmo
+/docs/  @canonical/starcraft-authors @asanvaq @tigarmo
 
 # Finally, all CODEOWNERS changes need to be approved by The Man, Himself.
 /.github/CODEOWNERS     @steinbro

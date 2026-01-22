@@ -68,7 +68,7 @@ Rockcraft 1.12 brings the following minor changes.
 Support for non-root rocks in 12-factor extensions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You can now use the non-root :ref:`_daemon_ user <rockcraft_yaml_run_user>` with
+You can now set :ref:`run-user <rockcraft-yaml-run-user>` to ``_daemon_`` with
 extensions that support the :ref:`12-factor web app <set-up-web-app-rock>` methodology.
 
 12-factor web app documentation

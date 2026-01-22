@@ -211,7 +211,11 @@ def test_fastapi_check_no_correct_requirement_and_no_asgi_entrypoint(
         extensions.apply_extensions(tmp_path, fastapi_input_yaml)
     assert str(exc.value) == (
         "- missing fastapi or starlette package dependency in requirements.txt file.\n"
-        "- missing ASGI entrypoint"
+        "- missing ASGI entrypoint\n"
+        "  Cannot find 'app' global variable in the following places:\n"
+        "  1. app.py.\n"
+        "  2. In files __init__.py, and main.py in the 'app','src', "
+        "and root project directories."
     )
 
 
@@ -312,4 +316,5 @@ def test_fastapi_extension_incorrect_prime_prefix_error(tmp_path, fastapi_input_
 
     with pytest.raises(ExtensionError) as exc:
         extensions.apply_extensions(tmp_path, fastapi_input_yaml)
+    assert "start with app/" in str(exc)
     assert "start with app/" in str(exc)

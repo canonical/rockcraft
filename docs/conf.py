@@ -19,7 +19,6 @@ import os
 import pathlib
 import sys
 
-import craft_parts
 import craft_parts_docs
 import rockcraft
 
@@ -59,9 +58,7 @@ html_static_path = ["_static"]
 templates_path = ["_templates"]
 
 # Static resources for Google Analytics
-html_css_files = [
-    "css/cookie-banner.css"
-]
+html_css_files = ["css/cookie-banner.css"]
 
 html_js_files = [
     "js/bundle.js",
@@ -111,6 +108,7 @@ exclude_patterns = [
     "common/craft-parts/reference/parts_steps.rst",
     "common/craft-parts/reference/step_execution_environment.rst",
     "common/craft-parts/reference/step_output_directories.rst",
+    "common/craft-parts/reference/part_properties.rst",
     "common/craft-parts/reference/plugins/poetry_plugin.rst",
     "common/craft-parts/reference/plugins/python_plugin.rst",
     "common/craft-parts/reference/plugins/python_v2_plugin.rst",
@@ -118,39 +116,6 @@ exclude_patterns = [
     # Extra non-craft-parts exclusions can be added after this comment
     "reuse/*",
 ]
-
-# Linkcheck settings
-
-linkcheck_retries = 20
-linkcheck_anchors_ignore = ["#", ":"]
-# We have many links on sites that frequently respond with 503s to GitHub runners.
-# https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-linkcheck_retries
-linkcheck_ignore = [
-    # Ignore releases, since we'll include the next release before it exists.
-    r"^https://github.com/canonical/[a-z]*craft[a-z-]*/releases/.*",
-    # Entire domains to ignore due to flakiness or issues
-    r"^https://www.gnu.org/",
-    r"^https://crates.io/",
-    r"^https://([\w-]*\.)?npmjs.org",
-    r"^https://rsync.samba.org",
-    r"^https://ubuntu.com",
-    "http://0.0.0.0:8080",
-    "https://github.com/canonical/craft-actions#rockcraft-pack",
-    "https://juju.is/cloud-native-kubernetes-usage-report-2021#selection-criteria-for-container-images",
-    "https://matrix.to/#/#rocks:ubuntu.com",
-    "https://matrix.to/#/#rockcraft:ubuntu.com",
-    "https://github.com/canonical/spread#selecting-which-tasks-to-run",
-    # Ignore opencontainer's anchors as linkchecker is not able to check them.
-    "https://specs.opencontainers.org/image-spec/config/",
-    "https://matrix.to/#/#12-factor-charms:ubuntu.com",
-    # Docker is giving 403s for all their docs lately; revisit ASAP
-    "https://docs.docker.com",
-]
-
-# Don't check links in the "common" subdirectory, as those are the responsibility of
-# the libraries.
-linkcheck_exclude_documents = ["^common/.*"]
-linkcheck_anchors_ignore = ["slice-definitions"]
 
 rst_epilog = """
 .. include:: /reuse/links.txt
@@ -162,7 +127,10 @@ rst_epilog = """
 # https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html#configuration
 
 intersphinx_mapping = {
-    "12-factor": ("https://canonical-12-factor-app-support.readthedocs-hosted.com/latest/", None),
+    "12-factor": (
+        "https://canonical-12-factor-app-support.readthedocs-hosted.com/latest/",
+        None,
+    ),
     "charmcraft": ("https://documentation.ubuntu.com/charmcraft/stable/", None),
     "pebble": ("https://documentation.ubuntu.com/pebble", None),
 }
@@ -174,12 +142,16 @@ intersphinx_disabled_reftypes = ["*"]
 rediraffe_redirects = "redirects.txt"
 
 # Sitemap configuration: https://sphinx-sitemap.readthedocs.io/
-html_baseurl = "https://documentation.ubuntu.com/rockcraft/"
-if "READTHEDOCS_VERSION" in os.environ:
-    version = os.environ["READTHEDOCS_VERSION"]
-    sitemap_url_scheme = "{version}{link}"
-else:
-    sitemap_url_scheme = "latest/{link}"
+html_baseurl = os.environ.get("READTHEDOCS_CANONICAL_URL", "/")
+# Builds URLs as {html_baseurl}/<page-location>
+sitemap_url_scheme = "{link}"
+
+# Exclude generated pages from the sitemap:
+sitemap_excludes = [
+    '404/',
+    'genindex/',
+    'search/',
+]
 
 # Do (not) include module names.
 add_module_names = True
@@ -242,9 +214,6 @@ notfound_context = {
 project_dir = pathlib.Path(__file__).parents[1].resolve()
 sys.path.insert(0, str(project_dir.absolute()))
 
-model_dir = pathlib.Path(craft_parts.__file__).parent.resolve()
-sys.path.append(str(model_dir.absolute()))
-
 
 def generate_cli_docs(nil):
     gen_cli_docs_path = (project_dir / "tools/docs/gen_cli_docs.py").resolve()
@@ -264,3 +233,28 @@ craft_parts_docs_path = pathlib.Path(craft_parts_docs.__file__).parent / "craft-
 )
 
 # endregion
+
+# We have many links on sites that frequently respond with 503s to GitHub runners.
+# https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-linkcheck_retries
+linkcheck_retries = 20
+linkcheck_anchors_ignore = ["#", ":", "slice-definitions"]
+linkcheck_ignore = [
+    # Ignore releases, since we'll include the next release before it exists.
+    r"^https://github.com/canonical/[a-z]*craft[a-z-]*/releases/.*",
+    # Entire domains to ignore due to flakiness or issues
+    r"^https://www.gnu.org/",
+    r"^https://crates.io/",
+    r"^https://([\w-]*\.)?npmjs.org",
+    r"^https://rsync.samba.org",
+    r"^https://ubuntu.com",
+    "https://github.com/canonical/craft-actions#rockcraft-pack",
+    "https://github.com/canonical/spread#selecting-which-tasks-to-run",
+    "https://juju.is/cloud-native-kubernetes-usage-report-2021#selection-criteria-for-container-images",
+    "https://matrix.to/#/#rocks:ubuntu.com",
+    "https://matrix.to/#/#rockcraft:ubuntu.com",
+    "https://matrix.to/#/#12-factor-charms:ubuntu.com",
+    "https://specs.opencontainers.org/image-spec/config/",
+]
+# Don't check links in the "common" subdirectory, as those are the responsibility of
+# the libraries.
+linkcheck_exclude_documents = ["^common/.*"]

@@ -9,8 +9,7 @@ Every rock is built from a *base*, which defines the baseline system that the ro
 contents are layered on. The systems are Ubuntu releases. An empty, or *bare* base, is
 also available for lean images.
 
-The base is declared in the project file by the :literalref:`base <rockcraft_yaml_base>`
-key.
+The base is declared in the project file by the :ref:`base <rockcraft-yaml-base>` key.
 
 
 Ubuntu bases
@@ -58,8 +57,8 @@ deployment efficiency and reduced attack surface. The combination of the bare ba
 that meets the production environment's criteria while retaining its functionality.
 
 Even with a bare base, when Rockcraft assembles a rock, it needs Ubuntu as the operating
-system for its build environment. The project's :literalref:`build-base
-<rockcraft_yaml_build_base>` key determines which Ubuntu release is provided for the
+system for its build environment. The project's :ref:`build-base
+<rockcraft-yaml-build-base>` key determines which Ubuntu release is provided for the
 build environment.
 
 For example, if the goal is to have a tiny chiselled rock with software
