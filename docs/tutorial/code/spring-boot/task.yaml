@@ -21,7 +21,7 @@ execute: |
     --path maven-app \
     --project maven-project \
     --language java \
-    --boot-version 3.4.4 \
+    --boot-version 3.5.10 \
     --version 0.0.1 \
     --group com.example \
     --artifact demo \
