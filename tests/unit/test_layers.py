@@ -13,7 +13,6 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-import os
 import re
 import stat
 import sys
@@ -351,8 +350,8 @@ def test_prune_prime_files(tmp_path):
     (prime_dir / "file3.txt").write_text("file3")
     (prime_dir / "file3.txt").chmod(0o444)
 
-    files = {"file1.txt", "file2.txt", "file3.txt"}
+    files = {Path("file1.txt"), Path("file2.txt"), Path("file3.txt")}
     layers.prune_prime_files(prime_dir, files, base_layer_dir)
 
     # "file1.txt" gets pruned, the other files remain.
-    assert sorted(os.listdir(prime_dir)) == ["file2.txt", "file3.txt"]  # noqa: PTH208 (use Path.iterdir())
+    assert sorted(Path(prime_dir).iterdir()) == [Path("file2.txt"), Path("file3.txt")]
