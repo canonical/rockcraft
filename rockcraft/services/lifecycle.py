@@ -90,8 +90,8 @@ class RockcraftLifecycleService(LifecycleService):
         Rockcraft uses different sets of plugins depending on the build base to ensure
         compatibility and stability. For example:
         - Legacy bases (20.04, 22.04, 24.04) use Python v1, Poetry v1, and UV v1 plugins
-        - Modern bases (25.10+) use Python v2 and exclude plugins without v2 support
-        - The dotnet v1 plugin is only available on legacy bases
+        - Newer bases (25.10, devel) use Python v2 and exclude plugins without v2 support
+        - The dotnet v1 plugin is only available on legacy bases (20.04, 22.04, 24.04)
 
         This method returns the appropriate plugin group based on the build base,
         enabling Rockcraft to automatically adapt to base-specific requirements.
