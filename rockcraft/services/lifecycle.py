@@ -85,18 +85,19 @@ class RockcraftLifecycleService(LifecycleService):
     def get_plugin_group(
         build_info: craft_platforms.BuildInfo,
     ) -> dict[str, type[Plugin]] | None:
-        """Get the plugin group for a given build.
+        """Get the base-specific plugin group for building a rock.
 
-        If this returns a non-``None`` value, the LifecycleService sets the plugin
-        group to that group when running the given build. If ``None`` is returned, the
-        plugin groups feature is not used and an application must manually handle its
-        plugin groups.
+        Rockcraft uses different sets of plugins depending on the build base to ensure
+        compatibility and stability. For example:
+        - Legacy bases (20.04, 22.04, 24.04) use Python v1, Poetry v1, and UV v1 plugins
+        - Modern bases (25.10+) use Python v2 and exclude plugins without v2 support
+        - The dotnet v1 plugin is only available on legacy bases
 
-        The default implementation simply returns ``None``, as this is designed for an
-        application to override in order to get the relevant plugin groups.
+        This method returns the appropriate plugin group based on the build base,
+        enabling Rockcraft to automatically adapt to base-specific requirements.
 
-        :param build_info: The BuildInfo for the build.
-        :returns: A dictionary that is an appropriate plugin group or ``None``.
+        :param build_info: The BuildInfo for the build, containing the build base.
+        :returns: A dictionary mapping plugin names to their implementations for the given base.
         """
         return plugins.get_plugin_group(str(build_info.build_base))
 
