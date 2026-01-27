@@ -57,7 +57,7 @@ StatsD exporter
 
 A StatsD exporter is installed alongside the Gunicorn server to record
 server metrics. Some of the `Gunicorn-provided metrics
-<https://docs.gunicorn.org/en/stable/instrumentation.html>`_
+<https://gunicorn.org/instrumentation/>`_
 are mapped to new names:
 
 .. list-table::

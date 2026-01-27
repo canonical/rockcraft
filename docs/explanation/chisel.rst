@@ -47,9 +47,8 @@ rocks small and less exposed to vulnerabilities.
 Defining slices
 ~~~~~~~~~~~~~~~
 
-A package's slices can be defined via a YAML slice definitions file. Check the
-`slice definitions reference
-<https://github.com/canonical/chisel/#slice-definitions>`_ for more information
+A package's slices can be defined via a YAML slice definitions file. Check
+:external+chisel:ref:`slice_definitions_ref` in the Chisel documentation for more information
 about this file's format.
 
 .. note::
