@@ -213,7 +213,7 @@ class _GunicornBase(Extension):
             .get("command")
         ):
             snippet["services"][self.framework]["command"] = (
-                f"/bin/python3 -m gunicorn -c /{self.framework}/gunicorn.conf.py {self.wsgi_path} -k [ {self._check_async()} ]"
+                f"/bin/python3 -m gunicorn -c /{self.framework}/gunicorn.conf.py '{self.wsgi_path}' -k [ {self._check_async()} ]"
             )
         snippet["parts"] = self._gen_parts()
         return snippet
@@ -292,7 +292,14 @@ class FlaskFramework(_GunicornBase):
                 for f in source_files
                 if not any(
                     fnmatch.fnmatch(f, p)
-                    for p in ("node_modules", ".git", ".yarn", "*.rock")
+                    for p in (
+                        "node_modules",
+                        ".git",
+                        ".yarn",
+                        "*.rock",
+                        #  requirements.txt file is used for dependencies, not install
+                        "requirements.txt",
+                    )
                 )
             }
 
@@ -325,6 +332,8 @@ class FlaskFramework(_GunicornBase):
                 for f in (
                     "app",
                     "app.py",
+                    "main.py",
+                    "src",
                     "migrate",
                     "migrate.sh",
                     "migrate.py",

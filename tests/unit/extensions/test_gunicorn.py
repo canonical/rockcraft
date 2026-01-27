@@ -14,6 +14,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import textwrap
+from pathlib import Path
+from typing import Any
 
 import pytest
 from rockcraft import extensions
@@ -459,6 +461,115 @@ def test_flask_extension_no_requirements_txt_no_app_py_error(tmp_path):
         "- missing a requirements.txt file. The flask-framework extension requires this file with 'flask' specified as a dependency.\n"
         "- Missing WSGI entrypoint in default search locations"
     )
+
+
+_MODULES = ["app", "src", "foo_bar"]
+_FILES = ["app.py", "main.py"]
+
+
+@pytest.mark.parametrize(
+    ("app_name", "app_content"),
+    [
+        ("app", "app = object()"),
+        ("app", "from .app import app"),
+        ("application", "application = object()"),
+        ("application", "from .application import application"),
+        ("create_app()", "def create_app(): return object()"),
+        ("make_app()", "def make_app(): return object()"),
+    ],
+)
+@pytest.mark.parametrize(
+    ("file_path", "organize_key", "organize_value", "wsgi_module"),
+    [
+        # App in root file
+        *[(f, f, f"flask/app/{f}", f.removesuffix(".py")) for f in _FILES],
+        # App in module
+        *[(f"{m}/__init__.py", m, f"flask/app/{m}", m) for m in _MODULES],
+        # App in module file
+        *[
+            (f"{m}/{f}", m, f"flask/app/{m}", f"{m}.{f.removesuffix('.py')}")
+            for m in _MODULES
+            for f in _FILES
+        ],
+    ],
+)
+@pytest.mark.usefixtures("flask_extension")
+def test_flask_extension_wsgi_single_entrypoint(
+    tmp_path: Path,
+    flask_input_yaml: dict[str, Any],
+    file_path: str,
+    organize_key: str,
+    organize_value: str,
+    wsgi_module: str,
+    app_name: str,
+    app_content: str,
+):
+    """Test single WSGI entrypoint discovery across all file locations and app object types."""
+    (tmp_path / "requirements.txt").write_text("flask")
+
+    # Create the file with app content
+    full_path = tmp_path / file_path
+    full_path.parent.mkdir(parents=True, exist_ok=True)
+    full_path.write_text(app_content)
+
+    applied = extensions.apply_extensions(tmp_path, flask_input_yaml)
+    install_app_part = applied["parts"]["flask-framework/install-app"]
+
+    # Check organize
+    assert install_app_part["organize"] == {organize_key: organize_value}
+
+    # Check stage
+    assert install_app_part["stage"] == [organize_value]
+
+    # Check command
+    expected_command = f"/bin/python3 -m gunicorn -c /flask/gunicorn.conf.py '{wsgi_module}:{app_name}' -k [ sync ]"
+    assert applied["services"]["flask"]["command"] == expected_command
+
+
+@pytest.mark.parametrize(
+    ("files", "organize", "command"),
+    [
+        # Priority testing: multiple entrypoints
+        pytest.param(
+            {"app.py": "app = object()", "foo_bar/app.py": "app = object()"},
+            {"app.py": "flask/app/app.py"},
+            "/bin/python3 -m gunicorn -c /flask/gunicorn.conf.py 'app:app' -k [ sync ]",
+            id="Multiple entrypoints, prefer top-level file",
+        ),
+        pytest.param(
+            {"main.py": "app = object()", "src/app.py": "app = object()"},
+            {"main.py": "flask/app/main.py", "src": "flask/app/src"},
+            "/bin/python3 -m gunicorn -c /flask/gunicorn.conf.py 'main:app' -k [ sync ]",
+            id="With two entrypoints, take the first one",
+        ),
+        # Additional files beside entrypoint
+        pytest.param(
+            {"src/app.py": "app = object()", "migrate.sh": "", "unknown": ""},
+            {"src": "flask/app/src", "migrate.sh": "flask/app/migrate.sh"},
+            "/bin/python3 -m gunicorn -c /flask/gunicorn.conf.py 'src.app:app' -k [ sync ]",
+            id="Include other files beside the entrypoint",
+        ),
+    ],
+)
+@pytest.mark.usefixtures("flask_extension")
+def test_flask_extension_wsgi_multiple_entrypoints(
+    tmp_path: Path,
+    flask_input_yaml: dict[str, Any],
+    files: dict[str, str],
+    organize: dict[str, str],
+    command: str,
+):
+    (tmp_path / "requirements.txt").write_text("flask")
+    for file_path, content in files.items():
+        (tmp_path / file_path).parent.mkdir(parents=True, exist_ok=True)
+        (tmp_path / file_path).write_text(content)
+    applied = extensions.apply_extensions(tmp_path, flask_input_yaml)
+    install_app_part = applied["parts"]["flask-framework/install-app"]
+    assert install_app_part["organize"] == organize
+    assert applied["parts"]["flask-framework/install-app"]["stage"] == list(
+        install_app_part["organize"].values()
+    )
+    assert applied["services"]["flask"]["command"] == command
 
 
 @pytest.mark.usefixtures("flask_extension")
