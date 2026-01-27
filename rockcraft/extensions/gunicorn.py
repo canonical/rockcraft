@@ -22,6 +22,8 @@ import fnmatch
 import os.path
 import posixpath
 import re
+from collections.abc import Iterable
+from pathlib import Path
 from typing import Any
 
 from overrides import override  # type: ignore[reportUnknownVariableType]
@@ -30,7 +32,11 @@ from packaging.requirements import InvalidRequirement, Requirement
 from rockcraft.errors import ExtensionError
 from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
 
-from ._python_utils import has_global_variable
+from ._python_utils import (
+    find_entrypoint_with_factory,
+    find_entrypoint_with_variable,
+    has_global_variable,
+)
 from ._utils import find_ubuntu_base_python_version
 from .app_parts import gen_logging_part
 from .extension import Extension, get_extensions_data_dir
@@ -184,7 +190,6 @@ class _GunicornBase(Extension):
                 self.framework: {
                     "override": "replace",
                     "startup": "enabled",
-                    "command": f"/bin/python3 -m gunicorn -c /{self.framework}/gunicorn.conf.py {self.wsgi_path} -k [ {self._check_async()} ]",
                     "after": ["statsd-exporter"],
                     "user": "_daemon_",
                 },
@@ -201,6 +206,15 @@ class _GunicornBase(Extension):
                 },
             },
         }
+        # It the user has overridden the service command, do not try to add it.
+        if (
+            not self.yaml_data.get("services", {})
+            .get(self.framework, {})
+            .get("command")
+        ):
+            snippet["services"][self.framework]["command"] = (
+                f"/bin/python3 -m gunicorn -c /{self.framework}/gunicorn.conf.py {self.wsgi_path} -k [ {self._check_async()} ]"
+            )
         snippet["parts"] = self._gen_parts()
         return snippet
 
@@ -221,8 +235,29 @@ class FlaskFramework(_GunicornBase):
     @property
     @override
     def wsgi_path(self) -> str:
-        """Return the wsgi path of the wsgi application."""
-        return "app:app"
+        """Return the wsgi path of the wsgi application.
+
+        Matches Flask's find_best_app() discovery order:
+        1. Look for 'app' or `application` variable
+        2. Look for create_app() or make_app() factory functions
+
+        Searches in all top-level directories automatically.
+        """
+        try:
+            return find_entrypoint_with_variable(
+                self.project_root, self._wsgi_locations(), {"app", "application"}
+            )
+        except FileNotFoundError:
+            pass
+
+        try:
+            return find_entrypoint_with_factory(
+                self.project_root,
+                self._wsgi_locations(),
+                factory_names=("create_app", "make_app"),
+            )
+        except FileNotFoundError:
+            raise FileNotFoundError("No Flask app or factory found")
 
     @property
     @override
@@ -294,23 +329,44 @@ class FlaskFramework(_GunicornBase):
             ]
         return user_prime
 
+    def _wsgi_locations(self) -> Iterable[Path]:
+        """Return the possible locations for the WSGI entrypoint.
+
+        Matches Flask's discovery logic. Will look for (in order):
+        1. 'app' or 'application' global variables
+        2. create_app() or make_app() factory functions
+
+        In the following file locations:
+        1. `app.py`
+        2. `main.py`
+        3. Inside all top-level directories, in the files
+           `__init__.py`, `app.py` or `main.py`.
+        """
+        # Get all top-level directories in the project root
+        search_dirs = [
+            item.name
+            for item in self.project_root.iterdir()
+            if item.is_dir() and not item.name.startswith((".", "_"))
+        ]
+
+        return (
+            Path(".", "app.py"),
+            Path(".", "main.py"),
+            *(
+                Path(src_dir, src_file)
+                for src_dir in search_dirs
+                for src_file in ("__init__.py", "app.py", "main.py")
+            ),
+        )
+
     def _wsgi_path_error_messages(self) -> list[str]:
         """Ensure the extension can infer the WSGI path of the Flask application."""
-        app_file = self.project_root / "app.py"
-        if not app_file.exists():
-            return [
-                "flask application can not be imported from app:app, no app.py file found in the project root."
-            ]
         try:
-            has_app = has_global_variable(app_file, "app")
-        except SyntaxError as err:
-            return [f"error parsing app.py: {err.msg}"]
-
-        if not has_app:
-            return [
-                "the global variable 'app' was not found in app.py in the project root."
-            ]
-
+            self.wsgi_path  # noqa: B018 (no assignment needed)``
+        except FileNotFoundError:
+            return ["missing WSGI entrypoint in default search locations."]
+        except SyntaxError as e:
+            return [f"Syntax error in python file in WSGI search path: {e}"]
         return []
 
     def _requirements_txt_error_messages(self) -> list[str]:
