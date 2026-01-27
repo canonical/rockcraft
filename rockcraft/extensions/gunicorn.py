@@ -242,6 +242,10 @@ class FlaskFramework(_GunicornBase):
         2. Look for create_app() or make_app() factory functions
 
         Searches in all top-level directories automatically.
+
+        Raises:
+            FileNotFoundError: If no valid Flask entrypoint is found
+            SyntaxError: If Python files have syntax errors
         """
         try:
             return find_entrypoint_with_variable(
@@ -257,7 +261,9 @@ class FlaskFramework(_GunicornBase):
                 factory_names=("create_app", "make_app"),
             )
         except FileNotFoundError:
-            raise FileNotFoundError("No Flask app or factory found")
+            raise FileNotFoundError(
+                "Missing WSGI entrypoint in default search locations"
+            )
 
     @property
     @override
@@ -362,11 +368,12 @@ class FlaskFramework(_GunicornBase):
     def _wsgi_path_error_messages(self) -> list[str]:
         """Ensure the extension can infer the WSGI path of the Flask application."""
         try:
-            self.wsgi_path  # noqa: B018 (no assignment needed)``
+            self.wsgi_path  # noqa: B018 (unused expression, just checking for errors)
         except FileNotFoundError:
-            return ["missing WSGI entrypoint in default search locations."]
+            return ["Missing WSGI entrypoint in default search locations"]
         except SyntaxError as e:
-            return [f"Syntax error in python file in WSGI search path: {e}"]
+            filename = Path(e.filename).name if e.filename else "<unknown>"
+            return [f"error parsing {filename}: {e.msg}"]
         return []
 
     def _requirements_txt_error_messages(self) -> list[str]:

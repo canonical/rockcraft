@@ -457,7 +457,7 @@ def test_flask_extension_no_requirements_txt_no_app_py_error(tmp_path):
         extensions.apply_extensions(tmp_path, flask_input_yaml)
     assert str(exc.value) == (
         "- missing a requirements.txt file. The flask-framework extension requires this file with 'flask' specified as a dependency.\n"
-        "- flask application can not be imported from app:app, no app.py file found in the project root."
+        "- Missing WSGI entrypoint in default search locations"
     )
 
 
@@ -494,7 +494,7 @@ def test_flask_extension_incorrect_wsgi_path_error(tmp_path):
 
     with pytest.raises(
         ExtensionError,
-        match="the global variable 'app' was not found in app.py in the project root.",
+        match="Missing WSGI entrypoint in default search locations",
     ):
         extensions.apply_extensions(tmp_path, WSGI_FLASK_INPUT_YAML.copy())
 
@@ -503,7 +503,9 @@ def test_flask_extension_incorrect_wsgi_path_error(tmp_path):
 def test_flask_extension_incorrect_wsgi_path_error_no_app(tmp_path):
     (tmp_path / "requirements.txt").write_text("flask")
 
-    with pytest.raises(ExtensionError, match="app:app, no app.py"):
+    with pytest.raises(
+        ExtensionError, match="Missing WSGI entrypoint in default search locations"
+    ):
         extensions.apply_extensions(tmp_path, WSGI_FLASK_INPUT_YAML.copy())
 
 
