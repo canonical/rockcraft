@@ -80,6 +80,10 @@ class ExpressJSFramework(Extension):
         snippet["parts"] = {
             "expressjs-framework/install-app": self._gen_install_app_part(),
         }
+        if self._rock_base == "bare":
+            snippet["parts"]["expressjs-framework/install-app"]["override-stage"] = (
+                "craftctl default\nln -sf /usr/bin/bash /usr/bin/sh"
+            )
         runtime_part = self._gen_runtime_part()
         if runtime_part:
             snippet["parts"]["expressjs-framework/runtime"] = runtime_part
@@ -153,14 +157,10 @@ class ExpressJSFramework(Extension):
         build_packages = self._gen_app_build_packages()
         if build_packages:
             install_app_part["build-packages"] = build_packages
+        """Return the stage packages for the install app part."""
         stage_packages = self._gen_app_stage_packages()
         if stage_packages:
             install_app_part["stage-packages"] = stage_packages
-        if self._user_npm_include_node:
-            install_app_part["npm-include-node"] = self._user_npm_include_node
-            install_app_part["npm-node-version"] = self._user_install_app_part.get(
-                "npm-node-version"
-            )
 
         # NOTE: There's currently a bad interaction between the nodejs version in the
         # archives and the kernel, causing an infinite hang during 'npm install':

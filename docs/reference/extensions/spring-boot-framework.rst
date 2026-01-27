@@ -104,6 +104,9 @@ The ``spring-boot-framework`` uses the following configuration:
         - ca-certificates_data
         - coreutils_bins
         - base-files_tmp
+      override-stage: |
+        override-stage": "craftctl default
+        ln -sf /usr/bin/bash /usr/bin/sh
 
 .. _reference-spring-boot-framework-stage:
 
