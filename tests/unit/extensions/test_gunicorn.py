@@ -463,10 +463,6 @@ def test_flask_extension_no_requirements_txt_no_app_py_error(tmp_path):
     )
 
 
-_MODULES = ["app", "src", "foo_bar"]
-_FILES = ["app.py", "main.py"]
-
-
 @pytest.mark.parametrize(
     ("app_name", "app_content"),
     [
@@ -479,18 +475,21 @@ _FILES = ["app.py", "main.py"]
     ],
 )
 @pytest.mark.parametrize(
-    ("file_path", "organize_key", "organize_value", "wsgi_module"),
+    ("file_path", "organize", "wsgi_module"),
     [
-        # App in root file
-        *[(f, f, f"flask/app/{f}", f.removesuffix(".py")) for f in _FILES],
+        # App in root files
+        ("app.py", {"app": "flask/app/app"}, "app"),
+        ("main.py", {"main": "flask/app/main"}, "main"),
         # App in module
-        *[(f"{m}/__init__.py", m, f"flask/app/{m}", m) for m in _MODULES],
-        # App in module file
-        *[
-            (f"{m}/{f}", m, f"flask/app/{m}", f"{m}.{f.removesuffix('.py')}")
-            for m in _MODULES
-            for f in _FILES
-        ],
+        ("app/__init__.py", {"app": "flask/app/app"}, "app"),
+        ("app/app.py", {"app": "flask/app/app"}, "app.app"),
+        ("app/main.py", {"app": "flask/app/app"}, "app.main"),
+        ("src/__init__.py", {"src": "flask/app/src"}, "src"),
+        ("src/app.py", {"src": "flask/app/src"}, "src.app"),
+        ("src/main.py", {"src": "flask/app/src"}, "src.main"),
+        ("foo_bar/__init__.py", {"foo_bar": "flask/app/foo_bar"}, "foo_bar"),
+        ("foo_bar/app.py", {"foo_bar": "flask/app/foo_bar"}, "foo_bar.app"),
+        ("foo_bar/main.py", {"foo_bar": "flask/app/foo_bar"}, "foo_bar.main"),
     ],
 )
 @pytest.mark.usefixtures("flask_extension")
@@ -498,14 +497,15 @@ def test_flask_extension_wsgi_single_entrypoint(
     tmp_path: Path,
     flask_input_yaml: dict[str, Any],
     file_path: str,
-    organize_key: str,
-    organize_value: str,
+    organize: dict[str, str],
     wsgi_module: str,
     app_name: str,
     app_content: str,
 ):
     """Test single WSGI entrypoint discovery across all file locations and app object types."""
     (tmp_path / "requirements.txt").write_text("flask")
+
+    (organize_value,) = organize.values()
 
     flask_input_yaml["parts"] = {
         "flask-framework/install-app": {"prime": [organize_value]}
@@ -520,7 +520,7 @@ def test_flask_extension_wsgi_single_entrypoint(
     install_app_part = applied["parts"]["flask-framework/install-app"]
 
     # Check organize
-    assert install_app_part["organize"] == {organize_key: organize_value}
+    assert install_app_part["organize"] == organize
 
     # Check stage
     assert install_app_part["stage"] == [organize_value]
@@ -533,7 +533,6 @@ def test_flask_extension_wsgi_single_entrypoint(
 @pytest.mark.parametrize(
     ("files", "organize", "command"),
     [
-        # Priority testing: multiple entrypoints
         pytest.param(
             {"app.py": "app = object()", "foo_bar/app.py": "app = object()"},
             {"app.py": "flask/app/app.py"},
@@ -546,7 +545,6 @@ def test_flask_extension_wsgi_single_entrypoint(
             "/bin/python3 -m gunicorn -c /flask/gunicorn.conf.py 'main:app' -k [ sync ]",
             id="With two entrypoints, take the first one",
         ),
-        # Additional files beside entrypoint
         pytest.param(
             {"src/app.py": "app = object()", "migrate.sh": "", "unknown": ""},
             {"src": "flask/app/src", "migrate.sh": "flask/app/migrate.sh"},
