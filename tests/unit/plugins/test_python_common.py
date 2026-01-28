@@ -35,6 +35,6 @@ def test_get_python_plugins_v2(base):
     plugins = python_common.get_python_plugins(base)
 
     assert plugins["python"] is PythonPluginV2
-    # No "V2" versions for uv and poetry yet, and we can't "unregister" default plugins
-    assert plugins["uv"] is UvPluginV1
-    assert plugins["poetry"] is PoetryPluginV1
+    # No "V2" versions for uv and poetry yet
+    assert "uv" not in plugins
+    assert "poetry" not in plugins
