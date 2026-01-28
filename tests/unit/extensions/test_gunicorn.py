@@ -146,7 +146,7 @@ def test_flask_extension_default(
             "flask": {
                 "after": ["statsd-exporter"],
                 "command": "/bin/python3 -m gunicorn -c "
-                f"/flask/gunicorn.conf.py app:app -k [ {expected_worker} ]",
+                f"/flask/gunicorn.conf.py 'app:app' -k [ {expected_worker} ]",
                 "override": "replace",
                 "startup": "enabled",
                 "user": "_daemon_",
@@ -282,7 +282,7 @@ def test_flask_framework_add_service(tmp_path, flask_input_yaml):
     assert applied["services"] == {
         "flask": {
             "after": ["statsd-exporter"],
-            "command": "/bin/python3 -m gunicorn -c /flask/gunicorn.conf.py app:app -k [ sync ]",
+            "command": "/bin/python3 -m gunicorn -c /flask/gunicorn.conf.py 'app:app' -k [ sync ]",
             "override": "replace",
             "startup": "enabled",
             "user": "_daemon_",
@@ -507,6 +507,10 @@ def test_flask_extension_wsgi_single_entrypoint(
     """Test single WSGI entrypoint discovery across all file locations and app object types."""
     (tmp_path / "requirements.txt").write_text("flask")
 
+    flask_input_yaml["parts"] = {
+        "flask-framework/install-app": {"prime": [organize_value]}
+    }
+
     # Create the file with app content
     full_path = tmp_path / file_path
     full_path.parent.mkdir(parents=True, exist_ok=True)
@@ -727,7 +731,7 @@ def test_django_extension_default(
         "services": {
             "django": {
                 "after": ["statsd-exporter"],
-                "command": f"/bin/python3 -m gunicorn -c /django/gunicorn.conf.py foo_bar.wsgi:application -k [ {expected_worker} ]",
+                "command": f"/bin/python3 -m gunicorn -c /django/gunicorn.conf.py 'foo_bar.wsgi:application' -k [ {expected_worker} ]",
                 "override": "replace",
                 "startup": "enabled",
                 "user": "_daemon_",
@@ -833,7 +837,7 @@ def test_django_extension_django_service_override_disable_wsgi_path_check(tmp_pa
         "build-base": "ubuntu@22.04",
         "services": {
             "django": {
-                "command": "/bin/python3 -m gunicorn -c /django/gunicorn.conf.py webapp:app"
+                "command": "/bin/python3 -m gunicorn -c /django/gunicorn.conf.py 'webapp:app'"
             }
         },
     }

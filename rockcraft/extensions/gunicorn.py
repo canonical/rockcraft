@@ -297,8 +297,6 @@ class FlaskFramework(_GunicornBase):
                         ".git",
                         ".yarn",
                         "*.rock",
-                        #  requirements.txt file is used for dependencies, not install
-                        "requirements.txt",
                     )
                 )
             }
