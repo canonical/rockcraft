@@ -284,7 +284,7 @@ development keeps pace with the OS's new releases and support lifecycle.
   We would like to express a big thank you to all the people who contributed to
   this release.
 
-  :literalref:`@alex<https://example.com/alex>`,
-  :literalref:`@blair<https://example.com/blair>`,
-  :literalref:`@cam<https://example.com/cam>`,
-  and :literalref:`@devin<https://example.com/devin>`
+  :literalref:`@alex <https://example.com/alex>`,
+  :literalref:`@blair <https://example.com/blair>`,
+  :literalref:`@cam <https://example.com/cam>`,
+  and :literalref:`@devin <https://example.com/devin>`

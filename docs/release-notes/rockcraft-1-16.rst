@@ -115,7 +115,8 @@ The following changes are incompatible with previous versions of Rockcraft.
 Removed character support in platform names
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-:ref:`Platform <rockcraft-yaml-platform-keys>` names no longer support forward slashes (/).
+:ref:`Platform <rockcraft-yaml-platform-keys>` names no longer support forward slashes
+(/).
 
 
 Fixed bugs and issues

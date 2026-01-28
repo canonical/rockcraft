@@ -3,7 +3,7 @@
 Add an internal user
 ====================
 
-You can declare :ref:`run-user <rockcraft-yaml-run-user>` in a rock's project
+You can declare :ref:`Project.run_user` in a rock's project
 file to specify which user you want to run a its services with. If you don't
 specify a user, the services run as root by default. The ``run-user`` key only
 accepts a limited number of users, which could be a constraint for certain
