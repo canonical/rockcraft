@@ -600,7 +600,7 @@ toml = [
 
 [[package]]
 name = "craft-application"
-version = "6.0.1"
+version = "6.1.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "annotated-types" },
@@ -621,9 +621,9 @@ dependencies = [
     { name = "snap-helpers" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/f6/f8/53b68f2b70385d31b5d6f8e147d70bedeece67076d7b06bc91d908669ac0/craft_application-6.0.1.tar.gz", hash = "sha256:291249a0f24e811c37175bbc9a23c7f4a37b3dba9db01a5dcd35d21253ce8db9", size = 580889, upload-time = "2025-11-19T19:01:26.597Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/8a/d7/11fb39172bb1381084aa284fcfd2ccc8372c78fdb4782e86c23acf0508b8/craft_application-6.1.0.tar.gz", hash = "sha256:a12c302e3b2ac6d2b1958cf9ad1596ab9d634a91d94fee662ec46bd62604ac0e", size = 585353, upload-time = "2026-01-20T20:45:23.209Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/98/73/788dfd1b94a11dc1c43a1a378ac76eefaa9225861dec8df3c656b1580f54/craft_application-6.0.1-py3-none-any.whl", hash = "sha256:26ae8e8c2cca1adf4f19e11b2efc2eb5bbcd32f7e7ba9fea83a5492c991a34c6", size = 193966, upload-time = "2025-11-19T19:01:24.835Z" },
+    { url = "https://files.pythonhosted.org/packages/bc/53/87630797853e23ceeefa212ddf929fdebd98ca06c0d1149d89eaa4527a26/craft_application-6.1.0-py3-none-any.whl", hash = "sha256:827b970907de7129d88463f40904df3810296a8f8855e85b149fd738e32755ec", size = 195058, upload-time = "2026-01-20T20:45:21.746Z" },
 ]
 
 [[package]]
@@ -675,7 +675,7 @@ wheels = [
 
 [[package]]
 name = "craft-parts"
-version = "2.27.0"
+version = "2.28.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "lxml" },
@@ -687,9 +687,9 @@ dependencies = [
     { name = "semver" },
     { name = "tomli", marker = "python_full_version < '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-oracular') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-oracular') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-oracular' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-oracular' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-plucky' and extra == 'group-9-rockcraft-dev-questing')" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/f5/18/5ff89127861f2a3ab832b0bd7707bb5b3840a2234c415ef4756c1ba0c905/craft_parts-2.27.0.tar.gz", hash = "sha256:d4f52527b066093be6662ccf4279df2de0b5e620df38d66f607e5af5af9d3220", size = 877107, upload-time = "2025-12-01T11:50:57.46Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/ca/80/5d2ab6748840460d0d96ae95cf56be6d6c15c57266e4f2ced34ac0f8c44a/craft_parts-2.28.0.tar.gz", hash = "sha256:8de965c14272776c23e1a8836178448bf3dc9baa713a4bd2d68fe686885b093a", size = 887516, upload-time = "2026-01-09T15:03:42.634Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/f2/19/ad70c4db44b58045925bbac5f59164ced415517c437e885d8c8415b20197/craft_parts-2.27.0-py3-none-any.whl", hash = "sha256:63c8b5ea6c47d0b4cc0aa9ea24e588310b9a001b9f24e4b92742802a79ebdca3", size = 523491, upload-time = "2025-12-01T11:50:55.781Z" },
+    { url = "https://files.pythonhosted.org/packages/cb/94/a0d43886e362cde5e19c87d60742d766feab0e41e980baa6e31be179b89b/craft_parts-2.28.0-py3-none-any.whl", hash = "sha256:92c839430986afbfb841cd1d58d705ca67a5ee8fee8daa750bef1819ff610a53", size = 529746, upload-time = "2026-01-09T15:03:41.025Z" },
 ]
 
 [[package]]
@@ -873,14 +873,14 @@ wheels = [
 
 [[package]]
 name = "distro-support"
-version = "2025.8.13"
+version = "2025.12.16"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/90/c8/40cf2bdb5647c0ccad40a02edde6966d03a3258c550d92a2030427867029/distro_support-2025.8.13.tar.gz", hash = "sha256:12a73039db0a04e4b987789598f05c554adb3b2ec8e97bc28f40a125dc82d982", size = 36195, upload-time = "2025-08-13T03:15:53.792Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/91/9f/530d03c3d7172f787949af55768d088a341e52974c03ce26142693375de1/distro_support-2025.12.16.tar.gz", hash = "sha256:95d93375983a68cd749e7ae9d434a22ab7d5b6f515fbed52541ecc9457296946", size = 37088, upload-time = "2025-12-16T15:54:34.721Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/36/74/32abc08f3b003920ca57aadffe339339a4dab20dabdda78190fd819d3838/distro_support-2025.8.13-py3-none-any.whl", hash = "sha256:639672b5d51c587d9f18d515ef09733d322dba1cdfd0f9563def784556b25a48", size = 6590, upload-time = "2025-08-13T03:15:53.011Z" },
+    { url = "https://files.pythonhosted.org/packages/88/02/6cec6f872455e935f933d9eae08e581650b55eb96b096d2f4aa7a0d70c60/distro_support-2025.12.16-py3-none-any.whl", hash = "sha256:1e883f0b967a799a26f1329f7c527ba262d53385ad377bc1f7bee06671645684", size = 6634, upload-time = "2025-12-16T15:54:36.686Z" },
 ]
 
 [[package]]
@@ -2172,7 +2172,7 @@ wheels = [
 
 [[package]]
 name = "pydantic-kitbash"
-version = "0.1.1"
+version = "1.0.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "docutils" },
@@ -2180,9 +2180,9 @@ dependencies = [
     { name = "pyyaml" },
     { name = "sphinx" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/cd/e1/5caae54ee150f118c883a7a2b14a3dcb836daae177914491f7f71faa1d2f/pydantic_kitbash-0.1.1.tar.gz", hash = "sha256:3f1382ee2381a7e29c62ef9662845c6af7c64e99a345fc78c00a4ff8f33599e7", size = 155732, upload-time = "2025-12-12T18:47:33.308Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/b7/f7/67623d601fc5bdf11e7d812399ab80883d1b971ceef3eb95fc0ac009dc00/pydantic_kitbash-1.0.0.tar.gz", hash = "sha256:5b83aec025c856a2cd4cf74a761056b8adc4988419c3e5f2e8b442b7449d627d", size = 116712, upload-time = "2026-01-21T18:15:53.59Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/49/0e/199fc675c068067846c47886395894ef4a61b0366d5d1078e50db4b1330c/pydantic_kitbash-0.1.1-py3-none-any.whl", hash = "sha256:9cd4a47a6646a358f84b186ab6d70bd20f2ec9bece039210ade1206594633e3a", size = 14400, upload-time = "2025-12-12T18:47:31.3Z" },
+    { url = "https://files.pythonhosted.org/packages/ca/8e/979b47ae4853025a51bf741ad7405472dfc9209765cc275f2dec204745b2/pydantic_kitbash-1.0.0-py3-none-any.whl", hash = "sha256:d745655e52b1f3cb70c9145084015e66d6061441f1a262c2a1e0cf9d4051513f", size = 14417, upload-time = "2026-01-21T18:15:52.209Z" },
 ]
 
 [[package]]
@@ -3102,10 +3102,10 @@ types = [
 
 [package.metadata]
 requires-dist = [
-    { name = "craft-application", specifier = ">=6.0.1" },
+    { name = "craft-application", specifier = ">=6.1.0" },
     { name = "craft-archives", specifier = ">=2.2.0" },
     { name = "craft-cli", specifier = ">=3.1.2" },
-    { name = "craft-parts", specifier = ">=2.27.0" },
+    { name = "craft-parts", specifier = ">=2.28.0" },
     { name = "craft-platforms", specifier = ">=0.10.0" },
     { name = "craft-providers", specifier = ">=3.1.0" },
     { name = "craft-store", marker = "extra == 'store'" },
@@ -3139,7 +3139,7 @@ dev-plucky = [{ name = "python-apt", marker = "sys_platform == 'linux'", specifi
 dev-questing = [{ name = "python-apt", marker = "sys_platform == 'linux'", specifier = "~=3.0.0", index = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/" }]
 docs = [
     { name = "canonical-sphinx", extras = ["full"], specifier = "~=0.5.1" },
-    { name = "pydantic-kitbash", specifier = "~=0.1" },
+    { name = "pydantic-kitbash", specifier = "~=1.0" },
     { name = "sphinx-autobuild", specifier = "~=2024.2" },
     { name = "sphinx-lint", specifier = "~=1.0" },
     { name = "sphinx-prompt", specifier = "~=1.8.0" },

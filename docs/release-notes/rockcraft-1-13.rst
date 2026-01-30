@@ -88,15 +88,15 @@ Contributors
 We would like to express a big thank you to all the people who contributed to
 this release.
 
-:literalref:`@AlexBaranowski<https://github.com/AlexBaranowski>`,
-:literalref:`@bepri<https://github.com/bepri>`,
-:literalref:`@erinecon<https://github.com/erinecon>`,
-:literalref:`@jahn-junior<https://github.com/jahn-junior>`,
-:literalref:`@javierdelapuente<https://github.com/javierdelapuente>`,
-:literalref:`@lengau<https://github.com/lengau>`,
-:literalref:`@medubelko<https://github.com/medubelko>`,
-:literalref:`@sergiusens<https://github.com/sergiusens>`,
-and :literalref:`@tigarmo<https://github.com/tigarmo>`.
+:literalref:`@AlexBaranowski <https://github.com/AlexBaranowski>`,
+:literalref:`@bepri <https://github.com/bepri>`,
+:literalref:`@erinecon <https://github.com/erinecon>`,
+:literalref:`@jahn-junior <https://github.com/jahn-junior>`,
+:literalref:`@javierdelapuente <https://github.com/javierdelapuente>`,
+:literalref:`@lengau <https://github.com/lengau>`,
+:literalref:`@medubelko <https://github.com/medubelko>`,
+:literalref:`@sergiusens <https://github.com/sergiusens>`,
+and :literalref:`@tigarmo <https://github.com/tigarmo>`.
 
 
 .. _StatsD: https://github.com/statsd/statsd

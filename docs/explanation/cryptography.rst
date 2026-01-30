@@ -30,3 +30,4 @@ process. Rockcraft only uses the internal, pre-packaged copy of skopeo for this 
 .. _Craft Application: https://canonical-craft-application.readthedocs-hosted.com/en/latest/
 .. _Cryptographic technology in Craft Application: https://canonical-craft-application.readthedocs-hosted.com/en/latest/explanation/cryptography/
 .. _umoci: https://umo.ci/
+.. _skopeo: https://github.com/containers/skopeo
