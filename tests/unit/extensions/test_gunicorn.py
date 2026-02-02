@@ -90,7 +90,7 @@ def test_flask_extension_default(
             "flask-framework/dependencies": {
                 "plugin": "python",
                 "python-packages": ["gunicorn~=23.0"],
-                "python-requirements": ["requirements.txt"],
+                "python-requirements": ["requirements.txt", "pyproject.toml"],
                 "source": ".",
                 "stage-packages": ["python3-venv"],
                 "build-environment": [],
@@ -325,7 +325,11 @@ def test_flask_extension_override_parts(tmp_path, flask_input_yaml):
     assert applied["parts"]["flask-framework/dependencies"] == {
         "plugin": "python",
         "python-packages": ["gunicorn~=23.0"],
-        "python-requirements": ["requirements.txt", "requirements-jammy.txt"],
+        "python-requirements": [
+            "requirements.txt",
+            "pyproject.toml",
+            "requirements-jammy.txt",
+        ],
         "source": ".",
         "stage-packages": ["python3-venv"],
         "build-environment": [],
@@ -369,7 +373,7 @@ def test_flask_extension_bare(
     assert applied["parts"]["flask-framework/dependencies"] == {
         "plugin": "python",
         "python-packages": ["gunicorn~=23.0"],
-        "python-requirements": ["requirements.txt"],
+        "python-requirements": ["requirements.txt", "pyproject.toml"],
         "source": ".",
         "stage-packages": expected_stage_packages,
         "build-environment": [
@@ -397,7 +401,7 @@ def test_flask_extension_no_requirements_txt_error(tmp_path):
         extensions.apply_extensions(tmp_path, flask_input_yaml)
     assert (
         str(exc.value)
-        == "- missing a requirements.txt file. The flask-framework extension requires this file with 'flask' specified as a dependency."
+        == "- missing a requirements file (requirements.txt or pyproject.toml). The flask-framework extension requires one of these files with 'flask' specified as a dependency."
     )
 
 
@@ -414,9 +418,7 @@ def test_flask_extension_requirements_txt_no_flask_error(tmp_path):
     with pytest.raises(ExtensionError) as exc:
         extensions.apply_extensions(tmp_path, flask_input_yaml)
 
-    assert (
-        str(exc.value) == "- missing flask package dependency in requirements.txt file."
-    )
+    assert str(exc.value) == "- missing flask package dependency in requirements file."
 
 
 @pytest.mark.usefixtures("flask_extension")
@@ -458,7 +460,7 @@ def test_flask_extension_no_requirements_txt_no_app_py_error(tmp_path):
     with pytest.raises(ExtensionError) as exc:
         extensions.apply_extensions(tmp_path, flask_input_yaml)
     assert str(exc.value) == (
-        "- missing a requirements.txt file. The flask-framework extension requires this file with 'flask' specified as a dependency.\n"
+        "- missing a requirements file (requirements.txt or pyproject.toml). The flask-framework extension requires one of these files with 'flask' specified as a dependency.\n"
         "- Missing WSGI entrypoint in default search locations"
     )
 
@@ -678,7 +680,7 @@ def test_django_extension_default(
             "django-framework/dependencies": {
                 "plugin": "python",
                 "python-packages": ["gunicorn~=23.0"],
-                "python-requirements": ["requirements.txt"],
+                "python-requirements": ["requirements.txt", "pyproject.toml"],
                 "source": ".",
                 "stage-packages": ["python3-venv"],
                 "build-environment": [],
