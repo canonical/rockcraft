@@ -1,0 +1,113 @@
+summary: flask extension WSGI auto-discovery test
+environment:
+  SCENARIO/app_app: app_app
+  SCENARIO/app_application: app_application
+  SCENARIO/app_create_app: app_create_app
+  SCENARIO/app_make_app: app_make_app
+  SCENARIO/main_app: main_app
+  SCENARIO/main_application: main_application
+  SCENARIO/main_create_app: main_create_app
+  SCENARIO/main_make_app: main_make_app
+  SCENARIO/module_app: module_app
+  SCENARIO/module_application: module_application
+  SCENARIO/module_create_app: module_create_app
+  SCENARIO/module_make_app: module_make_app
+  SCENARIO/src_app: src_app
+  SCENARIO/src_main: src_main
+  SCENARIO/src_module: src_module
+
+  BASE/bare: bare
+  BASE/base_2204: ubuntu-22.04
+  BASE/base_2404: ubuntu-24.04
+
+execute: |
+  NAME="flask-discovery-${SCENARIO//_/-}-${BASE//./-}"
+  ROCK_FILE="${NAME}_0.1_amd64.rock"
+  IMAGE="${NAME}:0.1"
+
+  run_rockcraft init --name flask-extension --profile flask-framework
+  sed -i "s/name: .*/name: ${NAME}/g" rockcraft.yaml
+
+  if [ "${BASE}" = "bare" ]; then
+    sed -i "s/base: .*/base: ${BASE}\nbuild-base: ubuntu@22.04/g" rockcraft.yaml
+  else
+    sed -i "s/base: .*/base: ${BASE//-/@}/g" rockcraft.yaml
+  fi
+
+  # Copy the appropriate test app
+  cp -r "${SPREAD_TASK}/${SCENARIO}"/* .
+  cp requirements.txt .
+
+  run_rockcraft pack
+
+  test -f "${ROCK_FILE}"
+
+  # Ensure docker does not have this container image
+  docker rmi --force "${IMAGE}"
+  # Install container
+  sudo rockcraft.skopeo --insecure-policy copy "oci-archive:${ROCK_FILE}" "docker-daemon:${IMAGE}"
+  # Ensure container exists
+  docker images "${IMAGE}" | MATCH "${NAME}"
+
+  # ensure container doesn't exist
+  docker rm -f "${NAME}-container"
+
+  # test that the correct WSGI path is configured
+  if [ "${SCENARIO}" = "app_app" ]; then
+    docker run --rm "${IMAGE}" plan | grep "app:app"
+    docker run --rm --entrypoint /bin/python3 "${IMAGE}" -m gunicorn --chdir /flask/app --check-config app:app
+  elif [ "${SCENARIO}" = "app_application" ]; then
+    docker run --rm "${IMAGE}" plan | grep "app:application"
+    docker run --rm --entrypoint /bin/python3 "${IMAGE}" -m gunicorn --chdir /flask/app --check-config app:application
+  elif [ "${SCENARIO}" = "app_create_app" ]; then
+    docker run --rm "${IMAGE}" plan | grep "app:create_app()"
+    docker run --rm --entrypoint /bin/python3 "${IMAGE}" -m gunicorn --chdir /flask/app --check-config "app:create_app()"
+  elif [ "${SCENARIO}" = "app_make_app" ]; then
+    docker run --rm "${IMAGE}" plan | grep "app:make_app()"
+    docker run --rm --entrypoint /bin/python3 "${IMAGE}" -m gunicorn --chdir /flask/app --check-config "app:make_app()"
+  elif [ "${SCENARIO}" = "main_app" ]; then
+    docker run --rm "${IMAGE}" plan | grep "main:app"
+    docker run --rm --entrypoint /bin/python3 "${IMAGE}" -m gunicorn --chdir /flask/app --check-config main:app
+  elif [ "${SCENARIO}" = "main_application" ]; then
+    docker run --rm "${IMAGE}" plan | grep "main:application"
+    docker run --rm --entrypoint /bin/python3 "${IMAGE}" -m gunicorn --chdir /flask/app --check-config main:application
+  elif [ "${SCENARIO}" = "main_create_app" ]; then
+    docker run --rm "${IMAGE}" plan | grep "main:create_app()"
+    docker run --rm --entrypoint /bin/python3 "${IMAGE}" -m gunicorn --chdir /flask/app --check-config "main:create_app()"
+  elif [ "${SCENARIO}" = "main_make_app" ]; then
+    docker run --rm "${IMAGE}" plan | grep "main:make_app()"
+    docker run --rm --entrypoint /bin/python3 "${IMAGE}" -m gunicorn --chdir /flask/app --check-config "main:make_app()"
+  elif [ "${SCENARIO}" = "module_app" ]; then
+    docker run --rm "${IMAGE}" plan | grep "flaskapp:app"
+    docker run --rm --entrypoint /bin/python3 "${IMAGE}" -m gunicorn --chdir /flask/app --check-config flaskapp:app
+  elif [ "${SCENARIO}" = "module_application" ]; then
+    docker run --rm "${IMAGE}" plan | grep "flaskapp:application"
+    docker run --rm --entrypoint /bin/python3 "${IMAGE}" -m gunicorn --chdir /flask/app --check-config flaskapp:application
+  elif [ "${SCENARIO}" = "module_create_app" ]; then
+    docker run --rm "${IMAGE}" plan | grep "flaskapp:create_app()"
+    docker run --rm --entrypoint /bin/python3 "${IMAGE}" -m gunicorn --chdir /flask/app --check-config "flaskapp:create_app()"
+  elif [ "${SCENARIO}" = "module_make_app" ]; then
+    docker run --rm "${IMAGE}" plan | grep "flaskapp:make_app()"
+    docker run --rm --entrypoint /bin/python3 "${IMAGE}" -m gunicorn --chdir /flask/app --check-config "flaskapp:make_app()"
+  elif [ "${SCENARIO}" = "src_app" ]; then
+    docker run --rm "${IMAGE}" plan | grep "src.app:create_app()"
+    docker run --rm --entrypoint /bin/python3 "${IMAGE}" -m gunicorn --chdir /flask/app --check-config "src.app:create_app()"
+  elif [ "${SCENARIO}" = "src_main" ]; then
+    docker run --rm "${IMAGE}" plan | grep "src.main:app"
+    docker run --rm --entrypoint /bin/python3 "${IMAGE}" -m gunicorn --chdir /flask/app --check-config src.main:app
+  elif [ "${SCENARIO}" = "src_module" ]; then
+    docker run --rm "${IMAGE}" plan | grep "src.flaskapp:application"
+    docker run --rm --entrypoint /bin/python3 "${IMAGE}" -m gunicorn --chdir /flask/app --check-config src.flaskapp:application
+  fi
+
+  # test the flask service
+  docker run --name "${NAME}-container" -d -p 8140:8000 "${IMAGE}"
+  retry -n 5 --wait 2 curl localhost:8140
+  [ "$(curl -sSf localhost:8140)" == "ok" ]
+
+restore: |
+  NAME="flask-discovery-${SCENARIO//_/-}-${BASE//./-}"
+  docker stop "${NAME}-container" || true
+  docker rm --force "${NAME}-container"
+  rm -rf *
+  docker system prune -a -f
