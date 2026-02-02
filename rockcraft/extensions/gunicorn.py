@@ -26,6 +26,7 @@ from collections.abc import Iterable
 from pathlib import Path
 from typing import Any
 
+import tomllib
 from overrides import override  # type: ignore[reportUnknownVariableType]
 from packaging.requirements import InvalidRequirement, Requirement
 
@@ -104,7 +105,7 @@ class _GunicornBase(Extension):
                 "stage-packages": stage_packages,
                 "source": ".",
                 "python-packages": ["gunicorn~=23.0"],
-                "python-requirements": ["requirements.txt"],
+                "python-requirements": ["requirements.txt", "pyproject.toml"],
                 "build-environment": build_environment,
             },
             f"{self.framework}-framework/install-app": {
@@ -161,15 +162,44 @@ class _GunicornBase(Extension):
             }
         return parts
 
-    def _check_async(self) -> str:
-        """Check if gevent package installed in requirements.txt."""
+    def _requirements(self) -> list[str]:
+        """Return the content of the detected requirements file.
+
+        Searches for requirements.txt first, then pyproject.toml.
+        In pyproject.toml, supports both PEP 621 and Poetry formats.
+        """
         requirements_file = self.project_root / "requirements.txt"
-        requirements_text = requirements_file.read_text()
-        for line in requirements_text.splitlines():
-            with contextlib.suppress(InvalidRequirement):
-                req = Requirement(line)
-                if req.name == "gevent":
-                    return "gevent"
+        pyproject_file = self.project_root / "pyproject.toml"
+
+        requirements: list[str] = []
+        if requirements_file.exists():
+            for line in requirements_file.read_text().splitlines():
+                with contextlib.suppress(InvalidRequirement):
+                    req = Requirement(line)
+                    requirements.append(req.name.lower())
+        elif pyproject_file.exists():
+            pyproject_data = tomllib.load(pyproject_file.open("rb"))
+
+            # PEP 621 dependencies=
+            if deps := pyproject_data.get("project", {}).get("dependencies", []):
+                for line in deps:
+                    with contextlib.suppress(InvalidRequirement):
+                        req = Requirement(line)
+                        requirements.append(req.name.lower())
+            # Poetry dependencies
+            elif (
+                deps := pyproject_data.get("tool", {})
+                .get("poetry", {})
+                .get("dependencies", {})
+            ):
+                requirements.extend(dep_name.lower() for dep_name in deps)
+        return requirements
+
+    def _check_async(self) -> str:
+        """Check if gevent package installed in requirements."""
+        requirements = self._requirements()
+        if "gevent" in requirements:
+            return "gevent"
         return "sync"
 
     @override
@@ -383,24 +413,24 @@ class FlaskFramework(_GunicornBase):
             return [f"error parsing {filename}: {e.msg}"]
         return []
 
-    def _requirements_txt_error_messages(self) -> list[str]:
+    def _requirements_error_messages(self) -> list[str]:
         """Ensure the requirements.txt file is correct."""
         requirements_file = self.project_root / "requirements.txt"
-        if not requirements_file.exists():
+        pyproject_file = self.project_root / "pyproject.toml"
+        if not requirements_file.exists() and not pyproject_file.exists():
             return [
-                "missing a requirements.txt file. The flask-framework extension requires this file with 'flask' specified as a dependency."
+                "missing a requirements file (requirements.txt or pyproject.toml). The flask-framework extension requires one of these files with 'flask' specified as a dependency."
             ]
 
-        requirements_lines = requirements_file.read_text(encoding="utf-8").splitlines()
-        if not any("flask" in line.lower() for line in requirements_lines):
-            return ["missing flask package dependency in requirements.txt file."]
+        if "flask" not in self._requirements():
+            return ["missing flask package dependency in requirements file."]
 
         return []
 
     @override
     def check_project(self) -> None:
         """Ensure this extension can apply to the current rockcraft project."""
-        error_messages = self._requirements_txt_error_messages()
+        error_messages = self._requirements_error_messages()
         if not self.yaml_data.get("services", {}).get("flask", {}).get("command"):
             error_messages += self._wsgi_path_error_messages()
         if error_messages:
