@@ -418,6 +418,104 @@ def test_flask_extension_requirements_txt_no_flask_error(tmp_path):
 
 
 @pytest.mark.usefixtures("flask_extension")
+def test_flask_extension_pyproject_toml(
+    tmp_path: Path, flask_input_yaml: dict[str, Any]
+):
+    """Test extension works with pyproject.toml"""
+    (tmp_path / "app.py").write_text("app = object()")
+    (tmp_path / "pyproject.toml").write_text(
+        textwrap.dedent(
+            """
+            [project]
+            name = "test-app"
+            dependencies = ["flask>=3.0", "requests"]
+            """
+        )
+    )
+    applied = extensions.apply_extensions(tmp_path, flask_input_yaml)
+
+    assert applied["parts"]["flask-framework/dependencies"]["python-requirements"] == []
+    assert (
+        applied["services"]["flask"]["command"]
+        == "/bin/python3 -m gunicorn -c /flask/gunicorn.conf.py 'app:app' -k [ sync ]"
+    )
+
+
+@pytest.mark.usefixtures("flask_extension")
+def test_flask_extension_both_requirements_files(
+    tmp_path: Path, flask_input_yaml: dict[str, Any]
+):
+    """Test extension merges dependencies from both requirements.txt and pyproject.toml."""
+    (tmp_path / "app.py").write_text("app = object()")
+    (tmp_path / "requirements.txt").write_text("flask\nrequests")
+    (tmp_path / "pyproject.toml").write_text(
+        textwrap.dedent(
+            """
+            [project]
+            name = "test-app"
+            dependencies = ["gevent>=24.0"]
+            """
+        )
+    )
+    applied = extensions.apply_extensions(tmp_path, flask_input_yaml)
+
+    assert applied["parts"]["flask-framework/dependencies"]["python-requirements"] == [
+        "requirements.txt"
+    ]
+    assert (
+        applied["services"]["flask"]["command"]
+        == "/bin/python3 -m gunicorn -c /flask/gunicorn.conf.py 'app:app' -k [ gevent ]"
+    )
+
+
+@pytest.mark.usefixtures("flask_extension")
+def test_flask_extension_pyproject_toml_no_flask_error(
+    tmp_path: Path, flask_input_yaml: dict[str, Any]
+):
+    """Test error when pyproject.toml exists but doesn't contain flask."""
+    (tmp_path / "app.py").write_text("app = object()")
+    (tmp_path / "pyproject.toml").write_text(
+        textwrap.dedent(
+            """
+            [project]
+            name = "test-app"
+            dependencies = ["requests"]
+            """
+        )
+    )
+    with pytest.raises(ExtensionError) as exc:
+        extensions.apply_extensions(tmp_path, flask_input_yaml)
+
+    assert str(exc.value) == "- missing flask package dependency in requirements file."
+
+
+@pytest.mark.usefixtures("flask_extension")
+def test_flask_extension_both_files_flask_in_pyproject_only(
+    tmp_path: Path, flask_input_yaml: dict[str, Any]
+):
+    """Test validation passes when flask is only in pyproject.toml but both files exist."""
+    (tmp_path / "app.py").write_text("app = object()")
+    (tmp_path / "requirements.txt").write_text("requests\ngunicorn")
+    (tmp_path / "pyproject.toml").write_text(
+        textwrap.dedent(
+            """
+            [project]
+            name = "test-app"
+            dependencies = ["flask>=3.0"]
+            """
+        )
+    )
+    applied = extensions.apply_extensions(tmp_path, flask_input_yaml)
+    assert applied["parts"]["flask-framework/dependencies"]["python-requirements"] == [
+        "requirements.txt"
+    ]
+    assert (
+        applied["services"]["flask"]["command"]
+        == "/bin/python3 -m gunicorn -c /flask/gunicorn.conf.py 'app:app' -k [ sync ]"
+    )
+
+
+@pytest.mark.usefixtures("flask_extension")
 def test_flask_extension_bad_app_py(tmp_path):
     bad_code = textwrap.dedent(
         """
