@@ -99,13 +99,17 @@ class _GunicornBase(Extension):
                 {"PARTS_PYTHON_INTERPRETER": f"python{python_version}"}
             ]
 
+        python_requirements: list[str] = []
+        if (self.project_root / "requirements.txt").exists():
+            python_requirements.append("requirements.txt")
+
         parts: dict[str, Any] = {
             f"{self.framework}-framework/dependencies": {
                 "plugin": "python",
                 "stage-packages": stage_packages,
                 "source": ".",
                 "python-packages": ["gunicorn~=23.0"],
-                "python-requirements": ["requirements.txt", "pyproject.toml"],
+                "python-requirements": python_requirements,
                 "build-environment": build_environment,
             },
             f"{self.framework}-framework/install-app": {
@@ -162,37 +166,32 @@ class _GunicornBase(Extension):
             }
         return parts
 
-    def _requirements(self) -> list[str]:
+    def _requirements(self) -> set[str]:
         """Return the content of the detected requirements file.
 
-        Searches for requirements.txt first, then pyproject.toml.
-        In pyproject.toml, supports both PEP 621 and Poetry formats.
+        Checks both requirements.txt and pyproject.toml if they exist,
+        merging dependencies from both files.
         """
         requirements_file = self.project_root / "requirements.txt"
         pyproject_file = self.project_root / "pyproject.toml"
 
-        requirements: list[str] = []
+        requirements: set[str] = set()
+
+        # Check requirements.txt
         if requirements_file.exists():
             for line in requirements_file.read_text().splitlines():
                 with contextlib.suppress(InvalidRequirement):
                     req = Requirement(line)
-                    requirements.append(req.name.lower())
-        elif pyproject_file.exists():
+                    requirements.add(req.name.lower())
+
+        if pyproject_file.exists():
             pyproject_data = tomllib.load(pyproject_file.open("rb"))
 
-            # PEP 621 dependencies=
             if deps := pyproject_data.get("project", {}).get("dependencies", []):
                 for line in deps:
                     with contextlib.suppress(InvalidRequirement):
                         req = Requirement(line)
-                        requirements.append(req.name.lower())
-            # Poetry dependencies
-            elif (
-                deps := pyproject_data.get("tool", {})
-                .get("poetry", {})
-                .get("dependencies", {})
-            ):
-                requirements.extend(dep_name.lower() for dep_name in deps)
+                        requirements.add(req.name.lower())
         return requirements
 
     def _check_async(self) -> str:

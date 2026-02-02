@@ -90,7 +90,7 @@ def test_flask_extension_default(
             "flask-framework/dependencies": {
                 "plugin": "python",
                 "python-packages": ["gunicorn~=23.0"],
-                "python-requirements": ["requirements.txt", "pyproject.toml"],
+                "python-requirements": ["requirements.txt"],
                 "source": ".",
                 "stage-packages": ["python3-venv"],
                 "build-environment": [],
@@ -325,11 +325,7 @@ def test_flask_extension_override_parts(tmp_path, flask_input_yaml):
     assert applied["parts"]["flask-framework/dependencies"] == {
         "plugin": "python",
         "python-packages": ["gunicorn~=23.0"],
-        "python-requirements": [
-            "requirements.txt",
-            "pyproject.toml",
-            "requirements-jammy.txt",
-        ],
+        "python-requirements": ["requirements.txt", "requirements-jammy.txt"],
         "source": ".",
         "stage-packages": ["python3-venv"],
         "build-environment": [],
@@ -373,7 +369,7 @@ def test_flask_extension_bare(
     assert applied["parts"]["flask-framework/dependencies"] == {
         "plugin": "python",
         "python-packages": ["gunicorn~=23.0"],
-        "python-requirements": ["requirements.txt", "pyproject.toml"],
+        "python-requirements": ["requirements.txt"],
         "source": ".",
         "stage-packages": expected_stage_packages,
         "build-environment": [
@@ -680,7 +676,7 @@ def test_django_extension_default(
             "django-framework/dependencies": {
                 "plugin": "python",
                 "python-packages": ["gunicorn~=23.0"],
-                "python-requirements": ["requirements.txt", "pyproject.toml"],
+                "python-requirements": ["requirements.txt"],
                 "source": ".",
                 "stage-packages": ["python3-venv"],
                 "build-environment": [],
