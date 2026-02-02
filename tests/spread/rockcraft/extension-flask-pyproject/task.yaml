@@ -54,5 +54,5 @@ restore: |
   NAME="flask-pyproject-${SCENARIO//./-}"
   docker stop "${NAME}-container" || true
   docker rm --force "${NAME}-container"
-  rm -f "*.rock" rockcraft.yaml pyproject.toml requirements.txt
+  rm -f "*.rock" rockcraft.yaml
   docker system prune -a -f
