@@ -27,7 +27,7 @@ from pathlib import Path
 from typing import Any, cast
 
 try:
-    import tomllib  # Available in Python 3.11+  # type: ignore[import-not-found]
+    import tomllib  # type: ignore[import-not-found]
 except ModuleNotFoundError:
     import tomli as tomllib  # type: ignore[import-not-found]
 

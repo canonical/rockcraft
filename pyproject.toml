@@ -224,8 +224,6 @@ exclude = [
     "docs/tutorial/code/django",
     "docs/tutorial/code/fastapi",
     "tests/spread/general/extension-django/example_django",
-    "tests/spread/rockcraft/extension-flask-discovery",
-    "tests/spread/rockcraft/extension-flask-pyproject"
 ]
 
 [tool.mypy]

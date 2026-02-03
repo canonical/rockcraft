@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask  # pyright: ignore[reportMissingImports]
 
 def make_app():
     app = Flask(__name__)
