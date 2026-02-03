@@ -252,7 +252,7 @@ class _GunicornBase(Extension):
             .get("command")
         ):
             snippet["services"][self.framework]["command"] = (
-                f"/bin/python3 -m gunicorn -c /{self.framework}/gunicorn.conf.py '{self.wsgi_path}' -k {self._check_async()}"
+                f"/bin/python3 -m gunicorn -c /{self.framework}/gunicorn.conf.py '{self.wsgi_path}' -k [ {self._check_async()} ]"
             )
         snippet["parts"] = self._gen_parts()
         return snippet
