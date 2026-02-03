@@ -101,7 +101,7 @@ The top of the file should look similar to the following snippet:
     name: flask-hello-world
     # see https://documentation.ubuntu.com/rockcraft/en/1.6.0/explanation/bases/
     # for more information about bases and using 'bare' bases for chiselled rocks
-    base: bare # as an alternative, a ubuntu base can be used
+    base: bare # as an alternative, an ubuntu base can be used
     build-base: ubuntu@24.04 # build-base is required when the base is bare
     version: '0.1' # just for humans. Semantic versioning is recommended
     summary: A summary of your Flask app # 79 char long summary
