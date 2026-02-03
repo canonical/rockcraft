@@ -181,7 +181,6 @@ class _GunicornBase(Extension):
 
         requirements: set[str] = set()
 
-        # Check requirements.txt
         if requirements_file.exists():
             for line in requirements_file.read_text().splitlines():
                 with contextlib.suppress(InvalidRequirement):
@@ -284,7 +283,6 @@ class FlaskFramework(_GunicornBase):
 
         Raises:
             FileNotFoundError: If no valid Flask entrypoint is found
-            SyntaxError: If Python files have syntax errors
         """
         try:
             return find_entrypoint_with_variable(
@@ -331,12 +329,7 @@ class FlaskFramework(_GunicornBase):
                 for f in source_files
                 if not any(
                     fnmatch.fnmatch(f, p)
-                    for p in (
-                        "node_modules",
-                        ".git",
-                        ".yarn",
-                        "*.rock",
-                    )
+                    for p in ("node_modules", ".git", ".yarn", "*.rock")
                 )
             }
 
@@ -394,7 +387,6 @@ class FlaskFramework(_GunicornBase):
         3. Inside all top-level directories, in the files
            `__init__.py`, `app.py` or `main.py`.
         """
-        # Get all top-level directories in the project root
         search_dirs = [
             item.name
             for item in self.project_root.iterdir()

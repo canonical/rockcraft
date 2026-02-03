@@ -24,11 +24,19 @@ from pathlib import Path
 def find_file_with_variable(
     base_dir: Path, python_paths: Iterable[Path], variable_names: Iterable[str]
 ) -> tuple[Path, str]:
-    """Find Python file that contains any of the variable_names as a global variable.
+    """Find a Python file that defines one of the given global variables.
 
-    Given a base_dir, several paths for Python files, and variable_names, return the path
-    to the first file that contains variable_name as a global variable.
-    If not found, raise FileNotFoundError.
+    Args:
+        base_dir: Base directory to resolve the Python paths.
+        python_paths: Iterable of candidate Python file paths.
+        variable_names: Iterable of global variable names to search for.
+
+    Returns:
+        A tuple of (path, variable_name) for the first match.
+
+    Raises:
+        FileNotFoundError: If no file contains any of the variables.
+
     """
     for python_path in python_paths:
         full_path = base_dir / python_path
@@ -47,14 +55,22 @@ def find_file_with_variable(
 def find_file_with_factory(
     base_dir: Path, python_paths: Iterable[Path], factory_names: Iterable[str]
 ) -> tuple[Path, str]:
-    """Find Python file that contains a factory function.
+    """Find a Python file that defines an application factory function.
 
     Looks for application factory functions like create_app or make_app,
     matching Flask's discovery behavior.
 
-    Given a base_dir and several paths for Python files, return a tuple of
-    (path, factory_name) where factory_name is the factory function name found.
-    If not found, raise FileNotFoundError.
+    Args:
+        base_dir: Base directory to resolve the Python paths.
+        python_paths: Iterable of candidate Python file paths.
+        factory_names: Iterable of factory function names to search for.
+
+    Returns:
+        A tuple of (path, factory_name) for the first match.
+
+    Raises:
+        FileNotFoundError: If no file contains any of the factory functions.
+
     """
     for python_path in python_paths:
         full_path = base_dir / python_path
@@ -71,13 +87,21 @@ def find_file_with_factory(
 def find_entrypoint_with_variable(
     base_dir: Path, python_paths: Iterable[Path], variable_names: Iterable[str]
 ) -> str:
-    """Find Python file entrypoint for a global variable.
+    """Find a WSGI entrypoint for a global variable.
 
-    Returns WSGI format: "module:app"
+    Returns a WSGI entrypoint in the format "module:app".
 
-    Given a base_dir, several paths for Python files, and a variable_name, return the first
-    entrypoint that contains variable_name as a global variable,
-    following ASGI and WSGI specification. If not found, raise FileNotFoundError.
+    Args:
+        base_dir: Base directory to resolve the Python paths.
+        python_paths: Iterable of candidate Python file paths.
+        variable_names: Iterable of global variable names to search for.
+
+    Returns:
+        The first matching WSGI entrypoint.
+
+    Raises:
+        FileNotFoundError: If no file contains any of the variables.
+
     """
     python_path, variable_name = find_file_with_variable(
         base_dir, python_paths, variable_names
@@ -91,13 +115,21 @@ def find_entrypoint_with_variable(
 def find_entrypoint_with_factory(
     base_dir: Path, python_paths: Iterable[Path], factory_names: Iterable[str]
 ) -> str:
-    """Find Python file entrypoint for a factory function.
+    """Find a WSGI entrypoint for a factory function.
 
-    Returns WSGI format: "module:create_app()" or "module:make_app()"
+    Returns a WSGI entrypoint in the format "module:factory()".
 
-    Given a base_dir and several paths for Python files, return the first
-    entrypoint that contains a factory function (create_app or make_app),
-    following ASGI and WSGI specification. If not found, raise FileNotFoundError.
+    Args:
+        base_dir: Base directory to resolve the Python paths.
+        python_paths: Iterable of candidate Python file paths.
+        factory_names: Iterable of factory function names to search for.
+
+    Returns:
+        The first matching WSGI entrypoint.
+
+    Raises:
+        FileNotFoundError: If no file contains any of the factory functions.
+
     """
     python_path, factory_name = find_file_with_factory(
         base_dir, python_paths, factory_names
@@ -109,7 +141,16 @@ def find_entrypoint_with_factory(
 
 
 def has_global_variable(source_file: Path, variable_name: str) -> bool:
-    """Check whether the given Python source code has a global variable defined."""
+    """Check whether a Python source file defines a global variable.
+
+    Args:
+        source_file: Path to the Python source file to check.
+        variable_name: Global variable name to search for.
+
+    Returns:
+        True if the variable is defined at module level; otherwise False.
+
+    """
     tree = ast.parse(source_file.read_text(encoding="utf-8"), filename=source_file)
     for node in ast.iter_child_nodes(tree):
         if isinstance(node, ast.Assign):
@@ -126,13 +167,13 @@ def has_global_variable(source_file: Path, variable_name: str) -> bool:
 
 
 def has_factory_function(source_file: Path, factory_names: Iterable[str]) -> str | None:
-    """Check whether the given Python source code has a factory function defined.
+    """Check whether a Python source file defines a factory function.
 
     Looks for application factory functions from the provided list.
 
     Args:
-        source_file: Path to the Python source file to check
-        factory_names: Iterable of factory function names to search for
+        source_file: Path to the Python source file to check.
+        factory_names: Iterable of factory function names to search for.
 
     Returns:
         The name of the first factory function found, or None if not found.
