@@ -312,9 +312,7 @@ in a much smaller rock with a reduced attack surface.
     development tooling (such as for debugging).
 
 The first step towards chiselling the rock is to ensure we are using a
-``bare`` :ref:`base <explanation-bases>`.
-In the project file, change the ``base`` to ``bare`` if needed and add
-``build-base: ubuntu@24.04``:
+``bare`` :ref:`base <explanation-bases>`:
 
 .. literalinclude:: code/flask/task.yaml
     :language: bash
