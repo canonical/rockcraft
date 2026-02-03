@@ -124,6 +124,7 @@ class FastAPIFramework(Extension):
                     "coreutils_bins",
                     "ca-certificates_data",
                 ],
+                "override-stage": "craftctl default\nln -sf /usr/bin/bash ${CRAFT_PART_STAGE}/usr/bin/sh",
             }
         else:
             parts["fastapi-framework/runtime"] = {

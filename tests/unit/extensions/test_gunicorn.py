@@ -363,6 +363,7 @@ def test_flask_extension_bare(
         "plugin": "nil",
         "override-build": "mkdir -m 777 ${CRAFT_PART_INSTALL}/tmp",
         "stage-packages": ["bash_bins", "coreutils_bins", "ca-certificates_data"],
+        "override-stage": "craftctl default\nln -sf /usr/bin/bash ${CRAFT_PART_STAGE}/usr/bin/sh",
     }
     assert applied["parts"]["flask-framework/dependencies"] == {
         "plugin": "python",

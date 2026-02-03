@@ -286,6 +286,9 @@ class SpringBootFramework(Extension):
                 "base-files_tmp",
                 "coreutils_bins",
             ]
+            runtime_part["override-stage"] = (
+                "craftctl default\nln -sf /usr/bin/bash ${CRAFT_PART_STAGE}/usr/bin/sh"
+            )
 
         return runtime_part
 

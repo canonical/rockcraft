@@ -210,6 +210,7 @@ def package_json_file(app_path):
                             "ca-certificates_data",
                             "coreutils_bins",
                         ],
+                        "override-stage": "craftctl default\nln -sf /usr/bin/bash ${CRAFT_PART_STAGE}/usr/bin/sh",
                         "build-environment": [{"UV_USE_IO_URING": "0"}],
                     },
                     "expressjs-framework/runtime": {
@@ -280,6 +281,7 @@ def package_json_file(app_path):
                             "ca-certificates_data",
                             "coreutils_bins",
                         ],
+                        "override-stage": "craftctl default\nln -sf /usr/bin/bash ${CRAFT_PART_STAGE}/usr/bin/sh",
                         "build-environment": [{"UV_USE_IO_URING": "0"}],
                     },
                     "expressjs-framework/runtime": {

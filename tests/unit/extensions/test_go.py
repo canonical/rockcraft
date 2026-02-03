@@ -104,6 +104,7 @@ def test_go_extension_bare(tmp_path):
     assert applied["parts"]["go-framework/runtime"] == {
         "plugin": "nil",
         "stage-packages": ["ca-certificates_data", "bash_bins", "coreutils_bins"],
+        "override-stage": "craftctl default\nln -sf /usr/bin/bash ${CRAFT_PART_STAGE}/usr/bin/sh",
     }
 
 

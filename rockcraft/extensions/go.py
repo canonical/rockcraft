@@ -82,6 +82,10 @@ class GoFramework(Extension):
             },
             "go-framework/logging": gen_logging_part(),
         }
+        if self.yaml_data["base"] == "bare":
+            snippet["parts"]["go-framework/runtime"]["override-stage"] = (
+                "craftctl default\nln -sf /usr/bin/bash ${CRAFT_PART_STAGE}/usr/bin/sh"
+            )
 
         assets_part = self._get_install_assets_part()
         if assets_part:

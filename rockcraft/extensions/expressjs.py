@@ -80,6 +80,10 @@ class ExpressJSFramework(Extension):
         snippet["parts"] = {
             "expressjs-framework/install-app": self._gen_install_app_part(),
         }
+        if self._rock_base == "bare":
+            snippet["parts"]["expressjs-framework/install-app"]["override-stage"] = (
+                "craftctl default\nln -sf /usr/bin/bash ${CRAFT_PART_STAGE}/usr/bin/sh"
+            )
         runtime_part = self._gen_runtime_part()
         if runtime_part:
             snippet["parts"]["expressjs-framework/runtime"] = runtime_part
