@@ -24,9 +24,13 @@ import posixpath
 import re
 from collections.abc import Iterable
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
-import tomllib
+try:
+    import tomllib  # Available in Python 3.11+  # type: ignore[import-not-found]
+except ModuleNotFoundError:
+    import tomli as tomllib  # type: ignore[import-not-found]
+
 from overrides import override  # type: ignore[reportUnknownVariableType]
 from packaging.requirements import InvalidRequirement, Requirement
 
@@ -185,9 +189,15 @@ class _GunicornBase(Extension):
                     requirements.add(req.name.lower())
 
         if pyproject_file.exists():
-            pyproject_data = tomllib.load(pyproject_file.open("rb"))
+            with pyproject_file.open("rb") as f:
+                pyproject_data = cast(
+                    dict[str, Any],
+                    tomllib.load(f),  # type: ignore[reportUnknownMemberType]
+                )
 
-            if deps := pyproject_data.get("project", {}).get("dependencies", []):
+            if deps := cast(
+                list[str], pyproject_data.get("project", {}).get("dependencies", [])
+            ):
                 for line in deps:
                     with contextlib.suppress(InvalidRequirement):
                         req = Requirement(line)
@@ -242,7 +252,7 @@ class _GunicornBase(Extension):
             .get("command")
         ):
             snippet["services"][self.framework]["command"] = (
-                f"/bin/python3 -m gunicorn -c /{self.framework}/gunicorn.conf.py '{self.wsgi_path}' -k [ {self._check_async()} ]"
+                f"/bin/python3 -m gunicorn -c /{self.framework}/gunicorn.conf.py '{self.wsgi_path}' -k {self._check_async()}"
             )
         snippet["parts"] = self._gen_parts()
         return snippet
