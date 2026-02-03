@@ -94,6 +94,7 @@ execute: |
   elif [ "${SCENARIO}" = "src_main" ]; then
     docker run --rm "${IMAGE}" plan | grep "src.main:app"
     docker run --rm --entrypoint /bin/python3 "${IMAGE}" -m gunicorn --chdir /flask/app --check-config src.main:app
+  fi
 
   # test the flask service
   docker run --name "${NAME}-container" -d -p 8140:8000 "${IMAGE}"
