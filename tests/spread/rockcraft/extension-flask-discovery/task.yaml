@@ -99,17 +99,20 @@ environment:
   BASE/src_main_2404: ubuntu-24.04
 
 execute: |
-  NAME="flask-discovery-${SCENARIO//_/-}-${BASE//./-}"
+  run_rockcraft init --profile flask-framework
+
+  NAME="$(awk '$1=="name:" {print $2; exit}' rockcraft.yaml)"
+  if [ -z "${NAME}" ]; then
+    echo "Could not determine project name from rockcraft.yaml" >&2
+    exit 1
+  fi
   ROCK_FILE="${NAME}_0.1_amd64.rock"
   IMAGE="${NAME}:0.1"
 
-  run_rockcraft init --name flask-extension --profile flask-framework
-  sed -i "s/name: .*/name: ${NAME}/g" rockcraft.yaml
-
   if [ "${BASE}" = "bare" ]; then
-    sed -i "s/base: .*/base: ${BASE}\nbuild-base: ubuntu@22.04/g" rockcraft.yaml
+    sed -i "s/^base: .*/base: ${BASE}\nbuild-base: ubuntu@22.04/" rockcraft.yaml
   else
-    sed -i "s/base: .*/base: ${BASE//-/@}/g" rockcraft.yaml
+    sed -i "s/^base: .*/base: ${BASE//-/@}/" rockcraft.yaml
   fi
 
   # Copy the appropriate test app
@@ -180,8 +183,13 @@ execute: |
   [ "$(curl -sSf localhost:8140)" == "ok" ]
 
 restore: |
-  NAME="flask-discovery-${SCENARIO//_/-}-${BASE//./-}"
-  docker stop "${NAME}-container" || true
-  docker rm --force "${NAME}-container"
+  NAME=""
+  if [ -f rockcraft.yaml ]; then
+    NAME="$(awk '$1=="name:" {print $2; exit}' rockcraft.yaml)"
+  fi
+  if [ -n "${NAME}" ]; then
+    docker stop "${NAME}-container" || true
+    docker rm --force "${NAME}-container" || true
+  fi
   rm -rf "*.rock" rockcraft.yaml
   docker system prune -a -f
