@@ -109,6 +109,7 @@ exclude_patterns = [
     "common/craft-parts/reference/step_execution_environment.rst",
     "common/craft-parts/reference/step_output_directories.rst",
     "common/craft-parts/reference/part_properties.rst",
+    "common/craft-parts/reference/plugins/colcon_plugin.rst",
     "common/craft-parts/reference/plugins/poetry_plugin.rst",
     "common/craft-parts/reference/plugins/python_plugin.rst",
     "common/craft-parts/reference/plugins/python_v2_plugin.rst",
