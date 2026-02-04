@@ -1,23 +1,102 @@
 summary: flask extension WSGI auto-discovery test
 environment:
-  SCENARIO/app_app: app_app
-  SCENARIO/app_application: app_application
-  SCENARIO/app_create_app: app_create_app
-  SCENARIO/app_make_app: app_make_app
-  SCENARIO/main_app: main_app
-  SCENARIO/main_application: main_application
-  SCENARIO/main_create_app: main_create_app
-  SCENARIO/main_make_app: main_make_app
-  SCENARIO/module_app: module_app
-  SCENARIO/module_application: module_application
-  SCENARIO/module_create_app: module_create_app
-  SCENARIO/module_make_app: module_make_app
-  SCENARIO/src_app: src_app
-  SCENARIO/src_main: src_main
+  SCENARIO/app_app_bare: app_app
+  BASE/app_app_bare: bare
+  SCENARIO/app_app_2204: app_app
+  BASE/app_app_2204: ubuntu-22.04
+  SCENARIO/app_app_2404: app_app
+  BASE/app_app_2404: ubuntu-24.04
 
-  BASE/bare: bare
-  BASE/base_2204: ubuntu-22.04
-  BASE/base_2404: ubuntu-24.04
+  SCENARIO/app_application_bare: app_application
+  BASE/app_application_bare: bare
+  SCENARIO/app_application_2204: app_application
+  BASE/app_application_2204: ubuntu-22.04
+  SCENARIO/app_application_2404: app_application
+  BASE/app_application_2404: ubuntu-24.04
+
+  SCENARIO/app_create_app_bare: app_create_app
+  BASE/app_create_app_bare: bare
+  SCENARIO/app_create_app_2204: app_create_app
+  BASE/app_create_app_2204: ubuntu-22.04
+  SCENARIO/app_create_app_2404: app_create_app
+  BASE/app_create_app_2404: ubuntu-24.04
+
+  SCENARIO/app_make_app_bare: app_make_app
+  BASE/app_make_app_bare: bare
+  SCENARIO/app_make_app_2204: app_make_app
+  BASE/app_make_app_2204: ubuntu-22.04
+  SCENARIO/app_make_app_2404: app_make_app
+  BASE/app_make_app_2404: ubuntu-24.04
+
+  SCENARIO/main_app_bare: main_app
+  BASE/main_app_bare: bare
+  SCENARIO/main_app_2204: main_app
+  BASE/main_app_2204: ubuntu-22.04
+  SCENARIO/main_app_2404: main_app
+  BASE/main_app_2404: ubuntu-24.04
+
+  SCENARIO/main_application_bare: main_application
+  BASE/main_application_bare: bare
+  SCENARIO/main_application_2204: main_application
+  BASE/main_application_2204: ubuntu-22.04
+  SCENARIO/main_application_2404: main_application
+  BASE/main_application_2404: ubuntu-24.04
+
+  SCENARIO/main_create_app_bare: main_create_app
+  BASE/main_create_app_bare: bare
+  SCENARIO/main_create_app_2204: main_create_app
+  BASE/main_create_app_2204: ubuntu-22.04
+  SCENARIO/main_create_app_2404: main_create_app
+  BASE/main_create_app_2404: ubuntu-24.04
+
+  SCENARIO/main_make_app_bare: main_make_app
+  BASE/main_make_app_bare: bare
+  SCENARIO/main_make_app_2204: main_make_app
+  BASE/main_make_app_2204: ubuntu-22.04
+  SCENARIO/main_make_app_2404: main_make_app
+  BASE/main_make_app_2404: ubuntu-24.04
+
+  SCENARIO/module_app_bare: module_app
+  BASE/module_app_bare: bare
+  SCENARIO/module_app_2204: module_app
+  BASE/module_app_2204: ubuntu-22.04
+  SCENARIO/module_app_2404: module_app
+  BASE/module_app_2404: ubuntu-24.04
+
+  SCENARIO/module_application_bare: module_application
+  BASE/module_application_bare: bare
+  SCENARIO/module_application_2204: module_application
+  BASE/module_application_2204: ubuntu-22.04
+  SCENARIO/module_application_2404: module_application
+  BASE/module_application_2404: ubuntu-24.04
+
+  SCENARIO/module_create_app_bare: module_create_app
+  BASE/module_create_app_bare: bare
+  SCENARIO/module_create_app_2204: module_create_app
+  BASE/module_create_app_2204: ubuntu-22.04
+  SCENARIO/module_create_app_2404: module_create_app
+  BASE/module_create_app_2404: ubuntu-24.04
+
+  SCENARIO/module_make_app_bare: module_make_app
+  BASE/module_make_app_bare: bare
+  SCENARIO/module_make_app_2204: module_make_app
+  BASE/module_make_app_2204: ubuntu-22.04
+  SCENARIO/module_make_app_2404: module_make_app
+  BASE/module_make_app_2404: ubuntu-24.04
+
+  SCENARIO/src_app_bare: src_app
+  BASE/src_app_bare: bare
+  SCENARIO/src_app_2204: src_app
+  BASE/src_app_2204: ubuntu-22.04
+  SCENARIO/src_app_2404: src_app
+  BASE/src_app_2404: ubuntu-24.04
+
+  SCENARIO/src_main_bare: src_main
+  BASE/src_main_bare: bare
+  SCENARIO/src_main_2204: src_main
+  BASE/src_main_2204: ubuntu-22.04
+  SCENARIO/src_main_2404: src_main
+  BASE/src_main_2404: ubuntu-24.04
 
 execute: |
   NAME="flask-discovery-${SCENARIO//_/-}-${BASE//./-}"
