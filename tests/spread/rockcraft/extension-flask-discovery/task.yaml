@@ -113,7 +113,7 @@ execute: |
   fi
 
   # Copy the appropriate test app
-  cp -r "${SPREAD_TASK}/${SCENARIO}"/* .
+  cp -r "${SCENARIO}"/* .
   cp requirements.txt .
 
   run_rockcraft pack
