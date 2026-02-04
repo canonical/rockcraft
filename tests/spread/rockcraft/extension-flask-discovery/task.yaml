@@ -114,7 +114,6 @@ execute: |
 
   # Copy the appropriate test app
   cp -r "${SCENARIO}"/* .
-  cp requirements.txt .
 
   run_rockcraft pack
 
