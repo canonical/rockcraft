@@ -77,7 +77,7 @@ def find_file_with_factory(
         if not full_path.exists():
             continue
 
-        factory_name = has_factory_function(full_path, factory_names)
+        factory_name = find_factory_function(full_path, factory_names)
         if factory_name:
             return python_path, factory_name
 
@@ -166,8 +166,10 @@ def has_global_variable(source_file: Path, variable_name: str) -> bool:
     return False
 
 
-def has_factory_function(source_file: Path, factory_names: Iterable[str]) -> str | None:
-    """Check whether a Python source file defines a factory function.
+def find_factory_function(
+    source_file: Path, factory_names: Iterable[str]
+) -> str | None:
+    """Find the name of a factory function defined in a Python source file.
 
     Looks for application factory functions from the provided list.
 
