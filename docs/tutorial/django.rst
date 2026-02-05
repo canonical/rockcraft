@@ -336,13 +336,29 @@ in a much smaller rock with a reduced attack surface.
 The first step towards chiselling the rock is to ensure we are using a
 ``bare`` :ref:`base <explanation-bases>`.
 In the project file, change the ``base`` to ``bare`` and add
-``build-base: ubuntu@22.04``:
+``build-base: ubuntu@24.04``:
 
-.. literalinclude:: code/django/task.yaml
-    :language: bash
-    :start-after: [docs:change-base]
-    :end-before: [docs:change-base-end]
-    :dedent: 2
+.. tabs::
+
+    .. tab:: git diff
+
+        .. code-block:: diff
+
+            name: django-rock
+            -base: ubuntu@24.04
+            +base: bare
+            +build-base: ubuntu@24.04
+            version: '0.1'
+            summary: A summary of your Django application
+            description: |
+
+    .. tab:: sed command
+
+        .. literalinclude:: code/django/task.yaml
+            :language: bash
+            :start-after: [docs:change-base]
+            :end-before: [docs:change-base-end]
+            :dedent: 2
 
 So that we can compare the size after chiselling, open the project
 file and change the ``version`` (e.g. to ``0.1-chiselled``). The top of
