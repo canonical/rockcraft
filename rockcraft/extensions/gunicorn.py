@@ -27,8 +27,10 @@ from pathlib import Path
 from typing import Any, cast
 
 try:
+    # Available in Python 3.11 and later
     import tomllib  # type: ignore[import-not-found]
 except ModuleNotFoundError:
+    # Use the backported tomli package
     import tomli as tomllib  # type: ignore[import-not-found]
 
 from overrides import override  # type: ignore[reportUnknownVariableType]
@@ -194,17 +196,21 @@ class _GunicornBase(Extension):
                     tomllib.load(f),  # type: ignore[reportUnknownMemberType]
                 )
 
-            if deps := cast(
+            deps = cast(
                 list[str], pyproject_data.get("project", {}).get("dependencies", [])
-            ):
-                for line in deps:
-                    with contextlib.suppress(InvalidRequirement):
-                        req = Requirement(line)
-                        requirements.add(req.name.lower())
+            )
+            for line in deps:
+                with contextlib.suppress(InvalidRequirement):
+                    req = Requirement(line)
+                    requirements.add(req.name.lower())
         return requirements
 
-    def _check_async(self) -> str:
-        """Check if gevent package installed in requirements."""
+    def _worker_class(self) -> str:
+        """Return the Gunicorn worker class based on project dependencies.
+
+        If the project's dependencies include `gevent`, use the `gevent` worker.
+        Otherwise default to `sync`.
+        """
         requirements = self._requirements()
         if "gevent" in requirements:
             return "gevent"
@@ -244,14 +250,14 @@ class _GunicornBase(Extension):
                 },
             },
         }
-        # It the user has overridden the service command, do not try to add it.
+        # If the user has overridden the service command, do not try to add it.
         if (
             not self.yaml_data.get("services", {})
             .get(self.framework, {})
             .get("command")
         ):
             snippet["services"][self.framework]["command"] = (
-                f"/bin/python3 -m gunicorn -c /{self.framework}/gunicorn.conf.py '{self.wsgi_path}' -k [ {self._check_async()} ]"
+                f"/bin/python3 -m gunicorn -c /{self.framework}/gunicorn.conf.py '{self.wsgi_path}' -k [ {self._worker_class()} ]"
             )
         snippet["parts"] = self._gen_parts()
         return snippet
