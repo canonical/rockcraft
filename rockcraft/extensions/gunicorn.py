@@ -172,7 +172,7 @@ class _GunicornBase(Extension):
 
         Default values:
           - run_user: _daemon_
-          - build-base: ubuntu:22.04 (only if user specify bare without a build-base)
+          - build-base: ubuntu:24.04 (only if user specify bare without a build-base)
           - platform: amd64
           - services: a service to run the Gunicorn server
           - parts: see _GunicornBase._gen_parts
