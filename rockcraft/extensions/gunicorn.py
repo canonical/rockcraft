@@ -281,18 +281,29 @@ class FlaskFramework(_GunicornBase):
     def wsgi_path(self) -> str:
         """Return the wsgi path of the wsgi application.
 
-        Matches Flask's find_best_app() discovery order:
-        1. Look for 'app' or `application` variable
-        2. Look for create_app() or make_app() factory functions
+        Infers an entrypoint by scanning the project's source tree.
+
+        This extension will:
+        - Search common names (`app`, `application`).
+        - Search factory function definitions (`create_app`, `make_app`).
+
+        This extension does not:
+        - Validate runtime types.
+        - Fallback to any singular `Flask` app if only one is found.
+
+        Reference: Flask's CLI uses `flask.cli.find_best_app()` (used by `flask run`) for runtime
+        discovery. This extension uses that discovery order as a reference, but it does not fully
+        align with `find_best_app()`.
 
         Searches in all top-level directories automatically.
 
         Raises:
             FileNotFoundError: If no valid Flask entrypoint is found
         """
+        locations = self._wsgi_locations()
         try:
             return find_entrypoint_with_variable(
-                self.project_root, self._wsgi_locations(), {"app", "application"}
+                self.project_root, locations, {"app", "application"}
             )
         except FileNotFoundError:
             pass
@@ -300,7 +311,7 @@ class FlaskFramework(_GunicornBase):
         try:
             return find_entrypoint_with_factory(
                 self.project_root,
-                self._wsgi_locations(),
+                locations,
                 factory_names=("create_app", "make_app"),
             )
         except FileNotFoundError:
