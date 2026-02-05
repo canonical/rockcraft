@@ -468,15 +468,13 @@ class DjangoFramework(_GunicornBase):
         return self.yaml_data["name"].replace("-", "_").lower()
 
     @property
-    def default_wsgi_path(self) -> str:
-        """Return the default wsgi path for the Django project."""
-        return f"{self.name}.wsgi:application"
-
-    @property
     @override
     def wsgi_path(self) -> str:
         """Return the wsgi path of the wsgi application."""
-        return self.default_wsgi_path
+        rock_dir = self.project_root / self.name
+
+        manage_py = rock_dir / "manage.py"
+        return self._wsgi_path_from_manage_py(manage_py)
 
     @property
     @override
@@ -502,19 +500,68 @@ class DjangoFramework(_GunicornBase):
             }
         return {}
 
-    def _check_wsgi_path(self) -> None:
-        wsgi_file = self.project_root / self.name / self.name / "wsgi.py"
-        if not wsgi_file.exists():
+    def _wsgi_path_from_manage_py(self, manage_py: Path) -> str:
+        if not manage_py.exists():
             raise ExtensionError(
-                f"django application can not be imported from {self.default_wsgi_path}, "
-                f"no wsgi.py file found in the project directory ({str(wsgi_file.parent)}).",
+                "django application can not be imported, "
+                "unable to infer WSGI application because manage.py was not found "
+                f"at {str(manage_py)}.",
                 doc_slug="/reference/extensions/django-framework/#project-requirements",
                 logpath_report=False,
             )
-        if not has_global_variable(wsgi_file, "application"):
+
+        content = manage_py.read_text(encoding="utf-8")
+        match = re.search(
+            r"os\.environ\.setdefault\(\s*['\"]DJANGO_SETTINGS_MODULE['\"]\s*,\s*['\"]([^'\"]+)['\"]\s*\)",
+            content,
+        )
+        if not match:
             raise ExtensionError(
-                f"django application can not be imported from {self.default_wsgi_path}, "
-                "no variable named 'application' in wsgi.py",
+                "django application can not be imported, "
+                "unable to infer settings module (DJANGO_SETTINGS_MODULE not found in manage.py).",
+                doc_slug="/reference/extensions/django-framework/#project-requirements",
+                logpath_report=False,
+            )
+        project_dir = manage_py.parent
+        settings = project_dir / Path(*match.group(1).split(".")).with_suffix(".py")
+
+        if not settings.exists():
+            raise ExtensionError(
+                "django application can not be imported, "
+                f"unable to locate settings.py (expected {str(settings)}).",
+                doc_slug="/reference/extensions/django-framework/#project-requirements",
+                logpath_report=False,
+            )
+
+        # Get WSGI_APPLICATION = 'mysite.wsgi.application'
+        wsgi_app_match = re.search(
+            r"WSGI_APPLICATION\s*=\s*['\"]([^'\"]+)['\"]",
+            settings.read_text(encoding="utf-8"),
+        )
+        if wsgi_app_match:
+            wsgi_app = wsgi_app_match.group(1).split(".")
+            relative_wsgi_path = Path(*wsgi_app[:-1])
+            if (project_dir / relative_wsgi_path.with_suffix(".py")).exists():
+                return (
+                    f"{relative_wsgi_path.as_posix().replace('/', '.')}:{wsgi_app[-1]}"
+                )
+
+        raise ExtensionError(
+            "django application can not be imported, "
+            "unable to infer WSGI application factory from settings.py.",
+            doc_slug="/reference/extensions/django-framework/#project-requirements",
+            logpath_report=False,
+        )
+
+    def _check_wsgi_path(self) -> None:
+        module, application = self.wsgi_path.split(":", 1)
+        wsgi_file = (
+            self.project_root / self.name / Path(*module.split("."))
+        ).with_suffix(".py")
+        if not has_global_variable(wsgi_file, application):
+            raise ExtensionError(
+                f"django application can not be imported from {self.wsgi_path}, "
+                f"no variable named '{application}' in {str(wsgi_file)}",
                 doc_slug="/reference/extensions/django-framework/#project-requirements",
                 logpath_report=False,
             )
