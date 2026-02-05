@@ -99,7 +99,7 @@ environment:
   BASE/src_main_2404: ubuntu-24.04
 
 execute: |
-  NAME="flask-${SCENARIO}"
+  NAME="flask-${SCENARIO//_/-}"
   ROCK_FILE="${NAME}_0.1_amd64.rock"
   IMAGE="${NAME}:0.1"
 
@@ -180,7 +180,7 @@ execute: |
   [ "$(curl -sSf localhost:8140)" == "ok" ]
 
 restore: |
-  NAME="flask-${SCENARIO}"
+  NAME="flask-${SCENARIO//_/-}"
   docker stop "${NAME}-container" || true
   docker rm --force "${NAME}-container"
   rm -f "${SCENARIO}/"*.rock "${SCENARIO}/rockcraft.yaml" "${SCENARIO}/requirements.txt"
