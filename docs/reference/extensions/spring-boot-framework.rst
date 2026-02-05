@@ -7,7 +7,7 @@ The Spring Boot extension streamlines the process of building Spring Boot
 application rocks.
 
 The extension packs and copies the Jar package file to the rock.
-By default, the base ``bare`` is used, to generate a lightweight image.
+By default, the base ``bare`` is used to generate a lightweight image.
 
 .. note::
 
