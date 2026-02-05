@@ -161,7 +161,7 @@ def test_python_usrmerge_fix(tmp_path, plugin_name, base, build_base):
     assert sorted(os.listdir(prime_dir)) == ["lib", "lib64"]  # noqa: PTH208 (use Path.iterdir())
 
     assert step_info.state is not None
-    step_info.state.files.update({"lib64"})
+    step_info.state.files.update({Path("lib64")})
 
     lifecycle_module._python_usrmerge_fix(step_info)
 
@@ -179,7 +179,7 @@ def test_python_v2_shebang_fix(tmp_path, monkeypatch, source_file):
     # Setup a 'prime' directory with some files
     bin_dir = prime_dir / "usr/bin"
     bin_dir.mkdir(parents=True)
-    files: set[str] = set()
+    files: set[Path] = set()
 
     # 'script' is a file with a shebang pointing to either the part's install dir
     # ('from-install'), or from the stage dir ('from-stage').
@@ -187,18 +187,18 @@ def test_python_v2_shebang_fix(tmp_path, monkeypatch, source_file):
     data_file = Path(__file__).parent / f"test_lifecycle/{source_file}"
     shutil.copy(data_file, script)
     script.write_text(script.read_text().replace("/root", str(tmp_path)))
-    files.add("usr/bin/script")
+    files.add(Path("usr/bin/script"))
 
     # Also add some "bad" entries to ensure the function is resilient
 
     # Add an entry without a corresponding 'concrete' file, which might've been pruned
     # by another post-prime function
-    files.add("i-dont-exist")
+    files.add(Path("i-dont-exist"))
 
     # Add a binary file
     bin_file = bin_dir / "binary"
     bin_file.write_bytes(b"\x81")
-    files.add("usr/bin/binary")
+    files.add(Path("usr/bin/binary"))
 
     assert step_info.state is not None
     step_info.state.files.update(files)
