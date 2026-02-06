@@ -59,8 +59,8 @@ Gradle plugin
 The :ref:`craft_parts_gradle_plugin` now supports the ``self-contained`` :ref:`build-attribute <partspec.build_attributes>`,
 to allow building Gradle projects from dependencies that are fully declared in the Rockcraft project file.
 
-Additionally, the plugin now supports the ``gradle-use-daemon`` to control whether the Gradle Daemon should be enabled
-during the build. By default, the Daemon is disabled.
+Additionally, the plugin now supports the ``gradle-use-daemon`` key, which enables
+the Gradle Daemon during build.
 
 
 Project schema included in snap
