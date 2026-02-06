@@ -112,7 +112,7 @@ Documentation improvements
 
 We've made improvements to the documentation:
 
-- Corrected the output of the "Hello World" :ref:`tutorial <tutorial-create-a-hello-world-rock>`.
+- Corrected the output of the :ref:`"Hello World" tutorial <tutorial-create-a-hello-world-rock>`.
 - Fixed various broken links across the documentation.
 - Updated the warning about the interaction between Docker and LXD instances.
 
