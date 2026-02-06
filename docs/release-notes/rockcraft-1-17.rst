@@ -72,8 +72,8 @@ and can be used to validate projects against the specific version of Rockcraft t
 is installed.
 
 
-Python bytecode compilation
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Python compilation with the uv plugin
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The :ref:`craft_parts_uv_plugin` now compiles Python bytecode by default. This is desirable for most projects, as it
 improves the startup time of Python apps. To disable bytecode compilation, set the ``UV_COMPILE_BYTECODE``
@@ -93,18 +93,14 @@ The Maven-based plugins now correctly support projects where the ``groupId`` is 
 in a parent POM.
 
 
-Init profiles
-~~~~~~~~~~~~~
+12-factor app rocks
+~~~~~~~~~~~~~~~~~~~
 
 The init profiles for the 12-factor app extensions now use ``bare`` bases, which
 makes leaner rocks by default and reduces the attack surface for vulnerabilities.
 
-
-12-factor app rocks
-~~~~~~~~~~~~~~~~~~~
-
-Rocks created with a 12-factor app extension now work correctly with the ``juju ssh``
-command.
+Additionally, rocks created with a 12-factor app extension now include a command interpreter
+on ``/bin/sh``, which allows them to work correctly with the ``juju ssh`` command.
 
 
 Documentation improvements
