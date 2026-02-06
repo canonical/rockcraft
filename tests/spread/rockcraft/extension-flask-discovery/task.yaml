@@ -1,187 +1,284 @@
 summary: flask extension WSGI auto-discovery test
+
+# Pre-prepared applications copied to temp directory to avoid file duplication
+# Tests discovery in root or in module subdirectories (src, app, rock_name)
 environment:
-  SCENARIO/app_app_bare: app_app
-  BASE/app_app_bare: bare
-  SCENARIO/app_app_2204: app_app
-  BASE/app_app_2204: ubuntu-22.04
-  SCENARIO/app_app_2404: app_app
-  BASE/app_app_2404: ubuntu-24.04
+  # Root level - app.py with app variable
+  FILE/app_root_app: app.py
+  APP_FILE/app_root_app: case_app_var.py
+  WSGI_PATH/app_root_app: app:app
 
-  SCENARIO/app_application_bare: app_application
-  BASE/app_application_bare: bare
-  SCENARIO/app_application_2204: app_application
-  BASE/app_application_2204: ubuntu-22.04
-  SCENARIO/app_application_2404: app_application
-  BASE/app_application_2404: ubuntu-24.04
+  # Root level - main.py with app variable
+  FILE/app_root_main: main.py
+  APP_FILE/app_root_main: case_app_var.py
+  WSGI_PATH/app_root_main: main:app
 
-  SCENARIO/app_create_app_bare: app_create_app
-  BASE/app_create_app_bare: bare
-  SCENARIO/app_create_app_2204: app_create_app
-  BASE/app_create_app_2204: ubuntu-22.04
-  SCENARIO/app_create_app_2404: app_create_app
-  BASE/app_create_app_2404: ubuntu-24.04
+  # src module - __init__.py
+  MODULE/app_src_init: src
+  FILE/app_src_init: __init__.py
+  APP_FILE/app_src_init: case_app_var.py
+  WSGI_PATH/app_src_init: src:app
 
-  SCENARIO/app_make_app_bare: app_make_app
-  BASE/app_make_app_bare: bare
-  SCENARIO/app_make_app_2204: app_make_app
-  BASE/app_make_app_2204: ubuntu-22.04
-  SCENARIO/app_make_app_2404: app_make_app
-  BASE/app_make_app_2404: ubuntu-24.04
+  # src module - app.py
+  MODULE/app_src_app: src
+  FILE/app_src_app: app.py
+  APP_FILE/app_src_app: case_app_var.py
+  WSGI_PATH/app_src_app: src.app:app
 
-  SCENARIO/main_app_bare: main_app
-  BASE/main_app_bare: bare
-  SCENARIO/main_app_2204: main_app
-  BASE/main_app_2204: ubuntu-22.04
-  SCENARIO/main_app_2404: main_app
-  BASE/main_app_2404: ubuntu-24.04
+  # src module - main.py
+  MODULE/app_src_main: src
+  FILE/app_src_main: main.py
+  APP_FILE/app_src_main: case_app_var.py
+  WSGI_PATH/app_src_main: src.main:app
 
-  SCENARIO/main_application_bare: main_application
-  BASE/main_application_bare: bare
-  SCENARIO/main_application_2204: main_application
-  BASE/main_application_2204: ubuntu-22.04
-  SCENARIO/main_application_2404: main_application
-  BASE/main_application_2404: ubuntu-24.04
+  # app module - __init__.py
+  MODULE/app_app_init: app
+  FILE/app_app_init: __init__.py
+  APP_FILE/app_app_init: case_app_var.py
+  WSGI_PATH/app_app_init: app:app
 
-  SCENARIO/main_create_app_bare: main_create_app
-  BASE/main_create_app_bare: bare
-  SCENARIO/main_create_app_2204: main_create_app
-  BASE/main_create_app_2204: ubuntu-22.04
-  SCENARIO/main_create_app_2404: main_create_app
-  BASE/main_create_app_2404: ubuntu-24.04
+  # app module - app.py
+  MODULE/app_app_app: app
+  FILE/app_app_app: app.py
+  APP_FILE/app_app_app: case_app_var.py
+  WSGI_PATH/app_app_app: app.app:app
 
-  SCENARIO/main_make_app_bare: main_make_app
-  BASE/main_make_app_bare: bare
-  SCENARIO/main_make_app_2204: main_make_app
-  BASE/main_make_app_2204: ubuntu-22.04
-  SCENARIO/main_make_app_2404: main_make_app
-  BASE/main_make_app_2404: ubuntu-24.04
+  # app module - main.py
+  MODULE/app_app_main: app
+  FILE/app_app_main: main.py
+  APP_FILE/app_app_main: case_app_var.py
+  WSGI_PATH/app_app_main: app.main:app
 
-  SCENARIO/module_app_bare: module_app
-  BASE/module_app_bare: bare
-  SCENARIO/module_app_2204: module_app
-  BASE/module_app_2204: ubuntu-22.04
-  SCENARIO/module_app_2404: module_app
-  BASE/module_app_2404: ubuntu-24.04
+  # rock_name module - __init__.py
+  MODULE/app_rock_init: rock_name
+  FILE/app_rock_init: __init__.py
+  APP_FILE/app_rock_init: case_app_var.py
+  WSGI_PATH/app_rock_init: rock_name:app
 
-  SCENARIO/module_application_bare: module_application
-  BASE/module_application_bare: bare
-  SCENARIO/module_application_2204: module_application
-  BASE/module_application_2204: ubuntu-22.04
-  SCENARIO/module_application_2404: module_application
-  BASE/module_application_2404: ubuntu-24.04
+  # rock_name module - app.py
+  MODULE/app_rock_app: rock_name
+  FILE/app_rock_app: app.py
+  APP_FILE/app_rock_app: case_app_var.py
+  WSGI_PATH/app_rock_app: rock_name.app:app
 
-  SCENARIO/module_create_app_bare: module_create_app
-  BASE/module_create_app_bare: bare
-  SCENARIO/module_create_app_2204: module_create_app
-  BASE/module_create_app_2204: ubuntu-22.04
-  SCENARIO/module_create_app_2404: module_create_app
-  BASE/module_create_app_2404: ubuntu-24.04
+  # rock_name module - main.py
+  MODULE/app_rock_main: rock_name
+  FILE/app_rock_main: main.py
+  APP_FILE/app_rock_main: case_app_var.py
+  WSGI_PATH/app_rock_main: rock_name.main:app
 
-  SCENARIO/module_make_app_bare: module_make_app
-  BASE/module_make_app_bare: bare
-  SCENARIO/module_make_app_2204: module_make_app
-  BASE/module_make_app_2204: ubuntu-22.04
-  SCENARIO/module_make_app_2404: module_make_app
-  BASE/module_make_app_2404: ubuntu-24.04
+  # Root level with application variable
+  MODULE/application_root_app: ""
+  FILE/application_root_app: app.py
+  APP_FILE/application_root_app: case_application_var.py
+  WSGI_PATH/application_root_app: app:application
 
-  SCENARIO/src_app_bare: src_app
-  BASE/src_app_bare: bare
-  SCENARIO/src_app_2204: src_app
-  BASE/src_app_2204: ubuntu-22.04
-  SCENARIO/src_app_2404: src_app
-  BASE/src_app_2404: ubuntu-24.04
+  MODULE/application_root_main: ""
+  FILE/application_root_main: main.py
+  APP_FILE/application_root_main: case_application_var.py
+  WSGI_PATH/application_root_main: main:application
 
-  SCENARIO/src_main_bare: src_main
-  BASE/src_main_bare: bare
-  SCENARIO/src_main_2204: src_main
-  BASE/src_main_2204: ubuntu-22.04
-  SCENARIO/src_main_2404: src_main
-  BASE/src_main_2404: ubuntu-24.04
+  # Modules with application variable
+  MODULE/application_src_init: src
+  FILE/application_src_init: __init__.py
+  APP_FILE/application_src_init: case_application_var.py
+  WSGI_PATH/application_src_init: src:application
+
+  MODULE/application_src_app: src
+  FILE/application_src_app: app.py
+  APP_FILE/application_src_app: case_application_var.py
+  WSGI_PATH/application_src_app: src.app:application
+
+  MODULE/application_src_main: src
+  FILE/application_src_main: main.py
+  APP_FILE/application_src_main: case_application_var.py
+  WSGI_PATH/application_src_main: src.main:application
+
+  MODULE/application_app_init: app
+  FILE/application_app_init: __init__.py
+  APP_FILE/application_app_init: case_application_var.py
+  WSGI_PATH/application_app_init: app:application
+
+  MODULE/application_app_app: app
+  FILE/application_app_app: app.py
+  APP_FILE/application_app_app: case_application_var.py
+  WSGI_PATH/application_app_app: app.app:application
+
+  MODULE/application_app_main: app
+  FILE/application_app_main: main.py
+  APP_FILE/application_app_main: case_application_var.py
+  WSGI_PATH/application_app_main: app.main:application
+
+  MODULE/application_rock_init: rock_name
+  FILE/application_rock_init: __init__.py
+  APP_FILE/application_rock_init: case_application_var.py
+  WSGI_PATH/application_rock_init: rock_name:application
+
+  MODULE/application_rock_app: rock_name
+  FILE/application_rock_app: app.py
+  APP_FILE/application_rock_app: case_application_var.py
+  WSGI_PATH/application_rock_app: rock_name.app:application
+
+  MODULE/application_rock_main: rock_name
+  FILE/application_rock_main: main.py
+  APP_FILE/application_rock_main: case_application_var.py
+  WSGI_PATH/application_rock_main: rock_name.main:application
+
+  # Root level with create_app factory
+  MODULE/create_app_root_app: ""
+  FILE/create_app_root_app: app.py
+  APP_FILE/create_app_root_app: case_create_app_factory.py
+  WSGI_PATH/create_app_root_app: app:create_app()
+
+  MODULE/create_app_root_main: ""
+  FILE/create_app_root_main: main.py
+  APP_FILE/create_app_root_main: case_create_app_factory.py
+  WSGI_PATH/create_app_root_main: main:create_app()
+
+  # Modules with create_app factory
+  MODULE/create_app_src_init: src
+  FILE/create_app_src_init: __init__.py
+  APP_FILE/create_app_src_init: case_create_app_factory.py
+  WSGI_PATH/create_app_src_init: src:create_app()
+
+  MODULE/create_app_src_app: src
+  FILE/create_app_src_app: app.py
+  APP_FILE/create_app_src_app: case_create_app_factory.py
+  WSGI_PATH/create_app_src_app: src.app:create_app()
+
+  MODULE/create_app_src_main: src
+  FILE/create_app_src_main: main.py
+  APP_FILE/create_app_src_main: case_create_app_factory.py
+  WSGI_PATH/create_app_src_main: src.main:create_app()
+
+  MODULE/create_app_app_init: app
+  FILE/create_app_app_init: __init__.py
+  APP_FILE/create_app_app_init: case_create_app_factory.py
+  WSGI_PATH/create_app_app_init: app:create_app()
+
+  MODULE/create_app_app_app: app
+  FILE/create_app_app_app: app.py
+  APP_FILE/create_app_app_app: case_create_app_factory.py
+  WSGI_PATH/create_app_app_app: app.app:create_app()
+
+  MODULE/create_app_app_main: app
+  FILE/create_app_app_main: main.py
+  APP_FILE/create_app_app_main: case_create_app_factory.py
+  WSGI_PATH/create_app_app_main: app.main:create_app()
+
+  MODULE/create_app_rock_init: rock_name
+  FILE/create_app_rock_init: __init__.py
+  APP_FILE/create_app_rock_init: case_create_app_factory.py
+  WSGI_PATH/create_app_rock_init: rock_name:create_app()
+
+  MODULE/create_app_rock_app: rock_name
+  FILE/create_app_rock_app: app.py
+  APP_FILE/create_app_rock_app: case_create_app_factory.py
+  WSGI_PATH/create_app_rock_app: rock_name.app:create_app()
+
+  MODULE/create_app_rock_main: rock_name
+  FILE/create_app_rock_main: main.py
+  APP_FILE/create_app_rock_main: case_create_app_factory.py
+  WSGI_PATH/create_app_rock_main: rock_name.main:create_app()
+
+  # Root level with make_app factory
+  MODULE/make_app_root_app: ""
+  FILE/make_app_root_app: app.py
+  APP_FILE/make_app_root_app: case_make_app_factory.py
+  WSGI_PATH/make_app_root_app: app:make_app()
+
+  MODULE/make_app_root_main: ""
+  FILE/make_app_root_main: main.py
+  APP_FILE/make_app_root_main: case_make_app_factory.py
+  WSGI_PATH/make_app_root_main: main:make_app()
+
+  # Modules with make_app factory
+  MODULE/make_app_src_init: src
+  FILE/make_app_src_init: __init__.py
+  APP_FILE/make_app_src_init: case_make_app_factory.py
+  WSGI_PATH/make_app_src_init: src:make_app()
+
+  MODULE/make_app_src_app: src
+  FILE/make_app_src_app: app.py
+  APP_FILE/make_app_src_app: case_make_app_factory.py
+  WSGI_PATH/make_app_src_app: src.app:make_app()
+
+  MODULE/make_app_src_main: src
+  FILE/make_app_src_main: main.py
+  APP_FILE/make_app_src_main: case_make_app_factory.py
+  WSGI_PATH/make_app_src_main: src.main:make_app()
+
+  MODULE/make_app_app_init: app
+  FILE/make_app_app_init: __init__.py
+  APP_FILE/make_app_app_init: case_make_app_factory.py
+  WSGI_PATH/make_app_app_init: app:make_app()
+
+  MODULE/make_app_app_app: app
+  FILE/make_app_app_app: app.py
+  APP_FILE/make_app_app_app: case_make_app_factory.py
+  WSGI_PATH/make_app_app_app: app.app:make_app()
+
+  MODULE/make_app_app_main: app
+  FILE/make_app_app_main: main.py
+  APP_FILE/make_app_app_main: case_make_app_factory.py
+  WSGI_PATH/make_app_app_main: app.main:make_app()
+
+  MODULE/make_app_rock_init: rock_name
+  FILE/make_app_rock_init: __init__.py
+  APP_FILE/make_app_rock_init: case_make_app_factory.py
+  WSGI_PATH/make_app_rock_init: rock_name:make_app()
+
+  MODULE/make_app_rock_app: rock_name
+  FILE/make_app_rock_app: app.py
+  APP_FILE/make_app_rock_app: case_make_app_factory.py
+  WSGI_PATH/make_app_rock_app: rock_name.app:make_app()
+
+  MODULE/make_app_rock_main: rock_name
+  FILE/make_app_rock_main: main.py
+  APP_FILE/make_app_rock_main: case_make_app_factory.py
+  WSGI_PATH/make_app_rock_main: rock_name.main:make_app()
 
 execute: |
-  NAME="flask-${SCENARIO//_/-}"
-  ROCK_FILE="${NAME}_0.1_amd64.rock"
-  IMAGE="${NAME}:0.1"
+  ROCK_NAME="flask-discovery"
+  NORMALIZED_NAME="flask_discovery"
 
-  cd "${SCENARIO}"
+  # Create temp directory for test
+  mkdir -p test_workspace
+  cd test_workspace
+
   cp ../requirements.txt .
 
-  rm -f rockcraft.yaml
-  run_rockcraft init --name "${NAME}" --profile flask-framework
-
-  if [ "${BASE}" = "bare" ]; then
-    sed -i "s/^base: .*/base: ${BASE}\nbuild-base: ubuntu@22.04/" rockcraft.yaml
+  # Determine target directory based on MODULE
+  if [ -z "${MODULE}" ]; then
+    TARGET_DIR="."
+  elif [ "${MODULE}" = "rock_name" ]; then
+    TARGET_DIR="${NORMALIZED_NAME}"
   else
-    sed -i "s/^base: .*/base: ${BASE//-/@}/" rockcraft.yaml
+    TARGET_DIR="${MODULE}"
   fi
 
-  run_rockcraft pack
+  mkdir -p "${TARGET_DIR}"
+  cp "../${APP_FILE}" "${TARGET_DIR}/${FILE}"
 
-  test -f "${ROCK_FILE}"
+  run_rockcraft init --name "${ROCK_NAME}" --profile flask-framework
 
-  # Ensure docker does not have this container image
-  docker rmi --force "${IMAGE}"
-  # Install container
-  sudo rockcraft.skopeo --insecure-policy copy "oci-archive:${ROCK_FILE}" "docker-daemon:${IMAGE}"
-  # Ensure container exists
-  docker images "${IMAGE}" | MATCH "${NAME}"
+  run_rockcraft expand-extensions > expanded.yaml
 
-  # ensure container doesn't exist
-  docker rm -f "${NAME}-container"
+  # Build expected WSGI path
+  FILE_MODULE=$(echo "${FILE}" | sed 's/\.py$//')
 
-  # test that the correct WSGI path is configured
-  if [ "${SCENARIO}" = "app_app" ]; then
-    docker run --rm "${IMAGE}" plan | grep "app:app"
-    docker run --rm --entrypoint /bin/python3 "${IMAGE}" -m gunicorn --chdir /flask/app --check-config app:app
-  elif [ "${SCENARIO}" = "app_application" ]; then
-    docker run --rm "${IMAGE}" plan | grep "app:application"
-    docker run --rm --entrypoint /bin/python3 "${IMAGE}" -m gunicorn --chdir /flask/app --check-config app:application
-  elif [ "${SCENARIO}" = "app_create_app" ]; then
-    docker run --rm "${IMAGE}" plan | grep "app:create_app()"
-    docker run --rm --entrypoint /bin/python3 "${IMAGE}" -m gunicorn --chdir /flask/app --check-config "app:create_app()"
-  elif [ "${SCENARIO}" = "app_make_app" ]; then
-    docker run --rm "${IMAGE}" plan | grep "app:make_app()"
-    docker run --rm --entrypoint /bin/python3 "${IMAGE}" -m gunicorn --chdir /flask/app --check-config "app:make_app()"
-  elif [ "${SCENARIO}" = "main_app" ]; then
-    docker run --rm "${IMAGE}" plan | grep "main:app"
-    docker run --rm --entrypoint /bin/python3 "${IMAGE}" -m gunicorn --chdir /flask/app --check-config main:app
-  elif [ "${SCENARIO}" = "main_application" ]; then
-    docker run --rm "${IMAGE}" plan | grep "main:application"
-    docker run --rm --entrypoint /bin/python3 "${IMAGE}" -m gunicorn --chdir /flask/app --check-config main:application
-  elif [ "${SCENARIO}" = "main_create_app" ]; then
-    docker run --rm "${IMAGE}" plan | grep "main:create_app()"
-    docker run --rm --entrypoint /bin/python3 "${IMAGE}" -m gunicorn --chdir /flask/app --check-config "main:create_app()"
-  elif [ "${SCENARIO}" = "main_make_app" ]; then
-    docker run --rm "${IMAGE}" plan | grep "main:make_app()"
-    docker run --rm --entrypoint /bin/python3 "${IMAGE}" -m gunicorn --chdir /flask/app --check-config "main:make_app()"
-  elif [ "${SCENARIO}" = "module_app" ]; then
-    docker run --rm "${IMAGE}" plan | grep "flaskapp:app"
-    docker run --rm --entrypoint /bin/python3 "${IMAGE}" -m gunicorn --chdir /flask/app --check-config flaskapp:app
-  elif [ "${SCENARIO}" = "module_application" ]; then
-    docker run --rm "${IMAGE}" plan | grep "flaskapp:application"
-    docker run --rm --entrypoint /bin/python3 "${IMAGE}" -m gunicorn --chdir /flask/app --check-config flaskapp:application
-  elif [ "${SCENARIO}" = "module_create_app" ]; then
-    docker run --rm "${IMAGE}" plan | grep "flaskapp:create_app()"
-    docker run --rm --entrypoint /bin/python3 "${IMAGE}" -m gunicorn --chdir /flask/app --check-config "flaskapp:create_app()"
-  elif [ "${SCENARIO}" = "module_make_app" ]; then
-    docker run --rm "${IMAGE}" plan | grep "flaskapp:make_app()"
-    docker run --rm --entrypoint /bin/python3 "${IMAGE}" -m gunicorn --chdir /flask/app --check-config "flaskapp:make_app()"
-  elif [ "${SCENARIO}" = "src_app" ]; then
-    docker run --rm "${IMAGE}" plan | grep "src.app:create_app()"
-    docker run --rm --entrypoint /bin/python3 "${IMAGE}" -m gunicorn --chdir /flask/app --check-config "src.app:create_app()"
-  elif [ "${SCENARIO}" = "src_main" ]; then
-    docker run --rm "${IMAGE}" plan | grep "src.main:app"
-    docker run --rm --entrypoint /bin/python3 "${IMAGE}" -m gunicorn --chdir /flask/app --check-config src.main:app
+  # WSGI path in environment, replace rock_name with normalized name if used
+  EXPECTED=$(echo "${WSGI_PATH}" | sed "s/rock_name/${NORMALIZED_NAME}/" | sed "s/\./\//g")
+
+  # Validate WSGI path in expanded YAML
+  if ! grep -q "'${EXPECTED}'" expanded.yaml; then
+    echo "ERROR: Expected WSGI path '${EXPECTED}' not found in expanded YAML"
+    echo "Service command:"
+    grep "command:" expanded.yaml
+    exit 1
   fi
 
-  # test the flask service
-  docker run --name "${NAME}-container" -d -p 8140:8000 "${IMAGE}"
-  retry -n 5 --wait 2 curl localhost:8140
-  [ "$(curl -sSf localhost:8140)" == "ok" ]
+  echo "Successfully validated WSGI path: ${EXPECTED}"
 
 restore: |
-  NAME="flask-${SCENARIO//_/-}"
-  docker stop "${NAME}-container" || true
-  docker rm --force "${NAME}-container"
-  rm -f "${SCENARIO}/"*.rock "${SCENARIO}/rockcraft.yaml" "${SCENARIO}/requirements.txt"
-  docker system prune -a -f
+  rm -rf test_workspace
