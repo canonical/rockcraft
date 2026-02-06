@@ -30,6 +30,7 @@ def flask_extension(mock_extensions):
 @pytest.fixture(name="flask_input_yaml")
 def flask_input_yaml_fixture():
     return {
+        "name": "foo-bar",
         "base": "ubuntu@22.04",
         "platforms": {"amd64": {}},
         "extensions": ["flask-framework"],
@@ -72,6 +73,7 @@ def test_flask_extension_default(
     assert source[-len(suffix) :].replace("\\", "/") == suffix
 
     assert applied == {
+        "name": "foo-bar",
         "base": "ubuntu@22.04",
         "parts": {
             "flask-framework/config-files": {
@@ -354,6 +356,7 @@ def test_flask_extension_bare(
     (tmp_path / "requirements.txt").write_text("flask")
     (tmp_path / "app.py").write_text("app = object()")
     flask_input_yaml = {
+        "name": "test-app",
         "extensions": ["flask-framework"],
         "base": "bare",
         "build-base": build_base,
@@ -388,6 +391,7 @@ def test_flask_extension_bare(
 def test_flask_extension_no_requirements_txt_error(tmp_path):
     (tmp_path / "app.py").write_text("app = object()")
     flask_input_yaml = {
+        "name": "test-app",
         "extensions": ["flask-framework"],
         "base": "bare",
         "build-base": "ubuntu@22.04",
@@ -406,6 +410,7 @@ def test_flask_extension_requirements_txt_no_flask_error(tmp_path):
     (tmp_path / "app.py").write_text("app = object()")
     (tmp_path / "requirements.txt").write_text("")
     flask_input_yaml = {
+        "name": "test-app",
         "extensions": ["flask-framework"],
         "base": "bare",
         "build-base": "ubuntu@22.04",
@@ -529,6 +534,7 @@ def test_flask_extension_bad_app_py(tmp_path):
     (tmp_path / "app.py").write_text(bad_code)
     (tmp_path / "requirements.txt").write_text("flask")
     flask_input_yaml = {
+        "name": "test-app",
         "extensions": ["flask-framework"],
         "base": "bare",
         "build-base": "ubuntu@22.04",
@@ -546,6 +552,7 @@ def test_flask_extension_bad_app_py(tmp_path):
 @pytest.mark.usefixtures("flask_extension")
 def test_flask_extension_no_requirements_txt_no_app_py_error(tmp_path):
     flask_input_yaml = {
+        "name": "test-app",
         "extensions": ["flask-framework"],
         "base": "bare",
         "build-base": "ubuntu@22.04",
@@ -675,6 +682,7 @@ def test_flask_extension_incorrect_prime_prefix_error(tmp_path):
     (tmp_path / "requirements.txt").write_text("flask")
     (tmp_path / "app.py").write_text("app = object()")
     flask_input_yaml = {
+        "name": "test-app",
         "extensions": ["flask-framework"],
         "base": "bare",
         "build-base": "ubuntu@22.04",
@@ -689,6 +697,7 @@ def test_flask_extension_incorrect_prime_prefix_error(tmp_path):
 
 
 WSGI_FLASK_INPUT_YAML = {
+    "name": "test-app",
     "extensions": ["flask-framework"],
     "base": "bare",
     "build-base": "ubuntu@22.04",
@@ -723,6 +732,7 @@ def test_flask_extension_flask_service_override_disable_wsgi_path_check(tmp_path
     (tmp_path / "requirements.txt").write_text("flask")
 
     flask_input_yaml = {
+        "name": "test-app",
         "extensions": ["flask-framework"],
         "base": "bare",
         "build-base": "ubuntu@22.04",
@@ -735,6 +745,35 @@ def test_flask_extension_flask_service_override_disable_wsgi_path_check(tmp_path
     }
 
     extensions.apply_extensions(tmp_path, flask_input_yaml)
+
+
+@pytest.mark.usefixtures("flask_extension")
+def test_flask_extension_app_in_non_matching_directory(tmp_path):
+    """Test that the extension does NOT find apps in directories that don't match the rock name.
+
+    The flask-framework extension only searches in the directory matching the normalized
+    rock name. Apps in other directories like 'backend', 'webapp', etc. should not be found.
+    """
+    (tmp_path / "requirements.txt").write_text("flask")
+
+    # Create app in a directory that doesn't match the rock name
+    random_dir = tmp_path / "backend"
+    random_dir.mkdir()
+    (random_dir / "app.py").write_text("app = object()")
+
+    flask_input_yaml = {
+        "name": "my-rock",  # Normalized to "my_rock", won't match "backend"
+        "extensions": ["flask-framework"],
+        "base": "bare",
+        "build-base": "ubuntu@22.04",
+        "platforms": {"amd64": {}},
+    }
+
+    # Should raise an error because app is not in "my_rock/" directory
+    with pytest.raises(
+        ExtensionError, match="Missing WSGI entrypoint in default search locations"
+    ):
+        extensions.apply_extensions(tmp_path, flask_input_yaml)
 
 
 @pytest.mark.usefixtures("django_extension")
@@ -757,8 +796,8 @@ def test_django_extension_default(
     assert source[-len(suffix) :].replace("\\", "/") == suffix
 
     assert applied == {
-        "base": "ubuntu@22.04",
         "name": "foo-bar",
+        "base": "ubuntu@22.04",
         "parts": {
             "django-framework/config-files": {
                 "organize": {"gunicorn.conf.py": "django/gunicorn.conf.py"},
