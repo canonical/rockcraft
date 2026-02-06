@@ -110,7 +110,7 @@ ssh`` command.
 Documentation improvements
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-We've made improvements to the documentation, including the following:
+We've made improvements to the documentation:
 
 - Corrected the output of the "Hello World" :ref:`tutorial <tutorial-create-a-hello-world-rock>`.
 - Fixed various broken links across the documentation.
