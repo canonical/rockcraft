@@ -126,8 +126,8 @@ The following issues have been resolved in Rockcraft 1.17.
 Rockcraft 1.17.0
 ~~~~~~~~~~~~~~~~
 
-- `#1069 <https://github.com/canonical/rockcraft/issues/1069>`_ schema: ubuntu@26.04 should not be a valid build-base for now.
-- `craft-application #986 <https://github.com/canonical/craft-application/issues/986>`_ craft-application is using outdated distro-support package.
+- `#1069 <https://github.com/canonical/rockcraft/issues/1069>`__ schema: ubuntu\@26.04 should not be a valid build-base for now.
+- `craft-application #986 <https://github.com/canonical/craft-application/issues/986>`__ craft-application is using outdated distro-support package.
 
 Contributors
 ------------
