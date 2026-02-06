@@ -141,7 +141,8 @@ class _GunicornBase(Extension):
         if self.yaml_data["base"] == "bare":
             parts[f"{self.framework}-framework/runtime"] = {
                 "plugin": "nil",
-                "override-build": "mkdir -m 777 ${CRAFT_PART_INSTALL}/tmp",
+                "override-build": "mkdir -m 777 ${CRAFT_PART_INSTALL}/tmp\n"
+                "ln -sf /usr/bin/bash ${CRAFT_PART_INSTALL}/usr/bin/sh",
                 "stage-packages": [
                     "bash_bins",
                     "coreutils_bins",
