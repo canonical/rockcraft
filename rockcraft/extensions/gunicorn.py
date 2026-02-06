@@ -279,6 +279,11 @@ class FlaskFramework(_GunicornBase):
     """An extension for constructing Python applications based on the Flask framework."""
 
     @property
+    def name(self) -> str:
+        """Return the normalized name of the rockcraft project."""
+        return self.yaml_data["name"].replace("-", "_").lower()
+
+    @property
     @override
     def wsgi_path(self) -> str:
         """Return the wsgi path of the wsgi application.
@@ -396,28 +401,18 @@ class FlaskFramework(_GunicornBase):
     def _wsgi_locations(self) -> Iterable[Path]:
         """Return the possible locations for the WSGI entrypoint.
 
-        Matches Flask's discovery logic. Will look for (in order):
-        1. 'app' or 'application' global variables
-        2. create_app() or make_app() factory functions
-
-        In the following file locations:
-        1. `app.py`
-        2. `main.py`
-        3. Inside all top-level directories, in the files
+        It will look for an `app` global variable in the following places:
+        1. `app.py`.
+        2. `main.py`.
+        3. Inside the directories `app`, `src` and rockcraft name, in the files
            `__init__.py`, `app.py` or `main.py`.
         """
-        search_dirs = [
-            item.name
-            for item in self.project_root.iterdir()
-            if item.is_dir() and not item.name.startswith((".", "_"))
-        ]
-
         return (
             Path(".", "app.py"),
             Path(".", "main.py"),
             *(
                 Path(src_dir, src_file)
-                for src_dir in search_dirs
+                for src_dir in ("app", "src", self.name)
                 for src_file in ("__init__.py", "app.py", "main.py")
             ),
         )
