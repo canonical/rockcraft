@@ -125,7 +125,8 @@ The top of the file should look similar to the following snippet:
     name: django-hello-world
     # see https://documentation.ubuntu.com/rockcraft/en/1.6.0/explanation/bases/
     # for more information about bases and using 'bare' bases for chiselled rocks
-    base: ubuntu@22.04 # the base environment for this Django app
+    base: bare # as an alternative, an ubuntu base can be used
+    build-base: ubuntu@24.04 # build-base is required when the base is bare
     version: '0.1' # just for humans. Semantic versioning is recommended
     summary: A summary of your Django app # 79 char long summary
     description: |
@@ -334,9 +335,7 @@ in a much smaller rock with a reduced attack surface.
     development tooling (such as for debugging).
 
 The first step towards chiselling the rock is to ensure we are using a
-``bare`` :ref:`base <explanation-bases>`.
-In the project file, change the ``base`` to ``bare`` and add
-``build-base: ubuntu@22.04``:
+``bare`` :ref:`base <explanation-bases>`:
 
 .. literalinclude:: code/django/task.yaml
     :language: bash
@@ -356,7 +355,7 @@ the ``rockcraft.yaml`` file should look similar to the following:
     # see https://documentation.ubuntu.com/rockcraft/en/1.6.0/explanation/bases/
     # for more information about bases and using 'bare' bases for chiselled rocks
     base: bare
-    build-base: ubuntu@22.04
+    build-base: ubuntu@24.04
     version: '0.1-chiselled'
     summary: A summary of your Django app # 79 char long summary
     description: |
@@ -469,7 +468,7 @@ the ``rockcraft.yaml`` file should look similar to the following:
     # see https://documentation.ubuntu.com/rockcraft/en/1.6.0/explanation/bases/
     # for more information about bases and using 'bare' bases for chiselled rocks
     base: bare
-    build-base: ubuntu@22.04
+    build-base: ubuntu@24.04
     version: '0.2'
     summary: A summary of your Django app # 79 char long summary
     description: |
