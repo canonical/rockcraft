@@ -17,6 +17,7 @@
 """An extension for the Gunicorn based Python WSGI application extensions."""
 
 import abc
+import ast
 import contextlib
 import fnmatch
 import os.path
@@ -42,6 +43,7 @@ from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
 from ._python_utils import (
     find_entrypoint_with_factory,
     find_entrypoint_with_variable,
+    find_global_constant_in_file,
     has_global_variable,
 )
 from ._utils import find_ubuntu_base_python_version
@@ -500,6 +502,33 @@ class DjangoFramework(_GunicornBase):
             }
         return {}
 
+    def _extract_django_settings_module(self, manage_py: Path) -> str | None:
+        """Extract DJANGO_SETTINGS_MODULE value from Django's manage.py.
+
+        Parses manage.py to find os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'value').
+
+        Args:
+            manage_py: Path to Django's manage.py file.
+
+        Returns:
+            The settings module string (like 'myproject.settings'), or None if not found.
+
+        """
+        tree = ast.parse(manage_py.read_text(encoding="utf-8"), filename=manage_py)
+        for node in ast.walk(tree):
+            if (
+                isinstance(node, ast.Call)
+                and isinstance(node.func, ast.Attribute)
+                and node.func.attr == "setdefault"
+                and len(node.args) >= 2  # noqa: PLR2004 (magic-value-comparison)
+                and isinstance(node.args[0], ast.Constant)
+                and node.args[0].value == "DJANGO_SETTINGS_MODULE"
+                and isinstance(node.args[1], ast.Constant)
+                and isinstance(node.args[1].value, str)
+            ):
+                return node.args[1].value
+        return None
+
     def _wsgi_path_from_manage_py(self, manage_py: Path) -> str:
         if not manage_py.exists():
             raise ExtensionError(
@@ -510,12 +539,8 @@ class DjangoFramework(_GunicornBase):
                 logpath_report=False,
             )
 
-        content = manage_py.read_text(encoding="utf-8")
-        match = re.search(
-            r"os\.environ\.setdefault\(\s*['\"]DJANGO_SETTINGS_MODULE['\"]\s*,\s*['\"]([^'\"]+)['\"]\s*\)",
-            content,
-        )
-        if not match:
+        settings_module = self._extract_django_settings_module(manage_py)
+        if not settings_module:
             raise ExtensionError(
                 "django application can not be imported, "
                 "unable to infer settings module (DJANGO_SETTINGS_MODULE not found in manage.py).",
@@ -523,7 +548,7 @@ class DjangoFramework(_GunicornBase):
                 logpath_report=False,
             )
         project_dir = manage_py.parent
-        settings = project_dir / Path(*match.group(1).split(".")).with_suffix(".py")
+        settings = project_dir / Path(*settings_module.split(".")).with_suffix(".py")
 
         if not settings.exists():
             raise ExtensionError(
@@ -533,18 +558,12 @@ class DjangoFramework(_GunicornBase):
                 logpath_report=False,
             )
 
-        # Get WSGI_APPLICATION = 'mysite.wsgi.application'
-        wsgi_app_match = re.search(
-            r"WSGI_APPLICATION\s*=\s*['\"]([^'\"]+)['\"]",
-            settings.read_text(encoding="utf-8"),
-        )
-        if wsgi_app_match:
-            wsgi_app = wsgi_app_match.group(1).split(".")
-            relative_wsgi_path = Path(*wsgi_app[:-1])
-            if (project_dir / relative_wsgi_path.with_suffix(".py")).exists():
-                return (
-                    f"{relative_wsgi_path.as_posix().replace('/', '.')}:{wsgi_app[-1]}"
-                )
+        wsgi_app_value = find_global_constant_in_file(settings, "WSGI_APPLICATION")
+        if wsgi_app_value and isinstance(wsgi_app_value, str) and "." in wsgi_app_value:
+            *relative_wsgi_path_parts, wsgi_application = wsgi_app_value.split(".")
+            wsgi_path = Path(*relative_wsgi_path_parts)
+            if (project_dir / wsgi_path.with_suffix(".py")).exists():
+                return f"{wsgi_path.as_posix().replace('/', '.')}:{wsgi_application}"
 
         raise ExtensionError(
             "django application can not be imported, "

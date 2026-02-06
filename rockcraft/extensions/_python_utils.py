@@ -19,6 +19,12 @@
 import ast
 from collections.abc import Iterable
 from pathlib import Path
+from types import EllipsisType
+from typing import TypeAlias
+
+AstConstantT: TypeAlias = (
+    str | bytes | bool | int | float | complex | None | EllipsisType
+)
 
 
 def find_file_with_variable(
@@ -187,4 +193,30 @@ def find_factory_function(
         for node in ast.iter_child_nodes(tree):
             if isinstance(node, ast.FunctionDef) and node.name == factory_name:
                 return factory_name
+    return None
+
+
+def find_global_constant_in_file(source_file: Path, constant_name: str) -> AstConstantT:
+    """Extract a constant value from a Python source file.
+
+    Parses the file to find a module-level assignment like `CONSTANT_NAME = value`.
+
+    Args:
+        source_file: Path to the Python source file to parse.
+        constant_name: Name of the constant to extract.
+
+    Returns:
+        The constant's value if found, or None if not found or not a constant.
+
+    """
+    tree = ast.parse(source_file.read_text(encoding="utf-8"), filename=source_file)
+    for node in ast.iter_child_nodes(tree):
+        if isinstance(node, ast.Assign):
+            for target in node.targets:
+                if (
+                    isinstance(target, ast.Name)
+                    and target.id == constant_name
+                    and isinstance(node.value, ast.Constant)
+                ):
+                    return node.value.value
     return None
