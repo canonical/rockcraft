@@ -96,15 +96,15 @@ in a parent POM.
 Init profiles
 ~~~~~~~~~~~~~
 
-The init profiles for the 12-factor app extensions now use ``bare`` bases, which 
+The init profiles for the 12-factor app extensions now use ``bare`` bases, which
 makes leaner rocks by default and reduces the attack surface for vulnerabilities.
 
 
 12-factor app rocks
 ~~~~~~~~~~~~~~~~~~~
 
-Rocks created with a 12-factor app extension now work correctly with the ``juju 
-ssh`` command.
+Rocks created with a 12-factor app extension now work correctly with the ``juju ssh``
+command.
 
 
 Documentation improvements
