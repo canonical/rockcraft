@@ -96,8 +96,8 @@ in a parent POM.
 Init profiles
 ~~~~~~~~~~~~~
 
-The init profiles for the 12-factor extensions now use ``bare`` bases, which allow for rocks that are
-smaller in size and have a reduced attack surface for vulnerabilities.
+The init profiles for the 12-factor app extensions now use ``bare`` bases, which 
+makes leaner rocks by default and reduces the attack surface for vulnerabilities.
 
 
 12-factor rocks
