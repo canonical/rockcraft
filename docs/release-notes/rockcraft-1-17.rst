@@ -76,7 +76,7 @@ Python bytecode compilation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The :ref:`craft_parts_uv_plugin` now compiles Python bytecode by default. This is desirable for most projects, as it
-improves the startup time of Python applications. To disable bytecode compilation, set the ``UV_COMPILE_BYTECODE``
+improves the startup time of Python apps. To disable bytecode compilation, set the ``UV_COMPILE_BYTECODE``
 environment variable to ``0`` in the part's :ref:`build-environment <partspec.build_environment>` key.
 
 
