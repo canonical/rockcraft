@@ -1,0 +1,187 @@
+summary: flask extension WSGI auto-discovery test
+environment:
+  SCENARIO/app_app_bare: app_app
+  BASE/app_app_bare: bare
+  SCENARIO/app_app_2204: app_app
+  BASE/app_app_2204: ubuntu-22.04
+  SCENARIO/app_app_2404: app_app
+  BASE/app_app_2404: ubuntu-24.04
+
+  SCENARIO/app_application_bare: app_application
+  BASE/app_application_bare: bare
+  SCENARIO/app_application_2204: app_application
+  BASE/app_application_2204: ubuntu-22.04
+  SCENARIO/app_application_2404: app_application
+  BASE/app_application_2404: ubuntu-24.04
+
+  SCENARIO/app_create_app_bare: app_create_app
+  BASE/app_create_app_bare: bare
+  SCENARIO/app_create_app_2204: app_create_app
+  BASE/app_create_app_2204: ubuntu-22.04
+  SCENARIO/app_create_app_2404: app_create_app
+  BASE/app_create_app_2404: ubuntu-24.04
+
+  SCENARIO/app_make_app_bare: app_make_app
+  BASE/app_make_app_bare: bare
+  SCENARIO/app_make_app_2204: app_make_app
+  BASE/app_make_app_2204: ubuntu-22.04
+  SCENARIO/app_make_app_2404: app_make_app
+  BASE/app_make_app_2404: ubuntu-24.04
+
+  SCENARIO/main_app_bare: main_app
+  BASE/main_app_bare: bare
+  SCENARIO/main_app_2204: main_app
+  BASE/main_app_2204: ubuntu-22.04
+  SCENARIO/main_app_2404: main_app
+  BASE/main_app_2404: ubuntu-24.04
+
+  SCENARIO/main_application_bare: main_application
+  BASE/main_application_bare: bare
+  SCENARIO/main_application_2204: main_application
+  BASE/main_application_2204: ubuntu-22.04
+  SCENARIO/main_application_2404: main_application
+  BASE/main_application_2404: ubuntu-24.04
+
+  SCENARIO/main_create_app_bare: main_create_app
+  BASE/main_create_app_bare: bare
+  SCENARIO/main_create_app_2204: main_create_app
+  BASE/main_create_app_2204: ubuntu-22.04
+  SCENARIO/main_create_app_2404: main_create_app
+  BASE/main_create_app_2404: ubuntu-24.04
+
+  SCENARIO/main_make_app_bare: main_make_app
+  BASE/main_make_app_bare: bare
+  SCENARIO/main_make_app_2204: main_make_app
+  BASE/main_make_app_2204: ubuntu-22.04
+  SCENARIO/main_make_app_2404: main_make_app
+  BASE/main_make_app_2404: ubuntu-24.04
+
+  SCENARIO/module_app_bare: module_app
+  BASE/module_app_bare: bare
+  SCENARIO/module_app_2204: module_app
+  BASE/module_app_2204: ubuntu-22.04
+  SCENARIO/module_app_2404: module_app
+  BASE/module_app_2404: ubuntu-24.04
+
+  SCENARIO/module_application_bare: module_application
+  BASE/module_application_bare: bare
+  SCENARIO/module_application_2204: module_application
+  BASE/module_application_2204: ubuntu-22.04
+  SCENARIO/module_application_2404: module_application
+  BASE/module_application_2404: ubuntu-24.04
+
+  SCENARIO/module_create_app_bare: module_create_app
+  BASE/module_create_app_bare: bare
+  SCENARIO/module_create_app_2204: module_create_app
+  BASE/module_create_app_2204: ubuntu-22.04
+  SCENARIO/module_create_app_2404: module_create_app
+  BASE/module_create_app_2404: ubuntu-24.04
+
+  SCENARIO/module_make_app_bare: module_make_app
+  BASE/module_make_app_bare: bare
+  SCENARIO/module_make_app_2204: module_make_app
+  BASE/module_make_app_2204: ubuntu-22.04
+  SCENARIO/module_make_app_2404: module_make_app
+  BASE/module_make_app_2404: ubuntu-24.04
+
+  SCENARIO/src_app_bare: src_app
+  BASE/src_app_bare: bare
+  SCENARIO/src_app_2204: src_app
+  BASE/src_app_2204: ubuntu-22.04
+  SCENARIO/src_app_2404: src_app
+  BASE/src_app_2404: ubuntu-24.04
+
+  SCENARIO/src_main_bare: src_main
+  BASE/src_main_bare: bare
+  SCENARIO/src_main_2204: src_main
+  BASE/src_main_2204: ubuntu-22.04
+  SCENARIO/src_main_2404: src_main
+  BASE/src_main_2404: ubuntu-24.04
+
+execute: |
+  NAME="flask-${SCENARIO//_/-}"
+  ROCK_FILE="${NAME}_0.1_amd64.rock"
+  IMAGE="${NAME}:0.1"
+
+  cd "${SCENARIO}"
+  cp ../requirements.txt .
+
+  rm -f rockcraft.yaml
+  run_rockcraft init --name "${NAME}" --profile flask-framework
+
+  if [ "${BASE}" = "bare" ]; then
+    sed -i "s/^base: .*/base: ${BASE}\nbuild-base: ubuntu@22.04/" rockcraft.yaml
+  else
+    sed -i "s/^base: .*/base: ${BASE//-/@}/" rockcraft.yaml
+  fi
+
+  run_rockcraft pack
+
+  test -f "${ROCK_FILE}"
+
+  # Ensure docker does not have this container image
+  docker rmi --force "${IMAGE}"
+  # Install container
+  sudo rockcraft.skopeo --insecure-policy copy "oci-archive:${ROCK_FILE}" "docker-daemon:${IMAGE}"
+  # Ensure container exists
+  docker images "${IMAGE}" | MATCH "${NAME}"
+
+  # ensure container doesn't exist
+  docker rm -f "${NAME}-container"
+
+  # test that the correct WSGI path is configured
+  if [ "${SCENARIO}" = "app_app" ]; then
+    docker run --rm "${IMAGE}" plan | grep "app:app"
+    docker run --rm --entrypoint /bin/python3 "${IMAGE}" -m gunicorn --chdir /flask/app --check-config app:app
+  elif [ "${SCENARIO}" = "app_application" ]; then
+    docker run --rm "${IMAGE}" plan | grep "app:application"
+    docker run --rm --entrypoint /bin/python3 "${IMAGE}" -m gunicorn --chdir /flask/app --check-config app:application
+  elif [ "${SCENARIO}" = "app_create_app" ]; then
+    docker run --rm "${IMAGE}" plan | grep "app:create_app()"
+    docker run --rm --entrypoint /bin/python3 "${IMAGE}" -m gunicorn --chdir /flask/app --check-config "app:create_app()"
+  elif [ "${SCENARIO}" = "app_make_app" ]; then
+    docker run --rm "${IMAGE}" plan | grep "app:make_app()"
+    docker run --rm --entrypoint /bin/python3 "${IMAGE}" -m gunicorn --chdir /flask/app --check-config "app:make_app()"
+  elif [ "${SCENARIO}" = "main_app" ]; then
+    docker run --rm "${IMAGE}" plan | grep "main:app"
+    docker run --rm --entrypoint /bin/python3 "${IMAGE}" -m gunicorn --chdir /flask/app --check-config main:app
+  elif [ "${SCENARIO}" = "main_application" ]; then
+    docker run --rm "${IMAGE}" plan | grep "main:application"
+    docker run --rm --entrypoint /bin/python3 "${IMAGE}" -m gunicorn --chdir /flask/app --check-config main:application
+  elif [ "${SCENARIO}" = "main_create_app" ]; then
+    docker run --rm "${IMAGE}" plan | grep "main:create_app()"
+    docker run --rm --entrypoint /bin/python3 "${IMAGE}" -m gunicorn --chdir /flask/app --check-config "main:create_app()"
+  elif [ "${SCENARIO}" = "main_make_app" ]; then
+    docker run --rm "${IMAGE}" plan | grep "main:make_app()"
+    docker run --rm --entrypoint /bin/python3 "${IMAGE}" -m gunicorn --chdir /flask/app --check-config "main:make_app()"
+  elif [ "${SCENARIO}" = "module_app" ]; then
+    docker run --rm "${IMAGE}" plan | grep "flaskapp:app"
+    docker run --rm --entrypoint /bin/python3 "${IMAGE}" -m gunicorn --chdir /flask/app --check-config flaskapp:app
+  elif [ "${SCENARIO}" = "module_application" ]; then
+    docker run --rm "${IMAGE}" plan | grep "flaskapp:application"
+    docker run --rm --entrypoint /bin/python3 "${IMAGE}" -m gunicorn --chdir /flask/app --check-config flaskapp:application
+  elif [ "${SCENARIO}" = "module_create_app" ]; then
+    docker run --rm "${IMAGE}" plan | grep "flaskapp:create_app()"
+    docker run --rm --entrypoint /bin/python3 "${IMAGE}" -m gunicorn --chdir /flask/app --check-config "flaskapp:create_app()"
+  elif [ "${SCENARIO}" = "module_make_app" ]; then
+    docker run --rm "${IMAGE}" plan | grep "flaskapp:make_app()"
+    docker run --rm --entrypoint /bin/python3 "${IMAGE}" -m gunicorn --chdir /flask/app --check-config "flaskapp:make_app()"
+  elif [ "${SCENARIO}" = "src_app" ]; then
+    docker run --rm "${IMAGE}" plan | grep "src.app:create_app()"
+    docker run --rm --entrypoint /bin/python3 "${IMAGE}" -m gunicorn --chdir /flask/app --check-config "src.app:create_app()"
+  elif [ "${SCENARIO}" = "src_main" ]; then
+    docker run --rm "${IMAGE}" plan | grep "src.main:app"
+    docker run --rm --entrypoint /bin/python3 "${IMAGE}" -m gunicorn --chdir /flask/app --check-config src.main:app
+  fi
+
+  # test the flask service
+  docker run --name "${NAME}-container" -d -p 8140:8000 "${IMAGE}"
+  retry -n 5 --wait 2 curl localhost:8140
+  [ "$(curl -sSf localhost:8140)" == "ok" ]
+
+restore: |
+  NAME="flask-${SCENARIO//_/-}"
+  docker stop "${NAME}-container" || true
+  docker rm --force "${NAME}-container"
+  rm -f "${SCENARIO}/"*.rock "${SCENARIO}/rockcraft.yaml" "${SCENARIO}/requirements.txt"
+  docker system prune -a -f
