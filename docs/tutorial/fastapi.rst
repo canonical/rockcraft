@@ -350,8 +350,8 @@ The top of the ``rockcraft.yaml`` file should look similar to the following:
     name: fastapi-hello-world
     # see https://documentation.ubuntu.com/rockcraft/latest/explanation/bases/
     # for more information about bases and using 'bare' bases for chiselled rocks
-    base: bare
-    build-base: ubuntu@24.04
+    base: bare # as an alternative, an ubuntu base can be used
+    build-base: ubuntu@24.04 # build-base is required when the base is bare
     version: '0.1-chiselled'
     summary: A summary of your FastAPI app # 79 char long summary
     description: |
