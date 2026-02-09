@@ -67,9 +67,7 @@ Project schema included in snap
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The JSON Schema for the rockcraft.yaml project file is now included in the Rockcraft
-snap. The schema can be found at the ``schema/rockcraft.json`` path inside the snap,
-and can be used to validate projects against the specific version of Rockcraft that
-is installed.
+snap. The schema is located at the ``schema/rockcraft.json`` path inside the snap.
 
 
 Python compilation with the uv plugin
