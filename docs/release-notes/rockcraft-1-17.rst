@@ -66,7 +66,7 @@ the Gradle Daemon during build.
 Project schema included in snap
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The JSON Schema for the rockcraft.yaml project file is now included in the Rockcraft
+The JSON Schema for the ``rockcraft.yaml`` project file is now included in the Rockcraft
 snap. The schema is located at the ``schema/rockcraft.json`` path inside the snap.
 
 
