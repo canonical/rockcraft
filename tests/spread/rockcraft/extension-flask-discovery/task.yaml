@@ -264,11 +264,8 @@ execute: |
 
   run_rockcraft expand-extensions > expanded.yaml
 
-  # Build expected WSGI path
-  FILE_MODULE=$(echo "${FILE}" | sed 's/\.py$//')
-
   # WSGI path in environment, replace rock_name with normalized name if used
-  EXPECTED=$(echo "${WSGI_PATH}" | sed "s/rock_name/${NORMALIZED_NAME}/" | sed "s/\./\//g")
+  EXPECTED=$(echo "${WSGI_PATH}" | sed "s/rock_name/${NORMALIZED_NAME}/")
 
   # Validate WSGI path in expanded YAML
   if ! grep -q "'${EXPECTED}'" expanded.yaml; then
