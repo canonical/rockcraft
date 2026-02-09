@@ -77,7 +77,7 @@ execute: |
 
   # [docs:change-base]
   sed -i \
-    "s/base: .*/base: bare\nbuild-base: ubuntu@22.04/g" \
+    "s/base: .*/base: bare\nbuild-base: ubuntu@24.04/g" \
     rockcraft.yaml
   # [docs:change-base-end]
   sed -i "s/version: .*/version: 0.1-chiselled/g" rockcraft.yaml
