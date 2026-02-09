@@ -249,7 +249,7 @@ execute: |
   cp ../requirements.txt .
 
   # Determine target directory based on MODULE
-  if [ -z "${MODULE}" ]; then
+  if [ -z "${MODULE:-}" ]; then
     TARGET_DIR="."
   elif [ "${MODULE}" = "rock_name" ]; then
     TARGET_DIR="${NORMALIZED_NAME}"
