@@ -150,6 +150,11 @@ class ExpressJSFramework(Extension):
                 f"chown -R {USER_UID}:{USER_UID} ${{CRAFT_PART_INSTALL}}/app\n"
             ),
         }
+        if self._rock_base == "bare":
+            install_app_part["override-build"] = (
+                f"{install_app_part['override-build']}"
+                "ln -sf /usr/bin/bash ${CRAFT_PART_INSTALL}/usr/bin/sh"
+            )
         build_packages = self._gen_app_build_packages()
         if build_packages:
             install_app_part["build-packages"] = build_packages

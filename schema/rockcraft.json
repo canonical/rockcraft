@@ -5248,6 +5248,11 @@
                 "title": "Gradle-Task",
                 "type": "string"
               },
+              "gradle-use-daemon": {
+                "default": false,
+                "title": "Gradle-Use-Daemon",
+                "type": "boolean"
+              },
               "source-checksum": {
                 "default": "",
                 "description": "The checksum of the downloaded source, to ensure integrity.",

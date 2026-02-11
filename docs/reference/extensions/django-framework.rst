@@ -9,6 +9,7 @@ rocks.
 It facilitates the installation of Django application dependencies, including
 Gunicorn, inside the rock. Additionally, it transfers your project files to
 ``/django/app`` within the rock.
+By default, the base ``bare`` is used to generate a lightweight image.
 
 .. note::
     The Django extension is compatible with the ``bare``, ``ubuntu@22.04``
