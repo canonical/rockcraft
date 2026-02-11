@@ -929,7 +929,8 @@ def test_django_extension_incorrect_wsgi_path_error_wsgi_missing(tmp_path):
     (tmp_path / "requirements.txt").write_text("django")
 
     with pytest.raises(
-        ExtensionError, match=r"wsgi:application, no wsgi\.py file found"
+        ExtensionError,
+        match=r"unable to locate a wsgi\.py",
     ):
         extensions.apply_extensions(tmp_path, WSGI_DJANGO_INPUT_YAML.copy())
 
@@ -943,7 +944,7 @@ def test_django_extension_incorrect_wsgi_path_error_no_app(tmp_path):
 
     with pytest.raises(
         ExtensionError,
-        match=r"wsgi:application, no variable named 'application' in wsgi.py",
+        match=r"unable to locate a wsgi\.py",
     ):
         extensions.apply_extensions(tmp_path, WSGI_DJANGO_INPUT_YAML.copy())
 

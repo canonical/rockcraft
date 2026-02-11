@@ -17,7 +17,6 @@
 """An extension for the Gunicorn based Python WSGI application extensions."""
 
 import abc
-import ast
 import contextlib
 import fnmatch
 import os.path
@@ -43,7 +42,6 @@ from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
 from ._python_utils import (
     find_entrypoint_with_factory,
     find_entrypoint_with_variable,
-    find_global_constant_in_file,
     has_global_variable,
 )
 from ._utils import find_ubuntu_base_python_version
@@ -468,10 +466,20 @@ class DjangoFramework(_GunicornBase):
     @override
     def wsgi_path(self) -> str:
         """Return the wsgi path of the wsgi application."""
-        rock_dir = self.project_root / self.name
+        module = f"{self.name}.wsgi"
+        for wsgi_file in self._wsgi_locations():
+            if not wsgi_file.exists():
+                continue
 
-        manage_py = rock_dir / "manage.py"
-        return self._wsgi_path_from_manage_py(manage_py)
+            if has_global_variable(wsgi_file, "application"):
+                return f"{module}:application"
+
+        raise ExtensionError(
+            "django application can not be imported, unable to locate a wsgi.py "
+            "with an 'application' callable in the default discovery locations.",
+            doc_slug="/reference/extensions/django-framework/#project-requirements",
+            logpath_report=False,
+        )
 
     @property
     @override
@@ -497,88 +505,9 @@ class DjangoFramework(_GunicornBase):
             }
         return {}
 
-    def _extract_django_settings_module(self, manage_py: Path) -> str | None:
-        """Extract DJANGO_SETTINGS_MODULE value from Django's manage.py.
-
-        Parses manage.py to find os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'value').
-
-        Args:
-            manage_py: Path to Django's manage.py file.
-
-        Returns:
-            The settings module string (like 'myproject.settings'), or None if not found.
-
-        """
-        tree = ast.parse(manage_py.read_text(encoding="utf-8"), filename=manage_py)
-        for node in ast.walk(tree):
-            if (
-                isinstance(node, ast.Call)
-                and isinstance(node.func, ast.Attribute)
-                and node.func.attr == "setdefault"
-                and len(node.args) >= 2  # noqa: PLR2004 (magic-value-comparison)
-                and isinstance(node.args[0], ast.Constant)
-                and node.args[0].value == "DJANGO_SETTINGS_MODULE"
-                and isinstance(node.args[1], ast.Constant)
-                and isinstance(node.args[1].value, str)
-            ):
-                return node.args[1].value
-        return None
-
-    def _wsgi_path_from_manage_py(self, manage_py: Path) -> str:
-        if not manage_py.exists():
-            raise ExtensionError(
-                "django application can not be imported, "
-                "unable to infer WSGI application because manage.py was not found "
-                f"at {str(manage_py)}.",
-                doc_slug="/reference/extensions/django-framework/#project-requirements",
-                logpath_report=False,
-            )
-
-        settings_module = self._extract_django_settings_module(manage_py)
-        if not settings_module:
-            raise ExtensionError(
-                "django application can not be imported, "
-                "unable to infer settings module (DJANGO_SETTINGS_MODULE not found in manage.py).",
-                doc_slug="/reference/extensions/django-framework/#project-requirements",
-                logpath_report=False,
-            )
-        project_dir = manage_py.parent
-        settings = project_dir / Path(*settings_module.split(".")).with_suffix(".py")
-
-        if not settings.exists():
-            raise ExtensionError(
-                "django application can not be imported, "
-                f"unable to locate settings.py (expected {str(settings)}).",
-                doc_slug="/reference/extensions/django-framework/#project-requirements",
-                logpath_report=False,
-            )
-
-        wsgi_app_value = find_global_constant_in_file(settings, "WSGI_APPLICATION")
-        if wsgi_app_value and isinstance(wsgi_app_value, str) and "." in wsgi_app_value:
-            *relative_wsgi_path_parts, wsgi_application = wsgi_app_value.split(".")
-            wsgi_path = Path(*relative_wsgi_path_parts)
-            if (project_dir / wsgi_path.with_suffix(".py")).exists():
-                return f"{wsgi_path.as_posix().replace('/', '.')}:{wsgi_application}"
-
-        raise ExtensionError(
-            "django application can not be imported, "
-            "unable to infer WSGI application factory from settings.py.",
-            doc_slug="/reference/extensions/django-framework/#project-requirements",
-            logpath_report=False,
-        )
-
-    def _check_wsgi_path(self) -> None:
-        module, application = self.wsgi_path.split(":", 1)
-        wsgi_file = (
-            self.project_root / self.name / Path(*module.split("."))
-        ).with_suffix(".py")
-        if not has_global_variable(wsgi_file, application):
-            raise ExtensionError(
-                f"django application can not be imported from {self.wsgi_path}, "
-                f"no variable named '{application}' in {str(wsgi_file)}",
-                doc_slug="/reference/extensions/django-framework/#project-requirements",
-                logpath_report=False,
-            )
+    def _wsgi_locations(self) -> Iterable[Path]:
+        """Return candidate paths for the project's wsgi.py."""
+        return (self.project_root / self.name / self.name / "wsgi.py",)
 
     @override
     def check_project(self) -> None:
@@ -591,4 +520,4 @@ class DjangoFramework(_GunicornBase):
                 logpath_report=False,
             )
         if not self.yaml_data.get("services", {}).get("django", {}).get("command"):
-            self._check_wsgi_path()
+            self.wsgi_path  # noqa: B018 (unused expression, just checking for errors)
