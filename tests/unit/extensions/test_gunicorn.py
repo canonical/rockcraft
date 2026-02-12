@@ -781,15 +781,18 @@ def test_flask_extension_app_in_non_matching_directory(tmp_path):
 @pytest.mark.parametrize(
     ("packages", "expected_worker"), [("Django\ngevent", "gevent"), ("Django", "sync")]
 )
+@pytest.mark.parametrize("wsgi_subdir", ["foo_bar", "mysite"])
 def test_django_extension_default(
-    tmp_path, django_input_yaml, packages, expected_worker
+    tmp_path, django_input_yaml, packages, expected_worker, wsgi_subdir
 ):
     (tmp_path / "requirements.txt").write_text(packages)
     (tmp_path / "test").mkdir()
-    (tmp_path / "foo_bar" / "foo_bar").mkdir(parents=True)
-    (tmp_path / "foo_bar" / "foo_bar" / "wsgi.py").write_text("application = object()")
+    django_project_dir = tmp_path / "foo_bar" / wsgi_subdir
+    django_project_dir.mkdir(parents=True)
+    (django_project_dir / "wsgi.py").write_text("application = object()")
 
     applied = extensions.apply_extensions(tmp_path, django_input_yaml)
+    expected_module = f"{wsgi_subdir}.wsgi"
 
     source = applied["parts"]["django-framework/config-files"]["source"]
     del applied["parts"]["django-framework/config-files"]["source"]
@@ -865,7 +868,10 @@ def test_django_extension_default(
         "services": {
             "django": {
                 "after": ["statsd-exporter"],
-                "command": f"/bin/python3 -m gunicorn -c /django/gunicorn.conf.py 'foo_bar.wsgi:application' -k [ {expected_worker} ]",
+                "command": (
+                    "/bin/python3 -m gunicorn -c /django/gunicorn.conf.py "
+                    f"'{expected_module}:application' -k [ {expected_worker} ]"
+                ),
                 "override": "replace",
                 "startup": "enabled",
                 "user": "_daemon_",

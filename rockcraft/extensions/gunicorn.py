@@ -467,17 +467,17 @@ class DjangoFramework(_GunicornBase):
     @override
     def wsgi_path(self) -> str:
         """Return the wsgi path of the wsgi application."""
-        module = f"{self.name}.wsgi"
         for wsgi_file in self._wsgi_locations():
             if not wsgi_file.exists():
                 continue
 
             if has_global_variable(wsgi_file, "application"):
+                module = self._module_from_wsgi_file(wsgi_file)
                 return f"{module}:application"
 
         raise ExtensionError(
             "django application can not be imported, unable to locate a wsgi.py "
-            "with an 'application' callable in the default discovery locations.",
+            f"with an 'application' callable in the default discovery locations ({', '.join(str(p) for p in self._wsgi_locations())}).",
             doc_slug="/reference/extensions/django-framework/#project-requirements",
             logpath_report=False,
         )
@@ -508,7 +508,16 @@ class DjangoFramework(_GunicornBase):
 
     def _wsgi_locations(self) -> Iterable[Path]:
         """Return candidate paths for the project's wsgi.py."""
-        return (self.project_root / self.name / self.name / "wsgi.py",)
+        return (
+            self.project_root / self.name / self.name / "wsgi.py",
+            self.project_root / self.name / "mysite/wsgi.py",
+        )
+
+    def _module_from_wsgi_file(self, wsgi_file: Path) -> str:
+        """Return the dotted module path for the discovered wsgi file."""
+        base_package = self.project_root / self.name
+        relative_path = wsgi_file.relative_to(base_package)
+        return ".".join(relative_path.with_suffix("").parts)
 
     @override
     def check_project(self) -> None:
