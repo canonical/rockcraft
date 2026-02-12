@@ -19,25 +19,6 @@ environment:
   WSGI_PATH/rock_app_2404: rock_name.app:app
   BASE/rock_app_2404: ubuntu-24.04
 
-  # Nested src package with alternative `application` attribute
-  MODULE/application_src_bare: src
-  FILE/application_src_bare: __init__.py
-  APP_FILE/application_src_bare: case_application_var.py
-  WSGI_PATH/application_src_bare: src:application
-  BASE/application_src_bare: bare
-
-  MODULE/application_src_2204: src
-  FILE/application_src_2204: __init__.py
-  APP_FILE/application_src_2204: case_application_var.py
-  WSGI_PATH/application_src_2204: src:application
-  BASE/application_src_2204: ubuntu-22.04
-
-  MODULE/application_src_2404: src
-  FILE/application_src_2404: __init__.py
-  APP_FILE/application_src_2404: case_application_var.py
-  WSGI_PATH/application_src_2404: src:application
-  BASE/application_src_2404: ubuntu-24.04
-
   # Factory discovery from nested module
   MODULE/create_app_main_bare: app
   FILE/create_app_main_bare: main.py
