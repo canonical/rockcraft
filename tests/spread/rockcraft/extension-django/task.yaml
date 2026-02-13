@@ -17,7 +17,7 @@ execute: |
 
   # Replace base with ubuntu@<base>
   sed -i "s/^base: .*/base: ${BASE}/g" rockcraft.yaml
-  echo "build-base: ${BUILD_BASE}" >> rockcraft.yaml
+  sed -i "s/^build-base: .*/build-base: ${BUILD_BASE}/g" rockcraft.yaml
 
   # Install findutils for the bare scenario
   # This is a workaround for the fact that the bare scenario does not have
