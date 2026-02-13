@@ -510,7 +510,9 @@ class DjangoFramework(_GunicornBase):
         """Return candidate paths for the project's wsgi.py."""
         return (
             self.project_root / self.name / self.name / "wsgi.py",
-            self.project_root / self.name / "mysite/wsgi.py",
+            self.project_root
+            / self.name
+            / "mysite/wsgi.py",  # Used in Django's official tutorial
         )
 
     def _module_from_wsgi_file(self, wsgi_file: Path) -> str:

@@ -19,12 +19,7 @@
 import ast
 from collections.abc import Callable, Iterable
 from pathlib import Path
-from types import EllipsisType
 from typing import TypeAlias
-
-AstConstantT: TypeAlias = (
-    str | bytes | bool | int | float | complex | None | EllipsisType
-)
 
 MatchFn: TypeAlias = Callable[[Path], str | None]
 
