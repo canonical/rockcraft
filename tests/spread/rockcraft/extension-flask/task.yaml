@@ -11,8 +11,6 @@ execute: |
   run_rockcraft init --name flask-extension --profile flask-framework
   sed -i "s/name: .*/name: ${NAME}/g" rockcraft.yaml
   if [ "${SCENARIO}" = "bare" ]; then
-    sed -i "s/base: .*/base: ${SCENARIO}\nbuild-base: ubuntu@22.04/g" rockcraft.yaml
-
     # Install findutils for the bare scenario
     # This is a workaround for the fact that the bare scenario does not have
     # findutils installed by default, which is required for the test
@@ -25,6 +23,8 @@ execute: |
   EOL
   else
     sed -i "s/base: .*/base: ${SCENARIO//-/@}/g" rockcraft.yaml
+    sed -i "/build-base:/d" rockcraft.yaml
+
   fi
   run_rockcraft pack
 

@@ -11,10 +11,9 @@ execute: |
 
   run_rockcraft init --name flask-extension --profile flask-framework
   sed -i "s/name: .*/name: ${NAME}/g" rockcraft.yaml
-  if [ "${SCENARIO}" = "bare" ]; then
-      sed -i "s/base: .*/base: ${SCENARIO}\nbuild-base: ubuntu@22.04/g" rockcraft.yaml
-  else
+  if [ "${SCENARIO}" != "bare" ]; then
       sed -i "s/base: .*/base: ${SCENARIO//-/@}/g" rockcraft.yaml
+      sed -i "/build-base:/d" rockcraft.yaml
   fi
 
   # uncomment the parts main section

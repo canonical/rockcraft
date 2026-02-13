@@ -22,6 +22,7 @@ execute: |
   EOL
   else
     sed -i "s/base: .*/base: ${SCENARIO//-/@}/g" rockcraft.yaml
+    sed -i "/build-base:/d" rockcraft.yaml
   fi
   run_rockcraft pack
 
