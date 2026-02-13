@@ -54,6 +54,11 @@ USER_UID: int = SUPPORTED_GLOBAL_USERNAMES["_daemon_"]["uid"]
 class _GunicornBase(Extension):
     """An extension base class for Python WSGI framework extensions."""
 
+    @property
+    def name(self) -> str:
+        """Return the normalized name of the rockcraft project."""
+        return self.yaml_data["name"].replace("-", "_").lower()
+
     @staticmethod
     @override
     def get_supported_bases() -> tuple[str, ...]:
@@ -278,11 +283,6 @@ class FlaskFramework(_GunicornBase):
     """An extension for constructing Python applications based on the Flask framework."""
 
     @property
-    def name(self) -> str:
-        """Return the normalized name of the rockcraft project."""
-        return self.yaml_data["name"].replace("-", "_").lower()
-
-    @property
     @override
     def wsgi_path(self) -> str:
         """Return the wsgi path of the wsgi application.
@@ -457,11 +457,6 @@ class FlaskFramework(_GunicornBase):
 
 class DjangoFramework(_GunicornBase):
     """An extension for constructing Python applications based on the Django framework."""
-
-    @property
-    def name(self) -> str:
-        """Return the normalized name of the rockcraft project."""
-        return self.yaml_data["name"].replace("-", "_").lower()
 
     @property
     @override
