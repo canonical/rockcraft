@@ -335,13 +335,7 @@ in a much smaller rock with a reduced attack surface.
     development tooling (such as for debugging).
 
 The first step towards chiselling the rock is to ensure we are using a
-``bare`` :ref:`base <explanation-bases>`:
-
-.. literalinclude:: code/django/task.yaml
-    :language: bash
-    :start-after: [docs:change-base]
-    :end-before: [docs:change-base-end]
-    :dedent: 2
+``bare`` :ref:`base <explanation-bases>`.
 
 So that we can compare the size after chiselling, open the project
 file and change the ``version`` (e.g. to ``0.1-chiselled``). The top of
