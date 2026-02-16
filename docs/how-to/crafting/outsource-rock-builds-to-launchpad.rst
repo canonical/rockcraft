@@ -40,7 +40,7 @@ Define desired architectures
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Once you :ref:`start your remote build <start-a-remote-build>`, all architectures
-defined in the :ref:`rockcraft-yaml-platforms` key of your project file will be built.
+defined in the :ref:`Project.platforms` key of your project file will be built.
 Rockcraft currently supports AMD64, ARM64, ARM hard float, IA-32, little-endian PowerPC
 64-bit, RISC-V 64-bit and S390x. Your project file can contain any subset of these
 architectures.

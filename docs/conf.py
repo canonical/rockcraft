@@ -109,10 +109,12 @@ exclude_patterns = [
     "common/craft-parts/reference/step_execution_environment.rst",
     "common/craft-parts/reference/step_output_directories.rst",
     "common/craft-parts/reference/part_properties.rst",
+    "common/craft-parts/reference/plugins/colcon_plugin.rst",
     "common/craft-parts/reference/plugins/poetry_plugin.rst",
     "common/craft-parts/reference/plugins/python_plugin.rst",
     "common/craft-parts/reference/plugins/python_v2_plugin.rst",
     "common/craft-parts/reference/plugins/uv_plugin.rst",
+    "common/craft-parts/reference/plugins/ruby_plugin.rst",
     # Extra non-craft-parts exclusions can be added after this comment
     "reuse/*",
 ]
@@ -134,6 +136,7 @@ intersphinx_mapping = {
     "charmcraft": ("https://documentation.ubuntu.com/charmcraft/stable/", None),
     "pebble": ("https://documentation.ubuntu.com/pebble", None),
     "craft-parts": ("https://canonical-craft-parts.readthedocs-hosted.com/latest", None),
+    "chisel": ("https://documentation.ubuntu.com/chisel/en/latest", None),
 }
 # See also:
 # https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html#confval-intersphinx_disabled_reftypes
@@ -149,9 +152,9 @@ sitemap_url_scheme = "{link}"
 
 # Exclude generated pages from the sitemap:
 sitemap_excludes = [
-    '404/',
-    'genindex/',
-    'search/',
+    "404/",
+    "genindex/",
+    "search/",
 ]
 
 # Do (not) include module names.

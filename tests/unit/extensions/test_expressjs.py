@@ -202,7 +202,8 @@ def package_json_file(app_path):
                         "chown -R 584792:584792 ${CRAFT_PART_INSTALL}/lib/node_modules/test-expressjs-project\n"
                         "ln -s /lib/node_modules/test-expressjs-project "
                         "${CRAFT_PART_INSTALL}/app\n"
-                        "chown -R 584792:584792 ${CRAFT_PART_INSTALL}/app\n",
+                        "chown -R 584792:584792 ${CRAFT_PART_INSTALL}/app\n"
+                        "ln -sf /usr/bin/bash ${CRAFT_PART_INSTALL}/usr/bin/sh",
                         "plugin": "npm",
                         "source": "app/",
                         "stage-packages": [
@@ -272,7 +273,8 @@ def package_json_file(app_path):
                         "chown -R 584792:584792 ${CRAFT_PART_INSTALL}/lib/node_modules/test-expressjs-project\n"
                         "ln -s /lib/node_modules/test-expressjs-project "
                         "${CRAFT_PART_INSTALL}/app\n"
-                        "chown -R 584792:584792 ${CRAFT_PART_INSTALL}/app\n",
+                        "chown -R 584792:584792 ${CRAFT_PART_INSTALL}/app\n"
+                        "ln -sf /usr/bin/bash ${CRAFT_PART_INSTALL}/usr/bin/sh",
                         "plugin": "npm",
                         "source": "app/",
                         "stage-packages": [

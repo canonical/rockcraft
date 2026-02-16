@@ -5,12 +5,12 @@ dynamic = ["version"]
 dependencies = [
     # To use a dev version of a craft library:
     # craft-lib @ git+https://github.com/canonical/craft-lib@ref
-    "craft-application>=6.0.1",
+    "craft-application>=6.1.1",
     "craft-archives>=2.2.0",
     "craft-cli>=3.1.2",
-    "craft-parts>=2.27.0",
+    "craft-parts>=2.29.0",
     "craft-platforms>=0.10.0",
-    "craft-providers>=3.1.0",
+    "craft-providers>=3.3.0",
     "overrides>=7.7.0",
     # setuptools >= 80.9 has a noisy warning about pkg_resources
     "setuptools~=80.9.0",
@@ -51,7 +51,7 @@ types = [
 ]
 docs = [
     "canonical-sphinx[full]~=0.5.1",
-    "pydantic-kitbash~=0.1",
+    "pydantic-kitbash~=1.0",
     "sphinx-autobuild~=2024.2",
     "sphinx-pydantic==0.1.1",
     # sphinx-sitemap is pinned to 2.6 because https://github.com/jdillard/sphinx-sitemap/pull/95
@@ -129,6 +129,9 @@ constraint-dependencies = [
     "urllib3>=2.0",
     "webencodings>=0.4.0",
     "wheel>=0.38",
+    # protobuf 6.33.x segfaults on s390x
+    # this issue might be the cause: https://github.com/protocolbuffers/protobuf/issues/24103
+    "protobuf==6.32.*",
 ]
 conflicts = [
     [

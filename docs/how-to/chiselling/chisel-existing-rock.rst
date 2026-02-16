@@ -8,8 +8,8 @@ testing purposes. However, when moving to production, you want to make your
 rock as lean and secure as possible, getting rid of all the unnecessary bits
 and thus reducing its attack surface, while retaining its functionality.
 
-For this, you'll want to ensure that your rock has a bare :ref:`base
-<rockcraft-yaml-base>` and that its contents are :ref:`chiselled <explanation-chisel>`.
+For this, you'll want to ensure that your rock has a bare :ref:`Project.base` and that
+its contents are :ref:`chiselled <explanation-chisel>`.
 
 For this guide, let's take the example of a Python runtime rock.
 

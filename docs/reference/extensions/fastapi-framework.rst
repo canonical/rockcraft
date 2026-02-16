@@ -9,6 +9,7 @@ rocks.
 It facilitates the installation of FastAPI application dependencies, including
 Uvicorn, inside the rock. Additionally, it transfers your project files to
 ``/app`` within the rock.
+By default, the base ``bare`` is used to generate a lightweight image.
 
 .. note::
     The FastAPI extension is compatible with the ``bare`` and ``ubuntu@24.04``

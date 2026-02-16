@@ -103,6 +103,7 @@ def test_go_extension_bare(tmp_path):
 
     assert applied["parts"]["go-framework/runtime"] == {
         "plugin": "nil",
+        "override-build": "ln -sf /usr/bin/bash ${CRAFT_PART_INSTALL}/usr/bin/sh",
         "stage-packages": ["ca-certificates_data", "bash_bins", "coreutils_bins"],
     }
 
