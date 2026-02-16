@@ -1,4 +1,4 @@
-.. _expl_prime_step_OCI_layer:
+.. _explanation-prime-step-oci-layer:
 
 From prime step to OCI layer
 ============================
