@@ -23,56 +23,54 @@ directing your focus to what really matters: the image's content.
 In this documentation
 ---------------------
 
-Getting started with Rockcraft
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. list-table::
+    :widths: 35 65
+    :header-rows: 0
 
-Understand Rockcraft and build your first Rock.
-
-* **Tutorial:** :ref:`Build your first rock in 15 min <tutorial-create-a-hello-world-rock>`
-* **Basic concepts:** :ref:`Lifecycle details of a rock <craft-parts:lifecycle>`
-
-Building rocks
-~~~~~~~~~~~~~~
-
-Configure, build, harden, and publish rocks with Rockcraft.
-
-*  **Set up your rock:** :ref:`reference-rockcraft-yaml` •
-   :ref:`Types of bases <explanation-bases>` • :ref:`Specify a base <how-to-specify-a-base>` •
-   :ref:`Pebble as entrypoint <explanation-pebble>` •
-   :ref:`Convert an entrypoint to a Pebble layer <how-to-convert-an-entrypoint-to-a-pebble-layer>` •
-   :ref:`Define a non root user <how-to-add-an-internal-user>`
-*  **Hardening:**  :ref:`Overview <explanation-chisel>` • :ref:`Chisel rocks <how-to-chisel-a-rock>` •
-   :ref:`Install a custom slice <how-to-install-a-custom-package-slice>` •
-   :ref:`Migrate Docker images to chiseled rocks <how-to-migrate-a-docker-image-to-a-chiselled-rock>`
-* **Remote builds:** :ref:`Build remotely using Launchpad<how-to-outsource-rock-builds-to-launchpad>`
-*  **App rocks:** :ref:`Build a rock for an app <tutorial>` •
-   :ref:`Set-up 12-Factor rocks <set-up-web-app-rock>`•
-   :ref:`Use rocks for 12-Factor apps <use-web-app-rock>`
-*  **Pack:** :ref:`Use the Rockcraft pack GitHub Action<how-to-use-the-rockcraft-pack-github-action>` •
-   :ref:`Pack a Python package <tutorial-pack-a-python-package>`
-* **Publish:** :ref:`Publish a rock to a registry <how-to-publish-a-rock-to-a-registry>`
-
-Rock components
-~~~~~~~~~~~~~~~
-
-Define how a rock is built and run.
-
-* **Steps:** :ref:`ref_lifecycle_commands` • :ref:`expl_prime_step_OCI_layer`
-* **Parts:** :ref:`Understand Parts <craft-parts:parts>` • :ref:`craft-parts:filesets_explanation` • :ref:`Permissions <reference-parts-and-steps>`
-*  **Extensions:** :ref:`Extensions available <reference-extensions>` • :ref:`Commands <ref_extension_commands>` •
-   :ref:`configure-the-build-base-for-an-express-app`
-*  **Plugins:** :ref:`Plugins available <reference-plugins>` • :ref:`how-to-override-a-plugins-build` •
-   :ref:`Include local files and remote resources using the dump plugin <how-to-include-local-files-and-remote-resources>`
+    * - **Tutorial**
+      - :ref:`Build your first rock in 15 min <tutorial-create-a-hello-world-rock>`
+    * - **Installation and setup**
+      - :ref:`how-to-quickstart-guide`
+    * - **Vocabulary and syntax**
+      - :ref:`reference-commands` • :ref:`reference-rockcraft-yaml`
+    * - **Platform compatibility**
+      - :ref:`explanation-bases` • :ref:`how-to-specify-a-base` •
+        :ref:`Build remotely using Launchpad<how-to-outsource-rock-builds-to-launchpad>`
+    * - **Software integration**
+      - :external+craft-parts:ref:`parts` • :ref:`reference-plugins` •
+        :ref:`how-to-override-a-plugins-build` •
+        :ref:`reference-extensions`
+    * - **12-factor apps**
+      - :ref:`tutorial-build-a-rock-for-a-django-app` • 
+        :ref:`tutorial-build-a-rock-for-an-express-app` •
+        :ref:`tutorial-build-a-rock-for-a-fastapi-app` •
+        :ref:`tutorial-build-a-rock-for-a-flask-app` •
+        :ref:`tutorial-build-a-rock-for-a-go-app` •
+        :ref:`Set-up 12-Factor rocks <set-up-web-app-rock>` •
+        :ref:`Use rocks for 12-Factor apps <use-web-app-rock>`
+    * - **Process manager**
+      - :ref:`Pebble as entrypoint <explanation-pebble>` •
+        :ref:`Convert an entrypoint to a Pebble layer <how-to-convert-an-entrypoint-to-a-pebble-layer>`
+    * - **Hardening**
+      - :ref:`Chisel <explanation-chisel>` • 
+        :ref:`Chisel rocks <how-to-chisel-a-rock>` •
+        :ref:`Migrate Docker images to chiseled rocks <how-to-migrate-a-docker-image-to-a-chiselled-rock>` •
+        :ref:`Install a custom slice <how-to-install-a-custom-package-slice>` •
+        :ref:`Define a non root user <how-to-add-an-internal-user>`
+    * - **Distribution**
+      - :ref:`Publish a rock to a registry <how-to-publish-a-rock-to-a-registry>` •
+        :ref:`Use the Rockcraft pack GitHub Action<how-to-use-the-rockcraft-pack-github-action>`
 
 How this documentation is organized
 -----------------------------------
+
+This documentation uses the `Diátaxis documentation structure <https://diataxis.fr/>`_.
 
 *  The :ref:`Tutorial <tutorial>` takes you step-by-step through building your first rock.
 *  :ref:`How-to guides <how-to>` assume you have basic familiarity with Rockcraft.
    These include crafting rocks, building rocks for different apps and hardening.
 * :ref:`Reference <reference>` provides a guide to the .yaml files, commands and components.
 * :ref:`Explanation <explanation>` includes topic overviews, background and context and detailed discussion.
-
 
 Project and community
 ---------------------
@@ -103,10 +101,6 @@ Commercial support
 ~~~~~~~~~~~~~~~~~~
 
 Thinking about using Rocks for your next project? `Get in touch!`_
-
-_____________________________
-
-This documentation uses the `Diátaxis documentation structure <https://diataxis.fr/>`_.
 
 
 .. toctree::
