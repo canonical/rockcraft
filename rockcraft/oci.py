@@ -524,14 +524,13 @@ class Image:
         _config_image(image_path, annotation_params)
         emit.progress(f"Labels and annotations set to {labels_list}")
 
-    def set_media_type(
-        self,
-    ) -> None:
+    def set_media_type(self, arch: str) -> None:
         """Set the media type in the target image's manifest."""
         image_path = self.path / self.image_name
+        mapping = SUPPORTED_ARCHS[arch]
         _inject_oci_fields(
             image_path,
-            arch_variant=None,
+            arch_variant=mapping.go_variant,
         )
 
 
