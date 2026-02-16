@@ -41,7 +41,7 @@ In this documentation
         :ref:`how-to-override-a-plugins-build` •
         :ref:`reference-extensions`
     * - **12-factor apps**
-      - :ref:`tutorial-build-a-rock-for-a-django-app` • 
+      - :ref:`tutorial-build-a-rock-for-a-django-app` •
         :ref:`tutorial-build-a-rock-for-an-express-app` •
         :ref:`tutorial-build-a-rock-for-a-fastapi-app` •
         :ref:`tutorial-build-a-rock-for-a-flask-app` •
@@ -52,7 +52,7 @@ In this documentation
       - :ref:`Pebble as entrypoint <explanation-pebble>` •
         :ref:`Convert an entrypoint to a Pebble layer <how-to-convert-an-entrypoint-to-a-pebble-layer>`
     * - **Hardening**
-      - :ref:`Chisel <explanation-chisel>` • 
+      - :ref:`Chisel <explanation-chisel>` •
         :ref:`Chisel rocks <how-to-chisel-a-rock>` •
         :ref:`Migrate Docker images to chiseled rocks <how-to-migrate-a-docker-image-to-a-chiselled-rock>` •
         :ref:`Install a custom slice <how-to-install-a-custom-package-slice>` •
