@@ -83,7 +83,7 @@ Support
 
 * `Ubuntu Rocks Discourse <https://discourse.ubuntu.com/c/project/rocks/117>`_
 * `Rocks Community on Matrix <https://matrix.to/#/#rocks:ubuntu.com>`_
-* `Contribute to the project <https://github.com/canonical/rockcraft>`_
+* `Contribute to the project <https://github.com/canonical/rockcraft/blob/main/CONTRIBUTING.md>`_
 * :ref:`Contribute to the documentation <contribute-to-this-documentation>`
 
 Releases
