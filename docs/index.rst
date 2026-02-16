@@ -28,7 +28,7 @@ In this documentation
     :header-rows: 0
 
     * - **Tutorial**
-      - :ref:`Build your first rock in 15 min <tutorial-create-a-hello-world-rock>`
+      - :ref:`Build your first rock <tutorial-create-a-hello-world-rock>`
     * - **Installation and setup**
       - :ref:`how-to-quickstart-guide`
     * - **Vocabulary and syntax**
