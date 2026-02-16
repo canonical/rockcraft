@@ -244,3 +244,10 @@ parts:
       bin/spread: libexec/rockcraft/craft.spread
     stage:
       - libexec/rockcraft/
+
+  # Add the project schema to the snap
+  schema:
+    plugin: dump
+    source: ./schema
+    organize:
+      "*": schema/

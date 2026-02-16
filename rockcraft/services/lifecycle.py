@@ -20,11 +20,13 @@ import re
 from pathlib import Path
 from typing import cast
 
+import craft_platforms
 from craft_application import LifecycleService
 from craft_parts.infos import StepInfo
+from craft_parts.plugins import Plugin
 from overrides import override  # type: ignore[reportUnknownVariableType]
 
-from rockcraft import layers
+from rockcraft import layers, plugins
 from rockcraft.plugins.python_common import get_python_plugins
 
 
@@ -77,6 +79,23 @@ class RockcraftLifecycleService(LifecycleService):
         _python_v2_shebang_fix(step_info)
 
         return True
+
+    @override
+    @staticmethod
+    def get_plugin_group(
+        build_info: craft_platforms.BuildInfo,
+    ) -> dict[str, type[Plugin]] | None:
+        """Get the plugin group for a given base.
+
+        Some rockcraft-specific quirks include:
+        - Legacy bases (20.04, 22.04, 24.04) use Python v1, Poetry v1, and uv v1 plugins
+        - Newer bases (25.10, devel) use Python v2 and omit Poetry and uv (no v2 available yet)
+        - The dotnet v1 plugin is only available on legacy bases (20.04, 22.04, 24.04)
+
+        :param build_info: The BuildInfo for the build, containing the build base.
+        :returns: A dictionary mapping plugin names to their implementations for the given base.
+        """
+        return plugins.get_plugin_group(str(build_info.build_base))
 
 
 def _python_usrmerge_fix(step_info: StepInfo) -> None:

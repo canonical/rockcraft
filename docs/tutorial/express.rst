@@ -129,7 +129,7 @@ The top of the file should look similar to the following snippet:
     name: expressjs-hello-world
     # see https://documentation.ubuntu.com/rockcraft/latest/explanation/bases/
     # for more information about bases and using 'bare' bases for chiselled rocks
-    base: bare # as an alternative, a ubuntu base can be used
+    base: bare # as an alternative, an ubuntu base can be used
     build-base: ubuntu@24.04 # build-base is required when the base is bare
     version: '0.1' # just for humans. Semantic versioning is recommended
     summary: A summary of your ExpressJS app # 79 char long summary
@@ -349,7 +349,7 @@ The top of the ``rockcraft.yaml`` file should look similar to the following:
     name: expressjs-hello-world
     # see https://documentation.ubuntu.com/rockcraft/latest/explanation/bases/
     # for more information about bases and using 'bare' bases for chiselled rocks
-    base: bare # as an alternative, a ubuntu base can be used
+    base: bare # as an alternative, an ubuntu base can be used
     build-base: ubuntu@24.04 # build-base is required when the base is bare
     version: '0.2'
     summary: A summary of your ExpressJS app # 79 char long summary
