@@ -7,7 +7,7 @@ Commands
 
 .. include:: commands/toc.rst
 
-.. _ref_lifecycle_commands:
+.. _reference-commands-lifecycle:
 
 Lifecycle commands
 ------------------
