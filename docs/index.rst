@@ -11,7 +11,7 @@ is able to compartmentalise typical container image builds into multiple
 parts, each one being comprised of several independent lifecycle steps,
 allowing complex operations to be declared at build time.
 
-Rockcraft enables users to create automatically secure container images in sync with Ubuntu OS’s SLAs,
+Rockcraft enables users to create automatically secure container images in sync with Ubuntu releases,
 whilst ensuring the smallest footprint possible.
 
 **Rockcraft is for anyone who wants to build production-grade container images,
