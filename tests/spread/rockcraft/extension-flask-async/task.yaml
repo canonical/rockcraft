@@ -31,7 +31,7 @@ execute: |
   # docker rm -f "${NAME}-container"
 
   # test that gunicorn is installed and config file is correct
-  docker run --rm --entrypoint /bin/python3 "${IMAGE}" -m gunicorn --chdir /flask/app --check-config app:app
+  docker run --rm --entrypoint /bin/python3 "${IMAGE}" -m gunicorn --chdir /flask/app --check-config 'main:create_app()'
 
   # test that gevent is installed
   docker run --rm --entrypoint /bin/python3 "${IMAGE}" -c "import gevent;print(f'gevent: {gevent.__version__}')"
