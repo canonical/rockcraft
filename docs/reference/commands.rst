@@ -17,7 +17,7 @@ provided, the command applies to all parts.
 
 .. include:: commands/lifecycle-commands.rst
 
-.. _ref_extension_commands:
+.. _reference-commands-extensions:
 
 Extension commands
 ------------------
