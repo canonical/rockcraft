@@ -11,7 +11,7 @@ execute: |
 
   run_rockcraft init --name fastapi-extension --profile fastapi-framework
   sed -i "s/name: .*/name: ${NAME}/g" rockcraft.yaml
-  sed -i "s/base: .*/base: ${SCENARIO}/g" rockcraft.yaml
+  sed -i "s/base: .*/base: ${SCENARIO//-/@}/g" rockcraft.yaml
   if [ "${SCENARIO}" = "bare" ]; then
     cat >> rockcraft.yaml <<EOL
   parts:
