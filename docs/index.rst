@@ -82,7 +82,7 @@ Support
 ~~~~~~~
 
 * `Ubuntu Rocks Discourse <https://discourse.ubuntu.com/c/project/rocks/117>`_
-* `Rocks Community on Matrix <https://matrix.to/#/#rocks:ubuntu.com>`_
+* `Rocks Community on Matrix`_
 * `Contribute to the project <https://github.com/canonical/rockcraft/blob/main/CONTRIBUTING.md>`_
 * :ref:`Contribute to the documentation <contribute-to-this-documentation>`
 
@@ -115,3 +115,4 @@ Thinking about using Rocks for your next project? `Get in touch!`_
    release-notes/index
 
 .. _Get in touch!: https://canonical.com/#get-in-touch#
+.. _Rocks Community on Matrix: https://matrix.to/#/#rocks:ubuntu.com
