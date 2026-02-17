@@ -96,7 +96,7 @@ def test_flask_extension_default(
             "flask-framework/install-app": {
                 "organize": {
                     "app.py": "flask/app/app.py",
-                    "static": "flask/app/static",
+                    "static/*": "flask/app/static/",
                 },
                 "plugin": "dump",
                 "prime": ["flask/app/app.py", "flask/app/static"],
@@ -190,7 +190,7 @@ def test_flask_extension_prime_override(tmp_path, flask_input_yaml):
     assert install_app_part["organize"] == {
         "app.py": "flask/app/app.py",
         "requirements.txt": "flask/app/requirements.txt",
-        "static": "flask/app/static",
+        "static/*": "flask/app/static/",
     }
     assert install_app_part["stage"] == [
         "flask/app/app.py",
@@ -226,9 +226,9 @@ def test_flask_framework_exclude_prime(tmp_path, flask_input_yaml):
     assert install_app_part["organize"] == {
         "app.py": "flask/app/app.py",
         "requirements.txt": "flask/app/requirements.txt",
-        "static": "flask/app/static",
-        "test": "flask/app/test",
-        "webapp": "flask/app/webapp",
+        "static/*": "flask/app/static/",
+        "test/*": "flask/app/test/",
+        "webapp/*": "flask/app/webapp/",
     }
     assert install_app_part["stage"] == [
         "flask/app/app.py",

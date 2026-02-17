@@ -98,58 +98,67 @@ def test_fastapi_extension_default(tmp_path, fastapi_input_yaml, packages):
 
 
 @pytest.mark.parametrize(
-    ("files", "organize", "command"),
+    ("files", "organize", "stage", "command"),
     [
         (
             {"app.py": "app = object()"},
             {"app.py": "app/app.py"},
+            ["app/app.py"],
             "/bin/python3 -m uvicorn app:app",
         ),
         (
             {"app/__init__.py": "app = object()"},
-            {"app": "app/app"},
+            {"app/*": "app/app/"},
+            ["app/app"],
             "/bin/python3 -m uvicorn app:app",
         ),
         (
             {"app/__init__.py": "from .app import app"},
-            {"app": "app/app"},
+            {"app/*": "app/app/"},
+            ["app/app"],
             "/bin/python3 -m uvicorn app:app",
         ),
         (
             {"app/app.py": "app = object()"},
-            {"app": "app/app"},
+            {"app/*": "app/app/"},
+            ["app/app"],
             "/bin/python3 -m uvicorn app.app:app",
         ),
         (
             {"app/main.py": "app = object()"},
-            {"app": "app/app"},
+            {"app/*": "app/app/"},
+            ["app/app"],
             "/bin/python3 -m uvicorn app.main:app",
         ),
         (
             {"app/app.py": "app = object()", "app/__init__.py": "from .app import app"},
-            {"app": "app/app"},
+            {"app/*": "app/app/"},
+            ["app/app"],
             "/bin/python3 -m uvicorn app:app",
         ),
         (
             {"src/app.py": "app = object()"},
-            {"src": "app/src"},
+            {"src/*": "app/src/"},
+            ["app/src"],
             "/bin/python3 -m uvicorn src.app:app",
         ),
         (
             {"foo_bar/app.py": "app = object()"},
-            {"foo_bar": "app/foo_bar"},
+            {"foo_bar/*": "app/foo_bar/"},
+            ["app/foo_bar"],
             "/bin/python3 -m uvicorn foo_bar.app:app",
         ),
         (
             {"app.py": "app = object()", "foo_bar/app.py": "app = object()"},
             {"app.py": "app/app.py"},
+            ["app/app.py"],
             "/bin/python3 -m uvicorn app:app",
         ),
     ],
 )
 @pytest.mark.usefixtures("fastapi_extension")
 def test_fastapi_extension_asgi_entrypoints(
-    tmp_path, fastapi_input_yaml, files, organize, command
+    tmp_path, fastapi_input_yaml, files, organize, stage, command
 ):
     (tmp_path / "requirements.txt").write_text("fastapi")
     for file_path, content in files.items():
@@ -158,9 +167,7 @@ def test_fastapi_extension_asgi_entrypoints(
     applied = extensions.apply_extensions(tmp_path, fastapi_input_yaml)
     install_app_part = applied["parts"]["fastapi-framework/install-app"]
     assert install_app_part["organize"] == organize
-    assert applied["parts"]["fastapi-framework/install-app"]["stage"] == list(
-        install_app_part["organize"].values()
-    )
+    assert install_app_part["stage"] == stage
     assert applied["services"]["fastapi"]["command"] == command
     assert install_app_part["permissions"] == [{"owner": 584792, "group": 584792}]
 
@@ -267,9 +274,9 @@ def test_fastapi_framework_exclude_prime(tmp_path, fastapi_input_yaml):
     assert install_app_part["organize"] == {
         "app.py": "app/app.py",
         "requirements.txt": "app/requirements.txt",
-        "static": "app/static",
-        "test": "app/test",
-        "webapp": "app/webapp",
+        "static/*": "app/static/",
+        "test/*": "app/test/",
+        "webapp/*": "app/webapp/",
     }
     assert install_app_part["stage"] == [
         "app/app.py",
