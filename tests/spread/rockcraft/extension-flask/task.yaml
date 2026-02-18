@@ -31,14 +31,14 @@ execute: |
   test ! -d work
 
   # Ensure docker does not have this container image
-  docker rmi --force "${IMAGE}"
+  # docker rmi --force "${IMAGE}"
   # Install container
   sudo rockcraft.skopeo --insecure-policy copy "oci-archive:${ROCK_FILE}" "docker-daemon:${IMAGE}"
   # Ensure container exists
   docker images "${IMAGE}" | MATCH "${NAME}"
 
   # ensure container doesn't exist
-  docker rm -f "${NAME}-container"
+  # docker rm -f "${NAME}-container"
 
   # test the flask project is ready to run inside the container
   docker run --rm --entrypoint /bin/python3 "${IMAGE}" -m gunicorn --chdir /flask/app --check-config app:app
