@@ -66,7 +66,7 @@ execute: |
   docker run --rm --entrypoint /bin/python3 "${IMAGE}" -c "import pathlib;assert not pathlib.Path('/flask/app/node_modules').exists()"
 
   # test the uncommented extra parts effectively added libpq library
-  docker run --rm --entrypoint /usr/bin/bash "${IMAGE}" -c '/bin/ls -1 /usr/lib/**/libpq.so.5*'
+  docker run --rm --entrypoint /usr/bin/bash "${IMAGE}" -c '/usr/bin/ls -1 /usr/lib/**/libpq.so.5*'
 
   # test the default flask service
   docker run --name "${NAME}-container" -d -p 8138:8000 "${IMAGE}"
