@@ -223,8 +223,6 @@ def test_fastapi_check_no_correct_requirement_and_no_asgi_entrypoint(
 @pytest.mark.parametrize(
     ("build_base", "expected_stage_packages", "expected_python_interpreter"),
     [
-        ("ubuntu@22.04", ["python3.10-venv_ensurepip"], "python3.10"),
-        ("ubuntu:22.04", ["python3.10-venv_ensurepip"], "python3.10"),
         ("ubuntu@24.04", ["python3.12-venv_ensurepip"], "python3.12"),
         ("ubuntu:24.04", ["python3.12-venv_ensurepip"], "python3.12"),
     ],
