@@ -367,8 +367,11 @@ def test_flask_extension_bare(
             "bash_bins",
             "coreutils_bins",
             "ca-certificates_data",
-            "libstdc++6",
         ],
+    }
+    assert applied["parts"]["flask-framework/runtime-libs"] == {
+        "plugin": "nil",
+        "stage-packages": ["libstdc++6"],
     }
     assert applied["parts"]["flask-framework/dependencies"] == {
         "plugin": "python",

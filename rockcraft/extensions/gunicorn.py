@@ -147,8 +147,11 @@ class _GunicornBase(Extension):
                     "bash_bins",
                     "coreutils_bins",
                     "ca-certificates_data",
-                    "libstdc++6",
                 ],
+            }
+            parts[f"{self.framework}-framework/runtime-libs"] = {
+                "plugin": "nil",
+                "stage-packages": ["libstdc++6"],
             }
         else:
             parts[f"{self.framework}-framework/runtime"] = {
