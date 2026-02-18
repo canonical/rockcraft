@@ -219,24 +219,38 @@ def test_fastapi_check_no_correct_requirement_and_no_asgi_entrypoint(
     )
 
 
+@pytest.mark.parametrize(
+    ("build_base", "expected_stage_packages", "expected_python_interpreter"),
+    [
+        ("ubuntu@22.04", ["python3.10-venv_ensurepip"], "python3.10"),
+        ("ubuntu:22.04", ["python3.10-venv_ensurepip"], "python3.10"),
+        ("ubuntu@24.04", ["python3.12-venv_ensurepip"], "python3.12"),
+        ("ubuntu:24.04", ["python3.12-venv_ensurepip"], "python3.12"),
+    ],
+)
 @pytest.mark.usefixtures("fastapi_extension")
-def test_fastapi_extension_bare(tmp_path):
+def test_fastapi_extension_bare(
+    tmp_path, build_base, expected_stage_packages, expected_python_interpreter
+):
     (tmp_path / "requirements.txt").write_text("fastapi")
     (tmp_path / "app.py").write_text("app = object()")
     fastapi_input_yaml = {
         "name": "foo-bar",
         "extensions": ["fastapi-framework"],
         "base": "bare",
-        "build-base": "ubuntu@24.04",
+        "build-base": build_base,
         "platforms": {"amd64": {}},
     }
     applied = extensions.apply_extensions(tmp_path, fastapi_input_yaml)
     assert applied["parts"]["fastapi-framework/dependencies"] == {
         "plugin": "python",
-        "stage-packages": ["python3.12-venv_ensurepip"],
+        "stage-packages": expected_stage_packages,
         "source": ".",
         "python-packages": ["uvicorn"],
         "python-requirements": ["requirements.txt"],
+        "build-environment": [
+            {"PARTS_PYTHON_INTERPRETER": expected_python_interpreter}
+        ],
     }
     assert applied["parts"]["fastapi-framework/runtime"] == {
         "plugin": "nil",

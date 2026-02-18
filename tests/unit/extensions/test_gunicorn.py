@@ -90,7 +90,7 @@ def test_flask_extension_default(
                 "python-packages": ["gunicorn~=23.0"],
                 "python-requirements": ["requirements.txt"],
                 "source": ".",
-                "stage-packages": ["python3-venv"],
+                "stage-packages": ["python3.12-venv_ensurepip"],
                 "build-environment": [],
             },
             "flask-framework/install-app": {
@@ -325,7 +325,7 @@ def test_flask_extension_override_parts(tmp_path, flask_input_yaml):
         "python-packages": ["gunicorn~=23.0"],
         "python-requirements": ["requirements.txt", "requirements-jammy.txt"],
         "source": ".",
-        "stage-packages": ["python3-venv"],
+        "stage-packages": ["python3.12-venv_ensurepip"],
         "build-environment": [],
     }
     assert applied["parts"]["flask-framework/install-app"]["permissions"] == [

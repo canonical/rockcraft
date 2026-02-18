@@ -83,7 +83,7 @@ class _GunicornBase(Extension):
                 )
             except NotImplementedError:
                 raise ExtensionError(
-                    "Unable to determine the Python version for the base",
+                    f"Unable to determine the Python version for the build-base {self.yaml_data['build-base']}",
                     doc_slug="/reference/extensions/gunicorn",
                     logpath_report=False,
                 )
