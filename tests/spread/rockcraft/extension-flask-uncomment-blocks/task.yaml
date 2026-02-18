@@ -10,8 +10,8 @@ execute: |
   IMAGE="${NAME}:0.1"
 
   run_rockcraft init --name flask-extension --profile flask-framework
-  sed -i "s/name: .*/name: ${NAME}/g" rockcraft.yaml
-  sed -i "s/base: .*/base: ${SCENARIO//-/@}/g" rockcraft.yaml
+  sed -i "s/^name: .*/name: ${NAME}/g" rockcraft.yaml
+  sed -i "s/^base: .*/base: ${SCENARIO//-/@}/g" rockcraft.yaml
   if [ "${SCENARIO}" != "bare" ]; then
       sed -i "/build-base:/d" rockcraft.yaml
   fi
