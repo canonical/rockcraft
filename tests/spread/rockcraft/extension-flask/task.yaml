@@ -48,7 +48,7 @@ execute: |
   # ensure the flask and promtail folders have the correct user
   check_directory_ownership() {
     local directory="$1"
-    docker run --rm --entrypoint /bin/bash "${IMAGE}" -c "find ${directory}/ ! -user '_daemon_' || { echo 'Error: ${directory} or its contents are not owned by _daemon_'; exit 2; }"
+    docker run --rm --entrypoint /usr/bin/bash "${IMAGE}" -c "find ${directory}/ ! -user '_daemon_' || { echo 'Error: ${directory} or its contents are not owned by _daemon_'; exit 2; }"
   }
 
   check_directory_ownership "/flask"
