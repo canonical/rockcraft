@@ -50,6 +50,7 @@ def test_fastapi_extension_default(tmp_path, fastapi_input_yaml, packages):
         "run_user": "_daemon_",
         "parts": {
             "fastapi-framework/dependencies": {
+                "build-environment": [],
                 "plugin": "python",
                 "stage-packages": ["python3-venv"],
                 "source": ".",
