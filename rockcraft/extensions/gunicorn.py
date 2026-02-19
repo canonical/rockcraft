@@ -141,7 +141,8 @@ class _GunicornBase(Extension):
         if self.yaml_data["base"] == "bare":
             parts[f"{self.framework}-framework/runtime"] = {
                 "plugin": "nil",
-                "override-build": "mkdir -m 777 ${CRAFT_PART_INSTALL}/tmp",
+                "override-build": "mkdir -m 777 ${CRAFT_PART_INSTALL}/tmp\n"
+                "ln -sf /usr/bin/bash ${CRAFT_PART_INSTALL}/usr/bin/sh",
                 "stage-packages": [
                     "bash_bins",
                     "coreutils_bins",
@@ -172,7 +173,7 @@ class _GunicornBase(Extension):
 
         Default values:
           - run_user: _daemon_
-          - build-base: ubuntu:22.04 (only if user specify bare without a build-base)
+          - build-base: ubuntu:24.04 (only if user specify bare without a build-base)
           - platform: amd64
           - services: a service to run the Gunicorn server
           - parts: see _GunicornBase._gen_parts

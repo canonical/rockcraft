@@ -11,6 +11,7 @@ It also contains the release and support policies for Rockcraft.
 Current releases
 ----------------
 
+- :ref:`Rockcraft 1.17 <release-1.17>`
 - :ref:`Rockcraft 1.16 <release-1.16>`
 - :ref:`Rockcraft 1.15 <release-1.15>`
 - :ref:`Rockcraft 1.14 <release-1.14>`
@@ -69,6 +70,7 @@ development keeps pace with the OS's new releases and support lifecycle.
    :maxdepth: 1
    :hidden:
 
+   Rockcraft 1.17 <rockcraft-1-17>
    Rockcraft 1.16 <rockcraft-1-16>
    Rockcraft 1.15 <rockcraft-1-15>
    Rockcraft 1.14 <rockcraft-1-14>
@@ -284,7 +286,7 @@ development keeps pace with the OS's new releases and support lifecycle.
   We would like to express a big thank you to all the people who contributed to
   this release.
 
-  :literalref:`@alex<https://example.com/alex>`,
-  :literalref:`@blair<https://example.com/blair>`,
-  :literalref:`@cam<https://example.com/cam>`,
-  and :literalref:`@devin<https://example.com/devin>`
+  :literalref:`@alex <https://example.com/alex>`,
+  :literalref:`@blair <https://example.com/blair>`,
+  :literalref:`@cam <https://example.com/cam>`,
+  and :literalref:`@devin <https://example.com/devin>`

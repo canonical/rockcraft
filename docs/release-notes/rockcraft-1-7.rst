@@ -133,15 +133,15 @@ Contributors
 We would like to express a big thank you to all the people who contributed to
 this release.
 
-:literalref:`@alithethird<https://github.com/alithethird>`,
-:literalref:`@dariuszd21<https://github.com/dariuszd21>`,
-:literalref:`@erinecon<https://github.com/erinecon>`,
-:literalref:`@javierdelapuente<https://github.com/javierdelapuente>`,
-:literalref:`@lengau<https://github.com/lengau>`,
-:literalref:`@linostar<https://github.com/linostar>`,
-:literalref:`@tigarmo<https://github.com/tigarmo>`,
-:literalref:`@vpa1977<https://github.com/vpa1977>`
-and :literalref:`@yanksyoon<https://github.com/yanksyoon>`.
+:literalref:`@alithethird <https://github.com/alithethird>`,
+:literalref:`@dariuszd21 <https://github.com/dariuszd21>`,
+:literalref:`@erinecon <https://github.com/erinecon>`,
+:literalref:`@javierdelapuente <https://github.com/javierdelapuente>`,
+:literalref:`@lengau <https://github.com/lengau>`,
+:literalref:`@linostar <https://github.com/linostar>`,
+:literalref:`@tigarmo <https://github.com/tigarmo>`,
+:literalref:`@vpa1977 <https://github.com/vpa1977>`
+and :literalref:`@yanksyoon <https://github.com/yanksyoon>`.
 
 .. _Ubuntu Discourse: https://discourse.ubuntu.com/c/project/rockcraft/118
 

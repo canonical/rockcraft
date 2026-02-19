@@ -143,9 +143,7 @@ def get_python_plugins(base: str | None) -> dict[str, PluginType]:
       If `None`, the function will behave as if the base were the latest LTS.
     """
     plugins: dict[str, PluginType] = {
-        "poetry": PoetryPluginV1,
         "python": PythonPluginV2,
-        "uv": UvPluginV1,
     }
 
     # For now we'll consider the lack of base (e.g. when running a command without a
@@ -157,5 +155,7 @@ def get_python_plugins(base: str | None) -> dict[str, PluginType]:
 
     if base in v1_bases:
         plugins["python"] = PythonPluginV1
+        plugins["poetry"] = PoetryPluginV1
+        plugins["uv"] = UvPluginV1
 
     return plugins

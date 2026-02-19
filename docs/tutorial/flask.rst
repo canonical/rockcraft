@@ -101,7 +101,8 @@ The top of the file should look similar to the following snippet:
     name: flask-hello-world
     # see https://documentation.ubuntu.com/rockcraft/en/1.6.0/explanation/bases/
     # for more information about bases and using 'bare' bases for chiselled rocks
-    base: ubuntu@22.04 # the base environment for this Flask app
+    base: bare # as an alternative, an ubuntu base can be used
+    build-base: ubuntu@24.04 # build-base is required when the base is bare
     version: '0.1' # just for humans. Semantic versioning is recommended
     summary: A summary of your Flask app # 79 char long summary
     description: |
@@ -150,19 +151,27 @@ Pack the rock:
    There is a `known connectivity issue with LXD and Docker
    <lxd-docker-connectivity-issue_>`_. If we see a
    networking issue such as "*A network related operation failed in a context
-   of no network access*" or ``Client.Timeout``, allow egress network traffic
-   to flow from the LXD managed bridge using:
+   of no network access*" or ``Client.Timeout``, we need to allow egress network
+   traffic to flow from the managed LXD bridge.
+
+   First, run ``lxc network list`` to show the available networks. The
+   bridge will have ``TYPE: bridge`` and ``MANAGED: YES``. Save the name to an
+   environment variable:
 
    .. code-block::
 
-       iptables  -I DOCKER-USER -i <network_bridge> -j ACCEPT
-       ip6tables -I DOCKER-USER -i <network_bridge> -j ACCEPT
-       iptables  -I DOCKER-USER -o <network_bridge> -m conntrack \
-         --ctstate RELATED,ESTABLISHED -j ACCEPT
-       ip6tables -I DOCKER-USER -o <network_bridge> -m conntrack \
-         --ctstate RELATED,ESTABLISHED -j ACCEPT
+       NETWORK_BRIDGE=<name of managed LXD bridge>
 
-   Run ``lxc network list`` to show the existing LXD managed bridges.
+   Then, update the network traffic flow using:
+
+   .. code-block::
+
+       sudo iptables  -I DOCKER-USER -i $NETWORK_BRIDGE -j ACCEPT
+       sudo ip6tables -I DOCKER-USER -i $NETWORK_BRIDGE -j ACCEPT
+       sudo iptables  -I DOCKER-USER -o $NETWORK_BRIDGE -m conntrack \
+         --ctstate RELATED,ESTABLISHED -j ACCEPT
+       sudo ip6tables -I DOCKER-USER -o $NETWORK_BRIDGE -m conntrack \
+         --ctstate RELATED,ESTABLISHED -j ACCEPT
 
 Depending on the network, this step can take a couple of minutes to finish.
 
@@ -303,9 +312,7 @@ in a much smaller rock with a reduced attack surface.
     development tooling (such as for debugging).
 
 The first step towards chiselling the rock is to ensure we are using a
-``bare`` :ref:`base <explanation-bases>`.
-In the project file, change the ``base`` to ``bare`` and add
-``build-base: ubuntu@22.04``:
+``bare`` :ref:`base <explanation-bases>`:
 
 .. literalinclude:: code/flask/task.yaml
     :language: bash
@@ -330,7 +337,7 @@ top of the ``rockcraft.yaml`` file looks similar to the following:
     # see https://documentation.ubuntu.com/rockcraft/en/1.6.0/explanation/bases/
     # for more information about bases and using 'bare' bases for chiselled rocks
     base: bare
-    build-base: ubuntu@22.04
+    build-base: ubuntu@24.04
     version: '0.1-chiselled'
     summary: A summary of your Flask app # 79 char long summary
     description: |
@@ -424,7 +431,7 @@ top of the ``rockcraft.yaml`` file should look similar to the following:
     # see https://documentation.ubuntu.com/rockcraft/en/1.6.0/explanation/bases/
     # for more information about bases and using 'bare' bases for chiselled rocks
     base: bare
-    build-base: ubuntu@22.04
+    build-base: ubuntu@24.04
     version: '0.2'
     summary: A summary of your Flask app # 79 char long summary
     description: |

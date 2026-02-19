@@ -70,8 +70,8 @@ Rockcraft 1.10 brings the following minor changes.
 Part sources
 ~~~~~~~~~~~~
 
-The ``source-commit`` :ref:`key <rockcraft-yaml-source-commit>` now accepts
-short hashes in addition to the full hash of a Git commit.
+The :ref:`source-commit <PartSpec.source_commit>` key now accepts short hashes in
+addition to the full hash of a Git commit.
 
 OCI Annotations
 ~~~~~~~~~~~~~~~
@@ -98,12 +98,12 @@ Contributors
 We would like to express a big thank you to all the people who contributed to
 this release.
 
-:literalref:`@alesancor1<https://github.com/alesancor1>`,
-:literalref:`@bepri<https://github.com/bepri>`,
-:literalref:`@cjdcordeiro<https://github.com/cjdcordeiro>`,
-:literalref:`@erinecon<https://github.com/erinecon>`,
-:literalref:`@jdkandersson<https://github.com/jdkandersson>`,
-:literalref:`@medubelko<https://github.com/medubelko>`,
-:literalref:`@mr-cal<https://github.com/mr-cal>`,
-:literalref:`@tigarmo<https://github.com/tigarmo>`,
-and :literalref:`@yanksyoon<https://github.com/yanksyoon>`.
+:literalref:`@alesancor1 <https://github.com/alesancor1>`,
+:literalref:`@bepri <https://github.com/bepri>`,
+:literalref:`@cjdcordeiro <https://github.com/cjdcordeiro>`,
+:literalref:`@erinecon <https://github.com/erinecon>`,
+:literalref:`@jdkandersson <https://github.com/jdkandersson>`,
+:literalref:`@medubelko <https://github.com/medubelko>`,
+:literalref:`@mr-cal <https://github.com/mr-cal>`,
+:literalref:`@tigarmo <https://github.com/tigarmo>`,
+and :literalref:`@yanksyoon <https://github.com/yanksyoon>`.

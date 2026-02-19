@@ -35,28 +35,6 @@ To build the rock, run:
     :end-before: [docs:build-rock-end]
     :dedent: 2
 
-The output should look as follows:
-
-..  code-block:: text
-    :emphasize-lines: 13
-    :class: log-snippets
-
-    Launching instance...
-    Retrieved base bare for amd64
-    Extracted bare:latest
-    Executed: pull hello
-    Executed: pull pebble
-    Executed: overlay hello
-    Executed: overlay pebble
-    Executed: build hello
-    Executed: build pebble
-    Executed: stage hello
-    Executed: stage pebble
-    Executed: prime hello
-    Executed: prime pebble
-    Executed parts lifecycle
-    Exported to OCI archive 'hello_latest_amd64.rock'
-
 At the end of the process, a file named ``hello_latest_amd64.rock`` should be
 present in the current directory. That's your rock, in oci-archive format
 (a tarball).

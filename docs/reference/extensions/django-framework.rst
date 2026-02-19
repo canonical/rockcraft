@@ -9,6 +9,7 @@ rocks.
 It facilitates the installation of Django application dependencies, including
 Gunicorn, inside the rock. Additionally, it transfers your project files to
 ``/django/app`` within the rock.
+By default, the base ``bare`` is used to generate a lightweight image.
 
 .. note::
     The Django extension is compatible with the ``bare``, ``ubuntu@22.04``
@@ -59,7 +60,7 @@ StatsD exporter
 
 A StatsD exporter is installed alongside the Gunicorn server to record
 server metrics. Some of the `Gunicorn-provided metrics
-<https://docs.gunicorn.org/en/stable/instrumentation.html>`_
+<https://gunicorn.org/instrumentation/>`_
 are mapped to new names:
 
 .. list-table::
