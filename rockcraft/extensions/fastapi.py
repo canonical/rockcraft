@@ -26,6 +26,7 @@ from typing import Any
 from overrides import override  # type: ignore[reportUnknownVariableType]
 
 from rockcraft.errors import ExtensionError
+from rockcraft.extensions._utils import find_ubuntu_base_python_version
 from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
 
 from ._python_utils import has_global_variable
@@ -99,8 +100,22 @@ class FastAPIFramework(Extension):
     def _get_parts(self) -> dict[str, Any]:
         """Generate the parts associated with this extension."""
         stage_packages = ["python3-venv"]
+        build_environment = []
         if self.yaml_data["base"] == "bare":
-            stage_packages = ["python3.12-venv_ensurepip"]
+            try:
+                python_version = find_ubuntu_base_python_version(
+                    base=self.yaml_data["build-base"]
+                )
+            except NotImplementedError:
+                raise ExtensionError(
+                    f"Unable to determine the Python version for the build-base {self.yaml_data['build-base']}",
+                    doc_slug="/reference/extensions/fastapi",
+                    logpath_report=False,
+                )
+            stage_packages = [f"python{python_version}-venv_ensurepip"]
+            build_environment = [
+                {"PARTS_PYTHON_INTERPRETER": f"python{python_version}"}
+            ]
 
         parts: dict[str, Any] = {
             "fastapi-framework/dependencies": {
@@ -109,6 +124,7 @@ class FastAPIFramework(Extension):
                 "source": ".",
                 "python-packages": ["uvicorn"],
                 "python-requirements": ["requirements.txt"],
+                "build-environment": build_environment,
             },
             "fastapi-framework/install-app": {
                 **self._get_install_app_part(),

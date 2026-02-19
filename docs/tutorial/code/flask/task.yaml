@@ -69,11 +69,6 @@ execute: |
   sudo docker rmi flask-hello-world:0.1
   # [docs:stop-docker-end]
 
-  # [docs:change-base]
-  sed -i \
-    "s/base: .*/base: bare\nbuild-base: ubuntu@24.04/g" \
-    rockcraft.yaml
-  # [docs:change-base-end]
   sed -i "s/version: .*/version: 0.1-chiselled/g" rockcraft.yaml
 
   # [docs:chisel-pack]
