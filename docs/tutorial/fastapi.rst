@@ -325,19 +325,6 @@ in a much smaller rock with a reduced attack surface.
 
 The first step towards chiselling the rock is to ensure we are using a
 ``bare`` :ref:`base <explanation-bases>`.
-In the project file, change the ``base`` to ``bare`` and add
-``build-base: ubuntu@24.04``:
-
-.. literalinclude:: code/fastapi/task.yaml
-    :language: bash
-    :start-after: [docs:change-base]
-    :end-before: [docs:change-base-end]
-    :dedent: 2
-
-.. note::
-    The ``sed`` command replaces the current ``base`` in the project file with
-    the ``bare`` base. The command also adds a ``build-base`` which is required
-    when using the ``bare`` base.
 
 So that we can compare the size after chiselling, open the project
 file and change the ``version`` (e.g. to ``0.1-chiselled``).
