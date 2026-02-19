@@ -67,7 +67,7 @@ Pebble distinguishes itself from other similar tools (like `tini`_ and
   entrypoint, a predictable and consistent user experience is guaranteed;
 * **embedded utilities**: regardless of the rock's contents, Pebble offers a
   comprehensive suite of commands for inspecting and interacting with the
-  container. These commands are especially useful for :ref:`Chiselled Rocks
+  container. These commands are especially useful for :ref:`chiseled rocks
   <explanation-chisel>`, as they encompass functionalities such as listing and
   deleting files, creating directories, and inspecting Pebble services,
   among others.
@@ -81,7 +81,7 @@ Rockcraft follows the :external+pebble:ref:`Pebble layer specification
 provides an example of how to convert a Docker entrypoint to a Pebble layer.
 
 
-.. _Pebble: https://github.com/canonical/pebble
+.. _Pebble: https://documentation.ubuntu.com/pebble/
 .. _tini: https://github.com/krallin/tini
 .. _s6-overlay: https://github.com/just-containers/s6-overlay
 .. _imperative wrapper scripts (as suggested in the Docker documentation): https://docs.docker.com/engine/containers/multi-service_container/#use-a-wrapper-script
