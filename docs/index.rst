@@ -37,7 +37,7 @@ In this documentation
       - :ref:`explanation-bases` • :ref:`how-to-specify-a-base` •
         :ref:`Build remotely using Launchpad<how-to-outsource-rock-builds-to-launchpad>`
     * - **Software integration**
-      - :external+craft-parts:ref:`parts` • :ref:`reference-plugins` •
+      - :ref:`parts` • :ref:`reference-plugins` •
         :ref:`how-to-override-a-plugins-build` •
         :ref:`reference-extensions`
     * - **12-factor apps**

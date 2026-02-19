@@ -135,7 +135,6 @@ intersphinx_mapping = {
     ),
     "charmcraft": ("https://documentation.ubuntu.com/charmcraft/stable/", None),
     "pebble": ("https://documentation.ubuntu.com/pebble", None),
-    "craft-parts": ("https://canonical-craft-parts.readthedocs-hosted.com/latest", None),
     "chisel": ("https://documentation.ubuntu.com/chisel/en/latest", None),
 }
 # See also:
