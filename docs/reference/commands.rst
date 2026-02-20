@@ -7,6 +7,7 @@ Commands
 
 .. include:: commands/toc.rst
 
+.. _reference-commands-lifecycle:
 
 Lifecycle commands
 ------------------
@@ -16,6 +17,7 @@ provided, the command applies to all parts.
 
 .. include:: commands/lifecycle-commands.rst
 
+.. _reference-commands-extensions:
 
 Extension commands
 ------------------
