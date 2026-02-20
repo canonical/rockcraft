@@ -78,8 +78,8 @@ Project and community
 Rockcraft is a member of the Ubuntu family. It’s an open source project that warmly welcomes
 `community contributions <https://documentation.ubuntu.com/project/contributors/>`_.
 
-Support
-~~~~~~~
+Get involved
+~~~~~~~~~~~~
 
 * `Ubuntu Rocks Discourse <https://discourse.ubuntu.com/c/project/rocks/117>`_
 * `Rocks Community on Matrix`_
