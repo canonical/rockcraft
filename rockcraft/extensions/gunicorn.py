@@ -244,27 +244,41 @@ class FlaskFramework(_GunicornBase):
     @override
     def gen_install_app_part(self) -> dict[str, Any]:
         source_files = [f.name for f in sorted(self.project_root.iterdir())]
-        # if prime is not in exclude mode, use it to generate the stage and organize
+
+        # Build list of (src, dst) pairs based on mode
         if self._app_prime and self._app_prime[0] and self._app_prime[0][0] != "-":
-            renaming_map = {
-                os.path.relpath(file, f"{self.framework}/app"): file
+            # if prime is not in exclude mode, use it to generate the stage and organize
+            src_dst_pairs = [
+                (os.path.relpath(file, f"{self.framework}/app"), file)
                 for file in self._app_prime
-            }
+            ]
         else:
-            renaming_map = {
-                f: posixpath.join(f"{self.framework}/app", f)
+            src_dst_pairs = [
+                (f, posixpath.join(f"{self.framework}/app", f))
                 for f in source_files
                 if not any(
                     fnmatch.fnmatch(f, p)
                     for p in ("node_modules", ".git", ".yarn", "*.rock")
                 )
-            }
+            ]
+
+        # Process all pairs: use wildcards for directories to avoid organize issue
+        # where organizing dir to subdir of itself fails
+        renaming_map = {}
+        stage_list: list[str] = []
+        for src, dst in src_dst_pairs:
+            src_path = self.project_root / src
+            stage_list.append(dst)
+            if src_path.is_dir():
+                renaming_map[f"{src}/*"] = dst + "/"
+            else:
+                renaming_map[src] = dst
 
         return {
             "plugin": "dump",
             "source": ".",
             "organize": renaming_map,
-            "stage": list(renaming_map.values()),
+            "stage": stage_list,
             "prime": self._app_prime,
         }
 
