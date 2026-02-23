@@ -139,6 +139,7 @@ linkcheck_ignore = [
     "https://matrix.to/#/#rockcraft:ubuntu.com",
     "https://matrix.to/#/#12-factor-charms:ubuntu.com",
     "https://specs.opencontainers.org/image-spec/config/",
+    "https://canonical.com/#get-in-touch#",
 ]
 
 # Don't check links in the "common" subdirectory, as those are the responsibility of
@@ -362,29 +363,3 @@ def setup(app):
     app.connect("builder-inited", generate_cli_docs)
 
 # endregion
-
-# We have many links on sites that frequently respond with 503s to GitHub runners.
-# https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-linkcheck_retries
-linkcheck_retries = 20
-linkcheck_anchors_ignore = ["#", ":", "slice-definitions"]
-linkcheck_ignore = [
-    # Ignore releases, since we'll include the next release before it exists.
-    r"^https://github.com/canonical/[a-z]*craft[a-z-]*/releases/.*",
-    # Entire domains to ignore due to flakiness or issues
-    r"^https://www.gnu.org/",
-    r"^https://crates.io/",
-    r"^https://([\w-]*\.)?npmjs.org",
-    r"^https://rsync.samba.org",
-    r"^https://ubuntu.com",
-    "https://github.com/canonical/craft-actions#rockcraft-pack",
-    "https://github.com/canonical/spread#selecting-which-tasks-to-run",
-    "https://juju.is/cloud-native-kubernetes-usage-report-2021#selection-criteria-for-container-images",
-    "https://matrix.to/#/#rocks:ubuntu.com",
-    "https://matrix.to/#/#rockcraft:ubuntu.com",
-    "https://matrix.to/#/#12-factor-charms:ubuntu.com",
-    "https://specs.opencontainers.org/image-spec/config/",
-    "https://canonical.com/#get-in-touch#",
-]
-# Don't check links in the "common" subdirectory, as those are the responsibility of
-# the libraries.
-linkcheck_exclude_documents = ["^common/.*"]
