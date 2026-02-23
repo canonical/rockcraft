@@ -222,6 +222,7 @@ exclude_patterns = [
     "common/craft-parts/reference/plugins/ruby_plugin.rst",
     # Extra non-craft-parts exclusions can be added after this comment
     "reuse/*",
+    "README.md",
 ]
 
 # Adds custom CSS files, located under 'html_static_path'
