@@ -186,7 +186,7 @@ def _pack(
     # This is different than calling _inject_oci_fields in oci.Image.new_oci_image,
     # since _inject_oci_fields is called in the context of creating the base image.
     emit.progress("Adding manifest media type")
-    new_image.set_media_type()
+    new_image.set_media_type(arch=build_for)
     emit.progress("Manifest media type added")
 
     emit.progress("Exporting to OCI archive")
