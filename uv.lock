@@ -87,6 +87,34 @@ wheels = [
 ]
 
 [[package]]
+name = "apeye"
+version = "1.4.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "apeye-core" },
+    { name = "domdf-python-tools" },
+    { name = "platformdirs" },
+    { name = "requests" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/4f/6b/cc65e31843d7bfda8313a9dc0c77a21e8580b782adca53c7cb3e511fe023/apeye-1.4.1.tar.gz", hash = "sha256:14ea542fad689e3bfdbda2189a354a4908e90aee4bf84c15ab75d68453d76a36", size = 99219, upload-time = "2023-08-14T15:32:41.381Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/89/7b/2d63664777b3e831ac1b1d8df5bbf0b7c8bee48e57115896080890527b1b/apeye-1.4.1-py3-none-any.whl", hash = "sha256:44e58a9104ec189bf42e76b3a7fe91e2b2879d96d48e9a77e5e32ff699c9204e", size = 107989, upload-time = "2023-08-14T15:32:40.064Z" },
+]
+
+[[package]]
+name = "apeye-core"
+version = "1.1.5"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "domdf-python-tools" },
+    { name = "idna" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/e5/4c/4f108cfd06923bd897bf992a6ecb6fb122646ee7af94d7f9a64abd071d4c/apeye_core-1.1.5.tar.gz", hash = "sha256:5de72ed3d00cc9b20fea55e54b7ab8f5ef8500eb33a5368bc162a5585e238a55", size = 96511, upload-time = "2024-01-30T17:45:48.727Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/77/9f/fa9971d2a0c6fef64c87ba362a493a4f230eff4ea8dfb9f4c7cbdf71892e/apeye_core-1.1.5-py3-none-any.whl", hash = "sha256:dc27a93f8c9e246b3b238c5ea51edf6115ab2618ef029b9f2d9a190ec8228fbf", size = 99286, upload-time = "2024-01-30T17:45:46.764Z" },
+]
+
+[[package]]
 name = "astroid"
 version = "4.0.3"
 source = { registry = "https://pypi.org/simple" }
@@ -96,6 +124,18 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/a1/ca/c17d0f83016532a1ad87d1de96837164c99d47a3b6bbba28bd597c25b37a/astroid-4.0.3.tar.gz", hash = "sha256:08d1de40d251cc3dc4a7a12726721d475ac189e4e583d596ece7422bc176bda3", size = 406224, upload-time = "2026-01-03T22:14:26.096Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/ce/66/686ac4fc6ef48f5bacde625adac698f41d5316a9753c2b20bb0931c9d4e2/astroid-4.0.3-py3-none-any.whl", hash = "sha256:864a0a34af1bd70e1049ba1e61cee843a7252c826d97825fcee9b2fcbd9e1b14", size = 276443, upload-time = "2026-01-03T22:14:24.412Z" },
+]
+
+[[package]]
+name = "autodocsumm"
+version = "0.2.14"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "sphinx" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/03/96/92afe8a7912b327c01f0a8b6408c9556ee13b1aba5b98d587ac7327ff32d/autodocsumm-0.2.14.tar.gz", hash = "sha256:2839a9d4facc3c4eccd306c08695540911042b46eeafcdc3203e6d0bab40bc77", size = 46357, upload-time = "2024-10-23T18:51:47.369Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/87/bc/3f66af9beb683728e06ca08797e4e9d3e44f432f339718cae3ba856a9cad/autodocsumm-0.2.14-py3-none-any.whl", hash = "sha256:3bad8717fc5190802c60392a7ab04b9f3c97aa9efa8b3780b3d81d615bfe5dc0", size = 14640, upload-time = "2024-10-23T18:51:45.115Z" },
 ]
 
 [[package]]
@@ -745,6 +785,31 @@ wheels = [
 ]
 
 [[package]]
+name = "cssutils"
+version = "2.11.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "more-itertools" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/33/9f/329d26121fe165be44b1dfff21aa0dc348f04633931f1d20ed6cf448a236/cssutils-2.11.1.tar.gz", hash = "sha256:0563a76513b6af6eebbe788c3bf3d01c920e46b3f90c8416738c5cfc773ff8e2", size = 711657, upload-time = "2024-06-04T15:51:39.373Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a7/ec/bb273b7208c606890dc36540fe667d06ce840a6f62f9fae7e658fcdc90fb/cssutils-2.11.1-py3-none-any.whl", hash = "sha256:a67bfdfdff4f3867fab43698ec4897c1a828eca5973f4073321b3bccaf1199b1", size = 385747, upload-time = "2024-06-04T15:51:37.499Z" },
+]
+
+[[package]]
+name = "dict2css"
+version = "0.3.0.post1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "cssutils" },
+    { name = "domdf-python-tools" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/24/eb/776eef1f1aa0188c0fc165c3a60b71027539f71f2eedc43ad21b060e9c39/dict2css-0.3.0.post1.tar.gz", hash = "sha256:89c544c21c4ca7472c3fffb9d37d3d926f606329afdb751dc1de67a411b70719", size = 7845, upload-time = "2023-11-22T11:09:20.958Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/fe/47/290daabcf91628f4fc0e17c75a1690b354ba067066cd14407712600e609f/dict2css-0.3.0.post1-py3-none-any.whl", hash = "sha256:f006a6b774c3e31869015122ae82c491fd25e7de4a75607a62aa3e798f837e0d", size = 25647, upload-time = "2023-11-22T11:09:19.221Z" },
+]
+
+[[package]]
 name = "dill"
 version = "0.4.1"
 source = { registry = "https://pypi.org/simple" }
@@ -790,6 +855,19 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/ae/ed/aefcc8cd0ba62a0560c3c18c33925362d46c6075480bfa4df87b28e169a9/docutils-0.21.2.tar.gz", hash = "sha256:3a6b18732edf182daa3cd12775bbb338cf5691468f91eeeb109deff6ebfa986f", size = 2204444, upload-time = "2024-04-23T18:57:18.24Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/8f/d7/9322c609343d929e75e7e5e6255e614fcc67572cfd083959cdef3b7aad79/docutils-0.21.2-py3-none-any.whl", hash = "sha256:dafca5b9e384f0e419294eb4d2ff9fa826435bf15f15b7bd45723e8ad76811b2", size = 587408, upload-time = "2024-04-23T18:57:14.835Z" },
+]
+
+[[package]]
+name = "domdf-python-tools"
+version = "3.10.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "natsort" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/36/8b/ab2d8a292bba8fe3135cacc8bfd3576710a14b8f2d0a8cde19130d5c9d21/domdf_python_tools-3.10.0.tar.gz", hash = "sha256:2ae308d2f4f1e9145f5f4ba57f840fbfd1c2983ee26e4824347789649d3ae298", size = 100458, upload-time = "2025-02-12T17:34:05.747Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/5b/11/208f72084084d3f6a2ed5ebfdfc846692c3f7ad6dce65e400194924f7eed/domdf_python_tools-3.10.0-py3-none-any.whl", hash = "sha256:5e71c1be71bbcc1f881d690c8984b60e64298ec256903b3147f068bc33090c36", size = 126860, upload-time = "2025-02-12T17:34:04.093Z" },
 ]
 
 [[package]]
@@ -909,6 +987,19 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/01/ee/02a2c011bdab74c6fb3c75474d40b3052059d95df7e73351460c8588d963/h11-0.16.0.tar.gz", hash = "sha256:4e35b956cf45792e4caa5885e69fba00bdbc6ffafbfa020300e549b208ee5ff1", size = 101250, upload-time = "2025-04-24T03:35:25.427Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/04/4b/29cac41a4d98d144bf5f6d33995617b185d14b22401f75ca86f384e87ff1/h11-0.16.0-py3-none-any.whl", hash = "sha256:63cf8bbe7522de3bf65932fda1d9c2772064ffb3dae62d55932da54b31cb6c86", size = 37515, upload-time = "2025-04-24T03:35:24.344Z" },
+]
+
+[[package]]
+name = "html5lib"
+version = "1.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "six" },
+    { name = "webencodings" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/ac/b6/b55c3f49042f1df3dcd422b7f224f939892ee94f22abcf503a9b7339eaf2/html5lib-1.1.tar.gz", hash = "sha256:b2e5b40261e20f354d198eae92afc10d750afb487ed5e50f9c4eaf07c184146f", size = 272215, upload-time = "2020-06-22T23:32:38.834Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/6c/dd/a834df6482147d48e225a49515aabc28974ad5a4ca3215c18a882565b028/html5lib-1.1-py2.py3-none-any.whl", hash = "sha256:0d78f8fde1c230e99fe37986a60526d7049ed4bf8a9fadbad5f00e22e58e041d", size = 112173, upload-time = "2020-06-22T23:32:36.781Z" },
 ]
 
 [[package]]
@@ -1660,6 +1751,15 @@ wheels = [
 ]
 
 [[package]]
+name = "natsort"
+version = "8.4.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/e2/a9/a0c57aee75f77794adaf35322f8b6404cbd0f89ad45c87197a937764b7d0/natsort-8.4.0.tar.gz", hash = "sha256:45312c4a0e5507593da193dedd04abb1469253b601ecaf63445ad80f0a1ea581", size = 76575, upload-time = "2023-06-20T04:17:19.925Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ef/82/7a9d0550484a62c6da82858ee9419f3dd1ccc9aa1c26a1e43da3ecd20b0d/natsort-8.4.0-py3-none-any.whl", hash = "sha256:4732914fb471f56b5cce04d7bae6f164a592c7712e1c85f9ef585e197299521c", size = 38268, upload-time = "2023-06-20T04:17:17.522Z" },
+]
+
+[[package]]
 name = "nh3"
 version = "0.3.2"
 source = { registry = "https://pypi.org/simple" }
@@ -2004,7 +2104,7 @@ wheels = [
 
 [[package]]
 name = "pydantic-kitbash"
-version = "1.0.0"
+version = "1.0.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "docutils" },
@@ -2012,9 +2112,9 @@ dependencies = [
     { name = "pyyaml" },
     { name = "sphinx" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/b7/f7/67623d601fc5bdf11e7d812399ab80883d1b971ceef3eb95fc0ac009dc00/pydantic_kitbash-1.0.0.tar.gz", hash = "sha256:5b83aec025c856a2cd4cf74a761056b8adc4988419c3e5f2e8b442b7449d627d", size = 116712, upload-time = "2026-01-21T18:15:53.59Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/e6/5d/2d1916a0aafc290768ee06b233f5c8c1debb65562e853fc0b6220bf6d5f9/pydantic_kitbash-1.0.1.tar.gz", hash = "sha256:44ad7f851cbba3c9fdbc1e705d2b36bca455befbdc361d86ad53af421e2b2eb1", size = 117282, upload-time = "2026-02-23T21:51:41.236Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/ca/8e/979b47ae4853025a51bf741ad7405472dfc9209765cc275f2dec204745b2/pydantic_kitbash-1.0.0-py3-none-any.whl", hash = "sha256:d745655e52b1f3cb70c9145084015e66d6061441f1a262c2a1e0cf9d4051513f", size = 14417, upload-time = "2026-01-21T18:15:52.209Z" },
+    { url = "https://files.pythonhosted.org/packages/02/54/c24ce86ecf25c67a4fe7f0f47fe742daf4ccafb3ba4c770baa0d88623778/pydantic_kitbash-1.0.1-py3-none-any.whl", hash = "sha256:8a8055cea6f2e18e5e45336436107b527ae6ab7d32b686eeec95a7aaec18adf2", size = 17762, upload-time = "2026-02-23T21:51:40.028Z" },
 ]
 
 [[package]]
@@ -2901,6 +3001,7 @@ docs = [
     { name = "pydantic-kitbash" },
     { name = "rst2html" },
     { name = "sphinx-autobuild" },
+    { name = "sphinx-autodoc-typehints" },
     { name = "sphinx-design", version = "0.6.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-oracular') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-oracular') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-oracular' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-oracular' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-plucky' and extra == 'group-9-rockcraft-dev-questing')" },
     { name = "sphinx-design", version = "0.7.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-oracular') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-oracular') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-oracular' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-oracular' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-plucky' and extra == 'group-9-rockcraft-dev-questing')" },
     { name = "sphinx-lint" },
@@ -2910,6 +3011,8 @@ docs = [
     { name = "sphinx-sitemap" },
     { name = "sphinx-substitution-extensions" },
     { name = "sphinx-terminal" },
+    { name = "sphinx-toolbox" },
+    { name = "sphinxcontrib-details-directive" },
     { name = "sphinxcontrib-jquery" },
     { name = "sphinxext-opengraph" },
     { name = "sphinxext-rediraffe" },
@@ -2991,9 +3094,10 @@ docs = [
     { name = "canonical-sphinx", specifier = ">=0.5.1" },
     { name = "myst-parser", specifier = ">=4.0.1" },
     { name = "packaging", specifier = ">=25.0" },
-    { name = "pydantic-kitbash", specifier = "~=1.0" },
+    { name = "pydantic-kitbash", specifier = "~=1.0.1" },
     { name = "rst2html", specifier = ">=2020.7.4" },
     { name = "sphinx-autobuild", specifier = ">=2024.10.3" },
+    { name = "sphinx-autodoc-typehints" },
     { name = "sphinx-design", specifier = ">=0.6.1" },
     { name = "sphinx-lint", specifier = "~=1.0" },
     { name = "sphinx-notfound-page", specifier = ">=1.1.0" },
@@ -3002,6 +3106,8 @@ docs = [
     { name = "sphinx-sitemap", specifier = "~=2.6.0" },
     { name = "sphinx-substitution-extensions", specifier = "==2025.1.2" },
     { name = "sphinx-terminal", specifier = "==0.1.1" },
+    { name = "sphinx-toolbox" },
+    { name = "sphinxcontrib-details-directive" },
     { name = "sphinxcontrib-jquery", specifier = ">=4.1" },
     { name = "sphinxext-opengraph", specifier = ">=0.13.0" },
     { name = "sphinxext-rediraffe", specifier = "==0.3.0" },
@@ -3040,6 +3146,15 @@ types = [
 ]
 
 [[package]]
+name = "roman"
+version = "5.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/9c/7c/3901b35ed856329bf98e84da8e5e0b4d899ea0027eee222f1be42a24ff3f/roman-5.2.tar.gz", hash = "sha256:275fe9f46290f7d0ffaea1c33251b92b8e463ace23660508ceef522e7587cb6f", size = 8185, upload-time = "2025-11-11T08:03:57.025Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/10/14/ea3cdd7276fcd731a9003fe4abeb6b395a38110ddff6a6a509f4ee00f741/roman-5.2-py3-none-any.whl", hash = "sha256:89d3b47400388806d06ff77ea77c79ab080bc127820dea6bf34e1f1c1b8e676e", size = 6041, upload-time = "2025-11-11T08:03:56.051Z" },
+]
+
+[[package]]
 name = "rst2html"
 version = "2020.7.4"
 source = { registry = "https://pypi.org/simple" }
@@ -3047,6 +3162,76 @@ dependencies = [
     { name = "docutils" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/29/8e/050653d3f88c7c0ef3ba6df84421dc022d84f152e2c84fc23d49b2d60d1f/rst2html-2020.7.4.tar.gz", hash = "sha256:ea450c6f3dfc0d1cac2a2dc76067d1efc7bb98414487faf2f1abc468463bc6e4", size = 1517, upload-time = "2020-07-15T18:37:40.884Z" }
+
+[[package]]
+name = "ruamel-yaml"
+version = "0.18.16"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "ruamel-yaml-clib", marker = "(python_full_version < '3.14' and platform_python_implementation == 'CPython') or (python_full_version >= '3.14' and extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (python_full_version >= '3.14' and extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-oracular') or (python_full_version >= '3.14' and extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-plucky') or (python_full_version >= '3.14' and extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (python_full_version >= '3.14' and extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-oracular') or (python_full_version >= '3.14' and extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-plucky') or (python_full_version >= '3.14' and extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (python_full_version >= '3.14' and extra == 'group-9-rockcraft-dev-oracular' and extra == 'group-9-rockcraft-dev-plucky') or (python_full_version >= '3.14' and extra == 'group-9-rockcraft-dev-oracular' and extra == 'group-9-rockcraft-dev-questing') or (python_full_version >= '3.14' and extra == 'group-9-rockcraft-dev-plucky' and extra == 'group-9-rockcraft-dev-questing') or (platform_python_implementation != 'CPython' and extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (platform_python_implementation != 'CPython' and extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-oracular') or (platform_python_implementation != 'CPython' and extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-plucky') or (platform_python_implementation != 'CPython' and extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (platform_python_implementation != 'CPython' and extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-oracular') or (platform_python_implementation != 'CPython' and extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-plucky') or (platform_python_implementation != 'CPython' and extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (platform_python_implementation != 'CPython' and extra == 'group-9-rockcraft-dev-oracular' and extra == 'group-9-rockcraft-dev-plucky') or (platform_python_implementation != 'CPython' and extra == 'group-9-rockcraft-dev-oracular' and extra == 'group-9-rockcraft-dev-questing') or (platform_python_implementation != 'CPython' and extra == 'group-9-rockcraft-dev-plucky' and extra == 'group-9-rockcraft-dev-questing')" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/9f/c7/ee630b29e04a672ecfc9b63227c87fd7a37eb67c1bf30fe95376437f897c/ruamel.yaml-0.18.16.tar.gz", hash = "sha256:a6e587512f3c998b2225d68aa1f35111c29fad14aed561a26e73fab729ec5e5a", size = 147269, upload-time = "2025-10-22T17:54:02.346Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/0f/73/bb1bc2529f852e7bf64a2dec885e89ff9f5cc7bbf6c9340eed30ff2c69c5/ruamel.yaml-0.18.16-py3-none-any.whl", hash = "sha256:048f26d64245bae57a4f9ef6feb5b552a386830ef7a826f235ffb804c59efbba", size = 119858, upload-time = "2025-10-22T17:53:59.012Z" },
+]
+
+[[package]]
+name = "ruamel-yaml-clib"
+version = "0.2.15"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/ea/97/60fda20e2fb54b83a61ae14648b0817c8f5d84a3821e40bfbdae1437026a/ruamel_yaml_clib-0.2.15.tar.gz", hash = "sha256:46e4cc8c43ef6a94885f72512094e482114a8a706d3c555a34ed4b0d20200600", size = 225794, upload-time = "2025-11-16T16:12:59.761Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/f7/5a/4ab767cd42dcd65b83c323e1620d7c01ee60a52f4032fb7b61501f45f5c2/ruamel_yaml_clib-0.2.15-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:88eea8baf72f0ccf232c22124d122a7f26e8a24110a0273d9bcddcb0f7e1fa03", size = 147454, upload-time = "2025-11-16T16:13:02.54Z" },
+    { url = "https://files.pythonhosted.org/packages/40/44/184173ac1e74fd35d308108bcbf83904d6ef8439c70763189225a166b238/ruamel_yaml_clib-0.2.15-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:9b6f7d74d094d1f3a4e157278da97752f16ee230080ae331fcc219056ca54f77", size = 132467, upload-time = "2025-11-16T16:13:03.539Z" },
+    { url = "https://files.pythonhosted.org/packages/49/1b/2d2077a25fe682ae335007ca831aff42e3cbc93c14066675cf87a6c7fc3e/ruamel_yaml_clib-0.2.15-cp310-cp310-manylinux1_i686.manylinux_2_28_i686.manylinux_2_5_i686.whl", hash = "sha256:4be366220090d7c3424ac2b71c90d1044ea34fca8c0b88f250064fd06087e614", size = 693454, upload-time = "2025-11-16T20:22:41.083Z" },
+    { url = "https://files.pythonhosted.org/packages/90/16/e708059c4c429ad2e33be65507fc1730641e5f239fb2964efc1ba6edea94/ruamel_yaml_clib-0.2.15-cp310-cp310-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:1f66f600833af58bea694d5892453f2270695b92200280ee8c625ec5a477eed3", size = 700345, upload-time = "2025-11-16T16:13:04.771Z" },
+    { url = "https://files.pythonhosted.org/packages/d9/79/0e8ef51df1f0950300541222e3332f20707a9c210b98f981422937d1278c/ruamel_yaml_clib-0.2.15-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:da3d6adadcf55a93c214d23941aef4abfd45652110aed6580e814152f385b862", size = 731306, upload-time = "2025-11-16T16:13:06.312Z" },
+    { url = "https://files.pythonhosted.org/packages/a6/f4/2cdb54b142987ddfbd01fc45ac6bd882695fbcedb9d8bbf796adc3fc3746/ruamel_yaml_clib-0.2.15-cp310-cp310-musllinux_1_2_aarch64.whl", hash = "sha256:e9fde97ecb7bb9c41261c2ce0da10323e9227555c674989f8d9eb7572fc2098d", size = 692415, upload-time = "2025-11-16T16:13:07.465Z" },
+    { url = "https://files.pythonhosted.org/packages/a0/07/40b5fc701cce8240a3e2d26488985d3bbdc446e9fe397c135528d412fea6/ruamel_yaml_clib-0.2.15-cp310-cp310-musllinux_1_2_i686.whl", hash = "sha256:05c70f7f86be6f7bee53794d80050a28ae7e13e4a0087c1839dcdefd68eb36b6", size = 705007, upload-time = "2025-11-16T20:22:42.856Z" },
+    { url = "https://files.pythonhosted.org/packages/82/19/309258a1df6192fb4a77ffa8eae3e8150e8d0ffa56c1b6fa92e450ba2740/ruamel_yaml_clib-0.2.15-cp310-cp310-musllinux_1_2_x86_64.whl", hash = "sha256:6f1d38cbe622039d111b69e9ca945e7e3efebb30ba998867908773183357f3ed", size = 723974, upload-time = "2025-11-16T16:13:08.72Z" },
+    { url = "https://files.pythonhosted.org/packages/67/3a/d6ee8263b521bfceb5cd2faeb904a15936480f2bb01c7ff74a14ec058ca4/ruamel_yaml_clib-0.2.15-cp310-cp310-win32.whl", hash = "sha256:fe239bdfdae2302e93bd6e8264bd9b71290218fff7084a9db250b55caaccf43f", size = 102836, upload-time = "2025-11-16T16:13:10.27Z" },
+    { url = "https://files.pythonhosted.org/packages/ed/03/92aeb5c69018387abc49a8bb4f83b54a0471d9ef48e403b24bac68f01381/ruamel_yaml_clib-0.2.15-cp310-cp310-win_amd64.whl", hash = "sha256:468858e5cbde0198337e6a2a78eda8c3fb148bdf4c6498eaf4bc9ba3f8e780bd", size = 121917, upload-time = "2025-11-16T16:13:12.145Z" },
+    { url = "https://files.pythonhosted.org/packages/2c/80/8ce7b9af532aa94dd83360f01ce4716264db73de6bc8efd22c32341f6658/ruamel_yaml_clib-0.2.15-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:c583229f336682b7212a43d2fa32c30e643d3076178fb9f7a6a14dde85a2d8bd", size = 147998, upload-time = "2025-11-16T16:13:13.241Z" },
+    { url = "https://files.pythonhosted.org/packages/53/09/de9d3f6b6701ced5f276d082ad0f980edf08ca67114523d1b9264cd5e2e0/ruamel_yaml_clib-0.2.15-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:56ea19c157ed8c74b6be51b5fa1c3aff6e289a041575f0556f66e5fb848bb137", size = 132743, upload-time = "2025-11-16T16:13:14.265Z" },
+    { url = "https://files.pythonhosted.org/packages/0e/f7/73a9b517571e214fe5c246698ff3ed232f1ef863c8ae1667486625ec688a/ruamel_yaml_clib-0.2.15-cp311-cp311-manylinux1_i686.manylinux_2_28_i686.manylinux_2_5_i686.whl", hash = "sha256:5fea0932358e18293407feb921d4f4457db837b67ec1837f87074667449f9401", size = 731459, upload-time = "2025-11-16T20:22:44.338Z" },
+    { url = "https://files.pythonhosted.org/packages/9b/a2/0dc0013169800f1c331a6f55b1282c1f4492a6d32660a0cf7b89e6684919/ruamel_yaml_clib-0.2.15-cp311-cp311-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:ef71831bd61fbdb7aa0399d5c4da06bea37107ab5c79ff884cc07f2450910262", size = 749289, upload-time = "2025-11-16T16:13:15.633Z" },
+    { url = "https://files.pythonhosted.org/packages/aa/ed/3fb20a1a96b8dc645d88c4072df481fe06e0289e4d528ebbdcc044ebc8b3/ruamel_yaml_clib-0.2.15-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:617d35dc765715fa86f8c3ccdae1e4229055832c452d4ec20856136acc75053f", size = 777630, upload-time = "2025-11-16T16:13:16.898Z" },
+    { url = "https://files.pythonhosted.org/packages/60/50/6842f4628bc98b7aa4733ab2378346e1441e150935ad3b9f3c3c429d9408/ruamel_yaml_clib-0.2.15-cp311-cp311-musllinux_1_2_aarch64.whl", hash = "sha256:1b45498cc81a4724a2d42273d6cfc243c0547ad7c6b87b4f774cb7bcc131c98d", size = 744368, upload-time = "2025-11-16T16:13:18.117Z" },
+    { url = "https://files.pythonhosted.org/packages/d3/b0/128ae8e19a7d794c2e36130a72b3bb650ce1dd13fb7def6cf10656437dcf/ruamel_yaml_clib-0.2.15-cp311-cp311-musllinux_1_2_i686.whl", hash = "sha256:def5663361f6771b18646620fca12968aae730132e104688766cf8a3b1d65922", size = 745233, upload-time = "2025-11-16T20:22:45.833Z" },
+    { url = "https://files.pythonhosted.org/packages/75/05/91130633602d6ba7ce3e07f8fc865b40d2a09efd4751c740df89eed5caf9/ruamel_yaml_clib-0.2.15-cp311-cp311-musllinux_1_2_x86_64.whl", hash = "sha256:014181cdec565c8745b7cbc4de3bf2cc8ced05183d986e6d1200168e5bb59490", size = 770963, upload-time = "2025-11-16T16:13:19.344Z" },
+    { url = "https://files.pythonhosted.org/packages/fd/4b/fd4542e7f33d7d1bc64cc9ac9ba574ce8cf145569d21f5f20133336cdc8c/ruamel_yaml_clib-0.2.15-cp311-cp311-win32.whl", hash = "sha256:d290eda8f6ada19e1771b54e5706b8f9807e6bb08e873900d5ba114ced13e02c", size = 102640, upload-time = "2025-11-16T16:13:20.498Z" },
+    { url = "https://files.pythonhosted.org/packages/bb/eb/00ff6032c19c7537371e3119287999570867a0eafb0154fccc80e74bf57a/ruamel_yaml_clib-0.2.15-cp311-cp311-win_amd64.whl", hash = "sha256:bdc06ad71173b915167702f55d0f3f027fc61abd975bd308a0968c02db4a4c3e", size = 121996, upload-time = "2025-11-16T16:13:21.855Z" },
+    { url = "https://files.pythonhosted.org/packages/72/4b/5fde11a0722d676e469d3d6f78c6a17591b9c7e0072ca359801c4bd17eee/ruamel_yaml_clib-0.2.15-cp312-cp312-macosx_10_13_x86_64.whl", hash = "sha256:cb15a2e2a90c8475df45c0949793af1ff413acfb0a716b8b94e488ea95ce7cff", size = 149088, upload-time = "2025-11-16T16:13:22.836Z" },
+    { url = "https://files.pythonhosted.org/packages/85/82/4d08ac65ecf0ef3b046421985e66301a242804eb9a62c93ca3437dc94ee0/ruamel_yaml_clib-0.2.15-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:64da03cbe93c1e91af133f5bec37fd24d0d4ba2418eaf970d7166b0a26a148a2", size = 134553, upload-time = "2025-11-16T16:13:24.151Z" },
+    { url = "https://files.pythonhosted.org/packages/b9/cb/22366d68b280e281a932403b76da7a988108287adff2bfa5ce881200107a/ruamel_yaml_clib-0.2.15-cp312-cp312-manylinux1_i686.manylinux_2_28_i686.manylinux_2_5_i686.whl", hash = "sha256:f6d3655e95a80325b84c4e14c080b2470fe4f33b6846f288379ce36154993fb1", size = 737468, upload-time = "2025-11-16T20:22:47.335Z" },
+    { url = "https://files.pythonhosted.org/packages/71/73/81230babf8c9e33770d43ed9056f603f6f5f9665aea4177a2c30ae48e3f3/ruamel_yaml_clib-0.2.15-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:71845d377c7a47afc6592aacfea738cc8a7e876d586dfba814501d8c53c1ba60", size = 753349, upload-time = "2025-11-16T16:13:26.269Z" },
+    { url = "https://files.pythonhosted.org/packages/61/62/150c841f24cda9e30f588ef396ed83f64cfdc13b92d2f925bb96df337ba9/ruamel_yaml_clib-0.2.15-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:11e5499db1ccbc7f4b41f0565e4f799d863ea720e01d3e99fa0b7b5fcd7802c9", size = 788211, upload-time = "2025-11-16T16:13:27.441Z" },
+    { url = "https://files.pythonhosted.org/packages/30/93/e79bd9cbecc3267499d9ead919bd61f7ddf55d793fb5ef2b1d7d92444f35/ruamel_yaml_clib-0.2.15-cp312-cp312-musllinux_1_2_aarch64.whl", hash = "sha256:4b293a37dc97e2b1e8a1aec62792d1e52027087c8eea4fc7b5abd2bdafdd6642", size = 743203, upload-time = "2025-11-16T16:13:28.671Z" },
+    { url = "https://files.pythonhosted.org/packages/8d/06/1eb640065c3a27ce92d76157f8efddb184bd484ed2639b712396a20d6dce/ruamel_yaml_clib-0.2.15-cp312-cp312-musllinux_1_2_i686.whl", hash = "sha256:512571ad41bba04eac7268fe33f7f4742210ca26a81fe0c75357fa682636c690", size = 747292, upload-time = "2025-11-16T20:22:48.584Z" },
+    { url = "https://files.pythonhosted.org/packages/a5/21/ee353e882350beab65fcc47a91b6bdc512cace4358ee327af2962892ff16/ruamel_yaml_clib-0.2.15-cp312-cp312-musllinux_1_2_x86_64.whl", hash = "sha256:e5e9f630c73a490b758bf14d859a39f375e6999aea5ddd2e2e9da89b9953486a", size = 771624, upload-time = "2025-11-16T16:13:29.853Z" },
+    { url = "https://files.pythonhosted.org/packages/57/34/cc1b94057aa867c963ecf9ea92ac59198ec2ee3a8d22a126af0b4d4be712/ruamel_yaml_clib-0.2.15-cp312-cp312-win32.whl", hash = "sha256:f4421ab780c37210a07d138e56dd4b51f8642187cdfb433eb687fe8c11de0144", size = 100342, upload-time = "2025-11-16T16:13:31.067Z" },
+    { url = "https://files.pythonhosted.org/packages/b3/e5/8925a4208f131b218f9a7e459c0d6fcac8324ae35da269cb437894576366/ruamel_yaml_clib-0.2.15-cp312-cp312-win_amd64.whl", hash = "sha256:2b216904750889133d9222b7b873c199d48ecbb12912aca78970f84a5aa1a4bc", size = 119013, upload-time = "2025-11-16T16:13:32.164Z" },
+    { url = "https://files.pythonhosted.org/packages/17/5e/2f970ce4c573dc30c2f95825f2691c96d55560268ddc67603dc6ea2dd08e/ruamel_yaml_clib-0.2.15-cp313-cp313-macosx_10_13_x86_64.whl", hash = "sha256:4dcec721fddbb62e60c2801ba08c87010bd6b700054a09998c4d09c08147b8fb", size = 147450, upload-time = "2025-11-16T16:13:33.542Z" },
+    { url = "https://files.pythonhosted.org/packages/d6/03/a1baa5b94f71383913f21b96172fb3a2eb5576a4637729adbf7cd9f797f8/ruamel_yaml_clib-0.2.15-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:65f48245279f9bb301d1276f9679b82e4c080a1ae25e679f682ac62446fac471", size = 133139, upload-time = "2025-11-16T16:13:34.587Z" },
+    { url = "https://files.pythonhosted.org/packages/dc/19/40d676802390f85784235a05788fd28940923382e3f8b943d25febbb98b7/ruamel_yaml_clib-0.2.15-cp313-cp313-manylinux1_i686.manylinux_2_28_i686.manylinux_2_5_i686.whl", hash = "sha256:46895c17ead5e22bea5e576f1db7e41cb273e8d062c04a6a49013d9f60996c25", size = 731474, upload-time = "2025-11-16T20:22:49.934Z" },
+    { url = "https://files.pythonhosted.org/packages/ce/bb/6ef5abfa43b48dd55c30d53e997f8f978722f02add61efba31380d73e42e/ruamel_yaml_clib-0.2.15-cp313-cp313-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:3eb199178b08956e5be6288ee0b05b2fb0b5c1f309725ad25d9c6ea7e27f962a", size = 748047, upload-time = "2025-11-16T16:13:35.633Z" },
+    { url = "https://files.pythonhosted.org/packages/ff/5d/e4f84c9c448613e12bd62e90b23aa127ea4c46b697f3d760acc32cb94f25/ruamel_yaml_clib-0.2.15-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:4d1032919280ebc04a80e4fb1e93f7a738129857eaec9448310e638c8bccefcf", size = 782129, upload-time = "2025-11-16T16:13:36.781Z" },
+    { url = "https://files.pythonhosted.org/packages/de/4b/e98086e88f76c00c88a6bcf15eae27a1454f661a9eb72b111e6bbb69024d/ruamel_yaml_clib-0.2.15-cp313-cp313-musllinux_1_2_aarch64.whl", hash = "sha256:ab0df0648d86a7ecbd9c632e8f8d6b21bb21b5fc9d9e095c796cacf32a728d2d", size = 736848, upload-time = "2025-11-16T16:13:37.952Z" },
+    { url = "https://files.pythonhosted.org/packages/0c/5c/5964fcd1fd9acc53b7a3a5d9a05ea4f95ead9495d980003a557deb9769c7/ruamel_yaml_clib-0.2.15-cp313-cp313-musllinux_1_2_i686.whl", hash = "sha256:331fb180858dd8534f0e61aa243b944f25e73a4dae9962bd44c46d1761126bbf", size = 741630, upload-time = "2025-11-16T20:22:51.718Z" },
+    { url = "https://files.pythonhosted.org/packages/07/1e/99660f5a30fceb58494598e7d15df883a07292346ef5696f0c0ae5dee8c6/ruamel_yaml_clib-0.2.15-cp313-cp313-musllinux_1_2_x86_64.whl", hash = "sha256:fd4c928ddf6bce586285daa6d90680b9c291cfd045fc40aad34e445d57b1bf51", size = 766619, upload-time = "2025-11-16T16:13:39.178Z" },
+    { url = "https://files.pythonhosted.org/packages/36/2f/fa0344a9327b58b54970e56a27b32416ffbcfe4dcc0700605516708579b2/ruamel_yaml_clib-0.2.15-cp313-cp313-win32.whl", hash = "sha256:bf0846d629e160223805db9fe8cc7aec16aaa11a07310c50c8c7164efa440aec", size = 100171, upload-time = "2025-11-16T16:13:40.456Z" },
+    { url = "https://files.pythonhosted.org/packages/06/c4/c124fbcef0684fcf3c9b72374c2a8c35c94464d8694c50f37eef27f5a145/ruamel_yaml_clib-0.2.15-cp313-cp313-win_amd64.whl", hash = "sha256:45702dfbea1420ba3450bb3dd9a80b33f0badd57539c6aac09f42584303e0db6", size = 118845, upload-time = "2025-11-16T16:13:41.481Z" },
+    { url = "https://files.pythonhosted.org/packages/3e/bd/ab8459c8bb759c14a146990bf07f632c1cbec0910d4853feeee4be2ab8bb/ruamel_yaml_clib-0.2.15-cp314-cp314-macosx_10_15_x86_64.whl", hash = "sha256:753faf20b3a5906faf1fc50e4ddb8c074cb9b251e00b14c18b28492f933ac8ef", size = 147248, upload-time = "2025-11-16T16:13:42.872Z" },
+    { url = "https://files.pythonhosted.org/packages/69/f2/c4cec0a30f1955510fde498aac451d2e52b24afdbcb00204d3a951b772c3/ruamel_yaml_clib-0.2.15-cp314-cp314-macosx_11_0_arm64.whl", hash = "sha256:480894aee0b29752560a9de46c0e5f84a82602f2bc5c6cde8db9a345319acfdf", size = 133764, upload-time = "2025-11-16T16:13:43.932Z" },
+    { url = "https://files.pythonhosted.org/packages/82/c7/2480d062281385a2ea4f7cc9476712446e0c548cd74090bff92b4b49e898/ruamel_yaml_clib-0.2.15-cp314-cp314-manylinux1_i686.manylinux_2_28_i686.manylinux_2_5_i686.whl", hash = "sha256:4d3b58ab2454b4747442ac76fab66739c72b1e2bb9bd173d7694b9f9dbc9c000", size = 730537, upload-time = "2025-11-16T20:22:52.918Z" },
+    { url = "https://files.pythonhosted.org/packages/75/08/e365ee305367559f57ba6179d836ecc3d31c7d3fdff2a40ebf6c32823a1f/ruamel_yaml_clib-0.2.15-cp314-cp314-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:bfd309b316228acecfa30670c3887dcedf9b7a44ea39e2101e75d2654522acd4", size = 746944, upload-time = "2025-11-16T16:13:45.338Z" },
+    { url = "https://files.pythonhosted.org/packages/a1/5c/8b56b08db91e569d0a4fbfa3e492ed2026081bdd7e892f63ba1c88a2f548/ruamel_yaml_clib-0.2.15-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:2812ff359ec1f30129b62372e5f22a52936fac13d5d21e70373dbca5d64bb97c", size = 778249, upload-time = "2025-11-16T16:13:46.871Z" },
+    { url = "https://files.pythonhosted.org/packages/6a/1d/70dbda370bd0e1a92942754c873bd28f513da6198127d1736fa98bb2a16f/ruamel_yaml_clib-0.2.15-cp314-cp314-musllinux_1_2_aarch64.whl", hash = "sha256:7e74ea87307303ba91073b63e67f2c667e93f05a8c63079ee5b7a5c8d0d7b043", size = 737140, upload-time = "2025-11-16T16:13:48.349Z" },
+    { url = "https://files.pythonhosted.org/packages/5b/87/822d95874216922e1120afb9d3fafa795a18fdd0c444f5c4c382f6dac761/ruamel_yaml_clib-0.2.15-cp314-cp314-musllinux_1_2_i686.whl", hash = "sha256:713cd68af9dfbe0bb588e144a61aad8dcc00ef92a82d2e87183ca662d242f524", size = 741070, upload-time = "2025-11-16T20:22:54.151Z" },
+    { url = "https://files.pythonhosted.org/packages/b9/17/4e01a602693b572149f92c983c1f25bd608df02c3f5cf50fd1f94e124a59/ruamel_yaml_clib-0.2.15-cp314-cp314-musllinux_1_2_x86_64.whl", hash = "sha256:542d77b72786a35563f97069b9379ce762944e67055bea293480f7734b2c7e5e", size = 765882, upload-time = "2025-11-16T16:13:49.526Z" },
+    { url = "https://files.pythonhosted.org/packages/9f/17/7999399081d39ebb79e807314de6b611e1d1374458924eb2a489c01fc5ad/ruamel_yaml_clib-0.2.15-cp314-cp314-win32.whl", hash = "sha256:424ead8cef3939d690c4b5c85ef5b52155a231ff8b252961b6516ed7cf05f6aa", size = 102567, upload-time = "2025-11-16T16:13:50.78Z" },
+    { url = "https://files.pythonhosted.org/packages/d2/67/be582a7370fdc9e6846c5be4888a530dcadd055eef5b932e0e85c33c7d73/ruamel_yaml_clib-0.2.15-cp314-cp314-win_amd64.whl", hash = "sha256:ac9b8d5fa4bb7fd2917ab5027f60d4234345fd366fe39aa711d5dca090aa1467", size = 122847, upload-time = "2025-11-16T16:13:51.807Z" },
+]
 
 [[package]]
 name = "secretstorage"
@@ -3194,6 +3379,18 @@ wheels = [
 ]
 
 [[package]]
+name = "sphinx-autodoc-typehints"
+version = "2.3.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "sphinx" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/74/cd/03e7b917230dc057922130a79ba0240df1693bfd76727ea33fae84b39138/sphinx_autodoc_typehints-2.3.0.tar.gz", hash = "sha256:535c78ed2d6a1bad393ba9f3dfa2602cf424e2631ee207263e07874c38fde084", size = 40709, upload-time = "2024-08-29T16:25:48.343Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a0/f3/e0a4ce49da4b6f4e4ce84b3c39a0677831884cb9d8a87ccbf1e9e56e53ac/sphinx_autodoc_typehints-2.3.0-py3-none-any.whl", hash = "sha256:3098e2c6d0ba99eacd013eb06861acc9b51c6e595be86ab05c08ee5506ac0c67", size = 19836, upload-time = "2024-08-29T16:25:46.707Z" },
+]
+
+[[package]]
 name = "sphinx-basic-ng"
 version = "1.0.0b2"
 source = { registry = "https://pypi.org/simple" }
@@ -3238,6 +3435,20 @@ wheels = [
 ]
 
 [[package]]
+name = "sphinx-jinja2-compat"
+version = "0.4.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "jinja2" },
+    { name = "markupsafe" },
+    { name = "standard-imghdr", marker = "python_full_version >= '3.13' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-oracular') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-oracular') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-oracular' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-oracular' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-plucky' and extra == 'group-9-rockcraft-dev-questing')" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/43/98/43313781f29e8c6c46fec907430310172d6f207e95e4fbea9289990fbbfe/sphinx_jinja2_compat-0.4.1.tar.gz", hash = "sha256:0188f0802d42c3da72997533b55a00815659a78d3f81d4b4747b1fb15a5728e6", size = 5222, upload-time = "2025-08-06T20:06:25.824Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ce/c8/4fd58c1000d7f8f5572c507f4550d2e2d9741e500c68eb2e3da17cbe5a85/sphinx_jinja2_compat-0.4.1-py3-none-any.whl", hash = "sha256:64ca0d46f0d8029fbe69ea612793a55e6ef0113e1bba4a85d402158c09f17a14", size = 8123, upload-time = "2025-08-06T20:06:24.947Z" },
+]
+
+[[package]]
 name = "sphinx-jsonschema"
 version = "1.19.2"
 source = { registry = "https://pypi.org/simple" }
@@ -3272,6 +3483,47 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/6a/b2/67603444a8ee97b4a8ea71b0a9d6bab1727ed65e362c87e02f818ee57b8a/sphinx_notfound_page-1.1.0.tar.gz", hash = "sha256:913e1754370bb3db201d9300d458a8b8b5fb22e9246a816643a819a9ea2b8067", size = 7392, upload-time = "2025-01-28T18:45:02.871Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/cd/d4/019fe439c840a7966012bbb95ccbdd81c5c10271749706793b43beb05145/sphinx_notfound_page-1.1.0-py3-none-any.whl", hash = "sha256:835dc76ff7914577a1f58d80a2c8418fb6138c0932c8da8adce4d9096fbcd389", size = 8167, upload-time = "2025-01-28T18:45:00.465Z" },
+]
+
+[[package]]
+name = "sphinx-prompt"
+version = "1.8.0"
+source = { registry = "https://pypi.org/simple" }
+resolution-markers = [
+    "python_full_version < '3.11'",
+]
+dependencies = [
+    { name = "docutils", marker = "python_full_version < '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-oracular') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-oracular') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-oracular' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-oracular' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-plucky' and extra == 'group-9-rockcraft-dev-questing')" },
+    { name = "pygments", marker = "python_full_version < '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-oracular') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-oracular') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-oracular' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-oracular' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-plucky' and extra == 'group-9-rockcraft-dev-questing')" },
+    { name = "sphinx", marker = "python_full_version < '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-oracular') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-oracular') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-oracular' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-oracular' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-plucky' and extra == 'group-9-rockcraft-dev-questing')" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/e7/fb/7a07b8df1ca2418147a6b13e3f6b445071f2565198b45efa631d0d6ef0cd/sphinx_prompt-1.8.0.tar.gz", hash = "sha256:47482f86fcec29662fdfd23e7c04ef03582714195d01f5d565403320084372ed", size = 5121, upload-time = "2023-09-14T12:46:13.449Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/39/49/f890a2668b7cbf375f5528b549c8d36dd2e801b0fbb7b2b5ef65663ecb6c/sphinx_prompt-1.8.0-py3-none-any.whl", hash = "sha256:369ecc633f0711886f9b3a078c83264245be1adf46abeeb9b88b5519e4b51007", size = 7298, upload-time = "2023-09-14T12:46:12.373Z" },
+]
+
+[[package]]
+name = "sphinx-prompt"
+version = "1.10.2"
+source = { registry = "https://pypi.org/simple" }
+resolution-markers = [
+    "python_full_version >= '3.13'",
+    "python_full_version == '3.12.*'",
+    "python_full_version == '3.11.*'",
+]
+dependencies = [
+    { name = "certifi", marker = "python_full_version >= '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-oracular') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-oracular') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-oracular' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-oracular' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-plucky' and extra == 'group-9-rockcraft-dev-questing')" },
+    { name = "docutils", marker = "python_full_version >= '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-oracular') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-oracular') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-oracular' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-oracular' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-plucky' and extra == 'group-9-rockcraft-dev-questing')" },
+    { name = "idna", marker = "python_full_version >= '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-oracular') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-oracular') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-oracular' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-oracular' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-plucky' and extra == 'group-9-rockcraft-dev-questing')" },
+    { name = "jinja2", marker = "python_full_version >= '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-oracular') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-oracular') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-oracular' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-oracular' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-plucky' and extra == 'group-9-rockcraft-dev-questing')" },
+    { name = "pygments", marker = "python_full_version >= '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-oracular') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-oracular') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-oracular' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-oracular' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-plucky' and extra == 'group-9-rockcraft-dev-questing')" },
+    { name = "requests", marker = "python_full_version >= '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-oracular') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-oracular') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-oracular' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-oracular' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-plucky' and extra == 'group-9-rockcraft-dev-questing')" },
+    { name = "sphinx", marker = "python_full_version >= '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-oracular') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-oracular') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-oracular' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-oracular' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-plucky' and extra == 'group-9-rockcraft-dev-questing')" },
+    { name = "urllib3", marker = "python_full_version >= '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-oracular') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-oracular') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-oracular' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-oracular' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-plucky' and extra == 'group-9-rockcraft-dev-questing')" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/d0/a3/91293c0e0f0b76d0697ba7a41541929ca3f5457671d008bd84a9bde17e21/sphinx_prompt-1.10.2.tar.gz", hash = "sha256:47b592ba75caebd044b0eddf7a5a1b6e0aef6df587b034377cd101a999b686ba", size = 5566, upload-time = "2025-11-28T09:23:18.057Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a9/f4/44ce4d0179fb4e9cfe181a8aa281bba23e40158a609fb3680774529acaaa/sphinx_prompt-1.10.2-py3-none-any.whl", hash = "sha256:6594337962c4b1498602e6984634bed4a0dc7955852e3cfc255eb0af766ed859", size = 7474, upload-time = "2025-11-28T09:23:17.154Z" },
 ]
 
 [[package]]
@@ -3327,6 +3579,20 @@ wheels = [
 ]
 
 [[package]]
+name = "sphinx-tabs"
+version = "3.4.5"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "docutils" },
+    { name = "pygments" },
+    { name = "sphinx" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/27/32/ab475e252dc2b704e82a91141fa404cdd8901a5cf34958fd22afacebfccd/sphinx-tabs-3.4.5.tar.gz", hash = "sha256:ba9d0c1e3e37aaadd4b5678449eb08176770e0fc227e769b6ce747df3ceea531", size = 16070, upload-time = "2024-01-21T12:13:39.392Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/20/9f/4ac7dbb9f23a2ff5a10903a4f9e9f43e0ff051f63a313e989c962526e305/sphinx_tabs-3.4.5-py3-none-any.whl", hash = "sha256:92cc9473e2ecf1828ca3f6617d0efc0aa8acb06b08c56ba29d1413f2f0f6cf09", size = 9904, upload-time = "2024-01-21T12:13:37.67Z" },
+]
+
+[[package]]
 name = "sphinx-terminal"
 version = "0.1.1"
 source = { registry = "https://pypi.org/simple" }
@@ -3340,12 +3606,54 @@ wheels = [
 ]
 
 [[package]]
+name = "sphinx-toolbox"
+version = "4.1.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "apeye" },
+    { name = "autodocsumm" },
+    { name = "beautifulsoup4" },
+    { name = "cachecontrol", extra = ["filecache"] },
+    { name = "dict2css" },
+    { name = "docutils" },
+    { name = "domdf-python-tools" },
+    { name = "filelock" },
+    { name = "html5lib" },
+    { name = "roman" },
+    { name = "ruamel-yaml" },
+    { name = "sphinx" },
+    { name = "sphinx-autodoc-typehints" },
+    { name = "sphinx-jinja2-compat" },
+    { name = "sphinx-prompt", version = "1.8.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-oracular') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-oracular') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-oracular' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-oracular' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-plucky' and extra == 'group-9-rockcraft-dev-questing')" },
+    { name = "sphinx-prompt", version = "1.10.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-oracular') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-oracular') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-oracular' and extra == 'group-9-rockcraft-dev-plucky') or (extra == 'group-9-rockcraft-dev-oracular' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-plucky' and extra == 'group-9-rockcraft-dev-questing')" },
+    { name = "sphinx-tabs" },
+    { name = "tabulate" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/ba/16/769454374719569f6165149a16d06b8da27cda8330fe5f932c2c65a77a04/sphinx_toolbox-4.1.2.tar.gz", hash = "sha256:c30a4f86c4c29e97adb0eb9337d35f5093cb96a44f49caffcf7d5bc58a88b781", size = 114911, upload-time = "2026-01-14T17:33:02.156Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/fa/38/6763a5a981770a21a18b66d3593a8bbb801884d9828c126866efdd01d41a/sphinx_toolbox-4.1.2-py3-none-any.whl", hash = "sha256:0438f8342ba1c6c0d6e47207f4eac167adba61742e8c2b1dc9624ff955b7bc89", size = 196812, upload-time = "2026-01-14T17:33:00.51Z" },
+]
+
+[[package]]
 name = "sphinxcontrib-applehelp"
 version = "2.0.0"
 source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/ba/6e/b837e84a1a704953c62ef8776d45c3e8d759876b4a84fe14eba2859106fe/sphinxcontrib_applehelp-2.0.0.tar.gz", hash = "sha256:2f29ef331735ce958efa4734873f084941970894c6090408b079c61b2e1c06d1", size = 20053, upload-time = "2024-07-29T01:09:00.465Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/5d/85/9ebeae2f76e9e77b952f4b274c27238156eae7979c5421fba91a28f4970d/sphinxcontrib_applehelp-2.0.0-py3-none-any.whl", hash = "sha256:4cd3f0ec4ac5dd9c17ec65e9ab272c9b867ea77425228e68ecf08d6b28ddbdb5", size = 119300, upload-time = "2024-07-29T01:08:58.99Z" },
+]
+
+[[package]]
+name = "sphinxcontrib-details-directive"
+version = "0.1.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "sphinx" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/62/0a/2de87a4f6e0e33415692ed4b03e0b7dfde7d91a691d1486c1577191f875c/sphinxcontrib-details-directive-0.1.0.tar.gz", hash = "sha256:78bd6a67f786a21868abf0e6a5973340d7e7a6fd71b1890de9c856f92877b38b", size = 7969, upload-time = "2019-09-22T13:24:27.707Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/10/9e/9cb96fbdca829ba3eb094d966d0f48bb018215e73f96c8750088e73f2f19/sphinxcontrib_details_directive-0.1.0-py2.py3-none-any.whl", hash = "sha256:ed4d4f47b36e3e905601d425945cbe9d50d4cbcf9964bbf9c863d5a983fb7bf6", size = 10724, upload-time = "2019-09-22T13:24:25.279Z" },
 ]
 
 [[package]]
@@ -3427,6 +3735,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/e3/a9/ab13d156049eea633f992424f3e92cb40e3f1b606bb6d01d40a27457d38a/sphinxext_rediraffe-0.3.0.tar.gz", hash = "sha256:f319b3ccb7c3c3b6f63ffa6fd3eeb171b6d272df55075a9e84364394f391f507", size = 22114, upload-time = "2025-09-28T15:31:53.641Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/87/55/ab40a0d1378ee5c859590a633052cf1d0a1f8435af87558a9f7cd576601a/sphinxext_rediraffe-0.3.0-py3-none-any.whl", hash = "sha256:f4220beafa99c99177488276b8e4fcf61fbeeec4253c1e4aae841a18c475330c", size = 7194, upload-time = "2025-09-28T15:31:52.388Z" },
+]
+
+[[package]]
+name = "standard-imghdr"
+version = "3.10.14"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/09/d2/2eb5521072c9598886035c65c023f39f7384bcb73eed70794f469e34efac/standard_imghdr-3.10.14.tar.gz", hash = "sha256:2598fe2e7c540dbda34b233295e10957ab8dc8ac6f3bd9eaa8d38be167232e52", size = 5474, upload-time = "2024-04-21T18:55:10.859Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/fb/d0/9852f70eb01f814843530c053542b72d30e9fbf74da7abb0107e71938389/standard_imghdr-3.10.14-py3-none-any.whl", hash = "sha256:cdf6883163349624dee9a81d2853a20260337c4cd41c04e99c082e01833a08e2", size = 5598, upload-time = "2024-04-21T18:54:48.587Z" },
 ]
 
 [[package]]
@@ -3790,6 +4107,15 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/bd/95/615e72cd27b85b61eec764a5ca51bd94d40b5adea5ff47567d9ebc4d275a/watchfiles-1.1.1-pp311-pypy311_pp73-macosx_11_0_arm64.whl", hash = "sha256:89eef07eee5e9d1fda06e38822ad167a044153457e6fd997f8a858ab7564a336", size = 396117, upload-time = "2025-10-14T15:06:11.28Z" },
     { url = "https://files.pythonhosted.org/packages/c9/81/e7fe958ce8a7fb5c73cc9fb07f5aeaf755e6aa72498c57d760af760c91f8/watchfiles-1.1.1-pp311-pypy311_pp73-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:ce19e06cbda693e9e7686358af9cd6f5d61312ab8b00488bc36f5aabbaf77e24", size = 450493, upload-time = "2025-10-14T15:06:12.321Z" },
     { url = "https://files.pythonhosted.org/packages/6e/d4/ed38dd3b1767193de971e694aa544356e63353c33a85d948166b5ff58b9e/watchfiles-1.1.1-pp311-pypy311_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:3e6f39af2eab0118338902798b5aa6664f46ff66bc0280de76fca67a7f262a49", size = 457546, upload-time = "2025-10-14T15:06:13.372Z" },
+]
+
+[[package]]
+name = "webencodings"
+version = "0.5.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/0b/02/ae6ceac1baeda530866a85075641cec12989bd8d31af6d5ab4a3e8c92f47/webencodings-0.5.1.tar.gz", hash = "sha256:b36a1c245f2d304965eb4e0a82848379241dc04b865afcc4aab16748587e1923", size = 9721, upload-time = "2017-04-05T20:21:34.189Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/f4/24/2a3e3df732393fed8b3ebf2ec078f05546de641fe1b667ee316ec1dcf3b7/webencodings-0.5.1-py2.py3-none-any.whl", hash = "sha256:a0af1213f3c2226497a97e2b3aa01a7e4bee4f403f95be16fc9acd2947514a78", size = 11774, upload-time = "2017-04-05T20:21:32.581Z" },
 ]
 
 [[package]]

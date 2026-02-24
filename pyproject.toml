@@ -50,7 +50,10 @@ types = [
     "types-tabulate",
 ]
 docs = [
-    "pydantic-kitbash~=1.0",
+    "pydantic-kitbash~=1.0.1",
+    "sphinx-autodoc-typehints",
+    "sphinxcontrib-details-directive",
+    "sphinx-toolbox",
     "sphinx-pydantic==0.1.1",
     "sphinx-lint~=1.0",
     "sphinxext-rediraffe==0.3.0",    
