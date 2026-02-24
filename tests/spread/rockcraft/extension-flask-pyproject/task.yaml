@@ -10,10 +10,10 @@ execute: |
 
   run_rockcraft init --name "${NAME}" --profile flask-framework
 
-  if [ "${SCENARIO}" = "bare" ]; then
-    sed -i "s/^base: .*/base: ${SCENARIO}\nbuild-base: ubuntu@22.04/" rockcraft.yaml
-  else
-    sed -i "s/^base: .*/base: ${SCENARIO//-/@}/" rockcraft.yaml
+  sed -i "s/^name: .*/name: ${NAME}/g" rockcraft.yaml
+  sed -i "s/^base: .*/base: ${SCENARIO//-/@}/g" rockcraft.yaml
+  if [ "${SCENARIO}" != "bare" ]; then
+      sed -i "/^build-base:/d" rockcraft.yaml
   fi
 
   run_rockcraft pack
