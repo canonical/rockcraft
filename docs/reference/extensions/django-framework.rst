@@ -25,16 +25,18 @@ Project requirements
 
 There are 2 requirements to be able to use the ``django-framework`` extension:
 
-1. There must be a ``requirements.txt`` file in the root directory of the
-   project with ``Django`` declared as a dependency.
-2. The project must be named the same as the ``name`` in the project file, with
-   any ``-`` replaced by ``_``, i.e., the ``manage.py`` must be located at
-   ``./<Rock name with - replaced by _>/<Rock name with - replaced by _>/manage.py``
-   relative to the project file.
+1. There must be a ``requirements.txt`` or ``pyproject.toml`` file in the root
+  directory of the project with ``Django`` declared as a dependency.
+2. The Django project directory at the rock root must be named the same as the
+  ``name`` in the project file, with any ``-`` replaced by ``_``. The Django
+  settings package inside that directory must be either the same name or
+  ``mysite``. This means ``manage.py`` is located at
+  ``./<rock-name>/<rock-name>/manage.py`` and ``wsgi.py`` is located at
+  ``./<rock-name>/<rock-name>/wsgi.py`` or ``./<rock-name>/mysite/wsgi.py``.
 
 For the project to make use of asynchronous Gunicorn workers:
 
-- The ``requirements.txt`` file must include ``gevent`` as a dependency.
+- The ``requirements.txt`` or ``pyproject.toml`` file must include ``gevent`` as a dependency.
 
 .. _reference-django-framework-stage-packages:
 
