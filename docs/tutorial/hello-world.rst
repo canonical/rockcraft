@@ -24,6 +24,13 @@ This file instructs Rockcraft to build a rock that **only** has the ``hello`` pa
 help define and describe the rock. For more information about all available keys, check
 :ref:`reference-rockcraft-yaml`.
 
+.. note::
+
+   This tutorial is validated with ``build-base: ubuntu@22.04`` as shown in
+   the example above. Behaviour may differ when using other Ubuntu series
+   (for example ``ubuntu@24.04``), as the contents of ``stage-packages``
+   can vary between releases.
+
 Pack the rock with Rockcraft
 ----------------------------
 
