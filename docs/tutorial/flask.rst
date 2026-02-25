@@ -463,7 +463,7 @@ Finally, use ``curl`` to send a request to the ``/time`` endpoint:
     :end-before: [docs:curl-time-end]
     :dedent: 2
 
-The updated app should respond with the current date and time in the container's
+The updated app should respond with the current date and time in
 UTC (e.g. ``2024-06-21 09:47:56``).
 
 .. note::
