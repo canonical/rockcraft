@@ -6,61 +6,61 @@
 <rect x="0" y="0" width="480" height="360" fill="none" />
 
 <g transform="translate(0, 0)">
-<rect x="10" y="10" width="420" height="150" stroke="currentColor" fill="#c0c0c0" />
+<rect x="10" y="10" width="420" height="150" stroke="#777777" fill="#c0c0c0" />
 
 <text x="220" y="35" font-family="Ubuntu" font-size="18"
 	  text-anchor="middle" dominant-baseline="text-after-edge"
-      fill="currentColor">Debian package A</text>
+      fill="#555555">Debian package A</text>
 
-<rect x="20" y="52" width="160" height="95" stroke="currentColor" fill="none"
+<rect x="20" y="52" width="160" height="95" stroke="#777777" fill="none"
 	  stroke-dasharray="3,2" />
 <text x="100" y="107" font-family="Ubuntu" font-size="15"
 	  text-anchor="middle" dominant-baseline="text-after-edge"
-      fill="currentColor">A_slice1</text>
-<rect x="150" y="45" width="160" height="95" stroke="currentColor" fill="none"
+      fill="#555555">A_slice1</text>
+<rect x="150" y="45" width="160" height="95" stroke="#777777" fill="none"
 	  stroke-dasharray="3,2" />
 <text x="230" y="100" font-family="Ubuntu" font-size="15"
 	  text-anchor="middle" dominant-baseline="text-after-edge"
-      fill="currentColor">A_slice2</text>
-<rect x="320" y="45" width="90" height="95" stroke="#505050" fill="none"
+      fill="#555555">A_slice2</text>
+<rect x="320" y="45" width="90" height="95" stroke="#777777" fill="none"
 	  stroke-dasharray="3,2" />
 <text x="365" y="100" font-family="Ubuntu" font-size="15"
 	  text-anchor="middle" dominant-baseline="text-after-edge"
-      fill="#505050">A_slice3</text>
+      fill="#555555">A_slice3</text>
 </g>
 
 <g transform="translate(40, 220)">
-<rect x="10" y="10" width="380" height="120" stroke="currentColor" fill="#c0c0c0" />
+<rect x="10" y="10" width="380" height="120" stroke="#777777" fill="#c0c0c0" />
 
 <text x="200" y="125" font-family="Ubuntu" font-size="18"
 	  text-anchor="middle" dominant-baseline="text-after-edge"
-      fill="currentColor">Debian package B</text>
+      fill="#555555">Debian package B</text>
 
-<rect x="20" y="20" width="140" height="75" stroke="currentColor" fill="none"
+<rect x="20" y="20" width="140" height="75" stroke="#777777" fill="none"
 	  stroke-dasharray="3,2" />
 <text x="90" y="65" font-family="Ubuntu" font-size="15"
 	  text-anchor="middle" dominant-baseline="text-after-edge"
-      fill="currentColor">B_slice1</text>
+      fill="#555555">B_slice1</text>
 
-<rect x="170" y="20" width="210" height="75" stroke="currentColor" fill="none"
+<rect x="170" y="20" width="210" height="75" stroke="#777777" fill="none"
 	  stroke-dasharray="3,2" />
 <text x="275" y="65" font-family="Ubuntu" font-size="15"
 	  text-anchor="middle" dominant-baseline="text-after-edge"
-      fill="currentColor">B_slice2</text>
+      fill="#555555">B_slice2</text>
 
-<path d="M 60,20 l 0,-85" stroke="currentColor" fill="none"
+<path d="M 60,20 l 0,-85" stroke="#777777" fill="none"
       stroke-dasharray="3,2" />
-<path d="M 60,-73 l 4,8 -8,0 z" stroke="currentColor" fill="none" />
+<path d="M 60,-73 l 4,8 -8,0 z" stroke="#777777" fill="none" />
 
-<path d="M 190,20 c 0,-73 -110,-20 -110,-85" stroke="currentColor" fill="none"
+<path d="M 190,20 c 0,-73 -110,-20 -110,-85" stroke="#777777" fill="none"
       stroke-dasharray="3,2" />
-<path d="M 80,-73 l 4,8 -8,0 z" stroke="currentColor" fill="none" />
+<path d="M 80,-73 l 4,8 -8,0 z" stroke="#777777" fill="none" />
 
-<path d="M 230,20 l 0,-92" stroke="currentColor" fill="none"
+<path d="M 230,20 l 0,-92" stroke="#777777" fill="none"
       stroke-dasharray="3,2" />
-<path d="M 230,-80 l 4,8 -8,0 z" stroke="currentColor" fill="none" />
+<path d="M 230,-80 l 4,8 -8,0 z" stroke="#777777" fill="none" />
 
-<path d="M 390,35 c 50,-20 60,-75 7,-105" stroke="currentColor" fill="none" />
-<path d="M 397,-70 l 2,-3 -8,-1 4,7 z" stroke="currentColor" fill="none" />
+<path d="M 390,35 c 50,-20 60,-75 7,-105" stroke="#777777" fill="none" />
+<path d="M 397,-70 l 2,-3 -8,-1 4,7 z" stroke="#777777" fill="none" />
 </g>
 </svg>
