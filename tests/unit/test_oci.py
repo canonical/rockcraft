@@ -18,6 +18,7 @@ import hashlib
 import json
 import os
 import tarfile
+from collections.abc import Sequence
 from pathlib import Path
 from typing import NamedTuple
 from unittest.mock import ANY, call, mock_open, patch
@@ -936,32 +937,55 @@ class TestImage:
         ]
         assert mock_loads.called
 
-    def test_set_path_bare(self, mock_run):
+    def _mock_skopeo_inspect_env(self, mock_run, mocker, *, env: Sequence[str]) -> None:
+        def _run_side_effect(cmd, **kwargs):
+            m = mocker.MagicMock()
+            if cmd[:2] == ["skopeo", "inspect"]:
+                m.stdout = json.dumps({"Env": env})
+                return m
+            if cmd[:2] == ["umoci", "config"] and "--image" in cmd:
+                return m
+            raise AssertionError(f"Unexpected command: {cmd!r}")
+
+        mock_run.side_effect = _run_side_effect
+
+    @pytest.mark.parametrize("base", ["ubuntu@24.04", "ubuntu@22.04", "ubuntu@20.04"])
+    def test_set_path_does_not_override_when_path_present(self, mock_run, mocker, base):
         image = oci.Image("a:b", Path("/c"))
-
-        image.set_default_path("bare")
-
-        expected = "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-        assert mock_run.mock_calls == [
-            call(
-                [
-                    "umoci",
-                    "config",
-                    "--image",
-                    "/c/a:b",
-                    "--config.env",
-                    f"PATH={expected}",
-                ]
-            )
-        ]
-
-    @pytest.mark.parametrize(
-        "base",
-        ["ubuntu@24.04", "ubuntu@22.04", "ubuntu@20.04"],
-    )
-    def test_set_path_non_bare(self, mock_run, base):
-        image = oci.Image("a:b", Path("/c"))
+        self._mock_skopeo_inspect_env(mock_run, mocker, env=["PATH=/usr/bin"])
 
         image.set_default_path(base)
 
-        assert not mock_run.called
+        assert mock_run.mock_calls == [
+            call(["skopeo", "inspect", "oci:/c/a:b"]),
+        ]
+
+    @pytest.mark.parametrize("base", ["ubuntu@24.04", "ubuntu@22.04", "ubuntu@20.04"])
+    def test_set_path_sets_default_when_path_missing(self, mock_run, mocker, base):
+        image = oci.Image("a:b", Path("/c"))
+        self._mock_skopeo_inspect_env(mock_run, mocker, env=["FOO=bar"])
+
+        image.set_default_path(base)
+
+        assert mock_run.call_count == 2
+        assert mock_run.mock_calls[0] == call(["skopeo", "inspect", "oci:/c/a:b"])
+
+        config_cmd = mock_run.mock_calls[1].args[0]
+        assert config_cmd[:4] == ["umoci", "config", "--image", "/c/a:b"]
+        assert "--config.env" in config_cmd
+        assert f"PATH={Pebble.DEFAULT_ENV_PATH}" in config_cmd
+
+    @pytest.mark.parametrize("base", ["ubuntu@24.04", "ubuntu@22.04", "ubuntu@20.04"])
+    def test_set_path_sets_default_when_path_empty(self, mock_run, mocker, base):
+        image = oci.Image("a:b", Path("/c"))
+        self._mock_skopeo_inspect_env(mock_run, mocker, env=["PATH="])
+
+        image.set_default_path(base)
+
+        assert mock_run.call_count == 2
+        assert mock_run.mock_calls[0] == call(["skopeo", "inspect", "oci:/c/a:b"])
+
+        config_cmd = mock_run.mock_calls[1].args[0]
+        assert config_cmd[:4] == ["umoci", "config", "--image", "/c/a:b"]
+        assert "--config.env" in config_cmd
+        assert f"PATH={Pebble.DEFAULT_ENV_PATH}" in config_cmd
