@@ -108,8 +108,8 @@ contributor you should:
 
 1. `create a fork`_ of the Rockcraft repository,
 2. commit the changes to your fork (ideally to a new branch),
-    1. make sure to follow the project's `CONTRIBUTING`_ guidelines,
-3. create a Pull Request against the ``main`` branch.
+3. make sure to follow the project's `CONTRIBUTING`_ guidelines,
+4. create a Pull Request against the ``main`` branch.
 
 Similarly to new issues, new Pull Requests (PR) are also supervised
 and regularly triaged by the repository owners. If the tests are passing
