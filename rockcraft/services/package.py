@@ -152,7 +152,6 @@ def _pack(
 
     new_image.set_entrypoint(entrypoint)
     new_image.set_cmd(cmd)
-    new_image.set_default_path(project.base)
 
     dumped = project.marshal()
     services = cast(dict[str, typing.Any], dumped.get("services", {}))
@@ -171,6 +170,9 @@ def _pack(
 
     if project.environment:
         new_image.set_environment(project.environment)
+
+    # Check the final environment after applying project-defined variables.
+    new_image.set_default_path()
 
     # Set annotations and metadata, both dynamic and the ones based on user-provided properties
     # Also include the "created" timestamp, just before packing the image

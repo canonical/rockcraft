@@ -1012,40 +1012,80 @@ class TestImage:
         ]
         assert mock_loads.called
 
-    def test_set_path_bare(self, mock_run):
-        image = oci.Image("a:b", Path("/c"))
+    def _mock_skopeo_inspect_env(
+        self,
+        mock_run,
+        mocker,
+        *,
+        env: list[str],
+    ) -> None:
+        def _run_side_effect(cmd, **kwargs):
+            result = mocker.MagicMock()
 
-        image.set_default_path("bare")
+            if cmd[:2] == ["skopeo", "inspect"]:
+                result.stdout = json.dumps({"Env": env})
+                return result
 
-        expected_path = "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-        expected_cmd = [
-            "umoci",
-            "config",
-            "--image",
-            "/c/a:b",
-            "--config.env",
-            f"PATH={expected_path}",
-        ]
+            if cmd[:2] == ["umoci", "config"] and "--image" in cmd:
+                return result
 
-        assert mock_run.mock_calls == [
-            call(
-                [
-                    *expected_cmd,
-                    "--history.created_by",
-                    " ".join(expected_cmd),
-                    "--history.comment",
-                    "Set default PATH for bare-based rock",
-                ]
-            )
-        ]
+            raise AssertionError(f"Unexpected command: {cmd!r}")
+
+        mock_run.side_effect = _run_side_effect
 
     @pytest.mark.parametrize(
-        "base",
-        ["ubuntu@24.04", "ubuntu@22.04", "ubuntu@20.04"],
+        ("env", "should_set_default"),
+        [
+            pytest.param(["PATH=/usr/bin"], False, id="path-present"),
+            pytest.param(["FOO=bar"], True, id="path-missing"),
+            pytest.param(["PATH="], True, id="path-empty"),
+            pytest.param(
+                ["PATH=/usr/bin", "PATH="],
+                True,
+                id="last-path-empty",
+            ),
+            pytest.param(
+                ["PATH=", "PATH=/custom/bin"],
+                False,
+                id="last-path-present",
+            ),
+        ],
     )
-    def test_set_path_non_bare(self, mock_run, base):
+    def test_set_default_path(
+        self,
+        mock_run,
+        mocker,
+        env,
+        should_set_default,
+    ):
         image = oci.Image("a:b", Path("/c"))
+        self._mock_skopeo_inspect_env(mock_run, mocker, env=env)
 
-        image.set_default_path(base)
+        image.set_default_path()
 
-        assert not mock_run.called
+        expected_calls = [
+            call(["skopeo", "inspect", "oci:/c/a:b"]),
+        ]
+
+        if should_set_default:
+            config_cmd = [
+                "umoci",
+                "config",
+                "--image",
+                "/c/a:b",
+                "--config.env",
+                f"PATH={Pebble.DEFAULT_ENV_PATH}",
+            ]
+            expected_calls.append(
+                call(
+                    [
+                        *config_cmd,
+                        "--history.created_by",
+                        " ".join(config_cmd),
+                        "--history.comment",
+                        "Set default PATH",
+                    ]
+                )
+            )
+
+        assert mock_run.mock_calls == expected_calls
