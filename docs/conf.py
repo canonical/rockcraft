@@ -140,6 +140,7 @@ linkcheck_ignore = [
     "https://matrix.to/#/#12-factor-charms:ubuntu.com",
     "https://specs.opencontainers.org/image-spec/config/",
     "https://canonical.com/#get-in-touch#",
+    "http://127.0.0.1:8000/",
 ]
 
 # Don't check links in the "common" subdirectory, as those are the responsibility of
