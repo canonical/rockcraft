@@ -296,7 +296,7 @@ Check for problems in the documentation with:
 make lint-docs
 ```
 
-All **new** pages must include a meta description. The meta description provides 
+All **new** pages must include a meta description. The meta description provides
 a summary of the page. Search engines often reuse this for the search result’s snippet.
 
 To set custom HTML meta descriptions, add this structure at the top of a page:
@@ -314,7 +314,7 @@ Please observe the following guidelines:
 - Keep the language simple, avoid unnecessary adverbs or adjectives.
 - Use an informative tone, frame sentences in terms of actions and facts.
 - Use the tool name and page-specific terminology that users are likely to
-  use when searching for information. 
+  use when searching for information.
 - Place key terms near the start.
 - Don’t include key terms that aren’t on the page.
 
