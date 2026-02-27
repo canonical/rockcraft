@@ -217,6 +217,29 @@ class SpringBootFramework(Extension):
         "craftctl default",
         "find ${CRAFT_PART_INSTALL} -name '*-plain.jar' -type f -delete",
     ]
+    # The Gradle plugin's JavaPlugin base class hardlinks ALL JARs found under
+    # ${CRAFT_PART_BUILD} (including Gradle's own distribution and cache JARs
+    # from .gradle/wrapper/dists/ and .gradle/caches/) into
+    # ${CRAFT_PART_INSTALL}/jar/.  Those extra JARs then get staged alongside
+    # the Spring Boot fat JAR and cause `jdeps` (used by the jlink plugin) to
+    # fail with a FindException: some of Gradle's own JARs are named modules
+    # (e.g. log4j-to-slf4j) that require automatic modules (e.g. org.slf4j)
+    # whose provider JAR (slf4j-api-1.7.x, bundled by Gradle) lacks the
+    # Automatic-Module-Name manifest entry.  --ignore-missing-deps does not
+    # suppress this error because it occurs during jdeps' module-graph
+    # construction phase, before analysis begins.
+    #
+    # The fix: after craftctl default, identify the Spring Boot fat JAR by
+    # looking in build/libs/ (where bootJar always places its output) and
+    # delete every other JAR from the install directory.  The fat JAR name is
+    # discovered at build time via shell commands, so no prior knowledge of the
+    # artifact name is required.
+    GRADLE_OVERRIDE_BUILD_COMMANDS = [
+        *DEFAULT_OVERRIDE_BUILD_COMMANDS,
+        "SPRING_FAT_JAR=$(find ${CRAFT_PART_BUILD}/build/libs"
+        " -name '*.jar' ! -name '*-plain.jar' -type f -printf '%f\\n' | head -1)",
+        'find ${CRAFT_PART_INSTALL}/jar -name "*.jar" ! -name "${SPRING_FAT_JAR}" -delete',
+    ]
 
     def _gen_install_app_gradle_plugin(self) -> dict[str, Any]:
         """Generate install app part using Gradle plugin."""
@@ -244,7 +267,7 @@ class SpringBootFramework(Extension):
                 "mkdir -p ${CRAFT_PART_BUILD}/.gradle/",
                 "cp ${CRAFT_STAGE}/*init.gradle* ${CRAFT_PART_BUILD}/.gradle/",
             ]
-        override_build_cmds += self.DEFAULT_OVERRIDE_BUILD_COMMANDS
+        override_build_cmds += self.GRADLE_OVERRIDE_BUILD_COMMANDS
         gradle_install_app_part["override-build"] = "\n".join(override_build_cmds)
         return gradle_install_app_part
 
