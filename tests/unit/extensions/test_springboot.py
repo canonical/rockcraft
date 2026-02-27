@@ -220,8 +220,13 @@ def use_gradlew_non_executable(tmp_path, request):
                         "organize": {
                             "**/*.jar": "app/",
                         },
-                        "override-build": "craftctl default\n"
-                        "find ${CRAFT_PART_INSTALL} -name '*-plain.jar' -type f -delete",
+                        "override-build": (
+                            "craftctl default\n"
+                            "find ${CRAFT_PART_INSTALL} -name '*-plain.jar' -type f -delete\n"
+                            "SPRING_FAT_JAR=$(find ${CRAFT_PART_BUILD}/build/libs"
+                            " -name '*.jar' ! -name '*-plain.jar' -type f -printf '%f\\n' | head -1)\n"
+                            'find ${CRAFT_PART_INSTALL}/jar -name "*.jar" ! -name "${SPRING_FAT_JAR}" -delete'
+                        ),
                     },
                     "spring-boot-framework/runtime": {
                         "plugin": "jlink",
@@ -261,8 +266,13 @@ def use_gradlew_non_executable(tmp_path, request):
                         "organize": {
                             "**/*.jar": "app/",
                         },
-                        "override-build": "craftctl default\n"
-                        "find ${CRAFT_PART_INSTALL} -name '*-plain.jar' -type f -delete",
+                        "override-build": (
+                            "craftctl default\n"
+                            "find ${CRAFT_PART_INSTALL} -name '*-plain.jar' -type f -delete\n"
+                            "SPRING_FAT_JAR=$(find ${CRAFT_PART_BUILD}/build/libs"
+                            " -name '*.jar' ! -name '*-plain.jar' -type f -printf '%f\\n' | head -1)\n"
+                            'find ${CRAFT_PART_INSTALL}/jar -name "*.jar" ! -name "${SPRING_FAT_JAR}" -delete'
+                        ),
                     },
                     "spring-boot-framework/runtime": {
                         "plugin": "jlink",
@@ -320,7 +330,10 @@ def use_gradlew_non_executable(tmp_path, request):
                             "mkdir -p ${CRAFT_PART_BUILD}/.gradle/\n"
                             "cp ${CRAFT_STAGE}/*init.gradle* ${CRAFT_PART_BUILD}/.gradle/\n"
                             "craftctl default\n"
-                            "find ${CRAFT_PART_INSTALL} -name '*-plain.jar' -type f -delete"
+                            "find ${CRAFT_PART_INSTALL} -name '*-plain.jar' -type f -delete\n"
+                            "SPRING_FAT_JAR=$(find ${CRAFT_PART_BUILD}/build/libs"
+                            " -name '*.jar' ! -name '*-plain.jar' -type f -printf '%f\\n' | head -1)\n"
+                            'find ${CRAFT_PART_INSTALL}/jar -name "*.jar" ! -name "${SPRING_FAT_JAR}" -delete'
                         ),
                     },
                     "spring-boot-framework/runtime": {
