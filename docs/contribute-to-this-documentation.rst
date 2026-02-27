@@ -64,7 +64,7 @@ CODA provides:
 * Skill development in documentation and writing
 
 Contributors gain experience with open source software, add to their professional
-portfolio, connect with likeminded people, and receive recognition for giving back.
+portfolio, connect with like-minded people, and receive recognition for giving back.
 
 CODA coordinates work for open source projects everywhere, including Rockcraft. The best
 way to get started is to volunteer for a topic in the `task aggregator`_

@@ -20,7 +20,7 @@ build the documentation:
     :end-before: [docs:make-docs-end]
     :dedent: 2
 
-Even better, serve it locally on port 8080. The documentation will be rebuilt
+Even better, serve it on :literalref:`http://127.0.0.1:8000/`. The documentation will be rebuilt
 on each file change, and will reload the browser view.
 
 .. literalinclude:: ../code/build-docs/task.yaml

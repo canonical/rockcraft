@@ -293,7 +293,7 @@ make docs
 Check for problems in the documentation with:
 
 ```bash
-make lint-docs
+make docs-lint
 ```
 
 ### Push the branch and open a PR

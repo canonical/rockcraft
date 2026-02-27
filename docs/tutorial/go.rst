@@ -148,7 +148,7 @@ The top of the file should look similar to the following snippet:
         # ppc64el:
         # s390x:
 
-Verfiy that the ``name`` is ``go-hello-world``.
+Verify that the ``name`` is ``go-hello-world``.
 
 The ``platforms`` key must match the architecture of your host. Check
 the architecture of your system:
