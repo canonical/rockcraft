@@ -296,6 +296,14 @@ typehints_document_rtype = True
 project_dir = pathlib.Path(__file__).parents[1].resolve()
 sys.path.insert(0, str(project_dir.absolute()))
 
+def generate_cli_docs(nil):
+    gen_cli_docs_path = (project_dir / "tools/docs/gen_cli_docs.py").resolve()
+    os.system("%s %s" % (gen_cli_docs_path, project_dir / "docs"))
+
+
+def setup(app):
+    app.connect("builder-inited", generate_cli_docs)
+
 # Setup libraries documentation snippets for use in rockcraft docs.
 common_docs_path = pathlib.Path(__file__).parent / "common"
 craft_parts_docs_path = pathlib.Path(craft_parts_docs.__file__).parent / "craft-parts"
@@ -352,15 +360,3 @@ notfound_context = {
     "title": "Page not found",
     "body": "<p><strong>Sorry, but the documentation page that you are looking for was not found.</strong></p>\n\n<p>Documentation changes over time, and pages are moved around. We try to redirect you to the updated content where possible, but unfortunately, that didn't work this time (maybe because the content you were looking for does not exist in this version of the documentation).</p>\n<p>You can try to use the navigation to locate the content you're looking for, or search for a similar page.</p>\n",
 }
-
-# region Autgenerate documentation
-
-def generate_cli_docs(nil):
-    gen_cli_docs_path = (project_dir / "tools/docs/gen_cli_docs.py").resolve()
-    os.system("%s %s" % (gen_cli_docs_path, project_dir / "docs"))
-
-
-def setup(app):
-    app.connect("builder-inited", generate_cli_docs)
-
-# endregion
