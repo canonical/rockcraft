@@ -8,7 +8,7 @@ beautifulsoup4==4.12.3
 black==24.4.2
 bracex==2.4
 cachetools==5.3.3
-canonical-sphinx==0.1.0
+canonical-sphinx==0.6.0
 canonical-sphinx-extensions==0.0.21
 certifi==2024.2.2
 cffi==1.16.0

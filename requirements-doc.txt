@@ -3,7 +3,7 @@ anyio==4.3.0
 Babel==2.15.0
 beautifulsoup4==4.12.3
 bracex==2.4
-canonical-sphinx==0.1.0
+canonical-sphinx==0.6.0
 canonical-sphinx-extensions==0.0.21
 certifi==2024.2.2
 cffi==1.16.0
