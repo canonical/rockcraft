@@ -4,8 +4,9 @@ Outsource rock builds to Launchpad
 ==================================
 
 This guide shows you how to outsource rock builds to the Launchpad `build farm
-<https://launchpad.net/builders>`_. By building remotely, you can concurrently
-assemble rocks for all supported architectures.
+<https://launchpad.net/builders>`_.
+By :ref:`building remotely <reference-remote-builds>`,
+you can concurrently assemble rocks for all supported architectures.
 
 .. important::
 
