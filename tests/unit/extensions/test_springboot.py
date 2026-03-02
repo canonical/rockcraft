@@ -224,6 +224,7 @@ def use_gradlew_non_executable(tmp_path, request):
                             "craftctl default\n"
                             "SPRING_FAT_JAR=$(find ${CRAFT_PART_BUILD}/build/libs"
                             " -name '*.jar' ! -name '*-plain.jar' -type f -printf '%f\\n' | head -1)\n"
+                            '[ -n "${SPRING_FAT_JAR}" ] || (echo "ERROR: could not find Spring Boot fat JAR in build/libs" && exit 1)\n'
                             'find ${CRAFT_PART_INSTALL}/jar -name "*.jar" ! -name "${SPRING_FAT_JAR}" -delete'
                         ),
                     },
@@ -269,6 +270,7 @@ def use_gradlew_non_executable(tmp_path, request):
                             "craftctl default\n"
                             "SPRING_FAT_JAR=$(find ${CRAFT_PART_BUILD}/build/libs"
                             " -name '*.jar' ! -name '*-plain.jar' -type f -printf '%f\\n' | head -1)\n"
+                            '[ -n "${SPRING_FAT_JAR}" ] || (echo "ERROR: could not find Spring Boot fat JAR in build/libs" && exit 1)\n'
                             'find ${CRAFT_PART_INSTALL}/jar -name "*.jar" ! -name "${SPRING_FAT_JAR}" -delete'
                         ),
                     },
@@ -330,6 +332,7 @@ def use_gradlew_non_executable(tmp_path, request):
                             "craftctl default\n"
                             "SPRING_FAT_JAR=$(find ${CRAFT_PART_BUILD}/build/libs"
                             " -name '*.jar' ! -name '*-plain.jar' -type f -printf '%f\\n' | head -1)\n"
+                            '[ -n "${SPRING_FAT_JAR}" ] || (echo "ERROR: could not find Spring Boot fat JAR in build/libs" && exit 1)\n'
                             'find ${CRAFT_PART_INSTALL}/jar -name "*.jar" ! -name "${SPRING_FAT_JAR}" -delete'
                         ),
                     },

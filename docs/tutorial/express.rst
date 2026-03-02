@@ -148,7 +148,7 @@ The top of the file should look similar to the following snippet:
 
     ...
 
-Verfiy that the ``name`` is ``expressjs-hello-world``.
+Verify that the ``name`` is ``expressjs-hello-world``.
 
 Ensure that ``platforms`` includes the architecture of your host. Check
 the architecture of your system:

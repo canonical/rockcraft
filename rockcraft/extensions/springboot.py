@@ -225,6 +225,7 @@ class SpringBootFramework(Extension):
         "craftctl default",
         "SPRING_FAT_JAR=$(find ${CRAFT_PART_BUILD}/build/libs"
         " -name '*.jar' ! -name '*-plain.jar' -type f -printf '%f\\n' | head -1)",
+        '[ -n "${SPRING_FAT_JAR}" ] || (echo "ERROR: could not find Spring Boot fat JAR in build/libs" && exit 1)',
         'find ${CRAFT_PART_INSTALL}/jar -name "*.jar" ! -name "${SPRING_FAT_JAR}" -delete',
     ]
 
