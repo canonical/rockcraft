@@ -4,3 +4,6 @@ schema/rockcraft.json
 # External code
 tools/external
 docs/sphinx-docs-starter-pack
+
+# Files from the Starter Pack
+docs/.sphinx

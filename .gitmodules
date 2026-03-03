@@ -2,6 +2,3 @@
 	path = tools/external
 	url = https://github.com/snapcore/snapd-testing-tools.git
 	branch = main
-[submodule "sphinx-docs-starter-pack"]
-	path = docs/sphinx-docs-starter-pack
-	url = https://github.com/canonical/sphinx-docs-starter-pack.git
