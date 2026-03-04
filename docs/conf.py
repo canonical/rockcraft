@@ -170,6 +170,7 @@ extensions = [
     "sphinx_related_links",
     "sphinx_roles",
     "sphinx_terminal",
+    "sphinx_copybutton",
     # "sphinx_ubuntu_images",
     # "sphinx_youtube_links",
     # "sphinxcontrib.cairosvgconverter",
