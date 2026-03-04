@@ -9,14 +9,9 @@ environment:
   BASE/gradle_2404: ubuntu@24.04
   BASE/maven_bare: bare
   BASE/maven_2404: ubuntu@24.04
-  # BUILD_BASE 22.04 and below's default JDKs are not compatible with Java version 21 and below.
   BUILD_BASE: ubuntu@24.04
 
   ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS: "true"
-
-# NOTE: marked as manual because these tests are currently failing with hundreds of megabytes
-# of text output
-manual: true
 
 execute: |
   NAME="spring-boot-${BASE//@/-}-${PROJECT_BASE}"
