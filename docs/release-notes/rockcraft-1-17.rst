@@ -123,6 +123,13 @@ Rockcraft 1.17.0
 - `#1069 <https://github.com/canonical/rockcraft/issues/1069>`__ schema: ubuntu\@26.04 should not be a valid build-base for now.
 - `craft-application #986 <https://github.com/canonical/craft-application/issues/986>`__ craft-application is using outdated distro-support package.
 
+
+Rockcraft 1.17.1
+~~~~~~~~~~~~~~~~
+
+- The version of Chisel included in Rockcraft correctly handles slices for the ``ubuntu@26.04`` base.
+
+
 Contributors
 ------------
 
