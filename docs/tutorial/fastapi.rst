@@ -155,31 +155,7 @@ Pack the rock:
     :end-before: [docs:pack-end]
     :dedent: 2
 
-.. warning::
-   There is a `known connectivity issue with LXD and Docker
-   <lxd-docker-connectivity-issue_>`_. If we see a
-   networking issue such as "*A network related operation failed in a context
-   of no network access*" or ``Client.Timeout``, we need to allow egress network
-   traffic to flow from the managed LXD bridge.
-
-   First, run ``lxc network list`` to show the available networks. The
-   bridge will have ``TYPE: bridge`` and ``MANAGED: YES``. Save the name to an
-   environment variable:
-
-   .. code-block::
-
-       NETWORK_BRIDGE=<name of managed LXD bridge>
-
-   Then, update the network traffic flow using:
-
-   .. code-block::
-
-       sudo iptables  -I DOCKER-USER -i $NETWORK_BRIDGE -j ACCEPT
-       sudo ip6tables -I DOCKER-USER -i $NETWORK_BRIDGE -j ACCEPT
-       sudo iptables  -I DOCKER-USER -o $NETWORK_BRIDGE -m conntrack \
-         --ctstate RELATED,ESTABLISHED -j ACCEPT
-       sudo ip6tables -I DOCKER-USER -o $NETWORK_BRIDGE -m conntrack \
-         --ctstate RELATED,ESTABLISHED -j ACCEPT
+.. include:: /reuse/troubleshooting/lxd-docker-networking.rst
 
 Depending on the network, this step can take a couple of minutes to finish.
 Since FastAPI is an experimental extension,
@@ -567,5 +543,4 @@ your changes are not taking effect (e.g. the ``/time``
 404), try running ``rockcraft clean`` and pack the rock again with
 ``rockcraft pack``.
 
-.. _`lxd-docker-connectivity-issue`: https://documentation.ubuntu.com/lxd/en/latest/howto/network_bridge_firewalld/#prevent-connectivity-issues-with-lxd-and-docker
 .. _`install-multipass`: https://multipass.run/docs/install-multipass
