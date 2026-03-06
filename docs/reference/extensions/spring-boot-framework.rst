@@ -24,7 +24,12 @@ To use the Spring Boot Framework extension, there must be either:
 - a ``pom.xml`` file
 - a ``build.gradle`` file
 
-in the root directory of the project.
+in the root directory of the project, not both.
+
+.. note::
+
+    For the build process to execute correctly the ``mvnw`` or
+    ``gradlew`` wrapper must have executable permissions.
 
 .. _reference-spring-boot-framework-plugin:
 
