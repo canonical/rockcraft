@@ -2458,7 +2458,7 @@ p:not([class*="p-heading--"]):not([class*="p-muted-heading"])
 
 :root {
     --vf-FLAG-ON: initial;
-    --vf-FLAG-OFF: 
+    --vf-FLAG-OFF:  
 ;
 }
 
