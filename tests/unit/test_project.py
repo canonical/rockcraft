@@ -717,7 +717,6 @@ def test_project_generate_metadata(yaml_loaded_data):
     assert oci_annotations == {
         "org.opencontainers.image.version": yaml_loaded_data["version"],
         "org.opencontainers.image.title": yaml_loaded_data["title"],
-        "org.opencontainers.image.ref.name": yaml_loaded_data["name"],
         "org.opencontainers.image.licenses": yaml_loaded_data["license"],
         "org.opencontainers.image.created": now,
         "org.opencontainers.image.base.digest": digest,
