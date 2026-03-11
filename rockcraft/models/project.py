@@ -420,7 +420,6 @@ class Project(BaseProject):
         annotations = {
             "org.opencontainers.image.version": self.version,
             "org.opencontainers.image.title": self.title,
-            "org.opencontainers.image.ref.name": self.name,
             "org.opencontainers.image.created": generation_time,
             "org.opencontainers.image.base.digest": base_digest.hex(),
             "org.opencontainers.image.description": re.sub(
