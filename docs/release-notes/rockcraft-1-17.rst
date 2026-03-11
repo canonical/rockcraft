@@ -130,6 +130,16 @@ Rockcraft 1.17.1
 - The version of Chisel included in Rockcraft correctly handles slices for the ``ubuntu@26.04`` base.
 
 
+Rockcraft 1.17.2
+~~~~~~~~~~~~~~~~
+
+- The ``org.opencontainers.image.ref.name`` key is no longer added to the rock's image manifest, following the
+  `OCI spec <https://specs.opencontainers.org/image-spec/annotations/?v=v1.1.1#pre-defined-annotation-keys>`__'s
+  recommendation.
+- Rocks with the ``bare`` base no longer include the ``org.opencontainers.image.base.digest`` annotation key,
+  as bare rocks have no base images.
+
+
 Contributors
 ------------
 

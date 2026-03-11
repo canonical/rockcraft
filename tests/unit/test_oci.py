@@ -832,7 +832,13 @@ class TestImage:
                     "annotations": {
                         "org.opencontainers.image.ref.name": "latest",
                     },
-                }
+                },
+                {
+                    "digest": "sha256:basemanifest",
+                    "annotations": {
+                        "org.opencontainers.image.ref.name": "origin",
+                    },
+                },
             ]
         }
         test_manifest = {"config": {"digest": "sha256:fooconfig"}}
@@ -871,7 +877,13 @@ class TestImage:
                             "org.opencontainers.image.ref.name": "latest",
                         },
                         "size": len(new_test_manifest_bytes),
-                    }
+                    },
+                    {
+                        "digest": "sha256:basemanifest",
+                        "annotations": {
+                            "org.opencontainers.image.ref.name": "origin",
+                        },
+                    },
                 ]
             },
         }
