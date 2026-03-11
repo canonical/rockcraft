@@ -133,8 +133,11 @@ Rockcraft 1.17.1
 Rockcraft 1.17.2
 ~~~~~~~~~~~~~~~~
 
-- The ``org.opencontainers.image.ref.name`` key is no longer added to the rock's image manifest, as this goes against the `OCI spec <https://github.com/opencontainers/image-spec/blob/v1.1.1/annotations.md#pre-defined-annotation-keys>`__.
-- Rocks with ``bare`` bases no longer include the ``org.opencontainers.image.base.digest`` annotation key, as bare rocks have no base images.
+- The ``org.opencontainers.image.ref.name`` key is no longer added to the rock's image manifest, following the
+  `OCI spec <https://github.com/opencontainers/image-spec/blob/v1.1.1/annotations.md#pre-defined-annotation-keys>`__'s
+  recommendation.
+- Rocks with the ``bare`` base no longer include the ``org.opencontainers.image.base.digest`` annotation key,
+  as bare rocks have no base images.
 
 
 Contributors
