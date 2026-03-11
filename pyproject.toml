@@ -57,7 +57,7 @@ docs = [
     "sphinx-toolbox",
     "sphinx-pydantic==0.1.1",
     "sphinx-lint~=1.0",
-    "sphinxext-rediraffe==0.3.0",    
+    "sphinxext-rediraffe==0.3.0",
     "sphinx-substitution-extensions==2025.1.2",
     "sphinx-terminal==0.1.1",
     "sphinx-copybutton",
@@ -108,25 +108,10 @@ dev = [
     "pytest-randomly>=3.16.0",
 ]
 tics = ["flake8", "pylint"]
-dev-jammy = [
-    # 2.4 for Jammy
-    "python-apt~=2.4.0;sys_platform=='linux'",
-]
-dev-noble = [
-    # 2.7 for Noble
-    "python-apt~=2.7.0;sys_platform=='linux'",
-]
-dev-oracular = [
-    # 2.9 for Oracular+
-    "python-apt>=2.9.0,<2.9.9;sys_platform=='linux'",
-]
-dev-plucky = [
-    # 2.9 for Oracular+
-    "python-apt>=2.9.0;sys_platform=='linux'",
-]
-dev-questing = [
-    "python-apt~=3.0.0;sys_platform=='linux'",
-]
+dev-jammy = ["python-apt~=2.4.0;sys_platform=='linux'"]
+dev-noble = ["python-apt~=2.7.0;sys_platform=='linux'"]
+dev-questing = ["python-apt~=3.0.0;sys_platform=='linux'"]
+dev-resolute = ["python-apt~=3.0;sys_platform=='linux'"]
 release = [
     "twine",
     "wheel",
@@ -164,9 +149,8 @@ conflicts = [
     [
         { group = "dev-jammy" },
         { group = "dev-noble" },
-        { group = "dev-oracular" },
-        { group = "dev-plucky" },
         { group = "dev-questing" },
+        { group = "dev-resolute" },
     ],
 ]
 build-constraint-dependencies = [
