@@ -1,3 +1,4 @@
+import importlib
 import datetime
 import os
 import pathlib
@@ -223,6 +224,11 @@ exclude_patterns = [
     "common/craft-parts/reference/plugins/python_v2_plugin.rst",
     "common/craft-parts/reference/plugins/uv_plugin.rst",
     "common/craft-parts/reference/plugins/ruby_plugin.rst",
+    "common/craft-application/how-to-guides/build-remotely.rst",
+    "common/craft-application/how-to-guides/reuse-packages-between-builds.rst",
+    "common/craft-application/reference/fetch-service.rst",
+    "common/craft-application/reference/remote-builds.rst",
+    "common/craft-application/reference/strict-platform-names.rst",
     # Extra non-craft-parts exclusions can be added after this comment
     "reuse/*",
     "README.md",
@@ -307,11 +313,22 @@ def setup(app):
 
 # Setup libraries documentation snippets for use in rockcraft docs.
 common_docs_path = pathlib.Path(__file__).parent / "common"
-craft_parts_docs_path = pathlib.Path(craft_parts_docs.__file__).parent / "craft-parts"
-(common_docs_path / "craft-parts").unlink(missing_ok=True)
-(common_docs_path / "craft-parts").symlink_to(
-    craft_parts_docs_path, target_is_directory=True
-)
+def link_common_docs(library_name: str) -> None:
+    """Create a link to the appropriate common documentation directory."""
+    common_lib_path = common_docs_path / library_name
+
+    docs_module_name = f"{library_name.replace('-', '_')}_docs"
+    docs_module = importlib.import_module(docs_module_name)
+    docs_path = pathlib.Path(docs_module.__file__).parent / library_name
+
+    if common_lib_path.is_symlink() and common_lib_path.readlink() == docs_path:
+        return
+
+    common_lib_path.unlink(missing_ok=True)
+    common_lib_path.symlink_to(docs_path, target_is_directory=True)
+
+link_common_docs("craft-parts")
+link_common_docs("craft-application")
 
 # Do (not) include module names.
 add_module_names = True

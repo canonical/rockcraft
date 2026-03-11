@@ -95,6 +95,15 @@ Platform keys
     :override-type: str | list[str]
 
 
+.. |star| replace:: rock
+.. |Starcraft| replace:: Rockcraft
+
+Naming rules
+~~~~~~~~~~~~
+
+.. include:: ../common/craft-application/reference/strict-platform-names.rst
+    :start-after: ------------
+
 .. _rockcraft-yaml-part-keys:
 
 Part keys
