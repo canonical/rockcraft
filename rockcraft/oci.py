@@ -599,6 +599,10 @@ def _inject_oci_fields(image_path: Path, arch_variant: str | None = None) -> Non
     # The manifest of the image being built contains both the base image
     # and the target image. We need to find the manifest that matches the
     # tag of the target image, and ensure the tag is not ambiguous.
+    # The annotation "org.opencontainers.image.ref.name" here is set by umoci
+    # when calling the method `add_layer` to distinguish images with different
+    # tags within the same OCI directory. This annotation is irrelevant to the
+    # annotation field with the same name in the manifest of the target image.
     manifest_digests: list[tuple[str, int]] = [
         (manifest["digest"].split(":")[-1], i)
         for i, manifest in enumerate(tl_index["manifests"])

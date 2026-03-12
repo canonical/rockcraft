@@ -406,7 +406,6 @@ class Project(BaseProject):
             "version": self.version,
             "created": generation_time,
             "base": self.base,
-            "base-digest": base_digest.hex(),
             # `architecture` "looks like" a string since it inherits from it, but serialization
             # represents it as a DebianArchitecture, which comes out wrong (see rockcraft#992)
             # instead, explicitly cast it to just be an actual string
@@ -420,9 +419,7 @@ class Project(BaseProject):
         annotations = {
             "org.opencontainers.image.version": self.version,
             "org.opencontainers.image.title": self.title,
-            "org.opencontainers.image.ref.name": self.name,
             "org.opencontainers.image.created": generation_time,
-            "org.opencontainers.image.base.digest": base_digest.hex(),
             "org.opencontainers.image.description": re.sub(
                 r"\n{2,}", "\n", self.summary
             )
@@ -430,6 +427,12 @@ class Project(BaseProject):
         }
         if self.license:
             annotations["org.opencontainers.image.licenses"] = self.license
+
+        # The base digest is only valid for non-bare bases, since there isn't an image
+        # sharing the zero-indexed layers with the target image for a bare-based image.
+        if self.base != "bare":
+            metadata["base-digest"] = base_digest.hex()
+            annotations["org.opencontainers.image.base.digest"] = base_digest.hex()
 
         return (annotations, metadata)
 
