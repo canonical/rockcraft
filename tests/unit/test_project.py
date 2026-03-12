@@ -717,7 +717,6 @@ def test_project_generate_metadata(yaml_loaded_data):
     assert oci_annotations == {
         "org.opencontainers.image.version": yaml_loaded_data["version"],
         "org.opencontainers.image.title": yaml_loaded_data["title"],
-        "org.opencontainers.image.ref.name": yaml_loaded_data["name"],
         "org.opencontainers.image.licenses": yaml_loaded_data["license"],
         "org.opencontainers.image.created": now,
         "org.opencontainers.image.base.digest": digest,
@@ -764,6 +763,25 @@ def test_metadata_base_devel(yaml_loaded_data):
         now, bytes.fromhex(digest), DebianArchitecture.from_host()
     )
     assert rock_metadata["grade"] == "devel"
+
+
+def test_metadata_base_bare(yaml_loaded_data):
+    yaml_loaded_data["base"] = "bare"
+    yaml_loaded_data["build-base"] = "ubuntu@24.04"
+    yaml_loaded_data["parts"]["foo"] = {
+        "plugin": "nil",
+        "stage-packages": ["hello"],
+    }  # Avoid validation error for no overlay with bare base
+    project = Project.unmarshal(yaml_loaded_data)
+
+    now = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    digest = "a1b2c3"  # mock digest
+
+    oci_annotations, rock_metadata = project.generate_metadata(
+        now, bytes.fromhex(digest), DebianArchitecture.from_host()
+    )
+    assert "base-digest" not in rock_metadata
+    assert "org.opencontainers.image.base.digest" not in oci_annotations
 
 
 EXPECTED_DUMPED_YAML = f"""\
