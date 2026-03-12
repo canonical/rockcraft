@@ -17,7 +17,6 @@ import datetime
 import hashlib
 import json
 import os
-import tarfile
 from pathlib import Path
 from typing import NamedTuple
 from unittest.mock import ANY, call, mock_open, patch
@@ -284,30 +283,34 @@ class TestImage:
         Path("layer_dir").mkdir()
         Path("layer_dir/foo.txt").touch()
         pid = os.getpid()
-
-        spy_add = mocker.spy(tarfile.TarFile, "add")
-
+        mock_proc_run = mocker.patch("craft_parts.utils.process.run")
         image.add_layer("tag", Path("layer_dir"))
-        # The `Tarfile.add()` on the directory ends up calling the method multiple
-        # times (due to the recursion), but we're mainly interested that the first
-        # call was to add `layer_dir`.
-        assert spy_add.mock_calls[0] == call(
-            ANY, Path("layer_dir/foo.txt"), arcname="foo.txt", recursive=False
-        )
 
+        expected_tar_file = new_dir / f"c/.temp_layer.{pid}.tar"
+        expected_tar_cmd = [
+            "tar",
+            "-cf",
+            expected_tar_file,
+            "--no-recursion",
+            "--acls",
+            "--xattrs",
+            "--selinux",
+            Path("foo.txt"),
+        ]
+        mock_proc_run.assert_called_once_with(expected_tar_cmd, cwd=ANY, check=True)
         expected_cmd = [
             "umoci",
             "raw",
             "add-layer",
             "--image",
             str(new_dir / "c/a:b"),
-            str(new_dir / f"c/.temp_layer.{pid}.tar"),
+            str(expected_tar_file),
             "--tag",
             "tag",
         ]
-        assert mock_run.mock_calls == [
-            call([*expected_cmd, "--history.created_by", " ".join(expected_cmd)])
-        ]
+        mock_run.assert_called_once_with(
+            [*expected_cmd, "--history.created_by", " ".join(expected_cmd)]
+        )
 
     def test_add_new_user(
         self,
