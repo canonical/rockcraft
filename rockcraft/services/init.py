@@ -42,7 +42,7 @@ class RockcraftInitService(InitService):
         )
 
         init_profile = template_dir.name
-        if init_profile != "simple":
+        if init_profile not in ("simple", "test"):
             versioned_docs = self._app.versioned_docs_url
             reference_docs = f"{versioned_docs}/reference/extensions/{init_profile}"
             emit.message(
