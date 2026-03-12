@@ -116,7 +116,7 @@ service:
     2023-10-30T12:37:33.659Z [pebble] POST /v1/services 3.878846ms 202
     2023-10-30T12:37:33.663Z [pebble] Service "app" starting: node server.js
     2023-10-30T12:37:33.864Z [app] Running on http://0.0.0.0:8080
-    2023-10-30T12:37:33.659Z [pebble] Started default services with change 1.
+    2023-10-30T12:37:33.865Z [pebble] Started default services with change 1.
 
 Next we'll verify that the Node.js app is up and running. If you're working on
 a regular Ubuntu system, open your web browser and go to
