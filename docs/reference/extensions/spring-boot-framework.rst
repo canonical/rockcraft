@@ -24,7 +24,8 @@ To use the Spring Boot Framework extension, there must be either:
 - a ``pom.xml`` file
 - a ``build.gradle`` file
 
-in the root directory of the project, not both.
+in the root directory of the project.
+The project must not contain both files, otherwise the rock initialization will fail.
 
 .. note::
 
