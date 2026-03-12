@@ -70,7 +70,7 @@ class RockcraftLifecycleService(LifecycleService):
         """Perform base-layer pruning on primed files."""
         prime_dir = step_info.prime_dir
         base_layer_dir = step_info.rootfs_dir
-        files: set[str]
+        files: set[Path]
 
         files = step_info.state.files if step_info.state else set()
         layers.prune_prime_files(prime_dir, files, base_layer_dir)
@@ -115,7 +115,7 @@ def _python_usrmerge_fix(step_info: StepInfo) -> None:
         # from a Python plugin.
         return
 
-    if "lib64" not in state.files:
+    if Path("lib64") not in state.files:
         return
 
     prime_dir = step_info.prime_dir
