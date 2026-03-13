@@ -28,7 +28,7 @@ execute: |
   # to the documentation that uses it.
   cat <<EOF > run-container.sh
   # [docs:run-container]
-  docker run --name my-node-app -p 8000:8080 my-node-app:1.0
+  docker run --name my-node-app -p 8000:8000 my-node-app:1.0 -v
   # [docs:run-container-end]
   EOF
 
