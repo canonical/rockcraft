@@ -27,7 +27,7 @@ To use the Spring Boot Framework extension, there must be either:
 in the root directory of the project.
 The project must not contain both files, otherwise the rock initialization will fail.
 
-For the build process to execute correctly the ``mvnw`` or
+For the build process to execute correctly, the ``mvnw`` or
 ``gradlew`` wrapper must have executable permissions.
 
 .. _reference-spring-boot-framework-plugin:
