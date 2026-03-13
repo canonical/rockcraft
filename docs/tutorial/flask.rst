@@ -7,6 +7,8 @@ In this tutorial, we'll create a simple Flask app and learn how to
 containerise it in a rock, using Rockcraft's ``flask-framework``
 :ref:`extension <reference-flask-framework>`.
 
+It should take 25 minutes for you to complete.
+
 Setup
 =====
 
