@@ -6,6 +6,8 @@ Bundle a Node.js app into a rock
 This tutorial describes the steps needed to bundle a typical Node.js application
 into a rock.
 
+It should take around 10 minutes to complete.
+
 Setup your environment
 ----------------------
 
