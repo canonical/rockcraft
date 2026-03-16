@@ -7,6 +7,8 @@ In this tutorial, we'll create a simple Django app and learn how to
 containerise it in a rock, using Rockcraft's ``django-framework``
 :ref:`extension <reference-django-framework>`.
 
+It should take 25 minutes for you to complete.
+
 Setup
 =====
 

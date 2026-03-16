@@ -7,6 +7,8 @@ In this tutorial, we'll create a simple FastAPI app and learn how to
 containerise it in a rock with Rockcraft's
 :ref:`fastapi-framework <reference-fastapi-framework>` extension.
 
+It should take 25 minutes for you to complete.
+
 Setup
 =====
 

@@ -3,6 +3,10 @@
 Create a "Hello World" rock
 ===========================
 
+This tutorial guides you through the process of packaging a rock with Rockcraft.
+
+It should take around 10 minutes to complete.
+
 Setup your environment
 ----------------------
 
