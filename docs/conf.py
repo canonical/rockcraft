@@ -140,6 +140,7 @@ linkcheck_ignore = [
     "https://matrix.to/#/#rockcraft:ubuntu.com",
     "https://matrix.to/#/#12-factor-charms:ubuntu.com",
     "https://specs.opencontainers.org/image-spec/config/",
+    "https://specs.opencontainers.org/image-spec/annotations/",
     "https://canonical.com/#get-in-touch#",
     "http://127.0.0.1:8000/",
 ]
