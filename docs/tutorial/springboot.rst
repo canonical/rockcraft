@@ -37,17 +37,7 @@ Create the Spring Boot app
 ==========================
 
 Start by creating the "Hello, world" Spring Boot app that will be used
-for this tutorial.
-
-Create an empty project directory:
-
-.. code-block:: bash
-
-   mkdir spring-boot-hello-world
-   cd spring-boot-hello-world
-
-Create the Demo Spring Boot app that will be used for
-this tutorial.
+for this tutorial:
 
 .. literalinclude:: code/spring-boot/task.yaml
     :language: bash
@@ -258,8 +248,8 @@ size:
 
 .. terminal::
 
-    REPOSITORY       TAG       IMAGE ID       CREATED         SIZE
-    spring-boot-hello-world   0.1       f3abf7ebc169   5 minutes aspring-boot   15.7MB
+    REPOSITORY                TAG       IMAGE ID       CREATED         SIZE
+    spring-boot-hello-world   0.1       f3abf7ebc169   5 minutes ago   15.7MB
 
 Now we're finally ready to run the rock and test the containerised Spring Boot
 app:
