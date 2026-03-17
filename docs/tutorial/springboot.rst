@@ -249,7 +249,7 @@ size:
 .. terminal::
 
     REPOSITORY                TAG       IMAGE ID       CREATED         SIZE
-    spring-boot-hello-world   0.1       f3abf7ebc169   5 minutes ago   15.7MB
+    spring-boot-hello-world   0.1       f3abf7ebc169   5 minutes ago   149MB
 
 Now we're finally ready to run the rock and test the containerised Spring Boot
 app:
