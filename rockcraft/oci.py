@@ -198,6 +198,7 @@ class Image:
         tag: str,
         new_layer_dir: Path,
         base_layer_dir: Path | None = None,
+        comment: str | None = None,
     ) -> "Image":
         """Add a layer to the image.
 
@@ -213,7 +214,9 @@ class Image:
 
         try:
             layers.archive_layer(new_layer_dir, temp_file, base_layer_dir)
-            _add_layer_into_image(image_path, temp_file, **{"--tag": tag})
+            _add_layer_into_image(
+                image_path, temp_file, comment=comment, **{"--tag": tag}
+            )
         finally:
             temp_file.unlink(missing_ok=True)
 
@@ -297,7 +300,11 @@ class Image:
                     )
 
             emit.progress(f"Adding user {username}:{uid} with group {username}:{uid}")
-            self.add_layer(tag, Path(tmpfs))
+            self.add_layer(
+                tag,
+                Path(tmpfs),
+                comment=f"Add user {username}:{uid} with group {username}:{uid}",
+            )
 
     def stat(self) -> dict[str, Any]:
         """Obtain the image statistics, as reported by "umoci stat --json"."""
@@ -364,7 +371,7 @@ class Image:
         """
         image_path = self.path / self.image_name
         params = ["--clear=config.entrypoint", "--config.user", str(userid)]
-        _config_image(image_path, params)
+        _config_image(image_path, params, comment="Set default user")
         emit.progress(f"Default user set to {userid} ({username})")
 
     def set_entrypoint(self, entrypoint: list[str]) -> None:
@@ -377,7 +384,7 @@ class Image:
             params.extend(["--config.entrypoint", entry])
 
         params.extend(["--clear=config.cmd"])
-        _config_image(image_path, params)
+        _config_image(image_path, params, comment="Set entrypoint")
         emit.progress(f"Entrypoint set to {entrypoint}")
 
     def set_cmd(self, command: list[str] | None = None) -> None:
@@ -391,7 +398,7 @@ class Image:
 
         for arg in command or []:
             cmd_params.extend(["--config.cmd", arg])
-        _config_image(image_path, cmd_params)
+        _config_image(image_path, cmd_params, comment="Set default commands")
         emit.progress(f"CMD set to {command}")
 
     def set_default_path(self, base: str) -> None:
@@ -407,7 +414,11 @@ class Image:
         image_path = self.path / self.image_name
 
         emit.debug(f"Setting bare-based rock PATH to {pebble_path!r}")
-        _config_image(image_path, ["--config.env", f"PATH={pebble_path}"])
+        _config_image(
+            image_path,
+            ["--config.env", f"PATH={pebble_path}"],
+            comment="Set default PATH for bare-based rock",
+        )
 
     def set_pebble_layer(
         self,
@@ -453,7 +464,7 @@ class Image:
             )
 
             emit.progress("Writing new Pebble layer file")
-            self.add_layer(tag, tmpfs_path)
+            self.add_layer(tag, tmpfs_path, comment="Add Pebble layer file")
 
     def set_environment(self, env: dict[str, str]) -> None:
         """Set the OCI image environment.
@@ -470,7 +481,7 @@ class Image:
             env_item = f"{name}={value}"
             env_list.append(env_item)
             params.extend(["--config.env", env_item])
-        _config_image(image_path, params)
+        _config_image(image_path, params, comment="Set environment variables")
         emit.progress(f"Environment set to {env_list}")
 
     def set_control_data(self, metadata: dict[str, Any]) -> None:
@@ -495,7 +506,11 @@ class Image:
 
         try:
             layers.archive_layer(local_control_data_path, temp_tar_file)
-            _add_layer_into_image(self.path / self.image_name, temp_tar_file)
+            _add_layer_into_image(
+                self.path / self.image_name,
+                temp_tar_file,
+                comment="Add rock control metadata",
+            )
         finally:
             temp_tar_file.unlink(missing_ok=True)
 
@@ -519,9 +534,9 @@ class Image:
             label_params.extend(["--config.label", label_item])
             annotation_params.extend(["--manifest.annotation", label_item])
         # Set the labels
-        _config_image(image_path, label_params)
+        _config_image(image_path, label_params, comment="Set labels")
         # Set the annotations as a copy of these labels (for OCI compliance only)
-        _config_image(image_path, annotation_params)
+        _config_image(image_path, annotation_params, comment="Set annotations")
         emit.progress(f"Labels and annotations set to {labels_list}")
 
     def set_media_type(
@@ -560,18 +575,26 @@ def _copy_image(
     )
 
 
-def _config_image(image_path: Path, params: list[str]) -> None:
+def _config_image(
+    image_path: Path, params: list[str], comment: str | None = None
+) -> None:
     """Configure the OCI image."""
-    _process_run(["umoci", "config", "--image", str(image_path), *params])
+    cmd = ["umoci", "config", "--image", str(image_path), *params]
+    if "--no-history" not in params:
+        cmd.extend(["--history.created_by", " ".join(cmd)])
+    if comment:
+        cmd.extend(["--history.comment", comment])
+    _process_run(cmd)
 
 
 def _add_layer_into_image(
-    image_path: Path, archived_content: Path, **kwargs: str
+    image_path: Path, archived_content: Path, comment: str | None = None, **kwargs: str
 ) -> None:
     """Add raw layer (archived) into the OCI image.
 
     :param image_path: path of the OCI image, in the format <image>:<tar>
     :param archived_content: path to the archived content to be added
+    :param comment: optional comment to add to the layer's history
     """
     cmd = [
         "umoci",
@@ -581,7 +604,10 @@ def _add_layer_into_image(
         str(image_path),
         str(archived_content),
     ] + [arg_val for k, v in kwargs.items() for arg_val in [k, v]]
-    _process_run([*cmd, "--history.created_by", " ".join(cmd)])
+    cmd.extend(["--history.created_by", " ".join(cmd)])
+    if comment:
+        cmd.extend(["--history.comment", comment])
+    _process_run(cmd)
 
 
 def _inject_oci_fields(image_path: Path, arch_variant: str | None = None) -> None:
