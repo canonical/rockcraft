@@ -413,7 +413,7 @@ Update the FastAPI app
 ======================
 
 As a final step, let's update our app. For example,
-we want to add a new ``/time`` endpoint which returns the current time.
+we want to add a new ``/time`` endpoint which returns the current time in the container's timezone.
 
 Start by opening the ``app.py`` file in a text editor and update the code to
 look like the following:
@@ -477,7 +477,7 @@ Finally, use ``curl`` to send a request to the ``/time`` endpoint:
     :end-before: [docs:curl-time-end]
     :dedent: 2
 
-The updated app should respond with the current date and time (e.g.
+The updated app should respond with the current date and time in the container's timezone (e.g.
 ``{"value":"2024-10-01 06:53:54\n"}``).
 
 .. note::
