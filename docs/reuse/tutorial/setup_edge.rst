@@ -54,7 +54,7 @@ and initialised:
    sudo snap install lxd
    lxd init --auto
 
-There is a :external+lxd:doc:`known connectivity issue with LXD and Docker <howto/network_bridge_firewalld>`.
+There is a :external+lxd:ref:`known connectivity issue with LXD and Docker <network-lxd-docker>`.
 To avoid this issue, enable IPv4 forwarding before installing Docker:
 
 .. code-block:: bash
