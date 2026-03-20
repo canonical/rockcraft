@@ -54,15 +54,13 @@ and initialised:
    sudo snap install lxd
    lxd init --auto
 
-.. note::
-   There is a `known connectivity issue with LXD and Docker
-   <https://documentation.ubuntu.com/lxd/stable-5.21/howto/network_bridge_firewalld/#prevent-connectivity-issues-with-lxd-and-docker>`_.
-   To avoid this issue, enable IPv4 forwarding before installing Docker:
+There is a :external+lxd:doc:`known connectivity issue with LXD and Docker <howto/network_bridge_firewalld>`.
+To avoid this issue, enable IPv4 forwarding before installing Docker:
 
-   .. code-block:: bash
+.. code-block:: bash
 
-      echo "net.ipv4.conf.all.forwarding=1" | sudo tee -a /etc/sysctl.d/99-forwarding.conf
-      sudo systemctl restart systemd-sysctl
+   echo "net.ipv4.conf.all.forwarding=1" | sudo tee -a /etc/sysctl.d/99-forwarding.conf
+   sudo systemctl restart systemd-sysctl
 
 .. warning::
    In a production environment, make sure to use a hardened firewall configuration.
