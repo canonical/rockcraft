@@ -50,8 +50,8 @@ Create a new project using ``django-admin``:
     :end-before: [docs:create-project-end]
     :dedent: 2
 
-Enter the ``~/django-hello-world/django_hello_world`` directory.
-Then run the Django app using ``python manage.py runserver`` to verify that it works.
+Enter the ``~/django-hello-world/django_hello_world/`` directory.
+Then run the Django app with ``python manage.py runserver`` and verify that it works.
 
 Test the Django app by using ``curl`` to send a request to the root
 endpoint. We'll need a new shell of the VM for this -- in a separate terminal,
@@ -101,8 +101,8 @@ First, we'll need a ``rockcraft.yaml`` project file. We'll take advantage of a
 pre-defined extension in Rockcraft with the ``--profile`` flag that caters
 initial rock files for specific web app frameworks. Using the
 Django profile, Rockcraft automates the creation of
-``rockcraft.yaml`` and tailors the file for a Django app. Change
-back into the ``~/django-hello-world`` directory using ``cd ..`` and initialize the rock:
+``rockcraft.yaml`` and tailors the file for a Django app. Return to the
+``~/django-hello-world/`` directory with ``cd ..`` and initialize the rock:
 
 .. literalinclude:: code/django/task.yaml
     :language: bash
