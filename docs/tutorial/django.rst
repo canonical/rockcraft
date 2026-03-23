@@ -155,8 +155,8 @@ the architecture of your system:
 
 Edit the ``platforms`` key in ``rockcraft.yaml`` if required.
 
-Using a ``bare`` :ref:`base <explanation-bases>` already produces a
-chiselled rock, so there is no separate chiselling step in this tutorial.
+Using a ``bare`` base provides the smallest possible foundation for the
+image, which helps reduce its complexity and size.
 
 .. note::
     For this tutorial, we'll use the ``name`` ``django-hello-world`` and assume
