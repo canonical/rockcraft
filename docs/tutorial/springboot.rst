@@ -335,7 +335,7 @@ Update the Spring Boot app
 ==========================
 
 As a final step, let's update our app. For example,
-we want to add a new ``/time`` endpoint which returns the current time in the container's timezone.
+we want to add a new ``/time`` endpoint which returns the current time in UTC.
 
 Start by creating the ``src/main/java/com/example/demo/TimeController.java``
 file in a text editor and paste in the code to look like the following:
@@ -400,7 +400,7 @@ Finally, use ``curl`` to send a request to the ``/time`` endpoint:
     :end-before: [docs:curl-time-end]
     :dedent: 2
 
-The updated app will respond with the current date and time in the container's timezone.
+The updated app will respond with the current date and time in UTC.
 
 .. note::
 
