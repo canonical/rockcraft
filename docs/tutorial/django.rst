@@ -102,7 +102,7 @@ pre-defined extension in Rockcraft with the ``--profile`` flag that caters
 initial rock files for specific web app frameworks. Using the
 Django profile, Rockcraft automates the creation of
 ``rockcraft.yaml`` and tailors the file for a Django app. Return to the
-``~/django-hello-world/`` directory with ``cd ..`` and initialize the rock:
+``~/django-hello-world/`` directory and initialize the rock:
 
 .. literalinclude:: code/django/task.yaml
     :language: bash
