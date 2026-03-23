@@ -70,8 +70,9 @@ The Django app should respond with
     The response from the Django app includes HTML and CSS which makes
     it difficult to read on a terminal. To see the fully-rendered page
     in a web browser, set ``ALLOWED_HOSTS = ['*']`` in
-    ``~/django-hello-world/django_hello_world/settings.py`` and run the Django app
-    using:
+    ``~/django-hello-world/django_hello_world/django_hello_world/settings.py``.
+    Then return to ``~/django-hello-world/django_hello_world/`` and run the Django
+    app using:
 
     .. code-block:: bash
 
