@@ -37,6 +37,11 @@ SUPPORTED_ARCHS: dict[str, ArchitectureMapping] = {
         description="Intel 64",
         go_arch="amd64",
     ),
+    "amd64v3": ArchitectureMapping(
+        description="Intel 64",
+        go_arch="amd64",
+        go_variant="v3"
+    ),
     "armhf": ArchitectureMapping(
         description="ARM 32-bit", go_arch="arm", go_variant="v7"
     ),
