@@ -133,6 +133,9 @@ the architecture of your system:
 
 Edit the ``platforms`` key in ``rockcraft.yaml`` if required.
 
+Using a ``bare`` base provides the smallest possible foundation for the
+image, which helps reduce its complexity and size.
+
 .. note::
     For this tutorial, we'll use the ``name`` ``flask-hello-world`` and assume
     we're running on the ``amd64`` platform. Check the architecture of the
@@ -269,102 +272,6 @@ respective image for now:
     :language: bash
     :start-after: [docs:stop-docker]
     :end-before: [docs:stop-docker-end]
-    :dedent: 2
-
-Chisel the rock
-===============
-
-This is an optional but recommended step, especially if we're looking to
-deploy the rock into a production environment. With :ref:`explanation-chisel`
-we can produce lean and production-ready rocks by getting rid of all the
-contents that are not needed for the Flask app to run. This results
-in a much smaller rock with a reduced attack surface.
-
-.. note::
-    It is recommended to run chiselled images in production. For development,
-    we may prefer non-chiselled images as they will include additional
-    development tooling (such as for debugging).
-
-The first step towards chiselling the rock is to ensure we are using a
-``bare`` :ref:`base <explanation-bases>`.
-
-So that we can compare the size after chiselling, open the project
-file and change the ``version`` (e.g. to ``0.1-chiselled``). The
-top of the ``rockcraft.yaml`` file looks similar to the following:
-
-.. code-block:: yaml
-    :caption: ~/flask-hello-world/rockcraft.yaml
-    :emphasize-lines: 6
-
-    name: flask-hello-world
-    # see https://documentation.ubuntu.com/rockcraft/en/1.6.0/explanation/bases/
-    # for more information about bases and using 'bare' bases for chiselled rocks
-    base: bare
-    build-base: ubuntu@24.04
-    version: '0.1-chiselled'
-    summary: A summary of your Flask app # 79 char long summary
-    description: |
-        This is flask-hello-world's description. You have a paragraph or two to tell the
-        most important story about it. Keep it under 100 words though,
-        we live in tweetspace and your description wants to look good in the
-        container registries out there.
-    # the platforms this rock should be built on and run on.
-    # you can check your architecture with `dpkg --print-architecture`
-    platforms:
-        amd64:
-        # arm64:
-        # ppc64el:
-        # s390x:
-
-Pack the rock with the new ``bare`` base:
-
-.. literalinclude:: code/flask/task.yaml
-    :language: bash
-    :start-after: [docs:chisel-pack]
-    :end-before: [docs:chisel-pack-end]
-    :dedent: 2
-
-As before, verify that the new rock was created:
-
-.. literalinclude:: code/flask/task.yaml
-    :language: bash
-    :start-after: [docs:ls-bare-rock]
-    :end-before: [docs:ls-bare-rock-end]
-    :dedent: 2
-
-We'll verify that the new Flask rock is now approximately **30% smaller**
-in size! And that's just because of the simple change of ``base``.
-
-And the functionality is still the same. As before, we can confirm this by
-running the rock with Docker
-
-.. literalinclude:: code/flask/task.yaml
-    :language: text
-    :start-after: [docs:docker-run-chisel]
-    :end-before: [docs:docker-run-chisel-end]
-    :dedent: 2
-
-and then using the same ``curl`` request:
-
-.. literalinclude:: code/flask/task.yaml
-    :language: text
-    :start-after: [docs:curl-flask-bare-rock]
-    :end-before: [docs:curl-flask-bare-rock-end]
-    :dedent: 2
-
-The Flask app should still respond with
-``Hello, world!``.
-
-Cleanup
-~~~~~~~
-
-And that's it. We can now stop the container and remove the corresponding
-image:
-
-.. literalinclude:: code/flask/task.yaml
-    :language: bash
-    :start-after: [docs:stop-docker-chisel]
-    :end-before: [docs:stop-docker-chisel-end]
     :dedent: 2
 
 .. _update-flask-application:
