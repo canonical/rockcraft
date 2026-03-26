@@ -148,7 +148,7 @@ The top of the file should look similar to the following snippet:
         # ppc64el:
         # s390x:
 
-Verfiy that the ``name`` is ``go-hello-world``.
+Verify that the ``name`` is ``go-hello-world``.
 
 The ``platforms`` key must match the architecture of your host. Check
 the architecture of your system:
@@ -328,7 +328,7 @@ Update the Go app
 =================
 
 As a final step, let's update our app. For example,
-we want to add a new ``/time`` endpoint which returns the current time.
+we want to add a new ``/time`` endpoint which returns the current time in UTC.
 
 Start by opening the ``main.go`` file in a text editor and update the code to
 look like the following:
@@ -392,7 +392,7 @@ Finally, use ``curl`` to send a request to the ``/time`` endpoint:
     :end-before: [docs:curl-time-end]
     :dedent: 2
 
-The updated app will respond with the current date and time.
+The updated app will respond with the current date and time in UTC.
 
 .. note::
 
