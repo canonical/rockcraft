@@ -20,10 +20,15 @@ import os
 import re
 from typing import Any
 
-from overrides import override
+from overrides import override  # type: ignore[reportUnknownVariableType]
 
-from ..errors import ExtensionError
+from rockcraft.errors import ExtensionError
+from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
+
+from .app_parts import gen_logging_part
 from .extension import Extension
+
+USER_UID: int = SUPPORTED_GLOBAL_USERNAMES["_daemon_"]["uid"]
 
 
 class GoFramework(Extension):
@@ -37,7 +42,7 @@ class GoFramework(Extension):
 
     @staticmethod
     @override
-    def is_experimental(base: str | None) -> bool:
+    def is_experimental(base: str | None) -> bool:  # noqa: ARG004 (unused arg)
         """Check if the extension is in an experimental state."""
         return True
 
@@ -59,19 +64,31 @@ class GoFramework(Extension):
             },
         }
 
+        stage_packages = ["ca-certificates_data"]
+        if self.yaml_data["base"] == "bare":
+            stage_packages.extend(["bash_bins", "coreutils_bins"])
+
         snippet["parts"] = {
             # This is needed in case there is no assets part, as the working directory is /app
             "go-framework/base-layout": {
                 "plugin": "nil",
                 "override-build": "mkdir -p ${CRAFT_PART_INSTALL}/app",
+                "permissions": [{"owner": USER_UID, "group": USER_UID}],
             },
             "go-framework/install-app": self._get_install_app_part(),
             "go-framework/runtime": {
                 "plugin": "nil",
-                "stage-packages": ["ca-certificates_data"],
+                "stage-packages": stage_packages,
             },
+            "go-framework/logging": gen_logging_part(),
         }
 
+        if self.yaml_data["base"] == "bare":
+            snippet["parts"]["go-framework/runtime"].update(
+                {
+                    "override-build": "ln -sf /usr/bin/bash ${CRAFT_PART_INSTALL}/usr/bin/sh"
+                }
+            )
         assets_part = self._get_install_assets_part()
         if assets_part:
             snippet["parts"]["go-framework/assets"] = assets_part
@@ -97,8 +114,8 @@ class GoFramework(Extension):
         """Check go.mod file exist in project."""
         if not (self.project_root / "go.mod").exists():
             raise ExtensionError(
-                "missing go.mod file",
-                doc_slug="/reference/extensions/go-framework",
+                "missing go.mod file, it should be present in the project directory",
+                doc_slug="/reference/extensions/go-framework/#project-requirements",
                 logpath_report=False,
             )
 
@@ -207,7 +224,7 @@ class GoFramework(Extension):
             ]
         return user_stage
 
-    def _get_nested(self, obj: dict, paths: list[str]) -> dict:
+    def _get_nested(self, obj: dict[str, Any], paths: list[str]) -> dict[str, Any]:
         """Get a nested object using a path (a list of keys)."""
         for key in paths:
             obj = obj.get(key, {})

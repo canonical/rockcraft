@@ -23,11 +23,17 @@ import posixpath
 import re
 from typing import Any
 
-from overrides import override
+from overrides import override  # type: ignore[reportUnknownVariableType]
 
-from ..errors import ExtensionError
+from rockcraft.errors import ExtensionError
+from rockcraft.extensions._utils import find_ubuntu_base_python_version
+from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
+
 from ._python_utils import has_global_variable
+from .app_parts import gen_logging_part
 from .extension import Extension
+
+USER_UID: int = SUPPORTED_GLOBAL_USERNAMES["_daemon_"]["uid"]
 
 
 class FastAPIFramework(Extension):
@@ -43,7 +49,7 @@ class FastAPIFramework(Extension):
 
     @staticmethod
     @override
-    def is_experimental(base: str | None) -> bool:
+    def is_experimental(base: str | None) -> bool:  # noqa: ARG004 (unused arg)
         """Check if the extension is in an experimental state."""
         return True
 
@@ -91,11 +97,25 @@ class FastAPIFramework(Extension):
         """Return the normalized name of the rockcraft project."""
         return self.yaml_data["name"].replace("-", "_").lower()
 
-    def _get_parts(self) -> dict:
+    def _get_parts(self) -> dict[str, Any]:
         """Generate the parts associated with this extension."""
         stage_packages = ["python3-venv"]
+        build_environment = []
         if self.yaml_data["base"] == "bare":
-            stage_packages = ["python3.12-venv_ensurepip"]
+            try:
+                python_version = find_ubuntu_base_python_version(
+                    base=self.yaml_data["build-base"]
+                )
+            except NotImplementedError:
+                raise ExtensionError(
+                    f"Unable to determine the Python version for the build-base {self.yaml_data['build-base']}",
+                    doc_slug="/reference/extensions/fastapi",
+                    logpath_report=False,
+                )
+            stage_packages = [f"python{python_version}-venv_ensurepip"]
+            build_environment = [
+                {"PARTS_PYTHON_INTERPRETER": f"python{python_version}"}
+            ]
 
         parts: dict[str, Any] = {
             "fastapi-framework/dependencies": {
@@ -104,13 +124,18 @@ class FastAPIFramework(Extension):
                 "source": ".",
                 "python-packages": ["uvicorn"],
                 "python-requirements": ["requirements.txt"],
+                "build-environment": build_environment,
             },
-            "fastapi-framework/install-app": self._get_install_app_part(),
+            "fastapi-framework/install-app": {
+                **self._get_install_app_part(),
+                "permissions": [{"owner": USER_UID, "group": USER_UID}],
+            },
         }
         if self.yaml_data["base"] == "bare":
             parts["fastapi-framework/runtime"] = {
                 "plugin": "nil",
-                "override-build": "mkdir -m 777 ${CRAFT_PART_INSTALL}/tmp",
+                "override-build": "mkdir -m 777 ${CRAFT_PART_INSTALL}/tmp\n"
+                "ln -sf /usr/bin/bash ${CRAFT_PART_INSTALL}/usr/bin/sh",
                 "stage-packages": [
                     "bash_bins",
                     "coreutils_bins",
@@ -122,6 +147,7 @@ class FastAPIFramework(Extension):
                 "plugin": "nil",
                 "stage-packages": ["ca-certificates_data"],
             }
+        parts["fastapi-framework/logging"] = gen_logging_part()
         return parts
 
     def _get_install_app_part(self) -> dict[str, Any]:
@@ -215,9 +241,8 @@ class FastAPIFramework(Extension):
 
         for src_dir, src_file in places_to_look:
             full_path = self.project_root / src_dir / src_file
-            if full_path.exists():
-                if has_global_variable(full_path, "app"):
-                    return pathlib.Path(src_dir, src_file)
+            if full_path.exists() and has_global_variable(full_path, "app"):
+                return pathlib.Path(src_dir, src_file)
 
         raise FileNotFoundError("ASGI entrypoint not found")
 
@@ -229,7 +254,7 @@ class FastAPIFramework(Extension):
         if error_messages:
             raise ExtensionError(
                 "\n".join("- " + message for message in error_messages),
-                doc_slug="/reference/extensions/fastapi-framework",
+                doc_slug="/reference/extensions/fastapi-framework/#project-requirements",
                 logpath_report=False,
             )
 
@@ -257,7 +282,15 @@ class FastAPIFramework(Extension):
         try:
             self._find_asgi_location()
         except FileNotFoundError:
-            return ["missing ASGI entrypoint"]
+            return [
+                (
+                    "missing ASGI entrypoint\n"
+                    "  Cannot find 'app' global variable in the following places:\n"
+                    "  1. app.py.\n"
+                    "  2. In files __init__.py, and main.py in the 'app',"
+                    "'src', and root project directories."
+                ),
+            ]
         except SyntaxError as e:
             return [f"Syntax error in  python file in ASGI search path: {e}"]
         return []

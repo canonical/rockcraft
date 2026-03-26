@@ -1,4 +1,4 @@
 summary: check that the build-snap used by the go plugin does not interfere with the one used by pebble
 
 execute: |
-  run_rockcraft prime
+  run_rockcraft pack

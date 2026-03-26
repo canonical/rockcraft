@@ -1,0 +1,18 @@
+summary: Cross-compile a rock with build-packages and stage-packages from a foreign architecture.
+
+restore: |
+  rockcraft clean
+  rm -f ./*.rock
+  rm -rf ./devel
+  rm -rf ./rootfs
+
+execute: |
+  rockcraft pack
+
+  # extract the rootfs
+  mkdir devel
+  tar -xvf curl-consumer_1.0_riscv64.rock -C devel/
+  /snap/rockcraft/current/bin/umoci unpack --rootless --image devel:1.0 rootfs
+
+  # check that the binary is compiled for riscv64
+  readelf -h rootfs/rootfs/usr/bin/curl-consumer | grep "Machine" | MATCH "RISC-V"

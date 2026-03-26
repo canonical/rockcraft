@@ -1,9 +1,7 @@
-.. _ref-remote-builds:
+.. _reference-remote-builds:
 
-
-*************
 Remote builds
-*************
+=============
 
 Remote builds offload rock builds to the `build farm`_ hosted by `Launchpad`_.
 With remote builds, you can assemble multiple rocks simultaneously and build

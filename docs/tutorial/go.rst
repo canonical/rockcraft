@@ -1,10 +1,10 @@
-.. _build-a-rock-for-a-go-application:
+.. _tutorial-build-a-rock-for-a-go-app:
 
-Build a rock for a Go application
-------------------------------------
+Build a rock for a Go app
+-------------------------
 
-In this tutorial, we'll containerise a simple Go application into a rock using
-Rockcraft's ``go-framework`` :ref:`extension <go-framework-reference>`.
+In this tutorial, we'll containerise a simple Go app into a rock using
+Rockcraft's ``go-framework`` :ref:`extension <reference-go-framework>`.
 
 It should take 25 minutes for you to complete.
 
@@ -13,21 +13,17 @@ packaging, but familiarity with Linux paradigms, terminal operations,
 and Go is required.
 
 Once you complete this tutorial, you’ll have a working rock for a
-Go application. You’ll gain familiarity with Rockcraft and the
+Go app. You’ll gain familiarity with Rockcraft and the
 ``go-framework`` extension, and have the experience to create
-rocks for Go applications.
+rocks for Go apps.
 
 Setup
 =====
 
-.. include:: /reuse/tutorial/setup.rst
+.. include:: /reuse/tutorial/setup_edge.rst
 
-This tutorial requires the ``latest/edge`` channel of Rockcraft. Run
-``sudo snap refresh rockcraft --channel latest/edge`` to get the latest
-edge version.
-
-In order to test the Go application locally, before packing it into a rock,
-install ``go``.
+In order to test the Go app locally, before packing it into a rock,
+install Go.
 
 .. literalinclude:: code/go/task.yaml
     :language: bash
@@ -36,13 +32,13 @@ install ``go``.
     :dedent: 2
 
 
-Create the Go application
-==============================
+Create the Go app
+=================
 
-Start by creating the "Hello, world" Go application that will be used for
+Start by creating the "Hello, world" Go app that will be used for
 this tutorial.
 
-Create a new directory for this tutorial and enter it:
+Create an empty project directory:
 
 .. code-block:: bash
 
@@ -61,9 +57,10 @@ Create a ``main.go`` file, copy the following text into it and then
 save it:
 
 .. literalinclude:: code/go/main.go
+    :caption: ~/go-hello-world/main.go
     :language: go
 
-Build the Go application so it can be run:
+Build the Go app so it can be run:
 
 .. literalinclude:: code/go/task.yaml
     :language: bash
@@ -73,18 +70,18 @@ Build the Go application so it can be run:
 
 A binary called ``go-hello-world`` is created in the current
 directory. This binary is only needed for local testing, as
-Rockcraft will compile the Go application when we pack the rock.
+Rockcraft will compile the Go app when we pack the rock.
 
-Let's Run the Go application to verify that it works:
+Let's Run the Go app to verify that it works:
 
 .. code:: bash
 
   ./go-hello-world
 
-The application starts an HTTP server listening on port 8000
+The app starts an HTTP server listening on port 8000
 that we can test by using ``curl`` to send a request to the root
-endpoint. We may need a new terminal for this -- if using Multipass, run
-``multipass shell rock-dev`` to get another terminal:
+endpoint. We'll need a new shell of the VM for this -- in a separate terminal,
+run ``multipass shell rock-dev`` again:
 
 .. literalinclude:: code/go/task.yaml
     :language: bash
@@ -92,18 +89,24 @@ endpoint. We may need a new terminal for this -- if using Multipass, run
     :end-before: [docs:curl-go-end]
     :dedent: 2
 
-The Go application should respond with ``Hello, world!``.
+The Go app should respond with ``Hello, world!``.
 
-The Go application looks good, so let's stop it for now
-with :kbd:`Ctrl` + :kbd:`C`.
+The Go app looks good, so let's close the terminal instance we used for
+testing and stop the app in the original terminal instance by pressing
+:kbd:`Ctrl` + :kbd:`C`.
 
-Pack the Go application into a rock
-===================================
+Pack the Go app into a rock
+===========================
 
+Now let's create a container image for our Go app. We'll use a rock,
+which is an OCI-compliant container image based on Ubuntu.
 
-First, we'll need a ``rockcraft.yaml`` file. Rockcraft will automate its
-creation and tailor it for a Go application when we tell it to use the
-``go-framework`` profile:
+First, we'll need a ``rockcraft.yaml`` project file. We'll take advantage of a
+pre-defined extension in Rockcraft with the ``--profile`` flag that caters
+initial rock files for specific web app frameworks. Using the
+Go profile, Rockcraft automates the creation of
+``rockcraft.yaml`` and tailors the file for a Go app.
+From the ``~/go-hello-world`` directory, initialize the rock:
 
 .. literalinclude:: code/go/task.yaml
     :language: bash
@@ -111,10 +114,51 @@ creation and tailor it for a Go application when we tell it to use the
     :end-before: [docs:create-rockcraft-yaml-end]
     :dedent: 2
 
-Open ``rockcraft.yaml`` in a text editor and check that the ``name``
-key is set to ``go-hello-world``. Ensure that ``platforms`` includes
-the architecture of the host. For example, if the host uses the ARM
-architecture, include ``arm64`` in ``platforms``.
+The ``rockcraft.yaml`` file will automatically be created and set the name
+based on your working directory.
+
+Check out the contents of ``rockcraft.yaml``:
+
+.. code-block:: bash
+
+    cat rockcraft.yaml
+
+The top of the file should look similar to the following snippet:
+
+.. code-block:: yaml
+    :caption: ~/go-hello-world/rockcraft.yaml
+
+    name: go-hello-world
+    # see https://documentation.ubuntu.com/rockcraft/latest/explanation/bases/
+    # for more information about bases and using 'bare' bases for chiselled rocks
+    base: bare # as an alternative, an ubuntu base can be used
+    build-base: ubuntu@24.04 # build-base is required when the base is bare
+    version: '0.1' # just for humans. Semantic versioning is recommended
+    summary: A summary of your Go app # 79 char long summary
+    description: |
+        This is go-hello-world's description. You have a paragraph or two to tell the
+        most important story about it. Keep it under 100 words though,
+        we live in tweetspace and your description wants to look good in the
+        container registries out there.
+    # the platforms this rock should be built on and run on.
+    # you can check your architecture with `dpkg --print-architecture`
+    platforms:
+        amd64:
+        # arm64:
+        # ppc64el:
+        # s390x:
+
+Verify that the ``name`` is ``go-hello-world``.
+
+The ``platforms`` key must match the architecture of your host. Check
+the architecture of your system:
+
+.. code-block:: bash
+
+    dpkg --print-architecture
+
+
+Edit the ``platforms`` key in ``rockcraft.yaml`` if required.
 
 .. note::
     For this tutorial, we name the rock ``go-hello-world`` and assume
@@ -142,6 +186,32 @@ Pack the rock:
     :end-before: [docs:pack-end]
     :dedent: 2
 
+.. warning::
+   There is a `known connectivity issue with LXD and Docker
+   <lxd-docker-connectivity-issue_>`_. If we see a
+   networking issue such as "*A network related operation failed in a context
+   of no network access*" or ``Client.Timeout``, we need to allow egress network
+   traffic to flow from the managed LXD bridge.
+
+   First, run ``lxc network list`` to show the available networks. The
+   bridge will have ``TYPE: bridge`` and ``MANAGED: YES``. Save the name to an
+   environment variable:
+
+   .. code-block::
+
+       NETWORK_BRIDGE=<name of managed LXD bridge>
+
+   Then, update the network traffic flow using:
+
+   .. code-block::
+
+       sudo iptables  -I DOCKER-USER -i $NETWORK_BRIDGE -j ACCEPT
+       sudo ip6tables -I DOCKER-USER -i $NETWORK_BRIDGE -j ACCEPT
+       sudo iptables  -I DOCKER-USER -o $NETWORK_BRIDGE -m conntrack \
+         --ctstate RELATED,ESTABLISHED -j ACCEPT
+       sudo ip6tables -I DOCKER-USER -o $NETWORK_BRIDGE -m conntrack \
+         --ctstate RELATED,ESTABLISHED -j ACCEPT
+
 Depending on the network, this step can take a couple of minutes to finish.
 
 Once Rockcraft has finished packing the Go rock, we'll find a new file in
@@ -159,8 +229,11 @@ Run the Go rock with Docker
 ===========================
 
 
-We already have the rock as an `OCI <OCI_image_spec_>`_ archive. Load the
-image into Docker:
+We already have the rock as an `OCI <OCI_image_spec_>`_ archive. Now we
+need to load it into Docker. Docker requires rocks to be imported into the
+daemon since they can't be run directly like an executable.
+
+Copy the rock:
 
 .. literalinclude:: code/go/task.yaml
     :language: bash
@@ -168,6 +241,12 @@ image into Docker:
     :end-before: [docs:skopeo-copy-end]
     :dedent: 2
 
+This command contains the following pieces:
+
+- ``--insecure-policy``: adopts a permissive policy that
+  removes the need for a dedicated policy file.
+- ``oci-archive``: specifies the rock we created for our Go app.
+- ``docker-daemon``: specifies the name of the image in the Docker registry.
 
 Check that the image was successfully loaded into Docker:
 
@@ -180,14 +259,13 @@ Check that the image was successfully loaded into Docker:
 The output should list the Go container image, along with its tag, ID and
 size:
 
-..  code-block:: text
-    :class: log-snippets
+.. terminal::
 
     REPOSITORY       TAG       IMAGE ID       CREATED         SIZE
     go-hello-world   0.1       f3abf7ebc169   5 minutes ago   15.7MB
 
 Now we're finally ready to run the rock and test the containerised Go
-application:
+app:
 
 .. literalinclude:: code/go/task.yaml
     :language: text
@@ -196,7 +274,7 @@ application:
     :dedent: 2
 
 Use the same ``curl`` command as before to send a request to the Go
-application's root endpoint which is running inside the container:
+app's root endpoint which is running inside the container:
 
 .. literalinclude:: code/go/task.yaml
     :language: text
@@ -204,14 +282,14 @@ application's root endpoint which is running inside the container:
     :end-before: [docs:curl-go-rock-end]
     :dedent: 2
 
-The Go application again responds with ``Hello, world!``.
+The Go app again responds with ``Hello, world!``.
 
 
-View the application logs
-~~~~~~~~~~~~~~~~~~~~~~~~~
+View the app logs
+~~~~~~~~~~~~~~~~~
 
-When deploying the Go rock, we can always get the application logs with
-:ref:`pebble_explanation_page`:
+When deploying the Go rock, we can always get the app logs with
+:ref:`explanation-pebble`:
 
 .. literalinclude:: code/go/task.yaml
     :language: text
@@ -219,12 +297,11 @@ When deploying the Go rock, we can always get the application logs with
     :end-before: [docs:get-logs-end]
     :dedent: 2
 
-As a result, ``pebble`` will give the logs for the
-``go`` service running inside the container.
+As a result, Pebble will give the logs for the
+Go service running inside the container.
 We should expect to see something similar to this:
 
-..  code-block:: text
-    :class: log-snippets
+.. terminal::
 
     2024-10-04T08:51:35.826Z [go] 2024/10/04 08:51:35 starting hello world application
     2024-10-04T08:51:39.974Z [go] 2024/10/04 08:51:39 new hello world request
@@ -233,10 +310,10 @@ We can also choose to follow the logs by using the ``-f`` option with the
 ``pebble logs`` command above. To stop following the logs, press :kbd:`Ctrl` + :kbd:`C`.
 
 
-Stop the application
-~~~~~~~~~~~~~~~~~~~~
+Stop the app
+~~~~~~~~~~~~
 
-Now we have a fully functional rock for a Go application! This concludes
+Now we have a fully functional rock for a Go app! This concludes
 the first part of this tutorial, so we'll stop the container and remove the
 respective image for now:
 
@@ -247,27 +324,52 @@ respective image for now:
     :dedent: 2
 
 
-Update the Go application
-========================================
+Update the Go app
+=================
 
-As a final step, let's update our application. For example,
-we want to add a new ``/time`` endpoint which returns the current time.
+As a final step, let's update our app. For example,
+we want to add a new ``/time`` endpoint which returns the current time in UTC.
 
 Start by opening the ``main.go`` file in a text editor and update the code to
 look like the following:
 
 .. literalinclude:: code/go/main.go.time
+    :caption: ~/go-hello-world/main.go
     :language: go
 
-Since we are creating a new version of the application, open the
+Since we are creating a new version of the app, open the project
+file and set ``version: '0.2'``.
+The top of the ``rockcraft.yaml`` file should look similar to the following:
 
-``rockcraft.yaml`` file and set ``version: "0.2"``.
+.. code-block:: yaml
+    :caption: ~/go-hello-world/rockcraft.yaml
+    :emphasize-lines: 6
+
+    name: go-hello-world
+    # see https://documentation.ubuntu.com/rockcraft/latest/explanation/bases/
+    # for more information about bases and using 'bare' bases for chiselled rocks
+    base: bare # as an alternative, an ubuntu base can be used
+    build-base: ubuntu@24.04 # build-base is required when the base is bare
+    version: '0.2'
+    summary: A summary of your Go app # 79 char long summary
+    description: |
+        This is go-hello-world's description. You have a paragraph or two to tell the
+        most important story about it. Keep it under 100 words though,
+        we live in tweetspace and your description wants to look good in the
+        container registries out there.
+    # the platforms this rock should be built on and run on.
+    # you can check your architecture with `dpkg --print-architecture`
+    platforms:
+        amd64:
+        # arm64:
+        # ppc64el:
+        # s390x:
 
 .. note::
 
-    ``rockcraft pack`` will create a new image with the updated code even if we
-    don't change the version. It is recommended to change the version whenever
-    we make changes to the application in the image.
+    If we repack the rock without changing the version, the new rock will have the
+    same name and overwrite the last one we built. It's a good practice to change
+    the version whenever we make changes to the app in the image.
 
 Pack and run the rock using similar commands as before:
 
@@ -290,7 +392,7 @@ Finally, use ``curl`` to send a request to the ``/time`` endpoint:
     :end-before: [docs:curl-time-end]
     :dedent: 2
 
-The updated application will respond with the current date and time.
+The updated app will respond with the current date and time in UTC.
 
 .. note::
 
@@ -324,31 +426,51 @@ following:
     :end-before: [docs:cleanup-end]
     :dedent: 2
 
-.. collapse:: If using Multipass...
+We can also clean the Multipass instance up.
+Start by exiting it:
 
-    If we created an instance using Multipass, we can also clean it up.
-    Start by exiting it:
+.. code-block:: bash
 
-    .. code-block:: bash
+    exit
 
-        exit
+And then we can proceed with its deletion:
 
-    And then we can proceed with its deletion:
+.. code-block:: bash
 
-    .. code-block:: bash
-
-        multipass delete rock-dev
-        multipass purge
+    multipass delete rock-dev
+    multipass purge
 
 ----
 
 Next steps
 ==========
 
-* :ref:`Rockcraft tutorials<tutorial>`.
-* :ref:`go-framework reference<go-framework-reference>`.
-* :ref:`why_use_rockcraft`.
-* :ref:`What is a Rock?<rocks_explanation>`.
+Congratulations! You've reached the end of this tutorial. You created a
+Go app, packaged it into a rock, and practiced some typical development skills
+such as viewing logs and updating the app.
+
+But there is a lot more to explore:
+
+.. list-table::
+    :widths: 30 30
+    :header-rows: 1
+
+    * - If you are wondering...
+      - Visit...
+    * - "What's next?"
+      - :external+charmcraft:ref:`Write your first Kubernetes charm for a Go app
+        in Charmcraft <write-your-first-kubernetes-charm-for-a-go-app>`
+    * - "How do I...?"
+      - :ref:`how-to-manage-a-12-factor-app-rock`
+    * - "How do I get in touch?"
+      - `Matrix channel <https://matrix.to/#/#12-factor-charms:ubuntu.com>`_
+    * - "What is...?"
+      - :ref:`go-framework extension <reference-go-framework>`
+
+        :ref:`What is a Rock? <explanation-rocks>`
+    * - "Why...?", "So what?"
+      - :external+12-factor:ref:`12-Factor app principles and support in Charmcraft
+        and Rockcraft <explanation>`
 
 ----
 
@@ -357,9 +479,9 @@ Next steps
 Troubleshooting
 ===============
 
-**Application updates not taking effect?**
+**App updates not taking effect?**
 
-Upon changing the Go application and re-packing the rock, if
+Upon changing the Go app and re-packing the rock, if
 the changes are not taking effect, try running ``rockcraft clean`` and pack
 the rock again with ``rockcraft pack``.
 

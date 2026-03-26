@@ -22,6 +22,7 @@ from unittest.mock import DEFAULT, call
 
 import pytest
 import yaml
+from craft_application.services import StateService
 from craft_cli import emit
 from rockcraft import cli, extensions, services
 from rockcraft.application import APP_METADATA, Rockcraft
@@ -29,7 +30,11 @@ from rockcraft.models import project
 
 DATA_DIR = pathlib.Path(__file__).parent.parent / "data"
 
+# All of the tests in this module require patched services
+pytestmark = [pytest.mark.usefixtures("fake_services")]
 
+
+@pytest.mark.usefixtures("fake_project_file")
 def test_run_pack_services(mocker, monkeypatch, tmp_path):
     # Pretend it's running inside the managed instance
     monkeypatch.setenv("CRAFT_MANAGED_MODE", "1")
@@ -40,6 +45,12 @@ def test_run_pack_services(mocker, monkeypatch, tmp_path):
     mocker.patch.object(Rockcraft, "log_path", new=log_path)
 
     fake_prime_dir = Path("/fake/prime/dir")
+
+    # In managed mode the StateService expects "/tmp/craft-state" to exist, but it
+    # doesn't in this case.
+    state_dir = tmp_path / "craft-state"
+    state_dir.mkdir()
+    mocker.patch.object(StateService, "_get_state_dir", return_value=state_dir)
 
     # Mock the relevant methods from the lifecycle and package services
     lifecycle_mocks = mocker.patch.multiple(
@@ -53,6 +64,7 @@ def test_run_pack_services(mocker, monkeypatch, tmp_path):
     package_mocks = mocker.patch.multiple(
         services.RockcraftPackageService, write_metadata=DEFAULT, pack=DEFAULT
     )
+    package_mocks["pack"].return_value = [tmp_path / "project/my-rock.rock"]
 
     command_line = ["rockcraft", "pack"]
     mocker.patch.object(sys, "argv", command_line)
@@ -109,14 +121,14 @@ def test_run_init_with_name(mocker):
 
 @pytest.mark.usefixtures("valid_dir")
 def test_run_init_with_invalid_name(mocker):
-    mocker.patch.object(sys, "argv", ["rockcraft", "init", "--name=f"])
+    mocker.patch.object(sys, "argv", ["rockcraft", "init", "--name=-f"])
     return_code = cli.run()
     assert return_code == 1
 
 
 def test_run_init_fallback_name(mocker, new_dir, monkeypatch):
     mocker.patch.object(sys, "argv", ["rockcraft", "init"])
-    invalid_dir = pathlib.Path(new_dir) / "f"
+    invalid_dir = pathlib.Path(new_dir) / "-f"
     invalid_dir.mkdir()
     monkeypatch.chdir(invalid_dir)
 

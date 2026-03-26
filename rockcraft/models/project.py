@@ -16,41 +16,31 @@
 
 """Project definition and helpers."""
 
-import copy
 import re
-import shlex
 import typing
-from collections.abc import Mapping
-from pathlib import Path
+from collections.abc import Iterable, Mapping
 from typing import TYPE_CHECKING, Any, Literal
 
 import craft_cli
-import craft_platforms
 import pydantic
-import spdx_lookup  # type: ignore
-import yaml
-from craft_application.errors import CraftValidationError
+import spdx_lookup  # type: ignore[import-untyped]
 from craft_application.models import (
-    BuildInfo,
     Platform,
-    get_validator_by_regex,
-)
-from craft_application.models import (
-    BuildPlanner as BaseBuildPlanner,
 )
 from craft_application.models import Project as BaseProject
 from craft_application.models.base import alias_generator
-from craft_platforms import rock
+from craft_application.models.project import DevelBaseInfo
+from craft_platforms import DebianArchitecture
 from craft_providers import bases
+from craft_providers.bases import BuilddBaseAlias
 from craft_providers.errors import BaseConfigurationError
-from typing_extensions import Annotated, override
+from typing_extensions import override
 
 from rockcraft.architectures import SUPPORTED_ARCHS
-from rockcraft.errors import ProjectLoadError
-from rockcraft.extensions import apply_extensions
 from rockcraft.parts import part_has_overlay
-from rockcraft.pebble import Check, Pebble, Service
+from rockcraft.pebble import Check, Service
 from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
+from rockcraft.utils import parse_command
 
 # pyright workaround
 if TYPE_CHECKING:
@@ -59,206 +49,140 @@ else:
     _RunUser = Literal[tuple(SUPPORTED_GLOBAL_USERNAMES)] | None
 
 
-PROJECT_NAME_REGEX = r"^([a-z](?:-?[a-z0-9]){2,})$"
-_PROJECT_NAME_DESCRIPTION = """\
-Valid names for rocks. It matches the accepted values for pebble layer files:
-
-- must start with a lowercase letter [a-z]
-- must contain only lowercase letters [a-z], numbers [0-9] or hyphens
-- must not end with a hyphen, and must not contain two or more consecutive hyphens
-"""
-PROJECT_NAME_COMPILED_REGEX = re.compile(PROJECT_NAME_REGEX)
-
-MESSAGE_INVALID_NAME = (
-    "invalid name for rock: Names can only use ASCII lowercase letters, numbers, and hyphens. "
-    "They must start with a lowercase letter, may not end with a hyphen, "
-    "and may not have two hyphens in a row."
+MESSAGE_ENTRYPOINT_CHANGED = (
+    "This operation will result in a rock with an "
+    "atypical OCI Entrypoint. While that might be acceptable for testing and "
+    "personal use, it shall require prior approval before submitting to a "
+    "Canonical registry namespace."
 )
 
 DEPRECATED_COLON_BASES = ["ubuntu:20.04", "ubuntu:22.04"]
 
 
-ProjectName = Annotated[
-    str,
-    pydantic.BeforeValidator(
-        get_validator_by_regex(PROJECT_NAME_COMPILED_REGEX, MESSAGE_INVALID_NAME)
-    ),
-    pydantic.Field(
-        min_length=1,
-        strict=True,
-        pattern=PROJECT_NAME_REGEX,
-        description=_PROJECT_NAME_DESCRIPTION,
-        title="Project Name",
-    ),
+BaseT = Literal[
+    "bare",
+    "ubuntu@20.04",
+    "ubuntu@22.04",
+    "ubuntu@24.04",
+    "ubuntu@25.10",
+    "ubuntu@26.04",
 ]
-
-BaseT = Literal["bare", "ubuntu@20.04", "ubuntu@22.04", "ubuntu@24.04"]
 BuildBaseT = typing.Annotated[
-    Literal["ubuntu@20.04", "ubuntu@22.04", "ubuntu@24.04", "devel"] | None,
+    Literal[
+        "ubuntu@20.04",
+        "ubuntu@22.04",
+        "ubuntu@24.04",
+        "ubuntu@25.10",
+        "devel",
+    ]
+    | None,
     pydantic.Field(validate_default=True),
 ]
 
 
-class BuildPlanner(BaseBuildPlanner):
-    """BuildPlanner for Rockcraft projects."""
-
-    platforms: dict[str, Platform]  # type: ignore[assignment]
-    base: BaseT  # type: ignore[reportIncompatibleVariableOverride]
-    build_base: BuildBaseT = None  # type: ignore[reportIncompatibleVariableOverride]
-
-    @pydantic.field_validator("build_base")
-    @classmethod
-    def _validate_build_base(
-        cls, value: str | None, info: pydantic.ValidationInfo
-    ) -> str | None:
-        """Build-base defaults to the base value if not specified.
-
-        :raises CraftValidationError: If base validation fails.
-        """
-        if not value:
-            base_value = info.data.get("base")
-            if base_value == "bare":
-                raise ValueError('When "base" is bare, a build-base must be specified.')
-            return base_value
-        return value
-
-    @pydantic.field_validator("base", mode="before")
-    @classmethod
-    def _validate_deprecated_base(cls, base_value: str | None) -> str | None:
-        return cls._check_deprecated_base(base_value, "base")
-
-    @pydantic.field_validator("build_base", mode="before")
-    @classmethod
-    def _validate_deprecated_build_base(cls, base_value: str | None) -> str | None:
-        return cls._check_deprecated_base(base_value, "build-base")
-
-    @staticmethod
-    def _check_deprecated_base(base_value: str | None, field_name: str) -> str | None:
-        if base_value in DEPRECATED_COLON_BASES:
-            at_value = base_value.replace(":", "@")
-            message = (
-                f'Warning: use of ":" in field "{field_name}" is deprecated. '
-                f'Prefer "{at_value}" instead.'
-            )
-            craft_cli.emit.message(message)
-            return at_value
-
-        return base_value
-
-    @pydantic.field_validator("platforms", mode="before")
-    @classmethod
-    def _vectorise_build_for(cls, platforms: dict[str, Any]) -> dict[str, Any]:
-        """Vectorise target architecture if needed."""
-        for platform in platforms.values():
-            if not platform:
-                continue
-            if isinstance(platform.get("build-for"), str):
-                platform["build-for"] = [platform["build-for"]]
-        return platforms
-
-    @pydantic.field_validator("platforms")
-    @classmethod
-    def _validate_all_platforms(
-        cls, platforms: dict[str, Platform]
-    ) -> dict[str, Platform]:
-        """Make sure all provided platforms are tangible and sane."""
-        for platform_label, platform in platforms.items():
-            error_prefix = f"Error for platform entry '{platform_label}'"
-
-            # build_on and build_for are validated
-            # let's also validate the platform label
-            build_on_one_of = platform.build_on or [platform_label]
-
-            # If the label maps to a valid architecture and
-            # `build-for` is present, then both need to have the same value,
-            # otherwise the project is invalid.
-            if platform.build_for:
-                build_target = platform.build_for[0]
-                if platform_label in SUPPORTED_ARCHS and platform_label != build_target:
-                    raise ValueError(
-                        str(
-                            f"{error_prefix}: if 'build-for' is provided and the "
-                            "platform entry label corresponds to a valid architecture, then "
-                            f"both values must match. {platform_label} != {build_target}"
-                        )
-                    )
-            else:
-                build_target = platform_label
-
-            # Both build and target architectures must be supported
-            if not any(b_o in SUPPORTED_ARCHS for b_o in build_on_one_of):
-                raise ValueError(
-                    str(
-                        f"{error_prefix}: trying to build rock in one of "
-                        f"{build_on_one_of}, but none of these build architectures is supported. "
-                        f"Supported architectures: {list(SUPPORTED_ARCHS.keys())}"
-                    )
-                )
-
-            if build_target not in SUPPORTED_ARCHS:
-                raise ValueError(
-                    str(
-                        f"{error_prefix}: trying to build rock for target "
-                        f"architecture {build_target}, which is not supported. "
-                        f"Supported architectures: {list(SUPPORTED_ARCHS.keys())}"
-                    )
-                )
-
-        return platforms
-
-    @property
-    def effective_base(self) -> bases.BaseName:
-        """Get the Base name for craft-providers."""
-        base = self.build_base if self.build_base else self.base
-
-        if base == "devel":
-            name, channel = "ubuntu", "devel"
-        else:
-            name, channel = base.split("@")
-
-        return bases.BaseName(name, channel)
-
-    @override
-    @classmethod
-    def model_reference_slug(cls) -> str | None:
-        return "/reference/rockcraft.yaml"
-
-    @override
-    def get_build_plan(self) -> list[BuildInfo]:
-        platforms = typing.cast(
-            craft_platforms.Platforms,
-            {name: platform.marshal() for name, platform in self.platforms.items()},
-        )
-        build_infos = rock.get_rock_build_plan(
-            base=self.base,
-            build_base=self.build_base,
-            platforms=platforms,
-        )
-        return [
-            BuildInfo(
-                platform=info.platform,
-                build_on=str(info.build_on),
-                build_for=str(info.build_for),
-                base=self.effective_base,
-            )
-            for info in build_infos
-        ]
-
-
-class Project(BuildPlanner, BaseProject):  # type: ignore[misc]
+class Project(BaseProject):
     """Rockcraft project definition."""
 
-    name: ProjectName  # type: ignore
-    # summary is Optional[str] in BaseProject
-    summary: str  # type: ignore
-    description: str  # type: ignore[reportIncompatibleVariableOverride]
-    # license is Optional[str] in BaseProject
-    environment: dict[str, str] | None = None
-    run_user: _RunUser = None
-    services: dict[str, Service] | None = None
-    checks: dict[str, Check] | None = None
-    entrypoint_service: str | None = None
-    platforms: dict[str, Platform | None]  # type: ignore[assignment]
+    # Type of summary is Optional[str] in BaseProject
+    summary: str = pydantic.Field(  # type: ignore[reportIncompatibleVariableOverride]
+        description="A short, single line description of the rock."
+    )
+    description: str = pydantic.Field(  # type: ignore[reportIncompatibleVariableOverride]
+        description="A full description of the rock, potentially including multiple paragraphs."
+    )
+    """A full description of the rock, potentially including multiple paragraphs.
+
+    The description should say in full what the rock is for and who may find it useful.
+    """
+    environment: dict[str, str] | None = pydantic.Field(
+        default=None,
+        description="Additional environment variables for the base image's OCI environment.",
+    )
+    run_user: _RunUser = pydantic.Field(
+        default=None, description="The default OCI user. If unset, runs as root."
+    )
+    """The default OCI user. Must be a shared user.
+
+    Currently, the only supported shared user is ``_daemon_`` (UID/GID 584792).
+    If unset, the user ``root`` (UID/GID 0) is selected as the default OCI user.
+    """
+    services: dict[str, Service] | None = pydantic.Field(
+        default=None,
+        description="Services to run in the rock, using Pebble's layer specification syntax.",
+    )
+    """Services to run in the rock.
+
+    This map of services is added to the Pebble configuration layer conforming to the
+    :external+pebble:ref:`layer specification <layer-specification>`.
+    """
+    checks: dict[str, Check] | None = pydantic.Field(
+        default=None,
+        description="Health checks for this rock.",
+    )
+    entrypoint_service: str | None = pydantic.Field(
+        default=None,
+        description=(
+            "The optional name of the Pebble service to serve as the entrypoint."
+        ),
+        examples=["my-service"],
+    )
+    """The optional name of the Pebble service to serve as the `OCI entrypoint
+    <https://specs.opencontainers.org/image-spec/config/?v=v1.0.1#properties>`_.
+
+    .. caution::
+
+        Only set this key when the deployment environment has a container image
+        entrypoint that is guaranteed to be static.
+
+    If set, this makes Rockcraft extend ``["/bin/pebble", "enter"]`` with
+    ``["--args", "<serviceName>"]``. The command of the Pebble service must
+    contain an optional argument that will become the `OCI CMD
+    <https://specs.opencontainers.org/image-spec/config/?v=v1.0.1#properties>`_.
+
+    This key is mutually incompatible with the ``entrypoint-command`` key.
+    """
+    entrypoint_command: str | None = pydantic.Field(
+        default=None,
+        examples=["echo [ Hello ]"],
+        description=(
+            "Overrides the rock's default Pebble OCI entrypoint and CMD properties."
+        ),
+    )
+    """Overrides the rock's default Pebble OCI ``entrypoint`` and ``CMD`` properties.
+
+    .. important::
+
+        Only set this key for certain categories of general-purpose rocks where
+        Pebble services aren't appropriate, such as the Ubuntu OS and base images.
+
+    The value can be suffixed with default entrypoint arguments using square
+    brackets (``[]``). These entrypoint arguments become the rock's OCI CMD.
+
+    This key is mutually incompatible with the ``entrypoint-service`` key.
+    """
+    base: BaseT = pydantic.Field(  # type: ignore[reportIncompatibleVariableOverride]
+        description="The base system image for the rock.",
+    )
+    """
+    The base system image that the rock's contents will be layered on.
+
+    :ref:`This system <explanation-bases>` is mounted and made available when using
+    overlays. The special value ``bare`` means that the rock will have no base system,
+    which is typically used with static binaries or
+    :ref:`Chisel slices <explanation-chisel>`.
+    """
+    build_base: BuildBaseT = pydantic.Field(  # type: ignore[reportIncompatibleVariableOverride]
+        default=None, description="The system used to build the rock."
+    )
+    """The system and version that will be used during the rock's build, but not
+    included in the final rock itself.
+
+    The :ref:`build base <explanation-bases>` comprises the set of tools and libraries
+    that Rockcraft uses when building the rock's contents.
+
+    This key is mandatory if ``base`` is ``bare``. Otherwise, it is optional and
+    defaults to the value of ``base``.
+    """
 
     model_config = pydantic.ConfigDict(
         validate_assignment=True,
@@ -306,6 +230,47 @@ class Project(BuildPlanner, BaseProject):  # type: ignore[misc]
             raise ValueError(unsupported_msg)
 
         return values
+
+    @pydantic.field_validator("build_base")
+    @classmethod
+    def _validate_build_base(
+        cls, value: str | None, info: pydantic.ValidationInfo
+    ) -> str | None:
+        """Build-base defaults to the base value if not specified.
+
+        :raises CraftValidationError: If base validation fails.
+        """
+        if not value:
+            base_value = info.data.get("base")
+            if base_value == "bare":
+                raise ValueError(
+                    'When "base" is "bare", a build-base must be specified.'
+                )
+            return base_value
+        return value
+
+    @pydantic.field_validator("base", mode="before")
+    @classmethod
+    def _validate_deprecated_base(cls, base_value: str | None) -> str | None:
+        return cls._check_deprecated_base(base_value, "base")
+
+    @pydantic.field_validator("build_base", mode="before")
+    @classmethod
+    def _validate_deprecated_build_base(cls, base_value: str | None) -> str | None:
+        return cls._check_deprecated_base(base_value, "build-base")
+
+    @staticmethod
+    def _check_deprecated_base(base_value: str | None, field_name: str) -> str | None:
+        if base_value in DEPRECATED_COLON_BASES:
+            at_value = base_value.replace(":", "@")
+            message = (
+                f'Warning: use of ":" in field "{field_name}" is deprecated. '
+                f'Prefer "{at_value}" instead.'
+            )
+            craft_cli.emit.message(message)
+            return at_value
+
+        return base_value
 
     @pydantic.field_validator("license")
     @classmethod
@@ -360,10 +325,7 @@ class Project(BuildPlanner, BaseProject):  # type: ignore[misc]
     ) -> str | None:
         """Verify that the entrypoint_service exists in the services dict."""
         craft_cli.emit.message(
-            "Warning: defining an entrypoint-service will result in a rock with an "
-            "atypical OCI Entrypoint. While that might be acceptable for testing and "
-            "personal use, it shall require prior approval before submitting to a "
-            "Canonical registry namespace."
+            f"Warning: 'entrypoint-service' is defined. {MESSAGE_ENTRYPOINT_CHANGED}"
         )
 
         if entrypoint_service not in info.data.get("services", {}):
@@ -372,23 +334,35 @@ class Project(BuildPlanner, BaseProject):  # type: ignore[misc]
                 "valid Pebble service."
             )
 
-        command = info.data["services"][entrypoint_service].command
-        command_sh_args = shlex.split(command)
-        # optional arg is surrounded by brackets, so check that they exist in the
-        # right order
-        try:
-            if command_sh_args.index("[") >= command_sh_args.index("]"):
-                raise IndexError(
-                    "Bad syntax for the entrypoint-service command's additional args."
-                )
-        except ValueError as ex:
+        command, args = parse_command(info.data["services"][entrypoint_service].command)
+
+        if args is None:
             raise ValueError(
-                f"The Pebble service '{entrypoint_service}' has a command {command} "
+                f"The Pebble service '{entrypoint_service}' has a command {' '.join(command)} "
                 "without default arguments and thus cannot be used as the "
                 "entrypoint-service."
-            ) from ex
+            )
 
         return entrypoint_service
+
+    @pydantic.field_validator("entrypoint_command")
+    @classmethod
+    def _validate_entrypoint_command(
+        cls, entrypoint_command: str, info: pydantic.ValidationInfo
+    ) -> str | None:
+        if info.data.get("entrypoint_service", None):
+            raise ValueError(
+                "The option 'entrypoint-command' cannot be used along 'entrypoint-service'."
+            )
+
+        craft_cli.emit.message(
+            f"Warning: 'entrypoint-command' is defined. {MESSAGE_ENTRYPOINT_CHANGED}"
+        )
+
+        # Check arguments
+        parse_command(entrypoint_command)
+
+        return entrypoint_command
 
     @pydantic.field_validator("environment")
     @classmethod
@@ -413,7 +387,10 @@ class Project(BuildPlanner, BaseProject):  # type: ignore[misc]
         return environment
 
     def generate_metadata(
-        self, generation_time: str, base_digest: bytes
+        self,
+        generation_time: str,
+        base_digest: bytes,
+        architecture: DebianArchitecture | str,
     ) -> tuple[dict[str, Any], dict[str, Any]]:
         """Generate the rock's metadata (both the OCI annotation and internal metadata.
 
@@ -429,7 +406,10 @@ class Project(BuildPlanner, BaseProject):  # type: ignore[misc]
             "version": self.version,
             "created": generation_time,
             "base": self.base,
-            "base-digest": base_digest.hex(),
+            # `architecture` "looks like" a string since it inherits from it, but serialization
+            # represents it as a DebianArchitecture, which comes out wrong (see rockcraft#992)
+            # instead, explicitly cast it to just be an actual string
+            "architecture": str(architecture),
         }
 
         if self.build_base == "devel":
@@ -439,129 +419,84 @@ class Project(BuildPlanner, BaseProject):  # type: ignore[misc]
         annotations = {
             "org.opencontainers.image.version": self.version,
             "org.opencontainers.image.title": self.title,
-            "org.opencontainers.image.ref.name": self.name,
             "org.opencontainers.image.created": generation_time,
-            "org.opencontainers.image.base.digest": base_digest.hex(),
+            "org.opencontainers.image.description": re.sub(
+                r"\n{2,}", "\n", self.summary
+            )
+            + f"\n\n{self.description}",
         }
         if self.license:
             annotations["org.opencontainers.image.licenses"] = self.license
+
+        # The base digest is only valid for non-bare bases, since there isn't an image
+        # sharing the zero-indexed layers with the target image for a bare-based image.
+        if self.base != "bare":
+            metadata["base-digest"] = base_digest.hex()
+            annotations["org.opencontainers.image.base.digest"] = base_digest.hex()
 
         return (annotations, metadata)
 
     @override
     @classmethod
-    def transform_pydantic_error(cls, error: pydantic.ValidationError) -> None:
-        BaseProject.transform_pydantic_error(error)
-
-        for error_dict in error.errors():
-            loc = str(error_dict["loc"][0]) if error_dict["loc"] else ""
-            loc_and_type = (loc, error_dict["type"])
-            if loc_and_type == ("name", "value_error.str.regex"):
-                # Note: The base Project class already changes the error message
-                # for the "name" regex, but we re-change it here because
-                # Rockcraft's name regex is slightly stricter.
-                error_dict["msg"] = MESSAGE_INVALID_NAME
-
-    @override
-    @classmethod
     def model_reference_slug(cls) -> str | None:
-        return "/reference/rockcraft.yaml"
+        return "/reference/rockcraft-yaml"
 
+    @pydantic.field_validator("platforms")
+    @classmethod
+    def _validate_all_platforms(
+        cls, platforms: dict[str, Platform]
+    ) -> dict[str, Platform]:
+        """Make sure all provided platforms are tangible and sane."""
+        for platform_label, platform in platforms.items():
+            error_prefix = f"Error for platform entry '{platform_label}'"
 
-def load_project(filename: Path) -> dict[str, Any]:
-    """Load and unmarshal the project YAML file.
+            # build_on and build_for are validated
+            # let's also validate the platform label
+            build_on_one_of = platform.build_on or [platform_label]
 
-    :param filename: The YAML file to load.
+            # If the label maps to a valid architecture and
+            # `build-for` is present, then both need to have the same value,
+            # otherwise the project is invalid.
+            if platform.build_for:
+                build_target = platform.build_for[0]
+                if platform_label in SUPPORTED_ARCHS and platform_label != build_target:
+                    raise ValueError(
+                        str(
+                            f"{error_prefix}: if 'build-for' is provided and the "
+                            "platform entry label corresponds to a valid architecture, then "
+                            f"both values must match. {platform_label} != {build_target}"
+                        )
+                    )
+            else:
+                build_target = platform_label
 
-    :returns: The populated project data.
+            # Both build and target architectures must be supported
+            if not any(b_o in SUPPORTED_ARCHS for b_o in build_on_one_of):
+                raise ValueError(
+                    str(
+                        f"{error_prefix}: trying to build rock in one of "
+                        f"{build_on_one_of}, but none of these build architectures is supported. "
+                        f"Supported architectures: {list(SUPPORTED_ARCHS.keys())}"
+                    )
+                )
 
-    :raises ProjectLoadError: If loading fails.
-    :raises CraftValidationError: If data validation fails.
-    """
-    try:
-        with open(filename, encoding="utf-8") as yaml_file:
-            yaml_data = yaml.safe_load(yaml_file)
-    except OSError as err:
-        msg = err.strerror or "unknown"
-        if err.filename:
-            msg = f"{msg}: {err.filename!r}."
-        raise ProjectLoadError(str(msg)) from err
+            if build_target not in SUPPORTED_ARCHS:
+                raise ValueError(
+                    str(
+                        f"{error_prefix}: trying to build rock for target "
+                        f"architecture {build_target}, which is not supported. "
+                        f"Supported architectures: {list(SUPPORTED_ARCHS.keys())}"
+                    )
+                )
 
-    return transform_yaml(filename.parent, yaml_data)
+        return platforms
 
-
-def transform_yaml(project_root: Path, yaml_data: dict[str, Any]) -> dict[str, Any]:
-    """Do Rockcraft-specific transformations on a project yaml.
-
-    :param project_root: The path that contains the "rockcraft.yaml" file.
-    :param yaml_data: The data dict loaded from the yaml file.
-    """
-    yaml_data = apply_extensions(project_root, yaml_data)
-
-    _add_apt_upgrade_data(yaml_data)
-    _add_pebble_data(yaml_data)
-
-    return yaml_data
-
-
-def _add_pebble_data(yaml_data: dict[str, Any]) -> None:
-    """Add pebble-specific contents to YAML-loaded data.
-
-    This function adds a special "pebble" part to a project's specification, to be
-    (eventually) used as the image's entrypoint.
-
-    :param yaml_data: The project spec loaded from "rockcraft.yaml".
-    :raises CraftValidationError: If `yaml_data` already contains a "pebble" part,
-      and said part's contents are different from the contents of the part we add.
-    """
-    if "parts" not in yaml_data:
-        # Invalid project: let it return to fail in the regular validation flow.
-        return
-
-    # do not modify the original data with pre-validators
-    model = BuildPlanner.unmarshal(copy.deepcopy(yaml_data))
-    build_base = model.build_base if model.build_base else model.base
-    pebble_part = Pebble.get_part_spec(build_base)
-
-    parts = yaml_data["parts"]
-    if "pebble" in parts:
-        if parts["pebble"] == pebble_part:
-            # Project already has the correct pebble part.
-            return
-        # Project already has a pebble part, and it's different from ours;
-        # this is currently not supported.
-        raise CraftValidationError('Cannot change the default "pebble" part')
-
-    parts["pebble"] = pebble_part
-
-
-def _add_apt_upgrade_data(yaml_data: dict[str, Any]) -> None:
-    """Add hidden part to execute apt-get upgrade in an overlay."""
-    part_name = "_apt-upgrade"
-    part_content = {
-        "plugin": "nil",
-        "overlay-script": 'craftctl chroot bash -c "'
-        "apt-get update && "
-        "apt-get -y upgrade && "
-        "apt-get clean && "
-        "rm -rf /var/lib/apt/lists/*"
-        '"',
-    }
-
-    if "base" in yaml_data and yaml_data["base"] == "bare":
-        # Skip adding the part to bare projects as executing apt-get upgrade
-        # would not make sense without a Ubuntu base.
-        return
-
-    if "parts" not in yaml_data:
-        # Invalid project: let it return to fail in the regular validation flow.
-        return
-
-    parts = yaml_data["parts"]
-    if (existing_part_content := parts.get(part_name)) is not None:
-        if existing_part_content != part_content:
-            raise CraftValidationError(
-                f'Cannot override the default "{part_name}" part.'
+    @classmethod
+    @override
+    def _get_devel_bases(cls) -> Iterable[DevelBaseInfo]:
+        return [
+            DevelBaseInfo(
+                current_devel_base=BuilddBaseAlias.RESOLUTE,
+                devel_base=BuilddBaseAlias.DEVEL,
             )
-
-    parts[part_name] = part_content
+        ]

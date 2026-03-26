@@ -1,0 +1,25 @@
+# pragma: no-schema-validate
+name: python-in-stage-ubuntu
+base: PLACEHOLDER_BASE
+build-base: PLACEHOLDER_BUILD_BASE
+version: "0.1"
+summary: Testing Python plugin v2
+description: Testing Python plugin v2
+platforms:
+  amd64:
+
+parts:
+  python-part:
+    plugin: nil
+    stage-packages:
+      - python3
+
+  my-part:
+    after:
+      - python-part
+    plugin: python
+    source: src/
+    python-packages:
+      - black
+    python-requirements:
+      - requirements.txt

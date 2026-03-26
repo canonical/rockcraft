@@ -1,15 +1,17 @@
-.. _bundle_a_nodejs_app_within_a_rock:
+.. _tutorial-bundle-a-nodejs-app-into-a-rock:
 
-Bundle a Node.js app within a rock
-**********************************
+Bundle a Node.js app into a rock
+================================
 
 This tutorial describes the steps needed to bundle a typical Node.js application
 into a rock.
 
+It should take around 10 minutes to complete.
+
 Setup your environment
 ----------------------
 
-.. include:: /reuse/tutorial/setup.rst
+.. include:: /reuse/tutorial/setup_stable.rst
 
 Project setup
 -------------
@@ -33,7 +35,7 @@ The second file is our sample app, a simple "hello world" server. Still inside
 
 Next, we'll setup the Rockcraft project. In the original empty folder, create
 an empty file called ``rockcraft.yaml``. Then add the following snippets, one
-after the other:
+after the other.
 
 Add the metadata that describes your rock, such as its name and licence:
 
@@ -114,9 +116,9 @@ service:
 
     2023-10-30T12:37:33.654Z [pebble] Started daemon.
     2023-10-30T12:37:33.659Z [pebble] POST /v1/services 3.878846ms 202
-    2023-10-30T12:37:33.659Z [pebble] Started default services with change 1.
     2023-10-30T12:37:33.663Z [pebble] Service "app" starting: node server.js
     2023-10-30T12:37:33.864Z [app] Running on http://0.0.0.0:8080
+    2023-10-30T12:37:33.865Z [pebble] Started default services with change 1.
 
 Next we'll verify that the Node.js app is up and running. If you're working on
 a regular Ubuntu system, open your web browser and go to

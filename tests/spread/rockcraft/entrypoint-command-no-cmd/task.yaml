@@ -1,0 +1,21 @@
+summary: container entrypoint-command-no-cmd test
+
+execute: |
+  set -ex
+  run_rockcraft pack
+
+  test -f entrypoint-command-no-cmd-test_latest_amd64.rock
+
+  # test container execution
+  sudo rockcraft.skopeo --insecure-policy copy oci-archive:entrypoint-command-no-cmd-test_latest_amd64.rock docker-daemon:entrypoint-command-no-cmd-test:latest
+  rm entrypoint-command-no-cmd-test_latest*.rock  
+  docker images entrypoint-command-no-cmd-test:latest
+  id=$(docker run -d entrypoint-command-no-cmd-test)
+  test "$(docker inspect "$id" -f '{{json .Config.Entrypoint}}')" = '["echo"]'
+  test "$(docker inspect "$id" -f '{{json .Config.Cmd}}')" = 'null'
+  docker rm -f "$id"
+  id=$(sh -c 'docker run -d entrypoint-command-no-cmd-test foobar')
+  test "$(docker inspect "$id" -f '{{json .Config.Entrypoint}}')" = '["echo"]'
+  test "$(docker inspect "$id" -f '{{json .Config.Cmd}}')" = '["foobar"]'
+  docker logs "$id" 2>&1 | grep 'foobar'
+  docker rm -f "$id"

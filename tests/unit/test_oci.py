@@ -18,8 +18,8 @@ import hashlib
 import json
 import os
 import tarfile
-from collections import namedtuple
 from pathlib import Path
+from typing import NamedTuple
 from unittest.mock import ANY, call, mock_open, patch
 
 import pytest
@@ -42,52 +42,57 @@ MOCK_NEW_USER = {
 }
 
 
-@pytest.fixture()
+@pytest.fixture
 def mock_run(mocker):
     return mocker.patch("rockcraft.oci._process_run")
 
 
-@pytest.fixture()
+@pytest.fixture
 def mock_archive_layer(mocker):
     return mocker.patch("rockcraft.layers.archive_layer")
 
 
-@pytest.fixture()
+@pytest.fixture
 def mock_rmtree(mocker):
     return mocker.patch("shutil.rmtree")
 
 
-@pytest.fixture()
+@pytest.fixture
 def mock_mkdir(mocker):
     return mocker.patch("pathlib.Path.mkdir")
 
 
-@pytest.fixture()
+@pytest.fixture
 def mock_mkdtemp(mocker):
     return mocker.patch("tempfile.mkdtemp")
 
 
-@pytest.fixture()
+@pytest.fixture
 def mock_tmpdir(mocker):
     return mocker.patch("tempfile.TemporaryDirectory")
 
 
-@pytest.fixture()
-def mock_inject_variant(mocker):
-    return mocker.patch("rockcraft.oci._inject_architecture_variant")
+@pytest.fixture
+def mock_inject_oci_fields(mocker):
+    return mocker.patch("rockcraft.oci._inject_oci_fields")
 
 
-@pytest.fixture()
+@pytest.fixture
 def mock_read_bytes(mocker):
     return mocker.patch("pathlib.Path.read_bytes")
 
 
-@pytest.fixture()
+@pytest.fixture
 def mock_write_bytes(mocker):
     return mocker.patch("pathlib.Path.write_bytes")
 
 
-@pytest.fixture()
+@pytest.fixture
+def mock_unlink(mocker):
+    return mocker.patch("pathlib.Path.unlink")
+
+
+@pytest.fixture
 def mock_add_layer(mocker):
     return mocker.patch("rockcraft.oci.Image.add_layer")
 
@@ -147,7 +152,9 @@ class TestImage:
         ]
 
     def _get_arch_from_call(self, mock_call):
-        ArchData = namedtuple("ArchData", ["override_arch", "override_variant"])
+        class ArchData(NamedTuple):
+            override_arch: str
+            override_variant: str | None
 
         call_args = mock_call.args[0]
         override_arch_index = call_args.index("--override-arch")
@@ -187,7 +194,7 @@ class TestImage:
         assert arch_data.override_variant == expected_variant
 
     @pytest.mark.parametrize("deb_arch", list(SUPPORTED_ARCHS))
-    def test_new_oci_image(self, mock_inject_variant, mock_run, deb_arch):
+    def test_new_oci_image(self, mock_inject_oci_fields, mock_run, deb_arch):
         """Test that new blank images are created with the correct GOARCH values."""
         expected = SUPPORTED_ARCHS[deb_arch]
 
@@ -214,12 +221,9 @@ class TestImage:
                 ]
             ),
         ]
-        if expected.go_variant is None:
-            mock_inject_variant.assert_not_called()
-        else:
-            mock_inject_variant.assert_called_once_with(
-                image_dir / "bare", expected.go_variant
-            )
+        mock_inject_oci_fields.assert_called_once_with(
+            image_dir / "bare:latest", arch_variant=expected.go_variant
+        )
 
     def test_copy_to(self, mock_run):
         image = oci.Image("a:b", Path("/c"))
@@ -313,7 +317,7 @@ class TestImage:
         tmp_path,
     ):
         fake_tmpfs = tmp_path / "mock-tmp"
-        mock_tmpdir.return_value = fake_tmpfs
+        mock_tmpdir.return_value.__enter__.return_value = str(fake_tmpfs)
 
         image = oci.Image("a:b", Path("/c"))
         image.add_user(
@@ -334,7 +338,7 @@ class TestImage:
             MOCK_NEW_USER["group"],
         )
 
-        check.is_false(os.path.exists(fake_tmpfs / "etc/shadow"))
+        check.is_false((fake_tmpfs / "etc/shadow").exists())
         mock_add_layer.assert_called_once_with("mock-tag", fake_tmpfs)
 
         # Test with a conflicting user or ID.
@@ -347,9 +351,9 @@ class TestImage:
                 MOCK_NEW_USER["user"],
                 MOCK_NEW_USER["uid"] + 1,
             )
-            check.is_in(
-                "conflict with existing user/group in the base filesystem", str(err)
-            )
+        check.is_in(
+            "conflict with existing user/group in the base filesystem", str(err)
+        )
 
         with pytest.raises(errors.RockcraftError) as err:
             image.add_user(
@@ -359,7 +363,9 @@ class TestImage:
                 MOCK_NEW_USER["user"] + "bar",
                 MOCK_NEW_USER["uid"],
             )
-            check.is_in("conflict with existing user/group in the base filesystem", err)
+        check.is_in(
+            "conflict with existing user/group in the base filesystem", str(err)
+        )
 
     @pytest.mark.parametrize(
         (
@@ -457,7 +463,7 @@ class TestImage:
                 (fake_prime_etc / f".wh.{filename}").touch()
 
         fake_tmp_new_layer = tmp_path / "mock-tmp"
-        mock_tmpdir.return_value = fake_tmp_new_layer
+        mock_tmpdir.return_value.__enter__.return_value = str(fake_tmp_new_layer)
 
         image = oci.Image("a:b", Path("/c"))
         image.add_user(
@@ -563,54 +569,18 @@ class TestImage:
         ]
 
     @pytest.mark.parametrize(
-        ("service", "build_base", "pebble_binary", "verbose", "service_config"),
+        ("entrypoint"),
         [
-            (
-                None,
-                "ubuntu@22.04",
-                Pebble.PEBBLE_BINARY_PATH_PREVIOUS,
-                [],
-                [],
-            ),
-            (
-                None,
-                "ubuntu@24.04",
-                Pebble.PEBBLE_BINARY_PATH,
-                [],
-                [],
-            ),
-            (
-                "test-service",
-                "ubuntu@22.04",
-                Pebble.PEBBLE_BINARY_PATH_PREVIOUS,
-                [],
-                [
-                    "--config.entrypoint",
-                    "--args",
-                    "--config.entrypoint",
-                    "test-service",
-                ],
-            ),
-            (
-                "test-service",
-                "ubuntu@24.04",
-                Pebble.PEBBLE_BINARY_PATH,
-                [],
-                [
-                    "--config.entrypoint",
-                    "--args",
-                    "--config.entrypoint",
-                    "test-service",
-                ],
-            ),
+            ([Pebble.PEBBLE_BINARY_PATH_PREVIOUS, "enter"],),
+            ([Pebble.PEBBLE_BINARY_PATH, "enter"],),
+            (["echo", "Test"],),
+            ([],),
         ],
     )
-    def test_set_entrypoint_default(
-        self, mock_run, service, build_base, pebble_binary, verbose, service_config
-    ):
+    def test_set_entrypoint_default(self, mock_run, entrypoint):
         image = oci.Image("a:b", Path("/tmp"))
 
-        image.set_entrypoint(service, build_base)
+        image.set_entrypoint(entrypoint)
 
         arg_list = [
             "umoci",
@@ -618,14 +588,10 @@ class TestImage:
             "--image",
             "/tmp/a:b",
             "--clear=config.entrypoint",
-            "--config.entrypoint",
-            f"/{pebble_binary}",
-            "--config.entrypoint",
-            "enter",
         ]
-        arg_list.extend(verbose)
 
-        arg_list.extend(service_config)
+        for e in entrypoint:
+            arg_list.extend(["--config.entrypoint", e])
 
         arg_list.append("--clear=config.cmd")
 
@@ -633,46 +599,24 @@ class TestImage:
             call(arg_list),
         ]
 
-    def test_set_cmd_empty(self, mock_run):
+    @pytest.mark.parametrize(("cmd"), [(["echo", "Test"]), ([])])
+    def test_set_cmd(self, mock_run, cmd):
         image = oci.Image("a:b", Path("/c"))
-        image.set_cmd()
+        image.set_cmd(cmd)
 
-        assert mock_run.mock_calls == []
-
-    def test_set_cmd_nonempty(self, mock_run):
-        image = oci.Image("a:b", Path("/c"))
-        image.set_cmd("echo [ foo ]")
-
-        assert mock_run.mock_calls == [
-            call(
-                [
-                    "umoci",
-                    "config",
-                    "--image",
-                    "/c/a:b",
-                    "--clear=config.cmd",
-                    "--config.cmd",
-                    "foo",
-                ]
-            ),
+        arg_list = [
+            "umoci",
+            "config",
+            "--image",
+            "/c/a:b",
+            "--clear=config.cmd",
         ]
 
-    def test_set_cmd_nonempty2(self, mock_run):
-        image = oci.Image("a:b", Path("/c"))
-        image.set_cmd("echo foo [ bar ]")
+        for arg in cmd:
+            arg_list.extend(["--config.cmd", arg])
 
         assert mock_run.mock_calls == [
-            call(
-                [
-                    "umoci",
-                    "config",
-                    "--image",
-                    "/c/a:b",
-                    "--clear=config.cmd",
-                    "--config.cmd",
-                    "bar",
-                ]
-            ),
+            call(arg_list),
         ]
 
     @pytest.mark.parametrize(
@@ -746,7 +690,7 @@ class TestImage:
         mock_define_pebble_layer.return_value = None
 
         fake_tmpfs = tmp_path / "mock-tmp-pebble-layer-path"
-        mock_tmpdir.return_value = fake_tmpfs
+        mock_tmpdir.return_value.__enter__.return_value = str(fake_tmpfs)
 
         image.set_pebble_layer(
             mock_services,
@@ -880,8 +824,23 @@ class TestImage:
             ),
         ]
 
-    def test_inject_architecture_variant(self, mock_read_bytes, mock_write_bytes):
-        test_index = {"manifests": [{"digest": "sha256:foomanifest"}]}
+    def test_inject_oci_fields(self, mock_read_bytes, mock_write_bytes, mock_unlink):
+        test_index = {
+            "manifests": [
+                {
+                    "digest": "sha256:foomanifest",
+                    "annotations": {
+                        "org.opencontainers.image.ref.name": "latest",
+                    },
+                },
+                {
+                    "digest": "sha256:basemanifest",
+                    "annotations": {
+                        "org.opencontainers.image.ref.name": "origin",
+                    },
+                },
+            ]
+        }
         test_manifest = {"config": {"digest": "sha256:fooconfig"}}
         test_config = {}
         mock_read_bytes.side_effect = [
@@ -898,10 +857,11 @@ class TestImage:
         new_test_manifest = {
             **test_manifest,
             **{
+                "mediaType": "application/vnd.oci.image.manifest.v1+json",
                 "config": {
                     "digest": f"sha256:{new_image_config_digest}",
                     "size": len(new_test_config_bytes),
-                }
+                },
             },
         }
         new_test_manifest_bytes = json.dumps(new_test_manifest).encode("utf-8")
@@ -913,32 +873,44 @@ class TestImage:
                 "manifests": [
                     {
                         "digest": f"sha256:{new_test_manifest_digest}",
+                        "annotations": {
+                            "org.opencontainers.image.ref.name": "latest",
+                        },
                         "size": len(new_test_manifest_bytes),
-                    }
+                    },
+                    {
+                        "digest": "sha256:basemanifest",
+                        "annotations": {
+                            "org.opencontainers.image.ref.name": "origin",
+                        },
+                    },
                 ]
             },
         }
 
         # pylint: disable=protected-access
-        oci._inject_architecture_variant(Path("img"), test_variant)
+        oci._inject_oci_fields(Path("img:latest"), test_variant)
         assert mock_read_bytes.call_count == 3
         assert mock_write_bytes.mock_calls == [
             call(new_test_config_bytes),
             call(new_test_manifest_bytes),
             call(json.dumps(new_test_index).encode("utf-8")),
         ]
+        assert mock_unlink.call_count == 2
 
-    def test_stat(self, new_dir, mock_run, mocker):
+    def test_stat(self, new_dir, mock_inject_oci_fields, mock_run, mocker):
         image_dir = Path("images/dir")
+        mock_loads = mocker.patch("json.loads")
+
         image, _ = oci.Image.new_oci_image(
             "bare@latest", image_dir=image_dir, arch="amd64"
         )
 
-        mock_loads = mocker.patch("json.loads")
         mock_run.reset_mock()
 
         image.stat()
 
+        assert mock_inject_oci_fields.call_count == 1
         assert mock_run.mock_calls == [
             call(
                 [
@@ -947,6 +919,30 @@ class TestImage:
                     "--json",
                     "--image",
                     "images/dir/bare:latest",
+                ]
+            )
+        ]
+        assert mock_loads.called
+
+    def test_get_manifest(self, new_dir, mock_inject_oci_fields, mock_run, mocker):
+        image_dir = Path("images/dir")
+        mock_loads = mocker.patch("json.loads")
+
+        image, _ = oci.Image.new_oci_image(
+            "bare@latest", image_dir=image_dir, arch="amd64"
+        )
+
+        mock_run.reset_mock()
+
+        image.get_manifest()
+
+        assert mock_run.mock_calls == [
+            call(
+                [
+                    "skopeo",
+                    "inspect",
+                    "--raw",
+                    "oci:images/dir/bare:latest",
                 ]
             )
         ]

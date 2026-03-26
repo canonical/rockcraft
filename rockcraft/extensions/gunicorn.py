@@ -17,19 +17,25 @@
 """An extension for the Gunicorn based Python WSGI application extensions."""
 
 import abc
+import contextlib
 import fnmatch
 import os.path
 import posixpath
 import re
 from typing import Any
 
-from overrides import override
+from overrides import override  # type: ignore[reportUnknownVariableType]
 from packaging.requirements import InvalidRequirement, Requirement
 
-from ..errors import ExtensionError
+from rockcraft.errors import ExtensionError
+from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
+
 from ._python_utils import has_global_variable
 from ._utils import find_ubuntu_base_python_version
+from .app_parts import gen_logging_part
 from .extension import Extension, get_extensions_data_dir
+
+USER_UID: int = SUPPORTED_GLOBAL_USERNAMES["_daemon_"]["uid"]
 
 
 class _GunicornBase(Extension):
@@ -43,7 +49,7 @@ class _GunicornBase(Extension):
 
     @staticmethod
     @override
-    def is_experimental(base: str | None) -> bool:
+    def is_experimental(base: str | None) -> bool:  # noqa: ARG004 (unused arg)
         """Check if the extension is in an experimental state."""
         return True
 
@@ -65,7 +71,7 @@ class _GunicornBase(Extension):
     def gen_install_app_part(self) -> dict[str, Any]:
         """Generate the content of *-framework/install-app part."""
 
-    def _gen_parts(self) -> dict:
+    def _gen_parts(self) -> dict[str, Any]:
         """Generate the parts associated with this extension."""
         data_dir = get_extensions_data_dir()
         stage_packages = ["python3-venv"]
@@ -77,7 +83,7 @@ class _GunicornBase(Extension):
                 )
             except NotImplementedError:
                 raise ExtensionError(
-                    "Unable to determine the Python version for the base",
+                    f"Unable to determine the Python version for the build-base {self.yaml_data['build-base']}",
                     doc_slug="/reference/extensions/gunicorn",
                     logpath_report=False,
                 )
@@ -91,17 +97,27 @@ class _GunicornBase(Extension):
                 "plugin": "python",
                 "stage-packages": stage_packages,
                 "source": ".",
-                "python-packages": ["gunicorn"],
+                "python-packages": ["gunicorn~=23.0"],
                 "python-requirements": ["requirements.txt"],
                 "build-environment": build_environment,
             },
-            f"{self.framework}-framework/install-app": self.gen_install_app_part(),
+            f"{self.framework}-framework/install-app": {
+                **self.gen_install_app_part(),
+                "permissions": [{"owner": USER_UID, "group": USER_UID}],
+            },
             f"{self.framework}-framework/config-files": {
                 "plugin": "dump",
                 "source": str(data_dir / f"{self.framework}-framework"),
                 "organize": {
                     "gunicorn.conf.py": f"{self.framework}/gunicorn.conf.py",
                 },
+                "permissions": [
+                    {
+                        "path": f"{self.framework}/gunicorn.conf.py",
+                        "owner": USER_UID,
+                        "group": USER_UID,
+                    },
+                ],
             },
             f"{self.framework}-framework/statsd-exporter": {
                 "build-snaps": ["go"],
@@ -109,16 +125,33 @@ class _GunicornBase(Extension):
                 "plugin": "go",
                 "source": "https://github.com/prometheus/statsd_exporter.git",
             },
+            f"{self.framework}-framework/logging": gen_logging_part(
+                override_build_lines=[
+                    f"mkdir -p $CRAFT_PART_INSTALL/var/log/{self.framework}"
+                ],
+                permissions=[
+                    {
+                        "path": f"var/log/{self.framework}",
+                        "owner": USER_UID,
+                        "group": USER_UID,
+                    }
+                ],
+            ),
         }
         if self.yaml_data["base"] == "bare":
             parts[f"{self.framework}-framework/runtime"] = {
                 "plugin": "nil",
-                "override-build": "mkdir -m 777 ${CRAFT_PART_INSTALL}/tmp",
+                "override-build": "mkdir -m 777 ${CRAFT_PART_INSTALL}/tmp\n"
+                "ln -sf /usr/bin/bash ${CRAFT_PART_INSTALL}/usr/bin/sh",
                 "stage-packages": [
                     "bash_bins",
                     "coreutils_bins",
                     "ca-certificates_data",
                 ],
+            }
+            parts[f"{self.framework}-framework/runtime-libs"] = {
+                "plugin": "nil",
+                "stage-packages": ["libstdc++6"],
             }
         else:
             parts[f"{self.framework}-framework/runtime"] = {
@@ -132,12 +165,10 @@ class _GunicornBase(Extension):
         requirements_file = self.project_root / "requirements.txt"
         requirements_text = requirements_file.read_text()
         for line in requirements_text.splitlines():
-            try:
+            with contextlib.suppress(InvalidRequirement):
                 req = Requirement(line)
                 if req.name == "gevent":
                     return "gevent"
-            except InvalidRequirement:
-                pass
         return "sync"
 
     @override
@@ -146,7 +177,7 @@ class _GunicornBase(Extension):
 
         Default values:
           - run_user: _daemon_
-          - build-base: ubuntu:22.04 (only if user specify bare without a build-base)
+          - build-base: ubuntu:24.04 (only if user specify bare without a build-base)
           - platform: amd64
           - services: a service to run the Gunicorn server
           - parts: see _GunicornBase._gen_parts
@@ -206,7 +237,7 @@ class FlaskFramework(_GunicornBase):
 
     @staticmethod
     @override
-    def is_experimental(base: str | None) -> bool:
+    def is_experimental(base: str | None) -> bool:  # noqa: ARG004 (unused arg)
         """Check if the extension is in an experimental state."""
         return False
 
@@ -282,7 +313,7 @@ class FlaskFramework(_GunicornBase):
 
         if not has_app:
             return [
-                "flask application can not be imported from app:app in app.py in the project root."
+                "the global variable 'app' was not found in app.py in the project root."
             ]
 
         return []
@@ -296,7 +327,7 @@ class FlaskFramework(_GunicornBase):
             ]
 
         requirements_lines = requirements_file.read_text(encoding="utf-8").splitlines()
-        if not any(("flask" in line.lower() for line in requirements_lines)):
+        if not any("flask" in line.lower() for line in requirements_lines):
             return ["missing flask package dependency in requirements.txt file."]
 
         return []
@@ -342,13 +373,13 @@ class DjangoFramework(_GunicornBase):
 
     @staticmethod
     @override
-    def is_experimental(base: str | None) -> bool:
+    def is_experimental(base: str | None) -> bool:  # noqa: ARG004 (unused arg)
         """Check if the extension is in an experimental state."""
         return False
 
     @override
     def gen_install_app_part(self) -> dict[str, Any]:
-        """Return the prime list for the Flask project."""
+        """Return the prime list for the Django project."""
         if "django-framework/install-app" not in self.yaml_data.get("parts", {}):
             return {
                 "plugin": "dump",
@@ -363,12 +394,16 @@ class DjangoFramework(_GunicornBase):
         if not wsgi_file.exists():
             raise ExtensionError(
                 f"django application can not be imported from {self.default_wsgi_path}, "
-                f"no wsgi.py file found in the project directory ({str(wsgi_file.parent)})."
+                f"no wsgi.py file found in the project directory ({str(wsgi_file.parent)}).",
+                doc_slug="/reference/extensions/django-framework/#project-requirements",
+                logpath_report=False,
             )
         if not has_global_variable(wsgi_file, "application"):
             raise ExtensionError(
-                "django application can not be imported from {self.default_wsgi_path}, "
-                "no variable named application in application.py"
+                f"django application can not be imported from {self.default_wsgi_path}, "
+                "no variable named 'application' in wsgi.py",
+                doc_slug="/reference/extensions/django-framework/#project-requirements",
+                logpath_report=False,
             )
 
     @override
@@ -377,7 +412,9 @@ class DjangoFramework(_GunicornBase):
         if not (self.project_root / "requirements.txt").exists():
             raise ExtensionError(
                 "missing requirements.txt file, django-framework extension "
-                "requires this file with Django specified as a dependency"
+                "requires this file with Django specified as a dependency",
+                doc_slug="/reference/extensions/django-framework/#project-requirements",
+                logpath_report=False,
             )
         if not self.yaml_data.get("services", {}).get("django", {}).get("command"):
             self._check_wsgi_path()

@@ -1,23 +1,30 @@
 PROJECT=rockcraft
+# Define when more than the main package tree requires coverage
+# like is the case for snapcraft (snapcraft and snapcraft_legacy):
+# COVERAGE_SOURCE="starcraft"
+UV_TEST_GROUPS := "--group=dev"
+UV_DOCS_GROUPS := "--group=docs"
+UV_LINT_GROUPS := "--group=lint" "--group=types"
+UV_TICS_GROUPS := "--group=tics"
 
+# If you have dev dependencies that depend on your distro version, uncomment these:
 ifneq ($(wildcard /etc/os-release),)
 include /etc/os-release
-export
 endif
-
-ifneq ($(VERSION_CODENAME),)
-SETUP_TESTS_EXTRA_ARGS=--extra apt-$(VERSION_CODENAME)
+ifdef VERSION_CODENAME
+UV_TEST_GROUPS += "--group=dev-$(VERSION_CODENAME)"
+UV_DOCS_GROUPS += "--group=dev-$(VERSION_CODENAME)"
+UV_LINT_GROUPS += "--group=dev-$(VERSION_CODENAME)"
+UV_TICS_GROUPS += "--group=dev-$(VERSION_CODENAME)"
 endif
-
-UV_FROZEN=true
 
 include common.mk
 
 .PHONY: format
-format: format-ruff format-codespell format-prettier  ## Run all automatic formatters
+format: format-ruff format-codespell format-prettier format-pre-commit  ## Run all automatic formatters
 
 .PHONY: lint
-lint: lint-ruff lint-codespell lint-mypy lint-prettier lint-pyright lint-shellcheck lint-docs lint-twine  ## Run all linters
+lint: lint-ruff lint-codespell lint-mypy lint-prettier lint-pyright lint-shellcheck lint-docs lint-twine lint-uv-lockfile  ## Run all linters
 
 .PHONY: pack
 pack: pack-pip pack-snap  ## Build all packages
@@ -29,43 +36,60 @@ ifeq ($(shell which snapcraft),)
 endif
 	snapcraft pack
 
-.PHONY: publish
-publish: publish-pypi  ## Publish packages
+schema: install-uv  ## Generate the schema file.
+	mkdir -p schema
+	uv run python tools/schema/schema.py > schema/rockcraft.json
 
-.PHONY: publish-pypi
-publish-pypi: clean package-pip lint-twine  ##- Publish Python packages to pypi
-	uv tool run twine upload dist/*
+validate-schema: install-ajv-cli
+	# Find all the rockcraft.yaml files that don't contain "# pragma: no-schema-validate"
+	find . -type f -name rockcraft.yaml -exec grep -HL '# pragma: no-schema-validate' '{}' '+' | \
+	xargs -I {} ajv validate --strict=false --spec=draft2020 -s schema/rockcraft.json -d {}
+    # The line below can be used to use the go-based jv command instead.
+    # xargs -I {} sh -c 'echo "\e[32mValidating {}\e[0m"; jv schema/rockcraft.json {}'
 
-.PHONY: setup
-setup: install-uv setup-precommit ## Set up a development environment
-	uv sync --frozen $(SETUP_TESTS_EXTRA_ARGS) --extra docs --extra lint --extra types
+# Find dependencies that need installing
+APT_PACKAGES :=
+ifeq ($(wildcard /usr/include/libxml2/libxml/xpath.h),)
+APT_PACKAGES += libxml2-dev
+endif
+ifeq ($(wildcard /usr/include/libxslt/xslt.h),)
+APT_PACKAGES += libxslt1-dev
+endif
+ifeq ($(wildcard /usr/share/doc/python3-venv/copyright),)
+APT_PACKAGES += python3-venv
+endif
+ifeq ($(wildcard /usr/share/doc/libyaml-dev/copyright),)
+APT_PACKAGES += libyaml-dev
+endif
+ifeq ($(wildcard /usr/share/doc/fuse-overlayfs/copyright),)
+APT_PACKAGES += fuse-overlayfs
+endif
+ifeq ($(wildcard /usr/share/doc/umoci/copyright),)
+APT_PACKAGES += umoci
+endif
+ifeq ($(wildcard /usr/share/doc/skopeo/copyright),)
+APT_PACKAGES += skopeo
+endif
 
 # Used for installing build dependencies in CI.
 .PHONY: install-build-deps
-install-build-deps: install-linux-build-deps install-lint-build-deps
-	# Ensure the system pip is new enough. If we get an error about breaking system packages, it is.
-	sudo pip install 'pip>=22.2' || true
+install-build-deps: install-lint-build-deps
+ifeq ($(APT_PACKAGES),)
+else ifeq ($(shell which apt-get),)
+	$(warning Cannot install build dependencies without apt.)
+	$(warning Please ensure the equivalents to these packages are installed: $(APT_PACKAGES))
+else
+	sudo $(APT) install $(APT_PACKAGES)
+endif
 
+# If additional build dependencies need installing in order to build the linting env.
 .PHONY: install-lint-build-deps
 install-lint-build-deps:
-ifeq ($(shell which apt-get),)
-	$(warning apt-get not found. Please install lint dependencies yourself.)
-else
-	sudo $(APT) install python-apt-dev libapt-pkg-dev clang
-endif
 
-.PHONY: install-linux-build-deps
-install-linux-build-deps:
-ifneq ($(OS),Linux)
-else ifeq ($(shell which apt-get),)
-	$(warning apt-get not found. Please install dependencies yourself.)
+
+.PHONY: install-ajv-cli
+install-ajv-cli: install-npm
+ifneq ($(shell which ajv),)
 else
-	sudo $(APT) install libyaml-dev python3-dev python3-pip python3-setuptools \
-	  python3-venv python3-wheel fuse-overlayfs libapt-pkg-dev umoci
-endif
-ifneq ($(shell which snap),)
-	sudo snap install lxd
-endif
-ifneq ($(shell which lxd),)
-	sudo lxd init --auto
+	npm install -g ajv-cli
 endif

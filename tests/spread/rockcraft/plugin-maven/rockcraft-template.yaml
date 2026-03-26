@@ -1,0 +1,22 @@
+name: plugin-maven
+base: bare
+build-base: BUILD_BASE
+
+version: "0.1"
+summary: A rock that bundles a Maven project.
+description: A rock that bundles a Maven project.
+license: GPL-3.0
+platforms:
+  amd64:
+
+parts:
+  maven-sample:
+    plugin: maven
+    source: sample
+    maven-parameters: ["-B"]
+    stage-packages:
+      - openjdk-21-jre-headless_core
+      - base-files_base
+    build-packages:
+      - maven
+      - openjdk-21-jdk-headless
