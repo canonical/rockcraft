@@ -206,6 +206,7 @@ class Image:
         :param new_layer_dir: The path to the new layer root filesystem.
         :param base_layer_dir: An optional path to the extracted contents of the
           new layer's base layer. Used to preserve lower-layer symlinks.
+        :param comment: An optional comment to add to the layer's history.
         """
         image_path = self.path / self.image_name
 
