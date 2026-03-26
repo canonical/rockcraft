@@ -49,6 +49,7 @@ def test_go_extension_default(tmp_path, go_input_yaml):
             "go-framework/base-layout": {
                 "override-build": "mkdir -p ${CRAFT_PART_INSTALL}/app",
                 "plugin": "nil",
+                "permissions": [{"owner": 584792, "group": 584792}],
             },
             "go-framework/install-app": {
                 "plugin": "go",
@@ -61,6 +62,18 @@ def test_go_extension_default(tmp_path, go_input_yaml):
                 "plugin": "nil",
                 "stage-packages": [
                     "ca-certificates_data",
+                ],
+            },
+            "go-framework/logging": {
+                "plugin": "nil",
+                "override-build": (
+                    "craftctl default\n"
+                    "mkdir -p $CRAFT_PART_INSTALL/opt/promtail\n"
+                    "mkdir -p $CRAFT_PART_INSTALL/etc/promtail"
+                ),
+                "permissions": [
+                    {"path": "opt/promtail", "owner": 584792, "group": 584792},
+                    {"path": "etc/promtail", "owner": 584792, "group": 584792},
                 ],
             },
         },
@@ -77,12 +90,37 @@ def test_go_extension_default(tmp_path, go_input_yaml):
 
 
 @pytest.mark.usefixtures("go_extension")
+def test_go_extension_bare(tmp_path):
+    (tmp_path / "go.mod").write_text("module projectname\n\ngo 1.22.4")
+    go_input_yaml = {
+        "name": "foo-bar",
+        "extensions": ["go-framework"],
+        "base": "bare",
+        "build-base": "ubuntu@24.04",
+        "platforms": {"amd64": {}},
+    }
+    applied = extensions.apply_extensions(tmp_path, go_input_yaml)
+
+    assert applied["parts"]["go-framework/runtime"] == {
+        "plugin": "nil",
+        "override-build": "ln -sf /usr/bin/bash ${CRAFT_PART_INSTALL}/usr/bin/sh",
+        "stage-packages": ["ca-certificates_data", "bash_bins", "coreutils_bins"],
+    }
+
+
+@pytest.mark.usefixtures("go_extension")
 def test_go_extension_no_go_mod_file_error(tmp_path, go_input_yaml):
     (tmp_path / "somefile").write_text("random text")
     with pytest.raises(ExtensionError) as exc:
         extensions.apply_extensions(tmp_path, go_input_yaml)
-    assert str(exc.value) == "missing go.mod file"
-    assert str(exc.value.doc_slug) == "/reference/extensions/go-framework"
+    assert (
+        str(exc.value)
+        == "missing go.mod file, it should be present in the project directory"
+    )
+    assert (
+        str(exc.value.doc_slug)
+        == "/reference/extensions/go-framework/#project-requirements"
+    )
 
 
 @pytest.mark.usefixtures("go_extension")
@@ -102,10 +140,14 @@ def test_go_extension_base_bare(tmp_path, go_input_yaml, build_environment):
     ]
     assert applied_build_environment == [{"CGO_ENABLED": "0"}, *build_environment]
 
+    assert "permissions" in applied["parts"]["go-framework/base-layout"]
+    applied_permissions = applied["parts"]["go-framework/base-layout"]["permissions"]
+    assert applied_permissions == [{"owner": 584792, "group": 584792}]
+
 
 @pytest.mark.usefixtures("go_extension")
 @pytest.mark.parametrize(
-    "organize, expected_organize",
+    ("organize", "expected_organize"),
     [
         ({}, {"bin/goprojectname": "usr/local/bin/goprojectname"}),
         (
@@ -142,7 +184,7 @@ def test_go_extension_overrides_organize(
 
 @pytest.mark.usefixtures("go_extension")
 @pytest.mark.parametrize(
-    "build_packages, build_snaps, expected_build_snaps",
+    ("build_packages", "build_snaps", "expected_build_snaps"),
     [
         ([], [], ["go"]),
         ([], ["go/1.22/stable"], ["go/1.22/stable"]),

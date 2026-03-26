@@ -1,14 +1,18 @@
-Install slices in a rock
-========================
+.. _tutorial-shrink-a-rock-with-chisel:
+
+Shrink a rock with Chisel
+=========================
 
 In this tutorial, you will create a lean hello-world rock that uses chisel
 slices, and then compare the resulting rock with the one created without slices
 in :doc:`/tutorial/hello-world`.
 
+It should take around 10 minutes to complete.
+
 Setup your environment
 ----------------------
 
-.. include:: /reuse/tutorial/setup.rst
+.. include:: /reuse/tutorial/setup_stable.rst
 
 Project setup
 -------------
@@ -19,11 +23,12 @@ Create a new directory, write the following into a text editor and save it as
 .. _chisel-example:
 
 .. literalinclude:: code/chisel/rockcraft.yaml
+    :caption: rockcraft.yaml
     :language: yaml
 
 Note that this Rockcraft file uses the ``hello_bins`` Chisel slice to generate
 an image containing only files that are strictly necessary for the ``hello``
-binary. See :ref:`chisel_explanation` for details on the Chisel tool.
+binary. See :ref:`explanation-chisel` for details on the Chisel tool.
 
 
 Pack the rock with Rockcraft

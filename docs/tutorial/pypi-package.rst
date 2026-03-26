@@ -1,5 +1,7 @@
-Containerise a PyPI package
-***************************
+.. _tutorial-pack-a-python-package:
+
+Pack a Python package
+=====================
 
 By the end of this tutorial you will be able to run pyfiglet via docker:
 
@@ -12,11 +14,12 @@ By the end of this tutorial you will be able to run pyfiglet via docker:
     | | | |  __/ | | (_) |
     |_| |_|\___|_|_|\___/
 
+It should take around 10 minutes to complete.
 
 Setup your environment
 ----------------------
 
-.. include:: /reuse/tutorial/setup.rst
+.. include:: /reuse/tutorial/setup_stable.rst
 
 Project setup
 -------------
@@ -32,8 +35,17 @@ To create a new Rockcraft project, create a new directory and change into it:
 Next, create a file called ``rockcraft.yaml`` with the following contents:
 
 .. literalinclude:: code/pyfiglet/rockcraft.yaml
+    :caption: rockcraft.yaml
     :language: yaml
 
+.. note::
+
+    This example uses ``python`` plugin along ``python-packages``, so ``pip`` is
+    invoked implicitly to install such packages. `PEP 668`_ changes the
+    behaviour of Python package managers like ``pip`` by introducing a special
+    marker (``EXTERNALLY-MANAGED``) that prevents ``pip`` from installing
+    packages outside a virtual environment. Thus, ``python3-venv`` is required
+    as a stage package.
 
 Pack the rock with Rockcraft
 ----------------------------
@@ -45,8 +57,6 @@ To build the rock, run:
     :start-after: [docs:build-rock]
     :end-before: [docs:build-rock-end]
     :dedent: 2
-
-
 
 Run the rock in Docker
 ----------------------
@@ -90,3 +100,4 @@ using bash, via:
     | | | | |
     |_| |_|_|
 
+.. _`PEP 668`: https://peps.python.org/pep-0668/

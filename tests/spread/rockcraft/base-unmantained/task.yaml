@@ -1,0 +1,5 @@
+summary: Unmaintaned bases need opt-in
+
+execute: |
+  run_rockcraft pack 2>&1 >/dev/null | MATCH "Cannot pack rock. Base 'ubuntu@20.04' has reached end-of-life"
+  run_rockcraft pack --ignore=unmaintained 2>&1 >/dev/null | MATCH "Using end-of-life base 'ubuntu@20.04'"

@@ -1,3 +1,4 @@
+.. _explanation-prime-step-oci-layer:
 
 From prime step to OCI layer
 ============================
@@ -15,12 +16,12 @@ accomplished.
    a given rock are the way they are.
 
 
-Consider the following snippet of a ``rockcraft.yaml`` that creates a rock
+Consider the following snippet of a project file that creates a rock
 containing a bare-bones Python 3.10 interpreter:
 
 .. code-block:: yaml
+   :caption: rockcraft.yaml
 
-   # (...)
    base: ubuntu@22.04
 
    parts:
@@ -170,7 +171,7 @@ This issue is made much worse if the instead of breaking ``bin/`` we break the
    libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f6053a00000)
    /lib64/ld-linux-x86-64.so.2 (0x00007f6053e6b000)
 
-The ``bash`` binary links to multiple dynamic libraries, but has a hardcoded
+The ``bash`` binary links to multiple dynamic libraries, but has a hard-coded
 path to the ``/lib64/ld-linux-x86-64.so.2`` dynamic loader. This loader is the
 program that does the actual finding of dynamic dependencies at runtime, and in
 an Ubuntu system its actual location is at ``/usr/lib64/ld-linux-x86-64.so.2``.

@@ -1,0 +1,21 @@
+summary: container entrypoint-command-empty test
+
+execute: |
+  set -ex
+  run_rockcraft pack
+
+  test -f entrypoint-command-empty-test_latest_amd64.rock
+
+  # test container execution
+  sudo rockcraft.skopeo --insecure-policy copy oci-archive:entrypoint-command-empty-test_latest_amd64.rock docker-daemon:entrypoint-command-empty-test:latest
+  rm entrypoint-command-empty-test_latest*.rock  
+  docker images entrypoint-command-empty-test:latest
+  id=entrypoint-command-empty-test:latest
+  test "$(docker inspect "$id" -f '{{json .Config.Entrypoint}}')" = 'null'
+  test "$(docker inspect "$id" -f '{{json .Config.Cmd}}')" = 'null'
+
+  id=$(sh -c 'docker run -d entrypoint-command-empty-test echo test-cmd')
+  test "$(docker inspect "$id" -f '{{json .Config.Entrypoint}}')" = 'null'
+  test "$(docker inspect "$id" -f '{{json .Config.Cmd}}')" = '["echo","test-cmd"]'
+  docker logs "$id" 2>&1 | grep 'test-cmd'
+  docker rm -f "$id"

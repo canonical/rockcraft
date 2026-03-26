@@ -241,7 +241,7 @@ def _symlink_target_in_base_layer(
     lower_path = base_layer_dir / relative_path
 
     if lower_path.is_symlink():
-        return Path(os.readlink(lower_path))
+        return lower_path.readlink()
 
     return None
 
@@ -295,5 +295,5 @@ def _all_compatible_files(paths: list[Path]) -> bool:
 
 def _get_permissions(filename: Path) -> Permissions:
     """Create a Permissions object for a given Path."""
-    stat = os.stat(filename)
+    stat = filename.stat()
     return Permissions(owner=stat.st_uid, group=stat.st_gid, mode=oct(stat.st_mode))

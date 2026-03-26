@@ -18,18 +18,19 @@ import datetime
 import os
 import subprocess
 from pathlib import Path
-from typing import Any
+from typing import cast
 
 import pydantic
 import pytest
 import yaml
 from craft_application.errors import CraftValidationError
-from craft_application.models import BuildInfo
-from craft_providers.bases import BaseName, ubuntu
-from rockcraft.errors import ProjectLoadError
+from craft_application.models.constraints import MESSAGE_INVALID_NAME
+from craft_platforms import DebianArchitecture
+from craft_providers.bases import ubuntu
 from rockcraft.models import Project
-from rockcraft.models.project import MESSAGE_INVALID_NAME, Platform, load_project
-from rockcraft.pebble import Pebble, Service
+from rockcraft.models.project import Platform
+from rockcraft.pebble import Service
+from rockcraft.services.project import RockcraftProjectService
 
 _ARCH_MAPPING = {"x86": "amd64", "x64": "amd64"}
 try:
@@ -65,9 +66,11 @@ package-repositories:
 
 platforms:
     {BUILD_ON_ARCH}:
+        build-on: [{BUILD_ON_ARCH}]
+        build-for: [{BUILD_ON_ARCH}]
     some-text:
         build-on: [{BUILD_ON_ARCH}]
-        build-for: {BUILD_ON_ARCH}
+        build-for: [{BUILD_ON_ARCH}]
     same-with-different-syntax:
         build-on: [{BUILD_ON_ARCH}]
         build-for: [{BUILD_ON_ARCH}]
@@ -76,7 +79,14 @@ services:
         override: replace
         command: echo [ foo ]
         on-failure: restart
-
+    empty-args-command-service:
+        override: replace
+        command: echo [ ]
+        on-failure: restart
+    no-args-command-service:
+        override: replace
+        command: echo
+        on-failure: restart
 parts:
     foo:
         plugin: nil
@@ -95,7 +105,7 @@ class DevelProject(Project):
     "development", but we want to test the behavior anyway.
     """
 
-    base: str  # type: ignore
+    base: str  # type: ignore[assignment]
 
 
 @pytest.fixture
@@ -106,32 +116,6 @@ def yaml_data():
 @pytest.fixture
 def yaml_loaded_data():
     return yaml.safe_load(ROCKCRAFT_YAML)
-
-
-@pytest.fixture
-def apt_upgrade_part() -> dict[str, Any]:
-    return {
-        "_apt-upgrade": {
-            "plugin": "nil",
-            "overlay-script": 'craftctl chroot bash -c "apt-get update && apt-get -y upgrade"',
-        }
-    }
-
-
-@pytest.fixture
-def pebble_part() -> dict[str, Any]:
-    return {
-        "pebble": {
-            "plugin": "nil",
-            "stage-snaps": ["pebble/latest/stable"],
-            "stage": ["bin/pebble"],
-            "override-prime": str(
-                "craftctl default\n"
-                "mkdir -p var/lib/pebble/default/layers\n"
-                "chmod 777 var/lib/pebble/default"
-            ),
-        }
-    }
 
 
 def load_project_yaml(yaml_loaded_data) -> Project:
@@ -157,6 +141,8 @@ def test_project_unmarshal(check, yaml_loaded_data):
         if attr == "services":
             # Services are classes and not Dicts upfront
             v["test-service"] = Service(**v["test-service"])
+            v["no-args-command-service"] = Service(**v["no-args-command-service"])
+            v["empty-args-command-service"] = Service(**v["empty-args-command-service"])
 
         check.equal(getattr(project, attr.replace("-", "_")), v)
 
@@ -223,7 +209,8 @@ def test_forbidden_env_var_interpolation(
             load_project_yaml(yaml_loaded_data)
         expected = (
             "Bad rockcraft.yaml content:\n"
-            f"- string interpolation not allowed for: {variable} (in field 'environment')"
+            f"- string interpolation not allowed for: {variable} "
+            f"(in field 'environment', input: {{'BAZ': 'value1', 'FOO': 'value3', 'BAR': 'value2', 'foo': '{variable}'}})"
         )
         check.equal(str(err.value), expected)
     else:
@@ -243,13 +230,14 @@ def test_project_base(yaml_loaded_data, base):
 def test_project_base_invalid(yaml_loaded_data):
     yaml_loaded_data["base"] = "ubuntu@19.04"
 
-    with pytest.raises(CraftValidationError) as err:
-        load_project_yaml(yaml_loaded_data)
-    assert str(err.value) == (
-        "Bad rockcraft.yaml content:\n"
-        "- input should be 'bare', 'ubuntu@20.04', 'ubuntu@22.04' or "
-        "'ubuntu@24.04' (in field 'base')"
+    match = (
+        r"^Bad rockcraft\.yaml content:\n"
+        r"- input should be 'bare', ('ubuntu@\d\d\.(04|10)'(, | or )?)+ "
+        r"\(in field 'base', input: 'ubuntu@19.04'\)"
     )
+
+    with pytest.raises(CraftValidationError, match=match):
+        load_project_yaml(yaml_loaded_data)
 
 
 def test_project_license_invalid(yaml_loaded_data):
@@ -261,7 +249,7 @@ def test_project_license_invalid(yaml_loaded_data):
     expected = (
         "Bad rockcraft.yaml content:\n"
         f"- license {yaml_loaded_data['license']} not valid. "
-        "It must be either 'proprietary' or in SPDX format. (in field 'license')"
+        "It must be either 'proprietary' or in SPDX format. (in field 'license', input: 'apache 0.x')"
     )
     assert str(err.value) == expected
 
@@ -296,8 +284,8 @@ def test_project_title_empty_invalid_name(yaml_loaded_data):
 
     expected = (
         "Bad rockcraft.yaml content:\n"
-        "- invalid name for rock: Names can only use .* "
-        r"\(in field 'name'\)"
+        "- invalid name: Names can only use ASCII lowercase letters, numbers, and hyphens. They must have at least one letter, may not start or end with a hyphen, and may not have two hyphens in a row. "
+        r"\(in field 'name', input: 'my@rock'\)"
     )
     assert err.match(expected)
 
@@ -310,12 +298,14 @@ def test_project_entrypoint_service_empty(yaml_loaded_data, entrypoint_service):
     expected = (
         "Bad rockcraft.yaml content:\n"
         "- the provided entrypoint-service '' is not a valid Pebble service. "
-        "(in field 'entrypoint-service')"
+        "(in field 'entrypoint-service', input: '')"
     )
     assert str(err.value) == expected
 
 
-@pytest.mark.parametrize("entrypoint_service", ["test-service"])
+@pytest.mark.parametrize(
+    "entrypoint_service", ["test-service", "empty-args-command-service"]
+)
 def test_project_entrypoint_service_valid(
     yaml_loaded_data, emitter, entrypoint_service
 ):
@@ -323,24 +313,31 @@ def test_project_entrypoint_service_valid(
     project = Project.unmarshal(yaml_loaded_data)
     assert project.entrypoint_service == entrypoint_service
     emitter.assert_message(
-        "Warning: defining an entrypoint-service will result in a rock with "
+        "Warning: 'entrypoint-service' is defined. This operation will result in a rock with "
         "an atypical OCI Entrypoint. While that might be acceptable for "
         "testing and personal use, it shall require prior approval before "
         "submitting to a Canonical registry namespace."
     )
 
 
-@pytest.mark.parametrize("entrypoint_service", ["baz"])
-def test_project_entrypoint_service_invalid(yaml_loaded_data, entrypoint_service):
+@pytest.mark.parametrize(
+    ("entrypoint_service", "expected_msg"),
+    [
+        ("baz", "the provided entrypoint-service 'baz' is not a valid Pebble service."),
+        (
+            "no-args-command-service",
+            "the Pebble service 'no-args-command-service' has a command echo without default arguments and thus cannot be used as the entrypoint-service.",
+        ),
+    ],
+)
+def test_project_entrypoint_service_invalid(
+    yaml_loaded_data, entrypoint_service, expected_msg
+):
     yaml_loaded_data["entrypoint-service"] = entrypoint_service
     with pytest.raises(CraftValidationError) as err:
         load_project_yaml(yaml_loaded_data)
 
-    expected = (
-        "Bad rockcraft.yaml content:\n"
-        "- the provided entrypoint-service 'baz' is not a valid Pebble service. "
-        "(in field 'entrypoint-service')"
-    )
+    expected = f"Bad rockcraft.yaml content:\n- {expected_msg} (in field 'entrypoint-service', input: '{entrypoint_service}')"
     assert str(err.value) == expected
 
 
@@ -348,6 +345,84 @@ def test_project_entrypoint_service_absent(yaml_loaded_data):
     yaml_loaded_data.pop("entrypoint-service")
     project = Project.unmarshal(yaml_loaded_data)
     assert project.entrypoint_service is None
+
+
+@pytest.mark.parametrize("entrypoint_command", ["echo foo"])
+def test_project_entrypoint_command_conflict(yaml_loaded_data, entrypoint_command):
+    yaml_loaded_data["entrypoint-command"] = entrypoint_command
+    yaml_loaded_data["entrypoint-service"] = "test-service"
+
+    with pytest.raises(CraftValidationError) as err:
+        load_project_yaml(yaml_loaded_data)
+    expected = (
+        "Bad rockcraft.yaml content:\n"
+        "- the option 'entrypoint-command' cannot be used along 'entrypoint-service'. "
+        f"(in field 'entrypoint-command', input: '{entrypoint_command}')"
+    )
+    assert str(err.value) == expected
+
+
+@pytest.mark.parametrize(
+    ("entrypoint_command", "expected_msg", "expected_input"),
+    [
+        (
+            "entrypoint [ cmd [ nested ] ]",
+            "cannot nest [ ... ] groups.",
+            "input: 'entrypoint [ cmd [ nested ] ]'",
+        ),
+        (
+            "entrypoint [ cmd ] [ extra ]",
+            "cannot have any arguments after [ ... ] group.",
+            "input: 'entrypoint [ cmd ] [ extra ]'",
+        ),
+        (
+            "entrypoint 'unclosed string",
+            "no closing quotation",
+            'input: "entrypoint \'unclosed string"',
+        ),
+    ],
+)
+def test_project_entrypoint_command_invalid(
+    yaml_loaded_data, entrypoint_command, expected_msg, expected_input
+):
+    yaml_loaded_data.pop("entrypoint-service")  # Avoid conflict
+    yaml_loaded_data["entrypoint-command"] = entrypoint_command
+    with pytest.raises(CraftValidationError) as err:
+        load_project_yaml(yaml_loaded_data)
+    expected = f"Bad rockcraft.yaml content:\n- {expected_msg} (in field 'entrypoint-command', {expected_input})"
+    assert str(err.value) == expected
+
+
+@pytest.mark.parametrize(
+    "entrypoint_command",
+    [
+        "",
+        "echo foo",
+        "echo [ foo ]",
+        "[ echo foo ]",
+        "echo 'happy :-]'",
+        "echo 'sad :-['",
+        "echo '[ foo ]' [ bar ]",
+    ],
+)
+def test_project_entrypoint_command_valid(
+    yaml_loaded_data, emitter, entrypoint_command
+):
+    yaml_loaded_data.pop("entrypoint-service")  # Avoid conflict
+    yaml_loaded_data["entrypoint-command"] = entrypoint_command
+    project = Project.unmarshal(yaml_loaded_data)
+    assert project.entrypoint_command == entrypoint_command
+    emitter.assert_message(
+        "Warning: 'entrypoint-command' is defined. This operation will result in a rock with "
+        "an atypical OCI Entrypoint. While that might be acceptable for "
+        "testing and personal use, it shall require prior approval before "
+        "submitting to a Canonical registry namespace."
+    )
+
+
+def test_project_entrypoint_command_absent(yaml_loaded_data):
+    project = Project.unmarshal(yaml_loaded_data)
+    assert project.entrypoint_command is None
 
 
 def test_project_build_base(yaml_loaded_data):
@@ -435,17 +510,29 @@ def test_project_all_platforms_invalid(yaml_loaded_data):
     mock_platforms = {
         "mock": {"build-on": ["arm64a", "noarch"], "build-for": ["amd64"]}
     }
-    assert "'arm64a' is not a valid DebianArchitecture" in reload_project_platforms(
+    assert "'arm64a' is not a valid Debian architecture" in reload_project_platforms(
         mock_platforms
     )
 
     mock_platforms = {"mock": {"build-on": ["arm64", "arm64"], "build-for": ["noarch"]}}
-    assert "'noarch' is not a valid DebianArchitecture" in reload_project_platforms(
+    assert "'noarch' is not a valid Debian architecture" in reload_project_platforms(
         mock_platforms
     )
 
 
-@pytest.mark.parametrize("valid_name", ("aaa", "a00", "a-00", "a-a-a", "a-000-bbb"))
+@pytest.mark.parametrize(
+    "valid_name",
+    [
+        "aaa",
+        "a00",
+        "0aaa",
+        "a",
+        "a-00",
+        "a-a-a",
+        "a-000-bbb",
+        "this-has-exactly-40-chars-so-it-is-valid",
+    ],
+)
 def test_project_name_valid(yaml_loaded_data, valid_name):
     yaml_loaded_data["name"] = valid_name
 
@@ -454,15 +541,29 @@ def test_project_name_valid(yaml_loaded_data, valid_name):
 
 
 @pytest.mark.parametrize(
-    "invalid_name", ("AAA", "0aaa", "a", "a--a", "aa-", "a:a", "a/a", "a@a", "a_a")
+    ("invalid_name", "expected_message"),
+    [
+        ("", MESSAGE_INVALID_NAME),
+        ("AAA", MESSAGE_INVALID_NAME),
+        ("a--a", MESSAGE_INVALID_NAME),
+        ("aa-", MESSAGE_INVALID_NAME),
+        ("a:a", MESSAGE_INVALID_NAME),
+        ("a/a", MESSAGE_INVALID_NAME),
+        ("a@a", MESSAGE_INVALID_NAME),
+        ("a_a", MESSAGE_INVALID_NAME),
+        (
+            "this-name-has-more-than-40-characters-and-then-is-invalid",
+            "value should have at most 40 items after validation, not 57",
+        ),
+    ],
 )
-def test_project_name_invalid(yaml_loaded_data, invalid_name):
+def test_project_name_invalid(yaml_loaded_data, invalid_name, expected_message):
     yaml_loaded_data["name"] = invalid_name
 
     with pytest.raises(CraftValidationError) as err:
         load_project_yaml(yaml_loaded_data)
 
-    expected_message = f"{MESSAGE_INVALID_NAME} (in field 'name')"
+    expected_message += f" (in field 'name', input: '{invalid_name}')"
     assert expected_message in str(err.value)
 
 
@@ -476,7 +577,7 @@ def test_project_version_invalid(yaml_loaded_data):
     # because it comes from craft-application and might change slightly. We just
     # want to ensure that the message refers to the version.
     expected_contents = "invalid version: Valid versions consist of"
-    expected_suffix = "(in field 'version')"
+    expected_suffix = "(in field 'version', input: 'invalid_version')"
 
     message = str(err.value)
     assert expected_contents in message
@@ -502,7 +603,7 @@ def test_project_extra_field(yaml_loaded_data):
         load_project_yaml(yaml_loaded_data)
     assert str(err.value) == (
         "Bad rockcraft.yaml content:\n"
-        "- extra inputs are not permitted (in field 'extra')"
+        "- extra inputs are not permitted (in field 'extra', input: 'invalid')"
     )
 
 
@@ -513,7 +614,7 @@ def test_project_parts_validation(yaml_loaded_data):
         load_project_yaml(yaml_loaded_data)
     assert str(err.value) == (
         "Bad rockcraft.yaml content:\n"
-        "- extra inputs are not permitted (in field 'parts.foo.invalid')"
+        "- extra inputs are not permitted (in field 'parts.foo.invalid', input: True)"
     )
 
 
@@ -539,25 +640,44 @@ def test_project_bare_overlay(yaml_loaded_data, packages, script):
     expected = (
         "Bad rockcraft.yaml content:\n"
         "- part 'foo' cannot use overlays with a 'bare' base"
-        " (there is no system to overlay). (in field 'parts')"
+        " (there is no system to overlay). (in field 'parts', "
+        f"input: {{'foo': {{'plugin': 'nil', 'overlay-script': {script!r}, 'overlay-packages': {packages}}}}})"
     )
     assert str(err.value) == expected
 
 
-def test_project_load(
-    check, yaml_data, yaml_loaded_data, pebble_part, apt_upgrade_part, tmp_path
-):
-    rockcraft_file = tmp_path / "rockcraft.yaml"
-    rockcraft_file.write_text(
-        yaml_data,
-        encoding="utf-8",
-    )
+@pytest.mark.usefixtures("fake_project_file", "configured_project")
+@pytest.mark.parametrize(
+    "fake_project_yaml", [pytest.param(ROCKCRAFT_YAML, id="default")]
+)
+def test_project_load(check, yaml_loaded_data, fake_services):
+    pebble_part = {
+        "pebble": {
+            "plugin": "nil",
+            "stage-snaps": ["pebble/latest/stable"],
+            "stage": ["bin/pebble"],
+            "override-prime": str(
+                "craftctl default\n"
+                "/bin/mkdir -p var/lib/pebble/default/layers\n"
+                "/bin/chmod 777 var/lib/pebble/default"
+            ),
+        }
+    }
+    apt_upgrade_part = {
+        "_apt-upgrade": {
+            "plugin": "nil",
+            "overlay-script": 'craftctl chroot bash -c "apt-get update && apt-get -y upgrade"',
+        }
+    }
+    project_service = cast(RockcraftProjectService, fake_services.get("project"))
 
+    project_yaml = project_service.get().marshal()
     # The Pebble part should be added to the loaded data
     yaml_loaded_data["parts"].update(pebble_part)
     yaml_loaded_data["parts"].update(apt_upgrade_part)
 
-    project_yaml = load_project(rockcraft_file)
+    assert project_yaml == yaml_loaded_data
+
     check.equal(project_yaml, yaml_loaded_data)
 
     # Test that the environment variables are loaded in the right order
@@ -572,6 +692,7 @@ def pebble_project(pebble_spec) -> str:
         title: Rock with Pebble
         version: latest
         base: ubuntu@24.04
+        build-base: devel
         summary: Rock with Pebble
         description: Rock with Pebble
         license: Apache-2.0
@@ -592,62 +713,21 @@ def pebble_project(pebble_spec) -> str:
     return yaml.dump(yaml_data)
 
 
-def test_project_unmarshal_existing_pebble_different(tmp_path):
-    """Test that loading a project that already has a "pebble" part fails if that
-    part is different from what we'd create."""
-    yaml_data = pebble_project(
-        {
-            "plugin": "go",
-            "source": "https://github.com/fork/pebble.git",
-            "source-branch": "new-pebble-work",
-        }
-    )
-    rockcraft_file = tmp_path / "rockcraft.yaml"
-    rockcraft_file.write_text(
-        yaml_data,
-        encoding="utf-8",
-    )
-
-    with pytest.raises(CraftValidationError):
-        load_project(rockcraft_file)
-
-
-def test_project_unmarshal_existing_pebble_same(tmp_path):
-    """Test that loading a project that already has a "pebble" part works if that
-    part is the same as what we'd create."""
-
-    yaml_data = pebble_project(Pebble.get_part_spec("ubuntu@24.04"))
-    rockcraft_file = tmp_path / "rockcraft.yaml"
-    rockcraft_file.write_text(
-        yaml_data,
-        encoding="utf-8",
-    )
-
-    # Must not raise any errors
-    _ = load_project(rockcraft_file)
-
-
-def test_project_load_error():
-    with pytest.raises(ProjectLoadError) as err:
-        load_project(Path("does_not_exist.txt"))
-    assert str(err.value) == "No such file or directory: 'does_not_exist.txt'."
-
-
 def test_project_generate_metadata(yaml_loaded_data):
     project = Project.unmarshal(yaml_loaded_data)
     now = datetime.datetime.now(datetime.timezone.utc).isoformat()
 
     digest = "a1b2c3"  # mock digest
     oci_annotations, rock_metadata = project.generate_metadata(
-        now, bytes.fromhex(digest)
+        now, bytes.fromhex(digest), DebianArchitecture.from_host()
     )
     assert oci_annotations == {
         "org.opencontainers.image.version": yaml_loaded_data["version"],
         "org.opencontainers.image.title": yaml_loaded_data["title"],
-        "org.opencontainers.image.ref.name": yaml_loaded_data["name"],
         "org.opencontainers.image.licenses": yaml_loaded_data["license"],
         "org.opencontainers.image.created": now,
         "org.opencontainers.image.base.digest": digest,
+        "org.opencontainers.image.description": f"{yaml_loaded_data['summary']}\n\n{yaml_loaded_data['description']}",
     }
     assert rock_metadata == {
         "name": yaml_loaded_data["name"],
@@ -657,7 +737,25 @@ def test_project_generate_metadata(yaml_loaded_data):
         "created": now,
         "base": yaml_loaded_data["base"],
         "base-digest": digest,
+        "architecture": str(DebianArchitecture.from_host()),
     }
+
+    # Regression test for https://github.com/canonical/rockcraft/issues/992
+    assert rock_metadata["architecture"].__class__ is str
+
+    # Redo test with multi-line summary
+    multi_line_summary = "one\n\ntwo\n\n\n\n\nthree"
+    project = Project.unmarshal({**yaml_loaded_data, **{"summary": multi_line_summary}})
+    sanitized_summary = "one\ntwo\nthree"
+
+    oci_annotations, rock_metadata = project.generate_metadata(
+        now, bytes.fromhex(digest), DebianArchitecture.from_host()
+    )
+    assert oci_annotations["org.opencontainers.image.description"] == (
+        f"{sanitized_summary}\n\n{yaml_loaded_data['description']}"
+    )
+
+    assert rock_metadata["summary"] == multi_line_summary
 
 
 def test_metadata_base_devel(yaml_loaded_data):
@@ -668,8 +766,29 @@ def test_metadata_base_devel(yaml_loaded_data):
     now = datetime.datetime.now(datetime.timezone.utc).isoformat()
     digest = "a1b2c3"  # mock digest
 
-    _, rock_metadata = project.generate_metadata(now, bytes.fromhex(digest))
+    _, rock_metadata = project.generate_metadata(
+        now, bytes.fromhex(digest), DebianArchitecture.from_host()
+    )
     assert rock_metadata["grade"] == "devel"
+
+
+def test_metadata_base_bare(yaml_loaded_data):
+    yaml_loaded_data["base"] = "bare"
+    yaml_loaded_data["build-base"] = "ubuntu@24.04"
+    yaml_loaded_data["parts"]["foo"] = {
+        "plugin": "nil",
+        "stage-packages": ["hello"],
+    }  # Avoid validation error for no overlay with bare base
+    project = Project.unmarshal(yaml_loaded_data)
+
+    now = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    digest = "a1b2c3"  # mock digest
+
+    oci_annotations, rock_metadata = project.generate_metadata(
+        now, bytes.fromhex(digest), DebianArchitecture.from_host()
+    )
+    assert "base-digest" not in rock_metadata
+    assert "org.opencontainers.image.base.digest" not in oci_annotations
 
 
 EXPECTED_DUMPED_YAML = f"""\
@@ -712,6 +831,14 @@ services:
     override: replace
     command: echo [ foo ]
     on-failure: restart
+  empty-args-command-service:
+    override: replace
+    command: echo [ ]
+    on-failure: restart
+  no-args-command-service:
+    override: replace
+    command: echo
+    on-failure: restart
 entrypoint-service: test-service
 """
 
@@ -719,78 +846,6 @@ entrypoint-service: test-service
 def test_project_yaml(yaml_loaded_data):
     project = Project.unmarshal(yaml_loaded_data)
     assert project.to_yaml_string() == EXPECTED_DUMPED_YAML
-
-
-@pytest.mark.parametrize(
-    ("platforms", "expected_build_infos"),
-    [
-        (
-            {
-                "amd64": None,
-            },
-            [
-                BuildInfo(
-                    build_on="amd64",
-                    build_for="amd64",
-                    base=BaseName(name="ubuntu", version="20.04"),
-                    platform="amd64",
-                )
-            ],
-        ),
-        (
-            {
-                "amd64": {
-                    "build-on": ["amd64", "i386"],
-                    "build-for": ["amd64"],
-                },
-            },
-            [
-                BuildInfo(
-                    build_on="amd64",
-                    build_for="amd64",
-                    base=BaseName(name="ubuntu", version="20.04"),
-                    platform="amd64",
-                ),
-                BuildInfo(
-                    build_on="i386",
-                    build_for="amd64",
-                    base=BaseName(name="ubuntu", version="20.04"),
-                    platform="amd64",
-                ),
-            ],
-        ),
-        (
-            {
-                "amd64v2": {
-                    "build-on": ["amd64"],
-                    "build-for": "amd64",
-                },
-            },
-            [
-                BuildInfo(
-                    build_on="amd64",
-                    build_for="amd64",
-                    base=BaseName(name="ubuntu", version="20.04"),
-                    platform="amd64v2",
-                )
-            ],
-        ),
-    ],
-)
-def test_project_get_build_plan(yaml_loaded_data, platforms, expected_build_infos):
-    yaml_loaded_data["platforms"] = platforms
-    project = Project.unmarshal(yaml_loaded_data)
-    assert project.get_build_plan() == expected_build_infos
-
-
-def test_get_effective_devel_base(yaml_loaded_data):
-    yaml_loaded_data["base"] = "ubuntu@24.04"
-    yaml_loaded_data["build-base"] = "devel"
-    project = Project.unmarshal(yaml_loaded_data)
-
-    base = project.effective_base
-    assert base.name == "ubuntu"
-    assert base.version == "devel"
 
 
 @pytest.mark.parametrize(
@@ -810,7 +865,5 @@ def test_provider_base(base, expected_base):
 
 
 def test_provider_base_error():
-    with pytest.raises(ValueError) as raised:
+    with pytest.raises(ValueError, match="Unknown base 'unknown'"):
         Project._providers_base("unknown")  # pylint: disable=protected-access
-
-    assert "Unknown base 'unknown'" in str(raised.value)

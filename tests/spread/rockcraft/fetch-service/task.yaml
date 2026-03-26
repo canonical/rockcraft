@@ -27,5 +27,5 @@ execute: |
   MATCH "https://pypi.org:443/simple/black/" "$LOGFILE"
 
 restore: |
-  rm fetch-service*.json
-  rm fetch-service*.rock
+  rm -f fetch-service*.json
+  rm -f fetch-service*.rock

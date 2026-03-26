@@ -57,7 +57,7 @@ def django_input_yaml_fixture():
 def test_flask_extension_default(
     tmp_path, flask_input_yaml, packages, async_package, expected_worker
 ):
-    full_packages = "\n".join([packages, async_package])
+    full_packages = f"{packages}\n{async_package}"
     (tmp_path / "requirements.txt").write_text(full_packages)
     (tmp_path / "app.py").write_text("app = object()")
     (tmp_path / "static").mkdir()
@@ -77,10 +77,17 @@ def test_flask_extension_default(
                     "gunicorn.conf.py": "flask/gunicorn.conf.py",
                 },
                 "plugin": "dump",
+                "permissions": [
+                    {
+                        "path": "flask/gunicorn.conf.py",
+                        "owner": 584792,
+                        "group": 584792,
+                    }
+                ],
             },
             "flask-framework/dependencies": {
                 "plugin": "python",
-                "python-packages": ["gunicorn"],
+                "python-packages": ["gunicorn~=23.0"],
                 "python-requirements": ["requirements.txt"],
                 "source": ".",
                 "stage-packages": ["python3-venv"],
@@ -95,10 +102,34 @@ def test_flask_extension_default(
                 "prime": ["flask/app/app.py", "flask/app/static"],
                 "source": ".",
                 "stage": ["flask/app/app.py", "flask/app/static"],
+                "permissions": [
+                    {
+                        "owner": 584792,
+                        "group": 584792,
+                    },
+                ],
             },
             "flask-framework/runtime": {
                 "plugin": "nil",
                 "stage-packages": ["ca-certificates_data"],
+            },
+            "flask-framework/logging": {
+                "plugin": "nil",
+                "override-build": (
+                    "craftctl default\n"
+                    "mkdir -p $CRAFT_PART_INSTALL/opt/promtail\n"
+                    "mkdir -p $CRAFT_PART_INSTALL/etc/promtail\n"
+                    "mkdir -p $CRAFT_PART_INSTALL/var/log/flask"
+                ),
+                "permissions": [
+                    {"path": "opt/promtail", "owner": 584792, "group": 584792},
+                    {"path": "etc/promtail", "owner": 584792, "group": 584792},
+                    {
+                        "path": "var/log/flask",
+                        "owner": 584792,
+                        "group": 584792,
+                    },
+                ],
             },
             "flask-framework/statsd-exporter": {
                 "build-snaps": ["go"],
@@ -166,6 +197,12 @@ def test_flask_extension_prime_override(tmp_path, flask_input_yaml):
         "flask/app/requirements.txt",
         "flask/app/static",
     ]
+    assert install_app_part["permissions"] == [
+        {
+            "owner": 584792,
+            "group": 584792,
+        },
+    ]
 
 
 @pytest.mark.usefixtures("flask_extension")
@@ -199,6 +236,12 @@ def test_flask_framework_exclude_prime(tmp_path, flask_input_yaml):
         "flask/app/static",
         "flask/app/test",
         "flask/app/webapp",
+    ]
+    assert install_app_part["permissions"] == [
+        {
+            "owner": 584792,
+            "group": 584792,
+        },
     ]
 
 
@@ -279,16 +322,22 @@ def test_flask_extension_override_parts(tmp_path, flask_input_yaml):
 
     assert applied["parts"]["flask-framework/dependencies"] == {
         "plugin": "python",
-        "python-packages": ["gunicorn"],
+        "python-packages": ["gunicorn~=23.0"],
         "python-requirements": ["requirements.txt", "requirements-jammy.txt"],
         "source": ".",
         "stage-packages": ["python3-venv"],
         "build-environment": [],
     }
+    assert applied["parts"]["flask-framework/install-app"]["permissions"] == [
+        {
+            "owner": 584792,
+            "group": 584792,
+        },
+    ]
 
 
 @pytest.mark.parametrize(
-    "build_base, expected_stage_packages, expected_python_interpreter",
+    ("build_base", "expected_stage_packages", "expected_python_interpreter"),
     [
         ("ubuntu@22.04", ["python3.10-venv_ensurepip"], "python3.10"),
         ("ubuntu:22.04", ["python3.10-venv_ensurepip"], "python3.10"),
@@ -312,12 +361,21 @@ def test_flask_extension_bare(
     applied = extensions.apply_extensions(tmp_path, flask_input_yaml)
     assert applied["parts"]["flask-framework/runtime"] == {
         "plugin": "nil",
-        "override-build": "mkdir -m 777 ${CRAFT_PART_INSTALL}/tmp",
-        "stage-packages": ["bash_bins", "coreutils_bins", "ca-certificates_data"],
+        "override-build": "mkdir -m 777 ${CRAFT_PART_INSTALL}/tmp\n"
+        "ln -sf /usr/bin/bash ${CRAFT_PART_INSTALL}/usr/bin/sh",
+        "stage-packages": [
+            "bash_bins",
+            "coreutils_bins",
+            "ca-certificates_data",
+        ],
+    }
+    assert applied["parts"]["flask-framework/runtime-libs"] == {
+        "plugin": "nil",
+        "stage-packages": ["libstdc++6"],
     }
     assert applied["parts"]["flask-framework/dependencies"] == {
         "plugin": "python",
-        "python-packages": ["gunicorn"],
+        "python-packages": ["gunicorn~=23.0"],
         "python-requirements": ["requirements.txt"],
         "source": ".",
         "stage-packages": expected_stage_packages,
@@ -325,6 +383,12 @@ def test_flask_extension_bare(
             {"PARTS_PYTHON_INTERPRETER": expected_python_interpreter}
         ],
     }
+    assert applied["parts"]["flask-framework/install-app"]["permissions"] == [
+        {
+            "owner": 584792,
+            "group": 584792,
+        },
+    ]
 
 
 @pytest.mark.usefixtures("flask_extension")
@@ -424,26 +488,32 @@ def test_flask_extension_incorrect_prime_prefix_error(tmp_path):
     assert "flask/app" in str(exc)
 
 
+WSGI_FLASK_INPUT_YAML = {
+    "extensions": ["flask-framework"],
+    "base": "bare",
+    "build-base": "ubuntu@22.04",
+    "platforms": {"amd64": {}},
+    "parts": {"flask/install-app": {"prime": ["flask/app/requirement.txt"]}},
+}
+
+
 @pytest.mark.usefixtures("flask_extension")
 def test_flask_extension_incorrect_wsgi_path_error(tmp_path):
-    flask_input_yaml = {
-        "extensions": ["flask-framework"],
-        "base": "bare",
-        "build-base": "ubuntu@22.04",
-        "platforms": {"amd64": {}},
-        "parts": {"flask/install-app": {"prime": ["flask/app/requirement.txt"]}},
-    }
-    (tmp_path / "requirements.txt").write_text("flask")
-
-    with pytest.raises(ExtensionError) as exc:
-        extensions.apply_extensions(tmp_path, flask_input_yaml)
-    assert "app:app" in str(exc)
-
     (tmp_path / "app.py").write_text("flask")
 
-    with pytest.raises(ExtensionError) as exc:
-        extensions.apply_extensions(tmp_path, flask_input_yaml)
-    assert "app:app" in str(exc)
+    with pytest.raises(
+        ExtensionError,
+        match="the global variable 'app' was not found in app.py in the project root.",
+    ):
+        extensions.apply_extensions(tmp_path, WSGI_FLASK_INPUT_YAML.copy())
+
+
+@pytest.mark.usefixtures("flask_extension")
+def test_flask_extension_incorrect_wsgi_path_error_no_app(tmp_path):
+    (tmp_path / "requirements.txt").write_text("flask")
+
+    with pytest.raises(ExtensionError, match="app:app, no app.py"):
+        extensions.apply_extensions(tmp_path, WSGI_FLASK_INPUT_YAML.copy())
 
 
 @pytest.mark.usefixtures("flask_extension")
@@ -491,10 +561,17 @@ def test_django_extension_default(
             "django-framework/config-files": {
                 "organize": {"gunicorn.conf.py": "django/gunicorn.conf.py"},
                 "plugin": "dump",
+                "permissions": [
+                    {
+                        "path": "django/gunicorn.conf.py",
+                        "owner": 584792,
+                        "group": 584792,
+                    },
+                ],
             },
             "django-framework/dependencies": {
                 "plugin": "python",
-                "python-packages": ["gunicorn"],
+                "python-packages": ["gunicorn~=23.0"],
                 "python-requirements": ["requirements.txt"],
                 "source": ".",
                 "stage-packages": ["python3-venv"],
@@ -505,10 +582,34 @@ def test_django_extension_default(
                 "plugin": "dump",
                 "source": "foo_bar",
                 "stage": ["-django/app/db.sqlite3"],
+                "permissions": [
+                    {
+                        "owner": 584792,
+                        "group": 584792,
+                    },
+                ],
             },
             "django-framework/runtime": {
                 "plugin": "nil",
                 "stage-packages": ["ca-certificates_data"],
+            },
+            "django-framework/logging": {
+                "plugin": "nil",
+                "override-build": (
+                    "craftctl default\n"
+                    "mkdir -p $CRAFT_PART_INSTALL/opt/promtail\n"
+                    "mkdir -p $CRAFT_PART_INSTALL/etc/promtail\n"
+                    "mkdir -p $CRAFT_PART_INSTALL/var/log/django"
+                ),
+                "permissions": [
+                    {"path": "opt/promtail", "owner": 584792, "group": 584792},
+                    {"path": "etc/promtail", "owner": 584792, "group": 584792},
+                    {
+                        "path": "var/log/django",
+                        "owner": 584792,
+                        "group": 584792,
+                    },
+                ],
             },
             "django-framework/statsd-exporter": {
                 "build-snaps": ["go"],
@@ -565,34 +666,56 @@ def test_django_extension_override_install_app(tmp_path, django_input_yaml):
         "plugin": "dump",
         "source": ".",
         "organize": {"foobar": "django/app"},
+        "permissions": [
+            {
+                "owner": 584792,
+                "group": 584792,
+            },
+        ],
     }
+
+
+WSGI_DJANGO_INPUT_YAML = {
+    "name": "foobar",
+    "extensions": ["django-framework"],
+    "base": "bare",
+    "build-base": "ubuntu@22.04",
+}
 
 
 @pytest.mark.usefixtures("django_extension")
-def test_django_extension_incorrect_wsgi_path_error(tmp_path):
-    input_yaml = {
-        "name": "foobar",
-        "extensions": ["django-framework"],
-        "base": "bare",
-        "build-base": "ubuntu@22.04",
-    }
+def test_django_extension_incorrect_wsgi_path_error_wsgi_missing(tmp_path):
     (tmp_path / "requirements.txt").write_text("django")
 
-    with pytest.raises(ExtensionError) as exc:
-        extensions.apply_extensions(tmp_path, input_yaml)
+    with pytest.raises(
+        ExtensionError, match=r"wsgi:application, no wsgi\.py file found"
+    ):
+        extensions.apply_extensions(tmp_path, WSGI_DJANGO_INPUT_YAML.copy())
 
-    assert "wsgi:application" in str(exc)
 
+@pytest.mark.usefixtures("django_extension")
+def test_django_extension_incorrect_wsgi_path_error_no_app(tmp_path):
+    (tmp_path / "requirements.txt").write_text("django")
     django_project_dir = tmp_path / "foobar" / "foobar"
     django_project_dir.mkdir(parents=True)
     (django_project_dir / "wsgi.py").write_text("app = object()")
 
-    with pytest.raises(ExtensionError):
-        extensions.apply_extensions(tmp_path, input_yaml)
+    with pytest.raises(
+        ExtensionError,
+        match=r"wsgi:application, no variable named 'application' in wsgi.py",
+    ):
+        extensions.apply_extensions(tmp_path, WSGI_DJANGO_INPUT_YAML.copy())
 
+
+@pytest.mark.usefixtures("django_extension")
+def test_django_extension_wsgi_path_happy(tmp_path):
+    (tmp_path / "requirements.txt").write_text("django")
+    django_project_dir = tmp_path / "foobar" / "foobar"
+    django_project_dir.mkdir(parents=True)
+    (django_project_dir / "wsgi.py").write_text("app = object()")
     (django_project_dir / "wsgi.py").write_text("application = object()")
 
-    extensions.apply_extensions(tmp_path, input_yaml)
+    extensions.apply_extensions(tmp_path, WSGI_DJANGO_INPUT_YAML.copy())
 
 
 @pytest.mark.usefixtures("django_extension")
@@ -611,4 +734,6 @@ def test_django_extension_django_service_override_disable_wsgi_path_check(tmp_pa
         },
     }
 
+    extensions.apply_extensions(tmp_path, input_yaml)
+    extensions.apply_extensions(tmp_path, input_yaml)
     extensions.apply_extensions(tmp_path, input_yaml)

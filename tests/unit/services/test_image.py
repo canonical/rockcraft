@@ -14,9 +14,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from typing import cast
 
-def test_image_service_cache(image_service, default_image_info, mocker):
+from rockcraft.services import RockcraftImageService
+
+
+def test_image_service_cache(default_image_info, mocker, fake_services):
     """Test that the image service only creates the base image once."""
+    image_service = cast(RockcraftImageService, fake_services.get("image"))
     mock_create = mocker.patch.object(
         image_service, "_create_image_info", return_value=default_image_info
     )

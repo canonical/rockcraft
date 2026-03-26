@@ -1,0 +1,40 @@
+# Actual parts definition for the rockcraft + python cases that we are testing.
+# (this gets appended to all rockcraft.yaml files in the subdirectories in the
+# main task.yaml).
+
+version: "0.1"
+summary: A rock that bundles a Java project.
+description: A rock that bundles a Java project.
+license: GPL-3.0
+platforms:
+  amd64:
+
+parts:
+  helloworld:
+    source: helloworld
+    source-type: local
+    build-packages:
+      - openjdk-21-jdk
+      - maven
+    plugin: maven
+    build-environment:
+      - JAVA_HOME: "/usr/lib/jvm/java-21-openjdk-${CRAFT_ARCH_BUILD_FOR}"
+
+  deps:
+    plugin: nil
+    stage-packages:
+      - openjdk-21-jre-headless_standard
+    stage:
+      - -usr/lib/jvm
+
+  runtime:
+    after:
+      - helloworld
+      - deps
+    plugin: jlink
+    build-packages:
+      - openjdk-21-jdk
+    build-environment:
+      - JAVA_HOME: /usr/lib/jvm/java-21-openjdk-${CRAFT_ARCH_BUILD_FOR}
+    jlink-jars:
+      - jar/helloworld-1.0-SNAPSHOT.jar

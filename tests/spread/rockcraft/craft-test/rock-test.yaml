@@ -1,0 +1,5 @@
+summary: test the 'craft-test' project
+
+execute: |
+  # Run a container
+  docker run --rm craft-test:latest -v | MATCH "\[hello\] hello from craft-test rock"

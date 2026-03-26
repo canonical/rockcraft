@@ -1,4 +1,4 @@
-.. _chisel_explanation:
+.. _explanation-chisel:
 
 Chisel
 ======
@@ -10,7 +10,7 @@ Using the analogy of a tool to carve and cut stone, Chisel is used in
 Rockcraft to sculpt minimal collections of files that only include what is
 needed for the rock to function properly.
 
-See :ref:`how_to_use_chisel` for information about using the tool.
+See :ref:`how-to-cut-existing-slices` for information about using the tool.
 
 Package slices
 --------------
@@ -47,9 +47,8 @@ rocks small and less exposed to vulnerabilities.
 Defining slices
 ~~~~~~~~~~~~~~~
 
-A package's slices can be defined via a YAML slice definitions file. Check the
-`slice definitions reference
-<https://github.com/canonical/chisel/#slice-definitions>`_ for more information
+A package's slices can be defined via a YAML slice definitions file. Check
+:external+chisel:ref:`slice_definitions_ref` in the Chisel documentation for more information
 about this file's format.
 
 .. note::

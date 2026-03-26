@@ -9,11 +9,10 @@ execute: |
   IMAGE="${NAME}:0.1"
 
   run_rockcraft init --name flask-extension --profile flask-framework
-  sed -i "s/name: .*/name: ${NAME}/g" rockcraft.yaml
-  if [ "${SCENARIO}" = "bare" ]; then
-      sed -i "s/base: .*/base: ${SCENARIO}\nbuild-base: ubuntu@22.04/g" rockcraft.yaml
-  else
-      sed -i "s/base: .*/base: ${SCENARIO//-/@}/g" rockcraft.yaml
+  sed -i "s/^name: .*/name: ${NAME}/g" rockcraft.yaml
+  sed -i "s/^base: .*/base: ${SCENARIO//-/@}/g" rockcraft.yaml
+  if [ "${SCENARIO}" != "bare" ]; then
+      sed -i "/^build-base:/d" rockcraft.yaml
   fi
   run_rockcraft pack
 
@@ -120,7 +119,7 @@ execute: |
   [ "$SYNC_RESULT" == 'TRUE' ]
 restore: |
   NAME="flask-${SCENARIO//./-}"
-  docker stop "${NAME}-container"
-  docker rm "${NAME}-container"
+  docker stop "${NAME}-container" || true
+  docker rm --force "${NAME}-container"
   rm -f "*.rock" rockcraft.yaml
   docker system prune -a -f
