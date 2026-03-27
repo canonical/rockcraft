@@ -125,7 +125,7 @@ The top of the file should look similar to the following snippet:
 .. code-block:: yaml
     :caption: ~/django-tutorial/rockcraft.yaml
 
-    name: django-hello-world
+    name: django-tutorial
     # see https://documentation.ubuntu.com/rockcraft/en/1.6.0/explanation/bases/
     # for more information about bases and using 'bare' bases for chiselled rocks
     base: bare # as an alternative, an ubuntu base can be used
@@ -133,7 +133,7 @@ The top of the file should look similar to the following snippet:
     version: '0.1' # just for humans. Semantic versioning is recommended
     summary: A summary of your Django app # 79 char long summary
     description: |
-        This is django-hello-world's description. You have a paragraph or two to tell the
+        This is django-tutorial's description. You have a paragraph or two to tell the
         most important story about it. Keep it under 100 words though,
         we live in tweetspace and your description wants to look good in the
         container registries out there.
@@ -145,7 +145,7 @@ The top of the file should look similar to the following snippet:
         # ppc64el:
         # s390x:
 
-Verify that the ``name`` is ``django-hello-world``.
+Verify that the ``name`` is ``django-tutorial``.
 
 The ``platforms`` key must match the architecture of your host. Check
 the architecture of your system:
@@ -160,7 +160,7 @@ Using a ``bare`` base provides the smallest possible foundation for the
 image, which helps reduce its complexity and size.
 
 .. note::
-    For this tutorial, we'll use the ``name`` ``django-hello-world`` and assume
+    For this tutorial, we'll use the ``name`` ``django-tutorial`` and assume
     we're running on the ``amd64`` platform. Check the architecture of the
     system using ``dpkg --print-architecture``.
 
@@ -260,7 +260,7 @@ size:
 .. terminal::
 
     REPOSITORY          TAG       IMAGE ID       CREATED       SIZE
-    django-hello-world  0.1       5cd019b51db9   6 days ago   184MB
+    django-tutorial  0.1       5cd019b51db9   6 days ago   184MB
 
 .. note::
     The size of the image reported by Docker is the uncompressed size which is
@@ -368,7 +368,7 @@ the ``rockcraft.yaml`` file should look similar to the following:
     :caption: ~/django-tutorial/rockcraft.yaml
     :emphasize-lines: 6
 
-    name: django-hello-world
+    name: django-tutorial
     # see https://documentation.ubuntu.com/rockcraft/en/1.6.0/explanation/bases/
     # for more information about bases and using 'bare' bases for chiselled rocks
     base: bare
@@ -376,7 +376,7 @@ the ``rockcraft.yaml`` file should look similar to the following:
     version: '0.2'
     summary: A summary of your Django app # 79 char long summary
     description: |
-        This is django-hello-world's description. You have a paragraph or two to tell the
+        This is django-tutorial's description. You have a paragraph or two to tell the
         most important story about it. Keep it under 100 words though,
         we live in tweetspace and your description wants to look good in the
         container registries out there.
