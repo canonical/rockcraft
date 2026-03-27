@@ -130,7 +130,7 @@ the slice names) to the project file, you were able to reduce the rock's
 size even further by an **additional ~40%** of its original size! In short:
 
 +---------------+------------------+-----------+
-| Original rock | w/ ``bare`` base | chiseled |
+| Original rock | w/ ``bare`` base | chiseled  |
 +===============+==================+===========+
 | 53MB          | 27MB             | 17MB      |
 +---------------+------------------+-----------+
