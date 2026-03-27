@@ -2,7 +2,7 @@ name: custom-<package>-rock
 base: bare
 build-base: "ubuntu@26.04"
 version: "0.0.1"
-summary: A chiselled rock with a custom vim-tiny slice
+summary: A chiseled rock with a custom vim-tiny slice
 description: |
   A rock containing only the binaries (and corresponding dependencies) from the vim-tiny package.
   Built from a custom Chisel release.
