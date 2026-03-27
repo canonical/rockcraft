@@ -3,7 +3,7 @@
 Release notes
 =============
 
-This page lists the notes for past releases of Rockcraft, which summarise new
+This page lists the notes for past releases of Rockcraft, which summarize new
 features, bug fixes and backwards-incompatible changes in each version.
 It also contains the release and support policies for Rockcraft.
 
@@ -34,7 +34,7 @@ possible. On the first Monday of the month, we publish a major or minor
 version of Rockcraft to the candidate channel, where it undergoes testing and
 feedback. If we determine the candidate is ready for mainstream use by the
 Monday of the week after, we release it as a stable version. During testing
-and feedback of a candidate, we prioritise fixes for critical issues.
+and feedback of a candidate, we prioritize fixes for critical issues.
 
 Rockcraft release naming follows the Semantic Versioning 2.0.0 scheme with
 numbers for major, minor, and patch versions.
@@ -139,7 +139,7 @@ development keeps pace with the OS's new releases and support lifecycle.
   feedback.">
 
   <Paragraph 2: Present the new behavior or feature. In words, *show* what the feature
-  is and make a case for how the reader could benefit from it. Centre the user whenever
+  is and make a case for how the reader could benefit from it. Center the user whenever
   possible ("you"), and speak on behalf of Canonical ("we"). Prefer general, simple
   usage over complex applications. Use past tense, or the form "is now [x]" or "now
   [does x]". For example, "We understand that some authors may not want to have their

@@ -34,7 +34,7 @@ What sets rocks apart?
 * **User-centric experience**: rocks are described in a :ref:`declarative
   format <reference-rockcraft-yaml>` and **built on top of familiar and reliable
   Ubuntu images**, offering an open and up-to-date user experience;
-* **Seamless chiselling experience**: rocks can be effortlessly
+* **Seamless chiseling experience**: rocks can be effortlessly
   :ref:`chiseled <explanation-chisel>` using off-the-shelf primitives,
   harnessing all the advantages of "distroless" to deliver **compact
   and secure Ubuntu-based container images**.
