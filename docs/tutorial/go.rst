@@ -130,7 +130,7 @@ The top of the file should look similar to the following snippet:
 
     name: go-hello-world
     # see https://documentation.ubuntu.com/rockcraft/latest/explanation/bases/
-    # for more information about bases and using 'bare' bases for chiselled rocks
+    # for more information about bases and using 'bare' bases for chiseled rocks
     base: bare # as an alternative, an ubuntu base can be used
     build-base: ubuntu@24.04 # build-base is required when the base is bare
     version: '0.1' # just for humans. Semantic versioning is recommended
@@ -347,7 +347,7 @@ The top of the ``rockcraft.yaml`` file should look similar to the following:
 
     name: go-hello-world
     # see https://documentation.ubuntu.com/rockcraft/latest/explanation/bases/
-    # for more information about bases and using 'bare' bases for chiselled rocks
+    # for more information about bases and using 'bare' bases for chiseled rocks
     base: bare # as an alternative, an ubuntu base can be used
     build-base: ubuntu@24.04 # build-base is required when the base is bare
     version: '0.2'

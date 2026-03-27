@@ -3,7 +3,7 @@ base: bare # using a bare base
 build-base: ubuntu@22.04 # using Ubuntu Jammy only for the build environment
 version: "3.11"
 summary: Chiselled Python3.11 rock
-description: Example of a chiselled Python rock
+description: Example of a chiseled Python rock
 platforms:
   amd64:
 run-user: _daemon_ # setting a non-root user for the rock

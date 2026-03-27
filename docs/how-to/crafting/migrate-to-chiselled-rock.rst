@@ -1,6 +1,6 @@
 .. _how-to-migrate-a-docker-image-to-a-chiselled-rock:
 
-Migrate a Docker image to a chiselled rock
+Migrate a Docker image to a chiseled rock
 ==========================================
 
 Prerequisites
@@ -224,7 +224,7 @@ The output should be similar to:
     2023-04-19 15:56:00.567 :: 2023-04-19 13:56:00.148 Exported to OCI archive 'dotnet-runtime_chiselled_amd64.rock'
 
 At the end of the process, a file named ``dotnet-runtime_chiselled_amd64.rock``
-should be present in the current directory. That's your chiselled rock,
+should be present in the current directory. That's your chiseled rock,
 as an OCI archive.
 
 
@@ -239,7 +239,7 @@ First, import the recently created rock into Docker:
     :end-before: [docs:skopeo-copy-end]
     :dedent: 2
 
-Now inspect the chiselled .NET Runtime rock the same way as it was done for the
+Now inspect the chiseled .NET Runtime rock the same way as it was done for the
 reference Docker image:
 
 .. literalinclude:: ../code/migrate-to-chiselled-rock/task.yaml

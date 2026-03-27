@@ -31,7 +31,7 @@ Bases
 """"""""
 
 - ``bare``-based rocks now have a default ``PATH`` value set on the image,
-  following the behaviour of ``Pebble`` services.
+  following the behavior of ``Pebble`` services.
 
 Plugins
 #######
