@@ -18,7 +18,7 @@ execute: |
 
   # [docs:init-spring-boot]
   devpack-for-spring boot start \
-    --path maven-app \
+    --path spring-boot-hello-world \
     --project maven-project \
     --language java \
     --boot-version 3.5.10 \
@@ -31,7 +31,7 @@ execute: |
     --dependencies web \
     --packaging jar \
     --java-version 21
-  cd maven-app
+  cd spring-boot-hello-world
   # [docs:init-spring-boot-end]
 
   # [docs:spring-boot-build]
@@ -124,5 +124,5 @@ execute: |
 
   # [docs:cleanup]
   # delete all the files created during the tutorial
-  cd .. && rm -rf maven-app
+  cd .. && rm -rf spring-boot-hello-world
   # [docs:cleanup-end]
