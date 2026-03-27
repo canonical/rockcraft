@@ -1,6 +1,6 @@
-.. _how-to-chiselling:
+.. _how-to-chiseling:
 
-Chiselling
+Chiseling
 ==========
 
 .. toctree::
