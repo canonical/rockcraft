@@ -26,7 +26,7 @@ import tempfile
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 import yaml
 from craft_cli import emit
@@ -395,18 +395,23 @@ class Image:
         emit.progress(f"CMD set to {command}")
 
     def set_default_path(self, base: str) -> None:
-        """Set the default PATH on the image (only for bare rocks)."""
-        if base != "bare":
-            emit.debug(f"Not setting a PATH on the image as base is {base!r}")
+        """Ensure the OCI image has a sane default PATH when PATH is empty."""
+        image_path = self.path / self.image_name
+
+        env = _read_image_env_from_skopeo(image_path)
+        path_value = _get_env_value(env, "PATH")
+
+        if path_value:
+            emit.debug("PATH already set on the image; not overriding.")
             return
 
         # Follow Pebble's lead here: if PATH is empty, use the standard one.
         # This means that containers that bypass the pebble entrypoint will
         # have the same behavior as PATH-less pebble services.
         pebble_path = Pebble.DEFAULT_ENV_PATH
-        image_path = self.path / self.image_name
-
-        emit.debug(f"Setting bare-based rock PATH to {pebble_path!r}")
+        emit.debug(
+            f"Setting default PATH on the image to {pebble_path!r} (base={base!r})"
+        )
         _config_image(image_path, ["--config.env", f"PATH={pebble_path}"])
 
     def set_pebble_layer(
@@ -557,6 +562,45 @@ def _copy_image(
             destination,
         ]
     )
+
+
+def _extract_str_list(value: object) -> list[str]:
+    """Return only string items if *value* is a list, otherwise []."""
+    if not isinstance(value, list):
+        return []
+    items = cast(list[object], value)
+    return [item for item in items if isinstance(item, str)]
+
+
+def _read_image_env_from_skopeo(image_path: Path) -> list[str]:
+    """Read image environment from `skopeo inspect` output (OCI layout)."""
+    output: str = _process_run(["skopeo", "inspect", f"oci:{image_path}"]).stdout
+    raw: object = json.loads(output)
+
+    if not isinstance(raw, dict):
+        return []
+    data = cast(dict[str, object], raw)
+
+    # Candidates observed across tool outputs / versions
+    candidates: list[object] = [data.get("Env")]
+
+    config = data.get("config")
+    if isinstance(config, dict):
+        candidates.append(cast(dict[str, object], config).get("Env"))
+
+    for candidate in candidates:
+        env = _extract_str_list(candidate)
+        if env:
+            return env
+
+    return []
+
+
+def _get_env_value(env: list[str], key: str) -> str | None:
+    """Return the value for KEY from env entries like ['K=V', ...]. Last wins."""
+    prefix = f"{key}="
+    values = [e.split("=", 1)[1] for e in env if e.startswith(prefix)]
+    return values[-1] if values else None
 
 
 def _config_image(image_path: Path, params: list[str]) -> None:
