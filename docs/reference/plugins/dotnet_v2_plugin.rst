@@ -1,4 +1,4 @@
-.. _rockcraft_dotnet_v2_plugin:
+.. _craft_parts_dotnet_v2_plugin:
 
 .NET plugin (ubuntu\@25.10)
 =============================
