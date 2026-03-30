@@ -334,7 +334,9 @@ def fake_project_yaml(
 
 
 @pytest.fixture
-def fake_project_file(in_project_path, fake_project_yaml) -> Path:
+def fake_project_file(
+    in_project_path, fake_project_yaml, enable_overlay_feature
+) -> Path:
     project_file = in_project_path / "rockcraft.yaml"
     project_file.write_text(fake_project_yaml)
 

@@ -15,6 +15,7 @@
 """Rockcraft Project service."""
 
 import datetime
+import textwrap
 from pathlib import Path
 from typing import Any
 
@@ -25,6 +26,25 @@ from typing_extensions import override
 
 from rockcraft.extensions._utils import apply_extensions
 from rockcraft.pebble import add_pebble_part
+
+# Part to execute apt-get upgrade in an overlay.
+# Currently only enabled if the project is built with pro sources.
+APT_UPGRADE_PART = {
+    "plugin": "nil",
+    "override-overlay": textwrap.dedent("""
+        # At the moment, we only upgrade the base system packages in the overlay
+        # if we are building with pro sources.
+        if find /etc/apt/sources.list.d/ -iname "ubuntu-esm-*.sources" -or -iname "ubuntu-fips-*.sources"; then
+            echo "Upgrading base overlay system packages"
+            apt-get update
+            apt-get -y upgrade
+            apt-get clean
+            rm -rf /var/cache/apt
+        else
+            echo "Ubuntu Pro sources not found; skipping base overlay upgrade
+        fi
+    """).strip(),
+}
 
 
 class RockcraftProjectService(ProjectService):
@@ -55,17 +75,8 @@ class RockcraftProjectService(ProjectService):
 def _add_apt_upgrade_data(yaml_data: dict[str, Any]) -> None:
     """Add hidden part to execute apt-get upgrade in an overlay."""
     part_name = "_apt-upgrade"
-    part_content = {
-        "plugin": "nil",
-        "overlay-script": 'craftctl chroot bash -c "'
-        "apt-get update && "
-        "apt-get -y upgrade && "
-        "apt-get clean && "
-        "rm -rf /var/lib/apt/lists/*"
-        '"',
-    }
 
-    if "base" in yaml_data and yaml_data["base"] == "bare":
+    if yaml_data.get("base", "unknown") == "bare":
         # Skip adding the part to bare projects as executing apt-get upgrade
         # would not make sense without a Ubuntu base.
         return
@@ -75,7 +86,7 @@ def _add_apt_upgrade_data(yaml_data: dict[str, Any]) -> None:
         return
 
     parts = yaml_data["parts"]
-    if (existing := parts.get(part_name)) is not None and existing != part_content:
+    if (existing := parts.get(part_name)) is not None and existing != APT_UPGRADE_PART:
         raise CraftValidationError(f'Cannot override the default "{part_name}" part.')
 
-    parts[part_name] = part_content
+    parts[part_name] = APT_UPGRADE_PART

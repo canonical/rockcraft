@@ -49,8 +49,8 @@ jobs:
           UBUNTU_PRO_TOKEN: ${{ secrets.UBUNTU_PRO_TOKEN }}
         run: |
           if [ -z "$UBUNTU_PRO_TOKEN" ]; then
-            echo "Skipping Ubuntu Pro spread tests."
-            exit
+            echo "Error: UBUNTU_PRO_TOKEN is not set."
+            exit 1
           fi
           spread google:tests/spread/pro/
 

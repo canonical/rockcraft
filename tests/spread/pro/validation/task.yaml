@@ -1,6 +1,14 @@
 summary: |
   Test rockcraft's Pro validation behavior.
 
+# Run this last as it changes the "pro-ness" of the host
+priority: -100
+
+prepare: |
+  # detach any existing attachment because the test wants to validate the command line
+  # without a pro host
+  sudo pro detach --assume-yes
+
 execute: |
 
   # Note: run_rockcraft does not seem to work... so we will use the rockcraft command directly
@@ -20,7 +28,7 @@ execute: |
   rockcraft clean
 
   # enable some pro services
-  sudo pro attach --no-auto-enable $UBUNTU_PRO_TOKEN 
+  sudo pro attach --no-auto-enable $UBUNTU_PRO_TOKEN
   sudo pro enable --assume-yes esm-apps
 
   # attempt to build a pro rock with pro entitlement on the host. This should pass
@@ -31,6 +39,3 @@ execute: |
   rockcraft pull --pro=esm-infra  --destructive-mode  || exit_code=$?
   test 0 != $exit_code # fail if the exit code indicates a pass
   rockcraft clean
-
-restore: |
-  sudo pro detach --assume-yes
