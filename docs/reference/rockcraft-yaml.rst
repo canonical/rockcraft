@@ -159,6 +159,9 @@ Part keys
 .. kitbash-field:: craft_parts.parts.PartSpec overlay_script
     :prepend-name: parts.<part-name>
 
+.. kitbash-field:: craft_parts.parts.PartSpec override_overlay
+    :prepend-name: parts.<part-name>
+
 .. Build step keys
 
 .. kitbash-field:: craft_parts.parts.PartSpec build_environment
