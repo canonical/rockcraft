@@ -48,9 +48,9 @@ package-repositories:
 parts:
   nginx-user:
     plugin: nil
-    overlay-script: |
+    override-overlay: |
       set -x
-      useradd -R $CRAFT_OVERLAY -M -U -r nginx
+      useradd -M -U -r nginx
 
   nginx:
     plugin: nil
