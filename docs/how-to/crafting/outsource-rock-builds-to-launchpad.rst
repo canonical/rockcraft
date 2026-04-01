@@ -84,9 +84,8 @@ When you enter the above command, Rockcraft will ask you to acknowledge that all
 remote builds are publicly available on Launchpad.
 
 .. terminal::
-    :input: rockcraft remote-build
-    :user: ubuntu
-    :host: rock-dev
+
+    rockcraft remote-build
 
     remote-build is experimental and is subject to change. Use with caution.
     All data sent to remote builders will be publicly available. Are you sure you
