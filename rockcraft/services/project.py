@@ -41,7 +41,7 @@ APT_UPGRADE_PART = {
             apt-get clean
             rm -rf /var/cache/apt
         else
-            echo "Ubuntu Pro sources not found; skipping base overlay upgrade
+            echo "Ubuntu Pro sources not found; skipping base overlay upgrade"
         fi
     """).strip(),
 }
