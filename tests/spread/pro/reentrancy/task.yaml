@@ -1,9 +1,6 @@
 summary: |
   Test rockcraft's Pro reentrancy behavior.
 
-prepare: |
-  sudo pro attach --no-auto-enable $UBUNTU_PRO_TOKEN
-
 execute: |
 
   # set the initial managed instance pro services.
@@ -24,6 +21,3 @@ execute: |
   # pro services as before. This should now pass
   rockcraft clean
   rockcraft pull --pro=esm-infra
-
-restore: |
-  sudo pro detach --assume-yes

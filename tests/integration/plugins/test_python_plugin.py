@@ -21,6 +21,7 @@ from craft_application import errors
 from craft_application.models import DEVEL_BASE_INFOS
 from craft_cli import EmitterMode, emit
 from craft_parts.errors import OsReleaseVersionIdError
+from craft_parts.packages import deb
 from craft_parts.utils.os_utils import OsRelease
 from craft_providers.bases import get_base_alias
 from rockcraft import plugins
@@ -113,11 +114,15 @@ except (OsReleaseVersionIdError, KeyError):
     VALUES_FOR_HOST = RELEASE_TO_VALUES["22.04"]
 
 
+@pytest.mark.usefixtures("overlay_mocks")
 @pytest.mark.parametrize("plugin_name", list(get_python_plugins("ubuntu@24.04").keys()))
 @pytest.mark.parametrize("base", tuple(UBUNTU_BASES))
 def test_python_plugin_ubuntu(
-    fake_services, fake_project_file, base, in_project_path, plugin_name: str
+    fake_services, fake_project_file, base, in_project_path, plugin_name: str, mocker
 ):
+    # The 'overlay_mocks' fixture causes craft-parts to try to call "apt-get update"
+    mocker.patch.object(deb.Ubuntu, "refresh_packages_list")
+
     project = create_python_project(base=base, plugin=plugin_name)
     project.to_yaml_file(in_project_path / "rockcraft.yaml")
     fake_services.get("project").configure(build_for=None, platform=None)

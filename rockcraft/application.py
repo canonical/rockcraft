@@ -37,6 +37,7 @@ APP_METADATA = AppMetadata(
     docs_url="https://documentation.ubuntu.com/rockcraft/{version}",
     check_supported_base=True,
     artifact_type="rock",
+    enable_pro_support=True,
 )
 
 
@@ -67,6 +68,9 @@ class Rockcraft(Application):
 
         # enable the craft-parts Features that we use here, right before
         # loading the project and validating its parts.
+        # Reset the features first because in tests they might get set (to the same
+        # configuration) multiple times.
+        Features().reset()
         Features(enable_overlay=True)
 
     def _get_build_base(self) -> str | None:

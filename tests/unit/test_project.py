@@ -30,7 +30,7 @@ from craft_providers.bases import ubuntu
 from rockcraft.models import Project
 from rockcraft.models.project import Platform
 from rockcraft.pebble import Service
-from rockcraft.services.project import RockcraftProjectService
+from rockcraft.services.project import APT_UPGRADE_PART, RockcraftProjectService
 
 _ARCH_MAPPING = {"x86": "amd64", "x64": "amd64"}
 try:
@@ -663,12 +663,7 @@ def test_project_load(check, yaml_loaded_data, fake_services):
             ),
         }
     }
-    apt_upgrade_part = {
-        "_apt-upgrade": {
-            "plugin": "nil",
-            "overlay-script": 'craftctl chroot bash -c "apt-get update && apt-get -y upgrade"',
-        }
-    }
+    apt_upgrade_part = {"_apt-upgrade": APT_UPGRADE_PART}
     project_service = cast(RockcraftProjectService, fake_services.get("project"))
 
     project_yaml = project_service.get().marshal()
