@@ -9,8 +9,8 @@ Rockcraft.
 .. toctree::
     :maxdepth: 1
 
-    /common/craft-parts/reference/plugins/dotnet_plugin
-    /common/craft-parts/reference/plugins/dotnet_v2_plugin
+    plugins/dotnet_plugin
+    plugins/dotnet_v2_plugin
     plugins/ant_plugin
     /common/craft-parts/reference/plugins/autotools_plugin
     /common/craft-parts/reference/plugins/cargo_use_plugin

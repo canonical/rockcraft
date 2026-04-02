@@ -22,6 +22,7 @@ from craft_parts.plugins.base import Plugin
 from craft_parts.plugins.cargo_use_plugin import CargoUsePlugin
 from craft_parts.plugins.cmake_plugin import CMakePlugin
 from craft_parts.plugins.dotnet_plugin import DotnetPlugin
+from craft_parts.plugins.dotnet_v2_plugin import DotnetV2Plugin
 from craft_parts.plugins.dump_plugin import DumpPlugin
 from craft_parts.plugins.go_plugin import GoPlugin
 from craft_parts.plugins.go_use_plugin import GoUsePlugin
@@ -77,17 +78,23 @@ _ROCKCRAFT_DEFAULT: dict[str, type[Plugin]] = {
     "scons": SConsPlugin,
 }
 
-# Dotnet gets separated because we need to look into supporting the v2 of the plugin.
+# The v1 dotnet plugin is expected to work on all bases up to and including 24.04,
+# but the v2 plugin is expected to only work on 25.10 onwards.
 _DOTNET_V1: dict[str, type[Plugin]] = {
     "dotnet": DotnetPlugin,
 }
 
+_DOTNET_V2: dict[str, type[Plugin]] = {
+    "dotnet": DotnetV2Plugin,
+}
+
 _LEGACY_PLUGINS: dict[str, type[Plugin]] = _ROCKCRAFT_DEFAULT | _DOTNET_V1
+_V2_PLUGINS: dict[str, type[Plugin]] = _ROCKCRAFT_DEFAULT | _DOTNET_V2
 
 _PLUGINS: dict[str, dict[str, type[Plugin]]] = {
     "ubuntu@20.04": _LEGACY_PLUGINS,
     "ubuntu@22.04": _LEGACY_PLUGINS,
     "ubuntu@24.04": _LEGACY_PLUGINS,
-    "ubuntu@25.10": _ROCKCRAFT_DEFAULT,
-    "devel": _ROCKCRAFT_DEFAULT,
+    "ubuntu@25.10": _V2_PLUGINS,
+    "devel": _V2_PLUGINS,
 }

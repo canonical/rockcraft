@@ -18,6 +18,7 @@
 
 import pytest
 from craft_parts.plugins.dotnet_plugin import DotnetPlugin as DotnetPluginV1
+from craft_parts.plugins.dotnet_v2_plugin import DotnetV2Plugin as DotnetPluginV2
 from craft_parts.plugins.python_v2.python_plugin import PythonPlugin as PythonPluginV2
 from rockcraft.plugins.groups import get_plugin_group
 from rockcraft.plugins.poetry_plugin import PoetryPlugin as PoetryPluginV1
@@ -37,7 +38,7 @@ def test_legacy_groups_dotnet(legacy_base):
 @pytest.mark.parametrize("base", DEFAULT_BASES)
 def test_default_dotnet(base):
     group = get_plugin_group(base)
-    assert "dotnet" not in group
+    assert group["dotnet"] is DotnetPluginV2
 
 
 @pytest.mark.parametrize("legacy_base", LEGACY_BASES)
