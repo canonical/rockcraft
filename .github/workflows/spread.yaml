@@ -24,6 +24,22 @@ jobs:
           name: snap
           path: ${{ steps.rockcraft.outputs.snap }}
 
+  snap-build-arm:
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Build snap
+        uses: canonical/action-build@v1
+        id: rockcraft
+      - name: Upload snap artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: snap-arm64
+          path: ${{ steps.rockcraft.outputs.snap }}
+
   snap-tests:
     runs-on: [self-hosted, spread-installed]
     needs: [snap-build]
@@ -44,7 +60,39 @@ jobs:
           name: snap
           path: tests
       - name: Run spread
-        run: spread
+        run: |
+          spread google:
+
+      - name: Discard spread workers
+        if: always()
+        run: |
+          shopt -s nullglob
+          for r in .spread-reuse.*.yaml; do
+            spread -discard -reuse-pid="$(echo "$r" | grep -o -E '[0-9]+')"
+          done
+
+  snap-tests-arm:
+    runs-on: [self-hosted, spread-installed]
+    needs: [snap-build-arm]
+
+    steps:
+      - name: Cleanup job workspace
+        run: |
+          rm -rf "${{ github.workspace }}"
+          mkdir "${{ github.workspace }}"
+      - name: Checkout rockcraft
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: true
+      - name: Download snap artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: snap-arm64
+          path: tests
+      - name: Run spread
+        run: |
+          spread google-arm:
 
       - name: Discard spread workers
         if: always()
