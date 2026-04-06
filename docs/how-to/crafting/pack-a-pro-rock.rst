@@ -48,7 +48,7 @@ Next, determine which Pro services fit your needs. Rockcraft supports the follow
 The desired Pro services don’t need to be enabled on your system, but they do need to be
 available. Run ``pro status`` and check the ``ENTITLED`` column to check whether a service is
 available. The Ubuntu Pro Client documentation has
-`further information <https://documentation.ubuntu.com/pro-client/en/v32/explanations/which_services/>`_
+`further information <https://documentation.ubuntu.com/pro-client/en/v32/explanations/which_services/>`__
 on each service.
 
 Pack the rock
