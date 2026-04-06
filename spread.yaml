@@ -33,6 +33,11 @@ backends:
       - fedora-39-64:
           workers: 1
           storage: 40G
+  lxd:
+    systems:
+      - ubuntu-22.04:
+          workers: 1
+          storage: 10G
 
 prepare: |
   # if the 'tools' directory inside the submodule does not exist, then assume the submodule is empty
@@ -116,26 +121,31 @@ suites:
     summary: tests tutorial from the docs
     systems:
       - ubuntu-22.04-64
+      - ubuntu-22.04
 
   docs/how-to/code/:
     summary: tests how-to guides from the docs
     systems:
       - ubuntu-22.04-64
+      - ubuntu-22.04
 
   docs/reference/code/:
     summary: tests reference code from the docs
     systems:
       - ubuntu-22.04-64
+      - ubuntu-22.04
 
   docs/reuse/tutorial/code/:
     summary: tests reusable code from the docs
     systems:
       - ubuntu-22.04-64
+      - ubuntu-22.04
 
   tests/spread/rockcraft/:
     summary: tests for rockcraft core functionality, independent of host system
     systems:
       - ubuntu-22.04-64
+      - ubuntu-22.04
 
   tests/spread/foreign/:
     summary: tests that rockcraft and rocks work on different host systems
@@ -145,3 +155,24 @@ suites:
     manual: true
     systems:
       - ubuntu-22.04-64
+      - ubuntu-22.04
+
+  tests/spread/pro/:
+    summary: manually-triggered when Ubuntu Pro token is available
+    manual: true
+    systems:
+      - ubuntu-22.04-64
+      - ubuntu-22.04
+    environment:
+      UBUNTU_PRO_TOKEN: '$(HOST: echo "$UBUNTU_PRO_TOKEN")'
+    prepare: |
+      # Enable Ubuntu Pro
+      sudo pro attach --no-auto-enable $UBUNTU_PRO_TOKEN
+      sudo pro enable --assume-yes esm-apps
+
+      # Enable guest attachment so that Rockcraft can enable Pro on the instances
+      sudo pro config set lxd_guest_attach=available
+      sudo snap restart lxd
+
+    restore: |
+      sudo pro detach --assume-yes
