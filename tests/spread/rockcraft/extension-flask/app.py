@@ -1,8 +1,8 @@
 from flask import Flask  # pyright: ignore[reportMissingImports]
 
-app = Flask(__name__)
+application = Flask(__name__)
 
 
-@app.route("/")
+@application.route("/")
 def ok():
     return "ok"
