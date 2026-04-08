@@ -13,6 +13,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+import json
 import os
 import subprocess
 import tarfile
@@ -245,3 +246,28 @@ def test_image_manifest_has_media_type():
     # Check the media type of the manifest
     manifest = image.get_manifest()
     assert manifest["mediaType"] == "application/vnd.oci.image.manifest.v1+json"
+
+
+@pytest.mark.parametrize(
+    ("arch", "expected_arch", "expected_variant"),
+    [
+        ("armhf", "arm", "v7"),
+        ("arm64", "arm64", "v8"),
+        ("amd64", "amd64", None),
+    ],
+)
+@pytest.mark.usefixtures("new_dir")
+def test_image_manifest_has_arch_variant(arch, expected_arch, expected_variant):
+    image = oci.Image.new_oci_image(
+        image_name="bare@original",
+        image_dir=Path("images"),
+        arch=arch,
+    )[0]
+
+    image_path = image.path / image.image_name
+    output: bytes = oci._process_run(  # pylint: disable=protected-access
+        ["skopeo", "inspect", "--config", "--raw", f"oci:{str(image_path)}"]
+    ).stdout
+    config = json.loads(output)
+    assert config["architecture"] == expected_arch
+    assert config.get("variant") == expected_variant

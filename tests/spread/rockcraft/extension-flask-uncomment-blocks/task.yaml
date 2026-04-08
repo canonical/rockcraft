@@ -10,11 +10,10 @@ execute: |
   IMAGE="${NAME}:0.1"
 
   run_rockcraft init --name flask-extension --profile flask-framework
-  sed -i "s/name: .*/name: ${NAME}/g" rockcraft.yaml
-  if [ "${SCENARIO}" = "bare" ]; then
-      sed -i "s/base: .*/base: ${SCENARIO}\nbuild-base: ubuntu@22.04/g" rockcraft.yaml
-  else
-      sed -i "s/base: .*/base: ${SCENARIO//-/@}/g" rockcraft.yaml
+  sed -i "s/^name: .*/name: ${NAME}/g" rockcraft.yaml
+  sed -i "s/^base: .*/base: ${SCENARIO//-/@}/g" rockcraft.yaml
+  if [ "${SCENARIO}" != "bare" ]; then
+      sed -i "/build-base:/d" rockcraft.yaml
   fi
 
   # uncomment the parts main section
@@ -52,14 +51,14 @@ execute: |
   test ! -d work
 
   # Ensure docker does not have this container image
-  docker rmi --force "${IMAGE}"
+  # docker rmi --force "${IMAGE}"
   # Install container
   sudo rockcraft.skopeo --insecure-policy copy "oci-archive:${ROCK_FILE}" "docker-daemon:${IMAGE}"
   # Ensure container exists
   docker images "${IMAGE}" | MATCH "${NAME}"
 
   # ensure container doesn't exist
-  docker rm -f "${NAME}-container"
+  # docker rm -f "${NAME}-container"
 
   # test the flask project is ready to run inside the container
   docker run --rm --entrypoint /bin/python3 "${IMAGE}" -m gunicorn --chdir /flask/app --check-config app:app
@@ -67,7 +66,7 @@ execute: |
   docker run --rm --entrypoint /bin/python3 "${IMAGE}" -c "import pathlib;assert not pathlib.Path('/flask/app/node_modules').exists()"
 
   # test the uncommented extra parts effectively added libpq library
-  docker run --rm --entrypoint /bin/bash "${IMAGE}" -c '/bin/ls -1 /usr/lib/**/libpq.so.5*'
+  docker run --rm --entrypoint /usr/bin/bash "${IMAGE}" -c '/usr/bin/ls -1 /usr/lib/**/libpq.so.5*'
 
   # test the default flask service
   docker run --name "${NAME}-container" -d -p 8138:8000 "${IMAGE}"

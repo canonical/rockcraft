@@ -9,8 +9,8 @@ Rockcraft.
 .. toctree::
     :maxdepth: 1
 
-    /common/craft-parts/reference/plugins/dotnet_plugin
-    /common/craft-parts/reference/plugins/dotnet_v2_plugin
+    plugins/dotnet_plugin
+    plugins/dotnet_v2_plugin
     plugins/ant_plugin
     /common/craft-parts/reference/plugins/autotools_plugin
     /common/craft-parts/reference/plugins/cargo_use_plugin
@@ -26,6 +26,7 @@ Rockcraft.
     /common/craft-parts/reference/plugins/meson_plugin
     /common/craft-parts/reference/plugins/nil_plugin
     /common/craft-parts/reference/plugins/npm_plugin
+    /common/craft-parts/reference/plugins/npm_use_plugin
     plugins/poetry_plugin
     plugins/python_plugin
     plugins/python_v2_plugin

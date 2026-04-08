@@ -37,17 +37,7 @@ Create the Spring Boot app
 ==========================
 
 Start by creating the "Hello, world" Spring Boot app that will be used
-for this tutorial.
-
-Create an empty project directory:
-
-.. code-block:: bash
-
-   mkdir spring-boot-hello-world
-   cd spring-boot-hello-world
-
-Create the Demo Spring Boot app that will be used for
-this tutorial.
+for this tutorial:
 
 .. literalinclude:: code/spring-boot/task.yaml
     :language: bash
@@ -128,7 +118,7 @@ The top of the file should look similar to the following snippet:
     name: spring-boot-hello-world
     # see https://documentation.ubuntu.com/rockcraft/latest/explanation/bases/
     # for more information about bases and using 'bare' bases for chiselled rocks
-    base: bare # as an alternative, a ubuntu base can be used
+    base: bare # as an alternative, an ubuntu base can be used
     build-base: ubuntu@24.04 # build-base is required when the base is bare
     version: '0.1' # just for humans. Semantic versioning is recommended
     summary: A summary of your Spring Boot application # 79 char long summary
@@ -145,7 +135,7 @@ The top of the file should look similar to the following snippet:
         # ppc64el:
         # s390x:
 
-Verfiy that the ``name`` is ``spring-boot-hello-world``.
+Verify that the ``name`` is ``spring-boot-hello-world``.
 
 The ``platforms`` key must match the architecture of your host. Check
 the architecture of your system:
@@ -258,8 +248,8 @@ size:
 
 .. terminal::
 
-    REPOSITORY       TAG       IMAGE ID       CREATED         SIZE
-    spring-boot-hello-world   0.1       f3abf7ebc169   5 minutes aspring-boot   15.7MB
+    REPOSITORY                TAG       IMAGE ID       CREATED         SIZE
+    spring-boot-hello-world   0.1       f3abf7ebc169   5 minutes ago   149MB
 
 Now we're finally ready to run the rock and test the containerised Spring Boot
 app:
@@ -335,7 +325,7 @@ Update the Spring Boot app
 ==========================
 
 As a final step, let's update our app. For example,
-we want to add a new ``/time`` endpoint which returns the current time.
+we want to add a new ``/time`` endpoint which returns the current time in UTC.
 
 Start by creating the ``src/main/java/com/example/demo/TimeController.java``
 file in a text editor and paste in the code to look like the following:
@@ -356,7 +346,7 @@ The top of the ``rockcraft.yaml`` file should look similar to the following:
     name: spring-boot-hello-world
     # see https://documentation.ubuntu.com/rockcraft/latest/explanation/bases/
     # for more information about bases and using 'bare' bases for chiselled rocks
-    base: bare # as an alternative, a ubuntu base can be used
+    base: bare # as an alternative, an ubuntu base can be used
     build-base: ubuntu@24.04 # build-base is required when the base is bare
     version: '0.2'
     summary: A summary of your Spring Boot application # 79 char long summary
@@ -400,7 +390,7 @@ Finally, use ``curl`` to send a request to the ``/time`` endpoint:
     :end-before: [docs:curl-time-end]
     :dedent: 2
 
-The updated app will respond with the current date and time.
+The updated app will respond with the current date and time in UTC.
 
 .. note::
 

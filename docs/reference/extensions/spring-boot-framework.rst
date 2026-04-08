@@ -7,7 +7,7 @@ The Spring Boot extension streamlines the process of building Spring Boot
 application rocks.
 
 The extension packs and copies the Jar package file to the rock.
-By default, the base ``bare`` is used, to generate a lightweight image.
+By default, the base ``bare`` is used to generate a lightweight image.
 
 .. note::
 
@@ -25,6 +25,10 @@ To use the Spring Boot Framework extension, there must be either:
 - a ``build.gradle`` file
 
 in the root directory of the project.
+The project must not contain both files, otherwise the rock initialization will fail.
+
+For the build process to execute correctly, the ``mvnw`` or
+``gradlew`` wrapper must have executable permissions.
 
 .. _reference-spring-boot-framework-plugin:
 

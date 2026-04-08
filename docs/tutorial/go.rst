@@ -131,7 +131,7 @@ The top of the file should look similar to the following snippet:
     name: go-hello-world
     # see https://documentation.ubuntu.com/rockcraft/latest/explanation/bases/
     # for more information about bases and using 'bare' bases for chiselled rocks
-    base: bare # as an alternative, a ubuntu base can be used
+    base: bare # as an alternative, an ubuntu base can be used
     build-base: ubuntu@24.04 # build-base is required when the base is bare
     version: '0.1' # just for humans. Semantic versioning is recommended
     summary: A summary of your Go app # 79 char long summary
@@ -148,7 +148,7 @@ The top of the file should look similar to the following snippet:
         # ppc64el:
         # s390x:
 
-Verfiy that the ``name`` is ``go-hello-world``.
+Verify that the ``name`` is ``go-hello-world``.
 
 The ``platforms`` key must match the architecture of your host. Check
 the architecture of your system:
@@ -328,7 +328,7 @@ Update the Go app
 =================
 
 As a final step, let's update our app. For example,
-we want to add a new ``/time`` endpoint which returns the current time.
+we want to add a new ``/time`` endpoint which returns the current time in UTC.
 
 Start by opening the ``main.go`` file in a text editor and update the code to
 look like the following:
@@ -348,7 +348,7 @@ The top of the ``rockcraft.yaml`` file should look similar to the following:
     name: go-hello-world
     # see https://documentation.ubuntu.com/rockcraft/latest/explanation/bases/
     # for more information about bases and using 'bare' bases for chiselled rocks
-    base: bare # as an alternative, a ubuntu base can be used
+    base: bare # as an alternative, an ubuntu base can be used
     build-base: ubuntu@24.04 # build-base is required when the base is bare
     version: '0.2'
     summary: A summary of your Go app # 79 char long summary
@@ -392,7 +392,7 @@ Finally, use ``curl`` to send a request to the ``/time`` endpoint:
     :end-before: [docs:curl-time-end]
     :dedent: 2
 
-The updated app will respond with the current date and time.
+The updated app will respond with the current date and time in UTC.
 
 .. note::
 

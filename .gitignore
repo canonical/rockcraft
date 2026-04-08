@@ -171,3 +171,7 @@ docs/.sphinx/.wordlist.dic
 docs/reference/commands
 
 .DS_Store
+
+# .NET generated directories
+**/bin/
+**/obj/

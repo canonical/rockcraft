@@ -8,6 +8,7 @@ The Flask extension streamlines the process of building Flask application rocks.
 It facilitates the installation of Flask application dependencies, including
 Gunicorn, inside the rock. Additionally, it transfers your project files to
 ``/flask/app`` within the rock.
+By default, the base ``bare`` is used to generate a lightweight image.
 
 .. note::
     The Flask extension is compatible with the ``bare``, ``ubuntu@22.04``
@@ -23,7 +24,7 @@ Project requirements
 
 There are 2 requirements to be able to use the ``flask-framework`` extension:
 
-1. There must be a ``requirements.txt`` file in the root of the project with
+1. There must be a ``requirements.txt``  or ``pyproject.toml`` file in the root of the project with
    ``Flask`` declared as a dependency
 2. The project must include a WSGI app with the path ``app:app``. This means
    there must be an ``app.py`` file at the root of the project with the name
@@ -31,7 +32,7 @@ There are 2 requirements to be able to use the ``flask-framework`` extension:
 
 For the project to make use of asynchronous Gunicorn workers:
 
-- The ``requirements.txt`` file must include ``gevent`` as a dependency.
+- The ``requirements.txt`` or ``pyproject.toml`` file must include ``gevent`` as a dependency.
 
 .. _reference-flask-framework-stage-packages:
 

@@ -2,3 +2,12 @@
 id = "CVE-2024-35195"
 ignoreUntil = "2025-01-01T00:00:00Z"
 reason = "Needed for requests-unixsocket, which we're replacing with requests-unixsocket2"
+
+[[IgnoredVulns]]
+id = "GHSA-7gcm-g887-7qv7"
+reason = """
+Protobuf 6.33.5 has an issue[0] that causes a segfault in s390x. The issue is fixed but the
+fix is unreleased.
+
+0: https://github.com/protocolbuffers/protobuf/issues/24103
+"""

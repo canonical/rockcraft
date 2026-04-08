@@ -7,6 +7,8 @@ In this tutorial, we'll create a simple FastAPI app and learn how to
 containerise it in a rock with Rockcraft's
 :ref:`fastapi-framework <reference-fastapi-framework>` extension.
 
+It should take 25 minutes for you to complete.
+
 Setup
 =====
 
@@ -325,19 +327,6 @@ in a much smaller rock with a reduced attack surface.
 
 The first step towards chiselling the rock is to ensure we are using a
 ``bare`` :ref:`base <explanation-bases>`.
-In the project file, change the ``base`` to ``bare`` and add
-``build-base: ubuntu@24.04``:
-
-.. literalinclude:: code/fastapi/task.yaml
-    :language: bash
-    :start-after: [docs:change-base]
-    :end-before: [docs:change-base-end]
-    :dedent: 2
-
-.. note::
-    The ``sed`` command replaces the current ``base`` in the project file with
-    the ``bare`` base. The command also adds a ``build-base`` which is required
-    when using the ``bare`` base.
 
 So that we can compare the size after chiselling, open the project
 file and change the ``version`` (e.g. to ``0.1-chiselled``).
@@ -350,8 +339,8 @@ The top of the ``rockcraft.yaml`` file should look similar to the following:
     name: fastapi-hello-world
     # see https://documentation.ubuntu.com/rockcraft/latest/explanation/bases/
     # for more information about bases and using 'bare' bases for chiselled rocks
-    base: bare
-    build-base: ubuntu@24.04
+    base: bare # as an alternative, an ubuntu base can be used
+    build-base: ubuntu@24.04 # build-base is required when the base is bare
     version: '0.1-chiselled'
     summary: A summary of your FastAPI app # 79 char long summary
     description: |
@@ -424,7 +413,7 @@ Update the FastAPI app
 ======================
 
 As a final step, let's update our app. For example,
-we want to add a new ``/time`` endpoint which returns the current time.
+we want to add a new ``/time`` endpoint which returns the current time in UTC.
 
 Start by opening the ``app.py`` file in a text editor and update the code to
 look like the following:
@@ -488,7 +477,7 @@ Finally, use ``curl`` to send a request to the ``/time`` endpoint:
     :end-before: [docs:curl-time-end]
     :dedent: 2
 
-The updated app should respond with the current date and time (e.g.
+The updated app should respond with the current date and time in UTC (e.g.
 ``{"value":"2024-10-01 06:53:54\n"}``).
 
 .. note::
