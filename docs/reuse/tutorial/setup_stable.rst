@@ -54,6 +54,17 @@ and initialised:
    sudo snap install lxd
    lxd init --auto
 
+There is a :external+lxd:ref:`known connectivity issue with LXD and Docker <network-lxd-docker>`.
+To avoid this issue, enable IPv4 forwarding before installing Docker:
+
+.. code-block:: bash
+
+   echo "net.ipv4.conf.all.forwarding=1" | sudo tee -a /etc/sysctl.d/99-forwarding.conf
+   sudo systemctl restart systemd-sysctl
+
+.. warning::
+   In a production environment, make sure to use a hardened firewall configuration.
+
 In order to create the rock, we'll install Rockcraft with
 classic confinement, which grants it access to the whole file system:
 
