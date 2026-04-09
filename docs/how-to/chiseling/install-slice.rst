@@ -25,7 +25,7 @@ This repository acts as the database of slice definitions files for each
 Chisel release (Chisel releases are named analogously to Ubuntu releases, and
 mapped into Git branches within the repository).
 
-Chisel will only recognise slices belonging to a Chisel release, so you need
+Chisel will only recognize slices belonging to a Chisel release, so you need
 to copy your slice definitions file - ``openssl.yaml`` in this example - into
 the ``chisel-releases/slices`` folder. Note that if a slice definitions file
 with the same name already exists, it most likely means that the package
