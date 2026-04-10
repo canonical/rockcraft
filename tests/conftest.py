@@ -154,11 +154,14 @@ def reset_features():
 
 
 @pytest.fixture
-def enable_overlay_feature(reset_features):
+def enable_overlay_feature(reset_features, request: pytest.FixtureRequest):
     """Enable the overlay feature."""
     from craft_parts import Features
 
-    Features(enable_overlay=True)
+    # Let tests opt-out of enabling the overlay here (useful for cli tests)
+    marker = request.node.get_closest_marker("skip_overlay_enable")
+    if marker is None:
+        Features(enable_overlay=True)
 
 
 @pytest.fixture
