@@ -1,0 +1,20 @@
+name: hello-dotnet
+summary: A rock built with .NET
+description: A simple .NET web application built with the .NET plugin
+license: Apache-2.0
+
+version: "0.0.1"
+base: bare
+build-base: BUILD_BASE
+platforms:
+  amd64:
+
+parts:
+  dotnet:
+    plugin: dotnet
+    source: HelloWorld
+    dotnet-version: "10.0"
+    dotnet-configuration: Release
+    dotnet-self-contained: true
+    stage-packages:
+      - libicu76

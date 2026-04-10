@@ -5,17 +5,18 @@ dynamic = ["version"]
 dependencies = [
     # To use a dev version of a craft library:
     # craft-lib @ git+https://github.com/canonical/craft-lib@ref
-    "craft-application>=6.1.1",
+    "craft-application>=6.3.0",
     "craft-archives>=2.2.0",
-    "craft-cli>=3.1.2",
-    "craft-parts>=2.29.0",
-    "craft-platforms>=0.10.0",
-    "craft-providers>=3.3.0",
+    "craft-cli>=3.3.0",
+    "craft-parts>=2.30.1",
+    "craft-platforms>=0.11.0",
+    "craft-providers>=3.5.0",
     "overrides>=7.7.0",
     # setuptools >= 80.9 has a noisy warning about pkg_resources
     "setuptools~=80.9.0",
     "spdx-lookup>=0.3.3",
     "tabulate>=0.9.0",
+    "tomli>=2.0.0; python_version < '3.11'",
 ]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
@@ -56,9 +57,8 @@ docs = [
     "sphinx-toolbox",
     "sphinx-pydantic==0.1.1",
     "sphinx-lint~=1.0",
-    "sphinxext-rediraffe==0.3.0",    
+    "sphinxext-rediraffe==0.3.0",
     "sphinx-substitution-extensions==2025.1.2",
-    "sphinx-terminal==0.1.1",
     "sphinx-copybutton",
     {include-group = "docs-starter-pack"},
 ]
@@ -83,7 +83,7 @@ docs-starter-pack = [
     "sphinx-sitemap~=2.6.0",
     # "sphinx-tabs>=3.4.5",
     # Ignore due to deps in Craft parts
-    # "sphinx-terminal>=1.0.2",
+    "sphinx-terminal>=1.0.2",
     # "sphinx-ubuntu-images>=0.1.0",
     # "sphinx-youtube-links>=0.1.0",
     "sphinxcontrib-jquery>=4.1",
@@ -107,25 +107,10 @@ dev = [
     "pytest-randomly>=3.16.0",
 ]
 tics = ["flake8", "pylint"]
-dev-jammy = [
-    # 2.4 for Jammy
-    "python-apt~=2.4.0;sys_platform=='linux'",
-]
-dev-noble = [
-    # 2.7 for Noble
-    "python-apt~=2.7.0;sys_platform=='linux'",
-]
-dev-oracular = [
-    # 2.9 for Oracular+
-    "python-apt>=2.9.0,<2.9.9;sys_platform=='linux'",
-]
-dev-plucky = [
-    # 2.9 for Oracular+
-    "python-apt>=2.9.0;sys_platform=='linux'",
-]
-dev-questing = [
-    "python-apt~=3.0.0;sys_platform=='linux'",
-]
+dev-jammy = ["python-apt~=2.4.0;sys_platform=='linux'"]
+dev-noble = ["python-apt~=2.7.0;sys_platform=='linux'"]
+dev-questing = ["python-apt~=3.0.0;sys_platform=='linux'"]
+dev-resolute = ["python-apt~=3.0;sys_platform=='linux'"]
 release = [
     "twine",
     "wheel",
@@ -163,14 +148,15 @@ conflicts = [
     [
         { group = "dev-jammy" },
         { group = "dev-noble" },
-        { group = "dev-oracular" },
-        { group = "dev-plucky" },
         { group = "dev-questing" },
+        { group = "dev-resolute" },
     ],
 ]
 build-constraint-dependencies = [
     # needed until we have rustc >= 1.78
     "maturin<1.10.0 ; python_version < '3.14'",
+    # Cyclic dependency when building setuptools-scm 10 from source. See: https://github.com/pypa/setuptools-scm/issues/1302
+    "setuptools-scm!=10.0.2,!=10.0.3",
 ]
 
 [build-system]
@@ -251,7 +237,7 @@ exclude = [
     "docs/tutorial/code/flask",
     "docs/tutorial/code/django",
     "docs/tutorial/code/fastapi",
-    "tests/spread/general/extension-django/example_django"
+    "tests/spread/general/extension-django/example_django",
 ]
 
 [tool.mypy]

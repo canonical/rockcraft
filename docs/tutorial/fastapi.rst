@@ -7,6 +7,8 @@ In this tutorial, we'll create a simple FastAPI app and learn how to
 containerise it in a rock with Rockcraft's
 :ref:`fastapi-framework <reference-fastapi-framework>` extension.
 
+It should take 25 minutes for you to complete.
+
 Setup
 =====
 
@@ -411,7 +413,7 @@ Update the FastAPI app
 ======================
 
 As a final step, let's update our app. For example,
-we want to add a new ``/time`` endpoint which returns the current time.
+we want to add a new ``/time`` endpoint which returns the current time in UTC.
 
 Start by opening the ``app.py`` file in a text editor and update the code to
 look like the following:
@@ -475,7 +477,7 @@ Finally, use ``curl`` to send a request to the ``/time`` endpoint:
     :end-before: [docs:curl-time-end]
     :dedent: 2
 
-The updated app should respond with the current date and time (e.g.
+The updated app should respond with the current date and time in UTC (e.g.
 ``{"value":"2024-10-01 06:53:54\n"}``).
 
 .. note::
