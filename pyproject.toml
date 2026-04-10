@@ -158,6 +158,7 @@ build-constraint-dependencies = [
     # Cyclic dependency when building setuptools-scm 10 from source. See: https://github.com/pypa/setuptools-scm/issues/1302
     "setuptools-scm!=10.0.2,!=10.0.3",
 ]
+environments = ["sys_platform == 'linux'"]
 
 [build-system]
 requires = ["setuptools>=69.0", "setuptools_scm[toml]>=7.1"]
