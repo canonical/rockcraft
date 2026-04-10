@@ -5,19 +5,19 @@ execute: |
 
   pushd non_bare
   # Build an empty rock with a non-bare base to trigger apt update/upgrade
-  rockcraft build --verbosity=DEBUG >log 2>&1
+  rockcraft build --pro=esm-apps --verbosity=DEBUG >log 2>&1
   rockcraft clean
   # check for indicative strings in the log
-  grep -P 'Executing.*apt.*upgrade.*in root /root/overlay/overlay' log
-  grep -P "upgraded, \d+ newly installed, \d+ to remove and \d+ not upgraded." log
+  MATCH 'Upgrading base overlay system packages' < log
+  MATCH "upgraded, .+ newly installed, .+ to remove and .+ not upgraded." < log
   rm log
   popd
 
   pushd bare
   # Build an empty rock with a bare base to confirm no apt update/upgrade
-  rockcraft build --verbosity=DEBUG >log 2>&1
+  rockcraft build --pro=esm-apps --verbosity=DEBUG >log 2>&1
   rockcraft clean
   # ensure none of the indicative strings are present in the log
-  ! grep -P 'Executing.*apt.*upgrade.*in root /root/overlay/overlay' log
+  NOMATCH 'Upgrading base overlay system packages' log
   rm log
   popd

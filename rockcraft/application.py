@@ -66,11 +66,6 @@ class Rockcraft(Application):
         # pylint: disable=import-outside-toplevel
         from craft_parts.features import Features
 
-        # enable the craft-parts Features that we use here, right before
-        # loading the project and validating its parts.
-        # Reset the features first because in tests they might get set (to the same
-        # configuration) multiple times.
-        Features().reset()
         Features(enable_overlay=True)
 
     def _get_build_base(self) -> str | None:

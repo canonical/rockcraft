@@ -168,6 +168,8 @@ suites:
     prepare: |
       # Enable Ubuntu Pro
       sudo pro attach --no-auto-enable $UBUNTU_PRO_TOKEN
+
+      # The destructive-mode tests pack with esm-apps
       sudo pro enable --assume-yes esm-apps
 
       # Enable guest attachment so that Rockcraft can enable Pro on the instances
