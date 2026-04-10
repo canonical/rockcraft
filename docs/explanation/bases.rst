@@ -23,8 +23,6 @@ The built rock contains the software and utilities from the Ubuntu image.
 
 Setting an Ubuntu base for a rock is especially useful when the goal is to build a rock
 that can serve as a general-purpose environment, such as a development workspace.
-Ubuntu base rocks are also more user-friendly compared to bare base ones.
-
 
 .. _explanation-bases-lts-and-interim-bases:
 
@@ -56,8 +54,9 @@ Such rocks are typically preferred for production environments due to their opti
 deployment efficiency and reduced attack surface. The combination of the bare base with
 :ref:`Chisel <explanation-chisel>` slices will result in a minimalist, secure
 container image with enhanced security that meets the production environment's
-criteria while retaining its functionality. Compared to Ubuntu base rocks,
-bare base rocks are less user-friendly.
+criteria while retaining its functionality. Compared to Ubuntu base rocks, bare 
+base rocks are less user-friendly for those using the rock because they lack many common 
+packages that users depend on.
 
 Even with a bare base, when Rockcraft assembles a rock, it needs Ubuntu as the operating
 system for its build environment. The project's :ref:`Project.build_base` key determines
