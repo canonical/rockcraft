@@ -34,7 +34,9 @@ APT_UPGRADE_PART = {
     "override-overlay": textwrap.dedent("""
         # At the moment, we only upgrade the base system packages in the overlay
         # if we are building with pro sources.
-        if find /etc/apt/sources.list.d/ -iname "ubuntu-esm-*.sources" -or -iname "ubuntu-fips-*.sources"; then
+        # The pipe to grep is because find always returns success, even in the case
+        # of no matches.
+        if find /etc/apt/sources.list.d/ -iname "ubuntu-esm-*.sources" -or -iname "ubuntu-fips-*.sources" | grep -q "."; then
             echo "Upgrading base overlay system packages"
             apt-get update
             apt-get -y upgrade
