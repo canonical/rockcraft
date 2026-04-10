@@ -1,7 +1,7 @@
 .. _reference-plugins:
 
-Rockcraft plugins
-=================
+Plugins
+=======
 
 This section contains an in-depth description of the plugins available in
 Rockcraft.
