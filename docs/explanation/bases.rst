@@ -54,8 +54,8 @@ Such rocks are typically preferred for production environments due to their opti
 deployment efficiency and reduced attack surface. The combination of the bare base with
 :ref:`Chisel <explanation-chisel>` slices will result in a minimalist, secure
 container image with enhanced security that meets the production environment's
-criteria while retaining its functionality. Compared to Ubuntu base rocks, bare 
-base rocks are less user-friendly for those using the rock because they lack many common 
+criteria while retaining its functionality. Compared to Ubuntu base rocks, bare
+base rocks are less user-friendly for those using the rock because they lack many common
 packages that users depend on.
 
 Even with a bare base, when Rockcraft assembles a rock, it needs Ubuntu as the operating
