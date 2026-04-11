@@ -1,0 +1,13 @@
+name: plugin-bazel
+base: ubuntu@24.04
+version: "0.1"
+summary: Test the Bazel plugin
+description: Test the Bazel plugin
+platforms:
+  amd64:
+
+parts:
+  my-part:
+    plugin: bazel
+    source: src/
+    build-packages: [build-essential]
