@@ -19,6 +19,7 @@
 from craft_parts.plugins.ant_plugin import AntPlugin
 from craft_parts.plugins.autotools_plugin import AutotoolsPlugin
 from craft_parts.plugins.base import Plugin
+from craft_parts.plugins.bazel_plugin import BazelPlugin
 from craft_parts.plugins.cargo_use_plugin import CargoUsePlugin
 from craft_parts.plugins.cmake_plugin import CMakePlugin
 from craft_parts.plugins.dotnet_plugin import DotnetPlugin
@@ -60,6 +61,7 @@ def get_plugin_group(
 _ROCKCRAFT_DEFAULT: dict[str, type[Plugin]] = {
     "ant": AntPlugin,
     "autotools": AutotoolsPlugin,
+    "bazel": BazelPlugin,
     "cargo-use": CargoUsePlugin,
     "cmake": CMakePlugin,
     "dump": DumpPlugin,
