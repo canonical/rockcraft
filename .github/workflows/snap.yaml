@@ -13,7 +13,7 @@ jobs:
 
     steps:
       - name: Checkout rockcraft
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -22,7 +22,7 @@ jobs:
         uses: snapcore/action-build@v1
 
       - name: Upload rockcraft snap
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: snap
           path: ${{ steps.build-rockcraft.outputs.snap }}
