@@ -15,3 +15,4 @@ Crafting
     publish-a-rock
     rockcraft-pack-action
     outsource-rock-builds-to-launchpad
+    pack-a-pro-rock
