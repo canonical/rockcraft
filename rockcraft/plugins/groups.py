@@ -61,7 +61,6 @@ def get_plugin_group(
 _ROCKCRAFT_DEFAULT: dict[str, type[Plugin]] = {
     "ant": AntPlugin,
     "autotools": AutotoolsPlugin,
-    "bazel": BazelPlugin,
     "cargo-use": CargoUsePlugin,
     "cmake": CMakePlugin,
     "dump": DumpPlugin,
@@ -90,8 +89,13 @@ _DOTNET_V2: dict[str, type[Plugin]] = {
     "dotnet": DotnetV2Plugin,
 }
 
+# The bazel plugin is only expected to work on 24.04 onwards, since it relies on newer bazel versions that aren't available on older bases.
+_BAZEL = {
+    "bazel": BazelPlugin,
+}
+
 _LEGACY_PLUGINS: dict[str, type[Plugin]] = _ROCKCRAFT_DEFAULT | _DOTNET_V1
-_V2_PLUGINS: dict[str, type[Plugin]] = _ROCKCRAFT_DEFAULT | _DOTNET_V2
+_V2_PLUGINS: dict[str, type[Plugin]] = _ROCKCRAFT_DEFAULT | _DOTNET_V2 | _BAZEL
 
 _PLUGINS: dict[str, dict[str, type[Plugin]]] = {
     "ubuntu@20.04": _LEGACY_PLUGINS,
