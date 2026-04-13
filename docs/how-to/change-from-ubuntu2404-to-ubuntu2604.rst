@@ -1,5 +1,7 @@
 .. meta::
-    :description: Migrate a rock’s base from ubuntu@24.04 to ubuntu@26.04 and ubuntu@25.10.
+    :description: Migrate a rock's base from ubuntu@24.04 to ubuntu@26.04 and ubuntu@25.10.
+
+.. _how-to-migrate-2604:
 
 Change from ``ubuntu@24.04`` to ``ubuntu@26.04``
 ================================================

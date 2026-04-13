@@ -104,6 +104,7 @@ def test_lifecycle_args(
 def test_lifecycle_package_repositories(extra_project_params, fake_services, mocker):
     base = cast(services.ProjectService, fake_services.get("project")).get().base
     mocker.patch.object(util, "get_host_base", return_value=base)
+    mocker.patch.object(os, "geteuid", return_value=0)
     fake_repositories = extra_project_params["package_repositories"]
     lifecycle_service = fake_services.get("lifecycle")
     lifecycle_service._lcm = mock.MagicMock(spec=LifecycleManager)
