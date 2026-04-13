@@ -1,5 +1,5 @@
 name: plugin-bazel
-base: ubuntu@24.04
+base: ubuntu@25.10
 version: "0.1"
 summary: Test the Bazel plugin
 description: Test the Bazel plugin
