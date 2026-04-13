@@ -43,7 +43,7 @@ example:
 For more examples of the ``npm-node-version`` key, see
 :ref:`craft_parts_npm_plugin`.
 
-If you don't customise the version of node, it will be installed from the Ubuntu
+If you don't customize the version of node, it will be installed from the Ubuntu
 package repository.
 
 .. _reference-express-framework-stage-packages:

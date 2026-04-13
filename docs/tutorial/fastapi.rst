@@ -104,7 +104,7 @@ The top of the file should look similar to the following snippet:
 
     name: fastapi-hello-world
     # see https://documentation.ubuntu.com/rockcraft/latest/explanation/bases/
-    # for more information about bases and using 'bare' bases for chiselled rocks
+    # for more information about bases and using 'bare' bases for chiseled rocks
     base: ubuntu@24.04 # the base environment for this FastAPI app
     version: '0.1' # just for humans. Semantic versioning is recommended
     summary: A summary of your FastAPI app # 79 char long summary
@@ -321,8 +321,8 @@ contents that are not needed for the FastAPI app to run. This results
 in a much smaller rock with a reduced attack surface.
 
 .. note::
-    It is recommended to run chiselled images in production. For development,
-    we may prefer non-chiselled images as they will include additional
+    It is recommended to run chiseled images in production. For development,
+    we may prefer non-chiseled images as they will include additional
     development tooling (such as for debugging).
 
 The first step towards chiselling the rock is to ensure we are using a
@@ -338,7 +338,7 @@ The top of the ``rockcraft.yaml`` file should look similar to the following:
 
     name: fastapi-hello-world
     # see https://documentation.ubuntu.com/rockcraft/latest/explanation/bases/
-    # for more information about bases and using 'bare' bases for chiselled rocks
+    # for more information about bases and using 'bare' bases for chiseled rocks
     base: bare # as an alternative, an ubuntu base can be used
     build-base: ubuntu@24.04 # build-base is required when the base is bare
     version: '0.1-chiselled'
@@ -432,7 +432,7 @@ The top of the ``rockcraft.yaml`` file should look similar to the following:
 
     name: fastapi-hello-world
     # see https://documentation.ubuntu.com/rockcraft/latest/explanation/bases/
-    # for more information about bases and using 'bare' bases for chiselled rocks
+    # for more information about bases and using 'bare' bases for chiseled rocks
     base: bare
     build-base: ubuntu@24.04
     version: '0.2'

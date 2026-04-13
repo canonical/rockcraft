@@ -9,7 +9,7 @@ rock as lean and secure as possible, getting rid of all the unnecessary bits
 and thus reducing its attack surface, while retaining its functionality.
 
 For this, you'll want to ensure that your rock has a bare :ref:`Project.base` and that
-its contents are :ref:`chiselled <explanation-chisel>`.
+its contents are :ref:`chiseled <explanation-chisel>`.
 
 For this guide, let's take the example of a Python runtime rock.
 
@@ -128,7 +128,7 @@ the slice names) to the project file, you were able to reduce the rock's
 size even further by an **additional ~37%** of its original size! In short:
 
 +---------------+------------------+-----------+
-| Original rock | w/ ``bare`` base | chiselled |
+| Original rock | w/ ``bare`` base | chiseled  |
 +===============+==================+===========+
 | 42MB          | 28MB             | 13MB      |
 +---------------+------------------+-----------+
