@@ -71,7 +71,7 @@ New .NET plugin
 
 Rockcraft projects targeting bases ubuntu\@25.10 and higher can now use a new version of the
 .NET plugin which provides better control over the distinct steps of a .NET build process.
-See the plugin’s :ref:`reference <craft_parts_dotnet_v2_plugin>` for a list of the new keys
+See the plugin's :ref:`reference <craft_parts_dotnet_v2_plugin>` for a list of the new keys
 and a description of the plugin's behavior.
 
 Updated documentation system
@@ -102,7 +102,7 @@ prefixing them with ``docs-``:
     * - ``make docs-help``
       - See the full list of commands from the Starter Pack.
 
-The Starter Pack is no longer a Git submodule. If you've written for Snapcraft 8 or
+The Starter Pack is no longer a Git submodule. If you've written for Rockcraft 1.17 or
 lower, or built the documentation before, you must remove the submodule from your host to
 continue developing:
 
@@ -133,7 +133,7 @@ Rockcraft project to ubuntu\@25.10 and ubuntu\@26.04.
 Documentation improvements
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-We’ve made improvements to the documentation:
+We've made improvements to the documentation:
 
 - Added expected completion times to the tutorials.
 - Updated the Node.js tutorial to display application logs.
