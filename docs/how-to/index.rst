@@ -16,6 +16,7 @@ either locally or remotely, and then published to an image registry.
 
 - :ref:`how-to-migrate-a-docker-image-to-a-chiselled-rock`
 - :ref:`how-to-publish-a-rock-to-a-registry`
+- :ref:`how-to-pack-a-pro-rock`
 
 
 Chiselling
@@ -55,3 +56,4 @@ contribute to it.
     chiselling/index
     Rocks for 12-factor apps <web-app-rocks/index>
     documentation/index
+    change-from-ubuntu2404-to-ubuntu2604

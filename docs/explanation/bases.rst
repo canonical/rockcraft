@@ -7,7 +7,7 @@ Bases
 
 Every rock is built from a *base*, which defines the baseline system that the rock's
 contents are layered on. The systems are Ubuntu releases. An empty, or *bare* base, is
-also available for lean images.
+also available for lean images. Both bare and non-bare rocks are production-ready.
 
 The base is declared in the project file by the :ref:`Project.base` key.
 
@@ -23,7 +23,6 @@ The built rock contains the software and utilities from the Ubuntu image.
 
 Setting an Ubuntu base for a rock is especially useful when the goal is to build a rock
 that can serve as a general-purpose environment, such as a development workspace.
-
 
 .. _explanation-bases-lts-and-interim-bases:
 
@@ -53,8 +52,11 @@ and some :ref:`additional metadata <what-sets-rocks-apart>`.
 The bare base is especially useful when the goal is to build a lean chiselled rock.
 Such rocks are typically preferred for production environments due to their optimized
 deployment efficiency and reduced attack surface. The combination of the bare base with
-:ref:`Chisel <explanation-chisel>` slices will result in a minimalist container image
-that meets the production environment's criteria while retaining its functionality.
+:ref:`Chisel <explanation-chisel>` slices will result in a minimalist, secure
+container image with enhanced security that meets the production environment's
+criteria while retaining its functionality. Compared to Ubuntu base rocks, bare
+base rocks are less user-friendly for those using the rock because they lack many common
+packages that users depend on.
 
 Even with a bare base, when Rockcraft assembles a rock, it needs Ubuntu as the operating
 system for its build environment. The project's :ref:`Project.build_base` key determines
