@@ -13,6 +13,7 @@ Rockcraft.
     plugins/dotnet_v2_plugin
     plugins/ant_plugin
     /common/craft-parts/reference/plugins/autotools_plugin
+    /common/craft-parts/reference/plugins/bazel_plugin
     /common/craft-parts/reference/plugins/cargo_use_plugin
     /common/craft-parts/reference/plugins/cmake_plugin
     /common/craft-parts/reference/plugins/dump_plugin
