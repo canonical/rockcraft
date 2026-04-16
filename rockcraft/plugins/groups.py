@@ -19,6 +19,7 @@
 from craft_parts.plugins.ant_plugin import AntPlugin
 from craft_parts.plugins.autotools_plugin import AutotoolsPlugin
 from craft_parts.plugins.base import Plugin
+from craft_parts.plugins.bazel_plugin import BazelPlugin
 from craft_parts.plugins.cargo_use_plugin import CargoUsePlugin
 from craft_parts.plugins.cmake_plugin import CMakePlugin
 from craft_parts.plugins.dotnet_plugin import DotnetPlugin
@@ -88,8 +89,13 @@ _DOTNET_V2: dict[str, type[Plugin]] = {
     "dotnet": DotnetV2Plugin,
 }
 
+# The bazel plugin is only expected to work on 24.04 onwards, since it relies on newer bazel versions that aren't available on older bases.
+_BAZEL = {
+    "bazel": BazelPlugin,
+}
+
 _LEGACY_PLUGINS: dict[str, type[Plugin]] = _ROCKCRAFT_DEFAULT | _DOTNET_V1
-_V2_PLUGINS: dict[str, type[Plugin]] = _ROCKCRAFT_DEFAULT | _DOTNET_V2
+_V2_PLUGINS: dict[str, type[Plugin]] = _ROCKCRAFT_DEFAULT | _DOTNET_V2 | _BAZEL
 
 _PLUGINS: dict[str, dict[str, type[Plugin]]] = {
     "ubuntu@20.04": _LEGACY_PLUGINS,

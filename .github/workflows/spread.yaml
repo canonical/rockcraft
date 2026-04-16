@@ -43,8 +43,25 @@ jobs:
         with:
           name: snap
           path: tests
+
+      - name: Run Ubuntu Pro spread tests
+        env:
+          UBUNTU_PRO_TOKEN: ${{ secrets.UBUNTU_PRO_TOKEN }}
+        run: |
+          if [ -z "$UBUNTU_PRO_TOKEN" ]; then
+            if [ "${{ github.event.pull_request.head.repo.full_name }}" == "canonical/rockcraft" ]; then
+              echo "Error: UBUNTU_PRO_TOKEN is not set."
+              exit 1
+            else
+              echo "Warning: UBUNTU_PRO_TOKEN is not set. Skipping Pro tests"
+              exit 0
+            fi
+          fi
+          spread google:tests/spread/pro/
+
       - name: Run spread
-        run: spread
+        run: |
+          spread google:
 
       - name: Discard spread workers
         if: always()
