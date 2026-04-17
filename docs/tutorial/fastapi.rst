@@ -140,15 +140,6 @@ Edit the ``platforms`` key in ``rockcraft.yaml`` if required.
     The ``name``, ``version`` and ``platform`` all influence the name of the
     generated ``.rock`` file.
 
-As the ``fastapi-framework`` extension is still experimental, export the
-environment variable ``ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS``:
-
-.. literalinclude:: code/fastapi/task.yaml
-    :language: bash
-    :start-after: [docs:experimental]
-    :end-before: [docs:experimental-end]
-    :dedent: 2
-
 Pack the rock:
 
 .. literalinclude:: code/fastapi/task.yaml
@@ -184,8 +175,6 @@ Pack the rock:
          --ctstate RELATED,ESTABLISHED -j ACCEPT
 
 Depending on the network, this step can take a couple of minutes to finish.
-Since FastAPI is an experimental extension,
-``ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS`` must be enabled.
 
 Once Rockcraft has finished packing the FastAPI rock, we'll find a new file in
 the project's working directory (an `OCI <OCI_image_spec_>`_ archive) with
