@@ -46,18 +46,18 @@ execute: |
   # [docs:ls-rock-end]
 
   # [docs:skopeo-copy]
-  sudo rockcraft.skopeo copy \
+  rockcraft.skopeo copy \
     --insecure-policy \
     oci-archive:django-hello-world_0.1_$(dpkg --print-architecture).rock \
     docker-daemon:django-hello-world:0.1
   # [docs:skopeo-copy-end]
 
   # [docs:docker-images]
-  sudo docker images django-hello-world:0.1
+  docker images django-hello-world:0.1
   # [docs:docker-images-end]
 
   # [docs:docker-run]
-  sudo docker run --rm -d -p 8000:8000 \
+  docker run --rm -d -p 8000:8000 \
     --name django-hello-world django-hello-world:0.1
   # [docs:docker-run-end]
   retry -n 5 --wait 2 curl --fail localhost:8000
@@ -67,12 +67,12 @@ execute: |
   # [docs:curl-django-rock-end]
 
   # [docs:get-logs]
-  sudo docker exec django-hello-world pebble logs django
+  docker exec django-hello-world pebble logs django
   # [docs:get-logs-end]
 
   # [docs:stop-docker]
-  sudo docker stop django-hello-world
-  sudo docker rmi django-hello-world:0.1
+  docker stop django-hello-world
+  docker rmi django-hello-world:0.1
   # [docs:stop-docker-end]
 
   sed -i "s/version: .*/version: 0.1-chiselled/g" rockcraft.yaml
@@ -86,11 +86,11 @@ execute: |
   # [docs:ls-bare-rock-end]
 
   # [docs:docker-run-chisel]
-  sudo rockcraft.skopeo --insecure-policy \
+  rockcraft.skopeo --insecure-policy \
     copy oci-archive:django-hello-world_0.1-chiselled_$(dpkg --print-architecture).rock \
     docker-daemon:django-hello-world:0.1-chiselled
-  sudo docker images django-hello-world:0.1-chiselled
-  sudo docker run --rm -d -p 8000:8000 \
+  docker images django-hello-world:0.1-chiselled
+  docker run --rm -d -p 8000:8000 \
     --name django-hello-world django-hello-world:0.1-chiselled
   # [docs:docker-run-chisel-end]
   retry -n 5 --wait 2 curl --fail localhost:8000
@@ -100,8 +100,8 @@ execute: |
   # [docs:curl-django-bare-rock-end]
 
   # [docs:stop-docker-chisel]
-  sudo docker stop django-hello-world
-  sudo docker rmi django-hello-world:0.1-chiselled
+  docker stop django-hello-world
+  docker rmi django-hello-world:0.1-chiselled
   # [docs:stop-docker-chisel-end]
 
   # [docs:create-time-app]
@@ -117,11 +117,11 @@ execute: |
 
   # [docs:docker-run-update]
   rockcraft pack
-  sudo rockcraft.skopeo --insecure-policy copy \
+  rockcraft.skopeo --insecure-policy copy \
     oci-archive:django-hello-world_0.2_$(dpkg --print-architecture).rock \
     docker-daemon:django-hello-world:0.2
-  sudo docker images django-hello-world:0.2
-  sudo docker run --rm -d -p 8000:8000 \
+  docker images django-hello-world:0.2
+  docker run --rm -d -p 8000:8000 \
     --name django-hello-world django-hello-world:0.2
   # [docs:docker-run-update-end]
   retry -n 5 --wait 2 curl --fail localhost:8000/time/
@@ -131,8 +131,8 @@ execute: |
   # [docs:curl-time-end]
 
   # [docs:stop-docker-updated]
-  sudo docker stop django-hello-world
-  sudo docker rmi django-hello-world:0.2
+  docker stop django-hello-world
+  docker rmi django-hello-world:0.2
   # [docs:stop-docker-updated-end]
 
   # [docs:cleanup]
