@@ -50,8 +50,11 @@ In the same directory, put the following code into a new file,
     :caption: ~/fastapi-hello-world/app.py
     :language: python
 
-Run the FastAPI app using ``fastapi dev app.py --port 8000`` to verify
-that it works.
+Run the FastAPI app to verify that it works:
+
+.. code-block:: bash
+
+   fastapi dev app.py --port 8000
 
 Test the FastAPI app by using ``curl`` to send a request to the root
 endpoint. We'll need a new shell of the VM for this -- in a separate terminal,
