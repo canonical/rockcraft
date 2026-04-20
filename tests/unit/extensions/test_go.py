@@ -30,8 +30,7 @@ def go_input_yaml_fixture():
 
 
 @pytest.fixture
-def go_extension(mock_extensions, monkeypatch):
-    monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "1")
+def go_extension(mock_extensions):
     extensions.register("go-framework", extensions.GoFramework)
 
 
