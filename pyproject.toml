@@ -5,12 +5,12 @@ dynamic = ["version"]
 dependencies = [
     # To use a dev version of a craft library:
     # craft-lib @ git+https://github.com/canonical/craft-lib@ref
-    "craft-application>=6.1.1",
+    "craft-application>=6.3.1",
     "craft-archives>=2.2.0",
-    "craft-cli>=3.1.2",
-    "craft-parts>=2.30.0",
-    "craft-platforms>=0.10.0",
-    "craft-providers>=3.3.0",
+    "craft-cli>=3.3.0",
+    "craft-parts>=2.33.0",
+    "craft-platforms>=0.11.0",
+    "craft-providers>=3.5.0",
     "overrides>=7.7.0",
     # setuptools >= 80.9 has a noisy warning about pkg_resources
     "setuptools~=80.9.0",
@@ -158,6 +158,7 @@ build-constraint-dependencies = [
     # Cyclic dependency when building setuptools-scm 10 from source. See: https://github.com/pypa/setuptools-scm/issues/1302
     "setuptools-scm!=10.0.2,!=10.0.3",
 ]
+environments = ["sys_platform == 'linux'"]
 
 [build-system]
 requires = ["setuptools>=69.0", "setuptools_scm[toml]>=7.1"]
