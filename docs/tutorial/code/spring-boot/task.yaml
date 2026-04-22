@@ -39,7 +39,7 @@ execute: |
   # [docs:spring-boot-build-end]
 
   java -jar target/demo-0.0.1.jar &
-  retry -n 5 --wait 2 curl localhost:8080
+  retry -n 5 --wait 3 curl localhost:8080
 
   # [docs:curl-spring-boot]
   curl localhost:8080
@@ -80,7 +80,7 @@ execute: |
     --name spring-boot-hello-world spring-boot-hello-world:0.1
   # [docs:docker-run-end]
 
-  retry -n 5 --wait 2 curl localhost:8080
+  retry -n 5 --wait 3 curl localhost:8080
   # [docs:curl-spring-boot-rock]
   curl localhost:8080
   # [docs:curl-spring-boot-rock-end]
@@ -110,7 +110,7 @@ execute: |
   docker run --rm -d -p 8080:8080 \
     --name spring-boot-hello-world spring-boot-hello-world:0.2
   # [docs:docker-run-update-end]
-  retry -n 5 --wait 2 curl --fail localhost:8080/time
+  retry -n 5 --wait 3 curl --fail localhost:8080/time
 
   # [docs:curl-time]
   curl --fail localhost:8080/time

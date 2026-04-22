@@ -2,7 +2,6 @@ summary: go extension test
 environment:
   SCENARIO/bare: bare
   SCENARIO/base_2404: ubuntu-24.04
-  ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS: "true"
 
 execute: |
   NAME="go-${SCENARIO//./-}"
