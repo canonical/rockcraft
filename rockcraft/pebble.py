@@ -187,7 +187,14 @@ class ExecCheck(_BaseCheck):
     exec: ExecCheckOptions
 
 
-def _get_check_tag(check: Mapping[str, Any]) -> str:
+def _get_check_tag(check: Mapping[str, Any] | _BaseCheck) -> str:
+    if isinstance(check, HttpCheck):
+        return "http"
+    if isinstance(check, TcpCheck):
+        return "tcp"
+    if isinstance(check, ExecCheck):
+        return "exec"
+
     tags = ("http", "tcp", "exec")
     check_types = check.keys() & tags
     match len(check_types):
