@@ -54,6 +54,10 @@ Next, create a skeleton for the project with the Express app generator:
     :end-before: [docs:init-app-end]
     :dedent: 2
 
+.. note::
+   During the ``npm install`` step, npm performs a security scan of downloaded dependencies, and it warns about any known vulnerabilities in installed packages.
+   This warning is expected for this tutorial and should not affect the remaining steps. For production use, review and address dependency vulnerabilities before deployment.
+
 Let's run the Express app to verify that it works:
 
 .. code:: bash
