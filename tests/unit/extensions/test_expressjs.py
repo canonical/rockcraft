@@ -32,8 +32,7 @@ def expressjs_input_yaml_fixture():
 
 
 @pytest.fixture
-def expressjs_extension(mock_extensions, monkeypatch):
-    monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "1")
+def expressjs_extension(mock_extensions):
     extensions.register("expressjs-framework", extensions.ExpressJSFramework)
 
 

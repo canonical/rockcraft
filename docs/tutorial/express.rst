@@ -21,11 +21,7 @@ rocks for Express apps.
 Setup
 =====
 
-.. include:: /reuse/tutorial/setup_edge.rst
-
-This tutorial requires the ``latest/edge`` channel of Rockcraft. Run
-``sudo snap refresh rockcraft --channel latest/edge`` to get the latest
-edge version.
+.. include:: /reuse/tutorial/setup_stable.rst
 
 In order to test the Express app locally, before packing it into a
 rock, install NPM and initialize the starter app.
@@ -159,15 +155,6 @@ the architecture of your system:
 
 
 Edit the ``platforms`` key in ``rockcraft.yaml`` if required.
-
-As the ``expressjs-framework`` extension is still experimental, export the
-environment variable ``ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS``:
-
-.. literalinclude:: code/expressjs/task.yaml
-    :language: bash
-    :start-after: [docs:experimental]
-    :end-before: [docs:experimental-end]
-    :dedent: 2
 
 Pack the rock:
 
@@ -484,4 +471,3 @@ the changes are not taking effect, try running ``rockcraft clean`` and pack
 the rock again with ``rockcraft pack``.
 
 .. _`lxd-docker-connectivity-issue`: https://documentation.ubuntu.com/lxd/en/latest/howto/network_bridge_firewalld/#prevent-connectivity-issues-with-lxd-and-docker
-.. _`install-multipass`: https://multipass.run/docs/install-multipass

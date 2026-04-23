@@ -51,7 +51,7 @@ class FastAPIFramework(Extension):
     @override
     def is_experimental(base: str | None) -> bool:  # noqa: ARG004 (unused arg)
         """Check if the extension is in an experimental state."""
-        return True
+        return False
 
     @override
     def get_root_snippet(self) -> dict[str, Any]:
