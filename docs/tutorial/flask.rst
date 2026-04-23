@@ -49,7 +49,11 @@ In the same directory, copy and save the following into a text file called
     :caption: ~/flask-hello-world/app.py
     :language: python
 
-Run the Flask app using ``flask run -p 8000`` to verify that it works.
+Run the Flask app to verify that it works:
+
+.. code-block:: bash
+
+   flask run -p 8000
 
 Test the Flask app by using ``curl`` to send a request to the root
 endpoint. We'll need a new shell of the VM for this -- in a separate terminal,

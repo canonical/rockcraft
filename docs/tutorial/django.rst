@@ -50,8 +50,12 @@ Create a new project using ``django-admin``:
     :end-before: [docs:create-project-end]
     :dedent: 2
 
-Enter the ``~/django-hello-world/django_hello_world/`` directory.
-Then run the Django app with ``python manage.py runserver`` and verify that it works.
+Enter the ``~/django-hello-world/django_hello_world/`` directory, then run
+the Django app to verify that it works:
+
+.. code-block:: bash
+
+   python manage.py runserver
 
 Test the Django app by using ``curl`` to send a request to the root
 endpoint. We'll need a new shell of the VM for this -- in a separate terminal,
