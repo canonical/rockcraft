@@ -22,6 +22,7 @@ from typing import cast
 
 import pydantic
 import pytest
+import warnings
 import yaml
 from craft_application.errors import CraftValidationError
 from craft_application.models.constraints import MESSAGE_INVALID_NAME
@@ -857,6 +858,36 @@ def test_provider_base(base, expected_base):
     actual_base = Project._providers_base(base)  # pylint: disable=protected-access
 
     assert actual_base == expected_base
+
+
+def test_project_marshal_exec_check_emits_no_pydantic_warning():
+    yaml_data = {
+        "name": "gubernator",
+        "version": "3.0.0",
+        "summary": "High-performance, distributed rate-limiting service",
+        "description": "example",
+        "base": "ubuntu@24.04",
+        "platforms": {"amd64": None},
+        "parts": {"foo": {"plugin": "nil"}},
+        "checks": {
+            "online": {
+                "override": "replace",
+                "period": "3s",
+                "exec": {"command": "/bin/healthcheck"},
+            }
+        },
+    }
+
+    project = Project.unmarshal(yaml_data)
+
+    with warnings.catch_warnings(record=True) as caught:
+        warnings.simplefilter("always")
+        dumped = project.marshal()
+
+    assert dumped["checks"]["online"]["exec"]["command"] == "/bin/healthcheck"
+    assert not any(
+        "PydanticSerializationUnexpectedValue" in str(w.message) for w in caught
+    )
 
 
 def test_provider_base_error():
