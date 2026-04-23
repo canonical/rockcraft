@@ -102,7 +102,7 @@ The top of the file should look similar to the following snippet:
 
     name: flask-hello-world
     # see https://documentation.ubuntu.com/rockcraft/en/1.6.0/explanation/bases/
-    # for more information about bases and using 'bare' bases for chiselled rocks
+    # for more information about bases and bare bases
     base: bare # as an alternative, an ubuntu base can be used
     build-base: ubuntu@24.04 # build-base is required when the base is bare
     version: '0.1' # just for humans. Semantic versioning is recommended
@@ -327,7 +327,7 @@ top of the ``rockcraft.yaml`` file should look similar to the following:
 
     name: flask-hello-world
     # see https://documentation.ubuntu.com/rockcraft/en/1.6.0/explanation/bases/
-    # for more information about bases and using 'bare' bases for chiselled rocks
+    # for more information about bases and bare bases
     base: bare
     build-base: ubuntu@24.04
     version: '0.2'
