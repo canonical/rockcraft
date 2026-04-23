@@ -117,7 +117,7 @@ The ``spring-boot-framework`` uses the following configuration:
 If ``migrate`` or ``migrate.sh`` exist in the project's root directory, they will be
 included in the rock's ``/app`` directory by default.
 
-You can customise the included files by modifying the ``stage`` key
+You can customize the included files by modifying the ``stage`` key
 of the ``spring-boot-framework/assets`` part:
 
 .. code-block:: yaml

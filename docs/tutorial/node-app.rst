@@ -37,7 +37,7 @@ Next, we'll setup the Rockcraft project. In the original empty folder, create
 an empty file called ``rockcraft.yaml``. Then add the following snippets, one
 after the other.
 
-Add the metadata that describes your rock, such as its name and licence:
+Add the metadata that describes your rock, such as its name and license:
 
 .. literalinclude:: code/node-app/rockcraft.yaml
     :caption: rockcraft.yaml

@@ -3,7 +3,7 @@
 How-to guides
 =============
 
-These guides accompany you through crafting, chiselling, and publishing rocks with
+These guides accompany you through crafting, chiseling, and publishing rocks with
 Rockcraft.
 
 
@@ -19,7 +19,7 @@ either locally or remotely, and then published to an image registry.
 - :ref:`how-to-pack-a-pro-rock`
 
 
-Chiselling
+Chiseling
 ----------
 
 Containers often contain redundant or unneeded software in their baseline systems.
@@ -53,7 +53,7 @@ contribute to it.
 
     get-started
     crafting/index
-    chiselling/index
+    chiseling/index
     Rocks for 12-factor apps <web-app-rocks/index>
     documentation/index
     change-from-ubuntu2404-to-ubuntu2604
