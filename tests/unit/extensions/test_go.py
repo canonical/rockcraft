@@ -37,6 +37,7 @@ def go_extension(mock_extensions):
 @pytest.mark.usefixtures("go_extension")
 def test_go_extension_default(tmp_path, go_input_yaml):
     (tmp_path / "go.mod").write_text("module projectname\n\ngo 1.22.4")
+    (tmp_path / "main.go").write_text("package main\n\nfunc main() {}\n")
     applied = extensions.apply_extensions(tmp_path, go_input_yaml)
 
     assert applied == {
@@ -91,6 +92,7 @@ def test_go_extension_default(tmp_path, go_input_yaml):
 @pytest.mark.usefixtures("go_extension")
 def test_go_extension_bare(tmp_path):
     (tmp_path / "go.mod").write_text("module projectname\n\ngo 1.22.4")
+    (tmp_path / "main.go").write_text("package main\n\nfunc main() {}\n")
     go_input_yaml = {
         "name": "foo-bar",
         "extensions": ["go-framework"],
@@ -131,6 +133,7 @@ def test_go_extension_base_bare(tmp_path, go_input_yaml, build_environment):
             "go-framework/install-app": {"build-environment": build_environment},
         }
     (tmp_path / "go.mod").write_text("module projectname\n\ngo 1.22.4")
+    (tmp_path / "main.go").write_text("package main\n\nfunc main() {}\n")
     applied = extensions.apply_extensions(tmp_path, go_input_yaml)
 
     assert "build-environment" in applied["parts"]["go-framework/install-app"]
@@ -170,6 +173,7 @@ def test_go_extension_overrides_organize(
     tmp_path, go_input_yaml, organize, expected_organize
 ):
     (tmp_path / "go.mod").write_text("module projectname\n\ngo 1.22.4")
+    (tmp_path / "main.go").write_text("package main\n\nfunc main() {}\n")
     if organize:
         go_input_yaml["parts"] = {
             "go-framework/install-app": {"organize": organize},
@@ -196,6 +200,7 @@ def test_go_extension_override_build_snaps(
     tmp_path, go_input_yaml, build_packages, build_snaps, expected_build_snaps
 ):
     (tmp_path / "go.mod").write_text("module projectname\n\ngo 1.22.4")
+    (tmp_path / "main.go").write_text("package main\n\nfunc main() {}\n")
     if build_snaps or build_packages:
         go_input_yaml["parts"] = {
             "go-framework/install-app": {
@@ -212,6 +217,7 @@ def test_go_extension_override_build_snaps(
 @pytest.mark.usefixtures("go_extension")
 def test_go_extension_override_service_go_command(tmp_path, go_input_yaml):
     (tmp_path / "go.mod").write_text("module projectname\n\ngo 1.22.4")
+    (tmp_path / "main.go").write_text("package main\n\nfunc main() {}\n")
     go_input_yaml["parts"] = {
         "go-framework/install-app": {
             "organize": {
@@ -236,6 +242,7 @@ def test_go_extension_override_service_go_command(tmp_path, go_input_yaml):
 @pytest.mark.usefixtures("go_extension")
 def test_go_extension_extra_assets(tmp_path, go_input_yaml):
     (tmp_path / "go.mod").write_text("module projectname\n\ngo 1.22.4")
+    (tmp_path / "main.go").write_text("package main\n\nfunc main() {}\n")
     (tmp_path / "static").mkdir()
     (tmp_path / "templates").mkdir()
     (tmp_path / "migrate").write_text("migrate")
@@ -259,6 +266,7 @@ def test_go_extension_extra_assets(tmp_path, go_input_yaml):
 @pytest.mark.usefixtures("go_extension")
 def test_go_extension_extra_assets_overridden(tmp_path, go_input_yaml):
     (tmp_path / "go.mod").write_text("module projectname\n\ngo 1.22.4")
+    (tmp_path / "main.go").write_text("package main\n\nfunc main() {}\n")
     (tmp_path / "static").mkdir()
     go_input_yaml["parts"] = {
         "go-framework/assets": {
