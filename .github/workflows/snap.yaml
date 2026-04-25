@@ -5,6 +5,7 @@ on:
     paths-ignore:
       - "docs/**"
       - "**/*.md"
+      - "*.md"
   push:
     branches:
       - "feature/**"
