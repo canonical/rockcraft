@@ -1,0 +1,14 @@
+name: prune-pebble
+version: latest
+summary: Check that the lifecycle layer has no Pebble
+description: Check that the lifecycle layer has no Pebble
+license: Apache-2.0
+base: ubuntu@26.04
+build-base: devel
+
+platforms:
+  amd64:
+
+parts:
+  my-part:
+    plugin: nil
