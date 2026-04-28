@@ -32,7 +32,6 @@ from craft_application.models.base import alias_generator
 from craft_application.models.project import DevelBaseInfo
 from craft_platforms import DebianArchitecture
 from craft_providers import bases
-from craft_providers.bases import BuilddBaseAlias
 from craft_providers.errors import BaseConfigurationError
 from typing_extensions import override
 
@@ -73,6 +72,7 @@ BuildBaseT = typing.Annotated[
         "ubuntu@22.04",
         "ubuntu@24.04",
         "ubuntu@25.10",
+        "ubuntu@26.04",
         "devel",
     ]
     | None,
@@ -219,7 +219,7 @@ class Project(BaseProject):
     def _check_unsupported_options(cls, values: Mapping[str, Any]) -> Mapping[str, Any]:
         """Before validation, check if unsupported fields exist. Exit if so."""
         # pylint: disable=unused-argument
-        unsupported_msg = str(
+        unsupported_msg = (
             "The fields 'entrypoint', 'cmd' and 'env' are not supported in "
             "Rockcraft. All rocks have Pebble as their entrypoint, so you must "
             "use 'services' to define your container application and "
@@ -494,9 +494,4 @@ class Project(BaseProject):
     @classmethod
     @override
     def _get_devel_bases(cls) -> Iterable[DevelBaseInfo]:
-        return [
-            DevelBaseInfo(
-                current_devel_base=BuilddBaseAlias.RESOLUTE,
-                devel_base=BuilddBaseAlias.DEVEL,
-            )
-        ]
+        return []
