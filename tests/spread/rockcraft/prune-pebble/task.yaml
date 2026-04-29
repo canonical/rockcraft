@@ -13,3 +13,5 @@ execute: |
 restore: |
   rm -f ./*.rock
   rm -rf blobs/
+  # possibly created by check_layers.py
+  rm -rf ./tmp-diff
