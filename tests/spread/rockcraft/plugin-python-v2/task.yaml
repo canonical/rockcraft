@@ -31,6 +31,7 @@ environment:
   BUILD_BASE/python_in_stage_ubuntu_2604: "ubuntu@26.04"
   BUILD_BASE/python_in_stage_bare_2604: "ubuntu@26.04"
 
+  # python3 comes from chisel slices
   SCENARIO/python_from_chisel_ubuntu_2510: "python-from-chisel-ubuntu"
   SCENARIO/python_from_chisel_bare_2510: "python-from-chisel-bare"
   SCENARIO/python_from_chisel_ubuntu_2604: "python-from-chisel-ubuntu"
