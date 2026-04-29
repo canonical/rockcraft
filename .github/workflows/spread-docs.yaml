@@ -1,0 +1,80 @@
+name: Spread tests for docs
+on:
+  pull_request:
+    paths:
+      - spread.yaml
+      - docs/**/code/**
+  push:
+    branches:
+      - main
+    paths:
+      - spread.yaml
+      - docs/**/code/**
+
+jobs:
+  snap-build:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Build snap
+        uses: canonical/action-build@v1
+        id: rockcraft
+      - name: Upload snap artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: snap
+          path: ${{ steps.rockcraft.outputs.snap }}
+
+  docs-tests:
+    runs-on: ubuntu-24.04
+    needs: [snap-build]
+    timeout-minutes: 90
+
+    steps:
+      - name: Cleanup job workspace
+        run: |
+          rm -rf "${{ github.workspace }}"
+          mkdir "${{ github.workspace }}"
+
+      - name: Fix network issues related to docker and lxd
+        run: |
+          sudo iptables -P FORWARD ACCEPT
+          sudo ip6tables -P FORWARD ACCEPT
+
+      - name: Checkout rockcraft
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          submodules: true
+
+      - name: Download snap artifact
+        uses: actions/download-artifact@v6
+        with:
+          name: snap
+
+      - name: Install LXD
+        uses: canonical/setup-lxd@d492474f6c8ceed1b716bb34c8f575a428871c70
+
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: 1.26
+
+      - name: Install spread
+        run: |
+          go install github.com/canonical/spread/cmd/spread@latest
+
+      - name: Run docs spread tests
+        run: |
+          spread google:...docs...
+
+      - name: Discard spread workers
+        if: always()
+        run: |
+          shopt -s nullglob
+          for r in .spread-reuse.*.yaml; do
+            spread -discard -reuse-pid="$(echo "$r" | grep -o -E '[0-9]+')"
+          done

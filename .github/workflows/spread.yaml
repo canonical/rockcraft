@@ -1,4 +1,4 @@
-name: Spread
+name: Spread tests for source
 on:
   pull_request:
   push:
@@ -75,7 +75,7 @@ jobs:
 
       - name: Run source spread tests
         run: |
-          spread google:
+          spread google:...tests...
 
       - name: Discard spread workers
         if: always()
