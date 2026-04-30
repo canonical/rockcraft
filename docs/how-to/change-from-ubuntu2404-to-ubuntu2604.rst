@@ -41,6 +41,24 @@ Not all extensions are compatible with ``ubuntu@26.04`` at launch. If your rock 
 run ``rockcraft extensions`` to see if it's available for ``ubuntu@26.04``. If your rock uses an
 extension that does not yet support ``ubuntu@26.04``, it's best to wait to upgrade.
 
+Update part names
+-----------------
+
+If you update a rock to use ``ubuntu@26.04``, then you must also verify its part names.
+Part names on ``ubuntu@26.04`` and higher bases can't contain any forward slashes (/).
+We recommend replacing them with a hyphen (-):
+
+.. code-block:: diff
+    :caption: rockcraft.yaml
+
+     base: ubuntu@26.04
+
+     # ...
+
+     parts:
+    -  my/part:
+    +  my-part:
+
 Update parts to the new .NET plugin
 -----------------------------------
 
