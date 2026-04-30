@@ -95,4 +95,8 @@ def fake_provider(mock_instance):
         ) -> Collection[Executor]:
             return []
 
+        @override
+        def prune(self, *, project_name: str, prune_templates: bool = False) -> None:
+            pass
+
     return FakeProvider()
