@@ -93,10 +93,13 @@ For example, the following part using the uv plugin in ``ubuntu@24.04``:
 
     base: ubuntu@24.04
 
+    # ...
+
     parts:
       uv-part:
         plugin: uv
-        ...
+
+        # ...
 
 can be  updated to:
 
@@ -104,6 +107,8 @@ can be  updated to:
     :caption: rockcraft.yaml
 
     base: ubuntu@26.04
+
+    # ...
 
     parts:
       uv-part:
@@ -115,7 +120,8 @@ can be  updated to:
           uv export --quiet --no-hashes --no-dev --no-emit-workspace > uv-requirements.txt
           # call the default build of the python plugin
           craftctl default
-        ...
+
+        #...
 
 Update packages
 ---------------
