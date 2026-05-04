@@ -8,7 +8,7 @@ for customising the Ubuntu base and the Node.js version to be included.
 The main differences between the cases are:
 
 - Whether to use the bare base or Ubuntu 24.04 base.
-- Whether Node.js is installed from Ubuntu package archive or the NPM plugin.
+- Whether Node.js is installed from Ubuntu package archive or the npm plugin.
 
 The remainder of this page discusses the combinations of
 Ubuntu bases and sources for Node.js.
@@ -23,14 +23,14 @@ Ubuntu 24.04 base, Node.js from Ubuntu package archive
     extensions:
         - expressjs-framework
 
-In this case, the NPM plugin copies the app's files and installs its
-dependencies. Node.js then provides a runtime and launches the app. The NPM and
-Node.js versions are determined by the versions of NPM and Node.js shipped with
+In this case, the npm plugin copies the app's files and installs its
+dependencies. Node.js then provides a runtime and launches the app. The npm and
+Node.js versions are determined by the versions of npm and Node.js shipped with
 the Ubuntu base. This `link to the Ubuntu archive
-<https://packages.ubuntu.com/noble/npm>`_ shows the NPM version shipped with the
+<https://packages.ubuntu.com/noble/npm>`_ shows the npm version shipped with the
 Ubuntu 24.04 base.
 
-Ubuntu 24.04 base, Node.js from NPM plugin
+Ubuntu 24.04 base, Node.js from npm plugin
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: yaml
@@ -44,8 +44,8 @@ Ubuntu 24.04 base, Node.js from NPM plugin
             npm-include-node: true
             npm-node-version: 20.12
 
-In this case, the NPM plugin copies the app's files and installs its
-dependencies. Node.js and NPM is installed by the NPM plugin.
+In this case, the npm plugin copies the app's files and installs its
+dependencies. Node.js and npm is installed by the npm plugin.
 
 Bare base, Node.js from Ubuntu package archive
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -58,12 +58,12 @@ Bare base, Node.js from Ubuntu package archive
     extensions:
         - expressjs-framework
 
-In this case, the NPM plugin copies the app's files and installs its
-dependencies. Node.js then provides a runtime and launches the app. The NPM and
-Node.js versions are determined by the versions of NPM and Node.js shipped with
+In this case, the npm plugin copies the app's files and installs its
+dependencies. Node.js then provides a runtime and launches the app. The npm and
+Node.js versions are determined by the versions of npm and Node.js shipped with
 the Ubuntu base.
 
-Bare base, Node.js from NPM plugin
+Bare base, Node.js from npm plugin
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: yaml
@@ -76,8 +76,8 @@ Bare base, Node.js from NPM plugin
             npm-include-node: true
             npm-node-version: 20.12
 
-In this case, the NPM plugin copies the app's files and installs its
+In this case, the npm plugin copies the app's files and installs its
 dependencies. Node.js then provides a runtime and launches the app. Node.js and
-NPM is installed by the NPM plugin. For different possible values for the
+npm is installed by the npm plugin. For different possible values for the
 ``npm-node-version`` key, refer to
-:ref:`NPM plugin documentation <craft_parts_npm_plugin>`.
+:ref:`npm plugin documentation <craft_parts_npm_plugin>`.

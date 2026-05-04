@@ -24,7 +24,7 @@ Setup
 .. include:: /reuse/tutorial/setup_stable.rst
 
 In order to test the Express app locally, before packing it into a
-rock, install NPM and initialize the starter app.
+rock, install npm and initialize the starter app.
 
 .. literalinclude:: code/expressjs/task.yaml
     :language: bash
