@@ -58,7 +58,7 @@ Stabilization of base ubuntu\@26.04
 
 Rocks targeting base ubuntu\@26.04 no longer require the ``devel`` build-base. Follow the
 :ref:`migration guide <how-to-migrate-2604>` to update existing rocks, and note the
-:ref:`new restriction <how-to-part-names-restriction>` on parts.
+:ref:`new restriction <how-to-update-part-names>` on parts.
 
 Stabilization of 12-factor app extensions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

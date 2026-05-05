@@ -41,7 +41,7 @@ Not all extensions are compatible with ``ubuntu@26.04`` at launch. If your rock 
 run ``rockcraft extensions`` to see if it's available for ``ubuntu@26.04``. If your rock uses an
 extension that does not yet support ``ubuntu@26.04``, it's best to wait to upgrade.
 
-.. _how-to-part-names-restriction:
+.. _how-to-update-part-names:
 
 Update part names
 -----------------
