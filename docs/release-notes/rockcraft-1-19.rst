@@ -52,6 +52,7 @@ What's new
 
 Rockcraft 1.19 brings the following features, integrations, and improvements.
 
+
 Stabilization of base ubuntu\@26.04
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
