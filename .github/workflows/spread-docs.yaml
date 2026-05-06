@@ -41,11 +41,6 @@ jobs:
           rm -rf "${{ github.workspace }}"
           mkdir "${{ github.workspace }}"
 
-      - name: Fix network issues related to docker and lxd
-        run: |
-          sudo iptables -P FORWARD ACCEPT
-          sudo ip6tables -P FORWARD ACCEPT
-
       - name: Checkout rockcraft
         uses: actions/checkout@v5
         with:
