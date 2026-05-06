@@ -51,6 +51,7 @@ jobs:
         uses: actions/download-artifact@v6
         with:
           name: snap
+          path: tests
 
       - name: Run docs spread tests
         run: |
