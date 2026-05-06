@@ -67,10 +67,10 @@ The extensions providing support for the 12-factor app methodology using Express
 and Go are now stable and no longer require setting the
 ``ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS`` environment variable.
 
-New Bazel plugin
-~~~~~~~~~~~~~~~~
+Bazel plugin
+~~~~~~~~~~~~
 
-This :ref:`plugin <craft_parts_bazel_plugin>` supports building projects using the Bazel
+The :ref:`craft_parts_bazel_plugin` supports building projects using the Bazel
 build system, and is available for rocks targeting bases ubuntu\@25.10 and higher.
 
 Contributors
