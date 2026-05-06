@@ -55,7 +55,7 @@ Rockcraft 1.19 brings the following features, integrations, and improvements.
 Support for ubuntu\@26.04
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Rockcraft now supports building rocks with the ubuntu\@26.04 base. ubuntu\@26.04 is stable
+Rockcraft now supports building rocks with the ubuntu\@26.04 base, which is stable
 and recommended for all new rocks.
 
 If you're currently using ubuntu\@24.04, you can migrate by following the
