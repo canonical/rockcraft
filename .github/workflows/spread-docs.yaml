@@ -10,6 +10,8 @@ on:
     paths:
       - spread.yaml
       - docs/**/code/**
+  schedule:
+    - cron: "0 0 */2 * *"
 
 jobs:
   snap-build:
@@ -29,7 +31,7 @@ jobs:
           path: ${{ steps.rockcraft.outputs.snap }}
 
   docs-tests:
-    runs-on: ubuntu-24.04
+    runs-on: [self-hosted, spread-installed]
     needs: [snap-build]
     timeout-minutes: 90
 
@@ -54,18 +56,6 @@ jobs:
         uses: actions/download-artifact@v6
         with:
           name: snap
-
-      - name: Install LXD
-        uses: canonical/setup-lxd@d492474f6c8ceed1b716bb34c8f575a428871c70
-
-      - name: Set up Go
-        uses: actions/setup-go@v6
-        with:
-          go-version: 1.26
-
-      - name: Install spread
-        run: |
-          go install github.com/canonical/spread/cmd/spread@latest
 
       - name: Run docs spread tests
         run: |
