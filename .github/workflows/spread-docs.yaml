@@ -2,6 +2,7 @@ name: Spread tests for docs
 on:
   pull_request:
     paths:
+      - .github/workflows/spread-docs.yaml
       - spread.yaml
       - docs/**/code/**
   push:
