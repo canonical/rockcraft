@@ -52,13 +52,17 @@ What's new
 
 Rockcraft 1.19 brings the following features, integrations, and improvements.
 
+Support for ubuntu\@26.04
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Stabilization of base ubuntu\@26.04
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Rockcraft now supports building rocks with the ubuntu\@26.04 base. ubuntu\@26.04 is stable
+and recommended for all new rocks.
 
-Rocks targeting base ubuntu\@26.04 no longer require the ``devel`` build-base. Follow the
-:ref:`migration guide <how-to-migrate-2604>` to update existing rocks, and note the
-:ref:`new restriction <how-to-update-part-names>` on parts.
+If you're currently using ubuntu\@24.04, you can migrate by following the
+:ref:`how-to-migrate-2604` guide.
+
+If you were already building experimental ubuntu\@26.04 rocks, you can drop
+``build-base: devel`` from your project file.
 
 Stabilization of 12-factor app extensions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
