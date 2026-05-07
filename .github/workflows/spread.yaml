@@ -8,7 +8,7 @@ on:
     - cron: "0 0 */2 * *"
 
 jobs:
-  source-snap-build:
+  snap-build:
     runs-on: ubuntu-24.04
     outputs:
       source-files: ${{ steps.filter.outputs.source-files }}

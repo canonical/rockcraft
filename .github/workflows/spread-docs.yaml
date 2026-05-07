@@ -33,7 +33,7 @@ jobs:
 
   docs-spread-tests:
     runs-on: [self-hosted, spread-installed]
-    needs: [snap-build]
+    needs: [docs-snap-build]
     timeout-minutes: 90
 
     steps:
