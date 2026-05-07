@@ -15,7 +15,7 @@ on:
     - cron: "0 2 * * 0"
 
 jobs:
-  snap-build:
+  docs-snap-build:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout code
@@ -31,7 +31,7 @@ jobs:
           name: snap
           path: ${{ steps.rockcraft.outputs.snap }}
 
-  docs-tests:
+  docs-spread-tests:
     runs-on: [self-hosted, spread-installed]
     needs: [snap-build]
     timeout-minutes: 90

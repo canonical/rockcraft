@@ -8,7 +8,7 @@ on:
     - cron: "0 0 */2 * *"
 
 jobs:
-  snap-build:
+  source-snap-build:
     runs-on: ubuntu-24.04
     outputs:
       source-files: ${{ steps.filter.outputs.source-files }}
@@ -37,7 +37,7 @@ jobs:
           name: snap
           path: ${{ steps.rockcraft.outputs.snap }}
 
-  snap-tests:
+  source-spread-tests:
     runs-on: [self-hosted, spread-installed]
     needs: [snap-build]
     if: ${{ needs.snap-build.outputs.source-files == 'true' }}
