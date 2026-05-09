@@ -25,7 +25,7 @@ jobs:
           # If we ever need to filter only for docs, glob 'docs/**/*' and '**/*.md'
           filters: |
             source-files:
-              - '!({docs/**,*.md,**/*.md})'
+              - '!({docs/**,*.md,**/*.md,.readthedocs.yaml})'
       - name: Build snap
         uses: canonical/action-build@v1
         if: steps.filter.outputs.source-files == 'true'
