@@ -4,7 +4,8 @@ summary: A craft like experience to create rocks
 description: |
   Rockcraft aims to take the same primitives used in Charmcraft and Snapcraft
   to create OCI images.
-adopt-info: rockcraft
+version: 1.19.0-bins
+grade: devel
 confinement: classic
 license: GPL-3.0
 
@@ -138,7 +139,7 @@ parts:
     build-environment:
       - "CFLAGS": "$(pkg-config python-3.12 yaml-0.1 --cflags)"
       - UV_FROZEN: "true"
-      - UV_NO_BINARY: "true"
+      #- UV_NO_BINARY: "true"
       # Parallel make jobs for things like python-apt
       - MAKEOPTS: -j$(nproc --all)
       - UV_COMPILE_BYTECODE: "true"
@@ -152,12 +153,6 @@ parts:
       "**/site-packages/extensions": share/rockcraft/extensions
     override-build: |
       ${SNAP}/libexec/snapcraft/craftctl default
-
-      version="$(uv pip show rockcraft | grep "Version:" | cut -d' ' -f2)"
-      ${SNAP}/libexec/snapcraft/craftctl set version="$version"
-
-      [ -n "$(echo $version | grep "post")" ] && grade=devel || grade=stable
-      ${SNAP}/libexec/snapcraft/craftctl set grade="${grade}"
 
       sed -i -e '1 s|^#!/.*|#!/snap/rockcraft/current/bin/python -E|' $CRAFT_PART_INSTALL/bin/craftctl
 
@@ -221,9 +216,9 @@ parts:
       - pkg-config
 
   chisel:
-    plugin: nil
-    stage-snaps:
-      - chisel/latest/candidate
+    plugin: go
+    source: https://github.com/upils/chisel.git
+    source-branch: support-bins
     organize:
       bin/chisel: libexec/rockcraft/chisel
     stage:
