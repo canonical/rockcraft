@@ -319,7 +319,7 @@ class SpringBootFramework(Extension):
 
     def _get_assets_stage(self) -> list[str]:
         """Return the assets stage list for the Spring Boot project."""
-        user_stage = (
+        user_stage: list[str] = (
             self.yaml_data.get("parts", {})
             .get("spring-boot-framework/assets", {})
             .get("stage", [])

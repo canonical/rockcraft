@@ -28,10 +28,10 @@ from typing import Any, cast
 
 try:
     # Available in Python 3.11 and later
-    import tomllib  # type: ignore[import-not-found]
+    import tomllib  # ty: ignore[unresolved-import]
 except ModuleNotFoundError:
     # Use the backported tomli package
-    import tomli as tomllib  # type: ignore[import-not-found]
+    import tomli as tomllib  # ty: ignore[unresolved-import]
 
 from overrides import override  # type: ignore[reportUnknownVariableType]
 from packaging.requirements import InvalidRequirement, Requirement
@@ -371,7 +371,7 @@ class FlaskFramework(_GunicornBase):
     @property
     def _app_prime(self) -> list[str]:
         """Return the prime list for the Flask project."""
-        user_prime = (
+        user_prime: list[str] = (
             self.yaml_data.get("parts", {})
             .get("flask-framework/install-app", {})
             .get("prime", [])

@@ -433,6 +433,12 @@ classmethod-decorators = ["pydantic.validator", "pydantic.root_validator"]
     "F401", # Allows unused imports in __init__ files.
 ]
 
+[tool.ty.src]
+exclude = [
+    "tests/spread/",
+    "tests/data",
+]
+
 # Rockcraft-specific configuration after this line ----------
 
 [project.optional-dependencies]

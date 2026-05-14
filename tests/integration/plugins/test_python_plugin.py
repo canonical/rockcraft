@@ -25,7 +25,7 @@ from craft_parts.packages import deb
 from craft_parts.utils.os_utils import OsRelease
 from craft_providers.bases import get_base_alias
 from rockcraft import plugins
-from rockcraft.models.project import Project
+from rockcraft.models.project import BaseT, Project
 from rockcraft.plugins.python_common import SITECUSTOMIZE_TEMPLATE, get_python_plugins
 
 from tests.testing.project import create_project
@@ -46,7 +46,9 @@ def setup_python_test(monkeypatch):
     emit.set_mode(EmitterMode.VERBOSE)
 
 
-def create_python_project(base: str, extra_part_props=None, *, plugin: str) -> Project:
+def create_python_project(
+    base: BaseT, extra_part_props=None, *, plugin: str
+) -> Project:
     source = Path(__file__).parent / "python_source" / plugin
     extra = extra_part_props or {}
 
@@ -61,7 +63,7 @@ def create_python_project(base: str, extra_part_props=None, *, plugin: str) -> P
 
     build_base = None
     if base != "bare":
-        base_alias = get_base_alias(base_name=tuple(base.split("@")))  # pyright: ignore[reportCallIssue,reportArgumentType]
+        base_alias = get_base_alias(base_name=tuple(base.split("@")))  # ty: ignore[no-matching-overload] ty does not understand the output of splitting these is predictable
         if base_alias in [info.current_devel_base for info in DEVEL_BASE_INFOS]:
             build_base = "devel"
 

@@ -200,7 +200,7 @@ class GoFramework(Extension):
     @property
     def _assets_stage(self) -> list[str]:
         """Return the assets stage list for the Go project."""
-        user_stage = self._get_nested(
+        user_stage: list[str] = self._get_nested(
             self.yaml_data, ["parts", "go-framework/assets"]
         ).get("stage", [])
 
