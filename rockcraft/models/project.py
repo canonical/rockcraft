@@ -19,7 +19,7 @@
 import re
 import typing
 from collections.abc import Iterable, Mapping
-from typing import TYPE_CHECKING, Any, Literal
+from typing import Any, Literal
 
 import craft_cli
 import pydantic
@@ -33,6 +33,8 @@ from craft_application.models.project import DevelBaseInfo
 from craft_platforms import DebianArchitecture
 from craft_providers import bases
 from craft_providers.errors import BaseConfigurationError
+from pydantic import GetCoreSchemaHandler
+from pydantic_core import core_schema
 from typing_extensions import override
 
 from rockcraft.architectures import SUPPORTED_ARCHS
@@ -41,11 +43,13 @@ from rockcraft.pebble import Check, Service
 from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
 from rockcraft.utils import parse_command
 
-# pyright workaround
-if TYPE_CHECKING:
-    _RunUser = str | None
-else:
-    _RunUser = Literal[tuple(SUPPORTED_GLOBAL_USERNAMES)] | None
+
+class _RunUser(str):
+    @classmethod
+    def __get_pydantic_core_schema__(
+        cls, source_type: str, handler: GetCoreSchemaHandler
+    ) -> core_schema.CoreSchema:
+        return core_schema.literal_schema(list(SUPPORTED_GLOBAL_USERNAMES.keys()))
 
 
 MESSAGE_ENTRYPOINT_CHANGED = (
@@ -98,7 +102,7 @@ class Project(BaseProject):
         default=None,
         description="Additional environment variables for the base image's OCI environment.",
     )
-    run_user: _RunUser = pydantic.Field(
+    run_user: _RunUser | None = pydantic.Field(
         default=None, description="The default OCI user. If unset, runs as root."
     )
     """The default OCI user. Must be a shared user.
