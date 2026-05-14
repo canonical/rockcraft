@@ -33,8 +33,8 @@ except ModuleNotFoundError:
     # Use the backported tomli package
     import tomli as tomllib  # ty: ignore[unresolved-import]
 
-from overrides import override  # type: ignore[reportUnknownVariableType]
 from packaging.requirements import InvalidRequirement, Requirement
+from typing_extensions import override
 
 from rockcraft.errors import ExtensionError
 from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
@@ -67,7 +67,7 @@ class _GunicornBase(Extension):
 
     @staticmethod
     @override
-    def is_experimental(base: str | None) -> bool:  # noqa: ARG004 (unused arg)
+    def is_experimental(base: str | None) -> bool:
         """Check if the extension is in an experimental state."""
         return True
 
@@ -203,7 +203,7 @@ class _GunicornBase(Extension):
             with pyproject_file.open("rb") as f:
                 pyproject_data = cast(
                     dict[str, Any],
-                    tomllib.load(f),  # type: ignore[reportUnknownMemberType]
+                    tomllib.load(f),
                 )
 
             deps = cast(
@@ -337,7 +337,7 @@ class FlaskFramework(_GunicornBase):
 
     @staticmethod
     @override
-    def is_experimental(base: str | None) -> bool:  # noqa: ARG004 (unused arg)
+    def is_experimental(base: str | None) -> bool:
         """Check if the extension is in an experimental state."""
         return False
 
@@ -489,7 +489,7 @@ class DjangoFramework(_GunicornBase):
 
     @staticmethod
     @override
-    def is_experimental(base: str | None) -> bool:  # noqa: ARG004 (unused arg)
+    def is_experimental(base: str | None) -> bool:
         """Check if the extension is in an experimental state."""
         return False
 

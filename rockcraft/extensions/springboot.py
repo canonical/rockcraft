@@ -21,7 +21,7 @@ import pathlib
 import re
 from typing import Any, Literal
 
-from overrides import override  # type: ignore[reportUnknownVariableType]
+from typing_extensions import override
 
 from rockcraft.errors import ExtensionError
 
@@ -44,7 +44,7 @@ class SpringBootFramework(Extension):
 
     @staticmethod
     @override
-    def is_experimental(base: str | None) -> bool:  # noqa: ARG004 (unused arg)
+    def is_experimental(base: str | None) -> bool:
         """Check if the extension is in an experimental state."""
         return True
 

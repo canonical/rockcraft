@@ -23,7 +23,7 @@ from typing import TYPE_CHECKING, Any, Literal
 
 import craft_cli
 import pydantic
-import spdx_lookup  # type: ignore[import-untyped]
+import spdx_lookup
 from craft_application.models import (
     Platform,
 )
@@ -84,10 +84,10 @@ class Project(BaseProject):
     """Rockcraft project definition."""
 
     # Type of summary is Optional[str] in BaseProject
-    summary: str = pydantic.Field(  # type: ignore[reportIncompatibleVariableOverride]
+    summary: str = pydantic.Field(
         description="A short, single line description of the rock."
     )
-    description: str = pydantic.Field(  # type: ignore[reportIncompatibleVariableOverride]
+    description: str = pydantic.Field(
         description="A full description of the rock, potentially including multiple paragraphs."
     )
     """A full description of the rock, potentially including multiple paragraphs.
@@ -160,7 +160,7 @@ class Project(BaseProject):
 
     This key is mutually incompatible with the ``entrypoint-service`` key.
     """
-    base: BaseT = pydantic.Field(  # type: ignore[reportIncompatibleVariableOverride]
+    base: BaseT = pydantic.Field(
         description="The base system image for the rock.",
     )
     """
@@ -171,7 +171,7 @@ class Project(BaseProject):
     which is typically used with static binaries or
     :ref:`Chisel slices <explanation-chisel>`.
     """
-    build_base: BuildBaseT = pydantic.Field(  # type: ignore[reportIncompatibleVariableOverride]
+    build_base: BuildBaseT = pydantic.Field(
         default=None, description="The system used to build the rock."
     )
     """The system and version that will be used during the rock's build, but not
@@ -286,12 +286,12 @@ class Project(BaseProject):
             # This is the license name we use on our stores.
             return license
 
-        lic: spdx_lookup.License | None = spdx_lookup.by_id(license)  # type: ignore[reportUnknownMemberType]
+        lic: spdx_lookup.License | None = spdx_lookup.by_id(license)
         if lic is None:
             raise ValueError(
                 f"License {license} not valid. It must be either 'proprietary' or in SPDX format.",
             )
-        return str(lic.id)  # type: ignore[reportUnknownMemberType]
+        return str(lic.id)
 
     @pydantic.model_validator(mode="before")
     @classmethod
