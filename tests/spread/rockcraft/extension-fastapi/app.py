@@ -1,5 +1,5 @@
-from fastapi import FastAPI  # pyright: ignore[reportMissingImports]
-from fastapi.responses import PlainTextResponse  # pyright: ignore[reportMissingImports]
+from fastapi import FastAPI
+from fastapi.responses import PlainTextResponse
 
 app = FastAPI()
 

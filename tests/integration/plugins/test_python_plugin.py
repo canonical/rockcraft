@@ -145,7 +145,7 @@ def test_python_plugin_ubuntu(
     # Check the extra sitecustomize.py module that we add
     expected_text = SITECUSTOMIZE_TEMPLATE.replace("EOF", "")
 
-    version_dir = VALUES_FOR_HOST.version_dir  # pyright: ignore[reportUnboundVariable]
+    version_dir = VALUES_FOR_HOST.version_dir
     sitecustom = in_project_path / f"stage/usr/lib/{version_dir}/sitecustomize.py"
     assert sitecustom.read_text().strip() == expected_text.strip()
 
@@ -170,9 +170,7 @@ def test_python_plugin_bare(in_project_path, fake_services, plugin_name):
     assert sorted(bin_dir.glob("python*")) == [
         bin_dir / i for i in VALUES_FOR_HOST.symlinks
     ]
-    assert (
-        (bin_dir / "python3").readlink() == VALUES_FOR_HOST.symlink_target  # pyright: ignore[reportUnboundVariable]
-    )
+    assert (bin_dir / "python3").readlink() == VALUES_FOR_HOST.symlink_target
 
     # Check the shebang in the "hello" script
     expected_shebang = "#!/bin/python3"
@@ -182,7 +180,7 @@ def test_python_plugin_bare(in_project_path, fake_services, plugin_name):
     # Check the extra sitecustomize.py module that we add
     expected_text = SITECUSTOMIZE_TEMPLATE.replace("EOF", "")
 
-    version_dir = VALUES_FOR_HOST.version_dir  # pyright: ignore[reportUnboundVariable]
+    version_dir = VALUES_FOR_HOST.version_dir
     sitecustom = in_project_path / f"stage/usr/lib/{version_dir}/sitecustomize.py"
     assert sitecustom.read_text().strip() == expected_text.strip()
 
