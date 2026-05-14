@@ -112,7 +112,7 @@ try:
     VALUES_FOR_HOST = RELEASE_TO_VALUES[OsRelease().version_id()]
 except (OsReleaseVersionIdError, KeyError):
     # not running on supported Ubuntu; the tests will be skipped.
-    # Use the 22.04 values to make pyright happy.
+    # Use the 22.04 values to make type checkers happy.
     VALUES_FOR_HOST = RELEASE_TO_VALUES["22.04"]
 
 
