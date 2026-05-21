@@ -1,3 +1,6 @@
+.. meta::
+    :description: Learn how to containerise a Flask app into a rock using Rockcraft's flask-framework extension.
+
 .. _tutorial-build-a-rock-for-a-flask-app:
 
 Build a rock for a Flask app

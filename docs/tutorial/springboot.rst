@@ -1,3 +1,6 @@
+.. meta::
+    :description: Learn how to containerise a Spring Boot app into a rock using Rockcraft's spring-boot-framework extension.
+
 .. _tutorial-build-a-rock-for-a-spring-boot-app:
 
 Build a rock for a Spring Boot app

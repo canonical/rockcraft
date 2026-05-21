@@ -1,3 +1,6 @@
+.. meta::
+    :description: Learn how to containerise a Django app into a rock using Rockcraft's django-framework extension.
+
 .. _tutorial-build-a-rock-for-a-django-app:
 
 Build a rock for a Django app

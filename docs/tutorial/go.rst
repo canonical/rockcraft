@@ -1,3 +1,6 @@
+.. meta::
+    :description: Learn how to containerise a Go app into a rock using Rockcraft's go-framework extension.
+
 .. _tutorial-build-a-rock-for-a-go-app:
 
 Build a rock for a Go app
