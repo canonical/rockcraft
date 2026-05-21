@@ -231,6 +231,11 @@ The output should list the FastAPI container image, along with its tag, ID and
 size:
 
 .. terminal::
+    :user: ubuntu
+    :host: rock-dev
+    :dir: ~/fastapi-hello-world
+
+    sudo docker images fastapi-hello-world:0.1
 
     REPOSITORY            TAG       IMAGE ID       CREATED       SIZE
     fastapi-hello-world   0.1       30c7e5aed202   2 weeks ago   193MB
@@ -276,6 +281,11 @@ As a result, Pebble will give us the logs for the
 We should expect to see something similar to this:
 
 .. terminal::
+    :user: ubuntu
+    :host: rock-dev
+    :dir: ~/fastapi-hello-world
+
+    sudo docker exec fastapi-hello-world pebble logs fastapi
 
     2024-10-01T06:32:50.180Z [fastapi] INFO:     Started server process [12]
     2024-10-01T06:32:50.181Z [fastapi] INFO:     Waiting for application startup.

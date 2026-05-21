@@ -258,6 +258,11 @@ The output should list the Django container image, along with its tag, ID and
 size:
 
 .. terminal::
+    :user: ubuntu
+    :host: rock-dev
+    :dir: ~/django-hello-world
+
+    sudo docker images django-hello-world:0.1
 
     REPOSITORY          TAG       IMAGE ID       CREATED       SIZE
     django-hello-world  0.1       5cd019b51db9   6 days ago   184MB
@@ -303,6 +308,11 @@ As a result, Pebble will give us the logs for the
 We should expect to see something similar to this:
 
 .. terminal::
+    :user: ubuntu
+    :host: rock-dev
+    :dir: ~/django-hello-world
+
+    sudo docker exec django-hello-world pebble logs django
 
     2024-08-20T06:34:36.114Z [django] [2024-08-20 06:34:36 +0000] [17] [INFO] Starting gunicorn 23.0.0
     2024-08-20T06:34:36.115Z [django] [2024-08-20 06:34:36 +0000] [17] [INFO] Listening at: http://0.0.0.0:8000 (17)

@@ -237,6 +237,11 @@ The output should list the Express image, along with its tag, ID and
 size:
 
 .. terminal::
+    :user: ubuntu
+    :host: rock-dev
+    :dir: ~/expressjs-hello-world
+
+    sudo docker images expressjs-hello-world:0.1
 
     REPOSITORY              TAG       IMAGE ID       CREATED       SIZE
     expressjs-hello-world   0.1       30c7e5aed202   2 weeks ago   304MB
@@ -278,6 +283,11 @@ As a result, Pebble will give us the logs for the
 We should expect to see something similar to this:
 
 .. terminal::
+    :user: ubuntu
+    :host: rock-dev
+    :dir: ~/expressjs-hello-world
+
+    sudo docker exec expressjs-hello-world pebble logs expressjs
 
     app@0.0.0 start
     node ./bin/www

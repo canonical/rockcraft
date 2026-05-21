@@ -251,6 +251,11 @@ The output should list the Go container image, along with its tag, ID and
 size:
 
 .. terminal::
+    :user: ubuntu
+    :host: rock-dev
+    :dir: ~/go-hello-world
+
+    docker images go-hello-world:0.1
 
     REPOSITORY       TAG       IMAGE ID       CREATED         SIZE
     go-hello-world   0.1       f3abf7ebc169   5 minutes ago   15.7MB
@@ -293,6 +298,11 @@ Go service running inside the container.
 We should expect to see something similar to this:
 
 .. terminal::
+    :user: ubuntu
+    :host: rock-dev
+    :dir: ~/go-hello-world
+
+    docker exec go-hello-world pebble logs go
 
     2024-10-04T08:51:35.826Z [go] 2024/10/04 08:51:35 starting hello world application
     2024-10-04T08:51:39.974Z [go] 2024/10/04 08:51:39 new hello world request

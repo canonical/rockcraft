@@ -234,6 +234,11 @@ The output should list the Flask container image, along with its tag, ID and
 size:
 
 .. terminal::
+    :user: ubuntu
+    :host: rock-dev
+    :dir: ~/flask-hello-world
+
+    sudo docker images flask-hello-world:0.1
 
     REPOSITORY          TAG       IMAGE ID       CREATED       SIZE
     flask-hello-world   0.1       c256056698ba   2 weeks ago   149MB
@@ -279,6 +284,11 @@ As a result, Pebble will give us the logs for the
 We expect to see something similar to this:
 
 .. terminal::
+    :user: ubuntu
+    :host: rock-dev
+    :dir: ~/flask-hello-world
+
+    sudo docker exec flask-hello-world pebble logs flask
 
     2024-06-21T03:41:45.077Z [flask] [2024-06-21 03:41:45 +0000] [17] [INFO] Starting gunicorn 22.0.0
     2024-06-21T03:41:45.077Z [flask] [2024-06-21 03:41:45 +0000] [17] [INFO] Listening at: http://0.0.0.0:8000 (17)
