@@ -71,6 +71,13 @@ def setup_extensions(mock_extensions):
     extensions.register(FullExtension.NAME, FullExtension)
 
 
+def test_expand_extensions_help_references_rockcraft_yaml():
+    assert ExpandExtensionsCommand.help_msg == "Expand extensions in rockcraft.yaml"
+    assert "rockcraft.yaml" in ExpandExtensionsCommand.overview
+    assert "snapcraft.yaml" not in ExpandExtensionsCommand.help_msg
+    assert "snapcraft.yaml" not in ExpandExtensionsCommand.overview
+
+
 @pytest.mark.usefixtures("tmp_path", "setup_extensions")
 def test_expand_extensions(emitter, fake_app_config):
     # ExpandExtensionsCommand loads "rockcraft.yaml" on the cwd
