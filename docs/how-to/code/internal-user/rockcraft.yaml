@@ -1,6 +1,6 @@
 name: internal-user
 base: bare
-build-base: ubuntu@24.04
+build-base: ubuntu@26.04
 version: "latest"
 summary: Add an internal user inside a rock
 description: Add an internal user inside a rock, and run a service with it.
@@ -11,7 +11,7 @@ platforms:
 services:
   web-service:
     override: replace
-    command: python3.12 -m http.server --cgi 8080
+    command: python3 -m http.server --cgi 8080
     startup: enabled
     user: myuser
     working-dir: /
@@ -25,8 +25,7 @@ parts:
     stage-packages:
       - base-passwd_data
       - base-files_base
-      - python3.12_standard
-    # [docs:rock-build]
+      - python3_standard
     override-build: |
       craftctl default
       groupadd --root ${CRAFT_PART_INSTALL} mygroup
