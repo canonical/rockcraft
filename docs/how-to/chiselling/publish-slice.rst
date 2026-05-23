@@ -17,8 +17,8 @@ It is as simple as proposing your changes into the upstream
 
 .. code-block:: bash
 
-    # Let's assume we are working with Ubuntu 22.04
-    git clone -b ubuntu-22.04 https://github.com/<your_github_username>/chisel-releases.git
+    # Let's assume we are working with Ubuntu 26.04
+    git clone -b ubuntu-26.04 https://github.com/<your_github_username>/chisel-releases.git
 
 2. Create a branch:
 
@@ -34,7 +34,7 @@ It is as simple as proposing your changes into the upstream
 
    cp <path/to/your/slice/definitions/file> slices
    git add slices/
-   git commit -m "feat(22.04): add new slice definitions for 'package_name'"
+   git commit -m "feat(26.04): add new slice definitions for 'package_name'"
    git push origin create-openssl-bins-slice
 
 4. Create integration tests to test your changes.
