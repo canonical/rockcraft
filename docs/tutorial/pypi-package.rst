@@ -7,7 +7,7 @@ By the end of this tutorial you will be able to run pyfiglet via docker:
 
 .. code:: text
 
-    $ docker run --rm -it pyfiglet:0.7.6 exec pyfiglet hello
+    $ docker run --rm -it pyfiglet:1.0.4 exec pyfiglet hello
      _          _ _
     | |__   ___| | | ___
     | '_ \ / _ \ | |/ _ \
@@ -92,7 +92,7 @@ using bash, via:
 
 .. code:: yaml
 
-    $ docker run --rm -it pyfiglet:0.7.6 exec bash
+    $ docker run --rm -it pyfiglet:1.0.4 exec bash
     root@14d1812a2681:/# pyfiglet hi
      _     _
     | |__ (_)
