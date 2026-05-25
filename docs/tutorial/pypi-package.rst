@@ -14,6 +14,7 @@ By the end of this tutorial you will be able to run pyfiglet via docker:
     | | | |  __/ | | (_) |
     |_| |_|\___|_|_|\___/
 
+It should take around 10 minutes to complete.
 
 Setup your environment
 ----------------------

@@ -3,10 +3,13 @@
 Python plugin (ubuntu\@25.10)
 =============================
 
-.. This starts the document immediately after the title line
+The Python plugin (ubuntu\@25.10) is the successor to the
+:ref:`craft_parts_python_plugin`. It can be used for Python projects where you would
+want to do any of the following things:
+
 .. include:: /common/craft-parts/reference/plugins/python_v2_plugin.rst
-    :start-after: ==================
-    :end-before: .. _python_v2_plugin-keywords:
+    :start-line: 8
+    :end-line: 11
 
 .. admonition:: Base support
 

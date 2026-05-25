@@ -22,7 +22,16 @@ import fnmatch
 import os.path
 import posixpath
 import re
-from typing import Any
+from collections.abc import Iterable
+from pathlib import Path
+from typing import Any, cast
+
+try:
+    # Available in Python 3.11 and later
+    import tomllib  # type: ignore[import-not-found]
+except ModuleNotFoundError:
+    # Use the backported tomli package
+    import tomli as tomllib  # type: ignore[import-not-found]
 
 from overrides import override  # type: ignore[reportUnknownVariableType]
 from packaging.requirements import InvalidRequirement, Requirement
@@ -30,7 +39,11 @@ from packaging.requirements import InvalidRequirement, Requirement
 from rockcraft.errors import ExtensionError
 from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
 
-from ._python_utils import has_global_variable
+from ._python_utils import (
+    find_entrypoint_with_factory,
+    find_entrypoint_with_variable,
+    has_global_variable,
+)
 from ._utils import find_ubuntu_base_python_version
 from .app_parts import gen_logging_part
 from .extension import Extension, get_extensions_data_dir
@@ -40,6 +53,11 @@ USER_UID: int = SUPPORTED_GLOBAL_USERNAMES["_daemon_"]["uid"]
 
 class _GunicornBase(Extension):
     """An extension base class for Python WSGI framework extensions."""
+
+    @property
+    def name(self) -> str:
+        """Return the normalized name of the rockcraft project."""
+        return self.yaml_data["name"].replace("-", "_").lower()
 
     @staticmethod
     @override
@@ -92,13 +110,17 @@ class _GunicornBase(Extension):
                 {"PARTS_PYTHON_INTERPRETER": f"python{python_version}"}
             ]
 
+        python_requirements: list[str] = []
+        if (self.project_root / "requirements.txt").exists():
+            python_requirements.append("requirements.txt")
+
         parts: dict[str, Any] = {
             f"{self.framework}-framework/dependencies": {
                 "plugin": "python",
                 "stage-packages": stage_packages,
                 "source": ".",
                 "python-packages": ["gunicorn~=23.0"],
-                "python-requirements": ["requirements.txt"],
+                "python-requirements": python_requirements,
                 "build-environment": build_environment,
             },
             f"{self.framework}-framework/install-app": {
@@ -160,15 +182,48 @@ class _GunicornBase(Extension):
             }
         return parts
 
-    def _check_async(self) -> str:
-        """Check if gevent package installed in requirements.txt."""
+    def _requirements(self) -> set[str]:
+        """Return the content of the detected requirements file.
+
+        Checks both requirements.txt and pyproject.toml if they exist,
+        merging dependencies from both files.
+        """
         requirements_file = self.project_root / "requirements.txt"
-        requirements_text = requirements_file.read_text()
-        for line in requirements_text.splitlines():
-            with contextlib.suppress(InvalidRequirement):
-                req = Requirement(line)
-                if req.name == "gevent":
-                    return "gevent"
+        pyproject_file = self.project_root / "pyproject.toml"
+
+        requirements: set[str] = set()
+
+        if requirements_file.exists():
+            for line in requirements_file.read_text().splitlines():
+                with contextlib.suppress(InvalidRequirement):
+                    req = Requirement(line)
+                    requirements.add(req.name.lower())
+
+        if pyproject_file.exists():
+            with pyproject_file.open("rb") as f:
+                pyproject_data = cast(
+                    dict[str, Any],
+                    tomllib.load(f),  # type: ignore[reportUnknownMemberType]
+                )
+
+            deps = cast(
+                list[str], pyproject_data.get("project", {}).get("dependencies", [])
+            )
+            for line in deps:
+                with contextlib.suppress(InvalidRequirement):
+                    req = Requirement(line)
+                    requirements.add(req.name.lower())
+        return requirements
+
+    def _worker_class(self) -> str:
+        """Return the Gunicorn worker class based on project dependencies.
+
+        If the project's dependencies include `gevent`, use the `gevent` worker.
+        Otherwise default to `sync`.
+        """
+        requirements = self._requirements()
+        if "gevent" in requirements:
+            return "gevent"
         return "sync"
 
     @override
@@ -189,7 +244,6 @@ class _GunicornBase(Extension):
                 self.framework: {
                     "override": "replace",
                     "startup": "enabled",
-                    "command": f"/bin/python3 -m gunicorn -c /{self.framework}/gunicorn.conf.py {self.wsgi_path} -k [ {self._check_async()} ]",
                     "after": ["statsd-exporter"],
                     "user": "_daemon_",
                 },
@@ -206,6 +260,15 @@ class _GunicornBase(Extension):
                 },
             },
         }
+        # If the user has overridden the service command, do not try to add it.
+        if (
+            not self.yaml_data.get("services", {})
+            .get(self.framework, {})
+            .get("command")
+        ):
+            snippet["services"][self.framework]["command"] = (
+                f"/bin/python3 -m gunicorn -c /{self.framework}/gunicorn.conf.py '{self.wsgi_path}' -k [ {self._worker_class()} ]"
+            )
         snippet["parts"] = self._gen_parts()
         return snippet
 
@@ -226,8 +289,45 @@ class FlaskFramework(_GunicornBase):
     @property
     @override
     def wsgi_path(self) -> str:
-        """Return the wsgi path of the wsgi application."""
-        return "app:app"
+        """Return the wsgi path of the wsgi application.
+
+        Infers an entrypoint by scanning the project's source tree.
+
+        This extension will:
+        - Search common names (`app`, `application`).
+        - Search factory function definitions (`create_app`, `make_app`).
+
+        This extension does not:
+        - Validate runtime types.
+        - Fallback to any singular `Flask` app if only one is found.
+
+        Reference: Flask's CLI uses `flask.cli.find_best_app()` (used by `flask run`) for runtime
+        discovery. This extension uses that discovery order as a reference, but it does not fully
+        align with `find_best_app()`.
+
+        Searches in all top-level directories automatically.
+
+        Raises:
+            FileNotFoundError: If no valid Flask entrypoint is found
+        """
+        locations = self._wsgi_locations()
+        try:
+            return find_entrypoint_with_variable(
+                self.project_root, locations, {"app", "application"}
+            )
+        except FileNotFoundError:
+            pass
+
+        try:
+            return find_entrypoint_with_factory(
+                self.project_root,
+                locations,
+                factory_names=("create_app", "make_app"),
+            )
+        except FileNotFoundError:
+            raise FileNotFoundError(
+                "Missing WSGI entrypoint in default search locations"
+            )
 
     @property
     @override
@@ -289,6 +389,8 @@ class FlaskFramework(_GunicornBase):
                 for f in (
                     "app",
                     "app.py",
+                    "main.py",
+                    "src",
                     "migrate",
                     "migrate.sh",
                     "migrate.py",
@@ -299,43 +401,54 @@ class FlaskFramework(_GunicornBase):
             ]
         return user_prime
 
+    def _wsgi_locations(self) -> Iterable[Path]:
+        """Return the possible locations for the WSGI entrypoint.
+
+        It will look for an `app` global variable in the following places:
+        1. `app.py`.
+        2. `main.py`.
+        3. Inside the directories `app`, `src` and rockcraft name, in the files
+           `__init__.py`, `app.py` or `main.py`.
+        """
+        return (
+            Path(".", "app.py"),
+            Path(".", "main.py"),
+            *(
+                Path(src_dir, src_file)
+                for src_dir in ("app", "src", self.name)
+                for src_file in ("__init__.py", "app.py", "main.py")
+            ),
+        )
+
     def _wsgi_path_error_messages(self) -> list[str]:
         """Ensure the extension can infer the WSGI path of the Flask application."""
-        app_file = self.project_root / "app.py"
-        if not app_file.exists():
-            return [
-                "flask application can not be imported from app:app, no app.py file found in the project root."
-            ]
         try:
-            has_app = has_global_variable(app_file, "app")
-        except SyntaxError as err:
-            return [f"error parsing app.py: {err.msg}"]
-
-        if not has_app:
-            return [
-                "the global variable 'app' was not found in app.py in the project root."
-            ]
-
+            self.wsgi_path  # noqa: B018 (unused expression, just checking for errors)
+        except FileNotFoundError:
+            return ["Missing WSGI entrypoint in default search locations"]
+        except SyntaxError as e:
+            filename = Path(e.filename).name if e.filename else "<unknown>"
+            return [f"error parsing {filename}: {e.msg}"]
         return []
 
-    def _requirements_txt_error_messages(self) -> list[str]:
+    def _requirements_error_messages(self) -> list[str]:
         """Ensure the requirements.txt file is correct."""
         requirements_file = self.project_root / "requirements.txt"
-        if not requirements_file.exists():
+        pyproject_file = self.project_root / "pyproject.toml"
+        if not requirements_file.exists() and not pyproject_file.exists():
             return [
-                "missing a requirements.txt file. The flask-framework extension requires this file with 'flask' specified as a dependency."
+                "missing a requirements file (requirements.txt or pyproject.toml). The flask-framework extension requires one of these files with 'flask' specified as a dependency."
             ]
 
-        requirements_lines = requirements_file.read_text(encoding="utf-8").splitlines()
-        if not any("flask" in line.lower() for line in requirements_lines):
-            return ["missing flask package dependency in requirements.txt file."]
+        if "flask" not in self._requirements():
+            return ["missing flask package dependency in requirements file."]
 
         return []
 
     @override
     def check_project(self) -> None:
         """Ensure this extension can apply to the current rockcraft project."""
-        error_messages = self._requirements_txt_error_messages()
+        error_messages = self._requirements_error_messages()
         if not self.yaml_data.get("services", {}).get("flask", {}).get("command"):
             error_messages += self._wsgi_path_error_messages()
         if error_messages:
@@ -350,20 +463,23 @@ class DjangoFramework(_GunicornBase):
     """An extension for constructing Python applications based on the Django framework."""
 
     @property
-    def name(self) -> str:
-        """Return the normalized name of the rockcraft project."""
-        return self.yaml_data["name"].replace("-", "_").lower()
-
-    @property
-    def default_wsgi_path(self) -> str:
-        """Return the default wsgi path for the Django project."""
-        return f"{self.name}.wsgi:application"
-
-    @property
     @override
     def wsgi_path(self) -> str:
         """Return the wsgi path of the wsgi application."""
-        return self.default_wsgi_path
+        for wsgi_file in self._wsgi_locations():
+            if not wsgi_file.exists():
+                continue
+
+            if has_global_variable(wsgi_file, "application"):
+                module = self._module_from_wsgi_file(wsgi_file)
+                return f"{module}:application"
+
+        raise ExtensionError(
+            "django application can not be imported, unable to locate a wsgi.py "
+            f"with an 'application' callable in the default discovery locations ({', '.join(str(p) for p in self._wsgi_locations())}).",
+            doc_slug="/reference/extensions/django-framework/#project-requirements",
+            logpath_report=False,
+        )
 
     @property
     @override
@@ -389,22 +505,20 @@ class DjangoFramework(_GunicornBase):
             }
         return {}
 
-    def _check_wsgi_path(self) -> None:
-        wsgi_file = self.project_root / self.name / self.name / "wsgi.py"
-        if not wsgi_file.exists():
-            raise ExtensionError(
-                f"django application can not be imported from {self.default_wsgi_path}, "
-                f"no wsgi.py file found in the project directory ({str(wsgi_file.parent)}).",
-                doc_slug="/reference/extensions/django-framework/#project-requirements",
-                logpath_report=False,
-            )
-        if not has_global_variable(wsgi_file, "application"):
-            raise ExtensionError(
-                f"django application can not be imported from {self.default_wsgi_path}, "
-                "no variable named 'application' in wsgi.py",
-                doc_slug="/reference/extensions/django-framework/#project-requirements",
-                logpath_report=False,
-            )
+    def _wsgi_locations(self) -> Iterable[Path]:
+        """Return candidate paths for the project's wsgi.py."""
+        return (
+            self.project_root / self.name / self.name / "wsgi.py",
+            self.project_root
+            / self.name
+            / "mysite/wsgi.py",  # Used in Django's official tutorial
+        )
+
+    def _module_from_wsgi_file(self, wsgi_file: Path) -> str:
+        """Return the dotted module path for the discovered wsgi file."""
+        base_package = self.project_root / self.name
+        relative_path = wsgi_file.relative_to(base_package)
+        return ".".join(relative_path.with_suffix("").parts)
 
     @override
     def check_project(self) -> None:
@@ -417,4 +531,4 @@ class DjangoFramework(_GunicornBase):
                 logpath_report=False,
             )
         if not self.yaml_data.get("services", {}).get("django", {}).get("command"):
-            self._check_wsgi_path()
+            self.wsgi_path  # noqa: B018 (unused expression, just checking for errors)

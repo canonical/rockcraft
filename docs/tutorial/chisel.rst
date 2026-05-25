@@ -7,6 +7,8 @@ In this tutorial, you will create a lean hello-world rock that uses chisel
 slices, and then compare the resulting rock with the one created without slices
 in :doc:`/tutorial/hello-world`.
 
+It should take around 10 minutes to complete.
+
 Setup your environment
 ----------------------
 

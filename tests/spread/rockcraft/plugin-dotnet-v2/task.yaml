@@ -1,0 +1,25 @@
+summary: .NET plugin (v2) tests
+
+environment:
+  BUILD_BASE/2510: ubuntu@25.10
+
+prepare: |
+  sed "s/BUILD_BASE/${BUILD_BASE}/" rockcraft-template.yaml > rockcraft.yaml
+
+execute: |
+  SCENARIO="hello-dotnet"
+  ROCK_FILE="${SCENARIO}_0.0.1_amd64.rock"
+  IMAGE="${SCENARIO}:0.0.1"
+
+  # Build the rock & load it into docker
+  run_rockcraft pack
+  echo expecting ${ROCK_FILE}
+  test -f ${ROCK_FILE}
+  rockcraft.skopeo copy --insecure-policy  oci-archive:${ROCK_FILE} docker-daemon:${IMAGE}
+  rm ${ROCK_FILE}
+
+  # Run the packaged project
+  docker run --rm $IMAGE exec /HelloWorld | MATCH "Hello, .NET!"
+
+restore: |
+  rm rockcraft.yaml

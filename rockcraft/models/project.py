@@ -32,7 +32,6 @@ from craft_application.models.base import alias_generator
 from craft_application.models.project import DevelBaseInfo
 from craft_platforms import DebianArchitecture
 from craft_providers import bases
-from craft_providers.bases import BuilddBaseAlias
 from craft_providers.errors import BaseConfigurationError
 from typing_extensions import override
 
@@ -73,6 +72,7 @@ BuildBaseT = typing.Annotated[
         "ubuntu@22.04",
         "ubuntu@24.04",
         "ubuntu@25.10",
+        "ubuntu@26.04",
         "devel",
     ]
     | None,
@@ -219,7 +219,7 @@ class Project(BaseProject):
     def _check_unsupported_options(cls, values: Mapping[str, Any]) -> Mapping[str, Any]:
         """Before validation, check if unsupported fields exist. Exit if so."""
         # pylint: disable=unused-argument
-        unsupported_msg = str(
+        unsupported_msg = (
             "The fields 'entrypoint', 'cmd' and 'env' are not supported in "
             "Rockcraft. All rocks have Pebble as their entrypoint, so you must "
             "use 'services' to define your container application and "
@@ -406,7 +406,6 @@ class Project(BaseProject):
             "version": self.version,
             "created": generation_time,
             "base": self.base,
-            "base-digest": base_digest.hex(),
             # `architecture` "looks like" a string since it inherits from it, but serialization
             # represents it as a DebianArchitecture, which comes out wrong (see rockcraft#992)
             # instead, explicitly cast it to just be an actual string
@@ -420,9 +419,7 @@ class Project(BaseProject):
         annotations = {
             "org.opencontainers.image.version": self.version,
             "org.opencontainers.image.title": self.title,
-            "org.opencontainers.image.ref.name": self.name,
             "org.opencontainers.image.created": generation_time,
-            "org.opencontainers.image.base.digest": base_digest.hex(),
             "org.opencontainers.image.description": re.sub(
                 r"\n{2,}", "\n", self.summary
             )
@@ -430,6 +427,12 @@ class Project(BaseProject):
         }
         if self.license:
             annotations["org.opencontainers.image.licenses"] = self.license
+
+        # The base digest is only valid for non-bare bases, since there isn't an image
+        # sharing the zero-indexed layers with the target image for a bare-based image.
+        if self.base != "bare":
+            metadata["base-digest"] = base_digest.hex()
+            annotations["org.opencontainers.image.base.digest"] = base_digest.hex()
 
         return (annotations, metadata)
 
@@ -491,9 +494,4 @@ class Project(BaseProject):
     @classmethod
     @override
     def _get_devel_bases(cls) -> Iterable[DevelBaseInfo]:
-        return [
-            DevelBaseInfo(
-                current_devel_base=BuilddBaseAlias.RESOLUTE,
-                devel_base=BuilddBaseAlias.DEVEL,
-            )
-        ]
+        return []

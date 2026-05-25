@@ -214,7 +214,7 @@ The output should be similar to:
     2023-04-19 15:56:00.567 :: 2023-04-19 13:55:59.767 Entrypoint set to ['/bin/pebble', 'enter']
     2023-04-19 15:56:00.567 :: 2023-04-19 13:55:59.767 Adding metadata
     2023-04-19 15:56:00.567 :: 2023-04-19 13:55:59.767 Configuring labels and annotations...
-    2023-04-19 15:56:00.567 :: 2023-04-19 13:55:59.785 Labels and annotations set to ['org.opencontainers.image.version=chiselled', 'org.opencontainers.image.title=dotnet-runtime', 'org.opencontainers.image.ref.name=dotnet-runtime', 'org.opencontainers.image.licenses=Apache-2.0', 'org.opencontainers.image.created=2023-04-19T13:55:59.767870+00:00', 'org.opencontainers.image.base.digest=13155b5ad26816d4107ee499de072069a701c9fe183f7e347e8d88fee16e69c2']
+    2023-04-19 15:56:00.567 :: 2023-04-19 13:55:59.785 Labels and annotations set to ['org.opencontainers.image.version=chiselled', 'org.opencontainers.image.title=dotnet-runtime', 'org.opencontainers.image.licenses=Apache-2.0', 'org.opencontainers.image.created=2023-04-19T13:55:59.767870+00:00']
     2023-04-19 15:56:00.567 :: 2023-04-19 13:55:59.792 Setting the ROCK's Control Data
     2023-04-19 15:56:00.567 :: 2023-04-19 13:55:59.797 Adding to layer: /tmp/tmpdqjmducj/.rock as '.rock'
     2023-04-19 15:56:00.567 :: 2023-04-19 13:55:59.797 Adding to layer: /tmp/tmpdqjmducj/.rock/metadata.yaml as '.rock/metadata.yaml'

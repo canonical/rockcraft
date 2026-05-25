@@ -71,6 +71,7 @@ def test_lifecycle_args(
         base_layer_hash=b"deadbeef",
         cache_dir=project_path / "cache",
         ignore_local_sources=[".craft", "*.rock"],
+        ignore_outdated=[".craft", "*.rock"],
         parallel_build_count=4,
         partitions=None,
         project_name="test-rock",
@@ -103,6 +104,7 @@ def test_lifecycle_args(
 def test_lifecycle_package_repositories(extra_project_params, fake_services, mocker):
     base = cast(services.ProjectService, fake_services.get("project")).get().base
     mocker.patch.object(util, "get_host_base", return_value=base)
+    mocker.patch.object(os, "geteuid", return_value=0)
     fake_repositories = extra_project_params["package_repositories"]
     lifecycle_service = fake_services.get("lifecycle")
     lifecycle_service._lcm = mock.MagicMock(spec=LifecycleManager)

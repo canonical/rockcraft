@@ -34,6 +34,7 @@ DATA_DIR = pathlib.Path(__file__).parent.parent / "data"
 pytestmark = [pytest.mark.usefixtures("fake_services")]
 
 
+@pytest.mark.skip_overlay_enable
 @pytest.mark.usefixtures("fake_project_file")
 def test_run_pack_services(mocker, monkeypatch, tmp_path):
     # Pretend it's running inside the managed instance

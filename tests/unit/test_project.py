@@ -30,7 +30,7 @@ from craft_providers.bases import ubuntu
 from rockcraft.models import Project
 from rockcraft.models.project import Platform
 from rockcraft.pebble import Service
-from rockcraft.services.project import RockcraftProjectService
+from rockcraft.services.project import APT_UPGRADE_PART, RockcraftProjectService
 
 _ARCH_MAPPING = {"x86": "amd64", "x64": "amd64"}
 try:
@@ -663,11 +663,13 @@ def test_project_load(check, yaml_loaded_data, fake_services):
             ),
         }
     }
+    apt_upgrade_part = {"_apt-upgrade": APT_UPGRADE_PART}
     project_service = cast(RockcraftProjectService, fake_services.get("project"))
 
     project_yaml = project_service.get().marshal()
     # The Pebble part should be added to the loaded data
     yaml_loaded_data["parts"].update(pebble_part)
+    yaml_loaded_data["parts"].update(apt_upgrade_part)
 
     assert project_yaml == yaml_loaded_data
 
@@ -717,7 +719,6 @@ def test_project_generate_metadata(yaml_loaded_data):
     assert oci_annotations == {
         "org.opencontainers.image.version": yaml_loaded_data["version"],
         "org.opencontainers.image.title": yaml_loaded_data["title"],
-        "org.opencontainers.image.ref.name": yaml_loaded_data["name"],
         "org.opencontainers.image.licenses": yaml_loaded_data["license"],
         "org.opencontainers.image.created": now,
         "org.opencontainers.image.base.digest": digest,
@@ -764,6 +765,25 @@ def test_metadata_base_devel(yaml_loaded_data):
         now, bytes.fromhex(digest), DebianArchitecture.from_host()
     )
     assert rock_metadata["grade"] == "devel"
+
+
+def test_metadata_base_bare(yaml_loaded_data):
+    yaml_loaded_data["base"] = "bare"
+    yaml_loaded_data["build-base"] = "ubuntu@24.04"
+    yaml_loaded_data["parts"]["foo"] = {
+        "plugin": "nil",
+        "stage-packages": ["hello"],
+    }  # Avoid validation error for no overlay with bare base
+    project = Project.unmarshal(yaml_loaded_data)
+
+    now = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    digest = "a1b2c3"  # mock digest
+
+    oci_annotations, rock_metadata = project.generate_metadata(
+        now, bytes.fromhex(digest), DebianArchitecture.from_host()
+    )
+    assert "base-digest" not in rock_metadata
+    assert "org.opencontainers.image.base.digest" not in oci_annotations
 
 
 EXPECTED_DUMPED_YAML = f"""\

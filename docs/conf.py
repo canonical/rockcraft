@@ -28,9 +28,11 @@ author = "Canonical Ltd."
 # Sidebar documentation title; best kept reasonably short
 # The full version, including alpha/beta/rc tags
 release = rockcraft.__version__
-# The commit hash in the dev release version confuses the spellchecker
 if ".post" in release:
     release = "dev"
+else:
+    major, minor, *_ = release.split(".")
+    release = f"{major}.{minor}"
 
 html_title = project + " documentation"
 
@@ -139,6 +141,7 @@ linkcheck_ignore = [
     "https://matrix.to/#/#rockcraft:ubuntu.com",
     "https://matrix.to/#/#12-factor-charms:ubuntu.com",
     "https://specs.opencontainers.org/image-spec/config/",
+    "https://specs.opencontainers.org/image-spec/annotations/",
     "https://canonical.com/#get-in-touch#",
     "http://127.0.0.1:8000/",
 ]
@@ -218,6 +221,8 @@ exclude_patterns = [
     "common/craft-parts/reference/step_output_directories.rst",
     "common/craft-parts/reference/part_properties.rst",
     "common/craft-parts/reference/plugins/colcon_plugin.rst",
+    "common/craft-parts/reference/plugins/dotnet_plugin.rst",
+    "common/craft-parts/reference/plugins/dotnet_v2_plugin.rst",
     "common/craft-parts/reference/plugins/poetry_plugin.rst",
     "common/craft-parts/reference/plugins/python_plugin.rst",
     "common/craft-parts/reference/plugins/python_v2_plugin.rst",
@@ -228,13 +233,11 @@ exclude_patterns = [
     "README.md",
 ]
 
-# Adds custom CSS files, located under 'html_static_path'
-html_css_files = ["css/cookie-banner.css"]
+# Adds custom CSS files
+html_css_files = ["https://assets.ubuntu.com/v1/d86746ef-cookie_banner.css"]
 
-# Adds custom JavaScript files, located under 'html_static_path'
-html_js_files = [
-    "js/bundle.js",
-]
+# Adds custom JavaScript files
+html_js_files = ["https://assets.ubuntu.com/v1/287a5e8f-bundle.js"]
 
 # Specifies a reST snippet to be appended to each .rst file
 rst_epilog = """
