@@ -1,5 +1,5 @@
 .. meta::
-    :description: Learn how to containerise a Flask app into a rock using Rockcraft's flask-framework extension.
+    :description: Learn the process of making a Flask app into a rock. In this tutorial, we use the flask-framework extension to bootstrap and test the contents of the rock.
 
 .. _tutorial-build-a-rock-for-a-flask-app:
 

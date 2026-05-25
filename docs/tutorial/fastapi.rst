@@ -1,5 +1,5 @@
 .. meta::
-    :description: Learn how to containerise a FastAPI app into a rock using Rockcraft's fastapi-framework extension.
+    :description: Learn the process of making a FastAPI app into a rock. In this tutorial, we use the fastapi-framework extension to bootstrap and test the contents of the rock.
 
 .. _tutorial-build-a-rock-for-a-fastapi-app:
 

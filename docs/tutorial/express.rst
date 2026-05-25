@@ -1,5 +1,5 @@
 .. meta::
-    :description: Learn how to containerise an Express app into a rock using Rockcraft's expressjs-framework extension.
+    :description: Learn the process of making an Express app into a rock. In this tutorial, we use the expressjs-framework extension to bootstrap and test the contents of the rock.
 
 .. _tutorial-build-a-rock-for-an-express-app:
 

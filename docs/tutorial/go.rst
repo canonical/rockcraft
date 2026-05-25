@@ -1,5 +1,5 @@
 .. meta::
-    :description: Learn how to containerise a Go app into a rock using Rockcraft's go-framework extension.
+    :description: Learn the process of making a Go app into a rock. In this tutorial, we use the go-framework extension to bootstrap and test the contents of the rock.
 
 .. _tutorial-build-a-rock-for-a-go-app:
 
