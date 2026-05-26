@@ -13,7 +13,7 @@ execute: |
   /snap/rockcraft/current/bin/umoci unpack --rootless --image $IMAGE_DIR:$TAG $UNPACK_DIR
 
   # verify pebble version
-  $UNPACK_DIR/rootfs/usr/bin/pebble version | MATCH "\-fips"
+  $UNPACK_DIR/rootfs/bin/pebble version | MATCH "\-fips"
 
   rockcraft clean
   rm -rf $ROCK_FILE $IMAGE_DIR $UNPACK_DIR
