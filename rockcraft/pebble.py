@@ -18,6 +18,7 @@
 
 import enum
 from collections.abc import Mapping
+from copy import deepcopy
 from pathlib import Path
 from typing import Annotated, Any, Literal
 
@@ -26,6 +27,7 @@ import pydantic
 import yaml
 from craft_application.errors import CraftValidationError
 from craft_application.models import CraftBaseModel
+from craft_application.util import ProServices
 from craft_cli import emit
 
 
@@ -496,7 +498,14 @@ def add_pebble_part(project: dict[str, Any]) -> None:
         # don't try to add the relevant pebble part if base is missing
         # (friendly error message will be presented later from pydantic)
         return
-    pebble_part = Pebble.get_part_spec(build_base)
+    pebble_part = deepcopy(Pebble.get_part_spec(build_base))
+
+    if ProServices._get_pro_services() & {  # noqa: SLF001 # pyright: ignore[reportPrivateUsage]
+        "fips",
+        "fips-preview",
+        "fips-updates",
+    }:
+        pebble_part["stage-snaps"] = ["pebble/fips/stable"]
 
     parts = project["parts"]
     if "pebble" in parts:
