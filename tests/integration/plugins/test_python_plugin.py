@@ -23,7 +23,7 @@ from craft_cli import EmitterMode, emit
 from craft_parts.errors import OsReleaseVersionIdError
 from craft_parts.packages import deb
 from craft_parts.utils.os_utils import OsRelease
-from craft_providers.bases import get_base_alias
+from craft_providers.bases import BaseName, get_base_alias
 from rockcraft import plugins
 from rockcraft.models.project import BaseT, Project
 from rockcraft.plugins.python_common import SITECUSTOMIZE_TEMPLATE, get_python_plugins
@@ -63,7 +63,8 @@ def create_python_project(
 
     build_base = None
     if base != "bare":
-        base_alias = get_base_alias(base_name=tuple(base.split("@")))  # ty: ignore[no-matching-overload] ty does not understand the output of splitting these is predictable
+        name, version = base.split("@")
+        base_alias = get_base_alias(base_name=BaseName(name, version))
         if base_alias in [info.current_devel_base for info in DEVEL_BASE_INFOS]:
             build_base = "devel"
 
