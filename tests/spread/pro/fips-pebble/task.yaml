@@ -1,0 +1,19 @@
+summary: Test packing rock with FIPS pebble snap
+execute: |
+  TAG="latest"
+  IMAGE_DIR="image"
+  ROCK_FILE="fips-pebble-test_latest_*.rock"
+  UNPACK_DIR="unpacked"
+
+  rockcraft pack --pro=fips
+
+  mkdir -p $IMAGE_DIR
+  tar -xvf $ROCK_FILE -C $IMAGE_DIR
+
+  /snap/rockcraft/current/bin/umoci unpack --rootless --image $IMAGE_DIR:$TAG $UNPACK_DIR
+
+  # verify pebble version
+  $UNPACK_DIR/rootfs/usr/bin/pebble version | MATCH "\-fips"
+
+  rockcraft clean
+  rm -rf $ROCK_FILE $IMAGE_DIR $UNPACK_DIR
