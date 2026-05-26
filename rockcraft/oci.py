@@ -24,7 +24,7 @@ import shutil
 import subprocess
 import tempfile
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -291,7 +291,10 @@ class Image:
                 groupf.write(user_files["group"])
 
             if user_files["shadow"]:
-                days_since_epoch = (datetime.utcnow() - datetime(1970, 1, 1)).days  # type: ignore[reportDeprecated]
+                days_since_epoch = (
+                    datetime.now(timezone.utc)
+                    - datetime(1970, 1, 1, tzinfo=timezone.utc)
+                ).days
 
                 # only add the shadow file if there's already one in the base image
                 with (tmpfs_etc / "shadow").open("a+") as shadowf:
