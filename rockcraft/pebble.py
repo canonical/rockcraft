@@ -500,11 +500,14 @@ def add_pebble_part(project: dict[str, Any]) -> None:
         return
     pebble_part = deepcopy(Pebble.get_part_spec(build_base))
 
-    if ProServices._get_pro_services() & {  # noqa: SLF001 # pyright: ignore[reportPrivateUsage]
-        "fips",
-        "fips-preview",
-        "fips-updates",
-    }:
+    if ProServices._pro_client_exists() and (  # noqa: SLF001 # pyright: ignore[reportPrivateUsage]
+        ProServices._get_pro_services()  # noqa: SLF001 # pyright: ignore[reportPrivateUsage]
+        & {
+            "fips",
+            "fips-preview",
+            "fips-updates",
+        }
+    ):
         pebble_part["stage-snaps"] = ["pebble/fips/stable"]
 
     parts = project["parts"]
