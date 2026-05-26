@@ -39,7 +39,7 @@ class RockcraftServiceFactory(ServiceFactory):
     if TYPE_CHECKING:
         from rockcraft.services import RockcraftImageService
 
-        image: RockcraftImageService = None  # ty: ignore[invalid-assignment]
+        image: RockcraftImageService
 
 
 def register_rockcraft_services() -> None:
