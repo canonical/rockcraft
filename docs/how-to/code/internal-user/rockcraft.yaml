@@ -17,6 +17,7 @@ services:
     working-dir: /
 # [docs:rock-services-end]
 
+# [docs:rock-build]
 parts:
   my-part:
     plugin: nil
