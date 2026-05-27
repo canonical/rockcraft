@@ -23,7 +23,7 @@ from typing import cast
 
 from craft_application import PackageService, errors, models
 from craft_cli import emit
-from overrides import override  # type: ignore[reportUnknownVariableType]
+from typing_extensions import override
 
 from rockcraft import oci
 from rockcraft.models import Project

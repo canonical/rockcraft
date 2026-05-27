@@ -102,5 +102,6 @@ _PLUGINS: dict[str, dict[str, type[Plugin]]] = {
     "ubuntu@22.04": _LEGACY_PLUGINS,
     "ubuntu@24.04": _LEGACY_PLUGINS,
     "ubuntu@25.10": _V2_PLUGINS,
+    "ubuntu@26.04": _V2_PLUGINS,
     "devel": _V2_PLUGINS,
 }

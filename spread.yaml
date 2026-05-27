@@ -117,6 +117,7 @@ debug-each: |
   fi
 
 suites:
+  # !!! Let's test the docs-only workflow
   docs/tutorial/code/:
     summary: tests tutorial from the docs
     systems:

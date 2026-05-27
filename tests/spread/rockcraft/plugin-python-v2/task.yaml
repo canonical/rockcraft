@@ -13,8 +13,8 @@ environment:
   BASE/python_in_install_bare_2604: "ubuntu@26.04"
   BUILD_BASE/python_in_install_ubuntu_2510: "ubuntu@25.10"
   BUILD_BASE/python_in_install_bare_2510: "ubuntu@25.10"
-  BUILD_BASE/python_in_install_ubuntu_2604: "devel"
-  BUILD_BASE/python_in_install_bare_2604: "devel"
+  BUILD_BASE/python_in_install_ubuntu_2604: "ubuntu@26.04"
+  BUILD_BASE/python_in_install_bare_2604: "ubuntu@26.04"
 
   # python3 comes from the stage dir
   SCENARIO/python_in_stage_ubuntu_2510: "python-in-stage-ubuntu"
@@ -28,25 +28,23 @@ environment:
   BASE/python_in_stage_bare_2604: "ubuntu@26.04"
   BUILD_BASE/python_in_stage_ubuntu_2510: "ubuntu@25.10"
   BUILD_BASE/python_in_stage_bare_2510: "ubuntu@25.10"
-  BUILD_BASE/python_in_stage_ubuntu_2604: "devel"
-  BUILD_BASE/python_in_stage_bare_2604: "devel"
+  BUILD_BASE/python_in_stage_ubuntu_2604: "ubuntu@26.04"
+  BUILD_BASE/python_in_stage_bare_2604: "ubuntu@26.04"
 
   # python3 comes from chisel slices
   SCENARIO/python_from_chisel_ubuntu_2510: "python-from-chisel-ubuntu"
   SCENARIO/python_from_chisel_bare_2510: "python-from-chisel-bare"
-  # NOTE: tests for 26.04 with chisel slices are currently disabled because
-  # chisel itself doesn't support 26.04 yet (no chisel-releases branch).
-  #SCENARIO/python_from_chisel_ubuntu_2604: "python-from-chisel-ubuntu"
-  #SCENARIO/python_from_chisel_bare_2604: "python-from-chisel-bare"
+  SCENARIO/python_from_chisel_ubuntu_2604: "python-from-chisel-ubuntu"
+  SCENARIO/python_from_chisel_bare_2604: "python-from-chisel-bare"
 
   BASE/python_from_chisel_ubuntu_2510: "ubuntu@25.10"
   BASE/python_from_chisel_bare_2510: "ubuntu@25.10"
-  #BASE/python_from_chisel_ubuntu_2604: "ubuntu@26.04"
-  #BASE/python_from_chisel_bare_2604: "ubuntu@26.04"
+  BASE/python_from_chisel_ubuntu_2604: "ubuntu@26.04"
+  BASE/python_from_chisel_bare_2604: "ubuntu@26.04"
   BUILD_BASE/python_from_chisel_ubuntu_2510: "ubuntu@25.10"
   BUILD_BASE/python_from_chisel_bare_2510: "ubuntu@25.10"
-  #BUILD_BASE/python_from_chisel_ubuntu_2604: "devel"
-  #BUILD_BASE/python_from_chisel_bare_2604: "devel"
+  BUILD_BASE/python_from_chisel_ubuntu_2604: "ubuntu@26.04"
+  BUILD_BASE/python_from_chisel_bare_2604: "ubuntu@26.04"
 
 prepare: cp -r src/ "$SCENARIO"/
 
