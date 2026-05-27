@@ -36,7 +36,7 @@ export UV_FROZEN := true
 help: ## Show this help.
 	@printf "\e[1m%-30s\e[0m | \e[1m%s\e[0m\n" "Target" "Description"
 	printf "\e[2m%-30s + %-41s\e[0m\n" "------------------------------" "------------------------------------------------"
-	egrep '^[^:]+\: [^#]*##' $$(echo $(MAKEFILE_LIST) | tac --separator=' ') | sed -e 's/^[^:]*://' -e 's/:[^#]*/ /' | sort -V| awk -F '[: ]*' \
+	egrep '^[^:]+\: [^#]*##' $$(echo $(MAKEFILE_LIST) | tac --separator=' ') | sed -e 's/:[^#]*/ /' | sort -V | awk -F '[: ]*' \
 	'{
 		if ($$2 == "##")
 		{
@@ -171,7 +171,7 @@ lint-ty: install-ty  ##- Check types with Astral ty (disabled by default)
 ifneq ($(CI),)
 	@echo ::group::$@
 endif
-	ty check --python .venv/bin/python $(SOURCES)
+	ty check --python .venv $(SOURCES)
 ifneq ($(CI),)
 	@echo ::endgroup::
 endif

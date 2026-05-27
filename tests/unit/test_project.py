@@ -105,7 +105,7 @@ class DevelProject(Project):
     "development", but we want to test the behavior anyway.
     """
 
-    base: str  # type: ignore[assignment]
+    base: str
 
 
 @pytest.fixture

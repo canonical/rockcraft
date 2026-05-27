@@ -18,6 +18,7 @@ import copy
 import re
 import textwrap
 from pathlib import Path
+from typing import Any
 
 import pytest
 from craft_application import errors, util
@@ -85,7 +86,7 @@ def test_expand_extensions(emitter, fake_app_config):
 
 @pytest.mark.usefixtures("tmp_path", "setup_extensions")
 def test_expand_extensions_error(fake_app_config):
-    wrong_yaml = copy.deepcopy(FULL_EXTENSION_PROJECT)
+    wrong_yaml: dict[str, Any] = copy.deepcopy(FULL_EXTENSION_PROJECT)
 
     # Misconfigure the plugin
     wrong_yaml["parts"]["foo"]["plugin"] = "nonexistent"
