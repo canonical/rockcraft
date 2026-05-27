@@ -19,11 +19,11 @@
 import re
 import typing
 from collections.abc import Iterable, Mapping
-from typing import TYPE_CHECKING, Any, Literal
+from typing import Any, Literal
 
 import craft_cli
 import pydantic
-import spdx_lookup  # type: ignore[import-untyped]
+import spdx_lookup
 from craft_application.models import (
     Platform,
 )
@@ -32,8 +32,9 @@ from craft_application.models.base import alias_generator
 from craft_application.models.project import DevelBaseInfo
 from craft_platforms import DebianArchitecture
 from craft_providers import bases
-from craft_providers.bases import BuilddBaseAlias
 from craft_providers.errors import BaseConfigurationError
+from pydantic import GetCoreSchemaHandler
+from pydantic_core import core_schema
 from typing_extensions import override
 
 from rockcraft.architectures import SUPPORTED_ARCHS
@@ -42,11 +43,13 @@ from rockcraft.pebble import Check, Service
 from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
 from rockcraft.utils import parse_command
 
-# pyright workaround
-if TYPE_CHECKING:
-    _RunUser = str | None
-else:
-    _RunUser = Literal[tuple(SUPPORTED_GLOBAL_USERNAMES)] | None
+
+class _RunUser(str):
+    @classmethod
+    def __get_pydantic_core_schema__(
+        cls, source_type: str, handler: GetCoreSchemaHandler
+    ) -> core_schema.CoreSchema:
+        return core_schema.literal_schema(list(SUPPORTED_GLOBAL_USERNAMES.keys()))
 
 
 MESSAGE_ENTRYPOINT_CHANGED = (
@@ -73,6 +76,7 @@ BuildBaseT = typing.Annotated[
         "ubuntu@22.04",
         "ubuntu@24.04",
         "ubuntu@25.10",
+        "ubuntu@26.04",
         "devel",
     ]
     | None,
@@ -84,10 +88,10 @@ class Project(BaseProject):
     """Rockcraft project definition."""
 
     # Type of summary is Optional[str] in BaseProject
-    summary: str = pydantic.Field(  # type: ignore[reportIncompatibleVariableOverride]
+    summary: str = pydantic.Field(
         description="A short, single line description of the rock."
     )
-    description: str = pydantic.Field(  # type: ignore[reportIncompatibleVariableOverride]
+    description: str = pydantic.Field(
         description="A full description of the rock, potentially including multiple paragraphs."
     )
     """A full description of the rock, potentially including multiple paragraphs.
@@ -98,7 +102,7 @@ class Project(BaseProject):
         default=None,
         description="Additional environment variables for the base image's OCI environment.",
     )
-    run_user: _RunUser = pydantic.Field(
+    run_user: _RunUser | None = pydantic.Field(
         default=None, description="The default OCI user. If unset, runs as root."
     )
     """The default OCI user. Must be a shared user.
@@ -160,7 +164,7 @@ class Project(BaseProject):
 
     This key is mutually incompatible with the ``entrypoint-service`` key.
     """
-    base: BaseT = pydantic.Field(  # type: ignore[reportIncompatibleVariableOverride]
+    base: BaseT = pydantic.Field(
         description="The base system image for the rock.",
     )
     """
@@ -171,7 +175,7 @@ class Project(BaseProject):
     which is typically used with static binaries or
     :ref:`Chisel slices <explanation-chisel>`.
     """
-    build_base: BuildBaseT = pydantic.Field(  # type: ignore[reportIncompatibleVariableOverride]
+    build_base: BuildBaseT = pydantic.Field(
         default=None, description="The system used to build the rock."
     )
     """The system and version that will be used during the rock's build, but not
@@ -219,7 +223,7 @@ class Project(BaseProject):
     def _check_unsupported_options(cls, values: Mapping[str, Any]) -> Mapping[str, Any]:
         """Before validation, check if unsupported fields exist. Exit if so."""
         # pylint: disable=unused-argument
-        unsupported_msg = str(
+        unsupported_msg = (
             "The fields 'entrypoint', 'cmd' and 'env' are not supported in "
             "Rockcraft. All rocks have Pebble as their entrypoint, so you must "
             "use 'services' to define your container application and "
@@ -286,12 +290,12 @@ class Project(BaseProject):
             # This is the license name we use on our stores.
             return license
 
-        lic: spdx_lookup.License | None = spdx_lookup.by_id(license)  # type: ignore[reportUnknownMemberType]
+        lic: spdx_lookup.License | None = spdx_lookup.by_id(license)
         if lic is None:
             raise ValueError(
                 f"License {license} not valid. It must be either 'proprietary' or in SPDX format.",
             )
-        return str(lic.id)  # type: ignore[reportUnknownMemberType]
+        return str(lic.id)
 
     @pydantic.model_validator(mode="before")
     @classmethod
@@ -494,9 +498,4 @@ class Project(BaseProject):
     @classmethod
     @override
     def _get_devel_bases(cls) -> Iterable[DevelBaseInfo]:
-        return [
-            DevelBaseInfo(
-                current_devel_base=BuilddBaseAlias.RESOLUTE,
-                devel_base=BuilddBaseAlias.DEVEL,
-            )
-        ]
+        return []

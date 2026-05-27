@@ -19,7 +19,7 @@ import json
 import os
 import tarfile
 from pathlib import Path
-from typing import NamedTuple
+from typing import NamedTuple, cast
 from unittest.mock import ANY, call, mock_open, patch
 
 import pytest
@@ -36,7 +36,7 @@ MOCK_NEW_USER = {
     "group": "foo:x:585287:\n",
     "shadow": str(
         "foo:!:"
-        f"{(datetime.datetime.utcnow() - datetime.datetime(1970, 1, 1)).days}"
+        f"{(datetime.datetime.now() - datetime.datetime(1970, 1, 1)).days}"
         "::::::\n"
     ),
 }
@@ -324,8 +324,8 @@ class TestImage:
             tmp_path / "prime",
             tmp_path,
             "mock-tag",
-            MOCK_NEW_USER["user"],
-            MOCK_NEW_USER["uid"],
+            cast(str, MOCK_NEW_USER["user"]),
+            cast(int, MOCK_NEW_USER["uid"]),
         )
 
         mock_tmpdir.assert_called_once()
@@ -350,8 +350,8 @@ class TestImage:
                 tmp_path / "prime",
                 fake_tmpfs,
                 "mock-tag",
-                MOCK_NEW_USER["user"],
-                MOCK_NEW_USER["uid"] + 1,
+                cast(str, MOCK_NEW_USER["user"]),
+                cast(int, MOCK_NEW_USER["uid"]) + 1,
             )
         check.is_in(
             "conflict with existing user/group in the base filesystem", str(err)
@@ -362,8 +362,8 @@ class TestImage:
                 tmp_path / "prime",
                 fake_tmpfs,
                 "mock-tag",
-                MOCK_NEW_USER["user"] + "bar",
-                MOCK_NEW_USER["uid"],
+                cast(str, MOCK_NEW_USER["user"]) + "bar",
+                cast(int, MOCK_NEW_USER["uid"]),
             )
         check.is_in(
             "conflict with existing user/group in the base filesystem", str(err)
@@ -472,8 +472,8 @@ class TestImage:
             fake_prime,
             tmp_path,
             "mock-tag",
-            MOCK_NEW_USER["user"],
-            MOCK_NEW_USER["uid"],
+            cast(str, MOCK_NEW_USER["user"]),
+            cast(int, MOCK_NEW_USER["uid"]),
         )
 
         mock_tmpdir.assert_called_once()
