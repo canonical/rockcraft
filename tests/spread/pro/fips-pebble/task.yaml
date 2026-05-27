@@ -1,15 +1,11 @@
 summary: Test packing rock with FIPS pebble snap
-prepare: |
-  sudo pro enable --assume-yes fips
 execute: |
-  TAG="latest"
   ROCK_FILE="fips-pebble-test_latest_*.rock"
 
-  rockcraft pack --pro=fips --destructive-mode
-  sudo rockcraft.skopeo --insecure-policy copy oci-archive:$ROCK_FILE docker-daemon:fips-pebble-test:$TAG
+  rockcraft pack --pro=fips
+  sudo rockcraft.skopeo --insecure-policy copy oci-archive:$ROCK_FILE docker-daemon:fips-pebble-test:latest
 
   docker run --rm fips-pebble-test:$TAG exec pebble version | MATCH "\-fips"
 restore: |
-  rm -rf $ROCK_FILE
-  docker rmi -f fips-pebble-test:$TAG
-  sudo pro disable --assume-yes fips
+  rm -rf fips-pebble-test_latest_*.rock
+  docker rmi -f fips-pebble-test:latest
