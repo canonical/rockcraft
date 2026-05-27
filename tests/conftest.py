@@ -22,7 +22,7 @@ from unittest import mock
 
 import craft_platforms
 import pytest
-import xdg
+import xdg.BaseDirectory
 from craft_application.application import AppMetadata
 from craft_application.services import ServiceFactory
 from overrides import override

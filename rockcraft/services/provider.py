@@ -21,7 +21,7 @@ from __future__ import annotations
 import os
 
 from craft_application import ProviderService
-from overrides import override  # type: ignore[reportUnknownVariableType]
+from typing_extensions import override
 
 
 class RockcraftProviderService(ProviderService):
