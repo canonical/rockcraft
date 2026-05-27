@@ -1,0 +1,55 @@
+summary: flask extension with pyproject.toml test
+environment:
+  SCENARIO/bare: bare
+  SCENARIO/base_2204: ubuntu-22.04
+  SCENARIO/base_2404: ubuntu-24.04
+execute: |
+  NAME="flask-pyproject-${SCENARIO//./-}"
+  ROCK_FILE="${NAME}_0.1_amd64.rock"
+  IMAGE="${NAME}:0.1"
+
+  run_rockcraft init --name "${NAME}" --profile flask-framework
+
+  sed -i "s/^name: .*/name: ${NAME}/g" rockcraft.yaml
+  sed -i "s/^base: .*/base: ${SCENARIO//-/@}/g" rockcraft.yaml
+  if [ "${SCENARIO}" != "bare" ]; then
+      sed -i "/^build-base:/d" rockcraft.yaml
+  fi
+
+  run_rockcraft pack
+
+  test -f "${ROCK_FILE}"
+
+  # Ensure docker does not have this container image
+  docker rmi --force "${IMAGE}"
+  # Install container
+  sudo rockcraft.skopeo --insecure-policy copy "oci-archive:${ROCK_FILE}" "docker-daemon:${IMAGE}"
+  # Ensure container exists
+  docker images "${IMAGE}" | MATCH "${NAME}"
+
+  # ensure container doesn't exist
+  docker rm -f "${NAME}-container"
+
+  # test that gunicorn is installed and config file is correct
+  docker run --rm --entrypoint /bin/python3 "${IMAGE}" -m gunicorn --chdir /flask/app --check-config app:app
+
+  # test that gevent is installed
+  docker run --rm --entrypoint /bin/python3 "${IMAGE}" -c "import gevent;print(f'gevent: {gevent.__version__}')"
+
+  # test that pebble service uses gevent
+  docker run --rm "${IMAGE}" plan | grep gevent
+
+  # test that flask is installed
+  docker run --rm --entrypoint /bin/python3 "${IMAGE}" -c "import flask;print(f'flask: {flask.__version__}')"
+
+  # test the flask service
+  docker run --name "${NAME}-container" -d -p 8139:8000 "${IMAGE}"
+  retry -n 5 --wait 2 curl localhost:8139
+  [ "$(curl -sSf localhost:8139)" == "ok" ]
+
+restore: |
+  NAME="flask-pyproject-${SCENARIO//./-}"
+  docker stop "${NAME}-container" || true
+  docker rm --force "${NAME}-container"
+  rm -f "*.rock" rockcraft.yaml
+  docker system prune -a -f
