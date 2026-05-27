@@ -2,7 +2,7 @@ summary: Test packing rock with FIPS pebble snap
 prepare: |
   sudo pro enable --assume-yes fips-updates
 execute: |
-  ROCK_FILE="fips-pebble-test_latest_*.rock"
+  ROCK_FILE="fips-pebble-test_latest_amd64.rock"
 
   rockcraft pack --destructive --pro=fips-updates
   sudo rockcraft.skopeo --insecure-policy copy oci-archive:$ROCK_FILE docker-daemon:fips-pebble-test:latest
