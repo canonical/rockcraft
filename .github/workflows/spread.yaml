@@ -1,4 +1,4 @@
-name: Spread
+name: Spread tests for source
 on:
   pull_request:
   push:
@@ -10,23 +10,37 @@ on:
 jobs:
   snap-build:
     runs-on: ubuntu-24.04
+    outputs:
+      source-files: ${{ steps.filter.outputs.source-files }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
+      - name: Check which files changed
+        id: filter
+        uses: dorny/paths-filter@fbd0ab8f3e69293af611ebaee6363fc25e6d187d # v4.0.1
+        with:
+          # Combine multiple negation checks into a union (¬A ∧ ¬B ∧ ¬C), because individual entries are checked independently (A ∨ B ∨ C).
+          # If we ever need to filter only for docs, glob 'docs/**/*' and '**/*.md'
+          filters: |
+            source-files:
+              - '!({docs/**,*.md,**/*.md,.readthedocs.yaml})'
       - name: Build snap
         uses: canonical/action-build@v1
+        if: steps.filter.outputs.source-files == 'true'
         id: rockcraft
       - name: Upload snap artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
+        if: steps.filter.outputs.source-files == 'true'
         with:
           name: snap
           path: ${{ steps.rockcraft.outputs.snap }}
 
-  snap-tests:
+  source-spread-tests:
     runs-on: [self-hosted, spread-installed]
     needs: [snap-build]
+    if: ${{ needs.snap-build.outputs.source-files == 'true' }}
 
     steps:
       - name: Cleanup job workspace
@@ -34,12 +48,12 @@ jobs:
           rm -rf "${{ github.workspace }}"
           mkdir "${{ github.workspace }}"
       - name: Checkout rockcraft
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           submodules: true
       - name: Download snap artifact
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v8
         with:
           name: snap
           path: tests
@@ -59,9 +73,9 @@ jobs:
           fi
           spread google:tests/spread/pro/
 
-      - name: Run spread
+      - name: Run source spread tests
         run: |
-          spread google:
+          spread google:...tests...
 
       - name: Discard spread workers
         if: always()
