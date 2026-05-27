@@ -2,7 +2,7 @@ summary: Test packing rock with FIPS pebble snap
 execute: |
   ROCK_FILE="fips-pebble-test_latest_*.rock"
 
-  rockcraft pack --pro=fips
+  rockcraft pack --pro=fips,esm-infra
   sudo rockcraft.skopeo --insecure-policy copy oci-archive:$ROCK_FILE docker-daemon:fips-pebble-test:latest
 
   docker run --rm fips-pebble-test:$TAG exec pebble version | MATCH "\-fips"
