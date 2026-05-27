@@ -24,7 +24,7 @@ import craft_platforms
 from craft_application import LifecycleService
 from craft_parts.infos import StepInfo
 from craft_parts.plugins import Plugin
-from overrides import override  # type: ignore[reportUnknownVariableType]
+from typing_extensions import override
 
 from rockcraft import layers, plugins
 from rockcraft.plugins.python_common import get_python_plugins

@@ -17,7 +17,7 @@
 """The Rockcraft Python plugin."""
 
 from craft_parts.plugins import python_plugin
-from overrides import override  # type: ignore[reportUnknownVariableType]
+from typing_extensions import override
 
 from rockcraft.plugins import python_common
 

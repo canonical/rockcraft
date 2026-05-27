@@ -19,7 +19,7 @@
 import json
 from typing import Any, cast
 
-from overrides import override  # type: ignore[reportUnknownVariableType]
+from typing_extensions import override
 
 from rockcraft.errors import ExtensionError
 from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
@@ -43,7 +43,7 @@ class ExpressJSFramework(Extension):
 
     @staticmethod
     @override
-    def is_experimental(base: str | None) -> bool:  # noqa: ARG004 (unused arg)
+    def is_experimental(base: str | None) -> bool:
         """Check if the extension is in an experimental state."""
         return False
 
