@@ -1,3 +1,6 @@
+.. meta::
+    :description: How to publish a Chisel slice definition to the upstream releases repository. Share your custom package slices with the broader community through a pull request.
+
 .. _how-to-publish-a-slice-definition:
 
 Publish a slice definition

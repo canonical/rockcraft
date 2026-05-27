@@ -1,3 +1,6 @@
+.. meta::
+    :description: How to convert an existing Docker entrypoint to a Pebble layer for Rockcraft. Define Pebble services from Dockerfile entrypoints using NGINX as a reference example.
+
 .. _how-to-convert-an-entrypoint-to-a-pebble-layer:
 
 Convert an entrypoint to a Pebble layer

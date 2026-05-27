@@ -1,3 +1,6 @@
+.. meta::
+    :description: Learn how to chisel an existing rock using Chisel slices to reduce its size and attack surface for a lean, production-ready OCI container image.
+
 .. _how-to-chisel-a-rock:
 
 Chisel a rock

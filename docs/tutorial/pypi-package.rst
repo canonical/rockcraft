@@ -1,3 +1,6 @@
+.. meta::
+    :description: In this tutorial, we use the Python plugin to pack a PyPI package into an OCI rock and run it with Docker.
+
 .. _tutorial-pack-a-python-package:
 
 Pack a Python package

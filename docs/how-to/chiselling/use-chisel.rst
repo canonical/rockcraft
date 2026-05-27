@@ -1,3 +1,6 @@
+.. meta::
+    :description: How to use Chisel with Rockcraft to cut existing package slices into rocks. Install packages or individual slices via stage-packages in your rockcraft.yaml file.
+
 .. _how-to-cut-existing-slices:
 
 Cut existing slices

@@ -1,3 +1,6 @@
+.. meta::
+    :description: How to migrate an existing Docker image to a chiselled Rockcraft rock. Step-by-step guide using Skopeo and LXD to build a minimal, secure OCI container image.
+
 .. _how-to-migrate-a-docker-image-to-a-chiselled-rock:
 
 Migrate a Docker image to a chiselled rock
