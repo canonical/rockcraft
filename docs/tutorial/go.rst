@@ -20,7 +20,7 @@ rocks for Go apps.
 Setup
 =====
 
-.. include:: /reuse/tutorial/setup_edge.rst
+.. include:: /reuse/tutorial/setup_stable.rst
 
 In order to test the Go app locally, before packing it into a rock,
 install Go.
@@ -168,15 +168,6 @@ Edit the ``platforms`` key in ``rockcraft.yaml`` if required.
     The ``name``, ``version`` and ``platform`` all influence the name of the
     generated ``.rock`` file.
 
-
-As the ``go-framework`` extension is still experimental, export the
-environment variable ``ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS``:
-
-.. literalinclude:: code/go/task.yaml
-    :language: bash
-    :start-after: [docs:experimental]
-    :end-before: [docs:experimental-end]
-    :dedent: 2
 
 Pack the rock:
 
@@ -486,4 +477,3 @@ the changes are not taking effect, try running ``rockcraft clean`` and pack
 the rock again with ``rockcraft pack``.
 
 .. _`lxd-docker-connectivity-issue`: https://documentation.ubuntu.com/lxd/en/latest/howto/network_bridge_firewalld/#prevent-connectivity-issues-with-lxd-and-docker
-.. _`install-multipass`: https://multipass.run/docs/install-multipass

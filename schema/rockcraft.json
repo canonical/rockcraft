@@ -872,6 +872,7 @@
             "nil",
             "ant",
             "autotools",
+            "bazel",
             "cargo-use",
             "cmake",
             "dotnet",
@@ -884,6 +885,7 @@
             "maven-use",
             "meson",
             "npm",
+            "npm-use",
             "poetry",
             "python",
             "qmake",
@@ -1199,6 +1201,22 @@
           ],
           "title": "Overlay-Script"
         },
+        "override-overlay": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Shell script to run inside the overlay chroot after mounting.",
+          "examples": [
+            "echo 'hello from chroot' > /root/test.txt"
+          ],
+          "title": "Override-Overlay"
+        },
         "override-build": {
           "anyOf": [
             {
@@ -1295,6 +1313,7 @@
                   "nil",
                   "ant",
                   "autotools",
+                  "bazel",
                   "cargo-use",
                   "cmake",
                   "dotnet",
@@ -1307,6 +1326,7 @@
                   "maven-use",
                   "meson",
                   "npm",
+                  "npm-use",
                   "poetry",
                   "python",
                   "qmake",
@@ -1621,6 +1641,22 @@
                   "|\n  rm -f ${CRAFT_OVERLAY}/usr/bin/vi ${CRAFT_OVERLAY}/usr/bin/vim*\n  rm -f ${CRAFT_OVERLAY}/usr/bin/emacs*\n  rm -f ${CRAFT_OVERLAY}/bin/nano"
                 ],
                 "title": "Overlay-Script"
+              },
+              "override-overlay": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Shell script to run inside the overlay chroot after mounting.",
+                "examples": [
+                  "echo 'hello from chroot' > /root/test.txt"
+                ],
+                "title": "Override-Overlay"
               },
               "override-build": {
                 "anyOf": [
@@ -1718,6 +1754,7 @@
                   "nil",
                   "ant",
                   "autotools",
+                  "bazel",
                   "cargo-use",
                   "cmake",
                   "dotnet",
@@ -1730,6 +1767,7 @@
                   "maven-use",
                   "meson",
                   "npm",
+                  "npm-use",
                   "poetry",
                   "python",
                   "qmake",
@@ -2045,6 +2083,22 @@
                 ],
                 "title": "Overlay-Script"
               },
+              "override-overlay": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Shell script to run inside the overlay chroot after mounting.",
+                "examples": [
+                  "echo 'hello from chroot' > /root/test.txt"
+                ],
+                "title": "Override-Overlay"
+              },
               "override-build": {
                 "anyOf": [
                   {
@@ -2141,6 +2195,7 @@
                   "nil",
                   "ant",
                   "autotools",
+                  "bazel",
                   "cargo-use",
                   "cmake",
                   "dotnet",
@@ -2153,6 +2208,7 @@
                   "maven-use",
                   "meson",
                   "npm",
+                  "npm-use",
                   "poetry",
                   "python",
                   "qmake",
@@ -2496,6 +2552,22 @@
                 ],
                 "title": "Overlay-Script"
               },
+              "override-overlay": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Shell script to run inside the overlay chroot after mounting.",
+                "examples": [
+                  "echo 'hello from chroot' > /root/test.txt"
+                ],
+                "title": "Override-Overlay"
+              },
               "override-build": {
                 "anyOf": [
                   {
@@ -2592,6 +2664,7 @@
                   "nil",
                   "ant",
                   "autotools",
+                  "bazel",
                   "cargo-use",
                   "cmake",
                   "dotnet",
@@ -2604,6 +2677,7 @@
                   "maven-use",
                   "meson",
                   "npm",
+                  "npm-use",
                   "poetry",
                   "python",
                   "qmake",
@@ -2935,6 +3009,481 @@
                 ],
                 "title": "Overlay-Script"
               },
+              "override-overlay": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Shell script to run inside the overlay chroot after mounting.",
+                "examples": [
+                  "echo 'hello from chroot' > /root/test.txt"
+                ],
+                "title": "Override-Overlay"
+              },
+              "override-build": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "The commands to run instead of the default behavior of the build step.",
+                "examples": [
+                  "|\n  cd cmd/webhook\n  mkdir $CRAFT_PART_INSTALL/ko-app\n  go build -o $CRAFT_PART_INSTALL/ko-app/webhook -a ."
+                ],
+                "title": "Override-Build"
+              },
+              "override-stage": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "The commands to run instead of the default behavior of the stage step.",
+                "examples": [
+                  "|\n  craftctl default\n  chown -R 499 \"${CRAFT_PART_INSTALL}/entrypoint.sh\""
+                ],
+                "title": "Override-Stage"
+              },
+              "override-prime": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "The commands to run instead of the default behavior of the prime step.",
+                "examples": [
+                  "|\n  craftctl default\n  mkdir -p $CRAFT_PRIME/var/lib/mysql\n  mkdir -p $CRAFT_PRIME/var/lib/mysqld"
+                ],
+                "title": "Override-Prime"
+              },
+              "permissions": {
+                "default": [],
+                "description": "The ownership and permission settings for a set of files in the part's prime directory.",
+                "examples": [
+                  "[{owner: 2000, group: 2000}, {path: srv/indico/start-indico.sh, mode: \"544\"}, {path: etc/, mode: \"755\"}]"
+                ],
+                "items": {
+                  "$ref": "#/$defs/Permissions"
+                },
+                "title": "Permissions",
+                "type": "array"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "plugin": {
+                "const": "bazel"
+              }
+            }
+          },
+          "then": {
+            "$comment": "common properties had to be repeated here or they would be considered invalid by the schema validator otherwise",
+            "properties": {
+              "plugin": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "The plugin to build the part with.",
+                "examples": [
+                  "python",
+                  "dump"
+                ],
+                "title": "Plugin",
+                "enum": [
+                  "dump",
+                  "nil",
+                  "ant",
+                  "autotools",
+                  "bazel",
+                  "cargo-use",
+                  "cmake",
+                  "dotnet",
+                  "go",
+                  "go-use",
+                  "gradle",
+                  "jlink",
+                  "make",
+                  "maven",
+                  "maven-use",
+                  "meson",
+                  "npm",
+                  "npm-use",
+                  "poetry",
+                  "python",
+                  "qmake",
+                  "ruby",
+                  "rust",
+                  "scons",
+                  "uv"
+                ]
+              },
+              "source": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "The location of the source files for the part.",
+                "examples": [
+                  ".",
+                  "https://github.com/canonical/dqlite"
+                ],
+                "title": "Source"
+              },
+              "bazel-targets": {
+                "default": [
+                  "//..."
+                ],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Bazel-Targets",
+                "type": "array"
+              },
+              "bazel-parameters": {
+                "default": [],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Bazel-Parameters",
+                "type": "array"
+              },
+              "after": {
+                "default": [],
+                "description": "The parts to process before starting this part's build.",
+                "examples": [
+                  "[build-deps, daemon]"
+                ],
+                "items": {
+                  "type": "string"
+                },
+                "title": "After",
+                "type": "array"
+              },
+              "source-checksum": {
+                "default": "",
+                "description": "The checksum of the downloaded source, to ensure integrity.",
+                "examples": [
+                  "sha256/1451d01ee3a21100340aed867d0b799f46f0b1749680028d38c3f5d0128fb8a7"
+                ],
+                "title": "Source-Checksum",
+                "type": "string"
+              },
+              "source-channel": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source-Channel"
+              },
+              "source-branch": {
+                "default": "",
+                "description": "The target branch for Git sources.",
+                "examples": [
+                  "main",
+                  "hotfix/2.10"
+                ],
+                "title": "Source-Branch",
+                "type": "string"
+              },
+              "source-commit": {
+                "default": "",
+                "description": "The target commit for Git sources.",
+                "examples": [
+                  "36086af03fc4941a8ac219648ce77401743f3ae0"
+                ],
+                "title": "Source-Commit",
+                "type": "string"
+              },
+              "source-depth": {
+                "default": 0,
+                "description": "The commit depth to fetch for Git sources.",
+                "examples": [
+                  "1"
+                ],
+                "title": "Source-Depth",
+                "type": "integer"
+              },
+              "source-subdir": {
+                "default": "",
+                "description": "The subdirectory of the unpacked source where the build will occur.",
+                "examples": [
+                  "src",
+                  "demo_nodes_cpp"
+                ],
+                "title": "Source-Subdir",
+                "type": "string"
+              },
+              "source-submodules": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "The registered submodules to fetch from Git sources.",
+                "examples": [
+                  "[third_party/googletest, third_party/jsoncpp]",
+                  "[libbpf]"
+                ],
+                "title": "Source-Submodules"
+              },
+              "source-tag": {
+                "default": "",
+                "description": "The target tag for Git sources.",
+                "examples": [
+                  "1.0.1"
+                ],
+                "title": "Source-Tag",
+                "type": "string"
+              },
+              "source-type": {
+                "default": "",
+                "description": "The format of the part's source.",
+                "examples": [
+                  "git",
+                  "local"
+                ],
+                "title": "Source-Type",
+                "type": "string"
+              },
+              "disable-parallel": {
+                "default": false,
+                "description": "Whether to disable CPU multithreading during the build step.",
+                "examples": [
+                  "true"
+                ],
+                "title": "Disable-Parallel",
+                "type": "boolean"
+              },
+              "overlay-packages": {
+                "default": [],
+                "description": "The packages to install in the part's layer.",
+                "examples": [
+                  "[ed]"
+                ],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Overlay-Packages",
+                "type": "array"
+              },
+              "stage-snaps": {
+                "default": [],
+                "description": "The snaps to include in the stage environment.",
+                "examples": [
+                  "[go/1.17, chisel/latest/candidate, mir-kiosk-x11]"
+                ],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Stage-Snaps",
+                "type": "array"
+              },
+              "stage-packages": {
+                "default": [],
+                "description": "The packages or Chisel slices to include in the stage environment.",
+                "examples": [
+                  "[curl, libxml2]"
+                ],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Stage-Packages",
+                "type": "array"
+              },
+              "build-snaps": {
+                "default": [],
+                "description": "The snaps to install in the build environment.",
+                "examples": [
+                  "[go/latest/stable, node/stable]"
+                ],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Snaps",
+                "type": "array"
+              },
+              "build-packages": {
+                "default": [],
+                "description": "The packages to install in the build environment.",
+                "examples": [
+                  "[git, libffi-dev, libssl-dev]"
+                ],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Packages",
+                "type": "array"
+              },
+              "build-environment": {
+                "default": [],
+                "description": "The environment variables to define for the build step, as key-value pairs.",
+                "examples": [
+                  "[{MESSAGE: \"Hello world!\"}, {NAME: \"Craft Parts\"}]"
+                ],
+                "items": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object"
+                },
+                "title": "Build-Environment",
+                "type": "array"
+              },
+              "build-attributes": {
+                "default": [],
+                "description": "Identifiers that control specific behaviors during the build.",
+                "examples": [
+                  "[enable-usrmerge]",
+                  "[disable-usrmerge]"
+                ],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Attributes",
+                "type": "array"
+              },
+              "organize": {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "description": "A map of files from the build directory to their destinations in the stage directory.",
+                "examples": [
+                  "{hello.py: bin/hello}"
+                ],
+                "title": "Organize",
+                "type": "object"
+              },
+              "overlay": {
+                "description": "The files to copy from the part's layer to the stage directory.",
+                "examples": [
+                  "[bin, usr/bin]",
+                  "[-etc/cloud/cloud.cfg.d/90_dpkg.cfg]"
+                ],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Overlay",
+                "type": "array"
+              },
+              "stage": {
+                "description": "The files to copy from the build directory to the stage directory.",
+                "examples": [
+                  "[usr/bin/*, usr/share]",
+                  "[-usr, zfsutils-linux]"
+                ],
+                "items": {
+                  "description": "relative path",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "title": "Stage",
+                "type": "array"
+              },
+              "prime": {
+                "description": "",
+                "examples": [
+                  "[usr/lib/*/qt6/plugins/tls/*, -usr/share/thumbnailers]"
+                ],
+                "items": {
+                  "description": "relative path",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "title": "Prime",
+                "type": "array"
+              },
+              "override-pull": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "The commands to run instead of the default behavior of the pull step.",
+                "examples": [
+                  "|\n  craftctl default\n  rm $CRAFT_PART_SRC/pyproject.toml"
+                ],
+                "title": "Override-Pull"
+              },
+              "overlay-script": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "The commands to run after the part's overlay packages are installed.",
+                "examples": [
+                  "|\n  rm -f ${CRAFT_OVERLAY}/usr/bin/vi ${CRAFT_OVERLAY}/usr/bin/vim*\n  rm -f ${CRAFT_OVERLAY}/usr/bin/emacs*\n  rm -f ${CRAFT_OVERLAY}/bin/nano"
+                ],
+                "title": "Overlay-Script"
+              },
+              "override-overlay": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Shell script to run inside the overlay chroot after mounting.",
+                "examples": [
+                  "echo 'hello from chroot' > /root/test.txt"
+                ],
+                "title": "Override-Overlay"
+              },
               "override-build": {
                 "anyOf": [
                   {
@@ -3031,6 +3580,7 @@
                   "nil",
                   "ant",
                   "autotools",
+                  "bazel",
                   "cargo-use",
                   "cmake",
                   "dotnet",
@@ -3043,6 +3593,7 @@
                   "maven-use",
                   "meson",
                   "npm",
+                  "npm-use",
                   "poetry",
                   "python",
                   "qmake",
@@ -3358,6 +3909,22 @@
                 ],
                 "title": "Overlay-Script"
               },
+              "override-overlay": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Shell script to run inside the overlay chroot after mounting.",
+                "examples": [
+                  "echo 'hello from chroot' > /root/test.txt"
+                ],
+                "title": "Override-Overlay"
+              },
               "override-build": {
                 "anyOf": [
                   {
@@ -3454,6 +4021,7 @@
                   "nil",
                   "ant",
                   "autotools",
+                  "bazel",
                   "cargo-use",
                   "cmake",
                   "dotnet",
@@ -3466,6 +4034,7 @@
                   "maven-use",
                   "meson",
                   "npm",
+                  "npm-use",
                   "poetry",
                   "python",
                   "qmake",
@@ -3794,6 +4363,22 @@
                 ],
                 "title": "Overlay-Script"
               },
+              "override-overlay": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Shell script to run inside the overlay chroot after mounting.",
+                "examples": [
+                  "echo 'hello from chroot' > /root/test.txt"
+                ],
+                "title": "Override-Overlay"
+              },
               "override-build": {
                 "anyOf": [
                   {
@@ -3890,6 +4475,7 @@
                   "nil",
                   "ant",
                   "autotools",
+                  "bazel",
                   "cargo-use",
                   "cmake",
                   "dotnet",
@@ -3902,6 +4488,7 @@
                   "maven-use",
                   "meson",
                   "npm",
+                  "npm-use",
                   "poetry",
                   "python",
                   "qmake",
@@ -4234,6 +4821,22 @@
                 ],
                 "title": "Overlay-Script"
               },
+              "override-overlay": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Shell script to run inside the overlay chroot after mounting.",
+                "examples": [
+                  "echo 'hello from chroot' > /root/test.txt"
+                ],
+                "title": "Override-Overlay"
+              },
               "override-build": {
                 "anyOf": [
                   {
@@ -4330,6 +4933,7 @@
                   "nil",
                   "ant",
                   "autotools",
+                  "bazel",
                   "cargo-use",
                   "cmake",
                   "dotnet",
@@ -4342,6 +4946,7 @@
                   "maven-use",
                   "meson",
                   "npm",
+                  "npm-use",
                   "poetry",
                   "python",
                   "qmake",
@@ -4673,6 +5278,22 @@
                 ],
                 "title": "Overlay-Script"
               },
+              "override-overlay": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Shell script to run inside the overlay chroot after mounting.",
+                "examples": [
+                  "echo 'hello from chroot' > /root/test.txt"
+                ],
+                "title": "Override-Overlay"
+              },
               "override-build": {
                 "anyOf": [
                   {
@@ -4769,6 +5390,7 @@
                   "nil",
                   "ant",
                   "autotools",
+                  "bazel",
                   "cargo-use",
                   "cmake",
                   "dotnet",
@@ -4781,6 +5403,7 @@
                   "maven-use",
                   "meson",
                   "npm",
+                  "npm-use",
                   "poetry",
                   "python",
                   "qmake",
@@ -5096,6 +5719,22 @@
                 ],
                 "title": "Overlay-Script"
               },
+              "override-overlay": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Shell script to run inside the overlay chroot after mounting.",
+                "examples": [
+                  "echo 'hello from chroot' > /root/test.txt"
+                ],
+                "title": "Override-Overlay"
+              },
               "override-build": {
                 "anyOf": [
                   {
@@ -5192,6 +5831,7 @@
                   "nil",
                   "ant",
                   "autotools",
+                  "bazel",
                   "cargo-use",
                   "cmake",
                   "dotnet",
@@ -5204,6 +5844,7 @@
                   "maven-use",
                   "meson",
                   "npm",
+                  "npm-use",
                   "poetry",
                   "python",
                   "qmake",
@@ -5542,6 +6183,22 @@
                 ],
                 "title": "Overlay-Script"
               },
+              "override-overlay": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Shell script to run inside the overlay chroot after mounting.",
+                "examples": [
+                  "echo 'hello from chroot' > /root/test.txt"
+                ],
+                "title": "Override-Overlay"
+              },
               "override-build": {
                 "anyOf": [
                   {
@@ -5638,6 +6295,7 @@
                   "nil",
                   "ant",
                   "autotools",
+                  "bazel",
                   "cargo-use",
                   "cmake",
                   "dotnet",
@@ -5650,6 +6308,7 @@
                   "maven-use",
                   "meson",
                   "npm",
+                  "npm-use",
                   "poetry",
                   "python",
                   "qmake",
@@ -6001,6 +6660,22 @@
                 ],
                 "title": "Overlay-Script"
               },
+              "override-overlay": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Shell script to run inside the overlay chroot after mounting.",
+                "examples": [
+                  "echo 'hello from chroot' > /root/test.txt"
+                ],
+                "title": "Override-Overlay"
+              },
               "override-build": {
                 "anyOf": [
                   {
@@ -6097,6 +6772,7 @@
                   "nil",
                   "ant",
                   "autotools",
+                  "bazel",
                   "cargo-use",
                   "cmake",
                   "dotnet",
@@ -6109,6 +6785,7 @@
                   "maven-use",
                   "meson",
                   "npm",
+                  "npm-use",
                   "poetry",
                   "python",
                   "qmake",
@@ -6432,6 +7109,22 @@
                 ],
                 "title": "Overlay-Script"
               },
+              "override-overlay": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Shell script to run inside the overlay chroot after mounting.",
+                "examples": [
+                  "echo 'hello from chroot' > /root/test.txt"
+                ],
+                "title": "Override-Overlay"
+              },
               "override-build": {
                 "anyOf": [
                   {
@@ -6528,6 +7221,7 @@
                   "nil",
                   "ant",
                   "autotools",
+                  "bazel",
                   "cargo-use",
                   "cmake",
                   "dotnet",
@@ -6540,6 +7234,7 @@
                   "maven-use",
                   "meson",
                   "npm",
+                  "npm-use",
                   "poetry",
                   "python",
                   "qmake",
@@ -6868,6 +7563,22 @@
                 ],
                 "title": "Overlay-Script"
               },
+              "override-overlay": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Shell script to run inside the overlay chroot after mounting.",
+                "examples": [
+                  "echo 'hello from chroot' > /root/test.txt"
+                ],
+                "title": "Override-Overlay"
+              },
               "override-build": {
                 "anyOf": [
                   {
@@ -6964,6 +7675,7 @@
                   "nil",
                   "ant",
                   "autotools",
+                  "bazel",
                   "cargo-use",
                   "cmake",
                   "dotnet",
@@ -6976,6 +7688,7 @@
                   "maven-use",
                   "meson",
                   "npm",
+                  "npm-use",
                   "poetry",
                   "python",
                   "qmake",
@@ -7299,6 +8012,22 @@
                 ],
                 "title": "Overlay-Script"
               },
+              "override-overlay": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Shell script to run inside the overlay chroot after mounting.",
+                "examples": [
+                  "echo 'hello from chroot' > /root/test.txt"
+                ],
+                "title": "Override-Overlay"
+              },
               "override-build": {
                 "anyOf": [
                   {
@@ -7395,6 +8124,7 @@
                   "nil",
                   "ant",
                   "autotools",
+                  "bazel",
                   "cargo-use",
                   "cmake",
                   "dotnet",
@@ -7407,6 +8137,7 @@
                   "maven-use",
                   "meson",
                   "npm",
+                  "npm-use",
                   "poetry",
                   "python",
                   "qmake",
@@ -7730,6 +8461,22 @@
                 ],
                 "title": "Overlay-Script"
               },
+              "override-overlay": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Shell script to run inside the overlay chroot after mounting.",
+                "examples": [
+                  "echo 'hello from chroot' > /root/test.txt"
+                ],
+                "title": "Override-Overlay"
+              },
               "override-build": {
                 "anyOf": [
                   {
@@ -7826,6 +8573,7 @@
                   "nil",
                   "ant",
                   "autotools",
+                  "bazel",
                   "cargo-use",
                   "cmake",
                   "dotnet",
@@ -7838,6 +8586,7 @@
                   "maven-use",
                   "meson",
                   "npm",
+                  "npm-use",
                   "poetry",
                   "python",
                   "qmake",
@@ -7880,6 +8629,19 @@
                 ],
                 "default": null,
                 "title": "Npm-Node-Version"
+              },
+              "build-attributes": {
+                "default": [],
+                "description": "Identifiers that control specific behaviors during the build.",
+                "examples": [
+                  "[enable-usrmerge]",
+                  "[disable-usrmerge]"
+                ],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Attributes",
+                "type": "array"
               },
               "source-checksum": {
                 "default": "",
@@ -8075,6 +8837,257 @@
                 "title": "Build-Environment",
                 "type": "array"
               },
+              "organize": {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "description": "A map of files from the build directory to their destinations in the stage directory.",
+                "examples": [
+                  "{hello.py: bin/hello}"
+                ],
+                "title": "Organize",
+                "type": "object"
+              },
+              "overlay": {
+                "description": "The files to copy from the part's layer to the stage directory.",
+                "examples": [
+                  "[bin, usr/bin]",
+                  "[-etc/cloud/cloud.cfg.d/90_dpkg.cfg]"
+                ],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Overlay",
+                "type": "array"
+              },
+              "stage": {
+                "description": "The files to copy from the build directory to the stage directory.",
+                "examples": [
+                  "[usr/bin/*, usr/share]",
+                  "[-usr, zfsutils-linux]"
+                ],
+                "items": {
+                  "description": "relative path",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "title": "Stage",
+                "type": "array"
+              },
+              "prime": {
+                "description": "",
+                "examples": [
+                  "[usr/lib/*/qt6/plugins/tls/*, -usr/share/thumbnailers]"
+                ],
+                "items": {
+                  "description": "relative path",
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "title": "Prime",
+                "type": "array"
+              },
+              "override-pull": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "The commands to run instead of the default behavior of the pull step.",
+                "examples": [
+                  "|\n  craftctl default\n  rm $CRAFT_PART_SRC/pyproject.toml"
+                ],
+                "title": "Override-Pull"
+              },
+              "overlay-script": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "The commands to run after the part's overlay packages are installed.",
+                "examples": [
+                  "|\n  rm -f ${CRAFT_OVERLAY}/usr/bin/vi ${CRAFT_OVERLAY}/usr/bin/vim*\n  rm -f ${CRAFT_OVERLAY}/usr/bin/emacs*\n  rm -f ${CRAFT_OVERLAY}/bin/nano"
+                ],
+                "title": "Overlay-Script"
+              },
+              "override-overlay": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Shell script to run inside the overlay chroot after mounting.",
+                "examples": [
+                  "echo 'hello from chroot' > /root/test.txt"
+                ],
+                "title": "Override-Overlay"
+              },
+              "override-build": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "The commands to run instead of the default behavior of the build step.",
+                "examples": [
+                  "|\n  cd cmd/webhook\n  mkdir $CRAFT_PART_INSTALL/ko-app\n  go build -o $CRAFT_PART_INSTALL/ko-app/webhook -a ."
+                ],
+                "title": "Override-Build"
+              },
+              "override-stage": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "The commands to run instead of the default behavior of the stage step.",
+                "examples": [
+                  "|\n  craftctl default\n  chown -R 499 \"${CRAFT_PART_INSTALL}/entrypoint.sh\""
+                ],
+                "title": "Override-Stage"
+              },
+              "override-prime": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "The commands to run instead of the default behavior of the prime step.",
+                "examples": [
+                  "|\n  craftctl default\n  mkdir -p $CRAFT_PRIME/var/lib/mysql\n  mkdir -p $CRAFT_PRIME/var/lib/mysqld"
+                ],
+                "title": "Override-Prime"
+              },
+              "permissions": {
+                "default": [],
+                "description": "The ownership and permission settings for a set of files in the part's prime directory.",
+                "examples": [
+                  "[{owner: 2000, group: 2000}, {path: srv/indico/start-indico.sh, mode: \"544\"}, {path: etc/, mode: \"755\"}]"
+                ],
+                "items": {
+                  "$ref": "#/$defs/Permissions"
+                },
+                "title": "Permissions",
+                "type": "array"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "plugin": {
+                "const": "npm-use"
+              }
+            }
+          },
+          "then": {
+            "$comment": "common properties had to be repeated here or they would be considered invalid by the schema validator otherwise",
+            "properties": {
+              "plugin": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "The plugin to build the part with.",
+                "examples": [
+                  "python",
+                  "dump"
+                ],
+                "title": "Plugin",
+                "enum": [
+                  "dump",
+                  "nil",
+                  "ant",
+                  "autotools",
+                  "bazel",
+                  "cargo-use",
+                  "cmake",
+                  "dotnet",
+                  "go",
+                  "go-use",
+                  "gradle",
+                  "jlink",
+                  "make",
+                  "maven",
+                  "maven-use",
+                  "meson",
+                  "npm",
+                  "npm-use",
+                  "poetry",
+                  "python",
+                  "qmake",
+                  "ruby",
+                  "rust",
+                  "scons",
+                  "uv"
+                ]
+              },
+              "source": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "The location of the source files for the part.",
+                "examples": [
+                  ".",
+                  "https://github.com/canonical/dqlite"
+                ],
+                "title": "Source"
+              },
+              "npm-include-node": {
+                "default": false,
+                "title": "Npm-Include-Node",
+                "type": "boolean"
+              },
+              "npm-node-version": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Npm-Node-Version"
+              },
               "build-attributes": {
                 "default": [],
                 "description": "Identifiers that control specific behaviors during the build.",
@@ -8086,6 +9099,200 @@
                   "type": "string"
                 },
                 "title": "Build-Attributes",
+                "type": "array"
+              },
+              "source-checksum": {
+                "default": "",
+                "description": "The checksum of the downloaded source, to ensure integrity.",
+                "examples": [
+                  "sha256/1451d01ee3a21100340aed867d0b799f46f0b1749680028d38c3f5d0128fb8a7"
+                ],
+                "title": "Source-Checksum",
+                "type": "string"
+              },
+              "source-channel": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Source-Channel"
+              },
+              "source-branch": {
+                "default": "",
+                "description": "The target branch for Git sources.",
+                "examples": [
+                  "main",
+                  "hotfix/2.10"
+                ],
+                "title": "Source-Branch",
+                "type": "string"
+              },
+              "source-commit": {
+                "default": "",
+                "description": "The target commit for Git sources.",
+                "examples": [
+                  "36086af03fc4941a8ac219648ce77401743f3ae0"
+                ],
+                "title": "Source-Commit",
+                "type": "string"
+              },
+              "source-depth": {
+                "default": 0,
+                "description": "The commit depth to fetch for Git sources.",
+                "examples": [
+                  "1"
+                ],
+                "title": "Source-Depth",
+                "type": "integer"
+              },
+              "source-subdir": {
+                "default": "",
+                "description": "The subdirectory of the unpacked source where the build will occur.",
+                "examples": [
+                  "src",
+                  "demo_nodes_cpp"
+                ],
+                "title": "Source-Subdir",
+                "type": "string"
+              },
+              "source-submodules": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "The registered submodules to fetch from Git sources.",
+                "examples": [
+                  "[third_party/googletest, third_party/jsoncpp]",
+                  "[libbpf]"
+                ],
+                "title": "Source-Submodules"
+              },
+              "source-tag": {
+                "default": "",
+                "description": "The target tag for Git sources.",
+                "examples": [
+                  "1.0.1"
+                ],
+                "title": "Source-Tag",
+                "type": "string"
+              },
+              "source-type": {
+                "default": "",
+                "description": "The format of the part's source.",
+                "examples": [
+                  "git",
+                  "local"
+                ],
+                "title": "Source-Type",
+                "type": "string"
+              },
+              "disable-parallel": {
+                "default": false,
+                "description": "Whether to disable CPU multithreading during the build step.",
+                "examples": [
+                  "true"
+                ],
+                "title": "Disable-Parallel",
+                "type": "boolean"
+              },
+              "after": {
+                "default": [],
+                "description": "The parts to process before starting this part's build.",
+                "examples": [
+                  "[build-deps, daemon]"
+                ],
+                "items": {
+                  "type": "string"
+                },
+                "title": "After",
+                "type": "array"
+              },
+              "overlay-packages": {
+                "default": [],
+                "description": "The packages to install in the part's layer.",
+                "examples": [
+                  "[ed]"
+                ],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Overlay-Packages",
+                "type": "array"
+              },
+              "stage-snaps": {
+                "default": [],
+                "description": "The snaps to include in the stage environment.",
+                "examples": [
+                  "[go/1.17, chisel/latest/candidate, mir-kiosk-x11]"
+                ],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Stage-Snaps",
+                "type": "array"
+              },
+              "stage-packages": {
+                "default": [],
+                "description": "The packages or Chisel slices to include in the stage environment.",
+                "examples": [
+                  "[curl, libxml2]"
+                ],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Stage-Packages",
+                "type": "array"
+              },
+              "build-snaps": {
+                "default": [],
+                "description": "The snaps to install in the build environment.",
+                "examples": [
+                  "[go/latest/stable, node/stable]"
+                ],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Snaps",
+                "type": "array"
+              },
+              "build-packages": {
+                "default": [],
+                "description": "The packages to install in the build environment.",
+                "examples": [
+                  "[git, libffi-dev, libssl-dev]"
+                ],
+                "items": {
+                  "type": "string"
+                },
+                "title": "Build-Packages",
+                "type": "array"
+              },
+              "build-environment": {
+                "default": [],
+                "description": "The environment variables to define for the build step, as key-value pairs.",
+                "examples": [
+                  "[{MESSAGE: \"Hello world!\"}, {NAME: \"Craft Parts\"}]"
+                ],
+                "items": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object"
+                },
+                "title": "Build-Environment",
                 "type": "array"
               },
               "organize": {
@@ -8169,6 +9376,22 @@
                   "|\n  rm -f ${CRAFT_OVERLAY}/usr/bin/vi ${CRAFT_OVERLAY}/usr/bin/vim*\n  rm -f ${CRAFT_OVERLAY}/usr/bin/emacs*\n  rm -f ${CRAFT_OVERLAY}/bin/nano"
                 ],
                 "title": "Overlay-Script"
+              },
+              "override-overlay": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Shell script to run inside the overlay chroot after mounting.",
+                "examples": [
+                  "echo 'hello from chroot' > /root/test.txt"
+                ],
+                "title": "Override-Overlay"
               },
               "override-build": {
                 "anyOf": [
@@ -8266,6 +9489,7 @@
                   "nil",
                   "ant",
                   "autotools",
+                  "bazel",
                   "cargo-use",
                   "cmake",
                   "dotnet",
@@ -8278,6 +9502,7 @@
                   "maven-use",
                   "meson",
                   "npm",
+                  "npm-use",
                   "poetry",
                   "python",
                   "qmake",
@@ -8618,6 +9843,22 @@
                 ],
                 "title": "Overlay-Script"
               },
+              "override-overlay": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Shell script to run inside the overlay chroot after mounting.",
+                "examples": [
+                  "echo 'hello from chroot' > /root/test.txt"
+                ],
+                "title": "Override-Overlay"
+              },
               "override-build": {
                 "anyOf": [
                   {
@@ -8714,6 +9955,7 @@
                   "nil",
                   "ant",
                   "autotools",
+                  "bazel",
                   "cargo-use",
                   "cmake",
                   "dotnet",
@@ -8726,6 +9968,7 @@
                   "maven-use",
                   "meson",
                   "npm",
+                  "npm-use",
                   "poetry",
                   "python",
                   "qmake",
@@ -9069,6 +10312,22 @@
                 ],
                 "title": "Overlay-Script"
               },
+              "override-overlay": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Shell script to run inside the overlay chroot after mounting.",
+                "examples": [
+                  "echo 'hello from chroot' > /root/test.txt"
+                ],
+                "title": "Override-Overlay"
+              },
               "override-build": {
                 "anyOf": [
                   {
@@ -9165,6 +10424,7 @@
                   "nil",
                   "ant",
                   "autotools",
+                  "bazel",
                   "cargo-use",
                   "cmake",
                   "dotnet",
@@ -9177,6 +10437,7 @@
                   "maven-use",
                   "meson",
                   "npm",
+                  "npm-use",
                   "poetry",
                   "python",
                   "qmake",
@@ -9510,6 +10771,22 @@
                 ],
                 "title": "Overlay-Script"
               },
+              "override-overlay": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Shell script to run inside the overlay chroot after mounting.",
+                "examples": [
+                  "echo 'hello from chroot' > /root/test.txt"
+                ],
+                "title": "Override-Overlay"
+              },
               "override-build": {
                 "anyOf": [
                   {
@@ -9606,6 +10883,7 @@
                   "nil",
                   "ant",
                   "autotools",
+                  "bazel",
                   "cargo-use",
                   "cmake",
                   "dotnet",
@@ -9618,6 +10896,7 @@
                   "maven-use",
                   "meson",
                   "npm",
+                  "npm-use",
                   "poetry",
                   "python",
                   "qmake",
@@ -9987,6 +11266,22 @@
                 ],
                 "title": "Overlay-Script"
               },
+              "override-overlay": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Shell script to run inside the overlay chroot after mounting.",
+                "examples": [
+                  "echo 'hello from chroot' > /root/test.txt"
+                ],
+                "title": "Override-Overlay"
+              },
               "override-build": {
                 "anyOf": [
                   {
@@ -10083,6 +11378,7 @@
                   "nil",
                   "ant",
                   "autotools",
+                  "bazel",
                   "cargo-use",
                   "cmake",
                   "dotnet",
@@ -10095,6 +11391,7 @@
                   "maven-use",
                   "meson",
                   "npm",
+                  "npm-use",
                   "poetry",
                   "python",
                   "qmake",
@@ -10468,6 +11765,22 @@
                 ],
                 "title": "Overlay-Script"
               },
+              "override-overlay": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Shell script to run inside the overlay chroot after mounting.",
+                "examples": [
+                  "echo 'hello from chroot' > /root/test.txt"
+                ],
+                "title": "Override-Overlay"
+              },
               "override-build": {
                 "anyOf": [
                   {
@@ -10564,6 +11877,7 @@
                   "nil",
                   "ant",
                   "autotools",
+                  "bazel",
                   "cargo-use",
                   "cmake",
                   "dotnet",
@@ -10576,6 +11890,7 @@
                   "maven-use",
                   "meson",
                   "npm",
+                  "npm-use",
                   "poetry",
                   "python",
                   "qmake",
@@ -10899,6 +12214,22 @@
                 ],
                 "title": "Overlay-Script"
               },
+              "override-overlay": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Shell script to run inside the overlay chroot after mounting.",
+                "examples": [
+                  "echo 'hello from chroot' > /root/test.txt"
+                ],
+                "title": "Override-Overlay"
+              },
               "override-build": {
                 "anyOf": [
                   {
@@ -10995,6 +12326,7 @@
                   "nil",
                   "ant",
                   "autotools",
+                  "bazel",
                   "cargo-use",
                   "cmake",
                   "dotnet",
@@ -11007,6 +12339,7 @@
                   "maven-use",
                   "meson",
                   "npm",
+                  "npm-use",
                   "poetry",
                   "python",
                   "qmake",
@@ -11340,6 +12673,22 @@
                 ],
                 "title": "Overlay-Script"
               },
+              "override-overlay": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "Shell script to run inside the overlay chroot after mounting.",
+                "examples": [
+                  "echo 'hello from chroot' > /root/test.txt"
+                ],
+                "title": "Override-Overlay"
+              },
               "override-build": {
                 "anyOf": [
                   {
@@ -11564,6 +12913,7 @@
             "ubuntu@22.04",
             "ubuntu@24.04",
             "ubuntu@25.10",
+            "ubuntu@26.04",
             "devel"
           ],
           "type": "string"

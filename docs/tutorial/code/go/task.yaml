@@ -37,10 +37,6 @@ execute: |
   # [docs:create-rockcraft-yaml-end]
   sed -i "s/name: .*/name: go-hello-world/g" rockcraft.yaml
 
-  # [docs:experimental]
-  export ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS=true
-  # [docs:experimental-end]
-
   # [docs:pack]
   rockcraft pack
   # [docs:pack-end]

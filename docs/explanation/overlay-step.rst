@@ -12,7 +12,10 @@ The overlay step provides the means to modify the base filesystem before the
 build step is applied. If ``overlay-packages`` is used, those packages will be
 installed first. ``overlay-script`` will run the provided script in this step.
 The location of the overlay is made available in the ``${CRAFT_OVERLAY}``
-environment variable. ``overlay`` can be used to specify which files will be
+environment variable. Alternatively, ``override-overlay`` runs the script in a
+chroot environment, which is useful for scripts that need to execute within the
+target filesystem as opposed to the host. ``overlay-script`` and ``override-overlay``
+are mutually incompatible. ``overlay`` can be used to specify which files will be
 migrated to the next steps, and when omitted its default value will be ``"*"``.
 
 .. Include a section about overlay parameters from the Craft Parts documentation.

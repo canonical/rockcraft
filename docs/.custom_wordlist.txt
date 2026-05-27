@@ -12,6 +12,7 @@ Autotools
 backend
 backends
 backoff
+Bazel
 Bazel's
 Boehm
 booleans?
@@ -130,6 +131,7 @@ pymarkdown
 pystatsd
 QEMU
 qmake
+rackup
 Read the Docs
 readthedocs
 redeclare
@@ -141,6 +143,7 @@ rosdep
 rst
 runit
 runtimes?
+rustc
 rustup
 SCons
 scriptlets?

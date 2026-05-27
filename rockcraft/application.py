@@ -21,7 +21,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from craft_application import Application, AppMetadata, errors
-from overrides import override  # type: ignore[reportUnknownVariableType]
+from typing_extensions import override
 
 from rockcraft import plugins
 from rockcraft.models import project
@@ -37,6 +37,7 @@ APP_METADATA = AppMetadata(
     docs_url="https://documentation.ubuntu.com/rockcraft/{version}",
     check_supported_base=True,
     artifact_type="rock",
+    enable_pro_support=True,
 )
 
 
@@ -65,8 +66,6 @@ class Rockcraft(Application):
         # pylint: disable=import-outside-toplevel
         from craft_parts.features import Features
 
-        # enable the craft-parts Features that we use here, right before
-        # loading the project and validating its parts.
         Features(enable_overlay=True)
 
     def _get_build_base(self) -> str | None:

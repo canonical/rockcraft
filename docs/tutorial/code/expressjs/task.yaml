@@ -42,10 +42,6 @@ execute: |
 
   sed -i "s/name: .*/name: expressjs-hello-world/g" rockcraft.yaml
 
-  # [docs:experimental]
-  export ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS=true
-  # [docs:experimental-end]
-
   # [docs:pack]
   rockcraft pack
   # [docs:pack-end]
