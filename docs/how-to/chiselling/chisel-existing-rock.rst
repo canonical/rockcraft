@@ -125,10 +125,10 @@ And the "Hello, world" script still works:
 
 **To conclude**, you've just created a general-purpose Python rock with just a
 few YAML lines and no code whatsoever! Then, by changing a couple of YAML
-fields (the ``base``), you've achieved a **~49% size reduction** while
+fields (the ``base``), you've achieved a **~50% size reduction** while
 maintaining functionality. Finally, by appending two words (literally, just
 the slice names) to the project file, you were able to reduce the rock's
-size even further by an **additional ~37%** of its original size! In short:
+size even further by an **additional ~40%** of its original size! In short:
 
 +---------------+------------------+-----------+
 | Original rock | w/ ``bare`` base | chiselled |
