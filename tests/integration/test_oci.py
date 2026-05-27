@@ -130,7 +130,7 @@ def test_add_layer_with_symlink_in_base(new_dir):
 
 
 @pytest.mark.slow
-@pytest.mark.usefixtures("fake_project_file", "project_keys")
+@pytest.mark.usefixtures("fake_project_file", "project_keys", "overlay_mocks")
 @pytest.mark.parametrize(
     "project_keys",
     [
@@ -152,7 +152,7 @@ def test_add_layer_with_symlink_in_base(new_dir):
         }
     ],
 )
-def test_add_layer_with_overlay(new_dir, mocker, fake_services, mock_obtain_image):
+def test_add_layer_with_overlay(new_dir, fake_services, mock_obtain_image):
     """Test "overwriting" directories in the base layer via overlays."""
 
     def populate_base_layer(base_layer_dir):
@@ -168,14 +168,9 @@ def test_add_layer_with_overlay(new_dir, mocker, fake_services, mock_obtain_imag
     )
     mock_obtain_image.return_value = image_info
 
-    # Mock os.geteuid() because currently craft-parts doesn't allow overlays
-    # without superuser privileges.
-    mock_geteuid = mocker.patch.object(os, "geteuid", return_value=0)
-
     fake_services.get("project").configure(build_for=None, platform=None)
     # Setup the service, to create the LifecycleManager.
     lifecycle_service = fake_services.get("lifecycle")
-    assert mock_geteuid.called
 
     # Run the lifecycle.
     lifecycle_service.run("prime")

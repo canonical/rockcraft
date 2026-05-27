@@ -21,10 +21,11 @@ from craft_application import errors
 from craft_application.models import DEVEL_BASE_INFOS
 from craft_cli import EmitterMode, emit
 from craft_parts.errors import OsReleaseVersionIdError
+from craft_parts.packages import deb
 from craft_parts.utils.os_utils import OsRelease
-from craft_providers.bases import get_base_alias
+from craft_providers.bases import BaseName, get_base_alias
 from rockcraft import plugins
-from rockcraft.models.project import Project
+from rockcraft.models.project import BaseT, Project
 from rockcraft.plugins.python_common import SITECUSTOMIZE_TEMPLATE, get_python_plugins
 
 from tests.testing.project import create_project
@@ -45,7 +46,9 @@ def setup_python_test(monkeypatch):
     emit.set_mode(EmitterMode.VERBOSE)
 
 
-def create_python_project(base: str, extra_part_props=None, *, plugin: str) -> Project:
+def create_python_project(
+    base: BaseT, extra_part_props=None, *, plugin: str
+) -> Project:
     source = Path(__file__).parent / "python_source" / plugin
     extra = extra_part_props or {}
 
@@ -60,7 +63,8 @@ def create_python_project(base: str, extra_part_props=None, *, plugin: str) -> P
 
     build_base = None
     if base != "bare":
-        base_alias = get_base_alias(base_name=tuple(base.split("@")))  # pyright: ignore[reportCallIssue,reportArgumentType]
+        name, version = base.split("@")
+        base_alias = get_base_alias(base_name=BaseName(name, version))
         if base_alias in [info.current_devel_base for info in DEVEL_BASE_INFOS]:
             build_base = "devel"
 
@@ -109,15 +113,19 @@ try:
     VALUES_FOR_HOST = RELEASE_TO_VALUES[OsRelease().version_id()]
 except (OsReleaseVersionIdError, KeyError):
     # not running on supported Ubuntu; the tests will be skipped.
-    # Use the 22.04 values to make pyright happy.
+    # Use the 22.04 values to make type checkers happy.
     VALUES_FOR_HOST = RELEASE_TO_VALUES["22.04"]
 
 
+@pytest.mark.usefixtures("overlay_mocks")
 @pytest.mark.parametrize("plugin_name", list(get_python_plugins("ubuntu@24.04").keys()))
 @pytest.mark.parametrize("base", tuple(UBUNTU_BASES))
 def test_python_plugin_ubuntu(
-    fake_services, fake_project_file, base, in_project_path, plugin_name: str
+    fake_services, fake_project_file, base, in_project_path, plugin_name: str, mocker
 ):
+    # The 'overlay_mocks' fixture causes craft-parts to try to call "apt-get update"
+    mocker.patch.object(deb.Ubuntu, "refresh_packages_list")
+
     project = create_python_project(base=base, plugin=plugin_name)
     project.to_yaml_file(in_project_path / "rockcraft.yaml")
     fake_services.get("project").configure(build_for=None, platform=None)
@@ -138,7 +146,7 @@ def test_python_plugin_ubuntu(
     # Check the extra sitecustomize.py module that we add
     expected_text = SITECUSTOMIZE_TEMPLATE.replace("EOF", "")
 
-    version_dir = VALUES_FOR_HOST.version_dir  # pyright: ignore[reportUnboundVariable]
+    version_dir = VALUES_FOR_HOST.version_dir
     sitecustom = in_project_path / f"stage/usr/lib/{version_dir}/sitecustomize.py"
     assert sitecustom.read_text().strip() == expected_text.strip()
 
@@ -163,9 +171,7 @@ def test_python_plugin_bare(in_project_path, fake_services, plugin_name):
     assert sorted(bin_dir.glob("python*")) == [
         bin_dir / i for i in VALUES_FOR_HOST.symlinks
     ]
-    assert (
-        (bin_dir / "python3").readlink() == VALUES_FOR_HOST.symlink_target  # pyright: ignore[reportUnboundVariable]
-    )
+    assert (bin_dir / "python3").readlink() == VALUES_FOR_HOST.symlink_target
 
     # Check the shebang in the "hello" script
     expected_shebang = "#!/bin/python3"
@@ -175,7 +181,7 @@ def test_python_plugin_bare(in_project_path, fake_services, plugin_name):
     # Check the extra sitecustomize.py module that we add
     expected_text = SITECUSTOMIZE_TEMPLATE.replace("EOF", "")
 
-    version_dir = VALUES_FOR_HOST.version_dir  # pyright: ignore[reportUnboundVariable]
+    version_dir = VALUES_FOR_HOST.version_dir
     sitecustom = in_project_path / f"stage/usr/lib/{version_dir}/sitecustomize.py"
     assert sitecustom.read_text().strip() == expected_text.strip()
 
