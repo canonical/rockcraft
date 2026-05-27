@@ -29,8 +29,7 @@ def fastapi_input_yaml_fixture():
 
 
 @pytest.fixture
-def fastapi_extension(mock_extensions, monkeypatch):
-    monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "1")
+def fastapi_extension(mock_extensions):
     extensions.register("fastapi-framework", extensions.FastAPIFramework)
 
 

@@ -66,8 +66,9 @@ def fake_provider(mock_instance):
         def is_provider_installed(cls) -> bool:
             return True
 
-        def create_environment(self, *, instance_name: str):  # type: ignore[reportIncompatibleVariableOverride]
-            yield mock_instance
+        @override
+        def create_environment(self, *, instance_name: str):
+            return mock_instance
 
         @contextlib.contextmanager
         def launched_environment(
@@ -94,5 +95,9 @@ def fake_provider(mock_instance):
             include_base_instances: bool = False,
         ) -> Collection[Executor]:
             return []
+
+        @override
+        def prune(self, *, project_name: str, prune_templates: bool = False) -> None:
+            pass
 
     return FakeProvider()

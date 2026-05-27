@@ -1,12 +1,11 @@
 .. _craft_parts_dotnet_v2_plugin:
 
 .NET plugin (ubuntu\@25.10)
-=============================
+===========================
 
-.. This starts the document immediately after the title line
-.. include:: /common/craft-parts/reference/plugins/dotnet_v2_plugin.rst
-    :start-after: ================
-    :end-before: Keys
+The .NET plugin (ubuntu\@25.10) builds .NET projects using the `dotnet`_ tool. It's the
+successor to the .NET plugin (ubuntu\@20.04).
+
 
 .. admonition:: Base support
 

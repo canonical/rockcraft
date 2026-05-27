@@ -1,5 +1,7 @@
 .. meta::
-    :description: Migrate a rock’s base from ubuntu@24.04 to ubuntu@26.04 and ubuntu@25.10.
+    :description: Migrate a rock's base from ubuntu@24.04 to ubuntu@26.04 and ubuntu@25.10.
+
+.. _how-to-migrate-2604:
 
 Change from ``ubuntu@24.04`` to ``ubuntu@26.04``
 ================================================
@@ -39,6 +41,26 @@ Not all extensions are compatible with ``ubuntu@26.04`` at launch. If your rock 
 run ``rockcraft extensions`` to see if it's available for ``ubuntu@26.04``. If your rock uses an
 extension that does not yet support ``ubuntu@26.04``, it's best to wait to upgrade.
 
+.. _how-to-update-part-names:
+
+Update part names
+-----------------
+
+If you update a rock to use ``ubuntu@26.04``, then you must also verify its part names.
+Part names on ``ubuntu@26.04`` and higher bases can't contain any forward slashes (/).
+We recommend replacing them with a hyphen (-):
+
+.. code-block:: diff
+    :caption: rockcraft.yaml
+
+     base: ubuntu@26.04
+
+     # ...
+
+     parts:
+    -  my/part:
+    +  my-part:
+
 Update parts to the new .NET plugin
 -----------------------------------
 
@@ -73,10 +95,13 @@ For example, the following part using the uv plugin in ``ubuntu@24.04``:
 
     base: ubuntu@24.04
 
+    # ...
+
     parts:
       uv-part:
         plugin: uv
-        ...
+
+        # ...
 
 can be  updated to:
 
@@ -84,6 +109,8 @@ can be  updated to:
     :caption: rockcraft.yaml
 
     base: ubuntu@26.04
+
+    # ...
 
     parts:
       uv-part:
@@ -95,7 +122,8 @@ can be  updated to:
           uv export --quiet --no-hashes --no-dev --no-emit-workspace > uv-requirements.txt
           # call the default build of the python plugin
           craftctl default
-        ...
+
+        #...
 
 Update packages
 ---------------

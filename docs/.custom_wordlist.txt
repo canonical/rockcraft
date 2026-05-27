@@ -12,6 +12,7 @@ Autotools
 backend
 backends
 backoff
+Bazel
 Bazel's
 Boehm
 booleans?

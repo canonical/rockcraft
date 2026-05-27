@@ -18,6 +18,8 @@ from textwrap import dedent
 import pytest
 from rockcraft import cli, plugins
 
+pytestmark = [pytest.mark.usefixtures("enable_overlay_feature")]
+
 
 @pytest.mark.parametrize("build_base", ["ubuntu@20.04", "ubuntu@24.04", "ubuntu@25.10"])
 def test_get_app_plugins_build_base(tmp_path, monkeypatch, mocker, build_base):

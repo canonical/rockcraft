@@ -1,0 +1,15 @@
+summary: Bazel plugin test
+
+execute: |
+  ROCK_FILE="plugin-bazel_0.1_amd64.rock"
+  IMAGE="plugin-bazel:0.1"
+
+  # Build the rock & load it into docker
+  run_rockcraft pack
+  test -f ${ROCK_FILE}
+  sudo rockcraft.skopeo --insecure-policy copy oci-archive:${ROCK_FILE} docker-daemon:${IMAGE}
+  docker images
+  rm ${ROCK_FILE}
+
+  # Run the packaged program to verify the bazel build succeeded
+  docker run --rm $IMAGE exec /hello | MATCH "Hello from Bazel"
