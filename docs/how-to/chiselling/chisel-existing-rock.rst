@@ -70,7 +70,7 @@ Pack this rock with the same ``rockcraft`` command as above:
     :language: bash
     :start-after: [docs:pack-bare-rock]
     :end-before: [docs:pack-bare-rock-end]
-    :dedent: 2
+a ~50% size reduction - and also have a functional Python3.14 interpreter.
 
 This new rock (``bare-python_3.14_amd64.rock``) will now have about **27MB** -
 a ~33% size reduction - and also have a functional Python3.14 interpreter.
