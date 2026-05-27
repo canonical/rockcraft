@@ -532,7 +532,7 @@ def test_add_pebble_part_snap(mocker, enabled_services, expected_channel):
     """Test that FIPS pebble snap is used when FIPS services are enabled."""
 
     mocker.patch(
-        "rockcraft.pebble.ProServices._get_pro_services", return_value=enabled_services
+        "craft_application.util.ProServices._get_pro_services", return_value=enabled_services
     )
 
     yaml_data = {"build-base": "ubuntu@24.04", "parts": {}}

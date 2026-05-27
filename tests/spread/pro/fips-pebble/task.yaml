@@ -1,19 +1,15 @@
 summary: Test packing rock with FIPS pebble snap
+prepare: |
+  sudo pro enable --assume-yes fips
 execute: |
   TAG="latest"
-  IMAGE_DIR="image"
   ROCK_FILE="fips-pebble-test_latest_*.rock"
-  UNPACK_DIR="unpacked"
 
-  rockcraft pack --pro=fips
+  rockcraft pack --pro=fips --destructive-mode
+  sudo rockcraft.skopeo --insecure-policy copy oci-archive:$ROCK_FILE docker-daemon:fips-pebble-test:$TAG
 
-  mkdir -p $IMAGE_DIR
-  tar -xvf $ROCK_FILE -C $IMAGE_DIR
-
-  /snap/rockcraft/current/bin/umoci unpack --rootless --image $IMAGE_DIR:$TAG $UNPACK_DIR
-
-  # verify pebble version
-  $UNPACK_DIR/rootfs/bin/pebble version | MATCH "\-fips"
-
-  rockcraft clean
-  rm -rf $ROCK_FILE $IMAGE_DIR $UNPACK_DIR
+  docker run --rm fips-pebble-test:$TAG exec pebble version | MATCH "\-fips"
+restore: |
+  rm -rf $ROCK_FILE
+  docker rmi -f fips-pebble-test:$TAG
+  sudo pro disable --assume-yes fips
