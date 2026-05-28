@@ -29,7 +29,7 @@ jobs:
     with:
       source-files: ${{ needs.filter.outputs.source-files }}
   test:
-    uses: canonical/starflow/.github/workflows/test-python.yaml@main
+    uses: medubelko/starflow/.github/workflows/test-python.yaml@work/craft-5161-conditional-qa-steps
     needs: filter
     with:
       source-files: ${{ needs.filter.outputs.source-files }}
