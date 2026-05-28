@@ -1,6 +1,8 @@
 Rockcraft documentation
 =======================
 
+!!! TEST
+
 **Rockcraft is a tool to create** :ref:`rocks <explanation-rocks>` -- a new
 generation of secure, stable and `OCI-compliant container images
 <OCI_image_spec_>`_, based on Ubuntu.
