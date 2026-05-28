@@ -22,7 +22,7 @@ jobs:
           # If we ever need to filter only for docs, glob 'docs/**/*' and '**/*.md'
           filters: |
             source-files:
-              - '!({docs/**,*.md,**/*.md,.readthedocs.yaml})'
+              - '!({docs/**,*.md,**/*.md,.readthedocs.yaml,.github/workflows/qa.yaml})'
   lint:
     uses: canonical/starflow/.github/workflows/lint-python.yaml@main
     needs: filter
