@@ -26,6 +26,11 @@ jobs:
           filters: |
             source-files:
               - '!({docs/**,*.md,**/*.md,.readthedocs.yaml})'
+      - name: Default to 'true' for scheduled checks on main
+        run: |
+          if [[ "${{ github.event_name }}" == "schedule" ]]; then
+            echo "source-files=true" >> "$GITHUB_OUTPUT"
+          fi
       - name: Build snap
         uses: canonical/action-build@v1
         if: steps.filter.outputs.source-files == 'true'
