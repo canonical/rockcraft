@@ -53,8 +53,11 @@ In the same directory, put the following code into a new file,
     :caption: ~/fastapi-hello-world/app.py
     :language: python
 
-Run the FastAPI app using ``fastapi dev app.py --port 8000`` to verify
-that it works.
+Run the FastAPI app to verify that it works:
+
+.. code-block:: bash
+
+    fastapi dev app.py --port 8000
 
 Test the FastAPI app by using ``curl`` to send a request to the root
 endpoint. We'll need a new shell of the VM for this -- in a separate terminal,
@@ -107,7 +110,7 @@ The top of the file should look similar to the following snippet:
 
     name: fastapi-hello-world
     # see https://documentation.ubuntu.com/rockcraft/latest/explanation/bases/
-    # for more information about bases and using 'bare' bases for chiselled rocks
+    # for more information about bases and bare bases
     base: ubuntu@24.04 # the base environment for this FastAPI app
     version: '0.1' # just for humans. Semantic versioning is recommended
     summary: A summary of your FastAPI app # 79 char long summary
@@ -340,7 +343,7 @@ The top of the ``rockcraft.yaml`` file should look similar to the following:
 
     name: fastapi-hello-world
     # see https://documentation.ubuntu.com/rockcraft/latest/explanation/bases/
-    # for more information about bases and using 'bare' bases for chiselled rocks
+    # for more information about bases and bare bases
     base: bare # as an alternative, an ubuntu base can be used
     build-base: ubuntu@24.04 # build-base is required when the base is bare
     version: '0.1-chiselled'
@@ -434,7 +437,7 @@ The top of the ``rockcraft.yaml`` file should look similar to the following:
 
     name: fastapi-hello-world
     # see https://documentation.ubuntu.com/rockcraft/latest/explanation/bases/
-    # for more information about bases and using 'bare' bases for chiselled rocks
+    # for more information about bases and bare bases
     base: bare
     build-base: ubuntu@24.04
     version: '0.2'

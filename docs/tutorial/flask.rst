@@ -52,7 +52,11 @@ In the same directory, copy and save the following into a text file called
     :caption: ~/flask-hello-world/app.py
     :language: python
 
-Run the Flask app using ``flask run -p 8000`` to verify that it works.
+Run the Flask app to verify that it works:
+
+.. code-block:: bash
+
+    flask run -p 8000
 
 Test the Flask app by using ``curl`` to send a request to the root
 endpoint. We'll need a new shell of the VM for this -- in a separate terminal,
@@ -105,7 +109,7 @@ The top of the file should look similar to the following snippet:
 
     name: flask-hello-world
     # see https://documentation.ubuntu.com/rockcraft/en/1.6.0/explanation/bases/
-    # for more information about bases and using 'bare' bases for chiselled rocks
+    # for more information about bases and bare bases
     base: bare # as an alternative, an ubuntu base can be used
     build-base: ubuntu@24.04 # build-base is required when the base is bare
     version: '0.1' # just for humans. Semantic versioning is recommended
@@ -340,7 +344,7 @@ top of the ``rockcraft.yaml`` file should look similar to the following:
 
     name: flask-hello-world
     # see https://documentation.ubuntu.com/rockcraft/en/1.6.0/explanation/bases/
-    # for more information about bases and using 'bare' bases for chiselled rocks
+    # for more information about bases and bare bases
     base: bare
     build-base: ubuntu@24.04
     version: '0.2'
