@@ -33,9 +33,8 @@ execute: |
 
   # [docs:create-rockcraft-yaml]
   cd ..
-  rockcraft init --profile django-framework
+  rockcraft init --profile django-framework --name django-hello-world
   # [docs:create-rockcraft-yaml-end]
-  sed -i "s/name: .*/name: django-hello-world/g" rockcraft.yaml
 
   # [docs:pack]
   rockcraft pack
