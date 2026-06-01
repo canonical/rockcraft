@@ -54,7 +54,7 @@ Run the FastAPI app to verify that it works:
 
 .. code-block:: bash
 
-   fastapi dev app.py --port 8000
+    fastapi dev app.py --port 8000
 
 Test the FastAPI app by using ``curl`` to send a request to the root
 endpoint. We'll need a new shell of the VM for this -- in a separate terminal,
