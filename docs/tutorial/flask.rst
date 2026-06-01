@@ -53,7 +53,7 @@ Run the Flask app to verify that it works:
 
 .. code-block:: bash
 
-   flask run -p 8000
+    flask run -p 8000
 
 Test the Flask app by using ``curl`` to send a request to the root
 endpoint. We'll need a new shell of the VM for this -- in a separate terminal,
