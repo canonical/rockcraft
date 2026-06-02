@@ -7,7 +7,7 @@ The Express extension streamlines the process of building Express
 application rocks.
 
 It facilitates the installation of Express application dependencies, including
-Node.js and NPM, inside the rock. Additionally, it transfers your project files
+Node.js and npm, inside the rock. Additionally, it transfers your project files
 to ``/app`` within the rock.
 
 The Express extension is compatible with the ``bare`` and ``ubuntu@24.04``
