@@ -1,3 +1,6 @@
+.. meta::
+    :description: Learn the process of making a Spring Boot app into a rock. In this tutorial, we use the spring-boot-framework extension to bootstrap and test the contents of the rock.
+
 .. _tutorial-build-a-rock-for-a-spring-boot-app:
 
 Build a rock for a Spring Boot app
@@ -247,6 +250,11 @@ The output should list the Spring Boot container image, along with its tag, ID a
 size:
 
 .. terminal::
+    :user: ubuntu
+    :host: rock-dev
+    :dir: ~/spring-boot-hello-world
+
+    docker images spring-boot-hello-world:0.1
 
     REPOSITORY                TAG       IMAGE ID       CREATED         SIZE
     spring-boot-hello-world   0.1       f3abf7ebc169   5 minutes ago   149MB
@@ -290,6 +298,11 @@ As a result, Pebble will give the logs for the
 We should expect to see something similar to this:
 
 .. terminal::
+    :user: ubuntu
+    :host: rock-dev
+    :dir: ~/spring-boot-hello-world
+
+    docker exec spring-boot-hello-world pebble logs spring-boot
 
      .   ____          _            __ _ _
     /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
