@@ -500,8 +500,8 @@ def add_pebble_part(project: dict[str, Any]) -> None:
         return
     pebble_part = deepcopy(Pebble.get_part_spec(build_base))
 
-    if ProServices._pro_client_exists() and (  # noqa: SLF001 # pyright: ignore[reportPrivateUsage]
-        ProServices._get_pro_services()  # noqa: SLF001 # pyright: ignore[reportPrivateUsage]
+    if ProServices.pro_client_exists() and (
+        ProServices.get_pro_services()
         & {
             "fips",
             "fips-preview",

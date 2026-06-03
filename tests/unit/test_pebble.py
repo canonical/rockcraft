@@ -532,7 +532,7 @@ def test_add_pebble_part_snap(mocker, enabled_services, expected_channel):
     """Test that FIPS pebble snap is used when FIPS services are enabled."""
 
     mocker.patch(
-        "craft_application.util.ProServices._get_pro_services",
+        "craft_application.util.ProServices.get_pro_services",
         return_value=enabled_services,
     )
 
