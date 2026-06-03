@@ -1,3 +1,6 @@
+.. meta::
+    :description: Browse Rockcraft tutorials for step-by-step guidance on building rocks. These include apps such as Python and 12-factor web apps.
+
 .. _tutorial:
 
 Tutorial
