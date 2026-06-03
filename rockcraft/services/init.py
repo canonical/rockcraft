@@ -21,7 +21,7 @@ from typing import Any
 
 from craft_application.services import InitService
 from craft_cli import emit
-from overrides import override  # type: ignore[reportUnknownVariableType]
+from typing_extensions import override
 
 
 class RockcraftInitService(InitService):

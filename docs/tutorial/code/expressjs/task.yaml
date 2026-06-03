@@ -51,18 +51,18 @@ execute: |
   # [docs:ls-rock-end]
 
   # [docs:skopeo-copy]
-  sudo rockcraft.skopeo copy \
+  rockcraft.skopeo copy \
     --insecure-policy \
     oci-archive:expressjs-hello-world_0.1_$(dpkg --print-architecture).rock \
     docker-daemon:expressjs-hello-world:0.1
   # [docs:skopeo-copy-end]
 
   # [docs:docker-images]
-  sudo docker images expressjs-hello-world:0.1
+  docker images expressjs-hello-world:0.1
   # [docs:docker-images-end]
 
   # [docs:docker-run]
-  sudo docker run --rm -d -p 3000:3000 \
+  docker run --rm -d -p 3000:3000 \
     --name expressjs-hello-world expressjs-hello-world:0.1
   # [docs:docker-run-end]
   retry -n 5 --wait 2 curl --fail localhost:3000
@@ -72,12 +72,12 @@ execute: |
   # [docs:curl-expressjs-rock-end]
 
   # [docs:get-logs]
-  sudo docker exec expressjs-hello-world pebble logs expressjs
+  docker exec expressjs-hello-world pebble logs expressjs
   # [docs:get-logs-end]
 
   # [docs:stop-docker]
-  sudo docker stop expressjs-hello-world
-  sudo docker rmi expressjs-hello-world:0.1 --force
+  docker stop expressjs-hello-world
+  docker rmi expressjs-hello-world:0.1 --force
   # [docs:stop-docker-end]
 
   mv time.js app/routes/
@@ -90,11 +90,11 @@ execute: |
 
   # [docs:docker-run-update]
   rockcraft pack
-  sudo rockcraft.skopeo --insecure-policy \
+  rockcraft.skopeo --insecure-policy \
     copy oci-archive:expressjs-hello-world_0.2_$(dpkg --print-architecture).rock \
     docker-daemon:expressjs-hello-world:0.2
-  sudo docker images expressjs-hello-world:0.2
-  sudo docker run --rm -d -p 3000:3000 \
+  docker images expressjs-hello-world:0.2
+  docker run --rm -d -p 3000:3000 \
     --name expressjs-hello-world expressjs-hello-world:0.2
   # [docs:docker-run-update-end]
   retry -n 5 --wait 2 curl --fail localhost:3000/time
@@ -104,8 +104,8 @@ execute: |
   # [docs:curl-time-end]
 
   # [docs:stop-docker-updated]
-  sudo docker stop expressjs-hello-world
-  sudo docker rmi expressjs-hello-world:0.2 --force
+  docker stop expressjs-hello-world
+  docker rmi expressjs-hello-world:0.2 --force
   # [docs:stop-docker-updated-end]
 
   # [docs:cleanup]
