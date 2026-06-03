@@ -19,7 +19,7 @@ import os
 import subprocess
 import warnings
 from pathlib import Path
-from typing import cast
+from typing import Any, cast
 
 import pydantic
 import pytest
@@ -884,7 +884,8 @@ def test_project_marshal_exec_check_emits_no_pydantic_warning():
         warnings.simplefilter("always")
         dumped = project.marshal()
 
-    assert dumped["checks"]["online"]["exec"]["command"] == "/bin/healthcheck"
+    checks = cast(dict[str, Any], dumped["checks"])
+    assert checks["online"]["exec"]["command"] == "/bin/healthcheck"
     assert not any(
         "PydanticSerializationUnexpectedValue" in str(w.message) for w in caught
     )

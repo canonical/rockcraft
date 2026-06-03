@@ -194,16 +194,18 @@ def _get_check_tag(check: Mapping[str, Any] | _BaseCheck) -> str:
         return "tcp"
     if isinstance(check, ExecCheck):
         return "exec"
+    if not isinstance(check, Mapping):
+        raise CraftValidationError(f"Unknown check type for {check!r}.")
 
     tags = ("http", "tcp", "exec")
-    check_types = check.keys() & tags
+    check_types = [tag for tag in tags if tag in check]
     match len(check_types):
         case 0:
             raise CraftValidationError(
                 f"Must specify exactly one of {', '.join(tags)} for each check."
             )
         case 1:
-            return check_types.pop()
+            return check_types[0]
         case _:
             raise CraftValidationError(
                 f"Multiple check types specified ({', '.join(sorted(check_types))}). "
