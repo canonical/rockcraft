@@ -1,3 +1,6 @@
+.. meta::
+    :description: Release notes for Rockcraft 1.7 (December 2024). Discover notable features, bug fixes, backwards-incompatible changes, and documentation updates.
+
 .. _release-1.7.0:
 .. _release-1.7:
 

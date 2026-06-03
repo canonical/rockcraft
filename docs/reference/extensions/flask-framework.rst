@@ -1,3 +1,6 @@
+.. meta::
+    :description: Reference documentation for the Rockcraft flask-framework extension. Streamlines building Flask app rocks with Gunicorn and project files installed at /flask/app.
+
 .. _reference-flask-framework:
 
 Flask framework

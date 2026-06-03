@@ -1,3 +1,6 @@
+.. meta::
+    :description: Reference documentation for all Rockcraft extensions including flask-framework, django-framework, fastapi-framework, go-framework, and spring-boot-framework.
+
 .. _reference-extensions:
 
 Extensions

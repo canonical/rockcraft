@@ -1,3 +1,6 @@
+.. meta::
+    :description: Reference documentation for the Rockcraft django-framework extension. Streamlines building Django app rocks with Gunicorn, installing dependencies at /django/app.
+
 .. _reference-django-framework:
 
 Django framework

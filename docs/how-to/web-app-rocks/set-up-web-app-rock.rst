@@ -1,3 +1,6 @@
+.. meta::
+    :description: How to initialize and configure a 12-factor app rock with Rockcraft. Use rockcraft init with web framework profiles and set up your rockcraft.yaml for production.
+
 .. _set-up-web-app-rock:
 
 Set up a 12-Factor app rock

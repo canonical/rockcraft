@@ -1,3 +1,6 @@
+.. meta::
+    :description: How to create a custom Chisel package slice definition when an upstream slice doesn't exist. Guide to defining, testing, and contributing slice definition files.
+
 .. _how-to-create-a-package-slice-for-chisel:
 
 Create a package slice for Chisel

@@ -1,3 +1,6 @@
+.. meta::
+    :description: Reference documentation for the Rockcraft .NET plugin for ubuntu@25.10 and later. The successor to the .NET (ubuntu@20.04) plugin for building .NET project rocks.
+
 .. _craft_parts_dotnet_v2_plugin:
 
 .NET plugin (ubuntu\@25.10)

@@ -1,3 +1,6 @@
+.. meta::
+    :description: Reference documentation for the Rockcraft Express framework extension. Streamlines building Express app rocks with Node.js and project files transferred to /app.
+
 .. _reference-express-framework:
 
 Express framework

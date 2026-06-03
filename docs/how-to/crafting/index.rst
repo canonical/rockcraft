@@ -1,3 +1,6 @@
+.. meta::
+    :description: How-to guides for crafting Rockcraft rocks: specify bases, add users, include files, override plugin builds, and publish rocks to OCI registries.
+
 .. _how-to-crafting:
 
 Crafting

@@ -1,3 +1,6 @@
+.. meta::
+    :description: How to publish a rock to an OCI container registry such as Docker Hub using Skopeo. Learn how to push and tag rock images for distribution and deployment.
+
 .. _how-to-publish-a-rock-to-a-registry:
 
 Publish a rock to a registry

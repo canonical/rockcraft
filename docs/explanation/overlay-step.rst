@@ -1,3 +1,6 @@
+.. meta::
+    :description: Explanation of the Rockcraft overlay step, a unique build phase that modifies the base filesystem before the build step using packages, scripts, and overlays.
+
 .. _explanation-overlay-step:
 
 Overlay step

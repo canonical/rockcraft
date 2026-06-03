@@ -1,3 +1,6 @@
+.. meta::
+    :description: Reference documentation for the Rockcraft .NET plugin for ubuntu@24.04 and earlier. Builds .NET projects and integrates them into a rock container image.
+
 .. _craft_parts_dotnet_plugin:
 
 .NET plugin (ubuntu\@20.04)

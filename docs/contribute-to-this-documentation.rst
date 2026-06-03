@@ -1,3 +1,6 @@
+.. meta::
+    :description: Learn how to contribute to the Rockcraft documentation. Understand the project's documentation standards, contribution process, and style guidelines.
+
 .. _about-this-documentation:
 .. _contribute-to-this-documentation:
 

@@ -1,3 +1,6 @@
+.. meta::
+    :description: Release notes for all Rockcraft versions. Browse summaries of new features, bug fixes, and breaking changes for each Rockcraft release.
+
 .. _release-notes:
 
 Release notes

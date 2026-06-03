@@ -1,3 +1,6 @@
+.. meta::
+    :description: Browse Rockcraft tutorials for step-by-step guidance on building rocks, from a hello-world rock to web app containers with Flask, Django, and Go.
+
 .. _tutorial:
 
 Tutorial

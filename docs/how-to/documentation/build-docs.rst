@@ -1,3 +1,6 @@
+.. meta::
+    :description: How to build the Rockcraft documentation locally using the provided Makefile and Sphinx. Install requirements, generate HTML output, and preview changes.
+
 .. _how-to-build-the-documentation:
 
 Build the documentation

@@ -1,3 +1,6 @@
+.. meta::
+    :description: Release notes for Rockcraft 1.14 (August 2025). Learn about the new features, changes, and fixes introduced in this release.
+
 .. _release-1.14:
 
 Rockcraft 1.14 release notes

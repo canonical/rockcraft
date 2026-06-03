@@ -1,3 +1,5 @@
+.. meta::
+    :description: Reference documentation for the Rockcraft Poetry plugin. Builds Python projects managed with Poetry, including virtual environment setup and Python dependency details.
 
 .. include:: /common/craft-parts/reference/plugins/poetry_plugin.rst
    :end-before: .. _poetry-details-begin:

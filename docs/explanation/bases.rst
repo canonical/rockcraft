@@ -1,3 +1,6 @@
+.. meta::
+    :description: Explanation of Rockcraft rock bases including Ubuntu LTS, interim, and bare base options, and how they affect rock contents and build compatibility.
+
 :relatedlinks: https://ubuntu.com/about/release-cycle, [Ubuntu&#32;image&#32;on&#32;Docker&#32;Hub](https://hub.docker.com/_/ubuntu), [Ubuntu&#32;image&#32;on&#32;Amazon&#32;ECR](https://gallery.ecr.aws/ubuntu/ubuntu), [Scratch&#32;image&#32;on&#32;Docker&#32;Hub](https://hub.docker.com/_/scratch)
 
 .. _explanation-bases:

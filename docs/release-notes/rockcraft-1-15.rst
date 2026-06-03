@@ -1,3 +1,6 @@
+.. meta::
+    :description: Release notes for Rockcraft 1.15 (October 2025). Learn about the new features, changes, and fixes introduced in this release.
+
 .. _release-1.15:
 
 Rockcraft 1.15 release notes

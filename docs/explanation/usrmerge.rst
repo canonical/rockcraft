@@ -1,3 +1,6 @@
+.. meta::
+    :description: Explanation of how Rockcraft implements usrmerge for rocks. Explains the approach to merging /usr directories in Ubuntu-based container images.
+
 .. _explanation-usrmerge-implementation:
 
 Usrmerge implementation

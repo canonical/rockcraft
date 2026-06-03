@@ -1,3 +1,6 @@
+.. meta::
+    :description: Explanation of Chisel, the tool for extracting Debian package slices into a filesystem. Learn how Rockcraft uses Chisel to build minimal rock containers.
+
 .. _explanation-chisel:
 
 Chisel

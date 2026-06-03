@@ -1,3 +1,6 @@
+.. meta::
+    :description: Reference documentation for all keys in the rockcraft.yaml project file. Covers name, title, summary, base, build-base, parts, services, and all options.
+
 .. _reference-rockcraft-yaml:
 
 rockcraft.yaml

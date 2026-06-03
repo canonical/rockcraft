@@ -1,3 +1,6 @@
+.. meta::
+    :description: How-to guides for managing 12-factor app rocks with Rockcraft web framework extensions. Learn to initialize, configure, and use rocks for web applications.
+
 .. _how-to-manage-a-12-factor-app-rock:
 
 Manage a 12-Factor app rock

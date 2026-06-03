@@ -1,3 +1,6 @@
+.. meta::
+    :description: How-to guides for Rockcraft covering crafting, chiselling, publishing, and managing rocks, including remote builds and web app container development.
+
 .. _how-to:
 
 How-to guides

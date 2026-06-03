@@ -1,3 +1,6 @@
+.. meta::
+    :description: Create a "Hello World" rock with Rockcraft. This tutorial guides you through packaging your first OCI container image step by step.
+
 .. _tutorial-create-a-hello-world-rock:
 
 Create a "Hello World" rock

@@ -1,3 +1,6 @@
+.. meta::
+    :description: Rockcraft documentation: build secure, stable, OCI-compliant Ubuntu-based container images declaratively. Tutorials, how-to guides, reference, and explanations.
+
 Rockcraft documentation
 =======================
 

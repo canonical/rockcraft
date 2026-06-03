@@ -1,3 +1,6 @@
+.. meta::
+    :description: Reference documentation for the Rockcraft spring-boot-framework extension. Streamlines building Spring Boot rocks by packaging and copying the JAR file to the image.
+
 .. _reference-spring-boot-framework:
 
 Spring Boot framework

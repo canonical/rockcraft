@@ -1,3 +1,6 @@
+.. meta::
+    :description: Reference documentation for Rockcraft: commands, rockcraft.yaml configuration, plugins, extensions, parts and steps, remote builds, and changelog.
+
 .. _reference:
 
 Reference

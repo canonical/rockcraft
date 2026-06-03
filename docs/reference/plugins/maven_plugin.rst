@@ -1,3 +1,6 @@
+.. meta::
+    :description: Reference documentation for the Rockcraft Maven plugin. Builds Java projects using the Maven build tool and installs JAR files into the rock container image.
+
 .. _rockcraft_maven_plugin:
 
 Maven plugin

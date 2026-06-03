@@ -1,3 +1,6 @@
+.. meta::
+    :description: Reference documentation for the Rockcraft Python plugin for ubuntu@24.04 and earlier. Builds Python projects and installs them with a virtual environment in the rock.
+
 .. _craft_parts_python_plugin:
 
 Python plugin (ubuntu\@20.04)

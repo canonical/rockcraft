@@ -1,3 +1,6 @@
+.. meta::
+    :description: Explanation of Pebble, the default service manager and entrypoint for all Rockcraft rocks. Learn how Pebble orchestrates container processes and service layers.
+
 .. _explanation-pebble:
 
 Pebble

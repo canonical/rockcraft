@@ -1,3 +1,6 @@
+.. meta::
+    :description: Release notes for Rockcraft 1.8 (January 2025). Discover notable features, bug fixes, backwards-incompatible changes, and documentation updates.
+
 .. _release-1.8.0:
 .. _release-1.8:
 
