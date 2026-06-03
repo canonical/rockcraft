@@ -55,7 +55,7 @@ ExpressJS extension
 
 The new ExpressJS extension streamlines the process of building rocks that bundle
 ExpressJS applications. This extension makes it easy to install your application's
-dependencies, including the Node.js interpreter and NPM.
+dependencies, including the Node.js interpreter and npm.
 
 This new extension is experimental and subject to change. For more information, check
 out the Express :ref:`tutorial <tutorial-build-a-rock-for-an-express-app>` and

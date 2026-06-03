@@ -27,12 +27,12 @@ jobs:
             source-files:
               - '!({docs/**,*.md,**/*.md,.readthedocs.yaml})'
       - name: Build snap
-        uses: canonical/action-build@v1
-        if: steps.filter.outputs.source-files == 'true'
         id: rockcraft
+        uses: canonical/action-build@v1
+        if: ${{ steps.filter.outputs.source-files == 'true' || github.event_name == 'schedule' }}
       - name: Upload snap artifact
         uses: actions/upload-artifact@v7
-        if: steps.filter.outputs.source-files == 'true'
+        if: ${{ steps.filter.outputs.source-files == 'true' || github.event_name == 'schedule' }}
         with:
           name: snap
           path: ${{ steps.rockcraft.outputs.snap }}
@@ -40,7 +40,7 @@ jobs:
   source-spread-tests:
     runs-on: [self-hosted, spread-installed]
     needs: [snap-build]
-    if: ${{ needs.snap-build.outputs.source-files == 'true' }}
+    if: ${{ needs.snap-build.outputs.source-files == 'true' || github.event_name == 'schedule' }}
 
     steps:
       - name: Cleanup job workspace
