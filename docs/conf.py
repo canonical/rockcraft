@@ -118,13 +118,12 @@ rediraffe_redirects = "redirects.txt"
 linkcheck_anchors_ignore = [
     "#",
     ":",
-    r"https://github\.com/.*",
     "slide definitions",
 ]
 linkcheck_ignore = [
     # GitHub aggressively rate limits us
-    r"^https://github.com/",
     # Entire domains to ignore due to flakiness or issues
+    "https://github.com",
     r"^https://www.gnu.org/",
     r"^https://crates.io/",
     r"^https://([\w-]*\.)?npmjs.org",
@@ -136,7 +135,6 @@ linkcheck_ignore = [
     "https://matrix.to/#",
     "https://github.com/canonical/craft-actions#rockcraft-pack",
     "https://github.com/canonical/spread#selecting-which-tasks-to-run",
-    "https://juju.is/cloud-native-kubernetes-usage-report-2021#selection-criteria-for-container-images",
     "https://matrix.to/#/#rocks:ubuntu.com",
     "https://matrix.to/#/#rockcraft:ubuntu.com",
     "https://matrix.to/#/#12-factor-charms:ubuntu.com",
@@ -144,6 +142,9 @@ linkcheck_ignore = [
     "https://specs.opencontainers.org/image-spec/annotations/",
     "https://canonical.com/#get-in-touch#",
     "http://127.0.0.1:8000/",
+    # 2026-06-03: Ignore Canonical sites until filtering is resolved
+    "https://snapcraft.io",
+    "https://juju.is",
 ]
 
 # Don't check links in the "common" subdirectory, as those are the responsibility of
