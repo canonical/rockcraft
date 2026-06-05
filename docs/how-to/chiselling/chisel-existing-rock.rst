@@ -1,5 +1,5 @@
 .. meta::
-    :description: Learn how to chisel an existing rock using Chisel slices to reduce its size and attack surface for a lean, production-ready OCI container image.
+    :description: How to chisel an existing Rockcraft project by using a bare base and specifying package slices to drastically reduce the final rock size and attack surface.
 
 .. _how-to-chisel-a-rock:
 
