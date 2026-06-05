@@ -1,5 +1,5 @@
 .. meta::
-    :description: Learn how to install a custom Chisel package slice not yet available in the upstream Chisel releases repository into your Rockcraft project.
+    :description: How to install a custom Chisel package slice into a Rockcraft project when the slice definition is not yet available in upstream Chisel releases.
 
 .. _how-to-install-a-custom-package-slice:
 
