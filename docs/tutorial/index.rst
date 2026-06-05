@@ -1,3 +1,5 @@
+.. meta::
+    :description: The tutorials for Rockcraft. These tutorials are guided lessons that help you develop skills by using Rockcraft.
 .. _tutorial:
 
 Tutorial
@@ -19,11 +21,6 @@ In the app tutorials, you'll build container apps.
 - :ref:`tutorial-pack-a-python-package`
 - :ref:`tutorial-bundle-a-nodejs-app-into-a-rock`
 
-In the Chisel tutorial, you'll reduce a rock's storage footprint by creating Chisel
-slices.
-
-- :ref:`tutorial-shrink-a-rock-with-chisel`
-
 In the 12-factor web app tutorials, you'll assemble containers for 12-factor apps and
 their components.
 
@@ -41,7 +38,6 @@ their components.
     hello-world
     pypi-package
     node-app
-    chisel
     flask
     django
     fastapi
