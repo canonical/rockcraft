@@ -119,7 +119,7 @@ class _GunicornBase(Extension):
                 "plugin": "python",
                 "stage-packages": stage_packages,
                 "source": ".",
-                "python-packages": ["gunicorn~=23.0"],
+                "python-packages": ["gunicorn~=26.0"],
                 "python-requirements": python_requirements,
                 "build-environment": build_environment,
             },
@@ -143,7 +143,7 @@ class _GunicornBase(Extension):
             },
             f"{self.framework}-framework/statsd-exporter": {
                 "build-snaps": ["go"],
-                "source-tag": "v0.26.0",
+                "source-tag": "v0.30.0",
                 "plugin": "go",
                 "source": "https://github.com/prometheus/statsd_exporter.git",
             },

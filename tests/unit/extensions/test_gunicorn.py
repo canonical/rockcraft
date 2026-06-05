@@ -91,7 +91,7 @@ def test_flask_extension_default(
             },
             "flask-framework/dependencies": {
                 "plugin": "python",
-                "python-packages": ["gunicorn~=23.0"],
+                "python-packages": ["gunicorn~=26.0"],
                 "python-requirements": ["requirements.txt"],
                 "source": ".",
                 "stage-packages": ["python3-venv"],
@@ -139,7 +139,7 @@ def test_flask_extension_default(
                 "build-snaps": ["go"],
                 "plugin": "go",
                 "source": "https://github.com/prometheus/statsd_exporter.git",
-                "source-tag": "v0.26.0",
+                "source-tag": "v0.30.0",
             },
         },
         "platforms": {"amd64": {}},
@@ -326,7 +326,7 @@ def test_flask_extension_override_parts(tmp_path, flask_input_yaml):
 
     assert applied["parts"]["flask-framework/dependencies"] == {
         "plugin": "python",
-        "python-packages": ["gunicorn~=23.0"],
+        "python-packages": ["gunicorn~=26.0"],
         "python-requirements": ["requirements.txt", "requirements-jammy.txt"],
         "source": ".",
         "stage-packages": ["python3-venv"],
@@ -380,7 +380,7 @@ def test_flask_extension_bare(
     }
     assert applied["parts"]["flask-framework/dependencies"] == {
         "plugin": "python",
-        "python-packages": ["gunicorn~=23.0"],
+        "python-packages": ["gunicorn~=26.0"],
         "python-requirements": ["requirements.txt"],
         "source": ".",
         "stage-packages": expected_stage_packages,
@@ -824,7 +824,7 @@ def test_django_extension_default(
             },
             "django-framework/dependencies": {
                 "plugin": "python",
-                "python-packages": ["gunicorn~=23.0"],
+                "python-packages": ["gunicorn~=26.0"],
                 "python-requirements": ["requirements.txt"],
                 "source": ".",
                 "stage-packages": ["python3-venv"],
@@ -868,7 +868,7 @@ def test_django_extension_default(
                 "build-snaps": ["go"],
                 "plugin": "go",
                 "source": "https://github.com/prometheus/statsd_exporter.git",
-                "source-tag": "v0.26.0",
+                "source-tag": "v0.30.0",
             },
         },
         "platforms": {"amd64": {}},
