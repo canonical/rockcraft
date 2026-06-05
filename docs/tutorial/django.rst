@@ -59,8 +59,8 @@ Create a new project using ``django-admin``:
     :end-before: [docs:create-project-end]
     :dedent: 2
 
-Enter the ``~/django-tutorial/django_hello_world/`` directory.
-Then run the Django app to verify that it works:
+Enter the ``~/django-tutorial/django_hello_world/`` directory, then run
+the Django app to verify that it works:
 
 .. code-block:: bash
 
