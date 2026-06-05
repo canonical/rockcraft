@@ -1,3 +1,6 @@
+.. meta::
+    :description: How to install a custom Chisel package slice into a Rockcraft project when the slice definition is not yet available in upstream Chisel releases.
+
 .. _how-to-install-a-custom-package-slice:
 
 Install a custom package slice
@@ -80,7 +83,7 @@ custom slice.
 Please note that this level of customisation is only needed when you want to
 install from a custom Chisel release. If the desired slice definitions are
 already upstream, then you can simply use ``stage-packages``, as demonstrated
-in :ref:`here <chisel-example>`.
+in :ref:`here <how-to-chisel-a-rock>`.
 
 Build your rock with:
 
