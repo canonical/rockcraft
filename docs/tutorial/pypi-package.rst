@@ -1,5 +1,5 @@
 .. meta::
-    :description: In this tutorial, we use the Python plugin to pack a PyPI package into an OCI rock and run it with Docker.
+    :description: Learn the essentials of Rockcraft. In this tutorial, we package a Python PyPI package into an OCI-compliant container and run it with Docker.
 
 .. _tutorial-pack-a-python-package:
 
