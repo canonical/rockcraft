@@ -87,7 +87,6 @@ nano
 NGINX
 nginx
 NGINX's
-NPM
 npm
 OCI
 oci
