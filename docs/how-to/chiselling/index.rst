@@ -1,6 +1,3 @@
-.. meta::
-    :description: How-to guides for chiseling rocks with Chisel. Learn to cut slices, create custom slice definitions, install them, and publish to the upstream repository.
-
 .. _how-to-chiselling:
 
 Chiselling

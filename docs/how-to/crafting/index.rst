@@ -1,5 +1,5 @@
 .. meta::
-    :description: How-to guides for crafting Rockcraft rocks: specify bases, add users, include files, override plugin builds, and publish rocks to OCI registries.
+    :description: The practical, goal-oriented documentation for Rockcraft. These guides provide directions for completing tasks and solving problems with Rockcraft.
 
 .. _how-to-crafting:
 

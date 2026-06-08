@@ -1,5 +1,5 @@
 .. meta::
-    :description: Explanation of Rockcraft concepts: rocks, bases, Chisel slices, Pebble entrypoint, OCI layers, and lifecycle steps for building secure container images.
+    :description: The explanatory documentation for Rockcraft. These explanations aid in understanding the concepts and relationships of Rockcraft as a complete system.
 
 .. _explanation:
 

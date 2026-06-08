@@ -1,5 +1,5 @@
 .. meta::
-    :description: How to get started with Rockcraft, the tool for building Ubuntu-based OCI container images. Learn installation, setup, and your first steps building rocks.
+    :description: How to get started with Rockcraft, the tool for building Ubuntu-based OCI container images. Covers installation, initial setup, and building your first rock.
 
 .. _how-to-quickstart-guide:
 

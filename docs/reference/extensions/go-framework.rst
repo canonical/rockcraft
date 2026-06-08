@@ -1,5 +1,5 @@
 .. meta::
-    :description: Reference documentation for the Rockcraft go-framework extension. Streamlines building Go application rocks by compiling and copying the binary into the rock.
+    :description: Reference documentation for the Rockcraft Go framework extension, which configures Go application rocks by compiling and installing the binary.
 
 .. _reference-go-framework:
 
