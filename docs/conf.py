@@ -41,7 +41,7 @@ copyright = "2022-%s, %s" % (datetime.date.today().year, author)
 
 # Documentation website URL
 
-ogp_site_url = "https://documentation.ubuntu.com/rockcraft"
+ogp_site_url = f"https://ubuntu.com/containers/docs/"
 
 #Preview name of the documentation website
 ogp_site_name = project
@@ -79,8 +79,10 @@ html_theme_options = {
 # Sitemap configuration: https://sphinx-sitemap.readthedocs.io/
 #######################
 
+sitemap_filename = "doc-sitemap.xml"
+
 # Use RTD canonical URL to ensure duplicate pages have a specific canonical URL
-html_baseurl = os.environ.get("READTHEDOCS_CANONICAL_URL", "/")
+html_baseurl = f"https://ubuntu.com/containers/docs/"
 
 # sphinx-sitemap uses html_baseurl to generate the full URL for each page:
 sitemap_url_scheme = '{link}'
@@ -237,7 +239,8 @@ exclude_patterns = [
 html_css_files = ["https://assets.ubuntu.com/v1/d86746ef-cookie_banner.css"]
 
 # Adds custom JavaScript files
-html_js_files = ["https://assets.ubuntu.com/v1/287a5e8f-bundle.js"]
+html_js_files = ["https://assets.ubuntu.com/v1/287a5e8f-bundle.js",
+                 "js/overwrite_links.js"]
 
 # Specifies a reST snippet to be appended to each .rst file
 rst_epilog = """
@@ -329,7 +332,7 @@ napoleon_use_ivar = True
 # For documentation on documentation.ubuntu.com, we also must add the slug.
 url_version = ""
 url_lang = ""
-slug = "rockcraft"
+slug = 'containers/docs'
 
 # Determine if the URL uses versions and language
 if (
