@@ -20,7 +20,7 @@ import os
 import re
 from typing import Any
 
-from overrides import override  # type: ignore[reportUnknownVariableType]
+from typing_extensions import override
 
 from rockcraft.errors import ExtensionError
 from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
@@ -42,7 +42,7 @@ class GoFramework(Extension):
 
     @staticmethod
     @override
-    def is_experimental(base: str | None) -> bool:  # noqa: ARG004 (unused arg)
+    def is_experimental(base: str | None) -> bool:
         """Check if the extension is in an experimental state."""
         return False
 
@@ -200,7 +200,7 @@ class GoFramework(Extension):
     @property
     def _assets_stage(self) -> list[str]:
         """Return the assets stage list for the Go project."""
-        user_stage = self._get_nested(
+        user_stage: list[str] = self._get_nested(
             self.yaml_data, ["parts", "go-framework/assets"]
         ).get("stage", [])
 

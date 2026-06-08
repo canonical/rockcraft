@@ -17,7 +17,7 @@
 """The Rockcraft Poetry plugin."""
 
 from craft_parts.plugins import poetry_plugin
-from overrides import override  # type: ignore[reportUnknownVariableType]
+from typing_extensions import override
 
 from rockcraft.plugins import python_common
 
