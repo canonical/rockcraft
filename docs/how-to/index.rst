@@ -27,7 +27,7 @@ Chisel cuts software collections into manageable slices that can layered within 
 make them leaner.
 
 - :ref:`how-to-chisel-a-rock`
-- :ref:`how-to-create-a-package-slice-for-chisel`
+- :ref:`how-to-install-a-chisel-slice-into-a-rock`
 
 
 12-factor web app rocks

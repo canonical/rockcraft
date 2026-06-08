@@ -12,23 +12,23 @@ execute: |
   # chisel snap to be able to access them.
   mv rockcraft.yaml "${HOME}/rockcraft.yaml.backup"
   pushd $HOME
-  rm -fr chisel-releases/ my-custom-openssl-fs/
+  rm -fr chisel-releases/ my-custom-<package>-fs/
 
   # [docs:clone-chisel-releases]
-  # Let's assume we are working with Ubuntu 22.04
-  git clone -b ubuntu-22.04 https://github.com/canonical/chisel-releases/
+  # Let's assume we are working with Ubuntu 26.04
+  git clone -b ubuntu-26.04 https://github.com/canonical/chisel-releases/
   # [docs:clone-chisel-releases-end]
 
   sudo snap install chisel --channel=latest/candidate
 
   # [docs:slice-exists]
-  chisel find --release=./chisel-releases/ openssl_bins
+  chisel find --release=./chisel-releases/ <package>_bins
   # [docs:slice-exists-end]
 
   # [docs:cut]
   # Testing with Chisel directly:
-  mkdir -p my-custom-openssl-fs
-  chisel cut --release ./chisel-releases --root my-custom-openssl-fs openssl_bins
+  mkdir -p my-custom-<package>-fs
+  chisel cut --release ./chisel-releases --root my-custom-<package>-fs <package>_bins
   # [docs:cut-end]
 
   # [docs:init]
@@ -42,13 +42,13 @@ execute: |
   # [docs:pack-end]
 
   # [docs:skopeo-copy]
-  sudo rockcraft.skopeo --insecure-policy copy oci-archive:custom-openssl-rock_0.0.1_amd64.rock docker-daemon:chisel-openssl:latest
+  sudo rockcraft.skopeo --insecure-policy copy oci-archive:custom-<package>-rock_0.0.1_amd64.rock docker-daemon:chisel-<package>:latest
   # [docs:skopeo-copy-end]
 
   # [docs:docker-run]
-  docker run --rm chisel-openssl exec openssl
+  docker run --rm chisel-<package> exec <package>
   # [docs:docker-run-end]
 
 restore: |
   pushd $HOME
-  rm -fr chisel-releases/ my-custom-openssl-fs/ custom-openssl-rock_0.0.1_amd64.rock
+  rm -fr chisel-releases/ my-custom-<package>-fs/ custom-<package>-rock_0.0.1_amd64.rock
