@@ -1,5 +1,5 @@
 .. meta::
-    :description: How to add a custom internal user or group to a rock in Rockcraft to run services as a non-root user. Covers required packages and rockcraft.yaml configuration.
+    :description: How to add a custom internal user or group to a rock to run services as a non-root user. Covers required packages and rockcraft.yaml configuration.
 
 .. _how-to-add-an-internal-user:
 

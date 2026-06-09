@@ -1,5 +1,5 @@
 .. meta::
-    :description: How to use a 12-factor app rock built with Rockcraft. Learn to update, deploy, and run OCI images with web framework extensions using Docker or Kubernetes.
+    :description: How to update, deploy, and run OCI images built with Rockcraft web framework extensions using Docker or Kubernetes.
 
 .. _use-web-app-rock:
 

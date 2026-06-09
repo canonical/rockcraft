@@ -1,5 +1,5 @@
 .. meta::
-    :description: Explanation of rocks: Ubuntu-based OCI-compliant container images built with Rockcraft. Learn what sets rocks apart in security, consistency, and design.
+    :description: Ubuntu-based OCI-compliant container images built with Rockcraft: what sets rocks apart in security, consistency, and design.
 
 .. _explanation-rocks:
 

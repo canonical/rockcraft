@@ -1,5 +1,5 @@
 .. meta::
-    :description: Reference documentation for Rockcraft remote builds via Launchpad. Learn how remote builds work, supported architectures, and how to use the remote-build command.
+    :description: Reference documentation for Rockcraft remote builds via Launchpad: how remote builds work, supported architectures, and the remote-build command.
 
 .. _reference-remote-builds:
 
