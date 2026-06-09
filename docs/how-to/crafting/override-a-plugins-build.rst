@@ -1,5 +1,5 @@
 .. meta::
-    :description: How to override a Rockcraft plugin's build step with custom commands. Customise the build, stage, and prime phases of any plugin in your rockcraft.yaml file.
+    :description: How to change a part's build with custom behavior. You can override the normal build step in the part's lifecycle to execute arbitrary commands.
 
 .. |app| replace:: Rockcraft
 

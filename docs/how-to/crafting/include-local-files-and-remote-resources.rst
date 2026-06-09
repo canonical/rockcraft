@@ -1,5 +1,5 @@
 .. meta::
-    :description: How to include local files and remote resources in a Rockcraft build. Learn to use the dump plugin and filesets to add content from your filesystem or remote URLs.
+    :description: How to add arbitrary files to a rock's filesystem. Use the Dump plugin and filesets to add files from local storage or remote URLs.
 
 .. _how-to-include-local-files-and-remote-resources:
 
