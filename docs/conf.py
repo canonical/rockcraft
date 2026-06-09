@@ -216,6 +216,7 @@ exclude_patterns = [
     "common/craft-parts/explanation/gradle_plugin.rst",
     "common/craft-parts/how-to/customise-the-build-with-craftctl.rst",
     "common/craft-parts/how-to/use_parts.rst",
+    "common/craft-parts/how-to/include_files.rst",
     "common/craft-parts/reference/partition_specific_output_directory_variables.rst",
     "common/craft-parts/reference/parts_steps.rst",
     "common/craft-parts/reference/step_execution_environment.rst",
