@@ -193,7 +193,6 @@ extensions = [
     "sphinx_autodoc_typehints",  # must be loaded after napoleon
     "sphinxcontrib.details.directive",
     "sphinx_toolbox.collapse",
-    "sphinx.ext.intersphinx",
     # "sphinx_substitution_extensions",
     ]
 
@@ -281,7 +280,7 @@ intersphinx_mapping = {
     ),
     "charmcraft": ("https://documentation.ubuntu.com/charmcraft/stable/", None),
     "pebble": ("https://documentation.ubuntu.com/pebble", None),
-    "chisel": ("https://documentation.ubuntu.com/chisel/en/latest", None),
+    "chisel": ("https://ubuntu.com/chisel/docs/latest", None),
 }
 # See also:
 # https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html#confval-intersphinx_disabled_reftypes
