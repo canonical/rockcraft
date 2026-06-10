@@ -134,6 +134,7 @@ constraint-dependencies = [
     "regex>=2021.11.10",
     "setuptools>=50",
     "sphinx-basic-ng>=1.0.0b1",
+    "starlette>=1.0.1",
     "tornado>=4.0",
     "urllib3>=2.0",
     "webencodings>=0.4.0",
