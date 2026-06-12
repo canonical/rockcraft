@@ -1,5 +1,6 @@
 .. meta::
     :description: Learn the process of packaging a Django app into a rock.
+
 .. _tutorial-build-a-rock-for-a-django-app:
 
 Build a rock for a Django app
