@@ -1,5 +1,5 @@
 .. meta::
-    :description: Reference documentation for the Rockcraft Ant plugin. Builds Java projects using Apache Ant, installs JAR files, and links the Java executable in the rock.
+    :description: Reference documentation for the Rockcraft Ant plugin.
 
 .. _rockcraft_ant_plugin:
 

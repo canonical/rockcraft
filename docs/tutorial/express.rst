@@ -1,6 +1,5 @@
 .. meta::
-    :description: Learn the process of making an Express app into a rock. In this tutorial, we use the expressjs-framework extension to bootstrap and test the contents of the rock.
-
+    :description: Learn the process of packaging an Express app into a rock.
 .. _tutorial-build-a-rock-for-an-express-app:
 
 Build a rock for an Express app

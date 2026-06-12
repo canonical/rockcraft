@@ -1,5 +1,5 @@
 .. meta::
-    :description: Learn the process of making a FastAPI app into a rock. In this tutorial, we use the fastapi-framework extension to bootstrap and test the contents of the rock.
+    :description: Learn the process of packaging a FastAPI app into a rock.
 
 .. _tutorial-build-a-rock-for-a-fastapi-app:
 

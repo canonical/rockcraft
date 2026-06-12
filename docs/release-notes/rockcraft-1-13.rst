@@ -1,5 +1,5 @@
 .. meta::
-    :description: Release notes for Rockcraft 1.13 (July 2025). New features, bug fixes, backwards-incompatible changes, and documentation updates.
+    :description: Release notes for Rockcraft 1.13.
 
 .. _release-1.13:
 

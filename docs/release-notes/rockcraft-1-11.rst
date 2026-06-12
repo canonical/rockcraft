@@ -1,5 +1,5 @@
 .. meta::
-    :description: Release notes for Rockcraft 1.11 (May 2025). New features, bug fixes, backwards-incompatible changes, and documentation updates.
+    :description: Release notes for Rockcraft 1.11.
 
 .. _release-1.11:
 

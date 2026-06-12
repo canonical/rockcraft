@@ -1,5 +1,5 @@
 .. meta::
-    :description: How to contribute to the Rockcraft documentation. Covers tools, markup language, Diátaxis structure, and the process for submitting documentation changes.
+    :description: How to contribute to the Rockcraft documentation.
 
 .. _how-to-contribute-to-rockcraft-documentation:
 

@@ -1,5 +1,5 @@
 .. meta::
-    :description: Learn the process of making a Spring Boot app into a rock. In this tutorial, we use the spring-boot-framework extension to bootstrap and test the contents of the rock.
+    :description: Learn the process of packaging a Spring Boot app into a rock.
 
 .. _tutorial-build-a-rock-for-a-spring-boot-app:
 

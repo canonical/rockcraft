@@ -1,5 +1,5 @@
 .. meta::
-    :description: How to configure the Ubuntu base and Node.js version for an Express app rock using the expressjs-framework extension. Covers bare and Ubuntu 24.04 base combinations.
+    :description: How to configure the build base for an Express app rock using the Express framework extension depending on the Node.js version and base used.
 
 .. _configure-the-build-base-for-an-express-app:
 

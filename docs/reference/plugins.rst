@@ -1,5 +1,5 @@
 .. meta::
-    :description: Reference documentation for all Rockcraft plugins including .NET, Ant, Maven, Python, Poetry, UV, and other build system plugins for creating rocks.
+    :description: Reference documentation for all Rockcraft plugins for all supported languages and frameworks.
 
 .. _reference-plugins:
 

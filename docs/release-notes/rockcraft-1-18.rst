@@ -1,5 +1,5 @@
 .. meta::
-    :description: Release notes for Rockcraft 1.18 (April 2026). New features, bug fixes, backwards-incompatible changes, and documentation updates.
+    :description: Release notes for Rockcraft 1.18.
 
 .. _release-1.18:
 

@@ -1,5 +1,5 @@
 .. meta::
-    :description: How to update, deploy, and run OCI images built with Rockcraft web framework extensions using Docker or Kubernetes.
+    :description: How to update and deploy OCI images built with Rockcraft web framework extensions.
 
 .. _use-web-app-rock:
 

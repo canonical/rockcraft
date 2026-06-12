@@ -1,6 +1,5 @@
 .. meta::
-    :description: Learn the process of making a Go app into a rock. In this tutorial, we use the go-framework extension to bootstrap and test the contents of the rock.
-
+    :description: Learn the process of packaging a Go app into a rock.
 .. _tutorial-build-a-rock-for-a-go-app:
 
 Build a rock for a Go app

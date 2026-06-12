@@ -1,5 +1,5 @@
 .. meta::
-    :description: Reference documentation for the Rockcraft Python plugin for ubuntu@25.10 and later. The successor to the Python (ubuntu@20.04) plugin for building Python project rocks.
+    :description: Reference documentation for the Rockcraft Python plugin for ubuntu@25.10 and later.
 
 .. _python_v2_plugin:
 
