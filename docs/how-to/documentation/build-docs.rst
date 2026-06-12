@@ -1,6 +1,6 @@
 .. meta::
     :description: How to build the Rockcraft documentation locally.
-    
+
 .. _how-to-build-the-documentation:
 
 Build the documentation

@@ -1,6 +1,6 @@
 .. meta::
     :description: Reference documentation for the Rockcraft changelog.
-    
+
 :tocdepth: 2
 
 .. Check out the bottom of the page for the release template
