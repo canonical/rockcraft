@@ -30,7 +30,7 @@ def fastapi_input_yaml_fixture():
 
 @pytest.fixture
 def fastapi_extension(mock_extensions):
-    extensions.register("fastapi-framework", extensions.FastAPIFramework)
+    extensions.register("fastapi-framework", extensions.FastAPIFrameworkFactory())  # type: ignore[arg-type]
 
 
 @pytest.mark.usefixtures("fastapi_extension")
@@ -331,3 +331,101 @@ def test_fastapi_extension_incorrect_prime_prefix_error(tmp_path, fastapi_input_
         extensions.apply_extensions(tmp_path, fastapi_input_yaml)
     assert "start with app/" in str(exc)
     assert "start with app/" in str(exc)
+
+
+def test_factory_dispatch_v1(tmp_path):
+    """Factory returns FastAPIFramework (V1) for ubuntu@24.04."""
+    instance = extensions.FastAPIFrameworkFactory()(
+        project_root=tmp_path, yaml_data={"name": "x", "base": "ubuntu@24.04"}
+    )
+    assert isinstance(instance, extensions.FastAPIFramework)
+    assert not isinstance(instance, extensions.FastAPIFrameworkV2)
+
+
+def test_factory_dispatch_v2(tmp_path):
+    """Factory returns FastAPIFrameworkV2 for ubuntu@26.04."""
+    instance = extensions.FastAPIFrameworkFactory()(
+        project_root=tmp_path, yaml_data={"name": "x", "base": "ubuntu@26.04"}
+    )
+    assert isinstance(instance, extensions.FastAPIFrameworkV2)
+
+
+def test_v2_supported_bases():
+    """FastAPIFrameworkV2 supports ubuntu@26.04."""
+    assert "ubuntu@26.04" in extensions.FastAPIFrameworkV2.get_supported_bases()
+
+
+def test_factory_supported_bases():
+    """FastAPIFrameworkFactory includes both V1 and V2 bases."""
+    factory_bases = extensions.FastAPIFrameworkFactory.get_supported_bases()
+    assert "ubuntu@26.04" in factory_bases
+    for base in extensions.FastAPIFramework.get_supported_bases():
+        assert base in factory_bases
+
+
+@pytest.mark.usefixtures("fastapi_extension")
+def test_fastapi_extension_default_26_04(tmp_path):
+    """Full apply on ubuntu@26.04 yields the same output as 24.04 but with a 26.04 base."""
+    (tmp_path / "requirements.txt").write_text("fastapi")
+    (tmp_path / "app.py").write_text("app = object()")
+    input_yaml = {
+        "name": "foo-bar",
+        "base": "ubuntu@26.04",
+        "platforms": {"amd64": {}},
+        "extensions": ["fastapi-framework"],
+    }
+    applied = extensions.apply_extensions(tmp_path, input_yaml)
+
+    assert applied == {
+        "base": "ubuntu@26.04",
+        "name": "foo-bar",
+        "platforms": {"amd64": {}},
+        "run_user": "_daemon_",
+        "parts": {
+            "fastapi-framework/dependencies": {
+                "build-environment": [],
+                "plugin": "python",
+                "stage-packages": ["python3-venv"],
+                "source": ".",
+                "python-packages": ["uvicorn"],
+                "python-requirements": ["requirements.txt"],
+            },
+            "fastapi-framework/install-app": {
+                "plugin": "dump",
+                "source": ".",
+                "organize": {
+                    "app.py": "app/app.py",
+                },
+                "stage": ["app/app.py"],
+                "permissions": [{"owner": 584792, "group": 584792}],
+            },
+            "fastapi-framework/runtime": {
+                "plugin": "nil",
+                "stage-packages": ["ca-certificates_data"],
+            },
+            "fastapi-framework/logging": {
+                "plugin": "nil",
+                "override-build": (
+                    "craftctl default\n"
+                    "mkdir -p $CRAFT_PART_INSTALL/opt/promtail\n"
+                    "mkdir -p $CRAFT_PART_INSTALL/etc/promtail"
+                ),
+                "permissions": [
+                    {"path": "opt/promtail", "owner": 584792, "group": 584792},
+                    {"path": "etc/promtail", "owner": 584792, "group": 584792},
+                ],
+            },
+        },
+        "services": {
+            "fastapi": {
+                "command": "/bin/python3 -m uvicorn app:app",
+                "override": "replace",
+                "startup": "enabled",
+                "user": "_daemon_",
+                "working-dir": "/app",
+                "environment": {
+                    "UVICORN_HOST": "0.0.0.0",  # noqa: S104
+                },
+            },
+        },
+    }
