@@ -1,6 +1,8 @@
 .. meta::
     :description: Release notes for Rockcraft 1.19.
 
+.. _release-1.19:
+
 Rockcraft 1.19 release notes
 ============================
 
