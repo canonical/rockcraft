@@ -33,7 +33,7 @@ def expressjs_input_yaml_fixture():
 
 @pytest.fixture
 def expressjs_extension(mock_extensions):
-    extensions.register("expressjs-framework", extensions.ExpressJSFramework)
+    extensions.register("expressjs-framework", extensions.ExpressJSFrameworkFactory())  # type: ignore[arg-type]
 
 
 @pytest.fixture
@@ -393,3 +393,93 @@ def test_expressjs_invalid_package_json_scripts_error(
         str(exc.value.doc_slug)
         == "/reference/extensions/express-framework/#project-requirements"
     )
+
+
+def test_expressjs_factory_dispatch(tmp_path):
+    factory = extensions.ExpressJSFrameworkFactory()
+
+    v1 = factory(project_root=tmp_path, yaml_data={"name": "x", "base": "ubuntu@24.04"})
+    assert isinstance(v1, extensions.ExpressJSFramework)
+    assert not isinstance(v1, extensions.ExpressJSFrameworkV2)
+
+    v2 = factory(project_root=tmp_path, yaml_data={"name": "x", "base": "ubuntu@26.04"})
+    assert isinstance(v2, extensions.ExpressJSFrameworkV2)
+
+
+def test_expressjs_v2_and_factory_supported_bases():
+    assert "ubuntu@26.04" in extensions.ExpressJSFrameworkV2.get_supported_bases()
+
+    factory_bases = extensions.ExpressJSFrameworkFactory.get_supported_bases()
+    assert "ubuntu@26.04" in factory_bases
+    # V1 bases must also be present
+    for base in extensions.ExpressJSFramework.get_supported_bases():
+        assert base in factory_bases
+
+
+@pytest.mark.usefixtures("expressjs_extension", "package_json_file")
+def test_expressjs_extension_ubuntu2604_default(tmp_path, expressjs_input_yaml):
+    expressjs_input_yaml["base"] = "ubuntu@26.04"
+    expressjs_input_yaml["parts"] = {
+        "expressjs-framework/install-app": {
+            "npm-include-node": False,
+            "npm-node-version": None,
+        }
+    }
+    applied = extensions.apply_extensions(tmp_path, expressjs_input_yaml)
+
+    expected = {
+        "base": "ubuntu@26.04",
+        "build-base": "ubuntu@24.04",
+        "name": "foo-bar",
+        "platforms": {"amd64": {}},
+        "run-user": "_daemon_",
+        "parts": {
+            "expressjs-framework/install-app": {
+                "plugin": "npm",
+                "source": "app/",
+                "npm-include-node": False,
+                "npm-node-version": None,
+                "override-build": (
+                    "rm -rf node_modules\n"
+                    "craftctl default\n"
+                    "npm config set script-shell=bash --location project\n"
+                    "cp ${CRAFT_PART_BUILD}/.npmrc ${CRAFT_PART_INSTALL}/lib/node_modules/"
+                    f"{_expressjs_project_name}/.npmrc\n"
+                    f"chown -R 584792:584792 ${{CRAFT_PART_INSTALL}}/lib/node_modules/{_expressjs_project_name}\n"
+                    f"ln -s /lib/node_modules/{_expressjs_project_name} "
+                    "${CRAFT_PART_INSTALL}/app\n"
+                    "chown -R 584792:584792 ${CRAFT_PART_INSTALL}/app\n"
+                ),
+                "build-packages": ["nodejs", "npm"],
+                "stage-packages": ["ca-certificates_data", "nodejs_bins"],
+                "build-environment": [{"UV_USE_IO_URING": "0"}],
+            },
+            "expressjs-framework/runtime": {
+                "plugin": "nil",
+                "stage-packages": ["npm"],
+            },
+            "expressjs-framework/logging": {
+                "plugin": "nil",
+                "override-build": (
+                    "craftctl default\n"
+                    "mkdir -p $CRAFT_PART_INSTALL/opt/promtail\n"
+                    "mkdir -p $CRAFT_PART_INSTALL/etc/promtail"
+                ),
+                "permissions": [
+                    {"path": "opt/promtail", "owner": 584792, "group": 584792},
+                    {"path": "etc/promtail", "owner": 584792, "group": 584792},
+                ],
+            },
+        },
+        "services": {
+            "expressjs": {
+                "override": "replace",
+                "startup": "enabled",
+                "user": "_daemon_",
+                "working-dir": "/app",
+                "command": "npm start",
+                "environment": {"NODE_ENV": "production"},
+            },
+        },
+    }
+    assert applied == expected

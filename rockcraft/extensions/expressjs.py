@@ -17,6 +17,7 @@
 """An extension for the NodeJS based Javascript application extension."""
 
 import json
+from pathlib import Path
 from typing import Any, cast
 
 from typing_extensions import override
@@ -250,3 +251,45 @@ class ExpressJSFramework(Extension):
     def _app_name(self) -> str:
         """Return the application name as defined on package.json."""
         return self._app_package_json["name"]
+
+
+class ExpressJSFrameworkV2(ExpressJSFramework):
+    """Extension for 12-factor ExpressJS applications targeting ubuntu@26.04.
+
+    For now this is behaviourally identical to :class:`ExpressJSFramework`; it exists so the
+    framework can dispatch to a paas-charm 2.0 implementation in the future. Only the
+    supported base differs.
+    """
+
+    @staticmethod
+    @override
+    def get_supported_bases() -> tuple[str, ...]:
+        """Return supported bases."""
+        return ("ubuntu@26.04",)
+
+
+class ExpressJSFrameworkFactory:
+    """Return the correct ExpressJSFramework extension for the project's base."""
+
+    def __call__(
+        self, *, project_root: Path, yaml_data: dict[str, Any]
+    ) -> Extension:
+        """Dispatch to the V2 extension for ubuntu@26.04, otherwise V1."""
+        if "26.04" in yaml_data.get("base", ""):
+            return ExpressJSFrameworkV2(project_root=project_root, yaml_data=yaml_data)
+        return ExpressJSFramework(project_root=project_root, yaml_data=yaml_data)
+
+    @staticmethod
+    def get_supported_bases() -> tuple[str, ...]:
+        """Return the union of V1 and V2 supported bases."""
+        return tuple(
+            dict.fromkeys(
+                ExpressJSFramework.get_supported_bases()
+                + ExpressJSFrameworkV2.get_supported_bases()
+            )
+        )
+
+    @staticmethod
+    def is_experimental(base: str | None) -> bool:
+        """Return whether the extension is experimental for the given base."""
+        return ExpressJSFramework.is_experimental(base)
