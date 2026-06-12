@@ -459,6 +459,46 @@ class FlaskFramework(_GunicornBase):
             )
 
 
+class FlaskFrameworkV2(FlaskFramework):
+    """Extension for 12-factor Flask applications targeting ubuntu@26.04.
+
+    For now this is behaviourally identical to :class:`FlaskFramework`; it exists so the
+    framework can dispatch to a paas-charm 2.0 implementation in the future. Only the
+    supported base differs.
+    """
+
+    @staticmethod
+    @override
+    def get_supported_bases() -> tuple[str, ...]:
+        """Return supported bases."""
+        return ("ubuntu@26.04",)
+
+
+class FlaskFrameworkFactory:
+    """Return the correct FlaskFramework extension for the project's base."""
+
+    def __call__(self, *, project_root: Path, yaml_data: dict[str, Any]) -> Extension:
+        """Dispatch to the V2 extension for ubuntu@26.04, otherwise V1."""
+        if "26.04" in yaml_data.get("base", ""):
+            return FlaskFrameworkV2(project_root=project_root, yaml_data=yaml_data)
+        return FlaskFramework(project_root=project_root, yaml_data=yaml_data)
+
+    @staticmethod
+    def get_supported_bases() -> tuple[str, ...]:
+        """Return the union of V1 and V2 supported bases."""
+        return tuple(
+            dict.fromkeys(
+                FlaskFramework.get_supported_bases()
+                + FlaskFrameworkV2.get_supported_bases()
+            )
+        )
+
+    @staticmethod
+    def is_experimental(base: str | None) -> bool:
+        """Return whether the extension is experimental for the given base."""
+        return FlaskFramework.is_experimental(base)
+
+
 class DjangoFramework(_GunicornBase):
     """An extension for constructing Python applications based on the Django framework."""
 

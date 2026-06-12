@@ -24,7 +24,7 @@ from rockcraft.errors import ExtensionError
 
 @pytest.fixture
 def flask_extension(mock_extensions):
-    extensions.register("flask-framework", extensions.FlaskFramework)
+    extensions.register("flask-framework", extensions.FlaskFrameworkFactory())  # type: ignore[arg-type]
 
 
 @pytest.fixture(name="flask_input_yaml")
@@ -783,6 +783,164 @@ def test_flask_extension_app_in_non_matching_directory(tmp_path):
         ExtensionError, match="Missing WSGI entrypoint in default search locations"
     ):
         extensions.apply_extensions(tmp_path, flask_input_yaml)
+
+
+def test_flask_framework_factory_dispatch(tmp_path):
+    """Test that FlaskFrameworkFactory dispatches to the correct class by base."""
+    from rockcraft.extensions.gunicorn import (
+        FlaskFramework,
+        FlaskFrameworkFactory,
+        FlaskFrameworkV2,
+    )
+
+    factory = FlaskFrameworkFactory()
+
+    v1 = factory(
+        project_root=tmp_path, yaml_data={"name": "x", "base": "ubuntu@22.04"}
+    )
+    assert isinstance(v1, FlaskFramework)
+    assert not isinstance(v1, FlaskFrameworkV2)
+
+    v2 = factory(
+        project_root=tmp_path, yaml_data={"name": "x", "base": "ubuntu@26.04"}
+    )
+    assert isinstance(v2, FlaskFrameworkV2)
+
+
+def test_flask_framework_v2_supported_bases():
+    """Test FlaskFrameworkV2 and FlaskFrameworkFactory supported bases."""
+    from rockcraft.extensions.gunicorn import (
+        FlaskFramework,
+        FlaskFrameworkFactory,
+        FlaskFrameworkV2,
+    )
+
+    assert "ubuntu@26.04" in FlaskFrameworkV2.get_supported_bases()
+
+    factory_bases = FlaskFrameworkFactory.get_supported_bases()
+    assert "ubuntu@26.04" in factory_bases
+    assert "ubuntu@22.04" in factory_bases
+    assert "ubuntu@24.04" in factory_bases
+    # All V1 bases are included
+    for base in FlaskFramework.get_supported_bases():
+        assert base in factory_bases
+
+
+@pytest.mark.usefixtures("flask_extension")
+def test_flask_v2_full_apply_26_04(tmp_path):
+    """Test that the flask-framework extension applies correctly on ubuntu@26.04."""
+    (tmp_path / "requirements.txt").write_text("flask")
+    (tmp_path / "app.py").write_text("app = object()")
+    (tmp_path / "static").mkdir()
+    (tmp_path / "node_modules").mkdir()
+
+    flask_input_yaml_26 = {
+        "name": "foo-bar",
+        "base": "ubuntu@26.04",
+        "platforms": {"amd64": {}},
+        "extensions": ["flask-framework"],
+    }
+
+    applied = extensions.apply_extensions(tmp_path, flask_input_yaml_26)
+    source = applied["parts"]["flask-framework/config-files"]["source"]
+    del applied["parts"]["flask-framework/config-files"]["source"]
+    suffix = "share/rockcraft/extensions/flask-framework"
+    assert source[-len(suffix) :].replace("\\", "/") == suffix
+
+    assert applied == {
+        "name": "foo-bar",
+        "base": "ubuntu@26.04",
+        "parts": {
+            "flask-framework/config-files": {
+                "organize": {
+                    "gunicorn.conf.py": "flask/gunicorn.conf.py",
+                },
+                "plugin": "dump",
+                "permissions": [
+                    {
+                        "path": "flask/gunicorn.conf.py",
+                        "owner": 584792,
+                        "group": 584792,
+                    }
+                ],
+            },
+            "flask-framework/dependencies": {
+                "plugin": "python",
+                "python-packages": ["gunicorn~=23.0"],
+                "python-requirements": ["requirements.txt"],
+                "source": ".",
+                "stage-packages": ["python3-venv"],
+                "build-environment": [],
+            },
+            "flask-framework/install-app": {
+                "organize": {
+                    "app.py": "flask/app/app.py",
+                    "static": "flask/app/static",
+                },
+                "plugin": "dump",
+                "prime": ["flask/app/app.py", "flask/app/static"],
+                "source": ".",
+                "stage": ["flask/app/app.py", "flask/app/static"],
+                "permissions": [
+                    {
+                        "owner": 584792,
+                        "group": 584792,
+                    },
+                ],
+            },
+            "flask-framework/runtime": {
+                "plugin": "nil",
+                "stage-packages": ["ca-certificates_data"],
+            },
+            "flask-framework/logging": {
+                "plugin": "nil",
+                "override-build": (
+                    "craftctl default\n"
+                    "mkdir -p $CRAFT_PART_INSTALL/opt/promtail\n"
+                    "mkdir -p $CRAFT_PART_INSTALL/etc/promtail\n"
+                    "mkdir -p $CRAFT_PART_INSTALL/var/log/flask"
+                ),
+                "permissions": [
+                    {"path": "opt/promtail", "owner": 584792, "group": 584792},
+                    {"path": "etc/promtail", "owner": 584792, "group": 584792},
+                    {
+                        "path": "var/log/flask",
+                        "owner": 584792,
+                        "group": 584792,
+                    },
+                ],
+            },
+            "flask-framework/statsd-exporter": {
+                "build-snaps": ["go"],
+                "plugin": "go",
+                "source": "https://github.com/prometheus/statsd_exporter.git",
+                "source-tag": "v0.26.0",
+            },
+        },
+        "platforms": {"amd64": {}},
+        "run_user": "_daemon_",
+        "services": {
+            "flask": {
+                "after": ["statsd-exporter"],
+                "command": "/bin/python3 -m gunicorn -c "
+                "/flask/gunicorn.conf.py 'app:app' -k [ sync ]",
+                "override": "replace",
+                "startup": "enabled",
+                "user": "_daemon_",
+            },
+            "statsd-exporter": {
+                "command": (
+                    "/bin/statsd_exporter --statsd.mapping-config=/statsd-mapping.conf "
+                    "--statsd.listen-udp=localhost:9125 "
+                    "--statsd.listen-tcp=localhost:9125"
+                ),
+                "override": "merge",
+                "startup": "enabled",
+                "summary": "statsd exporter service",
+                "user": "_daemon_",
+            },
+        },
+    }
 
 
 @pytest.mark.usefixtures("django_extension")
