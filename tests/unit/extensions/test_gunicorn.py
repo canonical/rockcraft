@@ -39,7 +39,7 @@ def flask_input_yaml_fixture():
 
 @pytest.fixture
 def django_extension(mock_extensions, monkeypatch):
-    extensions.register("django-framework", extensions.DjangoFramework)
+    extensions.register("django-framework", extensions.DjangoFrameworkFactory())  # type: ignore[arg-type]
 
 
 @pytest.fixture(name="django_input_yaml")
@@ -994,3 +994,156 @@ def test_django_extension_django_service_override_disable_wsgi_path_check(tmp_pa
     extensions.apply_extensions(tmp_path, input_yaml)
     extensions.apply_extensions(tmp_path, input_yaml)
     extensions.apply_extensions(tmp_path, input_yaml)
+
+
+# ---------------------------------------------------------------------------
+# DjangoFrameworkV2 / DjangoFrameworkFactory tests
+# ---------------------------------------------------------------------------
+
+
+def test_django_factory_dispatch_v1(tmp_path):
+    """Factory returns DjangoFramework (V1) for ubuntu@22.04."""
+    factory = extensions.DjangoFrameworkFactory()
+    instance = factory(
+        project_root=tmp_path,
+        yaml_data={"name": "x", "base": "ubuntu@22.04"},
+    )
+    assert isinstance(instance, extensions.DjangoFramework)
+    assert not isinstance(instance, extensions.DjangoFrameworkV2)
+
+
+def test_django_factory_dispatch_v2(tmp_path):
+    """Factory returns DjangoFrameworkV2 for ubuntu@26.04."""
+    factory = extensions.DjangoFrameworkFactory()
+    instance = factory(
+        project_root=tmp_path,
+        yaml_data={"name": "x", "base": "ubuntu@26.04"},
+    )
+    assert isinstance(instance, extensions.DjangoFrameworkV2)
+
+
+def test_django_framework_v2_supported_bases():
+    """DjangoFrameworkV2 only supports ubuntu@26.04."""
+    assert "ubuntu@26.04" in extensions.DjangoFrameworkV2.get_supported_bases()
+    assert "ubuntu@22.04" not in extensions.DjangoFrameworkV2.get_supported_bases()
+
+
+def test_django_factory_supported_bases():
+    """Factory's supported bases include both V1 and V2 bases."""
+    bases = extensions.DjangoFrameworkFactory.get_supported_bases()
+    assert "ubuntu@26.04" in bases
+    assert "ubuntu@22.04" in bases
+    assert "ubuntu@24.04" in bases
+
+
+@pytest.mark.usefixtures("django_extension")
+def test_django_extension_v2_default(tmp_path):
+    """Full apply on ubuntu@26.04 succeeds and produces the expected snippet."""
+    django_input_yaml = {
+        "name": "foo-bar",
+        "base": "ubuntu@26.04",
+        "platforms": {"amd64": {}},
+        "extensions": ["django-framework"],
+    }
+    (tmp_path / "requirements.txt").write_text("Django")
+    django_project_dir = tmp_path / "foo_bar" / "foo_bar"
+    django_project_dir.mkdir(parents=True)
+    (django_project_dir / "wsgi.py").write_text("application = object()")
+
+    applied = extensions.apply_extensions(tmp_path, django_input_yaml)
+
+    source = applied["parts"]["django-framework/config-files"]["source"]
+    del applied["parts"]["django-framework/config-files"]["source"]
+    suffix = "share/rockcraft/extensions/django-framework"
+    assert source[-len(suffix) :].replace("\\", "/") == suffix
+
+    assert applied == {
+        "name": "foo-bar",
+        "base": "ubuntu@26.04",
+        "parts": {
+            "django-framework/config-files": {
+                "organize": {"gunicorn.conf.py": "django/gunicorn.conf.py"},
+                "plugin": "dump",
+                "permissions": [
+                    {
+                        "path": "django/gunicorn.conf.py",
+                        "owner": 584792,
+                        "group": 584792,
+                    },
+                ],
+            },
+            "django-framework/dependencies": {
+                "plugin": "python",
+                "python-packages": ["gunicorn~=23.0"],
+                "python-requirements": ["requirements.txt"],
+                "source": ".",
+                "stage-packages": ["python3-venv"],
+                "build-environment": [],
+            },
+            "django-framework/install-app": {
+                "organize": {"*": "django/app/", ".*": "django/app/"},
+                "plugin": "dump",
+                "source": "foo_bar",
+                "stage": ["-django/app/db.sqlite3"],
+                "permissions": [
+                    {
+                        "owner": 584792,
+                        "group": 584792,
+                    },
+                ],
+            },
+            "django-framework/runtime": {
+                "plugin": "nil",
+                "stage-packages": ["ca-certificates_data"],
+            },
+            "django-framework/logging": {
+                "plugin": "nil",
+                "override-build": (
+                    "craftctl default\n"
+                    "mkdir -p $CRAFT_PART_INSTALL/opt/promtail\n"
+                    "mkdir -p $CRAFT_PART_INSTALL/etc/promtail\n"
+                    "mkdir -p $CRAFT_PART_INSTALL/var/log/django"
+                ),
+                "permissions": [
+                    {"path": "opt/promtail", "owner": 584792, "group": 584792},
+                    {"path": "etc/promtail", "owner": 584792, "group": 584792},
+                    {
+                        "path": "var/log/django",
+                        "owner": 584792,
+                        "group": 584792,
+                    },
+                ],
+            },
+            "django-framework/statsd-exporter": {
+                "build-snaps": ["go"],
+                "plugin": "go",
+                "source": "https://github.com/prometheus/statsd_exporter.git",
+                "source-tag": "v0.26.0",
+            },
+        },
+        "platforms": {"amd64": {}},
+        "run_user": "_daemon_",
+        "services": {
+            "django": {
+                "after": ["statsd-exporter"],
+                "command": (
+                    "/bin/python3 -m gunicorn -c /django/gunicorn.conf.py "
+                    "'foo_bar.wsgi:application' -k [ sync ]"
+                ),
+                "override": "replace",
+                "startup": "enabled",
+                "user": "_daemon_",
+            },
+            "statsd-exporter": {
+                "command": (
+                    "/bin/statsd_exporter --statsd.mapping-config=/statsd-mapping.conf "
+                    "--statsd.listen-udp=localhost:9125 "
+                    "--statsd.listen-tcp=localhost:9125"
+                ),
+                "override": "merge",
+                "startup": "enabled",
+                "summary": "statsd exporter service",
+                "user": "_daemon_",
+            },
+        },
+    }

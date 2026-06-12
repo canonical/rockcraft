@@ -532,3 +532,43 @@ class DjangoFramework(_GunicornBase):
             )
         if not self.yaml_data.get("services", {}).get("django", {}).get("command"):
             self.wsgi_path  # noqa: B018 (unused expression, just checking for errors)
+
+
+class DjangoFrameworkV2(DjangoFramework):
+    """Extension for 12-factor Django applications targeting ubuntu@26.04.
+
+    For now this is behaviourally identical to :class:`DjangoFramework`; it exists so the
+    framework can dispatch to a paas-charm 2.0 implementation in the future. Only the
+    supported base differs.
+    """
+
+    @staticmethod
+    @override
+    def get_supported_bases() -> tuple[str, ...]:
+        """Return supported bases."""
+        return ("ubuntu@26.04",)
+
+
+class DjangoFrameworkFactory:
+    """Return the correct DjangoFramework extension for the project's base."""
+
+    def __call__(self, *, project_root: Path, yaml_data: dict[str, Any]) -> Extension:
+        """Dispatch to the V2 extension for ubuntu@26.04, otherwise V1."""
+        if "26.04" in yaml_data.get("base", ""):
+            return DjangoFrameworkV2(project_root=project_root, yaml_data=yaml_data)
+        return DjangoFramework(project_root=project_root, yaml_data=yaml_data)
+
+    @staticmethod
+    def get_supported_bases() -> tuple[str, ...]:
+        """Return the union of V1 and V2 supported bases."""
+        return tuple(
+            dict.fromkeys(
+                DjangoFramework.get_supported_bases()
+                + DjangoFrameworkV2.get_supported_bases()
+            )
+        )
+
+    @staticmethod
+    def is_experimental(base: str | None) -> bool:
+        """Return whether the extension is experimental for the given base."""
+        return DjangoFramework.is_experimental(base)
