@@ -23,7 +23,7 @@ from .fastapi import FastAPIFramework
 from .go import GoFramework
 from .gunicorn import DjangoFramework, FlaskFramework
 from .registry import get_extension_class, get_extension_names, register, unregister
-from .springboot import SpringBootFramework
+from .springboot import SpringBootFramework, SpringBootFrameworkFactory, SpringBootFrameworkV2
 
 __all__ = [
     "get_extension_class",
@@ -32,6 +32,9 @@ __all__ = [
     "register",
     "unregister",
     "gen_logging_part",
+    "SpringBootFramework",
+    "SpringBootFrameworkV2",
+    "SpringBootFrameworkFactory",
 ]
 
 register("django-framework", DjangoFramework)
@@ -39,4 +42,4 @@ register("expressjs-framework", ExpressJSFramework)
 register("fastapi-framework", FastAPIFramework)
 register("flask-framework", FlaskFramework)
 register("go-framework", GoFramework)
-register("spring-boot-framework", SpringBootFramework)
+register("spring-boot-framework", SpringBootFrameworkFactory())  # type: ignore[arg-type]
