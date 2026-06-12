@@ -1,7 +1,8 @@
 .. meta::
     :description: Reference documentation for the Rockcraft UV plugin.
 
-.. _craft-parts-uv-plugin:
+.. include:: /common/craft-parts/reference/plugins/uv_plugin.rst
+   :end-before: .. _uv-details-begin:
 
 .. include:: _python_common.rst
 
