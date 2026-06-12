@@ -1,3 +1,6 @@
+.. meta::
+    :description: How to migrate an existing Docker image to a chiselled Rockcraft rock. Step-by-step guide using Skopeo and LXD to build a minimal, secure OCI container image.
+
 .. _how-to-migrate-a-docker-image-to-a-chiselled-rock:
 
 Migrate a Docker image to a chiselled rock
@@ -28,7 +31,7 @@ Project Setup
 -------------
 
 For this tutorial, the reference Docker image will be
-`Microsoft's .NET Runtime 6.0`_. The target base Ubuntu release will be Jammy, and the
+`Microsoft's .NET Runtime 10.0`_. The target base Ubuntu release will be Resolute (26.04), and the
 target architecture will be ``amd64``.
 
 Create a new directory, write the reference Dockerfile (pasted below) into a
@@ -46,28 +49,29 @@ For the sake of comparison, start by building this Docker image by running:
     :end-before: [docs:build-docker-image-end]
     :dedent: 2
 
-The output should look as follows:
+The output should be similar to:
 
 ..  code-block:: text
-    :emphasize-lines: 16
+    :emphasize-lines: 15
     :class: log-snippets
 
-    [+] Building 0.6s (10/10) FINISHED
-    => [internal] load .dockerignore0.0s
-    => => transferring context: 2B0.0s
-    => [internal] load build definition from Dockerfile    0.0s
-    => => transferring dockerfile: 881B   0.0s
-    => [internal] load metadata for mcr.microsoft.com/dotnet/runtime-deps:6.0.16-jammy-amd64    0.1s
-    => [internal] load metadata for docker.io/amd64/buildpack-deps:jammy-curl    0.6s
-    => [stage-1 1/3] FROM mcr.microsoft.com/dotnet/runtime-deps:6.0.16-jammy-amd64@sha256:e764c6f0cc866a1f2932  0.0s
-    => [installer 1/2] FROM docker.io/amd64/buildpack-deps:jammy-curl@sha256:e1f00c6daf4cd328bbef9c52e6c60f18a  0.0s
-    => CACHED [installer 2/2] RUN dotnet_version=6.0.16&& curl -fSL --output dotnet.tar.gz https://dotnet  0.0s
-    => CACHED [stage-1 2/3] COPY --from=installer [/dotnet, /usr/share/dotnet]   0.0s
-    => CACHED [stage-1 3/3] RUN ln -s /usr/share/dotnet/dotnet /usr/bin/dotnet   0.0s
-    => exporting to image   0.0s
-    => => exporting layers  0.0s
-    => => writing image sha256:a24cab51d4d02019dafcd22a2e2a3e1e6d033f9bbf1cb401d465cb2426bb2264 0.0s
-    => => naming to docker.io/library/dotnet-runtime:reference   0.0s
+    [+] Building 37.1s (10/10) FINISHED                                 docker:default
+    => [internal] load build definition from Dockerfile                          0.0s
+    => => transferring dockerfile: 1.12kB                                        0.0s
+    => [internal] load metadata for mcr.microsoft.com/dotnet/runtime-deps:10.0.  0.7s
+    => [internal] load metadata for docker.io/amd64/buildpack-deps:resolute-cur  1.7s
+    => [internal] load .dockerignore                                             0.0s
+    => => extracting sha256:2c7ba87ef970733d62efe74fdb09e39f78f3970903f21372e09  1.2s
+    => => extracting sha256:68a0c2f8197c261d8dc63644fa58de90d1bdaa782cf866f0e5b  0.0s
+    => [installer 2/2] RUN dotnet_version=10.0.8     && curl --fail --show-err  16.1s
+    => [stage-1 2/3] COPY --from=installer [/dotnet, /usr/share/dotnet]          0.2s
+    => [stage-1 3/3] RUN ln -s /usr/share/dotnet/dotnet /usr/bin/dotnet          0.4s
+    => exporting to image                                                        2.7s
+    => => exporting layers                                                       2.2s
+    => => exporting manifest sha256:f5f3158908ec561ef510155e56fc8e064026d56a662  0.0s
+    => => naming to docker.io/library/dotnet-runtime:reference                   0.0s
+    => => unpacking to docker.io/library/dotnet-runtime:reference                0.5s
+
 
 Now, inspect this .NET reference image's size:
 
@@ -77,15 +81,14 @@ Now, inspect this .NET reference image's size:
     :end-before: [docs:inspect-docker-image-end]
     :dedent: 2
 
-The output should look as follows:
+The output should be similar to:
 
 ..  code-block:: text
     :emphasize-lines: 2
     :class: log-snippets
 
-    REPOSITORY TAG IMAGE ID CREATED SIZE
-    dotnet-runtime   reference   a24cab51d4d0   4 minutes ago   187MB
-
+    IMAGE                      ID             DISK USAGE   CONTENT SIZE   EXTRA
+    dotnet-runtime:reference   70fd872341ed        343MB           96MB
 
 And make sure it is functional:
 
@@ -98,29 +101,36 @@ And make sure it is functional:
 The output should look as follows:
 
 ..  code-block:: text
-    :emphasize-lines: 13
+    :emphasize-lines: 11
     :class: log-snippets
 
-    global.json file:
-    Not found
-
     Host:
-    Version:6.0.16
-    Architecture: x64
-    Commit: 1e620a42e7
+        Version:      10.0.8
+        Architecture: x64
+        Commit:       94ea82652c
+        RID:          linux-x64
 
     .NET SDKs installed:
-    No SDKs were found.
+        No SDKs were found.
 
     .NET runtimes installed:
-    Microsoft.NETCore.App 6.0.16 [/usr/share/dotnet/shared/Microsoft.NETCore.App]
+        Microsoft.NETCore.App 10.0.8 [/usr/share/dotnet/shared/Microsoft.NETCore.App]
+
+    Other architectures found:
+        None
+
+    Environment variables:
+        DOTNET_RUNNING_IN_CONTAINER              [true]
+        DOTNET_VERSION                           [10.0.8]
+
+    global.json file:
+        Not found
+
+    Learn more:
+        https://aka.ms/dotnet/info
 
     Download .NET:
-    https://aka.ms/dotnet-download
-
-    Learn about .NET Runtimes and SDKs:
-    https://aka.ms/dotnet/runtimes-sdk-info
-
+        https://aka.ms/dotnet/download
 
 Convert Dockerfile to ``rockcraft.yaml`` file
 ---------------------------------------------
@@ -128,9 +138,9 @@ Convert Dockerfile to ``rockcraft.yaml`` file
 From a quick analysis of the reference Dockerfile above, the following
 requirements must be met:
 
-- R1. The rock must be based on Ubuntu Jammy
+- R1. The rock must be based on Ubuntu Resolute (26.04)
 - R2. There is no predefined Entrypoint or default command
-- R3. The rock must have version 6.0 of the .NET Runtime installed
+- R3. The rock must have version 10.0 of the .NET Runtime installed
 - R4. ``/usr/bin/dotnet`` must be a symbolic link to the .NET binary
 
 With these requirements in mind, and in the same directory as the Dockerfile
@@ -142,10 +152,10 @@ from above, write the following into a text editor and save it as
     :language: yaml
 
 Note the subtle chiselling of the .NET Runtime package in ``rockcraft.yaml``.
-You are requesting Rockcraft to install the ``libs`` slice of the
-``dotnet-runtime`` deb, which is defined in the
-`ubuntu-22.04 Chisel release
-<https://github.com/canonical/chisel-releases/tree/ubuntu-22.04/slices/>`_.
+You are requesting Rockcraft to install the ``standard`` slice of the
+``dotnet-runtime-10.0`` deb, which is defined in the
+`ubuntu-26.04 Chisel release
+<https://github.com/canonical/chisel-releases/tree/ubuntu-26.04/slices/>`_.
 
 
 Pack the Chiselled Rock with Rockcraft
@@ -162,66 +172,56 @@ To build the rock, run:
 The output should be similar to:
 
 ..  code-block:: text
-    :emphasize-lines: 42
     :class: log-snippets
 
-    2023-04-19 15:52:48.045 Starting Rockcraft 0.0.1.dev1
+    2026-05-26 16:44:26.830 Starting rockcraft, version 1.19.0
     ...
-    2023-04-19 15:52:48.214 Launching instance...
-    2023-04-19 15:52:48.214 Executing on host: lxc remote list --format=yaml
+    2026-05-26 16:44:27.329 Launching managed ubuntu 26.04 instance...
+    2026-05-26 16:44:27.329 Executing on host: lxc remote list --format=yaml
     ...
-    2023-04-19 15:58:25.138 :: 2023-04-19 13:56:57.784 Executing parts lifecycle: build install-dotnet-runtime
-    2023-04-19 15:58:25.138 :: 2023-04-19 13:56:57.784 Executing action
-    2023-04-19 15:58:25.138 :: 2023-04-19 13:56:57.784 execute action install-dotnet-runtime:Action(part_name='install-dotnet-runtime', step=Step.BUILD, action_type=ActionType.RUN, reason=None, project_vars=None, properties=ActionProperties(changed_files=None, changed_dirs=None))
-    2023-04-19 15:58:25.138 :: 2023-04-19 13:56:57.785 load state file: /root/parts/install-dotnet-runtime/state/pull
-    2023-04-19 15:58:25.138 :: 2023-04-19 13:56:58.081 :: 2023/04/19 13:56:58 Consulting release repository...
-    2023-04-19 15:58:25.138 :: 2023-04-19 13:56:58.349 :: 2023/04/19 13:56:58 Fetching current ubuntu-22.04 release...
-    2023-04-19 15:58:25.138 :: 2023-04-19 13:56:58.351 :: 2023/04/19 13:56:58 Processing ubuntu-22.04 release...
-    2023-04-19 15:58:25.138 :: 2023-04-19 13:56:58.369 :: 2023/04/19 13:56:58 Selecting slices...
-    2023-04-19 15:58:25.138 :: 2023-04-19 13:56:58.369 :: 2023/04/19 13:56:58 Fetching ubuntu 22.04 jammy suite details...
-    2023-04-19 15:58:25.138 :: 2023-04-19 13:57:04.548 :: 2023/04/19 13:57:04 Release date: Thu, 21 Apr 2022 17:16:08 UTC
-    2023-04-19 15:58:25.138 :: 2023-04-19 13:57:04.549 :: 2023/04/19 13:57:04 Fetching index for ubuntu 22.04 jammy main component...
-    2023-04-19 15:58:25.138 :: 2023-04-19 13:57:05.684 :: 2023/04/19 13:57:05 Fetching index for ubuntu 22.04 jammy universe component...
-    2023-04-19 15:58:25.138 :: 2023-04-19 13:57:25.215 :: 2023/04/19 13:57:25 Fetching ubuntu 22.04 jammy-security suite details...
-    2023-04-19 15:58:25.138 :: 2023-04-19 13:57:25.289 :: 2023/04/19 13:57:25 Release date: Wed, 19 Apr 2023 12:55:48 UTC
-    2023-04-19 15:58:25.139 :: 2023-04-19 13:57:25.289 :: 2023/04/19 13:57:25 Fetching index for ubuntu 22.04 jammy-security main component...
-    2023-04-19 15:58:25.139 :: 2023-04-19 13:57:30.489 :: 2023/04/19 13:57:30 Fetching index for ubuntu 22.04 jammy-security universe component...
-    2023-04-19 15:58:25.139 :: 2023-04-19 13:57:32.522 :: 2023/04/19 13:57:32 Fetching ubuntu 22.04 jammy-updates suite details...
-    2023-04-19 15:58:25.139 :: 2023-04-19 13:57:32.667 :: 2023/04/19 13:57:32 Release date: Wed, 19 Apr 2023 13:29:07 UTC
-    2023-04-19 15:58:25.139 :: 2023-04-19 13:57:32.668 :: 2023/04/19 13:57:32 Fetching index for ubuntu 22.04 jammy-updates main component...
-    2023-04-19 15:58:25.139 :: 2023-04-19 13:57:33.631 :: 2023/04/19 13:57:33 Fetching index for ubuntu 22.04 jammy-updates universe component...
-    2023-04-19 15:58:25.139 :: 2023-04-19 13:57:37.908 :: 2023/04/19 13:57:37 Fetching pool/main/b/base-files/base-files_12ubuntu4.3_amd64.deb...
-    2023-04-19 15:58:25.139 :: 2023-04-19 13:57:38.157 :: 2023/04/19 13:57:38 Fetching pool/main/g/glibc/libc6_2.35-0ubuntu3.1_amd64.deb...
-    2023-04-19 15:58:25.139 :: 2023-04-19 13:57:40.834 :: 2023/04/19 13:57:40 Fetching pool/main/g/gcc-12/libgcc-s1_12.1.0-2ubuntu1~22.04_amd64.deb...
-    2023-04-19 15:58:25.140 :: 2023-04-19 13:57:41.262 :: 2023/04/19 13:57:41 Fetching pool/main/g/gcc-12/libstdc++6_12.1.0-2ubuntu1~22.04_amd64.deb...
-    2023-04-19 15:58:25.140 :: 2023-04-19 13:57:42.001 :: 2023/04/19 13:57:42 Fetching pool/universe/d/dotnet6/dotnet-host_6.0.116-0ubuntu1~22.04.1_amd64.deb...
-    2023-04-19 15:58:25.140 :: 2023-04-19 13:57:42.119 :: 2023/04/19 13:57:42 Fetching pool/universe/d/dotnet6/dotnet-hostfxr-6.0_6.0.116-0ubuntu1~22.04.1_amd64.deb...
-    2023-04-19 15:58:25.140 :: 2023-04-19 13:57:42.237 :: 2023/04/19 13:57:42 Fetching pool/main/i/icu/libicu70_70.1-2_amd64.deb...
-    2023-04-19 15:58:25.140 :: 2023-04-19 13:57:44.046 :: 2023/04/19 13:57:44 Fetching pool/main/u/ust/liblttng-ust-common1_2.13.1-1ubuntu1_amd64.deb...
-    2023-04-19 15:58:25.140 :: 2023-04-19 13:57:44.146 :: 2023/04/19 13:57:44 Fetching pool/main/n/numactl/libnuma1_2.0.14-3ubuntu2_amd64.deb...
-    2023-04-19 15:58:25.141 :: 2023-04-19 13:57:44.247 :: 2023/04/19 13:57:44 Fetching pool/main/u/ust/liblttng-ust-ctl5_2.13.1-1ubuntu1_amd64.deb...
-    2023-04-19 15:58:25.141 :: 2023-04-19 13:57:44.355 :: 2023/04/19 13:57:44 Fetching pool/main/u/ust/liblttng-ust1_2.13.1-1ubuntu1_amd64.deb...
-    2023-04-19 15:58:25.141 :: 2023-04-19 13:57:44.571 :: 2023/04/19 13:57:44 Fetching pool/main/o/openssl/libssl3_3.0.2-0ubuntu1.8_amd64.deb...
-    2023-04-19 15:58:25.141 :: 2023-04-19 13:57:45.111 :: 2023/04/19 13:57:45 Fetching pool/main/l/llvm-toolchain-13/libunwind-13_13.0.1-2ubuntu2.1_amd64.deb...
-    2023-04-19 15:58:25.141 :: 2023-04-19 13:57:45.213 :: 2023/04/19 13:57:45 Fetching pool/main/x/xz-utils/liblzma5_5.2.5-2ubuntu1_amd64.deb...
-    2023-04-19 15:58:25.141 :: 2023-04-19 13:57:53.384 :: 2023/04/19 13:57:53 Fetching pool/main/libu/libunwind/libunwind8_1.3.2-2build2_amd64.deb...
-    2023-04-19 15:58:25.141 :: 2023-04-19 13:57:53.523 :: 2023/04/19 13:57:53 Fetching pool/main/z/zlib/zlib1g_1.2.11.dfsg-2ubuntu9.2_amd64.deb...
-    2023-04-19 15:58:25.141 :: 2023-04-19 13:57:53.982 :: 2023/04/19 13:57:53 Fetching pool/universe/d/dotnet6/dotnet-runtime-6.0_6.0.116-0ubuntu1~22.04.1_amd64.deb...
+    2026-05-26 16:45:29.562 Building install-dotnet-runtime
+    2026-05-26 16:45:29.564 execute action install-dotnet-runtime:Action(part_name='install-dotnet-runtime', step=Step.BUILD, action_type=ActionType.RUN, reason=None, project_vars=ProjectVarInfo(root={}), properties=ActionProperties(changed_files=None, changed_dirs=None))
+    2026-05-26 16:45:29.566 load state file: /root/parts/install-dotnet-runtime/state/pull
+    2026-05-26 16:45:29.788 :: 2026/05/26 16:45:29 Consulting release repository...
+    2026-05-26 16:45:30.309 :: 2026/05/26 16:45:30 Fetching current ubuntu-26.04 release...
+    2026-05-26 16:45:30.524 :: 2026/05/26 16:45:30 Processing ubuntu-26.04 release...
+    2026-05-26 16:45:40.419 :: 2026/05/26 16:45:40 Selecting slices...
+    2026-05-26 16:45:40.420 :: 2026/05/26 16:45:40 Fetching ubuntu 26.04 resolute suite details...
+    2026-05-26 16:45:40.673 :: 2026/05/26 16:45:40 Release date: Thu, 23 Apr 2026 17:07:15 UTC
+    2026-05-26 16:45:40.675 :: 2026/05/26 16:45:40 Fetching index for ubuntu 26.04 resolute main component...
+    2026-05-26 16:45:41.440 :: 2026/05/26 16:45:41 Fetching index for ubuntu 26.04 resolute universe component...
+    2026-05-26 16:45:49.441 :: 2026/05/26 16:45:49 Fetching ubuntu 26.04 resolute-security suite details...
+    2026-05-26 16:45:49.619 :: 2026/05/26 16:45:49 Release date: Tue, 26 May 2026 12:45:13 UTC
+    2026-05-26 16:45:49.621 :: 2026/05/26 16:45:49 Fetching index for ubuntu 26.04 resolute-security main component...
+    2026-05-26 16:45:49.703 :: 2026/05/26 16:45:49 Fetching index for ubuntu 26.04 resolute-security universe component...
+    2026-05-26 16:45:49.762 :: 2026/05/26 16:45:49 Fetching ubuntu 26.04 resolute-updates suite details...
+    2026-05-26 16:45:49.935 :: 2026/05/26 16:45:49 Release date: Tue, 26 May 2026 12:45:19 UTC
+    2026-05-26 16:45:49.936 :: 2026/05/26 16:45:49 Fetching index for ubuntu 26.04 resolute-updates main component...
+    2026-05-26 16:45:50.013 :: 2026/05/26 16:45:50 Fetching index for ubuntu 26.04 resolute-updates universe component...
+    2026-05-26 16:45:50.083 :: 2026/05/26 16:45:50 Fetching pool/main/b/base-files/base-files_14ubuntu6.1_amd64.deb...
+    2026-05-26 16:45:50.155 :: 2026/05/26 16:45:50 Fetching pool/main/d/dotnet10/dotnet-host-10.0_10.0.8-0ubuntu1~26.04.1_amd64.deb...
+    2026-05-26 16:45:50.268 :: 2026/05/26 16:45:50 Fetching pool/main/g/glibc/libc6_2.43-2ubuntu2_amd64.deb...
+    2026-05-26 16:45:51.332 :: 2026/05/26 16:45:51 Fetching pool/universe/g/gcc-14/gcc-14-base_14.3.0-14ubuntu1_amd64.deb...
+    2026-05-26 16:45:51.386 :: 2026/05/26 16:45:51 Fetching pool/main/g/gcc-16/libgcc-s1_16-20260322-1ubuntu1_amd64.deb...
+    2026-05-26 16:45:51.455 :: 2026/05/26 16:45:51 Fetching pool/main/g/gcc-16/libstdc++6_16-20260322-1ubuntu1_amd64.deb...
+    2026-05-26 16:45:51.815 :: 2026/05/26 16:45:51 Fetching pool/main/d/dotnet10/dotnet-hostfxr-10.0_10.0.8-0ubuntu1~26.04.1_amd64.deb...
+    2026-05-26 16:45:51.909 :: 2026/05/26 16:45:51 Fetching pool/main/d/dotnet10/dotnet-runtime-10.0_10.0.8-0ubuntu1~26.04.1_amd64.deb...
     ...
-    2023-04-19 15:56:00.566 :: 2023-04-19 13:55:59.756 Created new layer
-    2023-04-19 15:56:00.566 :: 2023-04-19 13:55:59.758 Adding Pebble entrypoint
-    2023-04-19 15:56:00.566 :: 2023-04-19 13:55:59.758 Configuring entrypoint...
-    2023-04-19 15:56:00.567 :: 2023-04-19 13:55:59.767 Entrypoint set to ['/bin/pebble', 'enter']
-    2023-04-19 15:56:00.567 :: 2023-04-19 13:55:59.767 Adding metadata
-    2023-04-19 15:56:00.567 :: 2023-04-19 13:55:59.767 Configuring labels and annotations...
-    2023-04-19 15:56:00.567 :: 2023-04-19 13:55:59.785 Labels and annotations set to ['org.opencontainers.image.version=chiselled', 'org.opencontainers.image.title=dotnet-runtime', 'org.opencontainers.image.licenses=Apache-2.0', 'org.opencontainers.image.created=2023-04-19T13:55:59.767870+00:00']
-    2023-04-19 15:56:00.567 :: 2023-04-19 13:55:59.792 Setting the ROCK's Control Data
-    2023-04-19 15:56:00.567 :: 2023-04-19 13:55:59.797 Adding to layer: /tmp/tmpdqjmducj/.rock as '.rock'
-    2023-04-19 15:56:00.567 :: 2023-04-19 13:55:59.797 Adding to layer: /tmp/tmpdqjmducj/.rock/metadata.yaml as '.rock/metadata.yaml'
-    2023-04-19 15:56:00.567 :: 2023-04-19 13:55:59.803 Control data written
-    2023-04-19 15:56:00.567 :: 2023-04-19 13:55:59.804 Metadata added
-    2023-04-19 15:56:00.567 :: 2023-04-19 13:55:59.804 Exporting to OCI archive
-    2023-04-19 15:56:00.567 :: 2023-04-19 13:56:00.148 Exported to OCI archive 'dotnet-runtime_chiselled_amd64.rock'
+    2026-05-26 16:46:15.523 Created new layer
+    2026-05-26 16:46:15.524 Adding Pebble entrypoint
+    2026-05-26 16:46:15.525 Configuring entrypoint...
+    2026-05-26 16:46:15.544 Entrypoint set to ['/usr/bin/pebble', 'enter']
+    2026-05-26 16:46:15.567 Entrypoint set to ['/bin/pebble', 'enter']
+    2026-05-26 16:46:15.571 Adding metadata
+    2026-05-26 16:46:15.572 Configuring labels and annotations...
+    2026-05-26 16:46:15.592 Labels and annotations set to ['org.opencontainers.image.version=chiselled', 'org.opencontainers.image.title=dotnet-runtime', 'org.opencontainers.image.created=2026-05-26T14:46:15.571853+00:00', 'org.opencontainers.image.description=.NET Runtime 10.0\n\nA Chiselled rock for the .NET Runtime 10.0', 'org.opencontainers.image.licenses=Apache-2.0']
+    2026-05-26 16:46:15.593 Setting the rock's control data
+    2026-05-26 16:46:15.594 Adding to layer: /tmp/tmpljv_j_q4/.rock as '.rock'
+    2026-05-26 16:46:15.595 Adding to layer: /tmp/tmpljv_j_q4/.rock/metadata.yaml as '.rock/metadata.yaml'
+    2026-05-26 16:46:15.612 Control data written
+    2026-05-26 16:46:15.612 Metadata added
+    2026-05-26 16:46:15.613 Exporting to OCI archive
+    2026-05-26 16:46:15.816 Exported to OCI archive 'dotnet-runtime_chiselled_amd64.rock'
 
 At the end of the process, a file named ``dotnet-runtime_chiselled_amd64.rock``
 should be present in the current directory. That's your chiselled rock,
@@ -254,8 +254,8 @@ Which should print something like:
     :emphasize-lines: 2
     :class: log-snippets
 
-    REPOSITORY TAG IMAGE ID CREATED SIZE
-    dotnet-runtime   chiselled   4e0951d180e3   About a minute ago   124MB
+    IMAGE                      ID             DISK USAGE   CONTENT SIZE   EXTRA
+    dotnet-runtime:chiselled   a846a767e8e8        213MB         64.5MB
 
 And make sure this rock is as functional as the reference Docker image:
 
@@ -268,29 +268,35 @@ And make sure this rock is as functional as the reference Docker image:
 The output should be similar to:
 
 ..  code-block:: text
-    :emphasize-lines: 13
+    :emphasize-lines: 11
     :class: log-snippets
 
-    global.json file:
-    Not found
-
     Host:
-    Version:6.0.16
-    Architecture: x64
-    Commit: 1e620a42e7
+        Version:      10.0.8
+        Architecture: x64
+        Commit:       94ea82652c
+        RID:          ubuntu.26.04-x64
 
     .NET SDKs installed:
-    No SDKs were found.
+        No SDKs were found.
 
     .NET runtimes installed:
-    Microsoft.NETCore.App 6.0.16 [/usr/lib/dotnet/shared/Microsoft.NETCore.App]
+        Microsoft.NETCore.App 10.0.8 [/usr/lib/dotnet/shared/Microsoft.NETCore.App]
+
+    Other architectures found:
+        None
+
+    Environment variables:
+        Not set
+
+    global.json file:
+        Not found
+
+    Learn more:
+        https://aka.ms/dotnet/info
 
     Download .NET:
-    https://aka.ms/dotnet-download
-
-    Learn about .NET Runtimes and SDKs:
-    https://aka.ms/dotnet/runtimes-sdk-info
-
+        https://aka.ms/dotnet/download
 
 Conclusion
 ----------
@@ -299,7 +305,7 @@ In this tutorial, you have migrated from an imperative container build
 instructions (Dockerfile) to a declarative one (``rockcraft.yaml``), without any
 overhead on the final file's size or complexity.
 
-The resulting rock ended up being 63MB smaller than the reference one, while
+The resulting rock ended up being 31.5MB smaller than the reference one, while
 offering the same .NET Runtime functionality.
 
-.. _Microsoft's .NET Runtime 6.0: https://github.com/dotnet/dotnet-docker/tree/36e80c363f5fa5a4f20d004c759c932a4027c89b/src/runtime/6.0/jammy
+.. _Microsoft's .NET Runtime 10.0: https://github.com/dotnet/dotnet-docker/tree/main/src/runtime/10.0/resolute
