@@ -20,7 +20,7 @@ from ._utils import apply_extensions
 from .app_parts import gen_logging_part
 from .expressjs import ExpressJSFramework
 from .fastapi import FastAPIFramework
-from .go import GoFramework
+from .go import GoFramework, GoFrameworkV2, go_framework_factory
 from .gunicorn import DjangoFramework, FlaskFramework
 from .registry import get_extension_class, get_extension_names, register, unregister
 from .springboot import SpringBootFramework
@@ -32,11 +32,14 @@ __all__ = [
     "register",
     "unregister",
     "gen_logging_part",
+    "GoFramework",
+    "GoFrameworkV2",
+    "go_framework_factory",
 ]
 
 register("django-framework", DjangoFramework)
 register("expressjs-framework", ExpressJSFramework)
 register("fastapi-framework", FastAPIFramework)
 register("flask-framework", FlaskFramework)
-register("go-framework", GoFramework)
+register("go-framework", go_framework_factory)  # type: ignore[arg-type]
 register("spring-boot-framework", SpringBootFramework)
