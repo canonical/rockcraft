@@ -2,6 +2,7 @@ import datetime
 import os
 import pathlib
 import sys
+import textwrap
 
 import craft_parts_docs
 import rockcraft
@@ -9,11 +10,14 @@ import rockcraft
 # Configuration for the Sphinx documentation builder.
 # All configuration specific to your project should be done in this file.
 #
+# If you're new to Sphinx and don't want any advanced or custom features,
+# just go through the items marked 'TODO'.
+#
 # A complete list of built-in Sphinx configuration values:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 #
-# Our starter pack uses the custom Canonical Sphinx extension
-# to keep all documentation based on it consistent and on brand:
+# The Sphinx Stack uses the Canonical Sphinx theme to keep all documentation consistent
+# and on brand:
 # https://github.com/canonical/canonical-sphinx
 
 
@@ -23,10 +27,11 @@ import rockcraft
 
 # Project name
 project = "Rockcraft"
+
+# Author name; used in the default copyright statement in the page footer
 author = "Canonical Ltd."
 
-# Sidebar documentation title; best kept reasonably short
-# The full version, including alpha/beta/rc tags
+# Format the product name and version for the TOC and HTML title
 release = rockcraft.__version__
 if ".post" in release:
     release = "dev"
@@ -34,44 +39,74 @@ else:
     major, minor, *_ = release.split(".")
     release = f"{major}.{minor}"
 
+# The year in the copyright statement
+copyright = f"2023-{datetime.date.today().year}"
+
+# Sidebar documentation title
+# To disable the title, set it to an empty string.
 html_title = project + " documentation"
 
-# Copyright string; shown at the bottom of the page
-copyright = "2022-%s, %s" % (datetime.date.today().year, author)
-
 # Documentation website URL
-
 ogp_site_url = "https://documentation.ubuntu.com/rockcraft"
 
 #Preview name of the documentation website
+# TODO: To use a different name for the project in previews, update the next line.
 ogp_site_name = project
 
 #Preview image URL
+# TODO: To customise the preview image, update the next line.
 ogp_image = "https://assets.ubuntu.com/v1/253da317-image-document-ubuntudocs.svg"
 
 # Product favicon; shown in bookmarks, browser tabs, etc.
+# TODO: To customise the favicon, uncomment and update the next line.
 # html_favicon = '.sphinx/_static/favicon.png'
 
 # Dictionary of values to pass into the Sphinx context for all pages:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-html_context
 html_context = {
-    "product_page": "",  # Rockcraft doesn't have a marketing page
-    "matrix": "https://matrix.to/#/#rockcraft:ubuntu.com",
+    # TODO: Change to your product website URL, dropping the 'https://' prefix (e.g.,
+    #       'ubuntu.com/lxd'). If there's no such website, remove the {{ product_page }}
+    #       link from the _templates/header.html file.
+    "product_page": "ubuntu.com/containers",
+    # Product tag image; the orange part of your logo, shown in the page header
+    # "product_tag": "_static/tag.png",
+    # Your Discourse instance URL
     "discourse": "https://discourse.ubuntu.com/c/rocks/117",
+    # Your Matrix channel URL
+    "matrix": "https://matrix.to/#/#rockcraft:ubuntu.com",
+    # Your documentation GitHub repository URL. If set, links for viewing the
+    # documentation source files and creating GitHub issues are added at the bottom of
+    # each page.
     "github_url": "https://github.com/canonical/rockcraft",
+    # Docs branch in the repo; used in links for viewing the source files
     "repo_default_branch": "main",
+    # Docs location in the repo; used in links for viewing the source files
     "repo_folder": "/docs/",
+    # List contributors on individual pages
     "display_contributors": False,
+    # Required for feedback button
     "github_issues": 'enabled',
+    # Passes the top-level 'author' value to the theme
+    "author": author,
+    # Documentation license information
+    "license": {
+        # TODO: Specify your project's license.
+        # For the name, we recommend using the standard shorthand identifier from
+        # https://spdx.org/licenses
+        "name": "LGPL-3.0",
+        # TODO: Link directly to your project's license statement.
+        "url": "https://github.com/canonical/starbase/blob/main/LICENSE",
+    },
 }
 
-#html_extra_path = []
-
+# TODO: To enable the edit button on pages, change the link to your public repository on
+# GitHub or Launchpad.
 html_theme_options = {
     "source_edit_link": "https://github.com/canonical/rockcraft",
 }
 
-# Project slug; see https://meta.discourse.org/t/what-is-category-slug/87897
+# TODO: If your documentation is hosted on https://documentation.ubuntu.com/,
+#       uncomment and set to the RTD slug.
 # slug = ''
 
 
@@ -88,7 +123,9 @@ sitemap_url_scheme = '{link}'
 # Include `lastmod` dates in the sitemap:
 # sitemap_show_lastmod = True
 
-# Exclude generated pages from the sitemap:
+# TODO: Exclude pages that aren't user-facing from the sitemap (e.g., module pages
+# generated by autodoc).
+# Pages excluded from the sitemap:
 sitemap_excludes = [
     '404/',
     'genindex/',
@@ -107,23 +144,44 @@ templates_path = ["_templates"]
 # Redirects #
 #############
 
+# Add redirects to the 'redirects.txt' file
+# https://sphinxext-rediraffe.readthedocs.io/en/latest/
+
+# To set up redirects in the Read the Docs project dashboard:
+# https://docs.readthedocs.io/en/stable/guides/redirects.html
+
 rediraffe_redirects = "redirects.txt"
 
+# Strips '/index.html' from destination URLs when building with 'dirhtml'
+rediraffe_dir_only = True
+
+############################
+# sphinx-llm configuration #
+############################
+
+# This description is included in llms.txt to provide some initial context for your
+# product docs.
+# TODO: Add a description in the form "This is the documentation for <product name>,
+# <first sentence of home page>".
+llms_txt_description = textwrap.dedent(
+    """\
+    This is the documentation for Starbase, a template repository for setting up
+    and maintaining Starcraft projects.
+    """
+)
+
+# The base URL for references built by sphinx-markdown-builder.
+if os.environ.get("READTHEDOCS"):
+    markdown_http_base = html_baseurl
 
 ###########################
 # Link checker exceptions #
 ###########################
 
-# A regex list of URLs that are ignored by 'make linkcheck'
-linkcheck_anchors_ignore = [
-    "#",
-    ":",
-    "slide definitions",
-]
+# Whole sites and individuals URLs to ignore
 linkcheck_ignore = [
-    # GitHub aggressively rate limits us
     # Entire domains to ignore due to flakiness or issues
-    "https://github.com",
+    r"^https://github.com",
     r"^https://www.gnu.org/",
     r"^https://crates.io/",
     r"^https://([\w-]*\.)?npmjs.org",
@@ -132,7 +190,7 @@ linkcheck_ignore = [
     r"^https://www.freedesktop.org/",
     r"^https://www.npmjs.com/",
     r"^https://github.com/canonical/[a-z]*craft[a-z-]*/releases/.*",
-    "https://matrix.to/#",
+    r"^https://matrix.to/#",
     "https://github.com/canonical/craft-actions#rockcraft-pack",
     "https://github.com/canonical/spread#selecting-which-tasks-to-run",
     "https://matrix.to/#/#rocks:ubuntu.com",
@@ -145,6 +203,13 @@ linkcheck_ignore = [
     # 2026-06-03: Ignore Canonical sites until filtering is resolved
     "https://snapcraft.io",
     "https://juju.is",
+]
+
+# Anchor strings to ignore
+linkcheck_anchors_ignore = [
+    "#",
+    ":",
+    "slide definitions",
 ]
 
 # Don't check links in the "common" subdirectory, as those are the responsibility of
@@ -164,13 +229,15 @@ linkcheck_retries = 20
 extensions = [
     "canonical_sphinx",
     "notfound.extension",
-    # "sphinx_design",
+    "sphinx_design",
+    "sphinx_rerediraffe",
     # "sphinx_tabs.tabs",
     # "sphinxcontrib.jquery",
-    # "sphinxext.opengraph",
+    "sphinxext.opengraph",
     # "sphinx_config_options",
     # "sphinx_contributor_listing",
     # "sphinx_filtered_toctree",
+    "sphinx_llm.txt",
     "sphinx_related_links",
     "sphinx_roles",
     "sphinx_terminal",
@@ -184,7 +251,6 @@ extensions = [
     # Custom Craft extensions
     "pydantic_kitbash",
     "sphinx-pydantic",
-    "sphinxext.rediraffe",
     "sphinx.ext.autodoc",
     "sphinx.ext.doctest",
     "sphinx.ext.ifconfig",
@@ -193,7 +259,6 @@ extensions = [
     "sphinx_autodoc_typehints",  # must be loaded after napoleon
     "sphinxcontrib.details.directive",
     "sphinx_toolbox.collapse",
-    "sphinx.ext.intersphinx",
     # "sphinx_substitution_extensions",
     ]
 
@@ -235,13 +300,13 @@ exclude_patterns = [
     "README.md",
 ]
 
-# Adds custom CSS files
+# Adds custom CSS files, located remotely or in 'html_static_path'.
 html_css_files = ["https://assets.ubuntu.com/v1/d86746ef-cookie_banner.css"]
 
-# Adds custom JavaScript files
+# Adds custom JavaScript files, located remotely or in 'html_static_path'.
 html_js_files = ["https://assets.ubuntu.com/v1/287a5e8f-bundle.js"]
 
-# Specifies a reST snippet to be appended to each .rst file
+# Appends extra markup to the end of every document written in reST
 rst_epilog = """
 .. include:: /reuse/links.txt
 """
@@ -266,10 +331,6 @@ rst_prolog = """
 .. role:: vale-ignore
     :class: vale-ignore
 """
-
-# Workaround for https://github.com/canonical/canonical-sphinx/issues/34
-if "discourse_prefix" not in html_context and "discourse" in html_context:
-    html_context["discourse_prefix"] = f"{html_context['discourse']}/t/"
 
 # Add configuration for intersphinx mapping
 # https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html#configuration
