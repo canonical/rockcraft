@@ -1,5 +1,5 @@
 .. meta::
-    :description: Reference documentation for the Rockcraft Ant plugin.
+    :description: Reference documentation for the Ant plugin.
 
 .. _rockcraft_ant_plugin:
 

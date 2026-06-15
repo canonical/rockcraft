@@ -1,5 +1,5 @@
 .. meta::
-    :description: Ubuntu-based OCI-compliant container images built with Rockcraft: what sets rocks apart in security, consistency, and design.
+    :description: Rocks are OCI-compliant images layered on top of the Ubuntu filesystem. Rocks have extra security features and can be made smaller than standard OCI images.
 
 .. _explanation-rocks:
 

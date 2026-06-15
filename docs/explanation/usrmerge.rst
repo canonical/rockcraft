@@ -1,5 +1,5 @@
 .. meta::
-    :description: Rockcraft's usrmerge implementation for rocks: the approach to merging /usr directories in Ubuntu-based container images.
+    :description: Explanation of usrmerge in Rockcraft. Rocks contain files that adhere to the Filesystem Hierarchy Standard, so they have a merge strategy for usr directories.
 
 .. _explanation-usrmerge-implementation:
 

@@ -1,5 +1,5 @@
 .. meta::
-    :description: Learn to build a "Hello World" rock with Rockcraft. In this tutorial, we create a basic rockcraft.yaml file and package it into an OCI container image.
+    :description: Learn to assemble a rock with Rockcraft. In this tutorial, we create a very small rock that prints a "Hello, world!" message to the log.
 
 .. _tutorial-create-a-hello-world-rock:
 

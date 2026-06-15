@@ -1,5 +1,5 @@
 .. meta::
-    :description: Reference documentation for the Rockcraft changelog.
+    :description: The legacy Rockcraft development changelog.
 
 :tocdepth: 2
 

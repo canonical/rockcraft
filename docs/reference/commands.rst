@@ -1,5 +1,5 @@
 .. meta::
-    :description: Reference documentation for all Rockcraft CLI commands including lifecycle commands (build, pack, stage, prime, pull, clean) and extension commands.
+    :description: Rockcraft CLI command reference.
 
 .. _reference-commands:
 

@@ -1,5 +1,5 @@
 .. meta::
-    :description: Explanation of rock bases including Ubuntu LTS, interim, and bare base options, and how they affect rock contents and build compatibility.
+    :description: Explanation of a rock's base, which is the baseline system that the rock's contents are layered on.
 
 :relatedlinks: https://ubuntu.com/about/release-cycle, [Ubuntu&#32;image&#32;on&#32;Docker&#32;Hub](https://hub.docker.com/_/ubuntu), [Ubuntu&#32;image&#32;on&#32;Amazon&#32;ECR](https://gallery.ecr.aws/ubuntu/ubuntu), [Scratch&#32;image&#32;on&#32;Docker&#32;Hub](https://hub.docker.com/_/scratch)
 

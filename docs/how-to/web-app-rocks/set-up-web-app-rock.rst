@@ -1,5 +1,5 @@
 .. meta::
-    :description: How to initialize a 12-factor app rock and configure it by including additional files, extra debs and override commands.
+    :description: How to initialize a rock for a 12-factor web app, and give it the minimal configuration needed for a supported framework.
 
 .. _set-up-web-app-rock:
 
