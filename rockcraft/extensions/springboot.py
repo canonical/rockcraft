@@ -26,7 +26,7 @@ from typing_extensions import override
 
 from rockcraft.errors import ExtensionError
 
-from .extension import Extension
+from .extension import Extension, _FrameworkFactory
 
 
 class SpringBootFramework(Extension):
@@ -359,27 +359,11 @@ class SpringBootFrameworkV2(SpringBootFramework):
         """Return supported bases."""
         return ("ubuntu@26.04",)
 
-
-class SpringBootFrameworkFactory:
-    """Return the correct SpringBootFramework extension for the project's base."""
-
-    def __call__(self, *, project_root: Path, yaml_data: dict[str, Any]) -> Extension:
-        """Dispatch to the V2 extension for ubuntu@26.04, otherwise V1."""
-        if "26.04" in yaml_data.get("base", ""):
-            return SpringBootFrameworkV2(project_root=project_root, yaml_data=yaml_data)
-        return SpringBootFramework(project_root=project_root, yaml_data=yaml_data)
-
     @staticmethod
-    def get_supported_bases() -> tuple[str, ...]:
-        """Return the union of V1 and V2 supported bases."""
-        return tuple(
-            dict.fromkeys(
-                SpringBootFramework.get_supported_bases()
-                + SpringBootFrameworkV2.get_supported_bases()
-            )
-        )
+    @override
+    def is_experimental(base: str | None) -> bool:  # noqa: ARG004 (unused arg)
+        """Check if the extension is in an experimental state."""
+        return True
 
-    @staticmethod
-    def is_experimental(base: str | None) -> bool:
-        """Return whether the extension is experimental for the given base."""
-        return SpringBootFramework.is_experimental(base)
+
+springboot_framework_factory = _FrameworkFactory(SpringBootFramework, SpringBootFrameworkV2)

@@ -46,7 +46,7 @@ def use_gradle_init_script_part_fixture(request, spring_boot_input_yaml):
 @pytest.fixture
 def spring_boot_extension(mock_extensions, monkeypatch):
     monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "1")
-    extensions.register("spring-boot-framework", extensions.SpringBootFrameworkFactory())  # type: ignore[arg-type]
+    extensions.register("spring-boot-framework", extensions.springboot_framework_factory)  # type: ignore[arg-type]
 
 
 @pytest.fixture
@@ -583,12 +583,11 @@ def test_factory_dispatch_v1(tmp_path):
     """Factory returns SpringBootFramework for ubuntu@24.04."""
     from rockcraft.extensions.springboot import (
         SpringBootFramework,
-        SpringBootFrameworkFactory,
         SpringBootFrameworkV2,
+        springboot_framework_factory,
     )
 
-    factory = SpringBootFrameworkFactory()
-    instance = factory(
+    instance = springboot_framework_factory(
         project_root=tmp_path,
         yaml_data={"name": "x", "base": "ubuntu@24.04"},
     )
@@ -599,12 +598,11 @@ def test_factory_dispatch_v1(tmp_path):
 def test_factory_dispatch_v2(tmp_path):
     """Factory returns SpringBootFrameworkV2 for ubuntu@26.04."""
     from rockcraft.extensions.springboot import (
-        SpringBootFrameworkFactory,
         SpringBootFrameworkV2,
+        springboot_framework_factory,
     )
 
-    factory = SpringBootFrameworkFactory()
-    instance = factory(
+    instance = springboot_framework_factory(
         project_root=tmp_path,
         yaml_data={"name": "x", "base": "ubuntu@26.04"},
     )
@@ -619,13 +617,13 @@ def test_v2_supported_bases():
 
 
 def test_factory_supported_bases():
-    """SpringBootFrameworkFactory includes bases from both V1 and V2."""
+    """springboot_framework_factory includes bases from both V1 and V2."""
     from rockcraft.extensions.springboot import (
         SpringBootFramework,
-        SpringBootFrameworkFactory,
+        springboot_framework_factory,
     )
 
-    factory_bases = SpringBootFrameworkFactory.get_supported_bases()
+    factory_bases = springboot_framework_factory.get_supported_bases()
     assert "ubuntu@26.04" in factory_bases
     for base in SpringBootFramework.get_supported_bases():
         assert base in factory_bases
