@@ -39,7 +39,8 @@ def flask_input_yaml_fixture():
 
 @pytest.fixture
 def django_extension(mock_extensions, monkeypatch):
-    extensions.register("django-framework", extensions.DjangoFrameworkFactory())  # type: ignore[arg-type]
+    monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "1")
+    extensions.register("django-framework", extensions.django_framework_factory)  # type: ignore[arg-type]
 
 
 @pytest.fixture(name="django_input_yaml")
@@ -997,13 +998,13 @@ def test_django_extension_django_service_override_disable_wsgi_path_check(tmp_pa
 
 
 # ---------------------------------------------------------------------------
-# DjangoFrameworkV2 / DjangoFrameworkFactory tests
+# DjangoFrameworkV2 / django_framework_factory tests
 # ---------------------------------------------------------------------------
 
 
 def test_django_factory_dispatch_v1(tmp_path):
     """Factory returns DjangoFramework (V1) for ubuntu@22.04."""
-    factory = extensions.DjangoFrameworkFactory()
+    factory = extensions.django_framework_factory
     instance = factory(
         project_root=tmp_path,
         yaml_data={"name": "x", "base": "ubuntu@22.04"},
@@ -1014,7 +1015,7 @@ def test_django_factory_dispatch_v1(tmp_path):
 
 def test_django_factory_dispatch_v2(tmp_path):
     """Factory returns DjangoFrameworkV2 for ubuntu@26.04."""
-    factory = extensions.DjangoFrameworkFactory()
+    factory = extensions.django_framework_factory
     instance = factory(
         project_root=tmp_path,
         yaml_data={"name": "x", "base": "ubuntu@26.04"},
@@ -1030,7 +1031,7 @@ def test_django_framework_v2_supported_bases():
 
 def test_django_factory_supported_bases():
     """Factory's supported bases include both V1 and V2 bases."""
-    bases = extensions.DjangoFrameworkFactory.get_supported_bases()
+    bases = extensions.django_framework_factory.get_supported_bases()
     assert "ubuntu@26.04" in bases
     assert "ubuntu@22.04" in bases
     assert "ubuntu@24.04" in bases

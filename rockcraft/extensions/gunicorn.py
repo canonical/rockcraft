@@ -46,7 +46,7 @@ from ._python_utils import (
 )
 from ._utils import find_ubuntu_base_python_version
 from .app_parts import gen_logging_part
-from .extension import Extension, get_extensions_data_dir
+from .extension import Extension, _FrameworkFactory, get_extensions_data_dir
 
 USER_UID: int = SUPPORTED_GLOBAL_USERNAMES["_daemon_"]["uid"]
 
@@ -539,7 +539,7 @@ class DjangoFrameworkV2(DjangoFramework):
 
     For now this is behaviourally identical to :class:`DjangoFramework`; it exists so the
     framework can dispatch to a paas-charm 2.0 implementation in the future. Only the
-    supported base differs.
+    supported base and experimental status differs.
     """
 
     @staticmethod
@@ -548,27 +548,14 @@ class DjangoFrameworkV2(DjangoFramework):
         """Return supported bases."""
         return ("ubuntu@26.04",)
 
-
-class DjangoFrameworkFactory:
-    """Return the correct DjangoFramework extension for the project's base."""
-
-    def __call__(self, *, project_root: Path, yaml_data: dict[str, Any]) -> Extension:
-        """Dispatch to the V2 extension for ubuntu@26.04, otherwise V1."""
-        if "26.04" in yaml_data.get("base", ""):
-            return DjangoFrameworkV2(project_root=project_root, yaml_data=yaml_data)
-        return DjangoFramework(project_root=project_root, yaml_data=yaml_data)
-
     @staticmethod
-    def get_supported_bases() -> tuple[str, ...]:
-        """Return the union of V1 and V2 supported bases."""
-        return tuple(
-            dict.fromkeys(
-                DjangoFramework.get_supported_bases()
-                + DjangoFrameworkV2.get_supported_bases()
-            )
-        )
+    @override
+    def is_experimental(base: str | None) -> bool:  # noqa: ARG004 (unused arg)
+        """Indicate if the extension is in an experimental state.
 
-    @staticmethod
-    def is_experimental(base: str | None) -> bool:
-        """Return whether the extension is experimental for the given base."""
-        return DjangoFramework.is_experimental(base)
+        This is always True for V2
+        """
+        return True
+
+
+django_framework_factory = _FrameworkFactory(DjangoFramework, DjangoFrameworkV2)
