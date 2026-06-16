@@ -32,7 +32,7 @@ from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
 
 from ._python_utils import has_global_variable
 from .app_parts import gen_logging_part
-from .extension import Extension
+from .extension import Extension, _FrameworkFactory
 
 USER_UID: int = SUPPORTED_GLOBAL_USERNAMES["_daemon_"]["uid"]
 
@@ -302,7 +302,7 @@ class FastAPIFrameworkV2(FastAPIFramework):
 
     For now this is behaviourally identical to :class:`FastAPIFramework`; it exists so the
     framework can dispatch to a paas-charm 2.0 implementation in the future. Only the
-    supported base differs.
+    supported base and experimental status differs.
     """
 
     @staticmethod
@@ -311,27 +311,14 @@ class FastAPIFrameworkV2(FastAPIFramework):
         """Return supported bases."""
         return ("ubuntu@26.04",)
 
-
-class FastAPIFrameworkFactory:
-    """Return the correct FastAPIFramework extension for the project's base."""
-
-    def __call__(self, *, project_root: Path, yaml_data: dict[str, Any]) -> "Extension":
-        """Dispatch to the V2 extension for ubuntu@26.04, otherwise V1."""
-        if "26.04" in yaml_data.get("base", ""):
-            return FastAPIFrameworkV2(project_root=project_root, yaml_data=yaml_data)
-        return FastAPIFramework(project_root=project_root, yaml_data=yaml_data)
-
     @staticmethod
-    def get_supported_bases() -> tuple[str, ...]:
-        """Return the union of V1 and V2 supported bases."""
-        return tuple(
-            dict.fromkeys(
-                FastAPIFramework.get_supported_bases()
-                + FastAPIFrameworkV2.get_supported_bases()
-            )
-        )
-
-    @staticmethod
+    @override
     def is_experimental(base: str | None) -> bool:
-        """Return whether the extension is experimental for the given base."""
-        return FastAPIFramework.is_experimental(base)
+        """Indicate if the extension is in an experimental state.
+
+        This is always True for V2
+        """
+        return True
+
+
+fastapi_framework_factory = _FrameworkFactory(FastAPIFramework, FastAPIFrameworkV2)
