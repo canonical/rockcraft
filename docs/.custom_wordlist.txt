@@ -191,6 +191,7 @@ untrusted
 URIs?
 URL
 usermod
+usr
 usrmerge
 usrmerged
 utils
