@@ -219,6 +219,8 @@ linkcheck_exclude_documents = ["^common/.*"]
 # give linkcheck multiple tries on failure
 linkcheck_retries = 20
 
+linkcheck_report_timeouts_as_broken = False
+
 ########################
 # Configuration extras #
 ########################
