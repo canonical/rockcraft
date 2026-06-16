@@ -266,6 +266,8 @@ extensions = [
 
 exclude_patterns = [
     "_build",
+    "_dev",
+    ".venv",
     "Thumbs.db",
     ".DS_Store",
     "env",
