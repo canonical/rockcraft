@@ -28,8 +28,8 @@ There are 2 requirements to be able to use the ``flask-framework`` extension:
 1. There must be a ``requirements.txt``  or ``pyproject.toml`` file in the root of the project with
    ``Flask`` declared as a dependency
 2. The project must include a Web Server Gateway Interface (WSGI) app with the path ``app:app``.
-   This means there must be an ``app.py`` file at the root of the project with the name
-   of the Flask object is set to ``app``.
+   This means there must be an ``app.py`` file at the root of the project where the Flask object
+   is named ``app``.
 
 For the project to make use of asynchronous Gunicorn workers:
 
@@ -135,8 +135,8 @@ notation. For example:
 You can use glob patterns to define your list of files; see :ref:`filesets_explanation`
 for more details.
 
-Adding this field to your project file overrides the default files to be included.
-Exclude a file from your rock by adding this field and omitting the file that you
+Adding the ``prime`` field to your project file overrides the default files to be included.
+Exclude a file from your rock by defining ``prime`` and omitting the file that you
 want to exclude.
 
 Useful links

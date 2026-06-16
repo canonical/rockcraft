@@ -37,7 +37,7 @@ Specifying Maven or Gradle
 --------------------------
 
 The ``spring-boot-framework`` extension dynamically determines the plugin to
-use to bulid the rock. Depending on the presence of ``pom.xml`` or
+use to build the rock. Depending on the presence of ``pom.xml`` or
 ``build.gradle`` file, the extension will use either the
 :doc:`maven </common/craft-parts/reference/plugins/maven_plugin>` or
 :doc:`gradle </common/craft-parts/reference/plugins/gradle_plugin>` plugin,
@@ -134,8 +134,8 @@ of the ``spring-boot-framework/assets`` part:
 You can use glob patterns to define your list of files; see :ref:`filesets_explanation`
 for more details.
 
-Adding this field to your project file overrides the default files to be included.
-Exclude a file from your rock by adding this field and omitting the file that you
+Adding the ``stage`` field to your project file overrides the default files to be included.
+Exclude a file from your rock by defining ``stage`` and omitting the file that you
 want to exclude.
 
 Useful links

@@ -73,8 +73,8 @@ of the ``go-framework/assets`` part:
 You can use glob patterns to define your list of files; see :ref:`filesets_explanation`
 for more details.
 
-Adding this field to your project file overrides the default files to be included.
-Exclude a file from your rock by adding this field and omitting the file that you
+Adding the ``stage`` field to your project file overrides the default files to be included.
+Exclude a file from your rock by defining ``stage`` and omitting the file that you
 want to exclude.
 
 Useful links
