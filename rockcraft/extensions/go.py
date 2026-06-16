@@ -236,7 +236,7 @@ class GoFrameworkV2(GoFramework):
 
     For now this is behaviourally identical to :class:`GoFramework`; it exists so the
     framework can dispatch to a paas-charm 2.0 implementation in the future. Only the
-    supported base differs.
+    supported base and experimental status differs.
     """
 
     @staticmethod
@@ -247,8 +247,11 @@ class GoFrameworkV2(GoFramework):
 
     @staticmethod
     @override
-    def is_experimental(base: str | None) -> bool:  # noqa: ARG004 (unused arg)
-        """Check if the extension is in an experimental state."""
+    def is_experimental(base: str | None) -> bool:
+        """Indicate if the extension is in an experimental state.
+
+        This is always True for V2
+        """
         return True
 
 
