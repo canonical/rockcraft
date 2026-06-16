@@ -1,5 +1,5 @@
 .. meta::
-    :description: Reference documentation for the Rockcraft Python plugin for ubuntu@24.04 and earlier.
+    :description: Reference documentation for the Python plugin for ubuntu@24.04 and earlier.
 
 .. _craft_parts_python_plugin:
 

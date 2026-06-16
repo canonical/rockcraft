@@ -1,5 +1,5 @@
 .. meta::
-    :description: Reference documentation for the Rockcraft Poetry plugin.
+    :description: Reference documentation for the Poetry plugin.
 
 .. include:: /common/craft-parts/reference/plugins/poetry_plugin.rst
    :end-before: .. _poetry-details-begin:

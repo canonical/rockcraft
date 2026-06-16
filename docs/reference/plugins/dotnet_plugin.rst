@@ -1,5 +1,5 @@
 .. meta::
-    :description: Reference documentation for the Rockcraft .NET plugin for ubuntu@24.04 and earlier.
+    :description: Reference documentation for the .NET plugin for ubuntu@24.04 and earlier.
 
 .. _craft_parts_dotnet_plugin:
 
