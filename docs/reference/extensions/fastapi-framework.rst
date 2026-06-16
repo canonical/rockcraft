@@ -1,5 +1,5 @@
 .. meta::
-    :description: Reference documentation for the Rockcraft FastAPI framework extension, which configures FastAPI rocks with Uvicorn and installs project files at /app.
+    :description: Reference documentation for the FastAPI framework extension, which configures FastAPI in a rock and populates it with FastAPI dependencies such as Uvicorn.
 
 .. _reference-fastapi-framework:
 
