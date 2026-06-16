@@ -46,7 +46,7 @@ from ._python_utils import (
 )
 from ._utils import find_ubuntu_base_python_version
 from .app_parts import gen_logging_part
-from .extension import Extension, get_extensions_data_dir
+from .extension import Extension, _FrameworkFactory, get_extensions_data_dir
 
 USER_UID: int = SUPPORTED_GLOBAL_USERNAMES["_daemon_"]["uid"]
 
@@ -473,30 +473,14 @@ class FlaskFrameworkV2(FlaskFramework):
         """Return supported bases."""
         return ("ubuntu@26.04",)
 
-
-class FlaskFrameworkFactory:
-    """Return the correct FlaskFramework extension for the project's base."""
-
-    def __call__(self, *, project_root: Path, yaml_data: dict[str, Any]) -> Extension:
-        """Dispatch to the V2 extension for ubuntu@26.04, otherwise V1."""
-        if "26.04" in yaml_data.get("base", ""):
-            return FlaskFrameworkV2(project_root=project_root, yaml_data=yaml_data)
-        return FlaskFramework(project_root=project_root, yaml_data=yaml_data)
-
     @staticmethod
-    def get_supported_bases() -> tuple[str, ...]:
-        """Return the union of V1 and V2 supported bases."""
-        return tuple(
-            dict.fromkeys(
-                FlaskFramework.get_supported_bases()
-                + FlaskFrameworkV2.get_supported_bases()
-            )
-        )
+    @override
+    def is_experimental(base: str | None) -> bool:  # noqa: ARG004 (unused arg)
+        """Check if the extension is in an experimental state."""
+        return True
 
-    @staticmethod
-    def is_experimental(base: str | None) -> bool:
-        """Return whether the extension is experimental for the given base."""
-        return FlaskFramework.is_experimental(base)
+
+flask_framework_factory = _FrameworkFactory(FlaskFramework, FlaskFrameworkV2)
 
 
 class DjangoFramework(_GunicornBase):

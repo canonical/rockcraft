@@ -220,3 +220,41 @@ def prepend_to_env(
                   a separator token at the end.
     """
     return separator.join(paths) + f"${{{env_variable}:+{separator}${env_variable}}}"
+
+
+def get_project_bases(yaml_data: dict[str, Any]) -> set[str]:
+    """Extract and normalize all bases used in the project."""
+    bases: set[str] = set()
+    if base_str := yaml_data.get("base"):
+        bases.add(base_str)
+    if platforms := yaml_data.get("platforms", {}):
+        for label in platforms:
+            if "@" in label:
+                bases.add(label)
+    return bases
+
+
+class _FrameworkFactory:
+    """Route to V1 or V2 extension based on project bases."""
+
+    def __init__(self, v1_cls: type[Extension], v2_cls: type[Extension]) -> None:
+        self._v1_cls = v1_cls
+        self._v2_cls = v2_cls
+
+    def __call__(self, *, project_root: Path, yaml_data: dict[str, Any]) -> Extension:
+        bases = get_project_bases(yaml_data)
+        if any(base in self._v2_cls.get_supported_bases() for base in bases):
+            return self._v2_cls(project_root=project_root, yaml_data=yaml_data)
+        return self._v1_cls(project_root=project_root, yaml_data=yaml_data)
+
+    def get_supported_bases(self) -> tuple[str, ...]:
+        return tuple(
+            dict.fromkeys(
+                self._v1_cls.get_supported_bases() + self._v2_cls.get_supported_bases()
+            )
+        )
+
+    def is_experimental(self, base: str | None) -> bool:
+        if base in self._v2_cls.get_supported_bases():
+            return self._v2_cls.is_experimental(base)
+        return self._v1_cls.is_experimental(base)

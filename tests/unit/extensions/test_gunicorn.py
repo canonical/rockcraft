@@ -24,7 +24,7 @@ from rockcraft.errors import ExtensionError
 
 @pytest.fixture
 def flask_extension(mock_extensions):
-    extensions.register("flask-framework", extensions.FlaskFrameworkFactory())  # type: ignore[arg-type]
+    extensions.register("flask-framework", extensions.flask_framework_factory)  # type: ignore[arg-type]
 
 
 @pytest.fixture(name="flask_input_yaml")
@@ -786,38 +786,36 @@ def test_flask_extension_app_in_non_matching_directory(tmp_path):
 
 
 def test_flask_framework_factory_dispatch(tmp_path):
-    """Test that FlaskFrameworkFactory dispatches to the correct class by base."""
+    """Test that flask_framework_factory dispatches to the correct class by base."""
     from rockcraft.extensions.gunicorn import (
         FlaskFramework,
-        FlaskFrameworkFactory,
         FlaskFrameworkV2,
+        flask_framework_factory,
     )
 
-    factory = FlaskFrameworkFactory()
-
-    v1 = factory(
+    v1 = flask_framework_factory(
         project_root=tmp_path, yaml_data={"name": "x", "base": "ubuntu@22.04"}
     )
     assert isinstance(v1, FlaskFramework)
     assert not isinstance(v1, FlaskFrameworkV2)
 
-    v2 = factory(
+    v2 = flask_framework_factory(
         project_root=tmp_path, yaml_data={"name": "x", "base": "ubuntu@26.04"}
     )
     assert isinstance(v2, FlaskFrameworkV2)
 
 
 def test_flask_framework_v2_supported_bases():
-    """Test FlaskFrameworkV2 and FlaskFrameworkFactory supported bases."""
+    """Test FlaskFrameworkV2 and flask_framework_factory supported bases."""
     from rockcraft.extensions.gunicorn import (
         FlaskFramework,
-        FlaskFrameworkFactory,
         FlaskFrameworkV2,
+        flask_framework_factory,
     )
 
     assert "ubuntu@26.04" in FlaskFrameworkV2.get_supported_bases()
 
-    factory_bases = FlaskFrameworkFactory.get_supported_bases()
+    factory_bases = flask_framework_factory.get_supported_bases()
     assert "ubuntu@26.04" in factory_bases
     assert "ubuntu@22.04" in factory_bases
     assert "ubuntu@24.04" in factory_bases
@@ -827,8 +825,9 @@ def test_flask_framework_v2_supported_bases():
 
 
 @pytest.mark.usefixtures("flask_extension")
-def test_flask_v2_full_apply_26_04(tmp_path):
+def test_flask_v2_full_apply_26_04(tmp_path, monkeypatch):
     """Test that the flask-framework extension applies correctly on ubuntu@26.04."""
+    monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "1")
     (tmp_path / "requirements.txt").write_text("flask")
     (tmp_path / "app.py").write_text("app = object()")
     (tmp_path / "static").mkdir()
