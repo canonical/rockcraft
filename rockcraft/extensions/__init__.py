@@ -34,7 +34,6 @@ __all__ = [
     "gen_logging_part",
     "GoFramework",
     "GoFrameworkV2",
-    "go_framework_factory",
 ]
 
 register("django-framework", DjangoFramework)
