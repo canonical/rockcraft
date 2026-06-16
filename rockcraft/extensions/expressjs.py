@@ -26,7 +26,7 @@ from rockcraft.errors import ExtensionError
 from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
 
 from .app_parts import gen_logging_part
-from .extension import Extension
+from .extension import Extension, _FrameworkFactory
 
 USER_UID: int = SUPPORTED_GLOBAL_USERNAMES["_daemon_"]["uid"]
 
@@ -258,7 +258,7 @@ class ExpressJSFrameworkV2(ExpressJSFramework):
 
     For now this is behaviourally identical to :class:`ExpressJSFramework`; it exists so the
     framework can dispatch to a paas-charm 2.0 implementation in the future. Only the
-    supported base differs.
+    supported base and experimental status differs.
     """
 
     @staticmethod
@@ -267,29 +267,14 @@ class ExpressJSFrameworkV2(ExpressJSFramework):
         """Return supported bases."""
         return ("ubuntu@26.04",)
 
-
-class ExpressJSFrameworkFactory:
-    """Return the correct ExpressJSFramework extension for the project's base."""
-
-    def __call__(
-        self, *, project_root: Path, yaml_data: dict[str, Any]
-    ) -> Extension:
-        """Dispatch to the V2 extension for ubuntu@26.04, otherwise V1."""
-        if "26.04" in yaml_data.get("base", ""):
-            return ExpressJSFrameworkV2(project_root=project_root, yaml_data=yaml_data)
-        return ExpressJSFramework(project_root=project_root, yaml_data=yaml_data)
-
     @staticmethod
-    def get_supported_bases() -> tuple[str, ...]:
-        """Return the union of V1 and V2 supported bases."""
-        return tuple(
-            dict.fromkeys(
-                ExpressJSFramework.get_supported_bases()
-                + ExpressJSFrameworkV2.get_supported_bases()
-            )
-        )
-
-    @staticmethod
+    @override
     def is_experimental(base: str | None) -> bool:
-        """Return whether the extension is experimental for the given base."""
-        return ExpressJSFramework.is_experimental(base)
+        """Indicate if the extension is in an experimental state.
+
+        This is always True for V2.
+        """
+        return True
+
+
+expressjs_framework_factory = _FrameworkFactory(ExpressJSFramework, ExpressJSFrameworkV2)

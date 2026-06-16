@@ -33,7 +33,7 @@ def expressjs_input_yaml_fixture():
 
 @pytest.fixture
 def expressjs_extension(mock_extensions):
-    extensions.register("expressjs-framework", extensions.ExpressJSFrameworkFactory())  # type: ignore[arg-type]
+    extensions.register("expressjs-framework", extensions.expressjs_framework_factory)  # type: ignore[arg-type]
 
 
 @pytest.fixture
@@ -396,7 +396,7 @@ def test_expressjs_invalid_package_json_scripts_error(
 
 
 def test_expressjs_factory_dispatch(tmp_path):
-    factory = extensions.ExpressJSFrameworkFactory()
+    factory = extensions.expressjs_framework_factory
 
     v1 = factory(project_root=tmp_path, yaml_data={"name": "x", "base": "ubuntu@24.04"})
     assert isinstance(v1, extensions.ExpressJSFramework)
@@ -409,15 +409,15 @@ def test_expressjs_factory_dispatch(tmp_path):
 def test_expressjs_v2_and_factory_supported_bases():
     assert "ubuntu@26.04" in extensions.ExpressJSFrameworkV2.get_supported_bases()
 
-    factory_bases = extensions.ExpressJSFrameworkFactory.get_supported_bases()
+    factory_bases = extensions.expressjs_framework_factory.get_supported_bases()
     assert "ubuntu@26.04" in factory_bases
-    # V1 bases must also be present
     for base in extensions.ExpressJSFramework.get_supported_bases():
         assert base in factory_bases
 
 
 @pytest.mark.usefixtures("expressjs_extension", "package_json_file")
-def test_expressjs_extension_ubuntu2604_default(tmp_path, expressjs_input_yaml):
+def test_expressjs_extension_ubuntu2604_default(tmp_path, monkeypatch, expressjs_input_yaml):
+    monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "1")
     expressjs_input_yaml["base"] = "ubuntu@26.04"
     expressjs_input_yaml["parts"] = {
         "expressjs-framework/install-app": {
