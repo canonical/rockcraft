@@ -7,7 +7,8 @@ The Spring Boot extension streamlines the process of building Spring Boot
 application rocks.
 
 The extension packs and copies the Jar package file to the rock.
-By default, the base ``bare`` is used to generate a lightweight image.
+By default, the :ref:`base <explanation-bases>` ``bare`` is used to generate a
+lightweight image.
 
 .. note::
 
@@ -32,8 +33,8 @@ For the build process to execute correctly, the ``mvnw`` or
 
 .. _reference-spring-boot-framework-plugin:
 
-``parts`` > ``spring-boot-framework/install-app`` > ``plugin``
---------------------------------------------------------------
+Specifying Maven or Gradle
+--------------------------
 
 The ``spring-boot-framework`` extension dynamically determines the plugin to
 use to bulid the rock. Depending on the presence of ``pom.xml`` or
@@ -63,8 +64,8 @@ respectively.
 
 .. _reference-spring-boot-framework-build-packages:
 
-``parts`` > ``spring-boot-framework/install-app`` > ``build-packages``
-----------------------------------------------------------------------
+Specifying the Java version
+---------------------------
 
 By default, the ``spring-boot-framework`` uses ``default-jdk`` package to build
 the rock. Depending on the ``build-base``, a different Java JDK version is used.
@@ -72,7 +73,7 @@ To find out what Java version is used to pack the JAR, you can search the
 `Ubuntu package archive <https://packages.ubuntu.com/>`_.
 
 If a different Java version is required, you can specify it in the
-``rockcraft.yaml`` file:
+``rockcraft.yaml`` file using the ``build-packages`` key:
 
 .. code-block:: yaml
   :caption: rockcraft.yaml
@@ -84,8 +85,8 @@ If a different Java version is required, you can specify it in the
 
 .. _reference-spring-boot-framework-runtime:
 
-``parts`` > ``spring-boot-framework/runtime``
----------------------------------------------
+Using the JLink plugin
+----------------------
 
 To provide an efficient runtime for Java, the extension calls the
 :doc:`Jlink </common/craft-parts/reference/plugins/jlink_plugin>`
@@ -111,8 +112,8 @@ The ``spring-boot-framework`` uses the following configuration:
 
 .. _reference-spring-boot-framework-stage:
 
-``parts`` > ``spring-boot-framework/assets`` > ``stage``
---------------------------------------------------------
+Including or excluding files in your rock
+-----------------------------------------
 
 If ``migrate`` or ``migrate.sh`` exist in the project's root directory, they will be
 included in the rock's ``/app`` directory by default.
@@ -130,6 +131,12 @@ of the ``spring-boot-framework/assets`` part:
         - app/migrate.sh
         - app/another_file_or_directory
 
+You can use glob patterns to define your list of files; see :ref:`filesets_explanation`
+for more details.
+
+Adding this field to your project file overrides the default files to be included.
+Exclude a file from your rock by adding this field and omitting the file that you
+want to exclude.
 
 Useful links
 ------------

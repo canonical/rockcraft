@@ -9,7 +9,7 @@ rocks.
 It facilitates the installation of Django application dependencies, including
 Gunicorn, inside the rock. Additionally, it transfers your project files to
 ``/django/app`` within the rock.
-By default, the base ``bare`` is used to generate a lightweight image.
+By default, the :ref:`base <explanation-bases>` ``bare`` is used to generate a lightweight image.
 
 .. note::
     The Django extension is compatible with the ``bare``, ``ubuntu@22.04``
@@ -40,10 +40,10 @@ For the project to make use of asynchronous Gunicorn workers:
 
 .. _reference-django-framework-stage-packages:
 
-``parts`` > ``django-framework/dependencies:`` > ``stage-packages``
--------------------------------------------------------------------
+Specifying required dependencies
+--------------------------------
 
-You can use this key to specify any dependencies required for your Django
+Use the ``stage-packages`` key to specify any dependencies required for your Django
 application. In the following example we use it to specify ``libpq-dev``:
 
 .. code-block:: yaml
@@ -54,6 +54,8 @@ application. In the following example we use it to specify ``libpq-dev``:
          stage-packages:
          # list required packages or slices for your Django application below.
          - libpq-dev
+
+Adding this key is optional unless your application requires additional dependencies.
 
 .. _reference-django-framework-statsd-exporter:
 
