@@ -72,7 +72,8 @@ html_theme_options = {
 }
 
 # Project slug; see https://meta.discourse.org/t/what-is-category-slug/87897
-# slug = ''
+version_slug = f"{os.environ.get('READTHEDOCS_VERSION', 'local')}"
+slug = 'containers/docs'
 
 
 #######################
@@ -332,8 +333,6 @@ napoleon_use_ivar = True
 # For documentation on documentation.ubuntu.com, we also must add the slug.
 url_version = ""
 url_lang = ""
-version_slug = f"{os.environ.get('READTHEDOCS_VERSION', 'local')}"
-slug = 'containers/docs'
 
 # Determine if the URL uses versions and language
 if (
