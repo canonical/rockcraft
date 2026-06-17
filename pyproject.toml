@@ -79,7 +79,7 @@ docs-sphinx-stack = [
     "sphinx-rerediraffe>=0.0.3,<1.0.0",
     "sphinx-reredirects==0.1.6",
     "sphinx-roles~=0.1",
-    "sphinx-sitemap~=2.9",
+    "sphinx-sitemap~=2.6.0",
     #"sphinx-tabs~=3.5",
     "sphinx-tabs~=3.5",
     "sphinx-terminal~=1.0",
