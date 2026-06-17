@@ -222,18 +222,6 @@ def prepend_to_env(
     return separator.join(paths) + f"${{{env_variable}:+{separator}${env_variable}}}"
 
 
-def get_project_bases(yaml_data: dict[str, Any]) -> set[str]:
-    """Extract and normalize all bases used in the project."""
-    bases: set[str] = set()
-    if base_str := yaml_data.get("base"):
-        bases.add(base_str)
-    if platforms := yaml_data.get("platforms", {}):
-        for label in platforms:
-            if "@" in label:
-                bases.add(label)
-    return bases
-
-
 class _FrameworkFactory:
     """Route to V1 or V2 extension based on project bases."""
 

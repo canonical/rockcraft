@@ -475,7 +475,7 @@ class FlaskFrameworkV2(FlaskFramework):
 
     @staticmethod
     @override
-    def is_experimental(base: str | None) -> bool:  # noqa: ARG004 (unused arg)
+    def is_experimental(base: str | None) -> bool:
         """Check if the extension is in an experimental state."""
         return True
 
