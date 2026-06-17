@@ -1,3 +1,6 @@
+.. meta::
+    :description: How to get started with Rockcraft. Covers requirements, installation and initial testing.
+
 .. _how-to-quickstart-guide:
 
 Quickstart guide

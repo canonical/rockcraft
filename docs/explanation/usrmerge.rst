@@ -1,3 +1,6 @@
+.. meta::
+    :description: Explanation of usrmerge in Rockcraft. Rocks contain files that adhere to the Filesystem Hierarchy Standard, so they have a merge strategy for usr directories.
+
 .. _explanation-usrmerge-implementation:
 
 Usrmerge implementation

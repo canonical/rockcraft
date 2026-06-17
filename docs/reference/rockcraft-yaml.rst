@@ -1,3 +1,6 @@
+.. meta::
+    :description: Configuration reference for all keys in rockcraft.yaml.
+
 .. _reference-rockcraft-yaml:
 
 rockcraft.yaml

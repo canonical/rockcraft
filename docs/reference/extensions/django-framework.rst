@@ -1,3 +1,6 @@
+.. meta::
+    :description: Reference documentation for the Django framework extension, which configures Django in a rock and populates it with Django dependencies such as Gunicorn.
+
 .. _reference-django-framework:
 
 Django framework

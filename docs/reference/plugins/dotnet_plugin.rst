@@ -1,3 +1,6 @@
+.. meta::
+    :description: Reference documentation for the .NET plugin for ubuntu@24.04 and higher.
+
 .. _craft_parts_dotnet_plugin:
 
 .NET plugin (ubuntu\@20.04)
