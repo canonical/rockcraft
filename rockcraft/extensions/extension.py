@@ -28,6 +28,25 @@ from craft_cli import emit
 from rockcraft import errors
 
 
+def get_project_bases(yaml_data: dict[str, Any]) -> set[str]:
+    """Extract and normalize all bases used in the project.
+
+    :param yaml_data: the raw yaml data.
+    :return: a set of base strings (e.g., {"ubuntu@24.04", "ubuntu@26.04"}).
+    """
+    bases: set[str] = set()
+
+    if base_str := yaml_data.get("base"):
+        bases.add(base_str)
+
+    if platforms := yaml_data.get("platforms", {}):
+        for label in platforms:
+            if "@" in label:
+                bases.add(label)
+
+    return bases
+
+
 class Extension(abc.ABC):
     """Extension is the class from which all extensions inherit.
 
@@ -114,6 +133,58 @@ class Extension(abc.ABC):
                 f"Extension has invalid part names: {invalid_parts!r}. "
                 "Format is <extension-name>/<part-name>"
             )
+
+
+class _FrameworkFactory:
+    """Route to a V1 or V2 extension class based on the project's target bases.
+
+    Instances are callable and expose get_supported_bases and is_experimental
+    so they can be registered and introspected like an Extension subclass.
+
+    The V2 class always supersedes V1 if the base is supported by the V2 class.
+    """
+
+    def __init__(self, v1_cls: type[Extension], v2_cls: type[Extension]) -> None:
+        """Store the V1 and V2 extension classes.
+
+        :param v1_cls: the V1 extension class.
+        :param v2_cls: the V2 extension class.
+        """
+        self._v1_cls = v1_cls
+        self._v2_cls = v2_cls
+
+    def __call__(self, *, project_root: Path, yaml_data: dict[str, Any]) -> Extension:
+        """Route to V1 or V2 based on project bases.
+
+        :param project_root: the project root directory.
+        :param yaml_data: the raw yaml data.
+        :return: an Extension instance from the appropriate version.
+        """
+        bases = get_project_bases(yaml_data)
+        if any(base in self._v2_cls.get_supported_bases() for base in bases):
+            return self._v2_cls(project_root=project_root, yaml_data=yaml_data)
+        return self._v1_cls(project_root=project_root, yaml_data=yaml_data)
+
+    def get_supported_bases(self) -> tuple[str, ...]:
+        """Return merged supported bases from both V1 and V2, deduped and ordered.
+
+        :return: tuple of supported base strings.
+        """
+        return tuple(
+            dict.fromkeys(
+                self._v1_cls.get_supported_bases() + self._v2_cls.get_supported_bases()
+            )
+        )
+
+    def is_experimental(self, base: str | None) -> bool:
+        """Check if experimental, delegating to the class that supports the base.
+
+        :param base: the target base string or None.
+        :return: True if the base is experimental, False otherwise.
+        """
+        if base in self._v2_cls.get_supported_bases():
+            return self._v2_cls.is_experimental(base)
+        return self._v1_cls.is_experimental(base)
 
 
 def get_extensions_data_dir() -> Path:
