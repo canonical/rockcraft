@@ -1,3 +1,6 @@
+.. meta::
+    :description: Release notes for Rockcraft 1.10.
+
 .. _release-1.10:
 
 Rockcraft 1.10 release notes

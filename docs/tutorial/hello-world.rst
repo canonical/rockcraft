@@ -1,3 +1,6 @@
+.. meta::
+    :description: Learn to assemble a rock with Rockcraft. In this tutorial, we create a very small rock that prints a "Hello, world!" message to the log.
+
 .. _tutorial-create-a-hello-world-rock:
 
 Create a "Hello World" rock

@@ -1,3 +1,6 @@
+.. meta::
+    :description: Reference documentation for the Go framework extension, which configures Go in a rock and compiles and installs the Go binary.
+
 .. _reference-go-framework:
 
 Go framework
