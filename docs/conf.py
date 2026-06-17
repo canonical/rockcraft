@@ -40,7 +40,7 @@ html_title = project + " documentation"
 copyright = "2022-%s, %s" % (datetime.date.today().year, author)
 
 # Documentation website URL
-
+version_slug = f"{os.environ.get('READTHEDOCS_VERSION', 'local')}"
 ogp_site_url = f"https://ubuntu.com/containers/docs/{version_slug}/"
 
 #Preview name of the documentation website
@@ -72,7 +72,6 @@ html_theme_options = {
 }
 
 # Project slug; see https://meta.discourse.org/t/what-is-category-slug/87897
-version_slug = f"{os.environ.get('READTHEDOCS_VERSION', 'local')}"
 slug = 'containers/docs'
 
 
