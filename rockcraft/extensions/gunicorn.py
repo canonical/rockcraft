@@ -480,7 +480,7 @@ class FlaskFrameworkV2(FlaskFramework):
         return True
 
 
-flask_framework_factory = _FrameworkFactory(FlaskFramework, FlaskFrameworkV2)
+FlaskFrameworkFactory = _FrameworkFactory(FlaskFramework, FlaskFrameworkV2)
 
 
 class DjangoFramework(_GunicornBase):

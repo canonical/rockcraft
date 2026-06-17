@@ -24,7 +24,7 @@ from rockcraft.errors import ExtensionError
 
 @pytest.fixture
 def flask_extension(mock_extensions):
-    extensions.register("flask-framework", extensions.flask_framework_factory)  # type: ignore[arg-type]
+    extensions.register("flask-framework", extensions.FlaskFrameworkFactory)  # type: ignore[arg-type]
 
 
 @pytest.fixture(name="flask_input_yaml")
@@ -786,36 +786,36 @@ def test_flask_extension_app_in_non_matching_directory(tmp_path):
 
 
 def test_flask_framework_factory_dispatch(tmp_path):
-    """Test that flask_framework_factory dispatches to the correct class by base."""
+    """Test that FlaskFrameworkFactory dispatches to the correct class by base."""
     from rockcraft.extensions.gunicorn import (
         FlaskFramework,
         FlaskFrameworkV2,
-        flask_framework_factory,
+        FlaskFrameworkFactory,
     )
 
-    v1 = flask_framework_factory(
+    v1 = FlaskFrameworkFactory(
         project_root=tmp_path, yaml_data={"name": "x", "base": "ubuntu@22.04"}
     )
     assert isinstance(v1, FlaskFramework)
     assert not isinstance(v1, FlaskFrameworkV2)
 
-    v2 = flask_framework_factory(
+    v2 = FlaskFrameworkFactory(
         project_root=tmp_path, yaml_data={"name": "x", "base": "ubuntu@26.04"}
     )
     assert isinstance(v2, FlaskFrameworkV2)
 
 
 def test_flask_framework_v2_supported_bases():
-    """Test FlaskFrameworkV2 and flask_framework_factory supported bases."""
+    """Test FlaskFrameworkV2 and FlaskFrameworkFactory supported bases."""
     from rockcraft.extensions.gunicorn import (
         FlaskFramework,
         FlaskFrameworkV2,
-        flask_framework_factory,
+        FlaskFrameworkFactory,
     )
 
     assert "ubuntu@26.04" in FlaskFrameworkV2.get_supported_bases()
 
-    factory_bases = flask_framework_factory.get_supported_bases()
+    factory_bases = FlaskFrameworkFactory.get_supported_bases()
     assert "ubuntu@26.04" in factory_bases
     assert "ubuntu@22.04" in factory_bases
     assert "ubuntu@24.04" in factory_bases
