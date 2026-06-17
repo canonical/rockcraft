@@ -19,7 +19,6 @@
 import os
 import pathlib
 import re
-from pathlib import Path
 from typing import Any, Literal
 
 from typing_extensions import override
@@ -361,7 +360,7 @@ class SpringBootFrameworkV2(SpringBootFramework):
 
     @staticmethod
     @override
-    def is_experimental(base: str | None) -> bool:  # noqa: ARG004 (unused arg)
+    def is_experimental(base: str | None) -> bool:
         """Check if the extension is in an experimental state."""
         return True
 
