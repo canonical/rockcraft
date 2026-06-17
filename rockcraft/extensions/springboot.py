@@ -366,4 +366,4 @@ class SpringBootFrameworkV2(SpringBootFramework):
         return True
 
 
-springboot_framework_factory = _FrameworkFactory(SpringBootFramework, SpringBootFrameworkV2)
+SpringBootFrameworkFactory = _FrameworkFactory(SpringBootFramework, SpringBootFrameworkV2)
