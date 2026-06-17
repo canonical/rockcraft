@@ -550,7 +550,7 @@ class DjangoFrameworkV2(DjangoFramework):
 
     @staticmethod
     @override
-    def is_experimental(base: str | None) -> bool:  # noqa: ARG004 (unused arg)
+    def is_experimental(base: str | None) -> bool:
         """Indicate if the extension is in an experimental state.
 
         This is always True for V2
