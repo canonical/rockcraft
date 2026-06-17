@@ -558,4 +558,4 @@ class DjangoFrameworkV2(DjangoFramework):
         return True
 
 
-django_framework_factory = _FrameworkFactory(DjangoFramework, DjangoFrameworkV2)
+DjangoFrameworkFactory = _FrameworkFactory(DjangoFramework, DjangoFrameworkV2)
