@@ -1,5 +1,5 @@
 .. meta::
-    :description: Reference documentation for the Express framework extension, which configures Express in a rock and installs Node.js and the application dependencies.
+    :description: Reference documentation for the Express framework extension, which configures Express in a rock and installs Node.js and the app's dependencies.
 
 .. _reference-express-framework:
 

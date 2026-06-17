@@ -1,5 +1,6 @@
 .. meta::
-    :description: Documentation for Rockcraft, the tool for assembling rocks. Rocks are OCI-compliant images with extra security features with a smaller storage footprint.
+    :description: Documentation for Rockcraft, the tool for assembling rocks. Rocks are OCI-compliant images with extra security features and a smaller storage footprint.
+
 
 Rockcraft documentation
 =======================
