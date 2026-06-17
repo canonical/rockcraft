@@ -31,7 +31,7 @@ def go_input_yaml_fixture():
 
 @pytest.fixture
 def go_extension(mock_extensions):
-    extensions.register("go-framework", extensions.go_framework_factory)  # type: ignore[arg-type]
+    extensions.register("go-framework", extensions.GoFrameworkFactory)  # type: ignore[arg-type]
 
 
 @pytest.mark.usefixtures("go_extension")
@@ -279,7 +279,7 @@ def test_go_extension_extra_assets_overridden(tmp_path, go_input_yaml):
 
 
 def test_go_framework_factory_dispatch(tmp_path):
-    factory = extensions.go_framework_factory
+    factory = extensions.GoFrameworkFactory
     v1 = factory(project_root=tmp_path, yaml_data={"name": "x", "base": "ubuntu@24.04"})
     assert isinstance(v1, extensions.GoFramework)
     assert not isinstance(v1, extensions.GoFrameworkV2)
@@ -293,14 +293,14 @@ def test_go_framework_v2_supported_bases():
 
 
 def test_go_framework_factory_supported_bases():
-    factory_bases = extensions.go_framework_factory.get_supported_bases()
+    factory_bases = extensions.GoFrameworkFactory.get_supported_bases()
     assert "ubuntu@26.04" in factory_bases
     for base in extensions.GoFramework.get_supported_bases():
         assert base in factory_bases
 
 
 def test_go_framework_factory_is_experimental():
-    factory = extensions.go_framework_factory
+    factory = extensions.GoFrameworkFactory
     assert factory.is_experimental("ubuntu@26.04") is True
     assert factory.is_experimental("ubuntu@24.04") is False
     assert factory.is_experimental("bare") is False

@@ -255,4 +255,4 @@ class GoFrameworkV2(GoFramework):
         return True
 
 
-go_framework_factory = _FrameworkFactory(GoFramework, GoFrameworkV2)
+GoFrameworkFactory = _FrameworkFactory(GoFramework, GoFrameworkV2)
