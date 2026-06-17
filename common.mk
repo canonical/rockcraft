@@ -338,7 +338,6 @@ endif
 	uv run $(UV_DOCS_GROUPS) sphinx-lint docs \
 	--ignore docs/_dev \
 	--ignore docs/_build \
-	--ignore docs/.venv \
 	--ignore docs/reference/commands \
 	--enable all \
 	-d line-too-long,missing-underscore-after-hyperlink,missing-space-in-hyperlink

@@ -268,11 +268,8 @@ extensions = [
 
 exclude_patterns = [
     "_build",
-    "_dev",
-    ".venv",
     "Thumbs.db",
     ".DS_Store",
-    "env",
     # Excluded here because they are either included explicitly in other
     # documents (so they generate "duplicate label" errors) or they aren't
     # used in this documentation at all (so they generate "unreferenced"
