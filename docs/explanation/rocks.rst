@@ -1,3 +1,6 @@
+.. meta::
+    :description: Rocks are OCI-compliant images layered on top of the Ubuntu filesystem. Rocks have extra security features and can be made smaller than standard OCI images.
+
 .. _explanation-rocks:
 
 Rocks

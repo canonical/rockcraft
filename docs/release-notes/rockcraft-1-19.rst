@@ -1,5 +1,5 @@
 .. meta::
-    :description: Learn about notable features, fixes and documentation updates in Rockcraft 1.19.
+    :description: Release notes for Rockcraft 1.19.
 
 .. _release-1.19:
 

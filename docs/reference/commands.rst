@@ -1,3 +1,6 @@
+.. meta::
+    :description: Rockcraft CLI command reference.
+
 .. _reference-commands:
 
 Commands

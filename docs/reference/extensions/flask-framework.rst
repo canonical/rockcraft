@@ -1,3 +1,6 @@
+.. meta::
+    :description: Reference documentation for the Flask framework extension, which configures Flask in a rock and populates it with Flask dependencies such as Gunicorn.
+
 .. _reference-flask-framework:
 
 Flask framework
