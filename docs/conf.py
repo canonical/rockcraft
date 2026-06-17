@@ -41,7 +41,7 @@ copyright = "2022-%s, %s" % (datetime.date.today().year, author)
 
 # Documentation website URL
 
-ogp_site_url = f"https://ubuntu.com/containers/docs/"
+ogp_site_url = f"https://ubuntu.com/containers/docs/{version_slug}/"
 
 #Preview name of the documentation website
 ogp_site_name = project
@@ -82,7 +82,7 @@ html_theme_options = {
 sitemap_filename = "doc-sitemap.xml"
 
 # Use RTD canonical URL to ensure duplicate pages have a specific canonical URL
-html_baseurl = f"https://ubuntu.com/containers/docs/"
+html_baseurl = f"https://ubuntu.com/containers/docs/{version_slug}/"
 
 # sphinx-sitemap uses html_baseurl to generate the full URL for each page:
 sitemap_url_scheme = '{link}'
@@ -332,6 +332,7 @@ napoleon_use_ivar = True
 # For documentation on documentation.ubuntu.com, we also must add the slug.
 url_version = ""
 url_lang = ""
+version_slug = f"{os.environ.get('READTHEDOCS_VERSION', 'local')}"
 slug = 'containers/docs'
 
 # Determine if the URL uses versions and language
