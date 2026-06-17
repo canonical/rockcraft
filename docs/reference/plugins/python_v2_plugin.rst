@@ -1,5 +1,5 @@
 .. meta::
-    :description: Reference documentation for the Python plugin for ubuntu@25.10 and later.
+    :description: Reference documentation for the Python plugin for ubuntu@25.10 and higher.
 
 .. _python_v2_plugin:
 
