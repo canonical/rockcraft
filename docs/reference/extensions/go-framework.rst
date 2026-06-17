@@ -31,7 +31,7 @@ If the main package is in the base directory and the rockcraft name
 attribute is equal to the go module name, the name of the binary will
 be selected correctly, otherwise you will need to adjust it.
 
-Use the ``organize`` field to specify a different binary to be used as the
+Use the ``organize`` key to specify a different binary to be used as the
 main application, without having to override the service command. For example,
 if your Go application contains a ``main`` package in the directory
 ``cmd/anotherserver``, the name of the binary will be ``anotherserver``

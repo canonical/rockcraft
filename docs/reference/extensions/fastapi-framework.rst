@@ -25,7 +25,7 @@ There are 2 requirements to be able to use the ``fastapi-framework`` extension:
 
 1. There must be a ``requirements.txt`` file in the root of the project with
    ``fastapi`` declared as a dependency
-2. The project must include an `ASGI <https://asgi.readthedocs.io/en/latest/>`_ app
+2. The project must include an `ASGI <https://asgi.readthedocs.io/en/latest/>`__ app
    in a variable called ``app`` in one of the following files relative to the project
    root (in order of priority):
 
@@ -82,7 +82,7 @@ example:
 You can use glob patterns to define your list of files; see :ref:`filesets_explanation`
 for more details.
 
-Adding the ``prime`` field to your project file overrides the default files to be included.
+Adding the ``prime`` key to your project file overrides the default files to be included.
 Exclude a file from your rock by defining ``prime`` and omitting the file that you
 want to exclude.
 
