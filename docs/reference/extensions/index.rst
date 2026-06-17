@@ -1,3 +1,6 @@
+.. meta::
+    :description: The reference documentation for all extensions in Rockcraft.
+
 .. _reference-extensions:
 
 Extensions

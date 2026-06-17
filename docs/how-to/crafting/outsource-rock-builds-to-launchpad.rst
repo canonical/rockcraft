@@ -1,3 +1,6 @@
+.. meta::
+    :description: How to outsource rock builds to the Launchpad build farm to concurrently build rocks for all supported architectures.
+
 .. _how-to-outsource-rock-builds-to-launchpad:
 
 Outsource rock builds to Launchpad

@@ -1,3 +1,6 @@
+.. meta::
+    :description: Reference documentation for the Spring Boot framework extension, which configures Spring Boot in a rock and packages the JAR using Maven or Gradle.
+
 .. _reference-spring-boot-framework:
 
 Spring Boot framework

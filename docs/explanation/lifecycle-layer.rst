@@ -1,3 +1,6 @@
+.. meta::
+    :description: Explanation of how Rockcraft maps the Craft Parts prime step to an OCI image layer, bridging the Craft lifecycle and the OCI image specification.
+
 .. _explanation-prime-step-oci-layer:
 
 From prime step to OCI layer

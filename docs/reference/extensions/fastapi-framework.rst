@@ -1,3 +1,6 @@
+.. meta::
+    :description: Reference documentation for the FastAPI framework extension, which configures FastAPI in a rock and populates it with FastAPI dependencies such as Uvicorn.
+
 .. _reference-fastapi-framework:
 
 FastAPI framework
