@@ -72,7 +72,6 @@ docs-sphinx-stack = [
     "sphinx-contributor-listing~=0.1",
     "sphinx-design==0.6.1",
     "sphinx-filtered-toctree~=0.1",
-    "sphinx-last-updated-by-git~=0.3",
     "sphinx-llm~=0.4",
     "sphinx-notfound-page~=1.1",
     "sphinx-related-links>=0.1.2",
