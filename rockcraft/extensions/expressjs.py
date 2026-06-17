@@ -17,7 +17,6 @@
 """An extension for the NodeJS based Javascript application extension."""
 
 import json
-from pathlib import Path
 from typing import Any, cast
 
 from typing_extensions import override
