@@ -1166,15 +1166,6 @@ wheels = [
 ]
 
 [[package]]
-name = "jsonpointer"
-version = "3.1.1"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/18/c7/af399a2e7a67fd18d63c40c5e62d3af4e67b836a2107468b6a5ea24c4304/jsonpointer-3.1.1.tar.gz", hash = "sha256:0b801c7db33a904024f6004d526dcc53bbb8a4a0f4e32bfd10beadf60adf1900", size = 9068, upload-time = "2026-03-23T22:32:32.458Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/9e/6a/a83720e953b1682d2d109d3c2dbb0bc9bf28cc1cbc205be4ef4be5da709d/jsonpointer-3.1.1-py3-none-any.whl", hash = "sha256:8ff8b95779d071ba472cf5bc913028df06031797532f08a7d5b602d8b2a488ca", size = 7659, upload-time = "2026-03-23T22:32:31.568Z" },
-]
-
-[[package]]
 name = "keyring"
 version = "25.7.0"
 source = { registry = "https://pypi.org/simple" }
@@ -2646,7 +2637,6 @@ docs = [
     { name = "sphinx-lint", marker = "sys_platform == 'linux' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute')" },
     { name = "sphinx-llm", marker = "sys_platform == 'linux' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute')" },
     { name = "sphinx-notfound-page", marker = "sys_platform == 'linux' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute')" },
-    { name = "sphinx-pydantic", marker = "sys_platform == 'linux' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute')" },
     { name = "sphinx-related-links", marker = "sys_platform == 'linux' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute')" },
     { name = "sphinx-rerediraffe", marker = "sys_platform == 'linux' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute')" },
     { name = "sphinx-reredirects", marker = "sys_platform == 'linux' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute')" },
@@ -2749,7 +2739,7 @@ dev-noble = [{ name = "python-apt", marker = "sys_platform == 'linux'", specifie
 dev-questing = [{ name = "python-apt", marker = "sys_platform == 'linux'", specifier = "~=3.0.0", index = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/" }]
 dev-resolute = [{ name = "python-apt", marker = "sys_platform == 'linux'", specifier = "~=3.0", index = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/" }]
 docs = [
-    { name = "canonical-sphinx", specifier = ">=0.5.1" },
+    { name = "canonical-sphinx", specifier = "~=0.6" },
     { name = "myst-parser", specifier = "~=4.0" },
     { name = "packaging", specifier = "~=26.1" },
     { name = "pydantic-kitbash", specifier = "~=1.0.1" },
@@ -2766,8 +2756,7 @@ docs = [
     { name = "sphinx-lint", specifier = "~=1.0" },
     { name = "sphinx-llm", specifier = "~=0.4" },
     { name = "sphinx-notfound-page", specifier = "~=1.1" },
-    { name = "sphinx-pydantic", specifier = "==0.1.1" },
-    { name = "sphinx-related-links", specifier = "~=0.1" },
+    { name = "sphinx-related-links", specifier = ">=0.1.2" },
     { name = "sphinx-rerediraffe", specifier = ">=0.0.3,<1.0.0" },
     { name = "sphinx-reredirects", specifier = "==0.1.6" },
     { name = "sphinx-roles", specifier = "~=0.1" },
@@ -2785,7 +2774,7 @@ docs = [
     { name = "vale", specifier = "~=3.13" },
 ]
 docs-sphinx-stack = [
-    { name = "canonical-sphinx", specifier = ">=0.5.1" },
+    { name = "canonical-sphinx", specifier = "~=0.6" },
     { name = "myst-parser", specifier = "~=4.0" },
     { name = "packaging", specifier = "~=26.1" },
     { name = "rst2html", specifier = ">=2020.7.4" },
@@ -2798,7 +2787,7 @@ docs-sphinx-stack = [
     { name = "sphinx-last-updated-by-git", specifier = "~=0.3" },
     { name = "sphinx-llm", specifier = "~=0.4" },
     { name = "sphinx-notfound-page", specifier = "~=1.1" },
-    { name = "sphinx-related-links", specifier = "~=0.1" },
+    { name = "sphinx-related-links", specifier = ">=0.1.2" },
     { name = "sphinx-rerediraffe", specifier = ">=0.0.3,<1.0.0" },
     { name = "sphinx-reredirects", specifier = "==0.1.6" },
     { name = "sphinx-roles", specifier = "~=0.1" },
@@ -3187,18 +3176,6 @@ wheels = [
 ]
 
 [[package]]
-name = "sphinx-jsonschema"
-version = "1.19.2"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "docutils", marker = "sys_platform == 'linux' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute')" },
-    { name = "jsonpointer", marker = "sys_platform == 'linux' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute')" },
-    { name = "pyyaml", marker = "sys_platform == 'linux' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute')" },
-    { name = "requests", marker = "sys_platform == 'linux' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute')" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/3c/03/15c1d632e6671ae07a8689ce84c6c72d7849cca13ec32bc68c2e3d6f6f08/sphinx_jsonschema-1.19.2.tar.gz", hash = "sha256:1a48954217c2b3c6759c89b9ddd2c8e5b668b8730564e0283b009f23932be150", size = 30550, upload-time = "2025-12-01T08:54:33.726Z" }
-
-[[package]]
 name = "sphinx-last-updated-by-git"
 version = "0.3.8"
 source = { registry = "https://pypi.org/simple" }
@@ -3301,19 +3278,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/d0/a3/91293c0e0f0b76d0697ba7a41541929ca3f5457671d008bd84a9bde17e21/sphinx_prompt-1.10.2.tar.gz", hash = "sha256:47b592ba75caebd044b0eddf7a5a1b6e0aef6df587b034377cd101a999b686ba", size = 5566, upload-time = "2025-11-28T09:23:18.057Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/a9/f4/44ce4d0179fb4e9cfe181a8aa281bba23e40158a609fb3680774529acaaa/sphinx_prompt-1.10.2-py3-none-any.whl", hash = "sha256:6594337962c4b1498602e6984634bed4a0dc7955852e3cfc255eb0af766ed859", size = 7474, upload-time = "2025-11-28T09:23:17.154Z" },
-]
-
-[[package]]
-name = "sphinx-pydantic"
-version = "0.1.1"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "pydantic", marker = "sys_platform == 'linux' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute')" },
-    { name = "sphinx-jsonschema", marker = "sys_platform == 'linux' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute')" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/67/58/e7a518876db551cf3bd6621eecc6675d003b9bd8413382c10298e2113f7e/sphinx-pydantic-0.1.1.tar.gz", hash = "sha256:a830e4f07fe88fbdfe3edecc2f52ef133cde2def7cb882a3f22780f34963b0fb", size = 3394, upload-time = "2020-06-04T17:27:16.982Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/14/87/e397aba1d53aea3bccb8df07e1086e00855404afd92d118b07854d746947/sphinx_pydantic-0.1.1-py3-none-any.whl", hash = "sha256:371487ad81250d8bc5b944a2936b33c10ff88af7188d5be0ee6c4b46bb70254a", size = 2888, upload-time = "2020-06-04T17:27:15.879Z" },
 ]
 
 [[package]]
