@@ -321,4 +321,4 @@ class FastAPIFrameworkV2(FastAPIFramework):
         return True
 
 
-fastapi_framework_factory = _FrameworkFactory(FastAPIFramework, FastAPIFrameworkV2)
+FastAPIFrameworkFactory = _FrameworkFactory(FastAPIFramework, FastAPIFrameworkV2)

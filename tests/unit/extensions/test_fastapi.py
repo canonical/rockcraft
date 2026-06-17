@@ -30,7 +30,7 @@ def fastapi_input_yaml_fixture():
 
 @pytest.fixture
 def fastapi_extension(mock_extensions):
-    extensions.register("fastapi-framework", extensions.fastapi_framework_factory)  # type: ignore[arg-type]
+    extensions.register("fastapi-framework", extensions.FastAPIFrameworkFactory)  # type: ignore[arg-type]
 
 
 @pytest.mark.usefixtures("fastapi_extension")
@@ -335,7 +335,7 @@ def test_fastapi_extension_incorrect_prime_prefix_error(tmp_path, fastapi_input_
 
 def test_factory_dispatch_v1(tmp_path):
     """Factory returns FastAPIFramework (V1) for ubuntu@24.04."""
-    instance = extensions.fastapi_framework_factory(
+    instance = extensions.FastAPIFrameworkFactory(
         project_root=tmp_path, yaml_data={"name": "x", "base": "ubuntu@24.04"}
     )
     assert isinstance(instance, extensions.FastAPIFramework)
@@ -344,7 +344,7 @@ def test_factory_dispatch_v1(tmp_path):
 
 def test_factory_dispatch_v2(tmp_path):
     """Factory returns FastAPIFrameworkV2 for ubuntu@26.04."""
-    instance = extensions.fastapi_framework_factory(
+    instance = extensions.FastAPIFrameworkFactory(
         project_root=tmp_path, yaml_data={"name": "x", "base": "ubuntu@26.04"}
     )
     assert isinstance(instance, extensions.FastAPIFrameworkV2)
@@ -357,14 +357,14 @@ def test_v2_supported_bases():
 
 def test_factory_supported_bases():
     """fastapi_framework_factory includes both V1 and V2 bases."""
-    factory_bases = extensions.fastapi_framework_factory.get_supported_bases()
+    factory_bases = extensions.FastAPIFrameworkFactory.get_supported_bases()
     assert "ubuntu@26.04" in factory_bases
     for base in extensions.FastAPIFramework.get_supported_bases():
         assert base in factory_bases
 
 
-def test_fastapi_framework_factory_is_experimental():
-    factory = extensions.fastapi_framework_factory
+def test_FastAPIFrameworkFactory_is_experimental():
+    factory = extensions.FastAPIFrameworkFactory
     assert factory.is_experimental("ubuntu@26.04") is True
     assert factory.is_experimental("ubuntu@24.04") is False
     assert factory.is_experimental("bare") is False
