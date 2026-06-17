@@ -25,9 +25,10 @@ There are 2 requirements to be able to use the ``fastapi-framework`` extension:
 
 1. There must be a ``requirements.txt`` file in the root of the project with
    ``fastapi`` declared as a dependency
-2. The project must include an `ASGI <https://asgi.readthedocs.io/en/latest/>`__ app
+2. The project must include an
+   `Asynchronous Server Gateway Interface (ASGI) <https://asgi.readthedocs.io/en/latest/>`__ app
    in a variable called ``app`` in one of the following files relative to the project
-   root (in order of priority):
+   root (in order of precedence):
 
    * ``app.py``
    * ``main.py``
@@ -41,7 +42,9 @@ Specifying required dependencies
 --------------------------------
 
 Use the ``stage-packages`` key to specify any dependencies required for your FastAPI
-application. In the following example we use it to specify ``libpq-dev``:
+application.
+Adding this key is optional unless your application requires additional dependencies.
+In the following example we use it to specify ``libpq-dev``:
 
 .. code-block:: yaml
   :caption: rockcraft.yaml
@@ -51,8 +54,6 @@ application. In the following example we use it to specify ``libpq-dev``:
       stage-packages:
         # list required packages or slices for your FastAPI application below.
         - libpq-dev
-
-Adding this key is optional unless your application requires additional dependencies.
 
 .. _reference-fastapi-framework-prime:
 
@@ -79,8 +80,8 @@ example:
         - app/templates
         - app/static
 
-You can use glob patterns to define your list of files; see :ref:`filesets_explanation`
-for more details.
+You can use glob patterns to define your list of files. See :ref:`filesets_explanation`
+for the various ways you can specify files in your rock.
 
 Adding the ``prime`` key to your project file overrides the default files to be included.
 Exclude a file from your rock by defining ``prime`` and omitting the file that you

@@ -70,8 +70,8 @@ of the ``go-framework/assets`` part:
         - app/another_file_or_directory
 
 
-You can use glob patterns to define your list of files; see :ref:`filesets_explanation`
-for more details.
+You can use glob patterns to define your list of files. See :ref:`filesets_explanation`
+for the various ways you can specify files in your rock.
 
 Adding the ``stage`` field to your project file overrides the default files to be included.
 Exclude a file from your rock by defining ``stage`` and omitting the file that you

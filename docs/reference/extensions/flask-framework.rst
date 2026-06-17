@@ -41,7 +41,9 @@ Specifying required dependencies
 --------------------------------
 
 Use the ``stage-packages`` key to specify any dependencies required for your Flask
-application. In the following example we use it to specify ``libpq-dev``:
+application.
+Adding this key is optional unless your application requires additional dependencies.
+In the following example we use it to specify ``libpq-dev``:
 
 .. code-block:: yaml
   :caption: rockcraft.yaml
@@ -51,8 +53,6 @@ application. In the following example we use it to specify ``libpq-dev``:
       stage-packages:
         # list required packages or slices for your flask app below.
         - libpq-dev
-
-Adding this key is optional unless your application requires additional dependencies.
 
 .. _reference-flask-framework-statsd-exporter:
 
@@ -132,8 +132,8 @@ notation. For example:
         - flask/app/templates
         - flask/app/static
 
-You can use glob patterns to define your list of files; see :ref:`filesets_explanation`
-for more details.
+You can use glob patterns to define your list of files. See :ref:`filesets_explanation`
+for the various ways you can specify files in your rock.
 
 Adding the ``prime`` field to your project file overrides the default files to be included.
 Exclude a file from your rock by defining ``prime`` and omitting the file that you

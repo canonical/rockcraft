@@ -45,7 +45,9 @@ Specifying required dependencies
 --------------------------------
 
 Use the ``stage-packages`` key to specify any dependencies required for your Django
-application. In the following example we use it to specify ``libpq-dev``:
+application.
+Adding this key is optional unless your application requires additional dependencies.
+In the following example we use it to specify ``libpq-dev``:
 
 .. code-block:: yaml
    :caption: rockcraft.yaml
@@ -55,8 +57,6 @@ application. In the following example we use it to specify ``libpq-dev``:
          stage-packages:
          # list required packages or slices for your Django application below.
          - libpq-dev
-
-Adding this key is optional unless your application requires additional dependencies.
 
 .. _reference-django-framework-statsd-exporter:
 
