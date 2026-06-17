@@ -277,4 +277,4 @@ class ExpressJSFrameworkV2(ExpressJSFramework):
         return True
 
 
-expressjs_framework_factory = _FrameworkFactory(ExpressJSFramework, ExpressJSFrameworkV2)
+ExpressJSFrameworkFactory = _FrameworkFactory(ExpressJSFramework, ExpressJSFrameworkV2)
