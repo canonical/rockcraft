@@ -1,3 +1,6 @@
+.. meta::
+    :description: How to contribute to the Rockcraft documentation.
+
 .. _how-to-contribute-to-rockcraft-documentation:
 
 Contribute to Rockcraft documentation

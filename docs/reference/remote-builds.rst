@@ -1,3 +1,6 @@
+.. meta::
+    :description: Reference documentation for remote rock builds on Launchpad. How remote builds work, the supported architectures, and details about the remote build command.
+
 .. _reference-remote-builds:
 
 Remote builds

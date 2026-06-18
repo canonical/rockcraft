@@ -1,3 +1,6 @@
+.. meta::
+    :description: The reference documentation for all part plugins in Rockcraft.
+
 .. _reference-plugins:
 
 Plugins

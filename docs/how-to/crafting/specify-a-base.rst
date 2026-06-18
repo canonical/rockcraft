@@ -1,3 +1,6 @@
+.. meta::
+    :description: How to specify a base for a Rockcraft rock. Understand Ubuntu LTS, interim, and bare base options, and how to configure the build base in rockcraft.yaml.
+
 .. _how-to-specify-a-base:
 
 Specify a base

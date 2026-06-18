@@ -1,3 +1,6 @@
+.. meta::
+    :description: How to deploy and update a rock of a 12-factor web app. This guide  demonstrates using Juju as a software orchestrator that consumes the rock.
+
 .. _use-web-app-rock:
 
 Use a 12-factor app rock

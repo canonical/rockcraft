@@ -1,3 +1,6 @@
+.. meta::
+    :description: Reference documentation for the Python plugin for ubuntu@25.10 and higher.
+
 .. _python_v2_plugin:
 
 Python plugin (ubuntu\@25.10)

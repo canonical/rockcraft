@@ -1,5 +1,6 @@
 .. meta::
     :description: The tutorials for Rockcraft. These tutorials are guided lessons that help you develop skills by using Rockcraft.
+
 .. _tutorial:
 
 Tutorial
