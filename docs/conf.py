@@ -54,7 +54,6 @@ ogp_site_name = project
 ogp_image = "https://assets.ubuntu.com/v1/253da317-image-document-ubuntudocs.svg"
 
 # Product favicon; shown in bookmarks, browser tabs, etc.
-# TODO: To customise the favicon, uncomment and update the next line.
 # html_favicon = '.sphinx/_static/favicon.png'
 
 # Dictionary of values to pass into the Sphinx context for all pages:
