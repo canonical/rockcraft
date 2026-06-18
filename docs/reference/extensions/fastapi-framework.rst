@@ -41,13 +41,13 @@ There are 2 requirements to be able to use the ``fastapi-framework`` extension:
 
 .. _reference-fastapi-framework-stage-packages:
 
-Specifying required dependencies
---------------------------------
+App dependencies
+----------------
 
-Use the ``stage-packages`` key to specify any dependencies required for your FastAPI
-application.
-Adding this key is optional unless your application requires additional dependencies.
-In the following example we use it to specify ``libpq-dev``:
+The ``stage-packages`` key specifies all additional dependencies. If the FastAPI app
+has its own special dependencies, this key must declare them.
+
+The following example specifies the ``libpq-dev`` package:
 
 .. code-block:: yaml
   :caption: rockcraft.yaml
@@ -60,15 +60,15 @@ In the following example we use it to specify ``libpq-dev``:
 
 .. _reference-fastapi-framework-prime:
 
-Including or excluding files in your rock
------------------------------------------
+Included or excluded files
+--------------------------
 
-Some files, if they exist, are included by default in your rock. These include:
+Some files, if they exist, are included by default in the rock. These include:
 ``app``, ``src``, ``<rock name>``, ``app.py``, ``migrate``, ``migrate.sh``,
 ``migrate.py``, ``static``, ``templates``.
 
-Use the ``prime`` field to specify the files to be included or excluded from
-your rock upon ``rockcraft pack``. Follow the ``app/<filename>`` notation. For
+The ``prime`` key specifies the files to be included or excluded from
+the rock upon ``rockcraft pack``, following the ``app/<filename>`` notation. For
 example:
 
 .. code-block:: yaml
@@ -83,12 +83,12 @@ example:
         - app/templates
         - app/static
 
-You can use glob patterns to define your list of files. See :ref:`filesets_explanation`
+The ``prime`` key supports glob patterns to define the list of files. See :ref:`filesets_explanation`
 for the various ways you can specify files in your rock.
 
-Adding the ``prime`` key to your project file overrides the default files to be included.
-Exclude a file from your rock by defining ``prime`` and omitting the file that you
-want to exclude.
+Adding the ``prime`` key to the project file overrides the default files to be included.
+Files are excluded from the rock by defining ``prime`` and omitting the file to
+be excluded.
 
 Useful links
 ------------

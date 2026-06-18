@@ -36,8 +36,8 @@ For the build process to execute correctly, the ``mvnw`` or
 
 .. _reference-spring-boot-framework-plugin:
 
-Specifying Maven or Gradle
---------------------------
+Maven or Gradle usage
+---------------------
 
 The ``spring-boot-framework`` extension dynamically determines the plugin to
 use to build the rock. Depending on the presence of ``pom.xml`` or
@@ -67,16 +67,16 @@ respectively.
 
 .. _reference-spring-boot-framework-build-packages:
 
-Specifying the Java version
----------------------------
+Java version
+------------
 
 By default, the ``spring-boot-framework`` uses ``default-jdk`` package to build
 the rock. Depending on the ``build-base``, a different Java JDK version is used.
 To find out what Java version is used to pack the JAR, you can search the
 `Ubuntu package archive <https://packages.ubuntu.com/>`_.
 
-If a different Java version is required, you can specify it in the
-``rockcraft.yaml`` file using the ``build-packages`` key:
+The ``build-packages`` key specifies the Java version for the rock.
+For example:
 
 .. code-block:: yaml
   :caption: rockcraft.yaml
@@ -88,8 +88,8 @@ If a different Java version is required, you can specify it in the
 
 .. _reference-spring-boot-framework-runtime:
 
-Using the JLink plugin
-----------------------
+JLink plugin
+------------
 
 To provide an efficient runtime for Java, the extension calls the
 :doc:`Jlink </common/craft-parts/reference/plugins/jlink_plugin>`
@@ -115,14 +115,16 @@ The ``spring-boot-framework`` uses the following configuration:
 
 .. _reference-spring-boot-framework-stage:
 
-Including or excluding files in your rock
------------------------------------------
+Included or excluded files
+--------------------------
 
 If ``migrate`` or ``migrate.sh`` exist in the project's root directory, they will be
 included in the rock's ``/app`` directory by default.
 
-You can customise the included files by modifying the ``stage`` key
-of the ``spring-boot-framework/assets`` part:
+The ``stage`` key of the ``spring-boot-framework/assets`` part
+specifies the files to be included or excluded from
+the rock upon ``rockcraft pack``, following the ``app/<filename>`` notation. For
+example:
 
 .. code-block:: yaml
   :caption: rockcraft.yaml
@@ -134,12 +136,12 @@ of the ``spring-boot-framework/assets`` part:
         - app/migrate.sh
         - app/another_file_or_directory
 
-You can use glob patterns to define your list of files. See :ref:`filesets_explanation`
+The ``stage`` key supports glob patterns to define the list of files. See :ref:`filesets_explanation`
 for the various ways you can specify files in your rock.
 
-Adding the ``stage`` field to your project file overrides the default files to be included.
-Exclude a file from your rock by defining ``stage`` and omitting the file that you
-want to exclude.
+Adding the ``stage`` key to the project file overrides the default files to be included.
+Files are excluded from the rock by defining ``stage`` and omitting the file to
+be excluded.
 
 Useful links
 ------------

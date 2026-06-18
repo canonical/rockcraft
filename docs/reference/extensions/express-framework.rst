@@ -33,10 +33,10 @@ extension:
 
 .. _reference-express-framework-npm-include-node:
 
-Specifying the Node.js version
-------------------------------
+Node.js version
+---------------
 
-You can use the ``npm-include-node`` and ``npm-node-version`` keys to
+The ``npm-include-node`` and ``npm-node-version`` keys
 specify the version of Node.js to be installed. For example:
 
 .. code-block:: yaml
@@ -55,8 +55,8 @@ package repository.
 
 .. _reference-express-framework-stage-packages:
 
-Including runtime packages
---------------------------
+Additional runtime packages
+---------------------------
 
 Installing additional runtime packages is currently unsupported.
 

@@ -44,13 +44,13 @@ For the project to make use of asynchronous Gunicorn workers:
 
 .. _reference-django-framework-stage-packages:
 
-Specifying required dependencies
---------------------------------
+App dependencies
+----------------
 
-Use the ``stage-packages`` key to specify any dependencies required for your Django
-application.
-Adding this key is optional unless your application requires additional dependencies.
-In the following example we use it to specify ``libpq-dev``:
+The ``stage-packages`` key specifies all additional dependencies. If the Django app
+has its own special dependencies, this key must declare them.
+
+The following example specifies the ``libpq-dev`` package:
 
 .. code-block:: yaml
    :caption: rockcraft.yaml

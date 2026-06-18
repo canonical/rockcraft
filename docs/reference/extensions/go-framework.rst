@@ -27,19 +27,18 @@ in the root directory of the project.
 
 .. _reference-go-framework-organize:
 
-Specifying a different binary for your app
-------------------------------------------
+App binary
+----------
 
-If the main package is in the base directory and the rockcraft name
-attribute is equal to the go module name, the name of the binary will
-be selected correctly, otherwise you will need to adjust it.
+If the main package is in the base directory and the Rockcraft ``name``
+attribute is equal to the Go module name, the name of the binary will
+be selected correctly.
 
-Use the ``organize`` key to specify a different binary to be used as the
+The ``organize`` key specifies a different binary to be used as the
 main application, without having to override the service command. For example,
-if your Go application contains a ``main`` package in the directory
-``cmd/anotherserver``, the name of the binary will be ``anotherserver``
-and you can override the main application to use the binary with the
-next snippet:
+if a Go application contains a ``main`` package in the directory
+``cmd/anotherserver``, the following snippet will override the main application
+to use the binary ``anotherserver``:
 
 .. code-block:: yaml
   :caption: rockcraft.yaml
@@ -51,15 +50,17 @@ next snippet:
 
 .. _reference-go-framework-stage:
 
-Including or excluding files in your rock
------------------------------------------
+Included or excluded files
+--------------------------
 
 Some files, if they exist in the project root, are included by
 default in the rock in the ``/app`` directory.  These include:
 ``migrate``, ``migrate.sh``, ``templates/`` and ``static/``.
 
-You can customise the files to include by overriding the ``stage`` property
-of the ``go-framework/assets`` part:
+The ``stage`` key of the ``go-framework/assets`` part
+specifies the files to be included or excluded from
+the rock upon ``rockcraft pack``, following the ``app/<filename>`` notation. For
+example:
 
 .. code-block:: yaml
   :caption: rockcraft.yaml
@@ -72,13 +73,12 @@ of the ``go-framework/assets`` part:
         - app/static
         - app/another_file_or_directory
 
-
-You can use glob patterns to define your list of files. See :ref:`filesets_explanation`
+The ``stage`` key supports glob patterns to define the list of files. See :ref:`filesets_explanation`
 for the various ways you can specify files in your rock.
 
-Adding the ``stage`` field to your project file overrides the default files to be included.
-Exclude a file from your rock by defining ``stage`` and omitting the file that you
-want to exclude.
+Adding the ``stage`` key to the project file overrides the default files to be included.
+Files are excluded from the rock by defining ``stage`` and omitting the file to
+be excluded.
 
 Useful links
 ------------
