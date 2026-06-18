@@ -123,7 +123,7 @@ def test_pack(fake_services: ServiceFactory, default_image_info, mocker):
                 "entrypoint_command": "echo",
             },
             ["echo"],
-            [],
+            None,
         ),
         # Entrypoint command with only CMD
         (
@@ -220,10 +220,8 @@ def test_inner_pack(
     )
     image.set_environment.assert_called_once_with(project.environment)
     image.set_annotations.assert_called_once_with(annotations)
-    image.set_control_data.assert_called_once_with(
-        {**metadata, "architecture": "amd64"}
-    )
-    image.set_media_type.assert_called_once_with()
+    image.set_control_data.assert_called_once_with(metadata)
+    image.set_media_type.assert_called_once_with(arch="amd64")
     image.to_oci_archive.assert_called_once_with(
         tag=project.version, filename=f"{project.name}_{project.version}_test-rock.rock"
     )

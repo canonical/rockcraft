@@ -19,7 +19,7 @@
 import json
 from typing import Any, cast
 
-from overrides import override  # type: ignore[reportUnknownVariableType]
+from typing_extensions import override
 
 from rockcraft.errors import ExtensionError
 from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
@@ -43,9 +43,9 @@ class ExpressJSFramework(Extension):
 
     @staticmethod
     @override
-    def is_experimental(base: str | None) -> bool:  # noqa: ARG004 (unused arg)
+    def is_experimental(base: str | None) -> bool:
         """Check if the extension is in an experimental state."""
-        return True
+        return False
 
     @override
     def get_root_snippet(self) -> dict[str, Any]:
@@ -114,16 +114,16 @@ class ExpressJSFramework(Extension):
             or "start" not in self._app_package_json["scripts"]
         ):
             raise ExtensionError(
-                "missing start script",
-                doc_slug="/reference/extensions/expressjs-framework",
+                "missing 'scripts.start' field in package.json",
+                doc_slug="/reference/extensions/express-framework/#project-requirements",
                 logpath_report=False,
             )
         if "name" not in self._app_package_json or not isinstance(
             self._app_package_json["name"], str
         ):
             raise ExtensionError(
-                "missing application name",
-                doc_slug="/reference/extensions/expressjs-framework",
+                "missing 'name' field in package.json",
+                doc_slug="/reference/extensions/express-framework/#project-requirements",
                 logpath_report=False,
             )
 
@@ -150,6 +150,11 @@ class ExpressJSFramework(Extension):
                 f"chown -R {USER_UID}:{USER_UID} ${{CRAFT_PART_INSTALL}}/app\n"
             ),
         }
+        if self._rock_base == "bare":
+            install_app_part["override-build"] = (
+                f"{install_app_part['override-build']}"
+                "ln -sf /usr/bin/bash ${CRAFT_PART_INSTALL}/usr/bin/sh"
+            )
         build_packages = self._gen_app_build_packages()
         if build_packages:
             install_app_part["build-packages"] = build_packages
@@ -219,8 +224,8 @@ class ExpressJSFramework(Extension):
         package_json_file = self.project_root / self.IMAGE_BASE_DIR / "package.json"
         if not package_json_file.exists():
             raise ExtensionError(
-                "missing package.json file",
-                doc_slug="/reference/extensions/expressjs-framework",
+                "missing package.json file in 'app' directory",
+                doc_slug="/reference/extensions/express-framework/#project-requirements",
                 logpath_report=False,
             )
         package_json_contents = package_json_file.read_text(encoding="utf-8")
@@ -229,13 +234,13 @@ class ExpressJSFramework(Extension):
             if not isinstance(app_package_json, dict):
                 raise ExtensionError(
                     "invalid package.json file",
-                    doc_slug="/reference/extensions/expressjs-framework",
+                    doc_slug="/reference/extensions/express-framework/#project-requirements",
                     logpath_report=False,
                 )
         except json.JSONDecodeError as exc:
             raise ExtensionError(
-                "failed to parse package.json file",
-                doc_slug="/reference/extensions/expressjs-framework",
+                "failed to parse package.json; it might contain invalid JSON",
+                doc_slug="/reference/extensions/express-framework/#project-requirements",
                 logpath_report=False,
             ) from exc
         else:

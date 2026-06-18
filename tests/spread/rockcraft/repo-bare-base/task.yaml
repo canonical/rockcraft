@@ -1,7 +1,7 @@
 summary: external apt repository build on bare base test
 
 execute: |
-  run_rockcraft pack
+  run_rockcraft pack --ignore=unmaintained
 
   test -f apt-repo-static-test_latest_amd64.rock
   test ! -d parts -a ! -d stage -a ! -d prime

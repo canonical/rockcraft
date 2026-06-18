@@ -20,8 +20,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from craft_application import Application, AppMetadata
-from overrides import override  # type: ignore[reportUnknownVariableType]
+from craft_application import Application, AppMetadata, errors
+from typing_extensions import override
 
 from rockcraft import plugins
 from rockcraft.models import project
@@ -34,8 +34,10 @@ APP_METADATA = AppMetadata(
     summary="A tool to create OCI images",
     ProjectClass=project.Project,
     source_ignore_patterns=["*.rock"],
-    docs_url="https://documentation.ubuntu.com/rockcraft/en/{version}",
+    docs_url="https://documentation.ubuntu.com/rockcraft/{version}",
     check_supported_base=True,
+    artifact_type="rock",
+    enable_pro_support=True,
 )
 
 
@@ -47,12 +49,7 @@ class Rockcraft(Application):
         self.services.update_kwargs(
             "image", work_dir=self._work_dir, project_dir=self.project_dir
         )
-        self.services.update_kwargs(
-            "init",
-            default_name="my-rock-name",
-            name_regex=project.PROJECT_NAME_COMPILED_REGEX,
-            invalid_name_message=project.MESSAGE_INVALID_NAME,
-        )
+        self.services.update_kwargs("init", default_name="my-rock-name")
         super()._configure_services(provider_name)
 
     @override
@@ -61,13 +58,21 @@ class Rockcraft(Application):
 
         Should be overridden by applications that need to register plugins at startup.
         """
-        return plugins.get_plugins()
+        build_base = self._get_build_base()
+        return plugins.get_plugins(build_base)
 
     @override
     def _enable_craft_parts_features(self) -> None:
         # pylint: disable=import-outside-toplevel
         from craft_parts.features import Features
 
-        # enable the craft-parts Features that we use here, right before
-        # loading the project and validating its parts.
         Features(enable_overlay=True)
+
+    def _get_build_base(self) -> str | None:
+        """Get the project's build-base, if the project file exists."""
+        try:
+            yaml_data = self.services.get("project").get_raw()
+        except errors.ProjectFileMissingError:
+            return None
+
+        return yaml_data.get("build-base") or yaml_data.get("base")

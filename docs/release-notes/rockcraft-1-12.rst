@@ -1,3 +1,6 @@
+.. meta::
+    :description: Release notes for Rockcraft 1.12.
+
 .. _release-1.12:
 
 Rockcraft 1.12 release notes
@@ -56,8 +59,8 @@ The new Spring Boot extension streamlines the process of building rocks that bun
 Spring Boot projects, using either Maven or Gradle as the build tool.
 
 This new extension is experimental and subject to change. For more information, check
-out the Spring Boot :ref:`tutorial <build-a-rock-for-a-spring-boot-application>` and
-:ref:`reference <spring-boot-framework-reference>`.
+out the Spring Boot :ref:`tutorial <tutorial-build-a-rock-for-a-spring-boot-app>` and
+:ref:`reference <reference-spring-boot-framework>`.
 
 
 Minor features
@@ -68,8 +71,8 @@ Rockcraft 1.12 brings the following minor changes.
 Support for non-root rocks in 12-factor extensions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You can now use the non-root :ref:`_daemon_ user <rockcraft_yaml_run_user>` with
-extensions that support the :ref:`12-factor web app <set-up-web-app-rock>` methodology.
+You can now set :ref:`Project.run_user` to ``_daemon_`` with extensions that support the
+:ref:`12-factor web app <set-up-web-app-rock>` methodology.
 
 12-factor web app documentation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -101,12 +104,12 @@ Contributors
 We would like to express a big thank you to all the people who contributed to
 this release.
 
-:literalref:`@alithethird<https://github.com/alithethird>`,
-:literalref:`@erinecon<https://github.com/erinecon>`,
-:literalref:`@medubelko<https://github.com/medubelko>`,
-:literalref:`@tigarmo<https://github.com/tigarmo>`,
-:literalref:`@yanksyoon<https://github.com/yanksyoon>`,
-and :literalref:`@zhijie-yang<https://github.com/zhijie-yang>`.
+:literalref:`@alithethird <https://github.com/alithethird>`,
+:literalref:`@erinecon <https://github.com/erinecon>`,
+:literalref:`@medubelko <https://github.com/medubelko>`,
+:literalref:`@tigarmo <https://github.com/tigarmo>`,
+:literalref:`@yanksyoon <https://github.com/yanksyoon>`,
+and :literalref:`@zhijie-yang <https://github.com/zhijie-yang>`.
 
 
 .. _rules-oci: https://github.com/bazel-contrib/rules_oci

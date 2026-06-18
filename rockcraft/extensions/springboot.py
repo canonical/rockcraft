@@ -21,7 +21,7 @@ import pathlib
 import re
 from typing import Any, Literal
 
-from overrides import override  # type: ignore[reportUnknownVariableType]
+from typing_extensions import override
 
 from rockcraft.errors import ExtensionError
 
@@ -44,7 +44,7 @@ class SpringBootFramework(Extension):
 
     @staticmethod
     @override
-    def is_experimental(base: str | None) -> bool:  # noqa: ARG004 (unused arg)
+    def is_experimental(base: str | None) -> bool:
         """Check if the extension is in an experimental state."""
         return True
 
@@ -91,28 +91,32 @@ class SpringBootFramework(Extension):
         """Check if the project is a Spring Boot project."""
         if self.pom_xml_path.exists() and self.build_gradle_path.exists():
             raise ExtensionError(
-                "both pom.xml and build.gradle files exist",
-                doc_slug="/reference/extensions/spring-boot-framework",
+                "both pom.xml and build.gradle files exist\n"
+                "you cannot have both Maven and Gradle build files in the same project",
+                doc_slug="/reference/extensions/spring-boot-framework/#project-requirements",
                 logpath_report=False,
             )
         if self.mvnw_path.exists() and self.gradlew_path.exists():
             raise ExtensionError(
-                "both mvnw and gradlew executable files exist",
-                doc_slug="/reference/extensions/spring-boot-framework",
+                "both mvnw and gradlew executable files exist\n"
+                "you cannot have both Maven and Gradle executables in the same project",
+                doc_slug="/reference/extensions/spring-boot-framework/#project-requirements",
                 logpath_report=False,
             )
         if not self.pom_xml_path.exists() and not self.build_gradle_path.exists():
             raise ExtensionError(
-                "missing pom.xml and build.gradle file",
-                doc_slug="/reference/extensions/spring-boot-framework",
+                "missing pom.xml and build.gradle file\n"
+                "you must have either a Maven pom.xml or a Gradle build.gradle file in your project",
+                doc_slug="/reference/extensions/spring-boot-framework/#project-requirements",
                 logpath_report=False,
             )
         if (self.mvnw_path.exists() and not os.access(self.mvnw_path, os.X_OK)) or (
             self.gradlew_path.exists() and not os.access(self.gradlew_path, os.X_OK)
         ):
             raise ExtensionError(
-                "mvnw or gradlew file is not executable",
-                doc_slug="/reference/extensions/spring-boot-framework",
+                "mvnw or gradlew file is not executable\n"
+                "the mvnw or gradlew file must have executable permissions",
+                doc_slug="/reference/extensions/spring-boot-framework/#project-requirements",
                 logpath_report=False,
             )
 
@@ -209,9 +213,20 @@ class SpringBootFramework(Extension):
         )
 
     DEFAULT_BUILD_PACKAGES = ["default-jdk"]
-    DEFAULT_OVERRIDE_BUILD_COMMANDS = [
+    MAVEN_OVERRIDE_BUILD_COMMANDS = [
         "craftctl default",
         "find ${CRAFT_PART_INSTALL} -name '*-plain.jar' -type f -delete",
+    ]
+    # Gradle's JavaPlugin hardlinks all JARs under ${CRAFT_PART_BUILD} (including
+    # internal distribution/cache JARs) into ${CRAFT_PART_INSTALL}/jar/, causing
+    # jdeps to fail on unresolvable named modules. Fix: keep only the fat JAR,
+    # discovered at build time from build/libs/ (bootJar's output directory).
+    GRADLE_OVERRIDE_BUILD_COMMANDS = [
+        "craftctl default",
+        "SPRING_FAT_JAR=$(find ${CRAFT_PART_BUILD}/build/libs"
+        " -name '*.jar' ! -name '*-plain.jar' -type f -printf '%f\\n' | head -1)",
+        '[ -n "${SPRING_FAT_JAR}" ] || (echo "ERROR: could not find Spring Boot fat JAR in build/libs" && exit 1)',
+        'find ${CRAFT_PART_INSTALL}/jar -name "*.jar" ! -name "${SPRING_FAT_JAR}" -delete',
     ]
 
     def _gen_install_app_gradle_plugin(self) -> dict[str, Any]:
@@ -240,7 +255,7 @@ class SpringBootFramework(Extension):
                 "mkdir -p ${CRAFT_PART_BUILD}/.gradle/",
                 "cp ${CRAFT_STAGE}/*init.gradle* ${CRAFT_PART_BUILD}/.gradle/",
             ]
-        override_build_cmds += self.DEFAULT_OVERRIDE_BUILD_COMMANDS
+        override_build_cmds += self.GRADLE_OVERRIDE_BUILD_COMMANDS
         gradle_install_app_part["override-build"] = "\n".join(override_build_cmds)
         return gradle_install_app_part
 
@@ -253,7 +268,7 @@ class SpringBootFramework(Extension):
             "plugin": "maven",
             "build-packages": self._user_install_app_build_packages_override
             or build_packages,
-            "override-build": "\n".join(self.DEFAULT_OVERRIDE_BUILD_COMMANDS),
+            "override-build": "\n".join(self.MAVEN_OVERRIDE_BUILD_COMMANDS),
         }
         if self.mvnw_path.exists():
             maven_install_app["maven-use-wrapper"] = "True"
@@ -304,7 +319,7 @@ class SpringBootFramework(Extension):
 
     def _get_assets_stage(self) -> list[str]:
         """Return the assets stage list for the Spring Boot project."""
-        user_stage = (
+        user_stage: list[str] = (
             self.yaml_data.get("parts", {})
             .get("spring-boot-framework/assets", {})
             .get("stage", [])

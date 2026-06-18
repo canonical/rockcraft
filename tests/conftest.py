@@ -22,7 +22,7 @@ from unittest import mock
 
 import craft_platforms
 import pytest
-import xdg
+import xdg.BaseDirectory
 from craft_application.application import AppMetadata
 from craft_application.services import ServiceFactory
 from overrides import override
@@ -154,11 +154,14 @@ def reset_features():
 
 
 @pytest.fixture
-def enable_overlay_feature(reset_features):
+def enable_overlay_feature(reset_features, request: pytest.FixtureRequest):
     """Enable the overlay feature."""
     from craft_parts import Features
 
-    Features(enable_overlay=True)
+    # Let tests opt-out of enabling the overlay here (useful for cli tests)
+    marker = request.node.get_closest_marker("skip_overlay_enable")
+    if marker is None:
+        Features(enable_overlay=True)
 
 
 @pytest.fixture
@@ -324,7 +327,8 @@ def fake_project_yaml(
     if "base" in request.fixturenames:
         project["base"] = str(request.getfixturevalue("base"))
 
-    base = craft_platforms.DistroBase.from_str(cast(str, project.get("base")))
+    project_base = project.get("build-base") or project.get("base")
+    base = craft_platforms.DistroBase.from_str(cast(str, project_base))
     mocker.patch.object(
         craft_platforms.DistroBase, "from_linux_distribution", return_value=base
     )
@@ -333,7 +337,9 @@ def fake_project_yaml(
 
 
 @pytest.fixture
-def fake_project_file(in_project_path, fake_project_yaml) -> Path:
+def fake_project_file(
+    in_project_path, fake_project_yaml, enable_overlay_feature
+) -> Path:
     project_file = in_project_path / "rockcraft.yaml"
     project_file.write_text(fake_project_yaml)
 

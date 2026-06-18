@@ -1,11 +1,14 @@
-.. _build-a-rock-for-a-spring-boot-application:
+.. meta::
+    :description: Learn the process of making a Spring Boot app into a rock. In this tutorial, we use the spring-boot-framework extension to bootstrap and test the contents of the rock.
+
+.. _tutorial-build-a-rock-for-a-spring-boot-app:
 
 Build a rock for a Spring Boot app
 ----------------------------------
 
 In this tutorial, we'll containerise a simple Spring Boot app into a
 rock using Rockcraft's ``spring-boot-framework``
-:ref:`extension <spring-boot-framework-reference>`.
+:ref:`extension <reference-spring-boot-framework>`.
 
 It should take 25 minutes for you to complete.
 
@@ -37,17 +40,7 @@ Create the Spring Boot app
 ==========================
 
 Start by creating the "Hello, world" Spring Boot app that will be used
-for this tutorial.
-
-Create an empty project directory:
-
-.. code-block:: bash
-
-   mkdir spring-boot-hello-world
-   cd spring-boot-hello-world
-
-Create the Demo Spring Boot app that will be used for
-this tutorial.
+for this tutorial:
 
 .. literalinclude:: code/spring-boot/task.yaml
     :language: bash
@@ -76,8 +69,8 @@ Let's Run the Spring Boot app to verify that it works:
 
 The app starts an HTTP server listening on port 8080
 that we can test by using ``curl`` to send a request to the root
-endpoint. We may need a new terminal for this -- run
-``multipass shell rock-dev`` to get another terminal:
+endpoint. We'll need a new shell of the VM for this -- in a separate terminal,
+run ``multipass shell rock-dev`` again:
 
 .. literalinclude:: code/spring-boot/task.yaml
     :language: bash
@@ -88,8 +81,9 @@ endpoint. We may need a new terminal for this -- run
 The Spring Boot app should respond with
 ``{"timestamp":<timestamp>,"status":404,"error":"Not Found","path":"/"}``.
 
-The Spring Boot app looks good, so let's stop it for now
-with :kbd:`Ctrl` + :kbd:`C`.
+The Spring Boot app looks good, so let's close the terminal instance we used for
+testing and stop the app in the original terminal instance by pressing
+:kbd:`Ctrl` + :kbd:`C`.
 
 Pack the Spring Boot app into a rock
 ====================================
@@ -125,9 +119,9 @@ The top of the file should look similar to the following snippet:
     :caption: ~/spring-boot-hello-world/rockcraft.yaml
 
     name: spring-boot-hello-world
-    # see https://documentation.ubuntu.com/rockcraft/en/latest/explanation/bases/
+    # see https://documentation.ubuntu.com/rockcraft/latest/explanation/bases/
     # for more information about bases and using 'bare' bases for chiselled rocks
-    base: bare # as an alternative, a ubuntu base can be used
+    base: bare # as an alternative, an ubuntu base can be used
     build-base: ubuntu@24.04 # build-base is required when the base is bare
     version: '0.1' # just for humans. Semantic versioning is recommended
     summary: A summary of your Spring Boot application # 79 char long summary
@@ -144,7 +138,7 @@ The top of the file should look similar to the following snippet:
         # ppc64el:
         # s390x:
 
-Verfiy that the ``name`` is ``spring-boot-hello-world``.
+Verify that the ``name`` is ``spring-boot-hello-world``.
 
 The ``platforms`` key must match the architecture of your host. Check
 the architecture of your system:
@@ -186,19 +180,27 @@ Pack the rock:
    There is a `known connectivity issue with LXD and Docker
    <lxd-docker-connectivity-issue_>`_. If we see a
    networking issue such as "*A network related operation failed in a context
-   of no network access*" or ``Client.Timeout``, allow egress network traffic
-   to flow from the LXD managed bridge using:
+   of no network access*" or ``Client.Timeout``, we need to allow egress network
+   traffic to flow from the managed LXD bridge.
+
+   First, run ``lxc network list`` to show the available networks. The
+   bridge will have ``TYPE: bridge`` and ``MANAGED: YES``. Save the name to an
+   environment variable:
 
    .. code-block::
 
-       iptables  -I DOCKER-USER -i <network_bridge> -j ACCEPT
-       ip6tables -I DOCKER-USER -i <network_bridge> -j ACCEPT
-       iptables  -I DOCKER-USER -o <network_bridge> -m conntrack \
-         --ctstate RELATED,ESTABLISHED -j ACCEPT
-       ip6tables -I DOCKER-USER -o <network_bridge> -m conntrack \
-         --ctstate RELATED,ESTABLISHED -j ACCEPT
+       NETWORK_BRIDGE=<name of managed LXD bridge>
 
-   Run ``lxc network list`` to show the existing LXD managed bridges.
+   Then, update the network traffic flow using:
+
+   .. code-block::
+
+       sudo iptables  -I DOCKER-USER -i $NETWORK_BRIDGE -j ACCEPT
+       sudo ip6tables -I DOCKER-USER -i $NETWORK_BRIDGE -j ACCEPT
+       sudo iptables  -I DOCKER-USER -o $NETWORK_BRIDGE -m conntrack \
+         --ctstate RELATED,ESTABLISHED -j ACCEPT
+       sudo ip6tables -I DOCKER-USER -o $NETWORK_BRIDGE -m conntrack \
+         --ctstate RELATED,ESTABLISHED -j ACCEPT
 
 Depending on the network, this step can take a couple of minutes to finish.
 
@@ -248,9 +250,14 @@ The output should list the Spring Boot container image, along with its tag, ID a
 size:
 
 .. terminal::
+    :user: ubuntu
+    :host: rock-dev
+    :dir: ~/spring-boot-hello-world
 
-    REPOSITORY       TAG       IMAGE ID       CREATED         SIZE
-    spring-boot-hello-world   0.1       f3abf7ebc169   5 minutes aspring-boot   15.7MB
+    docker images spring-boot-hello-world:0.1
+
+    REPOSITORY                TAG       IMAGE ID       CREATED         SIZE
+    spring-boot-hello-world   0.1       f3abf7ebc169   5 minutes ago   149MB
 
 Now we're finally ready to run the rock and test the containerised Spring Boot
 app:
@@ -278,7 +285,7 @@ View the app logs
 ~~~~~~~~~~~~~~~~~
 
 When deploying the Spring Boot rock, we can always get the app logs with
-:ref:`pebble_explanation_page`:
+:ref:`explanation-pebble`:
 
 .. literalinclude:: code/spring-boot/task.yaml
     :language: text
@@ -291,6 +298,11 @@ As a result, Pebble will give the logs for the
 We should expect to see something similar to this:
 
 .. terminal::
+    :user: ubuntu
+    :host: rock-dev
+    :dir: ~/spring-boot-hello-world
+
+    docker exec spring-boot-hello-world pebble logs spring-boot
 
      .   ____          _            __ _ _
     /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
@@ -326,7 +338,7 @@ Update the Spring Boot app
 ==========================
 
 As a final step, let's update our app. For example,
-we want to add a new ``/time`` endpoint which returns the current time.
+we want to add a new ``/time`` endpoint which returns the current time in UTC.
 
 Start by creating the ``src/main/java/com/example/demo/TimeController.java``
 file in a text editor and paste in the code to look like the following:
@@ -345,9 +357,9 @@ The top of the ``rockcraft.yaml`` file should look similar to the following:
     :emphasize-lines: 6
 
     name: spring-boot-hello-world
-    # see https://documentation.ubuntu.com/rockcraft/en/latest/explanation/bases/
+    # see https://documentation.ubuntu.com/rockcraft/latest/explanation/bases/
     # for more information about bases and using 'bare' bases for chiselled rocks
-    base: bare # as an alternative, a ubuntu base can be used
+    base: bare # as an alternative, an ubuntu base can be used
     build-base: ubuntu@24.04 # build-base is required when the base is bare
     version: '0.2'
     summary: A summary of your Spring Boot application # 79 char long summary
@@ -366,9 +378,9 @@ The top of the ``rockcraft.yaml`` file should look similar to the following:
 
 .. note::
 
-    ``rockcraft pack`` will create a new image with the updated code even if we
-    don't change the version. It is recommended to change the version whenever
-    we make changes to the app in the image.
+    If we repack the rock without changing the version, the new rock will have the
+    same name and overwrite the last one we built. It's a good practice to change
+    the version whenever we make changes to the app in the image.
 
 Pack and run the rock using similar commands as before:
 
@@ -391,7 +403,7 @@ Finally, use ``curl`` to send a request to the ``/time`` endpoint:
     :end-before: [docs:curl-time-end]
     :dedent: 2
 
-The updated app will respond with the current date and time.
+The updated app will respond with the current date and time in UTC.
 
 .. note::
 
@@ -444,10 +456,32 @@ And then we can proceed with its deletion:
 Next steps
 ==========
 
-* :ref:`Rockcraft tutorials<tutorial>`.
-* :ref:`spring-boot-framework reference<spring-boot-framework-reference>`.
-* :ref:`why_use_rockcraft`.
-* :ref:`What is a Rock?<rocks_explanation>`.
+Congratulations! You've reached the end of this tutorial. You created a
+Spring Boot app, packaged it into a rock, and practiced some typical development skills
+such as viewing logs and updating the app.
+
+But there is a lot more to explore:
+
+.. list-table::
+    :widths: 30 30
+    :header-rows: 1
+
+    * - If you are wondering...
+      - Visit...
+    * - "What's next?"
+      - :external+charmcraft:ref:`Write your first Kubernetes charm for a Spring Boot
+        app in Charmcraft <write-your-first-kubernetes-charm-for-a-spring-boot-app>`
+    * - "How do I...?"
+      - :ref:`how-to-manage-a-12-factor-app-rock`
+    * - "How do I get in touch?"
+      - `Matrix channel <https://matrix.to/#/#12-factor-charms:ubuntu.com>`_
+    * - "What is...?"
+      - :ref:`spring-boot-framework extension <reference-spring-boot-framework>`
+
+        :ref:`What is a Rock? <explanation-rocks>`
+    * - "Why...?", "So what?"
+      - :external+12-factor:ref:`12-Factor app principles and support in Charmcraft
+        and Rockcraft <explanation>`
 
 ----
 
@@ -463,4 +497,3 @@ the changes are not taking effect, try running ``rockcraft clean`` and pack
 the rock again with ``rockcraft pack``.
 
 .. _`lxd-docker-connectivity-issue`: https://documentation.ubuntu.com/lxd/en/latest/howto/network_bridge_firewalld/#prevent-connectivity-issues-with-lxd-and-docker
-.. _`install-multipass`: https://multipass.run/docs/install-multipass

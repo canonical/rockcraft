@@ -1,4 +1,7 @@
-.. _why_use_rockcraft:
+.. meta::
+    :description: Explanation of why Rockcraft exists and what sets it apart for building OCI container images, including the concepts and design philosophy behind it.
+
+.. _explanation-why-use-rockcraft:
 
 Why use Rockcraft?
 ==================
@@ -82,9 +85,8 @@ tools, but Rockcraft has been developed precisely to offer an easy way to build
 production-grade container images.
 
 Furthermore, Rockcraft is built on top of existing concepts and within the same
-family as `Snapcraft <https://snapcraft.io/docs/snapcraft-overview>`_ and
-`Charmcraft`_, such that its adoption becomes seamless for those already used
-to building Snaps and Charms.
+family as `Snapcraft`_ and `Charmcraft`_, such that its adoption becomes seamless for
+those already used to building Snaps and Charms.
 
 
 .. _Unit 42 / Znet: https://www.zdnet.com/article/96-of-third-party-container-applications-deployed-in-cloud-infrastructure-contain-known-vulnerabilities-unit-42/

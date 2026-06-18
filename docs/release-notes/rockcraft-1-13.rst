@@ -1,3 +1,6 @@
+.. meta::
+    :description: Release notes for Rockcraft 1.13.
+
 .. _release-1.13:
 
 Rockcraft 1.13 release notes
@@ -79,8 +82,8 @@ The tutorial and reference pages for all 12-factor app extensions were improved
 based on user feedback, with fixes to multiple steps that were showstoppers.
 
 We also added information about using the `StatsD`_
-exporter to the references for the :ref:`django-framework-reference` and
-:ref:`flask-framework-reference` extensions.
+exporter to the references for the :ref:`reference-django-framework` and
+:ref:`reference-flask-framework` extensions.
 
 Contributors
 ------------
@@ -88,15 +91,15 @@ Contributors
 We would like to express a big thank you to all the people who contributed to
 this release.
 
-:literalref:`@AlexBaranowski<https://github.com/AlexBaranowski>`,
-:literalref:`@bepri<https://github.com/bepri>`,
-:literalref:`@erinecon<https://github.com/erinecon>`,
-:literalref:`@jahn-junior<https://github.com/jahn-junior>`,
-:literalref:`@javierdelapuente<https://github.com/javierdelapuente>`,
-:literalref:`@lengau<https://github.com/lengau>`,
-:literalref:`@medubelko<https://github.com/medubelko>`,
-:literalref:`@sergiusens<https://github.com/sergiusens>`,
-and :literalref:`@tigarmo<https://github.com/tigarmo>`.
+:literalref:`@AlexBaranowski <https://github.com/AlexBaranowski>`,
+:literalref:`@bepri <https://github.com/bepri>`,
+:literalref:`@erinecon <https://github.com/erinecon>`,
+:literalref:`@jahn-junior <https://github.com/jahn-junior>`,
+:literalref:`@javierdelapuente <https://github.com/javierdelapuente>`,
+:literalref:`@lengau <https://github.com/lengau>`,
+:literalref:`@medubelko <https://github.com/medubelko>`,
+:literalref:`@sergiusens <https://github.com/sergiusens>`,
+and :literalref:`@tigarmo <https://github.com/tigarmo>`.
 
 
 .. _StatsD: https://github.com/statsd/statsd

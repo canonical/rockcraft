@@ -1,3 +1,6 @@
+.. meta::
+    :description: The legacy Rockcraft development changelog.
+
 :tocdepth: 2
 
 .. Check out the bottom of the page for the release template
@@ -93,13 +96,12 @@ Documentation
 
 - Add :ref:`reference documentation <craft_parts_poetry_plugin>` for the new
   ``poetry`` plugin.
-- Add a :ref:`how-to guide <add_internal_user_to_a_rock>` on adding internal
-  users to rocks.
+- Add a :ref:`how-to guide <how-to-add-an-internal-user>`.
 - Improve the ``flask-framework``
-  :ref:`tutorial <build-a-rock-for-a-flask-application>` based on user feedback.
-- Add a :ref:`tutorial <build-a-rock-for-a-django-application>` for the
+  :ref:`tutorial <tutorial-build-a-rock-for-a-flask-app>` based on user feedback.
+- Add a :ref:`tutorial <tutorial-build-a-rock-for-a-django-app>` for the
   ``django-framework`` extension.
-- Add a :ref:`tutorial <build-a-rock-for-a-fastapi-application>` for the
+- Add a :ref:`tutorial <tutorial-build-a-rock-for-a-fastapi-app>` for the
   ``fastapi-framework`` extension.
 
 For a complete list of commits, check out the `1.6.0`_ release on GitHub.

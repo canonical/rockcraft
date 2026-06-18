@@ -9,11 +9,10 @@ execute: |
   IMAGE="${NAME}:0.1"
 
   run_rockcraft init --name flask-extension --profile flask-framework
-  sed -i "s/name: .*/name: ${NAME}/g" rockcraft.yaml
-  if [ "${SCENARIO}" = "bare" ]; then
-      sed -i "s/base: .*/base: ${SCENARIO}\nbuild-base: ubuntu@22.04/g" rockcraft.yaml
-  else
-      sed -i "s/base: .*/base: ${SCENARIO//-/@}/g" rockcraft.yaml
+  sed -i "s/^name: .*/name: ${NAME}/g" rockcraft.yaml
+  sed -i "s/^base: .*/base: ${SCENARIO//-/@}/g" rockcraft.yaml
+  if [ "${SCENARIO}" != "bare" ]; then
+      sed -i "/^build-base:/d" rockcraft.yaml
   fi
   run_rockcraft pack
 
@@ -31,7 +30,7 @@ execute: |
   # docker rm -f "${NAME}-container"
 
   # test that gunicorn is installed and config file is correct
-  docker run --rm --entrypoint /bin/python3 "${IMAGE}" -m gunicorn --chdir /flask/app --check-config app:app
+  docker run --rm --entrypoint /bin/python3 "${IMAGE}" -m gunicorn --chdir /flask/app --check-config 'main:create_app()'
 
   # test that gevent is installed
   docker run --rm --entrypoint /bin/python3 "${IMAGE}" -c "import gevent;print(f'gevent: {gevent.__version__}')"

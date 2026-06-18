@@ -1,4 +1,4 @@
-name: Spread
+name: Spread tests for source
 on:
   pull_request:
   push:
@@ -9,24 +9,38 @@ on:
 
 jobs:
   snap-build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
+    outputs:
+      source-files: ${{ steps.filter.outputs.source-files }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
+      - name: Check which files changed
+        id: filter
+        uses: dorny/paths-filter@fbd0ab8f3e69293af611ebaee6363fc25e6d187d # v4.0.1
+        with:
+          # Combine multiple negation checks into a union (¬A ∧ ¬B ∧ ¬C), because individual entries are checked independently (A ∨ B ∨ C).
+          # If we ever need to filter only for docs, glob 'docs/**/*' and '**/*.md'
+          filters: |
+            source-files:
+              - '!({docs/**,*.md,**/*.md,.readthedocs.yaml})'
       - name: Build snap
-        uses: canonical/action-build@v1
         id: rockcraft
+        uses: canonical/action-build@v1
+        if: ${{ steps.filter.outputs.source-files == 'true' || github.event_name == 'schedule' }}
       - name: Upload snap artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
+        if: ${{ steps.filter.outputs.source-files == 'true' || github.event_name == 'schedule' }}
         with:
           name: snap
           path: ${{ steps.rockcraft.outputs.snap }}
 
-  snap-tests:
+  source-spread-tests:
     runs-on: [self-hosted, spread-installed]
     needs: [snap-build]
+    if: ${{ needs.snap-build.outputs.source-files == 'true' || github.event_name == 'schedule' }}
 
     steps:
       - name: Cleanup job workspace
@@ -34,17 +48,34 @@ jobs:
           rm -rf "${{ github.workspace }}"
           mkdir "${{ github.workspace }}"
       - name: Checkout rockcraft
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           submodules: true
       - name: Download snap artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: snap
           path: tests
-      - name: Run spread
-        run: spread
+
+      - name: Run Ubuntu Pro spread tests
+        env:
+          UBUNTU_PRO_TOKEN: ${{ secrets.UBUNTU_PRO_TOKEN }}
+        run: |
+          if [ -z "$UBUNTU_PRO_TOKEN" ]; then
+            if [ "${{ github.event.pull_request.head.repo.full_name }}" == "canonical/rockcraft" ]; then
+              echo "Error: UBUNTU_PRO_TOKEN is not set."
+              exit 1
+            else
+              echo "Warning: UBUNTU_PRO_TOKEN is not set. Skipping Pro tests"
+              exit 0
+            fi
+          fi
+          spread google:tests/spread/pro/
+
+      - name: Run source spread tests
+        run: |
+          spread google:...tests...
 
       - name: Discard spread workers
         if: always()

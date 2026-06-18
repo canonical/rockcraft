@@ -1,4 +1,7 @@
-.. _explanation_cryptographic-technology:
+.. meta::
+    :description: Explanation of the cryptographic technologies used by Rockcraft: TLS, credential storage, OCI image manipulation, and dependencies on external crypto libraries.
+
+.. _explanation-cryptographic-technology:
 
 Cryptographic technology in Rockcraft
 =====================================
@@ -30,3 +33,4 @@ process. Rockcraft only uses the internal, pre-packaged copy of skopeo for this 
 .. _Craft Application: https://canonical-craft-application.readthedocs-hosted.com/en/latest/
 .. _Cryptographic technology in Craft Application: https://canonical-craft-application.readthedocs-hosted.com/en/latest/explanation/cryptography/
 .. _umoci: https://umo.ci/
+.. _skopeo: https://github.com/containers/skopeo

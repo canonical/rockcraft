@@ -1,106 +1,215 @@
-# Copyright 2023-2024 Canonical Ltd.
-#
-# This program is free software; you can redistribute it and/or
-# modify it under the terms of the GNU Lesser General Public
-# License version 3 as published by the Free Software Foundation.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-# Lesser General Public License for more details.
-#
-# You should have received a copy of the GNU Lesser General Public License
-# along with this program; if not, write to the Free Software Foundation,
-# Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-#
-
+import importlib
 import datetime
 import os
 import pathlib
 import sys
 
-import craft_parts
 import craft_parts_docs
 import rockcraft
 
-project = "Rockcraft"
-author = "Canonical Group Ltd"
+# Configuration for the Sphinx documentation builder.
+# All configuration specific to your project should be done in this file.
+#
+# A complete list of built-in Sphinx configuration values:
+# https://www.sphinx-doc.org/en/master/usage/configuration.html
+#
+# Our starter pack uses the custom Canonical Sphinx extension
+# to keep all documentation based on it consistent and on brand:
+# https://github.com/canonical/canonical-sphinx
 
+
+#######################
+# Project information #
+#######################
+
+# Project name
+project = "Rockcraft"
+author = "Canonical Ltd."
+
+# Sidebar documentation title; best kept reasonably short
 # The full version, including alpha/beta/rc tags
 release = rockcraft.__version__
-# The commit hash in the dev release version confuses the spellchecker
 if ".post" in release:
     release = "dev"
+else:
+    major, minor, *_ = release.split(".")
+    release = f"{major}.{minor}"
 
+html_title = project + " documentation"
+
+# Copyright string; shown at the bottom of the page
 copyright = "2022-%s, %s" % (datetime.date.today().year, author)
 
-# region Configuration for canonical-sphinx
+# Documentation website URL
 
-ogp_site_url = "https://canonical-rockcraft.readthedocs-hosted.com/"
+ogp_site_url = "https://documentation.ubuntu.com/rockcraft"
+
+#Preview name of the documentation website
 ogp_site_name = project
+
+#Preview image URL
 ogp_image = "https://assets.ubuntu.com/v1/253da317-image-document-ubuntudocs.svg"
 
+# Product favicon; shown in bookmarks, browser tabs, etc.
+# html_favicon = '.sphinx/_static/favicon.png'
+
+# Dictionary of values to pass into the Sphinx context for all pages:
+# https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-html_context
 html_context = {
     "product_page": "",  # Rockcraft doesn't have a marketing page
+    "matrix": "https://matrix.to/#/#rockcraft:ubuntu.com",
+    "discourse": "https://discourse.ubuntu.com/c/rocks/117",
     "github_url": "https://github.com/canonical/rockcraft",
     "repo_default_branch": "main",
     "repo_folder": "/docs/",
-    "github_issues": "https://github.com/canonical/rockcraft/issues",
-    "matrix": "https://matrix.to/#/#rockcraft:ubuntu.com",
-    "discourse": "https://discourse.ubuntu.com/c/rocks/117",
     "display_contributors": False,
+    "github_issues": 'enabled',
 }
+
+#html_extra_path = []
 
 html_theme_options = {
     "source_edit_link": "https://github.com/canonical/rockcraft",
 }
 
+# Project slug; see https://meta.discourse.org/t/what-is-category-slug/87897
+# slug = ''
+
+
+#######################
+# Sitemap configuration: https://sphinx-sitemap.readthedocs.io/
+#######################
+
+# Use RTD canonical URL to ensure duplicate pages have a specific canonical URL
+html_baseurl = os.environ.get("READTHEDOCS_CANONICAL_URL", "/")
+
+# sphinx-sitemap uses html_baseurl to generate the full URL for each page:
+sitemap_url_scheme = '{link}'
+
+# Include `lastmod` dates in the sitemap:
+# sitemap_show_lastmod = True
+
+# Exclude generated pages from the sitemap:
+sitemap_excludes = [
+    '404/',
+    'genindex/',
+    'search/',
+]
+
+
+#######################
+# Template and asset locations
+#######################
+
 html_static_path = ["_static"]
 templates_path = ["_templates"]
 
-# Static resources for Google Analytics
-html_css_files = [
-    'css/cookie-banner.css'
+#############
+# Redirects #
+#############
+
+rediraffe_redirects = "redirects.txt"
+
+
+###########################
+# Link checker exceptions #
+###########################
+
+# A regex list of URLs that are ignored by 'make linkcheck'
+linkcheck_anchors_ignore = [
+    "#",
+    ":",
+    "slide definitions",
+]
+linkcheck_ignore = [
+    # GitHub aggressively rate limits us
+    # Entire domains to ignore due to flakiness or issues
+    "https://github.com",
+    r"^https://www.gnu.org/",
+    r"^https://crates.io/",
+    r"^https://([\w-]*\.)?npmjs.org",
+    r"^https://rsync.samba.org",
+    r"^https://ubuntu.com",
+    r"^https://www.freedesktop.org/",
+    r"^https://www.npmjs.com/",
+    r"^https://github.com/canonical/[a-z]*craft[a-z-]*/releases/.*",
+    "https://matrix.to/#",
+    "https://github.com/canonical/craft-actions#rockcraft-pack",
+    "https://github.com/canonical/spread#selecting-which-tasks-to-run",
+    "https://matrix.to/#/#rocks:ubuntu.com",
+    "https://matrix.to/#/#rockcraft:ubuntu.com",
+    "https://matrix.to/#/#12-factor-charms:ubuntu.com",
+    "https://specs.opencontainers.org/image-spec/config/",
+    "https://specs.opencontainers.org/image-spec/annotations/",
+    "https://canonical.com/#get-in-touch#",
+    "http://127.0.0.1:8000/",
+    # 2026-06-03: Ignore Canonical sites until filtering is resolved
+    "https://snapcraft.io",
+    "https://juju.is",
 ]
 
-html_js_files = [
-    'js/bundle.js',
-]
+# Don't check links in the "common" subdirectory, as those are the responsibility of
+# the libraries.
+linkcheck_exclude_documents = ["^common/.*"]
+
+# give linkcheck multiple tries on failure
+linkcheck_retries = 20
+
+########################
+# Configuration extras #
+########################
+
+# Custom Sphinx extensions; see
+# https://www.sphinx-doc.org/en/master/usage/extensions/index.html
 
 extensions = [
     "canonical_sphinx",
     "notfound.extension",
-    "pydantic_kitbash",
+    # "sphinx_design",
+    # "sphinx_tabs.tabs",
+    # "sphinxcontrib.jquery",
+    # "sphinxext.opengraph",
+    # "sphinx_config_options",
+    # "sphinx_contributor_listing",
+    # "sphinx_filtered_toctree",
+    "sphinx_related_links",
+    "sphinx_roles",
+    "sphinx_terminal",
+    "sphinx_copybutton",
+    # "sphinx_ubuntu_images",
+    # "sphinx_youtube_links",
+    # "sphinxcontrib.cairosvgconverter",
+    # "sphinx_last_updated_by_git",
+    "sphinx.ext.intersphinx",
     "sphinx_sitemap",
-]
-
-# endregion
-extensions.extend(
-    [
-        "sphinx.ext.autodoc",
-        "sphinx.ext.ifconfig",
-        "sphinx.ext.napoleon",
-        "sphinx.ext.viewcode",
-        "sphinx_autodoc_typehints",  # must be loaded after napoleon
-        "sphinxcontrib.details.directive",
-        "sphinx_toolbox.collapse",
-        "sphinxext.rediraffe",
+    # Custom Craft extensions
+    "pydantic_kitbash",
+    "sphinx-pydantic",
+    "sphinxext.rediraffe",
+    "sphinx.ext.autodoc",
+    "sphinx.ext.doctest",
+    "sphinx.ext.ifconfig",
+    "sphinx.ext.napoleon",
+    "sphinx.ext.viewcode",
+    "sphinx_autodoc_typehints",  # must be loaded after napoleon
+    "sphinxcontrib.details.directive",
+    "sphinx_toolbox.collapse",
+    "sphinx.ext.intersphinx",
+    # "sphinx_substitution_extensions",
     ]
-)
+
+# Excludes files or directories from processing
 
 exclude_patterns = [
     "_build",
     "Thumbs.db",
     ".DS_Store",
     "env",
-    "sphinx-starter-pack",
     # Excluded here because they are either included explicitly in other
     # documents (so they generate "duplicate label" errors) or they aren't
     # used in this documentation at all (so they generate "unreferenced"
     # errors).
     "common/craft-parts/explanation/file-migration.rst",
-    "common/craft-parts/explanation/filesets.rst",
-    "common/craft-parts/explanation/lifecycle.rst",
     "common/craft-parts/explanation/overlay_parameters.rst",
     "common/craft-parts/explanation/overlays.rst",
     "common/craft-parts/explanation/how_parts_are_built.rst",
@@ -108,69 +217,126 @@ exclude_patterns = [
     "common/craft-parts/explanation/gradle_plugin.rst",
     "common/craft-parts/how-to/customise-the-build-with-craftctl.rst",
     "common/craft-parts/how-to/use_parts.rst",
+    "common/craft-parts/how-to/include_files.rst",
     "common/craft-parts/reference/partition_specific_output_directory_variables.rst",
     "common/craft-parts/reference/parts_steps.rst",
     "common/craft-parts/reference/step_execution_environment.rst",
     "common/craft-parts/reference/step_output_directories.rst",
+    "common/craft-parts/reference/part_properties.rst",
+    "common/craft-parts/reference/plugins/colcon_plugin.rst",
+    "common/craft-parts/reference/plugins/dotnet_plugin.rst",
+    "common/craft-parts/reference/plugins/dotnet_v2_plugin.rst",
     "common/craft-parts/reference/plugins/poetry_plugin.rst",
     "common/craft-parts/reference/plugins/python_plugin.rst",
+    "common/craft-parts/reference/plugins/python_v2_plugin.rst",
     "common/craft-parts/reference/plugins/uv_plugin.rst",
+    "common/craft-parts/reference/plugins/ruby_plugin.rst",
+    "common/craft-application/how-to-guides/build-remotely.rst",
+    "common/craft-application/how-to-guides/reuse-packages-between-builds.rst",
+    "common/craft-application/reference/fetch-service.rst",
+    "common/craft-application/reference/remote-builds.rst",
+    "common/craft-application/reference/strict-platform-names.rst",
     # Extra non-craft-parts exclusions can be added after this comment
     "reuse/*",
+    "README.md",
 ]
 
-# Linkcheck settings
+# Adds custom CSS files
+html_css_files = ["https://assets.ubuntu.com/v1/d86746ef-cookie_banner.css"]
 
-# This doesn't seem to have any effect
-linkcheck_retries = 3
+# Adds custom JavaScript files
+html_js_files = ["https://assets.ubuntu.com/v1/287a5e8f-bundle.js"]
 
-# URLs to skip
-linkcheck_ignore = [
-    "http://0.0.0.0:8080",
-    "https://github.com/canonical/craft-actions#rockcraft-pack",
-    "https://canonical-pebble.readthedocs-hosted.com/en/latest/reference/layer-specification/",
-    "https://juju.is/cloud-native-kubernetes-usage-report-2021#selection-criteria-for-container-images",
-    "https://matrix.to/#/#rocks:ubuntu.com",
-    "https://matrix.to/#/#rockcraft:ubuntu.com",
-    "https://www.gnu.org/*",
-    # Ignore changelog links to Rockcraft releases, because the changelog entries
-    # are written before the actual release is tagged.
-    "https://github.com/canonical/rockcraft/releases/tag/.*",
-    "https://github.com/canonical/spread#selecting-which-tasks-to-run",
-    # Ignore opencontainer's anchors as linkchecker is not able to check them.
-    "https://specs.opencontainers.org/image-spec/config/",
-]
-
-# Don't check links in the "common" subdirectory, as those are the responsibility of
-# the libraries.
-linkcheck_exclude_documents = ["^common/.*"]
-linkcheck_anchors_ignore = ["slice-definitions"]
-
+# Specifies a reST snippet to be appended to each .rst file
 rst_epilog = """
 .. include:: /reuse/links.txt
 """
 
-# region Options for extensions
+# Feedback button at the top; enabled by default
+# disable_feedback_button = True
 
-# Client-side page redirects.
-rediraffe_redirects = "redirects.txt"
+# Your manpage URL
+# manpages_url = 'https://manpages.ubuntu.com/manpages/{codename}/en/' + \
+#     'man{section}/{page}.{section}.html'
 
-# Sitemap configuration: https://sphinx-sitemap.readthedocs.io/
-html_baseurl = "https://documentation.ubuntu.com/rockcraft/"
-if "READTHEDOCS_VERSION" in os.environ:
-    version = os.environ["READTHEDOCS_VERSION"]
-    sitemap_url_scheme = "{version}{link}"
-else:
-    sitemap_url_scheme = "latest/{link}"
+# Specifies a reST snippet to be prepended to each .rst file
+# This defines a :center: role that centers table cell content.
+# This defines a :h2: role that styles content for use with PDF generation.
+rst_prolog = """
+.. role:: center
+   :class: align-center
+.. role:: h2
+    :class: hclass2
+.. role:: woke-ignore
+    :class: woke-ignore
+.. role:: vale-ignore
+    :class: vale-ignore
+"""
 
-# Do (not) include module names.
-add_module_names = True
+# Workaround for https://github.com/canonical/canonical-sphinx/issues/34
+if "discourse_prefix" not in html_context and "discourse" in html_context:
+    html_context["discourse_prefix"] = f"{html_context['discourse']}/t/"
 
-# sphinx_autodoc_typehints
+# Add configuration for intersphinx mapping
+# https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html#configuration
+
+intersphinx_mapping = {
+    "12-factor": (
+        "https://canonical-12-factor-app-support.readthedocs-hosted.com/latest/",
+        None,
+    ),
+    "charmcraft": ("https://documentation.ubuntu.com/charmcraft/stable/", None),
+    "pebble": ("https://documentation.ubuntu.com/pebble", None),
+    "chisel": ("https://documentation.ubuntu.com/chisel/en/latest", None),
+}
+# See also:
+# https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html#confval-intersphinx_disabled_reftypes
+intersphinx_disabled_reftypes = ["*"]
+
+
+##############################
+# Custom Craft configuration #
+##############################
+
+# Type hints configuration
 set_type_checking_flag = True
 typehints_fully_qualified = False
 always_document_param_types = True
 typehints_document_rtype = True
+
+# Automated documentation
+project_dir = pathlib.Path(__file__).parents[1].resolve()
+sys.path.insert(0, str(project_dir.absolute()))
+
+def generate_cli_docs(nil):
+    gen_cli_docs_path = (project_dir / "tools/docs/gen_cli_docs.py").resolve()
+    os.system("%s %s" % (gen_cli_docs_path, project_dir / "docs"))
+
+
+def setup(app):
+    app.connect("builder-inited", generate_cli_docs)
+
+# Setup libraries documentation snippets for use in rockcraft docs.
+common_docs_path = pathlib.Path(__file__).parent / "common"
+def link_common_docs(library_name: str) -> None:
+    """Create a link to the appropriate common documentation directory."""
+    common_lib_path = common_docs_path / library_name
+
+    docs_module_name = f"{library_name.replace('-', '_')}_docs"
+    docs_module = importlib.import_module(docs_module_name)
+    docs_path = pathlib.Path(docs_module.__file__).parent / library_name  # pyright: ignore[reportArgumentType]
+
+    if common_lib_path.is_symlink() and common_lib_path.readlink() == docs_path:
+        return
+
+    common_lib_path.unlink(missing_ok=True)
+    common_lib_path.symlink_to(docs_path, target_is_directory=True)
+
+link_common_docs("craft-parts")
+link_common_docs("craft-application")
+
+# Do (not) include module names.
+add_module_names = True
 
 # Enable support for google-style instance attributes.
 napoleon_use_ivar = True
@@ -217,32 +383,3 @@ notfound_context = {
     "title": "Page not found",
     "body": "<p><strong>Sorry, but the documentation page that you are looking for was not found.</strong></p>\n\n<p>Documentation changes over time, and pages are moved around. We try to redirect you to the updated content where possible, but unfortunately, that didn't work this time (maybe because the content you were looking for does not exist in this version of the documentation).</p>\n<p>You can try to use the navigation to locate the content you're looking for, or search for a similar page.</p>\n",
 }
-# endregion
-
-# region Autgenerate documentation
-
-project_dir = pathlib.Path(__file__).parents[1].resolve()
-sys.path.insert(0, str(project_dir.absolute()))
-
-model_dir = pathlib.Path(craft_parts.__file__).parent.resolve()
-sys.path.append(str(model_dir.absolute()))
-
-
-def generate_cli_docs(nil):
-    gen_cli_docs_path = (project_dir / "tools/docs/gen_cli_docs.py").resolve()
-    os.system("%s %s" % (gen_cli_docs_path, project_dir / "docs"))
-
-
-def setup(app):
-    app.connect("builder-inited", generate_cli_docs)
-
-
-# Setup libraries documentation snippets for use in rockcraft docs.
-common_docs_path = pathlib.Path(__file__).parent / "common"
-craft_parts_docs_path = pathlib.Path(craft_parts_docs.__file__).parent / "craft-parts"
-(common_docs_path / "craft-parts").unlink(missing_ok=True)
-(common_docs_path / "craft-parts").symlink_to(
-    craft_parts_docs_path, target_is_directory=True
-)
-
-# endregion

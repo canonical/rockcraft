@@ -1,17 +1,23 @@
-Containerise a PyPI package
-***************************
+.. meta::
+    :description: Learn the essentials of Rockcraft. In this tutorial, we package a Python PyPI package into an OCI-compliant container and run it with Docker.
+
+.. _tutorial-pack-a-python-package:
+
+Pack a Python package
+=====================
 
 By the end of this tutorial you will be able to run pyfiglet via docker:
 
 .. code:: text
 
-    $ docker run --rm -it pyfiglet:0.7.6 exec pyfiglet hello
+    $ docker run --rm -it pyfiglet:1.0.4 exec pyfiglet hello
      _          _ _
     | |__   ___| | | ___
     | '_ \ / _ \ | |/ _ \
     | | | |  __/ | | (_) |
     |_| |_|\___|_|_|\___/
 
+It should take around 10 minutes to complete.
 
 Setup your environment
 ----------------------
@@ -89,7 +95,7 @@ using bash, via:
 
 .. code:: yaml
 
-    $ docker run --rm -it pyfiglet:0.7.6 exec bash
+    $ docker run --rm -it pyfiglet:1.0.4 exec bash
     root@14d1812a2681:/# pyfiglet hi
      _     _
     | |__ (_)

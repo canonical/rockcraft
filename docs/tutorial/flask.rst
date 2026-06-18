@@ -1,11 +1,16 @@
-.. _build-a-rock-for-a-flask-application:
+.. meta::
+    :description: Learn the process of making a Flask app into a rock. In this tutorial, we use the flask-framework extension to bootstrap and test the contents of the rock.
+
+.. _tutorial-build-a-rock-for-a-flask-app:
 
 Build a rock for a Flask app
 ----------------------------
 
 In this tutorial, we'll create a simple Flask app and learn how to
 containerise it in a rock, using Rockcraft's ``flask-framework``
-:ref:`extension <flask-framework-reference>`.
+:ref:`extension <reference-flask-framework>`.
+
+It should take 25 minutes for you to complete.
 
 Setup
 =====
@@ -47,11 +52,15 @@ In the same directory, copy and save the following into a text file called
     :caption: ~/flask-hello-world/app.py
     :language: python
 
-Run the Flask app using ``flask run -p 8000`` to verify that it works.
+Run the Flask app to verify that it works:
+
+.. code-block:: bash
+
+    flask run -p 8000
 
 Test the Flask app by using ``curl`` to send a request to the root
-endpoint. We'll need a new terminal for this -- run
-``multipass shell rock-dev`` to get another terminal:
+endpoint. We'll need a new shell of the VM for this -- in a separate terminal,
+run ``multipass shell rock-dev`` again:
 
 .. literalinclude:: code/flask/task.yaml
     :language: bash
@@ -61,7 +70,8 @@ endpoint. We'll need a new terminal for this -- run
 
 The Flask app should respond with ``Hello, world!``.
 
-The Flask app looks good, so let's stop it for now by pressing
+The Flask app looks good, so let's close the terminal instance we used for
+testing and stop the app in the original terminal instance by pressing
 :kbd:`Ctrl` + :kbd:`C`.
 
 Pack the Flask app into a rock
@@ -99,8 +109,9 @@ The top of the file should look similar to the following snippet:
 
     name: flask-hello-world
     # see https://documentation.ubuntu.com/rockcraft/en/1.6.0/explanation/bases/
-    # for more information about bases and using 'bare' bases for chiselled rocks
-    base: ubuntu@22.04 # the base environment for this Flask app
+    # for more information about bases and bare bases
+    base: bare # as an alternative, an ubuntu base can be used
+    build-base: ubuntu@24.04 # build-base is required when the base is bare
     version: '0.1' # just for humans. Semantic versioning is recommended
     summary: A summary of your Flask app # 79 char long summary
     description: |
@@ -129,6 +140,9 @@ the architecture of your system:
 
 Edit the ``platforms`` key in ``rockcraft.yaml`` if required.
 
+Using a ``bare`` base provides the smallest possible foundation for the
+image, which helps reduce its complexity and size.
+
 .. note::
     For this tutorial, we'll use the ``name`` ``flask-hello-world`` and assume
     we're running on the ``amd64`` platform. Check the architecture of the
@@ -149,19 +163,27 @@ Pack the rock:
    There is a `known connectivity issue with LXD and Docker
    <lxd-docker-connectivity-issue_>`_. If we see a
    networking issue such as "*A network related operation failed in a context
-   of no network access*" or ``Client.Timeout``, allow egress network traffic
-   to flow from the LXD managed bridge using:
+   of no network access*" or ``Client.Timeout``, we need to allow egress network
+   traffic to flow from the managed LXD bridge.
+
+   First, run ``lxc network list`` to show the available networks. The
+   bridge will have ``TYPE: bridge`` and ``MANAGED: YES``. Save the name to an
+   environment variable:
 
    .. code-block::
 
-       iptables  -I DOCKER-USER -i <network_bridge> -j ACCEPT
-       ip6tables -I DOCKER-USER -i <network_bridge> -j ACCEPT
-       iptables  -I DOCKER-USER -o <network_bridge> -m conntrack \
-         --ctstate RELATED,ESTABLISHED -j ACCEPT
-       ip6tables -I DOCKER-USER -o <network_bridge> -m conntrack \
-         --ctstate RELATED,ESTABLISHED -j ACCEPT
+       NETWORK_BRIDGE=<name of managed LXD bridge>
 
-   Run ``lxc network list`` to show the existing LXD managed bridges.
+   Then, update the network traffic flow using:
+
+   .. code-block::
+
+       sudo iptables  -I DOCKER-USER -i $NETWORK_BRIDGE -j ACCEPT
+       sudo ip6tables -I DOCKER-USER -i $NETWORK_BRIDGE -j ACCEPT
+       sudo iptables  -I DOCKER-USER -o $NETWORK_BRIDGE -m conntrack \
+         --ctstate RELATED,ESTABLISHED -j ACCEPT
+       sudo ip6tables -I DOCKER-USER -o $NETWORK_BRIDGE -m conntrack \
+         --ctstate RELATED,ESTABLISHED -j ACCEPT
 
 Depending on the network, this step can take a couple of minutes to finish.
 
@@ -219,6 +241,11 @@ The output should list the Flask container image, along with its tag, ID and
 size:
 
 .. terminal::
+    :user: ubuntu
+    :host: rock-dev
+    :dir: ~/flask-hello-world
+
+    sudo docker images flask-hello-world:0.1
 
     REPOSITORY          TAG       IMAGE ID       CREATED       SIZE
     flask-hello-world   0.1       c256056698ba   2 weeks ago   149MB
@@ -251,7 +278,7 @@ View the app logs
 ~~~~~~~~~~~~~~~~~
 
 When deploying the Flask rock, we can always get the app logs via
-:ref:`pebble_explanation_page`:
+:ref:`explanation-pebble`:
 
 .. literalinclude:: code/flask/task.yaml
     :language: text
@@ -264,6 +291,11 @@ As a result, Pebble will give us the logs for the
 We expect to see something similar to this:
 
 .. terminal::
+    :user: ubuntu
+    :host: rock-dev
+    :dir: ~/flask-hello-world
+
+    sudo docker exec flask-hello-world pebble logs flask
 
     2024-06-21T03:41:45.077Z [flask] [2024-06-21 03:41:45 +0000] [17] [INFO] Starting gunicorn 22.0.0
     2024-06-21T03:41:45.077Z [flask] [2024-06-21 03:41:45 +0000] [17] [INFO] Listening at: http://0.0.0.0:8000 (17)
@@ -285,115 +317,6 @@ respective image for now:
     :language: bash
     :start-after: [docs:stop-docker]
     :end-before: [docs:stop-docker-end]
-    :dedent: 2
-
-Chisel the rock
-===============
-
-This is an optional but recommended step, especially if we're looking to
-deploy the rock into a production environment. With :ref:`chisel_explanation`
-we can produce lean and production-ready rocks by getting rid of all the
-contents that are not needed for the Flask app to run. This results
-in a much smaller rock with a reduced attack surface.
-
-.. note::
-    It is recommended to run chiselled images in production. For development,
-    we may prefer non-chiselled images as they will include additional
-    development tooling (such as for debugging).
-
-The first step towards chiselling the rock is to ensure we are using a
-``bare`` :ref:`base <bases_explanation>`.
-In the project file, change the ``base`` to ``bare`` and add
-``build-base: ubuntu@22.04``:
-
-.. literalinclude:: code/flask/task.yaml
-    :language: bash
-    :start-after: [docs:change-base]
-    :end-before: [docs:change-base-end]
-    :dedent: 2
-
-.. note::
-    The ``sed`` command replaces the current ``base`` in ``rockcraft.yaml`` with
-    the ``bare`` base. The command also adds a ``build-base`` which is required
-    when using the ``bare`` base.
-
-So that we can compare the size after chiselling, open the project
-file and change the ``version`` (e.g. to ``0.1-chiselled``). The
-top of the ``rockcraft.yaml`` file looks similar to the following:
-
-.. code-block:: yaml
-    :caption: ~/flask-hello-world/rockcraft.yaml
-    :emphasize-lines: 6
-
-    name: flask-hello-world
-    # see https://documentation.ubuntu.com/rockcraft/en/1.6.0/explanation/bases/
-    # for more information about bases and using 'bare' bases for chiselled rocks
-    base: bare
-    build-base: ubuntu@22.04
-    version: '0.1-chiselled'
-    summary: A summary of your Flask app # 79 char long summary
-    description: |
-        This is flask-hello-world's description. You have a paragraph or two to tell the
-        most important story about it. Keep it under 100 words though,
-        we live in tweetspace and your description wants to look good in the
-        container registries out there.
-    # the platforms this rock should be built on and run on.
-    # you can check your architecture with `dpkg --print-architecture`
-    platforms:
-        amd64:
-        # arm64:
-        # ppc64el:
-        # s390x:
-
-Pack the rock with the new ``bare`` base:
-
-.. literalinclude:: code/flask/task.yaml
-    :language: bash
-    :start-after: [docs:chisel-pack]
-    :end-before: [docs:chisel-pack-end]
-    :dedent: 2
-
-As before, verify that the new rock was created:
-
-.. literalinclude:: code/flask/task.yaml
-    :language: bash
-    :start-after: [docs:ls-bare-rock]
-    :end-before: [docs:ls-bare-rock-end]
-    :dedent: 2
-
-We'll verify that the new Flask rock is now approximately **30% smaller**
-in size! And that's just because of the simple change of ``base``.
-
-And the functionality is still the same. As before, we can confirm this by
-running the rock with Docker
-
-.. literalinclude:: code/flask/task.yaml
-    :language: text
-    :start-after: [docs:docker-run-chisel]
-    :end-before: [docs:docker-run-chisel-end]
-    :dedent: 2
-
-and then using the same ``curl`` request:
-
-.. literalinclude:: code/flask/task.yaml
-    :language: text
-    :start-after: [docs:curl-flask-bare-rock]
-    :end-before: [docs:curl-flask-bare-rock-end]
-    :dedent: 2
-
-The Flask app should still respond with
-``Hello, world!``.
-
-Cleanup
-~~~~~~~
-
-And that's it. We can now stop the container and remove the corresponding
-image:
-
-.. literalinclude:: code/flask/task.yaml
-    :language: bash
-    :start-after: [docs:stop-docker-chisel]
-    :end-before: [docs:stop-docker-chisel-end]
     :dedent: 2
 
 .. _update-flask-application:
@@ -421,9 +344,9 @@ top of the ``rockcraft.yaml`` file should look similar to the following:
 
     name: flask-hello-world
     # see https://documentation.ubuntu.com/rockcraft/en/1.6.0/explanation/bases/
-    # for more information about bases and using 'bare' bases for chiselled rocks
+    # for more information about bases and bare bases
     base: bare
-    build-base: ubuntu@22.04
+    build-base: ubuntu@24.04
     version: '0.2'
     summary: A summary of your Flask app # 79 char long summary
     description: |
@@ -441,9 +364,9 @@ top of the ``rockcraft.yaml`` file should look similar to the following:
 
 .. note::
 
-    ``rockcraft pack`` will create a new image with the updated code even if we
-    don't change the version. It is recommended to change the version whenever
-    we make changes to the app in the image.
+    If we repack the rock without changing the version, the new rock will have the
+    same name and overwrite the last one we built. It's a good practice to change
+    the version whenever we make changes to the app in the image.
 
 Pack and run the rock using similar commands as before:
 
@@ -466,8 +389,8 @@ Finally, use ``curl`` to send a request to the ``/time`` endpoint:
     :end-before: [docs:curl-time-end]
     :dedent: 2
 
-The updated app should respond with the current date and time (e.g.
-``2024-06-21 09:47:56``).
+The updated app should respond with the current date and time in
+UTC (e.g. ``2024-06-21 09:47:56``).
 
 .. note::
 
@@ -513,6 +436,36 @@ And then we can proceed with its deletion:
     multipass delete rock-dev
     multipass purge
 
+Next steps
+==========
+
+Congratulations! You've reached the end of this tutorial. You created a
+Flask app, packaged it into a rock, and practiced some typical development skills
+such as viewing logs and updating the app.
+
+But there is a lot more to explore:
+
+.. list-table::
+    :widths: 30 30
+    :header-rows: 1
+
+    * - If you are wondering...
+      - Visit...
+    * - "What's next?"
+      - :external+charmcraft:ref:`Write your first Kubernetes charm for a Flask app
+        in Charmcraft <write-your-first-kubernetes-charm-for-a-flask-app>`
+    * - "How do I...?"
+      - :ref:`how-to-manage-a-12-factor-app-rock`
+    * - "How do I get in touch?"
+      - `Matrix channel <https://matrix.to/#/#12-factor-charms:ubuntu.com>`_
+    * - "What is...?"
+      - :ref:`flask-framework extension <reference-flask-framework>`
+
+        :ref:`What is a Rock? <explanation-rocks>`
+    * - "Why...?", "So what?"
+      - :external+12-factor:ref:`12-Factor app principles and support in Charmcraft
+        and Rockcraft <explanation>`
+
 ----
 
 .. _troubleshooting-flask:
@@ -529,4 +482,3 @@ your changes are not taking effect (e.g. the ``/time``
 ``rockcraft pack``.
 
 .. _`lxd-docker-connectivity-issue`: https://documentation.ubuntu.com/lxd/en/latest/howto/network_bridge_firewalld/#prevent-connectivity-issues-with-lxd-and-docker
-.. _`install-multipass`: https://multipass.run/docs/install-multipass

@@ -29,8 +29,7 @@ def fastapi_input_yaml_fixture():
 
 
 @pytest.fixture
-def fastapi_extension(mock_extensions, monkeypatch):
-    monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "1")
+def fastapi_extension(mock_extensions):
     extensions.register("fastapi-framework", extensions.FastAPIFramework)
 
 
@@ -50,6 +49,7 @@ def test_fastapi_extension_default(tmp_path, fastapi_input_yaml, packages):
         "run_user": "_daemon_",
         "parts": {
             "fastapi-framework/dependencies": {
+                "build-environment": [],
                 "plugin": "python",
                 "stage-packages": ["python3-venv"],
                 "source": ".",
@@ -211,32 +211,49 @@ def test_fastapi_check_no_correct_requirement_and_no_asgi_entrypoint(
         extensions.apply_extensions(tmp_path, fastapi_input_yaml)
     assert str(exc.value) == (
         "- missing fastapi or starlette package dependency in requirements.txt file.\n"
-        "- missing ASGI entrypoint"
+        "- missing ASGI entrypoint\n"
+        "  Cannot find 'app' global variable in the following places:\n"
+        "  1. app.py.\n"
+        "  2. In files __init__.py, and main.py in the 'app','src', "
+        "and root project directories."
     )
 
 
+@pytest.mark.parametrize(
+    ("build_base", "expected_stage_packages", "expected_python_interpreter"),
+    [
+        ("ubuntu@24.04", ["python3.12-venv_ensurepip"], "python3.12"),
+        ("ubuntu:24.04", ["python3.12-venv_ensurepip"], "python3.12"),
+    ],
+)
 @pytest.mark.usefixtures("fastapi_extension")
-def test_fastapi_extension_bare(tmp_path):
+def test_fastapi_extension_bare(
+    tmp_path, build_base, expected_stage_packages, expected_python_interpreter
+):
     (tmp_path / "requirements.txt").write_text("fastapi")
     (tmp_path / "app.py").write_text("app = object()")
     fastapi_input_yaml = {
         "name": "foo-bar",
         "extensions": ["fastapi-framework"],
         "base": "bare",
-        "build-base": "ubuntu@24.04",
+        "build-base": build_base,
         "platforms": {"amd64": {}},
     }
     applied = extensions.apply_extensions(tmp_path, fastapi_input_yaml)
     assert applied["parts"]["fastapi-framework/dependencies"] == {
         "plugin": "python",
-        "stage-packages": ["python3.12-venv_ensurepip"],
+        "stage-packages": expected_stage_packages,
         "source": ".",
         "python-packages": ["uvicorn"],
         "python-requirements": ["requirements.txt"],
+        "build-environment": [
+            {"PARTS_PYTHON_INTERPRETER": expected_python_interpreter}
+        ],
     }
     assert applied["parts"]["fastapi-framework/runtime"] == {
         "plugin": "nil",
-        "override-build": "mkdir -m 777 ${CRAFT_PART_INSTALL}/tmp",
+        "override-build": "mkdir -m 777 ${CRAFT_PART_INSTALL}/tmp\n"
+        "ln -sf /usr/bin/bash ${CRAFT_PART_INSTALL}/usr/bin/sh",
         "stage-packages": ["bash_bins", "coreutils_bins", "ca-certificates_data"],
     }
 
@@ -312,4 +329,5 @@ def test_fastapi_extension_incorrect_prime_prefix_error(tmp_path, fastapi_input_
 
     with pytest.raises(ExtensionError) as exc:
         extensions.apply_extensions(tmp_path, fastapi_input_yaml)
+    assert "start with app/" in str(exc)
     assert "start with app/" in str(exc)

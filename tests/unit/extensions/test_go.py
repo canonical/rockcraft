@@ -30,8 +30,7 @@ def go_input_yaml_fixture():
 
 
 @pytest.fixture
-def go_extension(mock_extensions, monkeypatch):
-    monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "1")
+def go_extension(mock_extensions):
     extensions.register("go-framework", extensions.GoFramework)
 
 
@@ -103,6 +102,7 @@ def test_go_extension_bare(tmp_path):
 
     assert applied["parts"]["go-framework/runtime"] == {
         "plugin": "nil",
+        "override-build": "ln -sf /usr/bin/bash ${CRAFT_PART_INSTALL}/usr/bin/sh",
         "stage-packages": ["ca-certificates_data", "bash_bins", "coreutils_bins"],
     }
 
@@ -112,8 +112,14 @@ def test_go_extension_no_go_mod_file_error(tmp_path, go_input_yaml):
     (tmp_path / "somefile").write_text("random text")
     with pytest.raises(ExtensionError) as exc:
         extensions.apply_extensions(tmp_path, go_input_yaml)
-    assert str(exc.value) == "missing go.mod file"
-    assert str(exc.value.doc_slug) == "/reference/extensions/go-framework"
+    assert (
+        str(exc.value)
+        == "missing go.mod file, it should be present in the project directory"
+    )
+    assert (
+        str(exc.value.doc_slug)
+        == "/reference/extensions/go-framework/#project-requirements"
+    )
 
 
 @pytest.mark.usefixtures("go_extension")

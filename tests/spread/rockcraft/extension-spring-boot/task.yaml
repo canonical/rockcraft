@@ -9,7 +9,6 @@ environment:
   BASE/gradle_2404: ubuntu@24.04
   BASE/maven_bare: bare
   BASE/maven_2404: ubuntu@24.04
-  # BUILD_BASE 22.04 and below's default JDKs are not compatible with Java version 21 and below.
   BUILD_BASE: ubuntu@24.04
 
   ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS: "true"
@@ -25,7 +24,7 @@ execute: |
     --path ${NAME}-app \
     --project ${PROJECT_BASE}-project \
     --language java \
-    --boot-version 3.4.4 \
+    --boot-version 3.5.10 \
     --version 0.0.1 \
     --group com.example \
     --artifact demo \
@@ -56,7 +55,7 @@ execute: |
   docker rm -f "${NAME}-container"
   # test the default spring-boot service
   docker run --name "${NAME}-container" -d -p 8080:8080 "${IMAGE}"
-  retry -n 5 --wait 2 curl localhost:8080
+  retry -n 5 --wait 3 curl localhost:8080
   http_status=$(curl -s -o /dev/null -w "%{http_code}" localhost:8080)
   [ "${http_status}" -eq 404 ]
 

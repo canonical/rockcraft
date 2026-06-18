@@ -34,6 +34,7 @@ DATA_DIR = pathlib.Path(__file__).parent.parent / "data"
 pytestmark = [pytest.mark.usefixtures("fake_services")]
 
 
+@pytest.mark.skip_overlay_enable
 @pytest.mark.usefixtures("fake_project_file")
 def test_run_pack_services(mocker, monkeypatch, tmp_path):
     # Pretend it's running inside the managed instance
@@ -41,7 +42,6 @@ def test_run_pack_services(mocker, monkeypatch, tmp_path):
 
     log_path = tmp_path / "rockcraft.log"
     mock_ended_ok = mocker.spy(emit, "ended_ok")
-    mocker.patch.object(Rockcraft, "get_project")
     mocker.patch.object(Rockcraft, "log_path", new=log_path)
 
     fake_prime_dir = Path("/fake/prime/dir")
@@ -121,14 +121,14 @@ def test_run_init_with_name(mocker):
 
 @pytest.mark.usefixtures("valid_dir")
 def test_run_init_with_invalid_name(mocker):
-    mocker.patch.object(sys, "argv", ["rockcraft", "init", "--name=f"])
+    mocker.patch.object(sys, "argv", ["rockcraft", "init", "--name=-f"])
     return_code = cli.run()
     assert return_code == 1
 
 
 def test_run_init_fallback_name(mocker, new_dir, monkeypatch):
     mocker.patch.object(sys, "argv", ["rockcraft", "init"])
-    invalid_dir = pathlib.Path(new_dir) / "f"
+    invalid_dir = pathlib.Path(new_dir) / "-f"
     invalid_dir.mkdir()
     monkeypatch.chdir(invalid_dir)
 

@@ -34,13 +34,15 @@ Then we can create the VM with the following command:
 
 .. code-block:: text
 
-    multipass launch --disk 10G --name rock-dev 24.04
+    multipass launch --memory 2G --disk 10G --name rock-dev 26.04
 
 Finally, once the VM is up, open a shell into it:
 
 .. code-block:: bash
 
     multipass shell rock-dev
+
+Unless stated otherwise, we will work entirely within the VM from now on.
 
 ----
 
@@ -90,4 +92,4 @@ Note that we'll also need a text editor. We can either install one of our
 choice or simply use one of the already existing editors in the Ubuntu
 environment (like ``vi``).
 
-.. _`install-multipass`: https://multipass.run/docs/install-multipass
+.. _`install-multipass`: https://documentation.ubuntu.com/multipass/stable/how-to-guides/install-multipass/

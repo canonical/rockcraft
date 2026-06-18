@@ -32,8 +32,7 @@ def expressjs_input_yaml_fixture():
 
 
 @pytest.fixture
-def expressjs_extension(mock_extensions, monkeypatch):
-    monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "1")
+def expressjs_extension(mock_extensions):
     extensions.register("expressjs-framework", extensions.ExpressJSFramework)
 
 
@@ -202,7 +201,8 @@ def package_json_file(app_path):
                         "chown -R 584792:584792 ${CRAFT_PART_INSTALL}/lib/node_modules/test-expressjs-project\n"
                         "ln -s /lib/node_modules/test-expressjs-project "
                         "${CRAFT_PART_INSTALL}/app\n"
-                        "chown -R 584792:584792 ${CRAFT_PART_INSTALL}/app\n",
+                        "chown -R 584792:584792 ${CRAFT_PART_INSTALL}/app\n"
+                        "ln -sf /usr/bin/bash ${CRAFT_PART_INSTALL}/usr/bin/sh",
                         "plugin": "npm",
                         "source": "app/",
                         "stage-packages": [
@@ -272,7 +272,8 @@ def package_json_file(app_path):
                         "chown -R 584792:584792 ${CRAFT_PART_INSTALL}/lib/node_modules/test-expressjs-project\n"
                         "ln -s /lib/node_modules/test-expressjs-project "
                         "${CRAFT_PART_INSTALL}/app\n"
-                        "chown -R 584792:584792 ${CRAFT_PART_INSTALL}/app\n",
+                        "chown -R 584792:584792 ${CRAFT_PART_INSTALL}/app\n"
+                        "ln -sf /usr/bin/bash ${CRAFT_PART_INSTALL}/usr/bin/sh",
                         "plugin": "npm",
                         "source": "app/",
                         "stage-packages": [
@@ -345,22 +346,33 @@ def test_expressjs_extension_default(
 def test_expressjs_no_package_json_error(tmp_path, expressjs_input_yaml):
     with pytest.raises(ExtensionError) as exc:
         extensions.apply_extensions(tmp_path, expressjs_input_yaml)
-    assert str(exc.value) == "missing package.json file"
-    assert str(exc.value.doc_slug) == "/reference/extensions/expressjs-framework"
+    assert str(exc.value) == "missing package.json file in 'app' directory"
+    assert (
+        str(exc.value.doc_slug)
+        == "/reference/extensions/express-framework/#project-requirements"
+    )
 
 
 @pytest.mark.parametrize(
     ("package_json_path", "package_json_contents", "error_message"),
     [
-        ("invalid-path", "", "missing package.json file"),
+        ("invalid-path", "", "missing package.json file in 'app' directory"),
         ("package.json", "[]", "invalid package.json file"),
-        ("package.json", "{", "failed to parse package.json file"),
-        ("package.json", "{}", "missing start script"),
-        ("package.json", '{"scripts":{}}', "missing start script"),
+        (
+            "package.json",
+            "{",
+            "failed to parse package.json; it might contain invalid JSON",
+        ),
+        ("package.json", "{}", "missing 'scripts.start' field in package.json"),
+        (
+            "package.json",
+            '{"scripts":{}}',
+            "missing 'scripts.start' field in package.json",
+        ),
         (
             "package.json",
             '{"scripts":{"start":"node ./bin/www"}}',
-            "missing application name",
+            "missing 'name' field in package.json",
         ),
     ],
 )
@@ -377,4 +389,7 @@ def test_expressjs_invalid_package_json_scripts_error(
     with pytest.raises(ExtensionError) as exc:
         extensions.apply_extensions(tmp_path, expressjs_input_yaml)
     assert str(exc.value) == error_message
-    assert str(exc.value.doc_slug) == "/reference/extensions/expressjs-framework"
+    assert (
+        str(exc.value.doc_slug)
+        == "/reference/extensions/express-framework/#project-requirements"
+    )
