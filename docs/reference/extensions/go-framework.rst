@@ -10,8 +10,8 @@ The Go extension streamlines the process of building Go application
 rocks.
 
 The extension builds and copies the Go binary file to the rock.
-By default, the :ref:`base <explanation-bases>` ``bare`` is used to generate
-a lightweight image.
+By default, the system foundation, or base, is set as ``bare`` to generate a
+lightweight image.
 
 .. note::
     The Go extension is compatible with the ``bare`` and ``ubuntu@24.04``

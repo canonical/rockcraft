@@ -13,8 +13,10 @@ It facilitates the installation of Express application dependencies, including
 Node.js and npm, inside the rock. Additionally, it transfers your project files
 to ``/app`` within the rock.
 
+By default, the system foundation, or base, is set as ``bare`` to generate a
+lightweight image.
 The Express extension is compatible with the ``bare`` and ``ubuntu@24.04``
-:ref:`bases <explanation-bases>`.
+bases.
 
 .. _reference-express-framework-project-requirements:
 

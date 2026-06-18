@@ -11,7 +11,7 @@ The Flask extension streamlines the process of building Flask application rocks.
 It facilitates the installation of Flask application dependencies, including
 Gunicorn, inside the rock. Additionally, it transfers your project files to
 ``/flask/app`` within the rock.
-By default, the :ref:`base <explanation-bases>` ``bare`` is used to generate a
+By default, the system foundation, or base, is set as ``bare`` to generate a
 lightweight image.
 
 .. note::

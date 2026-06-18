@@ -12,7 +12,7 @@ rocks.
 It facilitates the installation of Django application dependencies, including
 Gunicorn, inside the rock. Additionally, it transfers your project files to
 ``/django/app`` within the rock.
-By default, the :ref:`base <explanation-bases>` ``bare`` is used to generate a
+By default, the system foundation, or base, is set as ``bare`` to generate a
 lightweight image.
 
 .. note::
