@@ -31,20 +31,18 @@ project = "Rockcraft"
 # Author name; used in the default copyright statement in the page footer
 author = "Canonical Ltd."
 
-# Format the product name and version for the TOC and HTML title
-release = rockcraft.__version__
-if ".post" in release:
-    release = "dev"
-else:
-    major, minor, *_ = release.split(".")
+# Version string in sidebar
+if os.environ.get("READTHEDOCS_VERSION_TYPE", "external") == "external":  # PR or local build
+    # Because of Autotools, we can safely assume the version starts with `n.n`
+    major, minor, *_ = rockcraft.__version__.split(".")
     release = f"{major}.{minor}"
+else:  # Branch build
+    rtd_version = os.environ.get("READTHEDOCS_VERSION", "latest")
+    release = "dev" if rtd_version == "latest" else rtd_version
 
 # The year in the copyright statement
 copyright = f"2023-{datetime.date.today().year}"
 
-# Sidebar documentation title
-# To disable the title, set it to an empty string.
-html_title = project + " documentation"
 
 # Documentation website URL
 ogp_site_url = "https://documentation.ubuntu.com/rockcraft"
@@ -93,7 +91,7 @@ html_context = {
         # TODO: Specify your project's license.
         # For the name, we recommend using the standard shorthand identifier from
         # https://spdx.org/licenses
-        "name": "LGPL-3.0",
+        "name": "GPL-3.0-or-later",
         # TODO: Link directly to your project's license statement.
         "url": "https://github.com/canonical/starbase/blob/main/LICENSE",
     },
@@ -165,8 +163,8 @@ rediraffe_dir_only = True
 # <first sentence of home page>".
 llms_txt_description = textwrap.dedent(
     """\
-    This is the documentation for Starbase, a template repository for setting up
-    and maintaining Starcraft projects.
+    This is the documentation for Rockcraft, the tool for assembling rocks. Rocks are
+    OCI-compliant images with extra security features and a smaller storage footprint.
     """
 )
 
@@ -206,12 +204,7 @@ linkcheck_ignore = [
 ]
 
 # Anchor strings to ignore
-linkcheck_anchors_ignore = [
-    "#",
-    ":",
-    "slide definitions",
-]
-
+# linkcheck_anchors_ignore = []
 # Don't check links in the "common" subdirectory, as those are the responsibility of
 # the libraries.
 linkcheck_exclude_documents = ["^common/.*"]
