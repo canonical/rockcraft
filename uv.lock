@@ -589,7 +589,7 @@ wheels = [
 
 [[package]]
 name = "craft-parts"
-version = "2.33.0"
+version = "2.33.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "lxml", marker = "sys_platform == 'linux' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute')" },
@@ -602,9 +602,9 @@ dependencies = [
     { name = "tomli", marker = "(python_full_version < '3.11' and sys_platform == 'linux') or (python_full_version >= '3.11' and extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (python_full_version >= '3.11' and extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (python_full_version >= '3.11' and extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (python_full_version >= '3.11' and extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (python_full_version >= '3.11' and extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (python_full_version >= '3.11' and extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (sys_platform != 'linux' and extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (sys_platform != 'linux' and extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (sys_platform != 'linux' and extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (sys_platform != 'linux' and extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (sys_platform != 'linux' and extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (sys_platform != 'linux' and extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute')" },
     { name = "zstandard", marker = "sys_platform == 'linux' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute')" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/67/12/4fc505185393f016d26f3ab76094ee574dd84e9fb3213414c62c26eb1431/craft_parts-2.33.0.tar.gz", hash = "sha256:9c6adb4eb794faf27f439c3bfe2794692487fc66cf59eccc4e4800ee2479600e", size = 956762, upload-time = "2026-04-15T23:37:43.799Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/25/17/dad4f52f6619abca9a9ecd66a79d816f0cee99cebcd300abaf8bc736d5b0/craft_parts-2.33.1.tar.gz", hash = "sha256:50c4dc1ef4a062f1a500c2718ac79be37279dfd4872d14c795eb47ab5485b157", size = 957853, upload-time = "2026-06-17T19:23:46.743Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/25/9c/283f9b20251b8fb219aeb4b68cd9a9b1e58235c8a7130885ad70a57bf136/craft_parts-2.33.0-py3-none-any.whl", hash = "sha256:b4b20762de7338e9812415bf06bb0c48f7f364055045ec34dc9fdc9cbb09a5bc", size = 546943, upload-time = "2026-04-15T23:37:41.119Z" },
+    { url = "https://files.pythonhosted.org/packages/89/a4/32fbd24833c04ecd3025bd3c6c764a1b6055f7d2d9b468aaf7a9d41d1792/craft_parts-2.33.1-py3-none-any.whl", hash = "sha256:085e446a5cc434e43ce65dc5499c1e7183997b7cfee90b34c285135abc4b2fd3", size = 546945, upload-time = "2026-06-17T19:23:44.698Z" },
 ]
 
 [[package]]
@@ -2674,7 +2674,7 @@ requires-dist = [
     { name = "craft-application", specifier = ">=6.4.0" },
     { name = "craft-archives", specifier = ">=2.2.0" },
     { name = "craft-cli", specifier = ">=3.3.0" },
-    { name = "craft-parts", specifier = ">=2.33.0" },
+    { name = "craft-parts", specifier = "==2.33.1" },
     { name = "craft-platforms", specifier = ">=0.11.0" },
     { name = "craft-providers", specifier = ">=3.6.0" },
     { name = "craft-store", marker = "extra == 'store'" },
