@@ -42,7 +42,7 @@ else:  # Branch build
     release = "dev" if rtd_version == "latest" else rtd_version
 
 # The year in the copyright statement
-copyright = f"2023-{datetime.date.today().year}"
+copyright = f"2022-{datetime.date.today().year}"
 
 
 # Documentation website URL
@@ -84,7 +84,7 @@ html_context = {
     # Documentation license information
     "license": {
         "name": "GPL-3.0-or-later",
-        "url": "https://github.com/canonical/starbase/blob/main/LICENSE",
+        "url": "https://github.com/canonical/rockcraft/blob/main/LICENSE",
     },
 }
 
