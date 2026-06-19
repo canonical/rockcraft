@@ -1,3 +1,6 @@
+.. meta::
+    :description: The legacy Rockcraft development changelog.
+
 :tocdepth: 2
 
 .. Check out the bottom of the page for the release template

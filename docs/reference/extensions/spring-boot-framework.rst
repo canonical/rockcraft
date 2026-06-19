@@ -1,3 +1,6 @@
+.. meta::
+    :description: Reference documentation for the Spring Boot framework extension, which configures Spring Boot in a rock and packages the JAR using Maven or Gradle.
+
 .. _reference-spring-boot-framework:
 
 Spring Boot framework
@@ -7,7 +10,8 @@ The Spring Boot extension streamlines the process of building Spring Boot
 application rocks.
 
 The extension packs and copies the Jar package file to the rock.
-By default, the base ``bare`` is used to generate a lightweight image.
+By default, the system foundation, or base, is set as ``bare`` to generate a
+lightweight image.
 
 .. note::
 
@@ -32,11 +36,11 @@ For the build process to execute correctly, the ``mvnw`` or
 
 .. _reference-spring-boot-framework-plugin:
 
-``parts`` > ``spring-boot-framework/install-app`` > ``plugin``
---------------------------------------------------------------
+Maven or Gradle usage
+---------------------
 
 The ``spring-boot-framework`` extension dynamically determines the plugin to
-use to bulid the rock. Depending on the presence of ``pom.xml`` or
+use to build the rock. Depending on the presence of ``pom.xml`` or
 ``build.gradle`` file, the extension will use either the
 :doc:`maven </common/craft-parts/reference/plugins/maven_plugin>` or
 :doc:`gradle </common/craft-parts/reference/plugins/gradle_plugin>` plugin,
@@ -63,16 +67,16 @@ respectively.
 
 .. _reference-spring-boot-framework-build-packages:
 
-``parts`` > ``spring-boot-framework/install-app`` > ``build-packages``
-----------------------------------------------------------------------
+Java version
+------------
 
 By default, the ``spring-boot-framework`` uses ``default-jdk`` package to build
 the rock. Depending on the ``build-base``, a different Java JDK version is used.
 To find out what Java version is used to pack the JAR, you can search the
 `Ubuntu package archive <https://packages.ubuntu.com/>`_.
 
-If a different Java version is required, you can specify it in the
-``rockcraft.yaml`` file:
+The ``build-packages`` key specifies the Java version for the rock.
+For example:
 
 .. code-block:: yaml
   :caption: rockcraft.yaml
@@ -84,8 +88,8 @@ If a different Java version is required, you can specify it in the
 
 .. _reference-spring-boot-framework-runtime:
 
-``parts`` > ``spring-boot-framework/runtime``
----------------------------------------------
+JLink plugin
+------------
 
 To provide an efficient runtime for Java, the extension calls the
 :doc:`Jlink </common/craft-parts/reference/plugins/jlink_plugin>`
@@ -111,14 +115,16 @@ The ``spring-boot-framework`` uses the following configuration:
 
 .. _reference-spring-boot-framework-stage:
 
-``parts`` > ``spring-boot-framework/assets`` > ``stage``
---------------------------------------------------------
+Included or excluded files
+--------------------------
 
 If ``migrate`` or ``migrate.sh`` exist in the project's root directory, they will be
 included in the rock's ``/app`` directory by default.
 
-You can customise the included files by modifying the ``stage`` key
-of the ``spring-boot-framework/assets`` part:
+The ``stage`` key of the ``spring-boot-framework/assets`` part
+specifies the files to be included or excluded from
+the rock upon ``rockcraft pack``, following the ``app/<filename>`` notation. For
+example:
 
 .. code-block:: yaml
   :caption: rockcraft.yaml
@@ -130,6 +136,12 @@ of the ``spring-boot-framework/assets`` part:
         - app/migrate.sh
         - app/another_file_or_directory
 
+The ``stage`` key supports glob patterns to define the list of files. See :ref:`filesets_explanation`
+for the various ways you can specify files in your rock.
+
+Adding the ``stage`` key to the project file overrides the default files to be included.
+Files are excluded from the rock by defining ``stage`` and omitting the file to
+be excluded.
 
 Useful links
 ------------

@@ -1,3 +1,6 @@
+.. meta::
+    :description: Explanation of the overlay step in the parts lifecycle, which modifies the base filesystem before the build step begins.
+
 .. _explanation-overlay-step:
 
 Overlay step
