@@ -86,8 +86,16 @@ boilerplate keys from the listed extensions will be added to the project file.
 Platform keys
 -------------
 
+.. |star| replace:: rock
+.. |Starcraft| replace:: Rockcraft
+
 .. kitbash-field:: rockcraft.models.Project platforms
     :override-type: dict[str, Platform]
+
+    **Naming rules**
+
+    .. include:: ../common/craft-application/reference/strict-platform-names.rst
+        :start-after: ------------
 
 .. kitbash-field:: craft_application.models.Platform build_on
     :prepend-name: platforms.<platform-name>
@@ -96,6 +104,7 @@ Platform keys
 .. kitbash-field:: craft_application.models.Platform build_for
     :prepend-name: platforms.<platform-name>
     :override-type: str | list[str]
+
 
 
 .. _rockcraft-yaml-part-keys:
