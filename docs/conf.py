@@ -34,7 +34,7 @@ author = "Canonical Ltd."
 
 # Version string in sidebar
 if os.environ.get("READTHEDOCS_VERSION_TYPE", "external") == "external":  # PR or local build
-    # Because of Autotools, we can safely assume the version starts with `n.n`
+    # Because of setuptools-scm, we can safely assume the version starts with `n.n`
     major, minor, *_ = rockcraft.__version__.split(".")
     release = f"{major}.{minor}"
 else:  # Branch build
@@ -83,7 +83,7 @@ html_context = {
     "author": author,
     # Documentation license information
     "license": {
-        "name": "GPL-3.0-or-later",
+        "name": "GPL-3.0",
         "url": "https://github.com/canonical/rockcraft/blob/main/LICENSE",
     },
 }
