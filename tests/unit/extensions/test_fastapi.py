@@ -53,6 +53,7 @@ def test_fastapi_extension_default(tmp_path, fastapi_input_yaml, packages):
                 "plugin": "python",
                 "stage-packages": ["python3-venv"],
                 "source": ".",
+                "stage": ["-etc/ssl/certs/ca-certificates.crt"],
                 "python-packages": ["uvicorn"],
                 "python-requirements": ["requirements.txt"],
             },
