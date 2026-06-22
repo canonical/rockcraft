@@ -7,6 +7,8 @@
 
 # Documentation owners
 /docs/               @canonical/starcraft-authors @asanvaq @tigarmo
+/docs/tutorial/      @canonical/starcraft-authors @asanvaq @erinecon
+/docs/how-to/web-app-rocks/      @canonical/starcraft-authors @asanvaq @erinecon
 
 # Code owner changes must be approved by a maintainer.
 /.github/CODEOWNERS  @canonical/starcraft-maintainers
