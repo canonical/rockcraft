@@ -1,3 +1,6 @@
+.. meta::
+    :description: Explanation of the cryptographic technologies used by Rockcraft: TLS, credential storage, OCI image manipulation, and dependencies on external crypto libraries.
+
 .. _explanation-cryptographic-technology:
 
 Cryptographic technology in Rockcraft

@@ -1,3 +1,6 @@
+.. meta::
+    :description: How-to guides for designing, building, and debugging rocks of 12-factor web apps.
+
 .. _how-to-manage-a-12-factor-app-rock:
 
 Manage a 12-Factor app rock

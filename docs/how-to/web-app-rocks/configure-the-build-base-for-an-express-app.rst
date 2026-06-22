@@ -1,3 +1,6 @@
+.. meta::
+    :description: How to configure the build base for a rock of a 12-factor Express app.
+
 .. _configure-the-build-base-for-an-express-app:
 
 Configure the build base for an Express app
