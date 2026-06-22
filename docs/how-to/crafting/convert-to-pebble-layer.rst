@@ -1,3 +1,6 @@
+.. meta::
+    :description: How to convert an existing Docker entrypoint to a Pebble layer for Rockcraft. Define Pebble services from Dockerfile entrypoints using NGINX as a reference example.
+
 .. _how-to-convert-an-entrypoint-to-a-pebble-layer:
 
 Convert an entrypoint to a Pebble layer
@@ -83,8 +86,8 @@ You should see something like this:
     :class: log-snippets
 
     Launching instance...
-    Retrieved base ubuntu@22.04 for amd64
-    Extracted ubuntu@22.04
+    Retrieved base ubuntu@26.04 for amd64
+    Extracted ubuntu@26.04
     Refreshing repositories | (4.6s)
     Package repositories installed
     Executed: pull nginx-user
@@ -107,7 +110,7 @@ You should see something like this:
     Executed: prime nginx
     Executed: prime pebble
     Executed parts lifecycle
-    Exported to OCI archive 'custom-nginx-rock_latest_amd64.rock'
+    Packed custom-nginx-rock_latest_amd64.rock
 
 Then copy the resulting rock (from the OCI archive format) to the Docker daemon
 via:
@@ -167,13 +170,17 @@ For which you should see the following output:
     </head>
     <body>
     <h1>Welcome to nginx!</h1>
-    <p>If you see this page, the nginx web server is successfully installed and
-    working. Further configuration is required.</p>
+    <p>If you see this page, nginx is successfully installed and working.
+    Further configuration is required for the web server, reverse proxy,
+    API gateway, load balancer, content cache, or other features.</p>
 
     <p>For online documentation and support please refer to
-    <a href="http://nginx.org/">nginx.org</a>.<br/>
-    Commercial support is available at
-    <a href="http://nginx.com/">nginx.com</a>.</p>
+    <a href="https://nginx.org/">nginx.org</a>.<br/>
+    To engage with the community please visit
+    <a href="https://community.nginx.org/">community.nginx.org</a>.<br/>
+    For enterprise grade support, professional services, additional
+    security features and capabilities please refer to
+    <a href="https://f5.com/nginx">f5.com/nginx</a>.</p>
 
     <p><em>Thank you for using nginx.</em></p>
     </body>
