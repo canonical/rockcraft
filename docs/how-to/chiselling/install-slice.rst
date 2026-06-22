@@ -1,5 +1,6 @@
 .. meta::
     :description: How to install a custom Chisel package slice into a rock using a local repository clone.
+
 .. _how-to-install-a-custom-package-slice:
 
 Install a custom package slice
@@ -13,7 +14,7 @@ Once you have it though, the most obvious question is: **how can I install
 this custom slice with Chisel?**
 
 Let's assume you want to install the <package> slice. Follow this guide
-and replace any mention of <package> with your desired sliced program. 
+and replace any mention of <package> with your desired sliced program.
 
 First, clone the Chisel releases repository:
 
@@ -124,4 +125,4 @@ And that's it! You've now built your own rock from a custom Chisel release.
 
 Next step: share your slice definitions file with others!
 It is as simple as proposing your changes into the upstream
-`Chisel releases repository <https://github.com/canonical/chisel-releases>`_:
+`Chisel releases repository <https://github.com/canonical/chisel-releases>`_.
