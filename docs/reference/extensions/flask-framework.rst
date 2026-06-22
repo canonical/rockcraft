@@ -11,7 +11,8 @@ The Flask extension streamlines the process of building Flask application rocks.
 It facilitates the installation of Flask application dependencies, including
 Gunicorn, inside the rock. Additionally, it transfers your project files to
 ``/flask/app`` within the rock.
-By default, the base ``bare`` is used to generate a lightweight image.
+By default, the system foundation, or base, is set as ``bare`` to generate a
+lightweight image.
 
 .. note::
     The Flask extension is compatible with the ``bare``, ``ubuntu@22.04``
@@ -29,9 +30,9 @@ There are 2 requirements to be able to use the ``flask-framework`` extension:
 
 1. There must be a ``requirements.txt``  or ``pyproject.toml`` file in the root of the project with
    ``Flask`` declared as a dependency
-2. The project must include a WSGI app with the path ``app:app``. This means
-   there must be an ``app.py`` file at the root of the project with the name
-   of the Flask object is set to ``app``.
+2. The project must include a Web Server Gateway Interface (WSGI) app with the path ``app:app``.
+   This means there must be an ``app.py`` file at the root of the project where the Flask object
+   is named ``app``.
 
 For the project to make use of asynchronous Gunicorn workers:
 
@@ -39,11 +40,13 @@ For the project to make use of asynchronous Gunicorn workers:
 
 .. _reference-flask-framework-stage-packages:
 
-``parts`` > ``flask-framework/dependencies`` > ``stage-packages``
------------------------------------------------------------------
+App dependencies
+----------------
 
-You can use this key to specify any dependencies required for your Flask
-application. In the following example we use it to specify ``libpq-dev``:
+The ``stage-packages`` key specifies all additional dependencies. If the Flask app
+has its own special dependencies, this key must declare them.
+
+The following example specifies the ``libpq-dev`` package:
 
 .. code-block:: yaml
   :caption: rockcraft.yaml
@@ -109,12 +112,16 @@ rock:
 
 .. _reference-flask-framework-prime:
 
-``parts`` > ``flask-framework/install-app`` > ``prime``
--------------------------------------------------------
+Included or excluded files
+--------------------------
 
-You can use this field to specify the files to be included or excluded from
-your rock upon ``rockcraft pack``. Follow the ``flask/app/<filename>``
-notation. For example:
+Some files, if they exist, are included by default in the rock. These include:
+``app``, ``app.py``, ``migrate``, ``migrate.sh``, ``migrate.py``, ``static``,
+``templates``.
+
+The ``prime`` key specifies the files to be included or excluded from
+the rock upon ``rockcraft pack``, following the ``app/<filename>`` notation. For
+example:
 
 .. code-block:: yaml
   :caption: rockcraft.yaml
@@ -128,10 +135,12 @@ notation. For example:
         - flask/app/templates
         - flask/app/static
 
-Some files, if they exist, are included by default. These include:
-``app``, ``app.py``, ``migrate``, ``migrate.sh``, ``migrate.py``, ``static``,
-``templates``.
+The ``prime`` key supports glob patterns to define the list of files. See :ref:`filesets_explanation`
+for the various ways you can specify files in your rock.
 
+Adding the ``prime`` key to the project file overrides the default files to be included.
+Files are excluded from the rock by defining ``prime`` and omitting the file to
+be excluded.
 
 Useful links
 ------------

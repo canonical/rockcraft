@@ -13,6 +13,8 @@ It facilitates the installation of Express application dependencies, including
 Node.js and npm, inside the rock. Additionally, it transfers your project files
 to ``/app`` within the rock.
 
+By default, the system foundation, or base, is set as ``bare`` to generate a
+lightweight image.
 The Express extension is compatible with the ``bare`` and ``ubuntu@24.04``
 bases.
 
@@ -27,16 +29,18 @@ extension:
 1. The application should reside in the ``app`` directory.
 2. The application should have a ``package.json`` file.
 3. The ``package.json`` file should define the ``start`` script.
+   For more information, see the `npm documentation <https://docs.npmjs.com/cli/v11/configuring-npm/package-json>`_.
 
 .. _reference-express-framework-npm-include-node:
 
-``parts`` > ``expressjs-framework/install-app`` > ``npm-include-node``
-----------------------------------------------------------------------
+Node.js version
+---------------
 
-You can use this field to specify the version of Node.js to be installed. For
-example:
+The ``npm-include-node`` and ``npm-node-version`` keys
+specify the version of Node.js to be installed. For example:
 
 .. code-block:: yaml
+  :caption: rockcraft.yaml
 
   parts:
     expressjs-framework/install-app:
@@ -51,8 +55,8 @@ package repository.
 
 .. _reference-express-framework-stage-packages:
 
-``parts`` > ``expressjs-framework/runtime:`` > ``stage-packages``
------------------------------------------------------------------
+Additional runtime packages
+---------------------------
 
 Installing additional runtime packages is currently unsupported.
 
