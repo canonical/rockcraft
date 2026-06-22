@@ -1,4 +1,4 @@
-name: custom-sample-rock
+name: custom-<package>-rock
 base: bare
 build-base: "ubuntu@26.04"
 version: "0.0.1"
