@@ -30,7 +30,7 @@ from .gunicorn import (
     FlaskFrameworkFactory,
 )
 from .registry import get_extension_class, get_extension_names, register, unregister
-from .springboot import SpringBootFramework
+from .springboot import SpringBootFramework, SpringBootFrameworkV2, SpringBootFrameworkFactory
 
 __all__ = [
     "get_extension_class",
@@ -47,6 +47,8 @@ __all__ = [
     "FastAPIFrameworkV2",
     "FlaskFramework",
     "FlaskFrameworkV2",
+    "SpringBootFramework",
+    "SpringBootFrameworkV2",
 ]
 
 register("django-framework", DjangoFrameworkFactory)  # type: ignore[arg-type]
@@ -54,4 +56,4 @@ register("expressjs-framework", ExpressJSFrameworkFactory)  # type: ignore[arg-t
 register("fastapi-framework", FastAPIFrameworkFactory)  # type: ignore[arg-type]
 register("flask-framework", FlaskFrameworkFactory)  # type: ignore[arg-type]
 register("go-framework", GoFramework)
-register("spring-boot-framework", SpringBootFramework)
+register("spring-boot-framework", SpringBootFrameworkFactory)  # type: ignore[arg-type]
