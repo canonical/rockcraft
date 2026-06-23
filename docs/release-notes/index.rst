@@ -1,3 +1,6 @@
+.. meta::
+    :description: The index of release documentation for Rockcraft. These release notes summarize the new features, bug fixes, and backwards-incompatible changes in each version.
+
 .. _release-notes:
 
 Release notes

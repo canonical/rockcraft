@@ -1,3 +1,6 @@
+.. meta::
+    :description: The practical, goal-oriented documentation for Rockcraft. These guides provide directions for completing tasks and solving problems with Rockcraft.
+
 .. _how-to-crafting:
 
 Crafting

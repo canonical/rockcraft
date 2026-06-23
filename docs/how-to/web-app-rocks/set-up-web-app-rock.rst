@@ -1,3 +1,6 @@
+.. meta::
+    :description: How to initialize a rock for a 12-factor web app, and give it the minimal configuration needed for a supported framework.
+
 .. _set-up-web-app-rock:
 
 Set up a 12-Factor app rock

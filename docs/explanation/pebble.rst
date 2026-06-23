@@ -1,3 +1,6 @@
+.. meta::
+    :description: Overview of Pebble, the default container entrypoint for rocks. Pebble acts as a service manager, and can handle multiple processes inside the rock at once.
+
 .. _explanation-pebble:
 
 Pebble
