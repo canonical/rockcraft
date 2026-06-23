@@ -556,3 +556,30 @@ class DjangoFramework(_GunicornBase):
             )
         if not self.yaml_data.get("services", {}).get("django", {}).get("command"):
             self.wsgi_path  # noqa: B018 (unused expression, just checking for errors)
+
+
+class DjangoFrameworkV2(DjangoFramework):
+    """Extension for 12-factor Django applications targeting ubuntu@26.04.
+
+    For now this is behaviourally identical to :class:`DjangoFramework`; it exists so the
+    framework can dispatch to a paas-charm 2.0 implementation in the future. Only the
+    supported base and experimental status differs.
+    """
+
+    @staticmethod
+    @override
+    def get_supported_bases() -> tuple[str, ...]:
+        """Return supported bases."""
+        return ("ubuntu@26.04",)
+
+    @staticmethod
+    @override
+    def is_experimental(base: str | None) -> bool:
+        """Indicate if the extension is in an experimental state.
+
+        This is always True for V2
+        """
+        return True
+
+
+DjangoFrameworkFactory = _FrameworkFactory(DjangoFramework, DjangoFrameworkV2)

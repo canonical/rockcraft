@@ -23,6 +23,8 @@ from .fastapi import FastAPIFramework
 from .go import GoFramework
 from .gunicorn import (
     DjangoFramework,
+    DjangoFrameworkV2,
+    DjangoFrameworkFactory,
     FlaskFramework,
     FlaskFrameworkV2,
     FlaskFrameworkFactory,
@@ -38,11 +40,12 @@ __all__ = [
     "unregister",
     "gen_logging_part",
     "DjangoFramework",
+    "DjangoFrameworkV2",
     "FlaskFramework",
     "FlaskFrameworkV2",
 ]
 
-register("django-framework", DjangoFramework)
+register("django-framework", DjangoFrameworkFactory)  # type: ignore[arg-type]
 register("expressjs-framework", ExpressJSFramework)
 register("fastapi-framework", FastAPIFramework)
 register("flask-framework", FlaskFrameworkFactory)  # type: ignore[arg-type]
