@@ -46,7 +46,7 @@ from ._python_utils import (
 )
 from ._utils import find_ubuntu_base_python_version
 from .app_parts import gen_logging_part
-from .extension import Extension, get_extensions_data_dir
+from .extension import Extension, _FrameworkFactory, get_extensions_data_dir
 
 USER_UID: int = SUPPORTED_GLOBAL_USERNAMES["_daemon_"]["uid"]
 
@@ -457,6 +457,30 @@ class FlaskFramework(_GunicornBase):
                 doc_slug="/reference/extensions/flask-framework",
                 logpath_report=False,
             )
+
+
+class FlaskFrameworkV2(FlaskFramework):
+    """Extension for 12-factor Flask applications targeting ubuntu@26.04.
+
+    For now this is behaviourally identical to :class:`FlaskFramework`; it exists so the
+    framework can dispatch to a paas-charm 2.0 implementation in the future. Only the
+    supported base differs.
+    """
+
+    @staticmethod
+    @override
+    def get_supported_bases() -> tuple[str, ...]:
+        """Return supported bases."""
+        return ("ubuntu@26.04",)
+
+    @staticmethod
+    @override
+    def is_experimental(base: str | None) -> bool:
+        """Check if the extension is in an experimental state."""
+        return True
+
+
+FlaskFrameworkFactory = _FrameworkFactory(FlaskFramework, FlaskFrameworkV2)
 
 
 class DjangoFramework(_GunicornBase):
