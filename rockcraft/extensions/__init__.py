@@ -18,7 +18,7 @@
 
 from ._utils import apply_extensions
 from .app_parts import gen_logging_part
-from .expressjs import ExpressJSFramework
+from .expressjs import ExpressJSFramework, ExpressJSFrameworkFactory, ExpressJSFrameworkV2
 from .fastapi import FastAPIFramework, FastAPIFrameworkV2, FastAPIFrameworkFactory
 from .go import GoFramework
 from .gunicorn import (
@@ -41,6 +41,8 @@ __all__ = [
     "gen_logging_part",
     "DjangoFramework",
     "DjangoFrameworkV2",
+    "ExpressJSFramework",
+    "ExpressJSFrameworkV2",
     "FastAPIFramework",
     "FastAPIFrameworkV2",
     "FlaskFramework",
@@ -48,7 +50,7 @@ __all__ = [
 ]
 
 register("django-framework", DjangoFrameworkFactory)  # type: ignore[arg-type]
-register("expressjs-framework", ExpressJSFramework)
+register("expressjs-framework", ExpressJSFrameworkFactory)  # type: ignore[arg-type]
 register("fastapi-framework", FastAPIFrameworkFactory)  # type: ignore[arg-type]
 register("flask-framework", FlaskFrameworkFactory)  # type: ignore[arg-type]
 register("go-framework", GoFramework)
