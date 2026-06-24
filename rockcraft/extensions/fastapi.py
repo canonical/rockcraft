@@ -143,6 +143,11 @@ class FastAPIFramework(Extension):
                 ],
             }
         else:
+            # There is a bug where ca-certificates_data and python-venv both provide
+            # etc/ssl/certs/ca-certificates.crt with different content.
+            parts["fastapi-framework/dependencies"]["stage"] = [
+                "-etc/ssl/certs/ca-certificates.crt"
+            ]
             parts["fastapi-framework/runtime"] = {
                 "plugin": "nil",
                 "stage-packages": ["ca-certificates_data"],

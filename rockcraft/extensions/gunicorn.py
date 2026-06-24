@@ -176,6 +176,11 @@ class _GunicornBase(Extension):
                 "stage-packages": ["libstdc++6"],
             }
         else:
+            # There is a bug where ca-certificates_data and python-venv both provide
+            # etc/ssl/certs/ca-certificates.crt with different content.
+            parts[f"{self.framework}-framework/dependencies"]["stage"] = [
+                "-etc/ssl/certs/ca-certificates.crt"
+            ]
             parts[f"{self.framework}-framework/runtime"] = {
                 "plugin": "nil",
                 "stage-packages": ["ca-certificates_data"],

@@ -95,6 +95,7 @@ def test_flask_extension_default(
                 "python-packages": ["gunicorn~=23.0"],
                 "python-requirements": ["requirements.txt"],
                 "source": ".",
+                "stage": ["-etc/ssl/certs/ca-certificates.crt"],
                 "stage-packages": ["python3-venv"],
                 "build-environment": [],
             },
@@ -330,6 +331,7 @@ def test_flask_extension_override_parts(tmp_path, flask_input_yaml):
         "python-packages": ["gunicorn~=23.0"],
         "python-requirements": ["requirements.txt", "requirements-jammy.txt"],
         "source": ".",
+        "stage": ["-etc/ssl/certs/ca-certificates.crt"],
         "stage-packages": ["python3-venv"],
         "build-environment": [],
     }
@@ -985,6 +987,7 @@ def test_django_extension_default(
                 "python-packages": ["gunicorn~=23.0"],
                 "python-requirements": ["requirements.txt"],
                 "source": ".",
+                "stage": ["-etc/ssl/certs/ca-certificates.crt"],
                 "stage-packages": ["python3-venv"],
                 "build-environment": [],
             },
