@@ -460,6 +460,7 @@ def test_expressjs_extension_ubuntu2604_default(tmp_path, monkeypatch, expressjs
             "expressjs-framework/runtime": {
                 "plugin": "nil",
                 "stage-packages": ["npm"],
+                "stage": ["-etc/ssl/certs/ca-certificates.crt"],
             },
             "expressjs-framework/logging": {
                 "plugin": "nil",

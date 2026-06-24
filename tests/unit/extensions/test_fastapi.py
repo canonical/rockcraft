@@ -418,6 +418,7 @@ def test_fastapi_extension_default_26_04(tmp_path, monkeypatch):
                 "source": ".",
                 "python-packages": ["uvicorn"],
                 "python-requirements": ["requirements.txt"],
+                "stage": ["-etc/ssl/certs/ca-certificates.crt"],
             },
             "fastapi-framework/install-app": {
                 "plugin": "dump",

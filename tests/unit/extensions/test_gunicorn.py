@@ -873,6 +873,7 @@ def test_flask_v2_full_apply_26_04(tmp_path, monkeypatch):
                 "source": ".",
                 "stage-packages": ["python3-venv"],
                 "build-environment": [],
+                "stage": ["-etc/ssl/certs/ca-certificates.crt"],
             },
             "flask-framework/install-app": {
                 "organize": {
@@ -1240,6 +1241,7 @@ def test_django_extension_v2_default(tmp_path):
                 "source": ".",
                 "stage-packages": ["python3-venv"],
                 "build-environment": [],
+                "stage": ["-etc/ssl/certs/ca-certificates.crt"],
             },
             "django-framework/install-app": {
                 "organize": {"*": "django/app/", ".*": "django/app/"},
