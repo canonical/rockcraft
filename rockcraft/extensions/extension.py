@@ -23,22 +23,57 @@ from collections.abc import Sequence
 from pathlib import Path
 from typing import Any, final
 
+import craft_platforms
 from craft_cli import emit
 
 from rockcraft import errors
 
 
+# Similar logic in charmcraft but we return the set of base_str instead of a tuple
 def get_project_bases(yaml_data: dict[str, Any]) -> set[str]:
     """Extract and normalize all bases used in the project."""
     bases: set[str] = set()
     if base_str := yaml_data.get("base"):
-        bases.add(base_str)
-    if platforms := yaml_data.get("platforms", {}):
-        for label in platforms:
-            if "@" in label:
-                bases.add(label)
-    return bases
+        if parsed := craft_platforms.parse_base_and_name(base_str)[0]:
+            bases.add(f"{parsed.distribution}@{parsed.series}")
+        else:
+            name, _, channel = base_str.partition("@")
+            bases.add(f"{name}@{channel}")
 
+    if platforms := yaml_data.get("platforms", {}):
+        for label, data in platforms.items():
+            if base := craft_platforms.parse_base_and_name(label)[0]:
+                bases.add(f"{base.distribution}@{base.series}")
+            elif data and (build_for := data.get("build-for")):
+                build_for_items = (
+                    build_for if isinstance(build_for, list) else [build_for]
+                )
+                for item in build_for_items:
+                    if base := craft_platforms.parse_base_and_architecture(item)[0]:
+                        bases.add(f"{base.distribution}@{base.series}")
+
+    if legacy_bases := yaml_data.get("bases"):
+        for b in legacy_bases:
+            # Handle both short form ({name, channel}) and long form ({build-on: [...]})
+            if "build-on" in b:
+                for build_on in b.get("build-on", []):
+                    name = build_on.get("name")
+                    channel = build_on.get("channel")
+                    base_str = f"{name}@{channel}"
+                    if parsed := craft_platforms.parse_base_and_name(base_str)[0]:
+                        bases.add(f"{parsed.distribution}@{parsed.series}")
+                    else:
+                        bases.add(f"{name}@{channel}")
+            elif "name" in b and "channel" in b:
+                name = b["name"]
+                channel = b["channel"]
+                base_str = f"{name}@{channel}"
+                if parsed := craft_platforms.parse_base_and_name(base_str)[0]:
+                    bases.add(f"{parsed.distribution}@{parsed.series}")
+                else:
+                    bases.add(f"{name}@{channel}")
+
+    return bases
 
 class Extension(abc.ABC):
     """Extension is the class from which all extensions inherit.
