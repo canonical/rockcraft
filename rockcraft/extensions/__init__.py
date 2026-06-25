@@ -39,18 +39,6 @@ __all__ = [
     "register",
     "unregister",
     "gen_logging_part",
-    "DjangoFramework",
-    "DjangoFrameworkV2",
-    "ExpressJSFramework",
-    "ExpressJSFrameworkV2",
-    "FastAPIFramework",
-    "FastAPIFrameworkV2",
-    "FlaskFramework",
-    "FlaskFrameworkV2",
-    "GoFramework",
-    "GoFrameworkV2",
-    "SpringBootFramework",
-    "SpringBootFrameworkV2",
 ]
 
 register("django-framework", DjangoFrameworkFactory)  # type: ignore[arg-type]
