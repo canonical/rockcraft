@@ -172,9 +172,9 @@ class _FrameworkFactory:
 
     def __call__(self, *, project_root: Path, yaml_data: dict[str, Any]) -> Extension:
         bases = get_project_bases(yaml_data)
-        if any(base in self._v2_cls.get_supported_bases() for base in bases):
-            return self._v2_cls(project_root=project_root, yaml_data=yaml_data)
-        return self._v1_cls(project_root=project_root, yaml_data=yaml_data)
+        if any(base in self._v1_cls.get_supported_bases() for base in bases):
+            return self._v1_cls(project_root=project_root, yaml_data=yaml_data)
+        return self._v2_cls(project_root=project_root, yaml_data=yaml_data)
 
     def get_supported_bases(self) -> tuple[str, ...]:
         return tuple(
