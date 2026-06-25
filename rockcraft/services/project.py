@@ -39,7 +39,7 @@ APT_UPGRADE_PART = {
         if find /etc/apt/sources.list.d/ -iname "ubuntu-esm-*.sources" -or -iname "ubuntu-fips-*.sources" | grep -q "."; then
             echo "Upgrading base overlay system packages"
             apt-get update
-            apt-get -y upgrade
+            apt-get -y --allow-downgrades upgrade
             apt-get clean
             rm -rf /var/cache/apt
         else
