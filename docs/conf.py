@@ -185,6 +185,7 @@ linkcheck_ignore = [
     # 2026-06-03: Ignore Canonical sites until filtering is resolved
     "https://snapcraft.io",
     "https://juju.is",
+    "https://launchpad.net/builders",
 ]
 
 # Anchor strings to ignore
@@ -319,14 +320,10 @@ rst_prolog = """
 # https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html#configuration
 
 intersphinx_mapping = {
-    "12-factor": (
-        "https://canonical-12-factor-app-support.readthedocs-hosted.com/latest/",
-        None,
-    ),
-    "charmcraft": ("https://documentation.ubuntu.com/charmcraft/stable/", None),
-    "pebble": ("https://documentation.ubuntu.com/pebble", None),
-    "chisel": ("https://documentation.ubuntu.com/chisel/en/latest", None),
-    "lxd": ("https://documentation.ubuntu.com/lxd/latest/", None),
+    "12-factor": ("https://canonical.com/juju/docs/12-factor/latest", None),
+    "charmcraft": ("https://documentation.ubuntu.com/charmcraft/stable", None),
+    "pebble": ("https://ubuntu.com/docs/pebble/", None),
+    "chisel": ("https://ubuntu.com/chisel/docs/latest/", None),
 }
 # See also:
 # https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html#confval-intersphinx_disabled_reftypes
