@@ -185,7 +185,7 @@ linkcheck_ignore = [
     # 2026-06-03: Ignore Canonical sites until filtering is resolved
     "https://snapcraft.io",
     "https://juju.is",
-    "https://launchpad.net/+login",
+    "https://launchpad.net",
 ]
 
 # Anchor strings to ignore
