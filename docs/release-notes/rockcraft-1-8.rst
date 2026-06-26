@@ -1,3 +1,6 @@
+.. meta::
+    :description: Release notes for Rockcraft 1.8.
+
 .. _release-1.8.0:
 .. _release-1.8:
 

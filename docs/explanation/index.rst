@@ -1,3 +1,6 @@
+.. meta::
+    :description: The explanatory documentation for Rockcraft. These explanations aid in understanding the concepts and relationships of Rockcraft as a complete system.
+
 .. _explanation:
 
 Explanation
