@@ -320,7 +320,7 @@ rst_prolog = """
 
 intersphinx_mapping = {
     "12-factor": (
-        "https://canonical-12-factor-app-support.readthedocs-hosted.com/latest/",
+        "https://canonical.com/juju/docs/12-factor/latest/",
         None,
     ),
     "charmcraft": ("https://documentation.ubuntu.com/charmcraft/stable/", None),
