@@ -13,24 +13,15 @@ likely end up creating your own slice definition.
 Once you have it though, the most obvious question is: **how can I install
 this custom slice with Chisel?**
 
-Let's assume you want to install the <package> slice. Follow this guide
-and replace any mention of <package> with your desired sliced program.
-
-First, clone the Chisel releases repository:
-
-.. literalinclude:: ../code/install-slice/task.yaml
-    :language: bash
-    :start-after: [docs:clone-chisel-releases]
-    :end-before: [docs:clone-chisel-releases-end]
-    :dedent: 2
-
-This repository acts as the database of slice definitions files for each
-Chisel release. Chisel releases are named analogously to Ubuntu releases, and
-mapped into Git branches within the repository.
+Let's assume you want to install the ``vim-tiny`` slice created following the
+:ref:`Chisel documentation <chisel:slice_package>`. This guide can be
+applied to other packages by following this guide
+and replacing any mention of ``vim-tiny`` with your desired sliced program.
 
 Chisel will only recognise slices belonging to a Chisel release, so you need
-to copy your slice definitions file - ``<package>.yaml`` - into
-the ``chisel-releases/slices`` folder. Note that if a slice definitions file
+to copy your slice definitions file - ``vim-tiny.yaml`` - into
+the ``chisel-releases/slices`` folder in your ``chisel-releases`` clone.
+Note that if a slice definitions file
 with the same name already exists, it most likely means that the package
 you're slicing has already been sliced before, and in this case, you only
 need to merge your changes into that existing file.
@@ -38,33 +29,29 @@ need to merge your changes into that existing file.
 After this, you should be able to find your custom  slice ``bins``
 in the local Chisel release:
 
-.. literalinclude:: ../code/install-slice/task.yaml
-    :language: bash
-    :start-after: [docs:slice-exists]
-    :end-before: [docs:slice-exists-end]
-    :dedent: 2
+.. code-block:: bash
+
+   chisel find --release=./chisel-releases/ vim-tiny_bins
 
 If you wanted to test it with Chisel alone, you could now simply run
 
-.. literalinclude:: ../code/install-slice/task.yaml
-    :language: bash
-    :start-after: [docs:cut]
-    :end-before: [docs:cut-end]
-    :dedent: 2
+.. code-block:: bash
 
-You should end up with a folder named "my-custom-<package>-fs" containing a few
-folders, amongst which there would be ``./usr/bin/<package>``.
+   # Testing with Chisel directly:
+   mkdir -p my-custom-vim-tiny-fs
+   chisel cut --release ./chisel-releases --root my-custom-vim-tiny-fs vim-tiny_bins
+
+You should end up with a folder named "my-custom-vim-tiny-fs" containing a few
+folders, amongst which there would be ``./usr/bin/vim-tiny``.
 
 To install the custom package slice into a rock, you need to use
 Rockcraft.
 
 Start by initialising a new Rockcraft project:
 
-.. literalinclude:: ../code/install-slice/task.yaml
-    :language: bash
-    :start-after: [docs:init]
-    :end-before: [docs:init-end]
-    :dedent: 2
+.. code-block:: bash
+
+   rockcraft init
 
 After this command, you should find a new ``rockcraft.yaml`` file in your
 current path.
@@ -87,19 +74,15 @@ in :ref:`here <how-to-chisel-a-rock>`.
 
 Build your rock with:
 
-.. literalinclude:: ../code/install-slice/task.yaml
-    :language: bash
-    :start-after: [docs:pack]
-    :end-before: [docs:pack-end]
-    :dedent: 2
+.. code-block:: bash
 
-Test that the <package> binaries have been correctly installed with the following:
+   rockcraft pack
 
-.. literalinclude:: ../code/install-slice/task.yaml
-    :language: bash
-    :start-after: [docs:skopeo-copy]
-    :end-before: [docs:skopeo-copy-end]
-    :dedent: 2
+Test that the vim-tiny binaries have been correctly installed with the following:
+
+.. code-block:: bash
+
+   sudo rockcraft.skopeo --insecure-policy copy oci-archive:custom-vim-tiny-rock_0.0.1_amd64.rock docker-daemon:chisel-vim-tiny:latest
 
 The output will be:
 
@@ -115,11 +98,9 @@ The output will be:
 
 And after:
 
-.. literalinclude:: ../code/install-slice/task.yaml
-    :language: bash
-    :start-after: [docs:docker-run]
-    :end-before: [docs:docker-run-end]
-    :dedent: 2
+.. code-block:: bash
+
+   docker run --rm chisel-vim-tiny exec vim-tiny
 
 And that's it! You've now built your own rock from a custom Chisel release.
 

@@ -2,9 +2,9 @@ name: custom-sample-rock
 base: bare
 build-base: "ubuntu@26.04"
 version: "0.0.1"
-summary: A chiselled rock with a custom <package> slice
+summary: A chiselled rock with a custom vim-tiny slice
 description: |
-  A rock containing only the binaries (and corresponding dependencies) from the <package> package.
+  A rock containing only the binaries (and corresponding dependencies) from the vim-tiny package.
   Built from a custom Chisel release.
 license: GPL-3.0
 platforms:
@@ -14,4 +14,4 @@ parts:
     plugin: nil
     source: chisel-releases/
     source-type: local
-    override-build: chisel cut --release ./ --root ${CRAFT_PART_INSTALL} <package>_bins
+    override-build: chisel cut --release ./ --root ${CRAFT_PART_INSTALL} vim-tiny_bins
