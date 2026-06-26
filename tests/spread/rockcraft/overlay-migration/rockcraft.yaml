@@ -1,0 +1,24 @@
+name: overlay-migration
+base: ubuntu@24.04
+version: "0.1"
+summary: Check overlay migration
+description: Check overlay migration
+license: GPL-3.0
+platforms:
+  amd64:
+
+parts:
+  # This part has some identical files in install and overlay
+  stages-and-overlays:
+    plugin: nil
+    stage-packages:
+      - libbrotli1
+    overlay-packages:
+      - libssh-4
+  # This part doesn't do anything but it's needed regardless;
+  # it coming *after* stages-and-overlays triggers the bug
+  # in #1217
+  does-nothing:
+    plugin: nil
+    after:
+      - stages-and-overlays

@@ -1,5 +1,5 @@
 .. meta::
-    :description: Learn about notable features, fixes and documentation updates in Rockcraft 1.19.
+    :description: Release notes for Rockcraft 1.19.
 
 .. _release-1.19:
 
@@ -76,6 +76,18 @@ Bazel plugin
 
 The :ref:`craft_parts_bazel_plugin` supports building projects using the Bazel
 build system, and is available for rocks targeting bases ubuntu\@25.10 and higher.
+
+Fixed bugs and issues
+---------------------
+
+The following issues have been resolved in Rockcraft 1.19.
+
+Rockcraft 1.19.1
+~~~~~~~~~~~~~~~~
+
+- `#1217 <https://github.com/canonical/rockcraft/pull/1217>`__: Overlay packages fail to copy properly.
+- `#1261 <https://github.com/canonical/rockcraft/pull/1261>`__: stage-packages with deb packages create
+  /etc/ssl/certs/ca-certificates.crt file in final rock.
 
 Contributors
 ------------

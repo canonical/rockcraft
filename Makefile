@@ -4,7 +4,7 @@ PROJECT=rockcraft
 # COVERAGE_SOURCE="starcraft"
 UV_TEST_GROUPS := "--group=dev"
 UV_DOCS_GROUPS := "--group=docs"
-UV_LINT_GROUPS := "--group=lint" "--group=types"
+UV_LINT_GROUPS := "--group=lint" "--group=types" $(UV_DOCS_GROUPS)
 UV_TICS_GROUPS := "--group=tics"
 
 # If you have dev dependencies that depend on your distro version, uncomment these:
@@ -14,7 +14,7 @@ endif
 ifdef VERSION_CODENAME
 UV_TEST_GROUPS += "--group=dev-$(VERSION_CODENAME)"
 UV_DOCS_GROUPS += "--group=dev-$(VERSION_CODENAME)"
-UV_LINT_GROUPS += "--group=dev-$(VERSION_CODENAME)"
+UV_LINT_GROUPS += "--group=dev-$(VERSION_CODENAME)" $(UV_DOCS_GROUPS)
 UV_TICS_GROUPS += "--group=dev-$(VERSION_CODENAME)"
 endif
 

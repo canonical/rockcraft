@@ -1,3 +1,6 @@
+.. meta::
+    :description: How to use Chisel with Rockcraft to cut existing package slices into rocks. Install packages or individual slices via stage-packages in your rockcraft.yaml file.
+
 .. _how-to-cut-existing-slices:
 
 Cut existing slices
@@ -9,7 +12,7 @@ field without any ambiguities because slices follow an underscore-driven naming
 convention. For instance, ``openssl`` means the whole OpenSSL package, while
 ``openssl_bins`` means just the binaries slice of the OpenSSL package.
 Rockcraft will take care of the installation and priming of your
-content into the rock. There's an example :ref:`here <chisel-example>`.
+content into the rock.
 
 Chisel isn't, however, specific to Rockcraft. It can be used on its own! It
 relies on a `database of slices <https://github.com/canonical/chisel-releases>`_
@@ -17,9 +20,9 @@ that are indexed per Ubuntu release. So for example, the following command:
 
 .. code-block:: bash
 
-  chisel cut --release ubuntu-22.04 --root myrootfs libgcc-s1_libs libssl3_libs
+  chisel cut --release ubuntu-26.04 --root myrootfs libgcc-s1_libs libssl3t64_libs
 
-would look into the Ubuntu Jammy archives, fetch the provided packages and
+would look into the Ubuntu Resolute archives, fetch the provided packages and
 install only the desired slices into the ``myrootfs`` folder.
 
 To learn more about Chisel and how it works, have a look at

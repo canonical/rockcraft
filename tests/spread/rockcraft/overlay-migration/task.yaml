@@ -1,0 +1,5 @@
+summary: Check that files from stage and overlay migrate correctly
+
+execute: |
+  # Packing the rock is enough to trigger issue #1217
+  rockcraft pack

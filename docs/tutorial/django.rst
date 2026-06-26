@@ -1,3 +1,6 @@
+.. meta::
+    :description: Learn the process of making a Django app into a rock. In this tutorial, we use the django-framework extension to bootstrap and test the contents of the rock.
+
 .. _tutorial-build-a-rock-for-a-django-app:
 
 Build a rock for a Django app
@@ -18,8 +21,14 @@ Finally, create an empty project directory:
 
 .. code-block:: bash
 
-   mkdir django-hello-world
-   cd django-hello-world
+   mkdir django-tutorial
+   cd django-tutorial
+
+We'll name the outer workspace directory ``~/django-tutorial/`` so we can
+distinguish it from the Django project (``django_hello_world``) and the
+rock artifact (``django-hello-world``). Rockcraft will generate a project
+file named ``django-hello-world`` when we pass the name explicitly during
+project initialization.
 
 Create the Django app
 =====================
@@ -31,7 +40,7 @@ Create a ``requirements.txt`` file, copy the following text into it and then
 save it:
 
 .. literalinclude:: code/django/requirements.txt
-    :caption: ~/django-hello-world/requirements.txt
+    :caption: ~/django-tutorial/requirements.txt
 
 In order to test the Django app locally (before packing it into a rock),
 install ``python3-venv`` and create a virtual environment:
@@ -50,8 +59,12 @@ Create a new project using ``django-admin``:
     :end-before: [docs:create-project-end]
     :dedent: 2
 
-Enter the ``~/django-hello-world/django_hello_world/`` directory.
-Then run the Django app with ``python manage.py runserver`` and verify that it works.
+Enter the ``~/django-tutorial/django_hello_world/`` directory, then run
+the Django app to verify that it works:
+
+.. code-block:: bash
+
+    python manage.py runserver
 
 Test the Django app by using ``curl`` to send a request to the root
 endpoint. We'll need a new shell of the VM for this -- in a separate terminal,
@@ -70,8 +83,8 @@ The Django app should respond with
     The response from the Django app includes HTML and CSS which makes
     it difficult to read on a terminal. To see the fully-rendered page
     in a web browser, set ``ALLOWED_HOSTS = ['*']`` in
-    ``~/django-hello-world/django_hello_world/django_hello_world/settings.py``.
-    Then return to ``~/django-hello-world/django_hello_world/`` and run the Django
+    ``~/django-tutorial/django_hello_world/django_hello_world/settings.py``.
+    Then return to ``~/django-tutorial/django_hello_world/`` and run the Django
     app using:
 
     .. code-block:: bash
@@ -103,7 +116,7 @@ pre-defined extension in Rockcraft with the ``--profile`` flag that caters
 initial rock files for specific web app frameworks. Using the
 Django profile, Rockcraft automates the creation of
 ``rockcraft.yaml`` and tailors the file for a Django app. Return to the
-``~/django-hello-world/`` directory and initialize the rock:
+``~/django-tutorial/`` directory and initialize the rock:
 
 .. literalinclude:: code/django/task.yaml
     :language: bash
@@ -123,11 +136,11 @@ Check out the contents of ``rockcraft.yaml``:
 The top of the file should look similar to the following snippet:
 
 .. code-block:: yaml
-    :caption: ~/django-hello-world/rockcraft.yaml
+    :caption: ~/django-tutorial/rockcraft.yaml
 
     name: django-hello-world
     # see https://documentation.ubuntu.com/rockcraft/en/1.6.0/explanation/bases/
-    # for more information about bases and using 'bare' bases for chiselled rocks
+    # for more information about bases and bare bases
     base: bare # as an alternative, an ubuntu base can be used
     build-base: ubuntu@24.04 # build-base is required when the base is bare
     version: '0.1' # just for humans. Semantic versioning is recommended
@@ -230,6 +243,11 @@ The output should list the Django container image, along with its tag, ID and
 size:
 
 .. terminal::
+    :user: ubuntu
+    :host: rock-dev
+    :dir: ~/django-hello-world
+
+    sudo docker images django-hello-world:0.1
 
     REPOSITORY          TAG       IMAGE ID       CREATED       SIZE
     django-hello-world  0.1       5cd019b51db9   6 days ago   184MB
@@ -275,6 +293,11 @@ As a result, Pebble will give us the logs for the
 We should expect to see something similar to this:
 
 .. terminal::
+    :user: ubuntu
+    :host: rock-dev
+    :dir: ~/django-hello-world
+
+    sudo docker exec django-hello-world pebble logs django
 
     2024-08-20T06:34:36.114Z [django] [2024-08-20 06:34:36 +0000] [17] [INFO] Starting gunicorn 23.0.0
     2024-08-20T06:34:36.115Z [django] [2024-08-20 06:34:36 +0000] [17] [INFO] Listening at: http://0.0.0.0:8000 (17)
@@ -315,20 +338,20 @@ we want to add a new ``/time/`` endpoint which returns the current time in UTC.
 Open the file ``time_app/views.py`` and replace its contents with the following:
 
 .. literalinclude:: code/django/time_app_views.py
-    :caption: ~/django-hello-world/django_hello_world/time_app/views.py
+    :caption: ~/django-tutorial/django_hello_world/time_app/views.py
     :language: python
 
 Create the file ``time_app/urls.py`` with the following contents:
 
 .. literalinclude:: code/django/time_app_urls.py
-    :caption: ~/django-hello-world/django_hello_world/time_app/urls.py
+    :caption: ~/django-tutorial/django_hello_world/time_app/urls.py
     :language: python
 
 Open the file ``django_hello_world/urls.py`` and replace its contents with
 the following:
 
 .. literalinclude:: code/django/urls.py
-    :caption: ~/django-hello-world/django_hello_world/django_hello_world/urls.py
+    :caption: ~/django-tutorial/django_hello_world/django_hello_world/urls.py
     :language: python
 
 Since we are creating a new version of the app, go back to the
@@ -337,12 +360,12 @@ change the ``version`` (e.g. to ``0.2``). The top of
 the ``rockcraft.yaml`` file should look similar to the following:
 
 .. code-block:: yaml
-    :caption: ~/django-hello-world/rockcraft.yaml
+    :caption: ~/django-tutorial/rockcraft.yaml
     :emphasize-lines: 6
 
     name: django-hello-world
     # see https://documentation.ubuntu.com/rockcraft/en/1.6.0/explanation/bases/
-    # for more information about bases and using 'bare' bases for chiselled rocks
+    # for more information about bases and bare bases
     base: bare
     build-base: ubuntu@24.04
     version: '0.2'

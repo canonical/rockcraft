@@ -33,6 +33,7 @@ confdb
 connectedhomeip
 Craftctl
 crafters?
+crypto
 cryptographically
 ctypes?
 DBus
@@ -190,6 +191,7 @@ untrusted
 URIs?
 URL
 usermod
+usr
 usrmerge
 usrmerged
 utils
