@@ -23,7 +23,6 @@ build:
   jobs:
     post_checkout:
       - git fetch --tags --unshallow # Also fetch tags
-      - git describe # Make sure we get a proper version
     post_system_dependencies:
       - asdf plugin add uv
       - asdf install uv latest
@@ -31,7 +30,7 @@ build:
     create_environment:
       - uv venv "${READTHEDOCS_VIRTUALENV_PATH}"
     install:
-      - make setup-docs VENVDIR="${READTHEDOCS_VIRTUALENV_PATH}" UV_PROJECT_ENVIRONMENT="${READTHEDOCS_VIRTUALENV_PATH}"
+      - make setup-docs DOCS_VENVDIR="${READTHEDOCS_VIRTUALENV_PATH}" UV_PROJECT_ENVIRONMENT="${READTHEDOCS_VIRTUALENV_PATH}"
     build:
       html:
-        - make docs VENVDIR="${READTHEDOCS_VIRTUALENV_PATH}" UV_PROJECT_ENVIRONMENT="${READTHEDOCS_VIRTUALENV_PATH}" BUILDDIR="$READTHEDOCS_OUTPUT/html/"
+        - make docs DOCS_VENVDIR="${READTHEDOCS_VIRTUALENV_PATH}" UV_PROJECT_ENVIRONMENT="${READTHEDOCS_VIRTUALENV_PATH}" DOCS_BUILDDIR="$READTHEDOCS_OUTPUT/html/"
