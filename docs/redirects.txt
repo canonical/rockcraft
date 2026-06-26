@@ -17,3 +17,7 @@
 "release-notes/rockcraft-1-9-0.rst" "release-notes/rockcraft-1-9.rst"
 "release-notes/rockcraft-1-8-0.rst" "release-notes/rockcraft-1-8.rst"
 "release-notes/rockcraft-1-7-0.rst" "release-notes/rockcraft-1-7.rst"
+
+"how-to/chiselling/create-slice.rst" "how-to/chiselling/install-slice.rst"
+"how-to/chiselling/publish-slice.rst" "how-to/chiselling/install-slice.rst"
+"how-to/chiselling/use-chisel.rst" "how-to/chiselling/index.rst"
