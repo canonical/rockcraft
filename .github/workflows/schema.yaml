@@ -10,13 +10,13 @@ jobs:
 
     steps:
       - name: Checkout rockcraft
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
       - name: Set up uv with caching
         id: setup-uv
-        uses: astral-sh/setup-uv@v6
+        uses: astral-sh/setup-uv@v8.2.0
         with:
           enable-cache: true
           cache-suffix: ${{ steps.runner-info.outputs.cache-hash }}
@@ -41,14 +41,14 @@ jobs:
 
     steps:
       - name: Checkout rockcraft
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
       - name: Set up Node.js
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v6
         with:
-          node-version: "22"
+          node-version: "24"
 
       - name: Install ajv cli
         run: npm install -g ajv-cli
