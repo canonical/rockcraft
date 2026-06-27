@@ -57,7 +57,7 @@ docs = [
     "sphinxcontrib-details-directive",
     "sphinx-toolbox",
     "sphinx-lint~=1.0",
-    "sphinx-substitution-extensions==2025.1.2",
+    "sphinx-substitution-extensions==2026.6.17",
     "sphinx-copybutton",
     {include-group = "docs-sphinx-stack"},
 ]
