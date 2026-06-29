@@ -301,8 +301,8 @@ contents that are not needed for the FastAPI app to run. This results
 in a much smaller rock with a reduced attack surface.
 
 .. note::
-    It is recommended to run chiselled images in production. For development,
-    we may prefer non-chiselled images as they will include additional
+    It is recommended to run chiseled images in production. For development,
+    we may prefer non-chiseled images as they will include additional
     development tooling (such as for debugging).
 
 The first step towards chiselling the rock is to ensure we are using a

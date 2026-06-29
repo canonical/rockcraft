@@ -20,7 +20,7 @@ file with the same name already exists, it most likely means that the package yo
 slicing has already been sliced before, and in this case, you only need to merge your
 changes into that existing file.
 
-After this, you should be able to find your custom  slice ``bins``
+After this, you should be able to find your custom slice ``bins``
 in the local Chisel release:
 
 .. code-block:: bash
