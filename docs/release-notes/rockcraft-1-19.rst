@@ -89,6 +89,12 @@ Rockcraft 1.19.1
 - `#1261 <https://github.com/canonical/rockcraft/pull/1261>`__: stage-packages with deb packages create
   /etc/ssl/certs/ca-certificates.crt file in final rock.
 
+Rockcraft 1.19.2
+~~~~~~~~~~~~~~~~
+
+- `#1272 <https://github.com/canonical/rockcraft/pull/1272>`__: Upgrades of the base system fail to
+  downgrade packages.
+
 Contributors
 ------------
 
@@ -101,6 +107,7 @@ We would like to express a big thank you to all the people who contributed to th
 :literalref:`@ethandcosta <https://github.com/ethandcosta>`,
 :literalref:`@gcomneno <https://github.com/gcomneno>`,
 :literalref:`@javierdelapuente <https://github.com/javierdelapuente>`,
+:literalref:`@ktsakalozos <https://github.com/ktsakalozos>`,
 :literalref:`@mateusrodrigues <https://github.com/mateusrodrigues>`,
 :literalref:`@medubelko <https://github.com/medubelko>`,
 :literalref:`@mr-cal <https://github.com/mr-cal>`,
