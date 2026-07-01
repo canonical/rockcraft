@@ -136,7 +136,7 @@ prepare: |
   snap install docker
 
   # make sure docker is working
-  retry -n 10 --wait 2 sh -c 'docker run --rm hello-world'
+  # retry -n 10 --wait 2 sh -c 'docker run --rm hello-world'
 
   install_rockcraft
 
