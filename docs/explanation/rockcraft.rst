@@ -1,3 +1,6 @@
+.. meta::
+    :description: Explanation of why Rockcraft exists and what sets it apart for building OCI container images, including the concepts and design philosophy behind it.
+
 .. _explanation-why-use-rockcraft:
 
 Why use Rockcraft?

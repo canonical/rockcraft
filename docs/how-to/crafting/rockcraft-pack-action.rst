@@ -1,3 +1,6 @@
+.. meta::
+    :description: How to use the Rockcraft Pack GitHub Action to automate rock builds in GitHub CI/CD workflows. Covers configuring the action in your YAML workflow file.
+
 .. _how-to-use-the-rockcraft-pack-github-action:
 
 Use the Rockcraft Pack GitHub Action

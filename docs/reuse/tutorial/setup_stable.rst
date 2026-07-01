@@ -1,5 +1,5 @@
 We recommend starting from a clean Ubuntu installation. If we don't have
-one available, we can create one using `Multipass`_:
+one available, we can create one using `Multipass <https://multipass.run/docs/install-multipass>`__:
 
 .. tabs::
 
@@ -14,7 +14,7 @@ one available, we can create one using `Multipass`_:
         If we see the ``multipass`` service but it isn't "active", then we'll
         need to run ``sudo snap start multipass``. On the other hand, if we get
         an error saying ``snap "multipass" not found``, then we must install
-        `Multipass <install-multipass_>`_:
+        `Multipass <https://multipass.run/docs/install-multipass>`__:
 
         .. code-block:: bash
 
@@ -22,19 +22,19 @@ one available, we can create one using `Multipass`_:
 
     .. tab:: Windows
 
-        See `Multipass installation instructions <install-multipass_>`_, switch
+        See `Multipass installation instructions <https://multipass.run/docs/install-multipass>`__, switch
         to Windows in the drop down.
 
     .. tab:: macOS
 
-        See `Multipass installation instructions <install-multipass_>`_, switch
+        See `Multipass installation instructions <https://multipass.run/docs/install-multipass>`__, switch
         to macOS in the drop down.
 
 Then we can create the VM with the following command:
 
 .. code-block:: text
 
-    multipass launch --memory 2G --disk 10G --name rock-dev 24.04
+    multipass launch --memory 2G --disk 10G --name rock-dev 26.04
 
 Finally, once the VM is up, open a shell into it:
 
@@ -53,6 +53,17 @@ and initialised:
 
    sudo snap install lxd
    lxd init --auto
+
+There is a :external+lxd:ref:`known connectivity issue with LXD and Docker <network-lxd-docker>`.
+To avoid this issue, enable IPv4 forwarding before installing Docker:
+
+.. code-block:: bash
+
+   echo "net.ipv4.conf.all.forwarding=1" | sudo tee -a /etc/sysctl.d/99-forwarding.conf
+   sudo systemctl restart systemd-sysctl
+
+.. warning::
+   In a production environment, make sure to use a hardened firewall configuration.
 
 In order to create the rock, we'll install Rockcraft with
 classic confinement, which grants it access to the whole file system:
@@ -91,5 +102,3 @@ Restart Docker:
 Note that we'll also need a text editor. We can either install one of our
 choice or simply use one of the already existing editors in the Ubuntu
 environment (like ``vi``).
-
-.. _`install-multipass`: https://documentation.ubuntu.com/multipass/stable/how-to-guides/install-multipass/

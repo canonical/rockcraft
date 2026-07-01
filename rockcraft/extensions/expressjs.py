@@ -83,6 +83,14 @@ class ExpressJSFramework(Extension):
         runtime_part = self._gen_runtime_part()
         if runtime_part:
             snippet["parts"]["expressjs-framework/runtime"] = runtime_part
+            # There is a bug where ca-certificates_data and
+            # expressjs-framework/runtime stage-packages with a transitive
+            # dependency on ca-certificates will both contain
+            # etc/ssl/certs/ca-certificates.crt with different content.
+            snippet["parts"]["expressjs-framework/runtime"]["stage"] = [
+                "-etc/ssl/certs/ca-certificates.crt"
+            ]
+
         snippet["parts"]["expressjs-framework/logging"] = gen_logging_part()
         return snippet
 

@@ -515,3 +515,27 @@ def test_project_unmarshal_existing_pebble_same():
 
     # Must not raise any errors
     add_pebble_part(yaml_data)
+
+
+@pytest.mark.parametrize(
+    ("enabled_services", "expected_channel"),
+    [
+        (set(), "pebble/latest/stable"),
+        ({"fips"}, "pebble/fips/stable"),
+        ({"fips-updates"}, "pebble/fips/stable"),
+        ({"esm-apps", "fips-preview"}, "pebble/fips/stable"),
+        ({"esm-apps"}, "pebble/latest/stable"),
+    ],
+    ids=["no_pro_services", "fips", "fips_updates", "mixed", "not_fips"],
+)
+def test_add_pebble_part_snap(mocker, enabled_services, expected_channel):
+    """Test that FIPS pebble snap is used when FIPS services are enabled."""
+
+    mocker.patch(
+        "craft_application.util.ProServices.get_pro_services",
+        return_value=enabled_services,
+    )
+
+    yaml_data = {"build-base": "ubuntu@24.04", "parts": {}}
+    add_pebble_part(yaml_data)
+    assert yaml_data["parts"]["pebble"]["stage-snaps"] == [expected_channel]

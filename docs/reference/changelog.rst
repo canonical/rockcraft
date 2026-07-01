@@ -1,3 +1,6 @@
+.. meta::
+    :description: The legacy Rockcraft development changelog.
+
 :tocdepth: 2
 
 .. Check out the bottom of the page for the release template
@@ -31,7 +34,7 @@ Bases
 """"""""
 
 - ``bare``-based rocks now have a default ``PATH`` value set on the image,
-  following the behaviour of ``Pebble`` services.
+  following the behavior of ``Pebble`` services.
 
 Plugins
 #######

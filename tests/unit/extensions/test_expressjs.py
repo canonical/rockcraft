@@ -91,6 +91,7 @@ def package_json_file(app_path):
                     },
                     "expressjs-framework/runtime": {
                         "plugin": "nil",
+                        "stage": ["-etc/ssl/certs/ca-certificates.crt"],
                         "stage-packages": ["npm"],
                     },
                     "expressjs-framework/logging": {
@@ -214,6 +215,7 @@ def package_json_file(app_path):
                     },
                     "expressjs-framework/runtime": {
                         "plugin": "nil",
+                        "stage": ["-etc/ssl/certs/ca-certificates.crt"],
                         "stage-packages": [
                             "libstdc++6",
                             "zlib1g",
@@ -285,6 +287,7 @@ def package_json_file(app_path):
                     },
                     "expressjs-framework/runtime": {
                         "plugin": "nil",
+                        "stage": ["-etc/ssl/certs/ca-certificates.crt"],
                         "stage-packages": ["libstdc++6", "zlib1g"],
                     },
                     "expressjs-framework/logging": {
