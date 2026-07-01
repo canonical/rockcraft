@@ -11,3 +11,20 @@ fix is unreleased.
 
 0: https://github.com/protocolbuffers/protobuf/issues/24103
 """
+
+[[IgnoredVulns]]
+id = "GHSA-pj65-3pf6-c5q4"
+[[IgnoredVulns]]
+id = "GHSA-rp8m-h266-53jh"
+reason = """
+These python-apt CVEs affect versions of the package from before 2023.
+"""
+
+[[IgnoredVulns]]
+id = "GHSA-537c-gmf6-5ccf"
+reason = """
+We are currently constrained to a specific version of 'cryptography' and can't update.
+This specific CVE does not apply to us because it is present on the OpenSSL copy
+included in the cryptograhy wheel from PyPI, but we build it from source and don't use
+the affected library.
+"""

@@ -120,6 +120,9 @@ release = [
 constraint-dependencies = [
     # Basic constraints to allow --resolution=lowest
     "cffi>=1.15",
+    # Newer cryptography versions need a more recent of rustc
+    # than available in core24
+    "cryptography~=46.0.7",
     "iniconfig>=1.1.0",
     "httplib2>=0.20.0",
     "libnacl>=2.0",
