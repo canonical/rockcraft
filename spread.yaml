@@ -140,8 +140,16 @@ prepare: |
 
   snap install docker
 
+  if [ -n "${HTTP_PROXY:-}" ]; then
+    # Configure the proxy for the docker daemon through systemd
+    mkdir -p /etc/systemd/system/snap.docker.dockerd.service.d/
+    printf '[Service]\nEnvironment="HTTP_PROXY=%s"\nEnvironment="HTTPS_PROXY=%s"\nEnvironment="NO_PROXY=%s"\n' "${HTTP_PROXY}" "${HTTPS_PROXY}" "${NO_PROXY}" | tee /etc/systemd/system/snap.docker.dockerd.service.d/override.conf
+    systemctl daemon-reload
+    snap restart docker
+  fi
+
   # make sure docker is working
-  # retry -n 10 --wait 2 sh -c 'docker run --rm hello-world'
+  retry -n 10 --wait 2 sh -c 'docker run --rm hello-world'
 
   install_rockcraft
 
