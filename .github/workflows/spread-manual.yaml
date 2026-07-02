@@ -48,7 +48,7 @@ jobs:
   snap-tests:
     needs: [predicate, snap-build]
     if: needs.predicate.outputs.should_run == 'true'
-    runs-on: [self-hosted, spread-installed]
+    runs-on: [self-hosted, spread-enabled]
 
     steps:
       - name: Cleanup job workspace
