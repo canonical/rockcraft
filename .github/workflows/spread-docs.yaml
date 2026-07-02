@@ -34,7 +34,7 @@ jobs:
           path: ${{ steps.rockcraft.outputs.snap }}
 
   docs-spread-tests:
-    runs-on: [self-hosted, spread-installed]
+    runs-on: [self-hosted, spread-enabled]
     needs: [docs-snap-build]
     timeout-minutes: 90
 
