@@ -19,20 +19,50 @@ include:
 # The default spread timeout is 15 minutes. This is too short for some tests.
 kill-timeout: 25m
 backends:
-  google:
-    key: '$(HOST: echo "$SPREAD_GOOGLE_KEY")'
-    location: snapd-spread/us-east1-b
+  openstack:
+    key: '$(HOST: echo "$OS_CREDENTIALS_AMD64_PS7")'
+    plan: shared.medium
     halt-timeout: 2h
-    systems:
+    wait-timeout: 10m
+    proxy: ingress-haproxy.ps7.canonical.com
+    cidr-port-rel: ["10.151.96.0/21:5000"]
+    volume-auto-delete: true
+    environment: &openstack-env
+      SNAPD_USE_PROXY: "true"
+      HTTP_PROXY: "http://egress.ps7.internal:3128"
+      http_proxy: "http://egress.ps7.internal:3128"
+      HTTPS_PROXY: "http://egress.ps7.internal:3128"
+      https_proxy: "http://egress.ps7.internal:3128"
+      no_proxy: "127.0.0.1,127.0.0.53,localhost"
+      NO_PROXY: "127.0.0.1,127.0.0.53,localhost"
+      NTP_SERVER: "ntp.ps7.internal"
+    systems: &openstack-systems
       - ubuntu-20.04-64:
+          image: snapd-spread/ubuntu-20.04-64
           workers: 1
           storage: 40G
       - ubuntu-22.04-64:
+          image: snapd-spread/ubuntu-22.04-64
           workers: 6
           storage: 40G
-      - fedora-39-64:
+      - fedora-44-64:
+          image: snapd-spread/fedora-44-64
           workers: 1
           storage: 40G
+
+  openstack-dev:
+    type: openstack
+    key: '$(HOST: echo "$OS_CREDENTIALS_STG_AMD64_PS7")'
+    plan: shared.xsmall
+    halt-timeout: 2h
+    wait-timeout: 10m
+    groups: [default]
+    proxy: ingress-haproxy.ps7.canonical.com
+    cidr-port-rel: ["10.151.54.0/24:4000"]
+    volume-auto-delete: true
+    environment: *openstack-env
+    systems: *openstack-systems
+
   lxd:
     systems:
       - ubuntu-22.04:
@@ -47,6 +77,10 @@ prepare: |
   fi
 
   if os.query is-ubuntu; then
+    if [ -n "${HTTP_PROXY:-}" ]; then
+      # Persist proxy configuration for Apt
+      printf 'Acquire::http::Proxy "%s";\nAcquire::https::Proxy "%s";\n' "${HTTP_PROXY}" "${HTTPS_PROXY}" | tee /etc/apt/apt.conf.d/proxy.conf
+    fi
     tempfile="$(mktemp)"
     if ! apt-get update > "$tempfile" 2>&1; then
         cat "$tempfile"
@@ -60,6 +94,15 @@ prepare: |
 
   # The /snap directory does not exist in some environments
   [ ! -d /snap ] && ln -s /var/lib/snapd/snap /snap
+
+  #shellcheck source=tests/spread/tools.sh
+  . tests/spread/tools.sh
+  if [ -n "${HTTP_PROXY:-}" ]; then
+    # The snapd daemon doesn't see the environment variables, so we must modify its config
+    # to use a proxy with it. Came from:
+    # https://github.com/canonical/snapd/blob/619cc925793591348db21bb45fa4af65288d2c42/tests/lib/prepare.sh#L90
+    tools_setup_snapd_proxy
+  fi
 
   # older linux releases have separate packages for lxd and lxc (lxd-client)
   if [ "$SPREAD_SYSTEM" = "ubuntu-18.04-64" ] || \
@@ -86,7 +129,23 @@ prepare: |
   lxd waitready --timeout=30
   lxd init --auto
 
+  if [ -n "${HTTP_PROXY:-}" ]; then
+    # Lxd either can't access or doesn't fallback to the environment variables,
+    # so we must set them. This is needed to download remote images.
+    lxc config set core.proxy_http "$HTTP_PROXY"
+    lxc config set core.proxy_https "$HTTPS_PROXY"
+    lxc config set core.proxy_ignore_hosts "$NO_PROXY"
+  fi
+
   snap install docker
+
+  if [ -n "${HTTP_PROXY:-}" ]; then
+    # Configure the proxy for the docker daemon through systemd
+    mkdir -p /etc/systemd/system/snap.docker.dockerd.service.d/
+    printf '[Service]\nEnvironment="HTTP_PROXY=%s"\nEnvironment="HTTPS_PROXY=%s"\nEnvironment="NO_PROXY=%s"\n' "${HTTP_PROXY}" "${HTTPS_PROXY}" "${NO_PROXY}" | tee /etc/systemd/system/snap.docker.dockerd.service.d/override.conf
+    systemctl daemon-reload
+    snap restart docker
+  fi
 
   # make sure docker is working
   retry -n 10 --wait 2 sh -c 'docker run --rm hello-world'

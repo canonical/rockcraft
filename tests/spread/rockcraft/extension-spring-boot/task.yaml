@@ -62,7 +62,6 @@ execute: |
 restore: |
   NAME="spring-boot-${BASE//@/-}-${PROJECT_BASE}"
   NAME="${NAME//./-}"
-  docker stop "${NAME}-container"
-  docker rm "${NAME}-container"
+  docker rm -f "${NAME}-container"
   rm -f "*.rock" rockcraft.yaml
   docker system prune -a -f
