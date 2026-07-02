@@ -18,12 +18,19 @@
 
 from ._utils import apply_extensions
 from .app_parts import gen_logging_part
-from .expressjs import ExpressJSFramework
-from .fastapi import FastAPIFramework
-from .go import GoFramework
-from .gunicorn import DjangoFramework, FlaskFramework
+from .expressjs import ExpressJSFramework, ExpressJSFrameworkFactory, ExpressJSFrameworkV2
+from .fastapi import FastAPIFramework, FastAPIFrameworkV2, FastAPIFrameworkFactory
+from .go import GoFramework, GoFrameworkV2, GoFrameworkFactory
+from .gunicorn import (
+    DjangoFramework,
+    DjangoFrameworkV2,
+    DjangoFrameworkFactory,
+    FlaskFramework,
+    FlaskFrameworkV2,
+    FlaskFrameworkFactory,
+)
 from .registry import get_extension_class, get_extension_names, register, unregister
-from .springboot import SpringBootFramework
+from .springboot import SpringBootFramework, SpringBootFrameworkV2, SpringBootFrameworkFactory
 
 __all__ = [
     "get_extension_class",
@@ -34,9 +41,9 @@ __all__ = [
     "gen_logging_part",
 ]
 
-register("django-framework", DjangoFramework)
-register("expressjs-framework", ExpressJSFramework)
-register("fastapi-framework", FastAPIFramework)
-register("flask-framework", FlaskFramework)
-register("go-framework", GoFramework)
-register("spring-boot-framework", SpringBootFramework)
+register("django-framework", DjangoFrameworkFactory)  # type: ignore[arg-type]
+register("expressjs-framework", ExpressJSFrameworkFactory)  # type: ignore[arg-type]
+register("fastapi-framework", FastAPIFrameworkFactory)  # type: ignore[arg-type]
+register("flask-framework", FlaskFrameworkFactory)  # type: ignore[arg-type]
+register("go-framework", GoFrameworkFactory)  # type: ignore[arg-type]
+register("spring-boot-framework", SpringBootFrameworkFactory)  # type: ignore[arg-type]

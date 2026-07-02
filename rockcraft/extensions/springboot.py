@@ -25,7 +25,7 @@ from typing_extensions import override
 
 from rockcraft.errors import ExtensionError
 
-from .extension import Extension
+from .extension import Extension, _FrameworkFactory
 
 
 class SpringBootFramework(Extension):
@@ -342,3 +342,27 @@ class SpringBootFramework(Extension):
                 if (self.project_root / f).exists()
             ]
         return user_stage
+
+
+class SpringBootFrameworkV2(SpringBootFramework):
+    """Extension for 12-factor Spring Boot applications targeting ubuntu@26.04.
+
+    For now this is behaviourally identical to :class:`SpringBootFramework`; it exists so the
+    framework can dispatch to a paas-charm 2.0 implementation in the future. Only the
+    supported base differs.
+    """
+
+    @staticmethod
+    @override
+    def get_supported_bases() -> tuple[str, ...]:
+        """Return supported bases."""
+        return ("ubuntu@26.04",)
+
+    @staticmethod
+    @override
+    def is_experimental(base: str | None) -> bool:
+        """Check if the extension is in an experimental state."""
+        return True
+
+
+SpringBootFrameworkFactory = _FrameworkFactory(SpringBootFramework, SpringBootFrameworkV2)
