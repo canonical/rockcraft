@@ -230,7 +230,11 @@ suites:
       if [ -n "${HTTP_PROXY:-}" ]; then
         sudo pro config set http_proxy="$http_proxy"
         sudo pro config set https_proxy="$https_proxy"
+        echo "Configured Ubuntu Pro to use HTTP_PROXY and HTTPS_PROXY"
+      else
+        echo "No HTTP_PROXY or HTTPS_PROXY set, skipping proxy configuration for Ubuntu Pro"
       fi
+      exit 1
 
       sudo pro attach --no-auto-enable $UBUNTU_PRO_TOKEN
 
