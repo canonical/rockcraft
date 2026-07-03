@@ -226,6 +226,12 @@ suites:
       UBUNTU_PRO_TOKEN: '$(HOST: echo "$UBUNTU_PRO_TOKEN")'
     prepare: |
       # Enable Ubuntu Pro
+
+      if [ -n "${HTTP_PROXY:-}" ]; then
+        sudo pro config set http_proxy="$http_proxy"
+        sudo pro config set https_proxy="$https_proxy"
+      fi
+
       sudo pro attach --no-auto-enable $UBUNTU_PRO_TOKEN
 
       # The destructive-mode tests pack with esm-apps
