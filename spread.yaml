@@ -115,7 +115,17 @@ prepare: |
 
   # 5.21/stable is the latest stable LTS. Use 5.21/candidate as a "first line of
   # defense" against LXD regressions.
-  snap install lxd --channel=5.21/candidate
+  lxd_channel="5.21/candidate"
+
+  # Note: check and either refresh or install, because the image might come with
+  # the lxd snap pre-installed and tracking a different channel, and in this case
+  # the command "snap install lxd" does *not* fail.
+  # 5.21 is necessary for some tests, like the ones in the pro suite.
+  if snap list lxd; then
+    snap refresh --channel=${lxd_channel} lxd
+  else
+    snap install --channel=${lxd_channel} lxd
+  fi
 
   # Hold snap refreshes for 24h.
   snap set system refresh.hold="$(date --date=tomorrow +%Y-%m-%dT%H:%M:%S%:z)"
@@ -226,6 +236,11 @@ suites:
       UBUNTU_PRO_TOKEN: '$(HOST: echo "$UBUNTU_PRO_TOKEN")'
     prepare: |
       # Enable Ubuntu Pro
+
+      if [ -z "$UBUNTU_PRO_TOKEN" ]; then
+        echo "Error: UBUNTU_PRO_TOKEN is not set."
+        exit 1
+      fi
 
       if [ -n "${HTTP_PROXY:-}" ]; then
         sudo pro config set http_proxy="$http_proxy"
