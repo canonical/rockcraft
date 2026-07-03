@@ -58,7 +58,7 @@ jobs:
 
       - name: Run docs spread tests
         run: |
-          spread google:...docs...
+          spread openstack:...docs...
 
       - name: Discard spread workers
         if: always()
