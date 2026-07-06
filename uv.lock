@@ -544,7 +544,7 @@ toml = [
 
 [[package]]
 name = "craft-application"
-version = "7.0.0"
+version = "7.0.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "annotated-types", marker = "sys_platform == 'linux' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute')" },
@@ -567,9 +567,9 @@ dependencies = [
     { name = "snap-http", marker = "sys_platform == 'linux' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute')" },
     { name = "typing-extensions", marker = "sys_platform == 'linux' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute')" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/b5/82/f364723d620fd5e96e2d1a2a4e0f975113f3be4650923cd028ae33f1c1a0/craft_application-7.0.0.tar.gz", hash = "sha256:f341e05992b8f64f1d86ec927e3bb66ec72abcecdbca02117a99fd3b4c093715", size = 656712, upload-time = "2026-06-02T21:33:43.975Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/85/e4/859d9463012dfdfedf70db28292b70cad5b4dd64649d89d549caeb8f60ea/craft_application-7.0.1.tar.gz", hash = "sha256:d4d98c4131c36f9ecd21c62fa5808649409bc29a007e36b4e4677283b0d77906", size = 659487, upload-time = "2026-07-03T13:19:25.144Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/00/eb/37b78a3d15028840f94d260e973a7c6163b824b76faeaa95560080c0f850/craft_application-7.0.0-py3-none-any.whl", hash = "sha256:dc521efbf0bed63c0a68f84a79d818d31205a3fcd09090813e4a8c779ca71c3c", size = 206693, upload-time = "2026-06-02T21:33:41.952Z" },
+    { url = "https://files.pythonhosted.org/packages/ad/6a/ee1466a7f71df39696ed603a8b45ad08a3ab59b681f68c12874d098d26ca/craft_application-7.0.1-py3-none-any.whl", hash = "sha256:250b3bdf9330c5134982a9cebc4fd2e86f30eceb2adaecd457b134ce68d91d34", size = 210242, upload-time = "2026-07-03T13:19:23.206Z" },
 ]
 
 [[package]]
@@ -2711,7 +2711,7 @@ types = [
 
 [package.metadata]
 requires-dist = [
-    { name = "craft-application", specifier = ">=7.0.0" },
+    { name = "craft-application", specifier = ">=7.0.1" },
     { name = "craft-archives", specifier = ">=2.2.0" },
     { name = "craft-cli", specifier = ">=3.3.0" },
     { name = "craft-parts", specifier = "==2.33.1" },
