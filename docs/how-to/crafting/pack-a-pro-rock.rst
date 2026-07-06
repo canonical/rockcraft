@@ -13,7 +13,7 @@ Prerequisites
 -------------
 
 - An Ubuntu Pro system (https://ubuntu.com/pro)
-- LXD installer (https://documentation.ubuntu.com/lxd/)
+- LXD version 5.21 or higher installed (https://documentation.ubuntu.com/lxd/)
 - Rockcraft version 1.18.0 or higher installed (https://snapcraft.io/rockcraft)
 
 Enable guest attachment
