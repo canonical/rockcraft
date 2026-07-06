@@ -77,6 +77,13 @@ Bazel plugin
 The :ref:`craft_parts_bazel_plugin` supports building projects using the Bazel
 build system, and is available for rocks targeting bases ubuntu\@25.10 and higher.
 
+``ubuntu@26.10`` base
+~~~~~~~~~~~~~~~~~~~~~
+
+Rockcraft now supports ``ubuntu@26.10`` as a base. Since this version of Ubuntu is in
+development at time of release, to select this base you must also set
+``build-base: devel``.
+
 Fixed bugs and issues
 ---------------------
 
