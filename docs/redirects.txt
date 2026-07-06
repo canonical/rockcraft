@@ -21,3 +21,6 @@
 "how-to/chiselling/create-slice.rst" "how-to/chiseling/install-slice.rst"
 "how-to/chiselling/publish-slice.rst" "how-to/chiseling/install-slice.rst"
 "how-to/chiselling/use-chisel.rst" "how-to/chiseling/index.rst"
+"how-to/chiselling/index.rst" "how-to/chiseling/index.rst"
+"how-to/chiselling/chisel-existing-rock.rst" "how-to/chiseling/chisel-existing-rock.rst"
+"how-to/chiselling/install-slice.rst" "how-to/chiseling/install-slice.rst"
