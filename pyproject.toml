@@ -5,7 +5,7 @@ dynamic = ["version"]
 dependencies = [
     # To use a dev version of a craft library:
     # craft-lib @ git+https://github.com/canonical/craft-lib@ref
-    "craft-application>=7.0.0",
+    "craft-application>=7.0.1",
     "craft-archives>=2.2.0",
     "craft-cli>=3.3.0",
     # NOTE: craft-parts is pinned to 2.33.1 because 2.34 has a breaking
