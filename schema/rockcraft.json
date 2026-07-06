@@ -12900,7 +12900,8 @@
         "ubuntu@22.04",
         "ubuntu@24.04",
         "ubuntu@25.10",
-        "ubuntu@26.04"
+        "ubuntu@26.04",
+        "ubuntu@26.10"
       ],
       "title": "Base",
       "type": "string"
@@ -12914,6 +12915,7 @@
             "ubuntu@24.04",
             "ubuntu@25.10",
             "ubuntu@26.04",
+            "ubuntu@26.10",
             "devel"
           ],
           "type": "string"
