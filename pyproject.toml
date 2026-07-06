@@ -5,14 +5,14 @@ dynamic = ["version"]
 dependencies = [
     # To use a dev version of a craft library:
     # craft-lib @ git+https://github.com/canonical/craft-lib@ref
-    "craft-application>=7.0.0",
+    "craft-application>=7.0.1",
     "craft-archives>=2.2.0",
     "craft-cli>=3.3.0",
     # NOTE: craft-parts is pinned to 2.33.1 because 2.34 has a breaking
     # bug that needs to be investigated
     "craft-parts==2.33.1",
     "craft-platforms>=0.11.0",
-    "craft-providers>=3.6.0",
+    "craft-providers>=3.7.1",
     "overrides>=7.7.0",
     # setuptools >= 80.9 has a noisy warning about pkg_resources
     "setuptools~=80.10.2",
@@ -120,6 +120,9 @@ release = [
 constraint-dependencies = [
     # Basic constraints to allow --resolution=lowest
     "cffi>=1.15",
+    # Newer cryptography versions need a more recent of rustc
+    # than available in core24
+    "cryptography~=46.0.7",
     "iniconfig>=1.1.0",
     "httplib2>=0.20.0",
     "libnacl>=2.0",

@@ -154,33 +154,8 @@ Pack the rock:
     :end-before: [docs:pack-end]
     :dedent: 2
 
-.. warning::
-   There is a `known connectivity issue with LXD and Docker
-   <lxd-docker-connectivity-issue_>`_. If we see a
-   networking issue such as "*A network related operation failed in a context
-   of no network access*" or ``Client.Timeout``, we need to allow egress network
-   traffic to flow from the managed LXD bridge.
-
-   First, run ``lxc network list`` to show the available networks. The
-   bridge will have ``TYPE: bridge`` and ``MANAGED: YES``. Save the name to an
-   environment variable:
-
-   .. code-block::
-
-       NETWORK_BRIDGE=<name of managed LXD bridge>
-
-   Then, update the network traffic flow using:
-
-   .. code-block::
-
-       sudo iptables  -I DOCKER-USER -i $NETWORK_BRIDGE -j ACCEPT
-       sudo ip6tables -I DOCKER-USER -i $NETWORK_BRIDGE -j ACCEPT
-       sudo iptables  -I DOCKER-USER -o $NETWORK_BRIDGE -m conntrack \
-         --ctstate RELATED,ESTABLISHED -j ACCEPT
-       sudo ip6tables -I DOCKER-USER -o $NETWORK_BRIDGE -m conntrack \
-         --ctstate RELATED,ESTABLISHED -j ACCEPT
-
-Depending on the network, this step can take a couple of minutes to finish.
+Since FastAPI is an experimental extension,
+``ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS`` must be enabled.
 
 Once Rockcraft has finished packing the FastAPI rock, we'll find a new file in
 the project's working directory (an `OCI <OCI_image_spec_>`_ archive) with
@@ -326,8 +301,8 @@ contents that are not needed for the FastAPI app to run. This results
 in a much smaller rock with a reduced attack surface.
 
 .. note::
-    It is recommended to run chiselled images in production. For development,
-    we may prefer non-chiselled images as they will include additional
+    It is recommended to run chiseled images in production. For development,
+    we may prefer non-chiseled images as they will include additional
     development tooling (such as for debugging).
 
 The first step towards chiselling the rock is to ensure we are using a
@@ -573,5 +548,3 @@ your changes are not taking effect (e.g. the ``/time``
 :ref:`endpoint <update-fastapi-application>` is returning a
 404), try running ``rockcraft clean`` and pack the rock again with
 ``rockcraft pack``.
-
-.. _`lxd-docker-connectivity-issue`: https://documentation.ubuntu.com/lxd/en/latest/howto/network_bridge_firewalld/#prevent-connectivity-issues-with-lxd-and-docker
