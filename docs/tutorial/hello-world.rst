@@ -46,6 +46,10 @@ At the end of the process, a file named ``hello_latest_amd64.rock`` should be
 present in the current directory. That's your rock, in oci-archive format
 (a tarball).
 
+.. note::
+    If we changed the ``name`` or ``version`` in the project file or are not
+    on an ``amd64`` platform, the name of the ``.rock`` file will be different.
+
 
 Run the rock in Docker
 ----------------------

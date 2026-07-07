@@ -4,8 +4,13 @@ version: "1.0.4" # Note: should match `pyfiglet` below
 summary: A rock for pyfiglet
 description: A rock for pyfiglet
 license: Apache-2.0
+# the platforms this rock should be built on and run on.
+# you can check your architecture with `dpkg --print-architecture`
 platforms:
   amd64:
+  # arm64:
+  # ppc64el:
+  # s390x:
 
 parts:
   pyfiglet:

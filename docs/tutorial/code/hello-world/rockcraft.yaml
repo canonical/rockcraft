@@ -7,8 +7,13 @@ version: "latest"
 license: Apache-2.0
 
 base: ubuntu@26.04
+# the platforms this rock should be built on and run on.
+# you can check your architecture with `dpkg --print-architecture`
 platforms:
   amd64: # Make sure this value matches your computer's architecture
+  # arm64:
+  # ppc64el:
+  # s390x:
 
 # Parts section
 

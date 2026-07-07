@@ -1,3 +1,6 @@
+.. meta::
+    :description: Learn to package apps with Rockcraft. In this tutorial, we bundle a typical Node.js application into an OCI-compliant container and run it with Docker.
+
 .. _tutorial-bundle-a-nodejs-app-into-a-rock:
 
 Bundle a Node.js app into a rock
@@ -88,6 +91,10 @@ directory:
     :start-after: [docs:check-rock]
     :end-before: [docs:check-rock-end]
     :dedent: 2
+
+.. note::
+    If we changed the ``name`` or ``version`` in the project file or are not
+    on an ``amd64`` platform, the name of the ``.rock`` file will be different.
 
 Run the rock in Docker
 ----------------------

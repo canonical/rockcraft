@@ -61,6 +61,10 @@ To build the rock, run:
     :end-before: [docs:build-rock-end]
     :dedent: 2
 
+.. note::
+    If we changed the ``name`` or ``version`` in the project file or are not
+    on an ``amd64`` platform, the name of the ``.rock`` file will be different.
+
 Run the rock in Docker
 ----------------------
 
