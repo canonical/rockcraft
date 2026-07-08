@@ -79,7 +79,6 @@ BuildBaseT = typing.Annotated[
         "ubuntu@24.04",
         "ubuntu@25.10",
         "ubuntu@26.04",
-        "ubuntu@26.10",
         "devel",
     ]
     | None,
