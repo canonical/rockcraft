@@ -1,4 +1,4 @@
-summary: Usrmerged install dirs in 25.10+
+summary: Usrmerged install dirs in 26.04+
 
 execute: |
   run_rockcraft pack
