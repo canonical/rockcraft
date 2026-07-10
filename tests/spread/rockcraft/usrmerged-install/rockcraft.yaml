@@ -4,7 +4,7 @@ summary: A rock with usrmerged parts
 description: A rock with usrmerged parts
 license: Apache-2.0
 
-base: ubuntu@26.04
+base: ubuntu@25.10
 
 platforms:
   amd64:
