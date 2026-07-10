@@ -57,8 +57,6 @@ In this documentation
         :ref:`FastAPI reference <reference-fastapi-framework>` •
         :ref:`Spring Boot tutorial <tutorial-build-a-rock-for-a-spring-boot-app>` •
         :ref:`Spring Boot reference <reference-spring-boot-framework>` •
-        :ref:`Set-up 12-Factor rocks <set-up-web-app-rockg>` •
-        :ref:`Use rocks for 12-Factor apps <use-web-app-rock>` •
         :ref:`Set-up 12-Factor rocks <set-up-web-app-rock>` •
         :ref:`Use rocks for 12-Factor apps <use-web-app-rock>`
     * - **Process manager**
