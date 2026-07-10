@@ -58,7 +58,7 @@ In this documentation
         :ref:`Spring Boot tutorial <tutorial-build-a-rock-for-a-spring-boot-app>` •
         :ref:`Spring Boot reference <reference-spring-boot-framework>` •
         :ref:`Set-up 12-Factor rocks <set-up-web-app-rock>` •
-        :ref:`Use rocks for 12-Factor apps <use-web-app-rock>` •
+        :ref:`Use rocks for 12-Factor apps <use-web-app-rock>`
     * - **Process manager**
       - :ref:`Pebble as entrypoint <explanation-pebble>` •
         :ref:`Convert an entrypoint to a Pebble layer <how-to-convert-an-entrypoint-to-a-pebble-layer>`
@@ -69,10 +69,10 @@ In this documentation
         :ref:`Install a custom slice <how-to-install-a-custom-package-slice>` •
         :ref:`Define a non root user <how-to-add-an-internal-user>`
     * - **Remote and automated builds**
-      - :ref:`Use the Rockcraft pack GitHub Action<how-to-use-the-rockcraft-pack-github-action>` •
-        :ref:`Multi-architecture builds<how-to-outsource-rock-builds-to-launchpad>`
+      - :ref:`Use the Rockcraft pack GitHub Action <how-to-use-the-rockcraft-pack-github-action>` •
+        :ref:`Multi-architecture builds <how-to-outsource-rock-builds-to-launchpad>`
     * - **Distribution**
-      - :ref:`Publish a rock to a registry <how-to-publish-a-rock-to-a-registry>` •
+      - :ref:`Publish a rock to a registry <how-to-publish-a-rock-to-a-registry>`
 
 How this documentation is organized
 -----------------------------------
