@@ -33,14 +33,14 @@ In this documentation
     * - **Get started**
       - :ref:`Build your first rock <tutorial-create-a-hello-world-rock>` •
         :ref:`how-to-quickstart-guide`
-    * - **Bases**
+    * - **Base**
       - :ref:`Overview <explanation-bases>` • :ref:`how-to-specify-a-base` •
         :ref:`Upgrade to the newest base <how-to-migrate-2604>`
     * - **Configuration**
       - :ref:`About parts <parts>` •
         :ref:`reference-rockcraft-yaml`
     * - **Plugins**
-       -:ref:`how-to-override-a-plugins-build` •
+      - :ref:`how-to-override-a-plugins-build` •
         :ref:`reference-plugins`
     * - **Rockcraft CLI**
       - :ref:`reference-commands`
