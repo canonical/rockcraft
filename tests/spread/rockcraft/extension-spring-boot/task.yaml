@@ -19,7 +19,11 @@ execute: |
   ROCK_FILE="${NAME}_0.1_amd64.rock"
   IMAGE="${NAME}:0.1"
   JAVA_VERSION=21
-  sudo snap install devpack-for-spring --edge --classic
+  sudo snap install devpack-for-spring --classic
+
+  # Note: Proxy support needs version 1.4.3, which is currently on edge
+  sudo snap refresh --edge devpack-for-spring
+
   devpack-for-spring boot start \
     --path ${NAME}-app \
     --project ${PROJECT_BASE}-project \
