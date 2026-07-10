@@ -21,7 +21,7 @@ import os
 import sys
 from collections.abc import Sequence
 from pathlib import Path
-from typing import Any, final
+from typing import Any, cast, final
 
 import craft_platforms
 from craft_cli import emit
@@ -29,18 +29,23 @@ from craft_cli import emit
 from rockcraft import errors
 
 
-# Similar logic in charmcraft but we return the set of base_str instead of a tuple
-def get_project_bases(yaml_data: dict[str, Any]) -> set[str]:
+def get_project_base(yaml_data: dict[str, Any]) -> str | None:
     """Extract and normalize all bases used in the project."""
-    bases: set[str] = set()
-    if base_str := yaml_data.get("base"):
+    if base_str := cast(
+        str | None, yaml_data.get("build-base") or yaml_data.get("base")
+    ):
         if parsed := craft_platforms.parse_base_and_name(base_str)[0]:
-            bases.add(f"{parsed.distribution}@{parsed.series}")
-        else:
-            name, _, channel = base_str.partition("@")
-            bases.add(f"{name}@{channel}")
+            return f"{parsed.distribution}@{parsed.series}"
 
-    return bases
+        if base_str.count("@") != 1:
+            raise ValueError(
+                f"Invalid base string {base_str!r}. Format should be '<distribution>@<series>'",
+            )
+        name, _, channel = base_str.partition("@")
+        return f"{name}@{channel}"
+
+    return None
+
 
 class Extension(abc.ABC):
     """Extension is the class from which all extensions inherit.
@@ -131,15 +136,15 @@ class Extension(abc.ABC):
 
 
 class _FrameworkFactory:
-    """Route to V1 or V2 extension based on project bases."""
+    """Route to V1 or V2 extension based on project base."""
 
     def __init__(self, v1_cls: type[Extension], v2_cls: type[Extension]) -> None:
         self._v1_cls = v1_cls
         self._v2_cls = v2_cls
 
     def __call__(self, *, project_root: Path, yaml_data: dict[str, Any]) -> Extension:
-        bases = get_project_bases(yaml_data)
-        if any(base in self._v1_cls.get_supported_bases() for base in bases):
+        base = get_project_base(yaml_data)
+        if base in self._v1_cls.get_supported_bases():
             return self._v1_cls(project_root=project_root, yaml_data=yaml_data)
         return self._v2_cls(project_root=project_root, yaml_data=yaml_data)
 
@@ -151,9 +156,9 @@ class _FrameworkFactory:
         )
 
     def is_experimental(self, base: str | None) -> bool:
-        if base in self._v2_cls.get_supported_bases():
-            return self._v2_cls.is_experimental(base)
-        return self._v1_cls.is_experimental(base)
+        if base in self._v1_cls.get_supported_bases():
+            return self._v1_cls.is_experimental(base)
+        return self._v2_cls.is_experimental(base)
 
 
 def get_extensions_data_dir() -> Path:
