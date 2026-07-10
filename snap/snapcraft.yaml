@@ -138,7 +138,7 @@ parts:
     build-environment:
       - "CFLAGS": "$(pkg-config python-3.12 yaml-0.1 --cflags)"
       - UV_FROZEN: "true"
-      #      - UV_NO_BINARY: "true"
+      - UV_NO_BINARY: "true"
       # Parallel make jobs for things like python-apt
       - MAKEOPTS: -j$(nproc --all)
       - UV_COMPILE_BYTECODE: "true"
