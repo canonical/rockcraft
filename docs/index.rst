@@ -41,7 +41,7 @@ In this documentation
         :ref:`reference-rockcraft-yaml`
     * - **Plugins**
       - :ref:`how-to-override-a-plugins-build` •
-        :ref:`reference-plugins`
+        :ref:`Plugins available <reference-plugins>`
     * - **Rockcraft CLI**
       - :ref:`reference-commands`
     * - **12-factor apps**
