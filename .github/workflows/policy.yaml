@@ -14,7 +14,7 @@ jobs:
     name: Security scan
     uses: canonical/starflow/.github/workflows/scan-python.yaml@main
     with:
-      osv-extra-args: "--config=source/osv-scanner.toml"
+      osv-extra-args: "--config=osv-scanner.toml"
       uv-export-no-groups: |
         docs
         docs-sphinx-stack
