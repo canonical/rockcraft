@@ -21,11 +21,17 @@ from typing import TYPE_CHECKING
 from rockcraft import errors
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
+
     from .extension import Extension
 
     ExtensionType = type[Extension]
+    # A loader is a zero-arg callable returning the extension class. Registering
+    # a loader instead of the class lets the (heavy) framework modules stay
+    # unimported until an extension is actually used -- see extensions/__init__.
+    ExtensionLoader = Callable[[], ExtensionType]
 
-_EXTENSIONS: dict[str, "ExtensionType"] = {}
+_EXTENSIONS: dict[str, "ExtensionType | ExtensionLoader"] = {}
 
 
 def get_extension_names() -> list[str]:
@@ -46,18 +52,28 @@ def get_extension_class(extension_name: str) -> "ExtensionType":
     :raises ExtensionError: If the extension name is invalid.
     """
     try:
-        return _EXTENSIONS[extension_name]
+        entry = _EXTENSIONS[extension_name]
     except KeyError as key_error:
         raise errors.ExtensionError(
             f"Extension {extension_name!r} does not exist"
         ) from key_error
 
+    # A lazy loader was registered: resolve it and cache the class in its place.
+    if not isinstance(entry, type):
+        entry = entry()
+        _EXTENSIONS[extension_name] = entry
 
-def register(extension_name: str, extension_class: "ExtensionType") -> None:
+    return entry
+
+
+def register(
+    extension_name: str, extension_class: "ExtensionType | ExtensionLoader"
+) -> None:
     """Register extension.
 
     :param extension_name: the name to register.
-    :param extension_class: the Extension implementation.
+    :param extension_class: the Extension implementation, or a zero-arg loader
+        returning it (deferred import).
     """
     _EXTENSIONS[extension_name] = extension_class
 

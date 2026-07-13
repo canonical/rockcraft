@@ -16,14 +16,15 @@
 
 """Extension processor and related utilities."""
 
+from importlib import import_module
+from typing import TYPE_CHECKING
+
 from ._utils import apply_extensions
 from .app_parts import gen_logging_part
-from .expressjs import ExpressJSFramework
-from .fastapi import FastAPIFramework
-from .go import GoFramework
-from .gunicorn import DjangoFramework, FlaskFramework
 from .registry import get_extension_class, get_extension_names, register, unregister
-from .springboot import SpringBootFramework
+
+if TYPE_CHECKING:
+    from .registry import ExtensionLoader, ExtensionType
 
 __all__ = [
     "get_extension_class",
@@ -34,9 +35,47 @@ __all__ = [
     "gen_logging_part",
 ]
 
-register("django-framework", DjangoFramework)
-register("expressjs-framework", ExpressJSFramework)
-register("fastapi-framework", FastAPIFramework)
-register("flask-framework", FlaskFramework)
-register("go-framework", GoFramework)
-register("spring-boot-framework", SpringBootFramework)
+# Registered extension name -> (framework submodule, class name). The framework
+# modules pull in heavy deps (e.g. `packaging`), so they are imported lazily:
+# only resolved when an extension is actually applied or listed. This keeps
+# `rockcraft pack` of an extension-free rock from paying the import cost.
+_LAZY_EXTENSIONS = {
+    "django-framework": ("gunicorn", "DjangoFramework"),
+    "expressjs-framework": ("expressjs", "ExpressJSFramework"),
+    "fastapi-framework": ("fastapi", "FastAPIFramework"),
+    "flask-framework": ("gunicorn", "FlaskFramework"),
+    "go-framework": ("go", "GoFramework"),
+    "spring-boot-framework": ("springboot", "SpringBootFramework"),
+}
+
+
+def _make_loader(module_suffix: str, class_name: str) -> "ExtensionLoader":
+    def _load() -> "ExtensionType":
+        module = import_module(f".{module_suffix}", __name__)
+        return getattr(module, class_name)  # type: ignore[no-any-return]
+
+    return _load
+
+
+for _name, (_module_suffix, _class_name) in _LAZY_EXTENSIONS.items():
+    register(_name, _make_loader(_module_suffix, _class_name))
+
+# Class name -> (framework submodule, class name), for the __getattr__ below.
+_CLASS_TO_MODULE = {
+    class_name: (module_suffix, class_name)
+    for module_suffix, class_name in _LAZY_EXTENSIONS.values()
+}
+
+
+def __getattr__(name: str) -> "ExtensionType":
+    """Lazily expose the framework classes as `extensions.<ClassName>`.
+
+    The classes are no longer imported at module load (see `_LAZY_EXTENSIONS`),
+    but accessing them as attributes of this package still works -- the relevant
+    framework module is imported on first access.
+    """
+    if name in _CLASS_TO_MODULE:
+        module_suffix, class_name = _CLASS_TO_MODULE[name]
+        module = import_module(f".{module_suffix}", __name__)
+        return getattr(module, class_name)  # type: ignore[no-any-return]
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
