@@ -11,7 +11,7 @@ execute: |
   sed "s/placeholder-base/$BASE/" rockcraft.orig.yaml  > rockcraft.yaml
 
   # Build the rock
-  run_rockcraft pack
+  run_rockcraft pack --ignore=unmaintained
 
   # Extract the built rock and check that the "grade" is "devel" in the metadata
 

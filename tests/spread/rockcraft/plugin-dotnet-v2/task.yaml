@@ -12,7 +12,7 @@ execute: |
   IMAGE="${SCENARIO}:0.0.1"
 
   # Build the rock & load it into docker
-  run_rockcraft pack
+  run_rockcraft pack --ignore=unmaintained
   echo expecting ${ROCK_FILE}
   test -f ${ROCK_FILE}
   rockcraft.skopeo copy --insecure-policy  oci-archive:${ROCK_FILE} docker-daemon:${IMAGE}
