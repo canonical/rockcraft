@@ -1,6 +1,6 @@
 // Replace oldDomain with newDomain
 const oldDomain = 'canonical-rockcraft-new.readthedocs-hosted.com';
-const newDomain = 'ubuntu.com/containers/docs';
+const newDomain = 'ubuntu.com/containers/rockcraft/docs';
 
 function escapeRegExp(value) {
     return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');

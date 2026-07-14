@@ -41,7 +41,7 @@ copyright = "2022-%s, %s" % (datetime.date.today().year, author)
 
 # Documentation website URL
 version_slug = f"{os.environ.get('READTHEDOCS_VERSION', 'local')}"
-ogp_site_url = f"https://ubuntu.com/containers/docs/{version_slug}/"
+ogp_site_url = f"https://ubuntu.com/containers/rockcraft/docs/{version_slug}/"
 
 #Preview name of the documentation website
 ogp_site_name = project
@@ -72,7 +72,7 @@ html_theme_options = {
 }
 
 # Project slug; see https://meta.discourse.org/t/what-is-category-slug/87897
-slug = 'containers/docs'
+slug = 'containers/rockcraft/docs'
 
 
 #######################
@@ -82,7 +82,7 @@ slug = 'containers/docs'
 sitemap_filename = "doc-sitemap.xml"
 
 # Use RTD canonical URL to ensure duplicate pages have a specific canonical URL
-html_baseurl = f"https://ubuntu.com/containers/docs/{version_slug}/"
+html_baseurl = f"https://ubuntu.com/containers/rockcraft/docs/{version_slug}/"
 
 # sphinx-sitemap uses html_baseurl to generate the full URL for each page:
 sitemap_url_scheme = '{link}'
