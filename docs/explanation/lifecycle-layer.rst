@@ -163,7 +163,7 @@ symlink from the "base layer", which will make everything that assumed that
 the base binaries from ``usr/bin/`` would always be accessible through ``bin/``
 break.
 
-This issue is made much worse if the instead of breaking ``bin/`` we break the
+This issue is made much worse if instead of breaking ``bin/`` we break the
 ``lib*/`` symlinks. Consider:
 
 .. code-block:: bash

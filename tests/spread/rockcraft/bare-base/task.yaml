@@ -10,7 +10,7 @@ environment:
 execute: |
   sed "s/placeholder-base/$BASE/" rockcraft.orig.yaml  > rockcraft.yaml
 
-  run_rockcraft pack
+  run_rockcraft pack --ignore=unmaintained
 
   test -f bare-base-test_latest_amd64.rock
   test ! -d parts -a ! -d stage -a ! -d prime
