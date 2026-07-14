@@ -55,7 +55,7 @@ execute: |
   sed -i "s/PLACEHOLDER_BASE/$BASE/" rockcraft.yaml
   sed -i "s/PLACEHOLDER_BUILD_BASE/$BUILD_BASE/" rockcraft.yaml
 
-  run_rockcraft pack
+  run_rockcraft pack --ignore=unmaintained
   ROCK_FILE="${SCENARIO}_0.1_amd64.rock"
   IMAGE="${SCENARIO}:0.1"
   sudo rockcraft.skopeo --insecure-policy copy oci-archive:${ROCK_FILE} docker-daemon:${IMAGE}
