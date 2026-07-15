@@ -1,3 +1,6 @@
+.. meta::
+    :description: The reference documentation for Rockcraft. These references describe the structure and function of the individual components.
+
 .. _reference:
 
 Reference

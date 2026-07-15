@@ -1,3 +1,6 @@
+.. meta::
+    :description: Learn the process of making a Flask app into a rock. In this tutorial, we use the flask-framework extension to bootstrap and test the contents of the rock.
+
 .. _tutorial-build-a-rock-for-a-flask-app:
 
 Build a rock for a Flask app
@@ -49,7 +52,11 @@ In the same directory, copy and save the following into a text file called
     :caption: ~/flask-hello-world/app.py
     :language: python
 
-Run the Flask app using ``flask run -p 8000`` to verify that it works.
+Run the Flask app to verify that it works:
+
+.. code-block:: bash
+
+    flask run -p 8000
 
 Test the Flask app by using ``curl`` to send a request to the root
 endpoint. We'll need a new shell of the VM for this -- in a separate terminal,
@@ -102,7 +109,7 @@ The top of the file should look similar to the following snippet:
 
     name: flask-hello-world
     # see https://documentation.ubuntu.com/rockcraft/en/1.6.0/explanation/bases/
-    # for more information about bases and using 'bare' bases for chiselled rocks
+    # for more information about bases and bare bases
     base: bare # as an alternative, an ubuntu base can be used
     build-base: ubuntu@24.04 # build-base is required when the base is bare
     version: '0.1' # just for humans. Semantic versioning is recommended
@@ -151,34 +158,6 @@ Pack the rock:
     :start-after: [docs:pack]
     :end-before: [docs:pack-end]
     :dedent: 2
-
-.. warning::
-   There is a `known connectivity issue with LXD and Docker
-   <lxd-docker-connectivity-issue_>`_. If we see a
-   networking issue such as "*A network related operation failed in a context
-   of no network access*" or ``Client.Timeout``, we need to allow egress network
-   traffic to flow from the managed LXD bridge.
-
-   First, run ``lxc network list`` to show the available networks. The
-   bridge will have ``TYPE: bridge`` and ``MANAGED: YES``. Save the name to an
-   environment variable:
-
-   .. code-block::
-
-       NETWORK_BRIDGE=<name of managed LXD bridge>
-
-   Then, update the network traffic flow using:
-
-   .. code-block::
-
-       sudo iptables  -I DOCKER-USER -i $NETWORK_BRIDGE -j ACCEPT
-       sudo ip6tables -I DOCKER-USER -i $NETWORK_BRIDGE -j ACCEPT
-       sudo iptables  -I DOCKER-USER -o $NETWORK_BRIDGE -m conntrack \
-         --ctstate RELATED,ESTABLISHED -j ACCEPT
-       sudo ip6tables -I DOCKER-USER -o $NETWORK_BRIDGE -m conntrack \
-         --ctstate RELATED,ESTABLISHED -j ACCEPT
-
-Depending on the network, this step can take a couple of minutes to finish.
 
 Once Rockcraft has finished packing the Flask rock, we'll find a new file in
 the project's working directory (an `OCI <OCI_image_spec_>`_ archive) with the
@@ -234,6 +213,11 @@ The output should list the Flask container image, along with its tag, ID and
 size:
 
 .. terminal::
+    :user: ubuntu
+    :host: rock-dev
+    :dir: ~/flask-hello-world
+
+    sudo docker images flask-hello-world:0.1
 
     REPOSITORY          TAG       IMAGE ID       CREATED       SIZE
     flask-hello-world   0.1       c256056698ba   2 weeks ago   149MB
@@ -279,6 +263,11 @@ As a result, Pebble will give us the logs for the
 We expect to see something similar to this:
 
 .. terminal::
+    :user: ubuntu
+    :host: rock-dev
+    :dir: ~/flask-hello-world
+
+    sudo docker exec flask-hello-world pebble logs flask
 
     2024-06-21T03:41:45.077Z [flask] [2024-06-21 03:41:45 +0000] [17] [INFO] Starting gunicorn 22.0.0
     2024-06-21T03:41:45.077Z [flask] [2024-06-21 03:41:45 +0000] [17] [INFO] Listening at: http://0.0.0.0:8000 (17)
@@ -327,7 +316,7 @@ top of the ``rockcraft.yaml`` file should look similar to the following:
 
     name: flask-hello-world
     # see https://documentation.ubuntu.com/rockcraft/en/1.6.0/explanation/bases/
-    # for more information about bases and using 'bare' bases for chiselled rocks
+    # for more information about bases and bare bases
     base: bare
     build-base: ubuntu@24.04
     version: '0.2'
@@ -464,4 +453,3 @@ your changes are not taking effect (e.g. the ``/time``
 404), try running ``rockcraft clean`` and pack the rock again with
 ``rockcraft pack``.
 
-.. _`lxd-docker-connectivity-issue`: https://documentation.ubuntu.com/lxd/en/latest/howto/network_bridge_firewalld/#prevent-connectivity-issues-with-lxd-and-docker

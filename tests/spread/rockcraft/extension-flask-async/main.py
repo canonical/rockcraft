@@ -1,6 +1,7 @@
 from time import sleep
 
-from flask import Flask  # pyright: ignore[reportMissingImports]
+from flask import Flask
+
 
 def create_app():
     app = Flask(__name__)

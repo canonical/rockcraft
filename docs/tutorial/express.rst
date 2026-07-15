@@ -1,3 +1,6 @@
+.. meta::
+    :description: Learn the process of making an Express app into a rock. In this tutorial, we use the expressjs-framework extension to bootstrap and test the contents of the rock.
+
 .. _tutorial-build-a-rock-for-an-express-app:
 
 Build a rock for an Express app
@@ -24,7 +27,7 @@ Setup
 .. include:: /reuse/tutorial/setup_stable.rst
 
 In order to test the Express app locally, before packing it into a
-rock, install NPM and initialize the starter app.
+rock, install npm and initialize the starter app.
 
 .. literalinclude:: code/expressjs/task.yaml
     :language: bash
@@ -53,6 +56,10 @@ Next, create a skeleton for the project with the Express app generator:
     :start-after: [docs:init-app]
     :end-before: [docs:init-app-end]
     :dedent: 2
+
+.. note::
+   During the ``npm install`` step, npm performs a security scan of downloaded dependencies, and it warns about any known vulnerabilities in installed packages.
+   This warning is expected for this tutorial and should not affect the remaining steps. For production use, review and address dependency vulnerabilities before deployment.
 
 Let's run the Express app to verify that it works:
 
@@ -124,7 +131,7 @@ The top of the file should look similar to the following snippet:
 
     name: expressjs-hello-world
     # see https://documentation.ubuntu.com/rockcraft/latest/explanation/bases/
-    # for more information about bases and using 'bare' bases for chiselled rocks
+    # for more information about bases and using 'bare' bases for chiseled rocks
     base: bare # as an alternative, an ubuntu base can be used
     build-base: ubuntu@24.04 # build-base is required when the base is bare
     version: '0.1' # just for humans. Semantic versioning is recommended
@@ -163,34 +170,6 @@ Pack the rock:
     :start-after: [docs:pack]
     :end-before: [docs:pack-end]
     :dedent: 2
-
-.. warning::
-   There is a `known connectivity issue with LXD and Docker
-   <lxd-docker-connectivity-issue_>`_. If we see a
-   networking issue such as "*A network related operation failed in a context
-   of no network access*" or ``Client.Timeout``, we need to allow egress network
-   traffic to flow from the managed LXD bridge.
-
-   First, run ``lxc network list`` to show the available networks. The
-   bridge will have ``TYPE: bridge`` and ``MANAGED: YES``. Save the name to an
-   environment variable:
-
-   .. code-block::
-
-       NETWORK_BRIDGE=<name of managed LXD bridge>
-
-   Then, update the network traffic flow using:
-
-   .. code-block::
-
-       sudo iptables  -I DOCKER-USER -i $NETWORK_BRIDGE -j ACCEPT
-       sudo ip6tables -I DOCKER-USER -i $NETWORK_BRIDGE -j ACCEPT
-       sudo iptables  -I DOCKER-USER -o $NETWORK_BRIDGE -m conntrack \
-         --ctstate RELATED,ESTABLISHED -j ACCEPT
-       sudo ip6tables -I DOCKER-USER -o $NETWORK_BRIDGE -m conntrack \
-         --ctstate RELATED,ESTABLISHED -j ACCEPT
-
-Depending on the network, this step can take a couple of minutes to finish.
 
 Once Rockcraft has finished packing the Express rock, we'll find a new file in
 the working directory (an `OCI <OCI_image_spec_>`_ image) with the ``.rock``
@@ -237,6 +216,11 @@ The output should list the Express image, along with its tag, ID and
 size:
 
 .. terminal::
+    :user: ubuntu
+    :host: rock-dev
+    :dir: ~/expressjs-hello-world
+
+    sudo docker images expressjs-hello-world:0.1
 
     REPOSITORY              TAG       IMAGE ID       CREATED       SIZE
     expressjs-hello-world   0.1       30c7e5aed202   2 weeks ago   304MB
@@ -278,6 +262,11 @@ As a result, Pebble will give us the logs for the
 We should expect to see something similar to this:
 
 .. terminal::
+    :user: ubuntu
+    :host: rock-dev
+    :dir: ~/expressjs-hello-world
+
+    sudo docker exec expressjs-hello-world pebble logs expressjs
 
     app@0.0.0 start
     node ./bin/www
@@ -335,7 +324,7 @@ The top of the ``rockcraft.yaml`` file should look similar to the following:
 
     name: expressjs-hello-world
     # see https://documentation.ubuntu.com/rockcraft/latest/explanation/bases/
-    # for more information about bases and using 'bare' bases for chiselled rocks
+    # for more information about bases and using 'bare' bases for chiseled rocks
     base: bare # as an alternative, an ubuntu base can be used
     build-base: ubuntu@24.04 # build-base is required when the base is bare
     version: '0.2'
@@ -469,5 +458,3 @@ Troubleshooting
 Upon changing the Express app and re-packing the rock, if
 the changes are not taking effect, try running ``rockcraft clean`` and pack
 the rock again with ``rockcraft pack``.
-
-.. _`lxd-docker-connectivity-issue`: https://documentation.ubuntu.com/lxd/en/latest/howto/network_bridge_firewalld/#prevent-connectivity-issues-with-lxd-and-docker

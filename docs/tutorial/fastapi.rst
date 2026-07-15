@@ -1,3 +1,6 @@
+.. meta::
+    :description: Learn the process of making a FastAPI app into a rock. In this tutorial, we use the fastapi-framework extension to bootstrap and test the contents of the rock.
+
 .. _tutorial-build-a-rock-for-a-fastapi-app:
 
 Build a rock for a FastAPI app
@@ -50,8 +53,11 @@ In the same directory, put the following code into a new file,
     :caption: ~/fastapi-hello-world/app.py
     :language: python
 
-Run the FastAPI app using ``fastapi dev app.py --port 8000`` to verify
-that it works.
+Run the FastAPI app to verify that it works:
+
+.. code-block:: bash
+
+    fastapi dev app.py --port 8000
 
 Test the FastAPI app by using ``curl`` to send a request to the root
 endpoint. We'll need a new shell of the VM for this -- in a separate terminal,
@@ -104,7 +110,7 @@ The top of the file should look similar to the following snippet:
 
     name: fastapi-hello-world
     # see https://documentation.ubuntu.com/rockcraft/latest/explanation/bases/
-    # for more information about bases and using 'bare' bases for chiselled rocks
+    # for more information about bases and bare bases
     base: ubuntu@24.04 # the base environment for this FastAPI app
     version: '0.1' # just for humans. Semantic versioning is recommended
     summary: A summary of your FastAPI app # 79 char long summary
@@ -148,33 +154,8 @@ Pack the rock:
     :end-before: [docs:pack-end]
     :dedent: 2
 
-.. warning::
-   There is a `known connectivity issue with LXD and Docker
-   <lxd-docker-connectivity-issue_>`_. If we see a
-   networking issue such as "*A network related operation failed in a context
-   of no network access*" or ``Client.Timeout``, we need to allow egress network
-   traffic to flow from the managed LXD bridge.
-
-   First, run ``lxc network list`` to show the available networks. The
-   bridge will have ``TYPE: bridge`` and ``MANAGED: YES``. Save the name to an
-   environment variable:
-
-   .. code-block::
-
-       NETWORK_BRIDGE=<name of managed LXD bridge>
-
-   Then, update the network traffic flow using:
-
-   .. code-block::
-
-       sudo iptables  -I DOCKER-USER -i $NETWORK_BRIDGE -j ACCEPT
-       sudo ip6tables -I DOCKER-USER -i $NETWORK_BRIDGE -j ACCEPT
-       sudo iptables  -I DOCKER-USER -o $NETWORK_BRIDGE -m conntrack \
-         --ctstate RELATED,ESTABLISHED -j ACCEPT
-       sudo ip6tables -I DOCKER-USER -o $NETWORK_BRIDGE -m conntrack \
-         --ctstate RELATED,ESTABLISHED -j ACCEPT
-
-Depending on the network, this step can take a couple of minutes to finish.
+Since FastAPI is an experimental extension,
+``ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS`` must be enabled.
 
 Once Rockcraft has finished packing the FastAPI rock, we'll find a new file in
 the project's working directory (an `OCI <OCI_image_spec_>`_ archive) with
@@ -231,6 +212,11 @@ The output should list the FastAPI container image, along with its tag, ID and
 size:
 
 .. terminal::
+    :user: ubuntu
+    :host: rock-dev
+    :dir: ~/fastapi-hello-world
+
+    sudo docker images fastapi-hello-world:0.1
 
     REPOSITORY            TAG       IMAGE ID       CREATED       SIZE
     fastapi-hello-world   0.1       30c7e5aed202   2 weeks ago   193MB
@@ -276,6 +262,11 @@ As a result, Pebble will give us the logs for the
 We should expect to see something similar to this:
 
 .. terminal::
+    :user: ubuntu
+    :host: rock-dev
+    :dir: ~/fastapi-hello-world
+
+    sudo docker exec fastapi-hello-world pebble logs fastapi
 
     2024-10-01T06:32:50.180Z [fastapi] INFO:     Started server process [12]
     2024-10-01T06:32:50.181Z [fastapi] INFO:     Waiting for application startup.
@@ -310,8 +301,8 @@ contents that are not needed for the FastAPI app to run. This results
 in a much smaller rock with a reduced attack surface.
 
 .. note::
-    It is recommended to run chiselled images in production. For development,
-    we may prefer non-chiselled images as they will include additional
+    It is recommended to run chiseled images in production. For development,
+    we may prefer non-chiseled images as they will include additional
     development tooling (such as for debugging).
 
 The first step towards chiselling the rock is to ensure we are using a
@@ -327,7 +318,7 @@ The top of the ``rockcraft.yaml`` file should look similar to the following:
 
     name: fastapi-hello-world
     # see https://documentation.ubuntu.com/rockcraft/latest/explanation/bases/
-    # for more information about bases and using 'bare' bases for chiselled rocks
+    # for more information about bases and bare bases
     base: bare # as an alternative, an ubuntu base can be used
     build-base: ubuntu@24.04 # build-base is required when the base is bare
     version: '0.1-chiselled'
@@ -421,7 +412,7 @@ The top of the ``rockcraft.yaml`` file should look similar to the following:
 
     name: fastapi-hello-world
     # see https://documentation.ubuntu.com/rockcraft/latest/explanation/bases/
-    # for more information about bases and using 'bare' bases for chiselled rocks
+    # for more information about bases and bare bases
     base: bare
     build-base: ubuntu@24.04
     version: '0.2'
@@ -557,5 +548,3 @@ your changes are not taking effect (e.g. the ``/time``
 :ref:`endpoint <update-fastapi-application>` is returning a
 404), try running ``rockcraft clean`` and pack the rock again with
 ``rockcraft pack``.
-
-.. _`lxd-docker-connectivity-issue`: https://documentation.ubuntu.com/lxd/en/latest/howto/network_bridge_firewalld/#prevent-connectivity-issues-with-lxd-and-docker

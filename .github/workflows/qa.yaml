@@ -10,11 +10,33 @@ on:
   pull_request:
 
 jobs:
+  filter:
+    runs-on: ubuntu-slim
+    outputs:
+      source-files: ${{ steps.filter.outputs.source-files }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: dorny/paths-filter@7b450fff21473bca461d4b92ce414b9d0420d706 # v4.0.2
+        id: filter
+        with:
+          # Combine multiple negation checks into a union (¬A ∧ ¬B ∧ ¬C), because individual entries are checked independently (A ∨ B ∨ C).
+          # If we ever need to filter only for docs, glob 'docs/**/*' and '**/*.md'
+          filters: |
+            source-files:
+              - '!({docs/**,*.md,**/*.md,.readthedocs.yaml})'
   lint:
     uses: canonical/starflow/.github/workflows/lint-python.yaml@main
+    needs: filter
+    with:
+      source-files: ${{ needs.filter.outputs.source-files }}
   test:
     uses: canonical/starflow/.github/workflows/test-python.yaml@main
+    needs: filter
     with:
+      source-files: ${{ needs.filter.outputs.source-files }}
       lowest-python-version: ""
       fast-test-platforms: '["ubuntu-22.04", "ubuntu-24.04"]'
       fast-test-python-versions: '["3.10", "3.12"]'

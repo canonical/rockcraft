@@ -28,13 +28,13 @@ from typing import Any, cast
 
 try:
     # Available in Python 3.11 and later
-    import tomllib  # type: ignore[import-not-found]
+    import tomllib  # ty: ignore[unresolved-import]
 except ModuleNotFoundError:
     # Use the backported tomli package
-    import tomli as tomllib  # type: ignore[import-not-found]
+    import tomli as tomllib  # ty: ignore[unresolved-import]
 
-from overrides import override  # type: ignore[reportUnknownVariableType]
 from packaging.requirements import InvalidRequirement, Requirement
+from typing_extensions import override
 
 from rockcraft.errors import ExtensionError
 from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
@@ -67,7 +67,7 @@ class _GunicornBase(Extension):
 
     @staticmethod
     @override
-    def is_experimental(base: str | None) -> bool:  # noqa: ARG004 (unused arg)
+    def is_experimental(base: str | None) -> bool:
         """Check if the extension is in an experimental state."""
         return True
 
@@ -176,6 +176,11 @@ class _GunicornBase(Extension):
                 "stage-packages": ["libstdc++6"],
             }
         else:
+            # There is a bug where ca-certificates_data and python-venv both provide
+            # etc/ssl/certs/ca-certificates.crt with different content.
+            parts[f"{self.framework}-framework/dependencies"]["stage"] = [
+                "-etc/ssl/certs/ca-certificates.crt"
+            ]
             parts[f"{self.framework}-framework/runtime"] = {
                 "plugin": "nil",
                 "stage-packages": ["ca-certificates_data"],
@@ -203,7 +208,7 @@ class _GunicornBase(Extension):
             with pyproject_file.open("rb") as f:
                 pyproject_data = cast(
                     dict[str, Any],
-                    tomllib.load(f),  # type: ignore[reportUnknownMemberType]
+                    tomllib.load(f),
                 )
 
             deps = cast(
@@ -337,7 +342,7 @@ class FlaskFramework(_GunicornBase):
 
     @staticmethod
     @override
-    def is_experimental(base: str | None) -> bool:  # noqa: ARG004 (unused arg)
+    def is_experimental(base: str | None) -> bool:
         """Check if the extension is in an experimental state."""
         return False
 
@@ -371,7 +376,7 @@ class FlaskFramework(_GunicornBase):
     @property
     def _app_prime(self) -> list[str]:
         """Return the prime list for the Flask project."""
-        user_prime = (
+        user_prime: list[str] = (
             self.yaml_data.get("parts", {})
             .get("flask-framework/install-app", {})
             .get("prime", [])
@@ -489,7 +494,7 @@ class DjangoFramework(_GunicornBase):
 
     @staticmethod
     @override
-    def is_experimental(base: str | None) -> bool:  # noqa: ARG004 (unused arg)
+    def is_experimental(base: str | None) -> bool:
         """Check if the extension is in an experimental state."""
         return False
 

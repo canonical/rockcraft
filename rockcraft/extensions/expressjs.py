@@ -19,7 +19,7 @@
 import json
 from typing import Any, cast
 
-from overrides import override  # type: ignore[reportUnknownVariableType]
+from typing_extensions import override
 
 from rockcraft.errors import ExtensionError
 from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
@@ -43,7 +43,7 @@ class ExpressJSFramework(Extension):
 
     @staticmethod
     @override
-    def is_experimental(base: str | None) -> bool:  # noqa: ARG004 (unused arg)
+    def is_experimental(base: str | None) -> bool:
         """Check if the extension is in an experimental state."""
         return False
 
@@ -83,6 +83,14 @@ class ExpressJSFramework(Extension):
         runtime_part = self._gen_runtime_part()
         if runtime_part:
             snippet["parts"]["expressjs-framework/runtime"] = runtime_part
+            # There is a bug where ca-certificates_data and
+            # expressjs-framework/runtime stage-packages with a transitive
+            # dependency on ca-certificates will both contain
+            # etc/ssl/certs/ca-certificates.crt with different content.
+            snippet["parts"]["expressjs-framework/runtime"]["stage"] = [
+                "-etc/ssl/certs/ca-certificates.crt"
+            ]
+
         snippet["parts"]["expressjs-framework/logging"] = gen_logging_part()
         return snippet
 

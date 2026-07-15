@@ -1,8 +1,8 @@
 name: bare-python
 base: bare # using a bare base
-build-base: ubuntu@22.04 # using Ubuntu Jammy only for the build environment
-version: "3.11"
-summary: Python3.11 rock with a bare base
+build-base: ubuntu@26.04 # using Ubuntu Resolute only for the build environment
+version: "3.14"
+summary: Python3.14 rock with a bare base
 description: Example of a distroless-like Python rock
 platforms:
   amd64:
@@ -10,7 +10,7 @@ run-user: _daemon_ # setting a non-root user for the rock
 parts:
   install-python:
     plugin: nil
-    # install Python3.11
+    # install Python3.14
     stage-packages:
       - base-files # also install base-files to ensure a basic filesystem structure
-      - python3.11
+      - python3.14

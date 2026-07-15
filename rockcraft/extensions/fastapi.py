@@ -23,7 +23,7 @@ import posixpath
 import re
 from typing import Any
 
-from overrides import override  # type: ignore[reportUnknownVariableType]
+from typing_extensions import override
 
 from rockcraft.errors import ExtensionError
 from rockcraft.extensions._utils import find_ubuntu_base_python_version
@@ -49,7 +49,7 @@ class FastAPIFramework(Extension):
 
     @staticmethod
     @override
-    def is_experimental(base: str | None) -> bool:  # noqa: ARG004 (unused arg)
+    def is_experimental(base: str | None) -> bool:
         """Check if the extension is in an experimental state."""
         return False
 
@@ -143,6 +143,11 @@ class FastAPIFramework(Extension):
                 ],
             }
         else:
+            # There is a bug where ca-certificates_data and python-venv both provide
+            # etc/ssl/certs/ca-certificates.crt with different content.
+            parts["fastapi-framework/dependencies"]["stage"] = [
+                "-etc/ssl/certs/ca-certificates.crt"
+            ]
             parts["fastapi-framework/runtime"] = {
                 "plugin": "nil",
                 "stage-packages": ["ca-certificates_data"],

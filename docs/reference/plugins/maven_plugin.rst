@@ -1,3 +1,6 @@
+.. meta::
+    :description: Reference documentation for the Maven plugin.
+
 .. _rockcraft_maven_plugin:
 
 Maven plugin

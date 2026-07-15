@@ -1,3 +1,6 @@
+.. meta::
+    :description: How to chisel an existing Rockcraft project by using a bare base and specifying package slices to drastically reduce the final rock size and attack surface.
+
 .. _how-to-chisel-a-rock:
 
 Chisel a rock
@@ -9,7 +12,7 @@ rock as lean and secure as possible, getting rid of all the unnecessary bits
 and thus reducing its attack surface, while retaining its functionality.
 
 For this, you'll want to ensure that your rock has a bare :ref:`Project.base` and that
-its contents are :ref:`chiselled <explanation-chisel>`.
+its contents are :ref:`chiseled <explanation-chisel>`.
 
 For this guide, let's take the example of a Python runtime rock.
 
@@ -31,8 +34,8 @@ This rock can be built by running:
     :end-before: [docs:pack-rock-end]
     :dedent: 2
 
-The resulting rock (``python_3.11_amd64.rock``) will have approximately
-**42MB** and have a functional Python3.11 interpreter. You can verify that by
+The resulting rock (``python_3.14_amd64.rock``) will have approximately
+**53MB** and have a functional Python3.14 interpreter. You can verify that by
 running a very simply "Hello, world" Python script in it, with Docker:
 
 .. literalinclude:: ../code/chisel-existing-rock/task.yaml
@@ -67,10 +70,9 @@ Pack this rock with the same ``rockcraft`` command as above:
     :language: bash
     :start-after: [docs:pack-bare-rock]
     :end-before: [docs:pack-bare-rock-end]
-    :dedent: 2
 
-This new rock (``bare-python_3.11_amd64.rock``) will now have about **28MB** -
-a ~33% size reduction - and also have a functional Python3.11 interpreter.
+This new rock (``bare-python_3.14_amd64.rock``) will now have about **27MB** -
+a ~50% size reduction - and also have a functional Python3.14 interpreter.
 Run the same "Hello, world" Python script as before to confirm:
 
 .. literalinclude:: ../code/chisel-existing-rock/task.yaml
@@ -111,7 +113,7 @@ Pack it with:
     :end-before: [docs:pack-chiselled-rock-end]
     :dedent: 2
 
-And the end result will be an astoundingly small Python rock with **13MB**!
+And the end result will be an astoundingly small Python rock with **17MB**!
 And the "Hello, world" script still works:
 
 .. literalinclude:: ../code/chisel-existing-rock/task.yaml
@@ -122,13 +124,13 @@ And the "Hello, world" script still works:
 
 **To conclude**, you've just created a general-purpose Python rock with just a
 few YAML lines and no code whatsoever! Then, by changing a couple of YAML
-fields (the ``base``), you've achieved a **~33% size reduction** while
+fields (the ``base``), you've achieved a **~50% size reduction** while
 maintaining functionality. Finally, by appending two words (literally, just
 the slice names) to the project file, you were able to reduce the rock's
-size even further by an **additional ~37%** of its original size! In short:
+size even further by an **additional ~40%** of its original size! In short:
 
 +---------------+------------------+-----------+
-| Original rock | w/ ``bare`` base | chiselled |
+| Original rock | w/ ``bare`` base | chiseled  |
 +===============+==================+===========+
-| 42MB          | 28MB             | 13MB      |
+| 53MB          | 27MB             | 17MB      |
 +---------------+------------------+-----------+
