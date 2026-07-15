@@ -102,7 +102,6 @@ We would like to express a big thank you to all the people who contributed to th
 :literalref:`@erinecon <https://github.com/erinecon>`,
 :literalref:`@Gargoth <https://github.com/Gargoth>`,
 :literalref:`@gcomneno <https://github.com/gcomneno>`,
-:literalref:`@github-actions[bot] <https://github.com/github-actions[bot]>`,
 :literalref:`@jahn-junior <https://github.com/jahn-junior>`,
 :literalref:`@lengau <https://github.com/lengau>`,
 :literalref:`@medubelko <https://github.com/medubelko>`,
