@@ -37,10 +37,13 @@ def get_project_base(yaml_data: dict[str, Any]) -> str | None:
         if parsed := craft_platforms.parse_base_and_name(base_str)[0]:
             return f"{parsed.distribution}@{parsed.series}"
 
+        # "devel" is a valid base and corresponds to `ubuntu@devel`
+        if base_str == "devel":
+            return "ubuntu@devel"
+
         if base_str.count("@") != 1:
-            raise ValueError(
-                f"Invalid base string {base_str!r}. Format should be '<distribution>@<series>'",
-            )
+            return None
+
         name, _, channel = base_str.partition("@")
         return f"{name}@{channel}"
 
