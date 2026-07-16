@@ -31,6 +31,17 @@ This file instructs Rockcraft to build a rock that **only** has the ``hello`` pa
 help define and describe the rock. For more information about all available keys, check
 :ref:`reference-rockcraft-yaml`.
 
+The ``platforms`` key must match the architecture of your host.
+Edit the ``platforms`` key in ``rockcraft.yaml`` if required.
+
+.. note::
+    For this tutorial, we'll use the ``name`` ``hello`` and assume
+    we're running on the  ``amd64`` platform. Check the architecture of the
+    system using ``dpkg --print-architecture``.
+
+    The ``name``, ``version`` and ``platform`` all influence the name of the
+    generated ``.rock`` file.
+
 Pack the rock with Rockcraft
 ----------------------------
 
