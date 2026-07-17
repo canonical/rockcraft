@@ -16,6 +16,12 @@ execute: |
   sudo apt update && sudo apt install -y openjdk-21-jdk
   # [docs:install-devpack-for-spring-end]
 
+  # Note: Proxy support needs version 1.4.3, which is currently on edge
+  sudo snap refresh --edge devpack-for-spring
+
+  # Configure proxy for Maven itself
+  setup_maven_proxy
+
   # [docs:init-spring-boot]
   devpack-for-spring boot start \
     --path spring-boot-hello-world \
