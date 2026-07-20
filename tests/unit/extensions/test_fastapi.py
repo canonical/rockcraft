@@ -332,3 +332,49 @@ def test_fastapi_extension_incorrect_prime_prefix_error(tmp_path, fastapi_input_
         extensions.apply_extensions(tmp_path, fastapi_input_yaml)
     assert "start with app/" in str(exc)
     assert "start with app/" in str(exc)
+
+
+def test_fastapi_extension_uv(tmp_path, fastapi_extension, fastapi_input_yaml):
+    (tmp_path / "pyproject.toml").write_text(
+        "[project]\nname = 'foo-bar'\nversion = '0.1.0'\n"
+        "dependencies = ['fastapi']\n"
+    )
+    (tmp_path / "uv.lock").write_text("version = 1\n")
+    (tmp_path / "app.py").write_text("app = object()")
+
+    applied = extensions.apply_extensions(tmp_path, fastapi_input_yaml)
+
+    deps = applied["parts"]["fastapi-framework/dependencies"]
+    assert deps["plugin"] == "uv"
+    assert deps["source"] == "."
+    assert "python-packages" not in deps
+    assert "python-requirements" not in deps
+    assert deps["override-build"] == (
+        "craftctl default\n"
+        "uv pip install --python ${CRAFT_PART_INSTALL}/bin/python uvicorn"
+    )
+
+
+def test_fastapi_extension_uv_no_requirements_txt_is_ok(
+    tmp_path, fastapi_extension, fastapi_input_yaml
+):
+    (tmp_path / "pyproject.toml").write_text(
+        "[project]\nname = 'foo-bar'\nversion = '0.1.0'\n"
+        "dependencies = ['fastapi']\n"
+    )
+    (tmp_path / "uv.lock").write_text("version = 1\n")
+    (tmp_path / "app.py").write_text("app = object()")
+
+    # Should not raise despite there being no requirements.txt.
+    extensions.apply_extensions(tmp_path, fastapi_input_yaml)
+
+
+def test_fastapi_extension_uv_lock_without_pyproject_errors(
+    tmp_path, fastapi_extension, fastapi_input_yaml
+):
+    (tmp_path / "uv.lock").write_text("version = 1\n")
+    (tmp_path / "app.py").write_text("app = object()")
+
+    with pytest.raises(ExtensionError) as exc:
+        extensions.apply_extensions(tmp_path, fastapi_input_yaml)
+    assert "both uv.lock and pyproject.toml" in str(exc.value)
