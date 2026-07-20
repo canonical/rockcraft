@@ -31,7 +31,7 @@ from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
 
 from ._python_utils import has_global_variable
 from .app_parts import gen_logging_part
-from .extension import Extension
+from .extension import Extension, _FrameworkFactory
 
 USER_UID: int = SUPPORTED_GLOBAL_USERNAMES["_daemon_"]["uid"]
 
@@ -299,3 +299,30 @@ class FastAPIFramework(Extension):
         except SyntaxError as e:
             return [f"Syntax error in  python file in ASGI search path: {e}"]
         return []
+
+
+class FastAPIFrameworkV2(FastAPIFramework):
+    """Extension for 12-factor FastAPI applications targeting ubuntu@26.04.
+
+    For now this is behaviourally identical to :class:`FastAPIFramework`; it exists so the
+    framework can dispatch to a paas-charm 2.0 implementation in the future. Only the
+    supported base and experimental status differs.
+    """
+
+    @staticmethod
+    @override
+    def get_supported_bases() -> tuple[str, ...]:
+        """Return supported bases."""
+        return ("ubuntu@26.04",)
+
+    @staticmethod
+    @override
+    def is_experimental(base: str | None) -> bool:
+        """Indicate if the extension is in an experimental state.
+
+        This is always True for V2
+        """
+        return True
+
+
+FastAPIFrameworkFactory = _FrameworkFactory(FastAPIFramework, FastAPIFrameworkV2)

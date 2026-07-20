@@ -31,7 +31,7 @@ def go_input_yaml_fixture():
 
 @pytest.fixture
 def go_extension(mock_extensions):
-    extensions.register("go-framework", extensions.GoFramework)
+    extensions.register("go-framework", extensions.GoFrameworkFactory)
 
 
 @pytest.mark.usefixtures("go_extension")
@@ -126,6 +126,7 @@ def test_go_extension_no_go_mod_file_error(tmp_path, go_input_yaml):
 @pytest.mark.parametrize("build_environment", [[], [{"OTHER_ENV_VAR": "val"}]])
 def test_go_extension_base_bare(tmp_path, go_input_yaml, build_environment):
     go_input_yaml["base"] = "bare"
+    go_input_yaml["build-base"] = "ubuntu@24.04"
     if build_environment:
         go_input_yaml["parts"] = {
             "go-framework/install-app": {"build-environment": build_environment},
@@ -275,4 +276,106 @@ def test_go_extension_extra_assets_overridden(tmp_path, go_input_yaml):
             "foobar": "app/foobar",
         },
         "stage": ["app/foobar"],
+    }
+
+
+def test_go_framework_factory_dispatch(tmp_path):
+    factory = extensions.GoFrameworkFactory
+    v1 = factory(project_root=tmp_path, yaml_data={"name": "x", "base": "ubuntu@24.04"})
+    assert isinstance(v1, extensions.GoFramework)
+    assert not isinstance(v1, extensions.GoFrameworkV2)
+
+    v2 = factory(project_root=tmp_path, yaml_data={"name": "x", "base": "ubuntu@26.04"})
+    assert isinstance(v2, extensions.GoFrameworkV2)
+
+
+def test_go_framework_v2_supported_bases():
+    assert "ubuntu@26.04" in extensions.GoFrameworkV2.get_supported_bases()
+
+
+def test_go_framework_factory_supported_bases():
+    factory_bases = extensions.GoFrameworkFactory.get_supported_bases()
+    assert "ubuntu@26.04" in factory_bases
+    for base in extensions.GoFramework.get_supported_bases():
+        assert base in factory_bases
+
+
+def test_go_framework_factory_is_experimental():
+    factory = extensions.GoFrameworkFactory
+    assert factory.is_experimental("ubuntu@26.04") is True
+    assert factory.is_experimental("ubuntu@24.04") is False
+    assert factory.is_experimental("bare") is False
+
+
+@pytest.mark.usefixtures("go_extension")
+def test_go_extension_26_04_experimental_no_env(tmp_path):
+    (tmp_path / "go.mod").write_text("module projectname\n\ngo 1.22.4")
+    go_input_yaml = {
+        "name": "goprojectname",
+        "base": "ubuntu@26.04",
+        "platforms": {"amd64": {}},
+        "extensions": ["go-framework"],
+    }
+    with pytest.raises(ExtensionError, match="Extension is experimental"):
+        extensions.apply_extensions(tmp_path, go_input_yaml)
+
+
+@pytest.mark.usefixtures("go_extension")
+def test_go_extension_default_26_04(tmp_path, monkeypatch):
+    monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "1")
+    (tmp_path / "go.mod").write_text("module projectname\n\ngo 1.22.4")
+    go_input_yaml = {
+        "name": "goprojectname",
+        "base": "ubuntu@26.04",
+        "platforms": {"amd64": {}},
+        "extensions": ["go-framework"],
+    }
+    applied = extensions.apply_extensions(tmp_path, go_input_yaml)
+
+    assert applied == {
+        "base": "ubuntu@26.04",
+        "name": "goprojectname",
+        "platforms": {"amd64": {}},
+        "run_user": "_daemon_",
+        "parts": {
+            "go-framework/base-layout": {
+                "override-build": "mkdir -p ${CRAFT_PART_INSTALL}/app",
+                "plugin": "nil",
+                "permissions": [{"owner": 584792, "group": 584792}],
+            },
+            "go-framework/install-app": {
+                "plugin": "go",
+                "source": ".",
+                "build-snaps": ["go"],
+                "organize": {"bin/goprojectname": "usr/local/bin/goprojectname"},
+                "stage": ["usr/local/bin/goprojectname"],
+            },
+            "go-framework/runtime": {
+                "plugin": "nil",
+                "stage-packages": [
+                    "ca-certificates_data",
+                ],
+            },
+            "go-framework/logging": {
+                "plugin": "nil",
+                "override-build": (
+                    "craftctl default\n"
+                    "mkdir -p $CRAFT_PART_INSTALL/opt/promtail\n"
+                    "mkdir -p $CRAFT_PART_INSTALL/etc/promtail"
+                ),
+                "permissions": [
+                    {"path": "opt/promtail", "owner": 584792, "group": 584792},
+                    {"path": "etc/promtail", "owner": 584792, "group": 584792},
+                ],
+            },
+        },
+        "services": {
+            "go": {
+                "command": "goprojectname",
+                "override": "replace",
+                "startup": "enabled",
+                "user": "_daemon_",
+                "working-dir": "/app",
+            },
+        },
     }
