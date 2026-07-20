@@ -46,7 +46,7 @@ def use_gradle_init_script_part_fixture(request, spring_boot_input_yaml):
 @pytest.fixture
 def spring_boot_extension(mock_extensions, monkeypatch):
     monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "1")
-    extensions.register("spring-boot-framework", extensions.SpringBootFramework)
+    extensions.register("spring-boot-framework", extensions.SpringBootFrameworkFactory)
 
 
 @pytest.fixture
@@ -572,3 +572,106 @@ def test_spring_boot_extension_extra_assets_start_with_app(
         extensions.apply_extensions(tmp_path, spring_boot_input_yaml)
 
     assert "start with 'app/'" in str(exc.value)
+
+
+# ---------------------------------------------------------------------------
+# V2 and factory tests
+# ---------------------------------------------------------------------------
+
+
+def test_factory_dispatch_v1(tmp_path):
+    """Factory returns SpringBootFramework for ubuntu@24.04."""
+    from rockcraft.extensions.springboot import (
+        SpringBootFramework,
+        SpringBootFrameworkFactory,
+        SpringBootFrameworkV2,
+    )
+
+    instance = SpringBootFrameworkFactory(
+        project_root=tmp_path,
+        yaml_data={"name": "x", "base": "ubuntu@24.04"},
+    )
+    assert isinstance(instance, SpringBootFramework)
+    assert not isinstance(instance, SpringBootFrameworkV2)
+
+
+def test_factory_dispatch_v2(tmp_path):
+    """Factory returns SpringBootFrameworkV2 for ubuntu@26.04."""
+    from rockcraft.extensions.springboot import (
+        SpringBootFrameworkFactory,
+        SpringBootFrameworkV2,
+    )
+
+    instance = SpringBootFrameworkFactory(
+        project_root=tmp_path,
+        yaml_data={"name": "x", "base": "ubuntu@26.04"},
+    )
+    assert isinstance(instance, SpringBootFrameworkV2)
+
+
+def test_v2_supported_bases():
+    """SpringBootFrameworkV2 supports ubuntu@26.04."""
+    from rockcraft.extensions.springboot import SpringBootFrameworkV2
+
+    assert "ubuntu@26.04" in SpringBootFrameworkV2.get_supported_bases()
+
+
+def test_factory_supported_bases():
+    """SpringBootFrameworkFactory includes bases from both V1 and V2."""
+    from rockcraft.extensions.springboot import (
+        SpringBootFramework,
+        SpringBootFrameworkFactory,
+    )
+
+    factory_bases = SpringBootFrameworkFactory.get_supported_bases()
+    assert "ubuntu@26.04" in factory_bases
+    for base in SpringBootFramework.get_supported_bases():
+        assert base in factory_bases
+
+
+@pytest.mark.usefixtures("spring_boot_extension")
+def test_spring_boot_extension_default_ubuntu_26_04(tmp_path, monkeypatch):
+    """Applying the extension with ubuntu@26.04 succeeds and routes to V2."""
+    monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "1")
+    (tmp_path / "pom.xml").touch(exist_ok=True)
+    input_yaml = {
+        "name": "springbootprojectname",
+        "base": "ubuntu@26.04",
+        "platforms": {"amd64": {}},
+        "extensions": ["spring-boot-framework"],
+    }
+    applied = extensions.apply_extensions(tmp_path, input_yaml)
+
+    expected = {
+        "base": "ubuntu@26.04",
+        "name": "springbootprojectname",
+        "platforms": {"amd64": {}},
+        "run-user": "_daemon_",
+        "parts": {
+            "spring-boot-framework/install-app": {
+                "plugin": "maven",
+                "source": ".",
+                "build-packages": ["default-jdk", "maven"],
+                "organize": {"**/*.jar": "app/"},
+                "override-build": (
+                    "craftctl default\n"
+                    "find ${CRAFT_PART_INSTALL} -name '*-plain.jar' -type f -delete"
+                ),
+            },
+            "spring-boot-framework/runtime": {
+                "plugin": "jlink",
+                "after": ["spring-boot-framework/install-app"],
+                "build-packages": ["default-jdk"],
+            },
+        },
+        "services": {
+            "spring-boot": {
+                "command": 'bash -c "java -jar *.jar"',
+                "override": "replace",
+                "startup": "enabled",
+                "user": "_daemon_",
+                "working-dir": "/app",
+            }
+        },
+    }
+    assert applied == expected
