@@ -31,7 +31,7 @@ def go_input_yaml_fixture():
 
 @pytest.fixture
 def go_extension(mock_extensions):
-    extensions.register("go-framework", extensions.GoFrameworkFactory)  # type: ignore[arg-type]
+    extensions.register("go-framework", extensions.GoFrameworkFactory)  # type: ignore
 
 
 @pytest.mark.usefixtures("go_extension")

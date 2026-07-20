@@ -49,9 +49,9 @@ __all__ = [
     "gen_logging_part",
 ]
 
-register("django-framework", DjangoFrameworkFactory)  # type: ignore[arg-type]
-register("expressjs-framework", ExpressJSFrameworkFactory)  # type: ignore[arg-type]
-register("fastapi-framework", FastAPIFrameworkFactory)  # type: ignore[arg-type]
-register("flask-framework", FlaskFrameworkFactory)  # type: ignore[arg-type]
-register("go-framework", GoFrameworkFactory)  # type: ignore[arg-type]
-register("spring-boot-framework", SpringBootFrameworkFactory)  # type: ignore[arg-type]
+register("django-framework", DjangoFrameworkFactory)  # type: ignore
+register("expressjs-framework", ExpressJSFrameworkFactory)  # type: ignore
+register("fastapi-framework", FastAPIFrameworkFactory)  # type: ignore
+register("flask-framework", FlaskFrameworkFactory)  # type: ignore
+register("go-framework", GoFrameworkFactory)  # type: ignore
+register("spring-boot-framework", SpringBootFrameworkFactory)  # type: ignore

@@ -33,7 +33,7 @@ def expressjs_input_yaml_fixture():
 
 @pytest.fixture
 def expressjs_extension(mock_extensions):
-    extensions.register("expressjs-framework", extensions.ExpressJSFrameworkFactory)  # type: ignore[arg-type]
+    extensions.register("expressjs-framework", extensions.ExpressJSFrameworkFactory)  # type: ignore
 
 
 @pytest.fixture

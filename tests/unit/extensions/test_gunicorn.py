@@ -24,7 +24,7 @@ from rockcraft.errors import ExtensionError
 
 @pytest.fixture
 def flask_extension(mock_extensions):
-    extensions.register("flask-framework", extensions.FlaskFrameworkFactory)  # type: ignore[arg-type]
+    extensions.register("flask-framework", extensions.FlaskFrameworkFactory)  # type: ignore
 
 
 @pytest.fixture(name="flask_input_yaml")
@@ -40,7 +40,7 @@ def flask_input_yaml_fixture():
 @pytest.fixture
 def django_extension(mock_extensions, monkeypatch):
     monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "1")
-    extensions.register("django-framework", extensions.DjangoFrameworkFactory)  # type: ignore[arg-type]
+    extensions.register("django-framework", extensions.DjangoFrameworkFactory)  # type: ignore
 
 
 @pytest.fixture(name="django_input_yaml")
