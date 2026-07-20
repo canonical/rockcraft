@@ -34,8 +34,13 @@ def get_project_base(yaml_data: dict[str, Any]) -> str | None:
     if base_str := cast(
         str | None, yaml_data.get("build-base") or yaml_data.get("base")
     ):
-        if parsed := craft_platforms.parse_base_and_name(base_str)[0]:
-            return f"{parsed.distribution}@{parsed.series}"
+        try:
+            if parsed := craft_platforms.parse_base_and_name(base_str)[0]:
+                return f"{parsed.distribution}@{parsed.series}"
+        except ValueError:
+            # craft_platforms.parse_base_and_name raises ValueError if the base_str is invalid.
+            # We just return None in that case.
+            return None
 
         # "devel" is a valid base and corresponds to `ubuntu@devel`
         if base_str == "devel":
