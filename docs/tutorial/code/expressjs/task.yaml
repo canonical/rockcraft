@@ -19,6 +19,15 @@ execute: |
   sudo apt-get update -y && sudo apt-get install npm -y
   # [docs:install-deps-end]
 
+  # Handle proxies through 'npm config'; the reason for that is because we install express
+  # through 'sudo', which doesn't propagate the environment variables HTTP_PROXY and HTTPS_PROXY.
+  if [ -n "${HTTP_PROXY:-}" ]; then
+    sudo npm config set proxy $HTTP_PROXY
+  fi
+  if [ -n "${HTTPS_PROXY:-}" ]; then
+    sudo npm config set https-proxy $HTTPS_PROXY
+  fi
+
   # [docs:init-app]
   sudo npm install -g express-generator@4
   express app
