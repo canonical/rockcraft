@@ -997,3 +997,77 @@ def test_django_extension_django_service_override_disable_wsgi_path_check(tmp_pa
     extensions.apply_extensions(tmp_path, input_yaml)
     extensions.apply_extensions(tmp_path, input_yaml)
     extensions.apply_extensions(tmp_path, input_yaml)
+
+
+def test_flask_extension_uv(tmp_path, flask_extension, flask_input_yaml):
+    (tmp_path / "pyproject.toml").write_text(
+        "[project]\nname = 'foo-bar'\nversion = '0.1.0'\n"
+        "dependencies = ['flask']\n"
+    )
+    (tmp_path / "uv.lock").write_text("version = 1\n")
+    (tmp_path / "app.py").write_text("app = object()")
+
+    applied = extensions.apply_extensions(tmp_path, flask_input_yaml)
+
+    deps = applied["parts"]["flask-framework/dependencies"]
+    assert deps["plugin"] == "uv"
+    assert deps["source"] == "."
+    assert deps["stage-packages"] == ["python3-venv"]
+    assert "python-packages" not in deps
+    assert "python-requirements" not in deps
+    assert deps["override-build"] == (
+        "craftctl default\n"
+        "uv pip install --python ${CRAFT_PART_INSTALL}/bin/python gunicorn~=23.0"
+    )
+    # non-bare base still excludes the ca-certificates crt from the deps stage
+    assert deps["stage"] == ["-etc/ssl/certs/ca-certificates.crt"]
+
+
+def test_flask_extension_uv_lock_without_pyproject_errors(
+    tmp_path, flask_extension, flask_input_yaml
+):
+    (tmp_path / "uv.lock").write_text("version = 1\n")
+    (tmp_path / "app.py").write_text("app = object()")
+
+    with pytest.raises(ExtensionError) as exc:
+        extensions.apply_extensions(tmp_path, flask_input_yaml)
+    assert "both uv.lock and pyproject.toml" in str(exc.value)
+
+
+def test_django_extension_uv(tmp_path, django_extension, django_input_yaml):
+    (tmp_path / "pyproject.toml").write_text(
+        "[project]\nname = 'foo-bar'\nversion = '0.1.0'\n"
+        "dependencies = ['django']\n"
+    )
+    (tmp_path / "uv.lock").write_text("version = 1\n")
+    wsgi_dir = tmp_path / "foo_bar" / "foo_bar"
+    wsgi_dir.mkdir(parents=True)
+    (wsgi_dir / "wsgi.py").write_text("application = object()")
+
+    applied = extensions.apply_extensions(tmp_path, django_input_yaml)
+
+    deps = applied["parts"]["django-framework/dependencies"]
+    assert deps["plugin"] == "uv"
+    assert deps["override-build"] == (
+        "craftctl default\n"
+        "uv pip install --python ${CRAFT_PART_INSTALL}/bin/python gunicorn~=23.0"
+    )
+    assert "python-requirements" not in deps
+
+
+def test_django_extension_uv_no_requirements_txt_is_ok(
+    tmp_path, django_extension, django_input_yaml
+):
+    # A uv project with no requirements.txt must NOT raise the
+    # "missing requirements.txt" error.
+    (tmp_path / "pyproject.toml").write_text(
+        "[project]\nname = 'foo-bar'\nversion = '0.1.0'\n"
+        "dependencies = ['django']\n"
+    )
+    (tmp_path / "uv.lock").write_text("version = 1\n")
+    wsgi_dir = tmp_path / "foo_bar" / "foo_bar"
+    wsgi_dir.mkdir(parents=True)
+    (wsgi_dir / "wsgi.py").write_text("application = object()")
+
+    # Should not raise.
+    extensions.apply_extensions(tmp_path, django_input_yaml)
