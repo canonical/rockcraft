@@ -237,7 +237,6 @@ extensions = [
     "sphinx.ext.napoleon",
     "sphinx.ext.viewcode",
     "sphinx_autodoc_typehints",  # must be loaded after napoleon
-    "sphinxcontrib.details.directive",
     "sphinx_toolbox.collapse",
     # "sphinx_substitution_extensions",
     ]
