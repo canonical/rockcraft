@@ -18,7 +18,11 @@
 
 from ._utils import apply_extensions
 from .app_parts import gen_logging_part
-from .expressjs import ExpressJSFramework, ExpressJSFrameworkFactory, ExpressJSFrameworkV2
+from .expressjs import (
+    ExpressJSFramework,
+    ExpressJSFrameworkFactory,
+    ExpressJSFrameworkV2,
+)
 from .fastapi import FastAPIFramework, FastAPIFrameworkV2, FastAPIFrameworkFactory
 from .go import GoFramework, GoFrameworkV2, GoFrameworkFactory
 from .gunicorn import (
@@ -30,7 +34,11 @@ from .gunicorn import (
     FlaskFrameworkFactory,
 )
 from .registry import get_extension_class, get_extension_names, register, unregister
-from .springboot import SpringBootFramework, SpringBootFrameworkV2, SpringBootFrameworkFactory
+from .springboot import (
+    SpringBootFramework,
+    SpringBootFrameworkV2,
+    SpringBootFrameworkFactory,
+)
 
 __all__ = [
     "get_extension_class",

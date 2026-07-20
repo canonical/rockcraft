@@ -792,8 +792,8 @@ def test_flask_framework_factory_dispatch(tmp_path):
     """Test that FlaskFrameworkFactory dispatches to the correct class by base."""
     from rockcraft.extensions.gunicorn import (
         FlaskFramework,
-        FlaskFrameworkV2,
         FlaskFrameworkFactory,
+        FlaskFrameworkV2,
     )
 
     v1 = FlaskFrameworkFactory(
@@ -812,8 +812,8 @@ def test_flask_framework_v2_supported_bases():
     """Test FlaskFrameworkV2 and FlaskFrameworkFactory supported bases."""
     from rockcraft.extensions.gunicorn import (
         FlaskFramework,
-        FlaskFrameworkV2,
         FlaskFrameworkFactory,
+        FlaskFrameworkV2,
     )
 
     assert "ubuntu@26.04" in FlaskFrameworkV2.get_supported_bases()

@@ -583,8 +583,8 @@ def test_factory_dispatch_v1(tmp_path):
     """Factory returns SpringBootFramework for ubuntu@24.04."""
     from rockcraft.extensions.springboot import (
         SpringBootFramework,
-        SpringBootFrameworkV2,
         SpringBootFrameworkFactory,
+        SpringBootFrameworkV2,
     )
 
     instance = SpringBootFrameworkFactory(
@@ -598,8 +598,8 @@ def test_factory_dispatch_v1(tmp_path):
 def test_factory_dispatch_v2(tmp_path):
     """Factory returns SpringBootFrameworkV2 for ubuntu@26.04."""
     from rockcraft.extensions.springboot import (
-        SpringBootFrameworkV2,
         SpringBootFrameworkFactory,
+        SpringBootFrameworkV2,
     )
 
     instance = SpringBootFrameworkFactory(
@@ -675,4 +675,3 @@ def test_spring_boot_extension_default_ubuntu_26_04(tmp_path, monkeypatch):
         },
     }
     assert applied == expected
-
