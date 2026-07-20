@@ -30,7 +30,7 @@ def fastapi_input_yaml_fixture():
 
 @pytest.fixture
 def fastapi_extension(mock_extensions):
-    extensions.register("fastapi-framework", extensions.FastAPIFrameworkFactory)  # type: ignore
+    extensions.register("fastapi-framework", extensions.FastAPIFrameworkFactory)
 
 
 @pytest.mark.usefixtures("fastapi_extension")

@@ -46,7 +46,7 @@ def use_gradle_init_script_part_fixture(request, spring_boot_input_yaml):
 @pytest.fixture
 def spring_boot_extension(mock_extensions, monkeypatch):
     monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "1")
-    extensions.register("spring-boot-framework", extensions.SpringBootFrameworkFactory)  # type: ignore
+    extensions.register("spring-boot-framework", extensions.SpringBootFrameworkFactory)
 
 
 @pytest.fixture
