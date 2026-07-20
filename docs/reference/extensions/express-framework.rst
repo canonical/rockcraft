@@ -10,8 +10,13 @@ The Express extension streamlines the process of building Express
 application rocks.
 
 It facilitates the installation of Express application dependencies, including
-Node.js and npm, inside the rock. Additionally, it transfers your project files
-to ``/app`` within the rock.
+Node.js and npm, inside the rock. Extension discovers location of the
+``package.json``, but can only package a single application. If application
+defines ``build`` script, development dependencies will be installed,
+``npm run build`` called, and entries matching ``file`` array (excluding
+entries from ``.npmignore``, if exists) will be packages. If ``files``
+array is not defined and ``.npmignore`` does not exist, only files from
+the ``dist/`` directory will be packaged.
 
 By default, the system foundation, or base, is set as ``bare`` to generate a
 lightweight image.
@@ -23,13 +28,18 @@ bases.
 Project requirements
 --------------------
 
-There are 3 requirements to be able to use the ``expressjs-framework``
+There are two requirements to be able to use the ``expressjs-framework``
 extension:
 
-1. The application should reside in the ``app`` directory.
-2. The application should have a ``package.json`` file.
-3. The ``package.json`` file should define the ``start`` script.
+1. The application should have a ``package.json`` file.
+2. The ``package.json`` file should define the ``start`` script.
    For more information, see the `npm documentation <https://docs.npmjs.com/cli/v11/configuring-npm/package-json>`_.
+
+If application defines ``build`` script in ``package.json`` file, it is
+recommended to have ``files`` array describing the entries to be included
+or have an appropriate ``.npmignore`` file to exclude entries not required
+at the run time. If ``files`` array is not defined and ``.npmignore``
+does not exist, only the ``dist/`` directory will be packaged.
 
 .. _reference-express-framework-npm-include-node:
 
