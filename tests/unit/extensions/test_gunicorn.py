@@ -1001,8 +1001,7 @@ def test_django_extension_django_service_override_disable_wsgi_path_check(tmp_pa
 
 def test_flask_extension_uv(tmp_path, flask_extension, flask_input_yaml):
     (tmp_path / "pyproject.toml").write_text(
-        "[project]\nname = 'foo-bar'\nversion = '0.1.0'\n"
-        "dependencies = ['flask']\n"
+        "[project]\nname = 'foo-bar'\nversion = '0.1.0'\ndependencies = ['flask']\n"
     )
     (tmp_path / "uv.lock").write_text("version = 1\n")
     (tmp_path / "app.py").write_text("app = object()")
@@ -1036,8 +1035,7 @@ def test_flask_extension_uv_lock_without_pyproject_errors(
 
 def test_django_extension_uv(tmp_path, django_extension, django_input_yaml):
     (tmp_path / "pyproject.toml").write_text(
-        "[project]\nname = 'foo-bar'\nversion = '0.1.0'\n"
-        "dependencies = ['django']\n"
+        "[project]\nname = 'foo-bar'\nversion = '0.1.0'\ndependencies = ['django']\n"
     )
     (tmp_path / "uv.lock").write_text("version = 1\n")
     wsgi_dir = tmp_path / "foo_bar" / "foo_bar"
@@ -1061,8 +1059,7 @@ def test_django_extension_uv_no_requirements_txt_is_ok(
     # A uv project with no requirements.txt must NOT raise the
     # "missing requirements.txt" error.
     (tmp_path / "pyproject.toml").write_text(
-        "[project]\nname = 'foo-bar'\nversion = '0.1.0'\n"
-        "dependencies = ['django']\n"
+        "[project]\nname = 'foo-bar'\nversion = '0.1.0'\ndependencies = ['django']\n"
     )
     (tmp_path / "uv.lock").write_text("version = 1\n")
     wsgi_dir = tmp_path / "foo_bar" / "foo_bar"

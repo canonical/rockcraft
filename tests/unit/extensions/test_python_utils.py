@@ -2,7 +2,6 @@
 """Unit tests for uv detection helpers in the extensions package."""
 
 import pytest
-
 from rockcraft.errors import ExtensionError
 from rockcraft.extensions._python_utils import uses_uv, validate_uv_lockfile
 
