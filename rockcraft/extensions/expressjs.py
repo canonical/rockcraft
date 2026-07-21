@@ -20,6 +20,7 @@ import json
 from pathlib import Path
 from typing import Any, cast
 
+import craft_cli
 from typing_extensions import override
 
 from rockcraft.errors import ExtensionError
@@ -146,18 +147,7 @@ class ExpressJSFramework(Extension):
         install_app_part: dict[str, Any] = {
             "plugin": "npm",
             "source": f"{self._source_root}/",
-            "override-build": (
-                "rm -rf node_modules\n"
-                "craftctl default\n"
-                "npm config set script-shell=bash --location project\n"
-                "cp ${CRAFT_PART_BUILD}/.npmrc ${CRAFT_PART_INSTALL}/lib/node_modules/"
-                f"{self._app_name}/.npmrc\n"
-                # we can not user `permissions` block here because it doesn't work with symlinks
-                # bug: https://github.com/canonical/rockcraft/issues/660
-                f"chown -R {USER_UID}:{USER_UID} ${{CRAFT_PART_INSTALL}}/lib/node_modules/{self._app_name}\n"
-                f"ln -s /lib/node_modules/{self._app_name} ${{CRAFT_PART_INSTALL}}/app\n"
-                f"chown -R {USER_UID}:{USER_UID} ${{CRAFT_PART_INSTALL}}/app\n"
-            ),
+            "override-build": self._gen_override_build(),
         }
         if self._rock_base == "bare":
             install_app_part["override-build"] = (
@@ -184,6 +174,41 @@ class ExpressJSFramework(Extension):
         # be reverted in a few months (as of April 2025).
         install_app_part["build-environment"] = [{"UV_USE_IO_URING": "0"}]
         return install_app_part
+
+    def _gen_override_build(self) -> str:
+        """Generate the override-build script snippet.
+
+        Script consists of three parts:
+          - lines before 'craftctl default'
+          - 'craftctl default' invocation
+          - lines after 'craftctl default'
+        """
+        return self._gen_shell_script(
+            self._gen_override_build_pre_default(),
+            ["craftctl default"],
+            self._gen_override_build_post_default(),
+        )
+
+    def _gen_override_build_pre_default(self) -> list[str]:
+        """Generate override-build script part used before 'craftctl default'."""
+        return ["rm -rf node_modules"]
+
+    def _gen_override_build_post_default(self) -> list[str]:
+        """Generate override-build script part used after 'craftctl default'."""
+        return [
+            "npm config set script-shell=bash --location project",
+            "cp ${CRAFT_PART_BUILD}/.npmrc ${CRAFT_PART_INSTALL}/lib/node_modules/"
+            f"{self._app_name}/.npmrc",
+            # we can not user `permissions` block here because it doesn't work with symlinks
+            # bug: https://github.com/canonical/rockcraft/issues/660
+            f"chown -R {USER_UID}:{USER_UID} ${{CRAFT_PART_INSTALL}}/lib/node_modules/{self._app_name}",
+            f"ln -s /lib/node_modules/{self._app_name} ${{CRAFT_PART_INSTALL}}/app",
+            f"chown -R {USER_UID}:{USER_UID} ${{CRAFT_PART_INSTALL}}/app",
+        ]
+
+    def _gen_shell_script(self, *snippets: list[str]) -> str:
+        """Generate multiline shell script from lists of strings."""
+        return "\n".join(line for fragment in snippets for line in fragment) + "\n"
 
     def _gen_app_build_packages(self) -> list[str]:
         """Return the build packages for the install app part."""
@@ -296,6 +321,42 @@ class ExpressJSFrameworkV2(ExpressJSFramework):
         """
         return True
 
+    def _gen_override_build_pre_default(self) -> list[str]:
+        """Generate override-build script part used before 'craftctl default'."""
+        override_build = ["rm -rf node_modules"]
+        if self._has_build_script:
+            if not self._has_defined_files:
+                craft_cli.emit.warning(
+                    "No .npmignore or '.files[]' in package.json, all files will be packaged"
+                )
+                craft_cli.emit.warning(
+                    "This may not be what you want to pack after running 'npm run build'"
+                )
+            override_build.extend(
+                [
+                    "npm install --include=dev",
+                    "npm run build",
+                ]
+            )
+            # Note: there is no need to cleanup node_modules locally (like 'npm prune --omit=dev')
+            # npm_plugin calls 'npm pack' and it always ignores node_modules
+            # see https://docs.npmjs.com/cli/v10/configuring-npm/package-json#files
+            # npm install will user package.json from tgz to obtain the list of modules later
+        return override_build
+
+    def _gen_override_build_post_default(self) -> list[str]:
+        """Generate override-build script part used after 'craftctl default'."""
+        override_build = []
+        if self._has_build_script:  # Q: and not self._has_defined_files: ?
+            override_build.extend(
+                [
+                    f"mkdir -p ${{CRAFT_PART_INSTALL}}/lib/node_modules/{self._app_name}/dist",
+                    f"cp -r dist/. ${{CRAFT_PART_INSTALL}}/lib/node_modules/{self._app_name}/dist",
+                ]
+            )
+        override_build.extend(super()._gen_override_build_post_default())
+        return override_build
+
     @property
     def _source_root(self) -> str:
         """Return relative path to the source tree root directory."""
@@ -372,6 +433,26 @@ class ExpressJSFrameworkV2(ExpressJSFramework):
         else:
             self._app_package_json_cache = cast(dict[str, Any], app_package_json)
             return self._app_package_json_cache
+
+    @property
+    def _app_name(self) -> str:
+        """Return the application name as defined on package.json."""
+        return self._app_package_json["name"]
+
+    @property
+    def _has_defined_files(self) -> bool:
+        """Check if package.json::files[] is defined or .npmignore exists."""
+        return (
+            "files" in self._app_package_json
+            or (self._package_json_file.parent / ".npmignore").is_file()
+        )
+
+    @property
+    def _has_build_script(self) -> bool:
+        return (
+            "scripts" in self._app_package_json
+            and "build" in self._app_package_json["scripts"]
+        )
 
 
 ExpressJSFrameworkFactory = _FrameworkFactory(ExpressJSFramework, ExpressJSFrameworkV2)
