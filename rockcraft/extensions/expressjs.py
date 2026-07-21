@@ -17,6 +17,7 @@
 """An extension for the NodeJS based Javascript application extension."""
 
 import json
+from pathlib import Path
 from typing import Any, cast
 
 from typing_extensions import override
@@ -144,7 +145,7 @@ class ExpressJSFramework(Extension):
         """
         install_app_part: dict[str, Any] = {
             "plugin": "npm",
-            "source": f"{self.IMAGE_BASE_DIR}/",
+            "source": f"{self._source_root}/",
             "override-build": (
                 "rm -rf node_modules\n"
                 "craftctl default\n"
@@ -227,6 +228,11 @@ class ExpressJSFramework(Extension):
         return self.yaml_data["base"]
 
     @property
+    def _source_root(self) -> str:
+        """Return relative path to the source tree root directory."""
+        return self.IMAGE_BASE_DIR
+
+    @property
     def _app_package_json(self) -> dict[str, Any]:
         """Return the app package.json contents."""
         package_json_file = self.project_root / self.IMAGE_BASE_DIR / "package.json"
@@ -268,6 +274,13 @@ class ExpressJSFrameworkV2(ExpressJSFramework):
     supported base and experimental status differs.
     """
 
+    PACKAGE_JSON = "package.json"
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        super().__init__(*args, **kwargs)
+        self._package_json_file_cache = None
+        self._app_package_json_cache = None
+
     @staticmethod
     @override
     def get_supported_bases() -> tuple[str, ...]:
@@ -282,6 +295,83 @@ class ExpressJSFrameworkV2(ExpressJSFramework):
         This is always True for V2.
         """
         return True
+
+    @property
+    def _source_root(self) -> str:
+        """Return relative path to the source tree root directory."""
+        parent = self._package_json_file.parent
+        if self.project_root == parent:
+            return "."
+        return str(parent.relative_to(self.project_root))
+
+    @property
+    def _package_json_file(self) -> Path:
+        """Return package.json path.
+
+        Search for package.json in the project root directory first.
+        If not found, search non-hidden subdirectories exactly one level deep.
+
+        Returns:
+            Path: path to the discovered package.json file;
+
+        Raises:
+            ExtensionError If the file is missing entirely, or if multiple
+                           package.json files are found in the subdirectories.
+
+        """
+        if self._package_json_file_cache is not None:
+            return self._package_json_file_cache
+
+        root_package_json = self.project_root / self.PACKAGE_JSON
+        if root_package_json.is_file():
+            self._package_json_file_cache = root_package_json
+            return root_package_json
+
+        package_json = None
+        for path in self.project_root.glob(f"[!.]*/{self.PACKAGE_JSON}"):
+            if path.is_file():
+                if package_json is not None:  # more than one found: error
+                    raise ExtensionError(
+                        "multiple package.json files",
+                        doc_slug="/reference/extensions/express-framework/#project-requirements",
+                        logpath_report=False,
+                    )
+                package_json = path
+
+        if package_json is None:
+            raise ExtensionError(
+                "missing package.json file",
+                doc_slug="/reference/extensions/express-framework/#project-requirements",
+                logpath_report=False,
+            )
+
+        self._package_json_file_cache = package_json
+        return package_json
+
+    @property
+    def _app_package_json(self) -> dict[str, Any]:
+        """Return the app package.json contents."""
+        if self._app_package_json_cache is not None:
+            return self._app_package_json_cache
+
+        package_json_contents = self._package_json_file.read_text(encoding="utf-8")
+        try:
+            app_package_json = json.loads(package_json_contents)
+            if not isinstance(app_package_json, dict):
+                raise ExtensionError(
+                    "invalid package.json file",
+                    doc_slug="/reference/extensions/express-framework/#project-requirements",
+                    logpath_report=False,
+                )
+        except json.JSONDecodeError as exc:
+            raise ExtensionError(
+                "failed to parse package.json; it might contain invalid JSON",
+                doc_slug="/reference/extensions/express-framework/#project-requirements",
+                logpath_report=False,
+            ) from exc
+        else:
+            self._app_package_json_cache = cast(dict[str, Any], app_package_json)
+            return self._app_package_json_cache
 
 
 ExpressJSFrameworkFactory = _FrameworkFactory(ExpressJSFramework, ExpressJSFrameworkV2)
