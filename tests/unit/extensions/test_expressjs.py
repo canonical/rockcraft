@@ -46,18 +46,26 @@ def package_json_file(app_path) -> None:
     _create_package_json_file(app_path)
 
 
+@pytest.fixture
+def package_json_file_with_build(app_path) -> None:
+    _create_package_json_file(app_path, with_build=True)
+
+
 def _create_app_path(path, name):
     app_path = path / name
     app_path.mkdir(parents=True, exist_ok=True)
     return app_path
 
 
-def _create_package_json_file(app_path):
+def _create_package_json_file(app_path, *, with_build=False):
+    build_script = ""
+    if with_build:
+        build_script = ',"build": "tsc"'
     (app_path / "package.json").write_text(
         f"""{{
     "name": "{_expressjs_project_name}",
     "scripts": {{
-        "start": "node ./bin/www"
+        "start": "node ./bin/www"{build_script}
     }}
 }}"""
     )
@@ -342,6 +350,182 @@ def test_expressjs_extension_default(
     expected_yaml_dict,
 ):
     expressjs_input_yaml["base"] = base
+    expressjs_input_yaml["parts"] = {
+        "expressjs-framework/install-app": {
+            "npm-include-node": npm_include_node,
+            "npm-node-version": node_version,
+        }
+    }
+    applied = extensions.apply_extensions(tmp_path, expressjs_input_yaml)
+
+    assert applied == expected_yaml_dict
+
+
+@pytest.mark.parametrize(
+    ("base", "npm_include_node", "node_version", "expected_yaml_dict"),
+    [
+        pytest.param(
+            "ubuntu@26.04",
+            False,
+            None,
+            {
+                "base": "ubuntu@26.04",
+                "build-base": "ubuntu@26.04",
+                "name": "foo-bar",
+                "platforms": {
+                    "amd64": {},
+                },
+                "run-user": "_daemon_",
+                "parts": {
+                    "expressjs-framework/install-app": {
+                        "plugin": "npm",
+                        "source": "app/",
+                        "npm-include-node": False,
+                        "npm-node-version": None,
+                        "override-build": "rm -rf node_modules\n"
+                        "npm install --include=dev\n"
+                        "npm run build\n"
+                        "craftctl default\n"
+                        f"mkdir -p ${{CRAFT_PART_INSTALL}}/lib/node_modules/{_expressjs_project_name}/dist\n"
+                        f"cp -r dist/. ${{CRAFT_PART_INSTALL}}/lib/node_modules/{_expressjs_project_name}/dist\n"
+                        "npm config set script-shell=bash --location project\n"
+                        "cp ${CRAFT_PART_BUILD}/.npmrc ${CRAFT_PART_INSTALL}/lib/node_modules/"
+                        f"{_expressjs_project_name}/.npmrc\n"
+                        f"chown -R 584792:584792 ${{CRAFT_PART_INSTALL}}/lib/node_modules/{_expressjs_project_name}\n"
+                        f"ln -s /lib/node_modules/{_expressjs_project_name} "
+                        "${CRAFT_PART_INSTALL}/app\n"
+                        "chown -R 584792:584792 ${CRAFT_PART_INSTALL}/app\n",
+                        "build-packages": ["nodejs", "npm"],
+                        "stage-packages": ["ca-certificates_data", "nodejs_bins"],
+                        "build-environment": [{"UV_USE_IO_URING": "0"}],
+                    },
+                    "expressjs-framework/runtime": {
+                        "plugin": "nil",
+                        "stage": ["-etc/ssl/certs/ca-certificates.crt"],
+                        "stage-packages": ["npm"],
+                    },
+                    "expressjs-framework/logging": {
+                        "plugin": "nil",
+                        "override-build": (
+                            "craftctl default\n"
+                            "mkdir -p $CRAFT_PART_INSTALL/opt/promtail\n"
+                            "mkdir -p $CRAFT_PART_INSTALL/etc/promtail"
+                        ),
+                        "permissions": [
+                            {"path": "opt/promtail", "owner": 584792, "group": 584792},
+                            {"path": "etc/promtail", "owner": 584792, "group": 584792},
+                        ],
+                    },
+                },
+                "services": {
+                    "expressjs": {
+                        "override": "replace",
+                        "startup": "enabled",
+                        "user": "_daemon_",
+                        "working-dir": "/app",
+                        "command": "npm start",
+                        "environment": {"NODE_ENV": "production"},
+                    },
+                },
+            },
+            id="ubuntu@26.04",
+        ),
+        pytest.param(
+            "bare",
+            False,
+            None,
+            {
+                "base": "bare",
+                "build-base": "ubuntu@26.04",
+                "name": "foo-bar",
+                "parts": {
+                    "expressjs-framework/install-app": {
+                        "build-packages": [
+                            "nodejs",
+                            "npm",
+                        ],
+                        "npm-include-node": False,
+                        "npm-node-version": None,
+                        "override-build": "rm -rf node_modules\n"
+                        "npm install --include=dev\n"
+                        "npm run build\n"
+                        "craftctl default\n"
+                        "mkdir -p ${CRAFT_PART_INSTALL}/lib/node_modules/test-expressjs-project/dist\n"
+                        "cp -r dist/. ${CRAFT_PART_INSTALL}/lib/node_modules/test-expressjs-project/dist\n"
+                        "npm config set script-shell=bash --location project\n"
+                        "cp ${CRAFT_PART_BUILD}/.npmrc "
+                        "${CRAFT_PART_INSTALL}/lib/node_modules/test-expressjs-project/.npmrc\n"
+                        "chown -R 584792:584792 ${CRAFT_PART_INSTALL}/lib/node_modules/test-expressjs-project\n"
+                        "ln -s /lib/node_modules/test-expressjs-project "
+                        "${CRAFT_PART_INSTALL}/app\n"
+                        "chown -R 584792:584792 ${CRAFT_PART_INSTALL}/app\n"
+                        "ln -sf /usr/bin/bash ${CRAFT_PART_INSTALL}/usr/bin/sh",
+                        "plugin": "npm",
+                        "source": "app/",
+                        "stage-packages": [
+                            "bash_bins",
+                            "ca-certificates_data",
+                            "coreutils_bins",
+                        ],
+                        "build-environment": [{"UV_USE_IO_URING": "0"}],
+                    },
+                    "expressjs-framework/runtime": {
+                        "plugin": "nil",
+                        "stage": ["-etc/ssl/certs/ca-certificates.crt"],
+                        "stage-packages": [
+                            "libstdc++6",
+                            "zlib1g",
+                            "npm",
+                        ],
+                    },
+                    "expressjs-framework/logging": {
+                        "plugin": "nil",
+                        "override-build": (
+                            "craftctl default\n"
+                            "mkdir -p $CRAFT_PART_INSTALL/opt/promtail\n"
+                            "mkdir -p $CRAFT_PART_INSTALL/etc/promtail"
+                        ),
+                        "permissions": [
+                            {"path": "opt/promtail", "owner": 584792, "group": 584792},
+                            {"path": "etc/promtail", "owner": 584792, "group": 584792},
+                        ],
+                    },
+                },
+                "platforms": {
+                    "amd64": {},
+                },
+                "run-user": "_daemon_",
+                "services": {
+                    "expressjs": {
+                        "command": "npm start",
+                        "environment": {
+                            "NODE_ENV": "production",
+                        },
+                        "override": "replace",
+                        "startup": "enabled",
+                        "user": "_daemon_",
+                        "working-dir": "/app",
+                    },
+                },
+            },
+            id="bare",
+        ),
+    ],
+)
+@pytest.mark.usefixtures("expressjs_extension", "package_json_file_with_build")
+def test_expressjs_v2_with_build_script(
+    tmp_path,
+    monkeypatch,
+    expressjs_input_yaml,
+    base,
+    npm_include_node,
+    node_version,
+    expected_yaml_dict,
+):
+    monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "1")
+
+    expressjs_input_yaml["base"] = base
+    expressjs_input_yaml["build-base"] = "ubuntu@26.04"
     expressjs_input_yaml["parts"] = {
         "expressjs-framework/install-app": {
             "npm-include-node": npm_include_node,
