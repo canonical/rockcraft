@@ -398,6 +398,26 @@ def test_expressjs_invalid_package_json_scripts_error(
     )
 
 
+@pytest.mark.usefixtures("expressjs_extension", "package_json_file")
+def test_expressjs_extension_bare_base_with_ubuntu2604_build_base(
+    tmp_path, monkeypatch, expressjs_input_yaml
+):
+    """base:bare + build-base:ubuntu@26.04 should dispatch to V2 without error."""
+    monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "1")
+    expressjs_input_yaml["base"] = "bare"
+    expressjs_input_yaml["build-base"] = "ubuntu@26.04"
+    applied = extensions.apply_extensions(tmp_path, expressjs_input_yaml)
+    assert isinstance(
+        extensions.ExpressJSFrameworkFactory(
+            project_root=tmp_path,
+            yaml_data={"name": "x", "base": "bare", "build-base": "ubuntu@26.04"},
+        ),
+        extensions.ExpressJSFrameworkV2,
+    )
+    assert applied["base"] == "bare"
+    assert applied["build-base"] == "ubuntu@26.04"
+
+
 def test_expressjs_factory_dispatch(tmp_path):
     factory = extensions.ExpressJSFrameworkFactory
 
