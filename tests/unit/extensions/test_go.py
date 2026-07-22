@@ -31,7 +31,7 @@ def go_input_yaml_fixture():
 
 @pytest.fixture
 def go_extension(mock_extensions):
-    extensions.register("go-framework", extensions.GoFrameworkFactory)  # type: ignore[arg-type]
+    extensions.register("go-framework", extensions.GoFrameworkFactory)
 
 
 @pytest.mark.usefixtures("go_extension")
@@ -126,6 +126,7 @@ def test_go_extension_no_go_mod_file_error(tmp_path, go_input_yaml):
 @pytest.mark.parametrize("build_environment", [[], [{"OTHER_ENV_VAR": "val"}]])
 def test_go_extension_base_bare(tmp_path, go_input_yaml, build_environment):
     go_input_yaml["base"] = "bare"
+    go_input_yaml["build-base"] = "ubuntu@24.04"
     if build_environment:
         go_input_yaml["parts"] = {
             "go-framework/install-app": {"build-environment": build_environment},

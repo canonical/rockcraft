@@ -30,24 +30,28 @@ from rockcraft import errors
 
 
 def get_project_base(yaml_data: dict[str, Any]) -> str | None:
-    """Extract and normalize all bases used in the project."""
-    if base_str := cast(
-        str | None, yaml_data.get("build-base") or yaml_data.get("base")
-    ):
-        if parsed := craft_platforms.parse_base_and_name(base_str)[0]:
-            return f"{parsed.distribution}@{parsed.series}"
+    """Extract and normalize the effective base used in the project.
 
-        # "devel" is a valid base and corresponds to `ubuntu@devel`
-        if base_str == "devel":
-            return "ubuntu@devel"
+    ``build-base`` takes precedence over ``base``. When ``base`` is ``bare`` the
+    ``build-base`` is mandatory, so it always resolves the effective Ubuntu series.
+    """
+    base_str = cast(str | None, yaml_data.get("build-base") or yaml_data.get("base"))
 
-        if base_str.count("@") != 1:
-            return None
+    if not base_str:
+        return None
 
-        name, _, channel = base_str.partition("@")
-        return f"{name}@{channel}"
+    # Support the deprecated "<base>:<series>" colon format as an alias for "<base>@<series>"
+    if base_str.count(":") == 1 and "@" not in base_str:
+        base_str = base_str.replace(":", "@")
 
-    return None
+    # "devel" is a valid build-base that corresponds to "ubuntu@devel".
+    if base_str == "devel":
+        return "ubuntu@devel"
+
+    if base_str.count("@") != 1:
+        return None
+
+    return base_str
 
 
 class Extension(abc.ABC):

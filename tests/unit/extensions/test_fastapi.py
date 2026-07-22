@@ -30,7 +30,7 @@ def fastapi_input_yaml_fixture():
 
 @pytest.fixture
 def fastapi_extension(mock_extensions):
-    extensions.register("fastapi-framework", extensions.FastAPIFrameworkFactory)  # type: ignore[arg-type]
+    extensions.register("fastapi-framework", extensions.FastAPIFrameworkFactory)
 
 
 @pytest.mark.usefixtures("fastapi_extension")
@@ -364,7 +364,7 @@ def test_factory_supported_bases():
         assert base in factory_bases
 
 
-def test_FastAPIFrameworkFactory_is_experimental():
+def test_fastapi_framework_factory_is_experimental():
     factory = extensions.FastAPIFrameworkFactory
     assert factory.is_experimental("ubuntu@26.04") is True
     assert factory.is_experimental("ubuntu@24.04") is False
