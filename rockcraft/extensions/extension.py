@@ -23,7 +23,6 @@ from collections.abc import Sequence
 from pathlib import Path
 from typing import Any, cast, final
 
-import craft_platforms
 from craft_cli import emit
 
 from rockcraft import errors
