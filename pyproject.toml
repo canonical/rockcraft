@@ -5,17 +5,16 @@ dynamic = ["version"]
 dependencies = [
     # To use a dev version of a craft library:
     # craft-lib @ git+https://github.com/canonical/craft-lib@ref
-    "craft-application>=7.0.1",
-    "craft-archives>=2.2.0",
-    "craft-cli>=3.3.0",
+    "craft-application>=7.1.0",
+    "craft-archives>=2.2.1",
+    "craft-cli>=3.4.1",
     # NOTE: craft-parts is pinned to 2.33.1 because 2.34 has a breaking
     # bug that needs to be investigated
     "craft-parts==2.33.1",
-    "craft-platforms>=0.11.0",
+    "craft-platforms>=0.12.0",
     "craft-providers>=3.7.1",
     "overrides>=7.7.0",
-    # setuptools >= 80.9 has a noisy warning about pkg_resources
-    "setuptools~=80.10.2",
+    "setuptools~=83.0.0",
     "spdx-lookup>=0.3.3",
     "tabulate>=0.9.0",
     "tomli>=2.0.0; python_version < '3.11'",
@@ -54,7 +53,6 @@ types = [
 docs = [
     "pydantic-kitbash~=1.0.1",
     "sphinx-autodoc-typehints",
-    "sphinxcontrib-details-directive",
     "sphinx-toolbox",
     "sphinx-lint~=1.0",
     "sphinx-substitution-extensions==2025.1.2",
@@ -111,6 +109,7 @@ dev-jammy = ["python-apt~=2.4.0;sys_platform=='linux'"]
 dev-noble = ["python-apt~=2.7.0;sys_platform=='linux'"]
 dev-questing = ["python-apt~=3.0.0;sys_platform=='linux'"]
 dev-resolute = ["python-apt~=3.0;sys_platform=='linux'"]
+dev-stonking = ["python-apt~=3.0;sys_platform=='linux'"]
 release = [
     "twine",
     "wheel",
@@ -147,6 +146,8 @@ constraint-dependencies = [
     # protobuf 6.33.x segfaults on s390x
     # this issue might be the cause: https://github.com/protocolbuffers/protobuf/issues/24103
     "protobuf==6.32.*",
+    # newer pydantic-core needs a newer version of maturin and cargo
+    "pydantic-core<=2.41.5",
 ]
 conflicts = [
     [
@@ -154,6 +155,7 @@ conflicts = [
         { group = "dev-noble" },
         { group = "dev-questing" },
         { group = "dev-resolute" },
+        { group = "dev-stonking" },
     ],
 ]
 build-constraint-dependencies = [

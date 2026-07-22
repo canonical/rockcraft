@@ -21,11 +21,36 @@ import os
 import sys
 from collections.abc import Sequence
 from pathlib import Path
-from typing import Any, final
+from typing import Any, cast, final
 
 from craft_cli import emit
 
 from rockcraft import errors
+
+
+def get_project_base(yaml_data: dict[str, Any]) -> str | None:
+    """Extract and normalize the effective base used in the project.
+
+    ``build-base`` takes precedence over ``base``. When ``base`` is ``bare`` the
+    ``build-base`` is mandatory, so it always resolves the effective Ubuntu series.
+    """
+    base_str = cast(str | None, yaml_data.get("build-base") or yaml_data.get("base"))
+
+    if not base_str:
+        return None
+
+    # Support the deprecated "<base>:<series>" colon format as an alias for "<base>@<series>"
+    if base_str.count(":") == 1 and "@" not in base_str:
+        base_str = base_str.replace(":", "@")
+
+    # "devel" is a valid build-base that corresponds to "ubuntu@devel".
+    if base_str == "devel":
+        return "ubuntu@devel"
+
+    if base_str.count("@") != 1:
+        return None
+
+    return base_str
 
 
 class Extension(abc.ABC):
@@ -114,6 +139,32 @@ class Extension(abc.ABC):
                 f"Extension has invalid part names: {invalid_parts!r}. "
                 "Format is <extension-name>/<part-name>"
             )
+
+
+class _FrameworkFactory:
+    """Route to V1 or V2 extension based on project base."""
+
+    def __init__(self, v1_cls: type[Extension], v2_cls: type[Extension]) -> None:
+        self._v1_cls = v1_cls
+        self._v2_cls = v2_cls
+
+    def __call__(self, *, project_root: Path, yaml_data: dict[str, Any]) -> Extension:
+        base = get_project_base(yaml_data)
+        if base in self._v1_cls.get_supported_bases():
+            return self._v1_cls(project_root=project_root, yaml_data=yaml_data)
+        return self._v2_cls(project_root=project_root, yaml_data=yaml_data)
+
+    def get_supported_bases(self) -> tuple[str, ...]:
+        return tuple(
+            dict.fromkeys(
+                self._v1_cls.get_supported_bases() + self._v2_cls.get_supported_bases()
+            )
+        )
+
+    def is_experimental(self, base: str | None) -> bool:
+        if base in self._v1_cls.get_supported_bases():
+            return self._v1_cls.is_experimental(base)
+        return self._v2_cls.is_experimental(base)
 
 
 def get_extensions_data_dir() -> Path:
