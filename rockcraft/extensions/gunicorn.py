@@ -43,6 +43,8 @@ from ._python_utils import (
     find_entrypoint_with_factory,
     find_entrypoint_with_variable,
     has_global_variable,
+    uses_uv,
+    validate_uv_lockfile,
 )
 from ._utils import find_ubuntu_base_python_version
 from .app_parts import gen_logging_part
@@ -110,19 +112,34 @@ class _GunicornBase(Extension):
                 {"PARTS_PYTHON_INTERPRETER": f"python{python_version}"}
             ]
 
-        python_requirements: list[str] = []
-        if (self.project_root / "requirements.txt").exists():
-            python_requirements.append("requirements.txt")
-
-        parts: dict[str, Any] = {
-            f"{self.framework}-framework/dependencies": {
+        dependencies_part: dict[str, Any]
+        if uses_uv(self.project_root):
+            dependencies_part = {
+                "plugin": "uv",
+                "stage-packages": stage_packages,
+                "source": ".",
+                "build-environment": build_environment,
+                "override-build": (
+                    "craftctl default\n"
+                    "uv pip install --python "
+                    "${CRAFT_PART_INSTALL}/bin/python gunicorn~=23.0"
+                ),
+            }
+        else:
+            python_requirements: list[str] = []
+            if (self.project_root / "requirements.txt").exists():
+                python_requirements.append("requirements.txt")
+            dependencies_part = {
                 "plugin": "python",
                 "stage-packages": stage_packages,
                 "source": ".",
                 "python-packages": ["gunicorn~=23.0"],
                 "python-requirements": python_requirements,
                 "build-environment": build_environment,
-            },
+            }
+
+        parts: dict[str, Any] = {
+            f"{self.framework}-framework/dependencies": dependencies_part,
             f"{self.framework}-framework/install-app": {
                 **self.gen_install_app_part(),
                 "permissions": [{"owner": USER_UID, "group": USER_UID}],
@@ -453,6 +470,7 @@ class FlaskFramework(_GunicornBase):
     @override
     def check_project(self) -> None:
         """Ensure this extension can apply to the current rockcraft project."""
+        validate_uv_lockfile(self.project_root)
         error_messages = self._requirements_error_messages()
         if not self.yaml_data.get("services", {}).get("flask", {}).get("command"):
             error_messages += self._wsgi_path_error_messages()
@@ -552,7 +570,11 @@ class DjangoFramework(_GunicornBase):
     @override
     def check_project(self) -> None:
         """Ensure this extension can apply to the current rockcraft project."""
-        if not (self.project_root / "requirements.txt").exists():
+        validate_uv_lockfile(self.project_root)
+        if (
+            not uses_uv(self.project_root)
+            and not (self.project_root / "requirements.txt").exists()
+        ):
             raise ExtensionError(
                 "missing requirements.txt file, django-framework extension "
                 "requires this file with Django specified as a dependency",

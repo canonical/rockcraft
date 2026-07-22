@@ -29,7 +29,7 @@ from rockcraft.errors import ExtensionError
 from rockcraft.extensions._utils import find_ubuntu_base_python_version
 from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
 
-from ._python_utils import has_global_variable
+from ._python_utils import has_global_variable, uses_uv, validate_uv_lockfile
 from .app_parts import gen_logging_part
 from .extension import Extension, _FrameworkFactory
 
@@ -117,15 +117,31 @@ class FastAPIFramework(Extension):
                 {"PARTS_PYTHON_INTERPRETER": f"python{python_version}"}
             ]
 
-        parts: dict[str, Any] = {
-            "fastapi-framework/dependencies": {
+        dependencies_part: dict[str, Any]
+        if uses_uv(self.project_root):
+            dependencies_part = {
+                "plugin": "uv",
+                "stage-packages": stage_packages,
+                "source": ".",
+                "build-environment": build_environment,
+                "override-build": (
+                    "craftctl default\n"
+                    "uv pip install --python "
+                    "${CRAFT_PART_INSTALL}/bin/python uvicorn"
+                ),
+            }
+        else:
+            dependencies_part = {
                 "plugin": "python",
                 "stage-packages": stage_packages,
                 "source": ".",
                 "python-packages": ["uvicorn"],
                 "python-requirements": ["requirements.txt"],
                 "build-environment": build_environment,
-            },
+            }
+
+        parts: dict[str, Any] = {
+            "fastapi-framework/dependencies": dependencies_part,
             "fastapi-framework/install-app": {
                 **self._get_install_app_part(),
                 "permissions": [{"owner": USER_UID, "group": USER_UID}],
@@ -253,7 +269,10 @@ class FastAPIFramework(Extension):
 
     def _check_project(self) -> None:
         """Ensure this extension can apply to the current rockcraft project."""
-        error_messages = self._requirements_txt_error_messages()
+        validate_uv_lockfile(self.project_root)
+        error_messages: list[str] = []
+        if not uses_uv(self.project_root):
+            error_messages = self._requirements_txt_error_messages()
         if not self.yaml_data.get("services", {}).get("fastapi", {}).get("command"):
             error_messages += self._asgi_entrypoint_error_messages()
         if error_messages:

@@ -38,6 +38,21 @@ For the project to make use of asynchronous Gunicorn workers:
 
 - The ``requirements.txt`` or ``pyproject.toml`` file must include ``gevent`` as a dependency.
 
+.. _reference-flask-framework-uv:
+
+uv projects
+-----------
+
+If both a ``uv.lock`` and a ``pyproject.toml`` file are present in the project
+root, the extension builds the application with the :doc:`uv plugin
+</reference/plugins/uv_plugin>` instead of the Python plugin, installing dependencies
+from the lockfile with ``uv sync``. Gunicorn (``gunicorn~=23.0``) is injected
+after the build step regardless of the lockfile contents.
+
+If only ``pyproject.toml`` is present (no ``uv.lock``), the extension falls back
+to the Python plugin. If ``uv.lock`` is present but ``pyproject.toml`` is
+missing, packing fails with an error, as the uv plugin requires both files.
+
 .. _reference-flask-framework-stage-packages:
 
 App dependencies
