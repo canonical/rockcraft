@@ -106,7 +106,10 @@ class Extension(abc.ABC):
             # There is nothing to validate, the extension will set the preferred base.
             return
 
-        base: str = self.yaml_data["base"]
+        # Use get_project_base() so that build-base takes precedence over base (e.g. when
+        # base is "bare", build-base carries the effective Ubuntu series used for dispatch).
+        # Fall back to the raw base field if get_project_base() cannot resolve it.
+        base: str = get_project_base(self.yaml_data) or self.yaml_data["base"]
 
         if self.is_experimental(base) and not os.getenv(
             "ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS"

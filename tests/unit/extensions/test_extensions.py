@@ -57,13 +57,15 @@ def test_experimental_no_env(tmp_path, input_yaml):
     assert str(exc.value) == expected_message
 
 
-@pytest.mark.parametrize("base", ["ubuntu:20.04", "bare"])
+@pytest.mark.parametrize("base", ["ubuntu:20.04", "ubuntu@20.04", "bare"])
 def test_wrong_base(tmp_path, input_yaml, base):
     input_yaml["extensions"] = [FakeExtension.NAME]
     input_yaml["base"] = base
     with pytest.raises(errors.ExtensionError) as exc:
         extensions.apply_extensions(tmp_path, input_yaml)
 
+    # get_project_base() normalizes legacy format so we also do the same here to match the expected message.
+    base = base.replace(":", "@")
     expected_message = (
         f"Extension '{FakeExtension.NAME}' does not support base: '{base}'"
     )
