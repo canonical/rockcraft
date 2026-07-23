@@ -221,9 +221,11 @@ parts:
       - pkg-config
 
   chisel:
-    plugin: nil
-    stage-snaps:
-      - chisel/latest/candidate
+    plugin: go
+    source: https://github.com/upils/chisel.git
+    source-branch: fix/old-releases-not-moved
+    build-environment:
+      - CGO_ENABLED: "0"
     organize:
       bin/chisel: libexec/rockcraft/chisel
     stage:
