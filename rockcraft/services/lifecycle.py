@@ -117,7 +117,7 @@ def _python_usrmerge_fix(step_info: StepInfo) -> None:
         # from a Python plugin.
         return
 
-    if "lib64" not in state.files:
+    if Path("lib64") not in state.files:
         return
 
     prime_dir = step_info.prime_dir
