@@ -24,3 +24,36 @@
 "how-to/chiselling/index.rst" "how-to/chiseling/index.rst"
 "how-to/chiselling/chisel-existing-rock.rst" "how-to/chiseling/chisel-existing-rock.rst"
 "how-to/chiselling/install-slice.rst" "how-to/chiseling/install-slice.rst"
+
+# RTD 404 redirects
+
+"tutorials/index.rst" "tutorial/index.rst"
+"tutorials/hello-world.rst" "tutorial/hello-world.rst"
+"tutorials/pypi-package.rst" "tutorial/pypi-package.rst"
+"tutorials/node-app.rst" "tutorial/node-app.rst"
+"tutorials/chisel.rst" "how-to/chiseling/index.rst"
+
+"reference/rockcraft.yaml.rst" "reference/rockcraft-yaml.rst"
+"reference/parts_steps.rst" "reference/parts-and-steps.rst"
+"common/craft-parts/reference/part_properties.rst" "reference/parts-and-steps.rst"
+"reference/commands/overlay.rst" "reference/commands/lifecycle-commands.rst"
+
+"how-to/rocks/index.rst" "how-to/crafting/index.rst"
+"how-to/rocks/convert-to-pebble-layer.rst" "how-to/crafting/convert-to-pebble-layer.rst"
+"how-to/rocks/rockcraft-pack-action.rst" "how-to/crafting/rockcraft-pack-action.rst"
+"how-to/rocks/publish-a-rock.rst" "how-to/crafting/publish-a-rock.rst"
+"how-to/rocks/add-internal-user-to-a-rock.rst" "how-to/crafting/add-internal-user-to-a-rock.rst"
+"how-to/rocks/migrate-to-chiselled-rock.rst" "how-to/crafting/migrate-to-chiselled-rock.rst"
+"how-to/rocks/chisel-existing-rock.rst" "how-to/chiseling/chisel-existing-rock.rst"
+
+"how-to/chisel/install-slice.rst" "how-to/chiseling/install-slice.rst"
+"how-to/chisel/use-chisel.rst" "how-to/chiseling/index.rst"
+"how-to/chisel/create-slice.rst" "how-to/chiseling/install-slice.rst"
+"how-to/chisel/publish-slice.rst" "how-to/chiseling/install-slice.rst"
+
+"how-to/use-chisel.rst" "how-to/chiseling/index.rst"
+"how-to/rockcraft-pack-action.rst" "how-to/crafting/rockcraft-pack-action.rst"
+"how-to/contribute-docs.rst" "how-to/documentation/contribute-docs.rst"
+
+"explanation/lifecycle.rst" "explanation/lifecycle-layer.rst"
+"explanation/filesets.rst" "common/craft-parts/explanation/filesets.rst"
