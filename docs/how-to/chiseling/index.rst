@@ -5,7 +5,6 @@
 
 Chiseling
 =========
-These guides show you how to harden a rock using Chisel.
 
 Decrease a rock's size and harden it by chiseling a rock.
 

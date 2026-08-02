@@ -11,7 +11,7 @@ These guides walk you through configuring, building and publishing your rock.
 Configure your rock
 -------------------
 
-These guides cover setting up and configuring your rock.
+Set up and configure of your rock.
 
 - :ref:`how-to-specify-a-base`
 - :ref:`how-to-migrate-a-docker-image-to-a-chiselled-rock`
