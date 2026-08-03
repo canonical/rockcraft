@@ -15,6 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
+import stat
 from pathlib import Path
 from typing import Any
 
@@ -193,10 +194,13 @@ class TestPebble:
         )
 
         check.is_true(out_pebble_layer.exists())
-        check.equal(oct((tmp_path / pebble_obj.PEBBLE_PATH).stat().st_mode)[-3:], "777")
         check.equal(
-            oct(Path(out_pebble_layer).stat().st_mode)[-3:],
-            "777",
+            stat.S_IMODE((tmp_path / pebble_obj.PEBBLE_PATH).stat().st_mode),
+            0o1777,
+        )
+        check.equal(
+            stat.S_IMODE(Path(out_pebble_layer).stat().st_mode),
+            0o777,
         )
         with out_pebble_layer.open() as f:
             content = f.read()
