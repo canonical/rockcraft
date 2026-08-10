@@ -310,7 +310,7 @@ class ExpressJSFrameworkV2(ExpressJSFramework):
     @override
     def get_supported_bases() -> tuple[str, ...]:
         """Return supported bases."""
-        return ("ubuntu@26.04",)
+        return ("bare", "ubuntu@26.04")
 
     @staticmethod
     @override
