@@ -8,9 +8,7 @@ dependencies = [
     "craft-application>=7.1.0",
     "craft-archives>=2.2.1",
     "craft-cli>=3.4.1",
-    # NOTE: craft-parts is pinned to 2.33.1 because 2.34 has a breaking
-    # bug that needs to be investigated
-    "craft-parts==2.33.1",
+    "craft-parts>=2.35.0",
     "craft-platforms>=0.12.0",
     "craft-providers>=3.7.1",
     "overrides>=7.7.0",
