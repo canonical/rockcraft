@@ -289,33 +289,8 @@ def test_go_framework_factory_dispatch(tmp_path):
     assert isinstance(v2, extensions.GoFrameworkV2)
 
 
-def test_go_framework_factory_dispatch_bare_by_build_base(tmp_path):
-    factory = extensions.GoFrameworkFactory
-    v1 = factory(
-        project_root=tmp_path,
-        yaml_data={
-            "name": "x",
-            "base": "bare",
-            "build-base": "ubuntu@24.04",
-        },
-    )
-    assert isinstance(v1, extensions.GoFramework)
-    assert not isinstance(v1, extensions.GoFrameworkV2)
-
-    v2 = factory(
-        project_root=tmp_path,
-        yaml_data={
-            "name": "x",
-            "base": "bare",
-            "build-base": "ubuntu@26.04",
-        },
-    )
-    assert isinstance(v2, extensions.GoFrameworkV2)
-
-
 def test_go_framework_v2_supported_bases():
     assert "ubuntu@26.04" in extensions.GoFrameworkV2.get_supported_bases()
-    assert "bare" in extensions.GoFrameworkV2.get_supported_bases()
 
 
 def test_go_framework_factory_supported_bases():
