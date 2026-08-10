@@ -685,8 +685,34 @@ def test_expressjs_factory_dispatch(tmp_path):
     assert isinstance(v2, extensions.ExpressJSFrameworkV2)
 
 
+def test_expressjs_factory_dispatch_bare_by_build_base(tmp_path):
+    factory = extensions.ExpressJSFrameworkFactory
+
+    v1 = factory(
+        project_root=tmp_path,
+        yaml_data={
+            "name": "x",
+            "base": "bare",
+            "build-base": "ubuntu@24.04",
+        },
+    )
+    assert isinstance(v1, extensions.ExpressJSFramework)
+    assert not isinstance(v1, extensions.ExpressJSFrameworkV2)
+
+    v2 = factory(
+        project_root=tmp_path,
+        yaml_data={
+            "name": "x",
+            "base": "bare",
+            "build-base": "ubuntu@26.04",
+        },
+    )
+    assert isinstance(v2, extensions.ExpressJSFrameworkV2)
+
+
 def test_expressjs_v2_and_factory_supported_bases():
     assert "ubuntu@26.04" in extensions.ExpressJSFrameworkV2.get_supported_bases()
+    assert "bare" in extensions.ExpressJSFrameworkV2.get_supported_bases()
 
     factory_bases = extensions.ExpressJSFrameworkFactory.get_supported_bases()
     assert "ubuntu@26.04" in factory_bases
