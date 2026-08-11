@@ -34,9 +34,9 @@ There are 2 requirements to be able to use the ``django-framework`` extension:
 2. The Django project directory at the rock root must be named the same as the
    ``name`` in the project file, with any ``-`` replaced by ``_``. The Django
    settings package inside that directory must be either the same name or
-   ``mysite``. This means ``manage.py`` is located at
-   ``<rock-name>/<rock-name>/manage.py`` and ``wsgi.py`` is located at
-   ``<rock-name>/<rock-name>/wsgi.py`` or ``<rock-name>/mysite/wsgi.py``.
+   ``mysite``. This means both ``manage.py`` and ``wsgi.py`` are located at
+   either ``<rock-name>/<rock-name>/`` or ``<rock-name>/mysite/``, but
+   not both.
 
 For the project to make use of asynchronous Gunicorn workers:
 

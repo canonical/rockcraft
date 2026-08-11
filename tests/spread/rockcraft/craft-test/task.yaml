@@ -3,6 +3,10 @@ summary: Test 'rockcraft test'
 environment:
   CI: "1"
 
+# run this test last, because it will install 'retry' from the archive which will
+# shadow the 'retry' script on upcoming tests.
+priority: -200
+
 execute: |
   rockcraft init --profile=test
 

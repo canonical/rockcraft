@@ -1,7 +1,7 @@
 summary: Usrmerged install dirs in 25.10+
 
 execute: |
-  run_rockcraft pack
+  run_rockcraft pack --ignore=unmaintained
   sudo rockcraft.skopeo --insecure-policy copy oci-archive:usrmerged-install_1.0_amd64.rock docker-daemon:usrmerged-install:latest
 
   # Check the pebble services, so we can check pebble itself
