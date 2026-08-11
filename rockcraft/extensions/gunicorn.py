@@ -112,34 +112,10 @@ class _GunicornBase(Extension):
                 {"PARTS_PYTHON_INTERPRETER": f"python{python_version}"}
             ]
 
-        dependencies_part: dict[str, Any]
-        if uses_uv(self.project_root):
-            dependencies_part = {
-                "plugin": "uv",
-                "stage-packages": stage_packages,
-                "source": ".",
-                "build-environment": build_environment,
-                "override-build": (
-                    "craftctl default\n"
-                    "uv pip install --python "
-                    "${CRAFT_PART_INSTALL}/bin/python gunicorn~=23.0"
-                ),
-            }
-        else:
-            python_requirements: list[str] = []
-            if (self.project_root / "requirements.txt").exists():
-                python_requirements.append("requirements.txt")
-            dependencies_part = {
-                "plugin": "python",
-                "stage-packages": stage_packages,
-                "source": ".",
-                "python-packages": ["gunicorn~=23.0"],
-                "python-requirements": python_requirements,
-                "build-environment": build_environment,
-            }
-
         parts: dict[str, Any] = {
-            f"{self.framework}-framework/dependencies": dependencies_part,
+            f"{self.framework}-framework/dependencies": self._dependencies_part(
+                stage_packages, build_environment
+            ),
             f"{self.framework}-framework/install-app": {
                 **self.gen_install_app_part(),
                 "permissions": [{"owner": USER_UID, "group": USER_UID}],
@@ -303,6 +279,40 @@ class _GunicornBase(Extension):
     def get_parts_snippet(self) -> dict[str, Any]:
         """Return the parts to add to parts."""
         return {}
+
+    def _dependencies_part(
+        self, stage_packages: list[str], build_environment: list[Any]
+    ) -> dict[str, Any]:
+        """Return the part that installs the project's dependencies.
+
+        Uses the uv plugin if the project is using uv, otherwise uses the python plugin.
+        """
+        if uses_uv(self.project_root):
+            return {
+                "plugin": "uv",
+                "stage-packages": stage_packages,
+                "source": ".",
+                "build-environment": build_environment,
+                "override-build": (
+                    "craftctl default\n"
+                    "uv pip install --python "
+                    "${CRAFT_PART_INSTALL}/bin/python gunicorn~=23.0"
+                ),
+            }
+
+        python_requirements = (
+            ["requirements.txt"]
+            if (self.project_root / "requirements.txt").exists()
+            else []
+        )
+        return {
+            "plugin": "python",
+            "stage-packages": stage_packages,
+            "source": ".",
+            "python-packages": ["gunicorn~=23.0"],
+            "python-requirements": python_requirements,
+            "build-environment": build_environment,
+        }
 
 
 class FlaskFramework(_GunicornBase):

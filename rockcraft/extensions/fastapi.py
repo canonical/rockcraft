@@ -117,31 +117,10 @@ class FastAPIFramework(Extension):
                 {"PARTS_PYTHON_INTERPRETER": f"python{python_version}"}
             ]
 
-        dependencies_part: dict[str, Any]
-        if uses_uv(self.project_root):
-            dependencies_part = {
-                "plugin": "uv",
-                "stage-packages": stage_packages,
-                "source": ".",
-                "build-environment": build_environment,
-                "override-build": (
-                    "craftctl default\n"
-                    "uv pip install --python "
-                    "${CRAFT_PART_INSTALL}/bin/python uvicorn"
-                ),
-            }
-        else:
-            dependencies_part = {
-                "plugin": "python",
-                "stage-packages": stage_packages,
-                "source": ".",
-                "python-packages": ["uvicorn"],
-                "python-requirements": ["requirements.txt"],
-                "build-environment": build_environment,
-            }
-
         parts: dict[str, Any] = {
-            "fastapi-framework/dependencies": dependencies_part,
+            "fastapi-framework/dependencies": self._dependencies_part(
+                stage_packages, build_environment
+            ),
             "fastapi-framework/install-app": {
                 **self._get_install_app_part(),
                 "permissions": [{"owner": USER_UID, "group": USER_UID}],
@@ -228,6 +207,34 @@ class FastAPIFramework(Extension):
                     f"{self.IMAGE_BASE_DIR}/" + self._find_asgi_location().parts[0]
                 )
         return user_prime
+
+    def _dependencies_part(
+        self, stage_packages: list[str], build_environment: list[Any]
+    ) -> dict[str, Any]:
+        """Return the part that installs the project's dependencies.
+
+        Uses the uv plugin if the project is using uv, otherwise uses the python plugin.
+        """
+        if uses_uv(self.project_root):
+            return {
+                "plugin": "uv",
+                "stage-packages": stage_packages,
+                "source": ".",
+                "build-environment": build_environment,
+                "override-build": (
+                    "craftctl default\n"
+                    "uv pip install --python "
+                    "${CRAFT_PART_INSTALL}/bin/python uvicorn"
+                ),
+            }
+        return {
+            "plugin": "python",
+            "stage-packages": stage_packages,
+            "source": ".",
+            "python-packages": ["uvicorn"],
+            "python-requirements": ["requirements.txt"],
+            "build-environment": build_environment,
+        }
 
     def _asgi_path(self) -> str:
         asgi_location = self._find_asgi_location()
