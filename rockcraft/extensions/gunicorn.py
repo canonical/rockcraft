@@ -292,11 +292,14 @@ class _GunicornBase(Extension):
                 "plugin": "uv",
                 "stage-packages": stage_packages,
                 "source": ".",
+                "build-snaps": ["astral-uv"],
                 "build-environment": build_environment,
                 "override-build": (
                     "craftctl default\n"
-                    "uv pip install --python "
-                    "${CRAFT_PART_INSTALL}/bin/python gunicorn~=23.0"
+                    "uv pip install "
+                    "--python /usr/bin/python3 "
+                    "--prefix ${CRAFT_PART_INSTALL} "
+                    "gunicorn~=23.0"
                 ),
             }
 

@@ -220,11 +220,14 @@ class FastAPIFramework(Extension):
                 "plugin": "uv",
                 "stage-packages": stage_packages,
                 "source": ".",
+                "build-snaps": ["astral-uv"],
                 "build-environment": build_environment,
                 "override-build": (
                     "craftctl default\n"
-                    "uv pip install --python "
-                    "${CRAFT_PART_INSTALL}/bin/python uvicorn"
+                    "uv pip install "
+                    "--python /usr/bin/python3 "
+                    "--prefix ${CRAFT_PART_INSTALL} "
+                    "uvicorn"
                 ),
             }
         return {
