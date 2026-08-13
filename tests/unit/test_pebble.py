@@ -81,20 +81,13 @@ class TestPebble:
                     },
                 },
                 (
-                    "summary: mock summary"
-                    f"{os.linesep}"
-                    "description: mock description"
-                    f"{os.linesep}"
-                    "services:"
-                    f"{os.linesep}"
-                    "  mockServiceOne:"
-                    f"{os.linesep}"
-                    "    override: replace"
-                    f"{os.linesep}"
-                    "    command: foo"
-                    f"{os.linesep}"
-                    "    on-success: shutdown"
-                    f"{os.linesep}"
+                    "summary: mock summary\n"
+                    "description: mock description\n"
+                    "services:\n"
+                    "  mockServiceOne:\n"
+                    "    override: replace\n"
+                    "    command: foo\n"
+                    "    on-success: shutdown\n"
                 ),
             ),
             # Test Case 2:
@@ -112,24 +105,15 @@ class TestPebble:
                     },
                 },
                 (
-                    "summary: mock summary"
-                    f"{os.linesep}"
-                    "description: mock description"
-                    f"{os.linesep}"
-                    "services:"
-                    f"{os.linesep}"
-                    "  mockServiceOne:"
-                    f"{os.linesep}"
-                    "    override: replace"
-                    f"{os.linesep}"
-                    "    command: foo"
-                    f"{os.linesep}"
-                    "  mockServiceTwo:"
-                    f"{os.linesep}"
-                    "    override: merge"
-                    f"{os.linesep}"
-                    "    command: bar"
-                    f"{os.linesep}"
+                    "summary: mock summary\n"
+                    "description: mock description\n"
+                    "services:\n"
+                    "  mockServiceOne:\n"
+                    "    override: replace\n"
+                    "    command: foo\n"
+                    "  mockServiceTwo:\n"
+                    "    override: merge\n"
+                    "    command: bar\n"
                 ),
             ),
             # Test Case 3:
