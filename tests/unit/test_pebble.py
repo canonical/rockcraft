@@ -81,7 +81,20 @@ class TestPebble:
                     },
                 },
                 (
-                    f"summary: mock summary{os.linesep}description: mock description{os.linesep}services:{os.linesep}  mockServiceOne:{os.linesep}    override: replace{os.linesep}    command: foo{os.linesep}    on-success: shutdown{os.linesep}",
+                    "summary: mock summary"
+                    f"{os.linesep}"
+                    "description: mock description"
+                    f"{os.linesep}"
+                    "services:"
+                    f"{os.linesep}"
+                    "  mockServiceOne:"
+                    f"{os.linesep}"
+                    "    override: replace"
+                    f"{os.linesep}"
+                    "    command: foo"
+                    f"{os.linesep}"
+                    "    on-success: shutdown"
+                    f"{os.linesep}"
                 ),
             ),
             # Test Case 2:
