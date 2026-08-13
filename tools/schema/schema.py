@@ -100,11 +100,11 @@ def generate_project_schema() -> str:
     for name, cls in plugins.get_registered_plugins().items():
         plugin_schema = cls.properties_class.schema()
         properties_dict = dict(plugin_schema.get("properties", {}).items())
+        properties_dict.update(project_schema["$defs"]["Part"]["properties"])
 
         # Merge plugin-specific definitions into the main schema
         if "$defs" in plugin_schema:
             project_schema["$defs"].update(plugin_schema["$defs"])
-
         if_array.append(
             {
                 "if": {"properties": {"plugin": {"const": name}}},
