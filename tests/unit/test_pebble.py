@@ -81,20 +81,7 @@ class TestPebble:
                     },
                 },
                 (
-                    "summary: mock summary"
-                    f"{os.linesep}"
-                    "description: mock description"
-                    f"{os.linesep}"
-                    "services:"
-                    f"{os.linesep}"
-                    "  mockServiceOne:"
-                    f"{os.linesep}"
-                    "    override: replace"
-                    f"{os.linesep}"
-                    "    command: foo"
-                    f"{os.linesep}"
-                    "    on-success: shutdown"
-                    f"{os.linesep}"
+                    f"summary: mock summary{os.linesep}description: mock description{os.linesep}services:{os.linesep}  mockServiceOne:{os.linesep}    override: replace{os.linesep}    command: foo{os.linesep}    on-success: shutdown{os.linesep}",
                 ),
             ),
             # Test Case 2:
@@ -311,9 +298,11 @@ class TestPebble:
                     "url": [1],
                     "headers": "not a dict",
                 },
-                r"^2 validation errors[\s\S]*"
-                r"URL input should be a string or URL[\s\S]*"
-                r"Input should be a valid dictionary[\s\S]*",
+                (
+                    r"^2 validation errors[\s\S]*"
+                    r"URL input should be a string or URL[\s\S]*"
+                    r"Input should be a valid dictionary[\s\S]*"
+                ),
             ),
         ],
     )
@@ -332,9 +321,11 @@ class TestPebble:
                     "port": "not an int",
                     "host": ["string list"],
                 },
-                r"^2 validation errors[\s\S]*"
-                r"port[\s\S]*Input should be a valid integer[\s\S]*"
-                r"host[\s\S]*Input should be a valid string[\s\S]*",
+                (
+                    r"^2 validation errors[\s\S]*"
+                    r"port[\s\S]*Input should be a valid integer[\s\S]*"
+                    r"host[\s\S]*Input should be a valid string[\s\S]*"
+                ),
             ),
         ],
     )
@@ -359,15 +350,17 @@ class TestPebble:
                     "group-id": "not an int",
                     "working-dir": ["string list"],
                 },
-                r"^8 validation errors[\s\S]*"
-                r"command[\s\S]*Input should be a valid string[\s\S]*"
-                r"service-context[\s\S]*Input should be a valid string[\s\S]*"
-                r"environment[\s\S]*Input should be a valid dictionary[\s\S]*"
-                r"user[\s\S]*Input should be a valid string[\s\S]*"
-                r"user-id[\s\S]*Input should be a valid integer[\s\S]*"
-                r"group[\s\S]*Input should be a valid string[\s\S]*"
-                r"group-id[\s\S]*Input should be a valid integer[\s\S]*"
-                r"working-dir[\s\S]*Input should be a valid string[\s\S]*",
+                (
+                    r"^8 validation errors[\s\S]*"
+                    r"command[\s\S]*Input should be a valid string[\s\S]*"
+                    r"service-context[\s\S]*Input should be a valid string[\s\S]*"
+                    r"environment[\s\S]*Input should be a valid dictionary[\s\S]*"
+                    r"user[\s\S]*Input should be a valid string[\s\S]*"
+                    r"user-id[\s\S]*Input should be a valid integer[\s\S]*"
+                    r"group[\s\S]*Input should be a valid string[\s\S]*"
+                    r"group-id[\s\S]*Input should be a valid integer[\s\S]*"
+                    r"working-dir[\s\S]*Input should be a valid string[\s\S]*"
+                ),
             ),
         ],
     )
