@@ -10,11 +10,11 @@ The Express extension streamlines the process of building Express
 application rocks.
 
 It facilitates the installation of Express application dependencies, including
-Node.js and npm, inside the rock. Extension discovers location of the
-``package.json``, but can only package a single application. If application
-defines ``build`` script, development dependencies will be installed,
-``npm run build`` called, and entries matching ``file`` array (excluding
-entries from ``.npmignore``, if exists) will be packages. If ``files``
+Node.js and npm, inside the rock. The extension discovers the location of the
+``package.json``, but can only package a single application. If the application
+defines a ``build`` script, development dependencies will be installed,
+``npm run build`` will be called, and entries matching ``file`` array (excluding
+entries from ``.npmignore``, if they exist) will be packages. If the ``files``
 array is not defined and ``.npmignore`` does not exist, only files from
 the ``dist/`` directory will be packaged.
 
@@ -35,10 +35,10 @@ extension:
 2. The ``package.json`` file should define the ``start`` script.
    For more information, see the `npm documentation <https://docs.npmjs.com/cli/v11/configuring-npm/package-json>`_.
 
-If application defines ``build`` script in ``package.json`` file, it is
-recommended to have ``files`` array describing the entries to be included
+If the application defines a ``build`` script in ``package.json`` file, it is
+recommended to have a ``files`` array describing the entries to be included
 or have an appropriate ``.npmignore`` file to exclude entries not required
-at the run time. If ``files`` array is not defined and ``.npmignore``
+at runtime. If the ``files`` array is not defined and ``.npmignore``
 does not exist, only the ``dist/`` directory will be packaged.
 
 .. _reference-express-framework-npm-include-node:
