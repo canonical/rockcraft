@@ -227,14 +227,14 @@ class FastAPIFramework(Extension):
                     "uv pip install "
                     "--python /usr/bin/python3 "
                     "--prefix ${CRAFT_PART_INSTALL} "
-                    "uvicorn"
+                    "uvicorn~=0.52"
                 ),
             }
         return {
             "plugin": "python",
             "stage-packages": stage_packages,
             "source": ".",
-            "python-packages": ["uvicorn"],
+            "python-packages": ["uvicorn~=0.52"],
             "python-requirements": ["requirements.txt"],
             "build-environment": build_environment,
         }
