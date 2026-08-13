@@ -384,10 +384,8 @@ classmethod-decorators = ["pydantic.validator", "pydantic.root_validator"]
 
 
 [tool.ruff.lint.per-file-ignores]
-"extensions/django-framework/*.py" = ["INP001"]
-"extensions/flask-framework/*.py" = ["INP001"]
-"snap/local/*.py" = ["INP001"]
-
+"extensions/**/*.py" = ["INP001"]
+"snap/**/*.py" = ["INP001"]
 "tests/**.py" = [ # Some things we want for the main project are unnecessary in tests.
     "D",       # Ignore docstring rules in tests
     "ANN",     # Ignore type annotations in tests
