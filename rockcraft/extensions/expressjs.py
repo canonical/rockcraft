@@ -197,8 +197,10 @@ class ExpressJSFramework(Extension):
         """Generate override-build script part used after 'craftctl default'."""
         return [
             "npm config set script-shell=bash --location project",
-            "cp ${CRAFT_PART_BUILD}/.npmrc ${CRAFT_PART_INSTALL}/lib/node_modules/"
-            f"{self._app_name}/.npmrc",
+            (
+                "cp ${CRAFT_PART_BUILD}/.npmrc ${CRAFT_PART_INSTALL}/lib/node_modules/"
+                f"{self._app_name}/.npmrc"
+            ),
             # we can not user `permissions` block here because it doesn't work with symlinks
             # bug: https://github.com/canonical/rockcraft/issues/660
             f"chown -R {USER_UID}:{USER_UID} ${{CRAFT_PART_INSTALL}}/lib/node_modules/{self._app_name}",
@@ -321,6 +323,7 @@ class ExpressJSFrameworkV2(ExpressJSFramework):
         """
         return True
 
+    @override
     def _gen_override_build_pre_default(self) -> list[str]:
         """Generate override-build script part used before 'craftctl default'."""
         override_build = ["rm -rf node_modules"]
@@ -344,10 +347,11 @@ class ExpressJSFrameworkV2(ExpressJSFramework):
             # npm install will user package.json from tgz to obtain the list of modules later
         return override_build
 
+    @override
     def _gen_override_build_post_default(self) -> list[str]:
         """Generate override-build script part used after 'craftctl default'."""
         override_build = []
-        if self._has_build_script:  # Q: and not self._has_defined_files: ?
+        if self._has_build_script:
             override_build.extend(
                 [
                     f"mkdir -p ${{CRAFT_PART_INSTALL}}/lib/node_modules/{self._app_name}/dist",
