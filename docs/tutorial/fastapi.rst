@@ -111,7 +111,8 @@ The top of the file should look similar to the following snippet:
     name: fastapi-hello-world
     # see https://documentation.ubuntu.com/rockcraft/latest/explanation/bases/
     # for more information about bases and bare bases
-    base: ubuntu@24.04 # the base environment for this FastAPI app
+    base: bare
+    build-base: ubuntu@24.04
     version: '0.1' # just for humans. Semantic versioning is recommended
     summary: A summary of your FastAPI app # 79 char long summary
     description: |
