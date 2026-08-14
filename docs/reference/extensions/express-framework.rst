@@ -11,7 +11,7 @@ application rocks.
 
 It facilitates the installation of Express application dependencies, including
 Node.js and npm, inside the rock. The extension discovers the location of the
-``package.json``, but can only package a single application. If the application
+``package.json``, but the extension can only package a single application. If the application
 defines a ``build`` script, development dependencies will be installed,
 ``npm run build`` will be called, and entries matching ``file`` array (excluding
 entries from ``.npmignore``, if they exist) will be packages. If the ``files``
