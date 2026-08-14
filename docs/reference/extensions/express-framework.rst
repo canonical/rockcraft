@@ -49,7 +49,8 @@ Project requirements
           1. The application should reside in the ``app`` directory.
           2. The application should have a ``package.json`` file.
           3. The ``package.json`` file should define the ``start`` script.
-            For more information, see the `npm documentation <https://docs.npmjs.com/cli/v11/configuring-npm/package-json>`_.
+
+          For more information, see the `npm documentation <https://docs.npmjs.com/cli/v11/configuring-npm/package-json>`_.
 
     .. tab-item:: Ubuntu 26.04 and higher
         :sync: base-26-plus
@@ -59,7 +60,8 @@ Project requirements
           1. The application should have a ``package.json`` file in the same
           directory as ``rockcraft.yaml`` file or 1 directory below the ``rockcraft.yaml`` file.
           2. The ``package.json`` file should define the ``start`` script.
-            For more information, see the `npm documentation <https://docs.npmjs.com/cli/v11/configuring-npm/package-json>`_.
+
+          For more information, see the `npm documentation <https://docs.npmjs.com/cli/v11/configuring-npm/package-json>`_.
 
           If the application defines a ``build`` script in ``package.json`` file, it is
           recommended to have a ``files`` array describing the entries to be included
