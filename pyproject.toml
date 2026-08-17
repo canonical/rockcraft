@@ -117,6 +117,7 @@ release = [
 constraint-dependencies = [
     # Basic constraints to allow --resolution=lowest
     "cffi>=1.15",
+    "cryptography>=50.0.0",
     "iniconfig>=1.1.0",
     "httplib2>=0.20.0",
     "libnacl>=2.0",
