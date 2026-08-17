@@ -6,7 +6,7 @@
 Crafting
 ========
 
-These guides walk you through configuring, building and publishing your rock.
+These guides walk you through configuring, packaging, and publishing your rock.
 
 Configure your rock
 -------------------

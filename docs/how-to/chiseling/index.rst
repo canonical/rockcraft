@@ -10,9 +10,8 @@ Decrease a rock's size and harden it by chiseling a rock.
 
 - :ref:`how-to-chisel-a-rock`
 
-Sometimes, your rock may need a Chisel package slice that is
-not yet available in upstream Chisel releases. You can also install
-these custom slices.
+If your rock needs a package slice that isn't available in upstream Chisel releases,
+you'll need to create and install the slice yourself.
 
 - :ref:`how-to-install-a-custom-package-slice`
 
