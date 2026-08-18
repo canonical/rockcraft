@@ -38,7 +38,7 @@ jobs:
           path: ${{ steps.rockcraft.outputs.snap }}
 
   source-spread-tests:
-    runs-on: [self-hosted, spread-installed]
+    runs-on: [self-hosted, spread-enabled]
     needs: [snap-build]
     if: ${{ needs.snap-build.outputs.source-files == 'true' || github.event_name == 'schedule' }}
 
@@ -71,11 +71,11 @@ jobs:
               exit 0
             fi
           fi
-          spread google:tests/spread/pro/
+          spread openstack:tests/spread/pro/
 
       - name: Run source spread tests
         run: |
-          spread google:...tests...
+          spread openstack:...tests...
 
       - name: Discard spread workers
         if: always()

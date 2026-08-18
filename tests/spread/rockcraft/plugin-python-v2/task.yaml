@@ -69,6 +69,12 @@ prepare: cp -r src/ "$SCENARIO"/
 execute: |
   cd "$SCENARIO"
 
+  if [ -f rockcraft.yaml.template ]; then
+    # Some tests share a directory; copy the 'pristine' template to avoid
+    # cross-test pollution
+    cp rockcraft.yaml.template rockcraft.yaml
+  fi
+
   # Build the rock & load it into docker
   sed -i "s/PLACEHOLDER_BASE/$BASE/" rockcraft.yaml
   sed -i "s/PLACEHOLDER_BUILD_BASE/$BUILD_BASE/" rockcraft.yaml

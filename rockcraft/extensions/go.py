@@ -26,7 +26,7 @@ from rockcraft.errors import ExtensionError
 from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
 
 from .app_parts import gen_logging_part
-from .extension import Extension
+from .extension import Extension, _FrameworkFactory
 
 USER_UID: int = SUPPORTED_GLOBAL_USERNAMES["_daemon_"]["uid"]
 
@@ -229,3 +229,30 @@ class GoFramework(Extension):
         for key in paths:
             obj = obj.get(key, {})
         return obj
+
+
+class GoFrameworkV2(GoFramework):
+    """Extension for 12-factor Go applications targeting ubuntu@26.04.
+
+    For now this is behaviourally identical to :class:`GoFramework`; it exists so the
+    framework can dispatch to a paas-charm 2.0 implementation in the future. Only the
+    supported base and experimental status differs.
+    """
+
+    @staticmethod
+    @override
+    def get_supported_bases() -> tuple[str, ...]:
+        """Return supported bases."""
+        return ("ubuntu@26.04",)
+
+    @staticmethod
+    @override
+    def is_experimental(base: str | None) -> bool:
+        """Indicate if the extension is in an experimental state.
+
+        This is always True for V2
+        """
+        return True
+
+
+GoFrameworkFactory = _FrameworkFactory(GoFramework, GoFrameworkV2)
