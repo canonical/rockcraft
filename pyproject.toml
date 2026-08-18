@@ -117,9 +117,7 @@ release = [
 constraint-dependencies = [
     # Basic constraints to allow --resolution=lowest
     "cffi>=1.15",
-    # Newer cryptography versions need a more recent of rustc
-    # than available in core24
-    "cryptography~=46.0.7",
+    "cryptography>=50.0.0",
     "iniconfig>=1.1.0",
     "httplib2>=0.20.0",
     "libnacl>=2.0",
@@ -144,8 +142,6 @@ constraint-dependencies = [
     # protobuf 6.33.x segfaults on s390x
     # this issue might be the cause: https://github.com/protocolbuffers/protobuf/issues/24103
     "protobuf==6.32.*",
-    # newer pydantic-core needs a newer version of maturin and cargo
-    "pydantic-core<=2.41.5",
 ]
 conflicts = [
     [
@@ -157,8 +153,6 @@ conflicts = [
     ],
 ]
 build-constraint-dependencies = [
-    # needed until we have rustc >= 1.78
-    "maturin<1.10.0 ; python_version < '3.14'",
     # Cyclic dependency when building setuptools-scm 10 from source. See: https://github.com/pypa/setuptools-scm/issues/1302
     "setuptools-scm!=10.0.2,!=10.0.3",
 ]
