@@ -68,6 +68,7 @@ def test_flask_extension_default(
     (tmp_path / "node_modules").mkdir()
     (tmp_path / "test").write_text("test")
     applied = extensions.apply_extensions(tmp_path, flask_input_yaml)
+    assert "app-data" not in applied["parts"]
     source = applied["parts"]["flask-framework/config-files"]["source"]
     del applied["parts"]["flask-framework/config-files"]["source"]
     suffix = "share/rockcraft/extensions/flask-framework"
@@ -844,6 +845,11 @@ def test_flask_v2_full_apply_26_04(tmp_path, monkeypatch):
     }
 
     applied = extensions.apply_extensions(tmp_path, flask_input_yaml_26)
+    assert applied["parts"].pop("app-data") == {
+        "plugin": "nil",
+        "override-build": "mkdir -p ${CRAFT_PART_INSTALL}/app-data",
+        "permissions": [{"path": "app-data", "owner": 584792, "group": 584792}],
+    }
     source = applied["parts"]["flask-framework/config-files"]["source"]
     del applied["parts"]["flask-framework/config-files"]["source"]
     suffix = "share/rockcraft/extensions/flask-framework"
@@ -961,6 +967,7 @@ def test_django_extension_default(
     (django_project_dir / "wsgi.py").write_text("application = object()")
 
     applied = extensions.apply_extensions(tmp_path, django_input_yaml)
+    assert "app-data" not in applied["parts"]
     expected_module = f"{wsgi_subdir}.wsgi"
 
     source = applied["parts"]["django-framework/config-files"]["source"]
@@ -1213,6 +1220,11 @@ def test_django_extension_v2_default(tmp_path):
     (django_project_dir / "wsgi.py").write_text("application = object()")
 
     applied = extensions.apply_extensions(tmp_path, django_input_yaml)
+    assert applied["parts"].pop("app-data") == {
+        "plugin": "nil",
+        "override-build": "mkdir -p ${CRAFT_PART_INSTALL}/app-data",
+        "permissions": [{"path": "app-data", "owner": 584792, "group": 584792}],
+    }
 
     source = applied["parts"]["django-framework/config-files"]["source"]
     del applied["parts"]["django-framework/config-files"]["source"]

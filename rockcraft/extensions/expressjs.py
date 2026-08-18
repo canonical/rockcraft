@@ -24,7 +24,7 @@ from typing_extensions import override
 from rockcraft.errors import ExtensionError
 from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
 
-from .app_parts import gen_logging_part
+from .app_parts import AppDataDirMixin, gen_logging_part
 from .extension import Extension, _FrameworkFactory
 
 USER_UID: int = SUPPORTED_GLOBAL_USERNAMES["_daemon_"]["uid"]
@@ -260,7 +260,7 @@ class ExpressJSFramework(Extension):
         return self._app_package_json["name"]
 
 
-class ExpressJSFrameworkV2(ExpressJSFramework):
+class ExpressJSFrameworkV2(AppDataDirMixin, ExpressJSFramework):
     """Extension for 12-factor ExpressJS applications targeting ubuntu@26.04.
 
     For now this is behaviourally identical to :class:`ExpressJSFramework`; it exists so the

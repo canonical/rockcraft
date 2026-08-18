@@ -45,7 +45,7 @@ from ._python_utils import (
     has_global_variable,
 )
 from ._utils import find_ubuntu_base_python_version
-from .app_parts import gen_logging_part
+from .app_parts import AppDataDirMixin, gen_logging_part
 from .extension import Extension, _FrameworkFactory, get_extensions_data_dir
 
 USER_UID: int = SUPPORTED_GLOBAL_USERNAMES["_daemon_"]["uid"]
@@ -464,7 +464,7 @@ class FlaskFramework(_GunicornBase):
             )
 
 
-class FlaskFrameworkV2(FlaskFramework):
+class FlaskFrameworkV2(AppDataDirMixin, FlaskFramework):
     """Extension for 12-factor Flask applications targeting ubuntu@26.04.
 
     For now this is behaviourally identical to :class:`FlaskFramework`; it exists so the
@@ -563,7 +563,7 @@ class DjangoFramework(_GunicornBase):
             self.wsgi_path  # noqa: B018 (unused expression, just checking for errors)
 
 
-class DjangoFrameworkV2(DjangoFramework):
+class DjangoFrameworkV2(AppDataDirMixin, DjangoFramework):
     """Extension for 12-factor Django applications targeting ubuntu@26.04.
 
     For now this is behaviourally identical to :class:`DjangoFramework`; it exists so the

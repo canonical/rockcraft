@@ -341,7 +341,7 @@ def test_expressjs_extension_default(
         }
     }
     applied = extensions.apply_extensions(tmp_path, expressjs_input_yaml)
-
+    assert "app-data" not in applied["parts"]
     assert applied == expected_yaml_dict
 
 
@@ -432,6 +432,11 @@ def test_expressjs_extension_ubuntu2604_default(
         }
     }
     applied = extensions.apply_extensions(tmp_path, expressjs_input_yaml)
+    assert applied["parts"].pop("app-data") == {
+        "plugin": "nil",
+        "override-build": "mkdir -p ${CRAFT_PART_INSTALL}/app-data",
+        "permissions": [{"path": "app-data", "owner": 584792, "group": 584792}],
+    }
 
     expected = {
         "base": "ubuntu@26.04",

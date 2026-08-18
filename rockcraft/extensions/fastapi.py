@@ -30,7 +30,7 @@ from rockcraft.extensions._utils import find_ubuntu_base_python_version
 from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
 
 from ._python_utils import has_global_variable
-from .app_parts import gen_logging_part
+from .app_parts import AppDataDirMixin, gen_logging_part
 from .extension import Extension, _FrameworkFactory
 
 USER_UID: int = SUPPORTED_GLOBAL_USERNAMES["_daemon_"]["uid"]
@@ -301,7 +301,7 @@ class FastAPIFramework(Extension):
         return []
 
 
-class FastAPIFrameworkV2(FastAPIFramework):
+class FastAPIFrameworkV2(AppDataDirMixin, FastAPIFramework):
     """Extension for 12-factor FastAPI applications targeting ubuntu@26.04.
 
     For now this is behaviourally identical to :class:`FastAPIFramework`; it exists so the

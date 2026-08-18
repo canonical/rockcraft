@@ -4,7 +4,9 @@ kill-timeout: 45m
 environment:
   SCENARIO/bare: bare
   SCENARIO/base_2404: ubuntu-24.04
+  SCENARIO/base_2604: ubuntu-26.04
   UV_USE_IO_URING: "0"
+  ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS: "true"
 
 execute: |
   NAME="expressjs-${SCENARIO//./-}"
@@ -58,6 +60,10 @@ execute: |
     check_directory_ownership "/lib/node_modules/app"
     check_directory_ownership "/opt/promtail"
     check_directory_ownership "/etc/promtail"
+    if [ "${SCENARIO}" == "ubuntu-26.04" ]; then
+      check_directory_ownership "/app-data"
+      docker run --rm --entrypoint /usr/bin/bash "${IMAGE}" -c "test -w /app-data"
+    fi
 
     # Ensure image exists
     docker images "${IMAGE}" | MATCH "${NAME}"

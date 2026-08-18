@@ -41,6 +41,7 @@ def test_fastapi_extension_default(tmp_path, fastapi_input_yaml, packages):
     (tmp_path / "requirements.txt").write_text(packages)
     (tmp_path / "app.py").write_text("app = object()")
     applied = extensions.apply_extensions(tmp_path, fastapi_input_yaml)
+    assert "app-data" not in applied["parts"]
 
     assert applied == {
         "base": "ubuntu@24.04",
@@ -404,6 +405,11 @@ def test_fastapi_extension_default_26_04(tmp_path, monkeypatch):
         "extensions": ["fastapi-framework"],
     }
     applied = extensions.apply_extensions(tmp_path, input_yaml)
+    assert applied["parts"].pop("app-data") == {
+        "plugin": "nil",
+        "override-build": "mkdir -p ${CRAFT_PART_INSTALL}/app-data",
+        "permissions": [{"path": "app-data", "owner": 584792, "group": 584792}],
+    }
 
     assert applied == {
         "base": "ubuntu@26.04",
