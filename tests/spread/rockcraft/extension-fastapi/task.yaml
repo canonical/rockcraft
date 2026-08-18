@@ -50,8 +50,8 @@ execute: |
   check_directory_ownership "/opt/promtail"
   check_directory_ownership "/etc/promtail"
   if [ "${SCENARIO}" == "ubuntu-26.04" ]; then
-    check_directory_ownership "/app-data"
-    docker run --rm --entrypoint /usr/bin/bash "${IMAGE}" -c "test -w /app-data"
+    docker run --rm --entrypoint /usr/bin/bash "${IMAGE}" -c \
+      "test -z \"\$(find /app-data/ ! -user '_daemon_')\" && test -w /app-data"
   fi
 
   # test the default fastapi service
