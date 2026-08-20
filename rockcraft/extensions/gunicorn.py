@@ -507,7 +507,7 @@ class FlaskFrameworkV2(FlaskFramework):
     @override
     def get_supported_bases() -> tuple[str, ...]:
         """Return supported bases."""
-        return ("ubuntu@26.04",)
+        return ("bare", "ubuntu@26.04")
 
     @staticmethod
     @override
@@ -610,7 +610,7 @@ class DjangoFrameworkV2(DjangoFramework):
     @override
     def get_supported_bases() -> tuple[str, ...]:
         """Return supported bases."""
-        return ("ubuntu@26.04",)
+        return ("bare", "ubuntu@26.04")
 
     @staticmethod
     @override
