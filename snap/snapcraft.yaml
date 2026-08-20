@@ -126,13 +126,27 @@ parts:
     organize:
       "usr/lib/python3/dist-packages/*": "lib/python3.12/site-packages/"
 
+  rustc:
+    plugin: nil
+    build-packages:
+      - rustc-1.91
+      - cargo-1.91
+    override-build: |
+      # We need newer versions of cargo and rustc than the cargo
+      # and rustc packages provide, but they don't set the `cargo`
+      # and `rustc` commands needed by maturin.
+      # These commands allow rust-based libraries like pydantic-core
+      # and cryptography to build using the non-default rust.
+      mkdir -p "${CRAFT_PART_INSTALL}/bin"
+      ln -sf "$(command -v cargo-1.91)" "${CRAFT_PART_INSTALL}/bin/cargo"
+      ln -sf "$(command -v rustc-1.91)" "${CRAFT_PART_INSTALL}/bin/rustc"
+    prime:
+      - -*
   rockcraft:
     source: .
     plugin: uv
     build-attributes:
       - enable-patchelf
-    build-packages:
-      - cargo
     build-snaps:
       - astral-uv
     build-environment:
@@ -169,6 +183,7 @@ parts:
       - rockcraft-libs
       - libgit2
       - python3-apt
+      - rustc
 
   bash-completion:
     after: [rockcraft]
