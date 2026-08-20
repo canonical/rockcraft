@@ -53,7 +53,7 @@
 
 "how-to/use-chisel.rst" "how-to/chiseling/index.rst"
 "how-to/rockcraft-pack-action.rst" "how-to/crafting/rockcraft-pack-action.rst"
-"how-to/contribute-docs.rst" "how-to/documentation/contribute-docs.rst"
+"how-to/contribute-docs.rst" "contribute-to-this-documentation.rst"
 
-"explanation/lifecycle.rst" "explanation/lifecycle-layer.rst"
+"explanation/lifecycle.rst" "common/craft-parts/explanation/lifecycle.rst"
 "explanation/filesets.rst" "common/craft-parts/explanation/filesets.rst"
