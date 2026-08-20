@@ -18,6 +18,11 @@
 import pytest
 from rockcraft import extensions
 from rockcraft.errors import ExtensionError
+from rockcraft.extensions.springboot import (
+    SpringBootFramework,
+    SpringBootFrameworkFactory,
+    SpringBootFrameworkV2,
+)
 
 
 @pytest.fixture(name="spring_boot_input_yaml")
@@ -581,12 +586,6 @@ def test_spring_boot_extension_extra_assets_start_with_app(
 
 def test_factory_dispatch_v1(tmp_path):
     """Factory returns SpringBootFramework for ubuntu@24.04."""
-    from rockcraft.extensions.springboot import (
-        SpringBootFramework,
-        SpringBootFrameworkFactory,
-        SpringBootFrameworkV2,
-    )
-
     instance = SpringBootFrameworkFactory(
         project_root=tmp_path,
         yaml_data={"name": "x", "base": "ubuntu@24.04"},
@@ -597,11 +596,6 @@ def test_factory_dispatch_v1(tmp_path):
 
 def test_factory_dispatch_v2(tmp_path):
     """Factory returns SpringBootFrameworkV2 for ubuntu@26.04."""
-    from rockcraft.extensions.springboot import (
-        SpringBootFrameworkFactory,
-        SpringBootFrameworkV2,
-    )
-
     instance = SpringBootFrameworkFactory(
         project_root=tmp_path,
         yaml_data={"name": "x", "base": "ubuntu@26.04"},
@@ -609,20 +603,38 @@ def test_factory_dispatch_v2(tmp_path):
     assert isinstance(instance, SpringBootFrameworkV2)
 
 
-def test_v2_supported_bases():
-    """SpringBootFrameworkV2 supports ubuntu@26.04."""
-    from rockcraft.extensions.springboot import SpringBootFrameworkV2
+def test_factory_dispatch_bare_by_build_base(tmp_path):
+    """Factory selects the framework version from a bare rock's build-base."""
+    v1 = SpringBootFrameworkFactory(
+        project_root=tmp_path,
+        yaml_data={
+            "name": "x",
+            "base": "bare",
+            "build-base": "ubuntu@24.04",
+        },
+    )
+    assert isinstance(v1, SpringBootFramework)
+    assert not isinstance(v1, SpringBootFrameworkV2)
 
+    v2 = SpringBootFrameworkFactory(
+        project_root=tmp_path,
+        yaml_data={
+            "name": "x",
+            "base": "bare",
+            "build-base": "ubuntu@26.04",
+        },
+    )
+    assert isinstance(v2, SpringBootFrameworkV2)
+
+
+def test_v2_supported_bases():
+    """SpringBootFrameworkV2 supports ubuntu@26.04 and bare rocks."""
     assert "ubuntu@26.04" in SpringBootFrameworkV2.get_supported_bases()
+    assert "bare" in SpringBootFrameworkV2.get_supported_bases()
 
 
 def test_factory_supported_bases():
     """SpringBootFrameworkFactory includes bases from both V1 and V2."""
-    from rockcraft.extensions.springboot import (
-        SpringBootFramework,
-        SpringBootFrameworkFactory,
-    )
-
     factory_bases = SpringBootFrameworkFactory.get_supported_bases()
     assert "ubuntu@26.04" in factory_bases
     for base in SpringBootFramework.get_supported_bases():
