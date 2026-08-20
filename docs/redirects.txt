@@ -35,7 +35,7 @@
 
 "reference/rockcraft.yaml.rst" "reference/rockcraft-yaml.rst"
 "reference/parts_steps.rst" "reference/parts-and-steps.rst"
-"common/craft-parts/reference/part_properties.rst" "reference/parts-and-steps.rst"
+"common/craft-parts/reference/part_properties.rst" "reference/rockcraft-yaml.rst"
 "reference/commands/overlay.rst" "explanation/overlay-step.rst"
 
 "how-to/rocks/index.rst" "how-to/crafting/index.rst"
