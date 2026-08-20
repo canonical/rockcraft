@@ -49,9 +49,10 @@ root, the extension builds the application with the :doc:`uv plugin
 from the lockfile with ``uv sync``. Gunicorn (``gunicorn~=23.0``) is injected
 after the build step regardless of the lockfile contents.
 
-If only ``pyproject.toml`` is present (no ``uv.lock``), the extension falls back
-to the Python plugin. If ``uv.lock`` is present but ``pyproject.toml`` is
-missing, packing fails with an error, as the uv plugin requires both files.
+The uv plugin requires both files, meaning the application
+will fail to pack if ``uv.lock`` is present but ``pyproject.toml`` is missing.
+If only ``pyproject.toml`` is present, the extension falls back
+to the Python plugin.
 
 .. _reference-flask-framework-stage-packages:
 
