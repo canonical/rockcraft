@@ -292,7 +292,7 @@ class _GunicornBase(Extension):
                 "plugin": "uv",
                 "stage-packages": stage_packages,
                 "source": ".",
-                "build-snaps": ["astral-uv"],
+                "build-snaps": ["astral-uv/latest/edge"],
                 "build-environment": build_environment,
                 "override-build": (
                     "craftctl default\n"
