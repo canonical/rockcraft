@@ -25,7 +25,6 @@ Node.js and npm, inside the rock.
 
 By default, the system foundation, or base, is set as ``bare`` to generate a
 lightweight image.
-bases.
 The Express extension is compatible with the ``bare``, ``ubuntu@24.04`` and ``ubuntu@26.04``
 bases.
 
@@ -41,9 +40,9 @@ Project requirements
         There are three requirements to be able to use the ``expressjs-framework``
         extension:
 
-        1. The application should reside in the ``app`` directory.
-        2. The application should have a ``package.json`` file.
-        3. The ``package.json`` file should define the ``start`` script.
+        - The application should reside in the ``app`` directory.
+        - The application should have a ``package.json`` file.
+        - The ``package.json`` file should define the ``start`` script.
 
         For more information, see the `npm documentation <https://docs.npmjs.com/cli/v11/configuring-npm/package-json>`_.
 
@@ -53,13 +52,13 @@ Project requirements
         There are two requirements to be able to use the ``expressjs-framework``
         extension:
 
-        1. The application should have a ``package.json`` file in the same
+        - The application should have a ``package.json`` file in the same
         directory as ``rockcraft.yaml`` file or 1 directory below the ``rockcraft.yaml`` file.
-        2. The ``package.json`` file should define the ``start`` script.
+        - The ``package.json`` file should define the ``start`` script.
 
         For more information, see the `npm documentation <https://docs.npmjs.com/cli/v11/configuring-npm/package-json>`_.
 
-        If the application defines a ``build`` script in ``package.json`` file, it is
+        If the application defines a ``build`` script in its ``package.json`` file, it is
         recommended to have a ``files`` array describing the entries to be included
         or have an appropriate ``.npmignore`` file to exclude entries not required
         at runtime. If the ``files`` array is not defined and ``.npmignore``
@@ -85,7 +84,8 @@ For more examples of the ``npm-node-version`` key, see
 :ref:`craft_parts_npm_plugin`.
 
 If you don't customize the version of node, it will be installed from the Ubuntu
-package repository.
+If you don't customize the version of node, it will be installed from the
+`Ubuntu package repository <https://packages.ubuntu.com/noble/nodejs>`_.
 
 .. _reference-express-framework-stage-packages:
 
