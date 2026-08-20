@@ -53,7 +53,7 @@ Project requirements
         extension:
 
         - The application should have a ``package.json`` file in the same
-        directory as ``rockcraft.yaml`` file or 1 directory below the ``rockcraft.yaml`` file.
+          directory as ``rockcraft.yaml`` file or 1 directory below the ``rockcraft.yaml`` file.
         - The ``package.json`` file should define the ``start`` script.
 
         For more information, see the `npm documentation <https://docs.npmjs.com/cli/v11/configuring-npm/package-json>`_.
