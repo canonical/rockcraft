@@ -54,9 +54,10 @@ from the lockfile with ``uv sync``. Gunicorn (``gunicorn~=23.0``) is injected
 after the build step regardless of the lockfile contents. In this case, a
 ``requirements.txt`` file is not required.
 
+The uv plugin requires both files, meaning the application
+will fail to pack if ``uv.lock`` is present but ``pyproject.toml`` is missing.
 If only ``pyproject.toml`` is present, the extension falls back
-to the Python plugin. If ``uv.lock`` is present but ``pyproject.toml`` is
-missing, packing fails with an error, as the uv plugin requires both files.
+to the Python plugin.
 
 .. _reference-django-framework-stage-packages:
 

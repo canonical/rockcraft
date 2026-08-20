@@ -48,7 +48,7 @@ If both a ``uv.lock`` and a ``pyproject.toml`` file are present in the project
 root, the extension builds the application with the :doc:`uv plugin
 </reference/plugins/uv_plugin>` instead of the Python plugin, installing dependencies
 from the lockfile with ``uv sync``. Uvicorn is injected after the build step
-regardless of the lockfile contents. In this case a ``requirements.txt`` file is
+regardless of the lockfile contents. In this case, a ``requirements.txt`` file is
 not required.
 
 The uv plugin requires both files, meaning the application

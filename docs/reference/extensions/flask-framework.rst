@@ -46,8 +46,9 @@ uv projects
 If both a ``uv.lock`` and a ``pyproject.toml`` file are present in the project
 root, the extension builds the application with the :doc:`uv plugin
 </reference/plugins/uv_plugin>` instead of the Python plugin, installing dependencies
-from the lockfile with ``uv sync``. Gunicorn (``gunicorn~=23.0``) is injected
-after the build step regardless of the lockfile contents.
+from the lockfile with ``uv sync``. Uvicorn is injected after the build step
+regardless of the lockfile contents. In this case, a ``requirements.txt`` file is
+not required.
 
 The uv plugin requires both files, meaning the application
 will fail to pack if ``uv.lock`` is present but ``pyproject.toml`` is missing.
