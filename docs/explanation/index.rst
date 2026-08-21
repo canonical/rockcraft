@@ -14,7 +14,7 @@ Overview
 --------
 
 Rockcraft was created to build secure, stable container images. Read on for a bird's-eye
-view of what sets Rockcraft and rocks apart from similar tools.
+view of what sets rocks apart from similar tools.
 
 - :ref:`explanation-rocks`
 
