@@ -13,10 +13,13 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+import dataclasses
 from textwrap import dedent
 
 import pytest
+import rockcraft
 from rockcraft import cli, plugins
+from rockcraft.application import APP_METADATA
 
 pytestmark = [pytest.mark.usefixtures("enable_overlay_feature")]
 
@@ -73,3 +76,26 @@ def test_get_app_plugins_missing_project(tmp_path, monkeypatch, mocker):
     app._configure_early_services()
     _ = app._get_app_plugins()
     spied_get_plugins.assert_called_once_with(None)
+
+
+@pytest.mark.parametrize(
+    ("version", "expected_url"),
+    [
+        ("1.20.0", "https://documentation.ubuntu.com/rockcraft/1"),
+        ("2.0.1", "https://documentation.ubuntu.com/rockcraft/2"),
+    ],
+)
+def test_docs_url_uses_major_version(monkeypatch, version, expected_url):
+    """Released docs URLs point at the major version only.
+
+    Regression test for #1312. The expected URL is spelled out in full on
+    purpose: deriving it from the property under test would track any change to
+    the URL scheme instead of catching it.
+    """
+    # AppMetadata is a frozen dataclass whose 'version' field is init=False and
+    # derived in __post_init__ from the app package's __version__. replace()
+    # re-runs that derivation, so the real APP_METADATA is left alone.
+    monkeypatch.setattr(rockcraft, "__version__", version)
+    app_metadata = dataclasses.replace(APP_METADATA)
+
+    assert app_metadata.versioned_docs_url == expected_url
