@@ -286,8 +286,10 @@ exclude_patterns = [
 html_css_files = ["https://assets.ubuntu.com/v1/d86746ef-cookie_banner.css"]
 
 # Adds custom JavaScript files, located remotely or in 'html_static_path'.
-html_js_files = ["https://assets.ubuntu.com/v1/287a5e8f-bundle.js",
-                 "js/overwrite_links.js"]
+html_js_files = [
+    "https://assets.ubuntu.com/v1/287a5e8f-bundle.js",
+    "js/overwrite_links.js",
+]
 
 # Appends extra markup to the end of every document written in reST
 rst_epilog = """
