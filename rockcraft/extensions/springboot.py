@@ -25,7 +25,7 @@ from typing_extensions import override
 
 from rockcraft.errors import ExtensionError
 
-from .extension import Extension, _FrameworkFactory
+from .extension import Extension, ExtensionPart, _FrameworkFactory
 
 
 class SpringBootFramework(Extension):
@@ -67,13 +67,13 @@ class SpringBootFramework(Extension):
 
         snippet["parts"] = {
             **self.gen_gradle_init_script_part(),
-            "spring-boot-framework/install-app": self.gen_install_app_part(),
-            "spring-boot-framework/runtime": self.gen_runtime_app_part(),
+            self.get_part_name(ExtensionPart.INSTALL_APP): self.gen_install_app_part(),
+            self.get_part_name(ExtensionPart.RUNTIME): self.gen_runtime_app_part(),
         }
 
         assets_part = self.gen_assets_part()
         if assets_part:
-            snippet["parts"]["spring-boot-framework/assets"] = assets_part
+            snippet["parts"][self.get_part_name(ExtensionPart.ASSETS)] = assets_part
 
         return snippet
 
@@ -160,7 +160,7 @@ class SpringBootFramework(Extension):
         """Return the user's override-build part for gradle-init-script part."""
         return (
             self.yaml_data.get("parts", {})
-            .get("spring-boot-framework/gradle-init-script", {})
+            .get(self.get_part_name(ExtensionPart.GRADLE_INIT_SCRIPT), {})
             .get("override-build", "")
         )
 
@@ -169,7 +169,7 @@ class SpringBootFramework(Extension):
         if not self.user_gradle_init_script_part_override_build_override:
             return {}
         return {
-            "spring-boot-framework/gradle-init-script": {
+            self.get_part_name(ExtensionPart.GRADLE_INIT_SCRIPT): {
                 "plugin": "nil",
                 "source": ".",
                 "override-build": self.user_gradle_init_script_part_override_build_override,
@@ -208,7 +208,7 @@ class SpringBootFramework(Extension):
     def _user_install_app_build_packages_override(self) -> list[str]:
         return (
             self.yaml_data.get("parts", {})
-            .get("spring-boot-framework/install-app", {})
+            .get(self.get_part_name(ExtensionPart.INSTALL_APP), {})
             .get("build-packages", [])
         )
 
@@ -245,13 +245,13 @@ class SpringBootFramework(Extension):
 
         override_build_cmds: list[str] = []
         if self.yaml_data.get("parts", {}).get(
-            "spring-boot-framework/gradle-init-script", {}
+            self.get_part_name(ExtensionPart.GRADLE_INIT_SCRIPT), {}
         ):
             gradle_install_app_part["build-environment"] = [
                 {"GRADLE_USER_HOME": "${CRAFT_PART_BUILD}/.gradle/"}
             ]
             gradle_install_app_part["after"] = [
-                "spring-boot-framework/gradle-init-script"
+                self.get_part_name(ExtensionPart.GRADLE_INIT_SCRIPT)
             ]
             override_build_cmds += [
                 "mkdir -p ${CRAFT_PART_BUILD}/.gradle/",
@@ -280,12 +280,12 @@ class SpringBootFramework(Extension):
         """Return the runtime part."""
         user_build_packages_override = (
             self.yaml_data.get("parts", {})
-            .get("spring-boot-framework/runtime", {})
+            .get(self.get_part_name(ExtensionPart.RUNTIME), {})
             .get("build-packages")
         )
         runtime_part = {
             "plugin": "jlink",
-            "after": ["spring-boot-framework/install-app"],
+            "after": [self.get_part_name(ExtensionPart.INSTALL_APP)],
             "build-packages": (
                 user_build_packages_override
                 if user_build_packages_override
@@ -323,14 +323,14 @@ class SpringBootFramework(Extension):
         """Return the assets stage list for the Spring Boot project."""
         user_stage: list[str] = (
             self.yaml_data.get("parts", {})
-            .get("spring-boot-framework/assets", {})
+            .get(self.get_part_name(ExtensionPart.ASSETS), {})
             .get("stage", [])
         )
 
         if not all(re.match("-? *app/", p) for p in user_stage):
             raise ExtensionError(
                 "The spring-boot-framework extension requires the 'stage' entry in the "
-                "spring-boot-framework/assets part to start with 'app/'",
+                f"{self.get_part_name(ExtensionPart.ASSETS)} part to start with 'app/'",
                 doc_slug="/reference/extensions/spring-boot-framework",
                 logpath_report=False,
             )
