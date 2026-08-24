@@ -21,7 +21,7 @@ import os
 import pathlib
 import posixpath
 import re
-from typing import Any
+from typing import Any, ClassVar
 
 from typing_extensions import override
 
@@ -308,6 +308,8 @@ class FastAPIFrameworkV2(AppDataDirMixin, FastAPIFramework):
     framework can dispatch to a paas-charm 2.0 implementation in the future. Only the
     supported base and experimental status differs.
     """
+
+    app_data_part_name: ClassVar[str] = "fastapi-framework/app-data"
 
     @staticmethod
     @override

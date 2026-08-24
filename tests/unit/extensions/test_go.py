@@ -38,7 +38,7 @@ def go_extension(mock_extensions):
 def test_go_extension_default(tmp_path, go_input_yaml):
     (tmp_path / "go.mod").write_text("module projectname\n\ngo 1.22.4")
     applied = extensions.apply_extensions(tmp_path, go_input_yaml)
-    assert "app-data" not in applied["parts"]
+    assert "go-framework/app-data" not in applied["parts"]
 
     assert applied == {
         "base": "ubuntu@24.04",
@@ -332,7 +332,7 @@ def test_go_extension_default_26_04(tmp_path, monkeypatch):
         "extensions": ["go-framework"],
     }
     applied = extensions.apply_extensions(tmp_path, go_input_yaml)
-    assert applied["parts"].pop("app-data") == {
+    assert applied["parts"].pop("go-framework/app-data") == {
         "plugin": "nil",
         "override-build": "mkdir -p ${CRAFT_PART_INSTALL}/app-data",
         "permissions": [{"path": "app-data", "owner": 584792, "group": 584792}],

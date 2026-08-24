@@ -17,7 +17,7 @@
 """An extension for the NodeJS based Javascript application extension."""
 
 import json
-from typing import Any, cast
+from typing import Any, ClassVar, cast
 
 from typing_extensions import override
 
@@ -267,6 +267,8 @@ class ExpressJSFrameworkV2(AppDataDirMixin, ExpressJSFramework):
     framework can dispatch to a paas-charm 2.0 implementation in the future. Only the
     supported base and experimental status differs.
     """
+
+    app_data_part_name: ClassVar[str] = "expressjs-framework/app-data"
 
     @staticmethod
     @override

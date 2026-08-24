@@ -18,7 +18,7 @@
 
 import os
 import re
-from typing import Any
+from typing import Any, ClassVar
 
 from typing_extensions import override
 
@@ -238,6 +238,8 @@ class GoFrameworkV2(AppDataDirMixin, GoFramework):
     framework can dispatch to a paas-charm 2.0 implementation in the future. Only the
     supported base and experimental status differs.
     """
+
+    app_data_part_name: ClassVar[str] = "go-framework/app-data"
 
     @staticmethod
     @override

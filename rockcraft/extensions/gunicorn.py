@@ -24,7 +24,7 @@ import posixpath
 import re
 from collections.abc import Iterable
 from pathlib import Path
-from typing import Any, cast
+from typing import Any, ClassVar, cast
 
 try:
     # Available in Python 3.11 and later
@@ -472,6 +472,8 @@ class FlaskFrameworkV2(AppDataDirMixin, FlaskFramework):
     supported base differs.
     """
 
+    app_data_part_name: ClassVar[str] = "flask-framework/app-data"
+
     @staticmethod
     @override
     def get_supported_bases() -> tuple[str, ...]:
@@ -570,6 +572,8 @@ class DjangoFrameworkV2(AppDataDirMixin, DjangoFramework):
     framework can dispatch to a paas-charm 2.0 implementation in the future. Only the
     supported base and experimental status differs.
     """
+
+    app_data_part_name: ClassVar[str] = "django-framework/app-data"
 
     @staticmethod
     @override
