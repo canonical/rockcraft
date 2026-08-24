@@ -132,7 +132,7 @@ class _GunicornBase(Extension):
                 **self.gen_install_app_part(),
                 "permissions": [{"owner": USER_UID, "group": USER_UID}],
             },
-            self.get_part_name(ExtensionPart.CONFIG_FILES): {
+            self.get_part_name("config-files"): {
                 "plugin": "dump",
                 "source": str(data_dir / f"{self.framework}-framework"),
                 "organize": {
@@ -146,7 +146,7 @@ class _GunicornBase(Extension):
                     },
                 ],
             },
-            self.get_part_name(ExtensionPart.STATSD_EXPORTER): {
+            self.get_part_name("statsd-exporter"): {
                 "build-snaps": ["go"],
                 "source-tag": "v0.26.0",
                 "plugin": "go",
@@ -176,7 +176,7 @@ class _GunicornBase(Extension):
                     "ca-certificates_data",
                 ],
             }
-            parts[self.get_part_name(ExtensionPart.RUNTIME_LIBS)] = {
+            parts[self.get_part_name("runtime-libs")] = {
                 "plugin": "nil",
                 "stage-packages": ["libstdc++6"],
             }

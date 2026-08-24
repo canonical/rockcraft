@@ -70,7 +70,7 @@ class GoFramework(Extension):
 
         snippet["parts"] = {
             # This is needed in case there is no assets part, as the working directory is /app
-            self.get_part_name(ExtensionPart.BASE_LAYOUT): {
+            self.get_part_name("base-layout"): {
                 "plugin": "nil",
                 "override-build": "mkdir -p ${CRAFT_PART_INSTALL}/app",
                 "permissions": [{"owner": USER_UID, "group": USER_UID}],

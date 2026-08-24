@@ -160,7 +160,7 @@ class SpringBootFramework(Extension):
         """Return the user's override-build part for gradle-init-script part."""
         return (
             self.yaml_data.get("parts", {})
-            .get(self.get_part_name(ExtensionPart.GRADLE_INIT_SCRIPT), {})
+            .get(self.get_part_name("gradle-init-script"), {})
             .get("override-build", "")
         )
 
@@ -169,7 +169,7 @@ class SpringBootFramework(Extension):
         if not self.user_gradle_init_script_part_override_build_override:
             return {}
         return {
-            self.get_part_name(ExtensionPart.GRADLE_INIT_SCRIPT): {
+            self.get_part_name("gradle-init-script"): {
                 "plugin": "nil",
                 "source": ".",
                 "override-build": self.user_gradle_init_script_part_override_build_override,
@@ -245,13 +245,13 @@ class SpringBootFramework(Extension):
 
         override_build_cmds: list[str] = []
         if self.yaml_data.get("parts", {}).get(
-            self.get_part_name(ExtensionPart.GRADLE_INIT_SCRIPT), {}
+            self.get_part_name("gradle-init-script"), {}
         ):
             gradle_install_app_part["build-environment"] = [
                 {"GRADLE_USER_HOME": "${CRAFT_PART_BUILD}/.gradle/"}
             ]
             gradle_install_app_part["after"] = [
-                self.get_part_name(ExtensionPart.GRADLE_INIT_SCRIPT)
+                self.get_part_name("gradle-init-script")
             ]
             override_build_cmds += [
                 "mkdir -p ${CRAFT_PART_BUILD}/.gradle/",
