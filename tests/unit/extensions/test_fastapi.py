@@ -352,9 +352,34 @@ def test_factory_dispatch_v2(tmp_path):
     assert isinstance(instance, extensions.FastAPIFrameworkV2)
 
 
+def test_factory_dispatch_bare_by_build_base(tmp_path):
+    """Factory selects the framework version from a bare rock's build-base."""
+    v1 = extensions.FastAPIFrameworkFactory(
+        project_root=tmp_path,
+        yaml_data={
+            "name": "x",
+            "base": "bare",
+            "build-base": "ubuntu@24.04",
+        },
+    )
+    assert isinstance(v1, extensions.FastAPIFramework)
+    assert not isinstance(v1, extensions.FastAPIFrameworkV2)
+
+    v2 = extensions.FastAPIFrameworkFactory(
+        project_root=tmp_path,
+        yaml_data={
+            "name": "x",
+            "base": "bare",
+            "build-base": "ubuntu@26.04",
+        },
+    )
+    assert isinstance(v2, extensions.FastAPIFrameworkV2)
+
+
 def test_v2_supported_bases():
-    """FastAPIFrameworkV2 supports ubuntu@26.04."""
+    """FastAPIFrameworkV2 supports ubuntu@26.04 and bare rocks."""
     assert "ubuntu@26.04" in extensions.FastAPIFrameworkV2.get_supported_bases()
+    assert "bare" in extensions.FastAPIFrameworkV2.get_supported_bases()
 
 
 def test_factory_supported_bases():
