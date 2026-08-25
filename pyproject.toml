@@ -86,7 +86,7 @@ docs-sphinx-stack = [
     "sphinxcontrib-svg2pdfconverter[cairosvg]~=2.1",
     "sphinxext-opengraph~=0.13",
     "vale==3.13.0.0",
-]   
+]
 
 dev = [
     "build>=0.7.0",
