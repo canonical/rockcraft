@@ -48,7 +48,6 @@ from ._utils import find_ubuntu_base_python_version
 from .app_parts import gen_logging_part
 from .extension import (
     Extension,
-    ExtensionPart,
     _FrameworkFactory,
     get_extensions_data_dir,
 )
@@ -120,7 +119,7 @@ class _GunicornBase(Extension):
             python_requirements.append("requirements.txt")
 
         parts: dict[str, Any] = {
-            self.get_part_name(ExtensionPart.DEPENDENCIES): {
+            self.get_part_name("dependencies"): {
                 "plugin": "python",
                 "stage-packages": stage_packages,
                 "source": ".",
@@ -128,7 +127,7 @@ class _GunicornBase(Extension):
                 "python-requirements": python_requirements,
                 "build-environment": build_environment,
             },
-            self.get_part_name(ExtensionPart.INSTALL_APP): {
+            self.get_part_name("install-app"): {
                 **self.gen_install_app_part(),
                 "permissions": [{"owner": USER_UID, "group": USER_UID}],
             },
@@ -152,7 +151,7 @@ class _GunicornBase(Extension):
                 "plugin": "go",
                 "source": "https://github.com/prometheus/statsd_exporter.git",
             },
-            self.get_part_name(ExtensionPart.LOGGING): gen_logging_part(
+            self.get_part_name("logging"): gen_logging_part(
                 override_build_lines=[
                     f"mkdir -p $CRAFT_PART_INSTALL/var/log/{self.framework}"
                 ],
@@ -166,7 +165,7 @@ class _GunicornBase(Extension):
             ),
         }
         if self.yaml_data["base"] == "bare":
-            parts[self.get_part_name(ExtensionPart.RUNTIME)] = {
+            parts[self.get_part_name("runtime")] = {
                 "plugin": "nil",
                 "override-build": "mkdir -m 777 ${CRAFT_PART_INSTALL}/tmp\n"
                 "ln -sf /usr/bin/bash ${CRAFT_PART_INSTALL}/usr/bin/sh",
@@ -183,10 +182,10 @@ class _GunicornBase(Extension):
         else:
             # There is a bug where ca-certificates_data and python-venv both provide
             # etc/ssl/certs/ca-certificates.crt with different content.
-            parts[self.get_part_name(ExtensionPart.DEPENDENCIES)]["stage"] = [
+            parts[self.get_part_name("dependencies")]["stage"] = [
                 "-etc/ssl/certs/ca-certificates.crt"
             ]
-            parts[self.get_part_name(ExtensionPart.RUNTIME)] = {
+            parts[self.get_part_name("runtime")] = {
                 "plugin": "nil",
                 "stage-packages": ["ca-certificates_data"],
             }
@@ -383,13 +382,13 @@ class FlaskFramework(_GunicornBase):
         """Return the prime list for the Flask project."""
         user_prime: list[str] = (
             self.yaml_data.get("parts", {})
-            .get(self.get_part_name(ExtensionPart.INSTALL_APP), {})
+            .get(self.get_part_name("install-app"), {})
             .get("prime", [])
         )
         if not all(re.match("-? *flask/app", p) for p in user_prime):
             raise ExtensionError(
                 "flask-framework extension requires the 'prime' entry in the "
-                f"{self.get_part_name(ExtensionPart.INSTALL_APP)} part to start with flask/app",
+                f"{self.get_part_name('install-app')} part to start with flask/app",
                 doc_slug="/reference/extensions/flask-framework",
                 logpath_report=False,
             )
@@ -530,9 +529,7 @@ class DjangoFramework(_GunicornBase):
     @override
     def gen_install_app_part(self) -> dict[str, Any]:
         """Return the prime list for the Django project."""
-        if self.get_part_name(ExtensionPart.INSTALL_APP) not in self.yaml_data.get(
-            "parts", {}
-        ):
+        if self.get_part_name("install-app") not in self.yaml_data.get("parts", {}):
             return {
                 "plugin": "dump",
                 "source": self.name,

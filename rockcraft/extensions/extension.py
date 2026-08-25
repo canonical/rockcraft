@@ -17,7 +17,6 @@
 """Extension base class definition."""
 
 import abc
-import enum
 import os
 import sys
 from collections.abc import Sequence
@@ -53,22 +52,6 @@ def get_project_base(yaml_data: dict[str, Any]) -> str | None:
         return None
 
     return base_str
-
-
-class ExtensionPart(enum.Enum):
-    """Part names shared by two or more extensions.
-
-    Only add a member here if the part name is reused by multiple
-    extensions. Names specific to a single extension should be passed to
-    :meth:`Extension.get_part_name` as a plain string instead of being
-    added to this enum.
-    """
-
-    DEPENDENCIES = "dependencies"
-    INSTALL_APP = "install-app"
-    ASSETS = "assets"
-    RUNTIME = "runtime"
-    LOGGING = "logging"
 
 
 class Extension(abc.ABC):
@@ -121,14 +104,9 @@ class Extension(abc.ABC):
         base = get_project_base(self.yaml_data)
         return "/" if base in BASES_ALLOW_SLASH_IN_PART_NAME else "."
 
-    def get_part_name(self, part: ExtensionPart | str) -> str:
-        """Return formatted internal part name.
-
-        :param part: either a shared :class:`ExtensionPart` member, or a
-            plain string for part-name suffixes specific to this extension.
-        """
-        suffix = part.value if isinstance(part, ExtensionPart) else part
-        return f"{self.extension_name}{self._extension_name_sep}{suffix}"
+    def get_part_name(self, part: str) -> str:
+        """Return formatted internal part name."""
+        return f"{self.extension_name}{self._extension_name_sep}{part}"
 
     @final
     def validate(self) -> None:

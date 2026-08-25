@@ -26,7 +26,7 @@ from rockcraft.errors import ExtensionError
 from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
 
 from .app_parts import gen_logging_part
-from .extension import Extension, ExtensionPart, _FrameworkFactory
+from .extension import Extension, _FrameworkFactory
 
 USER_UID: int = SUPPORTED_GLOBAL_USERNAMES["_daemon_"]["uid"]
 
@@ -75,23 +75,23 @@ class GoFramework(Extension):
                 "override-build": "mkdir -p ${CRAFT_PART_INSTALL}/app",
                 "permissions": [{"owner": USER_UID, "group": USER_UID}],
             },
-            self.get_part_name(ExtensionPart.INSTALL_APP): self._get_install_app_part(),
-            self.get_part_name(ExtensionPart.RUNTIME): {
+            self.get_part_name("install-app"): self._get_install_app_part(),
+            self.get_part_name("runtime"): {
                 "plugin": "nil",
                 "stage-packages": stage_packages,
             },
-            self.get_part_name(ExtensionPart.LOGGING): gen_logging_part(),
+            self.get_part_name("logging"): gen_logging_part(),
         }
 
         if self.yaml_data["base"] == "bare":
-            snippet["parts"][self.get_part_name(ExtensionPart.RUNTIME)].update(
+            snippet["parts"][self.get_part_name("runtime")].update(
                 {
                     "override-build": "ln -sf /usr/bin/bash ${CRAFT_PART_INSTALL}/usr/bin/sh"
                 }
             )
         assets_part = self._get_install_assets_part()
         if assets_part:
-            snippet["parts"][self.get_part_name(ExtensionPart.ASSETS)] = assets_part
+            snippet["parts"][self.get_part_name("assets")] = assets_part
 
         return snippet
 
@@ -122,7 +122,7 @@ class GoFramework(Extension):
     def _get_install_app_part(self) -> dict[str, Any]:
         """Generate install-app part with the Go plugin."""
         install_app = self._get_nested(
-            self.yaml_data, ["parts", self.get_part_name(ExtensionPart.INSTALL_APP)]
+            self.yaml_data, ["parts", self.get_part_name("install-app")]
         )
 
         build_environment = install_app.get("build-environment", [])
@@ -162,7 +162,7 @@ class GoFramework(Extension):
     def _check_go_overridden(self) -> bool:
         """Check if the user overrode the go snap or package for the build step."""
         install_app = self._get_nested(
-            self.yaml_data, ["parts", self.get_part_name(ExtensionPart.INSTALL_APP)]
+            self.yaml_data, ["parts", self.get_part_name("install-app")]
         )
         build_snaps = install_app.get("build-snaps", [])
         if build_snaps:
@@ -201,13 +201,13 @@ class GoFramework(Extension):
     def _assets_stage(self) -> list[str]:
         """Return the assets stage list for the Go project."""
         user_stage: list[str] = self._get_nested(
-            self.yaml_data, ["parts", self.get_part_name(ExtensionPart.ASSETS)]
+            self.yaml_data, ["parts", self.get_part_name("assets")]
         ).get("stage", [])
 
         if not all(re.match("-? *app/", p) for p in user_stage):
             raise ExtensionError(
                 "go-framework extension requires the 'stage' entry in the "
-                f"{self.get_part_name(ExtensionPart.ASSETS)} part to start with app",
+                f"{self.get_part_name('assets')} part to start with app",
                 doc_slug="/reference/extensions/go-framework",
                 logpath_report=False,
             )

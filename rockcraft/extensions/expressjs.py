@@ -25,7 +25,7 @@ from rockcraft.errors import ExtensionError
 from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
 
 from .app_parts import gen_logging_part
-from .extension import Extension, ExtensionPart, _FrameworkFactory
+from .extension import Extension, _FrameworkFactory
 
 USER_UID: int = SUPPORTED_GLOBAL_USERNAMES["_daemon_"]["uid"]
 
@@ -78,20 +78,20 @@ class ExpressJSFramework(Extension):
             snippet["services"]["expressjs"]["command"] = "npm start"
 
         snippet["parts"] = {
-            self.get_part_name(ExtensionPart.INSTALL_APP): self._gen_install_app_part(),
+            self.get_part_name("install-app"): self._gen_install_app_part(),
         }
         runtime_part = self._gen_runtime_part()
         if runtime_part:
-            snippet["parts"][self.get_part_name(ExtensionPart.RUNTIME)] = runtime_part
+            snippet["parts"][self.get_part_name("runtime")] = runtime_part
             # There is a bug where ca-certificates_data and
             # expressjs-framework/runtime stage-packages with a transitive
             # dependency on ca-certificates will both contain
             # etc/ssl/certs/ca-certificates.crt with different content.
-            snippet["parts"][self.get_part_name(ExtensionPart.RUNTIME)]["stage"] = [
+            snippet["parts"][self.get_part_name("runtime")]["stage"] = [
                 "-etc/ssl/certs/ca-certificates.crt"
             ]
 
-        snippet["parts"][self.get_part_name(ExtensionPart.LOGGING)] = gen_logging_part()
+        snippet["parts"][self.get_part_name("logging")] = gen_logging_part()
         return snippet
 
     @override
@@ -213,7 +213,7 @@ class ExpressJSFramework(Extension):
     def _user_install_app_part(self) -> dict[str, Any]:
         """Return the user defined install app part."""
         return self.yaml_data.get("parts", {}).get(
-            self.get_part_name(ExtensionPart.INSTALL_APP), {}
+            self.get_part_name("install-app"), {}
         )
 
     @property
