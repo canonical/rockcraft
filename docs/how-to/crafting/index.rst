@@ -8,10 +8,8 @@ Crafting
 
 These guides walk you through configuring, packaging, and publishing your rock.
 
-Configure your rock
--------------------
-
-Set up and configure of your rock.
+Configure
+---------
 
 - :ref:`how-to-specify-a-base`
 - :ref:`how-to-migrate-a-docker-image-to-a-chiselled-rock`
@@ -21,11 +19,8 @@ Set up and configure of your rock.
 - :ref:`how-to-override-a-plugins-build`
 
 
-Build and publish
------------------
-
-Once a rock is configured, these guides cover packing and
-distributing your rock.
+Package and publish
+-------------------
 
 - :ref:`how-to-publish-a-rock-to-a-registry`
 - :ref:`how-to-pack-a-pro-rock`
