@@ -589,6 +589,7 @@ def test_factory_dispatch_v1(tmp_path):
     instance = SpringBootFrameworkFactory(
         project_root=tmp_path,
         yaml_data={"name": "x", "base": "ubuntu@24.04"},
+        extension_name="spring-boot-framework",
     )
     assert isinstance(instance, SpringBootFramework)
     assert not isinstance(instance, SpringBootFrameworkV2)
@@ -599,6 +600,7 @@ def test_factory_dispatch_v2(tmp_path):
     instance = SpringBootFrameworkFactory(
         project_root=tmp_path,
         yaml_data={"name": "x", "base": "ubuntu@26.04"},
+        extension_name="spring-boot-framework",
     )
     assert isinstance(instance, SpringBootFrameworkV2)
 
@@ -612,6 +614,7 @@ def test_factory_dispatch_bare_by_build_base(tmp_path):
             "base": "bare",
             "build-base": "ubuntu@24.04",
         },
+        extension_name="spring-boot-framework",
     )
     assert isinstance(v1, SpringBootFramework)
     assert not isinstance(v1, SpringBootFrameworkV2)
@@ -623,6 +626,7 @@ def test_factory_dispatch_bare_by_build_base(tmp_path):
             "base": "bare",
             "build-base": "ubuntu@26.04",
         },
+        extension_name="spring-boot-framework",
     )
     assert isinstance(v2, SpringBootFrameworkV2)
 
@@ -660,7 +664,7 @@ def test_spring_boot_extension_default_ubuntu_26_04(tmp_path, monkeypatch):
         "platforms": {"amd64": {}},
         "run-user": "_daemon_",
         "parts": {
-            "spring-boot-framework/install-app": {
+            "spring-boot-framework.install-app": {
                 "plugin": "maven",
                 "source": ".",
                 "build-packages": ["default-jdk", "maven"],
@@ -670,9 +674,9 @@ def test_spring_boot_extension_default_ubuntu_26_04(tmp_path, monkeypatch):
                     "find ${CRAFT_PART_INSTALL} -name '*-plain.jar' -type f -delete"
                 ),
             },
-            "spring-boot-framework/runtime": {
+            "spring-boot-framework.runtime": {
                 "plugin": "jlink",
-                "after": ["spring-boot-framework/install-app"],
+                "after": ["spring-boot-framework.install-app"],
                 "build-packages": ["default-jdk"],
             },
         },
