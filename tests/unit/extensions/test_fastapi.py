@@ -337,7 +337,9 @@ def test_fastapi_extension_incorrect_prime_prefix_error(tmp_path, fastapi_input_
 def test_factory_dispatch_v1(tmp_path):
     """Factory returns FastAPIFramework (V1) for ubuntu@24.04."""
     instance = extensions.FastAPIFrameworkFactory(
-        project_root=tmp_path, yaml_data={"name": "x", "base": "ubuntu@24.04"}
+        project_root=tmp_path,
+        yaml_data={"name": "x", "base": "ubuntu@24.04"},
+        extension_name="fastapi-framework",
     )
     assert isinstance(instance, extensions.FastAPIFramework)
     assert not isinstance(instance, extensions.FastAPIFrameworkV2)
@@ -346,7 +348,9 @@ def test_factory_dispatch_v1(tmp_path):
 def test_factory_dispatch_v2(tmp_path):
     """Factory returns FastAPIFrameworkV2 for ubuntu@26.04."""
     instance = extensions.FastAPIFrameworkFactory(
-        project_root=tmp_path, yaml_data={"name": "x", "base": "ubuntu@26.04"}
+        project_root=tmp_path,
+        yaml_data={"name": "x", "base": "ubuntu@26.04"},
+        extension_name="fastapi-framework",
     )
     assert isinstance(instance, extensions.FastAPIFrameworkV2)
 
@@ -360,6 +364,7 @@ def test_factory_dispatch_bare_by_build_base(tmp_path):
             "base": "bare",
             "build-base": "ubuntu@24.04",
         },
+        extension_name="fastapi-framework",
     )
     assert isinstance(v1, extensions.FastAPIFramework)
     assert not isinstance(v1, extensions.FastAPIFrameworkV2)
@@ -371,6 +376,7 @@ def test_factory_dispatch_bare_by_build_base(tmp_path):
             "base": "bare",
             "build-base": "ubuntu@26.04",
         },
+        extension_name="fastapi-framework",
     )
     assert isinstance(v2, extensions.FastAPIFrameworkV2)
 
@@ -436,7 +442,7 @@ def test_fastapi_extension_default_26_04(tmp_path, monkeypatch):
         "platforms": {"amd64": {}},
         "run_user": "_daemon_",
         "parts": {
-            "fastapi-framework/dependencies": {
+            "fastapi-framework.dependencies": {
                 "build-environment": [],
                 "plugin": "python",
                 "stage-packages": ["python3-venv"],
@@ -445,7 +451,7 @@ def test_fastapi_extension_default_26_04(tmp_path, monkeypatch):
                 "python-requirements": ["requirements.txt"],
                 "stage": ["-etc/ssl/certs/ca-certificates.crt"],
             },
-            "fastapi-framework/install-app": {
+            "fastapi-framework.install-app": {
                 "plugin": "dump",
                 "source": ".",
                 "organize": {
@@ -454,11 +460,11 @@ def test_fastapi_extension_default_26_04(tmp_path, monkeypatch):
                 "stage": ["app/app.py"],
                 "permissions": [{"owner": 584792, "group": 584792}],
             },
-            "fastapi-framework/runtime": {
+            "fastapi-framework.runtime": {
                 "plugin": "nil",
                 "stage-packages": ["ca-certificates_data"],
             },
-            "fastapi-framework/logging": {
+            "fastapi-framework.logging": {
                 "plugin": "nil",
                 "override-build": (
                     "craftctl default\n"
