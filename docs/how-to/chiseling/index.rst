@@ -6,7 +6,7 @@
 Chiseling
 =========
 
-Decrease a rock's size and harden it by chiseling a rock.
+Reduce a rock's attack surface with Chisel.
 
 - :ref:`how-to-chisel-a-rock`
 
