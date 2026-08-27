@@ -104,4 +104,4 @@ Restart Docker:
 
 Note that we'll also need a text editor. We can either install one of our
 choice or simply use one of the already existing editors in the Ubuntu
-environment (like ``vi``).
+environment (like ``nano``).

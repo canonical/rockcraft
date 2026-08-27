@@ -20,6 +20,11 @@ from typing import Any
 import pytest
 from rockcraft import extensions
 from rockcraft.errors import ExtensionError
+from rockcraft.extensions.gunicorn import (
+    FlaskFramework,
+    FlaskFrameworkFactory,
+    FlaskFrameworkV2,
+)
 
 
 @pytest.fixture
@@ -790,12 +795,6 @@ def test_flask_extension_app_in_non_matching_directory(tmp_path):
 
 def test_flask_framework_factory_dispatch(tmp_path):
     """Test that FlaskFrameworkFactory dispatches to the correct class by base."""
-    from rockcraft.extensions.gunicorn import (
-        FlaskFramework,
-        FlaskFrameworkFactory,
-        FlaskFrameworkV2,
-    )
-
     v1 = FlaskFrameworkFactory(
         project_root=tmp_path, yaml_data={"name": "x", "base": "ubuntu@22.04"}
     )
@@ -808,15 +807,34 @@ def test_flask_framework_factory_dispatch(tmp_path):
     assert isinstance(v2, FlaskFrameworkV2)
 
 
+def test_flask_framework_factory_dispatch_bare_by_build_base(tmp_path):
+    """Test that a bare rock's build-base selects the Flask framework version."""
+    v1 = FlaskFrameworkFactory(
+        project_root=tmp_path,
+        yaml_data={
+            "name": "x",
+            "base": "bare",
+            "build-base": "ubuntu@24.04",
+        },
+    )
+    assert isinstance(v1, FlaskFramework)
+    assert not isinstance(v1, FlaskFrameworkV2)
+
+    v2 = FlaskFrameworkFactory(
+        project_root=tmp_path,
+        yaml_data={
+            "name": "x",
+            "base": "bare",
+            "build-base": "ubuntu@26.04",
+        },
+    )
+    assert isinstance(v2, FlaskFrameworkV2)
+
+
 def test_flask_framework_v2_supported_bases():
     """Test FlaskFrameworkV2 and FlaskFrameworkFactory supported bases."""
-    from rockcraft.extensions.gunicorn import (
-        FlaskFramework,
-        FlaskFrameworkFactory,
-        FlaskFrameworkV2,
-    )
-
     assert "ubuntu@26.04" in FlaskFrameworkV2.get_supported_bases()
+    assert "bare" in FlaskFrameworkV2.get_supported_bases()
 
     factory_bases = FlaskFrameworkFactory.get_supported_bases()
     assert "ubuntu@26.04" in factory_bases
@@ -868,7 +886,7 @@ def test_flask_v2_full_apply_26_04(tmp_path, monkeypatch):
             },
             "flask-framework/dependencies": {
                 "plugin": "python",
-                "python-packages": ["gunicorn~=23.0"],
+                "python-packages": ["gunicorn~=26.0"],
                 "python-requirements": ["requirements.txt"],
                 "source": ".",
                 "stage-packages": ["python3-venv"],
@@ -917,7 +935,7 @@ def test_flask_v2_full_apply_26_04(tmp_path, monkeypatch):
                 "build-snaps": ["go"],
                 "plugin": "go",
                 "source": "https://github.com/prometheus/statsd_exporter.git",
-                "source-tag": "v0.26.0",
+                "source-tag": "v0.30.0",
             },
         },
         "platforms": {"amd64": {}},
@@ -1184,9 +1202,35 @@ def test_django_factory_dispatch_v2(tmp_path):
     assert isinstance(instance, extensions.DjangoFrameworkV2)
 
 
+def test_django_factory_dispatch_bare_by_build_base(tmp_path):
+    """Factory selects the Django framework version from a bare rock's build-base."""
+    factory = extensions.DjangoFrameworkFactory
+    v1 = factory(
+        project_root=tmp_path,
+        yaml_data={
+            "name": "x",
+            "base": "bare",
+            "build-base": "ubuntu@24.04",
+        },
+    )
+    assert isinstance(v1, extensions.DjangoFramework)
+    assert not isinstance(v1, extensions.DjangoFrameworkV2)
+
+    v2 = factory(
+        project_root=tmp_path,
+        yaml_data={
+            "name": "x",
+            "base": "bare",
+            "build-base": "ubuntu@26.04",
+        },
+    )
+    assert isinstance(v2, extensions.DjangoFrameworkV2)
+
+
 def test_django_framework_v2_supported_bases():
-    """DjangoFrameworkV2 only supports ubuntu@26.04."""
+    """DjangoFrameworkV2 supports ubuntu@26.04 and bare rocks."""
     assert "ubuntu@26.04" in extensions.DjangoFrameworkV2.get_supported_bases()
+    assert "bare" in extensions.DjangoFrameworkV2.get_supported_bases()
     assert "ubuntu@22.04" not in extensions.DjangoFrameworkV2.get_supported_bases()
 
 
@@ -1236,7 +1280,7 @@ def test_django_extension_v2_default(tmp_path):
             },
             "django-framework/dependencies": {
                 "plugin": "python",
-                "python-packages": ["gunicorn~=23.0"],
+                "python-packages": ["gunicorn~=26.0"],
                 "python-requirements": ["requirements.txt"],
                 "source": ".",
                 "stage-packages": ["python3-venv"],
@@ -1281,7 +1325,7 @@ def test_django_extension_v2_default(tmp_path):
                 "build-snaps": ["go"],
                 "plugin": "go",
                 "source": "https://github.com/prometheus/statsd_exporter.git",
-                "source-tag": "v0.26.0",
+                "source-tag": "v0.30.0",
             },
         },
         "platforms": {"amd64": {}},
