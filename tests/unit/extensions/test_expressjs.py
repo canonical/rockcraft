@@ -369,19 +369,18 @@ def test_expressjs_extension_default(
             False,
             None,
             {
+                "name": "foo-bar",
                 "base": "ubuntu@26.04",
                 "build-base": "ubuntu@26.04",
-                "name": "foo-bar",
                 "platforms": {
                     "amd64": {},
                 },
-                "run-user": "_daemon_",
                 "parts": {
-                    "expressjs-framework/install-app": {
-                        "plugin": "npm",
-                        "source": "app/",
+                    "expressjs-framework.install-app": {
                         "npm-include-node": False,
                         "npm-node-version": None,
+                        "plugin": "npm",
+                        "source": "app/",
                         "override-build": "rm -rf node_modules\n"
                         "npm install --include=dev\n"
                         "npm run build\n"
@@ -399,12 +398,12 @@ def test_expressjs_extension_default(
                         "stage-packages": ["ca-certificates_data", "nodejs_bins"],
                         "build-environment": [{"UV_USE_IO_URING": "0"}],
                     },
-                    "expressjs-framework/runtime": {
+                    "expressjs-framework.runtime": {
                         "plugin": "nil",
-                        "stage": ["-etc/ssl/certs/ca-certificates.crt"],
                         "stage-packages": ["npm"],
+                        "stage": ["-etc/ssl/certs/ca-certificates.crt"],
                     },
-                    "expressjs-framework/logging": {
+                    "expressjs-framework.logging": {
                         "plugin": "nil",
                         "override-build": (
                             "craftctl default\n"
@@ -417,14 +416,15 @@ def test_expressjs_extension_default(
                         ],
                     },
                 },
+                "run-user": "_daemon_",
                 "services": {
                     "expressjs": {
                         "override": "replace",
                         "startup": "enabled",
                         "user": "_daemon_",
                         "working-dir": "/app",
-                        "command": "npm start",
                         "environment": {"NODE_ENV": "production"},
+                        "command": "npm start",
                     },
                 },
             },
@@ -439,7 +439,7 @@ def test_expressjs_extension_default(
                 "build-base": "ubuntu@26.04",
                 "name": "foo-bar",
                 "parts": {
-                    "expressjs-framework/install-app": {
+                    "expressjs-framework.install-app": {
                         "build-packages": [
                             "nodejs",
                             "npm",
@@ -469,7 +469,7 @@ def test_expressjs_extension_default(
                         ],
                         "build-environment": [{"UV_USE_IO_URING": "0"}],
                     },
-                    "expressjs-framework/runtime": {
+                    "expressjs-framework.runtime": {
                         "plugin": "nil",
                         "stage": ["-etc/ssl/certs/ca-certificates.crt"],
                         "stage-packages": [
@@ -478,7 +478,7 @@ def test_expressjs_extension_default(
                             "npm",
                         ],
                     },
-                    "expressjs-framework/logging": {
+                    "expressjs-framework.logging": {
                         "plugin": "nil",
                         "override-build": (
                             "craftctl default\n"
@@ -497,14 +497,14 @@ def test_expressjs_extension_default(
                 "run-user": "_daemon_",
                 "services": {
                     "expressjs": {
-                        "command": "npm start",
-                        "environment": {
-                            "NODE_ENV": "production",
-                        },
                         "override": "replace",
                         "startup": "enabled",
                         "user": "_daemon_",
                         "working-dir": "/app",
+                        "environment": {
+                            "NODE_ENV": "production",
+                        },
+                        "command": "npm start",
                     },
                 },
             },
@@ -527,7 +527,7 @@ def test_expressjs_v2_with_build_script(
     expressjs_input_yaml["base"] = base
     expressjs_input_yaml["build-base"] = "ubuntu@26.04"
     expressjs_input_yaml["parts"] = {
-        "expressjs-framework/install-app": {
+        "expressjs-framework.install-app": {
             "npm-include-node": npm_include_node,
             "npm-node-version": node_version,
         }
@@ -546,7 +546,7 @@ def test_expressjs_v2_top_level_package_json(
     expressjs_input_yaml["build-base"] = "ubuntu@26.04"
     _create_package_json_file(tmp_path)
     applied = extensions.apply_extensions(tmp_path, expressjs_input_yaml)
-    assert applied["parts"]["expressjs-framework/install-app"]["source"] == "./"
+    assert applied["parts"]["expressjs-framework.install-app"]["source"] == "./"
 
 
 @pytest.mark.usefixtures("expressjs_extension")
@@ -703,6 +703,7 @@ def test_expressjs_factory_dispatch_bare_by_build_base(tmp_path):
             "base": "bare",
             "build-base": "ubuntu@24.04",
         },
+        extension_name="expressjs-framework",
     )
     assert isinstance(v1, extensions.ExpressJSFramework)
     assert not isinstance(v1, extensions.ExpressJSFrameworkV2)
@@ -714,6 +715,7 @@ def test_expressjs_factory_dispatch_bare_by_build_base(tmp_path):
             "base": "bare",
             "build-base": "ubuntu@26.04",
         },
+        extension_name="expressjs-framework",
     )
     assert isinstance(v2, extensions.ExpressJSFrameworkV2)
 
