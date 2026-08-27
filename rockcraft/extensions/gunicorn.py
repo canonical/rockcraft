@@ -54,6 +54,9 @@ USER_UID: int = SUPPORTED_GLOBAL_USERNAMES["_daemon_"]["uid"]
 class _GunicornBase(Extension):
     """An extension base class for Python WSGI framework extensions."""
 
+    _gunicorn_package = "gunicorn~=23.0"
+    _statsd_exporter_tag = "v0.26.0"
+
     @property
     def name(self) -> str:
         """Return the normalized name of the rockcraft project."""
@@ -119,7 +122,7 @@ class _GunicornBase(Extension):
                 "plugin": "python",
                 "stage-packages": stage_packages,
                 "source": ".",
-                "python-packages": ["gunicorn~=23.0"],
+                "python-packages": [self._gunicorn_package],
                 "python-requirements": python_requirements,
                 "build-environment": build_environment,
             },
@@ -143,7 +146,7 @@ class _GunicornBase(Extension):
             },
             f"{self.framework}-framework/statsd-exporter": {
                 "build-snaps": ["go"],
-                "source-tag": "v0.26.0",
+                "source-tag": self._statsd_exporter_tag,
                 "plugin": "go",
                 "source": "https://github.com/prometheus/statsd_exporter.git",
             },
@@ -472,6 +475,9 @@ class FlaskFrameworkV2(FlaskFramework):
     supported base differs.
     """
 
+    _gunicorn_package = "gunicorn~=26.0"
+    _statsd_exporter_tag = "v0.30.0"
+
     @staticmethod
     @override
     def get_supported_bases() -> tuple[str, ...]:
@@ -570,6 +576,9 @@ class DjangoFrameworkV2(DjangoFramework):
     framework can dispatch to a paas-charm 2.0 implementation in the future. Only the
     supported base and experimental status differs.
     """
+
+    _gunicorn_package = "gunicorn~=26.0"
+    _statsd_exporter_tag = "v0.30.0"
 
     @staticmethod
     @override
