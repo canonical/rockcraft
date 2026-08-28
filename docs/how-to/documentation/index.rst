@@ -6,8 +6,10 @@
 Documentation
 =============
 
+These guides show you how to contribute to and build the Rockcraft documentation.
+
 .. toctree::
     :maxdepth: 1
 
     contribute-docs
-    Build the documentation <build-docs>
+    build-docs
