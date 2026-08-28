@@ -41,9 +41,11 @@ def apply_extensions(project_root: Path, yaml_data: dict[str, Any]) -> dict[str,
     for extension_name in sorted(declared_extensions):
         extension_class = get_extension_class(extension_name)
         extension = extension_class(
-            project_root=project_root, yaml_data=copy.deepcopy(yaml_data)
+            project_root=project_root,
+            yaml_data=copy.deepcopy(yaml_data),
+            extension_name=extension_name,
         )
-        extension.validate(extension_name=extension_name)
+        extension.validate()
         _apply_extension(yaml_data, extension)
     return yaml_data
 

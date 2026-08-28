@@ -78,20 +78,20 @@ class ExpressJSFramework(Extension):
             snippet["services"]["expressjs"]["command"] = "npm start"
 
         snippet["parts"] = {
-            "expressjs-framework/install-app": self._gen_install_app_part(),
+            self.get_part_name("install-app"): self._gen_install_app_part(),
         }
         runtime_part = self._gen_runtime_part()
         if runtime_part:
-            snippet["parts"]["expressjs-framework/runtime"] = runtime_part
+            snippet["parts"][self.get_part_name("runtime")] = runtime_part
             # There is a bug where ca-certificates_data and
             # expressjs-framework/runtime stage-packages with a transitive
             # dependency on ca-certificates will both contain
             # etc/ssl/certs/ca-certificates.crt with different content.
-            snippet["parts"]["expressjs-framework/runtime"]["stage"] = [
+            snippet["parts"][self.get_part_name("runtime")]["stage"] = [
                 "-etc/ssl/certs/ca-certificates.crt"
             ]
 
-        snippet["parts"]["expressjs-framework/logging"] = gen_logging_part()
+        snippet["parts"][self.get_part_name("logging")] = gen_logging_part()
         return snippet
 
     @override
@@ -213,7 +213,7 @@ class ExpressJSFramework(Extension):
     def _user_install_app_part(self) -> dict[str, Any]:
         """Return the user defined install app part."""
         return self.yaml_data.get("parts", {}).get(
-            "expressjs-framework/install-app", {}
+            self.get_part_name("install-app"), {}
         )
 
     @property

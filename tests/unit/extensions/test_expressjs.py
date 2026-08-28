@@ -401,11 +401,19 @@ def test_expressjs_invalid_package_json_scripts_error(
 def test_expressjs_factory_dispatch(tmp_path):
     factory = extensions.ExpressJSFrameworkFactory
 
-    v1 = factory(project_root=tmp_path, yaml_data={"name": "x", "base": "ubuntu@24.04"})
+    v1 = factory(
+        project_root=tmp_path,
+        yaml_data={"name": "x", "base": "ubuntu@24.04"},
+        extension_name="expressjs-framework",
+    )
     assert isinstance(v1, extensions.ExpressJSFramework)
     assert not isinstance(v1, extensions.ExpressJSFrameworkV2)
 
-    v2 = factory(project_root=tmp_path, yaml_data={"name": "x", "base": "ubuntu@26.04"})
+    v2 = factory(
+        project_root=tmp_path,
+        yaml_data={"name": "x", "base": "ubuntu@26.04"},
+        extension_name="expressjs-framework",
+    )
     assert isinstance(v2, extensions.ExpressJSFrameworkV2)
 
 
@@ -426,7 +434,7 @@ def test_expressjs_extension_ubuntu2604_default(
     expressjs_input_yaml["base"] = "ubuntu@26.04"
     expressjs_input_yaml["build-base"] = "ubuntu@26.04"
     expressjs_input_yaml["parts"] = {
-        "expressjs-framework/install-app": {
+        "expressjs-framework.install-app": {
             "npm-include-node": False,
             "npm-node-version": None,
         }
@@ -445,7 +453,7 @@ def test_expressjs_extension_ubuntu2604_default(
         "platforms": {"amd64": {}},
         "run-user": "_daemon_",
         "parts": {
-            "expressjs-framework/install-app": {
+            "expressjs-framework.install-app": {
                 "plugin": "npm",
                 "source": "app/",
                 "npm-include-node": False,
@@ -465,12 +473,12 @@ def test_expressjs_extension_ubuntu2604_default(
                 "stage-packages": ["ca-certificates_data", "nodejs_bins"],
                 "build-environment": [{"UV_USE_IO_URING": "0"}],
             },
-            "expressjs-framework/runtime": {
+            "expressjs-framework.runtime": {
                 "plugin": "nil",
                 "stage-packages": ["npm"],
                 "stage": ["-etc/ssl/certs/ca-certificates.crt"],
             },
-            "expressjs-framework/logging": {
+            "expressjs-framework.logging": {
                 "plugin": "nil",
                 "override-build": (
                     "craftctl default\n"

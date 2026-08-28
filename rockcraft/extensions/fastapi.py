@@ -118,7 +118,7 @@ class FastAPIFramework(Extension):
             ]
 
         parts: dict[str, Any] = {
-            "fastapi-framework/dependencies": {
+            self.get_part_name("dependencies"): {
                 "plugin": "python",
                 "stage-packages": stage_packages,
                 "source": ".",
@@ -126,13 +126,13 @@ class FastAPIFramework(Extension):
                 "python-requirements": ["requirements.txt"],
                 "build-environment": build_environment,
             },
-            "fastapi-framework/install-app": {
+            self.get_part_name("install-app"): {
                 **self._get_install_app_part(),
                 "permissions": [{"owner": USER_UID, "group": USER_UID}],
             },
         }
         if self.yaml_data["base"] == "bare":
-            parts["fastapi-framework/runtime"] = {
+            parts[self.get_part_name("runtime")] = {
                 "plugin": "nil",
                 "override-build": "mkdir -m 777 ${CRAFT_PART_INSTALL}/tmp\n"
                 "ln -sf /usr/bin/bash ${CRAFT_PART_INSTALL}/usr/bin/sh",
@@ -145,14 +145,14 @@ class FastAPIFramework(Extension):
         else:
             # There is a bug where ca-certificates_data and python-venv both provide
             # etc/ssl/certs/ca-certificates.crt with different content.
-            parts["fastapi-framework/dependencies"]["stage"] = [
+            parts[self.get_part_name("dependencies")]["stage"] = [
                 "-etc/ssl/certs/ca-certificates.crt"
             ]
-            parts["fastapi-framework/runtime"] = {
+            parts[self.get_part_name("runtime")] = {
                 "plugin": "nil",
                 "stage-packages": ["ca-certificates_data"],
             }
-        parts["fastapi-framework/logging"] = gen_logging_part()
+        parts[self.get_part_name("logging")] = gen_logging_part()
         return parts
 
     def _get_install_app_part(self) -> dict[str, Any]:
@@ -185,13 +185,13 @@ class FastAPIFramework(Extension):
         """Return the prime list for the FastAPI project."""
         user_prime = (
             self.yaml_data.get("parts", {})
-            .get("fastapi-framework/install-app", {})
+            .get(self.get_part_name("install-app"), {})
             .get("prime", [])
         )
         if not all(re.match(f"-? *{self.IMAGE_BASE_DIR}/", p) for p in user_prime):
             raise ExtensionError(
                 "fastapi-framework extension requires the 'prime' entry in the "
-                f"fastapi-framework/install-app part to start with {self.IMAGE_BASE_DIR}/",
+                f"{self.get_part_name('install-app')} part to start with {self.IMAGE_BASE_DIR}/",
                 doc_slug="/reference/extensions/fastapi-framework",
                 logpath_report=False,
             )
