@@ -436,7 +436,7 @@ def test_fastapi_extension_default_26_04(tmp_path, monkeypatch):
         "extensions": ["fastapi-framework"],
     }
     applied = extensions.apply_extensions(tmp_path, input_yaml)
-    assert applied["parts"].pop("fastapi-framework/app-data") == {
+    assert applied["parts"].pop("fastapi-framework.app-data") == {
         "plugin": "nil",
         "override-build": "mkdir -p ${CRAFT_PART_INSTALL}/app-data",
         "permissions": [{"path": "app-data", "owner": 584792, "group": 584792}],
@@ -523,7 +523,7 @@ def test_fastapi_extension_v2_preserves_generic_app_data_part(tmp_path, monkeypa
         "plugin": "nil",
         "override-build": "echo user-defined",
     }
-    assert applied["parts"]["fastapi-framework/app-data"] == {
+    assert applied["parts"]["fastapi-framework.app-data"] == {
         "plugin": "nil",
         "override-build": "mkdir -p ${CRAFT_PART_INSTALL}/app-data",
         "permissions": [{"path": "app-data", "owner": 584792, "group": 584792}],

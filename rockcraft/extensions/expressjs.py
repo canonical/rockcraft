@@ -18,7 +18,7 @@
 
 import json
 from pathlib import Path
-from typing import Any, ClassVar, cast
+from typing import Any, cast
 
 import craft_cli
 from typing_extensions import override
@@ -301,7 +301,6 @@ class ExpressJSFrameworkV2(AppDataDirMixin, ExpressJSFramework):
     supported base and experimental status differs.
     """
 
-    app_data_part_name: ClassVar[str] = "expressjs-framework.app-data"
     PACKAGE_JSON = "package.json"
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:

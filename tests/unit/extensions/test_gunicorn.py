@@ -1274,7 +1274,7 @@ def test_django_extension_v2_default(tmp_path):
     (django_project_dir / "wsgi.py").write_text("application = object()")
 
     applied = extensions.apply_extensions(tmp_path, django_input_yaml)
-    assert applied["parts"].pop("django-framework/app-data") == {
+    assert applied["parts"].pop("django-framework.app-data") == {
         "plugin": "nil",
         "override-build": "mkdir -p ${CRAFT_PART_INSTALL}/app-data",
         "permissions": [{"path": "app-data", "owner": 584792, "group": 584792}],

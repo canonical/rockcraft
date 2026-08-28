@@ -24,7 +24,7 @@ import posixpath
 import re
 from collections.abc import Iterable
 from pathlib import Path
-from typing import Any, ClassVar, cast
+from typing import Any, cast
 
 try:
     # Available in Python 3.11 and later
@@ -475,7 +475,6 @@ class FlaskFrameworkV2(AppDataDirMixin, FlaskFramework):
     supported base differs.
     """
 
-    app_data_part_name: ClassVar[str] = "flask-framework/app-data"
     _gunicorn_package = "gunicorn~=26.0"
     _statsd_exporter_tag = "v0.30.0"
 
@@ -578,7 +577,6 @@ class DjangoFrameworkV2(AppDataDirMixin, DjangoFramework):
     supported base and experimental status differs.
     """
 
-    app_data_part_name: ClassVar[str] = "django-framework/app-data"
     _gunicorn_package = "gunicorn~=26.0"
     _statsd_exporter_tag = "v0.30.0"
 

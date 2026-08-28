@@ -657,7 +657,7 @@ def test_spring_boot_extension_default_ubuntu_26_04(tmp_path, monkeypatch):
         "extensions": ["spring-boot-framework"],
     }
     applied = extensions.apply_extensions(tmp_path, input_yaml)
-    assert applied["parts"].pop("spring-boot-framework/app-data") == {
+    assert applied["parts"].pop("spring-boot-framework.app-data") == {
         "plugin": "nil",
         "override-build": "mkdir -p ${CRAFT_PART_INSTALL}/app-data",
         "permissions": [{"path": "app-data", "owner": 584792, "group": 584792}],

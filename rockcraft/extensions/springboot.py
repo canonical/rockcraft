@@ -19,7 +19,7 @@
 import os
 import pathlib
 import re
-from typing import Any, ClassVar, Literal
+from typing import Any, Literal
 
 from typing_extensions import override
 
@@ -354,8 +354,6 @@ class SpringBootFrameworkV2(AppDataDirMixin, SpringBootFramework):
     framework can dispatch to a paas-charm 2.0 implementation in the future. Only the
     supported base differs.
     """
-
-    app_data_part_name: ClassVar[str] = "spring-boot-framework/app-data"
 
     @staticmethod
     @override

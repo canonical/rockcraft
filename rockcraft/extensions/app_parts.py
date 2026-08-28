@@ -16,7 +16,7 @@
 
 """Common extension application parts."""
 
-from typing import Any, ClassVar
+from typing import Any
 
 from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
 
@@ -28,7 +28,10 @@ USER_UID: int = SUPPORTED_GLOBAL_USERNAMES["_daemon_"]["uid"]
 class AppDataDirMixin(Extension):
     """Add the writable application data directory used by v2 frameworks."""
 
-    app_data_part_name: ClassVar[str]
+    @property
+    def app_data_part_name(self) -> str:
+        """Return the name of the application data part."""
+        return self.get_part_name("app-data")
 
     def get_parts_snippet(self) -> dict[str, Any]:
         """Add the shared application data part to the framework parts."""
