@@ -83,9 +83,7 @@ specify the version of Node.js to be installed. For example:
 For more examples of the ``npm-node-version`` key, see
 :ref:`craft_parts_npm_plugin`.
 
-If you don't customize the version of node, it will be installed from the Ubuntu
-If you don't customize the version of node, it will be installed from the
-`Ubuntu package repository <https://packages.ubuntu.com/noble/nodejs>`_.
+If you don’t customize the version of Node.js, it will be installed from the Ubuntu package repository. The exact version differs between Ubuntu releases. Check the ``nodejs`` package for the Ubuntu release you’re using (for example, `Noble <https://packages.ubuntu.com/noble/nodejs>`_).
 
 .. _reference-express-framework-stage-packages:
 
