@@ -38,6 +38,15 @@ from craft_parts.state_manager.prime_state import PrimeState
 from rockcraft.plugins.python_common import get_python_plugins
 from rockcraft.services import lifecycle as lifecycle_module
 
+try:
+    # The apt backend requires the python3-apt bindings, which are only
+    # available for the interpreter shipped by the distribution.
+    from craft_parts.packages.apt_cache import AptCache  # noqa: F401
+
+    _APT_BACKEND_AVAILABLE = True
+except ImportError:
+    _APT_BACKEND_AVAILABLE = False
+
 
 @pytest.fixture
 def extra_project_params():
@@ -92,6 +101,10 @@ def test_lifecycle_args(
 
 
 @pytest.mark.usefixtures("configured_project", "project_keys")
+@pytest.mark.skipif(
+    not _APT_BACKEND_AVAILABLE,
+    reason="python3-apt bindings not available for this interpreter",
+)
 @pytest.mark.parametrize(
     "project_keys",
     [
