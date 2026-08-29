@@ -38,31 +38,95 @@ from rockcraft.services import RockcraftImageService, package
         },
     ],
 )
-def test_pack(fake_services: ServiceFactory, default_image_info, mocker):
-    image_service = cast(RockcraftImageService, fake_services.get("image"))
+def test_get_artifacts(fake_services: ServiceFactory, mocker):
+    fake_services.get("project").configure(platform="bob", build_for="s390x")
+    package_service = fake_services.get("package")
+    package_service.set_output_dir(Path("/output"))
 
-    mock_obtain_image = mocker.patch.object(
-        image_service, "obtain_image", return_value=default_image_info
-    )
-    mock_inner_pack = mocker.patch.object(package, "_pack")
+    artifacts = package_service.get_artifacts()
+
+    assert artifacts == {None: Path("/output/test-rock_0.1_bob.rock")}
+
+
+@pytest.mark.usefixtures("fake_project_file", "project_keys")
+@pytest.mark.parametrize(
+    "project_keys",
+    [
+        {
+            "platforms": {
+                "bob": {
+                    "build-on": DebianArchitecture.from_host(),
+                    "build-for": "s390x",
+                }
+            },
+        },
+    ],
+)
+def test_pack(fake_services: ServiceFactory, default_image_info, mocker):
+    mock_create_rock = mocker.patch.object(package, "_create_rock")
 
     fake_services.get("project").configure(platform="bob", build_for="s390x")
-    fake_services.get("package").pack(prime_dir=Path("prime"), dest=Path())
+
+    mock_image_service = mocker.MagicMock()
+    mock_image_service.obtain_image.return_value = default_image_info
+
+    mock_lifecycle = mocker.MagicMock()
+    mock_lifecycle.prime_dir = Path("prime")
+
+    mock_build_plan = mocker.MagicMock()
+    mock_build_info = mocker.MagicMock()
+    mock_build_info.platform = "bob"
+    mock_build_info.build_for = "s390x"
+    mock_build_plan.plan.return_value = [mock_build_info]
+
+    mock_services = mocker.MagicMock()
+    mock_services.get.side_effect = {
+        "image": mock_image_service,
+        "lifecycle": mock_lifecycle,
+        "build_plan": mock_build_plan,
+        "project": fake_services.get("project"),
+    }.get
+
+    package_service = fake_services.get("package")
+    mocker.patch.object(package_service, "_services", mock_services)
+    package_service.set_output_dir(Path("/output"))
+    package_service._pack(name=None, path=Path("/output/test-rock_0.1_bob.rock"))
 
     # Check that the image service was queried for the ImageInfo
-    mock_obtain_image.assert_called_once_with()
+    mock_image_service.obtain_image.assert_called_once_with()
 
-    # Check that the regular _pack() function was called with the correct
-    # parameters.
-    mock_inner_pack.assert_called_once_with(
-        base_digest=b"deadbeef",
-        base_layer_dir=Path(),
-        build_for="s390x",
+    # Check that _create_rock() was called with the correct parameters
+    mock_create_rock.assert_called_once_with(
+        path=Path("/output/test-rock_0.1_bob.rock"),
         prime_dir=Path("prime"),
         project=fake_services.get("project").get(),
         project_base_image=default_image_info.base_image,
-        rock_suffix="bob",
+        base_digest=b"deadbeef",
+        build_for="s390x",
+        base_layer_dir=Path(),
     )
+
+
+@pytest.mark.usefixtures("fake_project_file", "project_keys")
+@pytest.mark.parametrize(
+    "project_keys",
+    [
+        {
+            "platforms": {
+                "bob": {
+                    "build-on": DebianArchitecture.from_host(),
+                    "build-for": "s390x",
+                }
+            },
+        },
+    ],
+)
+def test_pack_rejects_named_artifact(fake_services: ServiceFactory):
+    fake_services.get("project").configure(platform="bob", build_for="s390x")
+    package_service = fake_services.get("package")
+
+    with pytest.raises(ValueError, match="single unnamed artifact"):
+        package_service._pack(name="named", path=Path("/output/artifact.rock"))
 
 
 @pytest.mark.usefixtures("fake_project_file", "project_keys")
@@ -160,7 +224,7 @@ def test_pack(fake_services: ServiceFactory, default_image_info, mocker):
         ),
     ],
 )
-def test_inner_pack(
+def test_create_rock(
     fake_services: ServiceFactory, mocker, expected_entrypoint, expected_cmd
 ):
     fake_services.get("project").configure(platform=None, build_for=None)
@@ -170,6 +234,7 @@ def test_inner_pack(
     tag = cast(str, project.version)
     base_layer_dir = Path()
     prime_dir = Path("prime")
+    output_path = Path("output.rock")
     annotations = {"annotation": "foo"}
     metadata = {"metadata": "bar"}
 
@@ -182,15 +247,15 @@ def test_inner_pack(
         Project, "generate_metadata", return_value=(annotations, metadata)
     )
 
-    # Call the internal pack function
-    package._pack(
+    # Call the internal create_rock function
+    package._create_rock(
+        path=output_path,
         base_digest=b"deadbeef",
         base_layer_dir=base_layer_dir,
         build_for="amd64",
         prime_dir=prime_dir,
         project=project,
         project_base_image=image,
-        rock_suffix="test-rock",
     )
 
     # Assertions
@@ -223,5 +288,5 @@ def test_inner_pack(
     image.set_control_data.assert_called_once_with(metadata)
     image.set_media_type.assert_called_once_with(arch="amd64")
     image.to_oci_archive.assert_called_once_with(
-        tag=project.version, filename=f"{project.name}_{project.version}_test-rock.rock"
+        tag=project.version, filename=str(output_path)
     )

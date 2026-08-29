@@ -38,6 +38,7 @@ APP_METADATA = AppMetadata(
     check_supported_base=True,
     artifact_type="rock",
     enable_pro_support=True,
+    always_repack=False,
 )
 
 

@@ -16,6 +16,7 @@
 
 """Rockcraft Package service."""
 
+from collections.abc import Mapping
 import datetime
 import pathlib
 import typing
@@ -28,6 +29,7 @@ from typing_extensions import override
 from rockcraft import oci
 from rockcraft.models import Project
 from rockcraft.pebble import Pebble
+from rockcraft.services.image import RockcraftImageService
 from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
 from rockcraft.utils import parse_command
 
@@ -36,38 +38,52 @@ class RockcraftPackageService(PackageService):
     """Package service subclass for Rockcraft."""
 
     @override
-    def pack(self, prime_dir: pathlib.Path, dest: pathlib.Path) -> list[pathlib.Path]:
-        """Create one or more packages as appropriate.
+    def get_artifacts(self) -> dict[str | None, pathlib.Path]:
+        """Get the output artifacts for this application.
 
-        :param dest: Directory into which to write the package(s).
-        :returns: A list of paths to created packages.
+        Returns a single default artifact path based on the project name,
+        version, and platform.
         """
-        # This inner import is necessary to resolve a cyclic import
-        # pylint: disable=import-outside-toplevel
-        from rockcraft.services import RockcraftImageService
-
-        image_service = cast(RockcraftImageService, self._services.get("image"))
-        image_info = image_service.obtain_image()
-
+        project = cast(Project, self._services.get("project").get())
         build_plan = self._services.get("build_plan").plan()
 
         if len(build_plan) > 1:
             raise errors.MultipleBuildsError
 
         platform = build_plan[0].platform
+        archive_name = f"{project.name}_{project.version}_{platform}.rock"
+        return {None: self.output_dir / archive_name}
+
+    @override
+    def _pack(self, *, name: str | None = None, path: pathlib.Path) -> None:
+        """Pack a specific artifact for the rock.
+
+        :param name: The artifact name (always None for single-artifact).
+        :param path: The output path for the .rock artifact.
+        """
+        if name is not None:
+            raise ValueError(
+                f"Rockcraft only supports a single unnamed artifact, got name={name!r}"
+            )
+
+        image_service = cast(RockcraftImageService, self._services.get("image"))
+        image_info = image_service.obtain_image()
+
+        lifecycle = self._services.get("lifecycle")
+        prime_dir = lifecycle.prime_dir
+
+        build_plan = self._services.get("build_plan").plan()
         build_for = build_plan[0].build_for
 
-        archive_name = _pack(
+        _create_rock(
+            path=path,
             prime_dir=prime_dir,
             project=cast(Project, self._services.get("project").get()),
             project_base_image=image_info.base_image,
             base_digest=image_info.base_digest,
-            rock_suffix=platform,
             build_for=build_for,
             base_layer_dir=image_info.base_layer_dir,
         )
-
-        return [dest / archive_name]
 
     @override
     def write_metadata(self, path: pathlib.Path) -> None:
@@ -77,6 +93,27 @@ class RockcraftPackageService(PackageService):
         """
         # nop (no metadata file for Rockcraft)
 
+    @override
+    def write_artifacts_state(
+        self, artifacts: Mapping[str | None, pathlib.Path]
+    ) -> None:
+        """Write artifact-oriented packaging state.
+
+        Rockcraft's pack flow rewrites artifact state on every run, including
+        the "already packed" skip path enabled by ``always_repack=False``. The
+        base implementation refuses to replace an existing entry, so we override
+        it to pass ``overwrite=True``.
+        """
+        platform = self._build_info.platform
+        state_service = self._services.get("state")
+        state_entries = [
+            {"name": name, "path": str(path)} for name, path in artifacts.items()
+        ]
+
+        state_service.set(
+            "artifacts", platform, value=state_entries or None, overwrite=True
+        )
+
     @property
     def metadata(self) -> models.BaseMetadata:
         """Get the metadata model for this project."""
@@ -84,26 +121,28 @@ class RockcraftPackageService(PackageService):
         return models.BaseMetadata()
 
 
-def _pack(
+def _create_rock(
     *,
+    path: pathlib.Path,
     prime_dir: pathlib.Path,
     project: Project,
     project_base_image: oci.Image,
     base_digest: bytes,
-    rock_suffix: str,
     build_for: str,
     base_layer_dir: pathlib.Path,
-) -> str:
+) -> None:
     """Create the rock image for a given architecture.
 
-    :param lifecycle:
-      The lifecycle object containing the primed payload for the rock.
+    :param path:
+      The output path for the .rock artifact.
+    :param prime_dir:
+      The directory containing the primed payload for the rock.
+    :param project:
+      The project model with configuration for the rock.
     :param project_base_image:
       The Image for the base over which the payload was primed.
     :param base_digest:
       The digest of the base image, to add to the new image's metadata.
-    :param rock_suffix:
-      The suffix to append to the image's filename, after the name and version.
     :param build_for:
       The architecture of the built rock, to add as metadata.
     :param base_layer_dir:
@@ -190,8 +229,5 @@ def _pack(
     emit.progress("Manifest media type added")
 
     emit.progress("Exporting to OCI archive")
-    archive_name = f"{project.name}_{project.version}_{rock_suffix}.rock"
-    new_image.to_oci_archive(tag=version, filename=archive_name)
-    emit.progress(f"Exported to OCI archive '{archive_name}'")
-
-    return archive_name
+    new_image.to_oci_archive(tag=version, filename=str(path))
+    emit.progress(f"Exported to OCI archive '{path.name}'")
