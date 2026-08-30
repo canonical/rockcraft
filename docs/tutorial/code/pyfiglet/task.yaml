@@ -19,10 +19,13 @@ execute: |
   # [docs:build-rock-end]
 
   # [docs:skopeo-copy]
-  sudo rockcraft.skopeo --insecure-policy copy oci-archive:pyfiglet_1.0.4_amd64.rock docker-daemon:pyfiglet:1.0.4
+  sudo rockcraft.skopeo copy \
+    --insecure-policy \
+    oci-archive:pyfiglet_1.0.4_$(dpkg --print-architecture).rock \
+    docker-daemon:pyfiglet:1.0.4
   # [docs:skopeo-copy-end]
 
-  rm pyfiglet_1.0.4_amd64.rock
+  rm pyfiglet_1.0.4_$(dpkg --print-architecture).rock
 
   # [docs:docker-run]
   docker run --rm pyfiglet:1.0.4 exec pyfiglet it works!
