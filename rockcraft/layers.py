@@ -55,7 +55,7 @@ def archive_layer(
             tar_file.add(filepath, arcname=arcname, recursive=False)
 
 
-def prune_prime_files(prime_dir: Path, files: set[str], base_layer_dir: Path) -> None:
+def prune_prime_files(prime_dir: Path, files: set[Path], base_layer_dir: Path) -> None:
     """Remove (prune) files in a prime directory if they exist in the base layer.
 
     Given a set of filenames ``files``, this function will remove (prune) all those
@@ -285,9 +285,7 @@ def _all_compatible_files(paths: list[Path]) -> bool:
 
     for other_file in paths[1:]:
         permissions_other = [_get_permissions(other_file)]
-        if paths_collide(
-            str(first_file), str(other_file), permissions_first, permissions_other
-        ):
+        if paths_collide(first_file, other_file, permissions_first, permissions_other):
             return False
 
     return True

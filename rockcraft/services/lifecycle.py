@@ -70,7 +70,7 @@ class RockcraftLifecycleService(LifecycleService):
         """Perform base-layer pruning on primed files."""
         prime_dir = step_info.prime_dir
         base_layer_dir = step_info.rootfs_dir
-        files: set[str]
+        files: set[Path]
 
         # Fix: overlay content is not included in step_info so we just list the prime_dir
         files = {str(p.relative_to(prime_dir)) for p in prime_dir.rglob("*")}

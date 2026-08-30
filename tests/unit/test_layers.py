@@ -351,7 +351,7 @@ def test_prune_prime_files(tmp_path):
     (prime_dir / "file3.txt").write_text("file3")
     (prime_dir / "file3.txt").chmod(0o444)
 
-    files = {"file1.txt", "file2.txt", "file3.txt"}
+    files = {Path("file1.txt"), Path("file2.txt"), Path("file3.txt")}
     layers.prune_prime_files(prime_dir, files, base_layer_dir)
 
     # "file1.txt" gets pruned, the other files remain.
