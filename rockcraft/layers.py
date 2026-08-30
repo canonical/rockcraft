@@ -20,11 +20,13 @@ import os
 import tarfile
 from collections import defaultdict
 from pathlib import Path
+from tempfile import TemporaryDirectory
 
 from craft_cli import emit
 from craft_parts.executor.collisions import paths_collide
 from craft_parts.overlays import overlays
 from craft_parts.permissions import Permissions
+from craft_parts.utils import process
 
 from rockcraft import errors
 
@@ -45,14 +47,56 @@ def archive_layer(
     candidates = _gather_layer_paths(new_layer_dir, base_layer_dir)
     layer_paths = _merge_layer_paths(candidates)
 
-    with tarfile.open(temp_tar_file, mode="w") as tar_file:
-        # Iterate on sorted keys, so that the directories are always listed before
-        # any files that they contain (otherwise tools like Docker might choke on
-        # the layer tarball).
-        for arcname in sorted(layer_paths):
-            filepath = layer_paths[arcname]
-            emit.debug(f"Adding to layer: {filepath} as '{arcname}'")
-            tar_file.add(filepath, arcname=arcname, recursive=False)
+    layer_contents: list[Path] = []
+    transforms: list[str] = []
+    with TemporaryDirectory() as tmpdir:
+        tmppath = Path(tmpdir)
+        # Just create an empty tar file if there's nothing to put in the layer
+        # GNU tar simply refuses to create an actual empty tar file though, so just use
+        # python's tarfile
+        if not layer_paths:
+            with tarfile.open(temp_tar_file, "w"):
+                pass
+            return
+
+        # # Walk in reverse to avoid encountering not-yet created dirs
+        # for arcname in sorted(layer_paths, reverse=True):
+        #     filepath = layer_paths[arcname]
+        #     emit.debug(f"Adding to layer: {filepath} as {arcname!r}")
+
+        #     # Construct a new file at `arcname` with the same contents as `filepath`.
+        #     # This emulates the `arcname` parameter of `tarfile.open()`, which is not
+        #     # present in GNU tar.
+        #     new_path = tmppath / arcname
+        #     layer_contents.append(new_path.relative_to(tmppath))
+        #     if new_path.is_dir() and new_path.exists():
+        #         continue
+        #     new_path.parent.mkdir(parents=True, exist_ok=True)
+        #     filepath.rename(new_path)
+
+        for arcname, oldname in layer_paths.items():
+            oldname = str(oldname).removeprefix("/")
+            transforms.extend(["--transform", f"s|{str(oldname)}|{arcname}|"])
+
+        # GNU tar is being used instead of Python's `tarfile` as it does not support
+        # special file attributes like xattrs.
+        tar_command: list[str | Path] = [
+            "tar",
+            "-cf",
+            temp_tar_file.resolve(),
+            # Don't descend automatically into directories
+            "--no-recursion",
+            # Preserve all those fancy attributes
+            "--acls",
+            "--xattrs",
+            "--selinux",
+            *transforms,
+            # Tarball sorted files, so that the directories are always listed before
+            # any files that they contain (otherwise tools like Docker might choke on
+            # the layer tarball).
+            *sorted(str(p) for p in layer_paths.values()),
+        ]
+        process.run(tar_command, cwd=tmppath, check=True)
 
 
 def prune_prime_files(prime_dir: Path, files: set[str], base_layer_dir: Path) -> None:
