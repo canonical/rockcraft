@@ -3,13 +3,17 @@ summary: django extension test
 environment:
   BASE/bare_2204: bare
   BASE/bare_2404: bare
+  BASE/bare_2604: bare
   BASE/base_2204: ubuntu@22.04
   BASE/base_2404: ubuntu@24.04
+  BASE/base_2604: ubuntu@26.04
 
   BUILD_BASE/bare_2204: ubuntu@22.04
   BUILD_BASE/bare_2404: ubuntu@24.04
+  BUILD_BASE/bare_2604: ubuntu@26.04
   BUILD_BASE/base_2204: ubuntu@22.04
   BUILD_BASE/base_2404: ubuntu@24.04
+  BUILD_BASE/base_2604: ubuntu@26.04
 
 execute: |
 
