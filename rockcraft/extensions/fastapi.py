@@ -118,16 +118,16 @@ class FastAPIFramework(Extension):
             ]
 
         parts: dict[str, Any] = {
-            "fastapi-framework/dependencies": self._dependencies_part(
+            self.get_part_name("dependencies"): self._dependencies_part(
                 stage_packages, build_environment
             ),
-            "fastapi-framework/install-app": {
+            self.get_part_name("install-app"): {
                 **self._get_install_app_part(),
                 "permissions": [{"owner": USER_UID, "group": USER_UID}],
             },
         }
         if self.yaml_data["base"] == "bare":
-            parts["fastapi-framework/runtime"] = {
+            parts[self.get_part_name("runtime")] = {
                 "plugin": "nil",
                 "override-build": "mkdir -m 777 ${CRAFT_PART_INSTALL}/tmp\n"
                 "ln -sf /usr/bin/bash ${CRAFT_PART_INSTALL}/usr/bin/sh",
@@ -140,14 +140,14 @@ class FastAPIFramework(Extension):
         else:
             # There is a bug where ca-certificates_data and python-venv both provide
             # etc/ssl/certs/ca-certificates.crt with different content.
-            parts["fastapi-framework/dependencies"]["stage"] = [
+            parts[self.get_part_name("dependencies")]["stage"] = [
                 "-etc/ssl/certs/ca-certificates.crt"
             ]
-            parts["fastapi-framework/runtime"] = {
+            parts[self.get_part_name("runtime")] = {
                 "plugin": "nil",
                 "stage-packages": ["ca-certificates_data"],
             }
-        parts["fastapi-framework/logging"] = gen_logging_part()
+        parts[self.get_part_name("logging")] = gen_logging_part()
         return parts
 
     def _get_install_app_part(self) -> dict[str, Any]:
@@ -180,13 +180,13 @@ class FastAPIFramework(Extension):
         """Return the prime list for the FastAPI project."""
         user_prime = (
             self.yaml_data.get("parts", {})
-            .get("fastapi-framework/install-app", {})
+            .get(self.get_part_name("install-app"), {})
             .get("prime", [])
         )
         if not all(re.match(f"-? *{self.IMAGE_BASE_DIR}/", p) for p in user_prime):
             raise ExtensionError(
                 "fastapi-framework extension requires the 'prime' entry in the "
-                f"fastapi-framework/install-app part to start with {self.IMAGE_BASE_DIR}/",
+                f"{self.get_part_name('install-app')} part to start with {self.IMAGE_BASE_DIR}/",
                 doc_slug="/reference/extensions/fastapi-framework",
                 logpath_report=False,
             )
@@ -215,26 +215,11 @@ class FastAPIFramework(Extension):
 
         Uses the uv plugin if the project is using uv, otherwise uses the python plugin.
         """
-        if uses_uv(self.project_root):
-            return {
-                "plugin": "uv",
-                "stage-packages": stage_packages,
-                "source": ".",
-                "build-snaps": ["astral-uv/latest/edge"],
-                "build-environment": build_environment,
-                "override-build": (
-                    "craftctl default\n"
-                    "uv pip install "
-                    "--python /usr/bin/python3 "
-                    "--prefix ${CRAFT_PART_INSTALL} "
-                    "uvicorn~=0.52"
-                ),
-            }
         return {
             "plugin": "python",
             "stage-packages": stage_packages,
             "source": ".",
-            "python-packages": ["uvicorn~=0.52"],
+            "python-packages": ["uvicorn"],
             "python-requirements": ["requirements.txt"],
             "build-environment": build_environment,
         }
@@ -352,6 +337,38 @@ class FastAPIFrameworkV2(FastAPIFramework):
         This is always True for V2
         """
         return True
+
+    @override
+    def _dependencies_part(
+        self, stage_packages: list[str], build_environment: list[Any]
+    ) -> dict[str, Any]:
+        """Return the part that installs the project's dependencies.
+
+        Uses the uv plugin if the project is using uv, otherwise uses the python plugin.
+        """
+        if uses_uv(self.project_root):
+            return {
+                "plugin": "uv",
+                "stage-packages": stage_packages,
+                "source": ".",
+                "build-snaps": ["astral-uv"],
+                "build-environment": build_environment,
+                "override-build": (
+                    "craftctl default\n"
+                    "uv pip install "
+                    "--python /usr/bin/python3 "
+                    "--prefix ${CRAFT_PART_INSTALL} "
+                    "uvicorn~=0.52"
+                ),
+            }
+        return {
+            "plugin": "python",
+            "stage-packages": stage_packages,
+            "source": ".",
+            "python-packages": ["uvicorn~=0.52"],
+            "python-requirements": ["requirements.txt"],
+            "build-environment": build_environment,
+        }
 
 
 FastAPIFrameworkFactory = _FrameworkFactory(FastAPIFramework, FastAPIFrameworkV2)

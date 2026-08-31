@@ -28,6 +28,16 @@ def fastapi_input_yaml_fixture():
     }
 
 
+@pytest.fixture(name="fastapi_v2_input_yaml")
+def fastapi_v2_input_yaml_fixture():
+    return {
+        "name": "foo-bar",
+        "base": "ubuntu@26.04",
+        "platforms": {"amd64": {}},
+        "extensions": ["fastapi-framework"],
+    }
+
+
 @pytest.fixture
 def fastapi_extension(mock_extensions):
     extensions.register("fastapi-framework", extensions.FastAPIFrameworkFactory)
@@ -334,28 +344,28 @@ def test_fastapi_extension_incorrect_prime_prefix_error(tmp_path, fastapi_input_
     assert "start with app/" in str(exc)
 
 
-def test_fastapi_extension_uv(tmp_path, fastapi_extension, fastapi_input_yaml):
+def test_fastapi_extension_uv(tmp_path, fastapi_extension, fastapi_v2_input_yaml):
     (tmp_path / "pyproject.toml").write_text(
         "[project]\nname = 'foo-bar'\nversion = '0.1.0'\ndependencies = ['fastapi']\n"
     )
     (tmp_path / "uv.lock").write_text("version = 1\n")
     (tmp_path / "app.py").write_text("app = object()")
 
-    applied = extensions.apply_extensions(tmp_path, fastapi_input_yaml)
+    applied = extensions.apply_extensions(tmp_path, fastapi_v2_input_yaml)
 
-    deps = applied["parts"]["fastapi-framework/dependencies"]
+    deps = applied["parts"]["fastapi-framework.dependencies"]
     assert deps["plugin"] == "uv"
     assert deps["source"] == "."
     assert "python-packages" not in deps
     assert "python-requirements" not in deps
     assert deps["override-build"] == (
         "craftctl default\n"
-        "uv pip install --python ${CRAFT_PART_INSTALL}/bin/python uvicorn"
+        "uv pip install --python /usr/bin/python3 --prefix ${CRAFT_PART_INSTALL} uvicorn~=0.52"
     )
 
 
 def test_fastapi_extension_uv_no_requirements_txt_is_ok(
-    tmp_path, fastapi_extension, fastapi_input_yaml
+    tmp_path, fastapi_extension, fastapi_v2_input_yaml
 ):
     (tmp_path / "pyproject.toml").write_text(
         "[project]\nname = 'foo-bar'\nversion = '0.1.0'\ndependencies = ['fastapi']\n"
@@ -364,22 +374,26 @@ def test_fastapi_extension_uv_no_requirements_txt_is_ok(
     (tmp_path / "app.py").write_text("app = object()")
 
     # Should not raise despite there being no requirements.txt.
-    extensions.apply_extensions(tmp_path, fastapi_input_yaml)
+    extensions.apply_extensions(tmp_path, fastapi_v2_input_yaml)
 
 
 def test_fastapi_extension_uv_lock_without_pyproject_errors(
-    tmp_path, fastapi_extension, fastapi_input_yaml
+    tmp_path, fastapi_extension, fastapi_v2_input_yaml
 ):
     (tmp_path / "uv.lock").write_text("version = 1\n")
     (tmp_path / "app.py").write_text("app = object()")
 
     with pytest.raises(ExtensionError) as exc:
-        extensions.apply_extensions(tmp_path, fastapi_input_yaml)
+        extensions.apply_extensions(tmp_path, fastapi_v2_input_yaml)
     assert "both uv.lock and pyproject.toml" in str(exc.value)
+
+
 def test_factory_dispatch_v1(tmp_path):
     """Factory returns FastAPIFramework (V1) for ubuntu@24.04."""
     instance = extensions.FastAPIFrameworkFactory(
-        project_root=tmp_path, yaml_data={"name": "x", "base": "ubuntu@24.04"}
+        project_root=tmp_path,
+        yaml_data={"name": "x", "base": "ubuntu@24.04"},
+        extension_name="fastapi-framework",
     )
     assert isinstance(instance, extensions.FastAPIFramework)
     assert not isinstance(instance, extensions.FastAPIFrameworkV2)
@@ -388,7 +402,9 @@ def test_factory_dispatch_v1(tmp_path):
 def test_factory_dispatch_v2(tmp_path):
     """Factory returns FastAPIFrameworkV2 for ubuntu@26.04."""
     instance = extensions.FastAPIFrameworkFactory(
-        project_root=tmp_path, yaml_data={"name": "x", "base": "ubuntu@26.04"}
+        project_root=tmp_path,
+        yaml_data={"name": "x", "base": "ubuntu@26.04"},
+        extension_name="fastapi-framework",
     )
     assert isinstance(instance, extensions.FastAPIFrameworkV2)
 
@@ -402,6 +418,7 @@ def test_factory_dispatch_bare_by_build_base(tmp_path):
             "base": "bare",
             "build-base": "ubuntu@24.04",
         },
+        extension_name="fastapi-framework",
     )
     assert isinstance(v1, extensions.FastAPIFramework)
     assert not isinstance(v1, extensions.FastAPIFrameworkV2)
@@ -413,6 +430,7 @@ def test_factory_dispatch_bare_by_build_base(tmp_path):
             "base": "bare",
             "build-base": "ubuntu@26.04",
         },
+        extension_name="fastapi-framework",
     )
     assert isinstance(v2, extensions.FastAPIFrameworkV2)
 
@@ -478,16 +496,16 @@ def test_fastapi_extension_default_26_04(tmp_path, monkeypatch):
         "platforms": {"amd64": {}},
         "run_user": "_daemon_",
         "parts": {
-            "fastapi-framework/dependencies": {
+            "fastapi-framework.dependencies": {
                 "build-environment": [],
                 "plugin": "python",
                 "stage-packages": ["python3-venv"],
                 "source": ".",
-                "python-packages": ["uvicorn"],
+                "python-packages": ["uvicorn~=0.52"],
                 "python-requirements": ["requirements.txt"],
                 "stage": ["-etc/ssl/certs/ca-certificates.crt"],
             },
-            "fastapi-framework/install-app": {
+            "fastapi-framework.install-app": {
                 "plugin": "dump",
                 "source": ".",
                 "organize": {
@@ -496,11 +514,11 @@ def test_fastapi_extension_default_26_04(tmp_path, monkeypatch):
                 "stage": ["app/app.py"],
                 "permissions": [{"owner": 584792, "group": 584792}],
             },
-            "fastapi-framework/runtime": {
+            "fastapi-framework.runtime": {
                 "plugin": "nil",
                 "stage-packages": ["ca-certificates_data"],
             },
-            "fastapi-framework/logging": {
+            "fastapi-framework.logging": {
                 "plugin": "nil",
                 "override-build": (
                     "craftctl default\n"
