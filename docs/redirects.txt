@@ -6,6 +6,8 @@
 
 "tutorial/expressjs.rst" "tutorial/express.rst"
 
+"explanation/rockcraft.rst" "index.rst"
+
 "how-to/build-a-12-factor-app-rock.rst" "how-to/web-app-rocks/index.rst"
 "about-this-documentation.rst" "contribute-to-this-documentation.rst"
 "how-to/web-app-rocks/configure-the-build-base-for-an-expressjs-app.rst" "how-to/web-app-rocks/configure-the-build-base-for-an-express-app.rst"
