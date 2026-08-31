@@ -1202,7 +1202,10 @@ def test_django_extension_django_service_override_disable_wsgi_path_check(tmp_pa
     extensions.apply_extensions(tmp_path, input_yaml)
 
 
-def test_flask_extension_uv(tmp_path, flask_extension, flask_v2_input_yaml):
+def test_flask_extension_uv(
+    tmp_path, flask_extension, flask_v2_input_yaml, monkeypatch
+):
+    monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "1")
     (tmp_path / "pyproject.toml").write_text(
         "[project]\nname = 'foo-bar'\nversion = '0.1.0'\ndependencies = ['flask']\n"
     )
@@ -1226,8 +1229,9 @@ def test_flask_extension_uv(tmp_path, flask_extension, flask_v2_input_yaml):
 
 
 def test_flask_extension_uv_lock_without_pyproject_errors(
-    tmp_path, flask_extension, flask_input_yaml
+    tmp_path, flask_extension, flask_input_yaml, monkeypatch
 ):
+    monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "1")
     (tmp_path / "uv.lock").write_text("version = 1\n")
     (tmp_path / "app.py").write_text("app = object()")
 
