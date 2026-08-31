@@ -21,6 +21,8 @@ import pytest
 from rockcraft import extensions
 from rockcraft.errors import ExtensionError
 from rockcraft.extensions.gunicorn import (
+    DjangoFramework,
+    DjangoFrameworkV2,
     FlaskFramework,
     FlaskFrameworkFactory,
     FlaskFrameworkV2,
@@ -898,12 +900,20 @@ def test_flask_v2_full_apply_26_04(tmp_path, monkeypatch):
             },
             "flask-framework.dependencies": {
                 "plugin": "python",
-                "python-packages": ["gunicorn~=26.0"],
+                "python-packages": [
+                    "--constraint=.gunicorn-constraints.txt",
+                    "gunicorn",
+                ],
                 "python-requirements": ["requirements.txt"],
                 "source": ".",
                 "stage-packages": ["python3-venv"],
                 "build-environment": [],
                 "stage": ["-etc/ssl/certs/ca-certificates.crt"],
+                "override-build": (
+                    "printf '%s\\n' 'gunicorn~=26.0'"
+                    " > .gunicorn-constraints.txt\n"
+                    "craftctl default"
+                ),
             },
             "flask-framework.install-app": {
                 "organize": {
@@ -1302,12 +1312,20 @@ def test_django_extension_v2_default(tmp_path):
             },
             "django-framework.dependencies": {
                 "plugin": "python",
-                "python-packages": ["gunicorn~=26.0"],
+                "python-packages": [
+                    "--constraint=.gunicorn-constraints.txt",
+                    "gunicorn",
+                ],
                 "python-requirements": ["requirements.txt"],
                 "source": ".",
                 "stage-packages": ["python3-venv"],
                 "build-environment": [],
                 "stage": ["-etc/ssl/certs/ca-certificates.crt"],
+                "override-build": (
+                    "printf '%s\\n' 'gunicorn~=26.0'"
+                    " > .gunicorn-constraints.txt\n"
+                    "craftctl default"
+                ),
             },
             "django-framework.install-app": {
                 "organize": {"*": "django/app/", ".*": "django/app/"},
@@ -1376,3 +1394,100 @@ def test_django_extension_v2_default(tmp_path):
             },
         },
     }
+
+
+@pytest.mark.parametrize(
+    ("framework_class", "extension_name", "base", "expected_packages"),
+    [
+        (
+            FlaskFramework,
+            "flask-framework",
+            "ubuntu@24.04",
+            ["gunicorn~=23.0"],
+        ),
+        (
+            DjangoFramework,
+            "django-framework",
+            "ubuntu@24.04",
+            ["gunicorn~=23.0"],
+        ),
+    ],
+)
+def test_v1_dependency_part_has_no_gunicorn_constraint(
+    tmp_path, framework_class, extension_name, base, expected_packages
+):
+    """V1 framework dependency parts retain their direct Gunicorn requirement."""
+    framework = framework_class(
+        project_root=tmp_path,
+        yaml_data={"name": "foo-bar", "base": base},
+        extension_name=extension_name,
+    )
+
+    dependency_part = framework._gen_parts()[framework.get_part_name("dependencies")]
+
+    assert dependency_part["python-packages"] == expected_packages
+    assert "override-build" not in dependency_part
+
+
+@pytest.mark.parametrize(
+    ("framework_class", "extension_name"),
+    [
+        (FlaskFrameworkV2, "flask-framework"),
+        (DjangoFrameworkV2, "django-framework"),
+    ],
+)
+def test_v2_dependency_part_uses_gunicorn_constraint(
+    tmp_path, framework_class, extension_name
+):
+    """V2 framework dependency parts constrain Gunicorn without quoted pip input."""
+    framework = framework_class(
+        project_root=tmp_path,
+        yaml_data={"name": "foo-bar", "base": "ubuntu@26.04"},
+        extension_name=extension_name,
+    )
+
+    dependency_part = framework._gen_parts()[framework.get_part_name("dependencies")]
+
+    assert dependency_part["python-packages"] == [
+        "--constraint=.gunicorn-constraints.txt",
+        "gunicorn",
+    ]
+    assert dependency_part["override-build"] == (
+        "printf '%s\\n' 'gunicorn~=26.0' > .gunicorn-constraints.txt\ncraftctl default"
+    )
+
+
+@pytest.mark.parametrize(
+    ("framework_class", "extension_name"),
+    [
+        (FlaskFrameworkV2, "flask-framework"),
+        (DjangoFrameworkV2, "django-framework"),
+    ],
+)
+def test_v2_bare_dependency_part_uses_staged_python(
+    tmp_path, framework_class, extension_name
+):
+    """V2 bare dependency parts direct pip to the staged Python 3.14."""
+    framework = framework_class(
+        project_root=tmp_path,
+        yaml_data={
+            "name": "foo-bar",
+            "base": "bare",
+            "build-base": "ubuntu@26.04",
+        },
+        extension_name=extension_name,
+    )
+
+    dependency_part = framework._gen_parts()[framework.get_part_name("dependencies")]
+
+    assert dependency_part["stage-packages"] == ["python3"]
+    assert dependency_part["build-environment"] == [
+        {"PIP_PYTHON": "$(which python3.14)"}
+    ]
+    assert dependency_part["python-packages"] == [
+        "--constraint=.gunicorn-constraints.txt",
+        "gunicorn",
+    ]
+    assert dependency_part["override-build"] == (
+        "printf '%s\\n' 'gunicorn~=26.0' > .gunicorn-constraints.txt\ncraftctl default"
+    )
