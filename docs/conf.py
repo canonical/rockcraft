@@ -41,7 +41,8 @@ copyright = f"2022-{datetime.date.today().year}"
 
 
 # Documentation website URL
-ogp_site_url = "https://documentation.ubuntu.com/rockcraft"
+version_slug = f"{os.environ.get('READTHEDOCS_VERSION', 'local')}"
+ogp_site_url = f"https://ubuntu.com/containers/rockcraft/docs/{version_slug}/"
 
 #Preview name of the documentation website
 ogp_site_name = project
@@ -88,15 +89,18 @@ html_theme_options = {
     "source_edit_link": "https://github.com/canonical/rockcraft",
 }
 
-# slug = ''
+# Project slug; see https://meta.discourse.org/t/what-is-category-slug/87897
+slug = 'containers/rockcraft/docs'
 
 
 #######################
 # Sitemap configuration: https://sphinx-sitemap.readthedocs.io/
 #######################
 
+sitemap_filename = "doc-sitemap.xml"
+
 # Use RTD canonical URL to ensure duplicate pages have a specific canonical URL
-html_baseurl = os.environ.get("READTHEDOCS_CANONICAL_URL", "/")
+html_baseurl = f"https://ubuntu.com/containers/rockcraft/docs/{version_slug}/"
 
 # sphinx-sitemap uses html_baseurl to generate the full URL for each page:
 sitemap_url_scheme = '{link}'
@@ -282,7 +286,10 @@ exclude_patterns = [
 html_css_files = ["https://assets.ubuntu.com/v1/d86746ef-cookie_banner.css"]
 
 # Adds custom JavaScript files, located remotely or in 'html_static_path'.
-html_js_files = ["https://assets.ubuntu.com/v1/287a5e8f-bundle.js"]
+html_js_files = [
+    "https://assets.ubuntu.com/v1/287a5e8f-bundle.js",
+    "js/overwrite_links.js",
+]
 
 # Appends extra markup to the end of every document written in reST
 rst_epilog = """
@@ -375,7 +382,6 @@ napoleon_use_ivar = True
 # For documentation on documentation.ubuntu.com, we also must add the slug.
 url_version = ""
 url_lang = ""
-slug = "rockcraft"
 
 # Determine if the URL uses versions and language
 if (
