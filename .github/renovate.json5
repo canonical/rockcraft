@@ -25,9 +25,8 @@
     // `sudo npm install -g express-generator@<version>` in the ExpressJS Spread task.
     {
       customType: "regex",
-      managerFilePatterns: ["/^docs/tutorial/code/expressjs/task\\.yaml$/"],
+      managerFilePatterns: ["^docs/tutorial/code/expressjs/task\\.yaml$"],
       matchStrings: ["express-generator@(?<currentValue>\\S+)"],
-      datasourceTemplate: "npm",
       depNameTemplate: "express-generator",
     },
     // `--boot-version <version>` passed to `devpack-for-spring boot start` in the
