@@ -17,7 +17,7 @@
       matchFileNames: ["docs/tutorial/code/**"],
       matchUpdateTypes: ["minor", "patch"],
       groupName: "docs tutorial Spread dependencies (non-major)",
-      commitMessagePrefix: "chore: ",
+      commitMessagePrefix: "docs(build-deps): ",
     },
   ],
 
