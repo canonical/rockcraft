@@ -4,24 +4,53 @@ environment:
   BASE/bare_2204: bare
   BASE/bare_2404: bare
   BASE/bare_2604: bare
+  BASE/bare_2604_uv: bare
   BASE/base_2204: ubuntu@22.04
   BASE/base_2404: ubuntu@24.04
   BASE/base_2604: ubuntu@26.04
+  BASE/base_2604_uv: ubuntu@26.04
 
   BUILD_BASE/bare_2204: ubuntu@22.04
   BUILD_BASE/bare_2404: ubuntu@24.04
   BUILD_BASE/bare_2604: ubuntu@26.04
+  BUILD_BASE/bare_2604_uv: ubuntu@26.04
   BUILD_BASE/base_2204: ubuntu@22.04
   BUILD_BASE/base_2404: ubuntu@24.04
   BUILD_BASE/base_2604: ubuntu@26.04
+  BUILD_BASE/base_2604_uv: ubuntu@26.04
+
+  USE_UV/bare_2204: "false"
+  USE_UV/bare_2404: "false"
+  USE_UV/bare_2604: "false"
+  USE_UV/bare_2604_uv: "true"
+  USE_UV/base_2204: "false"
+  USE_UV/base_2404: "false"
+  USE_UV/base_2604: "false"
+  USE_UV/base_2604_uv: "true"
+
+  ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS: "true"
 
 execute: |
+  DEPENDENCY_SUFFIX=""
+  if [ "${USE_UV}" = "true" ]; then
+    DEPENDENCY_SUFFIX="-uv"
+  else
+    rm pyproject.toml uv.lock
+  fi
+  NAME="example-django"
+  IMAGE_NAME="${NAME}${DEPENDENCY_SUFFIX}"
+  ROCK_FILE="${NAME}_0.1_amd64.rock"
+  IMAGE="${IMAGE_NAME}:latest"
+  CONTAINER="${IMAGE_NAME}-container"
 
-  run_rockcraft init --name example-django --profile django-framework
+  run_rockcraft init --name "${NAME}" --profile django-framework
 
   # Replace base with ubuntu@<base>
   sed -i "s/^base: .*/base: ${BASE}/g" rockcraft.yaml
   sed -i "s/^build-base: .*/build-base: ${BUILD_BASE}/g" rockcraft.yaml
+  if [ "${USE_UV}" = "true" ]; then
+    run_rockcraft clean
+  fi
 
   # Install findutils for the bare scenario
   # This is a workaround for the fact that the bare scenario does not have
@@ -36,22 +65,22 @@ execute: |
 
   run_rockcraft pack
 
-  test -f example-django_0.1_amd64.rock
+  test -f "${ROCK_FILE}"
 
   # Ensure docker does not have this container image
-  docker rmi --force example-django
+  docker rmi --force "${IMAGE}"
   # Install image
-  sudo rockcraft.skopeo --insecure-policy copy oci-archive:example-django_0.1_amd64.rock docker-daemon:example-django:latest
+  sudo rockcraft.skopeo --insecure-policy copy "oci-archive:${ROCK_FILE}" "docker-daemon:${IMAGE}"
   # Ensure image exists
-  docker images example-django | MATCH "example-django"
+  docker images "${IMAGE}" | MATCH "${IMAGE_NAME}"
 
   # ensure container doesn't exist
-  docker rm -f example-django-container
+  docker rm -f "${CONTAINER}"
 
   # test the django project is ready to run inside the container
-  docker run --rm --entrypoint /bin/python3 example-django -m gunicorn --chdir /django/app --check-config example_django.wsgi:application
-  docker run --rm --entrypoint /bin/python3 example-django -c "import pathlib;assert pathlib.Path('/django/app/manage.py').is_file()"
-  docker run --rm --entrypoint /bin/python3 example-django -c "import pathlib;assert pathlib.Path('/django/app/.foobar').is_file()"
+  docker run --rm --entrypoint /bin/python3 "${IMAGE}" -m gunicorn --chdir /django/app --check-config example_django.wsgi:application
+  docker run --rm --entrypoint /bin/python3 "${IMAGE}" -c "import pathlib;assert pathlib.Path('/django/app/manage.py').is_file()"
+  docker run --rm --entrypoint /bin/python3 "${IMAGE}" -c "import pathlib;assert pathlib.Path('/django/app/.foobar').is_file()"
 
   # ensure the django and promtail folders have the correct user
   check_directory_ownership() {
@@ -59,7 +88,7 @@ execute: |
     local shell="/bin/bash"
     if [ "${BASE}" == "bare" ] && [ "${BUILD_BASE}" == "ubuntu@24.04" ]; then    shell="/usr/bin/bash"
     fi
-    docker run --rm --entrypoint ${shell} example-django -c "find ${directory}/ ! -user '_daemon_' || { echo 'Error: ${directory} or its contents are not owned by _daemon_'; exit 2; }"
+    docker run --rm --entrypoint "${shell}" "${IMAGE}" -c "find ${directory}/ ! -user '_daemon_' || { echo 'Error: ${directory} or its contents are not owned by _daemon_'; exit 2; }"
   }
 
   check_directory_ownership "/django"
@@ -67,13 +96,20 @@ execute: |
   check_directory_ownership "/etc/promtail"
 
   # test the default django service
-  docker run --name example-django-container -d -p 8138:8000 example-django
-  retry -n 5 --wait 2 curl localhost:8138
+  docker run --name "${CONTAINER}" -d -p 8138:8000 "${IMAGE}"
+  retry -n 5 --wait 2 curl localhost:8138 || {
+    docker logs "${CONTAINER}"
+    exit 1
+  }
   [ "$(curl -sw '%{http_code}' -o /dev/null localhost:8138)" == "200" ]
 
 restore: |
-  rm -f example-django_0.1_amd64.rock
-  docker rmi -f example-django
-  docker rm -f example-django-container
+  DEPENDENCY_SUFFIX=""
+  if [ "${USE_UV}" = "true" ]; then
+    DEPENDENCY_SUFFIX="-uv"
+  fi
+  NAME="example-django${DEPENDENCY_SUFFIX}"
+  docker rmi -f "${NAME}:latest"
+  docker rm -f "${NAME}-container"
   rm -f "*.rock" rockcraft.yaml
   docker system prune -a -f

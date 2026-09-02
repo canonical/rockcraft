@@ -16,6 +16,7 @@
 
 """The Rockcraft uv plugin."""
 
+import pathlib
 from textwrap import dedent
 
 from craft_parts.plugins import uv_plugin
@@ -29,8 +30,10 @@ class UvPlugin(uv_plugin.UvPlugin):
 
     @override
     def _should_remove_symlinks(self) -> bool:
-        """Overridden because for ubuntu bases we must always remove the symlinks."""
-        return python_common.should_remove_symlinks(self._part_info)
+        """Remove venv Python symlinks when the payload already provides Python."""
+        return self._is_bare_2604() or python_common.should_remove_symlinks(
+            self._part_info
+        )
 
     @override
     def _get_system_python_interpreter(self) -> str | None:
@@ -39,12 +42,35 @@ class UvPlugin(uv_plugin.UvPlugin):
         The uv plugin requires a name to reference Python, so we must depend
         on a relative python3 being installed. Should return None once
         https://github.com/canonical/craft-parts/issues/991 is closed."""
+        if self._part_info.project_info.build_base == "ubuntu@26.04":
+            return "python3.14"
         return "python3"
+
+    @override
+    def get_build_environment(self) -> dict[str, str]:
+        """Select the staged Python version for Ubuntu 26.04 builds."""
+        environment = super().get_build_environment()
+        if self._part_info.project_info.build_base == "ubuntu@26.04":
+            environment["PARTS_PYTHON_INTERPRETER"] = "python3.14"
+        return environment
 
     @override
     def _get_script_interpreter(self) -> str:
         """Overridden because Python is always available in /bin."""
         return python_common.get_script_interpreter()
+
+    def _is_bare_2604(self) -> bool:
+        return (
+            self._part_info.base == "bare"
+            and self._part_info.project_info.build_base == "ubuntu@26.04"
+        )
+
+    @override
+    def _get_venv_directory(self) -> pathlib.Path:
+        """Keep the venv separate from a staged usrmerged filesystem."""
+        if self._is_bare_2604():
+            return self._part_info.part_install_dir / ".venv"
+        return super()._get_venv_directory()
 
     @override
     def _get_rewrite_shebangs_commands(self) -> list[str]:
@@ -67,4 +93,16 @@ class UvPlugin(uv_plugin.UvPlugin):
     @override
     def get_build_commands(self) -> list[str]:
         """Overridden to add a sitecustomize.py."""
-        return python_common.wrap_build_commands(super().get_build_commands())
+        commands = super().get_build_commands()
+        if self._is_bare_2604():
+            install_dir = self._part_info.part_install_dir
+            venv_dir = self._get_venv_directory()
+            commands.append(
+                f'cp -a "{venv_dir}/bin/." "{install_dir}/usr/bin/"\n'
+                f'cp -a "{venv_dir}/lib/." "{install_dir}/usr/lib/"\n'
+                f'ln -sf python3.14 "{install_dir}/usr/bin/python3"\n'
+                f'ln -sf python3 "{install_dir}/usr/bin/python"\n'
+                f'mv "{venv_dir}/pyvenv.cfg" "{install_dir}/pyvenv.cfg"\n'
+                f'rm -rf "{venv_dir}"'
+            )
+        return python_common.wrap_build_commands(commands)

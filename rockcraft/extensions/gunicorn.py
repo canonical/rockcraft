@@ -62,6 +62,7 @@ class _GunicornBase(Extension):
 
     _gunicorn_package = "gunicorn~=23.0"
     _statsd_exporter_tag = "v0.26.0"
+    _worker_class_template = "[ {} ]"
 
     @property
     def name(self) -> str:
@@ -272,7 +273,9 @@ class _GunicornBase(Extension):
             .get("command")
         ):
             snippet["services"][self.framework]["command"] = (
-                f"/bin/python3 -m gunicorn -c /{self.framework}/gunicorn.conf.py '{self.wsgi_path}' -k [ {self._worker_class()} ]"
+                f"/bin/python3 -m gunicorn -c /{self.framework}/gunicorn.conf.py "
+                f"'{self.wsgi_path}' -k "
+                f"{self._worker_class_template.format(self._worker_class())}"
             )
         snippet["parts"] = self._gen_parts()
         return snippet
@@ -496,6 +499,7 @@ class FlaskFrameworkV2(FlaskFramework):
 
     _gunicorn_package = "gunicorn~=26.0"
     _statsd_exporter_tag = "v0.30.0"
+    _worker_class_template = "{}"
 
     @staticmethod
     @override
@@ -517,6 +521,18 @@ class FlaskFrameworkV2(FlaskFramework):
 
         Uses the uv plugin if the project is using uv, otherwise uses the python plugin.
         """
+        python_symlink = ""
+        uv_prefix = "${CRAFT_PART_INSTALL}"
+        if self.yaml_data["base"] == "bare":
+            python_version = find_ubuntu_base_python_version(
+                base=self.yaml_data["build-base"]
+            )
+            python_symlink = (
+                "\nmkdir -p ${CRAFT_PART_INSTALL}/bin"
+                f"\nln -sf /usr/bin/python{python_version} ${{CRAFT_PART_INSTALL}}/bin/python3"
+            )
+            build_environment = [{"PIP_PYTHON": f"$(which python{python_version})"}]
+            uv_prefix = "${CRAFT_PART_INSTALL}/usr"
         if uses_uv(self.project_root):
             return {
                 "plugin": "uv",
@@ -528,8 +544,8 @@ class FlaskFrameworkV2(FlaskFramework):
                     "craftctl default\n"
                     "uv pip install "
                     "--python /usr/bin/python3 "
-                    "--prefix ${CRAFT_PART_INSTALL} "
-                    f"{self._gunicorn_package}"
+                    f"--prefix {uv_prefix} "
+                    f"{self._gunicorn_package} packaging"
                 ),
             }
 
@@ -542,9 +558,18 @@ class FlaskFrameworkV2(FlaskFramework):
             "plugin": "python",
             "stage-packages": stage_packages,
             "source": ".",
-            "python-packages": [self._gunicorn_package],
             "python-requirements": python_requirements,
             "build-environment": build_environment,
+            "python-packages": [
+                "--constraint=.gunicorn-constraints.txt",
+                "gunicorn",
+                "packaging",
+            ],
+            "override-build": (
+                f"printf '%s\\n' '{self._gunicorn_package}'"
+                f" > .gunicorn-constraints.txt\n"
+                f"craftctl default{python_symlink}"
+            ),
         }
 
 
@@ -640,6 +665,7 @@ class DjangoFrameworkV2(DjangoFramework):
 
     _gunicorn_package = "gunicorn~=26.0"
     _statsd_exporter_tag = "v0.30.0"
+    _worker_class_template = "{}"
 
     @staticmethod
     @override
@@ -664,6 +690,18 @@ class DjangoFrameworkV2(DjangoFramework):
 
         Uses the uv plugin if the project is using uv, otherwise uses the python plugin.
         """
+        python_symlink = ""
+        uv_prefix = "${CRAFT_PART_INSTALL}"
+        if self.yaml_data["base"] == "bare":
+            python_version = find_ubuntu_base_python_version(
+                base=self.yaml_data["build-base"]
+            )
+            python_symlink = (
+                "\nmkdir -p ${CRAFT_PART_INSTALL}/bin"
+                f"\nln -sf /usr/bin/python{python_version} ${{CRAFT_PART_INSTALL}}/bin/python3"
+            )
+            build_environment = [{"PIP_PYTHON": f"$(which python{python_version})"}]
+            uv_prefix = "${CRAFT_PART_INSTALL}/usr"
         if uses_uv(self.project_root):
             return {
                 "plugin": "uv",
@@ -675,8 +713,8 @@ class DjangoFrameworkV2(DjangoFramework):
                     "craftctl default\n"
                     "uv pip install "
                     "--python /usr/bin/python3 "
-                    "--prefix ${CRAFT_PART_INSTALL} "
-                    f"{self._gunicorn_package}"
+                    f"--prefix {uv_prefix} "
+                    f"{self._gunicorn_package} packaging"
                 ),
             }
 
@@ -689,9 +727,18 @@ class DjangoFrameworkV2(DjangoFramework):
             "plugin": "python",
             "stage-packages": stage_packages,
             "source": ".",
-            "python-packages": [self._gunicorn_package],
             "python-requirements": python_requirements,
             "build-environment": build_environment,
+            "python-packages": [
+                "--constraint=.gunicorn-constraints.txt",
+                "gunicorn",
+                "packaging",
+            ],
+            "override-build": (
+                f"printf '%s\\n' '{self._gunicorn_package}'"
+                f" > .gunicorn-constraints.txt\n"
+                f"craftctl default{python_symlink}"
+            ),
         }
 
 

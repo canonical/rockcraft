@@ -346,6 +346,20 @@ class FastAPIFrameworkV2(FastAPIFramework):
 
         Uses the uv plugin if the project is using uv, otherwise uses the python plugin.
         """
+        _uvicorn_package = "uvicorn~=0.52"
+        python_symlink = ""
+        uv_prefix = "${CRAFT_PART_INSTALL}"
+        if self.yaml_data["base"] == "bare":
+            python_version = find_ubuntu_base_python_version(
+                base=self.yaml_data["build-base"]
+            )
+            python_symlink = (
+                "\nmkdir -p ${CRAFT_PART_INSTALL}/bin"
+                f"\nln -sf /usr/bin/python{python_version} ${{CRAFT_PART_INSTALL}}/bin/python3"
+            )
+            build_environment = [{"PIP_PYTHON": f"$(which python{python_version})"}]
+            uv_prefix = "${CRAFT_PART_INSTALL}/usr"
+
         if uses_uv(self.project_root):
             return {
                 "plugin": "uv",
@@ -357,17 +371,25 @@ class FastAPIFrameworkV2(FastAPIFramework):
                     "craftctl default\n"
                     "uv pip install "
                     "--python /usr/bin/python3 "
-                    "--prefix ${CRAFT_PART_INSTALL} "
-                    "uvicorn~=0.52"
+                    f"--prefix {uv_prefix} "
+                    f"{_uvicorn_package}"
                 ),
             }
         return {
             "plugin": "python",
             "stage-packages": stage_packages,
             "source": ".",
-            "python-packages": ["uvicorn~=0.52"],
             "python-requirements": ["requirements.txt"],
             "build-environment": build_environment,
+            "python-packages": [
+                "--constraint=.uvicorn-constraints.txt",
+                "uvicorn",
+            ],
+            "override-build": (
+                f"printf '%s\\n' '{_uvicorn_package}'"
+                f" > .uvicorn-constraints.txt\n"
+                f"craftctl default{python_symlink}"
+            ),
         }
 
 

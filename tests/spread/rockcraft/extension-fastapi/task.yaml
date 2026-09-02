@@ -2,22 +2,40 @@ summary: fastapi extension test
 environment:
   BASE/bare_2404: bare
   BASE/bare_2604: bare
+  BASE/bare_2604_uv: bare
   BASE/base_2404: ubuntu@24.04
   BASE/base_2604: ubuntu@26.04
+  BASE/base_2604_uv: ubuntu@26.04
 
   BUILD_BASE/bare_2404: ubuntu@24.04
   BUILD_BASE/bare_2604: ubuntu@26.04
+  BUILD_BASE/bare_2604_uv: ubuntu@26.04
   BUILD_BASE/base_2404: ubuntu@24.04
   BUILD_BASE/base_2604: ubuntu@26.04
+  BUILD_BASE/base_2604_uv: ubuntu@26.04
+
+  USE_UV/bare_2404: "false"
+  USE_UV/bare_2604: "false"
+  USE_UV/bare_2604_uv: "true"
+  USE_UV/base_2404: "false"
+  USE_UV/base_2604: "false"
+  USE_UV/base_2604_uv: "true"
 
   ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS: "true"
 
 execute: |
+  DEPENDENCY_SUFFIX=""
+  if [ "${USE_UV}" = "true" ]; then
+    DEPENDENCY_SUFFIX="-uv"
+  else
+    rm pyproject.toml uv.lock
+  fi
+
   BASE_TYPE="base"
   if [ "${BASE}" = "bare" ]; then
     BASE_TYPE="bare"
   fi
-  NAME="fastapi-${BASE_TYPE}-${BUILD_BASE#ubuntu@}"
+  NAME="fastapi-${BASE_TYPE}-${BUILD_BASE#ubuntu@}${DEPENDENCY_SUFFIX}"
   NAME="${NAME//./-}"
   ROCK_FILE="${NAME}_0.1_amd64.rock"
   IMAGE="${NAME}:0.1"
@@ -26,6 +44,9 @@ execute: |
   sed -i "s/^name: .*/name: ${NAME}/g" rockcraft.yaml
   sed -i "s/^base: .*/base: ${BASE}/g" rockcraft.yaml
   sed -i "s/^build-base: .*/build-base: ${BUILD_BASE}/g" rockcraft.yaml
+  if [ "${USE_UV}" = "true" ]; then
+    run_rockcraft clean
+  fi
   if [ "${BASE}" = "bare" ]; then
     cat >> rockcraft.yaml <<EOL
   parts:
@@ -63,15 +84,23 @@ execute: |
 
   # test the default fastapi service
   docker run --name "${NAME}-container" -d -p 8137:8000 "${IMAGE}"
-  retry -n 5 --wait 2 curl localhost:8137
+  retry -n 5 --wait 2 curl localhost:8137 || {
+    docker logs "${NAME}-container"
+    docker exec "${NAME}-container" pebble logs fastapi
+    exit 1
+  }
   [ "$(curl -sSf localhost:8137)" == "ok" ]
 
 restore: |
+  DEPENDENCY_SUFFIX=""
+  if [ "${USE_UV}" = "true" ]; then
+    DEPENDENCY_SUFFIX="-uv"
+  fi
   BASE_TYPE="base"
   if [ "${BASE}" = "bare" ]; then
     BASE_TYPE="bare"
   fi
-  NAME="fastapi-${BASE_TYPE}-${BUILD_BASE#ubuntu@}"
+  NAME="fastapi-${BASE_TYPE}-${BUILD_BASE#ubuntu@}${DEPENDENCY_SUFFIX}"
   NAME="${NAME//./-}"
   ROCK_FILE="${NAME}_0.1_amd64.rock"
   docker stop "${NAME}-container" || true
