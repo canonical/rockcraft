@@ -45,12 +45,8 @@ from ._python_utils import (
     has_global_variable,
 )
 from ._utils import find_ubuntu_base_python_version
-from .app_parts import gen_logging_part
-from .extension import (
-    Extension,
-    _FrameworkFactory,
-    get_extensions_data_dir,
-)
+from .app_parts import AppDataDirMixin, gen_logging_part
+from .extension import Extension, _FrameworkFactory, get_extensions_data_dir
 
 USER_UID: int = SUPPORTED_GLOBAL_USERNAMES["_daemon_"]["uid"]
 
@@ -59,6 +55,8 @@ class _GunicornBase(Extension):
     """An extension base class for Python WSGI framework extensions."""
 
     _gunicorn_package = "gunicorn~=23.0"
+    _gunicorn_constraint_file: str | None = None
+    _use_staged_pip_python = False
     _statsd_exporter_tag = "v0.26.0"
 
     @property
@@ -116,20 +114,39 @@ class _GunicornBase(Extension):
             build_environment = [
                 {"PARTS_PYTHON_INTERPRETER": f"python{python_version}"}
             ]
+            if self._use_staged_pip_python:
+                stage_packages = ["python3"]
+                build_environment = [{"PIP_PYTHON": f"$(which python{python_version})"}]
 
         python_requirements: list[str] = []
         if (self.project_root / "requirements.txt").exists():
             python_requirements.append("requirements.txt")
 
+        dependency_part: dict[str, Any] = {
+            "plugin": "python",
+            "stage-packages": stage_packages,
+            "source": ".",
+            "python-packages": [self._gunicorn_package],
+            "python-requirements": python_requirements,
+            "build-environment": build_environment,
+        }
+        if self._gunicorn_constraint_file:
+            dependency_part.update(
+                {
+                    "python-packages": [
+                        f"--constraint={self._gunicorn_constraint_file}",
+                        "gunicorn",
+                    ],
+                    "override-build": (
+                        f"printf '%s\\n' '{self._gunicorn_package}'"
+                        f" > {self._gunicorn_constraint_file}\n"
+                        "craftctl default"
+                    ),
+                }
+            )
+
         parts: dict[str, Any] = {
-            self.get_part_name("dependencies"): {
-                "plugin": "python",
-                "stage-packages": stage_packages,
-                "source": ".",
-                "python-packages": [self._gunicorn_package],
-                "python-requirements": python_requirements,
-                "build-environment": build_environment,
-            },
+            self.get_part_name("dependencies"): dependency_part,
             self.get_part_name("install-app"): {
                 **self.gen_install_app_part(),
                 "permissions": [{"owner": USER_UID, "group": USER_UID}],
@@ -471,7 +488,7 @@ class FlaskFramework(_GunicornBase):
             )
 
 
-class FlaskFrameworkV2(FlaskFramework):
+class FlaskFrameworkV2(AppDataDirMixin, FlaskFramework):
     """Extension for 12-factor Flask applications targeting ubuntu@26.04.
 
     For now this is behaviourally identical to :class:`FlaskFramework`; it exists so the
@@ -480,6 +497,8 @@ class FlaskFrameworkV2(FlaskFramework):
     """
 
     _gunicorn_package = "gunicorn~=26.0"
+    _gunicorn_constraint_file = ".gunicorn-constraints.txt"
+    _use_staged_pip_python = True
     _statsd_exporter_tag = "v0.30.0"
 
     @staticmethod
@@ -573,7 +592,7 @@ class DjangoFramework(_GunicornBase):
             self.wsgi_path  # noqa: B018 (unused expression, just checking for errors)
 
 
-class DjangoFrameworkV2(DjangoFramework):
+class DjangoFrameworkV2(AppDataDirMixin, DjangoFramework):
     """Extension for 12-factor Django applications targeting ubuntu@26.04.
 
     For now this is behaviourally identical to :class:`DjangoFramework`; it exists so the
@@ -582,6 +601,8 @@ class DjangoFrameworkV2(DjangoFramework):
     """
 
     _gunicorn_package = "gunicorn~=26.0"
+    _gunicorn_constraint_file = ".gunicorn-constraints.txt"
+    _use_staged_pip_python = True
     _statsd_exporter_tag = "v0.30.0"
 
     @staticmethod

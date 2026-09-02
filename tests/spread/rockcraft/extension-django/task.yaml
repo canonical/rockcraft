@@ -3,13 +3,19 @@ summary: django extension test
 environment:
   BASE/bare_2204: bare
   BASE/bare_2404: bare
+  BASE/bare_2604: bare
   BASE/base_2204: ubuntu@22.04
   BASE/base_2404: ubuntu@24.04
+  BASE/base_2604: ubuntu@26.04
 
   BUILD_BASE/bare_2204: ubuntu@22.04
   BUILD_BASE/bare_2404: ubuntu@24.04
+  BUILD_BASE/bare_2604: ubuntu@26.04
   BUILD_BASE/base_2204: ubuntu@22.04
   BUILD_BASE/base_2404: ubuntu@24.04
+  BUILD_BASE/base_2604: ubuntu@26.04
+
+  ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS: "true"
 
 execute: |
 
@@ -61,6 +67,10 @@ execute: |
   check_directory_ownership "/django"
   check_directory_ownership "/opt/promtail"
   check_directory_ownership "/etc/promtail"
+  if [ "${BASE}" == "ubuntu@26.04" ]; then
+    docker run --rm --entrypoint /usr/bin/bash example-django -c \
+      "test -z \"\$(find /app-data/ ! -user '_daemon_')\" && test -w /app-data"
+  fi
 
   # test the default django service
   docker run --name example-django-container -d -p 8138:8000 example-django

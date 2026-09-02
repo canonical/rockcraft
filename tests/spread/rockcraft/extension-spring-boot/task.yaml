@@ -2,14 +2,23 @@ summary: spring-boot extension test
 environment:
   PROJECT_BASE/gradle_bare: gradle
   PROJECT_BASE/gradle_2404: gradle
+  PROJECT_BASE/gradle_2604: gradle
   PROJECT_BASE/maven_bare: maven
   PROJECT_BASE/maven_2404: maven
+  PROJECT_BASE/maven_2604: maven
 
   BASE/gradle_bare: bare
   BASE/gradle_2404: ubuntu@24.04
+  BASE/gradle_2604: ubuntu@26.04
   BASE/maven_bare: bare
   BASE/maven_2404: ubuntu@24.04
-  BUILD_BASE: ubuntu@24.04
+  BASE/maven_2604: ubuntu@26.04
+  BUILD_BASE/gradle_bare: ubuntu@24.04
+  BUILD_BASE/gradle_2404: ubuntu@24.04
+  BUILD_BASE/gradle_2604: ubuntu@26.04
+  BUILD_BASE/maven_bare: ubuntu@24.04
+  BUILD_BASE/maven_2404: ubuntu@24.04
+  BUILD_BASE/maven_2604: ubuntu@26.04
 
   ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS: "true"
 
@@ -62,6 +71,10 @@ execute: |
   retry -n 5 --wait 3 curl localhost:8080
   http_status=$(curl -s -o /dev/null -w "%{http_code}" localhost:8080)
   [ "${http_status}" -eq 404 ]
+  if [ "${BASE}" == "ubuntu@26.04" ]; then
+    docker run --rm --entrypoint /usr/bin/bash "${IMAGE}" -c \
+      "test -z \"\$(find /app-data/ ! -user '_daemon_')\" && test -w /app-data"
+  fi
 
 restore: |
   NAME="spring-boot-${BASE//@/-}-${PROJECT_BASE}"

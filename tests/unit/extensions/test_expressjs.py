@@ -357,7 +357,7 @@ def test_expressjs_extension_default(
         }
     }
     applied = extensions.apply_extensions(tmp_path, expressjs_input_yaml)
-
+    assert "expressjs-framework/app-data" not in applied["parts"]
     assert applied == expected_yaml_dict
 
 
@@ -413,6 +413,17 @@ def test_expressjs_extension_default(
                         "permissions": [
                             {"path": "opt/promtail", "owner": 584792, "group": 584792},
                             {"path": "etc/promtail", "owner": 584792, "group": 584792},
+                        ],
+                    },
+                    "expressjs-framework.app-data": {
+                        "plugin": "nil",
+                        "override-build": "mkdir -p ${CRAFT_PART_INSTALL}/app-data",
+                        "permissions": [
+                            {
+                                "path": "app-data",
+                                "owner": 584792,
+                                "group": 584792,
+                            },
                         ],
                     },
                 },
@@ -488,6 +499,17 @@ def test_expressjs_extension_default(
                         "permissions": [
                             {"path": "opt/promtail", "owner": 584792, "group": 584792},
                             {"path": "etc/promtail", "owner": 584792, "group": 584792},
+                        ],
+                    },
+                    "expressjs-framework.app-data": {
+                        "plugin": "nil",
+                        "override-build": "mkdir -p ${CRAFT_PART_INSTALL}/app-data",
+                        "permissions": [
+                            {
+                                "path": "app-data",
+                                "owner": 584792,
+                                "group": 584792,
+                            },
                         ],
                     },
                 },
@@ -744,6 +766,11 @@ def test_expressjs_extension_ubuntu2604_default(
         }
     }
     applied = extensions.apply_extensions(tmp_path, expressjs_input_yaml)
+    assert applied["parts"].pop("expressjs-framework.app-data") == {
+        "plugin": "nil",
+        "override-build": "mkdir -p ${CRAFT_PART_INSTALL}/app-data",
+        "permissions": [{"path": "app-data", "owner": 584792, "group": 584792}],
+    }
 
     expected = {
         "base": "ubuntu@26.04",

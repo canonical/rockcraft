@@ -1,17 +1,32 @@
 summary: fastapi extension test
 environment:
-  SCENARIO/bare: bare
-  SCENARIO/base_2404: ubuntu-24.04
+  BASE/bare_2404: bare
+  BASE/bare_2604: bare
+  BASE/base_2404: ubuntu@24.04
+  BASE/base_2604: ubuntu@26.04
+
+  BUILD_BASE/bare_2404: ubuntu@24.04
+  BUILD_BASE/bare_2604: ubuntu@26.04
+  BUILD_BASE/base_2404: ubuntu@24.04
+  BUILD_BASE/base_2604: ubuntu@26.04
+
+  ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS: "true"
 
 execute: |
-  NAME="fastapi-${SCENARIO//./-}"
+  BASE_TYPE="base"
+  if [ "${BASE}" = "bare" ]; then
+    BASE_TYPE="bare"
+  fi
+  NAME="fastapi-${BASE_TYPE}-${BUILD_BASE#ubuntu@}"
+  NAME="${NAME//./-}"
   ROCK_FILE="${NAME}_0.1_amd64.rock"
   IMAGE="${NAME}:0.1"
 
   run_rockcraft init --name fastapi-extension --profile fastapi-framework
   sed -i "s/^name: .*/name: ${NAME}/g" rockcraft.yaml
-  sed -i "s/^base: .*/base: ${SCENARIO//-/@}/g" rockcraft.yaml
-  if [ "${SCENARIO}" = "bare" ]; then
+  sed -i "s/^base: .*/base: ${BASE}/g" rockcraft.yaml
+  sed -i "s/^build-base: .*/build-base: ${BUILD_BASE}/g" rockcraft.yaml
+  if [ "${BASE}" = "bare" ]; then
     cat >> rockcraft.yaml <<EOL
   parts:
     find-app:
@@ -19,8 +34,6 @@ execute: |
       stage-packages:
         - findutils
   EOL
-  else
-    sed -i "/^build-base:/d" rockcraft.yaml
   fi
   run_rockcraft pack
 
@@ -47,15 +60,31 @@ execute: |
   check_directory_ownership "/app"
   check_directory_ownership "/opt/promtail"
   check_directory_ownership "/etc/promtail"
+  if [ "${BUILD_BASE}" = "ubuntu@26.04" ]; then
+    docker run --rm --entrypoint /usr/bin/bash "${IMAGE}" -c \
+      "test -z \"\$(find /app-data/ ! -user '_daemon_')\" && test -w /app-data"
+  fi
 
   # test the default fastapi service
   docker run --name "${NAME}-container" -d -p 8137:8000 "${IMAGE}"
   retry -n 5 --wait 2 curl localhost:8137
   [ "$(curl -sSf localhost:8137)" == "ok" ]
+  if [ "${BUILD_BASE}" = "ubuntu@26.04" ]; then
+    [ "$(curl -sSf -X POST localhost:8137/write-app-data)" == "written" ]
+    docker exec "${NAME}-container" /usr/bin/bash -c \
+      "test \"\$(cat /app-data/fastapi-write-test.txt)\" = 'written by FastAPI' && \
+      test \"\$(stat -c '%U:%G' /app-data/fastapi-write-test.txt)\" = '_daemon_:_daemon_'"
+  fi
 
 restore: |
-  NAME="fastapi-${SCENARIO//./-}"
+  BASE_TYPE="base"
+  if [ "${BASE}" = "bare" ]; then
+    BASE_TYPE="bare"
+  fi
+  NAME="fastapi-${BASE_TYPE}-${BUILD_BASE#ubuntu@}"
+  NAME="${NAME//./-}"
+  ROCK_FILE="${NAME}_0.1_amd64.rock"
   docker stop "${NAME}-container" || true
   docker rm --force "${NAME}-container"
-  rm -f "*.rock" rockcraft.yaml
+  rm -f "${ROCK_FILE}" rockcraft.yaml
   docker system prune -a -f
