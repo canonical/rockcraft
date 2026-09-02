@@ -31,9 +31,7 @@ class UvPlugin(uv_plugin.UvPlugin):
     @override
     def _should_remove_symlinks(self) -> bool:
         """Remove venv Python symlinks when the payload already provides Python."""
-        return self._is_bare_2604() or python_common.should_remove_symlinks(
-            self._part_info
-        )
+        return self._is_2604() or python_common.should_remove_symlinks(self._part_info)
 
     @override
     def _get_system_python_interpreter(self) -> str | None:
@@ -59,16 +57,13 @@ class UvPlugin(uv_plugin.UvPlugin):
         """Overridden because Python is always available in /bin."""
         return python_common.get_script_interpreter()
 
-    def _is_bare_2604(self) -> bool:
-        return (
-            self._part_info.base == "bare"
-            and self._part_info.project_info.build_base == "ubuntu@26.04"
-        )
+    def _is_2604(self) -> bool:
+        return self._part_info.project_info.build_base == "ubuntu@26.04"
 
     @override
     def _get_venv_directory(self) -> pathlib.Path:
         """Keep the venv separate from a staged usrmerged filesystem."""
-        if self._is_bare_2604():
+        if self._is_2604():
             return self._part_info.part_install_dir / ".venv"
         return super()._get_venv_directory()
 
@@ -94,14 +89,19 @@ class UvPlugin(uv_plugin.UvPlugin):
     def get_build_commands(self) -> list[str]:
         """Overridden to add a sitecustomize.py."""
         commands = super().get_build_commands()
-        if self._is_bare_2604():
+        if self._is_2604():
             install_dir = self._part_info.part_install_dir
             venv_dir = self._get_venv_directory()
+            python_aliases = ""
+            if self._part_info.base == "bare":
+                python_aliases = (
+                    f'ln -sf python3.14 "{install_dir}/usr/bin/python3"\n'
+                    f'ln -sf python3 "{install_dir}/usr/bin/python"\n'
+                )
             commands.append(
                 f'cp -a "{venv_dir}/bin/." "{install_dir}/usr/bin/"\n'
                 f'cp -a "{venv_dir}/lib/." "{install_dir}/usr/lib/"\n'
-                f'ln -sf python3.14 "{install_dir}/usr/bin/python3"\n'
-                f'ln -sf python3 "{install_dir}/usr/bin/python"\n'
+                f"{python_aliases}"
                 f'mv "{venv_dir}/pyvenv.cfg" "{install_dir}/pyvenv.cfg"\n'
                 f'rm -rf "{venv_dir}"'
             )

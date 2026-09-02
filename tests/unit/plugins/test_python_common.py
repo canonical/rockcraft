@@ -100,22 +100,26 @@ def test_uv_2604_build_commands(tmp_path, base):
     commands = plugin.get_build_commands()
     install_dir = part_info.part_install_dir
 
+    venv_dir = install_dir / ".venv"
+    assert commands[1] == (
+        f'uv venv --relocatable --allow-existing --python python3.14 "{venv_dir}"'
+    )
+    merge_command = next(command for command in commands if command.startswith("cp -a"))
+    assert (
+        f'cp -a "{venv_dir}/bin/." "{install_dir}/usr/bin/"\n'
+        f'cp -a "{venv_dir}/lib/." "{install_dir}/usr/lib/"\n' in merge_command
+    )
+    assert (
+        f'mv "{venv_dir}/pyvenv.cfg" "{install_dir}/pyvenv.cfg"\n'
+        f'rm -rf "{venv_dir}"' in merge_command
+    )
+    assert f'rm "{venv_dir}"/bin/python*' in commands
+
+    aliases = (
+        f'ln -sf python3.14 "{install_dir}/usr/bin/python3"\n'
+        f'ln -sf python3 "{install_dir}/usr/bin/python"\n'
+    )
     if base == "bare":
-        venv_dir = install_dir / ".venv"
-        assert commands[1] == (
-            f'uv venv --relocatable --allow-existing --python python3.14 "{venv_dir}"'
-        )
-        assert (
-            f'cp -a "{venv_dir}/bin/." "{install_dir}/usr/bin/"\n'
-            f'cp -a "{venv_dir}/lib/." "{install_dir}/usr/lib/"\n'
-            f'ln -sf python3.14 "{install_dir}/usr/bin/python3"\n'
-            f'ln -sf python3 "{install_dir}/usr/bin/python"\n'
-            f'mv "{venv_dir}/pyvenv.cfg" "{install_dir}/pyvenv.cfg"\n'
-            f'rm -rf "{venv_dir}"' in commands
-        )
-        assert f'rm "{venv_dir}"/bin/python*' in commands
+        assert aliases in merge_command
     else:
-        assert commands[1] == (
-            "uv venv --relocatable --allow-existing --python python3.14 "
-            f'"{install_dir}"'
-        )
+        assert aliases not in merge_command
