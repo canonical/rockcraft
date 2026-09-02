@@ -3,7 +3,6 @@ name: CODA issue template
 about: Applies the CODA issue structure.
 title: 'CODA: short description'
 labels: 'coda'
-assignees: ''
 
 ---
 
