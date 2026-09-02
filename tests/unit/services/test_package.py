@@ -21,7 +21,7 @@ from craft_application import ServiceFactory, errors
 from craft_platforms import DebianArchitecture
 from rockcraft.models import Project
 from rockcraft.oci import Image
-from rockcraft.services import RockcraftImageService, package
+from rockcraft.services import package
 
 
 @pytest.mark.usefixtures("fake_project_file", "project_keys")
