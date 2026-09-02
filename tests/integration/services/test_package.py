@@ -5,8 +5,8 @@ from pathlib import Path
 from typing import cast
 
 import pytest
-from craft_application.commands.lifecycle import PackCommand
 from craft_application import ServiceFactory
+from craft_application.commands.lifecycle import PackCommand
 from craft_platforms import DebianArchitecture
 from rockcraft import oci
 from rockcraft.models.project import Project
@@ -79,7 +79,7 @@ def test_pack_command_skips_current_artifact(
     mocker.patch.object(PackCommand, "_relativize_paths", side_effect=lambda packages, root: packages)
 
     parsed_args = argparse.Namespace(fetch_service_policy=None)
-    command._run_pack(parsed_args, shell_after=False, debug=False)  # noqa: SLF001
+    command._run_pack(parsed_args, shell_after=False, debug=False)
 
     assert artifact_path.is_file()
     first_mtime = artifact_path.stat().st_mtime_ns
@@ -88,7 +88,7 @@ def test_pack_command_skips_current_artifact(
     state = package_service.read_state()
     assert state.artifact == artifact_path
 
-    command._run_pack(parsed_args, shell_after=False, debug=False)  # noqa: SLF001
+    command._run_pack(parsed_args, shell_after=False, debug=False)
 
     assert artifact_path.stat().st_mtime_ns == first_mtime
     mock_pack.assert_called_once()

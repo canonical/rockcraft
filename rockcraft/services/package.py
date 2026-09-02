@@ -16,10 +16,10 @@
 
 """Rockcraft Package service."""
 
-from collections.abc import Mapping
 import datetime
 import pathlib
 import typing
+from collections.abc import Mapping
 from typing import cast
 
 from craft_application import PackageService, errors, models
