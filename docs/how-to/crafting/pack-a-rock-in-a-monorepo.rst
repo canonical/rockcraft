@@ -35,7 +35,7 @@ Consider a rock monorepo that looks as follows:
     │   └── common.h
     └── rocks/
         ├── 24.04/
-        │   └── rockcraft.yaml
+        │   ├── rockcraft.yaml
         │   ├── Makefile
         │   └── main.c
         └── 26.04/

@@ -16,4 +16,4 @@ install:
 	install -m755 $(BIN) $(DESTDIR)/usr/bin
 
 clean:
-	rm -f $(OBJS)
+	rm -f $(OBJS) $(BIN)
