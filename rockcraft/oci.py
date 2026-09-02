@@ -405,23 +405,26 @@ class Image:
         _config_image(image_path, cmd_params, comment="Set default commands")
         emit.progress(f"CMD set to {command}")
 
-    def set_default_path(self, base: str) -> None:
-        """Set the default PATH on the image (only for bare rocks)."""
-        if base != "bare":
-            emit.debug(f"Not setting a PATH on the image as base is {base!r}")
+    def set_default_path(self) -> None:
+        """Ensure the OCI image has a sane PATH when PATH is missing or empty."""
+        image_path = self.path / self.image_name
+
+        env = _read_image_env_from_skopeo(image_path)
+        path_value = _get_env_value(env, "PATH")
+
+        if path_value:
+            emit.debug("PATH already set on the image; not overriding.")
             return
 
         # Follow Pebble's lead here: if PATH is empty, use the standard one.
-        # This means that containers that bypass the pebble entrypoint will
-        # have the same behavior as PATH-less pebble services.
+        # This means that containers that bypass the Pebble entrypoint will
+        # have the same behavior as PATH-less Pebble services.
         pebble_path = Pebble.DEFAULT_ENV_PATH
-        image_path = self.path / self.image_name
-
-        emit.debug(f"Setting bare-based rock PATH to {pebble_path!r}")
+        emit.debug(f"Setting default PATH on the image to {pebble_path!r}")
         _config_image(
             image_path,
             ["--config.env", f"PATH={pebble_path}"],
-            comment="Set default PATH for bare-based rock",
+            comment="Set default PATH",
         )
 
     def set_pebble_layer(
@@ -576,6 +579,28 @@ def _copy_image(
             destination,
         ]
     )
+
+
+def _read_image_env_from_skopeo(image_path: Path) -> list[str]:
+    """Read the environment from `skopeo inspect` output."""
+    output = _process_run(["skopeo", "inspect", f"oci:{image_path}"]).stdout
+    data: object = json.loads(output)
+
+    if not isinstance(data, dict):
+        return []
+
+    env = data.get("Env")
+    if not isinstance(env, list):
+        return []
+
+    return [entry for entry in env if isinstance(entry, str)]
+
+
+def _get_env_value(env: list[str], key: str) -> str | None:
+    """Return the value for KEY from env entries like ['K=V', ...]. Last wins."""
+    prefix = f"{key}="
+    values = [e.split("=", 1)[1] for e in env if e.startswith(prefix)]
+    return values[-1] if values else None
 
 
 def _config_image(
