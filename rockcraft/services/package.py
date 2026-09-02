@@ -47,7 +47,7 @@ class RockcraftPackageService(PackageService):
         project = cast(Project, self._services.get("project").get())
         build_plan = self._services.get("build_plan").plan()
 
-        if len(build_plan) > 1:
+        if len(build_plan) != 1:
             raise errors.MultipleBuildsError
 
         platform = build_plan[0].platform

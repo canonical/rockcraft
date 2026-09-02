@@ -17,7 +17,7 @@ from pathlib import Path
 from typing import cast
 
 import pytest
-from craft_application import ServiceFactory
+from craft_application import ServiceFactory, errors
 from craft_platforms import DebianArchitecture
 from rockcraft.models import Project
 from rockcraft.oci import Image
@@ -46,6 +46,36 @@ def test_get_artifacts(fake_services: ServiceFactory, mocker):
     artifacts = package_service.get_artifacts()
 
     assert artifacts == {None: Path("/output/test-rock_0.1_bob.rock")}
+
+
+@pytest.mark.usefixtures("fake_project_file", "project_keys")
+@pytest.mark.parametrize(
+    "project_keys",
+    [
+        {
+            "platforms": {
+                "bob": {
+                    "build-on": DebianArchitecture.from_host(),
+                    "build-for": "s390x",
+                }
+            },
+        },
+    ],
+)
+def test_get_artifacts_rejects_empty_build_plan(fake_services: ServiceFactory, mocker):
+    fake_services.get("project").configure(platform="bob", build_for="s390x")
+    mock_build_plan = mocker.MagicMock()
+    mock_build_plan.plan.return_value = []
+
+    package_service = fake_services.get("package")
+    mocker.patch.object(package_service, "_services")
+    package_service._services.get.side_effect = {
+        "project": fake_services.get("project"),
+        "build_plan": mock_build_plan,
+    }.get
+
+    with pytest.raises(errors.MultipleBuildsError):
+        package_service.get_artifacts()
 
 
 @pytest.mark.usefixtures("fake_project_file", "project_keys")
