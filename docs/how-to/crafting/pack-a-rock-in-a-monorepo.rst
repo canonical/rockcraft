@@ -44,8 +44,8 @@ Consider a rock monorepo that looks as follows:
             └── main.c
 
 For rocks located in subdirectories of your repository, set the ``source`` key of
-each rock's main part to the relative directory of the repository root and the
-``source-subdir`` key to the subdirectory path containing the rock's project file.
+each rock's main part to the relative path of the repository root and the
+``source-subdir`` key to the directory containing the rock's project file.
 
 For the rock in the example repository shown previously, these keys would be
 declared as:
@@ -71,10 +71,8 @@ declared as:
     in a subdirectory, you do not need to enable monorepo support. Instead, declare the
     ``source-subdir`` key in the rock's main part.
 
-With monorepo support, Rockcraft mounts the whole repository, not just the rock's own
-directory, so the build instance has the same directory layout as your local checkout.
-As a result, the Makefile can reference ``../shared/common.h`` exactly as it would
-outside of Rockcraft.
+With the whole repository mounted in the build instance, Rockcraft can reference the
+``../shared/common.h`` file exactly as it would outside of Rockcraft.
 
 
 Pack the rock
