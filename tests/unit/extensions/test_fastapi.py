@@ -395,7 +395,10 @@ def test_fastapi_extension_v2_bare_26_04(
     )
 
     deps = applied["parts"]["fastapi-framework.dependencies"]
-    assert deps["stage-packages"] == ["python3.14-venv_ensurepip"]
+    assert deps["stage-packages"] == [
+        "python3.14-venv_ensurepip",
+        "python3-minimal_python3",
+    ]
     assert deps["build-environment"] == [{"PIP_PYTHON": "$(which python3.14)"}]
     assert applied["parts"]["fastapi-framework.runtime"]["override-build"] == (
         "mkdir -m 777 ${CRAFT_PART_INSTALL}/tmp\n"

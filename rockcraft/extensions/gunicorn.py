@@ -533,6 +533,7 @@ class FlaskFrameworkV2(FlaskFramework):
             )
             build_environment = [{"PIP_PYTHON": f"$(which python{python_version})"}]
             uv_prefix = "${CRAFT_PART_INSTALL}/usr"
+            stage_packages.append("python3-minimal_python3")
         if uses_uv(self.project_root):
             return {
                 "plugin": "uv",
@@ -702,6 +703,7 @@ class DjangoFrameworkV2(DjangoFramework):
             )
             build_environment = [{"PIP_PYTHON": f"$(which python{python_version})"}]
             uv_prefix = "${CRAFT_PART_INSTALL}/usr"
+            stage_packages.append("python3-minimal_python3")
         if uses_uv(self.project_root):
             return {
                 "plugin": "uv",

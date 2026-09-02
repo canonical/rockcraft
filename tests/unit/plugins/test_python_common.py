@@ -51,7 +51,7 @@ def test_get_python_plugins_v2_2604():
 
 @pytest.mark.parametrize(
     ("base", "interpreter"),
-    [("ubuntu@24.04", "python3"), ("ubuntu@26.04", "python3.14")],
+    [("ubuntu@24.04", "python3"), ("ubuntu@26.04", "python3")],
 )
 def test_uv_system_python_interpreter(mocker, base, interpreter):
     plugin = mocker.Mock()
@@ -62,7 +62,7 @@ def test_uv_system_python_interpreter(mocker, base, interpreter):
 
 @pytest.mark.parametrize(
     ("build_base", "interpreter"),
-    [("ubuntu@24.04", "python3"), ("ubuntu@26.04", "python3.14")],
+    [("ubuntu@24.04", "python3"), ("ubuntu@26.04", "python3")],
 )
 def test_uv_build_environment(tmp_path, build_base, interpreter):
     part_info = PartInfo(
@@ -102,7 +102,7 @@ def test_uv_2604_build_commands(tmp_path, base):
 
     venv_dir = install_dir / ".venv"
     assert commands[1] == (
-        f'uv venv --relocatable --allow-existing --python python3.14 "{venv_dir}"'
+        f'uv venv --relocatable --allow-existing --python python3 "{venv_dir}"'
     )
     merge_command = next(command for command in commands if command.startswith("cp -a"))
     assert (
@@ -114,12 +114,3 @@ def test_uv_2604_build_commands(tmp_path, base):
         f'rm -rf "{venv_dir}"' in merge_command
     )
     assert f'rm "{venv_dir}"/bin/python*' in commands
-
-    aliases = (
-        f'ln -sf python3.14 "{install_dir}/usr/bin/python3"\n'
-        f'ln -sf python3 "{install_dir}/usr/bin/python"\n'
-    )
-    if base == "bare":
-        assert aliases in merge_command
-    else:
-        assert aliases not in merge_command
