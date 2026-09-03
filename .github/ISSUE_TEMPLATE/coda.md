@@ -1,9 +1,8 @@
 ---
 name: CODA issue template
 about: Applies the CODA issue structure.
-title: 'CODA: short description'
-labels: 'coda'
-
+title: "CODA: short description"
+labels: "coda"
 ---
 
 # Background
@@ -41,4 +40,4 @@ If the mentor is not a TA, modify the second sentence accordingly.
 If there is no mentor for the issue, use: `This issue does not currently have a mentor. If you are interested in working on it, please leave a comment and we will assign one as soon as possible. Please check our [guidelines for contributors](https://github.com/canonical/open-documentation-academy/blob/main/CONTRIBUTING.md) in the meantime.`
 Include contact information, for example: -->
 
-Please feel free to reach out to the mentor on [Matrix](<INSERT_YOUR_MATRIX_DM_ADDRESS_HERE>) if you have further questions.
+Please feel free to reach out to the mentor on [Matrix](INSERT_YOUR_MATRIX_DM_ADDRESS_HERE) if you have further questions.
