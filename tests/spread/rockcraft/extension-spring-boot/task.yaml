@@ -1,15 +1,25 @@
 summary: spring-boot extension test
 environment:
   PROJECT_BASE/gradle_bare: gradle
+  PROJECT_BASE/gradle_bare_2604: gradle
   PROJECT_BASE/gradle_2404: gradle
   PROJECT_BASE/maven_bare: maven
+  PROJECT_BASE/maven_bare_2604: maven
   PROJECT_BASE/maven_2404: maven
 
   BASE/gradle_bare: bare
+  BASE/gradle_bare_2604: bare
   BASE/gradle_2404: ubuntu@24.04
   BASE/maven_bare: bare
+  BASE/maven_bare_2604: bare
   BASE/maven_2404: ubuntu@24.04
-  BUILD_BASE: ubuntu@24.04
+
+  BUILD_BASE/gradle_bare: ubuntu@24.04
+  BUILD_BASE/gradle_bare_2604: ubuntu@26.04
+  BUILD_BASE/gradle_2404: ubuntu@24.04
+  BUILD_BASE/maven_bare: ubuntu@24.04
+  BUILD_BASE/maven_bare_2604: ubuntu@26.04
+  BUILD_BASE/maven_2404: ubuntu@24.04
 
   ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS: "true"
 
@@ -19,16 +29,17 @@ execute: |
   ROCK_FILE="${NAME}_0.1_amd64.rock"
   IMAGE="${NAME}:0.1"
   JAVA_VERSION=21
-  sudo snap install devpack-for-spring --classic
-
-  # Note: Proxy support needs version 1.4.3, which is currently on edge
-  sudo snap refresh --edge devpack-for-spring
-
+  BOOT_VERSION=$(curl -s https://start.spring.io/metadata/client \
+    | grep -o '"bootVersion":{[^}]*}' \
+    | grep -o '"default":"[^"]*"' \
+    | cut -d '"' -f 4)
+  test -n "${BOOT_VERSION}"
+  sudo snap install devpack-for-spring --edge --classic
   devpack-for-spring boot start \
-    --path ${NAME}-app \
-    --project ${PROJECT_BASE}-project \
+    --path "${NAME}-app" \
+    --project "${PROJECT_BASE}-project" \
     --language java \
-    --boot-version 3.5.10 \
+    --boot-version "${BOOT_VERSION}" \
     --version 0.0.1 \
     --group com.example \
     --artifact demo \
@@ -37,8 +48,8 @@ execute: |
     --package-name com.example.demo \
     --dependencies web \
     --packaging jar \
-    --java-version 21
-  cd ${NAME}-app
+    --java-version "${JAVA_VERSION}"
+  cd "${NAME}-app" || exit 1
   run_rockcraft init --name "${NAME}" --profile spring-boot-framework
 
   # Replace base & build-base with ubuntu@<base>
