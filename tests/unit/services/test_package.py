@@ -68,8 +68,8 @@ def test_get_artifacts_rejects_empty_build_plan(fake_services: ServiceFactory, m
     mock_build_plan.plan.return_value = []
 
     package_service = fake_services.get("package")
-    mocker.patch.object(package_service, "_services")
-    package_service._services.get.side_effect = {
+    mock_services = mocker.patch.object(package_service, "_services")
+    mock_services.get.side_effect = {
         "project": fake_services.get("project"),
         "build_plan": mock_build_plan,
     }.get
