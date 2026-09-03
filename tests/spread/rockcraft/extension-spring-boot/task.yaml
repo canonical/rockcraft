@@ -33,6 +33,7 @@ execute: |
     | grep -o '"bootVersion":{[^}]*}' \
     | grep -o '"default":"[^"]*"' \
     | cut -d '"' -f 4)
+  BOOT_VERSION="${BOOT_VERSION%.RELEASE}"
   test -n "${BOOT_VERSION}"
   sudo snap install devpack-for-spring --edge --classic
   devpack-for-spring boot start \
