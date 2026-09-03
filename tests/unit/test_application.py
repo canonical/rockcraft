@@ -73,3 +73,16 @@ def test_get_app_plugins_missing_project(tmp_path, monkeypatch, mocker):
     app._configure_early_services()
     _ = app._get_app_plugins()
     spied_get_plugins.assert_called_once_with(None)
+
+
+@pytest.mark.parametrize("support", ["0", "1"])
+def test_experimental_monorepo_smoke(support, monkeypatch):
+    """Enable monorepo support with an environment variable."""
+    monkeypatch.setenv("ROCKCRAFT_EXPERIMENTAL_MONOREPO", support)
+
+    app = cli._create_app()
+    app._configure_early_services()
+    app._configure_services(None)
+
+    assert app.services.get("config").get("experimental_monorepo") is bool(int(support))
+    assert app.services.get("provider")._use_git_build_root is bool(int(support))
