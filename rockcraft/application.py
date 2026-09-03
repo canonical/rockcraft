@@ -39,6 +39,7 @@ APP_METADATA = AppMetadata(
     artifact_type="rock",
     enable_pro_support=True,
     always_repack=False,
+    allow_git_build_root=True,
 )
 
 
