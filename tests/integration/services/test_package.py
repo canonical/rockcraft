@@ -25,9 +25,7 @@ def test_media_type_in_packed_image_manifest(fake_services: ServiceFactory):
     project = cast(Project, fake_services.get("project").get())
 
     # pylint: disable=protected-access
-    archive_path = Path(
-        f"{project.name}_{project.version}_risky.rock"
-    )
+    archive_path = Path(f"{project.name}_{project.version}_risky.rock")
     package._create_rock(
         path=archive_path,
         prime_dir=Path("prime"),
@@ -76,7 +74,9 @@ def test_pack_command_skips_current_artifact(
     package_service.set_output_dir(tmp_path)
 
     command = PackCommand(fake_app_config)
-    mocker.patch.object(PackCommand, "_relativize_paths", side_effect=lambda packages, root: packages)
+    mocker.patch.object(
+        PackCommand, "_relativize_paths", side_effect=lambda packages, root: packages
+    )
 
     parsed_args = argparse.Namespace(fetch_service_policy=None)
     command._run_pack(parsed_args, shell_after=False, debug=False)
