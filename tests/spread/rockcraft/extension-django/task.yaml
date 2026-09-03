@@ -35,7 +35,7 @@ execute: |
   if [ "${USE_UV}" = "true" ]; then
     DEPENDENCY_SUFFIX="-uv"
   else
-    rm pyproject.toml uv.lock
+    rm -f pyproject.toml uv.lock
   fi
   NAME="example-django"
   IMAGE_NAME="${NAME}${DEPENDENCY_SUFFIX}"
