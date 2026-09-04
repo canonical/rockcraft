@@ -1,0 +1,59 @@
+summary: Pack a rock within a monorepo
+
+# Tests the following structure:
+#
+# monorepo/
+# ├── .git             # git root
+# ├── 24.04            # cwd for 'rockcraft pack'
+# ├── 26.04            # cwd for 'rockcraft pack'
+# └── shared
+#     ├── hello.c      # rockcraft will build and bundle this
+#     └── Makefile
+
+environment:
+  ROCKCRAFT_EXPERIMENTAL_MONOREPO: "1"
+
+prepare: |
+  # copy into a disposable tree for easy clean up
+  mkdir -p monorepo
+  cp -r shared 24.04 26.04 monorepo/
+
+  git -C monorepo init
+  git -C monorepo config user.email "test@example.com"
+  git -C monorepo config user.name "Test Name"
+
+execute: |
+  arch="$(dpkg --print-architecture)"
+
+  for base in 24.04 26.04; do
+    rock_file="monorepo-test_0.1_${arch}.rock"
+    image="monorepo-test:${base}"
+
+    pushd "monorepo/${base}"
+    run_rockcraft pack
+
+    test -f "${rock_file}"
+
+    # Verify the rock was built with the expected base
+    mkdir "extracted"
+    tar -xf "${rock_file}" -C "extracted"
+    /snap/rockcraft/current/bin/umoci unpack --rootless --image "extracted:0.1" "rootfs"
+    MATCH "base: ubuntu@${base}" < "rootfs/rootfs/.rock/metadata.yaml"
+
+    # test that "hello.c" was built and bundled into the rock
+    docker images
+    sudo rockcraft.skopeo --insecure-policy copy "oci-archive:${rock_file}" "docker-daemon:${image}"
+    docker images "${image}"
+    docker run --rm "${image}" exec /usr/bin/hello | MATCH "hello"
+    docker run --rm "${image}" help
+    docker run --rm "${image}" --help
+    docker rmi "${image}"
+
+    popd
+  done
+
+restore: |
+  for base in 24.04 26.04; do
+    ( cd "monorepo/${base}" 2>/dev/null && rockcraft clean ) || true
+  done
+  rm -rf monorepo
