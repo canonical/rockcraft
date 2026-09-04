@@ -3,23 +3,29 @@ environment:
   PROJECT_BASE/gradle_bare: gradle
   PROJECT_BASE/gradle_bare_2604: gradle
   PROJECT_BASE/gradle_2404: gradle
+  PROJECT_BASE/gradle_2604: gradle
   PROJECT_BASE/maven_bare: maven
   PROJECT_BASE/maven_bare_2604: maven
   PROJECT_BASE/maven_2404: maven
+  PROJECT_BASE/maven_2604: maven
 
   BASE/gradle_bare: bare
   BASE/gradle_bare_2604: bare
   BASE/gradle_2404: ubuntu@24.04
+  BASE/gradle_2604: ubuntu@26.04
   BASE/maven_bare: bare
   BASE/maven_bare_2604: bare
   BASE/maven_2404: ubuntu@24.04
+  BASE/maven_2604: ubuntu@26.04
 
   BUILD_BASE/gradle_bare: ubuntu@24.04
   BUILD_BASE/gradle_bare_2604: ubuntu@26.04
   BUILD_BASE/gradle_2404: ubuntu@24.04
+  BUILD_BASE/gradle_2604: ubuntu@26.04
   BUILD_BASE/maven_bare: ubuntu@24.04
   BUILD_BASE/maven_bare_2604: ubuntu@26.04
   BUILD_BASE/maven_2404: ubuntu@24.04
+  BUILD_BASE/maven_2604: ubuntu@26.04
 
   ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS: "true"
 
@@ -29,6 +35,9 @@ execute: |
   ROCK_FILE="${NAME}_0.1_amd64.rock"
   IMAGE="${NAME}:0.1"
   JAVA_VERSION=21
+  if [ "${BUILD_BASE}" = "ubuntu@26.04" ]; then
+    JAVA_VERSION=25
+  fi
   BOOT_VERSION=$(curl -s https://start.spring.io/metadata/client \
     | grep -o '"bootVersion":{[^}]*}' \
     | grep -o '"default":"[^"]*"' \
