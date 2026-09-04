@@ -477,7 +477,6 @@ class FlaskFramework(_GunicornBase):
     @override
     def check_project(self) -> None:
         """Ensure this extension can apply to the current rockcraft project."""
-        validate_uv_lockfile(self.project_root)
         error_messages = self._requirements_error_messages()
         if not self.yaml_data.get("services", {}).get("flask", {}).get("command"):
             error_messages += self._wsgi_path_error_messages()
@@ -512,6 +511,22 @@ class FlaskFrameworkV2(FlaskFramework):
     def is_experimental(base: str | None) -> bool:
         """Check if the extension is in an experimental state."""
         return True
+
+    @override
+    def check_project(self) -> None:
+        """Ensure this extension can apply to the current rockcraft project."""
+        validate_uv_lockfile(self.project_root)
+        error_messages: list[str] = []
+        if not uses_uv(self.project_root):
+            error_messages = self._requirements_error_messages()
+        if not self.yaml_data.get("services", {}).get("flask", {}).get("command"):
+            error_messages += self._wsgi_path_error_messages()
+        if error_messages:
+            raise ExtensionError(
+                "\n".join("- " + message for message in error_messages),
+                doc_slug="/reference/extensions/flask-framework",
+                logpath_report=False,
+            )
 
     @override
     def _dependencies_part(
@@ -641,11 +656,7 @@ class DjangoFramework(_GunicornBase):
     @override
     def check_project(self) -> None:
         """Ensure this extension can apply to the current rockcraft project."""
-        validate_uv_lockfile(self.project_root)
-        if (
-            not uses_uv(self.project_root)
-            and not (self.project_root / "requirements.txt").exists()
-        ):
+        if not (self.project_root / "requirements.txt").exists():
             raise ExtensionError(
                 "missing requirements.txt file, django-framework extension "
                 "requires this file with Django specified as a dependency",
@@ -682,6 +693,23 @@ class DjangoFrameworkV2(DjangoFramework):
         This is always True for V2
         """
         return True
+
+    @override
+    def check_project(self) -> None:
+        """Ensure this extension can apply to the current rockcraft project."""
+        validate_uv_lockfile(self.project_root)
+        if (
+            not uses_uv(self.project_root)
+            and not (self.project_root / "requirements.txt").exists()
+        ):
+            raise ExtensionError(
+                "missing requirements.txt file, django-framework extension "
+                "requires this file with Django specified as a dependency",
+                doc_slug="/reference/extensions/django-framework/#project-requirements",
+                logpath_report=False,
+            )
+        if not self.yaml_data.get("services", {}).get("django", {}).get("command"):
+            self.wsgi_path  # noqa: B018 (unused expression, just checking for errors)
 
     @override
     def _dependencies_part(

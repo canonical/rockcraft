@@ -264,10 +264,7 @@ class FastAPIFramework(Extension):
 
     def _check_project(self) -> None:
         """Ensure this extension can apply to the current rockcraft project."""
-        validate_uv_lockfile(self.project_root)
-        error_messages: list[str] = []
-        if not uses_uv(self.project_root):
-            error_messages = self._requirements_txt_error_messages()
+        error_messages = self._requirements_txt_error_messages()
         if not self.yaml_data.get("services", {}).get("fastapi", {}).get("command"):
             error_messages += self._asgi_entrypoint_error_messages()
         if error_messages:
@@ -392,6 +389,22 @@ class FastAPIFrameworkV2(FastAPIFramework):
                 f"craftctl default{python_symlink}"
             ),
         }
+
+    @override
+    def _check_project(self) -> None:
+        """Ensure this extension can apply to the current rockcraft project."""
+        validate_uv_lockfile(self.project_root)
+        error_messages: list[str] = []
+        if not uses_uv(self.project_root):
+            error_messages = self._requirements_txt_error_messages()
+        if not self.yaml_data.get("services", {}).get("fastapi", {}).get("command"):
+            error_messages += self._asgi_entrypoint_error_messages()
+        if error_messages:
+            raise ExtensionError(
+                "\n".join("- " + message for message in error_messages),
+                doc_slug="/reference/extensions/fastapi-framework/#project-requirements",
+                logpath_report=False,
+            )
 
 
 FastAPIFrameworkFactory = _FrameworkFactory(FastAPIFramework, FastAPIFrameworkV2)
