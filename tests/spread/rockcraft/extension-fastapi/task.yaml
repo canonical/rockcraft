@@ -56,7 +56,15 @@ execute: |
         - findutils
   EOL
   fi
-  run_rockcraft pack
+  if [ "${BUILD_BASE}" = "ubuntu@26.04" ]; then
+    # Retry with a fresh environment if archive indexes and mirrors briefly disagree.
+    run_rockcraft pack || {
+      run_rockcraft clean
+      run_rockcraft pack
+    }
+  else
+    run_rockcraft pack
+  fi
 
   test -f "${ROCK_FILE}"
 

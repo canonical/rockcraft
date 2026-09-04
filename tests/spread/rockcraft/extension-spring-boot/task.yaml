@@ -45,6 +45,7 @@ execute: |
   BOOT_VERSION="${BOOT_VERSION%.RELEASE}"
   test -n "${BOOT_VERSION}"
   sudo snap install devpack-for-spring --edge --classic
+  rm -rf "${NAME}-app"
   devpack-for-spring boot start \
     --path "${NAME}-app" \
     --project "${PROJECT_BASE}-project" \
@@ -87,6 +88,7 @@ execute: |
 restore: |
   NAME="spring-boot-${BASE//@/-}-${PROJECT_BASE}"
   NAME="${NAME//./-}"
-  docker rm -f "${NAME}-container"
-  rm -f "*.rock" rockcraft.yaml
+  docker rm -f "${NAME}-container" || true
+  rm -rf "${NAME}-app"
+  rm -f -- *.rock rockcraft.yaml
   docker system prune -a -f
