@@ -1,0 +1,13 @@
+name: monorepo-test
+base: ubuntu@24.04
+version: "0.1"
+summary: Pack a rock within a monorepo
+description: Pack a rock within a monorepo
+
+platforms:
+  amd64:
+
+parts:
+  hello:
+    plugin: make
+    source: ../shared
