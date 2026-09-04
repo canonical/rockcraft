@@ -1296,14 +1296,14 @@ def test_flask_extension_v2_bare_26_04(tmp_path, flask_extension, monkeypatch, u
 
 
 def test_flask_extension_uv_lock_without_pyproject_errors(
-    tmp_path, flask_extension, flask_input_yaml, monkeypatch
+    tmp_path, flask_extension, flask_v2_input_yaml, monkeypatch
 ):
     monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "1")
     (tmp_path / "uv.lock").write_text("version = 1\n")
     (tmp_path / "app.py").write_text("app = object()")
 
     with pytest.raises(ExtensionError) as exc:
-        extensions.apply_extensions(tmp_path, flask_input_yaml)
+        extensions.apply_extensions(tmp_path, flask_v2_input_yaml)
     assert "both uv.lock and pyproject.toml" in str(exc.value)
 
 
