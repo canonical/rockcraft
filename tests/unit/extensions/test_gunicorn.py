@@ -75,7 +75,7 @@ def test_flask_extension_default(
     applied = extensions.apply_extensions(tmp_path, flask_input_yaml)
     source = applied["parts"]["flask-framework/config-files"]["source"]
     del applied["parts"]["flask-framework/config-files"]["source"]
-    suffix = "share/rockcraft/extensions/flask-framework"
+    suffix = "share/rockcraft/extensions/flask-framework/v1"
     assert source[-len(suffix) :].replace("\\", "/") == suffix
 
     assert applied == {
@@ -870,7 +870,7 @@ def test_flask_v2_full_apply_26_04(tmp_path, monkeypatch):
     applied = extensions.apply_extensions(tmp_path, flask_input_yaml_26)
     source = applied["parts"]["flask-framework.config-files"]["source"]
     del applied["parts"]["flask-framework.config-files"]["source"]
-    suffix = "share/rockcraft/extensions/flask-framework"
+    suffix = "share/rockcraft/extensions/flask-framework/v2"
     assert source[-len(suffix) :].replace("\\", "/") == suffix
 
     assert applied == {
@@ -879,15 +879,20 @@ def test_flask_v2_full_apply_26_04(tmp_path, monkeypatch):
         "parts": {
             "flask-framework.config-files": {
                 "organize": {
-                    "gunicorn.conf.py": "flask/gunicorn.conf.py",
+                    "gunicorn.conf.py": "var/lib/gunicorn/gunicorn.conf.py",
                 },
                 "plugin": "dump",
                 "permissions": [
                     {
-                        "path": "flask/gunicorn.conf.py",
+                        "path": "var/lib/gunicorn",
                         "owner": 584792,
                         "group": 584792,
-                    }
+                    },
+                    {
+                        "path": "var/lib/gunicorn/gunicorn.conf.py",
+                        "owner": 584792,
+                        "group": 584792,
+                    },
                 ],
             },
             "flask-framework.dependencies": {
@@ -901,13 +906,13 @@ def test_flask_v2_full_apply_26_04(tmp_path, monkeypatch):
             },
             "flask-framework.install-app": {
                 "organize": {
-                    "app.py": "flask/app/app.py",
-                    "static": "flask/app/static",
+                    "app.py": "app/app.py",
+                    "static": "app/static",
                 },
                 "plugin": "dump",
-                "prime": ["flask/app/app.py", "flask/app/static"],
+                "prime": ["app/app.py", "app/static"],
                 "source": ".",
-                "stage": ["flask/app/app.py", "flask/app/static"],
+                "stage": ["app/app.py", "app/static"],
                 "permissions": [
                     {
                         "owner": 584792,
@@ -925,13 +930,13 @@ def test_flask_v2_full_apply_26_04(tmp_path, monkeypatch):
                     "craftctl default\n"
                     "mkdir -p $CRAFT_PART_INSTALL/opt/promtail\n"
                     "mkdir -p $CRAFT_PART_INSTALL/etc/promtail\n"
-                    "mkdir -p $CRAFT_PART_INSTALL/var/log/flask"
+                    "mkdir -p $CRAFT_PART_INSTALL/var/log/app"
                 ),
                 "permissions": [
                     {"path": "opt/promtail", "owner": 584792, "group": 584792},
                     {"path": "etc/promtail", "owner": 584792, "group": 584792},
                     {
-                        "path": "var/log/flask",
+                        "path": "var/log/app",
                         "owner": 584792,
                         "group": 584792,
                     },
@@ -950,7 +955,7 @@ def test_flask_v2_full_apply_26_04(tmp_path, monkeypatch):
             "flask": {
                 "after": ["statsd-exporter"],
                 "command": "/bin/python3 -m gunicorn -c "
-                "/flask/gunicorn.conf.py 'app:app' -k [ sync ]",
+                "/var/lib/gunicorn/gunicorn.conf.py 'app:app' -k [ sync ]",
                 "override": "replace",
                 "startup": "enabled",
                 "user": "_daemon_",
@@ -989,7 +994,7 @@ def test_django_extension_default(
 
     source = applied["parts"]["django-framework/config-files"]["source"]
     del applied["parts"]["django-framework/config-files"]["source"]
-    suffix = "share/rockcraft/extensions/django-framework"
+    suffix = "share/rockcraft/extensions/django-framework/v1"
     assert source[-len(suffix) :].replace("\\", "/") == suffix
 
     assert applied == {
@@ -1270,7 +1275,7 @@ def test_django_extension_v2_default(tmp_path):
 
     source = applied["parts"]["django-framework.config-files"]["source"]
     del applied["parts"]["django-framework.config-files"]["source"]
-    suffix = "share/rockcraft/extensions/django-framework"
+    suffix = "share/rockcraft/extensions/django-framework/v2"
     assert source[-len(suffix) :].replace("\\", "/") == suffix
 
     assert applied == {
@@ -1278,11 +1283,16 @@ def test_django_extension_v2_default(tmp_path):
         "base": "ubuntu@26.04",
         "parts": {
             "django-framework.config-files": {
-                "organize": {"gunicorn.conf.py": "django/gunicorn.conf.py"},
+                "organize": {"gunicorn.conf.py": "var/lib/gunicorn/gunicorn.conf.py"},
                 "plugin": "dump",
                 "permissions": [
                     {
-                        "path": "django/gunicorn.conf.py",
+                        "path": "var/lib/gunicorn",
+                        "owner": 584792,
+                        "group": 584792,
+                    },
+                    {
+                        "path": "var/lib/gunicorn/gunicorn.conf.py",
                         "owner": 584792,
                         "group": 584792,
                     },
@@ -1298,10 +1308,10 @@ def test_django_extension_v2_default(tmp_path):
                 "stage": ["-etc/ssl/certs/ca-certificates.crt"],
             },
             "django-framework.install-app": {
-                "organize": {"*": "django/app/", ".*": "django/app/"},
+                "organize": {"*": "app/", ".*": "app/"},
                 "plugin": "dump",
                 "source": "foo_bar",
-                "stage": ["-django/app/db.sqlite3"],
+                "stage": ["-app/db.sqlite3"],
                 "permissions": [
                     {
                         "owner": 584792,
@@ -1319,13 +1329,13 @@ def test_django_extension_v2_default(tmp_path):
                     "craftctl default\n"
                     "mkdir -p $CRAFT_PART_INSTALL/opt/promtail\n"
                     "mkdir -p $CRAFT_PART_INSTALL/etc/promtail\n"
-                    "mkdir -p $CRAFT_PART_INSTALL/var/log/django"
+                    "mkdir -p $CRAFT_PART_INSTALL/var/log/app"
                 ),
                 "permissions": [
                     {"path": "opt/promtail", "owner": 584792, "group": 584792},
                     {"path": "etc/promtail", "owner": 584792, "group": 584792},
                     {
-                        "path": "var/log/django",
+                        "path": "var/log/app",
                         "owner": 584792,
                         "group": 584792,
                     },
@@ -1344,7 +1354,7 @@ def test_django_extension_v2_default(tmp_path):
             "django": {
                 "after": ["statsd-exporter"],
                 "command": (
-                    "/bin/python3 -m gunicorn -c /django/gunicorn.conf.py "
+                    "/bin/python3 -m gunicorn -c /var/lib/gunicorn/gunicorn.conf.py "
                     "'foo_bar.wsgi:application' -k [ sync ]"
                 ),
                 "override": "replace",

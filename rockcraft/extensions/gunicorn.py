@@ -88,6 +88,42 @@ class _GunicornBase(Extension):
     def framework(self) -> str:
         """Return the wsgi framework name, e.g. flask, django."""
 
+    @property
+    def app_dir(self) -> str:
+        """Return the top-level directory where the app and its runtime files live.
+
+        V1 extensions namespace everything under the framework name (e.g.
+        ``flask``, ``django``). V2 extensions unify this to ``app``, matching
+        the convention used by newer extensions such as fastapi and expressjs.
+        """
+        return self.framework
+
+    @property
+    def app_source_dir(self) -> str:
+        """Return the directory where the application source code is installed.
+
+        For V1 extensions this is a subdirectory of :attr:`app_dir` (e.g.
+        ``flask/app``). For V2 extensions the application source is installed
+        directly in :attr:`app_dir` (e.g. ``app``).
+        """
+        return f"{self.app_dir}/app"
+
+    @property
+    def gunicorn_config_dir(self) -> str:
+        """Return the directory where the Gunicorn configuration is installed."""
+        return self.app_dir
+
+    @property
+    def _config_data_dir_name(self) -> str:
+        """Return the subdirectory of the extension's data dir to dump config from.
+
+        V1 extensions dump the static config files (gunicorn.conf.py,
+        statsd-mapping.conf) from ``<framework>-framework/v1``. V2 extensions
+        override this to use ``v2``, since their gunicorn.conf.py needs a
+        different ``chdir`` value (``/app``).
+        """
+        return "v1"
+
     @abc.abstractmethod
     def check_project(self) -> None:
         """Ensure this extension can apply to the current rockcraft project."""
@@ -121,6 +157,27 @@ class _GunicornBase(Extension):
         if (self.project_root / "requirements.txt").exists():
             python_requirements.append("requirements.txt")
 
+        config_data_dir = (
+            data_dir / f"{self.framework}-framework" / self._config_data_dir_name
+        )
+
+        gunicorn_config_permissions = []
+        if self.gunicorn_config_dir != self.app_dir:
+            gunicorn_config_permissions.append(
+                {
+                    "path": self.gunicorn_config_dir,
+                    "owner": USER_UID,
+                    "group": USER_UID,
+                }
+            )
+        gunicorn_config_permissions.append(
+            {
+                "path": f"{self.gunicorn_config_dir}/gunicorn.conf.py",
+                "owner": USER_UID,
+                "group": USER_UID,
+            }
+        )
+
         parts: dict[str, Any] = {
             self.get_part_name("dependencies"): {
                 "plugin": "python",
@@ -136,17 +193,13 @@ class _GunicornBase(Extension):
             },
             self.get_part_name("config-files"): {
                 "plugin": "dump",
-                "source": str(data_dir / f"{self.framework}-framework"),
+                "source": str(config_data_dir),
                 "organize": {
-                    "gunicorn.conf.py": f"{self.framework}/gunicorn.conf.py",
+                    "gunicorn.conf.py": (
+                        f"{self.gunicorn_config_dir}/gunicorn.conf.py"
+                    ),
                 },
-                "permissions": [
-                    {
-                        "path": f"{self.framework}/gunicorn.conf.py",
-                        "owner": USER_UID,
-                        "group": USER_UID,
-                    },
-                ],
+                "permissions": gunicorn_config_permissions,
             },
             self.get_part_name("statsd-exporter"): {
                 "build-snaps": ["go"],
@@ -156,11 +209,11 @@ class _GunicornBase(Extension):
             },
             self.get_part_name("logging"): gen_logging_part(
                 override_build_lines=[
-                    f"mkdir -p $CRAFT_PART_INSTALL/var/log/{self.framework}"
+                    f"mkdir -p $CRAFT_PART_INSTALL/var/log/{self.app_dir}"
                 ],
                 permissions=[
                     {
-                        "path": f"var/log/{self.framework}",
+                        "path": f"var/log/{self.app_dir}",
                         "owner": USER_UID,
                         "group": USER_UID,
                     }
@@ -279,7 +332,7 @@ class _GunicornBase(Extension):
             .get("command")
         ):
             snippet["services"][self.framework]["command"] = (
-                f"/bin/python3 -m gunicorn -c /{self.framework}/gunicorn.conf.py '{self.wsgi_path}' -k [ {self._worker_class()} ]"
+                f"/bin/python3 -m gunicorn -c /{self.gunicorn_config_dir}/gunicorn.conf.py '{self.wsgi_path}' -k [ {self._worker_class()} ]"
             )
         snippet["parts"] = self._gen_parts()
         return snippet
@@ -359,12 +412,12 @@ class FlaskFramework(_GunicornBase):
         # if prime is not in exclude mode, use it to generate the stage and organize
         if self._app_prime and self._app_prime[0] and self._app_prime[0][0] != "-":
             renaming_map = {
-                os.path.relpath(file, f"{self.framework}/app"): file
+                os.path.relpath(file, self.app_source_dir): file
                 for file in self._app_prime
             }
         else:
             renaming_map = {
-                f: posixpath.join(f"{self.framework}/app", f)
+                f: posixpath.join(self.app_source_dir, f)
                 for f in source_files
                 if not any(
                     fnmatch.fnmatch(f, p)
@@ -388,16 +441,20 @@ class FlaskFramework(_GunicornBase):
             .get(self.get_part_name("install-app"), {})
             .get("prime", [])
         )
-        if not all(re.match("-? *flask/app", p) for p in user_prime):
+        if not all(
+            re.match(rf"-? *{re.escape(self.app_source_dir)}(/|$)", p)
+            for p in user_prime
+        ):
             raise ExtensionError(
                 "flask-framework extension requires the 'prime' entry in the "
-                f"{self.get_part_name('install-app')} part to start with flask/app",
+                f"{self.get_part_name('install-app')} part to start with "
+                f"{self.app_source_dir}",
                 doc_slug="/reference/extensions/flask-framework",
                 logpath_report=False,
             )
         if not user_prime:
             user_prime = [
-                f"flask/app/{f}"
+                f"{self.app_source_dir}/{f}"
                 for f in (
                     "app",
                     "app.py",
@@ -474,13 +531,38 @@ class FlaskFramework(_GunicornBase):
 class FlaskFrameworkV2(FlaskFramework):
     """Extension for 12-factor Flask applications targeting ubuntu@26.04.
 
-    For now this is behaviourally identical to :class:`FlaskFramework`; it exists so the
-    framework can dispatch to a paas-charm 2.0 implementation in the future. Only the
-    supported base differs.
+    Behaviourally identical to :class:`FlaskFramework`, except that the
+    application source and logs use ``/app`` instead of ``/flask``, matching
+    newer extensions (fastapi, expressjs). The mutable Gunicorn configuration
+    is kept separately in ``/var/lib/gunicorn``.
     """
 
     _gunicorn_package = "gunicorn~=26.0"
     _statsd_exporter_tag = "v0.30.0"
+
+    @property
+    @override
+    def app_dir(self) -> str:
+        """Return "app" as the unified top-level directory for V2 extensions."""
+        return "app"
+
+    @property
+    @override
+    def app_source_dir(self) -> str:
+        """Return "app" since V2 installs the app source directly in app_dir."""
+        return self.app_dir
+
+    @property
+    @override
+    def gunicorn_config_dir(self) -> str:
+        """Return the directory for the mutable Gunicorn configuration."""
+        return "var/lib/gunicorn"
+
+    @property
+    @override
+    def _config_data_dir_name(self) -> str:
+        """Return the "v2" data subdirectory containing the app-chdir'd config."""
+        return "v2"
 
     @staticmethod
     @override
@@ -539,8 +621,11 @@ class DjangoFramework(_GunicornBase):
             return {
                 "plugin": "dump",
                 "source": self.name,
-                "organize": {"*": "django/app/", ".*": "django/app/"},
-                "stage": ["-django/app/db.sqlite3"],
+                "organize": {
+                    "*": f"{self.app_source_dir}/",
+                    ".*": f"{self.app_source_dir}/",
+                },
+                "stage": [f"-{self.app_source_dir}/db.sqlite3"],
             }
         return {}
 
@@ -576,13 +661,38 @@ class DjangoFramework(_GunicornBase):
 class DjangoFrameworkV2(DjangoFramework):
     """Extension for 12-factor Django applications targeting ubuntu@26.04.
 
-    For now this is behaviourally identical to :class:`DjangoFramework`; it exists so the
-    framework can dispatch to a paas-charm 2.0 implementation in the future. Only the
-    supported base and experimental status differs.
+    Behaviourally identical to :class:`DjangoFramework`, except that the
+    application source and logs use ``/app`` instead of ``/django``, matching
+    newer extensions (fastapi, expressjs). The mutable Gunicorn configuration
+    is kept separately in ``/var/lib/gunicorn``.
     """
 
     _gunicorn_package = "gunicorn~=26.0"
     _statsd_exporter_tag = "v0.30.0"
+
+    @property
+    @override
+    def app_dir(self) -> str:
+        """Return "app" as the unified top-level directory for V2 extensions."""
+        return "app"
+
+    @property
+    @override
+    def app_source_dir(self) -> str:
+        """Return "app" since V2 installs the app source directly in app_dir."""
+        return self.app_dir
+
+    @property
+    @override
+    def gunicorn_config_dir(self) -> str:
+        """Return the directory for the mutable Gunicorn configuration."""
+        return "var/lib/gunicorn"
+
+    @property
+    @override
+    def _config_data_dir_name(self) -> str:
+        """Return the "v2" data subdirectory containing the app-chdir'd config."""
+        return "v2"
 
     @staticmethod
     @override
