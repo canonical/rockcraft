@@ -21,6 +21,8 @@ from collections.abc import Callable, Iterable
 from pathlib import Path
 from typing import TypeAlias
 
+from rockcraft.errors import ExtensionError
+
 MatchFn: TypeAlias = Callable[[Path], str | None]
 
 
@@ -189,3 +191,30 @@ def find_entrypoint_with_factory(
     )
     module_path = _build_module_path(python_path)
     return f"{module_path}:{factory_name}()"
+
+
+def uses_uv(project_root: Path) -> bool:
+    """Return True if the project should be built with the uv plugin.
+
+    A project is considered a uv project when both ``uv.lock`` and
+    ``pyproject.toml`` are present in the project root.
+    """
+    return (project_root / "uv.lock").exists() and (
+        project_root / "pyproject.toml"
+    ).exists()
+
+
+def validate_uv_lockfile(project_root: Path) -> None:
+    """Validate uv lockfile consistency.
+
+    Raise an ``ExtensionError`` when ``uv.lock`` is present but
+    ``pyproject.toml`` is missing, since the uv plugin requires both files.
+    """
+    if (project_root / "uv.lock").exists() and not (
+        project_root / "pyproject.toml"
+    ).exists():
+        raise ExtensionError(
+            "the plugin requires both uv.lock and pyproject.toml to be present",
+            doc_slug="/reference/plugins/uv_plugin",
+            logpath_report=False,
+        )

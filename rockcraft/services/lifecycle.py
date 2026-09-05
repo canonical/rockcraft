@@ -91,7 +91,7 @@ class RockcraftLifecycleService(LifecycleService):
 
         Some rockcraft-specific quirks include:
         - Legacy bases (20.04, 22.04, 24.04) use Python v1, Poetry v1, and uv v1 plugins
-        - Newer bases (25.10, devel) use Python v2 and omit Poetry and uv (no v2 available yet)
+        - Newer bases use Python v2 and omit Poetry; uv is available on 26.04
         - The dotnet v1 plugin is only available on legacy bases (20.04, 22.04, 24.04)
 
         :param build_info: The BuildInfo for the build, containing the build base.
