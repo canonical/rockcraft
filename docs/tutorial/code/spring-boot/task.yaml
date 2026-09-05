@@ -21,7 +21,7 @@ execute: |
     --path spring-boot-hello-world \
     --project maven-project \
     --language java \
-    --boot-version 3.5.10 \
+    --boot-version 3.5.16 \
     --version 0.0.1 \
     --group com.example \
     --artifact demo \
