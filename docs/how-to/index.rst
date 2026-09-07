@@ -20,6 +20,7 @@ either locally or remotely, and then published to an image registry.
 - :ref:`how-to-migrate-a-docker-image-to-a-chiselled-rock`
 - :ref:`how-to-publish-a-rock-to-a-registry`
 - :ref:`how-to-pack-a-pro-rock`
+- :ref:`how-to-pack-a-rock-in-a-monorepo`
 
 
 Chiseling

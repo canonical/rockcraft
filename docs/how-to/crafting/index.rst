@@ -17,6 +17,7 @@ Configure
 - :ref:`how-to-add-an-internal-user`
 - :ref:`how-to-include-local-files-and-remote-resources`
 - :ref:`how-to-override-a-plugins-build`
+- :ref:`how-to-pack-a-rock-in-a-monorepo`
 
 
 Package and publish
@@ -39,6 +40,7 @@ Package and publish
     add-internal-user-to-a-rock
     include-local-files-and-remote-resources
     override-a-plugins-build
+    pack-a-rock-in-a-monorepo
     publish-a-rock
     pack-a-pro-rock
     rockcraft-pack-action
