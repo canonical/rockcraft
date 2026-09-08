@@ -29,7 +29,7 @@ from rockcraft.errors import ExtensionError
 from rockcraft.extensions._utils import find_ubuntu_base_python_version
 from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
 
-from ._python_utils import has_global_variable
+from ._python_utils import has_global_variable, uses_uv, validate_uv_lockfile
 from .app_parts import gen_logging_part
 from .extension import Extension, _FrameworkFactory
 
@@ -118,14 +118,9 @@ class FastAPIFramework(Extension):
             ]
 
         parts: dict[str, Any] = {
-            self.get_part_name("dependencies"): {
-                "plugin": "python",
-                "stage-packages": stage_packages,
-                "source": ".",
-                "python-packages": ["uvicorn"],
-                "python-requirements": ["requirements.txt"],
-                "build-environment": build_environment,
-            },
+            self.get_part_name("dependencies"): self._dependencies_part(
+                stage_packages, build_environment
+            ),
             self.get_part_name("install-app"): {
                 **self._get_install_app_part(),
                 "permissions": [{"owner": USER_UID, "group": USER_UID}],
@@ -212,6 +207,22 @@ class FastAPIFramework(Extension):
                     f"{self.IMAGE_BASE_DIR}/" + self._find_asgi_location().parts[0]
                 )
         return user_prime
+
+    def _dependencies_part(
+        self, stage_packages: list[str], build_environment: list[Any]
+    ) -> dict[str, Any]:
+        """Return the part that installs the project's dependencies.
+
+        Uses the uv plugin if the project is using uv, otherwise uses the python plugin.
+        """
+        return {
+            "plugin": "python",
+            "stage-packages": stage_packages,
+            "source": ".",
+            "python-packages": ["uvicorn"],
+            "python-requirements": ["requirements.txt"],
+            "build-environment": build_environment,
+        }
 
     def _asgi_path(self) -> str:
         asgi_location = self._find_asgi_location()
@@ -323,6 +334,77 @@ class FastAPIFrameworkV2(FastAPIFramework):
         This is always True for V2
         """
         return True
+
+    @override
+    def _dependencies_part(
+        self, stage_packages: list[str], build_environment: list[Any]
+    ) -> dict[str, Any]:
+        """Return the part that installs the project's dependencies.
+
+        Uses the uv plugin if the project is using uv, otherwise uses the python plugin.
+        """
+        _uvicorn_package = "uvicorn~=0.52"
+        python_symlink = ""
+        uv_prefix = "${CRAFT_PART_INSTALL}"
+        if self.yaml_data["base"] == "bare":
+            python_version = find_ubuntu_base_python_version(
+                base=self.yaml_data["build-base"]
+            )
+            python_symlink = (
+                "\nmkdir -p ${CRAFT_PART_INSTALL}/bin"
+                f"\nln -sf /usr/bin/python{python_version} ${{CRAFT_PART_INSTALL}}/bin/python3"
+            )
+            build_environment = [{"PIP_PYTHON": f"$(which python{python_version})"}]
+            uv_prefix = "${CRAFT_PART_INSTALL}/usr"
+
+            stage_packages.append("python3-minimal_python3")
+        if uses_uv(self.project_root):
+            return {
+                "plugin": "uv",
+                "stage-packages": stage_packages,
+                "source": ".",
+                "build-snaps": ["astral-uv"],
+                "build-environment": build_environment,
+                "override-build": (
+                    "craftctl default\n"
+                    "uv pip install "
+                    "--python /usr/bin/python3 "
+                    f"--prefix {uv_prefix} "
+                    f"{_uvicorn_package}"
+                ),
+            }
+        return {
+            "plugin": "python",
+            "stage-packages": stage_packages,
+            "source": ".",
+            "python-requirements": ["requirements.txt"],
+            "build-environment": build_environment,
+            "python-packages": [
+                "--constraint=.uvicorn-constraints.txt",
+                "uvicorn",
+            ],
+            "override-build": (
+                f"printf '%s\\n' '{_uvicorn_package}'"
+                f" > .uvicorn-constraints.txt\n"
+                f"craftctl default{python_symlink}"
+            ),
+        }
+
+    @override
+    def _check_project(self) -> None:
+        """Ensure this extension can apply to the current rockcraft project."""
+        validate_uv_lockfile(self.project_root)
+        error_messages: list[str] = []
+        if not uses_uv(self.project_root):
+            error_messages = self._requirements_txt_error_messages()
+        if not self.yaml_data.get("services", {}).get("fastapi", {}).get("command"):
+            error_messages += self._asgi_entrypoint_error_messages()
+        if error_messages:
+            raise ExtensionError(
+                "\n".join("- " + message for message in error_messages),
+                doc_slug="/reference/extensions/fastapi-framework/#project-requirements",
+                logpath_report=False,
+            )
 
 
 FastAPIFrameworkFactory = _FrameworkFactory(FastAPIFramework, FastAPIFrameworkV2)

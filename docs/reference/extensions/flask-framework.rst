@@ -15,8 +15,8 @@ By default, the system foundation, or base, is set as ``bare`` to generate a
 lightweight image.
 
 .. note::
-    The Flask extension is compatible with the ``bare``, ``ubuntu@22.04``
-    and ``ubuntu@24.04`` bases.
+    The Flask extension is compatible with the ``bare``, ``ubuntu@22.04``,
+    ``ubuntu@24.04`` and ``ubuntu@26.04`` bases.
 
 The Flask extension supports both synchronous and asynchronous
 Gunicorn workers.
@@ -37,6 +37,35 @@ There are 2 requirements to be able to use the ``flask-framework`` extension:
 For the project to make use of asynchronous Gunicorn workers:
 
 - The ``requirements.txt`` or ``pyproject.toml`` file must include ``gevent`` as a dependency.
+
+.. _reference-flask-framework-uv:
+
+uv projects
+-----------
+
+.. tab-set::
+
+    .. tab-item:: Ubuntu 22.04 and 24.04
+        :sync: base-22-24
+
+        The extension doesn't support uv projects on these bases. It builds the
+        application with the Python plugin and installs dependencies from
+        ``requirements.txt`` or ``pyproject.toml``.
+
+    .. tab-item:: Ubuntu 26.04 and higher
+        :sync: base-26-plus
+
+        If both a ``uv.lock`` and a ``pyproject.toml`` file are present in the
+        project root, the extension builds the application with the :doc:`uv
+        plugin </reference/plugins/uv_plugin>` instead of the Python plugin. It
+        installs dependencies from the lockfile with ``uv sync``. Gunicorn is
+        injected after the build step regardless of the lockfile contents. In
+        this case, a ``requirements.txt`` file is not required.
+
+        The uv plugin requires both files, meaning the application will fail to
+        pack if ``uv.lock`` is present but ``pyproject.toml`` is missing. If
+        only ``pyproject.toml`` is present, the extension falls back to the
+        Python plugin.
 
 .. _reference-flask-framework-stage-packages:
 

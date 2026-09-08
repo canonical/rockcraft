@@ -1,24 +1,45 @@
 summary: uv plugin test
 
+environment:
+  BASE/base_2404: ubuntu@24.04
+  BASE/base_2604: ubuntu@26.04
+  BASE/bare_2604: bare
+
+  BUILD_BASE/base_2404: ubuntu@24.04
+  BUILD_BASE/base_2604: ubuntu@26.04
+  BUILD_BASE/bare_2604: ubuntu@26.04
+
+  PYTHON_STAGE/base_2404: python3
+  PYTHON_STAGE/base_2604: python3-venv
+  PYTHON_STAGE/bare_2604: python3_standard
+
 execute: |
   ROCK_FILE="plugin-uv_0.1_amd64.rock"
   IMAGE="plugin-uv:0.1"
 
+  cp rockcraft.yaml.template rockcraft.yaml
+  sed -i "s/PLACEHOLDER_BASE/${BASE}/" rockcraft.yaml
+  sed -i "s/PLACEHOLDER_BUILD_BASE/${BUILD_BASE}/" rockcraft.yaml
+  sed -i "s/PLACEHOLDER_PYTHON_STAGE/${PYTHON_STAGE}/" rockcraft.yaml
+
   # Build the rock & load it into docker
   run_rockcraft pack
-  test -f ${ROCK_FILE}
-  sudo rockcraft.skopeo --insecure-policy copy oci-archive:${ROCK_FILE} docker-daemon:${IMAGE}
+  test -f "${ROCK_FILE}"
+  sudo rockcraft.skopeo --insecure-policy copy "oci-archive:${ROCK_FILE}" "docker-daemon:${IMAGE}"
   docker images
-  rm ${ROCK_FILE}
+  rm "${ROCK_FILE}"
 
   # Run the packaged project, both via the console script and via "python -m"
-  docker run --rm $IMAGE exec test-uv | MATCH "Hello from uv"
-  docker run --rm $IMAGE exec /bin/python3 -m test_uv | MATCH "Hello from uv"
-  docker run --rm $IMAGE exec /usr/bin/python3 -m test_uv | MATCH "Hello from uv"
-  docker run --rm $IMAGE exec python3 -m test_uv | MATCH "Hello from uv"
+  docker run --rm "${IMAGE}" exec test-uv | MATCH "Hello from uv"
+  docker run --rm "${IMAGE}" exec /bin/python3 -m test_uv | MATCH "Hello from uv"
+  docker run --rm "${IMAGE}" exec /usr/bin/python3 -m test_uv | MATCH "Hello from uv"
+  docker run --rm "${IMAGE}" exec python3 -m test_uv | MATCH "Hello from uv"
 
   # Run the extra Python package, installed as a dependency, to make sure it's found
-  docker run --rm $IMAGE exec black --version
-  docker run --rm $IMAGE exec /bin/python3 -m black --version
-  docker run --rm $IMAGE exec /usr/bin/python3 -m black --version
-  docker run --rm $IMAGE exec python3 -m black --version
+  docker run --rm "${IMAGE}" exec black --version
+  docker run --rm "${IMAGE}" exec /bin/python3 -m black --version
+  docker run --rm "${IMAGE}" exec /usr/bin/python3 -m black --version
+  docker run --rm "${IMAGE}" exec python3 -m black --version
+
+restore: |
+  rm -f plugin-uv_0.1_amd64.rock rockcraft.yaml
