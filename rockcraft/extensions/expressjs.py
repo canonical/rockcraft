@@ -324,6 +324,21 @@ class ExpressJSFrameworkV2(ExpressJSFramework):
         return True
 
     @override
+    def _gen_install_app_part(self) -> dict[str, Any]:
+        """Generate an install part compatible with Node's unmerged archive layout."""
+        install_app_part = super()._gen_install_app_part()
+        if self._user_npm_include_node:
+            install_app_part["build-attributes"] = ["disable-usrmerge"]
+        return install_app_part
+
+    @override
+    def _gen_app_build_packages(self) -> list[str]:
+        """Return build tools needed before the npm plugin installs Node."""
+        if self._has_build_script:
+            return ["nodejs", "npm"]
+        return super()._gen_app_build_packages()
+
+    @override
     def _gen_override_build_pre_default(self) -> list[str]:
         """Generate override-build script part used before 'craftctl default'."""
         override_build = ["rm -rf node_modules"]

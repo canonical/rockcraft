@@ -157,5 +157,7 @@ def get_python_plugins(base: str | None) -> dict[str, PluginType]:
         plugins["python"] = PythonPluginV1
         plugins["poetry"] = PoetryPluginV1
         plugins["uv"] = UvPluginV1
+    elif base == "ubuntu@26.04":
+        plugins["uv"] = UvPluginV1
 
     return plugins
