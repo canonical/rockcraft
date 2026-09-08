@@ -14,7 +14,7 @@ from rockcraft.services import package
 
 
 @pytest.mark.usefixtures("fake_project_file")
-def test_media_type_in_packed_image_manifest(fake_services: ServiceFactory):
+def test_media_type_in_packed_image_manifest(fake_services: ServiceFactory, tmp_path):
     base_image = oci.Image.new_oci_image(
         image_name="bare@original",
         image_dir=Path("images"),
@@ -25,7 +25,7 @@ def test_media_type_in_packed_image_manifest(fake_services: ServiceFactory):
     project = cast(Project, fake_services.get("project").get())
 
     # pylint: disable=protected-access
-    archive_path = Path(f"{project.name}_{project.version}_risky.rock")
+    archive_path = tmp_path / f"{project.name}_{project.version}_risky.rock"
     package._create_rock(
         path=archive_path,
         prime_dir=Path("prime"),
