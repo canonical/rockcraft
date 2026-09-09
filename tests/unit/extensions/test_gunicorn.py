@@ -44,6 +44,16 @@ def flask_input_yaml_fixture():
     }
 
 
+@pytest.fixture(name="flask_v2_input_yaml")
+def flask_v2_input_yaml_fixture():
+    return {
+        "name": "foo-bar",
+        "base": "ubuntu@26.04",
+        "platforms": {"amd64": {}},
+        "extensions": ["flask-framework"],
+    }
+
+
 @pytest.fixture
 def django_extension(mock_extensions, monkeypatch):
     monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "1")
@@ -55,6 +65,16 @@ def django_input_yaml_fixture():
     return {
         "name": "foo-bar",
         "base": "ubuntu@22.04",
+        "platforms": {"amd64": {}},
+        "extensions": ["django-framework"],
+    }
+
+
+@pytest.fixture(name="django_v2_input_yaml")
+def django_v2_input_yaml_fixture():
+    return {
+        "name": "foo-bar",
+        "base": "ubuntu@26.04",
         "platforms": {"amd64": {}},
         "extensions": ["django-framework"],
     }
@@ -903,17 +923,18 @@ def test_flask_v2_full_apply_26_04(tmp_path, monkeypatch):
                 "python-packages": [
                     "--constraint=.gunicorn-constraints.txt",
                     "gunicorn",
+                    "packaging",
                 ],
                 "python-requirements": ["requirements.txt"],
                 "source": ".",
                 "stage-packages": ["python3-venv"],
                 "build-environment": [],
-                "stage": ["-etc/ssl/certs/ca-certificates.crt"],
                 "override-build": (
                     "printf '%s\\n' 'gunicorn~=26.0'"
                     " > .gunicorn-constraints.txt\n"
                     "craftctl default"
                 ),
+                "stage": ["-etc/ssl/certs/ca-certificates.crt"],
             },
             "flask-framework.install-app": {
                 "organize": {
@@ -966,7 +987,7 @@ def test_flask_v2_full_apply_26_04(tmp_path, monkeypatch):
             "flask": {
                 "after": ["statsd-exporter"],
                 "command": "/bin/python3 -m gunicorn -c "
-                "/flask/gunicorn.conf.py 'app:app' -k [ sync ]",
+                "/flask/gunicorn.conf.py 'app:app' -k sync",
                 "override": "replace",
                 "startup": "enabled",
                 "user": "_daemon_",
@@ -1199,6 +1220,199 @@ def test_django_extension_django_service_override_disable_wsgi_path_check(tmp_pa
     extensions.apply_extensions(tmp_path, input_yaml)
 
 
+def test_flask_extension_uv(
+    tmp_path, flask_extension, flask_v2_input_yaml, monkeypatch
+):
+    monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "1")
+    (tmp_path / "pyproject.toml").write_text(
+        "[project]\nname = 'foo-bar'\nversion = '0.1.0'\ndependencies = ['flask']\n"
+    )
+    (tmp_path / "uv.lock").write_text("version = 1\n")
+    (tmp_path / "app.py").write_text("app = object()")
+
+    applied = extensions.apply_extensions(tmp_path, flask_v2_input_yaml)
+
+    deps = applied["parts"]["flask-framework.dependencies"]
+    assert deps["plugin"] == "uv"
+    assert deps["source"] == "."
+    assert deps["stage-packages"] == ["python3-venv"]
+    assert "python-packages" not in deps
+    assert "python-requirements" not in deps
+    assert deps["override-build"] == (
+        "craftctl default\n"
+        "uv pip install --python /usr/bin/python3 --prefix ${CRAFT_PART_INSTALL} gunicorn~=26.0 packaging"
+    )
+    # non-bare base still excludes the ca-certificates crt from the deps stage
+    assert deps["stage"] == ["-etc/ssl/certs/ca-certificates.crt"]
+
+
+@pytest.mark.parametrize("use_uv", [False, True], ids=["python", "uv"])
+def test_flask_extension_v2_bare_26_04(tmp_path, flask_extension, monkeypatch, use_uv):
+    """Bare Flask V2 stages Python 3.14 and selects it for dependencies."""
+    monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "1")
+    (tmp_path / "app.py").write_text("app = object()")
+    if use_uv:
+        (tmp_path / "pyproject.toml").write_text(
+            "[project]\nname = 'foo-bar'\nversion = '0.1.0'\ndependencies = ['flask']\n"
+        )
+        (tmp_path / "uv.lock").write_text("version = 1\n")
+    else:
+        (tmp_path / "requirements.txt").write_text("flask")
+
+    applied = extensions.apply_extensions(
+        tmp_path,
+        {
+            "name": "foo-bar",
+            "base": "bare",
+            "build-base": "ubuntu@26.04",
+            "platforms": {"amd64": {}},
+            "extensions": ["flask-framework"],
+        },
+    )
+
+    deps = applied["parts"]["flask-framework.dependencies"]
+    assert deps["stage-packages"] == [
+        "python3",
+        "python3-minimal_python3",
+    ]
+    assert deps["build-environment"] == [{"PIP_PYTHON": "$(which python3.14)"}]
+    assert applied["parts"]["flask-framework.runtime"]["override-build"] == (
+        "mkdir -m 777 ${CRAFT_PART_INSTALL}/tmp\n"
+        "ln -sf /usr/bin/bash ${CRAFT_PART_INSTALL}/usr/bin/sh"
+    )
+    if use_uv:
+        assert deps["plugin"] == "uv"
+        assert "python-packages" not in deps
+        assert "python-requirements" not in deps
+        assert deps["override-build"] == (
+            "craftctl default\n"
+            "uv pip install --python /usr/bin/python3 "
+            "--prefix ${CRAFT_PART_INSTALL}/usr gunicorn~=26.0 packaging"
+        )
+    else:
+        assert deps["plugin"] == "python"
+        assert deps["python-packages"] == [
+            "--constraint=.gunicorn-constraints.txt",
+            "gunicorn",
+            "packaging",
+        ]
+        assert deps["python-requirements"] == ["requirements.txt"]
+        assert deps["override-build"].endswith(
+            "craftctl default\n"
+            "mkdir -p ${CRAFT_PART_INSTALL}/bin\n"
+            "ln -sf /usr/bin/python3.14 ${CRAFT_PART_INSTALL}/bin/python3"
+        )
+
+
+def test_flask_extension_uv_lock_without_pyproject_errors(
+    tmp_path, flask_extension, flask_v2_input_yaml, monkeypatch
+):
+    monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "1")
+    (tmp_path / "uv.lock").write_text("version = 1\n")
+    (tmp_path / "app.py").write_text("app = object()")
+
+    with pytest.raises(ExtensionError) as exc:
+        extensions.apply_extensions(tmp_path, flask_v2_input_yaml)
+    assert "both uv.lock and pyproject.toml" in str(exc.value)
+
+
+def test_django_extension_uv(tmp_path, django_extension, django_v2_input_yaml):
+    (tmp_path / "pyproject.toml").write_text(
+        "[project]\nname = 'foo-bar'\nversion = '0.1.0'\ndependencies = ['django']\n"
+    )
+    (tmp_path / "uv.lock").write_text("version = 1\n")
+    wsgi_dir = tmp_path / "foo_bar" / "foo_bar"
+    wsgi_dir.mkdir(parents=True)
+    (wsgi_dir / "wsgi.py").write_text("application = object()")
+
+    applied = extensions.apply_extensions(tmp_path, django_v2_input_yaml)
+
+    deps = applied["parts"]["django-framework.dependencies"]
+    assert deps["plugin"] == "uv"
+    assert deps["override-build"] == (
+        "craftctl default\n"
+        "uv pip install --python /usr/bin/python3 --prefix ${CRAFT_PART_INSTALL} gunicorn~=26.0 packaging"
+    )
+    assert "python-requirements" not in deps
+
+
+@pytest.mark.parametrize("use_uv", [False, True], ids=["python", "uv"])
+def test_django_extension_v2_bare_26_04(tmp_path, django_extension, use_uv):
+    """Bare Django V2 stages Python 3.14 and selects it for dependencies."""
+    wsgi_dir = tmp_path / "foo_bar" / "foo_bar"
+    wsgi_dir.mkdir(parents=True)
+    (wsgi_dir / "wsgi.py").write_text("application = object()")
+    if use_uv:
+        (tmp_path / "pyproject.toml").write_text(
+            "[project]\nname = 'foo-bar'\nversion = '0.1.0'\n"
+            "dependencies = ['django']\n"
+        )
+        (tmp_path / "uv.lock").write_text("version = 1\n")
+    else:
+        (tmp_path / "requirements.txt").write_text("django")
+
+    applied = extensions.apply_extensions(
+        tmp_path,
+        {
+            "name": "foo-bar",
+            "base": "bare",
+            "build-base": "ubuntu@26.04",
+            "platforms": {"amd64": {}},
+            "extensions": ["django-framework"],
+        },
+    )
+
+    deps = applied["parts"]["django-framework.dependencies"]
+    assert deps["stage-packages"] == [
+        "python3",
+        "python3-minimal_python3",
+    ]
+    assert deps["build-environment"] == [{"PIP_PYTHON": "$(which python3.14)"}]
+    assert applied["parts"]["django-framework.runtime"]["override-build"] == (
+        "mkdir -m 777 ${CRAFT_PART_INSTALL}/tmp\n"
+        "ln -sf /usr/bin/bash ${CRAFT_PART_INSTALL}/usr/bin/sh"
+    )
+    if use_uv:
+        assert deps["plugin"] == "uv"
+        assert "python-packages" not in deps
+        assert "python-requirements" not in deps
+        assert deps["override-build"] == (
+            "craftctl default\n"
+            "uv pip install --python /usr/bin/python3 "
+            "--prefix ${CRAFT_PART_INSTALL}/usr gunicorn~=26.0 packaging"
+        )
+    else:
+        assert deps["plugin"] == "python"
+        assert deps["python-packages"] == [
+            "--constraint=.gunicorn-constraints.txt",
+            "gunicorn",
+            "packaging",
+        ]
+        assert deps["python-requirements"] == ["requirements.txt"]
+        assert deps["override-build"].endswith(
+            "craftctl default\n"
+            "mkdir -p ${CRAFT_PART_INSTALL}/bin\n"
+            "ln -sf /usr/bin/python3.14 ${CRAFT_PART_INSTALL}/bin/python3"
+        )
+
+
+def test_django_extension_uv_no_requirements_txt_is_ok(
+    tmp_path, django_extension, django_v2_input_yaml
+):
+    # A uv project with no requirements.txt must NOT raise the
+    # "missing requirements.txt" error.
+    (tmp_path / "pyproject.toml").write_text(
+        "[project]\nname = 'foo-bar'\nversion = '0.1.0'\ndependencies = ['django']\n"
+    )
+    (tmp_path / "uv.lock").write_text("version = 1\n")
+    wsgi_dir = tmp_path / "foo_bar" / "foo_bar"
+    wsgi_dir.mkdir(parents=True)
+    (wsgi_dir / "wsgi.py").write_text("application = object()")
+
+    # Should not raise.
+    extensions.apply_extensions(tmp_path, django_v2_input_yaml)
+
+
 # ---------------------------------------------------------------------------
 # DjangoFrameworkV2 / django_framework_factory tests
 # ---------------------------------------------------------------------------
@@ -1315,17 +1529,18 @@ def test_django_extension_v2_default(tmp_path):
                 "python-packages": [
                     "--constraint=.gunicorn-constraints.txt",
                     "gunicorn",
+                    "packaging",
                 ],
                 "python-requirements": ["requirements.txt"],
                 "source": ".",
                 "stage-packages": ["python3-venv"],
                 "build-environment": [],
-                "stage": ["-etc/ssl/certs/ca-certificates.crt"],
                 "override-build": (
                     "printf '%s\\n' 'gunicorn~=26.0'"
                     " > .gunicorn-constraints.txt\n"
                     "craftctl default"
                 ),
+                "stage": ["-etc/ssl/certs/ca-certificates.crt"],
             },
             "django-framework.install-app": {
                 "organize": {"*": "django/app/", ".*": "django/app/"},
@@ -1375,7 +1590,7 @@ def test_django_extension_v2_default(tmp_path):
                 "after": ["statsd-exporter"],
                 "command": (
                     "/bin/python3 -m gunicorn -c /django/gunicorn.conf.py "
-                    "'foo_bar.wsgi:application' -k [ sync ]"
+                    "'foo_bar.wsgi:application' -k sync"
                 ),
                 "override": "replace",
                 "startup": "enabled",
@@ -1451,6 +1666,7 @@ def test_v2_dependency_part_uses_gunicorn_constraint(
     assert dependency_part["python-packages"] == [
         "--constraint=.gunicorn-constraints.txt",
         "gunicorn",
+        "packaging",
     ]
     assert dependency_part["override-build"] == (
         "printf '%s\\n' 'gunicorn~=26.0' > .gunicorn-constraints.txt\ncraftctl default"
@@ -1480,14 +1696,15 @@ def test_v2_bare_dependency_part_uses_staged_python(
 
     dependency_part = framework._gen_parts()[framework.get_part_name("dependencies")]
 
-    assert dependency_part["stage-packages"] == ["python3"]
+    assert dependency_part["stage-packages"] == ["python3", "python3-minimal_python3"]
     assert dependency_part["build-environment"] == [
         {"PIP_PYTHON": "$(which python3.14)"}
     ]
     assert dependency_part["python-packages"] == [
         "--constraint=.gunicorn-constraints.txt",
         "gunicorn",
+        "packaging",
     ]
     assert dependency_part["override-build"] == (
-        "printf '%s\\n' 'gunicorn~=26.0' > .gunicorn-constraints.txt\ncraftctl default"
+        "printf '%s\\n' 'gunicorn~=26.0' > .gunicorn-constraints.txt\ncraftctl default\nmkdir -p ${CRAFT_PART_INSTALL}/bin\nln -sf /usr/bin/python3.14 ${CRAFT_PART_INSTALL}/bin/python3"
     )
