@@ -1272,7 +1272,7 @@ def test_flask_extension_v2_bare_26_04(tmp_path, flask_extension, monkeypatch, u
 
     deps = applied["parts"]["flask-framework.dependencies"]
     assert deps["stage-packages"] == [
-        "python3",
+        "python3.14-venv_ensurepip",
         "python3-minimal_python3",
     ]
     assert deps["build-environment"] == [{"PIP_PYTHON": "$(which python3.14)"}]
@@ -1364,7 +1364,7 @@ def test_django_extension_v2_bare_26_04(tmp_path, django_extension, use_uv):
 
     deps = applied["parts"]["django-framework.dependencies"]
     assert deps["stage-packages"] == [
-        "python3",
+        "python3.14-venv_ensurepip",
         "python3-minimal_python3",
     ]
     assert deps["build-environment"] == [{"PIP_PYTHON": "$(which python3.14)"}]
@@ -1696,7 +1696,10 @@ def test_v2_bare_dependency_part_uses_staged_python(
 
     dependency_part = framework._gen_parts()[framework.get_part_name("dependencies")]
 
-    assert dependency_part["stage-packages"] == ["python3", "python3-minimal_python3"]
+    assert dependency_part["stage-packages"] == [
+        "python3.14-venv_ensurepip",
+        "python3-minimal_python3",
+    ]
     assert dependency_part["build-environment"] == [
         {"PIP_PYTHON": "$(which python3.14)"}
     ]
