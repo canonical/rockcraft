@@ -28,6 +28,16 @@ def fastapi_input_yaml_fixture():
     }
 
 
+@pytest.fixture(name="fastapi_v2_input_yaml")
+def fastapi_v2_input_yaml_fixture():
+    return {
+        "name": "foo-bar",
+        "base": "ubuntu@26.04",
+        "platforms": {"amd64": {}},
+        "extensions": ["fastapi-framework"],
+    }
+
+
 @pytest.fixture
 def fastapi_extension(mock_extensions):
     extensions.register("fastapi-framework", extensions.FastAPIFrameworkFactory)
@@ -334,6 +344,115 @@ def test_fastapi_extension_incorrect_prime_prefix_error(tmp_path, fastapi_input_
     assert "start with app/" in str(exc)
 
 
+def test_fastapi_extension_uv(
+    tmp_path, fastapi_extension, fastapi_v2_input_yaml, monkeypatch
+):
+    monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "1")
+    (tmp_path / "pyproject.toml").write_text(
+        "[project]\nname = 'foo-bar'\nversion = '0.1.0'\ndependencies = ['fastapi']\n"
+    )
+    (tmp_path / "uv.lock").write_text("version = 1\n")
+    (tmp_path / "app.py").write_text("app = object()")
+
+    applied = extensions.apply_extensions(tmp_path, fastapi_v2_input_yaml)
+
+    deps = applied["parts"]["fastapi-framework.dependencies"]
+    assert deps["plugin"] == "uv"
+    assert deps["source"] == "."
+    assert "python-packages" not in deps
+    assert "python-requirements" not in deps
+    assert deps["override-build"] == (
+        "craftctl default\n"
+        "uv pip install --python /usr/bin/python3 --prefix ${CRAFT_PART_INSTALL} uvicorn~=0.52"
+    )
+
+
+@pytest.mark.parametrize("use_uv", [False, True], ids=["python", "uv"])
+def test_fastapi_extension_v2_bare_26_04(
+    tmp_path, fastapi_extension, monkeypatch, use_uv
+):
+    """Bare V2 stages Python 3.14 and selects it for dependency installation."""
+    monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "1")
+    (tmp_path / "app.py").write_text("app = object()")
+    if use_uv:
+        (tmp_path / "pyproject.toml").write_text(
+            "[project]\nname = 'foo-bar'\nversion = '0.1.0'\n"
+            "dependencies = ['fastapi']\n"
+        )
+        (tmp_path / "uv.lock").write_text("version = 1\n")
+    else:
+        (tmp_path / "requirements.txt").write_text("fastapi")
+
+    applied = extensions.apply_extensions(
+        tmp_path,
+        {
+            "name": "foo-bar",
+            "base": "bare",
+            "build-base": "ubuntu@26.04",
+            "platforms": {"amd64": {}},
+            "extensions": ["fastapi-framework"],
+        },
+    )
+
+    deps = applied["parts"]["fastapi-framework.dependencies"]
+    assert deps["stage-packages"] == [
+        "python3.14-venv_ensurepip",
+        "python3-minimal_python3",
+    ]
+    assert deps["build-environment"] == [{"PIP_PYTHON": "$(which python3.14)"}]
+    assert applied["parts"]["fastapi-framework.runtime"]["override-build"] == (
+        "mkdir -m 777 ${CRAFT_PART_INSTALL}/tmp\n"
+        "ln -sf /usr/bin/bash ${CRAFT_PART_INSTALL}/usr/bin/sh"
+    )
+    if use_uv:
+        assert deps["plugin"] == "uv"
+        assert "python-packages" not in deps
+        assert "python-requirements" not in deps
+        assert deps["override-build"] == (
+            "craftctl default\n"
+            "uv pip install --python /usr/bin/python3 "
+            "--prefix ${CRAFT_PART_INSTALL}/usr uvicorn~=0.52"
+        )
+    else:
+        assert deps["plugin"] == "python"
+        assert deps["python-packages"] == [
+            "--constraint=.uvicorn-constraints.txt",
+            "uvicorn",
+        ]
+        assert deps["python-requirements"] == ["requirements.txt"]
+        assert deps["override-build"].endswith(
+            "craftctl default\n"
+            "mkdir -p ${CRAFT_PART_INSTALL}/bin\n"
+            "ln -sf /usr/bin/python3.14 ${CRAFT_PART_INSTALL}/bin/python3"
+        )
+
+
+def test_fastapi_extension_uv_no_requirements_txt_is_ok(
+    tmp_path, fastapi_extension, fastapi_v2_input_yaml, monkeypatch
+):
+    monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "1")
+    (tmp_path / "pyproject.toml").write_text(
+        "[project]\nname = 'foo-bar'\nversion = '0.1.0'\ndependencies = ['fastapi']\n"
+    )
+    (tmp_path / "uv.lock").write_text("version = 1\n")
+    (tmp_path / "app.py").write_text("app = object()")
+
+    # Should not raise despite there being no requirements.txt.
+    extensions.apply_extensions(tmp_path, fastapi_v2_input_yaml)
+
+
+def test_fastapi_extension_uv_lock_without_pyproject_errors(
+    tmp_path, fastapi_extension, fastapi_v2_input_yaml, monkeypatch
+):
+    monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "1")
+    (tmp_path / "uv.lock").write_text("version = 1\n")
+    (tmp_path / "app.py").write_text("app = object()")
+
+    with pytest.raises(ExtensionError) as exc:
+        extensions.apply_extensions(tmp_path, fastapi_v2_input_yaml)
+    assert "both uv.lock and pyproject.toml" in str(exc.value)
+
+
 def test_factory_dispatch_v1(tmp_path):
     """Factory returns FastAPIFramework (V1) for ubuntu@24.04."""
     instance = extensions.FastAPIFrameworkFactory(
@@ -447,8 +566,16 @@ def test_fastapi_extension_default_26_04(tmp_path, monkeypatch):
                 "plugin": "python",
                 "stage-packages": ["python3-venv"],
                 "source": ".",
-                "python-packages": ["uvicorn"],
+                "python-packages": [
+                    "--constraint=.uvicorn-constraints.txt",
+                    "uvicorn",
+                ],
                 "python-requirements": ["requirements.txt"],
+                "override-build": (
+                    "printf '%s\\n' 'uvicorn~=0.52'"
+                    " > .uvicorn-constraints.txt\n"
+                    "craftctl default"
+                ),
                 "stage": ["-etc/ssl/certs/ca-certificates.crt"],
             },
             "fastapi-framework.install-app": {
