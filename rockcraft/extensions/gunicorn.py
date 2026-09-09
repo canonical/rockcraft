@@ -57,8 +57,6 @@ class _GunicornBase(Extension):
     """An extension base class for Python WSGI framework extensions."""
 
     _gunicorn_package = "gunicorn~=23.0"
-    _gunicorn_constraint_file: str | None = None
-    _use_staged_pip_python = False
     _statsd_exporter_tag = "v0.26.0"
     _worker_class_template = "[ {} ]"
 
@@ -117,9 +115,6 @@ class _GunicornBase(Extension):
             build_environment = [
                 {"PARTS_PYTHON_INTERPRETER": f"python{python_version}"}
             ]
-            if self._use_staged_pip_python:
-                stage_packages = ["python3"]
-                build_environment = [{"PIP_PYTHON": f"$(which python{python_version})"}]
 
         parts: dict[str, Any] = {
             self.get_part_name("dependencies"): self._dependencies_part(
@@ -303,7 +298,7 @@ class _GunicornBase(Extension):
             if (self.project_root / "requirements.txt").exists()
             else []
         )
-        part = {
+        return {
             "plugin": "python",
             "stage-packages": stage_packages,
             "source": ".",
@@ -311,24 +306,6 @@ class _GunicornBase(Extension):
             "python-requirements": python_requirements,
             "build-environment": build_environment,
         }
-
-        if self._gunicorn_constraint_file:
-            part.update(
-                {
-                    "python-packages": [
-                        f"--constraint={self._gunicorn_constraint_file}",
-                        "gunicorn",
-                        "packaging",
-                    ],
-                    "override-build": (
-                        f"printf '%s\\n' '{self._gunicorn_package}'"
-                        f" > {self._gunicorn_constraint_file}\n"
-                        "craftctl default"
-                    ),
-                }
-            )
-
-        return part
 
 
 class FlaskFramework(_GunicornBase):
@@ -516,8 +493,6 @@ class FlaskFrameworkV2(AppDataDirMixin, FlaskFramework):
     """
 
     _gunicorn_package = "gunicorn~=26.0"
-    _gunicorn_constraint_file = ".gunicorn-constraints.txt"
-    _use_staged_pip_python = True
     _statsd_exporter_tag = "v0.30.0"
     _worker_class_template = "{}"
 
@@ -697,8 +672,6 @@ class DjangoFrameworkV2(AppDataDirMixin, DjangoFramework):
     """
 
     _gunicorn_package = "gunicorn~=26.0"
-    _gunicorn_constraint_file = ".gunicorn-constraints.txt"
-    _use_staged_pip_python = True
     _statsd_exporter_tag = "v0.30.0"
     _worker_class_template = "{}"
 
