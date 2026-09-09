@@ -290,7 +290,7 @@ class Image:
             with (tmpfs_etc / "group").open("a+") as groupf:
                 groupf.write(user_files["group"])
 
-            if user_files["shadow"]:
+            if user_files["shadow"]:  # ty: ignore[redundant-condition]
                 days_since_epoch = (
                     datetime.now(timezone.utc)
                     - datetime(1970, 1, 1, tzinfo=timezone.utc)
