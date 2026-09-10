@@ -3,7 +3,7 @@ summary: Check if repacking is skipped
 execute: |
   rm -f *.rock
   rockcraft pack 2>&1 | MATCH "Packed"
-  test -f skip-repack-test-*.rock
+  test -f skip-repack-test_*.rock
   rockcraft pack 2>&1 | MATCH "Skipping pack"
   rm -f *.rock
   rockcraft pack 2>&1 | MATCH "Packed"
