@@ -57,8 +57,6 @@ play when selecting the best container image, such as:
 * compliance
 * provenance
 
-You can find these values and their relevance in `this report`_.
-
 This brings us to the problem statement behind rocks:
 
     *How might we redesign secure container images \
@@ -91,4 +89,3 @@ those already used to building Snaps and Charms.
 
 .. _Unit 42 / Znet: https://www.zdnet.com/article/96-of-third-party-container-applications-deployed-in-cloud-infrastructure-contain-known-vulnerabilities-unit-42/
 .. _Snyk's state of open source security report 2020: https://snyk.io/blog/10-docker-image-security-best-practices/
-.. _this report: https://juju.is/cloud-native-kubernetes-usage-report-2021#selection-criteria-for-container-images
