@@ -34,7 +34,7 @@ execute: |
         - findutils
   EOL
   fi
-   
+
   function run_test() {
     # rockcraft clean is required here because the cached layer writes to npmrc
     # multiple times, causing the app to crash on first run.
@@ -84,10 +84,14 @@ execute: |
   if [ "${SCENARIO}" != "bare" ]; then
     echo "parts:" >> rockcraft.yaml
   fi
+  seperator='/'
+  if [ "${SCENARIO}" == "ubuntu-26.04" ]; then
+    seperator='.'
+  fi
   # test the expressjs service with a Node version specified
   node_version=20.18.2
   cat <<EOF >> rockcraft.yaml
-    expressjs-framework/install-app:
+    expressjs-framework${seperator}install-app:
       npm-include-node: true
       npm-node-version: $node_version
   EOF
