@@ -1,8 +1,10 @@
 summary: flask extension with pyproject.toml test
 environment:
   SCENARIO/bare: bare
-  SCENARIO/base_2204: ubuntu-22.04
-  SCENARIO/base_2404: ubuntu-24.04
+  SCENARIO/base_2604: ubuntu-26.04
+
+  ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS: "true"
+
 execute: |
   NAME="flask-pyproject-${SCENARIO//./-}"
   ROCK_FILE="${NAME}_0.1_amd64.rock"

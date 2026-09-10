@@ -43,16 +43,26 @@ from ._python_utils import (
     find_entrypoint_with_factory,
     find_entrypoint_with_variable,
     has_global_variable,
+    uses_uv,
+    validate_uv_lockfile,
 )
 from ._utils import find_ubuntu_base_python_version
 from .app_parts import gen_logging_part
-from .extension import Extension, _FrameworkFactory, get_extensions_data_dir
+from .extension import (
+    Extension,
+    _FrameworkFactory,
+    get_extensions_data_dir,
+)
 
 USER_UID: int = SUPPORTED_GLOBAL_USERNAMES["_daemon_"]["uid"]
 
 
 class _GunicornBase(Extension):
     """An extension base class for Python WSGI framework extensions."""
+
+    _gunicorn_package = "gunicorn~=23.0"
+    _statsd_exporter_tag = "v0.26.0"
+    _worker_class_template = "[ {} ]"
 
     @property
     def name(self) -> str:
@@ -110,24 +120,15 @@ class _GunicornBase(Extension):
                 {"PARTS_PYTHON_INTERPRETER": f"python{python_version}"}
             ]
 
-        python_requirements: list[str] = []
-        if (self.project_root / "requirements.txt").exists():
-            python_requirements.append("requirements.txt")
-
         parts: dict[str, Any] = {
-            f"{self.framework}-framework/dependencies": {
-                "plugin": "python",
-                "stage-packages": stage_packages,
-                "source": ".",
-                "python-packages": ["gunicorn~=23.0"],
-                "python-requirements": python_requirements,
-                "build-environment": build_environment,
-            },
-            f"{self.framework}-framework/install-app": {
+            self.get_part_name("dependencies"): self._dependencies_part(
+                stage_packages, build_environment
+            ),
+            self.get_part_name("install-app"): {
                 **self.gen_install_app_part(),
                 "permissions": [{"owner": USER_UID, "group": USER_UID}],
             },
-            f"{self.framework}-framework/config-files": {
+            self.get_part_name("config-files"): {
                 "plugin": "dump",
                 "source": str(data_dir / f"{self.framework}-framework"),
                 "organize": {
@@ -141,13 +142,13 @@ class _GunicornBase(Extension):
                     },
                 ],
             },
-            f"{self.framework}-framework/statsd-exporter": {
+            self.get_part_name("statsd-exporter"): {
                 "build-snaps": ["go"],
-                "source-tag": "v0.26.0",
+                "source-tag": self._statsd_exporter_tag,
                 "plugin": "go",
                 "source": "https://github.com/prometheus/statsd_exporter.git",
             },
-            f"{self.framework}-framework/logging": gen_logging_part(
+            self.get_part_name("logging"): gen_logging_part(
                 override_build_lines=[
                     f"mkdir -p $CRAFT_PART_INSTALL/var/log/{self.framework}"
                 ],
@@ -161,7 +162,7 @@ class _GunicornBase(Extension):
             ),
         }
         if self.yaml_data["base"] == "bare":
-            parts[f"{self.framework}-framework/runtime"] = {
+            parts[self.get_part_name("runtime")] = {
                 "plugin": "nil",
                 "override-build": "mkdir -m 777 ${CRAFT_PART_INSTALL}/tmp\n"
                 "ln -sf /usr/bin/bash ${CRAFT_PART_INSTALL}/usr/bin/sh",
@@ -171,17 +172,17 @@ class _GunicornBase(Extension):
                     "ca-certificates_data",
                 ],
             }
-            parts[f"{self.framework}-framework/runtime-libs"] = {
+            parts[self.get_part_name("runtime-libs")] = {
                 "plugin": "nil",
                 "stage-packages": ["libstdc++6"],
             }
         else:
             # There is a bug where ca-certificates_data and python-venv both provide
             # etc/ssl/certs/ca-certificates.crt with different content.
-            parts[f"{self.framework}-framework/dependencies"]["stage"] = [
+            parts[self.get_part_name("dependencies")]["stage"] = [
                 "-etc/ssl/certs/ca-certificates.crt"
             ]
-            parts[f"{self.framework}-framework/runtime"] = {
+            parts[self.get_part_name("runtime")] = {
                 "plugin": "nil",
                 "stage-packages": ["ca-certificates_data"],
             }
@@ -272,7 +273,9 @@ class _GunicornBase(Extension):
             .get("command")
         ):
             snippet["services"][self.framework]["command"] = (
-                f"/bin/python3 -m gunicorn -c /{self.framework}/gunicorn.conf.py '{self.wsgi_path}' -k [ {self._worker_class()} ]"
+                f"/bin/python3 -m gunicorn -c /{self.framework}/gunicorn.conf.py "
+                f"'{self.wsgi_path}' -k "
+                f"{self._worker_class_template.format(self._worker_class())}"
             )
         snippet["parts"] = self._gen_parts()
         return snippet
@@ -286,6 +289,27 @@ class _GunicornBase(Extension):
     def get_parts_snippet(self) -> dict[str, Any]:
         """Return the parts to add to parts."""
         return {}
+
+    def _dependencies_part(
+        self, stage_packages: list[str], build_environment: list[Any]
+    ) -> dict[str, Any]:
+        """Return the part that installs the project's dependencies.
+
+        Uses the uv plugin if the project is using uv, otherwise uses the python plugin.
+        """
+        python_requirements = (
+            ["requirements.txt"]
+            if (self.project_root / "requirements.txt").exists()
+            else []
+        )
+        return {
+            "plugin": "python",
+            "stage-packages": stage_packages,
+            "source": ".",
+            "python-packages": [self._gunicorn_package],
+            "python-requirements": python_requirements,
+            "build-environment": build_environment,
+        }
 
 
 class FlaskFramework(_GunicornBase):
@@ -378,13 +402,13 @@ class FlaskFramework(_GunicornBase):
         """Return the prime list for the Flask project."""
         user_prime: list[str] = (
             self.yaml_data.get("parts", {})
-            .get("flask-framework/install-app", {})
+            .get(self.get_part_name("install-app"), {})
             .get("prime", [])
         )
         if not all(re.match("-? *flask/app", p) for p in user_prime):
             raise ExtensionError(
                 "flask-framework extension requires the 'prime' entry in the "
-                "flask-framework/install-app part to start with flask/app",
+                f"{self.get_part_name('install-app')} part to start with flask/app",
                 doc_slug="/reference/extensions/flask-framework",
                 logpath_report=False,
             )
@@ -472,17 +496,97 @@ class FlaskFrameworkV2(FlaskFramework):
     supported base differs.
     """
 
+    _gunicorn_package = "gunicorn~=26.0"
+    _statsd_exporter_tag = "v0.30.0"
+    _worker_class_template = "{}"
+
     @staticmethod
     @override
     def get_supported_bases() -> tuple[str, ...]:
         """Return supported bases."""
-        return ("ubuntu@26.04",)
+        return ("bare", "ubuntu@26.04")
 
     @staticmethod
     @override
     def is_experimental(base: str | None) -> bool:
         """Check if the extension is in an experimental state."""
         return True
+
+    @override
+    def check_project(self) -> None:
+        """Ensure this extension can apply to the current rockcraft project."""
+        validate_uv_lockfile(self.project_root)
+        error_messages: list[str] = []
+        if not uses_uv(self.project_root):
+            error_messages = self._requirements_error_messages()
+        if not self.yaml_data.get("services", {}).get("flask", {}).get("command"):
+            error_messages += self._wsgi_path_error_messages()
+        if error_messages:
+            raise ExtensionError(
+                "\n".join("- " + message for message in error_messages),
+                doc_slug="/reference/extensions/flask-framework",
+                logpath_report=False,
+            )
+
+    @override
+    def _dependencies_part(
+        self, stage_packages: list[str], build_environment: list[Any]
+    ) -> dict[str, Any]:
+        """Return the part that installs the project's dependencies.
+
+        Uses the uv plugin if the project is using uv, otherwise uses the python plugin.
+        """
+        python_symlink = ""
+        uv_prefix = "${CRAFT_PART_INSTALL}"
+        if self.yaml_data["base"] == "bare":
+            python_version = find_ubuntu_base_python_version(
+                base=self.yaml_data["build-base"]
+            )
+            python_symlink = (
+                "\nmkdir -p ${CRAFT_PART_INSTALL}/bin"
+                f"\nln -sf /usr/bin/python{python_version} ${{CRAFT_PART_INSTALL}}/bin/python3"
+            )
+            build_environment = [{"PIP_PYTHON": f"$(which python{python_version})"}]
+            uv_prefix = "${CRAFT_PART_INSTALL}/usr"
+            stage_packages.append("python3-minimal_python3")
+        if uses_uv(self.project_root):
+            return {
+                "plugin": "uv",
+                "stage-packages": stage_packages,
+                "source": ".",
+                "build-snaps": ["astral-uv"],
+                "build-environment": build_environment,
+                "override-build": (
+                    "craftctl default\n"
+                    "uv pip install "
+                    "--python /usr/bin/python3 "
+                    f"--prefix {uv_prefix} "
+                    f"{self._gunicorn_package} packaging"
+                ),
+            }
+
+        python_requirements = (
+            ["requirements.txt"]
+            if (self.project_root / "requirements.txt").exists()
+            else []
+        )
+        return {
+            "plugin": "python",
+            "stage-packages": stage_packages,
+            "source": ".",
+            "python-requirements": python_requirements,
+            "build-environment": build_environment,
+            "python-packages": [
+                "--constraint=.gunicorn-constraints.txt",
+                "gunicorn",
+                "packaging",
+            ],
+            "override-build": (
+                f"printf '%s\\n' '{self._gunicorn_package}'"
+                f" > .gunicorn-constraints.txt\n"
+                f"craftctl default{python_symlink}"
+            ),
+        }
 
 
 FlaskFrameworkFactory = _FrameworkFactory(FlaskFramework, FlaskFrameworkV2)
@@ -525,7 +629,7 @@ class DjangoFramework(_GunicornBase):
     @override
     def gen_install_app_part(self) -> dict[str, Any]:
         """Return the prime list for the Django project."""
-        if "django-framework/install-app" not in self.yaml_data.get("parts", {}):
+        if self.get_part_name("install-app") not in self.yaml_data.get("parts", {}):
             return {
                 "plugin": "dump",
                 "source": self.name,
@@ -571,11 +675,15 @@ class DjangoFrameworkV2(DjangoFramework):
     supported base and experimental status differs.
     """
 
+    _gunicorn_package = "gunicorn~=26.0"
+    _statsd_exporter_tag = "v0.30.0"
+    _worker_class_template = "{}"
+
     @staticmethod
     @override
     def get_supported_bases() -> tuple[str, ...]:
         """Return supported bases."""
-        return ("ubuntu@26.04",)
+        return ("bare", "ubuntu@26.04")
 
     @staticmethod
     @override
@@ -585,6 +693,83 @@ class DjangoFrameworkV2(DjangoFramework):
         This is always True for V2
         """
         return True
+
+    @override
+    def check_project(self) -> None:
+        """Ensure this extension can apply to the current rockcraft project."""
+        validate_uv_lockfile(self.project_root)
+        if (
+            not uses_uv(self.project_root)
+            and not (self.project_root / "requirements.txt").exists()
+        ):
+            raise ExtensionError(
+                "missing requirements.txt file, django-framework extension "
+                "requires this file with Django specified as a dependency",
+                doc_slug="/reference/extensions/django-framework/#project-requirements",
+                logpath_report=False,
+            )
+        if not self.yaml_data.get("services", {}).get("django", {}).get("command"):
+            self.wsgi_path  # noqa: B018 (unused expression, just checking for errors)
+
+    @override
+    def _dependencies_part(
+        self, stage_packages: list[str], build_environment: list[Any]
+    ) -> dict[str, Any]:
+        """Return the part that installs the project's dependencies.
+
+        Uses the uv plugin if the project is using uv, otherwise uses the python plugin.
+        """
+        python_symlink = ""
+        uv_prefix = "${CRAFT_PART_INSTALL}"
+        if self.yaml_data["base"] == "bare":
+            python_version = find_ubuntu_base_python_version(
+                base=self.yaml_data["build-base"]
+            )
+            python_symlink = (
+                "\nmkdir -p ${CRAFT_PART_INSTALL}/bin"
+                f"\nln -sf /usr/bin/python{python_version} ${{CRAFT_PART_INSTALL}}/bin/python3"
+            )
+            build_environment = [{"PIP_PYTHON": f"$(which python{python_version})"}]
+            uv_prefix = "${CRAFT_PART_INSTALL}/usr"
+            stage_packages.append("python3-minimal_python3")
+        if uses_uv(self.project_root):
+            return {
+                "plugin": "uv",
+                "stage-packages": stage_packages,
+                "source": ".",
+                "build-snaps": ["astral-uv"],
+                "build-environment": build_environment,
+                "override-build": (
+                    "craftctl default\n"
+                    "uv pip install "
+                    "--python /usr/bin/python3 "
+                    f"--prefix {uv_prefix} "
+                    f"{self._gunicorn_package} packaging"
+                ),
+            }
+
+        python_requirements = (
+            ["requirements.txt"]
+            if (self.project_root / "requirements.txt").exists()
+            else []
+        )
+        return {
+            "plugin": "python",
+            "stage-packages": stage_packages,
+            "source": ".",
+            "python-requirements": python_requirements,
+            "build-environment": build_environment,
+            "python-packages": [
+                "--constraint=.gunicorn-constraints.txt",
+                "gunicorn",
+                "packaging",
+            ],
+            "override-build": (
+                f"printf '%s\\n' '{self._gunicorn_package}'"
+                f" > .gunicorn-constraints.txt\n"
+                f"craftctl default{python_symlink}"
+            ),
+        }
 
 
 DjangoFrameworkFactory = _FrameworkFactory(DjangoFramework, DjangoFrameworkV2)

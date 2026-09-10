@@ -281,16 +281,51 @@ def test_go_extension_extra_assets_overridden(tmp_path, go_input_yaml):
 
 def test_go_framework_factory_dispatch(tmp_path):
     factory = extensions.GoFrameworkFactory
-    v1 = factory(project_root=tmp_path, yaml_data={"name": "x", "base": "ubuntu@24.04"})
+    v1 = factory(
+        project_root=tmp_path,
+        yaml_data={"name": "x", "base": "ubuntu@24.04"},
+        extension_name="go-framework",
+    )
     assert isinstance(v1, extensions.GoFramework)
     assert not isinstance(v1, extensions.GoFrameworkV2)
 
-    v2 = factory(project_root=tmp_path, yaml_data={"name": "x", "base": "ubuntu@26.04"})
+    v2 = factory(
+        project_root=tmp_path,
+        yaml_data={"name": "x", "base": "ubuntu@26.04"},
+        extension_name="go-framework",
+    )
+    assert isinstance(v2, extensions.GoFrameworkV2)
+
+
+def test_go_framework_factory_dispatch_bare_by_build_base(tmp_path):
+    factory = extensions.GoFrameworkFactory
+    v1 = factory(
+        project_root=tmp_path,
+        yaml_data={
+            "name": "x",
+            "base": "bare",
+            "build-base": "ubuntu@24.04",
+        },
+        extension_name="go-framework",
+    )
+    assert isinstance(v1, extensions.GoFramework)
+    assert not isinstance(v1, extensions.GoFrameworkV2)
+
+    v2 = factory(
+        project_root=tmp_path,
+        yaml_data={
+            "name": "x",
+            "base": "bare",
+            "build-base": "ubuntu@26.04",
+        },
+        extension_name="go-framework",
+    )
     assert isinstance(v2, extensions.GoFrameworkV2)
 
 
 def test_go_framework_v2_supported_bases():
     assert "ubuntu@26.04" in extensions.GoFrameworkV2.get_supported_bases()
+    assert "bare" in extensions.GoFrameworkV2.get_supported_bases()
 
 
 def test_go_framework_factory_supported_bases():
@@ -338,25 +373,25 @@ def test_go_extension_default_26_04(tmp_path, monkeypatch):
         "platforms": {"amd64": {}},
         "run_user": "_daemon_",
         "parts": {
-            "go-framework/base-layout": {
+            "go-framework.base-layout": {
                 "override-build": "mkdir -p ${CRAFT_PART_INSTALL}/app",
                 "plugin": "nil",
                 "permissions": [{"owner": 584792, "group": 584792}],
             },
-            "go-framework/install-app": {
+            "go-framework.install-app": {
                 "plugin": "go",
                 "source": ".",
                 "build-snaps": ["go"],
                 "organize": {"bin/goprojectname": "usr/local/bin/goprojectname"},
                 "stage": ["usr/local/bin/goprojectname"],
             },
-            "go-framework/runtime": {
+            "go-framework.runtime": {
                 "plugin": "nil",
                 "stage-packages": [
                     "ca-certificates_data",
                 ],
             },
-            "go-framework/logging": {
+            "go-framework.logging": {
                 "plugin": "nil",
                 "override-build": (
                     "craftctl default\n"

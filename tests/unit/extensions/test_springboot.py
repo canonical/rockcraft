@@ -18,6 +18,11 @@
 import pytest
 from rockcraft import extensions
 from rockcraft.errors import ExtensionError
+from rockcraft.extensions.springboot import (
+    SpringBootFramework,
+    SpringBootFrameworkFactory,
+    SpringBootFrameworkV2,
+)
 
 
 @pytest.fixture(name="spring_boot_input_yaml")
@@ -581,15 +586,10 @@ def test_spring_boot_extension_extra_assets_start_with_app(
 
 def test_factory_dispatch_v1(tmp_path):
     """Factory returns SpringBootFramework for ubuntu@24.04."""
-    from rockcraft.extensions.springboot import (
-        SpringBootFramework,
-        SpringBootFrameworkFactory,
-        SpringBootFrameworkV2,
-    )
-
     instance = SpringBootFrameworkFactory(
         project_root=tmp_path,
         yaml_data={"name": "x", "base": "ubuntu@24.04"},
+        extension_name="spring-boot-framework",
     )
     assert isinstance(instance, SpringBootFramework)
     assert not isinstance(instance, SpringBootFrameworkV2)
@@ -597,32 +597,48 @@ def test_factory_dispatch_v1(tmp_path):
 
 def test_factory_dispatch_v2(tmp_path):
     """Factory returns SpringBootFrameworkV2 for ubuntu@26.04."""
-    from rockcraft.extensions.springboot import (
-        SpringBootFrameworkFactory,
-        SpringBootFrameworkV2,
-    )
-
     instance = SpringBootFrameworkFactory(
         project_root=tmp_path,
         yaml_data={"name": "x", "base": "ubuntu@26.04"},
+        extension_name="spring-boot-framework",
     )
     assert isinstance(instance, SpringBootFrameworkV2)
 
 
-def test_v2_supported_bases():
-    """SpringBootFrameworkV2 supports ubuntu@26.04."""
-    from rockcraft.extensions.springboot import SpringBootFrameworkV2
+def test_factory_dispatch_bare_by_build_base(tmp_path):
+    """Factory selects the framework version from a bare rock's build-base."""
+    v1 = SpringBootFrameworkFactory(
+        project_root=tmp_path,
+        yaml_data={
+            "name": "x",
+            "base": "bare",
+            "build-base": "ubuntu@24.04",
+        },
+        extension_name="spring-boot-framework",
+    )
+    assert isinstance(v1, SpringBootFramework)
+    assert not isinstance(v1, SpringBootFrameworkV2)
 
+    v2 = SpringBootFrameworkFactory(
+        project_root=tmp_path,
+        yaml_data={
+            "name": "x",
+            "base": "bare",
+            "build-base": "ubuntu@26.04",
+        },
+        extension_name="spring-boot-framework",
+    )
+    assert isinstance(v2, SpringBootFrameworkV2)
+
+
+def test_v2_supported_bases():
+    """SpringBootFrameworkV2 supports ubuntu@26.04 and bare rocks."""
     assert "ubuntu@26.04" in SpringBootFrameworkV2.get_supported_bases()
+    assert "bare" in SpringBootFrameworkV2.get_supported_bases()
 
 
 def test_factory_supported_bases():
     """SpringBootFrameworkFactory includes bases from both V1 and V2."""
-    from rockcraft.extensions.springboot import (
-        SpringBootFramework,
-        SpringBootFrameworkFactory,
-    )
-
     factory_bases = SpringBootFrameworkFactory.get_supported_bases()
     assert "ubuntu@26.04" in factory_bases
     for base in SpringBootFramework.get_supported_bases():
@@ -648,7 +664,7 @@ def test_spring_boot_extension_default_ubuntu_26_04(tmp_path, monkeypatch):
         "platforms": {"amd64": {}},
         "run-user": "_daemon_",
         "parts": {
-            "spring-boot-framework/install-app": {
+            "spring-boot-framework.install-app": {
                 "plugin": "maven",
                 "source": ".",
                 "build-packages": ["default-jdk", "maven"],
@@ -658,9 +674,9 @@ def test_spring_boot_extension_default_ubuntu_26_04(tmp_path, monkeypatch):
                     "find ${CRAFT_PART_INSTALL} -name '*-plain.jar' -type f -delete"
                 ),
             },
-            "spring-boot-framework/runtime": {
+            "spring-boot-framework.runtime": {
                 "plugin": "jlink",
-                "after": ["spring-boot-framework/install-app"],
+                "after": ["spring-boot-framework.install-app"],
                 "build-packages": ["default-jdk"],
             },
         },

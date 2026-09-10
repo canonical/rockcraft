@@ -29,7 +29,7 @@ from rockcraft.errors import ExtensionError
 from rockcraft.extensions._utils import find_ubuntu_base_python_version
 from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
 
-from ._python_utils import has_global_variable
+from ._python_utils import has_global_variable, uses_uv, validate_uv_lockfile
 from .app_parts import gen_logging_part
 from .extension import Extension, _FrameworkFactory
 
@@ -118,21 +118,16 @@ class FastAPIFramework(Extension):
             ]
 
         parts: dict[str, Any] = {
-            "fastapi-framework/dependencies": {
-                "plugin": "python",
-                "stage-packages": stage_packages,
-                "source": ".",
-                "python-packages": ["uvicorn"],
-                "python-requirements": ["requirements.txt"],
-                "build-environment": build_environment,
-            },
-            "fastapi-framework/install-app": {
+            self.get_part_name("dependencies"): self._dependencies_part(
+                stage_packages, build_environment
+            ),
+            self.get_part_name("install-app"): {
                 **self._get_install_app_part(),
                 "permissions": [{"owner": USER_UID, "group": USER_UID}],
             },
         }
         if self.yaml_data["base"] == "bare":
-            parts["fastapi-framework/runtime"] = {
+            parts[self.get_part_name("runtime")] = {
                 "plugin": "nil",
                 "override-build": "mkdir -m 777 ${CRAFT_PART_INSTALL}/tmp\n"
                 "ln -sf /usr/bin/bash ${CRAFT_PART_INSTALL}/usr/bin/sh",
@@ -145,14 +140,14 @@ class FastAPIFramework(Extension):
         else:
             # There is a bug where ca-certificates_data and python-venv both provide
             # etc/ssl/certs/ca-certificates.crt with different content.
-            parts["fastapi-framework/dependencies"]["stage"] = [
+            parts[self.get_part_name("dependencies")]["stage"] = [
                 "-etc/ssl/certs/ca-certificates.crt"
             ]
-            parts["fastapi-framework/runtime"] = {
+            parts[self.get_part_name("runtime")] = {
                 "plugin": "nil",
                 "stage-packages": ["ca-certificates_data"],
             }
-        parts["fastapi-framework/logging"] = gen_logging_part()
+        parts[self.get_part_name("logging")] = gen_logging_part()
         return parts
 
     def _get_install_app_part(self) -> dict[str, Any]:
@@ -185,13 +180,13 @@ class FastAPIFramework(Extension):
         """Return the prime list for the FastAPI project."""
         user_prime = (
             self.yaml_data.get("parts", {})
-            .get("fastapi-framework/install-app", {})
+            .get(self.get_part_name("install-app"), {})
             .get("prime", [])
         )
         if not all(re.match(f"-? *{self.IMAGE_BASE_DIR}/", p) for p in user_prime):
             raise ExtensionError(
                 "fastapi-framework extension requires the 'prime' entry in the "
-                f"fastapi-framework/install-app part to start with {self.IMAGE_BASE_DIR}/",
+                f"{self.get_part_name('install-app')} part to start with {self.IMAGE_BASE_DIR}/",
                 doc_slug="/reference/extensions/fastapi-framework",
                 logpath_report=False,
             )
@@ -212,6 +207,22 @@ class FastAPIFramework(Extension):
                     f"{self.IMAGE_BASE_DIR}/" + self._find_asgi_location().parts[0]
                 )
         return user_prime
+
+    def _dependencies_part(
+        self, stage_packages: list[str], build_environment: list[Any]
+    ) -> dict[str, Any]:
+        """Return the part that installs the project's dependencies.
+
+        Uses the uv plugin if the project is using uv, otherwise uses the python plugin.
+        """
+        return {
+            "plugin": "python",
+            "stage-packages": stage_packages,
+            "source": ".",
+            "python-packages": ["uvicorn"],
+            "python-requirements": ["requirements.txt"],
+            "build-environment": build_environment,
+        }
 
     def _asgi_path(self) -> str:
         asgi_location = self._find_asgi_location()
@@ -313,7 +324,7 @@ class FastAPIFrameworkV2(FastAPIFramework):
     @override
     def get_supported_bases() -> tuple[str, ...]:
         """Return supported bases."""
-        return ("ubuntu@26.04",)
+        return ("bare", "ubuntu@26.04")
 
     @staticmethod
     @override
@@ -323,6 +334,77 @@ class FastAPIFrameworkV2(FastAPIFramework):
         This is always True for V2
         """
         return True
+
+    @override
+    def _dependencies_part(
+        self, stage_packages: list[str], build_environment: list[Any]
+    ) -> dict[str, Any]:
+        """Return the part that installs the project's dependencies.
+
+        Uses the uv plugin if the project is using uv, otherwise uses the python plugin.
+        """
+        _uvicorn_package = "uvicorn~=0.52"
+        python_symlink = ""
+        uv_prefix = "${CRAFT_PART_INSTALL}"
+        if self.yaml_data["base"] == "bare":
+            python_version = find_ubuntu_base_python_version(
+                base=self.yaml_data["build-base"]
+            )
+            python_symlink = (
+                "\nmkdir -p ${CRAFT_PART_INSTALL}/bin"
+                f"\nln -sf /usr/bin/python{python_version} ${{CRAFT_PART_INSTALL}}/bin/python3"
+            )
+            build_environment = [{"PIP_PYTHON": f"$(which python{python_version})"}]
+            uv_prefix = "${CRAFT_PART_INSTALL}/usr"
+
+            stage_packages.append("python3-minimal_python3")
+        if uses_uv(self.project_root):
+            return {
+                "plugin": "uv",
+                "stage-packages": stage_packages,
+                "source": ".",
+                "build-snaps": ["astral-uv"],
+                "build-environment": build_environment,
+                "override-build": (
+                    "craftctl default\n"
+                    "uv pip install "
+                    "--python /usr/bin/python3 "
+                    f"--prefix {uv_prefix} "
+                    f"{_uvicorn_package}"
+                ),
+            }
+        return {
+            "plugin": "python",
+            "stage-packages": stage_packages,
+            "source": ".",
+            "python-requirements": ["requirements.txt"],
+            "build-environment": build_environment,
+            "python-packages": [
+                "--constraint=.uvicorn-constraints.txt",
+                "uvicorn",
+            ],
+            "override-build": (
+                f"printf '%s\\n' '{_uvicorn_package}'"
+                f" > .uvicorn-constraints.txt\n"
+                f"craftctl default{python_symlink}"
+            ),
+        }
+
+    @override
+    def _check_project(self) -> None:
+        """Ensure this extension can apply to the current rockcraft project."""
+        validate_uv_lockfile(self.project_root)
+        error_messages: list[str] = []
+        if not uses_uv(self.project_root):
+            error_messages = self._requirements_txt_error_messages()
+        if not self.yaml_data.get("services", {}).get("fastapi", {}).get("command"):
+            error_messages += self._asgi_entrypoint_error_messages()
+        if error_messages:
+            raise ExtensionError(
+                "\n".join("- " + message for message in error_messages),
+                doc_slug="/reference/extensions/fastapi-framework/#project-requirements",
+                logpath_report=False,
+            )
 
 
 FastAPIFrameworkFactory = _FrameworkFactory(FastAPIFramework, FastAPIFrameworkV2)

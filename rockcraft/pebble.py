@@ -367,8 +367,10 @@ class Pebble:
         "plugin": "nil",
         "stage-snaps": ["pebble/latest/stable"],
         # We need this because "services" is Optional, but the directory must exist
+        # and be writable by a non-root run-user. The sticky bit prevents users from
+        # deleting or renaming entries owned by other users.
         "override-prime": str(
-            f"craftctl default\n/bin/mkdir -p {PEBBLE_LAYERS_PATH}\n/bin/chmod 777 {PEBBLE_PATH}"
+            f"craftctl default\n/bin/mkdir -p {PEBBLE_LAYERS_PATH}\n/bin/chmod 1777 {PEBBLE_PATH}"
         ),
     }
     # The part spec for 25.10 and newer; pebble is in "usr/bin/pebble" because of the
@@ -434,7 +436,7 @@ class Pebble:
 
         tmp_pebble_layers_path = target_dir / self.PEBBLE_LAYERS_PATH
         tmp_pebble_layers_path.mkdir(parents=True)
-        (target_dir / self.PEBBLE_PATH).chmod(0o777)
+        (target_dir / self.PEBBLE_PATH).chmod(0o1777)
 
         tmp_new_layer = tmp_pebble_layers_path / new_layer_name
         with tmp_new_layer.open("w", encoding="utf-8") as layer_fd:
