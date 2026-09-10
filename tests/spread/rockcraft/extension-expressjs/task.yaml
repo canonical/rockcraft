@@ -84,14 +84,14 @@ execute: |
   if [ "${SCENARIO}" != "bare" ]; then
     echo "parts:" >> rockcraft.yaml
   fi
-  seperator='/'
+  separator='/'
   if [ "${SCENARIO}" == "ubuntu-26.04" ]; then
-    seperator='.'
+    separator='.'
   fi
   # test the expressjs service with a Node version specified
   node_version=20.18.2
   cat <<EOF >> rockcraft.yaml
-    expressjs-framework${seperator}install-app:
+    expressjs-framework${separator}install-app:
       npm-include-node: true
       npm-node-version: $node_version
   EOF
