@@ -13720,6 +13720,18 @@
         "echo [ Hello ]"
       ],
       "title": "Entrypoint-Command"
+    },
+    "extensions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of extensions to apply to the rock.",
+      "examples": [
+        [
+          "twelve-factor"
+        ]
+      ]
     }
   },
   "required": [
