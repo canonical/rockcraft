@@ -249,7 +249,9 @@ def test_post_prime_returns_false_when_nothing_changes(mocker, tmp_path):
     step_info.rootfs_dir = tmp_path / "base"
     step_info.rootfs_dir.mkdir()
 
-    mocker.patch.object(lifecycle_module.layers, "prune_prime_files", return_value=False)
+    mocker.patch.object(
+        lifecycle_module.layers, "prune_prime_files", return_value=False
+    )
     mocker.patch.object(lifecycle_module, "_python_usrmerge_fix", return_value=False)
     mocker.patch.object(lifecycle_module, "_python_v2_shebang_fix", return_value=False)
 
@@ -265,7 +267,9 @@ def test_post_prime_returns_true_when_any_fix_changes(mocker, tmp_path):
 
     (tmp_path / "file.txt").write_text("content")
 
-    mocker.patch.object(lifecycle_module.layers, "prune_prime_files", return_value=False)
+    mocker.patch.object(
+        lifecycle_module.layers, "prune_prime_files", return_value=False
+    )
     mocker.patch.object(lifecycle_module, "_python_usrmerge_fix", return_value=True)
     mocker.patch.object(lifecycle_module, "_python_v2_shebang_fix", return_value=False)
 
