@@ -217,6 +217,8 @@ class TestImage:
                     f"{image_dir}/bare:latest",
                     "--architecture",
                     expected.go_arch,
+                    "--created",
+                    "1970-01-01T00:00:00Z",
                     "--no-history",
                 ]
             ),
@@ -224,6 +226,29 @@ class TestImage:
         mock_inject_oci_fields.assert_called_once_with(
             image_dir / "bare:latest", arch_variant=expected.go_variant
         )
+
+    def test_new_oci_image_pins_created_timestamp(
+        self, mock_inject_oci_fields, mock_run, new_dir
+    ):
+        """The umoci config call pins --created so the digest is deterministic.
+
+        Regression test for skip-repack: without a fixed --created value,
+        'umoci new' embeds the current time in the image config, causing
+        base_digest to change across runs and invalidating overlay layer
+        state.
+        """
+        image_dir = Path("images/dir")
+        oci.Image.new_oci_image("bare@latest", image_dir=image_dir, arch="amd64")
+
+        config_calls = [
+            c for c in mock_run.mock_calls if c.args and "config" in c.args[0]
+        ]
+        assert len(config_calls) == 1
+
+        config_args = config_calls[0].args[0]
+        assert "--created" in config_args
+        assert config_args[config_args.index("--created") + 1] == "1970-01-01T00:00:00Z"
+        assert "--no-history" in config_args
 
     def test_copy_to(self, mock_run):
         image = oci.Image("a:b", Path("/c"))
