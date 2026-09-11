@@ -21,6 +21,7 @@ endif
 
 PRETTIER=npm exec --package=prettier@3.6.0 -- prettier --log-level warn # renovate: datasource=npm
 PRETTIER_FILES="**/*.{yaml,yml,json,json5,css,md}"
+TOMBI=uv tool run --from tombi==1.5.4 tombi # renovate: datasource=pypi
 
 # Cutoff (in seconds) before a test is considered slow by pytest
 SLOW_CUTOFF_TIME ?= 1
@@ -118,8 +119,8 @@ format-prettier: install-npm  ##- Format files with prettier
 	$(PRETTIER) --write $(PRETTIER_FILES)
 
 .PHONY: format-tombi
-format-tombi: install-tombi  ##- Format TOML files with tombi
-	tombi format
+format-tombi: install-uv  ##- Format TOML files with tombi
+	$(TOMBI) format
 
 .PHONY: lint-ruff
 lint-ruff: install-ruff  ##- Lint with ruff
@@ -204,11 +205,11 @@ ifneq ($(CI),)
 endif
 
 .PHONY: lint-tombi
-lint-tombi: install-tombi  ##- Check TOML formatting with tombi
+lint-tombi: install-uv  ##- Check TOML formatting with tombi
 ifneq ($(CI),)
 	@echo ::group::$@
 endif
-	tombi format --check --diff
+	$(TOMBI) format --check --diff
 ifneq ($(CI),)
 	@echo ::endgroup::
 endif
@@ -442,18 +443,6 @@ else ifneq ($(shell which brew),)
 	brew install shellcheck
 else
 	$(warning Shellcheck not installed. Please install it yourself.)
-endif
-
-.PHONY: install-tombi
-install-tombi:
-ifneq ($(shell which tombi),)
-else ifneq ($(shell which snap),)
-	sudo snap install --classic tombi
-else ifneq ($(shell which brew),)
-	brew install tombi
-else
-	make install-uv
-	uv tool install tombi
 endif
 
 .PHONY: install-ty
