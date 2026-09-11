@@ -17,8 +17,9 @@
 import datetime
 import os
 import subprocess
+import warnings
 from pathlib import Path
-from typing import cast
+from typing import Any, cast
 
 import pydantic
 import pytest
@@ -857,6 +858,37 @@ def test_provider_base(base, expected_base):
     actual_base = Project._providers_base(base)  # pylint: disable=protected-access
 
     assert actual_base == expected_base
+
+
+def test_project_marshal_exec_check_emits_no_pydantic_warning():
+    yaml_data = {
+        "name": "gubernator",
+        "version": "3.0.0",
+        "summary": "High-performance, distributed rate-limiting service",
+        "description": "example",
+        "base": "ubuntu@24.04",
+        "platforms": {"amd64": None},
+        "parts": {"foo": {"plugin": "nil"}},
+        "checks": {
+            "online": {
+                "override": "replace",
+                "period": "3s",
+                "exec": {"command": "/bin/healthcheck"},
+            }
+        },
+    }
+
+    project = Project.unmarshal(yaml_data)
+
+    with warnings.catch_warnings(record=True) as caught:
+        warnings.simplefilter("always")
+        dumped = project.marshal()
+
+    checks = cast(dict[str, Any], dumped["checks"])
+    assert checks["online"]["exec"]["command"] == "/bin/healthcheck"
+    assert not any(
+        "PydanticSerializationUnexpectedValue" in str(w.message) for w in caught
+    )
 
 
 def test_provider_base_error():
