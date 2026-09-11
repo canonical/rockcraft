@@ -10,14 +10,17 @@ execute: |
   # [docs:build-rock-end]
 
   # [docs:check-rock]
-  ls my-node-app_1.0_amd64.rock
+  ls my-node-app_1.0_$(dpkg --print-architecture).rock
   # [docs:check-rock-end]
 
   # test container execution
   docker images
 
   # [docs:skopeo-copy]
-  sudo rockcraft.skopeo --insecure-policy copy oci-archive:my-node-app_1.0_amd64.rock docker-daemon:my-node-app:1.0
+  sudo rockcraft.skopeo copy \
+    --insecure-policy \
+    oci-archive:my-node-app_1.0_$(dpkg --print-architecture).rock \
+    docker-daemon:my-node-app:1.0
   # [docs:skopeo-copy-end]
 
   rm *.rock

@@ -5,8 +5,13 @@ summary: A rock that bundles a simple nodejs app
 description: |
   This rock bundles a recent node runtime to serve a simple "hello-world" app.
 license: GPL-3.0
+# the platforms this rock should be built on and run on.
+# you can check your architecture with `dpkg --print-architecture`
 platforms:
   amd64:
+  # arm64:
+  # ppc64el:
+  # s390x:
 
 services:
   app:
