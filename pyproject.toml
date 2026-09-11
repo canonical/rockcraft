@@ -160,11 +160,11 @@ ensure_newline_before_comments = true
 line_length = 88
 
 [tool.pytest.ini_options]
+addopts = "--ignore=tests/spread"
+markers = ["slow: slow tests"]
 minversion = "7.0"
 testpaths = "tests"
 xfail_strict = true
-addopts = "--ignore=tests/spread"
-markers = ["slow: slow tests"]
 
 [tool.ruff]
 line-length = 88
