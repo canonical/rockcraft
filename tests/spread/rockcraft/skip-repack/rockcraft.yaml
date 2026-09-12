@@ -1,0 +1,14 @@
+name: skip-repack-test
+summary: An Ubuntu 24.04 rock
+description: |
+  Check if repacking will be properly skipped if no changes are made.
+version: "0.1"
+base: bare
+build-base: ubuntu@24.04
+
+platforms:
+  amd64:
+
+parts:
+  my-part:
+    plugin: nil
