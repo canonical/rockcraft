@@ -2,6 +2,8 @@ summary: go extension test
 environment:
   SCENARIO/bare: bare
   SCENARIO/base_2404: ubuntu-24.04
+  SCENARIO/base_2604: ubuntu-26.04
+  ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS: "true"
 
 execute: |
   NAME="go-${SCENARIO//./-}"
@@ -48,6 +50,10 @@ execute: |
   check_directory_ownership "/app"
   check_directory_ownership "/opt/promtail"
   check_directory_ownership "/etc/promtail"
+  if [ "${SCENARIO}" == "ubuntu-26.04" ]; then
+    docker run --rm --entrypoint /usr/bin/bash "${IMAGE}" -c \
+      "test -z \"\$(find /app-data/ ! -user '_daemon_')\" && test -w /app-data"
+  fi
 
   # ensure container doesn't exist
   docker rm -f "${NAME}-container"

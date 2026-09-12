@@ -16,9 +16,32 @@
 
 """Common extension application parts."""
 
+from typing import Any
+
 from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
 
+from .extension import Extension
+
 USER_UID: int = SUPPORTED_GLOBAL_USERNAMES["_daemon_"]["uid"]
+
+
+class AppDataDirMixin(Extension):
+    """Add the writable application data directory used by v2 frameworks."""
+
+    @property
+    def app_data_part_name(self) -> str:
+        """Return the name of the application data part."""
+        return self.get_part_name("app-data")
+
+    def get_parts_snippet(self) -> dict[str, Any]:
+        """Add the shared application data part to the framework parts."""
+        parts = dict(super().get_parts_snippet())
+        parts[self.app_data_part_name] = {
+            "plugin": "nil",
+            "override-build": "mkdir -p ${CRAFT_PART_INSTALL}/app-data",
+            "permissions": [{"path": "app-data", "owner": USER_UID, "group": USER_UID}],
+        }
+        return parts
 
 
 def gen_logging_part(

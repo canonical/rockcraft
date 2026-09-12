@@ -94,6 +94,10 @@ execute: |
   check_directory_ownership "/django"
   check_directory_ownership "/opt/promtail"
   check_directory_ownership "/etc/promtail"
+  if [ "${BASE}" == "ubuntu@26.04" ]; then
+    docker run --rm --entrypoint /usr/bin/bash "${IMAGE}" -c \
+      "test -z \"\$(find /app-data/ ! -user '_daemon_')\" && test -w /app-data"
+  fi
 
   # test the default django service
   docker run --name "${CONTAINER}" -d -p 8138:8000 "${IMAGE}"

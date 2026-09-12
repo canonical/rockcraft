@@ -84,6 +84,10 @@ execute: |
   retry -n 5 --wait 3 curl localhost:8080
   http_status=$(curl -s -o /dev/null -w "%{http_code}" localhost:8080)
   [ "${http_status}" -eq 404 ]
+  if [ "${BASE}" == "ubuntu@26.04" ]; then
+    docker run --rm --entrypoint /usr/bin/bash "${IMAGE}" -c \
+      "test -z \"\$(find /app-data/ ! -user '_daemon_')\" && test -w /app-data"
+  fi
 
 restore: |
   NAME="spring-boot-${BASE//@/-}-${PROJECT_BASE}"

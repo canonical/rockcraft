@@ -4,7 +4,9 @@ kill-timeout: 45m
 environment:
   SCENARIO/bare: bare
   SCENARIO/base_2404: ubuntu-24.04
+  SCENARIO/base_2604: ubuntu-26.04
   UV_USE_IO_URING: "0"
+  ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS: "true"
 
 execute: |
   NAME="expressjs-${SCENARIO//./-}"
@@ -32,7 +34,7 @@ execute: |
         - findutils
   EOL
   fi
-   
+
   function run_test() {
     # rockcraft clean is required here because the cached layer writes to npmrc
     # multiple times, causing the app to crash on first run.
@@ -58,6 +60,10 @@ execute: |
     check_directory_ownership "/lib/node_modules/app"
     check_directory_ownership "/opt/promtail"
     check_directory_ownership "/etc/promtail"
+    if [ "${SCENARIO}" == "ubuntu-26.04" ]; then
+      docker run --rm --entrypoint /usr/bin/bash "${IMAGE}" -c \
+        "test -z \"\$(find /app-data/ ! -user '_daemon_')\" && test -w /app-data"
+    fi
 
     # Ensure image exists
     docker images "${IMAGE}" | MATCH "${NAME}"
@@ -78,10 +84,14 @@ execute: |
   if [ "${SCENARIO}" != "bare" ]; then
     echo "parts:" >> rockcraft.yaml
   fi
+  separator='/'
+  if [ "${SCENARIO}" == "ubuntu-26.04" ]; then
+    separator='.'
+  fi
   # test the expressjs service with a Node version specified
   node_version=20.18.2
   cat <<EOF >> rockcraft.yaml
-    expressjs-framework/install-app:
+    expressjs-framework${separator}install-app:
       npm-include-node: true
       npm-node-version: $node_version
   EOF
