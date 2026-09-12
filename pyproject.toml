@@ -377,6 +377,9 @@ max-args = 8
 classmethod-decorators = ["pydantic.validator", "pydantic.root_validator"]
 
 [tool.ruff.lint.per-file-ignores]
+"extensions/**.py" = [
+    "INP001", # These are dumped as data files into rocks, not part of any Python package.
+]
 "tests/**.py" = [ # Some things we want for the main project are unnecessary in tests.
     "D",       # Ignore docstring rules in tests
     "ANN",     # Ignore type annotations in tests
