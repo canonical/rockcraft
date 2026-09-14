@@ -11,7 +11,7 @@ rocks.
 
 It facilitates the installation of Django application dependencies, including
 Gunicorn, inside the rock. Additionally, it transfers your project files to
-``/django/app`` within the rock.
+``/django/app`` within the rock (``/app`` on ubuntu@26.04).
 By default, the system foundation, or base, is set as ``bare`` to generate a
 lightweight image.
 
