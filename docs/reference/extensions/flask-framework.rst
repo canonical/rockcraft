@@ -10,7 +10,7 @@ The Flask extension streamlines the process of building Flask application rocks.
 
 It facilitates the installation of Flask application dependencies, including
 Gunicorn, inside the rock. Additionally, it transfers your project files to
-``/flask/app`` within the rock (``/app`` on ubuntu@26.04).
+``/flask/app`` within the rock (``/app`` on Ubuntu 26.04).
 By default, the system foundation, or base, is set as ``bare`` to generate a
 lightweight image.
 
