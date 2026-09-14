@@ -79,7 +79,7 @@ Flask and Django application directory
 
 The ``ubuntu@26.04`` versions of ``flask-framework`` and ``django-framework``
 extensions now place application source files in ``/app``. This aligns rocks built with these
-extensions with the directory layout expected by the version 2 of the library ``paas-charm``.
+extensions with the directory layout expected by version 2 of the library ``paas-charm``.
 
 Support for ARMv8 in 32-bit mode (armv8l)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
