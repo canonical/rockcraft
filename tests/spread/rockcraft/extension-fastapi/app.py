@@ -12,7 +12,7 @@ async def root():
     return "ok"
 
 
-@app.post("/write-app-data", response_class=PlainTextResponse)
+@app.post("/write-data", response_class=PlainTextResponse)
 def write_app_data():
     APP_DATA_TEST_FILE.write_text("written by FastAPI\n", encoding="utf-8")
     return "written"

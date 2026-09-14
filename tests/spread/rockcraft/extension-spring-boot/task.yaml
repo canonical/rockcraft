@@ -61,6 +61,27 @@ execute: |
     --packaging jar \
     --java-version "${JAVA_VERSION}"
   cd "${NAME}-app" || exit 1
+  cat > src/main/java/com/example/demo/WriteDataController.java <<'EOF'
+  package com.example.demo;
+
+  import java.io.IOException;
+  import java.nio.file.Files;
+  import java.nio.file.Path;
+  import org.springframework.web.bind.annotation.GetMapping;
+  import org.springframework.web.bind.annotation.RestController;
+
+  @RestController
+  public class WriteDataController {
+      @GetMapping("/write-data")
+      public boolean writeData() throws IOException {
+          Files.writeString(
+              Path.of("/app-data/spring-boot-test.txt"),
+              "written by spring boot\n"
+          );
+          return true;
+      }
+  }
+  EOF
   run_rockcraft init --name "${NAME}" --profile spring-boot-framework
 
   # Replace base & build-base with ubuntu@<base>
@@ -84,9 +105,9 @@ execute: |
   retry -n 5 --wait 3 curl localhost:8080
   http_status=$(curl -s -o /dev/null -w "%{http_code}" localhost:8080)
   [ "${http_status}" -eq 404 ]
-  if [ "${BASE}" == "ubuntu@26.04" ]; then
-    docker run --rm --entrypoint /usr/bin/bash "${IMAGE}" -c \
-      "test -z \"\$(find /app-data/ ! -user '_daemon_')\" && test -w /app-data"
+  if [ "${BUILD_BASE}" = "ubuntu@26.04" ]; then
+    [ "$(curl -sSf localhost:8080/write-data)" = "true" ]
+    docker exec "${NAME}-container" test -f /app-data/spring-boot-test.txt
   fi
 
 restore: |

@@ -15,9 +15,19 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
+from pathlib import Path
+
 from django.contrib import admin
+from django.http import JsonResponse
 from django.urls import path
+
+
+def write_data(request):
+    Path("/app-data/django-test.txt").write_text("written by django\n")
+    return JsonResponse(True, safe=False)
+
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("write-data", write_data),
 ]

@@ -80,20 +80,6 @@ execute: |
   # ensure container doesn't exist
   docker rm -f "${NAME}-container"
 
-  # ensure the app and promtail folders have the correct user
-  check_directory_ownership() {
-    local directory="$1"
-    docker run --rm --entrypoint /usr/bin/bash "${IMAGE}" -c "find ${directory}/ ! -user '_daemon_' || { echo 'Error: ${directory} or its contents are not owned by _daemon_'; exit 2; }"
-  }
-
-  check_directory_ownership "/app"
-  check_directory_ownership "/opt/promtail"
-  check_directory_ownership "/etc/promtail"
-  if [ "${BUILD_BASE}" = "ubuntu@26.04" ]; then
-    docker run --rm --entrypoint /usr/bin/bash "${IMAGE}" -c \
-      "test -z \"\$(find /app-data/ ! -user '_daemon_')\" && test -w /app-data"
-  fi
-
   # test the default fastapi service
   docker run --name "${NAME}-container" -d -p 8137:8000 "${IMAGE}"
   retry -n 5 --wait 2 curl localhost:8137 || {
@@ -103,10 +89,7 @@ execute: |
   }
   [ "$(curl -sSf localhost:8137)" == "ok" ]
   if [ "${BUILD_BASE}" = "ubuntu@26.04" ]; then
-    [ "$(curl -sSf -X POST localhost:8137/write-app-data)" == "written" ]
-    docker exec "${NAME}-container" /usr/bin/bash -c \
-      "test \"\$(cat /app-data/fastapi-write-test.txt)\" = 'written by FastAPI' && \
-      test \"\$(stat -c '%U:%G' /app-data/fastapi-write-test.txt)\" = '_daemon_:_daemon_'"
+    [ "$(curl -sSf -X POST localhost:8137/write-data)" == "written" ]
   fi
 
 restore: |

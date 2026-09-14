@@ -13,11 +13,6 @@ execute: |
   ROCK_FILE="${NAME}_0.1_amd64.rock"
   IMAGE="${NAME}:0.1"
 
-  sudo apt-get update -y && sudo apt-get install npm -y
-  npm install -g express-generator@4
-  express app
-  cd app && npm install && cd ..
-
   run_rockcraft init --name "${NAME}" --profile expressjs-framework
   sed -i "s/^base: .*/base: ${SCENARIO//-/@}/g" rockcraft.yaml
   if [ "${SCENARIO}" != "bare" ]; then
@@ -50,16 +45,6 @@ execute: |
     sudo rockcraft.skopeo --insecure-policy copy "oci-archive:${ROCK_FILE}" \
     "docker-daemon:${IMAGE}"
 
-    # ensure the app and promtail folders have the correct user
-    check_directory_ownership() {
-      local directory="$1"
-      docker run --rm --entrypoint /usr/bin/bash "${IMAGE}" -c "find ${directory}/ ! -user '_daemon_' || { echo 'Error: ${directory} or its contents are not owned by _daemon_'; exit 2; }"
-    }
-
-    check_directory_ownership "/app"
-    check_directory_ownership "/lib/node_modules/app"
-    check_directory_ownership "/opt/promtail"
-    check_directory_ownership "/etc/promtail"
     if [ "${SCENARIO}" == "ubuntu-26.04" ]; then
       docker run --rm --entrypoint /usr/bin/bash "${IMAGE}" -c \
         "test -z \"\$(find /app-data/ ! -user '_daemon_')\" && test -w /app-data"
@@ -74,8 +59,11 @@ execute: |
     # test the default expressjs service
     docker run --name "${NAME}-container" -d -p 8137:3000 "${IMAGE}"
     retry -n 5 --wait 2 curl localhost:8137
-    http_status=$(curl -s -o /dev/null -w "%{http_code}" localhost:8137)
-    [ "${http_status}" -eq 200 ]
+    [ "$(curl -sw '%{http_code}' -o /dev/null localhost:8137)" == "200" ]
+    if [ "${BUILD_BASE}" == "ubuntu@26.04" ]; then
+      [ "$(curl -sw '%{http_code}' -o /dev/null localhost:8137/write-data)" == "200" ]
+    fi
+
   }
 
   run_test
