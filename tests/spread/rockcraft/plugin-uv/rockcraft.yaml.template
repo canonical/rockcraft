@@ -1,5 +1,6 @@
 name: plugin-uv
-base: ubuntu@24.04
+base: PLACEHOLDER_BASE
+build-base: PLACEHOLDER_BUILD_BASE
 version: "0.1"
 summary: Test the uv plugin
 description: Test the uv plugin
@@ -13,4 +14,4 @@ parts:
     build-snaps:
       - astral-uv
     stage-packages:
-      - python3
+      - PLACEHOLDER_PYTHON_STAGE

@@ -75,12 +75,11 @@ class RockcraftLifecycleService(LifecycleService):
         # Fix: overlay content is not included in step_info so we just list the prime_dir
         files = {str(p.relative_to(prime_dir)) for p in prime_dir.rglob("*")}
 
-        layers.prune_prime_files(prime_dir, files, base_layer_dir)
+        changed = layers.prune_prime_files(prime_dir, files, base_layer_dir)
+        changed |= _python_usrmerge_fix(step_info)
+        changed |= _python_v2_shebang_fix(step_info)
 
-        _python_usrmerge_fix(step_info)
-        _python_v2_shebang_fix(step_info)
-
-        return True
+        return changed
 
     @override
     @staticmethod
@@ -91,7 +90,7 @@ class RockcraftLifecycleService(LifecycleService):
 
         Some rockcraft-specific quirks include:
         - Legacy bases (20.04, 22.04, 24.04) use Python v1, Poetry v1, and uv v1 plugins
-        - Newer bases (25.10, devel) use Python v2 and omit Poetry and uv (no v2 available yet)
+        - Newer bases use Python v2 and omit Poetry; uv is available on 26.04
         - The dotnet v1 plugin is only available on legacy bases (20.04, 22.04, 24.04)
 
         :param build_info: The BuildInfo for the build, containing the build base.
@@ -100,47 +99,50 @@ class RockcraftLifecycleService(LifecycleService):
         return plugins.get_plugin_group(str(build_info.build_base))
 
 
-def _python_usrmerge_fix(step_info: StepInfo) -> None:
+def _python_usrmerge_fix(step_info: StepInfo) -> bool:
     """Fix 'lib64' symlinks created by the Python plugin on ubuntu@24.04 projects."""
     build_base = step_info.project_info.build_base
     if build_base != "ubuntu@24.04":
         # The issue only affects rocks with 24.04 build base.
-        return
+        return False
 
     state = step_info.state
     if state is None:
         # Can't inspect the files without a StepState.
-        return
+        return False
 
     if state.part_properties["plugin"] not in get_python_plugins(build_base):
         # Be conservative and don't try to fix the files if they didn't come
         # from a Python plugin.
-        return
+        return False
 
-    if "lib64" not in state.files:
-        return
+    if Path("lib64") not in state.files:
+        return False
 
     prime_dir = step_info.prime_dir
     lib64 = prime_dir / "lib64"
     if lib64.is_symlink() and lib64.readlink() == Path("lib"):
         lib64.unlink()
+        return True
+
+    return False
 
 
-def _python_v2_shebang_fix(step_info: StepInfo) -> None:
+def _python_v2_shebang_fix(step_info: StepInfo) -> bool:
     build_base = step_info.project_info.build_base
     if build_base in ("ubuntu@20.04", "ubuntu@22.04", "ubuntu@24.04"):
         # The issue only affects rocks with 25.10 and newer build bases.
-        return
+        return False
 
     state = step_info.state
     if state is None:
         # Can't inspect the files without a StepState.
-        return
+        return False
 
     if state.part_properties["plugin"] not in get_python_plugins(build_base):
         # Be conservative and don't try to fix the files if they didn't come
         # from a Python plugin.
-        return
+        return False
 
     prime_dir = step_info.prime_dir
 
@@ -152,6 +154,7 @@ def _python_v2_shebang_fix(step_info: StepInfo) -> None:
     stage_re = re.compile(f"#!{stage_dir}/.*/python3.*$")
 
     regex_and_dirs = [(install_re, install_dir), (stage_re, stage_dir)]
+    changed = False
 
     for filename in state.files:
         filepath = prime_dir / filename
@@ -176,3 +179,6 @@ def _python_v2_shebang_fix(step_info: StepInfo) -> None:
                     break
         if replaced:
             filepath.write_text(newline + remainder)
+            changed = True
+
+    return changed

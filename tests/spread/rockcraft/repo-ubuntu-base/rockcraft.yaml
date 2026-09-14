@@ -12,6 +12,9 @@ package-repositories:
   - type: apt
     ppa: deadsnakes/ppa
     priority: always
+    # TODO: we declare the key here but craft-archives should support querying the
+    # ppa's key through a proxy (OpenStack)
+    key-id: F23C5A6CF475977595C89F51BA6932366A755776
 
 parts:
   hello:

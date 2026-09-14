@@ -231,7 +231,7 @@ def test_invalid_yaml_error_messages(fake_services, expected_message):
     "project_keys",
     [
         {
-            "base": "ubuntu@25.10",
+            "base": "ubuntu@26.04",
             "build-base": "devel",
             "parts": {
                 "empty": {

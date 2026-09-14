@@ -48,7 +48,7 @@ jobs:
   snap-tests:
     needs: [predicate, snap-build]
     if: needs.predicate.outputs.should_run == 'true'
-    runs-on: [self-hosted, spread-installed]
+    runs-on: [self-hosted, spread-enabled]
 
     steps:
       - name: Cleanup job workspace
@@ -72,7 +72,7 @@ jobs:
         run: spread tests/spread/rockcraft/remote-build
       - name: Run large/flaky tests
         id: flaky
-        run: spread google:tests/spread/manual/
+        run: spread openstack:tests/spread/manual/
 
       - name: Discard spread workers
         if: always()

@@ -16,6 +16,7 @@
 
 """The Rockcraft uv plugin."""
 
+import pathlib
 from textwrap import dedent
 
 from craft_parts.plugins import uv_plugin
@@ -29,8 +30,8 @@ class UvPlugin(uv_plugin.UvPlugin):
 
     @override
     def _should_remove_symlinks(self) -> bool:
-        """Overridden because for ubuntu bases we must always remove the symlinks."""
-        return python_common.should_remove_symlinks(self._part_info)
+        """Remove venv Python symlinks when the payload already provides Python."""
+        return self._is_2604() or python_common.should_remove_symlinks(self._part_info)
 
     @override
     def _get_system_python_interpreter(self) -> str | None:
@@ -45,6 +46,16 @@ class UvPlugin(uv_plugin.UvPlugin):
     def _get_script_interpreter(self) -> str:
         """Overridden because Python is always available in /bin."""
         return python_common.get_script_interpreter()
+
+    def _is_2604(self) -> bool:
+        return self._part_info.project_info.build_base == "ubuntu@26.04"
+
+    @override
+    def _get_venv_directory(self) -> pathlib.Path:
+        """Keep the venv separate from a staged usrmerged filesystem."""
+        if self._is_2604():
+            return self._part_info.part_install_dir / ".venv"
+        return super()._get_venv_directory()
 
     @override
     def _get_rewrite_shebangs_commands(self) -> list[str]:
@@ -67,4 +78,14 @@ class UvPlugin(uv_plugin.UvPlugin):
     @override
     def get_build_commands(self) -> list[str]:
         """Overridden to add a sitecustomize.py."""
-        return python_common.wrap_build_commands(super().get_build_commands())
+        commands = super().get_build_commands()
+        if self._is_2604():
+            install_dir = self._part_info.part_install_dir
+            venv_dir = self._get_venv_directory()
+            commands.append(
+                f'cp -a "{venv_dir}/bin/." "{install_dir}/usr/bin/"\n'
+                f'cp -a "{venv_dir}/lib/." "{install_dir}/usr/lib/"\n'
+                f'mv "{venv_dir}/pyvenv.cfg" "{install_dir}/pyvenv.cfg"\n'
+                f'rm -rf "{venv_dir}"'
+            )
+        return python_common.wrap_build_commands(commands)

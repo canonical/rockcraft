@@ -32,6 +32,7 @@ from craft_application.models.base import alias_generator
 from craft_application.models.project import DevelBaseInfo
 from craft_platforms import DebianArchitecture
 from craft_providers import bases
+from craft_providers.bases import BuilddBaseAlias
 from craft_providers.errors import BaseConfigurationError
 from pydantic import GetCoreSchemaHandler
 from pydantic_core import core_schema
@@ -69,6 +70,7 @@ BaseT = Literal[
     "ubuntu@24.04",
     "ubuntu@25.10",
     "ubuntu@26.04",
+    "ubuntu@26.10",
 ]
 BuildBaseT = typing.Annotated[
     Literal[
@@ -498,4 +500,9 @@ class Project(BaseProject):
     @classmethod
     @override
     def _get_devel_bases(cls) -> Iterable[DevelBaseInfo]:
-        return []
+        return [
+            DevelBaseInfo(
+                current_devel_base=BuilddBaseAlias.STONKING,
+                devel_base=BuilddBaseAlias.DEVEL,
+            )
+        ]

@@ -30,25 +30,33 @@ In this documentation
     :widths: 35 65
     :header-rows: 0
 
-    * - **Tutorial**
-      - :ref:`Build your first rock <tutorial-create-a-hello-world-rock>`
-    * - **Installation and setup**
-      - :ref:`how-to-quickstart-guide`
-    * - **Vocabulary and syntax**
-      - :ref:`reference-commands` • :ref:`reference-rockcraft-yaml`
-    * - **Platform compatibility**
-      - :ref:`explanation-bases` • :ref:`how-to-specify-a-base` •
-        :ref:`Build remotely using Launchpad<how-to-outsource-rock-builds-to-launchpad>`
-    * - **Software integration**
-      - :ref:`parts` • :ref:`reference-plugins` •
-        :ref:`how-to-override-a-plugins-build` •
-        :ref:`reference-extensions`
+    * - **Get started**
+      - :ref:`Build your first rock <tutorial-create-a-hello-world-rock>` •
+        :ref:`how-to-quickstart-guide`
+    * - **Base**
+      - :ref:`Overview <explanation-bases>` • :ref:`how-to-specify-a-base` •
+        :ref:`Upgrade to the newest base <how-to-migrate-2604>`
+    * - **Configuration**
+      - :ref:`About parts <parts>` •
+        :ref:`reference-rockcraft-yaml`
+    * - **Plugins**
+      - :ref:`how-to-override-a-plugins-build` •
+        :ref:`Plugins available <reference-plugins>`
+    * - **Rockcraft CLI**
+      - :ref:`reference-commands`
     * - **12-factor apps**
-      - :ref:`tutorial-build-a-rock-for-a-django-app` •
-        :ref:`tutorial-build-a-rock-for-an-express-app` •
-        :ref:`tutorial-build-a-rock-for-a-fastapi-app` •
-        :ref:`tutorial-build-a-rock-for-a-flask-app` •
-        :ref:`tutorial-build-a-rock-for-a-go-app` •
+      - :ref:`Flask tutorial <tutorial-build-a-rock-for-a-flask-app>` •
+        :ref:`Flask reference <reference-flask-framework>` •
+        :ref:`Django tutorial <tutorial-build-a-rock-for-a-django-app>` •
+        :ref:`Django reference <reference-django-framework>` •
+        :ref:`Go tutorial <tutorial-build-a-rock-for-a-go-app>` •
+        :ref:`Go reference <reference-go-framework>` •
+        :ref:`Express tutorial <tutorial-build-a-rock-for-an-express-app>` •
+        :ref:`Express reference <reference-express-framework>` •
+        :ref:`FastAPI tutorial <tutorial-build-a-rock-for-a-fastapi-app>` •
+        :ref:`FastAPI reference <reference-fastapi-framework>` •
+        :ref:`Spring Boot tutorial <tutorial-build-a-rock-for-a-spring-boot-app>` •
+        :ref:`Spring Boot reference <reference-spring-boot-framework>` •
         :ref:`Set-up 12-Factor rocks <set-up-web-app-rock>` •
         :ref:`Use rocks for 12-Factor apps <use-web-app-rock>`
     * - **Process manager**
@@ -60,9 +68,11 @@ In this documentation
         :ref:`Migrate Docker images to chiseled rocks <how-to-migrate-a-docker-image-to-a-chiselled-rock>` •
         :ref:`Install a custom slice <how-to-install-a-custom-package-slice>` •
         :ref:`Define a non root user <how-to-add-an-internal-user>`
+    * - **Remote and automated builds**
+      - :ref:`Use the Rockcraft pack GitHub Action <how-to-use-the-rockcraft-pack-github-action>` •
+        :ref:`Multi-architecture builds <how-to-outsource-rock-builds-to-launchpad>`
     * - **Distribution**
-      - :ref:`Publish a rock to a registry <how-to-publish-a-rock-to-a-registry>` •
-        :ref:`Use the Rockcraft pack GitHub Action<how-to-use-the-rockcraft-pack-github-action>`
+      - :ref:`Publish a rock to a registry <how-to-publish-a-rock-to-a-registry>`
 
 How this documentation is organized
 -----------------------------------

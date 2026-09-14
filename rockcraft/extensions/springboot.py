@@ -25,7 +25,7 @@ from typing_extensions import override
 
 from rockcraft.errors import ExtensionError
 
-from .extension import Extension
+from .extension import Extension, _FrameworkFactory
 
 
 class SpringBootFramework(Extension):
@@ -67,13 +67,13 @@ class SpringBootFramework(Extension):
 
         snippet["parts"] = {
             **self.gen_gradle_init_script_part(),
-            "spring-boot-framework/install-app": self.gen_install_app_part(),
-            "spring-boot-framework/runtime": self.gen_runtime_app_part(),
+            self.get_part_name("install-app"): self.gen_install_app_part(),
+            self.get_part_name("runtime"): self.gen_runtime_app_part(),
         }
 
         assets_part = self.gen_assets_part()
         if assets_part:
-            snippet["parts"]["spring-boot-framework/assets"] = assets_part
+            snippet["parts"][self.get_part_name("assets")] = assets_part
 
         return snippet
 
@@ -160,7 +160,7 @@ class SpringBootFramework(Extension):
         """Return the user's override-build part for gradle-init-script part."""
         return (
             self.yaml_data.get("parts", {})
-            .get("spring-boot-framework/gradle-init-script", {})
+            .get(self.get_part_name("gradle-init-script"), {})
             .get("override-build", "")
         )
 
@@ -169,7 +169,7 @@ class SpringBootFramework(Extension):
         if not self.user_gradle_init_script_part_override_build_override:
             return {}
         return {
-            "spring-boot-framework/gradle-init-script": {
+            self.get_part_name("gradle-init-script"): {
                 "plugin": "nil",
                 "source": ".",
                 "override-build": self.user_gradle_init_script_part_override_build_override,
@@ -208,7 +208,7 @@ class SpringBootFramework(Extension):
     def _user_install_app_build_packages_override(self) -> list[str]:
         return (
             self.yaml_data.get("parts", {})
-            .get("spring-boot-framework/install-app", {})
+            .get(self.get_part_name("install-app"), {})
             .get("build-packages", [])
         )
 
@@ -223,8 +223,10 @@ class SpringBootFramework(Extension):
     # discovered at build time from build/libs/ (bootJar's output directory).
     GRADLE_OVERRIDE_BUILD_COMMANDS = [
         "craftctl default",
-        "SPRING_FAT_JAR=$(find ${CRAFT_PART_BUILD}/build/libs"
-        " -name '*.jar' ! -name '*-plain.jar' -type f -printf '%f\\n' | head -1)",
+        (
+            "SPRING_FAT_JAR=$(find ${CRAFT_PART_BUILD}/build/libs"
+            " -name '*.jar' ! -name '*-plain.jar' -type f -printf '%f\\n' | head -1)"
+        ),
         '[ -n "${SPRING_FAT_JAR}" ] || (echo "ERROR: could not find Spring Boot fat JAR in build/libs" && exit 1)',
         'find ${CRAFT_PART_INSTALL}/jar -name "*.jar" ! -name "${SPRING_FAT_JAR}" -delete',
     ]
@@ -243,13 +245,13 @@ class SpringBootFramework(Extension):
 
         override_build_cmds: list[str] = []
         if self.yaml_data.get("parts", {}).get(
-            "spring-boot-framework/gradle-init-script", {}
+            self.get_part_name("gradle-init-script"), {}
         ):
             gradle_install_app_part["build-environment"] = [
                 {"GRADLE_USER_HOME": "${CRAFT_PART_BUILD}/.gradle/"}
             ]
             gradle_install_app_part["after"] = [
-                "spring-boot-framework/gradle-init-script"
+                self.get_part_name("gradle-init-script")
             ]
             override_build_cmds += [
                 "mkdir -p ${CRAFT_PART_BUILD}/.gradle/",
@@ -278,12 +280,12 @@ class SpringBootFramework(Extension):
         """Return the runtime part."""
         user_build_packages_override = (
             self.yaml_data.get("parts", {})
-            .get("spring-boot-framework/runtime", {})
+            .get(self.get_part_name("runtime"), {})
             .get("build-packages")
         )
         runtime_part = {
             "plugin": "jlink",
-            "after": ["spring-boot-framework/install-app"],
+            "after": [self.get_part_name("install-app")],
             "build-packages": (
                 user_build_packages_override
                 if user_build_packages_override
@@ -321,14 +323,14 @@ class SpringBootFramework(Extension):
         """Return the assets stage list for the Spring Boot project."""
         user_stage: list[str] = (
             self.yaml_data.get("parts", {})
-            .get("spring-boot-framework/assets", {})
+            .get(self.get_part_name("assets"), {})
             .get("stage", [])
         )
 
         if not all(re.match("-? *app/", p) for p in user_stage):
             raise ExtensionError(
                 "The spring-boot-framework extension requires the 'stage' entry in the "
-                "spring-boot-framework/assets part to start with 'app/'",
+                f"{self.get_part_name('assets')} part to start with 'app/'",
                 doc_slug="/reference/extensions/spring-boot-framework",
                 logpath_report=False,
             )
@@ -342,3 +344,29 @@ class SpringBootFramework(Extension):
                 if (self.project_root / f).exists()
             ]
         return user_stage
+
+
+class SpringBootFrameworkV2(SpringBootFramework):
+    """Extension for 12-factor Spring Boot applications targeting ubuntu@26.04.
+
+    For now this is behaviourally identical to :class:`SpringBootFramework`; it exists so the
+    framework can dispatch to a paas-charm 2.0 implementation in the future. Only the
+    supported base differs.
+    """
+
+    @staticmethod
+    @override
+    def get_supported_bases() -> tuple[str, ...]:
+        """Return supported bases."""
+        return ("bare", "ubuntu@26.04")
+
+    @staticmethod
+    @override
+    def is_experimental(base: str | None) -> bool:
+        """Check if the extension is in an experimental state."""
+        return True
+
+
+SpringBootFrameworkFactory = _FrameworkFactory(
+    SpringBootFramework, SpringBootFrameworkV2
+)

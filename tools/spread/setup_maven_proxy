@@ -1,0 +1,46 @@
+#!/bin/bash
+
+
+if [ -n "${HTTP_PROXY:-}" ] && [ -n "${HTTPS_PROXY:-}" ] && [ -n "${NO_PROXY:-}" ]; then
+  echo "Configuring proxy for Maven"
+
+  mkdir -p ~/.m2
+
+  cat <<EOF > ~/.m2/settings.xml
+<settings>
+  <proxies>
+    <proxy>
+      <id>ps7-http</id>
+      <active>true</active>
+      <protocol>http</protocol>
+      <host>HTTP_PROXY_HOST</host>
+      <port>HTTP_PROXY_PORT</port>
+      <nonProxyHosts>NO_PROXY</nonProxyHosts>
+    </proxy>
+    <proxy>
+      <id>ps7-https</id>
+      <active>true</active>
+      <protocol>https</protocol>
+      <host>HTTPS_PROXY_HOST</host>
+      <port>HTTPS_PROXY_PORT</port>
+      <nonProxyHosts>NO_PROXY</nonProxyHosts>
+    </proxy>
+  </proxies>
+</settings>
+EOF
+
+  # set http proxy by splitting '<scheme>://<host>:<port>' into the host and port
+  http_proxy_url="${HTTP_PROXY#*://}"                                    # strip '<scheme>://'
+  sed -i "s/HTTP_PROXY_HOST/${http_proxy_url%:*}/"  ~/.m2/settings.xml   # strip ':<port>'
+  sed -i "s/HTTP_PROXY_PORT/${http_proxy_url##*:}/" ~/.m2/settings.xml   # strip '<host>:'
+
+  # set https proxy by splitting '<scheme>://<host>:<port>' into the host and port
+  https_proxy_url="${HTTPS_PROXY#*://}"                                  # strip '<scheme>://'
+  sed -i "s/HTTPS_PROXY_HOST/${https_proxy_url%:*}/"  ~/.m2/settings.xml # strip ':<port>'
+  sed -i "s/HTTPS_PROXY_PORT/${https_proxy_url##*:}/" ~/.m2/settings.xml # strip '<host>:'
+
+  # set no proxy
+  # Maven's nonProxyHosts uses "|" as separator instead of ","
+  no_proxy_urls="${NO_PROXY//,/|}"
+  sed -i "s/NO_PROXY/$no_proxy_urls/" ~/.m2/settings.xml
+fi

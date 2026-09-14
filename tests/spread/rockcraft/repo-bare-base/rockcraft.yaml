@@ -13,6 +13,9 @@ package-repositories:
   - type: apt
     ppa: snappy-dev/snapcraft-daily
     priority: always
+    # TODO: we declare the key here but craft-archives should support querying the
+    # ppa's key through a proxy (OpenStack)
+    key-id: 78E1918602959B9C59103100F1831DDAFC42E99D
 
 parts:
   hello:

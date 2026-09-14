@@ -1,3 +1,44 @@
 {
   extends: ["github>canonical/starflow:renovate.json5"],
+
+  // The docs build's own requirements.txt is pinned intentionally; never bump it.
+  ignorePaths: ["docs/requirements.txt"],
+
+  packageRules: [
+    // Major bumps for tutorial deps must be reviewed/updated manually
+    // (tutorial prose, screenshots and Spread tests may need matching edits).
+    {
+      matchFileNames: ["docs/tutorial/code/**"],
+      matchUpdateTypes: ["major"],
+      enabled: false,
+    },
+    // Lump all minor/patch bumps for tutorial deps into a single PR.
+    {
+      matchFileNames: ["docs/tutorial/code/**"],
+      matchUpdateTypes: ["minor", "patch"],
+      groupName: "docs tutorial Spread dependencies (non-major)",
+      commitMessagePrefix: "docs(build-deps): ",
+    },
+  ],
+
+  customManagers: [
+    // `sudo npm install -g express-generator@<version>` in the ExpressJS Spread task.
+    {
+      customType: "regex",
+      managerFilePatterns: ["/^docs/tutorial/code/expressjs/task\\.yaml$/"],
+      matchStrings: ["express-generator@(?<currentValue>\\S+)"],
+      datasourceTemplate: "npm",
+      depNameTemplate: "express-generator",
+    },
+    // `--boot-version <version>` passed to `devpack-for-spring boot start` in the
+    // Spring Boot Spread task. Renovate has no start.spring.io datasource, so
+    // track spring-boot-starter-parent on Maven Central (identical version stream).
+    {
+      customType: "regex",
+      managerFilePatterns: ["/^docs/tutorial/code/spring-boot/task\\.yaml$/"],
+      matchStrings: ["--boot-version (?<currentValue>\\S+)"],
+      datasourceTemplate: "maven",
+      depNameTemplate: "org.springframework.boot:spring-boot-starter-parent",
+    },
+  ],
 }

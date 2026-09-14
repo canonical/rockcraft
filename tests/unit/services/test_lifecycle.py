@@ -71,7 +71,7 @@ def test_lifecycle_args(
         base_layer_hash=b"deadbeef",
         cache_dir=project_path / "cache",
         ignore_local_sources=[".craft", "*.rock"],
-        ignore_outdated=[".craft", "*.rock"],
+        ignore_outdated=[".craft", "*.rock", ".spread-reuse.*"],
         parallel_build_count=4,
         partitions=None,
         project_name="test-rock",
@@ -163,12 +163,16 @@ def test_python_usrmerge_fix(tmp_path, plugin_name, base, build_base):
     assert sorted(os.listdir(prime_dir)) == ["lib", "lib64"]  # noqa: PTH208 (use Path.iterdir())
 
     assert step_info.state is not None
-    step_info.state.files.update({"lib64"})
+    step_info.state.files.update({Path("lib64")})
 
-    lifecycle_module._python_usrmerge_fix(step_info)
+    changed = lifecycle_module._python_usrmerge_fix(step_info)
 
     # After running the fix the "lib64" symlink must be gone
+    assert changed is True
     assert sorted(os.listdir(prime_dir)) == ["lib"]  # noqa: PTH208 (use Path.iterdir())
+
+    changed = lifecycle_module._python_usrmerge_fix(step_info)
+    assert changed is False
 
 
 @pytest.mark.parametrize("source_file", ["from-install", "from-stage"])
@@ -181,7 +185,7 @@ def test_python_v2_shebang_fix(tmp_path, monkeypatch, source_file):
     # Setup a 'prime' directory with some files
     bin_dir = prime_dir / "usr/bin"
     bin_dir.mkdir(parents=True)
-    files: set[str] = set()
+    files: set[Path] = set()
 
     # 'script' is a file with a shebang pointing to either the part's install dir
     # ('from-install'), or from the stage dir ('from-stage').
@@ -189,26 +193,87 @@ def test_python_v2_shebang_fix(tmp_path, monkeypatch, source_file):
     data_file = Path(__file__).parent / f"test_lifecycle/{source_file}"
     shutil.copy(data_file, script)
     script.write_text(script.read_text().replace("/root", str(tmp_path)))
-    files.add("usr/bin/script")
+    files.add(Path("usr/bin/script"))
 
     # Also add some "bad" entries to ensure the function is resilient
 
     # Add an entry without a corresponding 'concrete' file, which might've been pruned
     # by another post-prime function
-    files.add("i-dont-exist")
+    files.add(Path("i-dont-exist"))
 
     # Add a binary file
     bin_file = bin_dir / "binary"
     bin_file.write_bytes(b"\x81")
-    files.add("usr/bin/binary")
+    files.add(Path("usr/bin/binary"))
 
     assert step_info.state is not None
     step_info.state.files.update(files)
 
-    lifecycle_module._python_v2_shebang_fix(step_info)
+    changed = lifecycle_module._python_v2_shebang_fix(step_info)
 
     contents = script.read_text()
+    assert changed is True
     assert contents.startswith("#!/usr/bin/python3\n")
+
+    changed = lifecycle_module._python_v2_shebang_fix(step_info)
+    assert changed is False
+
+
+def test_python_v2_shebang_fix_no_matching_shebangs(tmp_path, monkeypatch):
+    """Files exist and are listed in state.files but none have a matching shebang."""
+    monkeypatch.chdir(tmp_path)
+    step_info, prime_dir = _create_step_info(
+        tmp_path, "python", "ubuntu@25.10", "devel"
+    )
+
+    bin_dir = prime_dir / "usr/bin"
+    bin_dir.mkdir(parents=True)
+
+    # A regular text file with a non-matching shebang.
+    script = bin_dir / "script"
+    script.write_text("#!/usr/bin/env bash\necho hi\n")
+
+    assert step_info.state is not None
+    step_info.state.files.update({Path("usr/bin/script")})
+
+    changed = lifecycle_module._python_v2_shebang_fix(step_info)
+
+    assert changed is False
+    assert script.read_text() == "#!/usr/bin/env bash\necho hi\n"
+
+
+def test_post_prime_returns_false_when_nothing_changes(mocker, tmp_path):
+    lifecycle_service = object.__new__(lifecycle_module.RockcraftLifecycleService)
+    step_info = mocker.MagicMock()
+    step_info.prime_dir = tmp_path
+    step_info.rootfs_dir = tmp_path / "base"
+    step_info.rootfs_dir.mkdir()
+
+    mocker.patch.object(
+        lifecycle_module.layers, "prune_prime_files", return_value=False
+    )
+    mocker.patch.object(lifecycle_module, "_python_usrmerge_fix", return_value=False)
+    mocker.patch.object(lifecycle_module, "_python_v2_shebang_fix", return_value=False)
+
+    assert lifecycle_service.post_prime(step_info) is False
+
+
+def test_post_prime_returns_true_when_any_fix_changes(mocker, tmp_path):
+    lifecycle_service = object.__new__(lifecycle_module.RockcraftLifecycleService)
+    step_info = mocker.MagicMock()
+    step_info.prime_dir = tmp_path
+    step_info.rootfs_dir = tmp_path / "base"
+    step_info.rootfs_dir.mkdir()
+
+    (tmp_path / "file.txt").write_text("content")
+
+    mocker.patch.object(
+        lifecycle_module.layers, "prune_prime_files", return_value=False
+    )
+    mocker.patch.object(lifecycle_module, "_python_usrmerge_fix", return_value=True)
+    mocker.patch.object(lifecycle_module, "_python_v2_shebang_fix", return_value=False)
+
+    assert lifecycle_service.post_prime(step_info) is True
 
 
 @pytest.mark.usefixtures("configured_project", "project_keys")
