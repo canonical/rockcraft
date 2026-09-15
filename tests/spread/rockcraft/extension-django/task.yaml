@@ -82,7 +82,7 @@ execute: |
   [ "$(curl -sw '%{http_code}' -o /dev/null localhost:8138)" == "200" ]
 
 restore: |
-  NAME="${NAME}"
+  NAME="example-django"
   docker rmi -f "${NAME}:latest"
   docker rm -f "${NAME}-container"
   rm -f "*.rock" rockcraft.yaml
