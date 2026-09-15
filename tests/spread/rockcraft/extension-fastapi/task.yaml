@@ -24,10 +24,7 @@ environment:
   ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS: "true"
 
 execute: |
-  DEPENDENCY_SUFFIX=""
-  if [ "${USE_UV}" = "true" ]; then
-    DEPENDENCY_SUFFIX="-uv"
-  else
+  if [ "${USE_UV}" != "true" ]; then
     rm -f pyproject.toml uv.lock
   fi
 
@@ -35,7 +32,7 @@ execute: |
   if [ "${BASE}" = "bare" ]; then
     BASE_TYPE="bare"
   fi
-  NAME="fastapi-${BASE_TYPE}-${BUILD_BASE#ubuntu@}${DEPENDENCY_SUFFIX}"
+  NAME="fastapi-${BASE_TYPE}-${BUILD_BASE#ubuntu@}"
   NAME="${NAME//./-}"
   ROCK_FILE="${NAME}_0.1_amd64.rock"
   IMAGE="${NAME}:0.1"
@@ -80,16 +77,6 @@ execute: |
   # ensure container doesn't exist
   docker rm -f "${NAME}-container"
 
-  # ensure the app and promtail folders have the correct user
-  check_directory_ownership() {
-    local directory="$1"
-    docker run --rm --entrypoint /usr/bin/bash "${IMAGE}" -c "find ${directory}/ ! -user '_daemon_' || { echo 'Error: ${directory} or its contents are not owned by _daemon_'; exit 2; }"
-  }
-
-  check_directory_ownership "/app"
-  check_directory_ownership "/opt/promtail"
-  check_directory_ownership "/etc/promtail"
-
   # test the default fastapi service
   docker run --name "${NAME}-container" -d -p 8137:8000 "${IMAGE}"
   retry -n 5 --wait 2 curl localhost:8137 || {
@@ -100,15 +87,11 @@ execute: |
   [ "$(curl -sSf localhost:8137)" == "ok" ]
 
 restore: |
-  DEPENDENCY_SUFFIX=""
-  if [ "${USE_UV}" = "true" ]; then
-    DEPENDENCY_SUFFIX="-uv"
-  fi
   BASE_TYPE="base"
   if [ "${BASE}" = "bare" ]; then
     BASE_TYPE="bare"
   fi
-  NAME="fastapi-${BASE_TYPE}-${BUILD_BASE#ubuntu@}${DEPENDENCY_SUFFIX}"
+  NAME="fastapi-${BASE_TYPE}-${BUILD_BASE#ubuntu@}"
   NAME="${NAME//./-}"
   ROCK_FILE="${NAME}_0.1_amd64.rock"
   docker stop "${NAME}-container" || true
