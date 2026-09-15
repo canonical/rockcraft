@@ -74,8 +74,10 @@ execute: |
   fi
 
 restore: |
-  NAME="${NAME}"
-  docker rmi -f "${NAME}:latest"
-  docker rm -f "${NAME}-container"
+  NAME="example-django"
+  IMAGE="${NAME}:latest"
+  CONTAINER="${NAME}-container"
+  docker rmi -f "${IMAGE}"
+  docker rm -f "${CONTAINER}"
   rm -f "*.rock" rockcraft.yaml
   docker system prune -a -f
