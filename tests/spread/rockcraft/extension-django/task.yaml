@@ -43,7 +43,12 @@ execute: |
   IMAGE="${IMAGE_NAME}:latest"
   CONTAINER="${IMAGE_NAME}-container"
 
-  run_rockcraft init --name "${NAME}" --profile django-framework
+  if [ "${BUILD_BASE}" = "ubuntu@26.04" ]; then
+    run_rockcraft init --name "${NAME}" --profile django-framework --base "${BUILD_BASE}"
+    grep -q "^build-base: ${BUILD_BASE}" rockcraft.yaml
+  else
+    run_rockcraft init --name "${NAME}" --profile django-framework
+  fi
 
   # Replace base with ubuntu@<base>
   sed -i "s/^base: .*/base: ${BASE}/g" rockcraft.yaml

@@ -46,7 +46,12 @@ execute: |
   ROCK_FILE="${NAME}_0.1_amd64.rock"
   IMAGE="${NAME}:0.1"
 
-  run_rockcraft init --name flask-extension --profile flask-framework
+  if [ "${BUILD_BASE}" = "ubuntu@26.04" ]; then
+    run_rockcraft init --name flask-extension --profile flask-framework --base "${BUILD_BASE}"
+    grep -q "^build-base: ${BUILD_BASE}" rockcraft.yaml
+  else
+    run_rockcraft init --name flask-extension --profile flask-framework
+  fi
   sed -i "s/^name: .*/name: ${NAME}/g" rockcraft.yaml
   sed -i "s/^base: .*/base: ${BASE}/g" rockcraft.yaml
   sed -i "s/^build-base: .*/build-base: ${BUILD_BASE}/g" rockcraft.yaml

@@ -2,13 +2,21 @@ summary: go extension test
 environment:
   SCENARIO/bare: bare
   SCENARIO/base_2404: ubuntu-24.04
+  SCENARIO/base_2604: ubuntu-26.04
+
+  ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS: "true"
 
 execute: |
   NAME="go-${SCENARIO//./-}"
   ROCK_FILE="${NAME}_0.1_amd64.rock"
   IMAGE="${NAME}:0.1"
 
-  run_rockcraft init --name "${NAME}" --profile go-framework
+  if [ "${SCENARIO}" = "ubuntu-26.04" ]; then
+    run_rockcraft init --name "${NAME}" --profile go-framework --base ubuntu@26.04
+    grep -q "^build-base: ubuntu@26.04" rockcraft.yaml
+  else
+    run_rockcraft init --name "${NAME}" --profile go-framework
+  fi
   sed -i "s/^base: .*/base: ${SCENARIO//-/@}/g" rockcraft.yaml
   if [ "${SCENARIO}" != "bare" ]; then
     sed -i "s/^build-base: .*/build-base: ${SCENARIO//-/@}/g" rockcraft.yaml

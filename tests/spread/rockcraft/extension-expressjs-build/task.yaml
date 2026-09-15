@@ -15,7 +15,8 @@ execute: |
   APP=$(sed -n 's/.*"name": *"\([^"]*\)".*/\1/p' "package.json")
 
   export ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS
-  run_rockcraft init --name "${NAME}" --profile expressjs-framework
+  run_rockcraft init --name "${NAME}" --profile expressjs-framework --base ubuntu@26.04
+  grep -q "^build-base: ubuntu@26.04" rockcraft.yaml
   sed -i "s/^base: .*/base: ${SCENARIO//-/@}/g" rockcraft.yaml
   if [ "${SCENARIO}" != "bare" ]; then
     sed -i "s/^build-base: .*/build-base: ${SCENARIO//-/@}/g" rockcraft.yaml
