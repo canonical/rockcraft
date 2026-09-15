@@ -30,10 +30,7 @@ environment:
   ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS: "true"
 
 execute: |
-  DEPENDENCY_SUFFIX=""
-  if [ "${USE_UV}" = "true" ]; then
-    DEPENDENCY_SUFFIX="-uv"
-  else
+  if [ "${USE_UV}" != "true" ]; then
     rm -f pyproject.toml uv.lock
   fi
 
@@ -41,7 +38,7 @@ execute: |
   if [ "${BASE}" = "bare" ]; then
     BASE_TYPE="bare"
   fi
-  NAME="flask-${BASE_TYPE}-${BUILD_BASE#ubuntu@}${DEPENDENCY_SUFFIX}"
+  NAME="flask-${BASE_TYPE}-${BUILD_BASE#ubuntu@}"
   NAME="${NAME//./-}"
   ROCK_FILE="${NAME}_0.1_amd64.rock"
   IMAGE="${NAME}:0.1"
@@ -80,6 +77,7 @@ execute: |
   # ensure container doesn't exist
   # docker rm -f "${NAME}-container"
 
+
   # test the default flask service
   docker run --name "${NAME}-container" -d -p 8137:8000 "${IMAGE}"
 
@@ -94,15 +92,11 @@ execute: |
   fi
 
 restore: |
-  DEPENDENCY_SUFFIX=""
-  if [ "${USE_UV}" = "true" ]; then
-    DEPENDENCY_SUFFIX="-uv"
-  fi
   BASE_TYPE="base"
   if [ "${BASE}" = "bare" ]; then
     BASE_TYPE="bare"
   fi
-  NAME="flask-${BASE_TYPE}-${BUILD_BASE#ubuntu@}${DEPENDENCY_SUFFIX}"
+  NAME="flask-${BASE_TYPE}-${BUILD_BASE#ubuntu@}"
   NAME="${NAME//./-}"
   ROCK_FILE="${NAME}_0.1_amd64.rock"
   docker stop "${NAME}-container" || true

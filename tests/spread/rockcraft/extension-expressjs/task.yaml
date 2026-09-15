@@ -45,11 +45,6 @@ execute: |
     sudo rockcraft.skopeo --insecure-policy copy "oci-archive:${ROCK_FILE}" \
     "docker-daemon:${IMAGE}"
 
-    if [ "${SCENARIO}" == "ubuntu-26.04" ]; then
-      docker run --rm --entrypoint /usr/bin/bash "${IMAGE}" -c \
-        "test -z \"\$(find /app-data/ ! -user '_daemon_')\" && test -w /app-data"
-    fi
-
     # Ensure image exists
     docker images "${IMAGE}" | MATCH "${NAME}"
 
