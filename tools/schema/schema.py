@@ -55,6 +55,14 @@ def generate_project_schema() -> str:
     # combine both schemas
     project_schema = {**initial_schema, **project_schema}
 
+    # add extensions field (DX only)
+    project_schema["properties"]["extensions"] = {
+        "type": "array",
+        "items": {"type": "string"},
+        "description": "List of extensions to apply to the rock.",
+        "examples": [["twelve-factor"]],
+    }
+
     # tweak the platforms definition on the Project (each value can be empty)
     project_schema["properties"]["platforms"]["additionalProperties"] = {
         "oneOf": [{"type": "null"}, {"$ref": "#/$defs/Platform"}]

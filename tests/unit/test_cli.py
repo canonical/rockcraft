@@ -61,10 +61,14 @@ def test_run_pack_services(mocker, monkeypatch, tmp_path):
         project_info=DEFAULT,
     )
 
+    rock_path = tmp_path / "project/my-rock.rock"
     package_mocks = mocker.patch.multiple(
-        services.RockcraftPackageService, write_metadata=DEFAULT, pack=DEFAULT
+        services.RockcraftPackageService,
+        write_metadata=DEFAULT,
+        get_artifacts=lambda self: {None: rock_path},
+        pack_artifacts=lambda self: {None: True},
+        write_artifacts_state=DEFAULT,
     )
-    package_mocks["pack"].return_value = [tmp_path / "project/my-rock.rock"]
 
     command_line = ["rockcraft", "pack"]
     mocker.patch.object(sys, "argv", command_line)
@@ -74,7 +78,7 @@ def test_run_pack_services(mocker, monkeypatch, tmp_path):
     lifecycle_mocks["run"].assert_called_once_with(step_name="prime")
 
     package_mocks["write_metadata"].assert_called_once_with(fake_prime_dir)
-    package_mocks["pack"].assert_called_once_with(fake_prime_dir, Path())
+    package_mocks["write_artifacts_state"].assert_called_once()
 
     assert mock_ended_ok.called
     assert log_path.is_file()
