@@ -29,12 +29,12 @@ environment:
   USE_UV/base_2604_uv: "true"
 
   ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS: "true"
+  NAME: "example-django"
 
 execute: |
   if [ "${USE_UV}" != "true" ]; then
     rm -f pyproject.toml uv.lock
   fi
-  NAME="example-django"
   ROCK_FILE="${NAME}_0.1_amd64.rock"
   IMAGE="${NAME}:latest"
   CONTAINER="${NAME}-container"
@@ -82,7 +82,6 @@ execute: |
   [ "$(curl -sw '%{http_code}' -o /dev/null localhost:8138)" == "200" ]
 
 restore: |
-  NAME="example-django"
   docker rmi -f "${NAME}:latest"
   docker rm -f "${NAME}-container"
   rm -f "*.rock" rockcraft.yaml
