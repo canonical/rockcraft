@@ -327,6 +327,7 @@ class ExpressJSFrameworkV2(ExpressJSFramework):
     def _gen_install_app_part(self) -> dict[str, Any]:
         """Generate an install part compatible with Node's unmerged archive layout."""
         install_app_part = super()._gen_install_app_part()
+        install_app_part.setdefault("stage-packages", []).append("tzdata")
         if self._user_npm_include_node:
             install_app_part["build-attributes"] = ["disable-usrmerge"]
         return install_app_part

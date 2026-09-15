@@ -397,6 +397,7 @@ def test_fastapi_extension_v2_bare_26_04(
     deps = applied["parts"]["fastapi-framework.dependencies"]
     assert deps["stage-packages"] == [
         "python3.14-venv_ensurepip",
+        "tzdata",
         "python3-minimal_python3",
     ]
     assert deps["build-environment"] == [{"PIP_PYTHON": "$(which python3.14)"}]
@@ -564,7 +565,7 @@ def test_fastapi_extension_default_26_04(tmp_path, monkeypatch):
             "fastapi-framework.dependencies": {
                 "build-environment": [],
                 "plugin": "python",
-                "stage-packages": ["python3-venv"],
+                "stage-packages": ["python3-venv", "tzdata"],
                 "source": ".",
                 "python-packages": [
                     "--constraint=.uvicorn-constraints.txt",

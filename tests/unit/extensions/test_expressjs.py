@@ -395,7 +395,11 @@ def test_expressjs_extension_default(
                         "${CRAFT_PART_INSTALL}/app\n"
                         "chown -R 584792:584792 ${CRAFT_PART_INSTALL}/app\n",
                         "build-packages": ["nodejs", "npm"],
-                        "stage-packages": ["ca-certificates_data", "nodejs_bins"],
+                        "stage-packages": [
+                            "ca-certificates_data",
+                            "nodejs_bins",
+                            "tzdata",
+                        ],
                         "build-environment": [{"UV_USE_IO_URING": "0"}],
                     },
                     "expressjs-framework.runtime": {
@@ -466,6 +470,7 @@ def test_expressjs_extension_default(
                             "bash_bins",
                             "ca-certificates_data",
                             "coreutils_bins",
+                            "tzdata",
                         ],
                         "build-environment": [{"UV_USE_IO_URING": "0"}],
                     },
@@ -769,7 +774,11 @@ def test_expressjs_extension_ubuntu2604_default(
                     "chown -R 584792:584792 ${CRAFT_PART_INSTALL}/app\n"
                 ),
                 "build-packages": ["nodejs", "npm"],
-                "stage-packages": ["ca-certificates_data", "nodejs_bins"],
+                "stage-packages": [
+                    "ca-certificates_data",
+                    "nodejs_bins",
+                    "tzdata",
+                ],
                 "build-environment": [{"UV_USE_IO_URING": "0"}],
             },
             "expressjs-framework.runtime": {

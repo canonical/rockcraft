@@ -343,6 +343,7 @@ class FastAPIFrameworkV2(FastAPIFramework):
 
         Uses the uv plugin if the project is using uv, otherwise uses the python plugin.
         """
+        stage_packages.append("tzdata")
         _uvicorn_package = "uvicorn~=0.52"
         python_symlink = ""
         uv_prefix = "${CRAFT_PART_INSTALL}"

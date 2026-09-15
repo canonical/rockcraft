@@ -919,7 +919,7 @@ def test_flask_v2_full_apply_26_04(tmp_path, monkeypatch):
                 ],
                 "python-requirements": ["requirements.txt"],
                 "source": ".",
-                "stage-packages": ["python3-venv"],
+                "stage-packages": ["python3-venv", "tzdata"],
                 "build-environment": [],
                 "override-build": (
                     "printf '%s\\n' 'gunicorn~=26.0'"
@@ -1226,7 +1226,7 @@ def test_flask_extension_uv(
     deps = applied["parts"]["flask-framework.dependencies"]
     assert deps["plugin"] == "uv"
     assert deps["source"] == "."
-    assert deps["stage-packages"] == ["python3-venv"]
+    assert deps["stage-packages"] == ["python3-venv", "tzdata"]
     assert "python-packages" not in deps
     assert "python-requirements" not in deps
     assert deps["override-build"] == (
@@ -1264,6 +1264,7 @@ def test_flask_extension_v2_bare_26_04(tmp_path, flask_extension, monkeypatch, u
     deps = applied["parts"]["flask-framework.dependencies"]
     assert deps["stage-packages"] == [
         "python3.14-venv_ensurepip",
+        "tzdata",
         "python3-minimal_python3",
     ]
     assert deps["build-environment"] == [{"PIP_PYTHON": "$(which python3.14)"}]
@@ -1356,6 +1357,7 @@ def test_django_extension_v2_bare_26_04(tmp_path, django_extension, use_uv):
     deps = applied["parts"]["django-framework.dependencies"]
     assert deps["stage-packages"] == [
         "python3.14-venv_ensurepip",
+        "tzdata",
         "python3-minimal_python3",
     ]
     assert deps["build-environment"] == [{"PIP_PYTHON": "$(which python3.14)"}]
@@ -1519,7 +1521,7 @@ def test_django_extension_v2_default(tmp_path):
                 ],
                 "python-requirements": ["requirements.txt"],
                 "source": ".",
-                "stage-packages": ["python3-venv"],
+                "stage-packages": ["python3-venv", "tzdata"],
                 "build-environment": [],
                 "override-build": (
                     "printf '%s\\n' 'gunicorn~=26.0'"

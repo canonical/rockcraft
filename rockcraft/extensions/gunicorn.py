@@ -536,6 +536,7 @@ class FlaskFrameworkV2(FlaskFramework):
 
         Uses the uv plugin if the project is using uv, otherwise uses the python plugin.
         """
+        stage_packages.append("tzdata")
         python_symlink = ""
         uv_prefix = "${CRAFT_PART_INSTALL}"
         if self.yaml_data["base"] == "bare":
@@ -719,6 +720,7 @@ class DjangoFrameworkV2(DjangoFramework):
 
         Uses the uv plugin if the project is using uv, otherwise uses the python plugin.
         """
+        stage_packages.append("tzdata")
         python_symlink = ""
         uv_prefix = "${CRAFT_PART_INSTALL}"
         if self.yaml_data["base"] == "bare":

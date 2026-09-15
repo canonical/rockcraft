@@ -389,6 +389,7 @@ def test_go_extension_default_26_04(tmp_path, monkeypatch):
                 "plugin": "nil",
                 "stage-packages": [
                     "ca-certificates_data",
+                    "tzdata",
                 ],
             },
             "go-framework.logging": {

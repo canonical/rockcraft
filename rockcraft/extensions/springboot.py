@@ -366,6 +366,13 @@ class SpringBootFrameworkV2(SpringBootFramework):
         """Check if the extension is in an experimental state."""
         return True
 
+    @override
+    def gen_runtime_app_part(self) -> dict[str, Any]:
+        """Return the runtime part with timezone data."""
+        runtime_part = super().gen_runtime_app_part()
+        runtime_part.setdefault("stage-packages", []).append("tzdata")
+        return runtime_part
+
 
 SpringBootFrameworkFactory = _FrameworkFactory(
     SpringBootFramework, SpringBootFrameworkV2

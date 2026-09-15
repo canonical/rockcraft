@@ -254,5 +254,14 @@ class GoFrameworkV2(GoFramework):
         """
         return True
 
+    @override
+    def get_root_snippet(self) -> dict[str, Any]:
+        """Return the root snippet with timezone data."""
+        snippet = super().get_root_snippet()
+        snippet["parts"][self.get_part_name("runtime")]["stage-packages"].append(
+            "tzdata"
+        )
+        return snippet
+
 
 GoFrameworkFactory = _FrameworkFactory(GoFramework, GoFrameworkV2)
