@@ -11,16 +11,9 @@ execute: |
   ROCK_FILE="${NAME}_0.1_amd64.rock"
   IMAGE="${NAME}:0.1"
 
-  if [ "${SCENARIO}" = "ubuntu-26.04" ]; then
-    run_rockcraft init --name "${NAME}" --profile go-framework --base ubuntu@26.04
-    grep -q "^build-base: ubuntu@26.04" rockcraft.yaml
-  else
-    run_rockcraft init --name "${NAME}" --profile go-framework
-  fi
-  sed -i "s/^base: .*/base: ${SCENARIO//-/@}/g" rockcraft.yaml
-  if [ "${SCENARIO}" != "bare" ]; then
-    sed -i "s/^build-base: .*/build-base: ${SCENARIO//-/@}/g" rockcraft.yaml
-  else
+  run_rockcraft init --name "${NAME}" --profile go-framework --base ${SCENARIO//-/@}
+  sed -i "s/^base: .*/base: /g" rockcraft.yaml
+  if [ "${SCENARIO}" == "bare" ]; then
     # Install findutils for the bare scenario
     # This is a workaround for the fact that the bare scenario does not have
     # findutils installed by default, which is required for the test

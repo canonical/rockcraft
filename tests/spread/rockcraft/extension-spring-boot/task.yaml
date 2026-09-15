@@ -61,16 +61,10 @@ execute: |
     --packaging jar \
     --java-version "${JAVA_VERSION}"
   cd "${NAME}-app" || exit 1
-  if [ "${BUILD_BASE}" = "ubuntu@26.04" ]; then
-    run_rockcraft init --name "${NAME}" --profile spring-boot-framework --base "${BUILD_BASE}"
-    grep -q "^build-base: ${BUILD_BASE}" rockcraft.yaml
-  else
-    run_rockcraft init --name "${NAME}" --profile spring-boot-framework
-  fi
+  run_rockcraft init --name "${NAME}" --profile spring-boot-framework --base "${BUILD_BASE}"
 
-  # Replace base & build-base with ubuntu@<base>
+  # Replace base with ubuntu@<base>
   sed -i "s/^base: .*/base: ${BASE}/g" rockcraft.yaml
-  sed -i "s/^build-base: .*/build-base: ${BUILD_BASE}/g" rockcraft.yaml
 
   run_rockcraft pack
   test -f "${ROCK_FILE}"

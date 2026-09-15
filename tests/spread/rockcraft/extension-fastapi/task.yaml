@@ -42,7 +42,6 @@ execute: |
 
   if [ "${BUILD_BASE}" = "ubuntu@26.04" ]; then
     run_rockcraft init --name fastapi-extension --profile fastapi-framework --base "${BUILD_BASE}"
-    grep -q "^build-base: ${BUILD_BASE}" rockcraft.yaml
   else
     run_rockcraft init --name fastapi-extension --profile fastapi-framework
   fi
