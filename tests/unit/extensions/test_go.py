@@ -389,7 +389,6 @@ def test_go_extension_default_26_04(tmp_path, monkeypatch):
                 "plugin": "nil",
                 "stage-packages": [
                     "ca-certificates_data",
-                    "tzdata",
                 ],
             },
             "go-framework.logging": {
@@ -403,6 +402,10 @@ def test_go_extension_default_26_04(tmp_path, monkeypatch):
                     {"path": "opt/promtail", "owner": 584792, "group": 584792},
                     {"path": "etc/promtail", "owner": 584792, "group": 584792},
                 ],
+            },
+            "go-framework.system-dependencies": {
+                "plugin": "nil",
+                "stage-packages": ["tzdata"],
             },
         },
         "services": {

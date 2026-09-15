@@ -336,6 +336,11 @@ class FastAPIFrameworkV2(FastAPIFramework):
         return True
 
     @override
+    def get_root_snippet(self) -> dict[str, Any]:
+        """Return the root snippet with timezone data."""
+        return self._add_system_dependencies_part(super().get_root_snippet())
+
+    @override
     def _dependencies_part(
         self, stage_packages: list[str], build_environment: list[Any]
     ) -> dict[str, Any]:
@@ -343,7 +348,6 @@ class FastAPIFrameworkV2(FastAPIFramework):
 
         Uses the uv plugin if the project is using uv, otherwise uses the python plugin.
         """
-        stage_packages.append("tzdata")
         _uvicorn_package = "uvicorn~=0.52"
         python_symlink = ""
         uv_prefix = "${CRAFT_PART_INSTALL}"

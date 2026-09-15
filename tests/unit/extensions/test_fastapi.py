@@ -397,9 +397,11 @@ def test_fastapi_extension_v2_bare_26_04(
     deps = applied["parts"]["fastapi-framework.dependencies"]
     assert deps["stage-packages"] == [
         "python3.14-venv_ensurepip",
-        "tzdata",
         "python3-minimal_python3",
     ]
+    assert applied["parts"]["fastapi-framework.system-dependencies"][
+        "stage-packages"
+    ] == ["tzdata"]
     assert deps["build-environment"] == [{"PIP_PYTHON": "$(which python3.14)"}]
     assert applied["parts"]["fastapi-framework.runtime"]["override-build"] == (
         "mkdir -m 777 ${CRAFT_PART_INSTALL}/tmp\n"
@@ -565,7 +567,7 @@ def test_fastapi_extension_default_26_04(tmp_path, monkeypatch):
             "fastapi-framework.dependencies": {
                 "build-environment": [],
                 "plugin": "python",
-                "stage-packages": ["python3-venv", "tzdata"],
+                "stage-packages": ["python3-venv"],
                 "source": ".",
                 "python-packages": [
                     "--constraint=.uvicorn-constraints.txt",
@@ -603,6 +605,10 @@ def test_fastapi_extension_default_26_04(tmp_path, monkeypatch):
                     {"path": "opt/promtail", "owner": 584792, "group": 584792},
                     {"path": "etc/promtail", "owner": 584792, "group": 584792},
                 ],
+            },
+            "fastapi-framework.system-dependencies": {
+                "plugin": "nil",
+                "stage-packages": ["tzdata"],
             },
         },
         "services": {

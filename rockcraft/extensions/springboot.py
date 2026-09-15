@@ -367,11 +367,9 @@ class SpringBootFrameworkV2(SpringBootFramework):
         return True
 
     @override
-    def gen_runtime_app_part(self) -> dict[str, Any]:
-        """Return the runtime part with timezone data."""
-        runtime_part = super().gen_runtime_app_part()
-        runtime_part.setdefault("stage-packages", []).append("tzdata")
-        return runtime_part
+    def get_root_snippet(self) -> dict[str, Any]:
+        """Return the root snippet with timezone data."""
+        return self._add_system_dependencies_part(super().get_root_snippet())
 
 
 SpringBootFrameworkFactory = _FrameworkFactory(

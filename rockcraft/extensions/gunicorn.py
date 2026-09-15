@@ -513,6 +513,11 @@ class FlaskFrameworkV2(FlaskFramework):
         return True
 
     @override
+    def get_root_snippet(self) -> dict[str, Any]:
+        """Return the root snippet with timezone data."""
+        return self._add_system_dependencies_part(super().get_root_snippet())
+
+    @override
     def check_project(self) -> None:
         """Ensure this extension can apply to the current rockcraft project."""
         validate_uv_lockfile(self.project_root)
@@ -536,7 +541,6 @@ class FlaskFrameworkV2(FlaskFramework):
 
         Uses the uv plugin if the project is using uv, otherwise uses the python plugin.
         """
-        stage_packages.append("tzdata")
         python_symlink = ""
         uv_prefix = "${CRAFT_PART_INSTALL}"
         if self.yaml_data["base"] == "bare":
@@ -696,6 +700,11 @@ class DjangoFrameworkV2(DjangoFramework):
         return True
 
     @override
+    def get_root_snippet(self) -> dict[str, Any]:
+        """Return the root snippet with timezone data."""
+        return self._add_system_dependencies_part(super().get_root_snippet())
+
+    @override
     def check_project(self) -> None:
         """Ensure this extension can apply to the current rockcraft project."""
         validate_uv_lockfile(self.project_root)
@@ -720,7 +729,6 @@ class DjangoFrameworkV2(DjangoFramework):
 
         Uses the uv plugin if the project is using uv, otherwise uses the python plugin.
         """
-        stage_packages.append("tzdata")
         python_symlink = ""
         uv_prefix = "${CRAFT_PART_INSTALL}"
         if self.yaml_data["base"] == "bare":

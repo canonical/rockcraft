@@ -108,6 +108,14 @@ class Extension(abc.ABC):
         """Return formatted internal part name."""
         return f"{self.extension_name}{self._extension_name_sep}{part}"
 
+    def _add_system_dependencies_part(self, snippet: dict[str, Any]) -> dict[str, Any]:
+        """Add Ubuntu runtime dependencies in a dedicated part."""
+        snippet["parts"][self.get_part_name("system-dependencies")] = {
+            "plugin": "nil",
+            "stage-packages": ["tzdata"],
+        }
+        return snippet
+
     @final
     def validate(self) -> None:
         """Validate that the extension can be used with the current project.

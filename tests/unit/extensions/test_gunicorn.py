@@ -919,7 +919,7 @@ def test_flask_v2_full_apply_26_04(tmp_path, monkeypatch):
                 ],
                 "python-requirements": ["requirements.txt"],
                 "source": ".",
-                "stage-packages": ["python3-venv", "tzdata"],
+                "stage-packages": ["python3-venv"],
                 "build-environment": [],
                 "override-build": (
                     "printf '%s\\n' 'gunicorn~=26.0'"
@@ -965,6 +965,10 @@ def test_flask_v2_full_apply_26_04(tmp_path, monkeypatch):
                         "group": 584792,
                     },
                 ],
+            },
+            "flask-framework.system-dependencies": {
+                "plugin": "nil",
+                "stage-packages": ["tzdata"],
             },
             "flask-framework.statsd-exporter": {
                 "build-snaps": ["go"],
@@ -1226,7 +1230,10 @@ def test_flask_extension_uv(
     deps = applied["parts"]["flask-framework.dependencies"]
     assert deps["plugin"] == "uv"
     assert deps["source"] == "."
-    assert deps["stage-packages"] == ["python3-venv", "tzdata"]
+    assert deps["stage-packages"] == ["python3-venv"]
+    assert applied["parts"]["flask-framework.system-dependencies"][
+        "stage-packages"
+    ] == ["tzdata"]
     assert "python-packages" not in deps
     assert "python-requirements" not in deps
     assert deps["override-build"] == (
@@ -1264,9 +1271,11 @@ def test_flask_extension_v2_bare_26_04(tmp_path, flask_extension, monkeypatch, u
     deps = applied["parts"]["flask-framework.dependencies"]
     assert deps["stage-packages"] == [
         "python3.14-venv_ensurepip",
-        "tzdata",
         "python3-minimal_python3",
     ]
+    assert applied["parts"]["flask-framework.system-dependencies"][
+        "stage-packages"
+    ] == ["tzdata"]
     assert deps["build-environment"] == [{"PIP_PYTHON": "$(which python3.14)"}]
     assert applied["parts"]["flask-framework.runtime"]["override-build"] == (
         "mkdir -m 777 ${CRAFT_PART_INSTALL}/tmp\n"
@@ -1357,9 +1366,11 @@ def test_django_extension_v2_bare_26_04(tmp_path, django_extension, use_uv):
     deps = applied["parts"]["django-framework.dependencies"]
     assert deps["stage-packages"] == [
         "python3.14-venv_ensurepip",
-        "tzdata",
         "python3-minimal_python3",
     ]
+    assert applied["parts"]["django-framework.system-dependencies"][
+        "stage-packages"
+    ] == ["tzdata"]
     assert deps["build-environment"] == [{"PIP_PYTHON": "$(which python3.14)"}]
     assert applied["parts"]["django-framework.runtime"]["override-build"] == (
         "mkdir -m 777 ${CRAFT_PART_INSTALL}/tmp\n"
@@ -1521,7 +1532,7 @@ def test_django_extension_v2_default(tmp_path):
                 ],
                 "python-requirements": ["requirements.txt"],
                 "source": ".",
-                "stage-packages": ["python3-venv", "tzdata"],
+                "stage-packages": ["python3-venv"],
                 "build-environment": [],
                 "override-build": (
                     "printf '%s\\n' 'gunicorn~=26.0'"
@@ -1563,6 +1574,10 @@ def test_django_extension_v2_default(tmp_path):
                         "group": 584792,
                     },
                 ],
+            },
+            "django-framework.system-dependencies": {
+                "plugin": "nil",
+                "stage-packages": ["tzdata"],
             },
             "django-framework.statsd-exporter": {
                 "build-snaps": ["go"],
