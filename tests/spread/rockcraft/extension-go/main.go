@@ -11,7 +11,7 @@ func hello(w http.ResponseWriter, req *http.Request) {
 }
 
 func writeData(w http.ResponseWriter, req *http.Request) {
-	filePath := "/app-dir/output.txt"
+	filePath := "/app-data/go-test.txt"
 	data := []byte("Data written from Go app!\n")
 
 	// Write data to the file with 0644 permissions
