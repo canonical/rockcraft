@@ -16,7 +16,12 @@ execute: |
   express app
   cd app && npm install && cd ..
 
-  run_rockcraft init --name "${NAME}" --profile expressjs-framework
+  if [ "${SCENARIO}" = "bare" ]; then
+    run_rockcraft init --name "${NAME}" --profile expressjs-framework
+  else
+    run_rockcraft init --name "${NAME}" --profile expressjs-framework --base "${SCENARIO//-/@}"
+    grep -q "^build-base: ${SCENARIO//-/@}" rockcraft.yaml
+  fi
   sed -i "s/^base: .*/base: ${SCENARIO//-/@}/g" rockcraft.yaml
   if [ "${SCENARIO}" != "bare" ]; then
     sed -i "s/^build-base: .*/build-base: ${SCENARIO//-/@}/g" rockcraft.yaml
