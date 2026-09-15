@@ -48,17 +48,6 @@ execute: |
     run_rockcraft clean
   fi
 
-  # Install findutils for the bare scenario
-  # This is a workaround for the fact that the bare scenario does not have
-  # findutils installed by default, which is required for the test
-  cat >> rockcraft.yaml <<EOL
-  parts:
-    find-app:
-      plugin: nil
-      stage-packages:
-        - findutils
-  EOL
-
   run_rockcraft pack
 
   test -f "${ROCK_FILE}"
@@ -75,11 +64,11 @@ execute: |
 
   # test the default django service
   docker run --name "${CONTAINER}" -d -p 8138:8000 "${IMAGE}"
-  retry -n 5 --wait 2 curl localhost:8138 || {
+  retry -n 5 --wait 2 curl localhost:8138/hello || {
     docker logs "${CONTAINER}"
     exit 1
   }
-  [ "$(curl -sw '%{http_code}' -o /dev/null localhost:8138)" == "200" ]
+  [ "$(curl -sw '%{http_code}' -o /dev/null localhost:8138/hello)" == "200" ]
   if [ "${BUILD_BASE}" == "ubuntu@26.04" ]; then
     [ "$(curl -sw '%{http_code}' -o /dev/null localhost:8138/write-data)" == "200" ]
   fi
