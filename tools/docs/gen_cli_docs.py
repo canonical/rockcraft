@@ -15,7 +15,7 @@ from rockcraft import cli
 
 
 def command_page_header(cmd, options_str, required_str):
-    underline = "=" * len(cmd.name)
+    underline = "~" * len(cmd.name)
     overview = fix_spelling(cmd.overview)
     return f"""
 .. _ref_commands_{cmd.name}:
@@ -25,7 +25,7 @@ def command_page_header(cmd, options_str, required_str):
 {overview}
 
 Usage
------
+^^^^^
 
 :command:`rockcraft {cmd.name}{options_str}{required_str}`
 
@@ -50,7 +50,7 @@ def not_none(*args):
 def make_section(title, items):
     s = ""
     if items:
-        underline = "-" * len(title)
+        underline = "^" * len(title)
         s = f"{title}\n{underline}\n\n"
 
     for dest, (names, help_str) in sorted(items):
@@ -96,8 +96,6 @@ def main(docs_dir):
         opts = not_none(arg.short_option, arg.long_option)
         global_options[arg.name] = (opts, arg.help_message)
 
-    toc = []
-
     for group in command_groups:
         group_name = group.name.lower() + "-commands" + os.extsep + "rst"
         group_path = commands_ref_dir / group_name
@@ -118,34 +116,14 @@ def main(docs_dir):
                 elif action.option_strings and action.dest not in global_options:
                     options[action.dest] = (action.option_strings, action.help)
 
-            cmd_path = commands_ref_dir / (cmd.name + os.extsep + "rst")
-
             if options or global_options:
                 options_str += "[options]"
             required_str = "".join([(" <%s>" % vl[0]) for d, (vl, h) in required])
 
-            f = cmd_path.open("w")
-            f.write(command_page_header(cmd, options_str, required_str))
-            f.write(make_section("Required", required))
-            f.write(make_section("Options", options.items()))
-            f.write(make_section("Global options", global_options.items()))
-
-            # Add a section for the command to be included in the group reference.
-            g.write(f":ref:`ref_commands_{cmd.name}`\n")
-            g.write(
-                "   "
-                + make_sentence(fix_spelling(cmd.help_msg)).replace("\n", "\n   ")
-                + "\n\n"
-            )
-
-            # Add an entry in the table of contents.
-            toc.append(cmd.name)
-
-    toc_path = commands_ref_dir / "toc.rst"
-    f = toc_path.open("w")
-    f.write(".. toctree::\n   :hidden:\n\n")
-    for name in sorted(toc):
-        f.write(f"   /reference/commands/{name}\n")
+            g.write(command_page_header(cmd, options_str, required_str))
+            g.write(make_section("Required", required))
+            g.write(make_section("Options", options.items()))
+            g.write(make_section("Global options", global_options.items()))
 
 
 if __name__ == "__main__":
