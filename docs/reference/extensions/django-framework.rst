@@ -17,7 +17,12 @@ lightweight image.
 
 .. note::
     The Django extension is compatible with the ``bare``, ``ubuntu@22.04``,
-    ``ubuntu@24.04`` and ``ubuntu@26.04`` bases.
+    ``ubuntu@24.04`` and ``ubuntu@26.04`` bases. Support for Ubuntu 26.04 is
+    experimental.
+
+Generated extension part names use ``/`` on Ubuntu 22.04 and 24.04 and ``.``
+on Ubuntu 26.04. For a ``bare`` base, the ``build-base`` determines which
+separator to use.
 
 The Django extension supports both synchronous and asynchronous
 Gunicorn workers.
@@ -56,8 +61,8 @@ uv projects
         application with the Python plugin and installs dependencies from
         ``requirements.txt``.
 
-    .. tab-item:: Ubuntu 26.04 and higher
-        :sync: base-26-plus
+    .. tab-item:: Ubuntu 26.04
+        :sync: base-26
 
         If both a ``uv.lock`` and a ``pyproject.toml`` file are present in the
         project root, the extension builds the application with the :doc:`uv
@@ -81,14 +86,31 @@ has its own special dependencies, this key must declare them.
 
 The following example specifies the ``libpq-dev`` package:
 
-.. code-block:: yaml
-   :caption: rockcraft.yaml
+.. tab-set::
 
-   parts:
-      django-framework/dependencies:
-         stage-packages:
-         # list required packages or slices for your Django application below.
-         - libpq-dev
+    .. tab-item:: Ubuntu 22.04 and 24.04
+        :sync: base-22-24
+
+        .. code-block:: yaml
+          :caption: rockcraft.yaml
+
+          parts:
+            django-framework/dependencies:
+              stage-packages:
+                # list required packages or slices for your Django application below.
+                - libpq-dev
+
+    .. tab-item:: Ubuntu 26.04
+        :sync: base-26
+
+        .. code-block:: yaml
+          :caption: rockcraft.yaml
+
+          parts:
+            django-framework.dependencies:
+              stage-packages:
+                # list required packages or slices for your Django application below.
+                - libpq-dev
 
 .. _reference-django-framework-statsd-exporter:
 

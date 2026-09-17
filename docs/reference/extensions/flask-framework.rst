@@ -16,7 +16,12 @@ lightweight image.
 
 .. note::
     The Flask extension is compatible with the ``bare``, ``ubuntu@22.04``,
-    ``ubuntu@24.04`` and ``ubuntu@26.04`` bases.
+    ``ubuntu@24.04`` and ``ubuntu@26.04`` bases. Support for Ubuntu 26.04 is
+    experimental.
+
+Generated extension part names use ``/`` on Ubuntu 22.04 and 24.04 and ``.``
+on Ubuntu 26.04. For a ``bare`` base, the ``build-base`` determines which
+separator to use.
 
 The Flask extension supports both synchronous and asynchronous
 Gunicorn workers.
@@ -52,8 +57,8 @@ uv projects
         application with the Python plugin and installs dependencies from
         ``requirements.txt`` or ``pyproject.toml``.
 
-    .. tab-item:: Ubuntu 26.04 and higher
-        :sync: base-26-plus
+    .. tab-item:: Ubuntu 26.04
+        :sync: base-26
 
         If both a ``uv.lock`` and a ``pyproject.toml`` file are present in the
         project root, the extension builds the application with the :doc:`uv
@@ -77,14 +82,31 @@ has its own special dependencies, this key must declare them.
 
 The following example specifies the ``libpq-dev`` package:
 
-.. code-block:: yaml
-  :caption: rockcraft.yaml
+.. tab-set::
 
-  parts:
-    flask-framework/dependencies:
-      stage-packages:
-        # list required packages or slices for your flask app below.
-        - libpq-dev
+    .. tab-item:: Ubuntu 22.04 and 24.04
+        :sync: base-22-24
+
+        .. code-block:: yaml
+          :caption: rockcraft.yaml
+
+          parts:
+            flask-framework/dependencies:
+              stage-packages:
+                # list required packages or slices for your Flask app below.
+                - libpq-dev
+
+    .. tab-item:: Ubuntu 26.04
+        :sync: base-26
+
+        .. code-block:: yaml
+          :caption: rockcraft.yaml
+
+          parts:
+            flask-framework.dependencies:
+              stage-packages:
+                # list required packages or slices for your Flask app below.
+                - libpq-dev
 
 .. _reference-flask-framework-statsd-exporter:
 
@@ -152,17 +174,37 @@ The ``prime`` key specifies the files to be included or excluded from
 the rock upon ``rockcraft pack``, following the ``app/<filename>`` notation. For
 example:
 
-.. code-block:: yaml
-  :caption: rockcraft.yaml
+.. tab-set::
 
-  parts:
-    flask-framework/install-app:
-      prime:
-        - flask/app/.env
-        - flask/app/app.py
-        - flask/app/webapp
-        - flask/app/templates
-        - flask/app/static
+    .. tab-item:: Ubuntu 22.04 and 24.04
+        :sync: base-22-24
+
+        .. code-block:: yaml
+          :caption: rockcraft.yaml
+
+          parts:
+            flask-framework/install-app:
+              prime:
+                - flask/app/.env
+                - flask/app/app.py
+                - flask/app/webapp
+                - flask/app/templates
+                - flask/app/static
+
+    .. tab-item:: Ubuntu 26.04
+        :sync: base-26
+
+        .. code-block:: yaml
+          :caption: rockcraft.yaml
+
+          parts:
+            flask-framework.install-app:
+              prime:
+                - app/.env
+                - app/app.py
+                - app/webapp
+                - app/templates
+                - app/static
 
 The ``prime`` key supports glob patterns to define the list of files. See :ref:`filesets_explanation`
 for the various ways you can specify files in your rock.
