@@ -19,9 +19,10 @@ lightweight image.
     The FastAPI extension is compatible with the ``bare``, ``ubuntu@24.04``
     and ``ubuntu@26.04`` bases. Support for Ubuntu 26.04 is experimental.
 
-    Generated extension part names use ``/`` on Ubuntu 24.04 and ``.`` on
-    Ubuntu 26.04. For a ``bare`` base, the ``build-base`` determines which
-    separator to use.
+    Part names added by the extension vary by Ubuntu version. On Ubuntu 24.04,
+    write ``extension/part``; on Ubuntu 26.04 and higher, write
+    ``extension.part``. For rocks with ``base: bare``, follow the convention
+    for the configured ``build-base``.
 
 .. _reference-fastapi-framework-project-requirements:
 

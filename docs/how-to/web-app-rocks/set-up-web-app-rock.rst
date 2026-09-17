@@ -76,9 +76,10 @@ the root of the project:
 - ``templates``
 
 .. note::
-   Generated extension part names use ``/`` on Ubuntu 22.04 and 24.04 and
-   ``.`` on Ubuntu 26.04. For a ``bare`` base, use the syntax for the
-   ``build-base``.
+   Part names added by extensions vary by Ubuntu version. On Ubuntu 22.04 and
+   24.04, write ``extension/part``; on Ubuntu 26.04 and higher, write
+   ``extension.part``. For rocks with ``base: bare``, follow the convention
+   for the configured ``build-base``.
 
 To change this list, add the following snippet to the project file:
 
@@ -210,9 +211,10 @@ Include additional debs in the OCI image
 ----------------------------------------
 
 .. note::
-   Generated extension part names use ``/`` on Ubuntu 22.04 and 24.04 and
-   ``.`` on Ubuntu 26.04. For a ``bare`` base, use the syntax for the
-   ``build-base``.
+   Part names added by extensions vary by Ubuntu version. On Ubuntu 22.04 and
+   24.04, write ``extension/part``; on Ubuntu 26.04 and higher, write
+   ``extension.part``. For rocks with ``base: bare``, follow the convention
+   for the configured ``build-base``.
 
 If your app requires debs -- for example, to connect to a database -- add the
 following snippet to the project file:
@@ -338,7 +340,6 @@ example:
          :caption: Output of ``rockcraft expand-extensions``
 
          # ...
-
          services:
            flask:
              override: replace
@@ -372,7 +373,6 @@ example:
              after:
                - statsd-exporter
              user: _daemon_
-         # ...
 
       To limit the maximum number of pending connections in ``Gunicorn`` to 1024, add the following
       lines to ``rockcraft.yaml``.

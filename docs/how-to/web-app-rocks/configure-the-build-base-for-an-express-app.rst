@@ -16,9 +16,10 @@ The main differences between the cases are:
 The remainder of this page discusses the combinations of
 Ubuntu bases and sources for Node.js.
 
-Generated extension part names use ``/`` when the effective build base is
-Ubuntu 24.04 and ``.`` when it is Ubuntu 26.04. For a ``bare`` base, the
-``build-base`` is the effective build base.
+Part names added by the extension vary by Ubuntu version. On Ubuntu 24.04,
+write ``extension/part``; on Ubuntu 26.04 and higher, write
+``extension.part``. For rocks with ``base: bare``, follow the convention for
+the configured ``build-base``.
 
 Ubuntu 24.04 base, Node.js from Ubuntu package archive
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
