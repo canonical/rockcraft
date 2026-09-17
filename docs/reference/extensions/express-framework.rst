@@ -25,12 +25,14 @@ Node.js and npm, inside the rock.
 
 By default, the system foundation, or base, is set as ``bare`` to generate a
 lightweight image.
-The Express extension is compatible with the ``bare``, ``ubuntu@24.04`` and
-``ubuntu@26.04`` bases. Support for Ubuntu 26.04 is experimental.
 
-Generated extension part names use ``/`` on Ubuntu 24.04 and ``.`` on Ubuntu
-26.04. For a ``bare`` base, the ``build-base`` determines which separator to
-use.
+.. note::
+    The Express extension is compatible with the ``bare``, ``ubuntu@24.04``
+    and ``ubuntu@26.04`` bases. Support for Ubuntu 26.04 is experimental.
+
+    Generated extension part names use ``/`` on Ubuntu 24.04 and ``.`` on
+    Ubuntu 26.04. For a ``bare`` base, the ``build-base`` determines which
+    separator to use.
 
 .. _reference-express-framework-project-requirements:
 

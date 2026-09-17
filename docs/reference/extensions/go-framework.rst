@@ -17,9 +17,9 @@ lightweight image.
     The Go extension is compatible with the ``bare``, ``ubuntu@24.04`` and
     ``ubuntu@26.04`` bases. Support for Ubuntu 26.04 is experimental.
 
-Generated extension part names use ``/`` on Ubuntu 24.04 and ``.`` on Ubuntu
-26.04. For a ``bare`` base, the ``build-base`` determines which separator to
-use.
+    Generated extension part names use ``/`` on Ubuntu 24.04 and ``.`` on
+    Ubuntu 26.04. For a ``bare`` base, the ``build-base`` determines which
+    separator to use.
 
 .. _reference-go-framework-project-requirements:
 
