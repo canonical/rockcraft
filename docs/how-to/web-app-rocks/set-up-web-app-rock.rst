@@ -75,10 +75,12 @@ the root of the project:
 - ``static``
 - ``templates``
 
-To change this list, add the following snippet to the project file:
+.. note::
+   Generated extension part names use ``/`` on Ubuntu 22.04 and 24.04 and
+   ``.`` on Ubuntu 26.04. For a ``bare`` base, use the syntax for the
+   ``build-base``.
 
-Generated extension part names use ``/`` on Ubuntu 22.04 and 24.04 and ``.``
-on Ubuntu 26.04. For a ``bare`` base, use the syntax for the ``build-base``.
+To change this list, add the following snippet to the project file:
 
 .. tabs::
 
@@ -207,11 +209,13 @@ on Ubuntu 26.04. For a ``bare`` base, use the syntax for the ``build-base``.
 Include additional debs in the OCI image
 ----------------------------------------
 
+.. note::
+   Generated extension part names use ``/`` on Ubuntu 22.04 and 24.04 and
+   ``.`` on Ubuntu 26.04. For a ``bare`` base, use the syntax for the
+   ``build-base``.
+
 If your app requires debs -- for example, to connect to a database -- add the
 following snippet to the project file:
-
-Generated extension part names use ``/`` on Ubuntu 22.04 and 24.04 and ``.``
-on Ubuntu 26.04. For a ``bare`` base, use the syntax for the ``build-base``.
 
 .. tabs::
 
