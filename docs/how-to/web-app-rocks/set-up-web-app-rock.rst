@@ -210,12 +210,6 @@ To change this list, add the following snippet to the project file:
 Include additional debs in the OCI image
 ----------------------------------------
 
-.. note::
-   Part names added by extensions vary by Ubuntu version. On Ubuntu 22.04 and
-   24.04, write ``extension/part``; on Ubuntu 26.04 and higher, write
-   ``extension.part``. For rocks with ``base: bare``, follow the convention
-   for the configured ``build-base``.
-
 If your app requires debs -- for example, to connect to a database -- add the
 following snippet to the project file:
 
