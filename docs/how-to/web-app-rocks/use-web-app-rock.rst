@@ -32,10 +32,23 @@ Update and deploy the OCI image
 
       4. To deploy the new OCI image, run:
 
-         .. code-block:: bash
+         .. tab-set::
 
-            juju refresh <app name> --path=<relative path to .charm file> \
-            --resource flask-app-image=<localhost:32000/<rock name>:<rock version>>
+            .. tab-item:: Ubuntu 22.04 and 24.04
+               :sync: base-22-24
+
+               .. code-block:: bash
+
+                  juju refresh <app name> --path=<relative path to .charm file> \
+                  --resource flask-app-image=<localhost:32000/<rock name>:<rock version>>
+
+            .. tab-item:: Ubuntu 26.04 and higher
+               :sync: base-26-plus
+
+               .. code-block:: bash
+
+                  juju refresh <app name> --path=<relative path to .charm file> \
+                  --resource app-image=<localhost:32000/<rock name>:<rock version>>
 
    .. group-tab:: Django
 
@@ -53,10 +66,23 @@ Update and deploy the OCI image
 
       4. To deploy the new OCI image, run:
 
-         .. code-block:: bash
+         .. tab-set::
 
-            juju refresh <app name> --path=<relative path to .charm file> \
-            --resource django-app-image=<localhost:32000/<rock name>:<rock version>>
+            .. tab-item:: Ubuntu 22.04 and 24.04
+               :sync: base-22-24
+
+               .. code-block:: bash
+
+                  juju refresh <app name> --path=<relative path to .charm file> \
+                  --resource django-app-image=<localhost:32000/<rock name>:<rock version>>
+
+            .. tab-item:: Ubuntu 26.04 and higher
+               :sync: base-26-plus
+
+               .. code-block:: bash
+
+                  juju refresh <app name> --path=<relative path to .charm file> \
+                  --resource app-image=<localhost:32000/<rock name>:<rock version>>
 
    .. group-tab:: FastAPI
 
