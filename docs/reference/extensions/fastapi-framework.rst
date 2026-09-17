@@ -58,7 +58,7 @@ uv projects
         ``requirements.txt``.
 
     .. tab-item:: Ubuntu 26.04 and higher
-        :sync: base-26
+        :sync: base-26-plus
 
         If both a ``uv.lock`` and a ``pyproject.toml`` file are present in the
         project root, the extension builds the application with the :doc:`uv
@@ -97,7 +97,7 @@ The following example specifies the ``libpq-dev`` package:
                 - libpq-dev
 
     .. tab-item:: Ubuntu 26.04 and higher
-        :sync: base-26
+        :sync: base-26-plus
 
         .. code-block:: yaml
           :caption: rockcraft.yaml
@@ -139,7 +139,7 @@ example:
                 - app/static
 
     .. tab-item:: Ubuntu 26.04 and higher
-        :sync: base-26
+        :sync: base-26-plus
 
         .. code-block:: yaml
           :caption: rockcraft.yaml

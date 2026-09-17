@@ -18,7 +18,7 @@ Node.js and npm, inside the rock.
         to ``/app`` within the rock.
 
     .. tab-item:: Ubuntu 26.04 and higher
-        :sync: base-26
+        :sync: base-26-plus
 
         The extension discovers the location of the
         ``package.json``, but the extension can only package a single application.
@@ -51,7 +51,7 @@ Project requirements
         For more information, see the `npm documentation <https://docs.npmjs.com/cli/v11/configuring-npm/package-json>`_.
 
     .. tab-item:: Ubuntu 26.04 and higher
-        :sync: base-26
+        :sync: base-26-plus
 
         There are two requirements to be able to use the ``expressjs-framework``
         extension:
@@ -90,7 +90,7 @@ specify the version of Node.js to be installed. For example:
               npm-node-version: 20.12.2
 
     .. tab-item:: Ubuntu 26.04 and higher
-        :sync: base-26
+        :sync: base-26-plus
 
         .. code-block:: yaml
           :caption: rockcraft.yaml

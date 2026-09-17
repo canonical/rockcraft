@@ -75,7 +75,7 @@ respectively.
               gradle-task: bootJar
 
     .. tab-item:: Ubuntu 26.04 and higher
-        :sync: base-26
+        :sync: base-26-plus
 
         .. code-block:: yaml
           :caption: rockcraft.yaml
@@ -122,7 +122,7 @@ For example:
                 - openjdk-17-jdk # specify the Java package to use
 
     .. tab-item:: Ubuntu 26.04 and higher
-        :sync: base-26
+        :sync: base-26-plus
 
         .. code-block:: yaml
           :caption: rockcraft.yaml
@@ -165,7 +165,7 @@ The ``spring-boot-framework`` uses the following configuration:
                 - base-files_tmp
 
     .. tab-item:: Ubuntu 26.04 and higher
-        :sync: base-26
+        :sync: base-26-plus
 
         .. code-block:: yaml
           :caption: rockcraft.yaml
@@ -211,7 +211,7 @@ example:
                 - app/another_file_or_directory
 
     .. tab-item:: Ubuntu 26.04 and higher
-        :sync: base-26
+        :sync: base-26-plus
 
         .. code-block:: yaml
           :caption: rockcraft.yaml
