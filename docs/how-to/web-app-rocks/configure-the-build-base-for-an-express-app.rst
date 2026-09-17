@@ -16,10 +16,11 @@ The main differences between the cases are:
 The remainder of this page discusses the combinations of
 Ubuntu bases and sources for Node.js.
 
-Part names added by the extension vary by Ubuntu version. On Ubuntu 24.04,
-write ``extension/part``; on Ubuntu 26.04 and higher, write
-``extension.part``. For rocks with ``base: bare``, follow the convention for
-the configured ``build-base``.
+.. note::
+    Part names added by the extension vary by Ubuntu version. On Ubuntu 24.04,
+    write ``extension/part``; on Ubuntu 26.04 and higher, write
+    ``extension.part``. For rocks with ``base: bare``, follow the convention
+    for the configured ``build-base``.
 
 .. tab-set::
 
