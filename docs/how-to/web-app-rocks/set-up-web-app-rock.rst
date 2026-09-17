@@ -82,9 +82,7 @@ on Ubuntu 26.04. For a ``bare`` base, use the syntax for the ``build-base``.
 
 .. tabs::
 
-   .. group-tab:: Flask
-
-      For Ubuntu 22.04 and 24.04:
+   .. group-tab:: Flask -- Ubuntu 22.04 and 24.04
 
       .. code-block:: yaml
          :caption: rockcraft.yaml
@@ -101,7 +99,7 @@ on Ubuntu 26.04. For a ``bare`` base, use the syntax for the ``build-base``.
       Note the ``flask/app/`` prefix that is required followed by the relative path to
       the project root.
 
-      For Ubuntu 26.04:
+   .. group-tab:: Flask -- Ubuntu 26.04 and higher
 
       .. code-block:: yaml
          :caption: rockcraft.yaml
@@ -122,9 +120,7 @@ on Ubuntu 26.04. For a ``bare`` base, use the syntax for the ``build-base``.
 
       N/A
 
-   .. group-tab:: FastAPI
-
-      For Ubuntu 24.04:
+   .. group-tab:: FastAPI -- Ubuntu 24.04
 
       .. code-block:: yaml
          :caption: rockcraft.yaml
@@ -141,7 +137,7 @@ on Ubuntu 26.04. For a ``bare`` base, use the syntax for the ``build-base``.
       Note the ``app/`` prefix that is required followed by the relative path to
       the project root.
 
-      For Ubuntu 26.04:
+   .. group-tab:: FastAPI -- Ubuntu 26.04 and higher
 
       .. code-block:: yaml
          :caption: rockcraft.yaml
@@ -155,9 +151,7 @@ on Ubuntu 26.04. For a ``bare`` base, use the syntax for the ``build-base``.
                - app/templates
                - app/static
 
-   .. group-tab:: Go
-
-      For Ubuntu 24.04:
+   .. group-tab:: Go -- Ubuntu 24.04
 
       .. code-block:: yaml
          :caption: rockcraft.yaml
@@ -172,7 +166,7 @@ on Ubuntu 26.04. For a ``bare`` base, use the syntax for the ``build-base``.
       Note the ``app/`` prefix that is required followed by the relative path to
       the project root.
 
-      For Ubuntu 26.04:
+   .. group-tab:: Go -- Ubuntu 26.04 and higher
 
       .. code-block:: yaml
          :caption: rockcraft.yaml
@@ -197,9 +191,7 @@ on Ubuntu 26.04. For a ``bare`` base, use the syntax for the ``build-base``.
 
 .. tabs::
 
-   .. group-tab:: Flask
-
-      For Ubuntu 22.04 and 24.04:
+   .. group-tab:: Flask -- Ubuntu 22.04 and 24.04
 
       .. code-block:: yaml
          :caption: rockcraft.yaml
@@ -210,7 +202,7 @@ on Ubuntu 26.04. For a ``bare`` base, use the syntax for the ``build-base``.
                # list required packages or slices for your Flask application below.
                - libpq-dev
 
-      For Ubuntu 26.04:
+   .. group-tab:: Flask -- Ubuntu 26.04 and higher
 
       .. code-block:: yaml
          :caption: rockcraft.yaml
@@ -221,9 +213,7 @@ on Ubuntu 26.04. For a ``bare`` base, use the syntax for the ``build-base``.
                # list required packages or slices for your Flask application below.
                - libpq-dev
 
-   .. group-tab:: Django
-
-      For Ubuntu 22.04 and 24.04:
+   .. group-tab:: Django -- Ubuntu 22.04 and 24.04
 
       .. code-block:: yaml
          :caption: rockcraft.yaml
@@ -234,7 +224,7 @@ on Ubuntu 26.04. For a ``bare`` base, use the syntax for the ``build-base``.
                # list required packages or slices for your Django application below.
                - libpq-dev
 
-      For Ubuntu 26.04:
+   .. group-tab:: Django -- Ubuntu 26.04 and higher
 
       .. code-block:: yaml
          :caption: rockcraft.yaml
@@ -245,9 +235,7 @@ on Ubuntu 26.04. For a ``bare`` base, use the syntax for the ``build-base``.
                # list required packages or slices for your Django application below.
                - libpq-dev
 
-   .. group-tab:: FastAPI
-
-      For Ubuntu 24.04:
+   .. group-tab:: FastAPI -- Ubuntu 24.04
 
       .. code-block:: yaml
          :caption: rockcraft.yaml
@@ -258,7 +246,7 @@ on Ubuntu 26.04. For a ``bare`` base, use the syntax for the ``build-base``.
                # list required packages or slices for your FastAPI application below.
                - libpq-dev
 
-      For Ubuntu 26.04:
+   .. group-tab:: FastAPI -- Ubuntu 26.04 and higher
 
       .. code-block:: yaml
          :caption: rockcraft.yaml
