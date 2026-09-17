@@ -57,7 +57,7 @@ to use the binary ``anotherserver``:
               organize:
                 bin/anotherserver: usr/local/bin/<rockcraft project name>
 
-    .. tab-item:: Ubuntu 26.04
+    .. tab-item:: Ubuntu 26.04 and higher
         :sync: base-26
 
         .. code-block:: yaml
@@ -98,7 +98,7 @@ example:
                 - app/static
                 - app/another_file_or_directory
 
-    .. tab-item:: Ubuntu 26.04
+    .. tab-item:: Ubuntu 26.04 and higher
         :sync: base-26
 
         .. code-block:: yaml

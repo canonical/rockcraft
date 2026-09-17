@@ -61,7 +61,7 @@ uv projects
         application with the Python plugin and installs dependencies from
         ``requirements.txt``.
 
-    .. tab-item:: Ubuntu 26.04
+    .. tab-item:: Ubuntu 26.04 and higher
         :sync: base-26
 
         If both a ``uv.lock`` and a ``pyproject.toml`` file are present in the
@@ -100,7 +100,7 @@ The following example specifies the ``libpq-dev`` package:
                 # list required packages or slices for your Django application below.
                 - libpq-dev
 
-    .. tab-item:: Ubuntu 26.04
+    .. tab-item:: Ubuntu 26.04 and higher
         :sync: base-26
 
         .. code-block:: yaml

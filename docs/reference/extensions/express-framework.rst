@@ -17,7 +17,7 @@ Node.js and npm, inside the rock.
         Additionally, it transfers your project files
         to ``/app`` within the rock.
 
-    .. tab-item:: Ubuntu 26.04
+    .. tab-item:: Ubuntu 26.04 and higher
         :sync: base-26
 
         The extension discovers the location of the
@@ -50,7 +50,7 @@ Project requirements
 
         For more information, see the `npm documentation <https://docs.npmjs.com/cli/v11/configuring-npm/package-json>`_.
 
-    .. tab-item:: Ubuntu 26.04
+    .. tab-item:: Ubuntu 26.04 and higher
         :sync: base-26
 
         There are two requirements to be able to use the ``expressjs-framework``
@@ -89,7 +89,7 @@ specify the version of Node.js to be installed. For example:
               npm-include-node: true
               npm-node-version: 20.12.2
 
-    .. tab-item:: Ubuntu 26.04
+    .. tab-item:: Ubuntu 26.04 and higher
         :sync: base-26
 
         .. code-block:: yaml

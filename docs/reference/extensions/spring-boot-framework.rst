@@ -74,7 +74,7 @@ respectively.
               plugin: gradle
               gradle-task: bootJar
 
-    .. tab-item:: Ubuntu 26.04
+    .. tab-item:: Ubuntu 26.04 and higher
         :sync: base-26
 
         .. code-block:: yaml
@@ -121,7 +121,7 @@ For example:
               build-packages:
                 - openjdk-17-jdk # specify the Java package to use
 
-    .. tab-item:: Ubuntu 26.04
+    .. tab-item:: Ubuntu 26.04 and higher
         :sync: base-26
 
         .. code-block:: yaml
@@ -164,7 +164,7 @@ The ``spring-boot-framework`` uses the following configuration:
                 - coreutils_bins
                 - base-files_tmp
 
-    .. tab-item:: Ubuntu 26.04
+    .. tab-item:: Ubuntu 26.04 and higher
         :sync: base-26
 
         .. code-block:: yaml
@@ -210,7 +210,7 @@ example:
                 - app/migrate.sh
                 - app/another_file_or_directory
 
-    .. tab-item:: Ubuntu 26.04
+    .. tab-item:: Ubuntu 26.04 and higher
         :sync: base-26
 
         .. code-block:: yaml
