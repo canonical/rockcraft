@@ -163,6 +163,9 @@ on Ubuntu 26.04. For a ``bare`` base, use the syntax for the ``build-base``.
                      - app/templates
                      - app/static
 
+            Note the ``app/`` prefix that is required followed by the relative
+            path to the project root.
+
    .. group-tab:: Go
 
       .. tab-set::
@@ -195,6 +198,9 @@ on Ubuntu 26.04. For a ``bare`` base, use the syntax for the ``build-base``.
                      - app/templates
                      - app/static
                      - app/migrate.sh
+
+            Note the ``app/`` prefix that is required followed by the relative
+            path to the project root.
 
 .. _set-up-web-app-rock-include-extra-debs-oci:
 
