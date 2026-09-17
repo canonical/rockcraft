@@ -50,9 +50,8 @@ Ubuntu base, Node.js from Ubuntu package archive
 In this case, the npm plugin copies the app's files and installs its
 dependencies. Node.js then provides a runtime and launches the app. The npm and
 Node.js versions are determined by the versions shipped with the Ubuntu base.
-For example, the `Ubuntu archive
-<https://packages.ubuntu.com/noble/npm>`_ lists the npm version shipped with
-Ubuntu 24.04.
+Search the `Ubuntu package archive <https://packages.ubuntu.com/>`_ for the npm
+and Node.js versions available in the selected Ubuntu release.
 
 Ubuntu base, Node.js from npm plugin
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
