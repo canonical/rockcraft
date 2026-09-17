@@ -21,104 +21,109 @@ write ``extension/part``; on Ubuntu 26.04 and higher, write
 ``extension.part``. For rocks with ``base: bare``, follow the convention for
 the configured ``build-base``.
 
-Ubuntu 24.04 base, Node.js from Ubuntu package archive
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. tab-set::
 
-.. code-block:: yaml
-    :caption: rockcraft.yaml
+    .. tab-item:: Ubuntu 24.04
+        :sync: base-24
 
-    base: ubuntu@24.04
-    extensions:
-        - expressjs-framework
+        **Ubuntu base, Node.js from Ubuntu package archive**
 
-In this case, the npm plugin copies the app's files and installs its
-dependencies. Node.js then provides a runtime and launches the app. The npm and
-Node.js versions are determined by the versions of npm and Node.js shipped with
-the Ubuntu base. This `link to the Ubuntu archive
-<https://packages.ubuntu.com/noble/npm>`_ shows the npm version shipped with the
-Ubuntu 24.04 base.
+        .. code-block:: yaml
+            :caption: rockcraft.yaml
 
-Ubuntu 24.04 base, Node.js from npm plugin
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            base: ubuntu@24.04
+            extensions:
+                - expressjs-framework
 
-.. code-block:: yaml
-    :caption: rockcraft.yaml
+        In this case, the npm plugin copies the app's files and installs its
+        dependencies. Node.js then provides a runtime and launches the app. The
+        npm and Node.js versions are determined by the versions of npm and
+        Node.js shipped with the Ubuntu base. This `link to the Ubuntu archive
+        <https://packages.ubuntu.com/noble/npm>`_ shows the npm version shipped
+        with the Ubuntu 24.04 base.
 
-    base: ubuntu@24.04
-    extensions:
-        - expressjs-framework
-    parts:
-        expressjs-framework/install-app:
-            npm-include-node: true
-            npm-node-version: 20.12
+        **Ubuntu base, Node.js from npm plugin**
 
-In this case, the npm plugin copies the app's files and installs its
-dependencies. Node.js and npm are installed by the npm plugin.
+        .. code-block:: yaml
+            :caption: rockcraft.yaml
 
-Ubuntu 26.04 build base, Node.js from npm plugin
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            base: ubuntu@24.04
+            extensions:
+                - expressjs-framework
+            parts:
+                expressjs-framework/install-app:
+                    npm-include-node: true
+                    npm-node-version: 20.12
 
-Support for Ubuntu 26.04 is experimental. For an Ubuntu base, use:
+        In this case, the npm plugin copies the app's files and installs its
+        dependencies. Node.js and npm are installed by the npm plugin.
 
-.. code-block:: yaml
-    :caption: rockcraft.yaml
+        **Bare base, Node.js from Ubuntu package archive**
 
-    base: ubuntu@26.04
-    extensions:
-        - expressjs-framework
-    parts:
-        expressjs-framework.install-app:
-            npm-include-node: true
-            npm-node-version: 20.12
+        .. code-block:: yaml
+            :caption: rockcraft.yaml
 
-For a ``bare`` base, use:
+            base: bare
+            build-base: ubuntu@24.04
+            extensions:
+                - expressjs-framework
 
-.. code-block:: yaml
-    :caption: rockcraft.yaml
+        In this case, the npm plugin copies the app's files and installs its
+        dependencies. Node.js then provides a runtime and launches the app. The
+        npm and Node.js versions are determined by the versions of npm and
+        Node.js shipped with the Ubuntu base.
 
-    base: bare
-    build-base: ubuntu@26.04
-    extensions:
-        - expressjs-framework
-    parts:
-        expressjs-framework.install-app:
-            npm-include-node: true
-            npm-node-version: 20.12
+        **Bare base, Node.js from npm plugin**
 
-In both cases, the npm plugin installs Node.js and npm, copies the app's files,
-and installs its dependencies.
+        .. code-block:: yaml
+            :caption: rockcraft.yaml
 
-Bare base, Node.js from Ubuntu package archive
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            base: bare
+            build-base: ubuntu@24.04
+            extensions:
+                - expressjs-framework
+            parts:
+                expressjs-framework/install-app:
+                    npm-include-node: true
+                    npm-node-version: 20.12
 
-.. code-block:: yaml
-    :caption: rockcraft.yaml
+        In this case, the npm plugin copies the app's files and installs its
+        dependencies. Node.js then provides a runtime and launches the app.
+        Node.js and npm are installed by the npm plugin. For different possible
+        values for the ``npm-node-version`` key, refer to
+        :ref:`npm plugin documentation <craft_parts_npm_plugin>`.
 
-    base: bare
-    build-base: ubuntu@24.04
-    extensions:
-        - expressjs-framework
+    .. tab-item:: Ubuntu 26.04 and higher
+        :sync: base-26-plus
 
-In this case, the npm plugin copies the app's files and installs its
-dependencies. Node.js then provides a runtime and launches the app. The npm and
-Node.js versions are determined by the versions of npm and Node.js shipped with
-the Ubuntu base.
+        Support for Ubuntu 26.04 is experimental.
 
-Bare base, Node.js from npm plugin
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        **Ubuntu base, Node.js from npm plugin**
 
-.. code-block:: yaml
-    :caption: rockcraft.yaml
+        .. code-block:: yaml
+            :caption: rockcraft.yaml
 
-    base: bare
-    build-base: ubuntu@24.04
-    parts:
-        expressjs-framework/install-app:
-            npm-include-node: true
-            npm-node-version: 20.12
+            base: ubuntu@26.04
+            extensions:
+                - expressjs-framework
+            parts:
+                expressjs-framework.install-app:
+                    npm-include-node: true
+                    npm-node-version: 20.12
 
-In this case, the npm plugin copies the app's files and installs its
-dependencies. Node.js then provides a runtime and launches the app. Node.js and
-npm is installed by the npm plugin. For different possible values for the
-``npm-node-version`` key, refer to
-:ref:`npm plugin documentation <craft_parts_npm_plugin>`.
+        **Bare base, Node.js from npm plugin**
+
+        .. code-block:: yaml
+            :caption: rockcraft.yaml
+
+            base: bare
+            build-base: ubuntu@26.04
+            extensions:
+                - expressjs-framework
+            parts:
+                expressjs-framework.install-app:
+                    npm-include-node: true
+                    npm-node-version: 20.12
+
+        In both cases, the npm plugin installs Node.js and npm, copies the
+        app's files, and installs its dependencies.
