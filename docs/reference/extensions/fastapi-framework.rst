@@ -17,10 +17,10 @@ lightweight image.
 
 .. note::
     The FastAPI extension is compatible with the ``bare``, ``ubuntu@24.04``
-    and ``ubuntu@26.04`` bases. Support for Ubuntu 26.04 is experimental.
+    and ``ubuntu@26.04`` bases. Support for Ubuntu 26.04 LTS is experimental.
 
-    Part names added by the extension vary by Ubuntu version. On Ubuntu 24.04,
-    write ``extension/part``; on Ubuntu 26.04 and higher, write
+    Part names added by the extension vary by Ubuntu version. On Ubuntu 24.04 LTS,
+    write ``extension/part``. On Ubuntu 26.04 LTS and higher, write
     ``extension.part``. For rocks with ``base: bare``, follow the convention
     for the configured ``build-base``.
 
@@ -51,14 +51,14 @@ uv projects
 
 .. tab-set::
 
-    .. tab-item:: Ubuntu 24.04
+    .. tab-item:: Ubuntu 24.04 LTS
         :sync: base-24
 
         The extension doesn't support uv projects on this base. It builds the
         application with the Python plugin and installs dependencies from
         ``requirements.txt``.
 
-    .. tab-item:: Ubuntu 26.04 and higher
+    .. tab-item:: Ubuntu 26.04 LTS and higher
         :sync: base-26-plus
 
         If both a ``uv.lock`` and a ``pyproject.toml`` file are present in the
@@ -85,7 +85,7 @@ The following example specifies the ``libpq-dev`` package:
 
 .. tab-set::
 
-    .. tab-item:: Ubuntu 24.04
+    .. tab-item:: Ubuntu 24.04 LTS
         :sync: base-24
 
         .. code-block:: yaml
@@ -97,7 +97,7 @@ The following example specifies the ``libpq-dev`` package:
                 # list required packages or slices for your FastAPI application below.
                 - libpq-dev
 
-    .. tab-item:: Ubuntu 26.04 and higher
+    .. tab-item:: Ubuntu 26.04 LTS and higher
         :sync: base-26-plus
 
         .. code-block:: yaml
@@ -124,7 +124,7 @@ example:
 
 .. tab-set::
 
-    .. tab-item:: Ubuntu 24.04
+    .. tab-item:: Ubuntu 24.04 LTS
         :sync: base-24
 
         .. code-block:: yaml
@@ -139,7 +139,7 @@ example:
                 - app/templates
                 - app/static
 
-    .. tab-item:: Ubuntu 26.04 and higher
+    .. tab-item:: Ubuntu 26.04 LTS and higher
         :sync: base-26-plus
 
         .. code-block:: yaml

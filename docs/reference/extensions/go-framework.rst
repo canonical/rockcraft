@@ -15,10 +15,10 @@ lightweight image.
 
 .. note::
     The Go extension is compatible with the ``bare``, ``ubuntu@24.04`` and
-    ``ubuntu@26.04`` bases. Support for Ubuntu 26.04 is experimental.
+    ``ubuntu@26.04`` bases. Support for Ubuntu 26.04 LTS is experimental.
 
-    Part names added by the extension vary by Ubuntu version. On Ubuntu 24.04,
-    write ``extension/part``; on Ubuntu 26.04 and higher, write
+    Part names added by the extension vary by Ubuntu version. On Ubuntu 24.04 LTS,
+    write ``extension/part``. On Ubuntu 26.04 LTS and higher, write
     ``extension.part``. For rocks with ``base: bare``, follow the convention
     for the configured ``build-base``.
 
@@ -47,7 +47,7 @@ to use the binary ``anotherserver``:
 
 .. tab-set::
 
-    .. tab-item:: Ubuntu 24.04
+    .. tab-item:: Ubuntu 24.04 LTS
         :sync: base-24
 
         .. code-block:: yaml
@@ -58,7 +58,7 @@ to use the binary ``anotherserver``:
               organize:
                 bin/anotherserver: usr/local/bin/<rockcraft project name>
 
-    .. tab-item:: Ubuntu 26.04 and higher
+    .. tab-item:: Ubuntu 26.04 LTS and higher
         :sync: base-26-plus
 
         .. code-block:: yaml
@@ -85,7 +85,7 @@ example:
 
 .. tab-set::
 
-    .. tab-item:: Ubuntu 24.04
+    .. tab-item:: Ubuntu 24.04 LTS
         :sync: base-24
 
         .. code-block:: yaml
@@ -99,7 +99,7 @@ example:
                 - app/static
                 - app/another_file_or_directory
 
-    .. tab-item:: Ubuntu 26.04 and higher
+    .. tab-item:: Ubuntu 26.04 LTS and higher
         :sync: base-26-plus
 
         .. code-block:: yaml

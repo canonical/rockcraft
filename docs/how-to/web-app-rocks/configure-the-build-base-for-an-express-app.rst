@@ -14,11 +14,11 @@ The main differences between the cases are:
 - Whether Node.js is installed from Ubuntu package archive or the npm plugin.
 
 The remainder of this page discusses the combinations of
-Ubuntu bases and sources for Node.js. Support for Ubuntu 26.04 is experimental.
+Ubuntu bases and sources for Node.js. Support for Ubuntu 26.04 LTS is experimental.
 
 .. note::
-    Part names added by the extension vary by Ubuntu version. On Ubuntu 24.04,
-    write ``extension/part``; on Ubuntu 26.04 and higher, write
+    Part names added by the extension vary by Ubuntu version. On Ubuntu 24.04 LTS,
+    write ``extension/part``; on Ubuntu 26.04 LTS and higher, write
     ``extension.part``. For rocks with ``base: bare``, follow the convention
     for the configured ``build-base``.
 
@@ -27,7 +27,7 @@ Ubuntu base, Node.js from Ubuntu package archive
 
 .. tab-set::
 
-    .. tab-item:: Ubuntu 24.04
+    .. tab-item:: Ubuntu 24.04 LTS
         :sync: base-24
 
         .. code-block:: yaml
@@ -37,7 +37,7 @@ Ubuntu base, Node.js from Ubuntu package archive
             extensions:
                 - expressjs-framework
 
-    .. tab-item:: Ubuntu 26.04 and higher
+    .. tab-item:: Ubuntu 26.04 LTS and higher
         :sync: base-26-plus
 
         .. code-block:: yaml
@@ -58,7 +58,7 @@ Ubuntu base, Node.js from npm plugin
 
 .. tab-set::
 
-    .. tab-item:: Ubuntu 24.04
+    .. tab-item:: Ubuntu 24.04 LTS
         :sync: base-24
 
         .. code-block:: yaml
@@ -72,7 +72,7 @@ Ubuntu base, Node.js from npm plugin
                     npm-include-node: true
                     npm-node-version: 20.12
 
-    .. tab-item:: Ubuntu 26.04 and higher
+    .. tab-item:: Ubuntu 26.04 LTS and higher
         :sync: base-26-plus
 
         .. code-block:: yaml
@@ -94,7 +94,7 @@ Bare base, Node.js from Ubuntu package archive
 
 .. tab-set::
 
-    .. tab-item:: Ubuntu 24.04
+    .. tab-item:: Ubuntu 24.04 LTS
         :sync: base-24
 
         .. code-block:: yaml
@@ -105,7 +105,7 @@ Bare base, Node.js from Ubuntu package archive
             extensions:
                 - expressjs-framework
 
-    .. tab-item:: Ubuntu 26.04 and higher
+    .. tab-item:: Ubuntu 26.04 LTS and higher
         :sync: base-26-plus
 
         .. code-block:: yaml
@@ -126,7 +126,7 @@ Bare base, Node.js from npm plugin
 
 .. tab-set::
 
-    .. tab-item:: Ubuntu 24.04
+    .. tab-item:: Ubuntu 24.04 LTS
         :sync: base-24
 
         .. code-block:: yaml
@@ -141,7 +141,7 @@ Bare base, Node.js from npm plugin
                     npm-include-node: true
                     npm-node-version: 20.12
 
-    .. tab-item:: Ubuntu 26.04 and higher
+    .. tab-item:: Ubuntu 26.04 LTS and higher
         :sync: base-26-plus
 
         .. code-block:: yaml

@@ -16,11 +16,11 @@ lightweight image.
 .. note::
 
     The Spring Boot extension is compatible with the ``bare``,
-    ``ubuntu@24.04`` and ``ubuntu@26.04`` bases. Support for Ubuntu 26.04 is
+    ``ubuntu@24.04`` and ``ubuntu@26.04`` bases. Support for Ubuntu 26.04 LTS is
     experimental.
 
-    Part names added by the extension vary by Ubuntu version. On Ubuntu 24.04,
-    write ``extension/part``; on Ubuntu 26.04 and higher, write
+    Part names added by the extension vary by Ubuntu version. On Ubuntu 24.04 LTS,
+    write ``extension/part``. On Ubuntu 26.04 LTS and higher, write
     ``extension.part``. For rocks with ``base: bare``, follow the convention
     for the configured ``build-base``.
 
@@ -54,7 +54,7 @@ respectively.
 
 .. tab-set::
 
-    .. tab-item:: Ubuntu 24.04
+    .. tab-item:: Ubuntu 24.04 LTS
         :sync: base-24
 
         .. code-block:: yaml
@@ -75,7 +75,7 @@ respectively.
               plugin: gradle
               gradle-task: bootJar
 
-    .. tab-item:: Ubuntu 26.04 and higher
+    .. tab-item:: Ubuntu 26.04 LTS and higher
         :sync: base-26-plus
 
         .. code-block:: yaml
@@ -111,7 +111,7 @@ For example:
 
 .. tab-set::
 
-    .. tab-item:: Ubuntu 24.04
+    .. tab-item:: Ubuntu 24.04 LTS
         :sync: base-24
 
         .. code-block:: yaml
@@ -122,7 +122,7 @@ For example:
               build-packages:
                 - openjdk-17-jdk # specify the Java package to use
 
-    .. tab-item:: Ubuntu 26.04 and higher
+    .. tab-item:: Ubuntu 26.04 LTS and higher
         :sync: base-26-plus
 
         .. code-block:: yaml
@@ -147,7 +147,7 @@ The ``spring-boot-framework`` uses the following configuration:
 
 .. tab-set::
 
-    .. tab-item:: Ubuntu 24.04
+    .. tab-item:: Ubuntu 24.04 LTS
         :sync: base-24
 
         .. code-block:: yaml
@@ -165,7 +165,7 @@ The ``spring-boot-framework`` uses the following configuration:
                 - coreutils_bins
                 - base-files_tmp
 
-    .. tab-item:: Ubuntu 26.04 and higher
+    .. tab-item:: Ubuntu 26.04 LTS and higher
         :sync: base-26-plus
 
         .. code-block:: yaml
@@ -198,7 +198,7 @@ example:
 
 .. tab-set::
 
-    .. tab-item:: Ubuntu 24.04
+    .. tab-item:: Ubuntu 24.04 LTS
         :sync: base-24
 
         .. code-block:: yaml
@@ -211,7 +211,7 @@ example:
                 - app/migrate.sh
                 - app/another_file_or_directory
 
-    .. tab-item:: Ubuntu 26.04 and higher
+    .. tab-item:: Ubuntu 26.04 LTS and higher
         :sync: base-26-plus
 
         .. code-block:: yaml

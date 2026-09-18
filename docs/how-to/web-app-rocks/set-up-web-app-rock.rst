@@ -76,10 +76,10 @@ the root of the project:
 - ``templates``
 
 .. note::
-   Part names added by extensions vary by Ubuntu version. On Ubuntu 22.04 and
-   24.04, write ``extension/part``; on Ubuntu 26.04 and higher, write
-   ``extension.part``. For rocks with ``base: bare``, follow the convention
-   for the configured ``build-base``.
+   Part names added by extensions vary by Ubuntu version. On Ubuntu 22.04 LTS
+   and Ubuntu 24.04 LTS, write ``extension/part``; on Ubuntu 26.04 LTS and
+   higher, write ``extension.part``. For rocks with ``base: bare``, follow the
+   convention for the configured ``build-base``.
 
 To change this list, add the following snippet to the project file:
 
@@ -89,7 +89,7 @@ To change this list, add the following snippet to the project file:
 
       .. tab-set::
 
-         .. tab-item:: Ubuntu 22.04 and 24.04
+         .. tab-item:: Ubuntu 22.04 LTS and Ubuntu 24.04 LTS
             :sync: base-22-24
 
             .. code-block:: yaml
@@ -107,7 +107,7 @@ To change this list, add the following snippet to the project file:
             Note the ``flask/app/`` prefix that is required followed by the
             relative path to the project root.
 
-         .. tab-item:: Ubuntu 26.04 and higher
+         .. tab-item:: Ubuntu 26.04 LTS and higher
             :sync: base-26-plus
 
             .. code-block:: yaml
@@ -133,7 +133,7 @@ To change this list, add the following snippet to the project file:
 
       .. tab-set::
 
-         .. tab-item:: Ubuntu 24.04
+         .. tab-item:: Ubuntu 24.04 LTS
             :sync: base-24
 
             .. code-block:: yaml
@@ -151,7 +151,7 @@ To change this list, add the following snippet to the project file:
             Note the ``app/`` prefix that is required followed by the relative
             path to the project root.
 
-         .. tab-item:: Ubuntu 26.04 and higher
+         .. tab-item:: Ubuntu 26.04 LTS and higher
             :sync: base-26-plus
 
             .. code-block:: yaml
@@ -173,7 +173,7 @@ To change this list, add the following snippet to the project file:
 
       .. tab-set::
 
-         .. tab-item:: Ubuntu 24.04
+         .. tab-item:: Ubuntu 24.04 LTS
             :sync: base-24
 
             .. code-block:: yaml
@@ -189,7 +189,7 @@ To change this list, add the following snippet to the project file:
             Note the ``app/`` prefix that is required followed by the relative
             path to the project root.
 
-         .. tab-item:: Ubuntu 26.04 and higher
+         .. tab-item:: Ubuntu 26.04 LTS and higher
             :sync: base-26-plus
 
             .. code-block:: yaml
@@ -219,7 +219,7 @@ following snippet to the project file:
 
       .. tab-set::
 
-         .. tab-item:: Ubuntu 22.04 and 24.04
+         .. tab-item:: Ubuntu 22.04 LTS and Ubuntu 24.04 LTS
             :sync: base-22-24
 
             .. code-block:: yaml
@@ -231,7 +231,7 @@ following snippet to the project file:
                      # list required packages or slices for your Flask application below.
                      - libpq-dev
 
-         .. tab-item:: Ubuntu 26.04 and higher
+         .. tab-item:: Ubuntu 26.04 LTS and higher
             :sync: base-26-plus
 
             .. code-block:: yaml
@@ -247,7 +247,7 @@ following snippet to the project file:
 
       .. tab-set::
 
-         .. tab-item:: Ubuntu 22.04 and 24.04
+         .. tab-item:: Ubuntu 22.04 LTS and Ubuntu 24.04 LTS
             :sync: base-22-24
 
             .. code-block:: yaml
@@ -259,7 +259,7 @@ following snippet to the project file:
                      # list required packages or slices for your Django application below.
                      - libpq-dev
 
-         .. tab-item:: Ubuntu 26.04 and higher
+         .. tab-item:: Ubuntu 26.04 LTS and higher
             :sync: base-26-plus
 
             .. code-block:: yaml
@@ -275,7 +275,7 @@ following snippet to the project file:
 
       .. tab-set::
 
-         .. tab-item:: Ubuntu 24.04
+         .. tab-item:: Ubuntu 24.04 LTS
             :sync: base-24
 
             .. code-block:: yaml
@@ -287,7 +287,7 @@ following snippet to the project file:
                      # list required packages or slices for your FastAPI application below.
                      - libpq-dev
 
-         .. tab-item:: Ubuntu 26.04 and higher
+         .. tab-item:: Ubuntu 26.04 LTS and higher
             :sync: base-26-plus
 
             .. code-block:: yaml

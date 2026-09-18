@@ -34,7 +34,7 @@ Update and deploy the OCI image
 
          .. tab-set::
 
-            .. tab-item:: Ubuntu 22.04 and 24.04
+            .. tab-item:: Ubuntu 22.04 LTS and Ubuntu 24.04 LTS
                :sync: base-22-24
 
                .. code-block:: bash
@@ -42,7 +42,7 @@ Update and deploy the OCI image
                   juju refresh <app name> --path=<relative path to .charm file> \
                   --resource flask-app-image=<localhost:32000/<rock name>:<rock version>>
 
-            .. tab-item:: Ubuntu 26.04 and higher
+            .. tab-item:: Ubuntu 26.04 LTS and higher
                :sync: base-26-plus
 
                .. code-block:: bash
@@ -68,7 +68,7 @@ Update and deploy the OCI image
 
          .. tab-set::
 
-            .. tab-item:: Ubuntu 22.04 and 24.04
+            .. tab-item:: Ubuntu 22.04 LTS and Ubuntu 24.04 LTS
                :sync: base-22-24
 
                .. code-block:: bash
@@ -76,7 +76,7 @@ Update and deploy the OCI image
                   juju refresh <app name> --path=<relative path to .charm file> \
                   --resource django-app-image=<localhost:32000/<rock name>:<rock version>>
 
-            .. tab-item:: Ubuntu 26.04 and higher
+            .. tab-item:: Ubuntu 26.04 LTS and higher
                :sync: base-26-plus
 
                .. code-block:: bash
