@@ -609,6 +609,7 @@ def test_fastapi_extension_default_26_04(tmp_path, monkeypatch):
             "fastapi-framework.system-dependencies": {
                 "plugin": "nil",
                 "stage-packages": ["tzdata"],
+                "stage": ["usr/share/zoneinfo"],
             },
         },
         "services": {

@@ -976,6 +976,7 @@ def test_flask_v2_full_apply_26_04(tmp_path, monkeypatch):
             "flask-framework.system-dependencies": {
                 "plugin": "nil",
                 "stage-packages": ["tzdata"],
+                "stage": ["usr/share/zoneinfo"],
             },
             "flask-framework.statsd-exporter": {
                 "build-snaps": ["go"],
@@ -1597,6 +1598,7 @@ def test_django_extension_v2_default(tmp_path):
             "django-framework.system-dependencies": {
                 "plugin": "nil",
                 "stage-packages": ["tzdata"],
+                "stage": ["usr/share/zoneinfo"],
             },
             "django-framework.statsd-exporter": {
                 "build-snaps": ["go"],

@@ -421,6 +421,7 @@ def test_expressjs_extension_default(
                     "expressjs-framework.system-dependencies": {
                         "plugin": "nil",
                         "stage-packages": ["tzdata"],
+                        "stage": ["usr/share/zoneinfo"],
                     },
                 },
                 "run-user": "_daemon_",
@@ -500,6 +501,7 @@ def test_expressjs_extension_default(
                     "expressjs-framework.system-dependencies": {
                         "plugin": "nil",
                         "stage-packages": ["tzdata"],
+                        "stage": ["usr/share/zoneinfo"],
                     },
                 },
                 "platforms": {
@@ -806,6 +808,7 @@ def test_expressjs_extension_ubuntu2604_default(
             "expressjs-framework.system-dependencies": {
                 "plugin": "nil",
                 "stage-packages": ["tzdata"],
+                "stage": ["usr/share/zoneinfo"],
             },
         },
         "services": {

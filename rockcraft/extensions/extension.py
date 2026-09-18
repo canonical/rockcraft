@@ -113,6 +113,7 @@ class Extension(abc.ABC):
         snippet["parts"][self.get_part_name("system-dependencies")] = {
             "plugin": "nil",
             "stage-packages": ["tzdata"],
+            "stage": ["usr/share/zoneinfo"],
         }
         return snippet
 

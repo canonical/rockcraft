@@ -682,6 +682,7 @@ def test_spring_boot_extension_default_ubuntu_26_04(tmp_path, monkeypatch):
             "spring-boot-framework.system-dependencies": {
                 "plugin": "nil",
                 "stage-packages": ["tzdata"],
+                "stage": ["usr/share/zoneinfo"],
             },
         },
         "services": {
