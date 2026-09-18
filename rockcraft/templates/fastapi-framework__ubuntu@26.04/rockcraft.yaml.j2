@@ -5,7 +5,7 @@ name: {{name}}
 # see {{versioned_url}}/explanation/bases/
 # for more information about bases and using 'bare' bases for chiselled rocks
 base: bare # as an alternative, an ubuntu base can be used
-build-base: {{ requested_base or "ubuntu@24.04" }} # build-base is required when the base is bare
+build-base: ubuntu@26.04 # build-base is required when the base is bare
 version: '0.1' # just for humans. Semantic versioning is recommended
 summary: A summary of your FastAPI application # 79 char long summary
 description: |
@@ -40,7 +40,7 @@ extensions:
 # uncomment the sections you need and adjust according to your requirements.
 # parts:  # you need to uncomment this line to add or update any part.
 
-#   fastapi-framework/install-app:
+#   fastapi-framework.install-app:
 #     prime:
 #       # by default, only the files in app.py, app/, src/, "project name/" templates/,
 #       # static/, migrate, migrate.sh, migrate.py and main.py are copied into the image.
@@ -52,7 +52,7 @@ extensions:
 #       - app/static
 
 # you may need Ubuntu packages to build a python dependency. Add them here if necessary.
-#   fastapi-framework/dependencies:
+#   fastapi-framework.dependencies:
 #     build-packages:
 #       # for example, if you need pkg-config and libxmlsec1-dev to build one
 #       # of your packages:

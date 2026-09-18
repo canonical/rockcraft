@@ -5,7 +5,7 @@ name: {{name}}
 # see {{versioned_url}}/explanation/bases/
 # for more information about bases and using 'bare' bases for chiselled rocks
 base: bare # as an alternative, an ubuntu base can be used
-build-base: {{ requested_base or "ubuntu@24.04" }} # build-base is required when the base is bare
+build-base: ubuntu@26.04 # build-base is required when the base is bare
 version: '0.1' # just for humans. Semantic versioning is recommended
 summary: A summary of your Go application # 79 char long summary
 description: |
@@ -36,7 +36,7 @@ extensions:
 # uncomment the sections you need and adjust according to your requirements.
 # parts:
 
-#   go-framework/install-app:
+#   go-framework.install-app:
 #    # select a specific Go version. Otherwise the current stable one will be used.
 #    build-snaps:
 #    - go/1.22/stable
@@ -49,7 +49,7 @@ extensions:
 #    # you can also include here other binary files to be included in the rock.
 #      bin/otherbinary: usr/local/bin/projectname
 
-#   go-framework/assets:
+#   go-framework.assets:
 #     stage:
 #       # by default, only the files migrate, migrate.sh, templates/ and static/
 #       # are copied into the image. You can modify the list below to override

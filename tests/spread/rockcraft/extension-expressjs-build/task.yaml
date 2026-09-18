@@ -15,12 +15,9 @@ execute: |
   APP=$(sed -n 's/.*"name": *"\([^"]*\)".*/\1/p' "package.json")
 
   export ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS
-  run_rockcraft init --name "${NAME}" --profile expressjs-framework
+  run_rockcraft init --name "${NAME}" --profile expressjs-framework --base ubuntu@26.04
   sed -i "s/^base: .*/base: ${SCENARIO//-/@}/g" rockcraft.yaml
-  if [ "${SCENARIO}" != "bare" ]; then
-    sed -i "s/^build-base: .*/build-base: ${SCENARIO//-/@}/g" rockcraft.yaml
-  else
-    sed -i "s/^build-base: .*/build-base: ubuntu@26.04/g" rockcraft.yaml
+  if [ "${SCENARIO}" == "bare" ]; then
     # Install findutils for the bare scenario
     # This is a workaround for the fact that the bare scenario does not have
     # findutils installed by default, which is required for the test

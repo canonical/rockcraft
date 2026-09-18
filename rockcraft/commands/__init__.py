@@ -16,6 +16,10 @@
 
 """Rockcraft commands."""
 
+from .init import InitCommand
+
+__all__ = ["InitCommand"]
+
 from .extensions import (
     ExpandExtensionsCommand,
     ExtensionsCommand,

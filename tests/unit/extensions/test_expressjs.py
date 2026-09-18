@@ -395,7 +395,10 @@ def test_expressjs_extension_default(
                         "${CRAFT_PART_INSTALL}/app\n"
                         "chown -R 584792:584792 ${CRAFT_PART_INSTALL}/app\n",
                         "build-packages": ["nodejs", "npm"],
-                        "stage-packages": ["ca-certificates_data", "nodejs_bins"],
+                        "stage-packages": [
+                            "ca-certificates_data",
+                            "nodejs_bins",
+                        ],
                         "build-environment": [{"UV_USE_IO_URING": "0"}],
                     },
                     "expressjs-framework.runtime": {
@@ -414,6 +417,11 @@ def test_expressjs_extension_default(
                             {"path": "opt/promtail", "owner": 584792, "group": 584792},
                             {"path": "etc/promtail", "owner": 584792, "group": 584792},
                         ],
+                    },
+                    "expressjs-framework.system-dependencies": {
+                        "plugin": "nil",
+                        "stage-packages": ["tzdata"],
+                        "stage": ["usr/share/zoneinfo"],
                     },
                 },
                 "run-user": "_daemon_",
@@ -489,6 +497,11 @@ def test_expressjs_extension_default(
                             {"path": "opt/promtail", "owner": 584792, "group": 584792},
                             {"path": "etc/promtail", "owner": 584792, "group": 584792},
                         ],
+                    },
+                    "expressjs-framework.system-dependencies": {
+                        "plugin": "nil",
+                        "stage-packages": ["tzdata"],
+                        "stage": ["usr/share/zoneinfo"],
                     },
                 },
                 "platforms": {
@@ -769,7 +782,10 @@ def test_expressjs_extension_ubuntu2604_default(
                     "chown -R 584792:584792 ${CRAFT_PART_INSTALL}/app\n"
                 ),
                 "build-packages": ["nodejs", "npm"],
-                "stage-packages": ["ca-certificates_data", "nodejs_bins"],
+                "stage-packages": [
+                    "ca-certificates_data",
+                    "nodejs_bins",
+                ],
                 "build-environment": [{"UV_USE_IO_URING": "0"}],
             },
             "expressjs-framework.runtime": {
@@ -788,6 +804,11 @@ def test_expressjs_extension_ubuntu2604_default(
                     {"path": "opt/promtail", "owner": 584792, "group": 584792},
                     {"path": "etc/promtail", "owner": 584792, "group": 584792},
                 ],
+            },
+            "expressjs-framework.system-dependencies": {
+                "plugin": "nil",
+                "stage-packages": ["tzdata"],
+                "stage": ["usr/share/zoneinfo"],
             },
         },
         "services": {

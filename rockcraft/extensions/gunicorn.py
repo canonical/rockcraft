@@ -617,6 +617,11 @@ class FlaskFrameworkV2(FlaskFramework):
         return True
 
     @override
+    def get_root_snippet(self) -> dict[str, Any]:
+        """Return the root snippet with timezone data."""
+        return self._add_system_dependencies_part(super().get_root_snippet())
+
+    @override
     def check_project(self) -> None:
         """Ensure this extension can apply to the current rockcraft project."""
         validate_uv_lockfile(self.project_root)
@@ -827,6 +832,11 @@ class DjangoFrameworkV2(DjangoFramework):
         This is always True for V2
         """
         return True
+
+    @override
+    def get_root_snippet(self) -> dict[str, Any]:
+        """Return the root snippet with timezone data."""
+        return self._add_system_dependencies_part(super().get_root_snippet())
 
     @override
     def check_project(self) -> None:
