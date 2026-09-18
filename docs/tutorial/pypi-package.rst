@@ -50,6 +50,17 @@ Next, create a file called ``rockcraft.yaml`` with the following contents:
     packages outside a virtual environment. Thus, ``python3-venv`` is required
     as a stage package.
 
+The ``platforms`` key must match the architecture of your host.
+Edit the ``platforms`` key in ``rockcraft.yaml`` if required.
+
+.. note::
+    For this tutorial, we'll use the ``name`` ``pyfiglet`` and assume
+    we're running on the  ``amd64`` platform. Check the architecture of the
+    system using ``dpkg --print-architecture``.
+
+    The ``name``, ``version`` and ``platform`` all influence the name of the
+    generated ``.rock`` file.
+
 Pack the rock with Rockcraft
 ----------------------------
 
@@ -60,6 +71,10 @@ To build the rock, run:
     :start-after: [docs:build-rock]
     :end-before: [docs:build-rock-end]
     :dedent: 2
+
+.. note::
+    If we changed the ``name`` or ``version`` in the project file or are not
+    on an ``amd64`` platform, the name of the ``.rock`` file will be different.
 
 Run the rock in Docker
 ----------------------

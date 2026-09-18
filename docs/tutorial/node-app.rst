@@ -1,3 +1,6 @@
+.. meta::
+    :description: Learn to package apps with Rockcraft. In this tutorial, we bundle a typical Node.js application into an OCI-compliant container and run it with Docker.
+
 .. _tutorial-bundle-a-nodejs-app-into-a-rock:
 
 Bundle a Node.js app into a rock
@@ -43,7 +46,7 @@ Add the metadata that describes your rock, such as its name and license:
     :caption: rockcraft.yaml
     :language: yaml
     :start-at: name: my-node-app
-    :end-at: amd64:
+    :end-at: # s390x:
 
 Add the container entrypoint, as a `Pebble`_ service:
 
@@ -68,6 +71,16 @@ The whole file then looks like this:
     :caption: rockcraft.yaml
     :language: yaml
 
+The ``platforms`` key must match the architecture of your host.
+Edit the ``platforms`` key in ``rockcraft.yaml`` if required.
+
+.. note::
+    For this tutorial, we'll use the ``name`` ``my-node-app`` and assume
+    we're running on the  ``amd64`` platform. Check the architecture of the
+    system using ``dpkg --print-architecture``.
+
+    The ``name``, ``version`` and ``platform`` all influence the name of the
+    generated ``.rock`` file.
 
 Pack the rock with Rockcraft
 ----------------------------
@@ -88,6 +101,10 @@ directory:
     :start-after: [docs:check-rock]
     :end-before: [docs:check-rock-end]
     :dedent: 2
+
+.. note::
+    If we changed the ``name`` or ``version`` in the project file or are not
+    on an ``amd64`` platform, the name of the ``.rock`` file will be different.
 
 Run the rock in Docker
 ----------------------
