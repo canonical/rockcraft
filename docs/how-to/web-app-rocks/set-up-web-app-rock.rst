@@ -75,26 +75,55 @@ the root of the project:
 - ``static``
 - ``templates``
 
+.. note::
+   Part names added by extensions vary by Ubuntu version. On Ubuntu 22.04 LTS
+   and Ubuntu 24.04 LTS, write ``extension/part``; on Ubuntu 26.04 LTS and
+   higher, write ``extension.part``. For rocks with ``base: bare``, follow the
+   convention for the configured ``build-base``.
+
 To change this list, add the following snippet to the project file:
 
 .. tabs::
 
    .. group-tab:: Flask
 
-      .. code-block:: yaml
-         :caption: rockcraft.yaml
+      .. tab-set::
 
-           parts:
-             flask-framework/install-app:
-               prime:
-                 - flask/app/.env
-                 - flask/app/app.py
-                 - flask/app/webapp
-                 - flask/app/templates
-                 - flask/app/static
+         .. tab-item:: Ubuntu 22.04 LTS and Ubuntu 24.04 LTS
+            :sync: base-22-24
 
-      Note the ``flask/app/`` prefix that is required followed by the relative path to
-      the project root.
+            .. code-block:: yaml
+               :caption: rockcraft.yaml
+
+               parts:
+                 flask-framework/install-app:
+                   prime:
+                     - flask/app/.env
+                     - flask/app/app.py
+                     - flask/app/webapp
+                     - flask/app/templates
+                     - flask/app/static
+
+            Note the ``flask/app/`` prefix that is required followed by the
+            relative path to the project root.
+
+         .. tab-item:: Ubuntu 26.04 LTS and higher
+            :sync: base-26-plus
+
+            .. code-block:: yaml
+               :caption: rockcraft.yaml
+
+               parts:
+                 flask-framework.install-app:
+                   prime:
+                     - app/.env
+                     - app/app.py
+                     - app/webapp
+                     - app/templates
+                     - app/static
+
+            Note the ``app/`` prefix that is required followed by the relative
+            path to the project root.
 
    .. group-tab:: Django
 
@@ -102,35 +131,79 @@ To change this list, add the following snippet to the project file:
 
    .. group-tab:: FastAPI
 
-      .. code-block:: yaml
-         :caption: rockcraft.yaml
+      .. tab-set::
 
-           parts:
-             fastapi-framework/install-app:
-               prime:
-                 - app/.env
-                 - app/app.py
-                 - app/webapp
-                 - app/templates
-                 - app/static
+         .. tab-item:: Ubuntu 24.04 LTS
+            :sync: base-24
 
-      Note the ``app/`` prefix that is required followed by the relative path to
-      the project root.
+            .. code-block:: yaml
+               :caption: rockcraft.yaml
+
+               parts:
+                 fastapi-framework/install-app:
+                   prime:
+                     - app/.env
+                     - app/app.py
+                     - app/webapp
+                     - app/templates
+                     - app/static
+
+            Note the ``app/`` prefix that is required followed by the relative
+            path to the project root.
+
+         .. tab-item:: Ubuntu 26.04 LTS and higher
+            :sync: base-26-plus
+
+            .. code-block:: yaml
+               :caption: rockcraft.yaml
+
+               parts:
+                 fastapi-framework.install-app:
+                   prime:
+                     - app/.env
+                     - app/app.py
+                     - app/webapp
+                     - app/templates
+                     - app/static
+
+            Note the ``app/`` prefix that is required followed by the relative
+            path to the project root.
 
    .. group-tab:: Go
 
-      .. code-block:: yaml
-         :caption: rockcraft.yaml
+      .. tab-set::
 
-           parts:
-             go-framework/assets:
-               prime:
-                 - app/templates
-                 - app/static
-                 - app/migrate.sh
+         .. tab-item:: Ubuntu 24.04 LTS
+            :sync: base-24
 
-      Note the ``app/`` prefix that is required followed by the relative path to
-      the project root.
+            .. code-block:: yaml
+               :caption: rockcraft.yaml
+
+               parts:
+                 go-framework/assets:
+                   prime:
+                     - app/templates
+                     - app/static
+                     - app/migrate.sh
+
+            Note the ``app/`` prefix that is required followed by the relative
+            path to the project root.
+
+         .. tab-item:: Ubuntu 26.04 LTS and higher
+            :sync: base-26-plus
+
+            .. code-block:: yaml
+               :caption: rockcraft.yaml
+
+               parts:
+                 go-framework.assets:
+                   prime:
+                     - app/templates
+                     - app/static
+                     - app/migrate.sh
+
+            Note the ``app/`` prefix that is required followed by the relative
+            path to the project root.
 
 .. _set-up-web-app-rock-include-extra-debs-oci:
 
@@ -144,36 +217,87 @@ following snippet to the project file:
 
    .. group-tab:: Flask
 
-      .. code-block:: yaml
-         :caption: rockcraft.yaml
+      .. tab-set::
 
-           parts:
-             flask-framework/dependencies:
-               stage-packages:
-                 # list required packages or slices for your flask application below.
-                 - libpq-dev
+         .. tab-item:: Ubuntu 22.04 LTS and Ubuntu 24.04 LTS
+            :sync: base-22-24
+
+            .. code-block:: yaml
+               :caption: rockcraft.yaml
+
+               parts:
+                 flask-framework/dependencies:
+                   stage-packages:
+                     # list required packages or slices for your Flask application below.
+                     - libpq-dev
+
+         .. tab-item:: Ubuntu 26.04 LTS and higher
+            :sync: base-26-plus
+
+            .. code-block:: yaml
+               :caption: rockcraft.yaml
+
+               parts:
+                 flask-framework.dependencies:
+                   stage-packages:
+                     # list required packages or slices for your Flask application below.
+                     - libpq-dev
 
    .. group-tab:: Django
 
-      .. code-block:: yaml
-         :caption: rockcraft.yaml
+      .. tab-set::
 
-           parts:
-             django-framework/dependencies:
-               stage-packages:
-                 # list required packages or slices for your Django application below.
-                 - libpq-dev
+         .. tab-item:: Ubuntu 22.04 LTS and Ubuntu 24.04 LTS
+            :sync: base-22-24
+
+            .. code-block:: yaml
+               :caption: rockcraft.yaml
+
+               parts:
+                 django-framework/dependencies:
+                   stage-packages:
+                     # list required packages or slices for your Django application below.
+                     - libpq-dev
+
+         .. tab-item:: Ubuntu 26.04 LTS and higher
+            :sync: base-26-plus
+
+            .. code-block:: yaml
+               :caption: rockcraft.yaml
+
+               parts:
+                 django-framework.dependencies:
+                   stage-packages:
+                     # list required packages or slices for your Django application below.
+                     - libpq-dev
 
    .. group-tab:: FastAPI
 
-      .. code-block:: yaml
-         :caption: rockcraft.yaml
+      .. tab-set::
 
-           parts:
-             fastapi-framework/dependencies:
-               stage-packages:
-                 # list required packages or slices for your FastAPI application below.
-                 - libpq-dev
+         .. tab-item:: Ubuntu 24.04 LTS
+            :sync: base-24
+
+            .. code-block:: yaml
+               :caption: rockcraft.yaml
+
+               parts:
+                 fastapi-framework/dependencies:
+                   stage-packages:
+                     # list required packages or slices for your FastAPI application below.
+                     - libpq-dev
+
+         .. tab-item:: Ubuntu 26.04 LTS and higher
+            :sync: base-26-plus
+
+            .. code-block:: yaml
+               :caption: rockcraft.yaml
+
+               parts:
+                 fastapi-framework.dependencies:
+                   stage-packages:
+                     # list required packages or slices for your FastAPI application below.
+                     - libpq-dev
 
    .. group-tab:: Go
 
@@ -210,7 +334,6 @@ example:
          :caption: Output of ``rockcraft expand-extensions``
 
          # ...
-
          services:
            flask:
              override: replace
@@ -244,7 +367,6 @@ example:
              after:
                - statsd-exporter
              user: _daemon_
-         # ...
 
       To limit the maximum number of pending connections in ``Gunicorn`` to 1024, add the following
       lines to ``rockcraft.yaml``.
