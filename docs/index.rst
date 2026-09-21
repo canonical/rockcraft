@@ -39,6 +39,8 @@ In this documentation
     * - **Configuration**
       - :ref:`About parts <parts>` •
         :ref:`reference-rockcraft-yaml`
+    * - **Monorepo builds**
+      - :ref:`Pack a rock in a monorepo <how-to-pack-a-rock-in-a-monorepo>`
     * - **Plugins**
       - :ref:`how-to-override-a-plugins-build` •
         :ref:`Plugins available <reference-plugins>`
@@ -73,6 +75,8 @@ In this documentation
         :ref:`Multi-architecture builds <how-to-outsource-rock-builds-to-launchpad>`
     * - **Distribution**
       - :ref:`Publish a rock to a registry <how-to-publish-a-rock-to-a-registry>`
+    * - **Ubuntu Pro**
+      - :ref:`Pack a Pro-compliant rock <how-to-pack-a-pro-rock>`
 
 How this documentation is organized
 -----------------------------------
