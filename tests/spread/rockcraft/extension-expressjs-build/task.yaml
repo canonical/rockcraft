@@ -59,6 +59,7 @@ execute: |
     retry -n 5 --wait 2 curl localhost:8137
     http_status=$(curl -s -o /dev/null -w "%{http_code}" localhost:8137)
     [ "${http_status}" -eq 200 ]
+    [ "$(curl -sw '%{http_code}' -o /dev/null localhost:8137/write-data)" == "200" ]
   }
 
   run_test
