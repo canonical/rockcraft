@@ -21,6 +21,22 @@ lightweight image.
 The Flask extension supports both synchronous and asynchronous
 Gunicorn workers.
 
+Use the extension
+-----------------
+
+Declare the extension in ``rockcraft.yaml``:
+
+.. code-block:: yaml
+   :caption: rockcraft.yaml
+
+   extensions:
+     - flask-framework
+
+You can write this project file by hand or generate it by running
+``rockcraft init --profile flask-framework`` in the application's directory.
+To inspect the parts, services, and other configuration contributed by the
+extension, run ``rockcraft expand-extensions``.
+
 .. _reference-flask-framework-project-requirements:
 
 Project requirements

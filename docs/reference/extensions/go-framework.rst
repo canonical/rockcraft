@@ -17,6 +17,22 @@ lightweight image.
     The Go extension is compatible with the ``bare`` and ``ubuntu@24.04``
     bases.
 
+Use the extension
+-----------------
+
+Declare the extension in ``rockcraft.yaml``:
+
+.. code-block:: yaml
+   :caption: rockcraft.yaml
+
+   extensions:
+     - go-framework
+
+You can write this project file by hand or generate it by running
+``rockcraft init --profile go-framework`` in the application's directory.
+To inspect the parts, services, and other configuration contributed by the
+extension, run ``rockcraft expand-extensions``.
+
 .. _reference-go-framework-project-requirements:
 
 Project requirements

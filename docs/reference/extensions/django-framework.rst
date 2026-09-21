@@ -22,6 +22,22 @@ lightweight image.
 The Django extension supports both synchronous and asynchronous
 Gunicorn workers.
 
+Use the extension
+-----------------
+
+Declare the extension in ``rockcraft.yaml``:
+
+.. code-block:: yaml
+   :caption: rockcraft.yaml
+
+   extensions:
+     - django-framework
+
+You can write this project file by hand or generate it by running
+``rockcraft init --profile django-framework`` in the application's directory.
+To inspect the parts, services, and other configuration contributed by the
+extension, run ``rockcraft expand-extensions``.
+
 .. _reference-django-framework-project-requirements:
 
 Project requirements
