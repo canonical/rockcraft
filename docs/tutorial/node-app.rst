@@ -1,5 +1,5 @@
 .. meta::
-    :description: Learn to package apps with Rockcraft. In this tutorial, we bundle a typical Node.js application into an OCI-compliant container and run it with Docker.
+    :description: Learn to package whole apps with Rockcraft. In this tutorial, we bundle a Node.js app into an OCI-compliant container.
 
 .. _tutorial-bundle-a-nodejs-app-into-a-rock:
 
