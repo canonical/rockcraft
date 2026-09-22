@@ -44,10 +44,6 @@ In this documentation
         :doc:`About parts </reference/parts-and-steps>`
         :doc:`rockcraft.yaml </reference/rockcraft-yaml>`
 
-    .. slice:: Monorepo builds
-
-        :doc:`Pack a rock in a monorepo </how-to/crafting/pack-a-rock-in-a-monorepo>`
-
     .. slice:: Plugins
 
         :doc:`Override a plugin's build </how-to/crafting/override-a-plugins-build>`
@@ -60,17 +56,12 @@ In this documentation
     .. slice:: 12-factor apps
 
         :doc:`Flask tutorial </tutorial/flask>`
-        :doc:`Flask reference </reference/extensions/flask-framework>`
         :doc:`Django tutorial </tutorial/django>`
-        :doc:`Django reference </reference/extensions/django-framework>`
         :doc:`Go tutorial </tutorial/go>`
-        :doc:`Go reference </reference/extensions/go-framework>`
         :doc:`Express tutorial </tutorial/express>`
-        :doc:`Express reference </reference/extensions/express-framework>`
         :doc:`FastAPI tutorial </tutorial/fastapi>`
-        :doc:`FastAPI reference </reference/extensions/fastapi-framework>`
         :doc:`Spring Boot tutorial </tutorial/springboot>`
-        :doc:`Spring Boot reference </reference/extensions/spring-boot-framework>`
+        :doc:`Extensions </reference/extensions/index>`
         :doc:`Set-up 12-Factor rocks </how-to/web-app-rocks/set-up-web-app-rock>`
         :doc:`Use rocks for 12-Factor apps </how-to/web-app-rocks/use-web-app-rock>`
 
@@ -87,13 +78,14 @@ In this documentation
         :doc:`Install a custom slice </how-to/chiseling/install-slice>`
         :doc:`Define a non root user </how-to/crafting/add-internal-user-to-a-rock>`
 
-    .. slice:: Remote and automated builds
+    .. slice:: Build workflows
 
-        :doc:`Use the Rockcraft pack GitHub Action </how-to/crafting/rockcraft-pack-action>`
         :doc:`Multi-architecture builds </how-to/crafting/outsource-rock-builds-to-launchpad>`
+        :doc:`Pack a rock in a monorepo </how-to/crafting/pack-a-rock-in-a-monorepo>`
 
     .. slice:: Distribution
 
+        :doc:`Use the Rockcraft pack GitHub Action </how-to/crafting/rockcraft-pack-action>`
         :doc:`Publish a rock to a registry </how-to/crafting/publish-a-rock>`
 
     .. slice:: Ubuntu Pro
