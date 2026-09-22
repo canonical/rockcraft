@@ -100,6 +100,20 @@ To change this list, add the following snippet to the project file:
 
       N/A
 
+   .. group-tab:: Express
+
+      .. code-block:: yaml
+         :caption: rockcraft.yaml
+
+           parts:
+             expressjs-framework/assets:
+               stage:
+                 - app/migrate
+                 - app/migrate.sh
+
+      Note the ``app/`` prefix that is required followed by the relative path to
+      the project root.
+
    .. group-tab:: FastAPI
 
       .. code-block:: yaml

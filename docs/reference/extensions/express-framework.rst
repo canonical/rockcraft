@@ -92,6 +92,66 @@ Additional runtime packages
 
 Installing additional runtime packages is currently unsupported.
 
+.. _reference-express-framework-assets:
+
+Included or excluded files
+--------------------------
+
+If ``migrate`` or ``migrate.sh`` exist in the project's root directory, they will be
+included in the rock's ``/app`` directory by default. They are useful, for example,
+as the database migration script that a 12-factor charm runs before the
+application starts. Make sure the script is executable, idempotent and safe to run
+on multiple units concurrently.
+
+A ``migrate.sh`` script for an Express application typically runs the migration
+command of an ORM library, for example:
+
+.. code-block:: bash
+
+    #!/bin/bash
+    # for Prisma:
+    npx prisma migrate deploy
+    # for Knex:
+    npx knex migrate:latest
+
+The ``stage`` key of the ``expressjs-framework/assets`` part
+specifies the files to be included or excluded from
+the rock upon ``rockcraft pack``, following the ``app/<filename>`` notation. For
+example:
+
+.. tab-set::
+    .. tab-item:: Ubuntu 22.04 and 24.04
+        :sync: base-22-24
+
+        .. code-block:: yaml
+          :caption: rockcraft.yaml
+
+          parts:
+            expressjs-framework/assets:
+              stage:
+                - app/migrate
+                - app/migrate.sh
+                - app/another_file_or_directory
+
+    .. tab-item:: Ubuntu 26.04 and higher
+        :sync: base-26-plus
+
+        .. code-block:: yaml
+          :caption: rockcraft.yaml
+
+          parts:
+            expressjs-framework.assets:
+              stage:
+                - app/migrate
+                - app/migrate.sh
+                - app/another_file_or_directory
+
+The ``stage`` key supports glob patterns to define the list of files. See :ref:`filesets_explanation`
+for the various ways you can specify files in your rock.
+
+Adding the ``stage`` key to the project file overrides the default files to be included.
+Files are excluded from the rock by defining ``stage`` and omitting the file to
+be excluded.
 
 Useful links
 ------------

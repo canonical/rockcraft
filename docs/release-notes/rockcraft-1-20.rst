@@ -86,6 +86,15 @@ Support for ARMv8 in 32-bit mode (armv8l)
 
 Rockcraft no longer fails when the system is an ARMv8 running in 32-bit mode.
 
+Migrate and migrate.sh support in ExpressJS
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The ``expressjs-framework`` extension now includes the ``migrate`` and
+``migrate.sh`` files from the project's root directory in the rock's
+``/app`` directory by default. The list of included files can be
+customized with the ``stage`` key of the ``expressjs-framework/assets``
+part, assuming every entry is prefixed with ``app/``.
+
 Documentation improvements
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 

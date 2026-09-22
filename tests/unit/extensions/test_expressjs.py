@@ -98,7 +98,7 @@ def _create_package_json_file(app_path, *, with_build=False):
                         "cp ${CRAFT_PART_BUILD}/.npmrc ${CRAFT_PART_INSTALL}/lib/node_modules/"
                         f"{_expressjs_project_name}/.npmrc\n"
                         f"chown -R 584792:584792 ${{CRAFT_PART_INSTALL}}/lib/node_modules/{_expressjs_project_name}\n"
-                        f"ln -s /lib/node_modules/{_expressjs_project_name} "
+                        f"ln -s lib/node_modules/{_expressjs_project_name} "
                         "${CRAFT_PART_INSTALL}/app\n"
                         "chown -R 584792:584792 ${CRAFT_PART_INSTALL}/app\n",
                         "build-packages": ["nodejs", "npm"],
@@ -154,7 +154,7 @@ def _create_package_json_file(app_path, *, with_build=False):
                         "cp ${CRAFT_PART_BUILD}/.npmrc "
                         "${CRAFT_PART_INSTALL}/lib/node_modules/test-expressjs-project/.npmrc\n"
                         "chown -R 584792:584792 ${CRAFT_PART_INSTALL}/lib/node_modules/test-expressjs-project\n"
-                        "ln -s /lib/node_modules/test-expressjs-project "
+                        "ln -s lib/node_modules/test-expressjs-project "
                         "${CRAFT_PART_INSTALL}/app\n"
                         "chown -R 584792:584792 ${CRAFT_PART_INSTALL}/app\n",
                         "plugin": "npm",
@@ -216,7 +216,7 @@ def _create_package_json_file(app_path, *, with_build=False):
                         "cp ${CRAFT_PART_BUILD}/.npmrc "
                         "${CRAFT_PART_INSTALL}/lib/node_modules/test-expressjs-project/.npmrc\n"
                         "chown -R 584792:584792 ${CRAFT_PART_INSTALL}/lib/node_modules/test-expressjs-project\n"
-                        "ln -s /lib/node_modules/test-expressjs-project "
+                        "ln -s lib/node_modules/test-expressjs-project "
                         "${CRAFT_PART_INSTALL}/app\n"
                         "chown -R 584792:584792 ${CRAFT_PART_INSTALL}/app\n"
                         "ln -sf /usr/bin/bash ${CRAFT_PART_INSTALL}/usr/bin/sh",
@@ -288,7 +288,7 @@ def _create_package_json_file(app_path, *, with_build=False):
                         "cp ${CRAFT_PART_BUILD}/.npmrc "
                         "${CRAFT_PART_INSTALL}/lib/node_modules/test-expressjs-project/.npmrc\n"
                         "chown -R 584792:584792 ${CRAFT_PART_INSTALL}/lib/node_modules/test-expressjs-project\n"
-                        "ln -s /lib/node_modules/test-expressjs-project "
+                        "ln -s lib/node_modules/test-expressjs-project "
                         "${CRAFT_PART_INSTALL}/app\n"
                         "chown -R 584792:584792 ${CRAFT_PART_INSTALL}/app\n"
                         "ln -sf /usr/bin/bash ${CRAFT_PART_INSTALL}/usr/bin/sh",
@@ -391,7 +391,7 @@ def test_expressjs_extension_default(
                         "cp ${CRAFT_PART_BUILD}/.npmrc ${CRAFT_PART_INSTALL}/lib/node_modules/"
                         f"{_expressjs_project_name}/.npmrc\n"
                         f"chown -R 584792:584792 ${{CRAFT_PART_INSTALL}}/lib/node_modules/{_expressjs_project_name}\n"
-                        f"ln -s /lib/node_modules/{_expressjs_project_name} "
+                        f"ln -s lib/node_modules/{_expressjs_project_name} "
                         "${CRAFT_PART_INSTALL}/app\n"
                         "chown -R 584792:584792 ${CRAFT_PART_INSTALL}/app\n",
                         "build-packages": ["nodejs", "npm"],
@@ -467,7 +467,7 @@ def test_expressjs_extension_default(
                         "cp ${CRAFT_PART_BUILD}/.npmrc "
                         "${CRAFT_PART_INSTALL}/lib/node_modules/test-expressjs-project/.npmrc\n"
                         "chown -R 584792:584792 ${CRAFT_PART_INSTALL}/lib/node_modules/test-expressjs-project\n"
-                        "ln -s /lib/node_modules/test-expressjs-project "
+                        "ln -s lib/node_modules/test-expressjs-project "
                         "${CRAFT_PART_INSTALL}/app\n"
                         "chown -R 584792:584792 ${CRAFT_PART_INSTALL}/app\n"
                         "ln -sf /usr/bin/bash ${CRAFT_PART_INSTALL}/usr/bin/sh",
@@ -753,6 +753,110 @@ def test_expressjs_v2_and_factory_supported_bases():
 
 
 @pytest.mark.usefixtures("expressjs_extension", "package_json_file")
+def test_expressjs_extension_extra_assets(tmp_path, expressjs_input_yaml):
+    (tmp_path / "migrate").write_text("migrate")
+    (tmp_path / "migrate.sh").write_text("migrate")
+    applied = extensions.apply_extensions(tmp_path, expressjs_input_yaml)
+    assert applied["parts"]["expressjs-framework/assets"] == {
+        "plugin": "dump",
+        "source": ".",
+        "override-build": (
+            "craftctl default\n"
+            "rm -rf ${CRAFT_PART_INSTALL}/app\n"
+            f"mkdir -p ${{CRAFT_PART_INSTALL}}/lib/node_modules/{_expressjs_project_name}\n"
+            f"ln -s lib/node_modules/{_expressjs_project_name} "
+            "${CRAFT_PART_INSTALL}/app\n"
+        ),
+        "organize": {
+            "migrate": "app/migrate",
+            "migrate.sh": "app/migrate.sh",
+        },
+        "stage": ["app/migrate", "app/migrate.sh"],
+        "permissions": [{"owner": 584792, "group": 584792}],
+    }
+
+
+@pytest.mark.usefixtures("expressjs_extension", "package_json_file")
+def test_expressjs_v2_extra_assets(tmp_path, monkeypatch, expressjs_input_yaml):
+    monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "1")
+    expressjs_input_yaml["base"] = "ubuntu@26.04"
+    expressjs_input_yaml["build-base"] = "ubuntu@26.04"
+    (tmp_path / "migrate.sh").write_text("migrate")
+    applied = extensions.apply_extensions(tmp_path, expressjs_input_yaml)
+    assert applied["parts"]["expressjs-framework.assets"] == {
+        "plugin": "dump",
+        "source": ".",
+        "override-build": (
+            "craftctl default\n"
+            "rm -rf ${CRAFT_PART_INSTALL}/app\n"
+            f"mkdir -p ${{CRAFT_PART_INSTALL}}/lib/node_modules/{_expressjs_project_name}\n"
+            f"ln -s lib/node_modules/{_expressjs_project_name} "
+            "${CRAFT_PART_INSTALL}/app\n"
+        ),
+        "organize": {
+            "migrate.sh": "app/migrate.sh",
+        },
+        "stage": ["app/migrate.sh"],
+        "permissions": [{"owner": 584792, "group": 584792}],
+    }
+
+
+@pytest.mark.usefixtures("expressjs_extension", "package_json_file")
+def test_expressjs_extension_extra_assets_overridden(tmp_path, expressjs_input_yaml):
+    (tmp_path / "migrate").write_text("migrate")
+    (tmp_path / "migrate.sh").write_text("migrate")
+    expressjs_input_yaml["parts"] = {
+        "expressjs-framework/assets": {
+            "plugin": "dump",
+            "source": ".",
+            "stage": ["app/foobar"],
+        }
+    }
+    applied = extensions.apply_extensions(tmp_path, expressjs_input_yaml)
+    assert applied["parts"]["expressjs-framework/assets"] == {
+        "plugin": "dump",
+        "source": ".",
+        "override-build": (
+            "craftctl default\n"
+            "rm -rf ${CRAFT_PART_INSTALL}/app\n"
+            f"mkdir -p ${{CRAFT_PART_INSTALL}}/lib/node_modules/{_expressjs_project_name}\n"
+            f"ln -s lib/node_modules/{_expressjs_project_name} "
+            "${CRAFT_PART_INSTALL}/app\n"
+        ),
+        "organize": {
+            "foobar": "app/foobar",
+        },
+        "stage": ["app/foobar"],
+        "permissions": [{"owner": 584792, "group": 584792}],
+    }
+
+
+@pytest.mark.usefixtures("expressjs_extension", "package_json_file")
+def test_expressjs_extension_extra_assets_start_with_app(
+    tmp_path, expressjs_input_yaml
+):
+    (tmp_path / "migrate").write_text("migrate")
+    (tmp_path / "migrate.sh").write_text("migrate")
+    expressjs_input_yaml["parts"] = {
+        "expressjs-framework/assets": {
+            "plugin": "dump",
+            "source": ".",
+            "stage": ["foobar_not_in_app"],
+        }
+    }
+    with pytest.raises(ExtensionError) as exc:
+        extensions.apply_extensions(tmp_path, expressjs_input_yaml)
+
+    assert "start with 'app/'" in str(exc.value)
+
+
+@pytest.mark.usefixtures("expressjs_extension", "package_json_file")
+def test_expressjs_extension_no_extra_assets(tmp_path, expressjs_input_yaml):
+    applied = extensions.apply_extensions(tmp_path, expressjs_input_yaml)
+    assert "expressjs-framework/assets" not in applied["parts"]
+
+
+@pytest.mark.usefixtures("expressjs_extension", "package_json_file")
 def test_expressjs_extension_ubuntu2604_default(
     tmp_path, monkeypatch, expressjs_input_yaml
 ):
@@ -791,7 +895,7 @@ def test_expressjs_extension_ubuntu2604_default(
                     "cp ${CRAFT_PART_BUILD}/.npmrc ${CRAFT_PART_INSTALL}/lib/node_modules/"
                     f"{_expressjs_project_name}/.npmrc\n"
                     f"chown -R 584792:584792 ${{CRAFT_PART_INSTALL}}/lib/node_modules/{_expressjs_project_name}\n"
-                    f"ln -s /lib/node_modules/{_expressjs_project_name} "
+                    f"ln -s lib/node_modules/{_expressjs_project_name} "
                     "${CRAFT_PART_INSTALL}/app\n"
                     "chown -R 584792:584792 ${CRAFT_PART_INSTALL}/app\n"
                 ),
