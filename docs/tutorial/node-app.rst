@@ -74,13 +74,8 @@ The whole file then looks like this:
 The ``platforms`` key must match the architecture of your host.
 Edit the ``platforms`` key in ``rockcraft.yaml`` if required.
 
-.. note::
-    For this tutorial, we'll use the ``name`` ``my-node-app`` and assume
-    we're running on the  ``amd64`` platform. Check the architecture of the
-    system using ``dpkg --print-architecture``.
-
-    The ``name``, ``version`` and ``platform`` all influence the name of the
-    generated ``.rock`` file.
+The ``name``, ``version`` and ``platform`` all influence the name of the
+generated ``.rock`` file.
 
 Pack the rock with Rockcraft
 ----------------------------
@@ -101,10 +96,6 @@ directory:
     :start-after: [docs:check-rock]
     :end-before: [docs:check-rock-end]
     :dedent: 2
-
-.. note::
-    If we changed the ``name`` or ``version`` in the project file or are not
-    on an ``amd64`` platform, the name of the ``.rock`` file will be different.
 
 Run the rock in Docker
 ----------------------

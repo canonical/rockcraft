@@ -34,13 +34,8 @@ help define and describe the rock. For more information about all available keys
 The ``platforms`` key must match the architecture of your host.
 Edit the ``platforms`` key in ``rockcraft.yaml`` if required.
 
-.. note::
-    For this tutorial, we'll use the ``name`` ``hello`` and assume
-    we're running on the  ``amd64`` platform. Check the architecture of the
-    system using ``dpkg --print-architecture``.
-
-    The ``name``, ``version`` and ``platform`` all influence the name of the
-    generated ``.rock`` file.
+The ``name``, ``version`` and ``platform`` all influence the name of the
+generated ``.rock`` file.
 
 Pack the rock with Rockcraft
 ----------------------------
@@ -53,13 +48,9 @@ To build the rock, run:
     :end-before: [docs:build-rock-end]
     :dedent: 2
 
-At the end of the process, a file named ``hello_latest_amd64.rock`` should be
-present in the current directory. That's your rock, in oci-archive format
-(a tarball).
-
-.. note::
-    If we changed the ``name`` or ``version`` in the project file or are not
-    on an ``amd64`` platform, the name of the ``.rock`` file will be different.
+At the end of the process, a ``.rock`` file (for example,
+``hello_latest_amd64.rock`` on an ``amd64`` host) should be present in the
+current directory. That's your rock, in oci-archive format (a tarball).
 
 
 Run the rock in Docker
