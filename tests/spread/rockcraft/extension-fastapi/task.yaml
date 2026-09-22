@@ -85,6 +85,9 @@ execute: |
     exit 1
   }
   [ "$(curl -sSf localhost:8137)" == "ok" ]
+  if [ "${BUILD_BASE}" = "ubuntu@26.04" ]; then
+    [ "$(curl -sSf -X POST localhost:8137/write-data)" == "written" ]
+  fi
 
 restore: |
   BASE_TYPE="base"
