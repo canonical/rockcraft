@@ -33,10 +33,11 @@ Declare the extension in ``rockcraft.yaml``:
    extensions:
      - django-framework
 
-You can write this project file by hand or generate it by running
-``rockcraft init --profile django-framework`` in the application's directory.
+You can generate this project file by running ``rockcraft init --profile django-framework``
+in the application's directory. You can also write this project file by hand.
 To inspect the parts, services, and other configuration contributed by the
-extension, run ``rockcraft expand-extensions``.
+extension, run ``rockcraft expand-extensions`` in the same directory as the
+``rockcraft.yaml`` file.
 
 .. _reference-django-framework-project-requirements:
 

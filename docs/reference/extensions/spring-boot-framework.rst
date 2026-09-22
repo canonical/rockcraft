@@ -29,10 +29,11 @@ Declare the extension in ``rockcraft.yaml``:
    extensions:
      - spring-boot-framework
 
-You can write this project file by hand or generate it by running
-``rockcraft init --profile spring-boot-framework`` in the application's
-directory. To inspect the parts, services, and other configuration contributed
-by the extension, run ``rockcraft expand-extensions``.
+You can generate this project file by running ``rockcraft init --profile spring-boot-framework``
+in the application's directory. You can also write this project file by hand.
+To inspect the parts, services, and other configuration contributed by the
+extension, run ``rockcraft expand-extensions`` in the same directory as the
+``rockcraft.yaml`` file.
 
 .. _reference-spring-boot-framework-project-requirements:
 
