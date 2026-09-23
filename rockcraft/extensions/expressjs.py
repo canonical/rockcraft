@@ -210,10 +210,7 @@ class ExpressJSFramework(Extension):
             # we can not user `permissions` block here because it doesn't work with symlinks
             # bug: https://github.com/canonical/rockcraft/issues/660
             f"chown -R {USER_UID}:{USER_UID} ${{CRAFT_PART_INSTALL}}/lib/node_modules/{self._app_name}",
-            # The symlink target is relative so that it resolves within the build
-            # tree; this allows other parts (like the assets part) to prime files
-            # through it into the application directory.
-            f"ln -s lib/node_modules/{self._app_name} ${{CRAFT_PART_INSTALL}}/app",
+            f"ln -s /lib/node_modules/{self._app_name} ${{CRAFT_PART_INSTALL}}/app",
             f"chown -R {USER_UID}:{USER_UID} ${{CRAFT_PART_INSTALL}}/app",
         ]
 

@@ -98,7 +98,7 @@ def _create_package_json_file(app_path, *, with_build=False):
                         "cp ${CRAFT_PART_BUILD}/.npmrc ${CRAFT_PART_INSTALL}/lib/node_modules/"
                         f"{_expressjs_project_name}/.npmrc\n"
                         f"chown -R 584792:584792 ${{CRAFT_PART_INSTALL}}/lib/node_modules/{_expressjs_project_name}\n"
-                        f"ln -s lib/node_modules/{_expressjs_project_name} "
+                        f"ln -s /lib/node_modules/{_expressjs_project_name} "
                         "${CRAFT_PART_INSTALL}/app\n"
                         "chown -R 584792:584792 ${CRAFT_PART_INSTALL}/app\n",
                         "build-packages": ["nodejs", "npm"],
@@ -154,7 +154,7 @@ def _create_package_json_file(app_path, *, with_build=False):
                         "cp ${CRAFT_PART_BUILD}/.npmrc "
                         "${CRAFT_PART_INSTALL}/lib/node_modules/test-expressjs-project/.npmrc\n"
                         "chown -R 584792:584792 ${CRAFT_PART_INSTALL}/lib/node_modules/test-expressjs-project\n"
-                        "ln -s lib/node_modules/test-expressjs-project "
+                        "ln -s /lib/node_modules/test-expressjs-project "
                         "${CRAFT_PART_INSTALL}/app\n"
                         "chown -R 584792:584792 ${CRAFT_PART_INSTALL}/app\n",
                         "plugin": "npm",
@@ -216,7 +216,7 @@ def _create_package_json_file(app_path, *, with_build=False):
                         "cp ${CRAFT_PART_BUILD}/.npmrc "
                         "${CRAFT_PART_INSTALL}/lib/node_modules/test-expressjs-project/.npmrc\n"
                         "chown -R 584792:584792 ${CRAFT_PART_INSTALL}/lib/node_modules/test-expressjs-project\n"
-                        "ln -s lib/node_modules/test-expressjs-project "
+                        "ln -s /lib/node_modules/test-expressjs-project "
                         "${CRAFT_PART_INSTALL}/app\n"
                         "chown -R 584792:584792 ${CRAFT_PART_INSTALL}/app\n"
                         "ln -sf /usr/bin/bash ${CRAFT_PART_INSTALL}/usr/bin/sh",
@@ -288,7 +288,7 @@ def _create_package_json_file(app_path, *, with_build=False):
                         "cp ${CRAFT_PART_BUILD}/.npmrc "
                         "${CRAFT_PART_INSTALL}/lib/node_modules/test-expressjs-project/.npmrc\n"
                         "chown -R 584792:584792 ${CRAFT_PART_INSTALL}/lib/node_modules/test-expressjs-project\n"
-                        "ln -s lib/node_modules/test-expressjs-project "
+                        "ln -s /lib/node_modules/test-expressjs-project "
                         "${CRAFT_PART_INSTALL}/app\n"
                         "chown -R 584792:584792 ${CRAFT_PART_INSTALL}/app\n"
                         "ln -sf /usr/bin/bash ${CRAFT_PART_INSTALL}/usr/bin/sh",
@@ -391,7 +391,7 @@ def test_expressjs_extension_default(
                         "cp ${CRAFT_PART_BUILD}/.npmrc ${CRAFT_PART_INSTALL}/lib/node_modules/"
                         f"{_expressjs_project_name}/.npmrc\n"
                         f"chown -R 584792:584792 ${{CRAFT_PART_INSTALL}}/lib/node_modules/{_expressjs_project_name}\n"
-                        f"ln -s lib/node_modules/{_expressjs_project_name} "
+                        f"ln -s /lib/node_modules/{_expressjs_project_name} "
                         "${CRAFT_PART_INSTALL}/app\n"
                         "chown -R 584792:584792 ${CRAFT_PART_INSTALL}/app\n",
                         "build-packages": ["nodejs", "npm"],
@@ -467,7 +467,7 @@ def test_expressjs_extension_default(
                         "cp ${CRAFT_PART_BUILD}/.npmrc "
                         "${CRAFT_PART_INSTALL}/lib/node_modules/test-expressjs-project/.npmrc\n"
                         "chown -R 584792:584792 ${CRAFT_PART_INSTALL}/lib/node_modules/test-expressjs-project\n"
-                        "ln -s lib/node_modules/test-expressjs-project "
+                        "ln -s /lib/node_modules/test-expressjs-project "
                         "${CRAFT_PART_INSTALL}/app\n"
                         "chown -R 584792:584792 ${CRAFT_PART_INSTALL}/app\n"
                         "ln -sf /usr/bin/bash ${CRAFT_PART_INSTALL}/usr/bin/sh",
@@ -895,7 +895,7 @@ def test_expressjs_extension_ubuntu2604_default(
                     "cp ${CRAFT_PART_BUILD}/.npmrc ${CRAFT_PART_INSTALL}/lib/node_modules/"
                     f"{_expressjs_project_name}/.npmrc\n"
                     f"chown -R 584792:584792 ${{CRAFT_PART_INSTALL}}/lib/node_modules/{_expressjs_project_name}\n"
-                    f"ln -s lib/node_modules/{_expressjs_project_name} "
+                    f"ln -s /lib/node_modules/{_expressjs_project_name} "
                     "${CRAFT_PART_INSTALL}/app\n"
                     "chown -R 584792:584792 ${CRAFT_PART_INSTALL}/app\n"
                 ),
