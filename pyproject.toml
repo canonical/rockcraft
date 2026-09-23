@@ -6,9 +6,9 @@ dependencies = [
     # To use a dev version of a craft library:
     # craft-lib @ git+https://github.com/canonical/craft-lib@ref
     "craft-application>=7.2.1",
-    "craft-archives>=2.2.1",
+    "craft-archives>=2.2.2",
     "craft-cli>=3.4.1",
-    "craft-parts>=2.35.0",
+    "craft-parts>=2.35.1",
     "craft-platforms>=0.12.0",
     "craft-providers>=3.7.1",
     "overrides>=7.7.0",
