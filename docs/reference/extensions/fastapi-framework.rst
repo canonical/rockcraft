@@ -31,9 +31,8 @@ Declare the extension in ``rockcraft.yaml``:
      - fastapi-framework
 
 You can generate this project file by running ``rockcraft init --profile fastapi-framework``
-in the application's directory. You can also write this project file by hand.
-To inspect the parts, services, and other configuration contributed by the
-extension, run ``rockcraft expand-extensions`` in the same directory as the
+in the application's directory. To inspect the parts, services, and other configuration
+contributed by the extension, run ``rockcraft expand-extensions`` in the same directory as the
 ``rockcraft.yaml`` file.
 
 .. _reference-fastapi-framework-project-requirements:

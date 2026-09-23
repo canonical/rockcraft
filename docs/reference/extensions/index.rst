@@ -14,8 +14,7 @@ configuration in the project file.
 
 Add an extension to the top-level ``extensions`` key in ``rockcraft.yaml``.
 When Rockcraft loads the project, it expands the extension and combines its
-configuration with your project file. To inspect the complete configuration
-before packing the rock, run ``rockcraft expand-extensions``.
+configuration with your project file.
 
 .. toctree::
     :maxdepth: 1
