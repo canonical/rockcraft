@@ -59,3 +59,19 @@
 
 "explanation/lifecycle.rst" "common/craft-parts/explanation/lifecycle.rst"
 "explanation/filesets.rst" "common/craft-parts/explanation/filesets.rst"
+
+"reference/commands/build.rst" "reference/commands.rst"
+"reference/commands/clean.rst" "reference/commands.rst"
+"reference/commands/pack.rst" "reference/commands.rst"
+"reference/commands/prime.rst" "reference/commands.rst"
+"reference/commands/pull.rst" "reference/commands.rst"
+"reference/commands/remote-build.rst" "reference/commands.rst"
+"reference/commands/stage.rst" "reference/commands.rst"
+"reference/commands/test.rst" "reference/commands.rst"
+
+"reference/commands/expand-extensions.rst" "reference/commands.rst"
+"reference/commands/extensions.rst" "reference/commands.rst"
+"reference/commands/list-extensions.rst" "reference/commands.rst"
+
+"reference/commands/init.rst" "reference/commands.rst"
+"reference/commands/version.rst" "reference/commands.rst"
