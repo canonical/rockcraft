@@ -50,6 +50,12 @@ MAX_DOWNLOAD_RETRIES = 5
 
 MANIFEST_MEDIA_TYPE = "application/vnd.oci.image.manifest.v1+json"
 
+# Fixed 'created' timestamp used when synthesizing the empty base image via
+# 'umoci new'. Pinning this makes the resulting manifest digest deterministic
+# across runs, so base_digest stays stable and craft-parts does not spuriously
+# invalidate overlay layer state.
+_FIXED_OCI_CREATED = "1970-01-01T00:00:00Z"
+
 
 @dataclass(frozen=True)
 class Image:
@@ -145,8 +151,25 @@ class Image:
 
         # Unfortunately, umoci does not allow initializing an image
         # with arch and variant. We can configure the arch via
-        # umoci config, but not the variant. Need to do it manually
-        _config_image(image_target, ["--architecture", mapping.go_arch, "--no-history"])
+        # umoci config, but not the variant. Need to do it manually.
+        #
+        # We also pin --created to a fixed epoch timestamp so the manifest
+        # digest is deterministic across runs. Without this, 'umoci new'
+        # embeds the current time in the image config, which changes the
+        # manifest digest on every invocation. That instability propagates
+        # to base_digest and invalidates craft-parts' overlay layer state,
+        # forcing unnecessary repacks. --no-history keeps umoci from adding
+        # a history entry whose 'created' would still track the current time.
+        _config_image(
+            image_target,
+            [
+                "--architecture",
+                mapping.go_arch,
+                "--created",
+                _FIXED_OCI_CREATED,
+                "--no-history",
+            ],
+        )
 
         _inject_oci_fields(
             image_target,
