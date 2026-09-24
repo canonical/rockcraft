@@ -145,7 +145,7 @@ example:
                 - app/migrate.sh
                 - app/another_file_or_directory
 
-The ``stage`` key supports glob patterns to define the list of files. See the :ref:`filesets_explanation`
+The ``stage`` key supports glob patterns to define the list of files. See the the :ref:`filesets explanation <filesets_explanation>`
 for the various ways you can specify files in your rock.
 
 Adding the ``stage`` key to the project file overrides the default files to be included.
