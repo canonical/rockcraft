@@ -12,9 +12,9 @@ configures the parts, services, and other keys needed to build and run the
 application, while still allowing you to customize the generated
 configuration in the project file.
 
-Add an extension to the top-level ``extensions`` key in ``rockcraft.yaml``.
-When Rockcraft loads the project, it expands the extension and combines its
-configuration with your project file.
+The top-level ``extensions`` key in ``rockcraft.yaml`` defines the extension
+used by the project. When Rockcraft loads the project, it expands the extension
+and combines its configuration with your project file.
 
 .. toctree::
     :maxdepth: 1
