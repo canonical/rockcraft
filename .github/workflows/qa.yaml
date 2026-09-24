@@ -33,6 +33,9 @@ jobs:
             source-files:
               - '!({docs/**,*.md,**/*.md,.readthedocs.yaml})'
   lint:
+    permissions:
+      contents: read
+      pull-requests: read
     uses: canonical/starflow/.github/workflows/lint-python.yaml@main
     needs: filter
     with:
