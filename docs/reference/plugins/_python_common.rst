@@ -24,6 +24,6 @@ here's an example that uses ``python3.12-venv`` from the Deadsnakes ppa:
 
    parts:
      my-part:
-       plugin: <python or poetry>
+       plugin: <python or poetry or uv>
        source: .
        stage-packages: [python3.12-venv]
