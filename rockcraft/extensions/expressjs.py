@@ -250,23 +250,22 @@ class ExpressJSFramework(Extension):
         the project's root directory, are organized into the application
         directory (``app``) so they are reachable at ``/app`` in the rock.
 
-        The part creates an 'app' symlink pointing to the installed
-        application directory, so 'organize' places assets through it and
-        'stage' entries that start with 'app/' resolve to the same physical
-        location used by the install-app part.
+        The part creates the same 'app' symlink as the install-app part, so
+        'organize' places assets in the installed application directory.
         """
         assets_stage = self._get_assets_stage()
         if not assets_stage or assets_stage[0][0] == "-":
             return None
 
+        app_dir = f"lib/node_modules/{self._app_name}"
         return {
             "plugin": "dump",
             "source": ".",
             "override-build": (
                 "craftctl default\n"
                 "rm -rf ${CRAFT_PART_INSTALL}/app\n"
-                f"mkdir -p ${{CRAFT_PART_INSTALL}}/lib/node_modules/{self._app_name}\n"
-                f"ln -s lib/node_modules/{self._app_name} ${{CRAFT_PART_INSTALL}}/app\n"
+                f"mkdir -p ${{CRAFT_PART_INSTALL}}/{app_dir}\n"
+                f"ln -s /{app_dir} ${{CRAFT_PART_INSTALL}}/app\n"
             ),
             "organize": {
                 os.path.relpath(asset, "app"): asset
@@ -274,7 +273,7 @@ class ExpressJSFramework(Extension):
                 if not asset.startswith("-")
             },
             "stage": assets_stage,
-            "permissions": [{"owner": USER_UID, "group": USER_UID}],
+            "permissions": [{"path": app_dir, "owner": USER_UID, "group": USER_UID}],
         }
 
     def _get_assets_stage(self) -> list[str]:

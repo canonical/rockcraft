@@ -764,7 +764,7 @@ def test_expressjs_extension_extra_assets(tmp_path, expressjs_input_yaml):
             "craftctl default\n"
             "rm -rf ${CRAFT_PART_INSTALL}/app\n"
             f"mkdir -p ${{CRAFT_PART_INSTALL}}/lib/node_modules/{_expressjs_project_name}\n"
-            f"ln -s lib/node_modules/{_expressjs_project_name} "
+            f"ln -s /lib/node_modules/{_expressjs_project_name} "
             "${CRAFT_PART_INSTALL}/app\n"
         ),
         "organize": {
@@ -772,7 +772,13 @@ def test_expressjs_extension_extra_assets(tmp_path, expressjs_input_yaml):
             "migrate.sh": "app/migrate.sh",
         },
         "stage": ["app/migrate", "app/migrate.sh"],
-        "permissions": [{"owner": 584792, "group": 584792}],
+        "permissions": [
+            {
+                "path": f"lib/node_modules/{_expressjs_project_name}",
+                "owner": 584792,
+                "group": 584792,
+            }
+        ],
     }
 
 
@@ -790,14 +796,20 @@ def test_expressjs_v2_extra_assets(tmp_path, monkeypatch, expressjs_input_yaml):
             "craftctl default\n"
             "rm -rf ${CRAFT_PART_INSTALL}/app\n"
             f"mkdir -p ${{CRAFT_PART_INSTALL}}/lib/node_modules/{_expressjs_project_name}\n"
-            f"ln -s lib/node_modules/{_expressjs_project_name} "
+            f"ln -s /lib/node_modules/{_expressjs_project_name} "
             "${CRAFT_PART_INSTALL}/app\n"
         ),
         "organize": {
             "migrate.sh": "app/migrate.sh",
         },
         "stage": ["app/migrate.sh"],
-        "permissions": [{"owner": 584792, "group": 584792}],
+        "permissions": [
+            {
+                "path": f"lib/node_modules/{_expressjs_project_name}",
+                "owner": 584792,
+                "group": 584792,
+            }
+        ],
     }
 
 
@@ -820,14 +832,20 @@ def test_expressjs_extension_extra_assets_overridden(tmp_path, expressjs_input_y
             "craftctl default\n"
             "rm -rf ${CRAFT_PART_INSTALL}/app\n"
             f"mkdir -p ${{CRAFT_PART_INSTALL}}/lib/node_modules/{_expressjs_project_name}\n"
-            f"ln -s lib/node_modules/{_expressjs_project_name} "
+            f"ln -s /lib/node_modules/{_expressjs_project_name} "
             "${CRAFT_PART_INSTALL}/app\n"
         ),
         "organize": {
             "foobar": "app/foobar",
         },
         "stage": ["app/foobar"],
-        "permissions": [{"owner": 584792, "group": 584792}],
+        "permissions": [
+            {
+                "path": f"lib/node_modules/{_expressjs_project_name}",
+                "owner": 584792,
+                "group": 584792,
+            }
+        ],
     }
 
 
