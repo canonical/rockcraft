@@ -17,7 +17,6 @@
 """An extension for the NodeJS based Javascript application extension."""
 
 import json
-import os
 import re
 from pathlib import Path
 from typing import Any, cast
@@ -250,31 +249,37 @@ class ExpressJSFramework(Extension):
         the project's root directory, are organized into the application
         directory (``app``) so they are reachable at ``/app`` in the rock.
 
-        The part creates the same 'app' symlink as the install-app part, so
-        'organize' places assets in the installed application directory.
+        Assets are placed directly in the installed application directory.
+        The ``app`` symlink remains owned by the install-app part.
         """
         assets_stage = self._get_assets_stage()
         if not assets_stage or assets_stage[0][0] == "-":
             return None
 
         app_dir = f"lib/node_modules/{self._app_name}"
+        translated_stage = [
+            self._translate_asset_path(asset, app_dir) for asset in assets_stage
+        ]
         return {
             "plugin": "dump",
             "source": ".",
-            "override-build": (
-                "craftctl default\n"
-                "rm -rf ${CRAFT_PART_INSTALL}/app\n"
-                f"mkdir -p ${{CRAFT_PART_INSTALL}}/{app_dir}\n"
-                f"ln -s /{app_dir} ${{CRAFT_PART_INSTALL}}/app\n"
-            ),
             "organize": {
-                os.path.relpath(asset, "app"): asset
+                asset.removeprefix("app/"): self._translate_asset_path(asset, app_dir)
                 for asset in assets_stage
                 if not asset.startswith("-")
             },
-            "stage": assets_stage,
+            "stage": translated_stage,
             "permissions": [{"path": app_dir, "owner": USER_UID, "group": USER_UID}],
         }
+
+    @staticmethod
+    def _translate_asset_path(asset: str, app_dir: str) -> str:
+        """Translate a public app fileset path to the installed application path."""
+        prefix = ""
+        if asset.startswith("-"):
+            prefix = "-"
+            asset = asset.removeprefix("-").lstrip()
+        return f"{prefix}{app_dir}/{asset.removeprefix('app/')}"
 
     def _get_assets_stage(self) -> list[str]:
         """Return the assets stage list for the ExpressJS project."""

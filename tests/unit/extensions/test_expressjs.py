@@ -760,18 +760,14 @@ def test_expressjs_extension_extra_assets(tmp_path, expressjs_input_yaml):
     assert applied["parts"]["expressjs-framework/assets"] == {
         "plugin": "dump",
         "source": ".",
-        "override-build": (
-            "craftctl default\n"
-            "rm -rf ${CRAFT_PART_INSTALL}/app\n"
-            f"mkdir -p ${{CRAFT_PART_INSTALL}}/lib/node_modules/{_expressjs_project_name}\n"
-            f"ln -s /lib/node_modules/{_expressjs_project_name} "
-            "${CRAFT_PART_INSTALL}/app\n"
-        ),
         "organize": {
-            "migrate": "app/migrate",
-            "migrate.sh": "app/migrate.sh",
+            "migrate": f"lib/node_modules/{_expressjs_project_name}/migrate",
+            "migrate.sh": f"lib/node_modules/{_expressjs_project_name}/migrate.sh",
         },
-        "stage": ["app/migrate", "app/migrate.sh"],
+        "stage": [
+            f"lib/node_modules/{_expressjs_project_name}/migrate",
+            f"lib/node_modules/{_expressjs_project_name}/migrate.sh",
+        ],
         "permissions": [
             {
                 "path": f"lib/node_modules/{_expressjs_project_name}",
@@ -792,17 +788,10 @@ def test_expressjs_v2_extra_assets(tmp_path, monkeypatch, expressjs_input_yaml):
     assert applied["parts"]["expressjs-framework.assets"] == {
         "plugin": "dump",
         "source": ".",
-        "override-build": (
-            "craftctl default\n"
-            "rm -rf ${CRAFT_PART_INSTALL}/app\n"
-            f"mkdir -p ${{CRAFT_PART_INSTALL}}/lib/node_modules/{_expressjs_project_name}\n"
-            f"ln -s /lib/node_modules/{_expressjs_project_name} "
-            "${CRAFT_PART_INSTALL}/app\n"
-        ),
         "organize": {
-            "migrate.sh": "app/migrate.sh",
+            "migrate.sh": f"lib/node_modules/{_expressjs_project_name}/migrate.sh",
         },
-        "stage": ["app/migrate.sh"],
+        "stage": [f"lib/node_modules/{_expressjs_project_name}/migrate.sh"],
         "permissions": [
             {
                 "path": f"lib/node_modules/{_expressjs_project_name}",
@@ -828,17 +817,13 @@ def test_expressjs_extension_extra_assets_overridden(tmp_path, expressjs_input_y
     assert applied["parts"]["expressjs-framework/assets"] == {
         "plugin": "dump",
         "source": ".",
-        "override-build": (
-            "craftctl default\n"
-            "rm -rf ${CRAFT_PART_INSTALL}/app\n"
-            f"mkdir -p ${{CRAFT_PART_INSTALL}}/lib/node_modules/{_expressjs_project_name}\n"
-            f"ln -s /lib/node_modules/{_expressjs_project_name} "
-            "${CRAFT_PART_INSTALL}/app\n"
-        ),
         "organize": {
-            "foobar": "app/foobar",
+            "foobar": f"lib/node_modules/{_expressjs_project_name}/foobar",
         },
-        "stage": ["app/foobar"],
+        "stage": [
+            f"lib/node_modules/{_expressjs_project_name}/foobar",
+            "app/foobar",
+        ],
         "permissions": [
             {
                 "path": f"lib/node_modules/{_expressjs_project_name}",
