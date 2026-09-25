@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 import argparse
 import os
 import pathlib
@@ -26,7 +25,7 @@ def command_page_header(cmd, options_str, required_str):
 
 **Usage**
 
-:command:`rockcraft {cmd.name}{options_str}{required_str}`
+``rockcraft {cmd.name}{options_str}{required_str}``
 
 """
 
@@ -49,9 +48,7 @@ def not_none(*args):
 def make_section(title, items):
     s = ""
     if items:
-         #s = f".. rubric:: {title}\n\n"
-         s = f"**{title}**\n"
-
+        s = f"**{title}**\n\n"
 
     for dest, (names, help_str) in sorted(items):
         names = " or ".join([f"``{name}``" for name in names])
@@ -60,7 +57,6 @@ def make_section(title, items):
 
     s += "\n"
     return s
-
 
 def main(docs_dir):
     """Generate reference documentation for the command line interface,
