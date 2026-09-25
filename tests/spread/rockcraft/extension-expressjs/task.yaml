@@ -30,12 +30,6 @@ execute: |
   EOL
   fi
 
-  cat > migrate.sh <<EOF
-  #!/bin/bash
-  echo "running migrate.sh"
-  EOF
-  chmod +x migrate.sh
-
   function run_test() {
     # rockcraft clean is required here because the cached layer writes to npmrc
     # multiple times, causing the app to crash on first run.
@@ -64,9 +58,6 @@ execute: |
     if [ "${SCENARIO}" == "ubuntu-26.04" ]; then
       [ "$(curl -sw '%{http_code}' -o /dev/null localhost:8137/write-data)" == "200" ]
     fi
-
-    # test that migrate.sh is copied into the image
-    docker exec "${NAME}-container" test -f /app/migrate.sh
 
   }
 
@@ -97,5 +88,5 @@ restore: |
   NAME="expressjs-${SCENARIO//./-}"
   docker stop "${NAME}-container" || true
   docker rm --force "${NAME}-container"
-  rm -f "*.rock" rockcraft.yaml migrate.sh
+  rm -f "*.rock" rockcraft.yaml
   docker system prune -a -f

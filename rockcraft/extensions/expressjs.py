@@ -17,7 +17,6 @@
 """An extension for the NodeJS based Javascript application extension."""
 
 import json
-import re
 from pathlib import Path
 from typing import Any, cast
 
@@ -93,10 +92,6 @@ class ExpressJSFramework(Extension):
             snippet["parts"][self.get_part_name("runtime")]["stage"] = [
                 "-etc/ssl/certs/ca-certificates.crt"
             ]
-
-        assets_part = self._gen_assets_part()
-        if assets_part:
-            snippet["parts"][self.get_part_name("assets")] = assets_part
 
         snippet["parts"][self.get_part_name("logging")] = gen_logging_part()
         return snippet
@@ -241,79 +236,6 @@ class ExpressJSFramework(Extension):
         if not stage_packages:
             return None
         return {"plugin": "nil", "stage-packages": stage_packages}
-
-    def _gen_assets_part(self) -> dict[str, Any] | None:
-        """Generate assets part for extra assets in the project root.
-
-        By default, the ``migrate`` and ``migrate.sh`` files, if they exist in
-        the project's root directory, are organized into the application
-        directory (``app``) so they are reachable at ``/app`` in the rock.
-
-        Assets are staged privately, then copied into the installed application
-        during priming. The ``app`` symlink remains owned by the install-app part.
-        """
-        assets_stage = self._get_assets_stage()
-        if not assets_stage or assets_stage[0][0] == "-":
-            return None
-
-        app_dir = f"lib/node_modules/{self._app_name}"
-        assets_dir = ".expressjs-assets"
-        translated_stage = [
-            self._translate_asset_path(asset, assets_dir) for asset in assets_stage
-        ]
-        return {
-            "plugin": "dump",
-            "source": ".",
-            "after": [self.get_part_name("install-app")],
-            "organize": {
-                asset.removeprefix("app/"): self._translate_asset_path(
-                    asset, assets_dir
-                )
-                for asset in assets_stage
-                if not asset.startswith("-")
-            },
-            "stage": translated_stage,
-            "override-prime": (
-                "craftctl default\n"
-                f"cp -a $CRAFT_PRIME/{assets_dir}/. $CRAFT_PRIME/{app_dir}/\n"
-                f"rm -rf $CRAFT_PRIME/{assets_dir}\n"
-            ),
-        }
-
-    @staticmethod
-    def _translate_asset_path(asset: str, destination: str) -> str:
-        """Translate a public app fileset path to an internal destination."""
-        prefix = ""
-        if asset.startswith("-"):
-            prefix = "-"
-            asset = asset.removeprefix("-").lstrip()
-        return f"{prefix}{destination}/{asset.removeprefix('app/')}"
-
-    def _get_assets_stage(self) -> list[str]:
-        """Return the assets stage list for the ExpressJS project."""
-        user_stage: list[str] = (
-            self.yaml_data.get("parts", {})
-            .get(self.get_part_name("assets"), {})
-            .get("stage", [])
-        )
-
-        if not all(re.match("-? *app/", p) for p in user_stage):
-            raise ExtensionError(
-                "expressjs-framework extension requires the 'stage' entry in the "
-                f"{self.get_part_name('assets')} part to start with 'app/'",
-                doc_slug="/reference/extensions/express-framework",
-                logpath_report=False,
-            )
-        if not user_stage:
-            user_stage = [
-                f"app/{f}"
-                for f in (
-                    "migrate",
-                    "migrate.sh",
-                )
-                if (self.project_root / f).exists()
-            ]
-        return user_stage
 
     @property
     def _user_install_app_part(self) -> dict[str, Any]:
