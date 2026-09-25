@@ -92,6 +92,27 @@ Additional runtime packages
 
 Installing additional runtime packages is currently unsupported.
 
+.. _reference-express-framework-migration:
+
+Database migration
+------------------
+
+A ``migrate.sh`` script placed in the application directory, that is, the
+directory containing the ``package.json`` file, is copied into the rock's
+``/app`` directory together with the rest of the application. The 12-factor
+charm runs the migration script before the application starts, so make sure the
+script is executable, idempotent and safe to run on multiple units concurrently.
+
+A ``migrate.sh`` script for an Express application typically runs the migration
+command of an ORM library, for example:
+
+.. code-block:: bash
+
+    #!/bin/bash
+    # for Prisma:
+    npx prisma migrate deploy
+    # for Knex:
+    npx knex migrate:latest
 
 Useful links
 ------------

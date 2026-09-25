@@ -75,6 +75,9 @@ the root of the project:
 - ``static``
 - ``templates``
 
+For the ``expressjs-framework``, place the migration script in the application
+directory instead; see :ref:`reference-express-framework-migration`.
+
 To change this list, add the following snippet to the project file:
 
 .. tabs::
@@ -99,6 +102,11 @@ To change this list, add the following snippet to the project file:
    .. group-tab:: Django
 
       N/A
+
+   .. group-tab:: Express
+
+      The entire ``app`` directory is copied into the rock, so place any
+      additional files in the ``app`` directory.
 
    .. group-tab:: FastAPI
 
