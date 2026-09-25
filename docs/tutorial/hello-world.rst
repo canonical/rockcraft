@@ -31,6 +31,12 @@ This file instructs Rockcraft to build a rock that **only** has the ``hello`` pa
 help define and describe the rock. For more information about all available keys, check
 :ref:`reference-rockcraft-yaml`.
 
+The ``platforms`` key must match the architecture of your host.
+Edit the ``platforms`` key in ``rockcraft.yaml`` if required.
+
+The ``name``, ``version`` and ``platform`` all influence the name of the
+generated ``.rock`` file.
+
 Pack the rock with Rockcraft
 ----------------------------
 
@@ -42,9 +48,9 @@ To build the rock, run:
     :end-before: [docs:build-rock-end]
     :dedent: 2
 
-At the end of the process, a file named ``hello_latest_amd64.rock`` should be
-present in the current directory. That's your rock, in oci-archive format
-(a tarball).
+At the end of the process, a ``.rock`` file (for example,
+``hello_latest_amd64.rock`` on an ``amd64`` host) should be present in the
+current directory. That's your rock, in oci-archive format (a tarball).
 
 
 Run the rock in Docker

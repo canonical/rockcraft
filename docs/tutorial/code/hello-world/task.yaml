@@ -17,7 +17,7 @@ execute: |
   rockcraft pack
   # [docs:build-rock-end]
 
-  test -f hello_latest_amd64.rock
+  test -f hello_latest_$(dpkg --print-architecture).rock
   test ! -d parts -a ! -d stage -a ! -d prime
 
   uname -a
@@ -27,10 +27,13 @@ execute: |
   docker images
 
   # [docs:skopeo-copy]
-  sudo rockcraft.skopeo --insecure-policy copy oci-archive:hello_latest_amd64.rock docker-daemon:hello:latest
+  sudo rockcraft.skopeo copy \
+    --insecure-policy \
+    oci-archive:hello_latest_$(dpkg --print-architecture).rock \
+    docker-daemon:hello:latest
   # [docs:skopeo-copy-end]
 
-  rm hello_latest_amd64.rock
+  rm hello_latest_$(dpkg --print-architecture).rock
   docker images hello:latest
 
   # [docs:docker-run]
