@@ -678,7 +678,7 @@ toml = [
 
 [[package]]
 name = "craft-application"
-version = "7.2.1"
+version = "7.3.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "annotated-types" },
@@ -701,9 +701,9 @@ dependencies = [
     { name = "snap-http" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/bf/30/9f520439e4f4a1c9ad538180b9c7057e4945c4e95994f2d2d93759202401/craft_application-7.2.1.tar.gz", hash = "sha256:86f1f35be4b447bada10305d91a252b178d20910f3d5a7d5bb8ac6d3d9810d49", size = 711352, upload-time = "2026-09-01T19:01:41.236Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/3c/b6/74682e7ad5da84d51fbb43a2dfb6bc3622836491918fdc0f3de1f46c099b/craft_application-7.3.0.tar.gz", hash = "sha256:4102567ca08cc306ff0022ca573687e72579b21c7aeee19d63705e5718af43cd", size = 725843, upload-time = "2026-09-23T20:49:55.537Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/1c/d8/2521124ef123c9164c6f432bf401a70e31df29b7487a6459fa73470930cf/craft_application-7.2.1-py3-none-any.whl", hash = "sha256:921437c49bc9ad7978f4eb8e12e5a91d781762c6d6eb2917839710ba689d8761", size = 212608, upload-time = "2026-09-01T19:01:38.289Z" },
+    { url = "https://files.pythonhosted.org/packages/1c/60/27198bf033998eccc7e46528c755a5d9032b96688881d960dcdebcddd03a/craft_application-7.3.0-py3-none-any.whl", hash = "sha256:ef58e272a73d2b073c70dd5cb585db21179442824d2957a4dfab2ee661cba507", size = 217496, upload-time = "2026-09-23T20:49:53.95Z" },
 ]
 
 [[package]]
@@ -753,7 +753,7 @@ wheels = [
 
 [[package]]
 name = "craft-parts"
-version = "2.35.1"
+version = "2.37.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "lxml" },
@@ -766,9 +766,9 @@ dependencies = [
     { name = "tomli", marker = "python_full_version < '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
     { name = "zstandard" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/0e/e8/436812aa3d486893af5c69f3373003e9b9015720fcef23383a829b028afe/craft_parts-2.35.1.tar.gz", hash = "sha256:2467399997544ec249c4499ecc622d029dd9609d395da1e6c03781f9d29589aa", size = 1028516, upload-time = "2026-08-27T17:42:34.849Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/04/d7/10cd8f5ed0392a287d770ea3d3b423f8b1cc749fd1aa67c21baca7250776/craft_parts-2.37.0.tar.gz", hash = "sha256:6dd0ddcedf330190fed9f85b91c80b290bc0f4053020767aa99e471b01717368", size = 1049640, upload-time = "2026-09-23T12:31:32.564Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/dd/46/944a8e49a7a90e6acde79e6075735f7f1f70719ee0bcdf96bd3b20d565f5/craft_parts-2.35.1-py3-none-any.whl", hash = "sha256:54f877247cd18df04c00ae9b9fe20b3b7b89f2b608ebd7067549090181638ba5", size = 556071, upload-time = "2026-08-27T17:42:33.335Z" },
+    { url = "https://files.pythonhosted.org/packages/75/d2/4f68290a3b7a4fadd1df0796a757cba23940031ced62d0120b55055bf8f1/craft_parts-2.37.0-py3-none-any.whl", hash = "sha256:5be2a95be8415a56852429e72ec91b10121d5f83b1dad47ab4d92caf8ae279f5", size = 565759, upload-time = "2026-09-23T12:31:30.592Z" },
 ]
 
 [[package]]
@@ -2976,10 +2976,10 @@ types = [
 
 [package.metadata]
 requires-dist = [
-    { name = "craft-application", specifier = ">=7.2.1" },
+    { name = "craft-application", specifier = ">=7.3.0" },
     { name = "craft-archives", specifier = ">=2.2.2" },
     { name = "craft-cli", specifier = ">=3.4.1" },
-    { name = "craft-parts", specifier = ">=2.35.1" },
+    { name = "craft-parts", specifier = ">=2.37.0" },
     { name = "craft-platforms", specifier = ">=0.12.0" },
     { name = "craft-providers", specifier = ">=3.7.1" },
     { name = "craft-store", marker = "extra == 'store'" },
