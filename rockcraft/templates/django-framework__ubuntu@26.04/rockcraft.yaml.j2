@@ -5,7 +5,7 @@ name: {{name}}
 # see {{versioned_url}}/explanation/bases/
 # for more information about bases and using 'bare' bases for chiselled rocks
 base: bare # as an alternative, an ubuntu base can be used
-build-base: {{ requested_base or "ubuntu@24.04" }} # build-base is required when the base is bare
+build-base: ubuntu@26.04 # build-base is required when the base is bare
 version: "0.1" # just for humans. Semantic versioning is recommended
 summary: A summary of your Django application # 79 char long summary
 description: |
@@ -40,7 +40,7 @@ extensions:
   - django-framework
 # uncomment the sections you need and adjust according to your requirements.
 # parts:
-#   django-framework/dependencies:
+#   django-framework.dependencies:
 #     stage-packages:
 #       # list required packages or slices for your Django application below.
 #       - libpq-dev

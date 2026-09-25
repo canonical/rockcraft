@@ -5,7 +5,7 @@ name: {{name}}
 # see {{versioned_url}}/explanation/bases/
 # for more information about bases and using 'bare' bases for chiselled rocks
 base: bare # as an alternative, an ubuntu base can be used
-build-base: {{ requested_base or "ubuntu@24.04" }} # build-base is required when the base is bare
+build-base: ubuntu@26.04 # build-base is required when the base is bare
 version: '0.1' # just for humans. Semantic versioning is recommended
 summary: A summary of your Spring Boot application # 79 char long summary
 description: |
@@ -35,24 +35,24 @@ extensions:
 # uncomment the sections you need and adjust according to your requirements.
 # parts:
 
-#   spring-boot-framework/gradle-init-script
+#   spring-boot-framework.gradle-init-script
 #   override-build: |
 #      cp <PATH-TO-INIT-SCRIPT> ${CRAFT_STAGE}
 
-#   spring-boot-framework/install-app:
+#   spring-boot-framework.install-app:
 #    # select a specific Java version to build the application. Otherwise the
 #    # default-jdk will be used.
 #    build-packages:
 #    - default-jdk
 
-#   spring-boot-framework/runtime:
+#   spring-boot-framework.runtime:
 #    # select a specific Java version to run the application. Otherwise the
 #    # default-jdk will be used. Note that the JDK should be used so that Jlink
 #    # tool can be used to create a custom runtime image.
 #    build-packages:
 #    - default-jdk
 
-#   spring-boot-framework/assets:
+#   spring-boot-framework.assets:
 #     stage:
 #       # by default, only the files migrate and migrate.sh are copied into
 #       # the image. You can modify the list below to override the default list

@@ -981,6 +981,11 @@ def test_flask_v2_full_apply_26_04(tmp_path, monkeypatch):
                     },
                 ],
             },
+            "flask-framework.system-dependencies": {
+                "plugin": "nil",
+                "stage-packages": ["tzdata"],
+                "stage": ["usr/share/zoneinfo"],
+            },
             "flask-framework.statsd-exporter": {
                 "build-snaps": ["go"],
                 "plugin": "go",
@@ -1243,6 +1248,9 @@ def test_flask_extension_uv(
     assert deps["plugin"] == "uv"
     assert deps["source"] == "."
     assert deps["stage-packages"] == ["python3-venv"]
+    assert applied["parts"]["flask-framework.system-dependencies"][
+        "stage-packages"
+    ] == ["tzdata"]
     assert "python-packages" not in deps
     assert "python-requirements" not in deps
     assert deps["override-build"] == (
@@ -1282,6 +1290,9 @@ def test_flask_extension_v2_bare_26_04(tmp_path, flask_extension, monkeypatch, u
         "python3.14-venv_ensurepip",
         "python3-minimal_python3",
     ]
+    assert applied["parts"]["flask-framework.system-dependencies"][
+        "stage-packages"
+    ] == ["tzdata"]
     assert deps["build-environment"] == [{"PIP_PYTHON": "$(which python3.14)"}]
     assert applied["parts"]["flask-framework.runtime"]["override-build"] == (
         "mkdir -m 777 ${CRAFT_PART_INSTALL}/tmp\n"
@@ -1374,6 +1385,9 @@ def test_django_extension_v2_bare_26_04(tmp_path, django_extension, use_uv):
         "python3.14-venv_ensurepip",
         "python3-minimal_python3",
     ]
+    assert applied["parts"]["django-framework.system-dependencies"][
+        "stage-packages"
+    ] == ["tzdata"]
     assert deps["build-environment"] == [{"PIP_PYTHON": "$(which python3.14)"}]
     assert applied["parts"]["django-framework.runtime"]["override-build"] == (
         "mkdir -m 777 ${CRAFT_PART_INSTALL}/tmp\n"
@@ -1594,6 +1608,11 @@ def test_django_extension_v2_default(tmp_path):
                         "group": 584792,
                     },
                 ],
+            },
+            "django-framework.system-dependencies": {
+                "plugin": "nil",
+                "stage-packages": ["tzdata"],
+                "stage": ["usr/share/zoneinfo"],
             },
             "django-framework.statsd-exporter": {
                 "build-snaps": ["go"],

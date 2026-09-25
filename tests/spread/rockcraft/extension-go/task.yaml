@@ -10,7 +10,12 @@ execute: |
   ROCK_FILE="${NAME}_0.1_amd64.rock"
   IMAGE="${NAME}:0.1"
 
-  run_rockcraft init --name "${NAME}" --profile go-framework
+  if [ "${SCENARIO}" = "bare" ]; then
+    run_rockcraft init --name "${NAME}" --profile go-framework
+  else
+    run_rockcraft init --name "${NAME}" --profile go-framework --base "${SCENARIO//-/@}"
+    grep -q "^build-base: ${SCENARIO//-/@}" rockcraft.yaml
+  fi
   sed -i "s/^base: .*/base: ${SCENARIO//-/@}/g" rockcraft.yaml
   if [ "${SCENARIO}" != "bare" ]; then
     sed -i "s/^build-base: .*/build-base: ${SCENARIO//-/@}/g" rockcraft.yaml

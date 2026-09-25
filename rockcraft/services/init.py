@@ -27,6 +27,8 @@ from typing_extensions import override
 class RockcraftInitService(InitService):
     """Rockcraft specialization of the InitService."""
 
+    requested_base: str | None = None
+
     @override
     def initialise_project(
         self,
@@ -43,7 +45,7 @@ class RockcraftInitService(InitService):
             vcs=vcs,
         )
 
-        init_profile = template_dir.name
+        init_profile = template_dir.name.split("__", maxsplit=1)[0]
         if init_profile != "simple":
             versioned_docs = self._app.versioned_docs_url
             reference_docs = f"{versioned_docs}/reference/extensions/{init_profile}"
@@ -57,5 +59,6 @@ class RockcraftInitService(InitService):
         context = super()._get_context(name, project_dir=project_dir)
         context["snake_name"] = context["name"].replace("-", "_").lower()
         context["versioned_url"] = self._app.versioned_docs_url
+        context["requested_base"] = self.requested_base
 
         return context

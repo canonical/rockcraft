@@ -409,6 +409,11 @@ def test_go_extension_default_26_04(tmp_path, monkeypatch):
                     {"path": "etc/promtail", "owner": 584792, "group": 584792},
                 ],
             },
+            "go-framework.system-dependencies": {
+                "plugin": "nil",
+                "stage-packages": ["tzdata"],
+                "stage": ["usr/share/zoneinfo"],
+            },
         },
         "services": {
             "go": {

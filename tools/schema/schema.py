@@ -19,16 +19,16 @@
 """Creation of schema for rockcraft.yaml."""
 
 import json
-import os
 import sys
 from pathlib import Path
 
 import yaml
 from craft_parts import Part
 from craft_parts.plugins import plugins
+from jinja2 import Template
 
-script_dir = os.path.dirname(os.path.realpath(__file__))
-sys.path.append(os.path.join(script_dir, "../../"))
+script_dir = Path(__file__).resolve().parent
+sys.path.append(str(script_dir / "../.."))
 
 import rockcraft  # noqa: E402
 from rockcraft.models.project import Project  # noqa: E402
@@ -36,9 +36,13 @@ from rockcraft.models.project import Project  # noqa: E402
 
 def generate_project_schema() -> str:
     """Generate the schema."""
-    # Render the default template with a name
+    # Render the default template with its standard init context.
     template = Path(rockcraft.__file__).parent / "templates/simple/rockcraft.yaml.j2"
-    contents = template.read_text().replace("{{name}}", "my-rock-name")
+    contents = Template(template.read_text()).render(
+        name="my-rock-name",
+        requested_base=None,
+        versioned_url="",
+    )
 
     # Initiate a project with all required fields
     project = Project.unmarshal(yaml.safe_load(contents))
@@ -108,9 +112,7 @@ def generate_project_schema() -> str:
     if_array = []
     for name, cls in plugins.get_registered_plugins().items():
         plugin_schema = cls.properties_class.schema()
-        properties_dict = {}
-        for k, v in plugin_schema.get("properties", {}).items():
-            properties_dict[k] = v
+        properties_dict = dict(plugin_schema.get("properties", {}))
         properties_dict.update(project_schema["$defs"]["Part"]["properties"])
 
         # Merge plugin-specific definitions into the main schema

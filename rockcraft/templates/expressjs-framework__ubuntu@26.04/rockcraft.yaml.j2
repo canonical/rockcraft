@@ -5,9 +5,9 @@ name: {{name}}
 # see {{versioned_url}}/explanation/bases/
 # for more information about bases and using 'bare' bases for chiselled rocks
 base: bare # as an alternative, an ubuntu base can be used
-build-base: {{ requested_base or "ubuntu@24.04" }} # build-base is required when the base is bare
+build-base: ubuntu@26.04 # build-base is required when the base is bare
 version: '0.1' # just for humans. Semantic versioning is recommended
-summary: A summary of your ExpresssJS application # 79 char long summary
+summary: A summary of your ExpressJS application # 79 char long summary
 description: |
     This is {{name}}'s description. You have a paragraph or two to tell the
     most important story about it. Keep it under 100 words though,
@@ -29,7 +29,7 @@ extensions:
 
 # uncomment the sections you need and adjust according to your requirements.
 # parts:  # you need to uncomment this line to add or update any part.
-#  expressjs-framework/install-app:
+#  expressjs-framework.install-app:
 #    # to specify the version of node to be installed, uncomment the following
 #    # line and set the version to the desired one.
 #    # see https://documentation.ubuntu.com/rockcraft/latest/common/craft-parts/reference/plugins/npm_plugin/
