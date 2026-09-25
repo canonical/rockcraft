@@ -760,21 +760,21 @@ def test_expressjs_extension_extra_assets(tmp_path, expressjs_input_yaml):
     assert applied["parts"]["expressjs-framework/assets"] == {
         "plugin": "dump",
         "source": ".",
+        "after": ["expressjs-framework/install-app"],
         "organize": {
-            "migrate": f"lib/node_modules/{_expressjs_project_name}/migrate",
-            "migrate.sh": f"lib/node_modules/{_expressjs_project_name}/migrate.sh",
+            "migrate": ".expressjs-assets/migrate",
+            "migrate.sh": ".expressjs-assets/migrate.sh",
         },
         "stage": [
-            f"lib/node_modules/{_expressjs_project_name}/migrate",
-            f"lib/node_modules/{_expressjs_project_name}/migrate.sh",
+            ".expressjs-assets/migrate",
+            ".expressjs-assets/migrate.sh",
         ],
-        "permissions": [
-            {
-                "path": f"lib/node_modules/{_expressjs_project_name}",
-                "owner": 584792,
-                "group": 584792,
-            }
-        ],
+        "override-prime": (
+            "craftctl default\n"
+            f"cp -a $CRAFT_PRIME/.expressjs-assets/. "
+            f"$CRAFT_PRIME/lib/node_modules/{_expressjs_project_name}/\n"
+            "rm -rf $CRAFT_PRIME/.expressjs-assets\n"
+        ),
     }
 
 
@@ -788,17 +788,17 @@ def test_expressjs_v2_extra_assets(tmp_path, monkeypatch, expressjs_input_yaml):
     assert applied["parts"]["expressjs-framework.assets"] == {
         "plugin": "dump",
         "source": ".",
+        "after": ["expressjs-framework.install-app"],
         "organize": {
-            "migrate.sh": f"lib/node_modules/{_expressjs_project_name}/migrate.sh",
+            "migrate.sh": ".expressjs-assets/migrate.sh",
         },
-        "stage": [f"lib/node_modules/{_expressjs_project_name}/migrate.sh"],
-        "permissions": [
-            {
-                "path": f"lib/node_modules/{_expressjs_project_name}",
-                "owner": 584792,
-                "group": 584792,
-            }
-        ],
+        "stage": [".expressjs-assets/migrate.sh"],
+        "override-prime": (
+            "craftctl default\n"
+            f"cp -a $CRAFT_PRIME/.expressjs-assets/. "
+            f"$CRAFT_PRIME/lib/node_modules/{_expressjs_project_name}/\n"
+            "rm -rf $CRAFT_PRIME/.expressjs-assets\n"
+        ),
     }
 
 
@@ -817,20 +817,20 @@ def test_expressjs_extension_extra_assets_overridden(tmp_path, expressjs_input_y
     assert applied["parts"]["expressjs-framework/assets"] == {
         "plugin": "dump",
         "source": ".",
+        "after": ["expressjs-framework/install-app"],
         "organize": {
-            "foobar": f"lib/node_modules/{_expressjs_project_name}/foobar",
+            "foobar": ".expressjs-assets/foobar",
         },
         "stage": [
-            f"lib/node_modules/{_expressjs_project_name}/foobar",
+            ".expressjs-assets/foobar",
             "app/foobar",
         ],
-        "permissions": [
-            {
-                "path": f"lib/node_modules/{_expressjs_project_name}",
-                "owner": 584792,
-                "group": 584792,
-            }
-        ],
+        "override-prime": (
+            "craftctl default\n"
+            f"cp -a $CRAFT_PRIME/.expressjs-assets/. "
+            f"$CRAFT_PRIME/lib/node_modules/{_expressjs_project_name}/\n"
+            "rm -rf $CRAFT_PRIME/.expressjs-assets\n"
+        ),
     }
 
 
