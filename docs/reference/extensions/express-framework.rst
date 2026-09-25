@@ -11,13 +11,13 @@ application rocks. It facilitates the installation of Express application depend
 Node.js and npm, inside the rock.
 
 .. tab-set::
-    .. tab-item:: Ubuntu 22.04 and 24.04
-        :sync: base-22-24
+    .. tab-item:: Ubuntu 24.04 LTS
+        :sync: base-24
 
         Additionally, it transfers your project files
         to ``/app`` within the rock.
 
-    .. tab-item:: Ubuntu 26.04 and higher
+    .. tab-item:: Ubuntu 26.04 LTS and higher
         :sync: base-26-plus
 
         The extension discovers the location of the
@@ -25,8 +25,15 @@ Node.js and npm, inside the rock.
 
 By default, the system foundation, or base, is set as ``bare`` to generate a
 lightweight image.
-The Express extension is compatible with the ``bare``, ``ubuntu@24.04`` and ``ubuntu@26.04``
-bases.
+
+.. note::
+    The Express extension is compatible with the ``bare``, ``ubuntu@24.04``
+    and ``ubuntu@26.04`` bases. Support for Ubuntu 26.04 LTS is experimental.
+
+    Part names added by the extension vary by Ubuntu version. On Ubuntu 24.04 LTS,
+    write ``extension/part``. On Ubuntu 26.04 LTS and higher, write
+    ``extension.part``. For rocks with ``base: bare``, follow the convention
+    for the configured ``build-base``.
 
 .. _reference-express-framework-project-requirements:
 
@@ -34,8 +41,8 @@ Project requirements
 --------------------
 
 .. tab-set::
-    .. tab-item:: Ubuntu 22.04 and 24.04
-        :sync: base-22-24
+    .. tab-item:: Ubuntu 24.04 LTS
+        :sync: base-24
 
         There are three requirements to be able to use the ``expressjs-framework``
         extension:
@@ -46,7 +53,7 @@ Project requirements
 
         For more information, see the `npm documentation <https://docs.npmjs.com/cli/v11/configuring-npm/package-json>`_.
 
-    .. tab-item:: Ubuntu 26.04 and higher
+    .. tab-item:: Ubuntu 26.04 LTS and higher
         :sync: base-26-plus
 
         There are two requirements to be able to use the ``expressjs-framework``
@@ -72,13 +79,29 @@ Node.js version
 The ``npm-include-node`` and ``npm-node-version`` keys
 specify the version of Node.js to be installed. For example:
 
-.. code-block:: yaml
-  :caption: rockcraft.yaml
+.. tab-set::
 
-  parts:
-    expressjs-framework/install-app:
-      npm-include-node: true
-      npm-node-version: 20.12.2
+    .. tab-item:: Ubuntu 24.04 LTS
+        :sync: base-24
+
+        .. code-block:: yaml
+          :caption: rockcraft.yaml
+
+          parts:
+            expressjs-framework/install-app:
+              npm-include-node: true
+              npm-node-version: 20.12.2
+
+    .. tab-item:: Ubuntu 26.04 LTS and higher
+        :sync: base-26-plus
+
+        .. code-block:: yaml
+          :caption: rockcraft.yaml
+
+          parts:
+            expressjs-framework.install-app:
+              npm-include-node: true
+              npm-node-version: 20.12.2
 
 For more examples of the ``npm-node-version`` key, see
 :ref:`craft_parts_npm_plugin`.

@@ -17,7 +17,12 @@ lightweight image.
 
 .. note::
     The FastAPI extension is compatible with the ``bare``, ``ubuntu@24.04``
-    and ``ubuntu@26.04`` bases.
+    and ``ubuntu@26.04`` bases. Support for Ubuntu 26.04 LTS is experimental.
+
+    Part names added by the extension vary by Ubuntu version. On Ubuntu 24.04 LTS,
+    write ``extension/part``. On Ubuntu 26.04 LTS and higher, write
+    ``extension.part``. For rocks with ``base: bare``, follow the convention
+    for the configured ``build-base``.
 
 .. _reference-fastapi-framework-project-requirements:
 
@@ -46,14 +51,14 @@ uv projects
 
 .. tab-set::
 
-    .. tab-item:: Ubuntu 24.04
-        :sync: base-22-24
+    .. tab-item:: Ubuntu 24.04 LTS
+        :sync: base-24
 
         The extension doesn't support uv projects on this base. It builds the
         application with the Python plugin and installs dependencies from
         ``requirements.txt``.
 
-    .. tab-item:: Ubuntu 26.04 and higher
+    .. tab-item:: Ubuntu 26.04 LTS and higher
         :sync: base-26-plus
 
         If both a ``uv.lock`` and a ``pyproject.toml`` file are present in the
@@ -78,14 +83,31 @@ has its own special dependencies, this key must declare them.
 
 The following example specifies the ``libpq-dev`` package:
 
-.. code-block:: yaml
-  :caption: rockcraft.yaml
+.. tab-set::
 
-  parts:
-    fastapi-framework/dependencies:
-      stage-packages:
-        # list required packages or slices for your FastAPI application below.
-        - libpq-dev
+    .. tab-item:: Ubuntu 24.04 LTS
+        :sync: base-24
+
+        .. code-block:: yaml
+          :caption: rockcraft.yaml
+
+          parts:
+            fastapi-framework/dependencies:
+              stage-packages:
+                # list required packages or slices for your FastAPI application below.
+                - libpq-dev
+
+    .. tab-item:: Ubuntu 26.04 LTS and higher
+        :sync: base-26-plus
+
+        .. code-block:: yaml
+          :caption: rockcraft.yaml
+
+          parts:
+            fastapi-framework.dependencies:
+              stage-packages:
+                # list required packages or slices for your FastAPI application below.
+                - libpq-dev
 
 .. _reference-fastapi-framework-prime:
 
@@ -100,17 +122,37 @@ The ``prime`` key specifies the files to be included or excluded from
 the rock upon ``rockcraft pack``, following the ``app/<filename>`` notation. For
 example:
 
-.. code-block:: yaml
-  :caption: rockcraft.yaml
+.. tab-set::
 
-  parts:
-    fastapi-framework/install-app:
-      prime:
-        - app/.env
-        - app/app.py
-        - app/webapp
-        - app/templates
-        - app/static
+    .. tab-item:: Ubuntu 24.04 LTS
+        :sync: base-24
+
+        .. code-block:: yaml
+          :caption: rockcraft.yaml
+
+          parts:
+            fastapi-framework/install-app:
+              prime:
+                - app/.env
+                - app/app.py
+                - app/webapp
+                - app/templates
+                - app/static
+
+    .. tab-item:: Ubuntu 26.04 LTS and higher
+        :sync: base-26-plus
+
+        .. code-block:: yaml
+          :caption: rockcraft.yaml
+
+          parts:
+            fastapi-framework.install-app:
+              prime:
+                - app/.env
+                - app/app.py
+                - app/webapp
+                - app/templates
+                - app/static
 
 The ``prime`` key supports glob patterns to define the list of files. See :ref:`filesets_explanation`
 for the various ways you can specify files in your rock.

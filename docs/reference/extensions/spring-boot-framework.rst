@@ -15,8 +15,14 @@ lightweight image.
 
 .. note::
 
-    The Spring Boot extension is compatible with the ``bare`` and
-    ``ubuntu@24.04`` bases.
+    The Spring Boot extension is compatible with the ``bare``,
+    ``ubuntu@24.04`` and ``ubuntu@26.04`` bases. Support for Ubuntu 26.04 LTS is
+    experimental.
+
+    Part names added by the extension vary by Ubuntu version. On Ubuntu 24.04 LTS,
+    write ``extension/part``. On Ubuntu 26.04 LTS and higher, write
+    ``extension.part``. For rocks with ``base: bare``, follow the convention
+    for the configured ``build-base``.
 
 .. _reference-spring-boot-framework-project-requirements:
 
@@ -46,24 +52,49 @@ use to build the rock. Depending on the presence of ``pom.xml`` or
 :doc:`gradle </common/craft-parts/reference/plugins/gradle_plugin>` plugin,
 respectively.
 
-.. code-block:: yaml
-  :caption: rockcraft.yaml
+.. tab-set::
 
-  # if pom.xml is present, use maven plugin
-  parts:
-    spring-boot-framework/install-app:
-      plugin: maven
-      maven-use-wrapper: False # If mvnw file is present, True
+    .. tab-item:: Ubuntu 24.04 LTS
+        :sync: base-24
 
+        .. code-block:: yaml
+          :caption: rockcraft.yaml
 
-.. code-block:: yaml
-  :caption: rockcraft.yaml
+          # if pom.xml is present, use maven plugin
+          parts:
+            spring-boot-framework/install-app:
+              plugin: maven
+              maven-use-wrapper: false # If mvnw file is present, true
 
-  # if build.gradle is present, use gradle plugin
-  parts:
-    spring-boot-framework/install-app:
-      plugin: gradle
-      gradle-task: bootJar
+        .. code-block:: yaml
+          :caption: rockcraft.yaml
+
+          # if build.gradle is present, use gradle plugin
+          parts:
+            spring-boot-framework/install-app:
+              plugin: gradle
+              gradle-task: bootJar
+
+    .. tab-item:: Ubuntu 26.04 LTS and higher
+        :sync: base-26-plus
+
+        .. code-block:: yaml
+          :caption: rockcraft.yaml
+
+          # if pom.xml is present, use maven plugin
+          parts:
+            spring-boot-framework.install-app:
+              plugin: maven
+              maven-use-wrapper: false # If mvnw file is present, true
+
+        .. code-block:: yaml
+          :caption: rockcraft.yaml
+
+          # if build.gradle is present, use gradle plugin
+          parts:
+            spring-boot-framework.install-app:
+              plugin: gradle
+              gradle-task: bootJar
 
 .. _reference-spring-boot-framework-build-packages:
 
@@ -78,13 +109,29 @@ To find out what Java version is used to pack the JAR, you can search the
 The ``build-packages`` key specifies the Java version for the rock.
 For example:
 
-.. code-block:: yaml
-  :caption: rockcraft.yaml
+.. tab-set::
 
-  parts:
-    spring-boot-framework/install-app:
-      build-packages:
-        - openjdk-17-jdk # specify the Java package to use
+    .. tab-item:: Ubuntu 24.04 LTS
+        :sync: base-24
+
+        .. code-block:: yaml
+          :caption: rockcraft.yaml
+
+          parts:
+            spring-boot-framework/install-app:
+              build-packages:
+                - openjdk-17-jdk # specify the Java package to use
+
+    .. tab-item:: Ubuntu 26.04 LTS and higher
+        :sync: base-26-plus
+
+        .. code-block:: yaml
+          :caption: rockcraft.yaml
+
+          parts:
+            spring-boot-framework.install-app:
+              build-packages:
+                - openjdk-17-jdk # specify the Java package to use
 
 .. _reference-spring-boot-framework-runtime:
 
@@ -98,20 +145,43 @@ of the rock and improves performance.
 
 The ``spring-boot-framework`` uses the following configuration:
 
-.. code-block:: yaml
-  :caption: rockcraft.yaml
+.. tab-set::
 
-  parts:
-    spring-boot-framework/runtime:
-      plugin: jlink
-      source: .
-      build-packages:
-        - default-jdk
-      stage-packages: # these packages are required for bare base rocks.
-        - bash_bins
-        - ca-certificates_data
-        - coreutils_bins
-        - base-files_tmp
+    .. tab-item:: Ubuntu 24.04 LTS
+        :sync: base-24
+
+        .. code-block:: yaml
+          :caption: rockcraft.yaml
+
+          parts:
+            spring-boot-framework/runtime:
+              plugin: jlink
+              source: .
+              build-packages:
+                - default-jdk
+              stage-packages: # these packages are required for bare base rocks.
+                - bash_bins
+                - ca-certificates_data
+                - coreutils_bins
+                - base-files_tmp
+
+    .. tab-item:: Ubuntu 26.04 LTS and higher
+        :sync: base-26-plus
+
+        .. code-block:: yaml
+          :caption: rockcraft.yaml
+
+          parts:
+            spring-boot-framework.runtime:
+              plugin: jlink
+              source: .
+              build-packages:
+                - default-jdk
+              stage-packages: # these packages are required for bare base rocks.
+                - bash_bins
+                - ca-certificates_data
+                - coreutils_bins
+                - base-files_tmp
 
 .. _reference-spring-boot-framework-stage:
 
@@ -121,20 +191,38 @@ Included or excluded files
 If ``migrate`` or ``migrate.sh`` exist in the project's root directory, they will be
 included in the rock's ``/app`` directory by default.
 
-The ``stage`` key of the ``spring-boot-framework/assets`` part
+The ``stage`` key of the generated assets part
 specifies the files to be included or excluded from
 the rock upon ``rockcraft pack``, following the ``app/<filename>`` notation. For
 example:
 
-.. code-block:: yaml
-  :caption: rockcraft.yaml
+.. tab-set::
 
-  parts:
-    spring-boot-framework/assets:
-      stage:
-        - app/migrate
-        - app/migrate.sh
-        - app/another_file_or_directory
+    .. tab-item:: Ubuntu 24.04 LTS
+        :sync: base-24
+
+        .. code-block:: yaml
+          :caption: rockcraft.yaml
+
+          parts:
+            spring-boot-framework/assets:
+              stage:
+                - app/migrate
+                - app/migrate.sh
+                - app/another_file_or_directory
+
+    .. tab-item:: Ubuntu 26.04 LTS and higher
+        :sync: base-26-plus
+
+        .. code-block:: yaml
+          :caption: rockcraft.yaml
+
+          parts:
+            spring-boot-framework.assets:
+              stage:
+                - app/migrate
+                - app/migrate.sh
+                - app/another_file_or_directory
 
 The ``stage`` key supports glob patterns to define the list of files. See :ref:`filesets_explanation`
 for the various ways you can specify files in your rock.

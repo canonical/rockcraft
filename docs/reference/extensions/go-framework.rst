@@ -14,8 +14,13 @@ By default, the system foundation, or base, is set as ``bare`` to generate a
 lightweight image.
 
 .. note::
-    The Go extension is compatible with the ``bare`` and ``ubuntu@24.04``
-    bases.
+    The Go extension is compatible with the ``bare``, ``ubuntu@24.04`` and
+    ``ubuntu@26.04`` bases. Support for Ubuntu 26.04 LTS is experimental.
+
+    Part names added by the extension vary by Ubuntu version. On Ubuntu 24.04 LTS,
+    write ``extension/part``. On Ubuntu 26.04 LTS and higher, write
+    ``extension.part``. For rocks with ``base: bare``, follow the convention
+    for the configured ``build-base``.
 
 .. _reference-go-framework-project-requirements:
 
@@ -40,13 +45,29 @@ if a Go application contains a ``main`` package in the directory
 ``cmd/anotherserver``, the following snippet will override the main application
 to use the binary ``anotherserver``:
 
-.. code-block:: yaml
-  :caption: rockcraft.yaml
+.. tab-set::
 
-  parts:
-    go-framework/install-app:
-     organize:
-       bin/anotherserver: usr/local/bin/<rockcraft project name>
+    .. tab-item:: Ubuntu 24.04 LTS
+        :sync: base-24
+
+        .. code-block:: yaml
+          :caption: rockcraft.yaml
+
+          parts:
+            go-framework/install-app:
+              organize:
+                bin/anotherserver: usr/local/bin/<rockcraft project name>
+
+    .. tab-item:: Ubuntu 26.04 LTS and higher
+        :sync: base-26-plus
+
+        .. code-block:: yaml
+          :caption: rockcraft.yaml
+
+          parts:
+            go-framework.install-app:
+              organize:
+                bin/anotherserver: usr/local/bin/<rockcraft project name>
 
 .. _reference-go-framework-stage:
 
@@ -57,21 +78,40 @@ Some files, if they exist in the project root, are included by
 default in the rock in the ``/app`` directory.  These include:
 ``migrate``, ``migrate.sh``, ``templates/`` and ``static/``.
 
-The ``stage`` key of the ``go-framework/assets`` part
+The ``stage`` key of the generated assets part
 specifies the files to be included or excluded from
 the rock upon ``rockcraft pack``, following the ``app/<filename>`` notation. For
 example:
 
-.. code-block:: yaml
-  :caption: rockcraft.yaml
+.. tab-set::
 
-  parts:
-    go-framework/assets:
-      stage:
-        - app/migrate
-        - app/migrate.sh
-        - app/static
-        - app/another_file_or_directory
+    .. tab-item:: Ubuntu 24.04 LTS
+        :sync: base-24
+
+        .. code-block:: yaml
+          :caption: rockcraft.yaml
+
+          parts:
+            go-framework/assets:
+              stage:
+                - app/migrate
+                - app/migrate.sh
+                - app/static
+                - app/another_file_or_directory
+
+    .. tab-item:: Ubuntu 26.04 LTS and higher
+        :sync: base-26-plus
+
+        .. code-block:: yaml
+          :caption: rockcraft.yaml
+
+          parts:
+            go-framework.assets:
+              stage:
+                - app/migrate
+                - app/migrate.sh
+                - app/static
+                - app/another_file_or_directory
 
 The ``stage`` key supports glob patterns to define the list of files. See :ref:`filesets_explanation`
 for the various ways you can specify files in your rock.
