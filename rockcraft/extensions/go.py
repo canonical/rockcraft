@@ -111,10 +111,19 @@ class GoFramework(Extension):
         return self.yaml_data["name"]
 
     def _check_project(self) -> None:
-        """Check go.mod file exist in project."""
+        """Check go.mod file and Go sources exist in project."""
         if not (self.project_root / "go.mod").exists():
             raise ExtensionError(
                 "missing go.mod file, it should be present in the project directory",
+                doc_slug="/reference/extensions/go-framework/#project-requirements",
+                logpath_report=False,
+            )
+
+        go_files = list(self.project_root.rglob("*.go"))
+        if not go_files:
+            raise ExtensionError(
+                "No Go source files found. The go-framework extension requires "
+                "at least one Go source file (typically with a main package).",
                 doc_slug="/reference/extensions/go-framework/#project-requirements",
                 logpath_report=False,
             )
