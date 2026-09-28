@@ -114,10 +114,7 @@ class RockcraftPackageService(PackageService):
         ]
 
         state_service.set(
-            "artifacts",
-            platform,
-            value=state_entries or None,  # ty: ignore[invalid-argument-type]
-            overwrite=True,
+            "artifacts", platform, value=state_entries or None, overwrite=True
         )
 
     @property
