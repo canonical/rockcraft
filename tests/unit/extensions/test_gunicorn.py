@@ -21,6 +21,8 @@ import pytest
 from rockcraft import extensions
 from rockcraft.errors import ExtensionError
 from rockcraft.extensions.gunicorn import (
+    DjangoFramework,
+    DjangoFrameworkV2,
     FlaskFramework,
     FlaskFrameworkFactory,
     FlaskFrameworkV2,
@@ -93,9 +95,10 @@ def test_flask_extension_default(
     (tmp_path / "node_modules").mkdir()
     (tmp_path / "test").write_text("test")
     applied = extensions.apply_extensions(tmp_path, flask_input_yaml)
+    assert "flask-framework/app-data" not in applied["parts"]
     source = applied["parts"]["flask-framework/config-files"]["source"]
     del applied["parts"]["flask-framework/config-files"]["source"]
-    suffix = "share/rockcraft/extensions/flask-framework"
+    suffix = "share/rockcraft/extensions/flask-framework/v1"
     assert source[-len(suffix) :].replace("\\", "/") == suffix
 
     assert applied == {
@@ -876,7 +879,8 @@ def test_flask_v2_full_apply_26_04(tmp_path, monkeypatch):
     """Test that the flask-framework extension applies correctly on ubuntu@26.04."""
     monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "1")
     (tmp_path / "requirements.txt").write_text("flask")
-    (tmp_path / "app.py").write_text("app = object()")
+    (tmp_path / "app").mkdir()
+    (tmp_path / "app" / "__init__.py").write_text("app = object()")
     (tmp_path / "static").mkdir()
     (tmp_path / "node_modules").mkdir()
 
@@ -888,9 +892,14 @@ def test_flask_v2_full_apply_26_04(tmp_path, monkeypatch):
     }
 
     applied = extensions.apply_extensions(tmp_path, flask_input_yaml_26)
+    assert applied["parts"].pop("flask-framework.app-data") == {
+        "plugin": "nil",
+        "override-build": "mkdir -p ${CRAFT_PART_INSTALL}/app-data",
+        "permissions": [{"path": "app-data", "owner": 584792, "group": 584792}],
+    }
     source = applied["parts"]["flask-framework.config-files"]["source"]
     del applied["parts"]["flask-framework.config-files"]["source"]
-    suffix = "share/rockcraft/extensions/flask-framework"
+    suffix = "share/rockcraft/extensions/flask-framework/v2"
     assert source[-len(suffix) :].replace("\\", "/") == suffix
 
     assert applied == {
@@ -899,15 +908,20 @@ def test_flask_v2_full_apply_26_04(tmp_path, monkeypatch):
         "parts": {
             "flask-framework.config-files": {
                 "organize": {
-                    "gunicorn.conf.py": "flask/gunicorn.conf.py",
+                    "gunicorn.conf.py": "var/lib/gunicorn/gunicorn.conf.py",
                 },
                 "plugin": "dump",
                 "permissions": [
                     {
-                        "path": "flask/gunicorn.conf.py",
+                        "path": "var/lib/gunicorn",
                         "owner": 584792,
                         "group": 584792,
-                    }
+                    },
+                    {
+                        "path": "var/lib/gunicorn/gunicorn.conf.py",
+                        "owner": 584792,
+                        "group": 584792,
+                    },
                 ],
             },
             "flask-framework.dependencies": {
@@ -929,14 +943,15 @@ def test_flask_v2_full_apply_26_04(tmp_path, monkeypatch):
                 "stage": ["-etc/ssl/certs/ca-certificates.crt"],
             },
             "flask-framework.install-app": {
-                "organize": {
-                    "app.py": "flask/app/app.py",
-                    "static": "flask/app/static",
-                },
+                "override-build": (
+                    'mkdir -p "${CRAFT_PART_INSTALL}/app"\n'
+                    "cp --archive --link --no-dereference "
+                    '"${CRAFT_PART_BUILD}/." "${CRAFT_PART_INSTALL}/app/"'
+                ),
                 "plugin": "dump",
-                "prime": ["flask/app/app.py", "flask/app/static"],
+                "prime": ["app/app", "app/static"],
                 "source": ".",
-                "stage": ["flask/app/app.py", "flask/app/static"],
+                "stage": ["app/app", "app/static"],
                 "permissions": [
                     {
                         "owner": 584792,
@@ -954,13 +969,13 @@ def test_flask_v2_full_apply_26_04(tmp_path, monkeypatch):
                     "craftctl default\n"
                     "mkdir -p $CRAFT_PART_INSTALL/opt/promtail\n"
                     "mkdir -p $CRAFT_PART_INSTALL/etc/promtail\n"
-                    "mkdir -p $CRAFT_PART_INSTALL/var/log/flask"
+                    "mkdir -p $CRAFT_PART_INSTALL/var/log/app"
                 ),
                 "permissions": [
                     {"path": "opt/promtail", "owner": 584792, "group": 584792},
                     {"path": "etc/promtail", "owner": 584792, "group": 584792},
                     {
-                        "path": "var/log/flask",
+                        "path": "var/log/app",
                         "owner": 584792,
                         "group": 584792,
                     },
@@ -979,7 +994,7 @@ def test_flask_v2_full_apply_26_04(tmp_path, monkeypatch):
             "flask": {
                 "after": ["statsd-exporter"],
                 "command": "/bin/python3 -m gunicorn -c "
-                "/flask/gunicorn.conf.py 'app:app' -k sync",
+                "/var/lib/gunicorn/gunicorn.conf.py 'app:app' -k sync",
                 "override": "replace",
                 "startup": "enabled",
                 "user": "_daemon_",
@@ -1014,11 +1029,12 @@ def test_django_extension_default(
     (django_project_dir / "wsgi.py").write_text("application = object()")
 
     applied = extensions.apply_extensions(tmp_path, django_input_yaml)
+    assert "django-framework/app-data" not in applied["parts"]
     expected_module = f"{wsgi_subdir}.wsgi"
 
     source = applied["parts"]["django-framework/config-files"]["source"]
     del applied["parts"]["django-framework/config-files"]["source"]
-    suffix = "share/rockcraft/extensions/django-framework"
+    suffix = "share/rockcraft/extensions/django-framework/v1"
     assert source[-len(suffix) :].replace("\\", "/") == suffix
 
     assert applied == {
@@ -1487,12 +1503,20 @@ def test_django_extension_v2_default(tmp_path):
     django_project_dir = tmp_path / "foo_bar" / "foo_bar"
     django_project_dir.mkdir(parents=True)
     (django_project_dir / "wsgi.py").write_text("application = object()")
+    django_app_dir = tmp_path / "foo_bar" / "app"
+    django_app_dir.mkdir()
+    (django_app_dir / "models.py").write_text("")
 
     applied = extensions.apply_extensions(tmp_path, django_input_yaml)
+    assert applied["parts"].pop("django-framework.app-data") == {
+        "plugin": "nil",
+        "override-build": "mkdir -p ${CRAFT_PART_INSTALL}/app-data",
+        "permissions": [{"path": "app-data", "owner": 584792, "group": 584792}],
+    }
 
     source = applied["parts"]["django-framework.config-files"]["source"]
     del applied["parts"]["django-framework.config-files"]["source"]
-    suffix = "share/rockcraft/extensions/django-framework"
+    suffix = "share/rockcraft/extensions/django-framework/v2"
     assert source[-len(suffix) :].replace("\\", "/") == suffix
 
     assert applied == {
@@ -1500,11 +1524,16 @@ def test_django_extension_v2_default(tmp_path):
         "base": "ubuntu@26.04",
         "parts": {
             "django-framework.config-files": {
-                "organize": {"gunicorn.conf.py": "django/gunicorn.conf.py"},
+                "organize": {"gunicorn.conf.py": "var/lib/gunicorn/gunicorn.conf.py"},
                 "plugin": "dump",
                 "permissions": [
                     {
-                        "path": "django/gunicorn.conf.py",
+                        "path": "var/lib/gunicorn",
+                        "owner": 584792,
+                        "group": 584792,
+                    },
+                    {
+                        "path": "var/lib/gunicorn/gunicorn.conf.py",
                         "owner": 584792,
                         "group": 584792,
                     },
@@ -1529,10 +1558,14 @@ def test_django_extension_v2_default(tmp_path):
                 "stage": ["-etc/ssl/certs/ca-certificates.crt"],
             },
             "django-framework.install-app": {
-                "organize": {"*": "django/app/", ".*": "django/app/"},
+                "override-build": (
+                    'mkdir -p "${CRAFT_PART_INSTALL}/app"\n'
+                    "cp --archive --link --no-dereference "
+                    '"${CRAFT_PART_BUILD}/." "${CRAFT_PART_INSTALL}/app/"'
+                ),
                 "plugin": "dump",
                 "source": "foo_bar",
-                "stage": ["-django/app/db.sqlite3"],
+                "stage": ["-app/db.sqlite3"],
                 "permissions": [
                     {
                         "owner": 584792,
@@ -1550,13 +1583,13 @@ def test_django_extension_v2_default(tmp_path):
                     "craftctl default\n"
                     "mkdir -p $CRAFT_PART_INSTALL/opt/promtail\n"
                     "mkdir -p $CRAFT_PART_INSTALL/etc/promtail\n"
-                    "mkdir -p $CRAFT_PART_INSTALL/var/log/django"
+                    "mkdir -p $CRAFT_PART_INSTALL/var/log/app"
                 ),
                 "permissions": [
                     {"path": "opt/promtail", "owner": 584792, "group": 584792},
                     {"path": "etc/promtail", "owner": 584792, "group": 584792},
                     {
-                        "path": "var/log/django",
+                        "path": "var/log/app",
                         "owner": 584792,
                         "group": 584792,
                     },
@@ -1575,7 +1608,7 @@ def test_django_extension_v2_default(tmp_path):
             "django": {
                 "after": ["statsd-exporter"],
                 "command": (
-                    "/bin/python3 -m gunicorn -c /django/gunicorn.conf.py "
+                    "/bin/python3 -m gunicorn -c /var/lib/gunicorn/gunicorn.conf.py "
                     "'foo_bar.wsgi:application' -k sync"
                 ),
                 "override": "replace",
@@ -1595,3 +1628,105 @@ def test_django_extension_v2_default(tmp_path):
             },
         },
     }
+
+
+@pytest.mark.parametrize(
+    ("framework_class", "extension_name", "base", "expected_packages"),
+    [
+        (
+            FlaskFramework,
+            "flask-framework",
+            "ubuntu@24.04",
+            ["gunicorn~=23.0"],
+        ),
+        (
+            DjangoFramework,
+            "django-framework",
+            "ubuntu@24.04",
+            ["gunicorn~=23.0"],
+        ),
+    ],
+)
+def test_v1_dependency_part_has_no_gunicorn_constraint(
+    tmp_path, framework_class, extension_name, base, expected_packages
+):
+    """V1 framework dependency parts retain their direct Gunicorn requirement."""
+    framework = framework_class(
+        project_root=tmp_path,
+        yaml_data={"name": "foo-bar", "base": base},
+        extension_name=extension_name,
+    )
+
+    dependency_part = framework._gen_parts()[framework.get_part_name("dependencies")]
+
+    assert dependency_part["python-packages"] == expected_packages
+    assert "override-build" not in dependency_part
+
+
+@pytest.mark.parametrize(
+    ("framework_class", "extension_name"),
+    [
+        (FlaskFrameworkV2, "flask-framework"),
+        (DjangoFrameworkV2, "django-framework"),
+    ],
+)
+def test_v2_dependency_part_uses_gunicorn_constraint(
+    tmp_path, framework_class, extension_name
+):
+    """V2 framework dependency parts constrain Gunicorn without quoted pip input."""
+    framework = framework_class(
+        project_root=tmp_path,
+        yaml_data={"name": "foo-bar", "base": "ubuntu@26.04"},
+        extension_name=extension_name,
+    )
+
+    dependency_part = framework._gen_parts()[framework.get_part_name("dependencies")]
+
+    assert dependency_part["python-packages"] == [
+        "--constraint=.gunicorn-constraints.txt",
+        "gunicorn",
+        "packaging",
+    ]
+    assert dependency_part["override-build"] == (
+        "printf '%s\\n' 'gunicorn~=26.0' > .gunicorn-constraints.txt\ncraftctl default"
+    )
+
+
+@pytest.mark.parametrize(
+    ("framework_class", "extension_name"),
+    [
+        (FlaskFrameworkV2, "flask-framework"),
+        (DjangoFrameworkV2, "django-framework"),
+    ],
+)
+def test_v2_bare_dependency_part_uses_staged_python(
+    tmp_path, framework_class, extension_name
+):
+    """V2 bare dependency parts direct pip to the staged Python 3.14."""
+    framework = framework_class(
+        project_root=tmp_path,
+        yaml_data={
+            "name": "foo-bar",
+            "base": "bare",
+            "build-base": "ubuntu@26.04",
+        },
+        extension_name=extension_name,
+    )
+
+    dependency_part = framework._gen_parts()[framework.get_part_name("dependencies")]
+
+    assert dependency_part["stage-packages"] == [
+        "python3.14-venv_ensurepip",
+        "python3-minimal_python3",
+    ]
+    assert dependency_part["build-environment"] == [
+        {"PIP_PYTHON": "$(which python3.14)"}
+    ]
+    assert dependency_part["python-packages"] == [
+        "--constraint=.gunicorn-constraints.txt",
+        "gunicorn",
+        "packaging",
+    ]
+    assert dependency_part["override-build"] == (
+        "printf '%s\\n' 'gunicorn~=26.0' > .gunicorn-constraints.txt\ncraftctl default\nmkdir -p ${CRAFT_PART_INSTALL}/bin\nln -sf /usr/bin/python3.14 ${CRAFT_PART_INSTALL}/bin/python3"
+    )

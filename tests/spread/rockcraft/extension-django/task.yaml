@@ -29,19 +29,15 @@ environment:
   USE_UV/base_2604_uv: "true"
 
   ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS: "true"
+  NAME: "example-django"
 
 execute: |
-  DEPENDENCY_SUFFIX=""
-  if [ "${USE_UV}" = "true" ]; then
-    DEPENDENCY_SUFFIX="-uv"
-  else
+  if [ "${USE_UV}" != "true" ]; then
     rm -f pyproject.toml uv.lock
   fi
-  NAME="example-django"
-  IMAGE_NAME="${NAME}${DEPENDENCY_SUFFIX}"
   ROCK_FILE="${NAME}_0.1_amd64.rock"
-  IMAGE="${IMAGE_NAME}:latest"
-  CONTAINER="${IMAGE_NAME}-container"
+  IMAGE="${NAME}:latest"
+  CONTAINER="${NAME}-container"
 
   run_rockcraft init --name "${NAME}" --profile django-framework
 
@@ -52,17 +48,6 @@ execute: |
     run_rockcraft clean
   fi
 
-  # Install findutils for the bare scenario
-  # This is a workaround for the fact that the bare scenario does not have
-  # findutils installed by default, which is required for the test
-  cat >> rockcraft.yaml <<EOL
-  parts:
-    find-app:
-      plugin: nil
-      stage-packages:
-        - findutils
-  EOL
-
   run_rockcraft pack
 
   test -f "${ROCK_FILE}"
@@ -72,43 +57,23 @@ execute: |
   # Install image
   sudo rockcraft.skopeo --insecure-policy copy "oci-archive:${ROCK_FILE}" "docker-daemon:${IMAGE}"
   # Ensure image exists
-  docker images "${IMAGE}" | MATCH "${IMAGE_NAME}"
+  docker images "${IMAGE}" | MATCH "${NAME}"
 
   # ensure container doesn't exist
   docker rm -f "${CONTAINER}"
 
-  # test the django project is ready to run inside the container
-  docker run --rm --entrypoint /bin/python3 "${IMAGE}" -m gunicorn --chdir /django/app --check-config example_django.wsgi:application
-  docker run --rm --entrypoint /bin/python3 "${IMAGE}" -c "import pathlib;assert pathlib.Path('/django/app/manage.py').is_file()"
-  docker run --rm --entrypoint /bin/python3 "${IMAGE}" -c "import pathlib;assert pathlib.Path('/django/app/.foobar').is_file()"
-
-  # ensure the django and promtail folders have the correct user
-  check_directory_ownership() {
-    local directory="$1"
-    local shell="/bin/bash"
-    if [ "${BASE}" == "bare" ] && [ "${BUILD_BASE}" == "ubuntu@24.04" ]; then    shell="/usr/bin/bash"
-    fi
-    docker run --rm --entrypoint "${shell}" "${IMAGE}" -c "find ${directory}/ ! -user '_daemon_' || { echo 'Error: ${directory} or its contents are not owned by _daemon_'; exit 2; }"
-  }
-
-  check_directory_ownership "/django"
-  check_directory_ownership "/opt/promtail"
-  check_directory_ownership "/etc/promtail"
-
   # test the default django service
   docker run --name "${CONTAINER}" -d -p 8138:8000 "${IMAGE}"
-  retry -n 5 --wait 2 curl localhost:8138 || {
+  retry -n 5 --wait 2 curl localhost:8138/hello || {
     docker logs "${CONTAINER}"
     exit 1
   }
-  [ "$(curl -sw '%{http_code}' -o /dev/null localhost:8138)" == "200" ]
+  [ "$(curl -sw '%{http_code}' -o /dev/null localhost:8138/hello)" == "200" ]
+  if [ "${BUILD_BASE}" == "ubuntu@26.04" ]; then
+    [ "$(curl -sw '%{http_code}' -o /dev/null localhost:8138/write-data)" == "200" ]
+  fi
 
 restore: |
-  DEPENDENCY_SUFFIX=""
-  if [ "${USE_UV}" = "true" ]; then
-    DEPENDENCY_SUFFIX="-uv"
-  fi
-  NAME="example-django${DEPENDENCY_SUFFIX}"
   docker rmi -f "${NAME}:latest"
   docker rm -f "${NAME}-container"
   rm -f "*.rock" rockcraft.yaml

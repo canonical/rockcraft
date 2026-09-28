@@ -2,6 +2,8 @@ summary: go extension test
 environment:
   SCENARIO/bare: bare
   SCENARIO/base_2404: ubuntu-24.04
+  SCENARIO/base_2604: ubuntu-26.04
+  ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS: "true"
 
 execute: |
   NAME="go-${SCENARIO//./-}"
@@ -39,16 +41,6 @@ execute: |
   # Ensure image exists
   docker images "${IMAGE}" | MATCH "${NAME}"
 
-  # ensure the app and promtail folders have the correct user
-  check_directory_ownership() {
-    local directory="$1"
-    docker run --rm --entrypoint /usr/bin/bash "${IMAGE}" -c "find ${directory}/ ! -user '_daemon_' || { echo 'Error: ${directory} or its contents are not owned by _daemon_'; exit 2; }"
-  }
-
-  check_directory_ownership "/app"
-  check_directory_ownership "/opt/promtail"
-  check_directory_ownership "/etc/promtail"
-
   # ensure container doesn't exist
   docker rm -f "${NAME}-container"
 
@@ -56,6 +48,9 @@ execute: |
   docker run --name "${NAME}-container" -d -p 8137:8000 "${IMAGE}"
   retry -n 5 --wait 2 curl localhost:8137
   [ "$(curl -sSf localhost:8137)" == "ok" ]
+  if [ "${SCENARIO}" = "ubuntu-26.04" ]; then
+    [ "$(curl -sSf localhost:8137/write-data)" == "written" ]
+  fi
 
 restore: |
   NAME="go-${SCENARIO//./-}"

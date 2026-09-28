@@ -25,6 +25,7 @@ from typing_extensions import override
 
 from rockcraft.errors import ExtensionError
 
+from .app_parts import AppDataDirMixin
 from .extension import Extension, _FrameworkFactory
 
 
@@ -346,7 +347,7 @@ class SpringBootFramework(Extension):
         return user_stage
 
 
-class SpringBootFrameworkV2(SpringBootFramework):
+class SpringBootFrameworkV2(AppDataDirMixin, SpringBootFramework):
     """Extension for 12-factor Spring Boot applications targeting ubuntu@26.04.
 
     For now this is behaviourally identical to :class:`SpringBootFramework`; it exists so the

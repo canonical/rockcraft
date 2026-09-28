@@ -11,16 +11,38 @@ rocks.
 
 It facilitates the installation of Django application dependencies, including
 Gunicorn, inside the rock. Additionally, it transfers your project files to
-``/django/app`` within the rock.
+``/django/app`` within the rock (``/app`` on Ubuntu 26.04 LTS).
 By default, the system foundation, or base, is set as ``bare`` to generate a
 lightweight image.
 
 .. note::
     The Django extension is compatible with the ``bare``, ``ubuntu@22.04``,
-    ``ubuntu@24.04`` and ``ubuntu@26.04`` bases.
+    ``ubuntu@24.04`` and ``ubuntu@26.04`` bases. Support for Ubuntu 26.04 LTS is
+    experimental.
+
+    Part names added by the extension vary by Ubuntu version. On Ubuntu 22.04 LTS
+    and Ubuntu 24.04 LTS, write ``extension/part``. On Ubuntu 26.04 LTS and
+    higher, write ``extension.part``. For rocks with ``base: bare``, follow the
+    convention for the configured ``build-base``.
 
 The Django extension supports both synchronous and asynchronous
 Gunicorn workers.
+
+Use the extension
+-----------------
+
+Declare the extension in ``rockcraft.yaml``:
+
+.. code-block:: yaml
+   :caption: rockcraft.yaml
+
+   extensions:
+     - django-framework
+
+You can generate this project file by running ``rockcraft init --profile django-framework``
+in the application's directory. To inspect the parts, services, and other configuration
+contributed by the extension, run ``rockcraft expand-extensions`` in the same directory as the
+``rockcraft.yaml`` file.
 
 .. _reference-django-framework-project-requirements:
 
@@ -49,14 +71,14 @@ uv projects
 
 .. tab-set::
 
-    .. tab-item:: Ubuntu 22.04 and 24.04
+    .. tab-item:: Ubuntu 22.04 LTS and Ubuntu 24.04 LTS
         :sync: base-22-24
 
         The extension doesn't support uv projects on these bases. It builds the
         application with the Python plugin and installs dependencies from
         ``requirements.txt``.
 
-    .. tab-item:: Ubuntu 26.04 and higher
+    .. tab-item:: Ubuntu 26.04 LTS and higher
         :sync: base-26-plus
 
         If both a ``uv.lock`` and a ``pyproject.toml`` file are present in the
@@ -81,14 +103,31 @@ has its own special dependencies, this key must declare them.
 
 The following example specifies the ``libpq-dev`` package:
 
-.. code-block:: yaml
-   :caption: rockcraft.yaml
+.. tab-set::
 
-   parts:
-      django-framework/dependencies:
-         stage-packages:
-         # list required packages or slices for your Django application below.
-         - libpq-dev
+    .. tab-item:: Ubuntu 22.04 LTS and Ubuntu 24.04 LTS
+        :sync: base-22-24
+
+        .. code-block:: yaml
+          :caption: rockcraft.yaml
+
+          parts:
+            django-framework/dependencies:
+              stage-packages:
+                # list required packages or slices for your Django application below.
+                - libpq-dev
+
+    .. tab-item:: Ubuntu 26.04 LTS and higher
+        :sync: base-26-plus
+
+        .. code-block:: yaml
+          :caption: rockcraft.yaml
+
+          parts:
+            django-framework.dependencies:
+              stage-packages:
+                # list required packages or slices for your Django application below.
+                - libpq-dev
 
 .. _reference-django-framework-statsd-exporter:
 
