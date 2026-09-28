@@ -23,7 +23,7 @@ def command_page_header(cmd, options_str, required_str):
 {underline}
 {overview}
 
-**Usage**
+.. rubric:: Usage
 
 ``rockcraft {cmd.name}{options_str}{required_str}``
 
@@ -48,7 +48,7 @@ def not_none(*args):
 def make_section(title, items):
     s = ""
     if items:
-        s = f"**{title}**\n\n"
+        s = f".. rubric:: {title}\n\n"
 
     for dest, (names, help_str) in sorted(items):
         names = " or ".join([f"``{name}``" for name in names])
