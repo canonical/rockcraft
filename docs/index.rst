@@ -26,53 +26,71 @@ directing your focus to what really matters: the image's content.
 In this documentation
 ---------------------
 
-.. list-table::
-    :widths: 35 65
-    :header-rows: 0
+.. domain::
 
-    * - **Get started**
-      - :ref:`Build your first rock <tutorial-create-a-hello-world-rock>` •
-        :ref:`how-to-quickstart-guide`
-    * - **Base**
-      - :ref:`Overview <explanation-bases>` • :ref:`how-to-specify-a-base` •
-        :ref:`Upgrade to the newest base <how-to-migrate-2604>`
-    * - **Configuration**
-      - :ref:`About parts <parts>` •
-        :ref:`reference-rockcraft-yaml`
-    * - **Plugins**
-      - :ref:`how-to-override-a-plugins-build` •
-        :ref:`Plugins available <reference-plugins>`
-    * - **Rockcraft CLI**
-      - :ref:`reference-commands`
-    * - **12-factor apps**
-      - :ref:`Flask tutorial <tutorial-build-a-rock-for-a-flask-app>` •
-        :ref:`Flask reference <reference-flask-framework>` •
-        :ref:`Django tutorial <tutorial-build-a-rock-for-a-django-app>` •
-        :ref:`Django reference <reference-django-framework>` •
-        :ref:`Go tutorial <tutorial-build-a-rock-for-a-go-app>` •
-        :ref:`Go reference <reference-go-framework>` •
-        :ref:`Express tutorial <tutorial-build-a-rock-for-an-express-app>` •
-        :ref:`Express reference <reference-express-framework>` •
-        :ref:`FastAPI tutorial <tutorial-build-a-rock-for-a-fastapi-app>` •
-        :ref:`FastAPI reference <reference-fastapi-framework>` •
-        :ref:`Spring Boot tutorial <tutorial-build-a-rock-for-a-spring-boot-app>` •
-        :ref:`Spring Boot reference <reference-spring-boot-framework>` •
-        :ref:`Set-up 12-Factor rocks <set-up-web-app-rock>` •
-        :ref:`Use rocks for 12-Factor apps <use-web-app-rock>`
-    * - **Process manager**
-      - :ref:`Pebble as entrypoint <explanation-pebble>` •
-        :ref:`Convert an entrypoint to a Pebble layer <how-to-convert-an-entrypoint-to-a-pebble-layer>`
-    * - **Hardening**
-      - :ref:`Chisel <explanation-chisel>` •
-        :ref:`Chisel rocks <how-to-chisel-a-rock>` •
-        :ref:`Migrate Docker images to chiseled rocks <how-to-migrate-a-docker-image-to-a-chiselled-rock>` •
-        :ref:`Install a custom slice <how-to-install-a-custom-package-slice>` •
-        :ref:`Define a non root user <how-to-add-an-internal-user>`
-    * - **Remote and automated builds**
-      - :ref:`Use the Rockcraft pack GitHub Action <how-to-use-the-rockcraft-pack-github-action>` •
-        :ref:`Multi-architecture builds <how-to-outsource-rock-builds-to-launchpad>`
-    * - **Distribution**
-      - :ref:`Publish a rock to a registry <how-to-publish-a-rock-to-a-registry>`
+    .. slice:: Get started
+
+        :doc:`Build your first rock </tutorial/hello-world>`
+        :doc:`Quickstart guide </how-to/get-started>`
+
+    .. slice:: Base
+
+        :doc:`Overview </explanation/bases>`
+        :doc:`Specify a base </how-to/crafting/specify-a-base>`
+        :doc:`Upgrade to the newest base </how-to/change-from-ubuntu2404-to-ubuntu2604>`
+
+    .. slice:: Configuration
+
+        :doc:`About parts </reference/parts-and-steps>`
+        :doc:`rockcraft.yaml </reference/rockcraft-yaml>`
+
+    .. slice:: Plugins
+
+        :doc:`Override a plugin's build </how-to/crafting/override-a-plugins-build>`
+        :doc:`Plugins available </reference/plugins>`
+
+    .. slice:: Rockcraft CLI
+
+        :doc:`Commands </reference/commands>`
+
+    .. slice:: 12-factor apps
+
+        :doc:`Flask tutorial </tutorial/flask>`
+        :doc:`Django tutorial </tutorial/django>`
+        :doc:`Go tutorial </tutorial/go>`
+        :doc:`Express tutorial </tutorial/express>`
+        :doc:`FastAPI tutorial </tutorial/fastapi>`
+        :doc:`Spring Boot tutorial </tutorial/springboot>`
+        :doc:`Extensions </reference/extensions/index>`
+        :doc:`Set-up 12-Factor rocks </how-to/web-app-rocks/set-up-web-app-rock>`
+        :doc:`Use rocks for 12-Factor apps </how-to/web-app-rocks/use-web-app-rock>`
+
+    .. slice:: Process manager
+
+        :doc:`Pebble as entrypoint </explanation/pebble>`
+        :doc:`Convert an entrypoint to a Pebble layer </how-to/crafting/convert-to-pebble-layer>`
+
+    .. slice:: Hardening
+
+        :doc:`Chisel </explanation/chisel>`
+        :doc:`Chisel rocks </how-to/chiseling/chisel-existing-rock>`
+        :doc:`Migrate Docker images to chiseled rocks </how-to/crafting/migrate-to-chiselled-rock>`
+        :doc:`Install a custom slice </how-to/chiseling/install-slice>`
+        :doc:`Define a non root user </how-to/crafting/add-internal-user-to-a-rock>`
+
+    .. slice:: Build workflows
+
+        :doc:`Multi-architecture builds </how-to/crafting/outsource-rock-builds-to-launchpad>`
+        :doc:`Pack a rock in a monorepo </how-to/crafting/pack-a-rock-in-a-monorepo>`
+
+    .. slice:: Distribution
+
+        :doc:`Use the Rockcraft pack GitHub Action </how-to/crafting/rockcraft-pack-action>`
+        :doc:`Publish a rock to a registry </how-to/crafting/publish-a-rock>`
+
+    .. slice:: Ubuntu Pro
+
+        :doc:`Pack a Pro-compliant rock </how-to/crafting/pack-a-pro-rock>`
 
 How this documentation is organized
 -----------------------------------
