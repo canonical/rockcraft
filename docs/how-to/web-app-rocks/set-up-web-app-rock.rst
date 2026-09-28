@@ -75,7 +75,7 @@ the root of the project:
 - ``static``
 - ``templates``
 
-For the ``expressjs-framework``, place the migration script in the application
+For ``expressjs-framework``, place the migration script in the application
 directory instead; see :ref:`reference-express-framework-migration`.
 
 To change this list, add the following snippet to the project file:

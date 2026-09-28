@@ -97,7 +97,7 @@ Installing additional runtime packages is currently unsupported.
 Database migration
 ------------------
 
-A ``migrate.sh`` script placed in the application directory, that is, the
+A ``migrate`` script placed in the application directory, that is, the
 directory containing the ``package.json`` file, is copied into the rock's
 ``/app`` directory together with the rest of the application. The 12-factor
 charm runs the migration script before the application starts, so make sure the
