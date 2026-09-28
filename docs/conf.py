@@ -279,6 +279,7 @@ exclude_patterns = [
     "common/craft-application/reference/fetch-service.rst",
     "common/craft-application/reference/remote-builds.rst",
     "common/craft-application/reference/strict-platform-names.rst",
+    "reference/commands/*-commands.rst",
     # Extra non-craft-parts exclusions can be added after this comment
     "reuse/*",
     "README.md",

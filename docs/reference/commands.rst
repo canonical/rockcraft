@@ -6,10 +6,6 @@
 Commands
 ========
 
-.. Use a hidden table of contents to ensure that documentation is read.
-
-.. include:: commands/toc.rst
-
 .. _reference-commands-lifecycle:
 
 Lifecycle commands
