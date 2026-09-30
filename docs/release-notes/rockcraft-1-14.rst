@@ -1,3 +1,6 @@
+.. meta::
+    :description: Release notes for Rockcraft 1.14.
+
 .. _release-1.14:
 
 Rockcraft 1.14 release notes
@@ -56,8 +59,7 @@ This key defines the rock's OCI entrypoint, bypassing the default Pebble-powered
 entrypoint. It can be necessary for cases like OS and base images, where
 an application-centric Pebble service is inadequate.
 
-See the :ref:`rockcraft.yaml reference <rockcraft-yaml-entrypoint-command>` for usage
-details.
+See the :ref:`rockcraft.yaml reference <Project.entrypoint_command>` for usage details.
 
 New ``jlink-extra-modules`` key
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -114,12 +116,12 @@ Contributors
 We would like to express a big thank you to all the people who contributed to
 this release.
 
-:literalref:`@alesancor1<https://github.com/alesancor1>`,
-:literalref:`@bepri<https://github.com/bepri>`,
-:literalref:`@erinecon<https://github.com/erinecon>`,
-:literalref:`@jahn-junior<https://github.com/jahn-junior>`,
-:literalref:`@javierdelapuente<https://github.com/javierdelapuente>`,
-:literalref:`@medubelko<https://github.com/medubelko>`,
-and :literalref:`@tigarmo<https://github.com/tigarmo>`.
+:literalref:`@alesancor1 <https://github.com/alesancor1>`,
+:literalref:`@bepri <https://github.com/bepri>`,
+:literalref:`@erinecon <https://github.com/erinecon>`,
+:literalref:`@jahn-junior <https://github.com/jahn-junior>`,
+:literalref:`@javierdelapuente <https://github.com/javierdelapuente>`,
+:literalref:`@medubelko <https://github.com/medubelko>`,
+and :literalref:`@tigarmo <https://github.com/tigarmo>`.
 
 .. _CONTRIBUTING.md: https://github.com/canonical/rockcraft/blob/main/CONTRIBUTING.md

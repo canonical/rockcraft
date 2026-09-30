@@ -23,8 +23,8 @@ import textwrap
 import tabulate
 from craft_application.commands import AppCommand
 from craft_cli import emit
-from overrides import overrides  # type: ignore[reportUnknownVariableType]
 from pydantic import BaseModel
+from typing_extensions import override
 
 from rockcraft import extensions
 from rockcraft.models import Project
@@ -55,8 +55,8 @@ class ListExtensionsCommand(AppCommand, abc.ABC):
         """
     )
 
-    @overrides
-    def run(self, parsed_args: argparse.Namespace) -> None:  # noqa: ARG002 (unused arg)
+    @override
+    def run(self, parsed_args: argparse.Namespace) -> None:
         """Print the list of available extensions and their bases."""
         extension_presentation: dict[str, ExtensionModel] = {}
 
@@ -93,8 +93,8 @@ class ExpandExtensionsCommand(AppCommand, abc.ABC):
         """
     )
 
-    @overrides
-    def run(self, parsed_args: argparse.Namespace) -> None:  # noqa: ARG002 (unused arg)
+    @override
+    def run(self, parsed_args: argparse.Namespace) -> None:
         """Print the project's specification with the extensions expanded."""
         project_service = self._services.get("project")
         raw_project = project_service.get_raw()

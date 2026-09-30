@@ -34,7 +34,7 @@ pytestmark = [
 
 @pytest.mark.slow
 @jammy_only
-@pytest.mark.usefixtures("project_keys")
+@pytest.mark.usefixtures("project_keys", "overlay_mocks")
 @pytest.mark.parametrize("project_keys", [{"platforms": {"amd64": None}}])
 def test_package_repositories_in_overlay(new_dir, project_path, mocker, fake_services):
     # Mock overlay-related calls that need root; we won't be actually installing
@@ -99,10 +99,14 @@ def test_package_repositories_in_overlay(new_dir, project_path, mocker, fake_ser
     assert (overlay_apt / "preferences.d/craft-archives").is_file()
 
 
+@pytest.mark.usefixtures("overlay_mocks")
 @pytest.mark.slow
 def test_prune_prime_files(new_dir, project_path, mocker, fake_services):
     """Test that primed files are "pruned"/removed based on the contents of the
     base layer."""
+    # Mock os.geteuid() because currently craft-parts doesn't allow overlays
+    # without superuser privileges.
+    mocker.patch.object(os, "geteuid", return_value=0)
 
     base_layer_dir = Path(new_dir) / "base"
     base_layer_dir.mkdir()

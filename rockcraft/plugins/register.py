@@ -24,14 +24,14 @@ from .maven_plugin import MavenPlugin
 from .python_common import get_python_plugins
 
 
-def register() -> None:
-    """Register Rockcraft plugins."""
-    craft_parts.plugins.register(get_plugins())
+def register(base: str | None) -> None:
+    """Register Rockcraft plugins for a given base."""
+    craft_parts.plugins.register(get_plugins(base))
 
 
-def get_plugins() -> dict[str, PluginType]:
-    """Get a dict of Rockcraft-specific plugins."""
+def get_plugins(base: str | None) -> dict[str, PluginType]:
+    """Get a dict of Rockcraft-specific plugins for a given base."""
     return {
         "ant": AntPlugin,
         "maven": MavenPlugin,
-    } | get_python_plugins()
+    } | get_python_plugins(base)

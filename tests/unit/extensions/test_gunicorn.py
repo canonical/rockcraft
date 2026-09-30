@@ -14,21 +14,41 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import textwrap
+from pathlib import Path
+from typing import Any
 
 import pytest
 from rockcraft import extensions
 from rockcraft.errors import ExtensionError
+from rockcraft.extensions.gunicorn import (
+    DjangoFramework,
+    DjangoFrameworkV2,
+    FlaskFramework,
+    FlaskFrameworkFactory,
+    FlaskFrameworkV2,
+)
 
 
 @pytest.fixture
 def flask_extension(mock_extensions):
-    extensions.register("flask-framework", extensions.FlaskFramework)
+    extensions.register("flask-framework", extensions.FlaskFrameworkFactory)
 
 
 @pytest.fixture(name="flask_input_yaml")
 def flask_input_yaml_fixture():
     return {
+        "name": "foo-bar",
         "base": "ubuntu@22.04",
+        "platforms": {"amd64": {}},
+        "extensions": ["flask-framework"],
+    }
+
+
+@pytest.fixture(name="flask_v2_input_yaml")
+def flask_v2_input_yaml_fixture():
+    return {
+        "name": "foo-bar",
+        "base": "ubuntu@26.04",
         "platforms": {"amd64": {}},
         "extensions": ["flask-framework"],
     }
@@ -36,7 +56,8 @@ def flask_input_yaml_fixture():
 
 @pytest.fixture
 def django_extension(mock_extensions, monkeypatch):
-    extensions.register("django-framework", extensions.DjangoFramework)
+    monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "1")
+    extensions.register("django-framework", extensions.DjangoFrameworkFactory)
 
 
 @pytest.fixture(name="django_input_yaml")
@@ -44,6 +65,16 @@ def django_input_yaml_fixture():
     return {
         "name": "foo-bar",
         "base": "ubuntu@22.04",
+        "platforms": {"amd64": {}},
+        "extensions": ["django-framework"],
+    }
+
+
+@pytest.fixture(name="django_v2_input_yaml")
+def django_v2_input_yaml_fixture():
+    return {
+        "name": "foo-bar",
+        "base": "ubuntu@26.04",
         "platforms": {"amd64": {}},
         "extensions": ["django-framework"],
     }
@@ -64,12 +95,14 @@ def test_flask_extension_default(
     (tmp_path / "node_modules").mkdir()
     (tmp_path / "test").write_text("test")
     applied = extensions.apply_extensions(tmp_path, flask_input_yaml)
+    assert "flask-framework/app-data" not in applied["parts"]
     source = applied["parts"]["flask-framework/config-files"]["source"]
     del applied["parts"]["flask-framework/config-files"]["source"]
-    suffix = "share/rockcraft/extensions/flask-framework"
+    suffix = "share/rockcraft/extensions/flask-framework/v1"
     assert source[-len(suffix) :].replace("\\", "/") == suffix
 
     assert applied == {
+        "name": "foo-bar",
         "base": "ubuntu@22.04",
         "parts": {
             "flask-framework/config-files": {
@@ -90,6 +123,7 @@ def test_flask_extension_default(
                 "python-packages": ["gunicorn~=23.0"],
                 "python-requirements": ["requirements.txt"],
                 "source": ".",
+                "stage": ["-etc/ssl/certs/ca-certificates.crt"],
                 "stage-packages": ["python3-venv"],
                 "build-environment": [],
             },
@@ -144,7 +178,7 @@ def test_flask_extension_default(
             "flask": {
                 "after": ["statsd-exporter"],
                 "command": "/bin/python3 -m gunicorn -c "
-                f"/flask/gunicorn.conf.py app:app -k [ {expected_worker} ]",
+                f"/flask/gunicorn.conf.py 'app:app' -k [ {expected_worker} ]",
                 "override": "replace",
                 "startup": "enabled",
                 "user": "_daemon_",
@@ -280,7 +314,7 @@ def test_flask_framework_add_service(tmp_path, flask_input_yaml):
     assert applied["services"] == {
         "flask": {
             "after": ["statsd-exporter"],
-            "command": "/bin/python3 -m gunicorn -c /flask/gunicorn.conf.py app:app -k [ sync ]",
+            "command": "/bin/python3 -m gunicorn -c /flask/gunicorn.conf.py 'app:app' -k [ sync ]",
             "override": "replace",
             "startup": "enabled",
             "user": "_daemon_",
@@ -325,6 +359,7 @@ def test_flask_extension_override_parts(tmp_path, flask_input_yaml):
         "python-packages": ["gunicorn~=23.0"],
         "python-requirements": ["requirements.txt", "requirements-jammy.txt"],
         "source": ".",
+        "stage": ["-etc/ssl/certs/ca-certificates.crt"],
         "stage-packages": ["python3-venv"],
         "build-environment": [],
     }
@@ -352,6 +387,7 @@ def test_flask_extension_bare(
     (tmp_path / "requirements.txt").write_text("flask")
     (tmp_path / "app.py").write_text("app = object()")
     flask_input_yaml = {
+        "name": "test-app",
         "extensions": ["flask-framework"],
         "base": "bare",
         "build-base": build_base,
@@ -361,8 +397,17 @@ def test_flask_extension_bare(
     applied = extensions.apply_extensions(tmp_path, flask_input_yaml)
     assert applied["parts"]["flask-framework/runtime"] == {
         "plugin": "nil",
-        "override-build": "mkdir -m 777 ${CRAFT_PART_INSTALL}/tmp",
-        "stage-packages": ["bash_bins", "coreutils_bins", "ca-certificates_data"],
+        "override-build": "mkdir -m 777 ${CRAFT_PART_INSTALL}/tmp\n"
+        "ln -sf /usr/bin/bash ${CRAFT_PART_INSTALL}/usr/bin/sh",
+        "stage-packages": [
+            "bash_bins",
+            "coreutils_bins",
+            "ca-certificates_data",
+        ],
+    }
+    assert applied["parts"]["flask-framework/runtime-libs"] == {
+        "plugin": "nil",
+        "stage-packages": ["libstdc++6"],
     }
     assert applied["parts"]["flask-framework/dependencies"] == {
         "plugin": "python",
@@ -386,6 +431,7 @@ def test_flask_extension_bare(
 def test_flask_extension_no_requirements_txt_error(tmp_path):
     (tmp_path / "app.py").write_text("app = object()")
     flask_input_yaml = {
+        "name": "test-app",
         "extensions": ["flask-framework"],
         "base": "bare",
         "build-base": "ubuntu@22.04",
@@ -395,7 +441,7 @@ def test_flask_extension_no_requirements_txt_error(tmp_path):
         extensions.apply_extensions(tmp_path, flask_input_yaml)
     assert (
         str(exc.value)
-        == "- missing a requirements.txt file. The flask-framework extension requires this file with 'flask' specified as a dependency."
+        == "- missing a requirements file (requirements.txt or pyproject.toml). The flask-framework extension requires one of these files with 'flask' specified as a dependency."
     )
 
 
@@ -404,6 +450,7 @@ def test_flask_extension_requirements_txt_no_flask_error(tmp_path):
     (tmp_path / "app.py").write_text("app = object()")
     (tmp_path / "requirements.txt").write_text("")
     flask_input_yaml = {
+        "name": "test-app",
         "extensions": ["flask-framework"],
         "base": "bare",
         "build-base": "ubuntu@22.04",
@@ -412,8 +459,104 @@ def test_flask_extension_requirements_txt_no_flask_error(tmp_path):
     with pytest.raises(ExtensionError) as exc:
         extensions.apply_extensions(tmp_path, flask_input_yaml)
 
+    assert str(exc.value) == "- missing flask package dependency in requirements file."
+
+
+@pytest.mark.usefixtures("flask_extension")
+def test_flask_extension_pyproject_toml(
+    tmp_path: Path, flask_input_yaml: dict[str, Any]
+):
+    """Test extension works with pyproject.toml"""
+    (tmp_path / "app.py").write_text("app = object()")
+    (tmp_path / "pyproject.toml").write_text(
+        textwrap.dedent(
+            """
+            [project]
+            name = "test-app"
+            dependencies = ["flask>=3.0", "requests"]
+            """
+        )
+    )
+    applied = extensions.apply_extensions(tmp_path, flask_input_yaml)
+
+    assert applied["parts"]["flask-framework/dependencies"]["python-requirements"] == []
     assert (
-        str(exc.value) == "- missing flask package dependency in requirements.txt file."
+        applied["services"]["flask"]["command"]
+        == "/bin/python3 -m gunicorn -c /flask/gunicorn.conf.py 'app:app' -k [ sync ]"
+    )
+
+
+@pytest.mark.usefixtures("flask_extension")
+def test_flask_extension_both_requirements_files(
+    tmp_path: Path, flask_input_yaml: dict[str, Any]
+):
+    """Test extension merges dependencies from both requirements.txt and pyproject.toml."""
+    (tmp_path / "app.py").write_text("app = object()")
+    (tmp_path / "requirements.txt").write_text("flask\nrequests")
+    (tmp_path / "pyproject.toml").write_text(
+        textwrap.dedent(
+            """
+            [project]
+            name = "test-app"
+            dependencies = ["gevent>=24.0"]
+            """
+        )
+    )
+    applied = extensions.apply_extensions(tmp_path, flask_input_yaml)
+
+    assert applied["parts"]["flask-framework/dependencies"]["python-requirements"] == [
+        "requirements.txt"
+    ]
+    assert (
+        applied["services"]["flask"]["command"]
+        == "/bin/python3 -m gunicorn -c /flask/gunicorn.conf.py 'app:app' -k [ gevent ]"
+    )
+
+
+@pytest.mark.usefixtures("flask_extension")
+def test_flask_extension_pyproject_toml_no_flask_error(
+    tmp_path: Path, flask_input_yaml: dict[str, Any]
+):
+    """Test error when pyproject.toml exists but doesn't contain flask."""
+    (tmp_path / "app.py").write_text("app = object()")
+    (tmp_path / "pyproject.toml").write_text(
+        textwrap.dedent(
+            """
+            [project]
+            name = "test-app"
+            dependencies = ["requests"]
+            """
+        )
+    )
+    with pytest.raises(ExtensionError) as exc:
+        extensions.apply_extensions(tmp_path, flask_input_yaml)
+
+    assert str(exc.value) == "- missing flask package dependency in requirements file."
+
+
+@pytest.mark.usefixtures("flask_extension")
+def test_flask_extension_both_files_flask_in_pyproject_only(
+    tmp_path: Path, flask_input_yaml: dict[str, Any]
+):
+    """Test validation passes when flask is only in pyproject.toml but both files exist."""
+    (tmp_path / "app.py").write_text("app = object()")
+    (tmp_path / "requirements.txt").write_text("requests\ngunicorn")
+    (tmp_path / "pyproject.toml").write_text(
+        textwrap.dedent(
+            """
+            [project]
+            name = "test-app"
+            dependencies = ["flask>=3.0"]
+            """
+        )
+    )
+    applied = extensions.apply_extensions(tmp_path, flask_input_yaml)
+    assert applied["parts"]["flask-framework/dependencies"]["python-requirements"] == [
+        "requirements.txt"
+    ]
+    assert (
+        applied["services"]["flask"]["command"]
+        == "/bin/python3 -m gunicorn -c /flask/gunicorn.conf.py 'app:app' -k [ sync ]"
     )
 
 
@@ -431,6 +574,7 @@ def test_flask_extension_bad_app_py(tmp_path):
     (tmp_path / "app.py").write_text(bad_code)
     (tmp_path / "requirements.txt").write_text("flask")
     flask_input_yaml = {
+        "name": "test-app",
         "extensions": ["flask-framework"],
         "base": "bare",
         "build-base": "ubuntu@22.04",
@@ -448,6 +592,7 @@ def test_flask_extension_bad_app_py(tmp_path):
 @pytest.mark.usefixtures("flask_extension")
 def test_flask_extension_no_requirements_txt_no_app_py_error(tmp_path):
     flask_input_yaml = {
+        "name": "test-app",
         "extensions": ["flask-framework"],
         "base": "bare",
         "build-base": "ubuntu@22.04",
@@ -456,9 +601,120 @@ def test_flask_extension_no_requirements_txt_no_app_py_error(tmp_path):
     with pytest.raises(ExtensionError) as exc:
         extensions.apply_extensions(tmp_path, flask_input_yaml)
     assert str(exc.value) == (
-        "- missing a requirements.txt file. The flask-framework extension requires this file with 'flask' specified as a dependency.\n"
-        "- flask application can not be imported from app:app, no app.py file found in the project root."
+        "- missing a requirements file (requirements.txt or pyproject.toml). The flask-framework extension requires one of these files with 'flask' specified as a dependency.\n"
+        "- Missing WSGI entrypoint in default search locations"
     )
+
+
+@pytest.mark.parametrize(
+    ("app_name", "app_content"),
+    [
+        ("app", "app = object()"),
+        ("app", "from .app import app"),
+        ("application", "application = object()"),
+        ("application", "from .application import application"),
+        ("create_app()", "def create_app(): return object()"),
+        ("make_app()", "def make_app(): return object()"),
+    ],
+)
+@pytest.mark.parametrize(
+    ("file_path", "organize", "wsgi_module"),
+    [
+        # App in root files
+        ("app.py", {"app": "flask/app/app"}, "app"),
+        ("main.py", {"main": "flask/app/main"}, "main"),
+        # App in module
+        ("app/__init__.py", {"app": "flask/app/app"}, "app"),
+        ("app/app.py", {"app": "flask/app/app"}, "app.app"),
+        ("app/main.py", {"app": "flask/app/app"}, "app.main"),
+        ("src/__init__.py", {"src": "flask/app/src"}, "src"),
+        ("src/app.py", {"src": "flask/app/src"}, "src.app"),
+        ("src/main.py", {"src": "flask/app/src"}, "src.main"),
+        ("foo_bar/__init__.py", {"foo_bar": "flask/app/foo_bar"}, "foo_bar"),
+        ("foo_bar/app.py", {"foo_bar": "flask/app/foo_bar"}, "foo_bar.app"),
+        ("foo_bar/main.py", {"foo_bar": "flask/app/foo_bar"}, "foo_bar.main"),
+    ],
+)
+@pytest.mark.usefixtures("flask_extension")
+def test_flask_extension_wsgi_single_entrypoint(
+    tmp_path: Path,
+    flask_input_yaml: dict[str, Any],
+    file_path: str,
+    organize: dict[str, str],
+    wsgi_module: str,
+    app_name: str,
+    app_content: str,
+):
+    """Test single WSGI entrypoint discovery across all file locations and app object types."""
+    (tmp_path / "requirements.txt").write_text("flask")
+
+    (organize_value,) = organize.values()
+
+    flask_input_yaml["parts"] = {
+        "flask-framework/install-app": {"prime": [organize_value]}
+    }
+
+    # Create the file with app content
+    full_path = tmp_path / file_path
+    full_path.parent.mkdir(parents=True, exist_ok=True)
+    full_path.write_text(app_content)
+
+    applied = extensions.apply_extensions(tmp_path, flask_input_yaml)
+    install_app_part = applied["parts"]["flask-framework/install-app"]
+
+    # Check organize
+    assert install_app_part["organize"] == organize
+
+    # Check stage
+    assert install_app_part["stage"] == [organize_value]
+
+    # Check command
+    expected_command = f"/bin/python3 -m gunicorn -c /flask/gunicorn.conf.py '{wsgi_module}:{app_name}' -k [ sync ]"
+    assert applied["services"]["flask"]["command"] == expected_command
+
+
+@pytest.mark.parametrize(
+    ("files", "organize", "command"),
+    [
+        pytest.param(
+            {"app.py": "app = object()", "foo_bar/app.py": "app = object()"},
+            {"app.py": "flask/app/app.py"},
+            "/bin/python3 -m gunicorn -c /flask/gunicorn.conf.py 'app:app' -k [ sync ]",
+            id="Multiple entrypoints, prefer top-level file",
+        ),
+        pytest.param(
+            {"main.py": "app = object()", "src/app.py": "app = object()"},
+            {"main.py": "flask/app/main.py", "src": "flask/app/src"},
+            "/bin/python3 -m gunicorn -c /flask/gunicorn.conf.py 'main:app' -k [ sync ]",
+            id="With two entrypoints, take the first one",
+        ),
+        pytest.param(
+            {"src/app.py": "app = object()", "migrate.sh": "", "unknown": ""},
+            {"src": "flask/app/src", "migrate.sh": "flask/app/migrate.sh"},
+            "/bin/python3 -m gunicorn -c /flask/gunicorn.conf.py 'src.app:app' -k [ sync ]",
+            id="Include other files beside the entrypoint",
+        ),
+    ],
+)
+@pytest.mark.usefixtures("flask_extension")
+def test_flask_extension_wsgi_multiple_entrypoints(
+    tmp_path: Path,
+    flask_input_yaml: dict[str, Any],
+    files: dict[str, str],
+    organize: dict[str, str],
+    command: str,
+):
+    (tmp_path / "requirements.txt").write_text("flask")
+    for file_path, content in files.items():
+        (tmp_path / file_path).parent.mkdir(parents=True, exist_ok=True)
+        (tmp_path / file_path).write_text(content)
+    applied = extensions.apply_extensions(tmp_path, flask_input_yaml)
+    install_app_part = applied["parts"]["flask-framework/install-app"]
+    assert install_app_part["organize"] == organize
+    assert applied["parts"]["flask-framework/install-app"]["stage"] == list(
+        install_app_part["organize"].values()
+    )
+    assert applied["services"]["flask"]["command"] == command
 
 
 @pytest.mark.usefixtures("flask_extension")
@@ -466,6 +722,7 @@ def test_flask_extension_incorrect_prime_prefix_error(tmp_path):
     (tmp_path / "requirements.txt").write_text("flask")
     (tmp_path / "app.py").write_text("app = object()")
     flask_input_yaml = {
+        "name": "test-app",
         "extensions": ["flask-framework"],
         "base": "bare",
         "build-base": "ubuntu@22.04",
@@ -480,6 +737,7 @@ def test_flask_extension_incorrect_prime_prefix_error(tmp_path):
 
 
 WSGI_FLASK_INPUT_YAML = {
+    "name": "test-app",
     "extensions": ["flask-framework"],
     "base": "bare",
     "build-base": "ubuntu@22.04",
@@ -492,7 +750,10 @@ WSGI_FLASK_INPUT_YAML = {
 def test_flask_extension_incorrect_wsgi_path_error(tmp_path):
     (tmp_path / "app.py").write_text("flask")
 
-    with pytest.raises(ExtensionError, match="can not be imported from app:app"):
+    with pytest.raises(
+        ExtensionError,
+        match="Missing WSGI entrypoint in default search locations",
+    ):
         extensions.apply_extensions(tmp_path, WSGI_FLASK_INPUT_YAML.copy())
 
 
@@ -500,7 +761,9 @@ def test_flask_extension_incorrect_wsgi_path_error(tmp_path):
 def test_flask_extension_incorrect_wsgi_path_error_no_app(tmp_path):
     (tmp_path / "requirements.txt").write_text("flask")
 
-    with pytest.raises(ExtensionError, match="app:app, no app.py"):
+    with pytest.raises(
+        ExtensionError, match="Missing WSGI entrypoint in default search locations"
+    ):
         extensions.apply_extensions(tmp_path, WSGI_FLASK_INPUT_YAML.copy())
 
 
@@ -509,6 +772,7 @@ def test_flask_extension_flask_service_override_disable_wsgi_path_check(tmp_path
     (tmp_path / "requirements.txt").write_text("flask")
 
     flask_input_yaml = {
+        "name": "test-app",
         "extensions": ["flask-framework"],
         "base": "bare",
         "build-base": "ubuntu@22.04",
@@ -523,28 +787,259 @@ def test_flask_extension_flask_service_override_disable_wsgi_path_check(tmp_path
     extensions.apply_extensions(tmp_path, flask_input_yaml)
 
 
+@pytest.mark.usefixtures("flask_extension")
+def test_flask_extension_app_in_non_matching_directory(tmp_path):
+    """Test that the extension does NOT find apps in directories that don't match the rock name.
+
+    The flask-framework extension only searches in the directory matching the normalized
+    rock name. Apps in other directories like 'backend', 'webapp', etc. should not be found.
+    """
+    (tmp_path / "requirements.txt").write_text("flask")
+
+    # Create app in a directory that doesn't match the rock name
+    random_dir = tmp_path / "backend"
+    random_dir.mkdir()
+    (random_dir / "app.py").write_text("app = object()")
+
+    flask_input_yaml = {
+        "name": "my-rock",  # Normalized to "my_rock", won't match "backend"
+        "extensions": ["flask-framework"],
+        "base": "bare",
+        "build-base": "ubuntu@22.04",
+        "platforms": {"amd64": {}},
+    }
+
+    # Should raise an error because app is not in "my_rock/" directory
+    with pytest.raises(
+        ExtensionError, match="Missing WSGI entrypoint in default search locations"
+    ):
+        extensions.apply_extensions(tmp_path, flask_input_yaml)
+
+
+def test_flask_framework_factory_dispatch(tmp_path):
+    """Test that FlaskFrameworkFactory dispatches to the correct class by base."""
+    v1 = FlaskFrameworkFactory(
+        project_root=tmp_path,
+        yaml_data={"name": "x", "base": "ubuntu@22.04"},
+        extension_name="flask-framework",
+    )
+    assert isinstance(v1, FlaskFramework)
+    assert not isinstance(v1, FlaskFrameworkV2)
+
+    v2 = FlaskFrameworkFactory(
+        project_root=tmp_path,
+        yaml_data={"name": "x", "base": "ubuntu@26.04"},
+        extension_name="flask-framework",
+    )
+    assert isinstance(v2, FlaskFrameworkV2)
+
+
+def test_flask_framework_factory_dispatch_bare_by_build_base(tmp_path):
+    """Test that a bare rock's build-base selects the Flask framework version."""
+    v1 = FlaskFrameworkFactory(
+        project_root=tmp_path,
+        yaml_data={
+            "name": "x",
+            "base": "bare",
+            "build-base": "ubuntu@24.04",
+        },
+        extension_name="flask-framework",
+    )
+    assert isinstance(v1, FlaskFramework)
+    assert not isinstance(v1, FlaskFrameworkV2)
+
+    v2 = FlaskFrameworkFactory(
+        project_root=tmp_path,
+        yaml_data={
+            "name": "x",
+            "base": "bare",
+            "build-base": "ubuntu@26.04",
+        },
+        extension_name="flask-framework",
+    )
+    assert isinstance(v2, FlaskFrameworkV2)
+
+
+def test_flask_framework_v2_supported_bases():
+    """Test FlaskFrameworkV2 and FlaskFrameworkFactory supported bases."""
+    assert "ubuntu@26.04" in FlaskFrameworkV2.get_supported_bases()
+    assert "bare" in FlaskFrameworkV2.get_supported_bases()
+
+    factory_bases = FlaskFrameworkFactory.get_supported_bases()
+    assert "ubuntu@26.04" in factory_bases
+    assert "ubuntu@22.04" in factory_bases
+    assert "ubuntu@24.04" in factory_bases
+    # All V1 bases are included
+    for base in FlaskFramework.get_supported_bases():
+        assert base in factory_bases
+
+
+@pytest.mark.usefixtures("flask_extension")
+def test_flask_v2_full_apply_26_04(tmp_path, monkeypatch):
+    """Test that the flask-framework extension applies correctly on ubuntu@26.04."""
+    monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "1")
+    (tmp_path / "requirements.txt").write_text("flask")
+    (tmp_path / "app").mkdir()
+    (tmp_path / "app" / "__init__.py").write_text("app = object()")
+    (tmp_path / "static").mkdir()
+    (tmp_path / "node_modules").mkdir()
+
+    flask_input_yaml_26 = {
+        "name": "foo-bar",
+        "base": "ubuntu@26.04",
+        "platforms": {"amd64": {}},
+        "extensions": ["flask-framework"],
+    }
+
+    applied = extensions.apply_extensions(tmp_path, flask_input_yaml_26)
+    assert applied["parts"].pop("flask-framework.app-data") == {
+        "plugin": "nil",
+        "override-build": "mkdir -p ${CRAFT_PART_INSTALL}/app-data",
+        "permissions": [{"path": "app-data", "owner": 584792, "group": 584792}],
+    }
+    source = applied["parts"]["flask-framework.config-files"]["source"]
+    del applied["parts"]["flask-framework.config-files"]["source"]
+    suffix = "share/rockcraft/extensions/flask-framework/v2"
+    assert source[-len(suffix) :].replace("\\", "/") == suffix
+
+    assert applied == {
+        "name": "foo-bar",
+        "base": "ubuntu@26.04",
+        "parts": {
+            "flask-framework.config-files": {
+                "organize": {
+                    "gunicorn.conf.py": "var/lib/gunicorn/gunicorn.conf.py",
+                },
+                "plugin": "dump",
+                "permissions": [
+                    {
+                        "path": "var/lib/gunicorn",
+                        "owner": 584792,
+                        "group": 584792,
+                    },
+                    {
+                        "path": "var/lib/gunicorn/gunicorn.conf.py",
+                        "owner": 584792,
+                        "group": 584792,
+                    },
+                ],
+            },
+            "flask-framework.dependencies": {
+                "plugin": "python",
+                "python-packages": [
+                    "--constraint=.gunicorn-constraints.txt",
+                    "gunicorn",
+                    "packaging",
+                ],
+                "python-requirements": ["requirements.txt"],
+                "source": ".",
+                "stage-packages": ["python3-venv"],
+                "build-environment": [],
+                "override-build": (
+                    "printf '%s\\n' 'gunicorn~=26.0'"
+                    " > .gunicorn-constraints.txt\n"
+                    "craftctl default"
+                ),
+                "stage": ["-etc/ssl/certs/ca-certificates.crt"],
+            },
+            "flask-framework.install-app": {
+                "override-build": (
+                    'mkdir -p "${CRAFT_PART_INSTALL}/app"\n'
+                    "cp --archive --link --no-dereference "
+                    '"${CRAFT_PART_BUILD}/." "${CRAFT_PART_INSTALL}/app/"'
+                ),
+                "plugin": "dump",
+                "prime": ["app/app", "app/static"],
+                "source": ".",
+                "stage": ["app/app", "app/static"],
+                "permissions": [
+                    {
+                        "owner": 584792,
+                        "group": 584792,
+                    },
+                ],
+            },
+            "flask-framework.runtime": {
+                "plugin": "nil",
+                "stage-packages": ["ca-certificates_data"],
+            },
+            "flask-framework.logging": {
+                "plugin": "nil",
+                "override-build": (
+                    "craftctl default\n"
+                    "mkdir -p $CRAFT_PART_INSTALL/opt/promtail\n"
+                    "mkdir -p $CRAFT_PART_INSTALL/etc/promtail\n"
+                    "mkdir -p $CRAFT_PART_INSTALL/var/log/app"
+                ),
+                "permissions": [
+                    {"path": "opt/promtail", "owner": 584792, "group": 584792},
+                    {"path": "etc/promtail", "owner": 584792, "group": 584792},
+                    {
+                        "path": "var/log/app",
+                        "owner": 584792,
+                        "group": 584792,
+                    },
+                ],
+            },
+            "flask-framework.statsd-exporter": {
+                "build-snaps": ["go"],
+                "plugin": "go",
+                "source": "https://github.com/prometheus/statsd_exporter.git",
+                "source-tag": "v0.30.0",
+            },
+        },
+        "platforms": {"amd64": {}},
+        "run_user": "_daemon_",
+        "services": {
+            "flask": {
+                "after": ["statsd-exporter"],
+                "command": "/bin/python3 -m gunicorn -c "
+                "/var/lib/gunicorn/gunicorn.conf.py 'app:app' -k sync",
+                "override": "replace",
+                "startup": "enabled",
+                "user": "_daemon_",
+            },
+            "statsd-exporter": {
+                "command": (
+                    "/bin/statsd_exporter --statsd.mapping-config=/statsd-mapping.conf "
+                    "--statsd.listen-udp=localhost:9125 "
+                    "--statsd.listen-tcp=localhost:9125"
+                ),
+                "override": "merge",
+                "startup": "enabled",
+                "summary": "statsd exporter service",
+                "user": "_daemon_",
+            },
+        },
+    }
+
+
 @pytest.mark.usefixtures("django_extension")
 @pytest.mark.parametrize(
     ("packages", "expected_worker"), [("Django\ngevent", "gevent"), ("Django", "sync")]
 )
+@pytest.mark.parametrize("wsgi_subdir", ["foo_bar", "mysite"])
 def test_django_extension_default(
-    tmp_path, django_input_yaml, packages, expected_worker
+    tmp_path, django_input_yaml, packages, expected_worker, wsgi_subdir
 ):
     (tmp_path / "requirements.txt").write_text(packages)
     (tmp_path / "test").mkdir()
-    (tmp_path / "foo_bar" / "foo_bar").mkdir(parents=True)
-    (tmp_path / "foo_bar" / "foo_bar" / "wsgi.py").write_text("application = object()")
+    django_project_dir = tmp_path / "foo_bar" / wsgi_subdir
+    django_project_dir.mkdir(parents=True)
+    (django_project_dir / "wsgi.py").write_text("application = object()")
 
     applied = extensions.apply_extensions(tmp_path, django_input_yaml)
+    assert "django-framework/app-data" not in applied["parts"]
+    expected_module = f"{wsgi_subdir}.wsgi"
 
     source = applied["parts"]["django-framework/config-files"]["source"]
     del applied["parts"]["django-framework/config-files"]["source"]
-    suffix = "share/rockcraft/extensions/django-framework"
+    suffix = "share/rockcraft/extensions/django-framework/v1"
     assert source[-len(suffix) :].replace("\\", "/") == suffix
 
     assert applied == {
-        "base": "ubuntu@22.04",
         "name": "foo-bar",
+        "base": "ubuntu@22.04",
         "parts": {
             "django-framework/config-files": {
                 "organize": {"gunicorn.conf.py": "django/gunicorn.conf.py"},
@@ -562,6 +1057,7 @@ def test_django_extension_default(
                 "python-packages": ["gunicorn~=23.0"],
                 "python-requirements": ["requirements.txt"],
                 "source": ".",
+                "stage": ["-etc/ssl/certs/ca-certificates.crt"],
                 "stage-packages": ["python3-venv"],
                 "build-environment": [],
             },
@@ -611,7 +1107,10 @@ def test_django_extension_default(
         "services": {
             "django": {
                 "after": ["statsd-exporter"],
-                "command": f"/bin/python3 -m gunicorn -c /django/gunicorn.conf.py foo_bar.wsgi:application -k [ {expected_worker} ]",
+                "command": (
+                    "/bin/python3 -m gunicorn -c /django/gunicorn.conf.py "
+                    f"'{expected_module}:application' -k [ {expected_worker} ]"
+                ),
                 "override": "replace",
                 "startup": "enabled",
                 "user": "_daemon_",
@@ -676,7 +1175,8 @@ def test_django_extension_incorrect_wsgi_path_error_wsgi_missing(tmp_path):
     (tmp_path / "requirements.txt").write_text("django")
 
     with pytest.raises(
-        ExtensionError, match=r"wsgi:application, no wsgi\.py file found"
+        ExtensionError,
+        match=r"unable to locate a wsgi\.py",
     ):
         extensions.apply_extensions(tmp_path, WSGI_DJANGO_INPUT_YAML.copy())
 
@@ -689,7 +1189,8 @@ def test_django_extension_incorrect_wsgi_path_error_no_app(tmp_path):
     (django_project_dir / "wsgi.py").write_text("app = object()")
 
     with pytest.raises(
-        ExtensionError, match=r"wsgi:application, no variable named application"
+        ExtensionError,
+        match=r"unable to locate a wsgi\.py",
     ):
         extensions.apply_extensions(tmp_path, WSGI_DJANGO_INPUT_YAML.copy())
 
@@ -716,9 +1217,516 @@ def test_django_extension_django_service_override_disable_wsgi_path_check(tmp_pa
         "build-base": "ubuntu@22.04",
         "services": {
             "django": {
-                "command": "/bin/python3 -m gunicorn -c /django/gunicorn.conf.py webapp:app"
+                "command": "/bin/python3 -m gunicorn -c /django/gunicorn.conf.py 'webapp:app'"
             }
         },
     }
 
     extensions.apply_extensions(tmp_path, input_yaml)
+    extensions.apply_extensions(tmp_path, input_yaml)
+    extensions.apply_extensions(tmp_path, input_yaml)
+
+
+def test_flask_extension_uv(
+    tmp_path, flask_extension, flask_v2_input_yaml, monkeypatch
+):
+    monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "1")
+    (tmp_path / "pyproject.toml").write_text(
+        "[project]\nname = 'foo-bar'\nversion = '0.1.0'\ndependencies = ['flask']\n"
+    )
+    (tmp_path / "uv.lock").write_text("version = 1\n")
+    (tmp_path / "app.py").write_text("app = object()")
+
+    applied = extensions.apply_extensions(tmp_path, flask_v2_input_yaml)
+
+    deps = applied["parts"]["flask-framework.dependencies"]
+    assert deps["plugin"] == "uv"
+    assert deps["source"] == "."
+    assert deps["stage-packages"] == ["python3-venv"]
+    assert "python-packages" not in deps
+    assert "python-requirements" not in deps
+    assert deps["override-build"] == (
+        "craftctl default\n"
+        "uv pip install --python /usr/bin/python3 --prefix ${CRAFT_PART_INSTALL} gunicorn~=26.0 packaging"
+    )
+    # non-bare base still excludes the ca-certificates crt from the deps stage
+    assert deps["stage"] == ["-etc/ssl/certs/ca-certificates.crt"]
+
+
+@pytest.mark.parametrize("use_uv", [False, True], ids=["python", "uv"])
+def test_flask_extension_v2_bare_26_04(tmp_path, flask_extension, monkeypatch, use_uv):
+    """Bare Flask V2 stages Python 3.14 and selects it for dependencies."""
+    monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "1")
+    (tmp_path / "app.py").write_text("app = object()")
+    if use_uv:
+        (tmp_path / "pyproject.toml").write_text(
+            "[project]\nname = 'foo-bar'\nversion = '0.1.0'\ndependencies = ['flask']\n"
+        )
+        (tmp_path / "uv.lock").write_text("version = 1\n")
+    else:
+        (tmp_path / "requirements.txt").write_text("flask")
+
+    applied = extensions.apply_extensions(
+        tmp_path,
+        {
+            "name": "foo-bar",
+            "base": "bare",
+            "build-base": "ubuntu@26.04",
+            "platforms": {"amd64": {}},
+            "extensions": ["flask-framework"],
+        },
+    )
+
+    deps = applied["parts"]["flask-framework.dependencies"]
+    assert deps["stage-packages"] == [
+        "python3.14-venv_ensurepip",
+        "python3-minimal_python3",
+    ]
+    assert deps["build-environment"] == [{"PIP_PYTHON": "$(which python3.14)"}]
+    assert applied["parts"]["flask-framework.runtime"]["override-build"] == (
+        "mkdir -m 777 ${CRAFT_PART_INSTALL}/tmp\n"
+        "ln -sf /usr/bin/bash ${CRAFT_PART_INSTALL}/usr/bin/sh"
+    )
+    if use_uv:
+        assert deps["plugin"] == "uv"
+        assert "python-packages" not in deps
+        assert "python-requirements" not in deps
+        assert deps["override-build"] == (
+            "craftctl default\n"
+            "uv pip install --python /usr/bin/python3 "
+            "--prefix ${CRAFT_PART_INSTALL}/usr gunicorn~=26.0 packaging"
+        )
+    else:
+        assert deps["plugin"] == "python"
+        assert deps["python-packages"] == [
+            "--constraint=.gunicorn-constraints.txt",
+            "gunicorn",
+            "packaging",
+        ]
+        assert deps["python-requirements"] == ["requirements.txt"]
+        assert deps["override-build"].endswith(
+            "craftctl default\n"
+            "mkdir -p ${CRAFT_PART_INSTALL}/bin\n"
+            "ln -sf /usr/bin/python3.14 ${CRAFT_PART_INSTALL}/bin/python3"
+        )
+
+
+def test_flask_extension_uv_lock_without_pyproject_errors(
+    tmp_path, flask_extension, flask_v2_input_yaml, monkeypatch
+):
+    monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "1")
+    (tmp_path / "uv.lock").write_text("version = 1\n")
+    (tmp_path / "app.py").write_text("app = object()")
+
+    with pytest.raises(ExtensionError) as exc:
+        extensions.apply_extensions(tmp_path, flask_v2_input_yaml)
+    assert "both uv.lock and pyproject.toml" in str(exc.value)
+
+
+def test_django_extension_uv(tmp_path, django_extension, django_v2_input_yaml):
+    (tmp_path / "pyproject.toml").write_text(
+        "[project]\nname = 'foo-bar'\nversion = '0.1.0'\ndependencies = ['django']\n"
+    )
+    (tmp_path / "uv.lock").write_text("version = 1\n")
+    wsgi_dir = tmp_path / "foo_bar" / "foo_bar"
+    wsgi_dir.mkdir(parents=True)
+    (wsgi_dir / "wsgi.py").write_text("application = object()")
+
+    applied = extensions.apply_extensions(tmp_path, django_v2_input_yaml)
+
+    deps = applied["parts"]["django-framework.dependencies"]
+    assert deps["plugin"] == "uv"
+    assert deps["override-build"] == (
+        "craftctl default\n"
+        "uv pip install --python /usr/bin/python3 --prefix ${CRAFT_PART_INSTALL} gunicorn~=26.0 packaging"
+    )
+    assert "python-requirements" not in deps
+
+
+@pytest.mark.parametrize("use_uv", [False, True], ids=["python", "uv"])
+def test_django_extension_v2_bare_26_04(tmp_path, django_extension, use_uv):
+    """Bare Django V2 stages Python 3.14 and selects it for dependencies."""
+    wsgi_dir = tmp_path / "foo_bar" / "foo_bar"
+    wsgi_dir.mkdir(parents=True)
+    (wsgi_dir / "wsgi.py").write_text("application = object()")
+    if use_uv:
+        (tmp_path / "pyproject.toml").write_text(
+            "[project]\nname = 'foo-bar'\nversion = '0.1.0'\n"
+            "dependencies = ['django']\n"
+        )
+        (tmp_path / "uv.lock").write_text("version = 1\n")
+    else:
+        (tmp_path / "requirements.txt").write_text("django")
+
+    applied = extensions.apply_extensions(
+        tmp_path,
+        {
+            "name": "foo-bar",
+            "base": "bare",
+            "build-base": "ubuntu@26.04",
+            "platforms": {"amd64": {}},
+            "extensions": ["django-framework"],
+        },
+    )
+
+    deps = applied["parts"]["django-framework.dependencies"]
+    assert deps["stage-packages"] == [
+        "python3.14-venv_ensurepip",
+        "python3-minimal_python3",
+    ]
+    assert deps["build-environment"] == [{"PIP_PYTHON": "$(which python3.14)"}]
+    assert applied["parts"]["django-framework.runtime"]["override-build"] == (
+        "mkdir -m 777 ${CRAFT_PART_INSTALL}/tmp\n"
+        "ln -sf /usr/bin/bash ${CRAFT_PART_INSTALL}/usr/bin/sh"
+    )
+    if use_uv:
+        assert deps["plugin"] == "uv"
+        assert "python-packages" not in deps
+        assert "python-requirements" not in deps
+        assert deps["override-build"] == (
+            "craftctl default\n"
+            "uv pip install --python /usr/bin/python3 "
+            "--prefix ${CRAFT_PART_INSTALL}/usr gunicorn~=26.0 packaging"
+        )
+    else:
+        assert deps["plugin"] == "python"
+        assert deps["python-packages"] == [
+            "--constraint=.gunicorn-constraints.txt",
+            "gunicorn",
+            "packaging",
+        ]
+        assert deps["python-requirements"] == ["requirements.txt"]
+        assert deps["override-build"].endswith(
+            "craftctl default\n"
+            "mkdir -p ${CRAFT_PART_INSTALL}/bin\n"
+            "ln -sf /usr/bin/python3.14 ${CRAFT_PART_INSTALL}/bin/python3"
+        )
+
+
+def test_django_extension_uv_no_requirements_txt_is_ok(
+    tmp_path, django_extension, django_v2_input_yaml
+):
+    # A uv project with no requirements.txt must NOT raise the
+    # "missing requirements.txt" error.
+    (tmp_path / "pyproject.toml").write_text(
+        "[project]\nname = 'foo-bar'\nversion = '0.1.0'\ndependencies = ['django']\n"
+    )
+    (tmp_path / "uv.lock").write_text("version = 1\n")
+    wsgi_dir = tmp_path / "foo_bar" / "foo_bar"
+    wsgi_dir.mkdir(parents=True)
+    (wsgi_dir / "wsgi.py").write_text("application = object()")
+
+    # Should not raise.
+    extensions.apply_extensions(tmp_path, django_v2_input_yaml)
+
+
+# ---------------------------------------------------------------------------
+# DjangoFrameworkV2 / django_framework_factory tests
+# ---------------------------------------------------------------------------
+
+
+def test_django_factory_dispatch_v1(tmp_path):
+    """Factory returns DjangoFramework (V1) for ubuntu@22.04."""
+    factory = extensions.DjangoFrameworkFactory
+    instance = factory(
+        project_root=tmp_path,
+        yaml_data={"name": "x", "base": "ubuntu@22.04"},
+        extension_name="django-framework",
+    )
+    assert isinstance(instance, extensions.DjangoFramework)
+    assert not isinstance(instance, extensions.DjangoFrameworkV2)
+
+
+def test_django_factory_dispatch_v2(tmp_path):
+    """Factory returns DjangoFrameworkV2 for ubuntu@26.04."""
+    factory = extensions.DjangoFrameworkFactory
+    instance = factory(
+        project_root=tmp_path,
+        yaml_data={"name": "x", "base": "ubuntu@26.04"},
+        extension_name="django-framework",
+    )
+    assert isinstance(instance, extensions.DjangoFrameworkV2)
+
+
+def test_django_factory_dispatch_bare_by_build_base(tmp_path):
+    """Factory selects the Django framework version from a bare rock's build-base."""
+    factory = extensions.DjangoFrameworkFactory
+    v1 = factory(
+        project_root=tmp_path,
+        yaml_data={
+            "name": "x",
+            "base": "bare",
+            "build-base": "ubuntu@24.04",
+        },
+        extension_name="django-framework",
+    )
+    assert isinstance(v1, extensions.DjangoFramework)
+    assert not isinstance(v1, extensions.DjangoFrameworkV2)
+
+    v2 = factory(
+        project_root=tmp_path,
+        yaml_data={
+            "name": "x",
+            "base": "bare",
+            "build-base": "ubuntu@26.04",
+        },
+        extension_name="django-framework",
+    )
+    assert isinstance(v2, extensions.DjangoFrameworkV2)
+
+
+def test_django_framework_v2_supported_bases():
+    """DjangoFrameworkV2 supports ubuntu@26.04 and bare rocks."""
+    assert "ubuntu@26.04" in extensions.DjangoFrameworkV2.get_supported_bases()
+    assert "bare" in extensions.DjangoFrameworkV2.get_supported_bases()
+    assert "ubuntu@22.04" not in extensions.DjangoFrameworkV2.get_supported_bases()
+
+
+def test_django_factory_supported_bases():
+    """Factory's supported bases include both V1 and V2 bases."""
+    bases = extensions.DjangoFrameworkFactory.get_supported_bases()
+    assert "ubuntu@26.04" in bases
+    assert "ubuntu@22.04" in bases
+    assert "ubuntu@24.04" in bases
+
+
+@pytest.mark.usefixtures("django_extension")
+def test_django_extension_v2_default(tmp_path):
+    """Full apply on ubuntu@26.04 succeeds and produces the expected snippet."""
+    django_input_yaml = {
+        "name": "foo-bar",
+        "base": "ubuntu@26.04",
+        "platforms": {"amd64": {}},
+        "extensions": ["django-framework"],
+    }
+    (tmp_path / "requirements.txt").write_text("Django")
+    django_project_dir = tmp_path / "foo_bar" / "foo_bar"
+    django_project_dir.mkdir(parents=True)
+    (django_project_dir / "wsgi.py").write_text("application = object()")
+    django_app_dir = tmp_path / "foo_bar" / "app"
+    django_app_dir.mkdir()
+    (django_app_dir / "models.py").write_text("")
+
+    applied = extensions.apply_extensions(tmp_path, django_input_yaml)
+    assert applied["parts"].pop("django-framework.app-data") == {
+        "plugin": "nil",
+        "override-build": "mkdir -p ${CRAFT_PART_INSTALL}/app-data",
+        "permissions": [{"path": "app-data", "owner": 584792, "group": 584792}],
+    }
+
+    source = applied["parts"]["django-framework.config-files"]["source"]
+    del applied["parts"]["django-framework.config-files"]["source"]
+    suffix = "share/rockcraft/extensions/django-framework/v2"
+    assert source[-len(suffix) :].replace("\\", "/") == suffix
+
+    assert applied == {
+        "name": "foo-bar",
+        "base": "ubuntu@26.04",
+        "parts": {
+            "django-framework.config-files": {
+                "organize": {"gunicorn.conf.py": "var/lib/gunicorn/gunicorn.conf.py"},
+                "plugin": "dump",
+                "permissions": [
+                    {
+                        "path": "var/lib/gunicorn",
+                        "owner": 584792,
+                        "group": 584792,
+                    },
+                    {
+                        "path": "var/lib/gunicorn/gunicorn.conf.py",
+                        "owner": 584792,
+                        "group": 584792,
+                    },
+                ],
+            },
+            "django-framework.dependencies": {
+                "plugin": "python",
+                "python-packages": [
+                    "--constraint=.gunicorn-constraints.txt",
+                    "gunicorn",
+                    "packaging",
+                ],
+                "python-requirements": ["requirements.txt"],
+                "source": ".",
+                "stage-packages": ["python3-venv"],
+                "build-environment": [],
+                "override-build": (
+                    "printf '%s\\n' 'gunicorn~=26.0'"
+                    " > .gunicorn-constraints.txt\n"
+                    "craftctl default"
+                ),
+                "stage": ["-etc/ssl/certs/ca-certificates.crt"],
+            },
+            "django-framework.install-app": {
+                "override-build": (
+                    'mkdir -p "${CRAFT_PART_INSTALL}/app"\n'
+                    "cp --archive --link --no-dereference "
+                    '"${CRAFT_PART_BUILD}/." "${CRAFT_PART_INSTALL}/app/"'
+                ),
+                "plugin": "dump",
+                "source": "foo_bar",
+                "stage": ["-app/db.sqlite3"],
+                "permissions": [
+                    {
+                        "owner": 584792,
+                        "group": 584792,
+                    },
+                ],
+            },
+            "django-framework.runtime": {
+                "plugin": "nil",
+                "stage-packages": ["ca-certificates_data"],
+            },
+            "django-framework.logging": {
+                "plugin": "nil",
+                "override-build": (
+                    "craftctl default\n"
+                    "mkdir -p $CRAFT_PART_INSTALL/opt/promtail\n"
+                    "mkdir -p $CRAFT_PART_INSTALL/etc/promtail\n"
+                    "mkdir -p $CRAFT_PART_INSTALL/var/log/app"
+                ),
+                "permissions": [
+                    {"path": "opt/promtail", "owner": 584792, "group": 584792},
+                    {"path": "etc/promtail", "owner": 584792, "group": 584792},
+                    {
+                        "path": "var/log/app",
+                        "owner": 584792,
+                        "group": 584792,
+                    },
+                ],
+            },
+            "django-framework.statsd-exporter": {
+                "build-snaps": ["go"],
+                "plugin": "go",
+                "source": "https://github.com/prometheus/statsd_exporter.git",
+                "source-tag": "v0.30.0",
+            },
+        },
+        "platforms": {"amd64": {}},
+        "run_user": "_daemon_",
+        "services": {
+            "django": {
+                "after": ["statsd-exporter"],
+                "command": (
+                    "/bin/python3 -m gunicorn -c /var/lib/gunicorn/gunicorn.conf.py "
+                    "'foo_bar.wsgi:application' -k sync"
+                ),
+                "override": "replace",
+                "startup": "enabled",
+                "user": "_daemon_",
+            },
+            "statsd-exporter": {
+                "command": (
+                    "/bin/statsd_exporter --statsd.mapping-config=/statsd-mapping.conf "
+                    "--statsd.listen-udp=localhost:9125 "
+                    "--statsd.listen-tcp=localhost:9125"
+                ),
+                "override": "merge",
+                "startup": "enabled",
+                "summary": "statsd exporter service",
+                "user": "_daemon_",
+            },
+        },
+    }
+
+
+@pytest.mark.parametrize(
+    ("framework_class", "extension_name", "base", "expected_packages"),
+    [
+        (
+            FlaskFramework,
+            "flask-framework",
+            "ubuntu@24.04",
+            ["gunicorn~=23.0"],
+        ),
+        (
+            DjangoFramework,
+            "django-framework",
+            "ubuntu@24.04",
+            ["gunicorn~=23.0"],
+        ),
+    ],
+)
+def test_v1_dependency_part_has_no_gunicorn_constraint(
+    tmp_path, framework_class, extension_name, base, expected_packages
+):
+    """V1 framework dependency parts retain their direct Gunicorn requirement."""
+    framework = framework_class(
+        project_root=tmp_path,
+        yaml_data={"name": "foo-bar", "base": base},
+        extension_name=extension_name,
+    )
+
+    dependency_part = framework._gen_parts()[framework.get_part_name("dependencies")]
+
+    assert dependency_part["python-packages"] == expected_packages
+    assert "override-build" not in dependency_part
+
+
+@pytest.mark.parametrize(
+    ("framework_class", "extension_name"),
+    [
+        (FlaskFrameworkV2, "flask-framework"),
+        (DjangoFrameworkV2, "django-framework"),
+    ],
+)
+def test_v2_dependency_part_uses_gunicorn_constraint(
+    tmp_path, framework_class, extension_name
+):
+    """V2 framework dependency parts constrain Gunicorn without quoted pip input."""
+    framework = framework_class(
+        project_root=tmp_path,
+        yaml_data={"name": "foo-bar", "base": "ubuntu@26.04"},
+        extension_name=extension_name,
+    )
+
+    dependency_part = framework._gen_parts()[framework.get_part_name("dependencies")]
+
+    assert dependency_part["python-packages"] == [
+        "--constraint=.gunicorn-constraints.txt",
+        "gunicorn",
+        "packaging",
+    ]
+    assert dependency_part["override-build"] == (
+        "printf '%s\\n' 'gunicorn~=26.0' > .gunicorn-constraints.txt\ncraftctl default"
+    )
+
+
+@pytest.mark.parametrize(
+    ("framework_class", "extension_name"),
+    [
+        (FlaskFrameworkV2, "flask-framework"),
+        (DjangoFrameworkV2, "django-framework"),
+    ],
+)
+def test_v2_bare_dependency_part_uses_staged_python(
+    tmp_path, framework_class, extension_name
+):
+    """V2 bare dependency parts direct pip to the staged Python 3.14."""
+    framework = framework_class(
+        project_root=tmp_path,
+        yaml_data={
+            "name": "foo-bar",
+            "base": "bare",
+            "build-base": "ubuntu@26.04",
+        },
+        extension_name=extension_name,
+    )
+
+    dependency_part = framework._gen_parts()[framework.get_part_name("dependencies")]
+
+    assert dependency_part["stage-packages"] == [
+        "python3.14-venv_ensurepip",
+        "python3-minimal_python3",
+    ]
+    assert dependency_part["build-environment"] == [
+        {"PIP_PYTHON": "$(which python3.14)"}
+    ]
+    assert dependency_part["python-packages"] == [
+        "--constraint=.gunicorn-constraints.txt",
+        "gunicorn",
+        "packaging",
+    ]
+    assert dependency_part["override-build"] == (
+        "printf '%s\\n' 'gunicorn~=26.0' > .gunicorn-constraints.txt\ncraftctl default\nmkdir -p ${CRAFT_PART_INSTALL}/bin\nln -sf /usr/bin/python3.14 ${CRAFT_PART_INSTALL}/bin/python3"
+    )

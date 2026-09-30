@@ -30,7 +30,7 @@ execute: |
 
   # check permission of /var/lib/pebble/default directory
   docker run --rm run-user-minimal-test exec \
-    stat --format="%a" /var/lib/pebble/default | MATCH "777"
+    stat --format="%a" /var/lib/pebble/default | MATCH "1777"
 
   # check file creation capability of non-root user
   docker run --rm run-user-minimal-test exec \

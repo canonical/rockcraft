@@ -1,73 +1,142 @@
-.. _go-framework-reference:
+.. meta::
+    :description: Reference documentation for the Go framework extension, which configures Go in a rock and compiles and installs the Go binary.
 
-go-framework
-----------------
+.. _reference-go-framework:
+
+Go framework
+============
 
 The Go extension streamlines the process of building Go application
 rocks.
 
 The extension builds and copies the Go binary file to the rock.
-By default, the base ``bare`` is used, to generate a lightweight image.
-
+By default, the system foundation, or base, is set as ``bare`` to generate a
+lightweight image.
 
 .. note::
-    The Go extension is compatible with the ``bare`` and ``ubuntu@24.04``
-    bases.
+    The Go extension is compatible with the ``bare``, ``ubuntu@24.04`` and
+    ``ubuntu@26.04`` bases. Support for Ubuntu 26.04 LTS is experimental.
+
+    Part names added by the extension vary by Ubuntu version. On Ubuntu 24.04 LTS,
+    write ``extension/part``. On Ubuntu 26.04 LTS and higher, write
+    ``extension.part``. For rocks with ``base: bare``, follow the convention
+    for the configured ``build-base``.
+
+Use the extension
+-----------------
+
+Declare the extension in ``rockcraft.yaml``:
+
+.. code-block:: yaml
+   :caption: rockcraft.yaml
+
+   extensions:
+     - go-framework
+
+You can generate this project file by running ``rockcraft init --profile go-framework``
+in the application's directory. To inspect the parts, services, and other configuration
+contributed by the extension, run ``rockcraft expand-extensions`` in the same directory as the
+``rockcraft.yaml`` file.
+
+.. _reference-go-framework-project-requirements:
 
 Project requirements
-====================
+--------------------
 
 To use the ``go-framework`` extension, there must be a ``go.mod`` file
 in the root directory of the project.
 
+.. _reference-go-framework-organize:
 
-``parts`` > ``go-framework/install-app`` > ``organize``
-=========================================================
+App binary
+----------
 
-If the main package is in the base directory and the rockcraft name
-attribute is equal to the go module name, the name of the binary will
-be selected correctly, otherwise you will need to adjust it.
+If the main package is in the base directory and the Rockcraft ``name``
+attribute is equal to the Go module name, the name of the binary will
+be selected correctly.
 
-You can use this field to specify a different binary to be used as the
+The ``organize`` key specifies a different binary to be used as the
 main application, without having to override the service command. For example,
-if your Go application contains a ``main`` package in the directory
-``cmd/anotherserver``, the name of the binary will be ``anotherserver``
-and you can override the main application to use the binary with the
-next snippet:
+if a Go application contains a ``main`` package in the directory
+``cmd/anotherserver``, the following snippet will override the main application
+to use the binary ``anotherserver``:
 
-.. code-block:: yaml
-  :caption: rockcraft.yaml
+.. tab-set::
 
-  parts:
-    go-framework/install-app:
-     organize:
-       bin/anotherserver: usr/local/bin/<rockcraft project name>
+    .. tab-item:: Ubuntu 24.04 LTS
+        :sync: base-24
 
+        .. code-block:: yaml
+          :caption: rockcraft.yaml
 
-``parts`` > ``go-framework/assets`` > ``stage``
-=========================================================
+          parts:
+            go-framework/install-app:
+              organize:
+                bin/anotherserver: usr/local/bin/<rockcraft project name>
 
+    .. tab-item:: Ubuntu 26.04 LTS and higher
+        :sync: base-26-plus
+
+        .. code-block:: yaml
+          :caption: rockcraft.yaml
+
+          parts:
+            go-framework.install-app:
+              organize:
+                bin/anotherserver: usr/local/bin/<rockcraft project name>
+
+.. _reference-go-framework-stage:
+
+Included or excluded files
+--------------------------
 
 Some files, if they exist in the project root, are included by
 default in the rock in the ``/app`` directory.  These include:
 ``migrate``, ``migrate.sh``, ``templates/`` and ``static/``.
 
-You can customise the files to include by overriding the ``stage`` property
-of the ``go-framework/assets`` part:
+The ``stage`` key of the generated assets part
+specifies the files to be included or excluded from
+the rock upon ``rockcraft pack``, following the ``app/<filename>`` notation. For
+example:
 
-.. code-block:: yaml
-  :caption: rockcraft.yaml
+.. tab-set::
 
-  parts:
-    go-framework/assets:
-      stage:
-        - app/migrate
-        - app/migrate.sh
-        - app/static
-        - app/another_file_or_directory
+    .. tab-item:: Ubuntu 24.04 LTS
+        :sync: base-24
 
+        .. code-block:: yaml
+          :caption: rockcraft.yaml
+
+          parts:
+            go-framework/assets:
+              stage:
+                - app/migrate
+                - app/migrate.sh
+                - app/static
+                - app/another_file_or_directory
+
+    .. tab-item:: Ubuntu 26.04 LTS and higher
+        :sync: base-26-plus
+
+        .. code-block:: yaml
+          :caption: rockcraft.yaml
+
+          parts:
+            go-framework.assets:
+              stage:
+                - app/migrate
+                - app/migrate.sh
+                - app/static
+                - app/another_file_or_directory
+
+The ``stage`` key supports glob patterns to define the list of files. See :ref:`filesets_explanation`
+for the various ways you can specify files in your rock.
+
+Adding the ``stage`` key to the project file overrides the default files to be included.
+Files are excluded from the rock by defining ``stage`` and omitting the file to
+be excluded.
 
 Useful links
-============
+------------
 
-- :ref:`build-a-rock-for-a-go-application`
+:ref:`tutorial-build-a-rock-for-a-go-app`

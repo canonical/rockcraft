@@ -1,59 +1,138 @@
-.. _flask-framework-reference:
+.. meta::
+    :description: Reference documentation for the Flask framework extension, which configures Flask in a rock and populates it with Flask dependencies such as Gunicorn.
 
-flask-framework
----------------
+.. _reference-flask-framework:
+
+Flask framework
+===============
 
 The Flask extension streamlines the process of building Flask application rocks.
 
 It facilitates the installation of Flask application dependencies, including
 Gunicorn, inside the rock. Additionally, it transfers your project files to
-``/flask/app`` within the rock.
+``/flask/app`` within the rock (``/app`` on Ubuntu 26.04 LTS).
+By default, the system foundation, or base, is set as ``bare`` to generate a
+lightweight image.
 
 .. note::
-    The Flask extension is compatible with the ``bare``, ``ubuntu@22.04``
-    and ``ubuntu@24.04`` bases.
+    The Flask extension is compatible with the ``bare``, ``ubuntu@22.04``,
+    ``ubuntu@24.04`` and ``ubuntu@26.04`` bases. Support for Ubuntu 26.04 LTS is
+    experimental.
+
+    Part names added by the extension vary by Ubuntu version. On Ubuntu 22.04 LTS
+    and Ubuntu 24.04 LTS, write ``extension/part``. On Ubuntu 26.04 LTS and
+    higher, write ``extension.part``. For rocks with ``base: bare``, follow the
+    convention for the configured ``build-base``.
 
 The Flask extension supports both synchronous and asynchronous
 Gunicorn workers.
 
+Use the extension
+-----------------
+
+Declare the extension in ``rockcraft.yaml``:
+
+.. code-block:: yaml
+   :caption: rockcraft.yaml
+
+   extensions:
+     - flask-framework
+
+You can generate this project file by running ``rockcraft init --profile flask-framework``
+in the application's directory. To inspect the parts, services, and other configuration
+contributed by the extension, run ``rockcraft expand-extensions`` in the same directory as the
+``rockcraft.yaml`` file.
+
+.. _reference-flask-framework-project-requirements:
+
 Project requirements
-====================
+--------------------
 
 There are 2 requirements to be able to use the ``flask-framework`` extension:
 
-1. There must be a ``requirements.txt`` file in the root of the project with
+1. There must be a ``requirements.txt``  or ``pyproject.toml`` file in the root of the project with
    ``Flask`` declared as a dependency
-2. The project must include a WSGI app with the path ``app:app``. This means
-   there must be an ``app.py`` file at the root of the project with the name
-   of the Flask object is set to ``app``.
+2. The project must include a Web Server Gateway Interface (WSGI) app with the path ``app:app``.
+   This means there must be an ``app.py`` file at the root of the project where the Flask object
+   is named ``app``.
 
 For the project to make use of asynchronous Gunicorn workers:
 
-- The ``requirements.txt`` file must include ``gevent`` as a dependency.
+- The ``requirements.txt`` or ``pyproject.toml`` file must include ``gevent`` as a dependency.
 
+.. _reference-flask-framework-uv:
 
-``parts`` > ``flask-framework/dependencies`` > ``stage-packages``
-=================================================================
+uv projects
+-----------
 
-You can use this key to specify any dependencies required for your Flask
-application. In the following example we use it to specify ``libpq-dev``:
+.. tab-set::
 
-.. code-block:: yaml
-  :caption: rockcraft.yaml
+    .. tab-item:: Ubuntu 22.04 LTS and Ubuntu 24.04 LTS
+        :sync: base-22-24
 
-  parts:
-    flask-framework/dependencies:
-      stage-packages:
-        # list required packages or slices for your flask app below.
-        - libpq-dev
+        The extension doesn't support uv projects on these bases. It builds the
+        application with the Python plugin and installs dependencies from
+        ``requirements.txt`` or ``pyproject.toml``.
 
+    .. tab-item:: Ubuntu 26.04 LTS and higher
+        :sync: base-26-plus
+
+        If both a ``uv.lock`` and a ``pyproject.toml`` file are present in the
+        project root, the extension builds the application with the :doc:`uv
+        plugin </reference/plugins/uv_plugin>` instead of the Python plugin. It
+        installs dependencies from the lockfile with ``uv sync``. Gunicorn is
+        injected after the build step regardless of the lockfile contents. In
+        this case, a ``requirements.txt`` file is not required.
+
+        The uv plugin requires both files, meaning the application will fail to
+        pack if ``uv.lock`` is present but ``pyproject.toml`` is missing. If
+        only ``pyproject.toml`` is present, the extension falls back to the
+        Python plugin.
+
+.. _reference-flask-framework-stage-packages:
+
+App dependencies
+----------------
+
+The ``stage-packages`` key specifies all additional dependencies. If the Flask app
+has its own special dependencies, this key must declare them.
+
+The following example specifies the ``libpq-dev`` package:
+
+.. tab-set::
+
+    .. tab-item:: Ubuntu 22.04 LTS and Ubuntu 24.04 LTS
+        :sync: base-22-24
+
+        .. code-block:: yaml
+          :caption: rockcraft.yaml
+
+          parts:
+            flask-framework/dependencies:
+              stage-packages:
+                # list required packages or slices for your Flask app below.
+                - libpq-dev
+
+    .. tab-item:: Ubuntu 26.04 LTS and higher
+        :sync: base-26-plus
+
+        .. code-block:: yaml
+          :caption: rockcraft.yaml
+
+          parts:
+            flask-framework.dependencies:
+              stage-packages:
+                # list required packages or slices for your Flask app below.
+                - libpq-dev
+
+.. _reference-flask-framework-statsd-exporter:
 
 StatsD exporter
-===============
+---------------
 
 A StatsD exporter is installed alongside the Gunicorn server to record
 server metrics. Some of the `Gunicorn-provided metrics
-<https://docs.gunicorn.org/en/stable/instrumentation.html>`_
+<https://gunicorn.org/instrumentation/>`_
 are mapped to new names:
 
 .. list-table::
@@ -85,7 +164,7 @@ for more information.
 .. _flask-gunicorn-worker-selection:
 
 Gunicorn worker selection
-=========================
+-------------------------
 
 If the project has gevent as a dependency, Rockcraft automatically updates the
 pebble plan to spawn asynchronous Gunicorn workers.
@@ -99,30 +178,59 @@ rock:
    docker run --name flask-container -d -p 8000:8000 flask-image:1.0 \
    --args flask sync
 
-``parts`` > ``flask-framework/install-app`` > ``prime``
-=======================================================
+.. _reference-flask-framework-prime:
 
-You can use this field to specify the files to be included or excluded from
-your rock upon ``rockcraft pack``. Follow the ``flask/app/<filename>``
-notation. For example:
+Included or excluded files
+--------------------------
 
-.. code-block:: yaml
-  :caption: rockcraft.yaml
-
-  parts:
-    flask-framework/install-app:
-      prime:
-        - flask/app/.env
-        - flask/app/app.py
-        - flask/app/webapp
-        - flask/app/templates
-        - flask/app/static
-
-Some files, if they exist, are included by default. These include:
+Some files, if they exist, are included by default in the rock. These include:
 ``app``, ``app.py``, ``migrate``, ``migrate.sh``, ``migrate.py``, ``static``,
 ``templates``.
 
-Useful links
-============
+The ``prime`` key specifies the files to be included or excluded from
+the rock upon ``rockcraft pack``, following the ``app/<filename>`` notation. For
+example:
 
-- :ref:`build-a-rock-for-a-flask-application`
+.. tab-set::
+
+    .. tab-item:: Ubuntu 22.04 LTS and Ubuntu 24.04 LTS
+        :sync: base-22-24
+
+        .. code-block:: yaml
+          :caption: rockcraft.yaml
+
+          parts:
+            flask-framework/install-app:
+              prime:
+                - flask/app/.env
+                - flask/app/app.py
+                - flask/app/webapp
+                - flask/app/templates
+                - flask/app/static
+
+    .. tab-item:: Ubuntu 26.04 LTS and higher
+        :sync: base-26-plus
+
+        .. code-block:: yaml
+          :caption: rockcraft.yaml
+
+          parts:
+            flask-framework.install-app:
+              prime:
+                - app/.env
+                - app/app.py
+                - app/webapp
+                - app/templates
+                - app/static
+
+The ``prime`` key supports glob patterns to define the list of files. See :ref:`filesets_explanation`
+for the various ways you can specify files in your rock.
+
+Adding the ``prime`` key to the project file overrides the default files to be included.
+Files are excluded from the rock by defining ``prime`` and omitting the file to
+be excluded.
+
+Useful links
+------------
+
+:ref:`tutorial-build-a-rock-for-a-flask-app`

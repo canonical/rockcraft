@@ -1,3 +1,6 @@
+.. meta::
+    :description: Reference documentation for the Ant plugin.
+
 .. _rockcraft_ant_plugin:
 
 Ant plugin
@@ -15,12 +18,10 @@ After a successful build, this plugin will:
   ``$CRAFT_PART_INSTALL/usr/bin/java`` if ``/usr/bin`` exists.
 
 
-Keywords
---------
+Keys
+----
 
-In addition to the common :ref:`plugin <reference-part-properties-plugin>` and
-:ref:`sources <reference-part-properties-source>` keywords, this plugin provides
-the following plugin-specific keywords:
+This plugin provides the following unique keys.
 
 ant-build-targets
 ~~~~~~~~~~~~~~~~~

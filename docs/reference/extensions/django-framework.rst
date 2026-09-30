@@ -1,61 +1,142 @@
-.. _django-framework-reference:
+.. meta::
+    :description: Reference documentation for the Django framework extension, which configures Django in a rock and populates it with Django dependencies such as Gunicorn.
 
-django-framework
-----------------
+.. _reference-django-framework:
+
+Django framework
+================
 
 The Django extension streamlines the process of building Django application
 rocks.
 
 It facilitates the installation of Django application dependencies, including
 Gunicorn, inside the rock. Additionally, it transfers your project files to
-``/django/app`` within the rock.
+``/django/app`` within the rock (``/app`` on Ubuntu 26.04 LTS).
+By default, the system foundation, or base, is set as ``bare`` to generate a
+lightweight image.
 
 .. note::
-    The Django extension is compatible with the ``bare``, ``ubuntu@22.04``
-    and ``ubuntu@24.04`` bases.
+    The Django extension is compatible with the ``bare``, ``ubuntu@22.04``,
+    ``ubuntu@24.04`` and ``ubuntu@26.04`` bases. Support for Ubuntu 26.04 LTS is
+    experimental.
+
+    Part names added by the extension vary by Ubuntu version. On Ubuntu 22.04 LTS
+    and Ubuntu 24.04 LTS, write ``extension/part``. On Ubuntu 26.04 LTS and
+    higher, write ``extension.part``. For rocks with ``base: bare``, follow the
+    convention for the configured ``build-base``.
 
 The Django extension supports both synchronous and asynchronous
 Gunicorn workers.
 
-Project requirements
-====================
+Use the extension
+-----------------
 
-There are 2 requirements to be able to use the ``django-framework`` extension:
-
-1. There must be a ``requirements.txt`` file in the root directory of the
-   project with ``Django`` declared as a dependency.
-2. The project must be named the same as the ``name`` in the project file, with
-   any ``-`` replaced by ``_``, i.e., the ``manage.py`` must be located at
-   ``./<Rock name with - replaced by _>/<Rock name with - replaced by _>/manage.py``
-   relative to the project file.
-
-For the project to make use of asynchronous Gunicorn workers:
-
-- The ``requirements.txt`` file must include ``gevent`` as a dependency.
-
-
-``parts`` > ``django-framework/dependencies:`` > ``stage-packages``
-===================================================================
-
-You can use this key to specify any dependencies required for your Django
-application. In the following example we use it to specify ``libpq-dev``:
+Declare the extension in ``rockcraft.yaml``:
 
 .. code-block:: yaml
    :caption: rockcraft.yaml
 
-   parts:
-      django-framework/dependencies:
-         stage-packages:
-         # list required packages or slices for your Django application below.
-         - libpq-dev
+   extensions:
+     - django-framework
 
+You can generate this project file by running ``rockcraft init --profile django-framework``
+in the application's directory. To inspect the parts, services, and other configuration
+contributed by the extension, run ``rockcraft expand-extensions`` in the same directory as the
+``rockcraft.yaml`` file.
+
+.. _reference-django-framework-project-requirements:
+
+Project requirements
+--------------------
+
+There are 2 requirements to be able to use the ``django-framework`` extension:
+
+1. There must be a ``requirements.txt`` or ``pyproject.toml`` file in the root
+   directory of the project with ``Django`` declared as a dependency.
+2. The Django project directory at the rock root must be named the same as the
+   ``name`` in the project file, with any ``-`` replaced by ``_``. The Django
+   settings package inside that directory must be either the same name or
+   ``mysite``. This means both ``manage.py`` and ``wsgi.py`` are located at
+   either ``<rock-name>/<rock-name>/`` or ``<rock-name>/mysite/``, but
+   not both.
+
+For the project to make use of asynchronous Gunicorn workers:
+
+- The ``requirements.txt`` or ``pyproject.toml`` file must include ``gevent`` as a dependency.
+
+.. _reference-django-framework-uv:
+
+uv projects
+-----------
+
+.. tab-set::
+
+    .. tab-item:: Ubuntu 22.04 LTS and Ubuntu 24.04 LTS
+        :sync: base-22-24
+
+        The extension doesn't support uv projects on these bases. It builds the
+        application with the Python plugin and installs dependencies from
+        ``requirements.txt``.
+
+    .. tab-item:: Ubuntu 26.04 LTS and higher
+        :sync: base-26-plus
+
+        If both a ``uv.lock`` and a ``pyproject.toml`` file are present in the
+        project root, the extension builds the application with the :doc:`uv
+        plugin </reference/plugins/uv_plugin>` instead of the Python plugin. It
+        installs dependencies from the lockfile with ``uv sync``. Gunicorn is
+        injected after the build step regardless of the lockfile contents. In
+        this case, a ``requirements.txt`` file is not required.
+
+        The uv plugin requires both files, meaning the application will fail to
+        pack if ``uv.lock`` is present but ``pyproject.toml`` is missing. If
+        only ``pyproject.toml`` is present, the extension falls back to the
+        Python plugin.
+
+.. _reference-django-framework-stage-packages:
+
+App dependencies
+----------------
+
+The ``stage-packages`` key specifies all additional dependencies. If the Django app
+has its own special dependencies, this key must declare them.
+
+The following example specifies the ``libpq-dev`` package:
+
+.. tab-set::
+
+    .. tab-item:: Ubuntu 22.04 LTS and Ubuntu 24.04 LTS
+        :sync: base-22-24
+
+        .. code-block:: yaml
+          :caption: rockcraft.yaml
+
+          parts:
+            django-framework/dependencies:
+              stage-packages:
+                # list required packages or slices for your Django application below.
+                - libpq-dev
+
+    .. tab-item:: Ubuntu 26.04 LTS and higher
+        :sync: base-26-plus
+
+        .. code-block:: yaml
+          :caption: rockcraft.yaml
+
+          parts:
+            django-framework.dependencies:
+              stage-packages:
+                # list required packages or slices for your Django application below.
+                - libpq-dev
+
+.. _reference-django-framework-statsd-exporter:
 
 StatsD exporter
-===============
+---------------
 
 A StatsD exporter is installed alongside the Gunicorn server to record
 server metrics. Some of the `Gunicorn-provided metrics
-<https://docs.gunicorn.org/en/stable/instrumentation.html>`_
+<https://gunicorn.org/instrumentation/>`_
 are mapped to new names:
 
 .. list-table::
@@ -87,7 +168,7 @@ for more information.
 .. _django-gunicorn-worker-selection:
 
 Gunicorn worker selection
-=========================
+-------------------------
 
 If the project has gevent as a dependency, Rockcraft automatically updates the
 pebble plan to spawn asynchronous Gunicorn workers.
@@ -101,7 +182,8 @@ rock:
    docker run --name django-container -d -p 8000:8000 django-image:1.0 \
    --args django sync
 
-Useful links
-============
 
-- :ref:`build-a-rock-for-a-django-application`
+Useful links
+------------
+
+:ref:`tutorial-build-a-rock-for-a-django-app`

@@ -1,16 +1,31 @@
 summary: spring-boot extension test
 environment:
   PROJECT_BASE/gradle_bare: gradle
+  PROJECT_BASE/gradle_bare_2604: gradle
   PROJECT_BASE/gradle_2404: gradle
+  PROJECT_BASE/gradle_2604: gradle
   PROJECT_BASE/maven_bare: maven
+  PROJECT_BASE/maven_bare_2604: maven
   PROJECT_BASE/maven_2404: maven
+  PROJECT_BASE/maven_2604: maven
 
   BASE/gradle_bare: bare
+  BASE/gradle_bare_2604: bare
   BASE/gradle_2404: ubuntu@24.04
+  BASE/gradle_2604: ubuntu@26.04
   BASE/maven_bare: bare
+  BASE/maven_bare_2604: bare
   BASE/maven_2404: ubuntu@24.04
-  # BUILD_BASE 22.04 and below's default JDKs are not compatible with Java version 21 and below.
-  BUILD_BASE: ubuntu@24.04
+  BASE/maven_2604: ubuntu@26.04
+
+  BUILD_BASE/gradle_bare: ubuntu@24.04
+  BUILD_BASE/gradle_bare_2604: ubuntu@26.04
+  BUILD_BASE/gradle_2404: ubuntu@24.04
+  BUILD_BASE/gradle_2604: ubuntu@26.04
+  BUILD_BASE/maven_bare: ubuntu@24.04
+  BUILD_BASE/maven_bare_2604: ubuntu@26.04
+  BUILD_BASE/maven_2404: ubuntu@24.04
+  BUILD_BASE/maven_2604: ubuntu@26.04
 
   ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS: "true"
 
@@ -20,12 +35,22 @@ execute: |
   ROCK_FILE="${NAME}_0.1_amd64.rock"
   IMAGE="${NAME}:0.1"
   JAVA_VERSION=21
+  if [ "${BUILD_BASE}" = "ubuntu@26.04" ]; then
+    JAVA_VERSION=25
+  fi
+  BOOT_VERSION=$(curl -s https://start.spring.io/metadata/client \
+    | grep -o '"bootVersion":{[^}]*}' \
+    | grep -o '"default":"[^"]*"' \
+    | cut -d '"' -f 4)
+  BOOT_VERSION="${BOOT_VERSION%.RELEASE}"
+  test -n "${BOOT_VERSION}"
   sudo snap install devpack-for-spring --edge --classic
+  rm -rf "${NAME}-app"
   devpack-for-spring boot start \
-    --path ${NAME}-app \
-    --project ${PROJECT_BASE}-project \
+    --path "${NAME}-app" \
+    --project "${PROJECT_BASE}-project" \
     --language java \
-    --boot-version 3.4.4 \
+    --boot-version "${BOOT_VERSION}" \
     --version 0.0.1 \
     --group com.example \
     --artifact demo \
@@ -34,8 +59,29 @@ execute: |
     --package-name com.example.demo \
     --dependencies web \
     --packaging jar \
-    --java-version 21
-  cd ${NAME}-app
+    --java-version "${JAVA_VERSION}"
+  cd "${NAME}-app" || exit 1
+  cat > src/main/java/com/example/demo/WriteDataController.java <<'EOF'
+  package com.example.demo;
+
+  import java.io.IOException;
+  import java.nio.file.Files;
+  import java.nio.file.Path;
+  import org.springframework.web.bind.annotation.GetMapping;
+  import org.springframework.web.bind.annotation.RestController;
+
+  @RestController
+  public class WriteDataController {
+      @GetMapping("/write-data")
+      public boolean writeData() throws IOException {
+          Files.writeString(
+              Path.of("/app-data/spring-boot-test.txt"),
+              "written by spring boot\n"
+          );
+          return true;
+      }
+  }
+  EOF
   run_rockcraft init --name "${NAME}" --profile spring-boot-framework
 
   # Replace base & build-base with ubuntu@<base>
@@ -56,14 +102,18 @@ execute: |
   docker rm -f "${NAME}-container"
   # test the default spring-boot service
   docker run --name "${NAME}-container" -d -p 8080:8080 "${IMAGE}"
-  retry -n 5 --wait 2 curl localhost:8080
+  retry -n 5 --wait 3 curl localhost:8080
   http_status=$(curl -s -o /dev/null -w "%{http_code}" localhost:8080)
   [ "${http_status}" -eq 404 ]
+  if [ "${BUILD_BASE}" = "ubuntu@26.04" ]; then
+    [ "$(curl -sSf localhost:8080/write-data)" = "true" ]
+    docker exec "${NAME}-container" test -f /app-data/spring-boot-test.txt
+  fi
 
 restore: |
   NAME="spring-boot-${BASE//@/-}-${PROJECT_BASE}"
   NAME="${NAME//./-}"
-  docker stop "${NAME}-container"
-  docker rm "${NAME}-container"
-  rm -f "*.rock" rockcraft.yaml
+  docker rm -f "${NAME}-container" || true
+  rm -rf "${NAME}-app"
+  rm -f -- *.rock rockcraft.yaml
   docker system prune -a -f

@@ -31,10 +31,6 @@ execute: |
   # [docs:create-rockcraft-yaml-end]
   sed -i "s/name: .*/name: fastapi-hello-world/g" rockcraft.yaml
 
-  # [docs:experimental]
-  export ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS=true
-  # [docs:experimental-end]
-
   # [docs:pack]
   rockcraft pack
   # [docs:pack-end]
@@ -44,18 +40,18 @@ execute: |
   # [docs:ls-rock-end]
 
   # [docs:skopeo-copy]
-  sudo rockcraft.skopeo copy \
+  rockcraft.skopeo copy \
     --insecure-policy \
     oci-archive:fastapi-hello-world_0.1_$(dpkg --print-architecture).rock \
     docker-daemon:fastapi-hello-world:0.1
   # [docs:skopeo-copy-end]
 
   # [docs:docker-images]
-  sudo docker images fastapi-hello-world:0.1
+  docker images fastapi-hello-world:0.1
   # [docs:docker-images-end]
 
   # [docs:docker-run]
-  sudo docker run --rm -d -p 8000:8000 \
+  docker run --rm -d -p 8000:8000 \
     --name fastapi-hello-world fastapi-hello-world:0.1
   # [docs:docker-run-end]
   retry -n 5 --wait 2 curl --fail localhost:8000
@@ -65,58 +61,24 @@ execute: |
   # [docs:curl-fastapi-rock-end]
 
   # [docs:get-logs]
-  sudo docker exec fastapi-hello-world pebble logs fastapi
+  docker exec fastapi-hello-world pebble logs fastapi
   # [docs:get-logs-end]
 
   # [docs:stop-docker]
-  sudo docker stop fastapi-hello-world
-  sudo docker rmi fastapi-hello-world:0.1
+  docker stop fastapi-hello-world
+  docker rmi fastapi-hello-world:0.1
   # [docs:stop-docker-end]
-
-  # [docs:change-base]
-  sed -i \
-    "s/base: .*/base: bare\nbuild-base: ubuntu@24.04/g" \
-    rockcraft.yaml
-  # [docs:change-base-end]
-  sed -i "s/version: .*/version: 0.1-chiselled/g" rockcraft.yaml
-
-  # [docs:chisel-pack]
-  rockcraft pack
-  # [docs:chisel-pack-end]
-
-  # [docs:ls-bare-rock]
-  ls *.rock -l --block-size=MB
-  # [docs:ls-bare-rock-end]
-
-  # [docs:docker-run-chisel]
-  sudo rockcraft.skopeo --insecure-policy \
-    copy oci-archive:fastapi-hello-world_0.1-chiselled_$(dpkg --print-architecture).rock \
-    docker-daemon:fastapi-hello-world:0.1-chiselled
-  sudo docker images fastapi-hello-world:0.1-chiselled
-  sudo docker run --rm -d -p 8000:8000 \
-    --name fastapi-hello-world fastapi-hello-world:0.1-chiselled
-  # [docs:docker-run-chisel-end]
-  retry -n 5 --wait 2 curl --fail localhost:8000
-
-  # [docs:curl-fastapi-bare-rock]
-  curl --fail localhost:8000
-  # [docs:curl-fastapi-bare-rock-end]
-
-  # [docs:stop-docker-chisel]
-  sudo docker stop fastapi-hello-world
-  sudo docker rmi fastapi-hello-world:0.1-chiselled
-  # [docs:stop-docker-chisel-end]
 
   cat time_app.py > app.py
   sed -i "s/version: .*/version: 0.2/g" rockcraft.yaml
 
   # [docs:docker-run-update]
   rockcraft pack
-  sudo rockcraft.skopeo --insecure-policy \
+  rockcraft.skopeo --insecure-policy \
     copy oci-archive:fastapi-hello-world_0.2_$(dpkg --print-architecture).rock \
     docker-daemon:fastapi-hello-world:0.2
-  sudo docker images fastapi-hello-world:0.2
-  sudo docker run --rm -d -p 8000:8000 \
+  docker images fastapi-hello-world:0.2
+  docker run --rm -d -p 8000:8000 \
     --name fastapi-hello-world fastapi-hello-world:0.2
   # [docs:docker-run-update-end]
   retry -n 5 --wait 2 curl --fail localhost:8000/time
@@ -126,8 +88,8 @@ execute: |
   # [docs:curl-time-end]
 
   # [docs:stop-docker-updated]
-  sudo docker stop fastapi-hello-world
-  sudo docker rmi fastapi-hello-world:0.2
+  docker stop fastapi-hello-world
+  docker rmi fastapi-hello-world:0.2
   # [docs:stop-docker-updated-end]
 
   # [docs:cleanup]
@@ -136,7 +98,6 @@ execute: |
   rm -rf .venv __pycache__
   # delete all the files created during the tutorial
   rm fastapi-hello-world_0.1_$(dpkg --print-architecture).rock \
-    fastapi-hello-world_0.1-chiselled_$(dpkg --print-architecture).rock \
     fastapi-hello-world_0.2_$(dpkg --print-architecture).rock \
     rockcraft.yaml app.py requirements.txt
   # [docs:cleanup-end]

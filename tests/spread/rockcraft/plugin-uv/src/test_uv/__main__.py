@@ -1,5 +1,5 @@
 # Test the importing of a non-stdlib module
-import black  # pyright: ignore[reportMissingImports]
+import black
 
 # "Use" it without using it so linters don't complain
 _ = black

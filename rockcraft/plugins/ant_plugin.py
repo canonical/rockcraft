@@ -19,7 +19,7 @@
 import logging
 
 from craft_parts.plugins import ant_plugin
-from overrides import override  # type: ignore[reportUnknownVariableType]
+from typing_extensions import override
 
 from .java_common import create_usr_bin_java
 

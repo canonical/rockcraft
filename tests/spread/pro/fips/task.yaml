@@ -1,0 +1,19 @@
+summary: |
+  Test that packing a rock with FIPS Pro sources succeeds.
+
+  Uses a full base so the overlay apt upgrade step runs. The
+  fips-updates repository pins packages (e.g. libgcrypt20) to versions
+  older than the noble GA archive, so the overlay upgrade must pass
+  --allow-downgrades or apt aborts with:
+  "Packages were downgraded and -y was used without --allow-downgrades".
+
+execute: |
+  rockcraft pack --pro=fips-updates --verbosity=DEBUG > log 2>&1
+  rockcraft clean
+
+  # the overlay upgrade step must have run for a full base
+  MATCH 'Upgrading base overlay system packages' < log
+
+restore: |
+  rm -f log
+  rm -f fips-test_latest_*.rock

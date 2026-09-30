@@ -13,14 +13,14 @@ execute: |
   rockcraft pack
   # [docs:pack-rock-end]
 
-  du -sh python_3.11_amd64.rock
+  du -sh python_3.14_amd64.rock
 
   # [docs:run-rock]
-  sudo rockcraft.skopeo --insecure-policy copy oci-archive:python_3.11_amd64.rock docker-daemon:python-rock:3.11-22.04
-  docker run --rm python-rock:3.11-22.04 exec python3.11 -c 'print("Hello, world")'
+  sudo rockcraft.skopeo --insecure-policy copy oci-archive:python_3.14_amd64.rock docker-daemon:python-rock:3.14-26.04
+  docker run --rm python-rock:3.14-26.04 exec python3.14 -c 'print("Hello, world")'
   # [docs:run-rock-end]
 
-  docker run --rm python-rock:3.11-22.04 exec python3.11 -c 'print("Hello, world")' | grep "Hello, world"
+  docker run --rm python-rock:3.14-26.04 exec python3.14 -c 'print("Hello, world")' | grep "Hello, world"
 
   popd
   pushd bare-rock
@@ -28,14 +28,14 @@ execute: |
   rockcraft pack
   # [docs:pack-bare-rock-end]
 
-  du -sh bare-python_3.11_amd64.rock
+  du -sh bare-python_3.14_amd64.rock
 
   # [docs:run-bare-rock]
-  sudo rockcraft.skopeo --insecure-policy copy oci-archive:bare-python_3.11_amd64.rock docker-daemon:python-rock:3.11-bare
-  docker run --rm python-rock:3.11-bare exec python3.11 -c 'print("Hello, world")'
+  sudo rockcraft.skopeo --insecure-policy copy oci-archive:bare-python_3.14_amd64.rock docker-daemon:python-rock:3.14-bare
+  docker run --rm python-rock:3.14-bare exec python3.14 -c 'print("Hello, world")'
   # [docs:run-bare-rock-end]
 
-  docker run --rm python-rock:3.11-bare exec python3.11 -c 'print("Hello, world")' | grep "Hello, world"
+  docker run --rm python-rock:3.14-bare exec python3.14 -c 'print("Hello, world")' | grep "Hello, world"
 
   popd
   pushd chiselled-rock
@@ -43,16 +43,16 @@ execute: |
   rockcraft pack
   # [docs:pack-chiselled-rock-end]
 
-  du -sh chiselled-python_3.11_amd64.rock
+  du -sh chiselled-python_3.14_amd64.rock
 
   # [docs:run-chiselled-rock]
-  sudo rockcraft.skopeo --insecure-policy copy oci-archive:chiselled-python_3.11_amd64.rock docker-daemon:python-rock:3.11-chiselled
-  docker run --rm python-rock:3.11-chiselled exec python3.11 -c 'print("Hello, world")'
+  sudo rockcraft.skopeo --insecure-policy copy oci-archive:chiselled-python_3.14_amd64.rock docker-daemon:python-rock:3.14-chiselled
+  docker run --rm python-rock:3.14-chiselled exec python3.14 -c 'print("Hello, world")'
   # [docs:run-chiselled-rock-end]
 
-  docker run --rm python-rock:3.11-chiselled exec python3.11 -c 'print("Hello, world")' | grep "Hello, world"
+  docker run --rm python-rock:3.14-chiselled exec python3.14 -c 'print("Hello, world")' | grep "Hello, world"
 
   ###
-  docker rmi -f python-rock:3.11-22.04
-  docker rmi -f python-rock:3.11-bare
-  docker rmi -f python-rock:3.11-chiselled
+  docker rmi -f python-rock:3.14-26.04
+  docker rmi -f python-rock:3.14-bare
+  docker rmi -f python-rock:3.14-chiselled

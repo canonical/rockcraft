@@ -15,7 +15,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
+import stat
 from pathlib import Path
+from typing import Any
 
 import pydantic
 import pytest
@@ -23,11 +25,11 @@ import yaml
 from craft_application.errors import CraftValidationError
 from rockcraft.pebble import (
     Check,
-    ExecCheck,
-    HttpCheck,
+    ExecCheckOptions,
+    HttpCheckOptions,
     Pebble,
     Service,
-    TcpCheck,
+    TcpCheckOptions,
     add_pebble_part,
 )
 
@@ -70,11 +72,13 @@ class TestPebble:
                     "summary": "mock summary",
                     "description": "mock description",
                     "services": {
-                        "mockServiceOne": Service(
-                            override="replace",
-                            command="foo",
-                            on_success="shutdown",
-                        ).model_dump(exclude_none=True, by_alias=True)
+                        "mockServiceOne": Service.unmarshal(
+                            {
+                                "override": "replace",
+                                "command": "foo",
+                                "on_success": "shutdown",
+                            }
+                        ).marshal()
                     },
                 },
                 (
@@ -190,10 +194,13 @@ class TestPebble:
         )
 
         check.is_true(out_pebble_layer.exists())
-        check.equal(oct((tmp_path / pebble_obj.PEBBLE_PATH).stat().st_mode)[-3:], "777")
         check.equal(
-            oct(Path(out_pebble_layer).stat().st_mode)[-3:],
-            "777",
+            stat.S_IMODE((tmp_path / pebble_obj.PEBBLE_PATH).stat().st_mode),
+            0o1777,
+        )
+        check.equal(
+            stat.S_IMODE(Path(out_pebble_layer).stat().st_mode),
+            0o777,
         )
         with out_pebble_layer.open() as f:
             content = f.read()
@@ -244,10 +251,12 @@ class TestPebble:
     @pytest.mark.parametrize(
         ("bad_service", "error"),
         [
-            # Missing fields
-            ({}, r"^2 validation errors[\s\S]*override[\s\S]*command"),
-            # Bad attributes values
-            (
+            pytest.param(
+                {},
+                r"^2 validation errors[\s\S]*override[\s\S]*command",
+                id="missing-fields",
+            ),
+            pytest.param(
                 {
                     "override": "bad value",
                     "command": "free text allowed",
@@ -260,14 +269,14 @@ class TestPebble:
                 r"override[\s\S]*Input should be[\s\S]*'merge' or 'replace'[\s\S]*"
                 r"startup[\s\S]*Input should be[\s\S]*'enabled' or 'disabled'[\s\S]*"
                 r"on-success[\s\S]*Input should be[\s\S]*"
-                r"'restart', 'shutdown' or 'ignore'[\s\S]*"
+                r"'restart', 'shutdown', 'failure-shutdown' or 'ignore'[\s\S]*"
                 r"on-failure[\s\S]*Input should be[\s\S]*"
-                r"'restart', 'shutdown' or 'ignore'[\s\S]*"
+                r"'restart', 'shutdown', 'success-shutdown' or 'ignore'[\s\S]*"
                 r"on-check-failure[\s\S]*Input should be[\s\S]*"
-                r"'restart', 'shutdown' or 'ignore'[\s\S]*",
+                r"'restart', 'shutdown', 'success-shutdown' or 'ignore'[\s\S]*",
+                id="bad-values",
             ),
-            # Bad attribute types
-            (
+            pytest.param(
                 {
                     "override": ["merge"],
                     "command": ["not a string"],
@@ -285,14 +294,15 @@ class TestPebble:
                 r"Input should be a valid list[\s\S]*"
                 r"Input should be a valid dictionary[\s\S]*"
                 r"Input should be a valid integer[\s\S]*"
-                r"Input should be 'restart', 'shutdown' or 'ignore'[\s\S]*"
+                r"Input should be 'restart', 'shutdown', 'success-shutdown' or 'ignore'[\s\S]*"
                 r"Input should be a valid number[\s\S]*",
+                id="bad-types",
             ),
         ],
     )
     def test_bad_services(self, bad_service, error):
         with pytest.raises(pydantic.ValidationError, match=error):
-            _ = Service(**bad_service)
+            Service.model_validate(bad_service)
 
     @pytest.mark.parametrize(
         ("bad_http_check", "error"),
@@ -305,15 +315,17 @@ class TestPebble:
                     "url": [1],
                     "headers": "not a dict",
                 },
-                r"^2 validation errors[\s\S]*"
-                r"URL input should be a string or URL[\s\S]*"
-                r"Input should be a valid dictionary[\s\S]*",
+                (
+                    r"^2 validation errors[\s\S]*"
+                    r"URL input should be a string or URL[\s\S]*"
+                    r"Input should be a valid dictionary[\s\S]*"
+                ),
             ),
         ],
     )
     def test_bad_http_checks(self, bad_http_check, error):
         with pytest.raises(pydantic.ValidationError, match=error):
-            _ = HttpCheck(**bad_http_check)
+            HttpCheckOptions.model_validate(bad_http_check)
 
     @pytest.mark.parametrize(
         ("bad_tcp_check", "error"),
@@ -326,15 +338,17 @@ class TestPebble:
                     "port": "not an int",
                     "host": ["string list"],
                 },
-                r"^2 validation errors[\s\S]*"
-                r"port[\s\S]*Input should be a valid integer[\s\S]*"
-                r"host[\s\S]*Input should be a valid string[\s\S]*",
+                (
+                    r"^2 validation errors[\s\S]*"
+                    r"port[\s\S]*Input should be a valid integer[\s\S]*"
+                    r"host[\s\S]*Input should be a valid string[\s\S]*"
+                ),
             ),
         ],
     )
     def test_bad_tcp_checks(self, bad_tcp_check, error):
         with pytest.raises(pydantic.ValidationError, match=error):
-            _ = TcpCheck(**bad_tcp_check)
+            TcpCheckOptions.model_validate(bad_tcp_check)
 
     @pytest.mark.parametrize(
         ("bad_exec_check", "error"),
@@ -353,60 +367,85 @@ class TestPebble:
                     "group-id": "not an int",
                     "working-dir": ["string list"],
                 },
-                r"^8 validation errors[\s\S]*"
-                r"command[\s\S]*Input should be a valid string[\s\S]*"
-                r"service-context[\s\S]*Input should be a valid string[\s\S]*"
-                r"environment[\s\S]*Input should be a valid dictionary[\s\S]*"
-                r"user[\s\S]*Input should be a valid string[\s\S]*"
-                r"user-id[\s\S]*Input should be a valid integer[\s\S]*"
-                r"group[\s\S]*Input should be a valid string[\s\S]*"
-                r"group-id[\s\S]*Input should be a valid integer[\s\S]*"
-                r"working-dir[\s\S]*Input should be a valid string[\s\S]*",
+                (
+                    r"^8 validation errors[\s\S]*"
+                    r"command[\s\S]*Input should be a valid string[\s\S]*"
+                    r"service-context[\s\S]*Input should be a valid string[\s\S]*"
+                    r"environment[\s\S]*Input should be a valid dictionary[\s\S]*"
+                    r"user[\s\S]*Input should be a valid string[\s\S]*"
+                    r"user-id[\s\S]*Input should be a valid integer[\s\S]*"
+                    r"group[\s\S]*Input should be a valid string[\s\S]*"
+                    r"group-id[\s\S]*Input should be a valid integer[\s\S]*"
+                    r"working-dir[\s\S]*Input should be a valid string[\s\S]*"
+                ),
             ),
         ],
     )
     def test_bad_exec_checks(self, bad_exec_check, error):
         with pytest.raises(pydantic.ValidationError, match=error):
-            _ = ExecCheck(**bad_exec_check)
+            ExecCheckOptions.model_validate(bad_exec_check)
 
-    def test_full_check(self):
+    @pytest.mark.parametrize(
+        "additional_fields",
+        [
+            {"http": {"url": "http://foo.bar"}},
+            {"tcp": {"port": 1}},
+            {"exec": {"command": "/bin/true"}},
+        ],
+    )
+    def test_full_check(self, additional_fields: dict[str, dict[str, Any]]):
         full_check = {
             "override": "merge",
             "level": "alive",
             "period": "1s",
             "timeout": "10s",
             "threshold": 3,
-            "http": {"url": "http://foo.bar"},
-        }
-        _ = Check(**full_check)
+        } | additional_fields
+        adapter = pydantic.TypeAdapter(Check)
+        adapter.validate_python(full_check)
 
-    def test_minimal_check(self):
-        _ = Check.model_validate({"override": "merge", "exec": {"command": "foo cmd"}})
+    @pytest.mark.parametrize(
+        "additional_fields",
+        [
+            {"http": {"url": "http://foo.bar"}},
+            {"tcp": {"port": 1}},
+            {"exec": {"command": "/bin/true"}},
+        ],
+    )
+    @pytest.mark.parametrize("override", ["merge", "replace"])
+    def test_minimal_check(
+        self, override: str, additional_fields: dict[str, dict[str, Any]]
+    ):
+        adapter = pydantic.TypeAdapter(Check)
+        adapter.validate_python({"override": override} | additional_fields)
 
     @pytest.mark.parametrize(
         ("bad_check", "exception", "error"),
         [
             # Missing check type fields
-            (
+            pytest.param(
                 {},
                 CraftValidationError,
                 r"Must specify exactly one of http, tcp, exec for each check.",
+                id="missing-check-type",
             ),
             # Missing mandatory fields
-            (
+            pytest.param(
                 {"exec": {"command": "foo"}},
                 pydantic.ValidationError,
                 r"^1 validation error[\s\S]*override[\s\S]*",
+                id="missing-mandatory-fields",
             ),
             # Too many check types
-            (
+            pytest.param(
                 {"override": "merge", "exec": {"command": "foo"}, "tcp": {"port": 1}},
                 CraftValidationError,
                 r"Multiple check types specified ([\s\S]*). "
                 r"Each check must have exactly one type.",
+                id="multiple-check-types",
             ),
             # Bad attributes values
-            (
+            pytest.param(
                 {
                     "override": "bad value",
                     "level": "bad value",
@@ -416,9 +455,10 @@ class TestPebble:
                 r"^2 validation errors[\s\S]*"
                 r"override[\s\S]*Input should be 'merge' or 'replace'[\s\S]*"
                 r"level[\s\S]*Input should be 'alive' or 'ready'[\s\S]*",
+                id="bad-attribute-values",
             ),
             # Bad attribute types
-            (
+            pytest.param(
                 {
                     "override": ["merge"],
                     "level": ["alive"],
@@ -435,15 +475,17 @@ class TestPebble:
                 r"Input should be a valid string[\s\S]*"
                 r"Input should be a valid integer[\s\S]*"
                 r"Input should be a valid dictionary[\s\S]*",
+                id="bad-attribute-types",
             ),
         ],
     )
     def test_bad_checks(self, bad_check, exception, error):
+        adapter = pydantic.TypeAdapter(Check)
         with pytest.raises(exception, match=error):
-            _ = Check(**bad_check)
+            adapter.validate_python(bad_check)
 
     def test_http_check_dump(self):
-        check = HttpCheck.model_validate({"url": "http://www.example.com"})
+        check = HttpCheckOptions.model_validate({"url": "http://www.example.com"})
         dump = check.model_dump(exclude_none=True, mode="json")
 
         assert dump["url"] == "http://www.example.com/"
@@ -483,3 +525,27 @@ def test_project_unmarshal_existing_pebble_same():
 
     # Must not raise any errors
     add_pebble_part(yaml_data)
+
+
+@pytest.mark.parametrize(
+    ("enabled_services", "expected_channel"),
+    [
+        (set(), "pebble/latest/stable"),
+        ({"fips"}, "pebble/fips/stable"),
+        ({"fips-updates"}, "pebble/fips/stable"),
+        ({"esm-apps", "fips-preview"}, "pebble/fips/stable"),
+        ({"esm-apps"}, "pebble/latest/stable"),
+    ],
+    ids=["no_pro_services", "fips", "fips_updates", "mixed", "not_fips"],
+)
+def test_add_pebble_part_snap(mocker, enabled_services, expected_channel):
+    """Test that FIPS pebble snap is used when FIPS services are enabled."""
+
+    mocker.patch(
+        "craft_application.util.ProServices.get_pro_services",
+        return_value=enabled_services,
+    )
+
+    yaml_data = {"build-base": "ubuntu@24.04", "parts": {}}
+    add_pebble_part(yaml_data)
+    assert yaml_data["parts"]["pebble"]["stage-snaps"] == [expected_channel]

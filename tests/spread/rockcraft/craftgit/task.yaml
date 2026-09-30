@@ -6,4 +6,4 @@ execute: |
   test -f craftgit-test_latest_amd64.rock
 
 restore: |
-  rm -v craftgit-test_latest_amd64.rock
+  rm -fv craftgit-test_latest_amd64.rock

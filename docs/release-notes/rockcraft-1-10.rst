@@ -1,3 +1,6 @@
+.. meta::
+    :description: Release notes for Rockcraft 1.10.
+
 .. _release-1.10:
 
 Rockcraft 1.10 release notes
@@ -55,11 +58,11 @@ ExpressJS extension
 
 The new ExpressJS extension streamlines the process of building rocks that bundle
 ExpressJS applications. This extension makes it easy to install your application's
-dependencies, including the Node.js interpreter and NPM.
+dependencies, including the Node.js interpreter and npm.
 
 This new extension is experimental and subject to change. For more information, check
-out the ExpressJS :ref:`tutorial <build-a-rock-for-an-expressjs-application>` and
-:ref:`reference <expressjs-framework-reference>`.
+out the Express :ref:`tutorial <tutorial-build-a-rock-for-an-express-app>` and
+:ref:`reference <reference-express-framework>`.
 
 
 Minor features
@@ -70,8 +73,8 @@ Rockcraft 1.10 brings the following minor changes.
 Part sources
 ~~~~~~~~~~~~
 
-The ``source-commit`` :ref:`key <reference-part-properties-source-commit>` now accepts
-short hashes in addition to the full hash of a Git commit.
+The :ref:`source-commit <PartSpec.source_commit>` key now accepts short hashes in
+addition to the full hash of a Git commit.
 
 OCI Annotations
 ~~~~~~~~~~~~~~~
@@ -98,12 +101,12 @@ Contributors
 We would like to express a big thank you to all the people who contributed to
 this release.
 
-:literalref:`@alesancor1<https://github.com/alesancor1>`,
-:literalref:`@bepri<https://github.com/bepri>`,
-:literalref:`@cjdcordeiro<https://github.com/cjdcordeiro>`,
-:literalref:`@erinecon<https://github.com/erinecon>`,
-:literalref:`@jdkandersson<https://github.com/jdkandersson>`,
-:literalref:`@medubelko<https://github.com/medubelko>`,
-:literalref:`@mr-cal<https://github.com/mr-cal>`,
-:literalref:`@tigarmo<https://github.com/tigarmo>`,
-and :literalref:`@yanksyoon<https://github.com/yanksyoon>`.
+:literalref:`@alesancor1 <https://github.com/alesancor1>`,
+:literalref:`@bepri <https://github.com/bepri>`,
+:literalref:`@cjdcordeiro <https://github.com/cjdcordeiro>`,
+:literalref:`@erinecon <https://github.com/erinecon>`,
+:literalref:`@jdkandersson <https://github.com/jdkandersson>`,
+:literalref:`@medubelko <https://github.com/medubelko>`,
+:literalref:`@mr-cal <https://github.com/mr-cal>`,
+:literalref:`@tigarmo <https://github.com/tigarmo>`,
+and :literalref:`@yanksyoon <https://github.com/yanksyoon>`.

@@ -4,7 +4,7 @@ PROJECT=rockcraft
 # COVERAGE_SOURCE="starcraft"
 UV_TEST_GROUPS := "--group=dev"
 UV_DOCS_GROUPS := "--group=docs"
-UV_LINT_GROUPS := "--group=lint" "--group=types"
+UV_LINT_GROUPS := "--group=lint" "--group=types" $(UV_DOCS_GROUPS)
 UV_TICS_GROUPS := "--group=tics"
 
 # If you have dev dependencies that depend on your distro version, uncomment these:
@@ -14,7 +14,7 @@ endif
 ifdef VERSION_CODENAME
 UV_TEST_GROUPS += "--group=dev-$(VERSION_CODENAME)"
 UV_DOCS_GROUPS += "--group=dev-$(VERSION_CODENAME)"
-UV_LINT_GROUPS += "--group=dev-$(VERSION_CODENAME)"
+UV_LINT_GROUPS += "--group=dev-$(VERSION_CODENAME)" $(UV_DOCS_GROUPS)
 UV_TICS_GROUPS += "--group=dev-$(VERSION_CODENAME)"
 endif
 
@@ -24,7 +24,7 @@ include common.mk
 format: format-ruff format-codespell format-prettier format-pre-commit  ## Run all automatic formatters
 
 .PHONY: lint
-lint: lint-ruff lint-codespell lint-mypy lint-prettier lint-pyright lint-shellcheck lint-docs lint-twine lint-uv-lockfile  ## Run all linters
+lint: lint-ruff lint-ty lint-codespell lint-prettier lint-shellcheck lint-docs lint-twine lint-uv-lockfile  ## Run all linters
 
 .PHONY: pack
 pack: pack-pip pack-snap  ## Build all packages

@@ -12,3 +12,7 @@ parts:
   from-deb:
     plugin: nil
     stage-packages: [hello]
+
+  from-slice:
+    plugin: nil
+    stage-packages: [bash_bins]

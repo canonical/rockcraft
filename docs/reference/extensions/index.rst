@@ -1,19 +1,27 @@
-.. _extensions:
+.. meta::
+    :description: The reference documentation for all extensions in Rockcraft.
+
+.. _reference-extensions:
 
 Extensions
-**********
+==========
 
-Just as the Snapcraft extensions are designed to simplify Snap creation,
-Rockcraft extensions are crafted to expand and modify the user-provided
-rockcraft project file, aiming to minimise the boilerplate code when
-initiating a new rock.
+Extensions are reusable configuration fragments that simplify a
+``rockcraft.yaml`` file for common application frameworks. An extension
+configures the parts, services, and other keys needed to build and run the
+application, while still allowing you to customize the generated
+configuration in the project file.
+
+The top-level ``extensions`` key in ``rockcraft.yaml`` defines the extension
+used by the project. When Rockcraft loads the project, it expands the extension
+and combines its configuration with your project file.
 
 .. toctree::
-   :maxdepth: 1
+    :maxdepth: 1
 
-   flask-framework
-   django-framework
-   fastapi-framework
-   go-framework
-   expressjs-framework
-   spring-boot-framework
+    flask-framework
+    django-framework
+    fastapi-framework
+    go-framework
+    express-framework
+    spring-boot-framework

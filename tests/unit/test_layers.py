@@ -352,7 +352,23 @@ def test_prune_prime_files(tmp_path):
     (prime_dir / "file3.txt").chmod(0o444)
 
     files = {"file1.txt", "file2.txt", "file3.txt"}
-    layers.prune_prime_files(prime_dir, files, base_layer_dir)
+    changed = layers.prune_prime_files(prime_dir, files, base_layer_dir)
 
     # "file1.txt" gets pruned, the other files remain.
+    assert changed is True
     assert sorted(os.listdir(prime_dir)) == ["file2.txt", "file3.txt"]  # noqa: PTH208 (use Path.iterdir())
+
+
+def test_prune_prime_files_no_changes(tmp_path):
+    base_layer_dir = tmp_path / "base"
+    base_layer_dir.mkdir()
+    (base_layer_dir / "file1.txt").write_text("file1")
+
+    prime_dir = tmp_path / "prime"
+    prime_dir.mkdir()
+    (prime_dir / "file1.txt").write_text("different")
+
+    changed = layers.prune_prime_files(prime_dir, {"file1.txt"}, base_layer_dir)
+
+    assert changed is False
+    assert sorted(os.listdir(prime_dir)) == ["file1.txt"]  # noqa: PTH208 (use Path.iterdir())

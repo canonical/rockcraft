@@ -1,10 +1,13 @@
-.. _build-a-rock-for-a-go-application:
+.. meta::
+    :description: Learn the process of making a Go app into a rock. In this tutorial, we use the go-framework extension to bootstrap and test the contents of the rock.
+
+.. _tutorial-build-a-rock-for-a-go-app:
 
 Build a rock for a Go app
 -------------------------
 
 In this tutorial, we'll containerise a simple Go app into a rock using
-Rockcraft's ``go-framework`` :ref:`extension <go-framework-reference>`.
+Rockcraft's ``go-framework`` :ref:`extension <reference-go-framework>`.
 
 It should take 25 minutes for you to complete.
 
@@ -20,7 +23,7 @@ rocks for Go apps.
 Setup
 =====
 
-.. include:: /reuse/tutorial/setup_edge.rst
+.. include:: /reuse/tutorial/setup_stable.rst
 
 In order to test the Go app locally, before packing it into a rock,
 install Go.
@@ -80,8 +83,8 @@ Let's Run the Go app to verify that it works:
 
 The app starts an HTTP server listening on port 8000
 that we can test by using ``curl`` to send a request to the root
-endpoint. We may need a new terminal for this -- run
-``multipass shell rock-dev`` to get another terminal:
+endpoint. We'll need a new shell of the VM for this -- in a separate terminal,
+run ``multipass shell rock-dev`` again:
 
 .. literalinclude:: code/go/task.yaml
     :language: bash
@@ -91,8 +94,9 @@ endpoint. We may need a new terminal for this -- run
 
 The Go app should respond with ``Hello, world!``.
 
-The Go app looks good, so let's stop it for now
-with :kbd:`Ctrl` + :kbd:`C`.
+The Go app looks good, so let's close the terminal instance we used for
+testing and stop the app in the original terminal instance by pressing
+:kbd:`Ctrl` + :kbd:`C`.
 
 Pack the Go app into a rock
 ===========================
@@ -128,9 +132,9 @@ The top of the file should look similar to the following snippet:
     :caption: ~/go-hello-world/rockcraft.yaml
 
     name: go-hello-world
-    # see https://documentation.ubuntu.com/rockcraft/en/latest/explanation/bases/
-    # for more information about bases and using 'bare' bases for chiselled rocks
-    base: bare # as an alternative, a ubuntu base can be used
+    # see https://documentation.ubuntu.com/rockcraft/latest/explanation/bases/
+    # for more information about bases and using 'bare' bases for chiseled rocks
+    base: bare # as an alternative, an ubuntu base can be used
     build-base: ubuntu@24.04 # build-base is required when the base is bare
     version: '0.1' # just for humans. Semantic versioning is recommended
     summary: A summary of your Go app # 79 char long summary
@@ -147,7 +151,7 @@ The top of the file should look similar to the following snippet:
         # ppc64el:
         # s390x:
 
-Verfiy that the ``name`` is ``go-hello-world``.
+Verify that the ``name`` is ``go-hello-world``.
 
 The ``platforms`` key must match the architecture of your host. Check
 the architecture of your system:
@@ -168,15 +172,6 @@ Edit the ``platforms`` key in ``rockcraft.yaml`` if required.
     generated ``.rock`` file.
 
 
-As the ``go-framework`` extension is still experimental, export the
-environment variable ``ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS``:
-
-.. literalinclude:: code/go/task.yaml
-    :language: bash
-    :start-after: [docs:experimental]
-    :end-before: [docs:experimental-end]
-    :dedent: 2
-
 Pack the rock:
 
 .. literalinclude:: code/go/task.yaml
@@ -184,26 +179,6 @@ Pack the rock:
     :start-after: [docs:pack]
     :end-before: [docs:pack-end]
     :dedent: 2
-
-.. warning::
-   There is a `known connectivity issue with LXD and Docker
-   <lxd-docker-connectivity-issue_>`_. If we see a
-   networking issue such as "*A network related operation failed in a context
-   of no network access*" or ``Client.Timeout``, allow egress network traffic
-   to flow from the LXD managed bridge using:
-
-   .. code-block::
-
-       iptables  -I DOCKER-USER -i <network_bridge> -j ACCEPT
-       ip6tables -I DOCKER-USER -i <network_bridge> -j ACCEPT
-       iptables  -I DOCKER-USER -o <network_bridge> -m conntrack \
-         --ctstate RELATED,ESTABLISHED -j ACCEPT
-       ip6tables -I DOCKER-USER -o <network_bridge> -m conntrack \
-         --ctstate RELATED,ESTABLISHED -j ACCEPT
-
-   Run ``lxc network list`` to show the existing LXD managed bridges.
-
-Depending on the network, this step can take a couple of minutes to finish.
 
 Once Rockcraft has finished packing the Go rock, we'll find a new file in
 the working directory (an `OCI <OCI_image_spec_>`_ image) with the ``.rock``
@@ -251,6 +226,11 @@ The output should list the Go container image, along with its tag, ID and
 size:
 
 .. terminal::
+    :user: ubuntu
+    :host: rock-dev
+    :dir: ~/go-hello-world
+
+    docker images go-hello-world:0.1
 
     REPOSITORY       TAG       IMAGE ID       CREATED         SIZE
     go-hello-world   0.1       f3abf7ebc169   5 minutes ago   15.7MB
@@ -280,7 +260,7 @@ View the app logs
 ~~~~~~~~~~~~~~~~~
 
 When deploying the Go rock, we can always get the app logs with
-:ref:`pebble_explanation_page`:
+:ref:`explanation-pebble`:
 
 .. literalinclude:: code/go/task.yaml
     :language: text
@@ -293,6 +273,11 @@ Go service running inside the container.
 We should expect to see something similar to this:
 
 .. terminal::
+    :user: ubuntu
+    :host: rock-dev
+    :dir: ~/go-hello-world
+
+    docker exec go-hello-world pebble logs go
 
     2024-10-04T08:51:35.826Z [go] 2024/10/04 08:51:35 starting hello world application
     2024-10-04T08:51:39.974Z [go] 2024/10/04 08:51:39 new hello world request
@@ -319,7 +304,7 @@ Update the Go app
 =================
 
 As a final step, let's update our app. For example,
-we want to add a new ``/time`` endpoint which returns the current time.
+we want to add a new ``/time`` endpoint which returns the current time in UTC.
 
 Start by opening the ``main.go`` file in a text editor and update the code to
 look like the following:
@@ -337,9 +322,9 @@ The top of the ``rockcraft.yaml`` file should look similar to the following:
     :emphasize-lines: 6
 
     name: go-hello-world
-    # see https://documentation.ubuntu.com/rockcraft/en/latest/explanation/bases/
-    # for more information about bases and using 'bare' bases for chiselled rocks
-    base: bare # as an alternative, a ubuntu base can be used
+    # see https://documentation.ubuntu.com/rockcraft/latest/explanation/bases/
+    # for more information about bases and using 'bare' bases for chiseled rocks
+    base: bare # as an alternative, an ubuntu base can be used
     build-base: ubuntu@24.04 # build-base is required when the base is bare
     version: '0.2'
     summary: A summary of your Go app # 79 char long summary
@@ -358,9 +343,9 @@ The top of the ``rockcraft.yaml`` file should look similar to the following:
 
 .. note::
 
-    ``rockcraft pack`` will create a new image with the updated code even if we
-    don't change the version. It is recommended to change the version whenever
-    we make changes to the app in the image.
+    If we repack the rock without changing the version, the new rock will have the
+    same name and overwrite the last one we built. It's a good practice to change
+    the version whenever we make changes to the app in the image.
 
 Pack and run the rock using similar commands as before:
 
@@ -383,7 +368,7 @@ Finally, use ``curl`` to send a request to the ``/time`` endpoint:
     :end-before: [docs:curl-time-end]
     :dedent: 2
 
-The updated app will respond with the current date and time.
+The updated app will respond with the current date and time in UTC.
 
 .. note::
 
@@ -452,13 +437,13 @@ But there is a lot more to explore:
       - :external+charmcraft:ref:`Write your first Kubernetes charm for a Go app
         in Charmcraft <write-your-first-kubernetes-charm-for-a-go-app>`
     * - "How do I...?"
-      - :ref:`How to manage a 12-factor app rock <manage-12-factor-app-rock>`
+      - :ref:`how-to-manage-a-12-factor-app-rock`
     * - "How do I get in touch?"
       - `Matrix channel <https://matrix.to/#/#12-factor-charms:ubuntu.com>`_
     * - "What is...?"
-      - :ref:`go-framework extension <go-framework-reference>`
+      - :ref:`go-framework extension <reference-go-framework>`
 
-        :ref:`What is a Rock? <rocks_explanation>`
+        :ref:`What is a Rock? <explanation-rocks>`
     * - "Why...?", "So what?"
       - :external+12-factor:ref:`12-Factor app principles and support in Charmcraft
         and Rockcraft <explanation>`
@@ -475,6 +460,3 @@ Troubleshooting
 Upon changing the Go app and re-packing the rock, if
 the changes are not taking effect, try running ``rockcraft clean`` and pack
 the rock again with ``rockcraft pack``.
-
-.. _`lxd-docker-connectivity-issue`: https://documentation.ubuntu.com/lxd/en/latest/howto/network_bridge_firewalld/#prevent-connectivity-issues-with-lxd-and-docker
-.. _`install-multipass`: https://multipass.run/docs/install-multipass

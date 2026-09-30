@@ -55,6 +55,14 @@ def generate_project_schema() -> str:
     # combine both schemas
     project_schema = {**initial_schema, **project_schema}
 
+    # add extensions field (DX only)
+    project_schema["properties"]["extensions"] = {
+        "type": "array",
+        "items": {"type": "string"},
+        "description": "List of extensions to apply to the rock.",
+        "examples": [["twelve-factor"]],
+    }
+
     # tweak the platforms definition on the Project (each value can be empty)
     project_schema["properties"]["platforms"]["additionalProperties"] = {
         "oneOf": [{"type": "null"}, {"$ref": "#/$defs/Platform"}]
@@ -99,10 +107,16 @@ def generate_project_schema() -> str:
     # add each plugin's property names in a conditional block
     if_array = []
     for name, cls in plugins.get_registered_plugins().items():
+        plugin_schema = cls.properties_class.schema()
         properties_dict = {}
-        for k, v in cls.properties_class.schema().get("properties", {}).items():
+        for k, v in plugin_schema.get("properties", {}).items():
             properties_dict[k] = v
         properties_dict.update(project_schema["$defs"]["Part"]["properties"])
+
+        # Merge plugin-specific definitions into the main schema
+        if "$defs" in plugin_schema:
+            project_schema["$defs"].update(plugin_schema["$defs"])
+
         if_array.append(
             {
                 "if": {"properties": {"plugin": {"const": name}}},

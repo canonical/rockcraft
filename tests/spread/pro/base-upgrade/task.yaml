@@ -1,0 +1,23 @@
+summary: |
+  Test rockcraft's Pro validation behavior.
+
+execute: |
+
+  pushd non_bare
+  # Build an empty rock with a non-bare base to trigger apt update/upgrade
+  rockcraft build --pro=esm-apps --verbosity=DEBUG >log 2>&1
+  rockcraft clean
+  # check for indicative strings in the log
+  MATCH 'Upgrading base overlay system packages' < log
+  MATCH "upgraded, .+ newly installed, .+ to remove and .+ not upgraded." < log
+  rm log
+  popd
+
+  pushd bare
+  # Build an empty rock with a bare base to confirm no apt update/upgrade
+  rockcraft build --pro=esm-apps --verbosity=DEBUG >log 2>&1
+  rockcraft clean
+  # ensure none of the indicative strings are present in the log
+  NOMATCH 'Upgrading base overlay system packages' log
+  rm log
+  popd

@@ -1,9 +1,16 @@
-Rockcraft commands
-==================
+.. meta::
+    :description: Rockcraft CLI command reference.
+
+.. _reference-commands:
+
+Commands
+========
 
 .. Use a hidden table of contents to ensure that documentation is read.
 
 .. include:: commands/toc.rst
+
+.. _reference-commands-lifecycle:
 
 Lifecycle commands
 ------------------
@@ -13,10 +20,13 @@ provided, the command applies to all parts.
 
 .. include:: commands/lifecycle-commands.rst
 
+.. _reference-commands-extensions:
+
 Extension commands
 ------------------
 
 .. include:: commands/extensions-commands.rst
+
 
 Other commands
 --------------

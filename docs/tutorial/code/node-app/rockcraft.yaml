@@ -1,5 +1,5 @@
 name: my-node-app
-base: ubuntu@22.04
+base: ubuntu@26.04
 version: "1.0"
 summary: A rock that bundles a simple nodejs app
 description: |
@@ -21,8 +21,11 @@ parts:
   app:
     plugin: npm
     npm-include-node: True
-    npm-node-version: "21.1.0"
+    npm-node-version: "24.15.0"
     source: src/
+    organize:
+      bin: usr/bin
+      lib: usr/lib
     build-environment:
       # NOTE: There's currently a bad interaction between the nodejs version in the
       # archives and the kernel, causing an infinite hang during 'npm install':

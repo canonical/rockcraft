@@ -21,6 +21,9 @@ execute: |
   # test that the custom scripted user exists
   docker run --rm --entrypoint /bin/sh -u test-user run-user-test -c 'whoami' | MATCH "test-user"
   docker run --rm run-user-test exec grep "test-user" /etc/group
+  # check that the shared Pebble directory is protected by the sticky bit
+  docker run --rm run-user-test exec \
+    stat --format="%a" /var/lib/pebble/default | MATCH "1777"
   timeout 15 docker run --rm --name run-user-test-container run-user-test --args test 10
 
 restore: |

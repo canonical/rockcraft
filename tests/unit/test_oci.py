@@ -19,7 +19,7 @@ import json
 import os
 import tarfile
 from pathlib import Path
-from typing import NamedTuple
+from typing import NamedTuple, cast
 from unittest.mock import ANY, call, mock_open, patch
 
 import pytest
@@ -36,7 +36,7 @@ MOCK_NEW_USER = {
     "group": "foo:x:585287:\n",
     "shadow": str(
         "foo:!:"
-        f"{(datetime.datetime.utcnow() - datetime.datetime(1970, 1, 1)).days}"
+        f"{(datetime.datetime.now() - datetime.datetime(1970, 1, 1)).days}"
         "::::::\n"
     ),
 }
@@ -217,6 +217,8 @@ class TestImage:
                     f"{image_dir}/bare:latest",
                     "--architecture",
                     expected.go_arch,
+                    "--created",
+                    "1970-01-01T00:00:00Z",
                     "--no-history",
                 ]
             ),
@@ -224,6 +226,29 @@ class TestImage:
         mock_inject_oci_fields.assert_called_once_with(
             image_dir / "bare:latest", arch_variant=expected.go_variant
         )
+
+    def test_new_oci_image_pins_created_timestamp(
+        self, mock_inject_oci_fields, mock_run, new_dir
+    ):
+        """The umoci config call pins --created so the digest is deterministic.
+
+        Regression test for skip-repack: without a fixed --created value,
+        'umoci new' embeds the current time in the image config, causing
+        base_digest to change across runs and invalidating overlay layer
+        state.
+        """
+        image_dir = Path("images/dir")
+        oci.Image.new_oci_image("bare@latest", image_dir=image_dir, arch="amd64")
+
+        config_calls = [
+            c for c in mock_run.mock_calls if c.args and "config" in c.args[0]
+        ]
+        assert len(config_calls) == 1
+
+        config_args = config_calls[0].args[0]
+        assert "--created" in config_args
+        assert config_args[config_args.index("--created") + 1] == "1970-01-01T00:00:00Z"
+        assert "--no-history" in config_args
 
     def test_copy_to(self, mock_run):
         image = oci.Image("a:b", Path("/c"))
@@ -324,8 +349,8 @@ class TestImage:
             tmp_path / "prime",
             tmp_path,
             "mock-tag",
-            MOCK_NEW_USER["user"],
-            MOCK_NEW_USER["uid"],
+            cast(str, MOCK_NEW_USER["user"]),
+            cast(int, MOCK_NEW_USER["uid"]),
         )
 
         mock_tmpdir.assert_called_once()
@@ -339,7 +364,9 @@ class TestImage:
         )
 
         check.is_false((fake_tmpfs / "etc/shadow").exists())
-        mock_add_layer.assert_called_once_with("mock-tag", fake_tmpfs)
+        mock_add_layer.assert_called_once_with(
+            "mock-tag", fake_tmpfs, comment="Add user foo:585287 with group foo:585287"
+        )
 
         # Test with a conflicting user or ID.
         # Use the new fs as a base to force the error.
@@ -348,8 +375,8 @@ class TestImage:
                 tmp_path / "prime",
                 fake_tmpfs,
                 "mock-tag",
-                MOCK_NEW_USER["user"],
-                MOCK_NEW_USER["uid"] + 1,
+                cast(str, MOCK_NEW_USER["user"]),
+                cast(int, MOCK_NEW_USER["uid"]) + 1,
             )
         check.is_in(
             "conflict with existing user/group in the base filesystem", str(err)
@@ -360,8 +387,8 @@ class TestImage:
                 tmp_path / "prime",
                 fake_tmpfs,
                 "mock-tag",
-                MOCK_NEW_USER["user"] + "bar",
-                MOCK_NEW_USER["uid"],
+                cast(str, MOCK_NEW_USER["user"]) + "bar",
+                cast(int, MOCK_NEW_USER["uid"]),
             )
         check.is_in(
             "conflict with existing user/group in the base filesystem", str(err)
@@ -470,12 +497,16 @@ class TestImage:
             fake_prime,
             tmp_path,
             "mock-tag",
-            MOCK_NEW_USER["user"],
-            MOCK_NEW_USER["uid"],
+            cast(str, MOCK_NEW_USER["user"]),
+            cast(int, MOCK_NEW_USER["uid"]),
         )
 
         mock_tmpdir.assert_called_once()
-        mock_add_layer.assert_called_once_with("mock-tag", fake_tmp_new_layer)
+        mock_add_layer.assert_called_once_with(
+            "mock-tag",
+            fake_tmp_new_layer,
+            comment="Add user foo:585287 with group foo:585287",
+        )
         check.equal(
             (fake_tmp_new_layer / "etc/passwd").read_text(),
             expected_user_files["passwd"],
@@ -554,27 +585,35 @@ class TestImage:
 
         image.set_default_user(584792, "_daemon_")
 
+        expected_cmd = [
+            "umoci",
+            "config",
+            "--image",
+            "/c/a:b",
+            "--clear=config.entrypoint",
+            "--config.user",
+            "584792",
+        ]
+
         assert mock_run.mock_calls == [
             call(
                 [
-                    "umoci",
-                    "config",
-                    "--image",
-                    "/c/a:b",
-                    "--clear=config.entrypoint",
-                    "--config.user",
-                    "584792",
+                    *expected_cmd,
+                    "--history.created_by",
+                    " ".join(expected_cmd),
+                    "--history.comment",
+                    "Set default user",
                 ]
             )
         ]
 
     @pytest.mark.parametrize(
-        ("entrypoint"),
+        "entrypoint",
         [
-            ([Pebble.PEBBLE_BINARY_PATH_PREVIOUS, "enter"],),
-            ([Pebble.PEBBLE_BINARY_PATH, "enter"],),
-            (["echo", "Test"],),
-            ([],),
+            [Pebble.PEBBLE_BINARY_PATH_PREVIOUS, "enter"],
+            [Pebble.PEBBLE_BINARY_PATH, "enter"],
+            ["echo", "Test"],
+            [],
         ],
     )
     def test_set_entrypoint_default(self, mock_run, entrypoint):
@@ -595,6 +634,15 @@ class TestImage:
 
         arg_list.append("--clear=config.cmd")
 
+        arg_list.extend(
+            [
+                "--history.created_by",
+                " ".join(arg_list),
+                "--history.comment",
+                "Set entrypoint",
+            ]
+        )
+
         assert mock_run.mock_calls == [
             call(arg_list),
         ]
@@ -614,6 +662,15 @@ class TestImage:
 
         for arg in cmd:
             arg_list.extend(["--config.cmd", arg])
+
+        arg_list.extend(
+            [
+                "--history.created_by",
+                " ".join(arg_list),
+                "--history.comment",
+                "Set default commands",
+            ]
+        )
 
         assert mock_run.mock_calls == [
             call(arg_list),
@@ -703,7 +760,9 @@ class TestImage:
         )
 
         mock_tmpdir.assert_called_once()
-        mock_add_layer.assert_called_once_with(mock_tag, fake_tmpfs)
+        mock_add_layer.assert_called_once_with(
+            mock_tag, fake_tmpfs, comment="Add Pebble layer file"
+        )
         mock_define_pebble_layer.assert_called_once_with(
             fake_tmpfs, mock_base_layer_dir, expected_layer, mock_name
         )
@@ -713,17 +772,25 @@ class TestImage:
 
         image.set_environment({"NAME1": "VALUE1", "NAME2": "VALUE2"})
 
+        expected_cmd = [
+            "umoci",
+            "config",
+            "--image",
+            "/c/a:b",
+            "--config.env",
+            "NAME1=VALUE1",
+            "--config.env",
+            "NAME2=VALUE2",
+        ]
+
         assert mock_run.mock_calls == [
             call(
                 [
-                    "umoci",
-                    "config",
-                    "--image",
-                    "/c/a:b",
-                    "--config.env",
-                    "NAME1=VALUE1",
-                    "--config.env",
-                    "NAME2=VALUE2",
+                    *expected_cmd,
+                    "--history.created_by",
+                    " ".join(expected_cmd),
+                    "--history.comment",
+                    "Set environment variables",
                 ]
             )
         ]
@@ -777,7 +844,13 @@ class TestImage:
         ]
         assert mock_run.mock_calls == [
             call(
-                [*expected_cmd, "--history.created_by", " ".join(expected_cmd)],
+                [
+                    *expected_cmd,
+                    "--history.created_by",
+                    " ".join(expected_cmd),
+                    "--history.comment",
+                    "Add rock control metadata",
+                ],
             )
         ]
         mock_rmtree.assert_called_once_with(Path(mock_control_data_path))
@@ -789,18 +862,38 @@ class TestImage:
 
         image.set_annotations({"NAME1": "VALUE1", "NAME2": "VALUE2"})
 
+        expected_label_cmd = [
+            "umoci",
+            "config",
+            "--image",
+            "/c/a:b",
+            "--clear=config.labels",
+            "--config.label",
+            "NAME1=VALUE1",
+            "--config.label",
+            "NAME2=VALUE2",
+        ]
+
+        expected_anno_cmd = [
+            "umoci",
+            "config",
+            "--image",
+            "/c/a:b",
+            "--clear=manifest.annotations",
+            "--manifest.annotation",
+            "NAME1=VALUE1",
+            "--manifest.annotation",
+            "NAME2=VALUE2",
+        ]
+
         assert mock_run.mock_calls == [
             call(
                 [
-                    "umoci",
-                    "config",
-                    "--image",
-                    "/c/a:b",
-                    "--clear=config.labels",
-                    "--config.label",
-                    "NAME1=VALUE1",
-                    "--config.label",
-                    "NAME2=VALUE2",
+                    *expected_label_cmd,
+                    "--history.created_by",
+                    " ".join(expected_label_cmd),
+                    "--history.comment",
+                    "Set labels",
                 ],
                 capture_output=True,
                 check=True,
@@ -808,15 +901,11 @@ class TestImage:
             ),
             call(
                 [
-                    "umoci",
-                    "config",
-                    "--image",
-                    "/c/a:b",
-                    "--clear=manifest.annotations",
-                    "--manifest.annotation",
-                    "NAME1=VALUE1",
-                    "--manifest.annotation",
-                    "NAME2=VALUE2",
+                    *expected_anno_cmd,
+                    "--history.created_by",
+                    " ".join(expected_anno_cmd),
+                    "--history.comment",
+                    "Set annotations",
                 ],
                 capture_output=True,
                 check=True,
@@ -832,7 +921,13 @@ class TestImage:
                     "annotations": {
                         "org.opencontainers.image.ref.name": "latest",
                     },
-                }
+                },
+                {
+                    "digest": "sha256:basemanifest",
+                    "annotations": {
+                        "org.opencontainers.image.ref.name": "origin",
+                    },
+                },
             ]
         }
         test_manifest = {"config": {"digest": "sha256:fooconfig"}}
@@ -871,7 +966,13 @@ class TestImage:
                             "org.opencontainers.image.ref.name": "latest",
                         },
                         "size": len(new_test_manifest_bytes),
-                    }
+                    },
+                    {
+                        "digest": "sha256:basemanifest",
+                        "annotations": {
+                            "org.opencontainers.image.ref.name": "origin",
+                        },
+                    },
                 ]
             },
         }
@@ -941,16 +1042,24 @@ class TestImage:
 
         image.set_default_path("bare")
 
-        expected = "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+        expected_path = "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+        expected_cmd = [
+            "umoci",
+            "config",
+            "--image",
+            "/c/a:b",
+            "--config.env",
+            f"PATH={expected_path}",
+        ]
+
         assert mock_run.mock_calls == [
             call(
                 [
-                    "umoci",
-                    "config",
-                    "--image",
-                    "/c/a:b",
-                    "--config.env",
-                    f"PATH={expected}",
+                    *expected_cmd,
+                    "--history.created_by",
+                    " ".join(expected_cmd),
+                    "--history.comment",
+                    "Set default PATH for bare-based rock",
                 ]
             )
         ]

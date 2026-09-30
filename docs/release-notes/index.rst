@@ -1,9 +1,12 @@
+.. meta::
+    :description: The index of release documentation for Rockcraft. These release notes summarize the new features, bug fixes, and backwards-incompatible changes in each version.
+
 .. _release-notes:
 
 Release notes
 =============
 
-This page lists the notes for past releases of Rockcraft, which summarise new
+This page lists the notes for past releases of Rockcraft, which summarize new
 features, bug fixes and backwards-incompatible changes in each version.
 It also contains the release and support policies for Rockcraft.
 
@@ -11,6 +14,12 @@ It also contains the release and support policies for Rockcraft.
 Current releases
 ----------------
 
+- :ref:`Rockcraft 1.20 <release-1.20>`
+- :ref:`Rockcraft 1.19 <release-1.19>`
+- :ref:`Rockcraft 1.18 <release-1.18>`
+- :ref:`Rockcraft 1.17 <release-1.17>`
+- :ref:`Rockcraft 1.16 <release-1.16>`
+- :ref:`Rockcraft 1.15 <release-1.15>`
 - :ref:`Rockcraft 1.14 <release-1.14>`
 - :ref:`Rockcraft 1.13 <release-1.13>`
 - :ref:`Rockcraft 1.12 <release-1.12>`
@@ -31,7 +40,7 @@ possible. On the first Monday of the month, we publish a major or minor
 version of Rockcraft to the candidate channel, where it undergoes testing and
 feedback. If we determine the candidate is ready for mainstream use by the
 Monday of the week after, we release it as a stable version. During testing
-and feedback of a candidate, we prioritise fixes for critical issues.
+and feedback of a candidate, we prioritize fixes for critical issues.
 
 Rockcraft release naming follows the Semantic Versioning 2.0.0 scheme with
 numbers for major, minor, and patch versions.
@@ -67,6 +76,12 @@ development keeps pace with the OS's new releases and support lifecycle.
    :maxdepth: 1
    :hidden:
 
+   Rockcraft 1.20 <rockcraft-1-20>
+   Rockcraft 1.19 <rockcraft-1-19>
+   Rockcraft 1.18 <rockcraft-1-18>
+   Rockcraft 1.17 <rockcraft-1-17>
+   Rockcraft 1.16 <rockcraft-1-16>
+   Rockcraft 1.15 <rockcraft-1-15>
    Rockcraft 1.14 <rockcraft-1-14>
    Rockcraft 1.13 <rockcraft-1-13>
    Rockcraft 1.12 <rockcraft-1-12>
@@ -126,14 +141,14 @@ development keeps pace with the OS's new releases and support lifecycle.
   | Other important update                 | <Describe update>            | Mitigation for Heartbleed vulnerability |
   +----------------------------------------+------------------------------+-----------------------------------------+
 
-  <Paragraph 1, optional: Briefly cover the previous behaviour or the change in
+  <Paragraph 1, optional: Briefly cover the previous behavior or the change in
   circumstances. For example, "With Ubuntu 24.04 LTS, the Snap Store and App
   Center now collect public reviews for snaps and assign an averaged score to
   them to provide users and authors an avenue for discoverability and
   feedback.">
 
-  <Paragraph 2: Present the new behaviour or feature. In words, *show* what the feature
-  is and make a case for how the reader could benefit from it. Centre the user whenever
+  <Paragraph 2: Present the new behavior or feature. In words, *show* what the feature
+  is and make a case for how the reader could benefit from it. Center the user whenever
   possible ("you"), and speak on behalf of Canonical ("we"). Prefer general, simple
   usage over complex applications. Use past tense, or the form "is now [x]" or "now
   [does x]". For example, "We understand that some authors may not want to have their
@@ -280,7 +295,7 @@ development keeps pace with the OS's new releases and support lifecycle.
   We would like to express a big thank you to all the people who contributed to
   this release.
 
-  :literalref:`@alex<https://example.com/alex>`,
-  :literalref:`@blair<https://example.com/blair>`,
-  :literalref:`@cam<https://example.com/cam>`,
-  and :literalref:`@devin<https://example.com/devin>`
+  :literalref:`@alex <https://example.com/alex>`,
+  :literalref:`@blair <https://example.com/blair>`,
+  :literalref:`@cam <https://example.com/cam>`,
+  and :literalref:`@devin <https://example.com/devin>`

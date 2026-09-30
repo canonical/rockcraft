@@ -14,6 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import os
+import shutil
 from pathlib import Path
 from typing import cast
 from unittest import mock
@@ -70,11 +71,18 @@ def test_lifecycle_args(
         base_layer_hash=b"deadbeef",
         cache_dir=project_path / "cache",
         ignore_local_sources=[".craft", "*.rock"],
+        ignore_outdated=[".craft", "*.rock", ".spread-reuse.*"],
         parallel_build_count=4,
         partitions=None,
         project_name="test-rock",
         project_vars=ProjectVarInfo(
-            root={"version": ProjectVar(value="0.1", updated=False, part_name=None)}
+            root={
+                "version": ProjectVar(value="0.1", updated=False, part_name=None),
+                "summary": ProjectVar(value="Rock on!", updated=False, part_name=None),
+                "description": ProjectVar(
+                    value="Ramble off!", updated=False, part_name=None
+                ),
+            }
         ),
         work_dir=project_path,
         rootfs_dir=Path(),
@@ -96,6 +104,7 @@ def test_lifecycle_args(
 def test_lifecycle_package_repositories(extra_project_params, fake_services, mocker):
     base = cast(services.ProjectService, fake_services.get("project")).get().base
     mocker.patch.object(util, "get_host_base", return_value=base)
+    mocker.patch.object(os, "geteuid", return_value=0)
     fake_repositories = extra_project_params["package_repositories"]
     lifecycle_service = fake_services.get("lifecycle")
     lifecycle_service._lcm = mock.MagicMock(spec=LifecycleManager)
@@ -113,10 +122,7 @@ def test_lifecycle_package_repositories(extra_project_params, fake_services, moc
     mock_callback.assert_called_once_with(repositories.install_overlay_repositories)
 
 
-@pytest.mark.parametrize("plugin_name", get_python_plugins())
-@pytest.mark.parametrize("base", ["bare", "ubuntu@24.04", "ubuntu@25.10"])
-@pytest.mark.parametrize("build_base", ["ubuntu@24.04", "ubuntu@25.10"])
-def test_python_usrmerge_fix(tmp_path, plugin_name, base, build_base):
+def _create_step_info(tmp_path, plugin_name, base, build_base) -> tuple[StepInfo, Path]:
     # The test setup is rather involved because we need to recreate/mock an
     # exact set of circumstances here:
 
@@ -138,20 +144,136 @@ def test_python_usrmerge_fix(tmp_path, plugin_name, base, build_base):
     prime_dir = dirs.prime_dir
     prime_dir.mkdir()
 
-    # 3) Setup a 'prime' directory where "lib64" is a symlink to "lib";
-    (prime_dir / "lib").mkdir()
-    (prime_dir / "lib64").symlink_to("lib")
-
     # 4) Create a StepInfo that contains all of this.
     step_info = StepInfo(part_info=part_info, step=Step.PRIME)
-    step_info.state = PrimeState(part_properties=part.spec.marshal(), files={"lib64"})
+    step_info.state = PrimeState(part_properties=part.spec.marshal(), files=set())
 
+    return step_info, prime_dir
+
+
+@pytest.mark.parametrize("plugin_name", get_python_plugins("ubuntu@24.04"))
+@pytest.mark.parametrize("base", ["bare", "ubuntu@24.04"])
+@pytest.mark.parametrize("build_base", ["ubuntu@24.04"])
+def test_python_usrmerge_fix(tmp_path, plugin_name, base, build_base):
+    step_info, prime_dir = _create_step_info(tmp_path, plugin_name, base, build_base)
+
+    # Setup a 'prime' directory where "lib64" is a symlink to "lib";
+    (prime_dir / "lib").mkdir()
+    (prime_dir / "lib64").symlink_to("lib")
     assert sorted(os.listdir(prime_dir)) == ["lib", "lib64"]  # noqa: PTH208 (use Path.iterdir())
 
-    lifecycle_module._python_usrmerge_fix(step_info)
+    assert step_info.state is not None
+    step_info.state.files.update({Path("lib64")})
+
+    changed = lifecycle_module._python_usrmerge_fix(step_info)
 
     # After running the fix the "lib64" symlink must be gone
+    assert changed is True
     assert sorted(os.listdir(prime_dir)) == ["lib"]  # noqa: PTH208 (use Path.iterdir())
+
+    changed = lifecycle_module._python_usrmerge_fix(step_info)
+    assert changed is False
+
+
+@pytest.mark.parametrize("source_file", ["from-install", "from-stage"])
+def test_python_v2_shebang_fix(tmp_path, monkeypatch, source_file):
+    monkeypatch.chdir(tmp_path)
+    step_info, prime_dir = _create_step_info(
+        tmp_path, "python", "ubuntu@25.10", "devel"
+    )
+
+    # Setup a 'prime' directory with some files
+    bin_dir = prime_dir / "usr/bin"
+    bin_dir.mkdir(parents=True)
+    files: set[Path] = set()
+
+    # 'script' is a file with a shebang pointing to either the part's install dir
+    # ('from-install'), or from the stage dir ('from-stage').
+    script = bin_dir / "script"
+    data_file = Path(__file__).parent / f"test_lifecycle/{source_file}"
+    shutil.copy(data_file, script)
+    script.write_text(script.read_text().replace("/root", str(tmp_path)))
+    files.add(Path("usr/bin/script"))
+
+    # Also add some "bad" entries to ensure the function is resilient
+
+    # Add an entry without a corresponding 'concrete' file, which might've been pruned
+    # by another post-prime function
+    files.add(Path("i-dont-exist"))
+
+    # Add a binary file
+    bin_file = bin_dir / "binary"
+    bin_file.write_bytes(b"\x81")
+    files.add(Path("usr/bin/binary"))
+
+    assert step_info.state is not None
+    step_info.state.files.update(files)
+
+    changed = lifecycle_module._python_v2_shebang_fix(step_info)
+
+    contents = script.read_text()
+    assert changed is True
+    assert contents.startswith("#!/usr/bin/python3\n")
+
+    changed = lifecycle_module._python_v2_shebang_fix(step_info)
+    assert changed is False
+
+
+def test_python_v2_shebang_fix_no_matching_shebangs(tmp_path, monkeypatch):
+    """Files exist and are listed in state.files but none have a matching shebang."""
+    monkeypatch.chdir(tmp_path)
+    step_info, prime_dir = _create_step_info(
+        tmp_path, "python", "ubuntu@25.10", "devel"
+    )
+
+    bin_dir = prime_dir / "usr/bin"
+    bin_dir.mkdir(parents=True)
+
+    # A regular text file with a non-matching shebang.
+    script = bin_dir / "script"
+    script.write_text("#!/usr/bin/env bash\necho hi\n")
+
+    assert step_info.state is not None
+    step_info.state.files.update({Path("usr/bin/script")})
+
+    changed = lifecycle_module._python_v2_shebang_fix(step_info)
+
+    assert changed is False
+    assert script.read_text() == "#!/usr/bin/env bash\necho hi\n"
+
+
+def test_post_prime_returns_false_when_nothing_changes(mocker, tmp_path):
+    lifecycle_service = object.__new__(lifecycle_module.RockcraftLifecycleService)
+    step_info = mocker.MagicMock()
+    step_info.prime_dir = tmp_path
+    step_info.rootfs_dir = tmp_path / "base"
+    step_info.rootfs_dir.mkdir()
+
+    mocker.patch.object(
+        lifecycle_module.layers, "prune_prime_files", return_value=False
+    )
+    mocker.patch.object(lifecycle_module, "_python_usrmerge_fix", return_value=False)
+    mocker.patch.object(lifecycle_module, "_python_v2_shebang_fix", return_value=False)
+
+    assert lifecycle_service.post_prime(step_info) is False
+
+
+def test_post_prime_returns_true_when_any_fix_changes(mocker, tmp_path):
+    lifecycle_service = object.__new__(lifecycle_module.RockcraftLifecycleService)
+    step_info = mocker.MagicMock()
+    step_info.prime_dir = tmp_path
+    step_info.rootfs_dir = tmp_path / "base"
+    step_info.rootfs_dir.mkdir()
+
+    (tmp_path / "file.txt").write_text("content")
+
+    mocker.patch.object(
+        lifecycle_module.layers, "prune_prime_files", return_value=False
+    )
+    mocker.patch.object(lifecycle_module, "_python_usrmerge_fix", return_value=True)
+    mocker.patch.object(lifecycle_module, "_python_v2_shebang_fix", return_value=False)
+
+    assert lifecycle_service.post_prime(step_info) is True
 
 
 @pytest.mark.usefixtures("configured_project", "project_keys")

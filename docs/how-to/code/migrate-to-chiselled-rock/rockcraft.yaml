@@ -1,13 +1,13 @@
 name: dotnet-runtime
-summary: .NET Runtime 6.0
-description: A Chiselled rock for the .NET Runtime 6.0
+summary: .NET Runtime 10.0
+description: A Chiselled rock for the .NET Runtime 10.0
 version: chiselled
 
 # Use a "bare" base for an even smaller rock
 base: bare
 
-# Meeting requirement R1 by making sure the rock builds on Jammy
-build-base: ubuntu@22.04
+# Meeting requirement R1 by making sure the rock builds on Resolute
+build-base: ubuntu@26.04
 
 license: Apache-2.0
 
@@ -21,12 +21,12 @@ parts:
   install-dotnet-runtime:
     plugin: nil
 
-    # Based on requirement R3, install version 6.0 of the .NET runtime "libs" slice
+    # Based on requirement R3, install version 10.0 of the .NET runtime "standard" slice
     stage-packages:
       - base-files_base
-      - dotnet-runtime-6.0_libs
+      - dotnet-runtime-10.0_standard
 
     # Based on requirement R4, create the symbolic link
     override-prime: |
       craftctl default
-      ln -s /usr/lib/dotnet/dotnet usr/bin/
+      ln -sf /usr/lib/dotnet/dotnet usr/bin/

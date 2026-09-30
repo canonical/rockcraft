@@ -21,11 +21,37 @@ import os
 import sys
 from collections.abc import Sequence
 from pathlib import Path
-from typing import Any, final
+from typing import Any, cast, final
 
+from craft_application._const import BASES_ALLOW_SLASH_IN_PART_NAME
 from craft_cli import emit
 
 from rockcraft import errors
+
+
+def get_project_base(yaml_data: dict[str, Any]) -> str | None:
+    """Extract and normalize the effective base used in the project.
+
+    ``build-base`` takes precedence over ``base``. When ``base`` is ``bare`` the
+    ``build-base`` is mandatory, so it always resolves the effective Ubuntu series.
+    """
+    base_str = cast(str | None, yaml_data.get("build-base") or yaml_data.get("base"))
+
+    if not base_str:
+        return None
+
+    # Support the deprecated "<base>:<series>" colon format as an alias for "<base>@<series>"
+    if base_str.count(":") == 1 and "@" not in base_str:
+        base_str = base_str.replace(":", "@")
+
+    # "devel" is a valid build-base that corresponds to "ubuntu@devel".
+    if base_str == "devel":
+        return "ubuntu@devel"
+
+    if base_str.count("@") != 1:
+        return None
+
+    return base_str
 
 
 class Extension(abc.ABC):
@@ -43,10 +69,12 @@ class Extension(abc.ABC):
         *,
         project_root: Path,
         yaml_data: dict[str, Any],
+        extension_name: str,
     ) -> None:
         """Create a new Extension."""
         self.project_root = project_root
         self.yaml_data = yaml_data
+        self.extension_name = extension_name
 
     @staticmethod
     @abc.abstractmethod
@@ -70,11 +98,20 @@ class Extension(abc.ABC):
     def get_parts_snippet(self) -> dict[str, Any]:
         """Return the parts to add to parts."""
 
+    @property
+    def _extension_name_sep(self) -> str:
+        """Return the string separating extension part name fragments."""
+        base = get_project_base(self.yaml_data)
+        return "/" if base in BASES_ALLOW_SLASH_IN_PART_NAME else "."
+
+    def get_part_name(self, part: str) -> str:
+        """Return formatted internal part name."""
+        return f"{self.extension_name}{self._extension_name_sep}{part}"
+
     @final
-    def validate(self, extension_name: str) -> None:
+    def validate(self) -> None:
         """Validate that the extension can be used with the current project.
 
-        :param extension_name: the name of the extension being parsed.
         :raises errors.ExtensionError: if the extension is incompatible with the project.
         """
         if "base" not in self.yaml_data:
@@ -87,7 +124,7 @@ class Extension(abc.ABC):
             "ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS"
         ):
             raise errors.ExtensionError(
-                f"Extension is experimental: {extension_name!r}",
+                f"Extension is experimental: {self.extension_name!r}",
                 doc_slug="/reference/extensions/",
                 resolution="Run with ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS=True to enable "
                 "experimental extensions.",
@@ -95,25 +132,61 @@ class Extension(abc.ABC):
 
         if self.is_experimental(base):
             emit.progress(
-                f"*EXPERIMENTAL* extension {extension_name!r} enabled",
+                f"*EXPERIMENTAL* extension {self.extension_name!r} enabled",
                 permanent=True,
             )
 
         if base not in self.get_supported_bases():
             raise errors.ExtensionError(
-                f"Extension {extension_name!r} does not support base: {base!r}"
+                f"Extension {self.extension_name!r} does not support base: {base!r}"
             )
 
         invalid_parts = [
             p
             for p in self.get_parts_snippet()
-            if not p.startswith(f"{extension_name}/")
+            if not p.startswith(f"{self.extension_name}{self._extension_name_sep}")
         ]
         if invalid_parts:
             raise ValueError(
                 f"Extension has invalid part names: {invalid_parts!r}. "
-                "Format is <extension-name>/<part-name>"
+                f"Format is <extension-name>{self._extension_name_sep}<part-name>"
             )
+
+
+class _FrameworkFactory:
+    """Route to V1 or V2 extension based on project base."""
+
+    def __init__(self, v1_cls: type[Extension], v2_cls: type[Extension]) -> None:
+        self._v1_cls = v1_cls
+        self._v2_cls = v2_cls
+
+    def __call__(
+        self, *, project_root: Path, yaml_data: dict[str, Any], extension_name: str
+    ) -> Extension:
+        base = get_project_base(yaml_data)
+        if base in self._v1_cls.get_supported_bases():
+            return self._v1_cls(
+                project_root=project_root,
+                yaml_data=yaml_data,
+                extension_name=extension_name,
+            )
+        return self._v2_cls(
+            project_root=project_root,
+            yaml_data=yaml_data,
+            extension_name=extension_name,
+        )
+
+    def get_supported_bases(self) -> tuple[str, ...]:
+        return tuple(
+            dict.fromkeys(
+                self._v1_cls.get_supported_bases() + self._v2_cls.get_supported_bases()
+            )
+        )
+
+    def is_experimental(self, base: str | None) -> bool:
+        if base in self._v1_cls.get_supported_bases():
+            return self._v1_cls.is_experimental(base)
+        return self._v2_cls.is_experimental(base)
 
 
 def get_extensions_data_dir() -> Path:

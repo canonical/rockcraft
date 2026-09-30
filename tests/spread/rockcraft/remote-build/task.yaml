@@ -17,6 +17,10 @@ prepare: |
 
   # commit the project
   git init
+
+  git config --global user.name "Starcraft Developer"
+  git config --global user.email "starcraft@example.com"
+
   git add rockcraft.yaml
   git commit -m "Initial Commit"
 

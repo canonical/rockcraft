@@ -16,14 +16,17 @@
 
 """Rockcraft Lifecycle service."""
 
+import re
 from pathlib import Path
 from typing import cast
 
+import craft_platforms
 from craft_application import LifecycleService
 from craft_parts.infos import StepInfo
-from overrides import override  # type: ignore[reportUnknownVariableType]
+from craft_parts.plugins import Plugin
+from typing_extensions import override
 
-from rockcraft import layers
+from rockcraft import layers, plugins
 from rockcraft.plugins.python_common import get_python_plugins
 
 
@@ -69,34 +72,113 @@ class RockcraftLifecycleService(LifecycleService):
         base_layer_dir = step_info.rootfs_dir
         files: set[str]
 
-        files = step_info.state.files if step_info.state else set()
-        layers.prune_prime_files(prime_dir, files, base_layer_dir)
+        # Fix: overlay content is not included in step_info so we just list the prime_dir
+        files = {str(p.relative_to(prime_dir)) for p in prime_dir.rglob("*")}
 
-        _python_usrmerge_fix(step_info)
+        changed = layers.prune_prime_files(prime_dir, files, base_layer_dir)
+        changed |= _python_usrmerge_fix(step_info)
+        changed |= _python_v2_shebang_fix(step_info)
 
-        return True
+        return changed
+
+    @override
+    @staticmethod
+    def get_plugin_group(
+        build_info: craft_platforms.BuildInfo,
+    ) -> dict[str, type[Plugin]] | None:
+        """Get the plugin group for a given base.
+
+        Some rockcraft-specific quirks include:
+        - Legacy bases (20.04, 22.04, 24.04) use Python v1, Poetry v1, and uv v1 plugins
+        - Newer bases use Python v2 and omit Poetry; uv is available on 26.04
+        - The dotnet v1 plugin is only available on legacy bases (20.04, 22.04, 24.04)
+
+        :param build_info: The BuildInfo for the build, containing the build base.
+        :returns: A dictionary mapping plugin names to their implementations for the given base.
+        """
+        return plugins.get_plugin_group(str(build_info.build_base))
 
 
-def _python_usrmerge_fix(step_info: StepInfo) -> None:
-    """Fix 'lib64' symlinks created by the Python plugin on ubuntu@24.04+ projects."""
-    if step_info.project_info.build_base in ("ubuntu@20.04", "ubuntu@22.04"):
-        # The issue only affects rocks with 24.04 and newer build bases.
-        return
+def _python_usrmerge_fix(step_info: StepInfo) -> bool:
+    """Fix 'lib64' symlinks created by the Python plugin on ubuntu@24.04 projects."""
+    build_base = step_info.project_info.build_base
+    if build_base != "ubuntu@24.04":
+        # The issue only affects rocks with 24.04 build base.
+        return False
 
     state = step_info.state
     if state is None:
         # Can't inspect the files without a StepState.
-        return
+        return False
 
-    if state.part_properties["plugin"] not in get_python_plugins():
+    if state.part_properties["plugin"] not in get_python_plugins(build_base):
         # Be conservative and don't try to fix the files if they didn't come
         # from a Python plugin.
-        return
+        return False
 
-    if "lib64" not in state.files:
-        return
+    if Path("lib64") not in state.files:
+        return False
 
     prime_dir = step_info.prime_dir
     lib64 = prime_dir / "lib64"
     if lib64.is_symlink() and lib64.readlink() == Path("lib"):
         lib64.unlink()
+        return True
+
+    return False
+
+
+def _python_v2_shebang_fix(step_info: StepInfo) -> bool:
+    build_base = step_info.project_info.build_base
+    if build_base in ("ubuntu@20.04", "ubuntu@22.04", "ubuntu@24.04"):
+        # The issue only affects rocks with 25.10 and newer build bases.
+        return False
+
+    state = step_info.state
+    if state is None:
+        # Can't inspect the files without a StepState.
+        return False
+
+    if state.part_properties["plugin"] not in get_python_plugins(build_base):
+        # Be conservative and don't try to fix the files if they didn't come
+        # from a Python plugin.
+        return False
+
+    prime_dir = step_info.prime_dir
+
+    # The Python interpreter can come from either the part's install dir, or from the
+    # stage.
+    install_dir = step_info.part_install_dir
+    install_re = re.compile(f"#!{install_dir}/.*/python3.*$")
+    stage_dir = step_info.stage_dir
+    stage_re = re.compile(f"#!{stage_dir}/.*/python3.*$")
+
+    regex_and_dirs = [(install_re, install_dir), (stage_re, stage_dir)]
+    changed = False
+
+    for filename in state.files:
+        filepath = prime_dir / filename
+        if not filepath.is_file():
+            # File might have been pruned out
+            continue
+        newline = ""
+        remainder = ""
+        replaced = False
+        with filepath.open("r") as f:
+            # Read the first line and check whether it matches the install or stage dirs.
+            try:
+                line = f.readline()
+            except UnicodeDecodeError:
+                # File is not text; ignore it
+                continue
+            for base_re, base_dir in regex_and_dirs:
+                if base_re.match(line):
+                    newline = line.replace(str(base_dir), "")
+                    remainder = f.read()
+                    replaced = True
+                    break
+        if replaced:
+            filepath.write_text(newline + remainder)
+            changed = True
+
+    return changed

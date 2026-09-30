@@ -55,7 +55,7 @@ def archive_layer(
             tar_file.add(filepath, arcname=arcname, recursive=False)
 
 
-def prune_prime_files(prime_dir: Path, files: set[str], base_layer_dir: Path) -> None:
+def prune_prime_files(prime_dir: Path, files: set[str], base_layer_dir: Path) -> bool:
     """Remove (prune) files in a prime directory if they exist in the base layer.
 
     Given a set of filenames ``files``, this function will remove (prune) all those
@@ -71,8 +71,10 @@ def prune_prime_files(prime_dir: Path, files: set[str], base_layer_dir: Path) ->
     :param files: The set of filenames added to ``prime_dir``, as provided by
         the corresponding post_step lifecycle callback.
     :param base_layer_dir: The directory where the base layer was extracted.
+    :returns: True if one or more files were pruned, False otherwise.
     """
     emit.debug("Pruning primed files that already exist on base layer...")
+    changed = False
     for filename in files:
         base_layer_file = base_layer_dir / filename
         if base_layer_file.is_file():
@@ -80,10 +82,13 @@ def prune_prime_files(prime_dir: Path, files: set[str], base_layer_dir: Path) ->
             if _all_compatible_files([base_layer_file, prime_file]):
                 emit.debug(f"Pruning: {prime_file} as it exists on the base")
                 prime_file.unlink()
+                changed = True
             else:
                 emit.debug(
                     f"{prime_file} exists on the base but with different contents or permissions"
                 )
+
+    return changed
 
 
 def _gather_layer_paths(
