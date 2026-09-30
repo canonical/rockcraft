@@ -524,6 +524,7 @@ def test_project_all_platforms_invalid(yaml_loaded_data):
     [
         "aaa",
         "a00",
+        "0a",
         "0aaa",
         "a-00",
         "a-a-a",
@@ -542,7 +543,7 @@ def test_project_name_valid(yaml_loaded_data, valid_name):
     ("invalid_name", "expected_message"),
     [
         ("", MESSAGE_INVALID_NAME),
-        ("a", MESSAGE_INVALID_NAME),
+        ("a", "value should have at least 2 items after validation, not 1"),
         ("AAA", MESSAGE_INVALID_NAME),
         ("a--a", MESSAGE_INVALID_NAME),
         ("aa-", MESSAGE_INVALID_NAME),

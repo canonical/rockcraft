@@ -102,7 +102,7 @@ The project name must consist only of lower-case ASCII letters (``a``-``z``), nu
 end with a hyphen, and not contain two consecutive hyphens. The maximum length is 40
 characters.
 """
-ROCK_NAME_REGEX = r"^([a-z0-9][a-z0-9-]?)*[a-z]+([a-z0-9-]?[a-z0-9])+$"
+ROCK_NAME_REGEX = r"^([a-z0-9][a-z0-9-]?)*[a-z]+([a-z0-9-]?[a-z0-9])*$"
 ROCK_NAME_COMPILED_REGEX = re.compile(ROCK_NAME_REGEX)
 RockName = Annotated[
     str,
