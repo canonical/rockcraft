@@ -40,7 +40,6 @@ def generate_project_schema() -> str:
     template = Path(rockcraft.__file__).parent / "templates/simple/rockcraft.yaml.j2"
     contents = Template(template.read_text()).render(
         name="my-rock-name",
-        requested_base=None,
         versioned_url="",
     )
 

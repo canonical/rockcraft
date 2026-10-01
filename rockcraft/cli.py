@@ -26,7 +26,7 @@ from .application import Rockcraft
 from .services import RockcraftServiceFactory, register_rockcraft_services
 
 COMMAND_GROUPS: list[CommandGroup] = [
-    CommandGroup("Other", [commands.InitCommand]),
+    CommandGroup("Other", [appcommands.InitCommand]),
     CommandGroup(
         "Extensions",
         [
