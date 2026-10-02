@@ -18,13 +18,13 @@ and combines its configuration with your project file.
 
 .. _reference-extensions-ubuntu-2604-frameworks:
 
-Ubuntu 26.04 framework extensions
----------------------------------
+Ubuntu 26.04 LTS framework extensions
+-------------------------------------
 
-The Express, FastAPI, Go, Flask, and Django framework extensions are stable on their
+The Flask, Django, FastAPI, Go, and Express framework extensions are stable on their
 supported bases earlier than Ubuntu 26.04 LTS. The Spring Boot extension remains
-experimental on its supported bases, and the Ubuntu 26.04 implementations of all
-six extensions are experimental. To use one of these extensions with Ubuntu 26.04,
+experimental on its supported bases, and the Ubuntu 26.04 LTS implementations of all
+six extensions are experimental. To use one of these extensions with Ubuntu 26.04 LTS,
 set ``ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS=1`` when running Rockcraft.
 
 Rockcraft selects the extension implementation from ``build-base`` when it is set, or from ``base`` otherwise. For a rock with ``base: bare``, ``build-base`` is mandatory. For example,
@@ -33,7 +33,7 @@ implementation and doesn't require the experimental extensions environment
 variable. For migration guidance, see
 :ref:`how-to-migrate-2604`.
 
-On Ubuntu 26.04, these six extensions place application content under
+On Ubuntu 26.04 LTS, these six extensions place application content under
 ``/app`` and create ``/app-data`` for application-generated data.
 ``/app-data`` is owned by ``_daemon_`` and is writable by the application
 service. Use it as the persistent-at-runtime application data directory,

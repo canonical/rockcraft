@@ -84,16 +84,17 @@ extensions with the directory layout expected by version 2 of the library ``paas
 Framework extension stability and application data
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The Express, FastAPI, and Go framework extensions remain stable on their
-supported bases earlier than Ubuntu 26.04. The Ubuntu 26.04 implementations of
-these extensions, as well as the Ubuntu 26.04 implementations of the Flask,
-Django, and Spring Boot extensions, are experimental and require
+The Flask, Django, FastAPI, Go, and Express framework extensions remain stable
+on their supported bases earlier than Ubuntu 26.04 LTS. Spring Boot remains
+experimental on its supported bases. The Ubuntu 26.04 LTS implementations of
+all six extensions are experimental and require
 ``ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS=1``.
 
-Rockcraft selects the extension implementation from ``base``, or from
-``build-base`` when ``base: bare``. The Ubuntu 26.04 implementations place
-application content in ``/app`` and provide the writable ``/app-data``
-directory for application-generated data. See
+Rockcraft selects the extension implementation from ``build-base`` when set,
+and otherwise from ``base``. A rock with ``base: bare`` requires
+``build-base``. The Ubuntu 26.04 LTS implementations place application content
+in ``/app`` and provide the writable ``/app-data`` directory for
+application-generated data. See
 :ref:`reference-extensions-ubuntu-2604-frameworks` for the full contract and
 :ref:`how-to-migrate-2604` for migration guidance.
 
