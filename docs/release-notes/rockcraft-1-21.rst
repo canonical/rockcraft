@@ -117,6 +117,7 @@ Contributors
 
 We would like to express a big thank you to all the people who contributed to this release.
 
+:literalref:`@0xzoowa <https://github.com/0xzoowa>`,
 :literalref:`@aahil-khan <https://github.com/aahil-khan>`,
 :literalref:`@alithethird <https://github.com/alithethird>`,
 :literalref:`@artivis <https://github.com/artivis>`,
