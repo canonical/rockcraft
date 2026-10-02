@@ -71,9 +71,9 @@ a Git repository when creating the Rockcraft project.
 stage-slices key
 ~~~~~~~~~~~~~~~~
 
-Rockcraft 1.21 introduces the ``stage-slices`` key, which specifies a list of Chisel slices to be cut into the part's install directory.
-Slices can still be declared in ``stage-packages``, but this support will be dropped
-starting with base ubuntu\@27.04.
+Rockcraft 1.21 introduces the ``stage-slices`` key, which specifies a list of Chisel slices
+to be cut into the part's install directory. Slices can still be declared in ``stage-packages``,
+but this support will be dropped starting with base ubuntu\@27.04.
 
 Support for uv in 12-factor extensions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -84,8 +84,11 @@ Experimental monorepo support
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Support for packing projects where the Rockcraft project file is not on the root of the
-repository can now be enabled with the new ``ROCKCRAFT_EXPERIMENTAL_MONOREPO`` environment
-variable. For guidance, see :ref:`how-to-pack-a-rock-in-a-monorepo`.
+repository can now be enabled with the ``ROCKCRAFT_EXPERIMENTAL_MONOREPO`` environment
+variable.
+
+This support is experimental and might change in future releases as we
+improve the monorepo experience. For guidance, see :ref:`how-to-pack-a-rock-in-a-monorepo`.
 
 Minor features
 --------------
