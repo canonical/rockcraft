@@ -68,24 +68,24 @@ Init Git repositories
 The :ref:`init command <ref_commands_init>` now features a ``--vcs`` option to initialize
 a Git repository when creating the Rockcraft project.
 
-New stage-slices key
-~~~~~~~~~~~~~~~~~~~~
+stage-slices key
+~~~~~~~~~~~~~~~~
 
-This key declares a list of Chisel slices to be cut into the part's install directory.
+Rockcraft 1.21 introduces the ``stage-slices`` key, which specifies a list of Chisel slices to be cut into the part's install directory.
 Slices can still be declared in ``stage-packages``, but this support will be dropped
 starting with base ubuntu\@27.04.
 
-Support for uv on 12-factor extensions
+Support for uv in 12-factor extensions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The Flask, Django and FastAPI extensions now support Python projects that use uv.
+The Flask, Django, and FastAPI extensions now support Python projects that use uv.
 
 Experimental monorepo support
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Support for packing projects where the Rockcraft project file is not on the root of the
 repository can now be enabled with the new ``ROCKCRAFT_EXPERIMENTAL_MONOREPO`` environment
-variable. Check out the new :ref:`how-to guide <how-to-pack-a-rock-in-a-monorepo>` for details.
+variable. For guidance, see :ref:`how-to-pack-a-rock-in-a-monorepo`.
 
 Minor features
 --------------
@@ -100,7 +100,7 @@ Rockcraft will now skip re-packing the rock if the project is unchanged.
 Sticky bit on Pebble directory
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The ``/var/lib/pebble/default`` directory now respects the sticky bit so that users
+The ``/var/lib/pebble/default/`` directory now respects the sticky bit so that users
 can't remove or rename entries made by other users.
 
 Testing with fetch-service sessions
