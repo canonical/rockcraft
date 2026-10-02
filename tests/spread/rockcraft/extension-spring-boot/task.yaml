@@ -82,11 +82,11 @@ execute: |
       }
   }
   EOF
-  run_rockcraft init --name "${NAME}" --profile spring-boot-framework
+  run_rockcraft init --name "${NAME}" --profile spring-boot-framework --base "${BUILD_BASE}"
+  grep -q "^build-base: ${BUILD_BASE}" rockcraft.yaml
 
-  # Replace base & build-base with ubuntu@<base>
+  # Replace base with ubuntu@<base>
   sed -i "s/^base: .*/base: ${BASE}/g" rockcraft.yaml
-  sed -i "s/^build-base: .*/build-base: ${BUILD_BASE}/g" rockcraft.yaml
 
   run_rockcraft pack
   test -f "${ROCK_FILE}"
