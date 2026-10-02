@@ -400,6 +400,9 @@ def test_fastapi_extension_v2_bare_26_04(
         "python3.14-venv_ensurepip",
         "python3-minimal_python3",
     ]
+    assert applied["parts"]["fastapi-framework.system-dependencies"][
+        "stage-packages"
+    ] == ["tzdata"]
     assert deps["build-environment"] == [{"PIP_PYTHON": "$(which python3.14)"}]
     assert applied["parts"]["fastapi-framework.runtime"]["override-build"] == (
         "mkdir -m 777 ${CRAFT_PART_INSTALL}/tmp\n"
@@ -608,6 +611,11 @@ def test_fastapi_extension_default_26_04(tmp_path, monkeypatch):
                     {"path": "opt/promtail", "owner": 584792, "group": 584792},
                     {"path": "etc/promtail", "owner": 584792, "group": 584792},
                 ],
+            },
+            "fastapi-framework.system-dependencies": {
+                "plugin": "nil",
+                "stage-packages": ["tzdata"],
+                "stage": ["usr/share/zoneinfo"],
             },
         },
         "services": {

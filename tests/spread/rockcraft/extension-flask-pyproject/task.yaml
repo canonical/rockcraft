@@ -10,13 +10,10 @@ execute: |
   ROCK_FILE="${NAME}_0.1_amd64.rock"
   IMAGE="${NAME}:0.1"
 
-  run_rockcraft init --name "${NAME}" --profile flask-framework
+  run_rockcraft init --name "${NAME}" --profile flask-framework --base ubuntu@26.04
 
   sed -i "s/^name: .*/name: ${NAME}/g" rockcraft.yaml
   sed -i "s/^base: .*/base: ${SCENARIO//-/@}/g" rockcraft.yaml
-  if [ "${SCENARIO}" != "bare" ]; then
-      sed -i "/^build-base:/d" rockcraft.yaml
-  fi
 
   run_rockcraft pack
 

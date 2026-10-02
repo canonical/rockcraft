@@ -123,6 +123,74 @@ def test_run_init_with_name(mocker):
     assert rock_project.name == "foobar"
 
 
+@pytest.mark.parametrize(
+    ("profile", "base", "base_key"),
+    [
+        ("simple", "ubuntu@22.04", "base"),
+        ("simple", "ubuntu@24.04", "base"),
+        ("simple", "ubuntu@26.04", "base"),
+        ("django-framework", "ubuntu@22.04", "build-base"),
+        ("django-framework", "ubuntu@24.04", "build-base"),
+        ("django-framework", "ubuntu@26.04", "build-base"),
+        ("expressjs-framework", "ubuntu@24.04", "build-base"),
+        ("expressjs-framework", "ubuntu@26.04", "build-base"),
+        ("fastapi-framework", "ubuntu@24.04", "build-base"),
+        ("fastapi-framework", "ubuntu@26.04", "build-base"),
+        ("flask-framework", "ubuntu@22.04", "build-base"),
+        ("flask-framework", "ubuntu@24.04", "build-base"),
+        ("flask-framework", "ubuntu@26.04", "build-base"),
+        ("go-framework", "ubuntu@24.04", "build-base"),
+        ("go-framework", "ubuntu@26.04", "build-base"),
+        ("spring-boot-framework", "ubuntu@24.04", "build-base"),
+        ("spring-boot-framework", "ubuntu@26.04", "build-base"),
+    ],
+)
+@pytest.mark.usefixtures("valid_dir")
+def test_run_init_with_base(mocker, profile, base, base_key):
+    mocker.patch.object(
+        sys,
+        "argv",
+        [
+            "rockcraft",
+            "init",
+            f"--profile={profile}",
+            f"--base={base}",
+        ],
+    )
+
+    cli.run()
+
+    rockcraft_yaml = yaml.safe_load(Path("rockcraft.yaml").read_text())
+
+    assert rockcraft_yaml[base_key] == base
+
+
+@pytest.mark.parametrize(
+    "profile",
+    [
+        "expressjs-framework",
+        "fastapi-framework",
+        "go-framework",
+        "spring-boot-framework",
+    ],
+)
+@pytest.mark.usefixtures("valid_dir")
+def test_run_init_with_unsupported_extension_base(mocker, profile):
+    mocker.patch.object(
+        sys,
+        "argv",
+        [
+            "rockcraft",
+            "init",
+            f"--profile={profile}",
+            "--base=ubuntu@22.04",
+        ],
+    )
+
+    assert cli.run() == 1
+    assert not Path("rockcraft.yaml").exists()
+
+
 @pytest.mark.usefixtures("valid_dir")
 def test_run_init_with_invalid_name(mocker):
     mocker.patch.object(sys, "argv", ["rockcraft", "init", "--name=-f"])

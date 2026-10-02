@@ -43,7 +43,7 @@ class RockcraftInitService(InitService):
             vcs=vcs,
         )
 
-        init_profile = template_dir.name
+        init_profile = template_dir.name.split("__", maxsplit=1)[0]
         if init_profile != "simple":
             versioned_docs = self._app.versioned_docs_url
             reference_docs = f"{versioned_docs}/reference/extensions/{init_profile}"
