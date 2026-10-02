@@ -336,6 +336,11 @@ class FastAPIFrameworkV2(AppDataDirMixin, FastAPIFramework):
         return True
 
     @override
+    def get_root_snippet(self) -> dict[str, Any]:
+        """Return the root snippet with timezone data."""
+        return self._add_system_dependencies_part(super().get_root_snippet())
+
+    @override
     def _dependencies_part(
         self, stage_packages: list[str], build_environment: list[Any]
     ) -> dict[str, Any]:

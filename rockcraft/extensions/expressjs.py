@@ -324,6 +324,11 @@ class ExpressJSFrameworkV2(AppDataDirMixin, ExpressJSFramework):
         return True
 
     @override
+    def get_root_snippet(self) -> dict[str, Any]:
+        """Return the root snippet with timezone data."""
+        return self._add_system_dependencies_part(super().get_root_snippet())
+
+    @override
     def _gen_install_app_part(self) -> dict[str, Any]:
         """Generate an install part compatible with Node's unmerged archive layout."""
         install_app_part = super()._gen_install_app_part()
