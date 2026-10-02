@@ -39,7 +39,8 @@ execute: |
   IMAGE="${NAME}:latest"
   CONTAINER="${NAME}-container"
 
-  run_rockcraft init --name "${NAME}" --profile django-framework
+  run_rockcraft init --name "${NAME}" --profile django-framework --base "${BUILD_BASE}"
+  grep -q "^build-base: ${BUILD_BASE}" rockcraft.yaml
 
   # Replace base with ubuntu@<base>
   sed -i "s/^base: .*/base: ${BASE}/g" rockcraft.yaml
