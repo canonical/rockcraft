@@ -21,15 +21,13 @@ and combines its configuration with your project file.
 Ubuntu 26.04 framework extensions
 ---------------------------------
 
-The Express, FastAPI, Go, Flask, Django, and Spring Boot framework extensions
-are stable on their supported bases earlier than Ubuntu 26.04 LTS. Their
-Ubuntu 26.04 extension implementations and contracts are experimental. To use
-one of these extensions with Ubuntu 26.04, set
-``ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS=1`` when running Rockcraft.
+The Express, FastAPI, Go, Flask, and Django framework extensions are stable on their
+supported bases earlier than Ubuntu 26.04 LTS. The Spring Boot extension remains
+experimental on its supported bases, and the Ubuntu 26.04 implementations of all
+six extensions are experimental. To use one of these extensions with Ubuntu 26.04,
+set ``ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS=1`` when running Rockcraft.
 
-Rockcraft selects the extension implementation from the effective base. For a
-rock with an Ubuntu base, this is the value of ``base``. For a rock with
-``base: bare``, it is the value of ``build-base``. For example,
+Rockcraft selects the extension implementation from ``build-base`` when it is set, or from ``base`` otherwise. For a rock with ``base: bare``, ``build-base`` is mandatory. For example,
 ``base: bare`` with ``build-base: ubuntu@24.04`` uses the stable extension
 implementation and doesn't require the experimental extensions environment
 variable. For migration guidance, see
