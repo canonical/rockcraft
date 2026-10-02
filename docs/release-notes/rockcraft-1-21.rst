@@ -24,7 +24,7 @@ container hosts.
 Minimum hardware requirements
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-- AMD64, ARM64, ARMv7-M, RISC-V 64-bit, PowerPC 64-bit little-endian, or S390x
+- AMD64, ARM64, ARMHF, RISC-V (RVA20), PPC64EL, or S390X-capable
   processor
 - 2GB RAM
 - 10GB available storage space
