@@ -41,6 +41,15 @@ Not all extensions are compatible with ``ubuntu@26.04`` at launch. If your rock 
 run ``rockcraft extensions`` to see if it's available for ``ubuntu@26.04``. If your rock uses an
 extension that does not yet support ``ubuntu@26.04``, it's best to wait to upgrade.
 
+The Ubuntu 26.04 implementations of the Express, FastAPI, Go, Flask, Django,
+and Spring Boot framework extensions are experimental. Set
+``ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS=1`` when running Rockcraft to use
+them. For rocks with ``base: bare``, the ``build-base`` selects the extension
+implementation, so this requirement applies when ``build-base:
+ubuntu@26.04``. See :ref:`reference-extensions-ubuntu-2604-frameworks` for the
+shared Ubuntu 26.04 framework extension contract, including the ``/app`` and
+``/app-data`` directories.
+
 .. _how-to-update-part-names:
 
 Update part names
