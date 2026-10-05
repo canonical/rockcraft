@@ -34,5 +34,8 @@ ij_visual_guides = none
 [{*.toml,Cargo.lock,Cargo.toml.orig,Gopkg.lock,Pipfile,poetry.lock}]
 max_line_length = off
 
+[*.toml]
+indent_size = 2
+
 [{*.yaml,*.yml}]
 indent_size = 2
