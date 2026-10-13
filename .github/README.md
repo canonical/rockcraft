@@ -68,16 +68,6 @@ TODO
        as-needed.
 
 4. Run all the linters with `make lint`.
-    1. `mypy`:
-        - Mypy checks the same things as `ruff`'s `ANNXXX` checks, but `ruff`'s `noqa`
-          directives mean nothing to mypy. You'll need to fix these by hand, mostly by
-          adding type annotations to function definitions.
-
-    2. `pyright`:
-        - For errors along the lines of "Stub file not found for $library", check for
-          the existence of pip package `typing-$library` and add it as a dependency.
-        - If you have lots of errors you may need to remove the
-          `strict` directive from `pyproject.toml`.
 
 5. Do a side-by-side diff of the `.gitignore` files in your project and Starbase, making
    them as close as possible and adding anything that makes sense upstream.
