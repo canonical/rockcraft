@@ -235,10 +235,10 @@ class _GunicornBase(Extension):
         if self.yaml_data["base"] == "bare":
             parts[self.get_part_name("runtime")] = {
                 "plugin": "nil",
-                "override-build": "mkdir -m 777 ${CRAFT_PART_INSTALL}/tmp\n"
-                "ln -sf /usr/bin/bash ${CRAFT_PART_INSTALL}/usr/bin/sh",
+                "override-build": "ln -sf /usr/bin/bash ${CRAFT_PART_INSTALL}/usr/bin/sh",
                 "stage-packages": [
                     "bash_bins",
+                    "base-files_tmp",
                     "coreutils_bins",
                     "ca-certificates_data",
                 ],

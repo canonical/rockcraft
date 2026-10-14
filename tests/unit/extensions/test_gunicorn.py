@@ -397,10 +397,10 @@ def test_flask_extension_bare(
     applied = extensions.apply_extensions(tmp_path, flask_input_yaml)
     assert applied["parts"]["flask-framework/runtime"] == {
         "plugin": "nil",
-        "override-build": "mkdir -m 777 ${CRAFT_PART_INSTALL}/tmp\n"
-        "ln -sf /usr/bin/bash ${CRAFT_PART_INSTALL}/usr/bin/sh",
+        "override-build": "ln -sf /usr/bin/bash ${CRAFT_PART_INSTALL}/usr/bin/sh",
         "stage-packages": [
             "bash_bins",
+            "base-files_tmp",
             "coreutils_bins",
             "ca-certificates_data",
         ],
@@ -1294,9 +1294,9 @@ def test_flask_extension_v2_bare_26_04(tmp_path, flask_extension, monkeypatch, u
         "stage-packages"
     ] == ["tzdata"]
     assert deps["build-environment"] == [{"PIP_PYTHON": "$(which python3.14)"}]
-    assert applied["parts"]["flask-framework.runtime"]["override-build"] == (
-        "mkdir -m 777 ${CRAFT_PART_INSTALL}/tmp\n"
-        "ln -sf /usr/bin/bash ${CRAFT_PART_INSTALL}/usr/bin/sh"
+    assert (
+        applied["parts"]["flask-framework.runtime"]["override-build"]
+        == "ln -sf /usr/bin/bash ${CRAFT_PART_INSTALL}/usr/bin/sh"
     )
     if use_uv:
         assert deps["plugin"] == "uv"
@@ -1389,9 +1389,9 @@ def test_django_extension_v2_bare_26_04(tmp_path, django_extension, use_uv):
         "stage-packages"
     ] == ["tzdata"]
     assert deps["build-environment"] == [{"PIP_PYTHON": "$(which python3.14)"}]
-    assert applied["parts"]["django-framework.runtime"]["override-build"] == (
-        "mkdir -m 777 ${CRAFT_PART_INSTALL}/tmp\n"
-        "ln -sf /usr/bin/bash ${CRAFT_PART_INSTALL}/usr/bin/sh"
+    assert (
+        applied["parts"]["django-framework.runtime"]["override-build"]
+        == "ln -sf /usr/bin/bash ${CRAFT_PART_INSTALL}/usr/bin/sh"
     )
     if use_uv:
         assert deps["plugin"] == "uv"
