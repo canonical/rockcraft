@@ -86,8 +86,8 @@ reference page for your framework:
 :ref:`Spring Boot <reference-spring-boot-framework-stage>`.
 The Django extension includes the whole Django project directory, except for
 the ``db.sqlite3`` file. The Flask and FastAPI extensions include only the
-default files, so list any other files your app needs, such as additional
-Python modules, in the ``prime`` key.
+default files, unless none of them exist. List any other files your app needs,
+such as additional Python modules, in the ``prime`` key.
 
 .. note::
    Part names added by extensions vary by Ubuntu version. On Ubuntu 22.04 LTS
@@ -164,7 +164,8 @@ To change this list, add the following snippet to the project file:
             The entire directory containing the ``package.json`` file is copied
             into the rock, except for the files left out by the ``files`` array
             in ``package.json`` or by a ``.npmignore`` file. Place any
-            additional files in the same directory as ``package.json``.
+            additional files in the same directory as ``package.json``. If the
+            app has a ``build`` script, the ``dist`` directory is always included.
 
    .. group-tab:: FastAPI
 

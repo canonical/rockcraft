@@ -54,7 +54,8 @@ App binary
 If the main package is in the base directory and the Rockcraft ``name``
 attribute is equal to the last element of the module path in ``go.mod``, the
 extension finds the binary. For example, the module
-``github.com/example/myapp`` requires the name ``myapp``. Otherwise, packing
+``github.com/example/myapp`` requires the name ``myapp``. The same applies to a module ending in a version
+suffix, such as ``github.com/example/myapp/v2``. Otherwise, packing
 fails with a ``No such file or directory`` error, because the extension looks
 for a binary named after the rock. Use the ``organize`` key as shown below.
 

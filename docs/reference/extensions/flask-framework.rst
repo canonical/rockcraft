@@ -201,7 +201,8 @@ Some files, if they exist, are included by default in the rock. These include:
 ``app``, ``app.py``, ``main.py``, ``src``, ``migrate``, ``migrate.sh``,
 ``migrate.py``, ``static``, ``templates``. Any other file or directory, such
 as an additional Python module that your app imports, isn't included unless you
-list it in ``prime``.
+list it in ``prime``. If none of these exist and ``prime`` isn't set, the whole
+project is included, except ``node_modules``, ``.git``, ``.yarn`` and ``*.rock``.
 
 The ``prime`` key specifies the files to be included or excluded from
 the rock upon ``rockcraft pack``. Prefix each entry with ``flask/app/`` (Ubuntu

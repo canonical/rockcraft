@@ -89,6 +89,9 @@ Project requirements
         at runtime. If the ``files`` array is not defined and ``.npmignore``
         does not exist, Rockcraft warns that it will package all files, not only ``dist/``.
 
+        With a ``build`` script, the whole ``dist`` directory is always included,
+        whatever the ``files`` array or the ``.npmignore`` file say.
+
 .. _reference-express-framework-npm-include-node:
 
 Node.js version
@@ -145,7 +148,9 @@ directory containing the ``package.json`` file, is copied into the rock's
 ``/app`` directory together with the rest of the application. The 12-factor
 charm runs the migration script before the application starts, so make sure the
 script is executable, idempotent and safe to run on multiple units concurrently.
-
+If ``package.json`` has a ``files`` array or the project has a ``.npmignore``
+file, make sure it includes the migration script. Otherwise the rock won't
+contain it.
 A ``migrate.sh`` script for an Express application typically runs the migration
 command of an ORM library, for example:
 

@@ -140,7 +140,9 @@ file or directory that contains the ASGI app: ``app.py``, ``main.py``, ``app``,
 ``src``, or ``<rock name>``. The extension includes the ASGI app only if you did
 not set a custom ``command`` for the ``fastapi`` service. Any other file or
 directory, such as an additional Python module that your app imports, isn't
-included unless you list it in ``prime``.
+included unless you list it in ``prime``. If none of these exist and ``prime``
+isn't set, the whole project is included, except ``node_modules``, ``.git``,
+``.yarn`` and ``*.rock``.
 
 The ``prime`` key specifies the files to be included or excluded from
 the rock upon ``rockcraft pack``, following the ``app/<filename>`` notation. For
