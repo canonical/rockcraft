@@ -97,9 +97,8 @@ However, there is no equivalent new version for the Poetry plugin. Users of this
 plugin should either wait until a new version becomes available, or should instead use Poetry
 to generate a requirements specification file that the Python plugin can use.
 
-The uv plugin works unchanged on ``ubuntu@26.04``, but it isn't available on ``ubuntu@25.10``.
-On ``ubuntu@25.10``, use uv to generate a requirements specification file that the Python plugin
-can use.
+The uv plugin works unchanged on ``ubuntu@26.04``. To use the Python plugin
+instead, generate a requirements specification file with uv.
 
 For example, the following part using the uv plugin in ``ubuntu@24.04``:
 
@@ -121,7 +120,7 @@ can be  updated to:
 .. code-block:: yaml
     :caption: rockcraft.yaml
 
-    base: ubuntu@25.10
+    base: ubuntu@26.04
 
     # ...
 
