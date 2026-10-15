@@ -151,6 +151,7 @@ script is executable, idempotent and safe to run on multiple units concurrently.
 If ``package.json`` has a ``files`` array or the project has a ``.npmignore``
 file, make sure it includes the migration script. Otherwise the rock won't
 contain it.
+
 A ``migrate.sh`` script for an Express application typically runs the migration
 command of an ORM library, for example:
 
