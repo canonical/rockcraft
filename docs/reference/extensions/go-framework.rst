@@ -18,7 +18,7 @@ lightweight image.
     ``ubuntu@26.04`` bases. Support for Ubuntu 26.04 LTS is experimental.
 
     Part names added by the extension vary by Ubuntu version. On Ubuntu 24.04 LTS,
-    write ``extension/part``. On Ubuntu 26.04 LTS and higher, write
+    write ``extension/part``. On Ubuntu 26.04 LTS, write
     ``extension.part``. For rocks with ``base: bare``, follow the convention
     for the configured ``build-base``.
 
@@ -52,8 +52,11 @@ App binary
 ----------
 
 If the main package is in the base directory and the Rockcraft ``name``
-attribute is equal to the Go module name, the name of the binary will
-be selected correctly.
+attribute is equal to the last element of the module path in ``go.mod``, the
+extension finds the binary. For example, the module
+``github.com/example/myapp`` requires the name ``myapp``. Otherwise, packing
+fails with a ``No such file or directory`` error, because the extension looks
+for a binary named after the rock. Use the ``organize`` key as shown below.
 
 The ``organize`` key specifies a different binary to be used as the
 main application, without having to override the service command. For example,
@@ -74,7 +77,7 @@ to use the binary ``anotherserver``:
               organize:
                 bin/anotherserver: usr/local/bin/<rockcraft project name>
 
-    .. tab-item:: Ubuntu 26.04 LTS and higher
+    .. tab-item:: Ubuntu 26.04 LTS
         :sync: base-26-plus
 
         .. code-block:: yaml
@@ -115,7 +118,7 @@ example:
                 - app/static
                 - app/another_file_or_directory
 
-    .. tab-item:: Ubuntu 26.04 LTS and higher
+    .. tab-item:: Ubuntu 26.04 LTS
         :sync: base-26-plus
 
         .. code-block:: yaml

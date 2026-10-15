@@ -20,7 +20,7 @@ lightweight image.
     and ``ubuntu@26.04`` bases. Support for Ubuntu 26.04 LTS is experimental.
 
     Part names added by the extension vary by Ubuntu version. On Ubuntu 24.04 LTS,
-    write ``extension/part``. On Ubuntu 26.04 LTS and higher, write
+    write ``extension/part``. On Ubuntu 26.04 LTS, write
     ``extension.part``. For rocks with ``base: bare``, follow the convention
     for the configured ``build-base``.
 
@@ -48,7 +48,8 @@ Project requirements
 There are 2 requirements to be able to use the ``fastapi-framework`` extension:
 
 1. There must be a ``requirements.txt`` file in the root of the project with
-   ``fastapi`` declared as a dependency
+   ``fastapi`` or ``starlette`` declared as a dependency. On Ubuntu 26.04 LTS,
+   you can use a :ref:`uv project <reference-fastapi-framework-uv>` instead.
 2. The project must include an
    `Asynchronous Server Gateway Interface (ASGI) <https://asgi.readthedocs.io/en/latest/>`__ app
    in a variable called ``app`` in one of the following files relative to the project
@@ -58,7 +59,7 @@ There are 2 requirements to be able to use the ``fastapi-framework`` extension:
    * ``main.py``
    * ``__init__.py``, ``app.py`` or ``main.py`` within the ``app`` or ``src``
      directory or within a directory with the name of the rock as declared in
-     the project file.
+     the project file, with any ``-`` replaced by ``_``.
 
 .. _reference-fastapi-framework-uv:
 
@@ -74,7 +75,7 @@ uv projects
         application with the Python plugin and installs dependencies from
         ``requirements.txt``.
 
-    .. tab-item:: Ubuntu 26.04 LTS and higher
+    .. tab-item:: Ubuntu 26.04 LTS
         :sync: base-26-plus
 
         If both a ``uv.lock`` and a ``pyproject.toml`` file are present in the
@@ -86,8 +87,9 @@ uv projects
 
         The uv plugin requires both files, meaning the application will fail to
         pack if ``uv.lock`` is present but ``pyproject.toml`` is missing. If
-        only ``pyproject.toml`` is present, the extension falls back to the
-        Python plugin.
+        ``uv.lock`` is absent, the extension builds with the Python plugin and
+        still requires ``requirements.txt``; a ``pyproject.toml`` file alone is
+        not enough.
 
 .. _reference-fastapi-framework-stage-packages:
 
@@ -97,7 +99,9 @@ App dependencies
 The ``stage-packages`` key specifies all additional dependencies. If the FastAPI app
 has its own special dependencies, this key must declare them.
 
-The following example specifies the ``libpq-dev`` package:
+The following example specifies the ``libpq-dev`` package. For a rock with
+``base: bare``, list slices instead, for example ``libpq5_libs``, because a part
+can't mix debs and slices:
 
 .. tab-set::
 
@@ -113,7 +117,7 @@ The following example specifies the ``libpq-dev`` package:
                 # list required packages or slices for your FastAPI application below.
                 - libpq-dev
 
-    .. tab-item:: Ubuntu 26.04 LTS and higher
+    .. tab-item:: Ubuntu 26.04 LTS
         :sync: base-26-plus
 
         .. code-block:: yaml
@@ -131,8 +135,12 @@ Included or excluded files
 --------------------------
 
 Some files, if they exist, are included by default in the rock. These include:
-``app``, ``src``, ``<rock name>``, ``app.py``, ``migrate``, ``migrate.sh``,
-``migrate.py``, ``static``, ``templates``.
+``migrate``, ``migrate.sh``, ``migrate.py``, ``static``, ``templates``, and the
+file or directory that contains the ASGI app: ``app.py``, ``main.py``, ``app``,
+``src``, or ``<rock name>``. The extension includes the ASGI app only if you did
+not set a custom ``command`` for the ``fastapi`` service. Any other file or
+directory, such as an additional Python module that your app imports, isn't
+included unless you list it in ``prime``.
 
 The ``prime`` key specifies the files to be included or excluded from
 the rock upon ``rockcraft pack``, following the ``app/<filename>`` notation. For
@@ -155,7 +163,7 @@ example:
                 - app/templates
                 - app/static
 
-    .. tab-item:: Ubuntu 26.04 LTS and higher
+    .. tab-item:: Ubuntu 26.04 LTS
         :sync: base-26-plus
 
         .. code-block:: yaml
