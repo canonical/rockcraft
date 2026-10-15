@@ -11,6 +11,7 @@ permissions:
 
 jobs:
   github-release:
+    if: false
     runs-on: [self-hosted]
     steps:
       - name: Create a Prerelease

@@ -8,7 +8,7 @@ on:
 
 jobs:
   TICS:
-    uses: canonical/starflow/.github/workflows/tics.yaml@main
+    uses: canonical/starflow/.github/workflows/tics.yaml@work/testing-skill
     with:
       project: "rockcraft"
     secrets: inherit

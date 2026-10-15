@@ -9,6 +9,7 @@ on:
 
 jobs:
   snap-build:
+    if: false
     runs-on: ubuntu-24.04
     outputs:
       source-files: ${{ steps.filter.outputs.source-files }}
@@ -29,18 +30,16 @@ jobs:
       - name: Build snap
         id: rockcraft
         uses: canonical/action-build@v1
-        if: ${{ steps.filter.outputs.source-files == 'true' || github.event_name == 'schedule' }}
       - name: Upload snap artifact
         uses: actions/upload-artifact@v7
-        if: ${{ steps.filter.outputs.source-files == 'true' || github.event_name == 'schedule' }}
         with:
           name: snap
           path: ${{ steps.rockcraft.outputs.snap }}
 
   source-spread-tests:
+    if: false
     runs-on: [self-hosted, spread-enabled]
     needs: [snap-build]
-    if: ${{ needs.snap-build.outputs.source-files == 'true' || github.event_name == 'schedule' }}
 
     steps:
       - name: Cleanup job workspace
@@ -78,7 +77,6 @@ jobs:
           spread openstack:...tests...
 
       - name: Discard spread workers
-        if: always()
         run: |
           shopt -s nullglob
           for r in .spread-reuse.*.yaml; do

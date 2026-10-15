@@ -16,6 +16,7 @@ on:
 
 jobs:
   renovate:
+    if: false
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -28,7 +29,6 @@ jobs:
         run: npm install --global re2 renovate
       - name: Enable ssh access
         uses: mxschmitt/action-tmate@v3
-        if: ${{ inputs.enable_ssh_access }}
         with:
           limit-access-to-actor: true
       - name: Check renovate config

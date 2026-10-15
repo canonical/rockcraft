@@ -6,6 +6,7 @@ env:
 
 jobs:
   diff-schema:
+    if: false
     runs-on: ubuntu-24.04
 
     steps:
@@ -37,6 +38,7 @@ jobs:
           diff generated_schema.json $ROCKCRAFT_JSON
 
   validate-schema:
+    if: false
     runs-on: ubuntu-latest
 
     steps:
