@@ -24,7 +24,10 @@ include common.mk
 format: format-ruff format-codespell format-prettier format-pre-commit  ## Run all automatic formatters
 
 .PHONY: lint
-lint: lint-ruff lint-ty lint-codespell lint-prettier lint-shellcheck lint-docs lint-twine lint-uv-lockfile  ## Run all linters
+lint: lint-code lint-docs lint-twine lint-uv-lockfile  ## Run all linters
+
+.PHONY: lint-code
+lint-code: lint-ruff lint-ty lint-codespell lint-prettier lint-shellcheck  ## Run code-specific linters
 
 .PHONY: pack
 pack: pack-pip pack-snap  ## Build all packages
