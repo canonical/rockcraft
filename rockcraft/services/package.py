@@ -16,7 +16,7 @@
 
 """Rockcraft Package service."""
 
-import datetime
+import datetime as dt
 import pathlib
 import typing
 from collections.abc import Mapping
@@ -218,7 +218,7 @@ def _create_rock(
     # Also include the "created" timestamp, just before packing the image
     emit.progress("Adding metadata")
     oci_annotations, rock_metadata = project.generate_metadata(
-        datetime.datetime.now(datetime.timezone.utc).isoformat(), base_digest, build_for
+        dt.datetime.now(dt.timezone.utc).isoformat(), base_digest, build_for
     )
     new_image.set_annotations(oci_annotations)
     new_image.set_control_data(rock_metadata)
