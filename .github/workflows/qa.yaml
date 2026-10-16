@@ -9,6 +9,11 @@ on:
       - "renovate/*"
   pull_request:
 
+permissions:
+  actions: read
+  contents: read
+  pull-requests: read
+
 jobs:
   filter:
     runs-on: ubuntu-slim

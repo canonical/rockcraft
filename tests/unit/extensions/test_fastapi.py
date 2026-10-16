@@ -51,6 +51,7 @@ def test_fastapi_extension_default(tmp_path, fastapi_input_yaml, packages):
     (tmp_path / "requirements.txt").write_text(packages)
     (tmp_path / "app.py").write_text("app = object()")
     applied = extensions.apply_extensions(tmp_path, fastapi_input_yaml)
+    assert "fastapi-framework/app-data" not in applied["parts"]
 
     assert applied == {
         "base": "ubuntu@24.04",
@@ -399,6 +400,9 @@ def test_fastapi_extension_v2_bare_26_04(
         "python3.14-venv_ensurepip",
         "python3-minimal_python3",
     ]
+    assert applied["parts"]["fastapi-framework.system-dependencies"][
+        "stage-packages"
+    ] == ["tzdata"]
     assert deps["build-environment"] == [{"PIP_PYTHON": "$(which python3.14)"}]
     assert applied["parts"]["fastapi-framework.runtime"]["override-build"] == (
         "mkdir -m 777 ${CRAFT_PART_INSTALL}/tmp\n"
@@ -554,6 +558,11 @@ def test_fastapi_extension_default_26_04(tmp_path, monkeypatch):
         "extensions": ["fastapi-framework"],
     }
     applied = extensions.apply_extensions(tmp_path, input_yaml)
+    assert applied["parts"].pop("fastapi-framework.app-data") == {
+        "plugin": "nil",
+        "override-build": "mkdir -p ${CRAFT_PART_INSTALL}/app-data",
+        "permissions": [{"path": "app-data", "owner": 584792, "group": 584792}],
+    }
 
     assert applied == {
         "base": "ubuntu@26.04",
@@ -603,6 +612,11 @@ def test_fastapi_extension_default_26_04(tmp_path, monkeypatch):
                     {"path": "etc/promtail", "owner": 584792, "group": 584792},
                 ],
             },
+            "fastapi-framework.system-dependencies": {
+                "plugin": "nil",
+                "stage-packages": ["tzdata"],
+                "stage": ["usr/share/zoneinfo"],
+            },
         },
         "services": {
             "fastapi": {
@@ -616,4 +630,36 @@ def test_fastapi_extension_default_26_04(tmp_path, monkeypatch):
                 },
             },
         },
+    }
+
+
+@pytest.mark.usefixtures("fastapi_extension")
+def test_fastapi_extension_v2_preserves_generic_app_data_part(tmp_path, monkeypatch):
+    """A user app-data part does not collide with the generated namespaced part."""
+    monkeypatch.setenv("ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS", "1")
+    (tmp_path / "requirements.txt").write_text("fastapi")
+    (tmp_path / "app.py").write_text("app = object()")
+    input_yaml = {
+        "name": "foo-bar",
+        "base": "ubuntu@26.04",
+        "platforms": {"amd64": {}},
+        "extensions": ["fastapi-framework"],
+        "parts": {
+            "app-data": {
+                "plugin": "nil",
+                "override-build": "echo user-defined",
+            }
+        },
+    }
+
+    applied = extensions.apply_extensions(tmp_path, input_yaml)
+
+    assert applied["parts"]["app-data"] == {
+        "plugin": "nil",
+        "override-build": "echo user-defined",
+    }
+    assert applied["parts"]["fastapi-framework.app-data"] == {
+        "plugin": "nil",
+        "override-build": "mkdir -p ${CRAFT_PART_INSTALL}/app-data",
+        "permissions": [{"path": "app-data", "owner": 584792, "group": 584792}],
     }

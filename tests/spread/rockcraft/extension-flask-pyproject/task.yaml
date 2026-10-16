@@ -10,13 +10,10 @@ execute: |
   ROCK_FILE="${NAME}_0.1_amd64.rock"
   IMAGE="${NAME}:0.1"
 
-  run_rockcraft init --name "${NAME}" --profile flask-framework
+  run_rockcraft init --name "${NAME}" --profile flask-framework --base ubuntu@26.04
 
   sed -i "s/^name: .*/name: ${NAME}/g" rockcraft.yaml
   sed -i "s/^base: .*/base: ${SCENARIO//-/@}/g" rockcraft.yaml
-  if [ "${SCENARIO}" != "bare" ]; then
-      sed -i "/^build-base:/d" rockcraft.yaml
-  fi
 
   run_rockcraft pack
 
@@ -36,6 +33,9 @@ execute: |
   docker run --name "${NAME}-container" -d -p 8139:8000 "${IMAGE}"
   retry -n 5 --wait 2 curl localhost:8139
   [ "$(curl -sSf localhost:8139)" == "ok" ]
+  if [ "${SCENARIO}" = "ubuntu-26.04" ]; then
+    [ "$(curl -sSf localhost:8139/write-data)" == "written" ]
+  fi
 
 restore: |
   NAME="flask-pyproject-${SCENARIO//./-}"

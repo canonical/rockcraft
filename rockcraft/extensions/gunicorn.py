@@ -47,12 +47,8 @@ from ._python_utils import (
     validate_uv_lockfile,
 )
 from ._utils import find_ubuntu_base_python_version
-from .app_parts import gen_logging_part
-from .extension import (
-    Extension,
-    _FrameworkFactory,
-    get_extensions_data_dir,
-)
+from .app_parts import AppDataDirMixin, gen_logging_part
+from .extension import Extension, _FrameworkFactory, get_extensions_data_dir
 
 USER_UID: int = SUPPORTED_GLOBAL_USERNAMES["_daemon_"]["uid"]
 
@@ -567,7 +563,7 @@ class FlaskFramework(_GunicornBase):
             )
 
 
-class FlaskFrameworkV2(FlaskFramework):
+class FlaskFrameworkV2(AppDataDirMixin, FlaskFramework):
     """Extension for 12-factor Flask applications targeting ubuntu@26.04.
 
     Behaviourally identical to :class:`FlaskFramework`, except that the
@@ -615,6 +611,11 @@ class FlaskFrameworkV2(FlaskFramework):
     def is_experimental(base: str | None) -> bool:
         """Check if the extension is in an experimental state."""
         return True
+
+    @override
+    def get_root_snippet(self) -> dict[str, Any]:
+        """Return the root snippet with timezone data."""
+        return self._add_system_dependencies_part(super().get_root_snippet())
 
     @override
     def check_project(self) -> None:
@@ -776,7 +777,7 @@ class DjangoFramework(_GunicornBase):
             self.wsgi_path  # noqa: B018 (unused expression, just checking for errors)
 
 
-class DjangoFrameworkV2(DjangoFramework):
+class DjangoFrameworkV2(AppDataDirMixin, DjangoFramework):
     """Extension for 12-factor Django applications targeting ubuntu@26.04.
 
     Behaviourally identical to :class:`DjangoFramework`, except that the
@@ -827,6 +828,11 @@ class DjangoFrameworkV2(DjangoFramework):
         This is always True for V2
         """
         return True
+
+    @override
+    def get_root_snippet(self) -> dict[str, Any]:
+        """Return the root snippet with timezone data."""
+        return self._add_system_dependencies_part(super().get_root_snippet())
 
     @override
     def check_project(self) -> None:

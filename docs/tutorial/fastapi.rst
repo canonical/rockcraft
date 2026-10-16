@@ -155,9 +155,6 @@ Pack the rock:
     :end-before: [docs:pack-end]
     :dedent: 2
 
-Since FastAPI is an experimental extension,
-``ROCKCRAFT_ENABLE_EXPERIMENTAL_EXTENSIONS`` must be enabled.
-
 Once Rockcraft has finished packing the FastAPI rock, we'll find a new file in
 the project's working directory (an `OCI <OCI_image_spec_>`_ archive) with
 the ``.rock`` extension:

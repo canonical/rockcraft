@@ -39,7 +39,8 @@ execute: |
   IMAGE="${NAME}:latest"
   CONTAINER="${NAME}-container"
 
-  run_rockcraft init --name "${NAME}" --profile django-framework
+  run_rockcraft init --name "${NAME}" --profile django-framework --base "${BUILD_BASE}"
+  grep -q "^build-base: ${BUILD_BASE}" rockcraft.yaml
 
   # Replace base with ubuntu@<base>
   sed -i "s/^base: .*/base: ${BASE}/g" rockcraft.yaml
@@ -47,17 +48,6 @@ execute: |
   if [ "${USE_UV}" = "true" ]; then
     run_rockcraft clean
   fi
-
-  # Install findutils for the bare scenario
-  # This is a workaround for the fact that the bare scenario does not have
-  # findutils installed by default, which is required for the test
-  cat >> rockcraft.yaml <<EOL
-  parts:
-    find-app:
-      plugin: nil
-      stage-packages:
-        - findutils
-  EOL
 
   run_rockcraft pack
 
@@ -75,11 +65,14 @@ execute: |
 
   # test the default django service
   docker run --name "${CONTAINER}" -d -p 8138:8000 "${IMAGE}"
-  retry -n 5 --wait 2 curl localhost:8138 || {
+  retry -n 5 --wait 2 curl localhost:8138/hello || {
     docker logs "${CONTAINER}"
     exit 1
   }
-  [ "$(curl -sw '%{http_code}' -o /dev/null localhost:8138)" == "200" ]
+  [ "$(curl -sw '%{http_code}' -o /dev/null localhost:8138/hello)" == "200" ]
+  if [ "${BUILD_BASE}" == "ubuntu@26.04" ]; then
+    [ "$(curl -sw '%{http_code}' -o /dev/null localhost:8138/write-data)" == "200" ]
+  fi
 
 restore: |
   docker rmi -f "${NAME}:latest"
