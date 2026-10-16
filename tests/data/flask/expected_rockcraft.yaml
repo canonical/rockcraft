@@ -1,8 +1,8 @@
-# See https://documentation.ubuntu.com/rockcraft/latest/reference/extensions/flask-framework
+# See https://ubuntu.com/containers/rockcraft/docs/latest/reference/extensions/flask-framework
 # For questions or help, visit https://matrix.to/#/#12-factor-charms:ubuntu.com
 
 name: test-name
-# see https://documentation.ubuntu.com/rockcraft/latest/explanation/bases/
+# see https://ubuntu.com/containers/rockcraft/docs/latest/explanation/bases/
 # for more information about bases and using 'bare' bases for chiselled rocks
 base: bare # as an alternative, an ubuntu base can be used
 build-base: ubuntu@24.04 # build-base is required when the base is bare
@@ -24,7 +24,7 @@ platforms:
 # to ensure the flask-framework extension works properly, your Flask application
 # should have an `app.py` file with an `app` object as the WSGI entrypoint.
 # a `requirements.txt` file with at least the flask package should also exist.
-# see https://documentation.ubuntu.com/rockcraft/latest/reference/extensions/flask-framework
+# see https://ubuntu.com/containers/rockcraft/docs/latest/reference/extensions/flask-framework
 # for more information.
 extensions:
   - flask-framework
@@ -55,7 +55,7 @@ extensions:
 # you can add package slices or Debian packages to the image.
 # package slices are subsets of Debian packages, which result
 # in smaller and more secure images.
-# see https://documentation.ubuntu.com/rockcraft/latest/explanation/chisel/
+# see https://ubuntu.com/containers/rockcraft/docs/latest/explanation/chisel/
 
 # add this part if you want to add packages slices to your image.
 # you can find a list of packages slices at https://github.com/canonical/chisel-releases

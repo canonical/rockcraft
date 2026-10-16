@@ -40,7 +40,7 @@ snap install rockcraft --classic
 
 ## Documentation
 
-The [Rockcraft documentation](https://documentation.ubuntu.com/rockcraft) provides
+The [Rockcraft documentation](https://ubuntu.com/containers/rockcraft/docs) provides
 guidance and learning material about the full process of building a rock, debugging, the
 command reference, and much more.
 
@@ -74,4 +74,4 @@ Rockcraft is released under the [GPL-3.0 license](LICENSE).
 [rockcraft-badge]: https://snapcraft.io/rockcraft/badge.svg
 [rockcraft-site]: https://snapcraft.io/rockcraft
 [rtd-badge]: https://readthedocs.com/projects/canonical-rockcraft/badge/?version=stable
-[rtd-stable]: https://documentation.ubuntu.com/rockcraft/en/stable/?badge=stable
+[rtd-stable]: https://ubuntu.com/containers/rockcraft/docs/stable/?badge=stable
