@@ -125,7 +125,7 @@ constraint-dependencies = [
     "lxml>=5.0",
     "markdown>=3.0",
     "markupsafe>=2.0",
-    "oauthlib>=3.0.0",
+    "oauthlib>=4.0.0",
     "protobuf>=5.0",
     "pynacl>=1.5",
     "pyparsing>=3.0.0",
@@ -137,7 +137,7 @@ constraint-dependencies = [
     "sphinx-basic-ng>=1.0.0b1",
     "starlette>=1.0.1",
     "tornado>=4.0",
-    "urllib3>=2.0",
+    "urllib3>=2.8",
     "webencodings>=0.4.0",
     "wheel>=0.38",
     # protobuf 6.33.x segfaults on s390x
