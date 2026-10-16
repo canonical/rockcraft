@@ -209,6 +209,12 @@ linkcheck_retries = 20
 # Report timeouts as 'timeout' instead of 'broken'
 linkcheck_report_timeouts_as_broken = False
 
+# sphinx-last-updated-by-git (a sphinx-sitemap 2.9 dependency, auto-enabled by
+# canonical-sphinx) warns when it can't get git data for source files. Our symlinked
+# library docs under common/ resolve into the build venv, which is outside the git
+# repo on Read the Docs, so each symlinked page warns and fails the build.
+suppress_warnings = ["git.subprocess_error"]
+
 
 ########################
 # Configuration extras #
