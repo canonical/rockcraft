@@ -1,8 +1,1 @@
-[[IgnoredVulns]]
-id = "GHSA-7gcm-g887-7qv7"
-reason = """
-Protobuf 6.33.5 has an issue[0] that causes a segfault in s390x. The issue is fixed but the
-fix is unreleased.
-
-0: https://github.com/protocolbuffers/protobuf/issues/24103
-"""
+# OSV Scanner configuration
