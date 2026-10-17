@@ -21,8 +21,8 @@ lightweight image.
     experimental.
 
     Part names added by the extension vary by Ubuntu version. On Ubuntu 22.04 LTS
-    and Ubuntu 24.04 LTS, write ``extension/part``. On Ubuntu 26.04 LTS and
-    higher, write ``extension.part``. For rocks with ``base: bare``, follow the
+    and Ubuntu 24.04 LTS, write ``extension/part``. On Ubuntu 26.04 LTS,
+    write ``extension.part``. For rocks with ``base: bare``, follow the
     convention for the configured ``build-base``.
 
 The Django extension supports both synchronous and asynchronous
@@ -51,14 +51,14 @@ Project requirements
 
 There are 2 requirements to be able to use the ``django-framework`` extension:
 
-1. There must be a ``requirements.txt`` or ``pyproject.toml`` file in the root
-   directory of the project with ``Django`` declared as a dependency.
+1. There must be a ``requirements.txt`` file in the root directory of the project
+   with ``Django`` declared as a dependency. On Ubuntu 26.04 LTS, you
+   can use a :ref:`uv project <reference-django-framework-uv>` instead.
 2. The Django project directory at the rock root must be named the same as the
-   ``name`` in the project file, with any ``-`` replaced by ``_``. The Django
-   settings package inside that directory must be either the same name or
-   ``mysite``. This means both ``manage.py`` and ``wsgi.py`` are located at
-   either ``<rock-name>/<rock-name>/`` or ``<rock-name>/mysite/``, but
-   not both.
+   ``name`` in the project file, with any ``-`` replaced by ``_``. The
+   ``wsgi.py`` file must be at either ``<rock-name>/<rock-name>/wsgi.py`` or
+   ``<rock-name>/mysite/wsgi.py`` and define an ``application`` callable. If both
+   files exist, ``<rock-name>/<rock-name>/wsgi.py`` takes precedence.
 
 For the project to make use of asynchronous Gunicorn workers:
 
@@ -78,7 +78,7 @@ uv projects
         application with the Python plugin and installs dependencies from
         ``requirements.txt``.
 
-    .. tab-item:: Ubuntu 26.04 LTS and higher
+    .. tab-item:: Ubuntu 26.04 LTS
         :sync: base-26-plus
 
         If both a ``uv.lock`` and a ``pyproject.toml`` file are present in the
@@ -90,8 +90,9 @@ uv projects
 
         The uv plugin requires both files, meaning the application will fail to
         pack if ``uv.lock`` is present but ``pyproject.toml`` is missing. If
-        only ``pyproject.toml`` is present, the extension falls back to the
-        Python plugin.
+        ``uv.lock`` is absent, the extension builds with the Python plugin and
+        still requires ``requirements.txt``; a ``pyproject.toml`` file alone is
+        not enough.
 
 .. _reference-django-framework-stage-packages:
 
@@ -101,7 +102,9 @@ App dependencies
 The ``stage-packages`` key specifies all additional dependencies. If the Django app
 has its own special dependencies, this key must declare them.
 
-The following example specifies the ``libpq-dev`` package:
+The following example specifies the ``libpq-dev`` package. For a rock with
+``base: bare``, list slices instead, for example ``libpq5_libs``, because a part
+can't mix debs and slices:
 
 .. tab-set::
 
@@ -117,7 +120,7 @@ The following example specifies the ``libpq-dev`` package:
                 # list required packages or slices for your Django application below.
                 - libpq-dev
 
-    .. tab-item:: Ubuntu 26.04 LTS and higher
+    .. tab-item:: Ubuntu 26.04 LTS
         :sync: base-26-plus
 
         .. code-block:: yaml
@@ -170,8 +173,9 @@ for more information.
 Gunicorn worker selection
 -------------------------
 
-If the project has gevent as a dependency, Rockcraft automatically updates the
-pebble plan to spawn asynchronous Gunicorn workers.
+If ``gevent`` is listed as a dependency in ``requirements.txt`` or in the
+``dependencies`` of ``pyproject.toml``, Rockcraft sets the Gunicorn worker to
+``gevent`` in the Pebble plan. Otherwise, it uses ``sync``.
 
 When the project instead needs synchronous workers, you can override the worker
 type by adding ``--args django sync`` to the Docker command that launches the

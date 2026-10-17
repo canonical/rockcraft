@@ -20,7 +20,7 @@ lightweight image.
     experimental.
 
     Part names added by the extension vary by Ubuntu version. On Ubuntu 24.04 LTS,
-    write ``extension/part``. On Ubuntu 26.04 LTS and higher, write
+    write ``extension/part``. On Ubuntu 26.04 LTS, write
     ``extension.part``. For rocks with ``base: bare``, follow the convention
     for the configured ``build-base``.
 
@@ -91,7 +91,7 @@ respectively.
               plugin: gradle
               gradle-task: bootJar
 
-    .. tab-item:: Ubuntu 26.04 LTS and higher
+    .. tab-item:: Ubuntu 26.04 LTS
         :sync: base-26-plus
 
         .. code-block:: yaml
@@ -138,7 +138,7 @@ For example:
               build-packages:
                 - openjdk-17-jdk # specify the Java package to use
 
-    .. tab-item:: Ubuntu 26.04 LTS and higher
+    .. tab-item:: Ubuntu 26.04 LTS
         :sync: base-26-plus
 
         .. code-block:: yaml
@@ -172,16 +172,17 @@ The ``spring-boot-framework`` uses the following configuration:
           parts:
             spring-boot-framework/runtime:
               plugin: jlink
-              source: .
+              after:
+                - spring-boot-framework/install-app
               build-packages:
                 - default-jdk
-              stage-packages: # these packages are required for bare base rocks.
+              stage-packages: # bare base only
                 - bash_bins
-                - ca-certificates_data
-                - coreutils_bins
+                - base-files_chisel
                 - base-files_tmp
+                - coreutils_bins
 
-    .. tab-item:: Ubuntu 26.04 LTS and higher
+    .. tab-item:: Ubuntu 26.04 LTS
         :sync: base-26-plus
 
         .. code-block:: yaml
@@ -190,14 +191,15 @@ The ``spring-boot-framework`` uses the following configuration:
           parts:
             spring-boot-framework.runtime:
               plugin: jlink
-              source: .
+              after:
+                - spring-boot-framework.install-app
               build-packages:
                 - default-jdk
-              stage-packages: # these packages are required for bare base rocks.
+              stage-packages: # bare base only
                 - bash_bins
-                - ca-certificates_data
-                - coreutils_bins
+                - base-files_chisel
                 - base-files_tmp
+                - coreutils_bins
 
 .. _reference-spring-boot-framework-stage:
 
@@ -227,7 +229,7 @@ example:
                 - app/migrate.sh
                 - app/another_file_or_directory
 
-    .. tab-item:: Ubuntu 26.04 LTS and higher
+    .. tab-item:: Ubuntu 26.04 LTS
         :sync: base-26-plus
 
         .. code-block:: yaml

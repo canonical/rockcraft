@@ -20,6 +20,13 @@ Use ``rockcraft init`` and specify the relevant profile:
 
     rockcraft init --profile <profile>
 
+By default, Rockcraft initializes the project for Ubuntu 24.04 LTS. To
+initialize it for another base, add the ``--base`` option:
+
+.. code-block:: bash
+
+    rockcraft init --profile <profile> --base ubuntu@26.04
+
 Rockcraft automatically creates a ``rockcraft.yaml`` project file
 for the rock in your current directory. You will need to check the project
 file to verify that the rock's name and description are correct.
@@ -56,6 +63,12 @@ file to verify that the rock's name and description are correct.
 
             rockcraft init --profile go-framework
 
+    .. group-tab:: Spring Boot
+
+        .. code-block:: bash
+
+            rockcraft init --profile spring-boot-framework
+
 
 For more information, see: :ref:`ref_commands_init`
 
@@ -64,21 +77,22 @@ For more information, see: :ref:`ref_commands_init`
 Include extra files in the OCI image
 ------------------------------------
 
-The following files are included in the image by default from
-the root of the project:
-
-- ``app`` (does not apply to the ``go-framework``)
-- ``app.py`` (does not apply to the ``go-framework``)
-- ``migrate``
-- ``migrate.sh``
-- ``migrate.py`` (does not apply to the ``go-framework``)
-- ``static``
-- ``templates``
+The files included in the image by default depend on the extension. For the
+list of default files, see the "Included or excluded files" section of the
+reference page for your framework:
+:ref:`Flask <reference-flask-framework-prime>`,
+:ref:`FastAPI <reference-fastapi-framework-prime>`,
+:ref:`Go <reference-go-framework-stage>` and
+:ref:`Spring Boot <reference-spring-boot-framework-stage>`.
+The Django extension includes the whole Django project directory, except for
+the ``db.sqlite3`` file. The Flask and FastAPI extensions include only the
+default files, unless none of them exist. List any other files your app needs,
+such as additional Python modules, in the ``prime`` key.
 
 .. note::
    Part names added by extensions vary by Ubuntu version. On Ubuntu 22.04 LTS
-   and Ubuntu 24.04 LTS, write ``extension/part``; on Ubuntu 26.04 LTS and
-   higher, write ``extension.part``. For rocks with ``base: bare``, follow the
+   and Ubuntu 24.04 LTS, write ``extension/part``; on Ubuntu 26.04 LTS,
+   write ``extension.part``. For rocks with ``base: bare``, follow the
    convention for the configured ``build-base``.
 
 For ``expressjs-framework``, place the migration script in the application
@@ -110,7 +124,7 @@ To change this list, add the following snippet to the project file:
             Note the ``flask/app/`` prefix that is required followed by the
             relative path to the project root.
 
-         .. tab-item:: Ubuntu 26.04 LTS and higher
+         .. tab-item:: Ubuntu 26.04 LTS
             :sync: base-26-plus
 
             .. code-block:: yaml
@@ -134,8 +148,24 @@ To change this list, add the following snippet to the project file:
 
    .. group-tab:: Express
 
-      The entire ``app`` directory is copied into the rock, so place any
-      additional files in the ``app`` directory.
+      .. tab-set::
+
+         .. tab-item:: Ubuntu 24.04 LTS
+            :sync: base-24
+
+            The entire ``app`` directory is copied into the rock, except for the
+            files left out by the ``files`` array in ``package.json`` or by a
+            ``.npmignore`` file. Place any additional files in the ``app``
+            directory.
+
+         .. tab-item:: Ubuntu 26.04 LTS
+            :sync: base-26-plus
+
+            The entire directory containing the ``package.json`` file is copied
+            into the rock, except for the files left out by the ``files`` array
+            in ``package.json`` or by a ``.npmignore`` file. Place any
+            additional files in the same directory as ``package.json``. If the
+            app has a ``build`` script, the ``dist`` directory is always included.
 
    .. group-tab:: FastAPI
 
@@ -159,7 +189,7 @@ To change this list, add the following snippet to the project file:
             Note the ``app/`` prefix that is required followed by the relative
             path to the project root.
 
-         .. tab-item:: Ubuntu 26.04 LTS and higher
+         .. tab-item:: Ubuntu 26.04 LTS
             :sync: base-26-plus
 
             .. code-block:: yaml
@@ -189,7 +219,7 @@ To change this list, add the following snippet to the project file:
 
                parts:
                  go-framework/assets:
-                   prime:
+                   stage:
                      - app/templates
                      - app/static
                      - app/migrate.sh
@@ -197,7 +227,7 @@ To change this list, add the following snippet to the project file:
             Note the ``app/`` prefix that is required followed by the relative
             path to the project root.
 
-         .. tab-item:: Ubuntu 26.04 LTS and higher
+         .. tab-item:: Ubuntu 26.04 LTS
             :sync: base-26-plus
 
             .. code-block:: yaml
@@ -205,10 +235,44 @@ To change this list, add the following snippet to the project file:
 
                parts:
                  go-framework.assets:
-                   prime:
+                   stage:
                      - app/templates
                      - app/static
                      - app/migrate.sh
+
+            Note the ``app/`` prefix that is required followed by the relative
+            path to the project root.
+
+   .. group-tab:: Spring Boot
+
+      .. tab-set::
+
+         .. tab-item:: Ubuntu 24.04 LTS
+            :sync: base-24
+
+            .. code-block:: yaml
+               :caption: rockcraft.yaml
+
+               parts:
+                 spring-boot-framework/assets:
+                   stage:
+                     - app/migrate.sh
+                     - app/another_file_or_directory
+
+            Note the ``app/`` prefix that is required followed by the relative
+            path to the project root.
+
+         .. tab-item:: Ubuntu 26.04 LTS
+            :sync: base-26-plus
+
+            .. code-block:: yaml
+               :caption: rockcraft.yaml
+
+               parts:
+                 spring-boot-framework.assets:
+                   stage:
+                     - app/migrate.sh
+                     - app/another_file_or_directory
 
             Note the ``app/`` prefix that is required followed by the relative
             path to the project root.
@@ -219,7 +283,13 @@ Include additional debs in the OCI image
 ----------------------------------------
 
 If your app requires debs -- for example, to connect to a database -- add the
-following snippet to the project file:
+following snippet to the project file.
+
+The Flask, Django and FastAPI snippets use debs, which work with an Ubuntu base
+such as ``ubuntu@24.04``. For a rock with ``base: bare``, the extension already
+lists slices in ``stage-packages``, and a part can't mix debs and slices. In
+that case, list slices instead, for example ``libpq5_libs`` instead of
+``libpq-dev``.
 
 .. tabs::
 
@@ -239,7 +309,7 @@ following snippet to the project file:
                      # list required packages or slices for your Flask application below.
                      - libpq-dev
 
-         .. tab-item:: Ubuntu 26.04 LTS and higher
+         .. tab-item:: Ubuntu 26.04 LTS
             :sync: base-26-plus
 
             .. code-block:: yaml
@@ -267,7 +337,7 @@ following snippet to the project file:
                      # list required packages or slices for your Django application below.
                      - libpq-dev
 
-         .. tab-item:: Ubuntu 26.04 LTS and higher
+         .. tab-item:: Ubuntu 26.04 LTS
             :sync: base-26-plus
 
             .. code-block:: yaml
@@ -295,7 +365,7 @@ following snippet to the project file:
                      # list required packages or slices for your FastAPI application below.
                      - libpq-dev
 
-         .. tab-item:: Ubuntu 26.04 LTS and higher
+         .. tab-item:: Ubuntu 26.04 LTS
             :sync: base-26-plus
 
             .. code-block:: yaml
@@ -312,13 +382,27 @@ following snippet to the project file:
       .. code-block:: yaml
          :caption: rockcraft.yaml
 
-           parts:
-             runtime-debs:
-               plugin: nil
-               stage-packages:
-                 - postgresql-client
+         parts:
+           runtime-debs:
+             plugin: nil
+             stage-packages:
+               - postgresql-client
 
       For the ``go-framework`` extension, a deb could be needed for example to use an external command in the migration process.
+
+   .. group-tab:: Express
+
+      The extension doesn't provide a dedicated part for additional packages.
+      Add your own part instead:
+
+      .. code-block:: yaml
+         :caption: rockcraft.yaml
+
+         parts:
+           runtime-debs:
+             plugin: nil
+             stage-packages:
+               - postgresql-client
 
 .. _set-up-web-app-rock-override-commands:
 
@@ -331,6 +415,8 @@ You can override the default service commands in ``rockcraft.yaml``.
 
 To override a service's command, check the default service
 entrypoint generated by the extension by running ``rockcraft expand-extensions``.
+On Ubuntu 26.04 LTS, and for the Spring Boot extension on any base, this requires
+the experimental extensions to be enabled; see :doc:`/reference/extensions/index`.
 Then, adapt the command to your needs and declare it in your project file. For
 example:
 
@@ -338,53 +424,115 @@ example:
 
    .. group-tab:: Flask
 
-      .. code-block:: yaml
-         :caption: Output of ``rockcraft expand-extensions``
+      .. tab-set::
 
-         # ...
-         services:
-           flask:
-             override: replace
-             command: /bin/python3 -m gunicorn -c /flask/gunicorn.conf.py app:app -k [ sync ]
-             startup: enabled
-             after:
-               - statsd-exporter
-             user: _daemon_
+         .. tab-item:: Ubuntu 22.04 LTS and Ubuntu 24.04 LTS
+            :sync: base-22-24
 
-      To limit the maximum number of pending connections in Gunicorn to 1024, add the
-      following lines to your project file.
+            .. code-block:: yaml
+               :caption: Output of ``rockcraft expand-extensions``
 
-      .. code-block:: yaml
-         :caption: rockcraft.yaml
+               # ...
+               services:
+                 flask:
+                   override: replace
+                   command: /bin/python3 -m gunicorn -c /flask/gunicorn.conf.py 'app:app' -k [ sync ]
+                   startup: enabled
+                   after:
+                     - statsd-exporter
+                   user: _daemon_
 
-         services:
-           flask:
-             command: /bin/python3 -m gunicorn -c /flask/gunicorn.conf.py app:app --backlog 1024 -k [ sync ]
+            To limit the maximum number of pending connections in Gunicorn to 1024, add the
+            following lines to your project file.
+
+            .. code-block:: yaml
+               :caption: rockcraft.yaml
+
+               services:
+                 flask:
+                   command: /bin/python3 -m gunicorn -c /flask/gunicorn.conf.py 'app:app' --backlog 1024 -k [ sync ]
+
+         .. tab-item:: Ubuntu 26.04 LTS
+            :sync: base-26-plus
+
+            .. code-block:: yaml
+               :caption: Output of ``rockcraft expand-extensions``
+
+               # ...
+               services:
+                 flask:
+                   override: replace
+                   command: /bin/python3 -m gunicorn -c /var/lib/gunicorn/gunicorn.conf.py 'app:app' -k [ sync ]
+                   startup: enabled
+                   after:
+                     - statsd-exporter
+                   user: _daemon_
+
+            To limit the maximum number of pending connections in Gunicorn to 1024, add the
+            following lines to your project file.
+
+            .. code-block:: yaml
+               :caption: rockcraft.yaml
+
+               services:
+                 flask:
+                   command: /bin/python3 -m gunicorn -c /var/lib/gunicorn/gunicorn.conf.py 'app:app' --backlog 1024 -k [ sync ]
 
    .. group-tab:: Django
 
-      .. code-block:: yaml
-         :caption: Output of ``rockcraft expand-extensions``
+      .. tab-set::
 
-         # ...
-         services:
-           django:
-             override: replace
-             command: /bin/python3 -m gunicorn -c /django/gunicorn.conf.py django_hello_world.wsgi:application -k [ sync ]
-             startup: enabled
-             after:
-               - statsd-exporter
-             user: _daemon_
+         .. tab-item:: Ubuntu 22.04 LTS and Ubuntu 24.04 LTS
+            :sync: base-22-24
 
-      To limit the maximum number of pending connections in ``Gunicorn`` to 1024, add the following
-      lines to ``rockcraft.yaml``.
+            .. code-block:: yaml
+               :caption: Output of ``rockcraft expand-extensions``
 
-      .. code-block:: yaml
-         :caption: rockcraft.yaml
+               # ...
+               services:
+                 django:
+                   override: replace
+                   command: /bin/python3 -m gunicorn -c /django/gunicorn.conf.py 'django_hello_world.wsgi:application' -k [ sync ]
+                   startup: enabled
+                   after:
+                     - statsd-exporter
+                   user: _daemon_
 
-         services:
-           django:
-             command: /bin/python3 -m gunicorn -c /django/gunicorn.conf.py django_hello_world.wsgi:application --backlog 1024 -k [ sync ]
+            To limit the maximum number of pending connections in ``Gunicorn`` to 1024, add the following
+            lines to ``rockcraft.yaml``.
+
+            .. code-block:: yaml
+               :caption: rockcraft.yaml
+
+               services:
+                 django:
+                   command: /bin/python3 -m gunicorn -c /django/gunicorn.conf.py 'django_hello_world.wsgi:application' --backlog 1024 -k [ sync ]
+
+         .. tab-item:: Ubuntu 26.04 LTS
+            :sync: base-26-plus
+
+            .. code-block:: yaml
+               :caption: Output of ``rockcraft expand-extensions``
+
+               # ...
+               services:
+                 django:
+                   override: replace
+                   command: /bin/python3 -m gunicorn -c /var/lib/gunicorn/gunicorn.conf.py 'django_hello_world.wsgi:application' -k [ sync ]
+                   startup: enabled
+                   after:
+                     - statsd-exporter
+                   user: _daemon_
+
+            To limit the maximum number of pending connections in ``Gunicorn`` to 1024, add the following
+            lines to ``rockcraft.yaml``.
+
+            .. code-block:: yaml
+               :caption: rockcraft.yaml
+
+               services:
+                 django:
+                   command: /bin/python3 -m gunicorn -c /var/lib/gunicorn/gunicorn.conf.py 'django_hello_world.wsgi:application' --backlog 1024 -k [ sync ]
 
    .. group-tab:: FastAPI
 
