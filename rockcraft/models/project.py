@@ -90,10 +90,10 @@ class Project(BaseProject):
     """Rockcraft project definition."""
 
     # Type of summary is Optional[str] in BaseProject
-    summary: str = pydantic.Field(
+    summary: str = pydantic.Field(  # ty: ignore[invalid-mutable-override]
         description="A short, single line description of the rock."
     )
-    description: str = pydantic.Field(
+    description: str = pydantic.Field(  # ty: ignore[invalid-mutable-override]
         description="A full description of the rock, potentially including multiple paragraphs."
     )
     """A full description of the rock, potentially including multiple paragraphs.
@@ -166,7 +166,7 @@ class Project(BaseProject):
 
     This key is mutually incompatible with the ``entrypoint-service`` key.
     """
-    base: BaseT = pydantic.Field(
+    base: BaseT = pydantic.Field(  # ty: ignore[invalid-mutable-override]
         description="The base system image for the rock.",
     )
     """
@@ -177,7 +177,7 @@ class Project(BaseProject):
     which is typically used with static binaries or
     :ref:`Chisel slices <explanation-chisel>`.
     """
-    build_base: BuildBaseT = pydantic.Field(
+    build_base: BuildBaseT = pydantic.Field(  # ty: ignore[invalid-mutable-override]
         default=None, description="The system used to build the rock."
     )
     """The system and version that will be used during the rock's build, but not
