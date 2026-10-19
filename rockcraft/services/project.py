@@ -14,7 +14,7 @@
 
 """Rockcraft Project service."""
 
-import datetime
+import datetime as dt
 import textwrap
 from pathlib import Path
 from typing import Any
@@ -65,9 +65,7 @@ class RockcraftProjectService(ProjectService):
 
     @staticmethod
     @override
-    def _is_supported_on(
-        *, base: craft_platforms.DistroBase, date: datetime.date
-    ) -> bool:
+    def _is_supported_on(*, base: craft_platforms.DistroBase, date: dt.date) -> bool:
         """Temporary override for 'devel' bases."""
         if base.series == "devel":
             return True
