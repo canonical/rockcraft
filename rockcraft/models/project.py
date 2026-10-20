@@ -437,8 +437,11 @@ class Project(BaseProject):
         # The base digest is only valid for non-bare bases, since there isn't an image
         # sharing the zero-indexed layers with the target image for a bare-based image.
         if self.base != "bare":
-            metadata["base-digest"] = base_digest.hex()
-            annotations["org.opencontainers.image.base.digest"] = base_digest.hex()
+            # OCI digests take the form "<algorithm>:<hex>"; base images are
+            # inspected with skopeo, which reports their sha256 digest.
+            digest = f"sha256:{base_digest.hex()}"
+            metadata["base-digest"] = digest
+            annotations["org.opencontainers.image.base.digest"] = digest
 
         return (annotations, metadata)
 
