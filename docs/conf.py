@@ -34,13 +34,8 @@ author = "Canonical Ltd."
 # Version string in sidebar
 import rockcraft
 
-if os.environ.get("READTHEDOCS_VERSION_TYPE", "external") == "external":  # PR or local build
-    # Because of setuptools-scm, we can safely assume the version starts with `n.n`
-    major, minor, *_ = rockcraft.__version__.split(".")
-    release = f"{major}.{minor}"
-else:  # Branch build
-    rtd_version = os.environ.get("READTHEDOCS_VERSION", "latest")
-    release = "dev" if rtd_version == "latest" else rtd_version
+major, minor, *_ = rockcraft.__version__.split(".")
+release = "dev" if os.environ.get("READTHEDOCS_VERSION") == "latest" else f"{major}.{minor}"
 
 # The year in the copyright statement
 copyright = f"2022-{datetime.date.today().year}"
@@ -69,7 +64,7 @@ html_context = {
     "discourse": "https://discourse.ubuntu.com/c/rocks/117",
     # Your Mattermost channel URL
     # TODO: Change to your Mattermost channel URL or leave empty.
-    "mattermost": "https://chat.canonical.com/canonical/channels/documentation",
+    # "mattermost": "",
     # Your Matrix channel URL
     "matrix": "https://matrix.to/#/#rockcraft:ubuntu.com",
     # Your documentation GitHub repository URL. If set, links for viewing the
