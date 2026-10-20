@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import datetime
+import datetime as dt
 import os
 import subprocess
 from pathlib import Path
@@ -105,7 +105,7 @@ class DevelProject(Project):
     "development", but we want to test the behavior anyway.
     """
 
-    base: str
+    base: str  # ty: ignore[invalid-attribute-override]
 
 
 @pytest.fixture
@@ -710,7 +710,7 @@ def pebble_project(pebble_spec) -> str:
 
 def test_project_generate_metadata(yaml_loaded_data):
     project = Project.unmarshal(yaml_loaded_data)
-    now = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    now = dt.datetime.now(dt.timezone.utc).isoformat()
 
     digest = "a1b2c3"  # mock digest
     oci_annotations, rock_metadata = project.generate_metadata(
@@ -758,7 +758,7 @@ def test_metadata_base_devel(yaml_loaded_data):
     yaml_loaded_data["build-base"] = "devel"
     project = Project.unmarshal(yaml_loaded_data)
 
-    now = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    now = dt.datetime.now(dt.timezone.utc).isoformat()
     digest = "a1b2c3"  # mock digest
 
     _, rock_metadata = project.generate_metadata(
@@ -776,7 +776,7 @@ def test_metadata_base_bare(yaml_loaded_data):
     }  # Avoid validation error for no overlay with bare base
     project = Project.unmarshal(yaml_loaded_data)
 
-    now = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    now = dt.datetime.now(dt.timezone.utc).isoformat()
     digest = "a1b2c3"  # mock digest
 
     oci_annotations, rock_metadata = project.generate_metadata(

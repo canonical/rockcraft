@@ -1,7 +1,7 @@
 """Dynamically load stage-package from another snap into our sys.path.
 
 https://docs.python.org/3/library/site.html#module-sitecustomize
-"""
+"""  # noqa: INP001 (implicit namespace package)
 
 import hashlib
 import os
