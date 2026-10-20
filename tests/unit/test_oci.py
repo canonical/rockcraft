@@ -13,7 +13,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-import datetime
+import datetime as dt
 import hashlib
 import json
 import os
@@ -35,9 +35,7 @@ MOCK_NEW_USER = {
     "passwd": "foo:x:585287:585287::/var/lib/pebble/default:/usr/bin/false\n",
     "group": "foo:x:585287:\n",
     "shadow": str(
-        "foo:!:"
-        f"{(datetime.datetime.now() - datetime.datetime(1970, 1, 1)).days}"
-        "::::::\n"
+        f"foo:!:{(dt.datetime.now() - dt.datetime(1970, 1, 1)).days}::::::\n"
     ),
 }
 
@@ -808,7 +806,7 @@ class TestImage:
         mock_control_data_path = "layer_dir"
         mock_mkdtemp.return_value = mock_control_data_path
 
-        now = datetime.datetime.now(datetime.timezone.utc).isoformat()
+        now = dt.datetime.now(dt.timezone.utc).isoformat()
         metadata = {"name": "rock-name", "version": 1, "created": now}
 
         expected = (f"created: '{now}'" + "{n}name: rock-name{n}version: 1{n}").format(
