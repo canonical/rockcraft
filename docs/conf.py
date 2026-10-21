@@ -93,7 +93,7 @@ html_theme_options = {
 }
 
 # The project slug passed to the sphinx-notfound-page extension
-slug = "rockcraft"
+slug = "containers/rockcraft/docs"
 
 
 #########################
@@ -102,7 +102,8 @@ slug = "rockcraft"
 
 # Use the proxied documentation URL to ensure duplicate pages have a specific
 # canonical URL
-html_baseurl = f"{ogp_site_url}/{release}/"
+version_slug = f"{os.environ.get('READTHEDOCS_VERSION', 'local')}"
+html_baseurl = f"{ogp_site_url}/{version_slug}/"
 
 # sphinx-sitemap uses html_baseurl to generate the full URL for each page:
 sitemap_url_scheme = "{link}"
