@@ -41,7 +41,7 @@ release = "dev" if os.environ.get("READTHEDOCS_VERSION") == "latest" else f"{maj
 copyright = f"2022-{datetime.date.today().year}"
 
 # Documentation website URL
-ogp_site_url = "https://documentation.ubuntu.com/rockcraft"
+ogp_site_url = "https://ubuntu.com/containers/rockcraft/docs"
 
 # Preview name of the documentation website
 # TODO: To use a different name for the project in previews, update the next line.
@@ -100,8 +100,9 @@ slug = "rockcraft"
 # Sitemap configuration #
 #########################
 
-# Use RTD canonical URL to ensure duplicate pages have a specific canonical URL
-html_baseurl = os.environ.get("READTHEDOCS_CANONICAL_URL", "/")
+# Use the proxied documentation URL to ensure duplicate pages have a specific
+# canonical URL
+html_baseurl = f"{ogp_site_url}/{release}/"
 
 # sphinx-sitemap uses html_baseurl to generate the full URL for each page:
 sitemap_url_scheme = "{link}"
