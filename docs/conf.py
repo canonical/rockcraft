@@ -6,6 +6,7 @@ import sys
 import textwrap
 
 import craft_parts_docs
+import rockcraft
 
 # Configuration for the Sphinx documentation builder.
 # All configuration specific to your project should be done in this file.
@@ -32,8 +33,6 @@ project = "Rockcraft"
 author = "Canonical Ltd."
 
 # Version string in sidebar
-import rockcraft
-
 major, minor, *_ = rockcraft.__version__.split(".")
 release = "dev" if os.environ.get("READTHEDOCS_VERSION") == "latest" else f"{major}.{minor}"
 
@@ -45,7 +44,6 @@ version_slug = f"{os.environ.get('READTHEDOCS_VERSION', 'local')}"
 ogp_site_url = f"https://ubuntu.com/containers/rockcraft/docs/{version_slug}/"
 
 # Preview name of the documentation website
-# TODO: To use a different name for the project in previews, update the next line.
 ogp_site_name = project
 
 # Preview image URL
@@ -308,7 +306,10 @@ exclude_patterns = [
 html_css_files = ["https://assets.ubuntu.com/v1/d86746ef-cookie_banner.css"]
 
 # Adds custom JavaScript files, located remotely or in 'html_static_path'.
-html_js_files = ["https://assets.ubuntu.com/v1/287a5e8f-bundle.js"]
+html_js_files = [
+    "https://assets.ubuntu.com/v1/287a5e8f-bundle.js",
+    "js/overwrite_links.js",
+]
 
 # Appends extra markup to the end of every document written in reST
 rst_epilog = """
