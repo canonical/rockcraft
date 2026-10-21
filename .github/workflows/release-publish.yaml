@@ -5,77 +5,19 @@ on:
       # These tags should be protected, remember to enable the rule:
       # https://github.com/canonical/starbase/settings/tag_protection
       - "[0-9]+.[0-9]+.[0-9]+"
-  pull_request:
-    paths:
-      - .github/workflows/release-publish.yaml
+
+permissions:
+  contents: write
 
 jobs:
-  source-wheel:
-    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository)
-    runs-on: [self-hosted, medium, linux]
-    permissions:
-      contents: read
-    steps:
-      - name: Install uv
-        run: |
-          sudo snap install --classic astral-uv
-      - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-      - name: Fetch tag annotations
-        if: ${{ github.event_name != 'pull_request' }}
-        run: |
-          # Note: we fetch the tags here instead of using actions/checkout's "fetch-tags"
-          # because of https://github.com/actions/checkout/issues/1467
-          git fetch --force --tags --depth 1
-          git describe --dirty --long --match '[0-9]*.[0-9]*.[0-9]*' --exclude '*[^0-9.]*'
-      - name: Build packages
-        run: |
-          uv build
-          uvx twine check dist/*
-      - name: Upload pypi packages artifact
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
-        with:
-          name: pypi-packages
-          path: dist/
-  # NOTE: This PyPI publishing job is often unnecessary for most applications
-  # that use starbase. Please ensure this job is excluded from merges/PRs
-  # originating from starbase unless explicitly required for a specific app.
-  pypi:
-    needs: ["source-wheel"]
-    runs-on: [self-hosted, amd64, medium, linux]
-    permissions:
-      # IMPORTANT: this permission is mandatory for trusted publishing
-      id-token: write
-    steps:
-      - name: Get packages
-        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
-        with:
-          name: pypi-packages
-          path: dist/
-      - name: Publish to pypi
-        # Only actually push to pypi when we're on a tag.
-        if: ${{ startsWith(github.ref, 'refs/tags/') }}
-        # Note: this action uses PyPI's support for Trusted Publishers
-        # It needs a configuration on the PyPI project - see:
-        # https://docs.pypi.org/trusted-publishers/adding-a-publisher/#github-actions
-        uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33 # release/v1
   github-release:
-    needs: ["source-wheel"]
-    runs-on: [self-hosted, medium, linux]
-    permissions:
-      contents: write
+    runs-on: [self-hosted]
     steps:
-      - name: Get pypi artifacts
-        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+      - name: Create a Prerelease
+        uses: softprops/action-gh-release@v2
         with:
-          name: pypi-packages
-      - name: Release
-        # Only actually publish the Github release when we're on a tag.
-        if: ${{ startsWith(github.ref, 'refs/tags/') }}
-        env:
-          GH_REPO: ${{ github.repository }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          RELEASE_TAG: ${{ github.ref_name }}
-        run: gh release create "$RELEASE_TAG" --generate-notes -- *.whl *.tar.gz
+          # Generate release notes on the new GH release
+          generate_release_notes: true
+          # Mark this new release as a pre-release, to be marked manually
+          # as the latest stable release later.
+          prerelease: true
