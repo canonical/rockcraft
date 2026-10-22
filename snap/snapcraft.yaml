@@ -29,7 +29,6 @@ apps:
     command: bin/skopeo
 
 build-packages:
-  - libapt-pkg-dev
   - libffi-dev # for cffi (via pygit2)
   - libxml2-dev # for lxml (craft-parts)
   - libxslt1-dev
@@ -153,7 +152,7 @@ parts:
       - "CFLAGS": "$(pkg-config python-3.12 yaml-0.1 --cflags)"
       - UV_FROZEN: "true"
       - UV_NO_BINARY: "true"
-      # Parallel make jobs for things like python-apt
+      # Parallel make jobs for source builds (e.g. cryptography, pygit2)
       - MAKEOPTS: -j$(nproc --all)
       - UV_COMPILE_BYTECODE: "true"
     uv-extras:
