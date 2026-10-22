@@ -8,7 +8,10 @@ on:
 
 jobs:
   TICS:
+    permissions:
+      contents: read
     uses: canonical/starflow/.github/workflows/tics.yaml@main
     with:
       project: "rockcraft"
-    secrets: inherit
+    secrets:
+      TICSAUTHTOKEN: ${{ secrets.TICSAUTHTOKEN }}
