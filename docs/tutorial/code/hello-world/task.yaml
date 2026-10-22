@@ -13,11 +13,19 @@ execute: |
   sudo snap install rockcraft --classic
   # [docs:install-rockcraft-end]
 
+  # [docs:check-arch]
+  dpkg --print-architecture
+  # [docs:check-arch-end]
+
+  # [docs:set-arch]
+  export ARCH=$(dpkg --print-architecture)
+  # [docs:set-arch-end]
+
   # [docs:build-rock]
   rockcraft pack
   # [docs:build-rock-end]
 
-  test -f hello_latest_amd64.rock
+  test -f hello_latest_${ARCH}.rock
   test ! -d parts -a ! -d stage -a ! -d prime
 
   uname -a
@@ -27,10 +35,13 @@ execute: |
   docker images
 
   # [docs:skopeo-copy]
-  sudo rockcraft.skopeo --insecure-policy copy oci-archive:hello_latest_amd64.rock docker-daemon:hello:latest
+  sudo rockcraft.skopeo copy \
+    --insecure-policy \
+    oci-archive:hello_latest_${ARCH}.rock \
+    docker-daemon:hello:latest
   # [docs:skopeo-copy-end]
 
-  rm hello_latest_amd64.rock
+  rm hello_latest_${ARCH}.rock
   docker images hello:latest
 
   # [docs:docker-run]
