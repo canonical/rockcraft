@@ -18,7 +18,7 @@ Ubuntu bases and sources for Node.js. Support for Ubuntu 26.04 LTS is experiment
 
 .. note::
     Part names added by the extension vary by Ubuntu version. On Ubuntu 24.04 LTS,
-    write ``extension/part``; on Ubuntu 26.04 LTS and higher, write
+    write ``extension/part``; on Ubuntu 26.04 LTS, write
     ``extension.part``. For rocks with ``base: bare``, follow the convention
     for the configured ``build-base``.
 
@@ -37,7 +37,7 @@ Ubuntu base, Node.js from Ubuntu package archive
             extensions:
                 - expressjs-framework
 
-    .. tab-item:: Ubuntu 26.04 LTS and higher
+    .. tab-item:: Ubuntu 26.04 LTS
         :sync: base-26-plus
 
         .. code-block:: yaml
@@ -70,9 +70,9 @@ Ubuntu base, Node.js from npm plugin
             parts:
                 expressjs-framework/install-app:
                     npm-include-node: true
-                    npm-node-version: 20.12
+                    npm-node-version: "20.12"
 
-    .. tab-item:: Ubuntu 26.04 LTS and higher
+    .. tab-item:: Ubuntu 26.04 LTS
         :sync: base-26-plus
 
         .. code-block:: yaml
@@ -84,7 +84,7 @@ Ubuntu base, Node.js from npm plugin
             parts:
                 expressjs-framework.install-app:
                     npm-include-node: true
-                    npm-node-version: 20.12
+                    npm-node-version: "20.12"
 
 In this case, the npm plugin copies the app's files and installs its
 dependencies. Node.js and npm are installed by the npm plugin.
@@ -105,7 +105,7 @@ Bare base, Node.js from Ubuntu package archive
             extensions:
                 - expressjs-framework
 
-    .. tab-item:: Ubuntu 26.04 LTS and higher
+    .. tab-item:: Ubuntu 26.04 LTS
         :sync: base-26-plus
 
         .. code-block:: yaml
@@ -139,9 +139,9 @@ Bare base, Node.js from npm plugin
             parts:
                 expressjs-framework/install-app:
                     npm-include-node: true
-                    npm-node-version: 20.12
+                    npm-node-version: "20.12"
 
-    .. tab-item:: Ubuntu 26.04 LTS and higher
+    .. tab-item:: Ubuntu 26.04 LTS
         :sync: base-26-plus
 
         .. code-block:: yaml
@@ -154,7 +154,7 @@ Bare base, Node.js from npm plugin
             parts:
                 expressjs-framework.install-app:
                     npm-include-node: true
-                    npm-node-version: 20.12
+                    npm-node-version: "20.12"
 
 In this case, the npm plugin copies the app's files and installs its
 dependencies. Node.js and npm are installed by the npm plugin. For different
