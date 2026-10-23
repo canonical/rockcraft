@@ -99,9 +99,9 @@ App dependencies
 The ``stage-packages`` key specifies all additional dependencies. If the FastAPI app
 has its own special dependencies, this key must declare them.
 
-The following example specifies the ``libpq-dev`` package. For a rock with
-``base: bare``, list slices instead, for example ``libpq5_libs``, because a part
-can't mix debs and slices:
+The following example specifies the ``libpq-dev`` package. For rocks built
+on the ``bare`` base, list slices instead. Instead of ``libpq-dev``, for example, you'd
+list ``libpq5_libs``.
 
 .. tab-set::
 

@@ -87,7 +87,7 @@ Project requirements
         recommended to have a ``files`` array describing the entries to be included
         or have an appropriate ``.npmignore`` file to exclude entries not required
         at runtime. If the ``files`` array is not defined and ``.npmignore``
-        does not exist, Rockcraft warns that it will package all files, not only ``dist/``.
+        does not exist, Rockcraft warns that it will package all files, not only those in the ``dist/`` directory.
 
         With a ``build`` script, the whole ``dist`` directory is always included,
         whatever the ``files`` array or the ``.npmignore`` file say.

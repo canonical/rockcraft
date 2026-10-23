@@ -102,9 +102,9 @@ App dependencies
 The ``stage-packages`` key specifies all additional dependencies. If the Django app
 has its own special dependencies, this key must declare them.
 
-The following example specifies the ``libpq-dev`` package. For a rock with
-``base: bare``, list slices instead, for example ``libpq5_libs``, because a part
-can't mix debs and slices:
+The following example specifies the ``libpq-dev`` package. For rocks built
+on the ``bare`` base, list slices instead. Instead of ``libpq-dev``, for example, you'd
+list ``libpq5_libs``.
 
 .. tab-set::
 
@@ -173,8 +173,8 @@ for more information.
 Gunicorn worker selection
 -------------------------
 
-If ``gevent`` is listed as a dependency in ``requirements.txt`` or in the
-``dependencies`` of ``pyproject.toml``, Rockcraft sets the Gunicorn worker to
+If ``gevent`` is listed as a dependency in either the ``requirements.txt`` or
+``pyproject.toml`` file, Rockcraft sets the Gunicorn worker to
 ``gevent`` in the Pebble plan. Otherwise, it uses ``sync``.
 
 When the project instead needs synchronous workers, you can override the worker
