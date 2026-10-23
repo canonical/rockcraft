@@ -1,3 +1,5 @@
+# OSV Scanner configuration
+
 [[IgnoredVulns]]
 id = "GHSA-7gcm-g887-7qv7"
 reason = """

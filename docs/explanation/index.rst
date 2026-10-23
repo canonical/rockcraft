@@ -77,3 +77,4 @@ communicating with local processes, and storing user credentials.
     /common/craft-parts/explanation/lifecycle
     /common/craft-parts/explanation/dump_plugin
     usrmerge
+    documentation

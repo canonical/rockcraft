@@ -38,7 +38,8 @@ jobs:
           then
             echo "branch=pr-${{ github.event.number }}" >> "$GITHUB_OUTPUT"
           else
-            branch=$(echo ${GITHUB_REF#refs/*/} | sed -e 's|feature/\(.*\)|\1|')
+            branch="${GITHUB_REF#refs/heads/feature/}"
+            branch="${branch#refs/heads/}"
             echo "branch=$branch" >> "$GITHUB_OUTPUT"
           fi
 
