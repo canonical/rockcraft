@@ -18,15 +18,17 @@
 
 import re
 from pathlib import Path
-from typing import cast
+from typing import Any, cast
 
 import craft_platforms
 from craft_application import LifecycleService
+from craft_cli import emit
 from craft_parts.infos import StepInfo
 from craft_parts.plugins import Plugin
 from typing_extensions import override
 
 from rockcraft import layers, plugins
+from rockcraft.models.project import Project
 from rockcraft.plugins.python_common import get_python_plugins
 
 
@@ -53,6 +55,21 @@ class RockcraftLifecycleService(LifecycleService):
         # Bases older than 25.10 do not get usermerged install dirs by default
         if base in ("ubuntu@20.04", "ubuntu@22.04", "ubuntu@24.04"):
             usrmerged_by_default = False
+
+        base_str = (
+            str(project.build_base) if project.base == "bare" else str(project.base)
+        )
+        build_base_str = (
+            str(project.build_base) if project.build_base else str(project.base)
+        )
+        try:
+            target_release = _resolve_chisel_release(base_str)
+            build_release = _resolve_chisel_release(build_base_str)
+            _patch_chisel_cut_slices(target_release, build_release)
+        except ValueError as exc:
+            emit.debug(
+                f"Could not resolve Chisel release for {base_str!r} / {build_base_str!r}: {exc}"
+            )
 
         self._manager_kwargs.update(
             base_layer_dir=image_info.base_layer_dir,
@@ -182,3 +199,67 @@ def _python_v2_shebang_fix(step_info: StepInfo) -> bool:
             changed = True
 
     return changed
+
+
+def _resolve_chisel_release(base_str: str) -> str:
+    """Resolve a base or build-base string into a Chisel release name (e.g. 'ubuntu-26.10')."""
+    if "@" not in base_str and base_str != "devel":
+        base_str = f"ubuntu@{base_str}"
+    distro = craft_platforms.DistroBase.from_str(base_str)
+    series = distro.series
+    if series == "devel":
+        for info in Project._get_devel_bases():  # noqa: SLF001 (private member access)
+            if info.devel_base.value == "devel":
+                series = info.current_devel_base.value
+                break
+    return f"{distro.distribution}-{series}"
+
+
+def _patch_chisel_cut_slices(target_release: str, build_release: str) -> None:
+    """Patch craft_parts chisel.cut_slices to explicitly specify the release."""
+    import logging
+    import subprocess
+    from io import StringIO
+
+    from craft_parts.packages import chisel
+    from craft_parts.packages import errors as craft_errors
+    from craft_parts.packages.base import logger as chisel_logger
+    from craft_parts.utils import os_utils
+
+    def _cut_slices_with_release(
+        slices: list[str], target_dir: Path, *args: Any, **kwargs: Any
+    ) -> None:
+        """Cut Chisel slices into a destination path with explicit release."""
+        release = (
+            build_release
+            if "build_slices" in Path(target_dir).parts
+            else target_release
+        )
+        output_stream = StringIO()
+        handler = logging.StreamHandler(stream=output_stream)
+        chisel_logger.addHandler(handler)
+        try:
+            os_utils.process_run(
+                [
+                    "chisel",
+                    "cut",
+                    f"--release={release}",
+                    "--ignore=unmaintained",
+                    "--ignore=unstable",
+                    f"--root={target_dir}",
+                    *slices,
+                ],
+                chisel_logger.debug,
+                *args,
+                **kwargs,
+            )
+        except subprocess.CalledProcessError as err:
+            command_output = output_stream.getvalue()
+            raise craft_errors.ChiselError(
+                slices=slices, output=command_output
+            ) from err
+        finally:
+            chisel_logger.removeHandler(handler)
+            handler.close()
+
+    chisel.cut_slices = _cut_slices_with_release

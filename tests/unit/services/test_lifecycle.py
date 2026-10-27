@@ -319,3 +319,98 @@ def test_usrmerged_by_default(
     assert mock_lifecycle.called
     call = mock_lifecycle.mock_calls[0]
     assert call.kwargs["usrmerged_by_default"] == expected_default
+
+
+@pytest.mark.parametrize(
+    ("base_str", "expected_release"),
+    [
+        ("ubuntu@22.04", "ubuntu-22.04"),
+        ("ubuntu@24.04", "ubuntu-24.04"),
+        ("24.04", "ubuntu-24.04"),
+        ("ubuntu@25.10", "ubuntu-25.10"),
+        ("ubuntu@26.04", "ubuntu-26.04"),
+        ("ubuntu@26.10", "ubuntu-26.10"),
+        ("devel", "ubuntu-26.10"),
+        ("ubuntu@devel", "ubuntu-26.10"),
+    ],
+)
+def test_resolve_chisel_release(base_str, expected_release):
+    assert lifecycle_module._resolve_chisel_release(base_str) == expected_release
+
+
+def test_patch_chisel_cut_slices(mocker, tmp_path):
+    mock_run = mocker.patch("craft_parts.utils.os_utils.process_run")
+    from craft_parts.packages import chisel
+
+    lifecycle_module._patch_chisel_cut_slices("ubuntu-24.04", "ubuntu-26.10")
+
+    # Regular part install dir uses target_release
+    install_dir = tmp_path / "parts" / "my-part" / "install"
+    chisel.cut_slices(["bash_bins"], install_dir)
+
+    mock_run.assert_called_once_with(
+        [
+            "chisel",
+            "cut",
+            "--release=ubuntu-24.04",
+            "--ignore=unmaintained",
+            "--ignore=unstable",
+            f"--root={install_dir}",
+            "bash_bins",
+        ],
+        mock.ANY,
+    )
+
+    mock_run.reset_mock()
+
+    # build_slices dir uses build_release
+    build_slices_dir = tmp_path / "work" / "build_slices"
+    chisel.cut_slices(["bash_bins"], build_slices_dir)
+
+    mock_run.assert_called_once_with(
+        [
+            "chisel",
+            "cut",
+            "--release=ubuntu-26.10",
+            "--ignore=unmaintained",
+            "--ignore=unstable",
+            f"--root={build_slices_dir}",
+            "bash_bins",
+        ],
+        mock.ANY,
+    )
+
+
+@pytest.mark.usefixtures("configured_project", "project_keys")
+@pytest.mark.parametrize(
+    ("project_keys", "expected_target", "expected_build"),
+    [
+        (
+            {"base": "bare", "build-base": "devel"},
+            "ubuntu-26.10",
+            "ubuntu-26.10",
+        ),
+        (
+            {"base": "ubuntu@24.04", "build-base": "devel"},
+            "ubuntu-24.04",
+            "ubuntu-26.10",
+        ),
+        (
+            {"base": "bare", "build-base": "ubuntu@24.04"},
+            "ubuntu-24.04",
+            "ubuntu-24.04",
+        ),
+    ],
+)
+def test_lifecycle_setup_patches_chisel(
+    default_image_info, mocker, fake_services, expected_target, expected_build
+):
+    mocker.patch.object(
+        fake_services.get("image"), "obtain_image", return_value=default_image_info
+    )
+    mocker.patch.object(LifecycleManager, "__init__", return_value=None)
+    mock_patch = mocker.patch.object(lifecycle_module, "_patch_chisel_cut_slices")
+
+    fake_services.get("lifecycle")
+
+    mock_patch.assert_called_once_with(expected_target, expected_build)
