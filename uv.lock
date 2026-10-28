@@ -1,5 +1,5 @@
 version = 1
-revision = 3
+revision = 5
 requires-python = ">=3.10"
 resolution-markers = [
     "python_full_version >= '3.13' and sys_platform == 'linux'",
@@ -82,9 +82,9 @@ name = "anyio"
 version = "4.15.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "exceptiongroup", marker = "python_full_version < '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
+    { name = "exceptiongroup", marker = "python_full_version < '3.11'" },
     { name = "idna" },
-    { name = "typing-extensions", marker = "python_full_version < '3.15' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
+    { name = "typing-extensions", marker = "python_full_version < '3.15'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/a9/d2/f4d173e22df740bc37b1db102b386ba719b66e95b0f0d751f556b387e6d2/anyio-4.15.1.tar.gz", hash = "sha256:9f28306018cbd6d329e64a36d58256edff76dd996fe423bc957326e578b82a94", size = 276966, upload-time = "2026-09-05T10:42:39.44Z" }
 wheels = [
@@ -124,7 +124,7 @@ name = "astroid"
 version = "4.0.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "typing-extensions", marker = "python_full_version < '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
+    { name = "typing-extensions", marker = "python_full_version < '3.11'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/07/63/0adf26577da5eff6eb7a177876c1cfa213856be9926a000f65c4add9692b/astroid-4.0.4.tar.gz", hash = "sha256:986fed8bcf79fb82c78b18a53352a0b287a73817d6dbcfba3162da36667c49a0", size = 406358, upload-time = "2026-02-07T23:35:07.509Z" }
 wheels = [
@@ -262,10 +262,10 @@ name = "build"
 version = "1.6.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "importlib-metadata", marker = "python_full_version < '3.10.2' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
+    { name = "importlib-metadata", marker = "python_full_version < '3.10.2'" },
     { name = "packaging" },
     { name = "pyproject-hooks" },
-    { name = "tomli", marker = "python_full_version < '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
+    { name = "tomli", marker = "python_full_version < '3.11'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/bd/67/4898a44ea4f3f8e213b0954ec0aa0a16971d62a6212d6ea3931e97115b99/build-1.6.1.tar.gz", hash = "sha256:51cc11666391ab6f092070437ac747002ff46f3e4113a3622177ee6b488bfc53", size = 113427, upload-time = "2026-09-10T07:56:00.417Z" }
 wheels = [
@@ -319,7 +319,7 @@ name = "cffi"
 version = "2.1.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "pycparser", marker = "implementation_name != 'PyPy' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
+    { name = "pycparser", marker = "implementation_name != 'PyPy'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/9e/ef/008a1939e372c06329a3fce4279c02f328488f3526744906eeec3da7ad5f/cffi-2.1.1.tar.gz", hash = "sha256:dd31f52ea1086513bb9df30f8fcee9b8918323ae067a3d5b78bc826a000712be", size = 530807, upload-time = "2026-08-03T21:21:18.939Z" }
 wheels = [
@@ -514,8 +514,8 @@ version = "2.1.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "crashtest" },
-    { name = "rapidfuzz", version = "3.14.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
-    { name = "rapidfuzz", version = "3.14.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
+    { name = "rapidfuzz", version = "3.14.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
+    { name = "rapidfuzz", version = "3.14.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/3c/30/f7960ed7041b158301c46774f87620352d50a9028d111b4211187af13783/cleo-2.1.0.tar.gz", hash = "sha256:0b2c880b5d13660a7ea651001fb4acb527696c01f15c9ee650f377aa543fd523", size = 79957, upload-time = "2023-10-30T18:54:12.057Z" }
 wheels = [
@@ -542,7 +542,7 @@ wheels = [
 
 [package.optional-dependencies]
 toml = [
-    { name = "tomli", marker = "python_full_version < '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
+    { name = "tomli", marker = "python_full_version < '3.11'" },
 ]
 
 [[package]]
@@ -645,7 +645,7 @@ wheels = [
 
 [package.optional-dependencies]
 toml = [
-    { name = "tomli", marker = "python_full_version <= '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
+    { name = "tomli", marker = "python_full_version <= '3.11'" },
 ]
 
 [[package]]
@@ -665,8 +665,8 @@ dependencies = [
     { name = "license-expression" },
     { name = "platformdirs" },
     { name = "pydantic" },
-    { name = "pygit2", version = "1.18.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
-    { name = "pygit2", version = "1.19.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
+    { name = "pygit2", version = "1.18.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
+    { name = "pygit2", version = "1.19.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
     { name = "pyyaml" },
     { name = "requests" },
     { name = "snap-helpers" },
@@ -735,7 +735,7 @@ dependencies = [
     { name = "requests" },
     { name = "requests-unixsocket2" },
     { name = "semver" },
-    { name = "tomli", marker = "python_full_version < '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
+    { name = "tomli", marker = "python_full_version < '3.11'" },
     { name = "zstandard" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/e3/38/4632253537e825d6dd58779f7dc3d67b998c0aa1689bcdaa33c16042ec62/craft_parts-2.37.2.tar.gz", hash = "sha256:747770e00651d1db40645e330a78bc4e6c2920cac5b5461708c0c0ba8098ad05", size = 1055795, upload-time = "2026-10-08T17:17:23.181Z" }
@@ -810,8 +810,8 @@ name = "cryptography"
 version = "50.0.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "cffi", marker = "platform_python_implementation != 'PyPy' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
-    { name = "typing-extensions", marker = "python_full_version < '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
+    { name = "cffi", marker = "platform_python_implementation != 'PyPy'" },
+    { name = "typing-extensions", marker = "python_full_version < '3.11'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/bb/ad/5d6702db60b1e40b41ef513b6967ff5848f307d50f8449baf1634f5908f1/cryptography-50.0.1.tar.gz", hash = "sha256:5dd9bda1c12b4162f6ff568eeb5e0ff956c28d14406e875cfe8a63a2d414ff20", size = 880381, upload-time = "2026-08-25T19:45:45.499Z" }
 wheels = [
@@ -933,7 +933,7 @@ name = "dulwich"
 version = "1.2.15"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "typing-extensions", marker = "python_full_version < '3.12' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
+    { name = "typing-extensions", marker = "python_full_version < '3.12'" },
     { name = "urllib3" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/63/b9/5b68d879282190b0429c815d582dc1f212d4910aa22ac7c1aff39675a719/dulwich-1.2.15.tar.gz", hash = "sha256:e98f775601846fb4d44a384003e93c53c42b0c9796c8fe0cc3128b8e2e0bbf88", size = 1371420, upload-time = "2026-09-14T21:20:24.556Z" }
@@ -962,7 +962,7 @@ name = "exceptiongroup"
 version = "1.3.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "typing-extensions", marker = "python_full_version < '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
+    { name = "typing-extensions" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/50/79/66800aadf48771f6b62f7eb014e352e5d06856655206165d775e675a02c9/exceptiongroup-1.3.1.tar.gz", hash = "sha256:8b412432c6055b0b7d14c310000ae93352ed6754f70fa8f7c34141f91c4e3219", size = 30371, upload-time = "2025-11-21T23:01:54.787Z" }
 wheels = [
@@ -1127,7 +1127,7 @@ name = "importlib-metadata"
 version = "9.0.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "zipp", marker = "python_full_version < '3.12' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
+    { name = "zipp" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/6f/7e/1e7e8dc30634b93ebb3d58a3dea569ad146e656218d3960ab04f62047b29/importlib_metadata-9.0.1.tar.gz", hash = "sha256:ab830580bc0ef3db61ce8fae716389e5462b67e033018bab6d8f80ef17172f99", size = 59124, upload-time = "2026-08-28T15:30:34.646Z" }
 wheels = [
@@ -1200,7 +1200,7 @@ name = "jaraco-context"
 version = "6.1.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "backports-tarfile", marker = "python_full_version < '3.12' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
+    { name = "backports-tarfile", marker = "python_full_version < '3.12'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/af/50/4763cd07e722bb6285316d390a164bc7e479db9d90daa769f22578f698b4/jaraco_context-6.1.2.tar.gz", hash = "sha256:f1a6c9d391e661cc5b8d39861ff077a7dc24dc23833ccee564b234b81c82dfe3", size = 16801, upload-time = "2026-03-20T22:13:33.922Z" }
 wheels = [
@@ -1245,7 +1245,7 @@ name = "keyring"
 version = "25.7.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "importlib-metadata", marker = "python_full_version < '3.12' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
+    { name = "importlib-metadata", marker = "python_full_version < '3.12'" },
     { name = "jaraco-classes" },
     { name = "jaraco-context" },
     { name = "jaraco-functools" },
@@ -1702,7 +1702,7 @@ download = [
     { name = "httpx" },
 ]
 install = [
-    { name = "backports-zstd", marker = "python_full_version < '3.14' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
+    { name = "backports-zstd", marker = "python_full_version < '3.14'" },
 ]
 
 [[package]]
@@ -1754,7 +1754,7 @@ dependencies = [
     { name = "requests" },
     { name = "requests-toolbelt" },
     { name = "shellingham" },
-    { name = "tomli", marker = "python_full_version < '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
+    { name = "tomli", marker = "python_full_version < '3.11'" },
     { name = "tomlkit" },
     { name = "trove-classifiers" },
     { name = "virtualenv" },
@@ -1952,7 +1952,7 @@ resolution-markers = [
     "python_full_version < '3.11' and sys_platform == 'linux'",
 ]
 dependencies = [
-    { name = "cffi", marker = "python_full_version < '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
+    { name = "cffi" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/2e/ea/762d00f6f518423cd889e39b12028844cc95f91a6413cf7136e184864821/pygit2-1.18.2.tar.gz", hash = "sha256:eca87e0662c965715b7f13491d5e858df2c0908341dee9bde2bc03268e460f55", size = 797200, upload-time = "2025-08-16T13:52:36.853Z" }
 wheels = [
@@ -1992,7 +1992,7 @@ resolution-markers = [
     "python_full_version == '3.11.*' and sys_platform == 'linux'",
 ]
 dependencies = [
-    { name = "cffi", marker = "python_full_version >= '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
+    { name = "cffi" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/a6/44/415aa93422b4bfc21a6448acb7e16280d5f33a9a3fae38a384e37b046ae4/pygit2-1.19.3.tar.gz", hash = "sha256:a543e6d4ebb43825564935758dc234e770016fed673b84370d46ae9580558831", size = 810489, upload-time = "2026-06-13T08:06:04.982Z" }
 wheels = [
@@ -2044,7 +2044,7 @@ dependencies = [
     { name = "isort" },
     { name = "mccabe" },
     { name = "platformdirs" },
-    { name = "tomli", marker = "python_full_version < '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
+    { name = "tomli", marker = "python_full_version < '3.11'" },
     { name = "tomlkit" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/5c/2e/424cbfcb3af792a6b7da6e5c640de463b98c8d3a49fbd8882f38e83d4232/pylint-4.0.8.tar.gz", hash = "sha256:1c1b2128bde5ff5e966801413080b6384d42a5782718d528c906dbb6beab94ed", size = 1599177, upload-time = "2026-08-29T12:21:59.188Z" }
@@ -2086,7 +2086,7 @@ name = "pynacl"
 version = "1.6.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "cffi", marker = "platform_python_implementation != 'PyPy' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
+    { name = "cffi", marker = "platform_python_implementation != 'PyPy'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/d9/9a/4019b524b03a13438637b11538c82781a5eda427394380381af8f04f467a/pynacl-1.6.2.tar.gz", hash = "sha256:018494d6d696ae03c7e656e5e74cdfd8ea1326962cc401bcf018f1ed8436811c", size = 3511692, upload-time = "2026-01-01T17:48:10.851Z" }
 wheels = [
@@ -2143,12 +2143,12 @@ name = "pytest"
 version = "9.1.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "exceptiongroup", marker = "python_full_version < '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
+    { name = "exceptiongroup", marker = "python_full_version < '3.11'" },
     { name = "iniconfig" },
     { name = "packaging" },
     { name = "pluggy" },
     { name = "pygments" },
-    { name = "tomli", marker = "python_full_version < '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
+    { name = "tomli", marker = "python_full_version < '3.11'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/e4/47/b9efed96c114afcfa3c9d3fe98a76a1d14c74a9e266d397cf6eb64be5e01/pytest-9.1.1.tar.gz", hash = "sha256:1088fbde8f2b49d95a549a195707afa7a76a3ce9bcadc26b6d71f0ffda5fe313", size = 1636369, upload-time = "2026-06-19T10:58:32.857Z" }
 wheels = [
@@ -2162,7 +2162,7 @@ source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "packaging" },
     { name = "pytest" },
-    { name = "typing-extensions", marker = "python_full_version < '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
+    { name = "typing-extensions", marker = "python_full_version < '3.11'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/5c/48/78fb4d9f95e383e81d2a74db1a56fd2f90947cd08e0d585356830e8e2fe8/pytest_check-2.9.1.tar.gz", hash = "sha256:2d8c9f1fe5cceb0b41c480e1454e95e9ed6a3a534bf2c7e3e0f39167b11cf88b", size = 41394, upload-time = "2026-08-01T06:28:06.417Z" }
 wheels = [
@@ -2209,8 +2209,8 @@ wheels = [
 
 [[package]]
 name = "python-apt"
-version = "2.4.0+ubuntu4"
-source = { registry = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/" }
+version = "2.4.0+ubuntu4.1"
+source = { registry = "https://lengau.github.io/python-apt-wheels/simple/" }
 resolution-markers = [
     "python_full_version >= '3.13' and sys_platform == 'linux'",
     "python_full_version == '3.12.*' and sys_platform == 'linux'",
@@ -2218,43 +2218,48 @@ resolution-markers = [
     "python_full_version < '3.11' and sys_platform == 'linux'",
 ]
 wheels = [
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.4.0+ubuntu4-cp310-cp310-manylinux_2_35_aarch64.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.4.0+ubuntu4-cp310-cp310-manylinux_2_35_armv7l.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.4.0+ubuntu4-cp310-cp310-manylinux_2_35_ppc64le.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.4.0+ubuntu4-cp310-cp310-manylinux_2_35_riscv64.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.4.0+ubuntu4-cp310-cp310-manylinux_2_35_s390x.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.4.0+ubuntu4-cp310-cp310-manylinux_2_35_x86_64.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.4.0+ubuntu4-cp311-cp311-manylinux_2_35_aarch64.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.4.0+ubuntu4-cp311-cp311-manylinux_2_35_armv7l.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.4.0+ubuntu4-cp311-cp311-manylinux_2_35_ppc64le.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.4.0+ubuntu4-cp311-cp311-manylinux_2_35_s390x.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.4.0+ubuntu4-cp311-cp311-manylinux_2_35_x86_64.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.4.0+ubuntu4-cp312-cp312-manylinux_2_35_aarch64.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.4.0+ubuntu4-cp312-cp312-manylinux_2_35_armv7l.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.4.0+ubuntu4-cp312-cp312-manylinux_2_35_ppc64le.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.4.0+ubuntu4-cp312-cp312-manylinux_2_35_s390x.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.4.0+ubuntu4-cp312-cp312-manylinux_2_35_x86_64.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.4.0+ubuntu4-cp313-cp313-manylinux_2_35_aarch64.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.4.0+ubuntu4-cp313-cp313-manylinux_2_35_armv7l.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.4.0+ubuntu4-cp313-cp313-manylinux_2_35_ppc64le.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.4.0+ubuntu4-cp313-cp313-manylinux_2_35_s390x.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.4.0+ubuntu4-cp313-cp313-manylinux_2_35_x86_64.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.4.0+ubuntu4-cp314-cp314-manylinux_2_35_aarch64.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.4.0+ubuntu4-cp314-cp314-manylinux_2_35_armv7l.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.4.0+ubuntu4-cp314-cp314-manylinux_2_35_ppc64le.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.4.0+ubuntu4-cp314-cp314-manylinux_2_35_s390x.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.4.0+ubuntu4-cp314-cp314-manylinux_2_35_x86_64.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.4.0+ubuntu4-cp314-cp314t-manylinux_2_35_aarch64.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.4.0+ubuntu4-cp314-cp314t-manylinux_2_35_armv7l.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.4.0+ubuntu4-cp314-cp314t-manylinux_2_35_ppc64le.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.4.0+ubuntu4-cp314-cp314t-manylinux_2_35_s390x.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.4.0+ubuntu4-cp314-cp314t-manylinux_2_35_x86_64.whl" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-67/python_apt-2.4.0+ubuntu4.1-cp310-cp310-manylinux_2_35_aarch64.whl", hash = "sha256:b4b56e38ef1b503d98fd58681bfb4348bbde7adb44e2d95433429ac7aef2c1ba" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-65/python_apt-2.4.0%2Bubuntu4.1-cp310-cp310-manylinux_2_35_armv7l.whl", hash = "sha256:14287664234e57f70f3db9650993e30b1e87d40d63b6e09235c62b74c8c65342" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-58/python_apt-2.4.0%2Bubuntu4.1-cp310-cp310-manylinux_2_35_ppc64le.whl", hash = "sha256:15a45cea589e7229b12bca55a598ab7a3eb8792fbd491cff0367382db4d15300" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-58/python_apt-2.4.0%2Bubuntu4.1-cp310-cp310-manylinux_2_35_riscv64.whl", hash = "sha256:39da94539917d086da78fdf2f42ef0ec75f9b5326eaa60bd57c7afa8b545d083" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-58/python_apt-2.4.0%2Bubuntu4.1-cp310-cp310-manylinux_2_35_s390x.whl", hash = "sha256:3073c6a5f4e68e192d652d9fc2adbf71d4747ea6874010a14a8df6d04126d363" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-51/python_apt-2.4.0%2Bubuntu4.1-cp310-cp310-manylinux_2_35_x86_64.whl", hash = "sha256:71c94fc49e5e224f83d4e84ba8c148de8e6268cb7db5d7cf27e1dd7452a8b63f" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-67/python_apt-2.4.0+ubuntu4.1-cp311-cp311-manylinux_2_35_aarch64.whl", hash = "sha256:06405cffa5864500ace20ced82327b0043d745dabdbf4e1dd3b8e11d285817f7" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-65/python_apt-2.4.0%2Bubuntu4.1-cp311-cp311-manylinux_2_35_armv7l.whl", hash = "sha256:570e909eba171f25c300c621d042856e8c7571e6be991542d00c935fa3e8c197" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-58/python_apt-2.4.0%2Bubuntu4.1-cp311-cp311-manylinux_2_35_ppc64le.whl", hash = "sha256:8d9853cfa5d0bfe1d0a1597499f4105bcb6b21df89d047b6e1c50760e2b4fcdb" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-58/python_apt-2.4.0%2Bubuntu4.1-cp311-cp311-manylinux_2_35_riscv64.whl", hash = "sha256:d0c0c6850448bddbd05c812e681627c1e76ddd18e0211d9cf5056157b25db69b" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-58/python_apt-2.4.0%2Bubuntu4.1-cp311-cp311-manylinux_2_35_s390x.whl", hash = "sha256:8e113a6c675d7aac9130fd097828b5c8de530fb947beda11d28b1b7d2fd1b817" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-51/python_apt-2.4.0%2Bubuntu4.1-cp311-cp311-manylinux_2_35_x86_64.whl", hash = "sha256:454093faa11de8b21f98b2b7a554ad7f9aaf372a8915b897e3731f9be470c2ff" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-67/python_apt-2.4.0+ubuntu4.1-cp312-cp312-manylinux_2_35_aarch64.whl", hash = "sha256:412538aebf371d555328fded4291fe8a24b3af7535f89fa168cc84e7931c3431" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-65/python_apt-2.4.0%2Bubuntu4.1-cp312-cp312-manylinux_2_35_armv7l.whl", hash = "sha256:fffb2c8aabcbf97922c8052c91a1d7d99d4fa1d99839a321758945afaea891fe" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-58/python_apt-2.4.0%2Bubuntu4.1-cp312-cp312-manylinux_2_35_ppc64le.whl", hash = "sha256:ad7819b8ba856deee216d0ecaf2ae5602c5b2285e5ac6747318bccdc605a9cf0" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-58/python_apt-2.4.0%2Bubuntu4.1-cp312-cp312-manylinux_2_35_riscv64.whl", hash = "sha256:a05a5fba008c267c19d485f7b14eee9bd26fbffd4f9e01b9fc54338f7565c6eb" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-58/python_apt-2.4.0%2Bubuntu4.1-cp312-cp312-manylinux_2_35_s390x.whl", hash = "sha256:c00c9421dc9d89304c23876187b47b93980620ab3456c3539b7c16ac37a0f61f" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-51/python_apt-2.4.0%2Bubuntu4.1-cp312-cp312-manylinux_2_35_x86_64.whl", hash = "sha256:d07c56c1c5992001dcbcbe4a94a405997fdaace1a1e9dd51b6b786d87a33cd98" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-67/python_apt-2.4.0+ubuntu4.1-cp313-cp313-manylinux_2_35_aarch64.whl", hash = "sha256:ccf8926cf1b487aa0930ea536a937a6b1ac61cdd9709f4b8973165360fcd51dd" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-65/python_apt-2.4.0%2Bubuntu4.1-cp313-cp313-manylinux_2_35_armv7l.whl", hash = "sha256:c11f652358fa4c6636a64c223a33d16df4657706d4fe7d2d734c6246943bd64b" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-58/python_apt-2.4.0%2Bubuntu4.1-cp313-cp313-manylinux_2_35_ppc64le.whl", hash = "sha256:be606e99605138e58b2f943f907dd4a7591a6a001f9521b35de83ffd466ec6f7" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-58/python_apt-2.4.0%2Bubuntu4.1-cp313-cp313-manylinux_2_35_riscv64.whl", hash = "sha256:e5a15af9a0117dedc9f5d9c5623794b685147aad20869a55b3bbe7a18cbb2af9" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-58/python_apt-2.4.0%2Bubuntu4.1-cp313-cp313-manylinux_2_35_s390x.whl", hash = "sha256:14c11c7ddeae6d843ce042091bde16a6e032bd91467e9cee4d3ee086985e5080" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-51/python_apt-2.4.0%2Bubuntu4.1-cp313-cp313-manylinux_2_35_x86_64.whl", hash = "sha256:b4d89d787213ab5065db46ecfc87a74bf536b0e5eb9aebcf567f7a2fb4eea77b" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-67/python_apt-2.4.0+ubuntu4.1-cp314-cp314-manylinux_2_35_aarch64.whl", hash = "sha256:67e4df217deb13a0cbef610c454a3fe328128370022667e3906579b8196274c2" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-65/python_apt-2.4.0%2Bubuntu4.1-cp314-cp314-manylinux_2_35_armv7l.whl", hash = "sha256:5b5d24ad0d4fb1c278f4875a1abda7909531cd85d096ea1db36d1325dd3c3b30" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-58/python_apt-2.4.0%2Bubuntu4.1-cp314-cp314-manylinux_2_35_ppc64le.whl", hash = "sha256:5e31c3484d5e2925db012b734ac164b685e7d70296cf63676547fb879ba20237" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-58/python_apt-2.4.0%2Bubuntu4.1-cp314-cp314-manylinux_2_35_riscv64.whl", hash = "sha256:f72dcf0057418585791a263606bcf22cbc5e36c548d82851d42e52a04e8782e6" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-58/python_apt-2.4.0%2Bubuntu4.1-cp314-cp314-manylinux_2_35_s390x.whl", hash = "sha256:26afd99f25fbaf1f4ec09abad3be05268e8af7b31560c562b0ee3d09452539c8" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-51/python_apt-2.4.0%2Bubuntu4.1-cp314-cp314-manylinux_2_35_x86_64.whl", hash = "sha256:db86e8e0dc7fe3889c26eaf569ad68f326842efc2b2b90f05f9a178c22075080" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-67/python_apt-2.4.0+ubuntu4.1-cp314-cp314t-manylinux_2_35_aarch64.whl", hash = "sha256:2ff67fa2b7b16b08740c381a458d54961b34cc47a858005a4ca85320b8189be3" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-65/python_apt-2.4.0%2Bubuntu4.1-cp314-cp314t-manylinux_2_35_armv7l.whl", hash = "sha256:55dd59d88821914287c6212ace34cef88e4255893fa5cf1b48eda521808103e5" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-58/python_apt-2.4.0%2Bubuntu4.1-cp314-cp314t-manylinux_2_35_ppc64le.whl", hash = "sha256:5c5c3618366efab04f9e54d481502cc5877ba28deb29acd0ec401d834f2535d6" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-58/python_apt-2.4.0%2Bubuntu4.1-cp314-cp314t-manylinux_2_35_riscv64.whl", hash = "sha256:9e323ddb58ce45687bc2f82bd347d9eb6c99e368509b657753119c14db9c72b0" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-58/python_apt-2.4.0%2Bubuntu4.1-cp314-cp314t-manylinux_2_35_s390x.whl", hash = "sha256:5af9e4e0ec2ccc2ddd6f79649147f50cb800a2a5e85fbec7f98835cc9dbd8219" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-51/python_apt-2.4.0%2Bubuntu4.1-cp314-cp314t-manylinux_2_35_x86_64.whl", hash = "sha256:feffc5ab94798ff10ea526ba99e5938bb10ad4895a39df1bc8792f932f90fb4b" },
 ]
 
 [[package]]
 name = "python-apt"
-version = "2.7.7+ubuntu5"
-source = { registry = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/" }
+version = "2.7.7+ubuntu5.3"
+source = { registry = "https://lengau.github.io/python-apt-wheels/simple/" }
 resolution-markers = [
     "python_full_version >= '3.13' and sys_platform == 'linux'",
     "python_full_version == '3.12.*' and sys_platform == 'linux'",
@@ -2262,42 +2267,48 @@ resolution-markers = [
     "python_full_version < '3.11' and sys_platform == 'linux'",
 ]
 wheels = [
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.7.7+ubuntu5-cp310-cp310-manylinux_2_39_aarch64.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.7.7+ubuntu5-cp310-cp310-manylinux_2_39_armv7l.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.7.7+ubuntu5-cp310-cp310-manylinux_2_39_ppc64le.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.7.7+ubuntu5-cp310-cp310-manylinux_2_39_s390x.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.7.7+ubuntu5-cp310-cp310-manylinux_2_39_x86_64.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.7.7+ubuntu5-cp311-cp311-manylinux_2_39_aarch64.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.7.7+ubuntu5-cp311-cp311-manylinux_2_39_armv7l.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.7.7+ubuntu5-cp311-cp311-manylinux_2_39_ppc64le.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.7.7+ubuntu5-cp311-cp311-manylinux_2_39_s390x.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.7.7+ubuntu5-cp311-cp311-manylinux_2_39_x86_64.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.7.7+ubuntu5-cp312-cp312-manylinux_2_39_aarch64.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.7.7+ubuntu5-cp312-cp312-manylinux_2_39_armv7l.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.7.7+ubuntu5-cp312-cp312-manylinux_2_39_ppc64le.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.7.7+ubuntu5-cp312-cp312-manylinux_2_39_s390x.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.7.7+ubuntu5-cp312-cp312-manylinux_2_39_x86_64.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.7.7+ubuntu5-cp313-cp313-manylinux_2_39_aarch64.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.7.7+ubuntu5-cp313-cp313-manylinux_2_39_armv7l.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.7.7+ubuntu5-cp313-cp313-manylinux_2_39_ppc64le.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.7.7+ubuntu5-cp313-cp313-manylinux_2_39_s390x.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.7.7+ubuntu5-cp313-cp313-manylinux_2_39_x86_64.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.7.7+ubuntu5-cp314-cp314-manylinux_2_39_aarch64.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.7.7+ubuntu5-cp314-cp314-manylinux_2_39_armv7l.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.7.7+ubuntu5-cp314-cp314-manylinux_2_39_ppc64le.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.7.7+ubuntu5-cp314-cp314-manylinux_2_39_s390x.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.7.7+ubuntu5-cp314-cp314-manylinux_2_39_x86_64.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.7.7+ubuntu5-cp314-cp314t-manylinux_2_39_aarch64.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.7.7+ubuntu5-cp314-cp314t-manylinux_2_39_armv7l.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.7.7+ubuntu5-cp314-cp314t-manylinux_2_39_ppc64le.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.7.7+ubuntu5-cp314-cp314t-manylinux_2_39_s390x.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-2.7.7+ubuntu5-cp314-cp314t-manylinux_2_39_x86_64.whl" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-67/python_apt-2.7.7+ubuntu5.3-cp310-cp310-manylinux_2_39_aarch64.whl", hash = "sha256:9ca20b33efe70cdfc273f23641d21c27827d1a128eaa81fa5bc52c566f1ce9d4" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-65/python_apt-2.7.7%2Bubuntu5.3-cp310-cp310-manylinux_2_39_armv7l.whl", hash = "sha256:7b7ae451f36ff3de8127f51b0239e8221ccea0758a851dd878457439653c0d0d" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-58/python_apt-2.7.7%2Bubuntu5.3-cp310-cp310-manylinux_2_39_ppc64le.whl", hash = "sha256:055992b4ad0d2f3746edd71370504abe5afcf6305961bf0b79b0f0354fadeb4c" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-58/python_apt-2.7.7%2Bubuntu5.3-cp310-cp310-manylinux_2_39_riscv64.whl", hash = "sha256:8d5605b2a3d3572935692373424f7f712e2bc224935fc27eff591435579de31c" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-58/python_apt-2.7.7%2Bubuntu5.3-cp310-cp310-manylinux_2_39_s390x.whl", hash = "sha256:269eff5abf2008c70f9225bb61465fd10b62ab907f726981ff49f59ff496bb73" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-51/python_apt-2.7.7%2Bubuntu5.3-cp310-cp310-manylinux_2_39_x86_64.whl", hash = "sha256:7c22432fa185bc24fdc80206cd32139aa47ea28d1d1c06c3e918e0679941f569" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-67/python_apt-2.7.7+ubuntu5.3-cp311-cp311-manylinux_2_39_aarch64.whl", hash = "sha256:f3eadb19d9db1dcf590453d6f6f125d568e11f91e966d8e843051cab09229579" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-65/python_apt-2.7.7%2Bubuntu5.3-cp311-cp311-manylinux_2_39_armv7l.whl", hash = "sha256:fbb4071f7516f7fcd10352d6c4e014725a3c352f2438674bc0eea2e21c68ea2c" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-58/python_apt-2.7.7%2Bubuntu5.3-cp311-cp311-manylinux_2_39_ppc64le.whl", hash = "sha256:286eeba3676a381f220525ff6fde8578c29ac815689a01df5d4a8282cf710b86" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-58/python_apt-2.7.7%2Bubuntu5.3-cp311-cp311-manylinux_2_39_riscv64.whl", hash = "sha256:12f2c93436f5b93bd0824c75b926c28bd952ae43f9eab950e0c4fabc1f35ea54" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-58/python_apt-2.7.7%2Bubuntu5.3-cp311-cp311-manylinux_2_39_s390x.whl", hash = "sha256:4f33c4ec7402649736a08a31444138478771526334dadddcf064007eaa75630c" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-51/python_apt-2.7.7%2Bubuntu5.3-cp311-cp311-manylinux_2_39_x86_64.whl", hash = "sha256:aaa655ab4cebd95b3f980fba3d4c29626cfabcc2bcc5b9606ab6d085db30e13d" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-67/python_apt-2.7.7+ubuntu5.3-cp312-cp312-manylinux_2_39_aarch64.whl", hash = "sha256:287dfb558761018999440d747a151d1dad1d4beb62cb1ebbe643cfab25130489" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-65/python_apt-2.7.7%2Bubuntu5.3-cp312-cp312-manylinux_2_39_armv7l.whl", hash = "sha256:8c73f6630d28bfe732e99d1f7b79ed1bfad7e7587e9d325fdcd6d8f865118e27" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-58/python_apt-2.7.7%2Bubuntu5.3-cp312-cp312-manylinux_2_39_ppc64le.whl", hash = "sha256:c719831f17a2ac67573d7eb0155b1a1aae8a3db8b322339b0ce322e66881aa4a" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-58/python_apt-2.7.7%2Bubuntu5.3-cp312-cp312-manylinux_2_39_riscv64.whl", hash = "sha256:e0bc6ba1cadeacf235b792b991a2b3b6a7b31ca1ebdc21ffb26741117d648d77" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-58/python_apt-2.7.7%2Bubuntu5.3-cp312-cp312-manylinux_2_39_s390x.whl", hash = "sha256:e524b2514370fdaf2831800256417fa52f064ec86073e606056c5a90927130bb" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-51/python_apt-2.7.7%2Bubuntu5.3-cp312-cp312-manylinux_2_39_x86_64.whl", hash = "sha256:923794cc2899f74f9b1b92f9344317f7c9166eab92f9633c07789e38c1174bd0" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-67/python_apt-2.7.7+ubuntu5.3-cp313-cp313-manylinux_2_39_aarch64.whl", hash = "sha256:43aa598d990eb709fb7f2df8e184ec41e7e55ebc6c4bbd1f84040f46efbabdac" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-65/python_apt-2.7.7%2Bubuntu5.3-cp313-cp313-manylinux_2_39_armv7l.whl", hash = "sha256:32a71ad2e0d7d5757dd610dd07b9aba6f9c627f372e053f69ab20d221e1ad33e" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-58/python_apt-2.7.7%2Bubuntu5.3-cp313-cp313-manylinux_2_39_ppc64le.whl", hash = "sha256:14a0d75bf6f2c4f2de6c649c45dd800aca7c0e4cdaf6cbec58d5a1e563d29940" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-58/python_apt-2.7.7%2Bubuntu5.3-cp313-cp313-manylinux_2_39_riscv64.whl", hash = "sha256:f886a29835242de50d04c32f6da6bd618fc36864fd32d974210feeaa862dcaee" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-58/python_apt-2.7.7%2Bubuntu5.3-cp313-cp313-manylinux_2_39_s390x.whl", hash = "sha256:d8db32b3ca83055309cce979b1db3e29f20edda0b8240ef8a3b777f7377e66d8" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-51/python_apt-2.7.7%2Bubuntu5.3-cp313-cp313-manylinux_2_39_x86_64.whl", hash = "sha256:a0067fd1e48da4924dbfe800d13622884750187833eda76e4b7ed63023b90ffd" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-67/python_apt-2.7.7+ubuntu5.3-cp314-cp314-manylinux_2_39_aarch64.whl", hash = "sha256:a113ca1fd09857e047f33579c1b9b12d8bf4ac7446f8b592271952df8d5ad643" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-65/python_apt-2.7.7%2Bubuntu5.3-cp314-cp314-manylinux_2_39_armv7l.whl", hash = "sha256:f366ade7056629bc2e9e5cf2f02f57b6e8a1f87497389568adf7a1e5bd2728a7" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-58/python_apt-2.7.7%2Bubuntu5.3-cp314-cp314-manylinux_2_39_ppc64le.whl", hash = "sha256:107345a8d9aea48e3632849bfeb6a9ae2ac8b4c21f2daddffc6ad40248a8320d" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-58/python_apt-2.7.7%2Bubuntu5.3-cp314-cp314-manylinux_2_39_riscv64.whl", hash = "sha256:1e5ffe1ea266c12fc648c1766ac498e0e99070336bd5e5a1b8be07cccc1f982f" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-58/python_apt-2.7.7%2Bubuntu5.3-cp314-cp314-manylinux_2_39_s390x.whl", hash = "sha256:9fe55d01660d2f6fa9cd55b0bcf61f7ea6145ed5bd46a94bfa8333c0e33fcb54" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-51/python_apt-2.7.7%2Bubuntu5.3-cp314-cp314-manylinux_2_39_x86_64.whl", hash = "sha256:8204dab79e91bb1e6908b0a405a5a36640702723999c83b3d38d1deac1d32a2f" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-67/python_apt-2.7.7+ubuntu5.3-cp314-cp314t-manylinux_2_39_aarch64.whl", hash = "sha256:11cd28a6c943bca443c251e5fa739b24867ec040414bb1b53b0f7ae9f4fc01e7" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-65/python_apt-2.7.7%2Bubuntu5.3-cp314-cp314t-manylinux_2_39_armv7l.whl", hash = "sha256:8983bebc1623115e3505c66414a63251dc485bc416c6fff17b8e88ec957ee911" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-58/python_apt-2.7.7%2Bubuntu5.3-cp314-cp314t-manylinux_2_39_ppc64le.whl", hash = "sha256:4267b9214cbea9d72d277fdbb4be538c908637c0deb17af2e849f727ff8986ef" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-58/python_apt-2.7.7%2Bubuntu5.3-cp314-cp314t-manylinux_2_39_riscv64.whl", hash = "sha256:5f82ddfb80c5c063f1bc917bc52495c825e2664b74eea0bfcffdad73a4553b1d" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-58/python_apt-2.7.7%2Bubuntu5.3-cp314-cp314t-manylinux_2_39_s390x.whl", hash = "sha256:eb365046e2087eeb9b50ee5b6bc3ef9cc6600be386790e4908fc69250565da2b" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-51/python_apt-2.7.7%2Bubuntu5.3-cp314-cp314t-manylinux_2_39_x86_64.whl", hash = "sha256:a333f4e1a19e269cf3c547a24f90b0209c64218603e168da61ca3992d63b5b71" },
 ]
 
 [[package]]
 name = "python-apt"
 version = "3.0.0+ubuntu1"
-source = { registry = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/" }
+source = { registry = "https://lengau.github.io/python-apt-wheels/simple/" }
 resolution-markers = [
     "python_full_version >= '3.13' and sys_platform == 'linux'",
     "python_full_version == '3.12.*' and sys_platform == 'linux'",
@@ -2305,30 +2316,67 @@ resolution-markers = [
     "python_full_version < '3.11' and sys_platform == 'linux'",
 ]
 wheels = [
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-3.0.0+ubuntu1-cp310-cp310-manylinux_2_42_aarch64.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-3.0.0+ubuntu1-cp310-cp310-manylinux_2_42_ppc64le.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-3.0.0+ubuntu1-cp310-cp310-manylinux_2_42_s390x.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-3.0.0+ubuntu1-cp310-cp310-manylinux_2_42_x86_64.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-3.0.0+ubuntu1-cp311-cp311-manylinux_2_42_aarch64.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-3.0.0+ubuntu1-cp311-cp311-manylinux_2_42_ppc64le.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-3.0.0+ubuntu1-cp311-cp311-manylinux_2_42_s390x.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-3.0.0+ubuntu1-cp311-cp311-manylinux_2_42_x86_64.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-3.0.0+ubuntu1-cp312-cp312-manylinux_2_42_aarch64.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-3.0.0+ubuntu1-cp312-cp312-manylinux_2_42_ppc64le.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-3.0.0+ubuntu1-cp312-cp312-manylinux_2_42_s390x.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-3.0.0+ubuntu1-cp312-cp312-manylinux_2_42_x86_64.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-3.0.0+ubuntu1-cp313-cp313-manylinux_2_42_aarch64.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-3.0.0+ubuntu1-cp313-cp313-manylinux_2_42_ppc64le.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-3.0.0+ubuntu1-cp313-cp313-manylinux_2_42_s390x.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-3.0.0+ubuntu1-cp313-cp313-manylinux_2_42_x86_64.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-3.0.0+ubuntu1-cp314-cp314-manylinux_2_42_aarch64.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-3.0.0+ubuntu1-cp314-cp314-manylinux_2_42_ppc64le.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-3.0.0+ubuntu1-cp314-cp314-manylinux_2_42_s390x.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-3.0.0+ubuntu1-cp314-cp314-manylinux_2_42_x86_64.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-3.0.0+ubuntu1-cp314-cp314t-manylinux_2_42_aarch64.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-3.0.0+ubuntu1-cp314-cp314t-manylinux_2_42_ppc64le.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-3.0.0+ubuntu1-cp314-cp314t-manylinux_2_42_s390x.whl" },
-    { url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/python-apt/python_apt-3.0.0+ubuntu1-cp314-cp314t-manylinux_2_42_x86_64.whl" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2025-10-21-publish/python_apt-3.0.0%2Bubuntu1-cp310-cp310-manylinux_2_42_aarch64.whl", hash = "sha256:2c7b25faf8c179d85c3a7b52c9d10f5b54a5d3961a7edce8f76620373048d960" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2025-10-21-publish/python_apt-3.0.0%2Bubuntu1-cp310-cp310-manylinux_2_42_x86_64.whl", hash = "sha256:7d4181b787ffded70de87dc2b0b4152416cb7cc60bf677f544287b75c57b3b27" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2025-10-21-publish/python_apt-3.0.0%2Bubuntu1-cp311-cp311-manylinux_2_42_aarch64.whl", hash = "sha256:394b64f81943650fb507a9ca8d4274d0927a77ca6cbc303f4407343bd14ca881" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2025-10-21-publish/python_apt-3.0.0%2Bubuntu1-cp311-cp311-manylinux_2_42_x86_64.whl", hash = "sha256:40cc3fbed30fb42df8547820266c35c6defd63a2db2d2175117d711338041f15" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2025-10-21-publish/python_apt-3.0.0%2Bubuntu1-cp312-cp312-manylinux_2_42_aarch64.whl", hash = "sha256:f1adafd35dd165ea10bcdde98436bdfa02ef8578ca8de8ff5d73725026ce736d" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2025-10-21-publish/python_apt-3.0.0%2Bubuntu1-cp312-cp312-manylinux_2_42_x86_64.whl", hash = "sha256:e2ec4008ff86130b0550348ce12cc1c05b71d62691b93ba695c0bbc724e746fc" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2025-10-21-publish/python_apt-3.0.0%2Bubuntu1-cp313-cp313-manylinux_2_42_aarch64.whl", hash = "sha256:59d3e314348106e2ed379adde44d9f08b8868db5b2ef6f094ab93a307d8605fd" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2025-10-21-publish/python_apt-3.0.0%2Bubuntu1-cp313-cp313-manylinux_2_42_x86_64.whl", hash = "sha256:9039197e3a723584b306a299fc21fdef30730afaf5838b21071e9d8634f2cf66" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2025-10-21-publish/python_apt-3.0.0%2Bubuntu1-cp314-cp314-manylinux_2_42_aarch64.whl", hash = "sha256:2e57f9b7e3df8ee213e6ecfb2e10e424e4e6fef9bf5bb5348cc4d97a2062d36a" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2025-10-21-publish/python_apt-3.0.0%2Bubuntu1-cp314-cp314-manylinux_2_42_x86_64.whl", hash = "sha256:dc7c40b74c91b6cb4816069b9f7774f0c957ff1e657f8cb740b48fe1ec5eee63" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2025-10-21-publish/python_apt-3.0.0%2Bubuntu1-cp314-cp314t-manylinux_2_42_aarch64.whl", hash = "sha256:bfab1022b59b920bf90db5ef1e413105b869d02bf2e7bd1bf924ab8ab7ee2b9a" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2025-10-21-publish/python_apt-3.0.0%2Bubuntu1-cp314-cp314t-manylinux_2_42_x86_64.whl", hash = "sha256:bc44a81a7a85a3a79014de9001ebe71f67a5fbf1d8c98210dfabdd8543db2274" },
+]
+
+[[package]]
+name = "python-apt"
+version = "3.1.0+ubuntu2"
+source = { registry = "https://lengau.github.io/python-apt-wheels/simple/" }
+resolution-markers = [
+    "python_full_version >= '3.13' and sys_platform == 'linux'",
+    "python_full_version == '3.12.*' and sys_platform == 'linux'",
+    "python_full_version == '3.11.*' and sys_platform == 'linux'",
+    "python_full_version < '3.11' and sys_platform == 'linux'",
+]
+wheels = [
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-67/python_apt-3.1.0+ubuntu2-cp310-cp310-manylinux_2_44_aarch64.whl", hash = "sha256:b4bfda073673c3e65466a93d7769ca6d752471900594fc48f1d0e6c8a24eec84" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-65/python_apt-3.1.0%2Bubuntu2-cp310-cp310-manylinux_2_44_armv7l.whl", hash = "sha256:e487e6f93130c3b3373890a2386cfd857e909b9b178760da60f93a26a2a3b92a" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-58/python_apt-3.1.0%2Bubuntu2-cp310-cp310-manylinux_2_44_ppc64le.whl", hash = "sha256:17559340c36c89887a27507530ad6034f8579e782eb1621aef6d48d778eac76e" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-58/python_apt-3.1.0%2Bubuntu2-cp310-cp310-manylinux_2_44_riscv64.whl", hash = "sha256:f4fc6a37411b78e880e4579e9961a2b6b38ef9738612bb74ab339b1b1a57be0e" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-58/python_apt-3.1.0%2Bubuntu2-cp310-cp310-manylinux_2_44_s390x.whl", hash = "sha256:4bed52fecc5237f58a0efd7557394e9f31cd37eafe07fd2d2a366c213eee07e8" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-51/python_apt-3.1.0%2Bubuntu2-cp310-cp310-manylinux_2_44_x86_64.whl", hash = "sha256:cf1a47dc19de7d98ce53db753b2703f0ed3d056b949016e4aeb38a44f5052c53" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-67/python_apt-3.1.0+ubuntu2-cp311-cp311-manylinux_2_44_aarch64.whl", hash = "sha256:ed64a4777eeea941782732ee5b400bf24f13a422127ab46c4070eee0d8404bb3" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-65/python_apt-3.1.0%2Bubuntu2-cp311-cp311-manylinux_2_44_armv7l.whl", hash = "sha256:cae9830cd7a9406b4ea1e6c14a4ee5d77c06eb64b408768dc4b7805b54c7c94e" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-58/python_apt-3.1.0%2Bubuntu2-cp311-cp311-manylinux_2_44_ppc64le.whl", hash = "sha256:cc82996a753c609ef715390fed112764cb5a25ce7f125368eed6d6b5348593e0" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-58/python_apt-3.1.0%2Bubuntu2-cp311-cp311-manylinux_2_44_riscv64.whl", hash = "sha256:24b8fe0022e0aa7f5e15612dade93db1f953f20887523b257011bc922fbc7a7f" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-58/python_apt-3.1.0%2Bubuntu2-cp311-cp311-manylinux_2_44_s390x.whl", hash = "sha256:eedf5fe827a57262903357e08211f46f8a95525098a4dbe1399dc49900ef546d" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-51/python_apt-3.1.0%2Bubuntu2-cp311-cp311-manylinux_2_44_x86_64.whl", hash = "sha256:7ef70fbdca536e838d88a58afbe838cde0cd60f1b88159852828eed9970e5b67" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-67/python_apt-3.1.0+ubuntu2-cp312-cp312-manylinux_2_44_aarch64.whl", hash = "sha256:b6428fe78b879d09281a985742ec46c5413045307c2806c1b37834d7acd2ca22" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-65/python_apt-3.1.0%2Bubuntu2-cp312-cp312-manylinux_2_44_armv7l.whl", hash = "sha256:28fe98f4d3645162b4f7dd6d7924ef0840f17b350d6db7b3e7aca411232f0a78" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-58/python_apt-3.1.0%2Bubuntu2-cp312-cp312-manylinux_2_44_ppc64le.whl", hash = "sha256:4d98f984c283542acb514a5cbc8b009162f0846884e849408be678ca6a1d2b96" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-58/python_apt-3.1.0%2Bubuntu2-cp312-cp312-manylinux_2_44_riscv64.whl", hash = "sha256:a22adf96b7202f97602148df26346c4837c4c1f0a5127ac1c4314323716cdbbf" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-58/python_apt-3.1.0%2Bubuntu2-cp312-cp312-manylinux_2_44_s390x.whl", hash = "sha256:7aacaa09e053a967ccfb104d061f21786baef6f9de9d9171b565fad087e0481f" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-51/python_apt-3.1.0%2Bubuntu2-cp312-cp312-manylinux_2_44_x86_64.whl", hash = "sha256:b695a05f5f366171ed8e4899c16a0add6bdc9f44fc7a8a111c55eab2e083861d" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-67/python_apt-3.1.0+ubuntu2-cp313-cp313-manylinux_2_44_aarch64.whl", hash = "sha256:22913208dde28334dbd8bc5742d26adbeac291d4da30e15e3cb999d465b9da3f" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-65/python_apt-3.1.0%2Bubuntu2-cp313-cp313-manylinux_2_44_armv7l.whl", hash = "sha256:82c59d655f024828b4d6ce7d1d25833fc6557e18a267627cadc56d015a2d57dc" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-58/python_apt-3.1.0%2Bubuntu2-cp313-cp313-manylinux_2_44_ppc64le.whl", hash = "sha256:093def169fa82d970a30b3ff224727240cc80b81fdd2043ab71399e928d6ab76" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-58/python_apt-3.1.0%2Bubuntu2-cp313-cp313-manylinux_2_44_riscv64.whl", hash = "sha256:165a1a191ab062a7c1f85c4afaed98c7ac142405292c000e664c94e087946c0d" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-58/python_apt-3.1.0%2Bubuntu2-cp313-cp313-manylinux_2_44_s390x.whl", hash = "sha256:223d12fb52ce2b9f4ad58306cf25c751d2d6a227fa655598484713480feca81e" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-51/python_apt-3.1.0%2Bubuntu2-cp313-cp313-manylinux_2_44_x86_64.whl", hash = "sha256:1b98ab46127e99e6a6f88f53d1c7c5092f40727d84cf3182eaf02dc481a9a155" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-67/python_apt-3.1.0+ubuntu2-cp314-cp314-manylinux_2_44_aarch64.whl", hash = "sha256:a49e041ca42fe8d051209913162cadf9169ad2a1adc4f6e1586ef69e4f3a6282" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-65/python_apt-3.1.0%2Bubuntu2-cp314-cp314-manylinux_2_44_armv7l.whl", hash = "sha256:354065031395c16e9b77ca7b1ba8b276b9e8f28fe30ed1ef64690918270a77fb" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-58/python_apt-3.1.0%2Bubuntu2-cp314-cp314-manylinux_2_44_ppc64le.whl", hash = "sha256:900eb576ccc0f0328bcde295a059c9db08aa3b0739e4a44847557e150ded22cf" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-58/python_apt-3.1.0%2Bubuntu2-cp314-cp314-manylinux_2_44_riscv64.whl", hash = "sha256:b79f85e2b38805690125811cf72ecc2d6f9f9f16deedb5a8926fbd38161c39a6" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-58/python_apt-3.1.0%2Bubuntu2-cp314-cp314-manylinux_2_44_s390x.whl", hash = "sha256:4a45c75153a7e5c43fb5b98435e13c555022eae62b6b650366f43044083170a0" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-51/python_apt-3.1.0%2Bubuntu2-cp314-cp314-manylinux_2_44_x86_64.whl", hash = "sha256:86fb6db4a7c649abe11eb44db98ada5363bd9bbc105d64af17c8794913784f84" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-67/python_apt-3.1.0+ubuntu2-cp314-cp314t-manylinux_2_44_aarch64.whl", hash = "sha256:8aaa6bc6d917e9f4cde3ca6272c0859e9ba02e5fad96a640f9d819e0c21831dd" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-65/python_apt-3.1.0%2Bubuntu2-cp314-cp314t-manylinux_2_44_armv7l.whl", hash = "sha256:be070e10e35b1115280654dc16c83d9d09aa916c83de205e8416cc3cfc454866" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-58/python_apt-3.1.0%2Bubuntu2-cp314-cp314t-manylinux_2_44_ppc64le.whl", hash = "sha256:4364cce5ad45bc79366c94bd01ee39394d045fbe8db013b9660069b96895c3f8" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-58/python_apt-3.1.0%2Bubuntu2-cp314-cp314t-manylinux_2_44_riscv64.whl", hash = "sha256:2f0bb8597a3d1350c0264fe364b03f3c4b3d582a2d4d5df7fa31c64820c9da0d" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-58/python_apt-3.1.0%2Bubuntu2-cp314-cp314t-manylinux_2_44_s390x.whl", hash = "sha256:95d382772111db1081c7ef972c395cd29e24cbd6e5720fd059a4c1d44cc9a984" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-10-28-51/python_apt-3.1.0%2Bubuntu2-cp314-cp314t-manylinux_2_44_x86_64.whl", hash = "sha256:83c7a3fe3c9eb8a33fca176cfcb79aabac19774bdd5d92796d5deba079cd1cce" },
 ]
 
 [[package]]
@@ -2731,7 +2779,7 @@ dependencies = [
     { name = "setuptools" },
     { name = "spdx-lookup" },
     { name = "tabulate" },
-    { name = "tomli", marker = "python_full_version < '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
+    { name = "tomli", marker = "python_full_version < '3.11'" },
 ]
 
 [package.optional-dependencies]
@@ -2755,19 +2803,19 @@ dev = [
     { name = "types-setuptools" },
 ]
 dev-jammy = [
-    { name = "python-apt", version = "2.4.0+ubuntu4", source = { registry = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/" } },
+    { name = "python-apt", version = "2.4.0+ubuntu4.1", source = { registry = "https://lengau.github.io/python-apt-wheels/simple/" } },
 ]
 dev-noble = [
-    { name = "python-apt", version = "2.7.7+ubuntu5", source = { registry = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/" } },
+    { name = "python-apt", version = "2.7.7+ubuntu5.3", source = { registry = "https://lengau.github.io/python-apt-wheels/simple/" } },
 ]
 dev-questing = [
-    { name = "python-apt", version = "3.0.0+ubuntu1", source = { registry = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/" } },
+    { name = "python-apt", version = "3.0.0+ubuntu1", source = { registry = "https://lengau.github.io/python-apt-wheels/simple/" } },
 ]
 dev-resolute = [
-    { name = "python-apt", version = "3.0.0+ubuntu1", source = { registry = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/" } },
+    { name = "python-apt", version = "3.1.0+ubuntu2", source = { registry = "https://lengau.github.io/python-apt-wheels/simple/" } },
 ]
 dev-stonking = [
-    { name = "python-apt", version = "3.0.0+ubuntu1", source = { registry = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/" } },
+    { name = "python-apt", version = "3.1.0+ubuntu2", source = { registry = "https://lengau.github.io/python-apt-wheels/simple/" } },
 ]
 docs = [
     { name = "canonical-sphinx" },
@@ -2775,8 +2823,8 @@ docs = [
     { name = "packaging" },
     { name = "pydantic-kitbash" },
     { name = "rst2html" },
-    { name = "sphinx-autobuild", version = "2024.10.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
-    { name = "sphinx-autobuild", version = "2025.8.25", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
+    { name = "sphinx-autobuild", version = "2024.10.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
+    { name = "sphinx-autobuild", version = "2025.8.25", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
     { name = "sphinx-autodoc-typehints" },
     { name = "sphinx-copybutton" },
     { name = "sphinx-design" },
@@ -2800,8 +2848,8 @@ docs-sphinx-stack = [
     { name = "myst-parser" },
     { name = "packaging" },
     { name = "rst2html" },
-    { name = "sphinx-autobuild", version = "2024.10.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
-    { name = "sphinx-autobuild", version = "2025.8.25", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
+    { name = "sphinx-autobuild", version = "2024.10.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
+    { name = "sphinx-autobuild", version = "2025.8.25", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
     { name = "sphinx-design" },
     { name = "sphinx-llm" },
     { name = "sphinx-notfound-page" },
@@ -2865,11 +2913,11 @@ dev = [
     { name = "types-pygments" },
     { name = "types-setuptools" },
 ]
-dev-jammy = [{ name = "python-apt", marker = "sys_platform == 'linux'", specifier = "~=2.4.0", index = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/" }]
-dev-noble = [{ name = "python-apt", marker = "sys_platform == 'linux'", specifier = "~=2.7.0", index = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/" }]
-dev-questing = [{ name = "python-apt", marker = "sys_platform == 'linux'", specifier = "~=3.0.0", index = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/" }]
-dev-resolute = [{ name = "python-apt", marker = "sys_platform == 'linux'", specifier = "~=3.0", index = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/" }]
-dev-stonking = [{ name = "python-apt", marker = "sys_platform == 'linux'", specifier = "~=3.0", index = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/" }]
+dev-jammy = [{ name = "python-apt", marker = "sys_platform == 'linux'", specifier = "~=2.4.0", index = "https://lengau.github.io/python-apt-wheels/simple/" }]
+dev-noble = [{ name = "python-apt", marker = "sys_platform == 'linux'", specifier = "~=2.7.0", index = "https://lengau.github.io/python-apt-wheels/simple/" }]
+dev-questing = [{ name = "python-apt", marker = "sys_platform == 'linux'", specifier = "~=3.0.0", index = "https://lengau.github.io/python-apt-wheels/simple/" }]
+dev-resolute = [{ name = "python-apt", marker = "sys_platform == 'linux'", specifier = "~=3.0", index = "https://lengau.github.io/python-apt-wheels/simple/" }]
+dev-stonking = [{ name = "python-apt", marker = "sys_platform == 'linux'", specifier = "~=3.0", index = "https://lengau.github.io/python-apt-wheels/simple/" }]
 docs = [
     { name = "canonical-sphinx", specifier = "~=0.6" },
     { name = "myst-parser", specifier = "~=4.0" },
@@ -3086,7 +3134,7 @@ dependencies = [
     { name = "sphinxcontrib-jsmath" },
     { name = "sphinxcontrib-qthelp" },
     { name = "sphinxcontrib-serializinghtml" },
-    { name = "tomli", marker = "python_full_version < '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
+    { name = "tomli", marker = "python_full_version < '3.11'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/5b/be/50e50cb4f2eff47df05673d361095cafd95521d2a22521b920c67a372dcb/sphinx-7.4.7.tar.gz", hash = "sha256:242f92a7ea7e6c5b406fdc2615413890ba9f699114a9c09192d7dfead2ee9cfe", size = 8067911, upload-time = "2024-07-20T14:46:56.059Z" }
 wheels = [
@@ -3101,12 +3149,12 @@ resolution-markers = [
     "python_full_version < '3.11' and sys_platform == 'linux'",
 ]
 dependencies = [
-    { name = "colorama", marker = "python_full_version < '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
-    { name = "sphinx", marker = "python_full_version < '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
-    { name = "starlette", marker = "python_full_version < '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
-    { name = "uvicorn", marker = "python_full_version < '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
-    { name = "watchfiles", marker = "python_full_version < '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
-    { name = "websockets", version = "16.1.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
+    { name = "colorama" },
+    { name = "sphinx" },
+    { name = "starlette" },
+    { name = "uvicorn" },
+    { name = "watchfiles" },
+    { name = "websockets", version = "16.1.1", source = { registry = "https://pypi.org/simple" } },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/a5/2c/155e1de2c1ba96a72e5dba152c509a8b41e047ee5c2def9e9f0d812f8be7/sphinx_autobuild-2024.10.3.tar.gz", hash = "sha256:248150f8f333e825107b6d4b86113ab28fa51750e5f9ae63b59dc339be951fb1", size = 14023, upload-time = "2024-10-02T23:15:30.172Z" }
 wheels = [
@@ -3123,12 +3171,12 @@ resolution-markers = [
     "python_full_version == '3.11.*' and sys_platform == 'linux'",
 ]
 dependencies = [
-    { name = "colorama", marker = "python_full_version >= '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
-    { name = "sphinx", marker = "python_full_version >= '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
-    { name = "starlette", marker = "python_full_version >= '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
-    { name = "uvicorn", marker = "python_full_version >= '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
-    { name = "watchfiles", marker = "python_full_version >= '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
-    { name = "websockets", version = "17.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
+    { name = "colorama" },
+    { name = "sphinx" },
+    { name = "starlette" },
+    { name = "uvicorn" },
+    { name = "watchfiles" },
+    { name = "websockets", version = "17.1", source = { registry = "https://pypi.org/simple" } },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/e0/3c/a59a3a453d4133777f7ed2e83c80b7dc817d43c74b74298ca0af869662ad/sphinx_autobuild-2025.8.25.tar.gz", hash = "sha256:9cf5aab32853c8c31af572e4fecdc09c997e2b8be5a07daf2a389e270e85b213", size = 15200, upload-time = "2025-08-25T18:44:55.436Z" }
 wheels = [
@@ -3190,7 +3238,7 @@ source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "jinja2" },
     { name = "markupsafe" },
-    { name = "standard-imghdr", marker = "python_full_version >= '3.13' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
+    { name = "standard-imghdr", marker = "python_full_version >= '3.13'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/43/98/43313781f29e8c6c46fec907430310172d6f207e95e4fbea9289990fbbfe/sphinx_jinja2_compat-0.4.1.tar.gz", hash = "sha256:0188f0802d42c3da72997533b55a00815659a78d3f81d4b4747b1fb15a5728e6", size = 5222, upload-time = "2025-08-06T20:06:25.824Z" }
 wheels = [
@@ -3269,9 +3317,9 @@ resolution-markers = [
     "python_full_version < '3.11' and sys_platform == 'linux'",
 ]
 dependencies = [
-    { name = "docutils", marker = "python_full_version < '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
-    { name = "pygments", marker = "python_full_version < '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
-    { name = "sphinx", marker = "python_full_version < '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
+    { name = "docutils" },
+    { name = "pygments" },
+    { name = "sphinx" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/e7/fb/7a07b8df1ca2418147a6b13e3f6b445071f2565198b45efa631d0d6ef0cd/sphinx_prompt-1.8.0.tar.gz", hash = "sha256:47482f86fcec29662fdfd23e7c04ef03582714195d01f5d565403320084372ed", size = 5121, upload-time = "2023-09-14T12:46:13.449Z" }
 wheels = [
@@ -3288,14 +3336,14 @@ resolution-markers = [
     "python_full_version == '3.11.*' and sys_platform == 'linux'",
 ]
 dependencies = [
-    { name = "certifi", marker = "python_full_version >= '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
-    { name = "docutils", marker = "python_full_version >= '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
-    { name = "idna", marker = "python_full_version >= '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
-    { name = "jinja2", marker = "python_full_version >= '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
-    { name = "pygments", marker = "python_full_version >= '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
-    { name = "requests", marker = "python_full_version >= '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
-    { name = "sphinx", marker = "python_full_version >= '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
-    { name = "urllib3", marker = "python_full_version >= '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
+    { name = "certifi" },
+    { name = "docutils" },
+    { name = "idna" },
+    { name = "jinja2" },
+    { name = "pygments" },
+    { name = "requests" },
+    { name = "sphinx" },
+    { name = "urllib3" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/d0/a3/91293c0e0f0b76d0697ba7a41541929ca3f5457671d008bd84a9bde17e21/sphinx_prompt-1.10.2.tar.gz", hash = "sha256:47b592ba75caebd044b0eddf7a5a1b6e0aef6df587b034377cd101a999b686ba", size = 5566, upload-time = "2025-11-28T09:23:18.057Z" }
 wheels = [
@@ -3428,8 +3476,8 @@ dependencies = [
     { name = "sphinx" },
     { name = "sphinx-autodoc-typehints" },
     { name = "sphinx-jinja2-compat" },
-    { name = "sphinx-prompt", version = "1.8.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
-    { name = "sphinx-prompt", version = "1.10.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
+    { name = "sphinx-prompt", version = "1.8.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
+    { name = "sphinx-prompt", version = "1.10.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
     { name = "sphinx-tabs" },
     { name = "tabulate" },
     { name = "typing-extensions" },
@@ -3532,7 +3580,7 @@ version = "1.6.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "anyio" },
-    { name = "typing-extensions", marker = "python_full_version < '3.13' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
+    { name = "typing-extensions", marker = "python_full_version < '3.13'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/b5/b4/205b0d5241d934e8add0c38aa924c4f9fb7330834ff11e5444db964ec3f9/starlette-1.6.0.tar.gz", hash = "sha256:d4e3ac5e546444960c710297a3c9fc3f7ebae1b7e963f3d36173b49da535be9b", size = 2716969, upload-time = "2026-08-08T18:27:57.512Z" }
 wheels = [
@@ -3613,7 +3661,7 @@ version = "7.0.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "id" },
-    { name = "keyring", marker = "(platform_machine != 'ppc64le' and platform_machine != 's390x') or (platform_machine == 'ppc64le' and extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (platform_machine == 'ppc64le' and extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (platform_machine == 'ppc64le' and extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (platform_machine == 'ppc64le' and extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (platform_machine == 'ppc64le' and extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (platform_machine == 'ppc64le' and extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (platform_machine == 'ppc64le' and extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (platform_machine == 'ppc64le' and extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (platform_machine == 'ppc64le' and extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (platform_machine == 'ppc64le' and extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking') or (platform_machine == 's390x' and extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (platform_machine == 's390x' and extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (platform_machine == 's390x' and extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (platform_machine == 's390x' and extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (platform_machine == 's390x' and extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (platform_machine == 's390x' and extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (platform_machine == 's390x' and extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (platform_machine == 's390x' and extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (platform_machine == 's390x' and extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (platform_machine == 's390x' and extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
+    { name = "keyring", marker = "platform_machine != 'ppc64le' and platform_machine != 's390x'" },
     { name = "packaging" },
     { name = "readme-renderer" },
     { name = "requests" },
@@ -3709,7 +3757,7 @@ source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "click" },
     { name = "h11" },
-    { name = "typing-extensions", marker = "python_full_version < '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
+    { name = "typing-extensions", marker = "python_full_version < '3.11'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/5d/ad/04bbb797c84fc1f26cb171f7394716f4865ffb8d8c5e1eef42565c2dfa6b/uvicorn-0.53.0.tar.gz", hash = "sha256:a9356f0cb89b3b8621529c5d5eebd69bfe154f4c3f68b4cf2de47e45fa855c2e", size = 110881, upload-time = "2026-09-14T07:44:23.815Z" }
 wheels = [
@@ -3734,7 +3782,7 @@ dependencies = [
     { name = "filelock" },
     { name = "platformdirs" },
     { name = "python-discovery" },
-    { name = "typing-extensions", marker = "python_full_version < '3.11' or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-noble') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-jammy' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-questing') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-noble' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-resolute') or (extra == 'group-9-rockcraft-dev-questing' and extra == 'group-9-rockcraft-dev-stonking') or (extra == 'group-9-rockcraft-dev-resolute' and extra == 'group-9-rockcraft-dev-stonking')" },
+    { name = "typing-extensions", marker = "python_full_version < '3.11'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/ba/37/e4f918e5a6547ab868aede62babdd696514bf1f282e71439db91597d7d9c/virtualenv-21.7.14.tar.gz", hash = "sha256:6f14bcaeb6c3438cd8c8cf3ab1805973592fb900e9b724427d1102aaa3db7fbb", size = 5360773, upload-time = "2026-09-18T05:24:20.684Z" }
 wheels = [
