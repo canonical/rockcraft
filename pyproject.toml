@@ -410,7 +410,7 @@ environments = ["sys_platform == 'linux'"]
 
 [[tool.uv.index]]
 name = "python-apt-wheels"
-url = "https://people.canonical.com/~lengau/python-apt-ubuntu-wheels/"
+url = "https://lengau.github.io/python-apt-wheels/simple/"
 explicit = true
 
 [tool.uv.sources]
