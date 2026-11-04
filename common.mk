@@ -320,7 +320,7 @@ docs-clean:  ##- Clean the temporary files used in documentation
 docs-help:  ##- List the individual commands in the documentation subproject.
 	@echo "Commands in the documentation subproject:"
 	$(MAKE) -C docs help --no-print-directory
-	@echo "Run these commands from inside the 'docs/' directory."
+	@echo "Run these from the repository root as 'make docs-<command>' (e.g. 'make docs-linkcheck')."
 
 # Override for `pymarkdownlnt-install` target in docs project. Make it a noop.
 .PHONY: docs-pymarkdownlnt-install
