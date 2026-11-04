@@ -15,6 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from pathlib import Path
 from typing import cast
+from unittest.mock import call
 
 import pytest
 from craft_application import ServiceFactory, errors
@@ -163,11 +164,11 @@ def test_pack_rejects_named_artifact(fake_services: ServiceFactory):
 @pytest.mark.parametrize(
     ("project_keys", "expected_entrypoint", "expected_cmd"),
     [
-        # Most common scenario
+        # Project environment explicitly clears PATH.
         (
             {
                 "run_user": "_daemon_",
-                "environment": {"test": "foo"},
+                "environment": {"PATH": ""},
                 "services": {"test": {"override": "replace", "command": "echo foo"}},
             },
             ["/usr/bin/pebble", "enter"],
@@ -303,7 +304,7 @@ def test_create_rock(
     image.set_default_user.assert_called_once_with(584792, project.run_user)
     image.set_entrypoint.assert_called_once_with(expected_entrypoint)
     image.set_cmd.assert_called_once_with(expected_cmd)
-    image.set_default_path.assert_called_once_with(project.base)
+    image.set_default_path.assert_called_once_with()
     image.set_pebble_layer.assert_called_once_with(
         services=project.marshal().get("services", {}),
         checks=project.marshal().get("checks", {}),
@@ -315,6 +316,12 @@ def test_create_rock(
     )
     image.set_environment.assert_called_once_with(project.environment)
     image.set_annotations.assert_called_once_with(annotations)
+
+    environment_call = call.set_environment(project.environment)
+    default_path_call = call.set_default_path()
+    assert image.method_calls.index(environment_call) < image.method_calls.index(
+        default_path_call
+    )
     image.set_control_data.assert_called_once_with(metadata)
     image.set_media_type.assert_called_once_with(arch="amd64")
     image.to_oci_archive.assert_called_once_with(
