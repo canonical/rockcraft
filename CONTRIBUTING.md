@@ -17,7 +17,7 @@ take responsibility for its stewardship and health.
 
 Before you start work on Rockcraft, there are three documents for you to digest.
 
-### Ubuntu code of conduct
+### Ubuntu Code of Conduct
 
 Projects governed by Canonical expect good conduct and excellence from every member. The
 specific principles are laid out in the [Ubuntu Code of
@@ -26,7 +26,7 @@ Conduct](https://ubuntu.com/community/ethos/code-of-conduct).
 ### Canonical Contributor License Agreement
 
 As a contributor, you retain your copyright and attribution rights, provided you sign
-the [Canonical Contributor Licence Agreement](http://www.ubuntu.com/legal/contributors).
+the [Canonical Contributor License Agreement](http://www.ubuntu.com/legal/contributors).
 Before committing any code, review its terms. If you agree and sign it, your code can be
 incorporated into the repository.
 
@@ -36,7 +36,7 @@ Rockcraft is licensed under [GPL-3.0](LICENSE).
 
 ## Report an issue or open a request
 
-If you find a bug or feature gap in Rockcraft, look for it on the [project's GitHub
+If you find a bug or feature gap in Rockcraft, look for it in the [project's GitHub
 issues](https://github.com/canonical/rockcraft/issues) first. If you have fresh input,
 add your voice to the issue.
 
@@ -122,10 +122,10 @@ Often, you will save time and effort by checking for prior work.
 Once you've found or created an issue you'd like to take on, propose your solution in
 the issue's thread. In your proposal, describe a plan for the change, its tests, and its
 documentation. If the feature warrants a new page in the documentation, propose a
-[Diátaxis](https://diataxis.fr) category for the page. The Starcraft team will review
-your proposal and, if everything looks complete, assign the issue to you.
+[Diátaxis](https://diataxis.fr) category for the page. A Rockcraft maintainer will
+review your proposal and, if everything looks complete, assign the issue to you.
 
-### Create a feature branch
+### Create a development branch
 
 Once you've settled on a topic to work on, it's time to set up a local branch.
 
@@ -151,7 +151,7 @@ make setup
 
 The new branch name should be brief, at no more than 80 characters. Format your branch
 name as `<ticket-id>-<description>`. For example, if you're working on GitHub issue
-#235, and it's about adding a string sanitizer, you'd name your branch
+\#235, and it's about adding a string sanitizer, you'd name your branch
 `issue-235-add-string-sanitizer-method`.
 
 ### Commit a change
@@ -164,7 +164,8 @@ git add -A
 git commit
 ```
 
-Format the commit message according to the Conventional Commits style. For the sanitizer
+Format the commit message according to the [Conventional
+Commits](https://www.conventionalcommits.org/en/v1.0.0/) style. For the sanitizer
 example, an appropriate commit title would be:
 
 ```
@@ -172,7 +173,7 @@ feat: add text sanitizer
 ```
 
 If you need help determining the type of conventional commit for your change, look at
-the history of the file in question with `git log --oneline <filename>`. When you're
+the history of the file in question with `git log --oneline <filename>` . When you're
 done browsing, press `Q` to exit the interactive log.
 
 > **Tip**
@@ -274,7 +275,7 @@ make docs
 Check for problems in the documentation with:
 
 ```bash
-make docs-lint
+make lint-docs
 ```
 
 ### Push the branch and open a PR
@@ -285,11 +286,14 @@ Once your work is committed to your branch, push it to your fork:
 git push -u origin <branch-name>
 ```
 
-Finally, [open a PR](https://github.com/canonical/rockcraft/compare) for it on GitHub.
-If your branch has one commit, GitHub will title the PR after it. If your branch has
-more than one commit, name the PR after the most significant and ensure it
-follows the Conventional Commits style. Once open, reviewers are
-assigned automatically to your work.
+On GitHub, [open a PR](https://github.com/canonical/rockcraft/compare) for your branch in
+Rockcraft.
+
+Format the PR title as a conventional commit. If your branch has only one commit, GitHub
+handles this automatically. If your branch has multiple commits, copy the title of the
+most important one.
+
+Once open, reviewers are assigned automatically to your work.
 
 ### Follow up for the review
 
