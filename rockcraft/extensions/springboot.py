@@ -300,6 +300,11 @@ class SpringBootFramework(Extension):
                 "base-files_tmp",
                 "coreutils_bins",
             ]
+            runtime_part["override-build"] = (
+                "craftctl default\n"
+                "mkdir -p ${CRAFT_PART_INSTALL}/usr/bin\n"
+                "ln -sf /usr/bin/bash ${CRAFT_PART_INSTALL}/usr/bin/sh"
+            )
 
         return runtime_part
 

@@ -701,3 +701,30 @@ def test_spring_boot_extension_default_ubuntu_26_04(tmp_path, monkeypatch):
         },
     }
     assert applied == expected
+
+
+@pytest.mark.parametrize("build_base", ["ubuntu@24.04", "ubuntu@26.04"])
+def test_spring_boot_extension_bare_sh_symlink(
+    tmp_path, spring_boot_input_yaml, spring_boot_extension, build_base
+):
+    """Bare rocks get a /usr/bin/sh symlink to bash in the runtime part."""
+    (tmp_path / "pom.xml").write_text("<project/>")
+    spring_boot_input_yaml["base"] = "bare"
+    spring_boot_input_yaml["build-base"] = build_base
+    applied = extensions.apply_extensions(tmp_path, spring_boot_input_yaml)
+    runtime = next(
+        part for name, part in applied["parts"].items() if name.endswith("runtime")
+    )
+    assert runtime["override-build"] == (
+        "craftctl default\n"
+        "mkdir -p ${CRAFT_PART_INSTALL}/usr/bin\n"
+        "ln -sf /usr/bin/bash ${CRAFT_PART_INSTALL}/usr/bin/sh"
+    )
+
+
+def test_spring_boot_extension_non_bare_no_sh_symlink(
+    tmp_path, spring_boot_input_yaml, spring_boot_extension
+):
+    (tmp_path / "pom.xml").write_text("<project/>")
+    applied = extensions.apply_extensions(tmp_path, spring_boot_input_yaml)
+    assert "override-build" not in applied["parts"]["spring-boot-framework/runtime"]
