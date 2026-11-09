@@ -22,12 +22,11 @@ platforms:
     # s390x:
 
 # to ensure the spring-boot-framework extension functions properly, your
-# Spring Boot project should have either a mvnw or a gradlew file.
+# Spring Boot project should have either a pom.xml or a build.gradle file
+# (but not both) in the root directory. If the mvnw or gradlew wrapper is
+# present, it must be executable.
 # see {{versioned_url}}/reference/extensions/spring-boot-framework
 # for more information.
-# +-- {{snake_name}}
-# |   |-- gradlew # either one of the two files should be present
-# |   |-- mvnw  # either one of the two files should be present
 
 extensions:
     - spring-boot-framework
@@ -35,9 +34,9 @@ extensions:
 # uncomment the sections you need and adjust according to your requirements.
 # parts:
 
-#   spring-boot-framework.gradle-init-script
-#   override-build: |
-#      cp <PATH-TO-INIT-SCRIPT> ${CRAFT_STAGE}
+#   spring-boot-framework.gradle-init-script:
+#     override-build: |
+#       cp <PATH-TO-INIT-SCRIPT> ${CRAFT_STAGE}
 
 #   spring-boot-framework.install-app:
 #    # select a specific Java version to build the application. Otherwise the

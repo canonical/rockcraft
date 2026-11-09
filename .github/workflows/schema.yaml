@@ -19,7 +19,6 @@ jobs:
         uses: astral-sh/setup-uv@v6
         with:
           enable-cache: true
-          cache-suffix: ${{ steps.runner-info.outputs.cache-hash }}
 
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -33,8 +32,8 @@ jobs:
 
       - name: Check with stored schema
         run: |
-          test -f $ROCKCRAFT_JSON &&
-          diff generated_schema.json $ROCKCRAFT_JSON
+          test -f "$ROCKCRAFT_JSON" &&
+          diff generated_schema.json "$ROCKCRAFT_JSON"
 
   validate-schema:
     runs-on: ubuntu-latest
