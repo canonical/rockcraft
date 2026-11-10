@@ -55,9 +55,8 @@ def test_packed_image_metadata(fake_services: ServiceFactory, tmp_path):
         )
     )
     creation_label = config["config"]["Labels"]["org.opencontainers.image.created"]
-    assert datetime.fromisoformat(config["created"]) == datetime.fromisoformat(
-        creation_label
-    )
+    created = config["created"].replace("Z", "+00:00")
+    assert datetime.fromisoformat(created) == datetime.fromisoformat(creation_label)
 
 
 @pytest.mark.usefixtures("fake_project_file")
