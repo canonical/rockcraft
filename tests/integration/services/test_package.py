@@ -1,6 +1,7 @@
 import argparse
 import json
 import subprocess
+from datetime import datetime
 from pathlib import Path
 from typing import cast
 
@@ -13,8 +14,11 @@ from rockcraft.models.project import Project
 from rockcraft.services import package
 
 
-@pytest.mark.usefixtures("fake_project_file")
-def test_media_type_in_packed_image_manifest(fake_services: ServiceFactory, tmp_path):
+@pytest.mark.usefixtures("fake_project_file", "project_keys")
+@pytest.mark.parametrize(
+    "project_keys", [{"base": "bare", "build-base": "ubuntu@24.04"}], indirect=True
+)
+def test_packed_image_metadata(fake_services: ServiceFactory, tmp_path):
     base_image = oci.Image.new_oci_image(
         image_name="bare@original",
         image_dir=Path("images"),
@@ -43,6 +47,17 @@ def test_media_type_in_packed_image_manifest(fake_services: ServiceFactory, tmp_
     manifest_content = json.loads(manifest)
 
     assert manifest_content["mediaType"] == "application/vnd.oci.image.manifest.v1+json"
+
+    config = json.loads(
+        subprocess.check_output(
+            ["skopeo", "inspect", "--config", f"oci-archive:{archive_path}"],
+            stderr=subprocess.STDOUT,
+        )
+    )
+    creation_label = config["config"]["Labels"]["org.opencontainers.image.created"]
+    assert datetime.fromisoformat(config["created"]) == datetime.fromisoformat(
+        creation_label
+    )
 
 
 @pytest.mark.usefixtures("fake_project_file")
