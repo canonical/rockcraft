@@ -20,7 +20,15 @@ Ubuntu bases
 
 When building with an Ubuntu base, Rockcraft pulls the corresponding Ubuntu image from a
 container registry. These Ubuntu images are the same as the ones hosted in registries
-like Docker Hub or Amazon Elastic Container Registry.
+like Docker Hub or Amazon Elastic Container Registry. By default, Rockcraft pulls them
+from Amazon Elastic Container Registry.
+
+To use a registry mirror, set ``ROCKCRAFT_BASE_IMAGE_REGISTRY_URL`` when invoking
+Rockcraft. The value can be an HTTPS URL or a host and optional port. For example:
+
+.. code-block:: bash
+
+    ROCKCRAFT_BASE_IMAGE_REGISTRY_URL=https://registry.example:5000 rockcraft pack
 
 The built rock contains the software and utilities from the Ubuntu image.
 

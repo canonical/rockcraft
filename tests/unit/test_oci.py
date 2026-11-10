@@ -110,7 +110,7 @@ class TestImage:
         )
         assert Path("images/dir").is_dir()
         assert image.image_name == "a:b"
-        assert source_image == f"docker://{oci.REGISTRY_URL}/a:b"
+        assert source_image == f"docker://{oci.DEFAULT_REGISTRY_URL}/a:b"
         assert image.path == Path("images/dir")
         assert mock_run.mock_calls == [
             call(
@@ -122,7 +122,7 @@ class TestImage:
                     "copy",
                     "--retry-times",
                     str(oci.MAX_DOWNLOAD_RETRIES),
-                    f"docker://{oci.REGISTRY_URL}/a:b",
+                    f"docker://{oci.DEFAULT_REGISTRY_URL}/a:b",
                     "oci:images/dir/a:b",
                 ]
             )
@@ -143,11 +143,22 @@ class TestImage:
                     "copy",
                     "--retry-times",
                     str(oci.MAX_DOWNLOAD_RETRIES),
-                    f"docker://{oci.REGISTRY_URL}/a:b",
+                    f"docker://{oci.DEFAULT_REGISTRY_URL}/a:b",
                     "oci:images/dir/a:b",
                 ]
             )
         ]
+
+    def test_from_docker_registry_normalizes_registry_url(self, mock_run, new_dir):
+        _, source_image = oci.Image.from_docker_registry(
+            "ubuntu@22.04",
+            image_dir=Path("images/dir"),
+            arch="amd64",
+            registry_url="https://registry.example:5000/cache/",
+        )
+
+        assert source_image == "docker://registry.example:5000/cache/ubuntu:22.04"
+        assert mock_run.call_args.args[0][-2] == source_image
 
     def _get_arch_from_call(self, mock_call):
         class ArchData(NamedTuple):
