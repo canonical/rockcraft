@@ -55,9 +55,15 @@ def test_packed_image_metadata(fake_services: ServiceFactory, tmp_path):
         )
     )
     creation_label = config["config"]["Labels"]["org.opencontainers.image.created"]
-    # umoci writes a trailing Z, which datetime.fromisoformat() rejects on Python 3.10.
-    created = config["created"].replace("Z", "+00:00")
-    assert datetime.fromisoformat(created) == datetime.fromisoformat(creation_label)
+    # umoci uses Z and trims trailing fractional zeros, both of which can make
+    # its timestamp unparseable by datetime.fromisoformat() on Python 3.10.
+    created = config["created"]
+    timestamp_format = "%Y-%m-%dT%H:%M:%S"
+    if "." in created:
+        timestamp_format += ".%f"
+    assert datetime.strptime(
+        created, timestamp_format + "%z"
+    ) == datetime.fromisoformat(creation_label)
 
 
 @pytest.mark.usefixtures("fake_project_file")
