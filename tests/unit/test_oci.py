@@ -149,16 +149,39 @@ class TestImage:
             )
         ]
 
-    def test_from_docker_registry_normalizes_registry_url(self, mock_run, new_dir):
+    @pytest.mark.parametrize(
+        ("registry_url", "expected_source"),
+        [
+            (
+                "https://registry.example:5000/cache/",
+                "docker://registry.example:5000/cache/ubuntu:22.04",
+            ),
+            (
+                "registry.example:5000/cache",
+                "docker://registry.example:5000/cache/ubuntu:22.04",
+            ),
+            (
+                "https://registry.example:5000",
+                "docker://registry.example:5000/ubuntu:22.04",
+            ),
+            (
+                "registry.example:5000/",
+                "docker://registry.example:5000/ubuntu:22.04",
+            ),
+        ],
+    )
+    def test_from_docker_registry_normalizes_registry_url(
+        self, mock_run, new_dir, registry_url, expected_source
+    ):
         _, source_image = oci.Image.from_docker_registry(
             "ubuntu@22.04",
             image_dir=Path("images/dir"),
             arch="amd64",
-            registry_url="https://registry.example:5000/cache/",
+            registry_url=registry_url,
         )
 
-        assert source_image == "docker://registry.example:5000/cache/ubuntu:22.04"
-        assert mock_run.call_args.args[0][-2] == source_image
+        assert source_image == expected_source
+        assert mock_run.call_args.args[0][-2] == expected_source
 
     def _get_arch_from_call(self, mock_call):
         class ArchData(NamedTuple):
