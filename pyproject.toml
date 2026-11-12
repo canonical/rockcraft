@@ -63,11 +63,16 @@ dev = [
   "types-colorama",
   "types-setuptools",
 ]
+# The python-apt wheels are built per Ubuntu series and tagged with that
+# series' minimum glibc, but the version number does not identify the series.
+# Resolute and stonking both ship python-apt 3.1.0, so their builds can only be
+# told apart by the local version. Pin them, or a range resolves to a wheel the
+# running series cannot install.
 dev-jammy = ["python-apt~=2.4.0;sys_platform=='linux'"]
 dev-noble = ["python-apt~=2.7.0;sys_platform=='linux'"]
 dev-questing = ["python-apt~=3.0.0;sys_platform=='linux'"]
-dev-resolute = ["python-apt~=3.0;sys_platform=='linux'"]
-dev-stonking = ["python-apt~=3.0;sys_platform=='linux'"]
+dev-resolute = ["python-apt==3.1.0+ubuntu1.1;sys_platform=='linux'"]
+dev-stonking = ["python-apt==3.1.0+ubuntu2;sys_platform=='linux'"]
 docs = [
   "pydantic-kitbash~=1.0.1",
   "sphinx-autodoc-typehints",
