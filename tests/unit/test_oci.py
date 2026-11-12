@@ -20,7 +20,7 @@ import os
 import tarfile
 from pathlib import Path
 from typing import NamedTuple, cast
-from unittest.mock import ANY, call, mock_open, patch
+from unittest.mock import ANY, MagicMock, call, mock_open, patch
 
 import pytest
 from rockcraft import errors, oci
@@ -148,6 +148,161 @@ class TestImage:
                 ]
             )
         ]
+
+    @pytest.mark.parametrize(
+        "error_msg",
+        [
+            pytest.param(
+                "toomanyrequests: Data limit exceeded",
+                id="toomanyrequests",
+            ),
+            pytest.param(
+                "received unexpected HTTP status: 429 Too Many Requests",
+                id="429-too-many-requests",
+            ),
+            pytest.param(
+                "StatusCode: 429, error parsing HTTP response",
+                id="status-code-429",
+            ),
+            pytest.param(
+                "too many requests to registry",
+                id="too-many-requests-to-registry",
+            ),
+        ],
+    )
+    def test_from_docker_registry_ecr_rate_limit_fallback_to_acr(
+        self,
+        mock_run: MagicMock,
+        mock_rmtree: MagicMock,
+        new_dir: Path,
+        error_msg: str,
+    ) -> None:
+        mock_run.side_effect = [
+            errors.RockcraftError(f"Failed to copy image: {error_msg}"),
+            None,
+        ]
+
+        image, source_image = oci.Image.from_docker_registry(
+            "ubuntu@22.04", image_dir=Path("images/dir"), arch="amd64"
+        )
+
+        assert source_image == f"docker://{oci.ACR_URL}/ubuntu:22.04"
+        assert image.image_name == "ubuntu:22.04"
+        mock_rmtree.assert_called_once_with(
+            Path("images/dir/ubuntu:22.04"), ignore_errors=True
+        )
+        assert mock_run.mock_calls == [
+            call(
+                [
+                    "skopeo",
+                    "--insecure-policy",
+                    "--override-arch",
+                    "amd64",
+                    "copy",
+                    "--retry-times",
+                    str(oci.MAX_DOWNLOAD_RETRIES),
+                    f"docker://{oci.ECR_URL}/ubuntu:22.04",
+                    "oci:images/dir/ubuntu:22.04",
+                ]
+            ),
+            call(
+                [
+                    "skopeo",
+                    "--insecure-policy",
+                    "--override-arch",
+                    "amd64",
+                    "copy",
+                    "--retry-times",
+                    str(oci.MAX_DOWNLOAD_RETRIES),
+                    f"docker://{oci.ACR_URL}/ubuntu:22.04",
+                    "oci:images/dir/ubuntu:22.04",
+                ]
+            ),
+        ]
+
+    def test_from_docker_registry_non_rate_limit_error_does_not_fallback(
+        self,
+        mock_run: MagicMock,
+        mock_rmtree: MagicMock,
+        new_dir: Path,
+    ) -> None:
+        mock_run.side_effect = errors.RockcraftError(
+            "Failed to copy image: manifest unknown"
+        )
+
+        with pytest.raises(errors.RockcraftError, match="manifest unknown"):
+            oci.Image.from_docker_registry(
+                "ubuntu@22.04", image_dir=Path("images/dir"), arch="amd64"
+            )
+
+        mock_rmtree.assert_not_called()
+        assert mock_run.call_count == 1
+
+    def test_from_docker_registry_acr_failure_raises(
+        self,
+        mock_run: MagicMock,
+        mock_rmtree: MagicMock,
+        new_dir: Path,
+    ) -> None:
+        mock_run.side_effect = [
+            errors.RockcraftError("Failed to copy image: 429 Too Many Requests"),
+            errors.RockcraftError("Failed to copy image: ACR connection refused"),
+        ]
+
+        with pytest.raises(errors.RockcraftError, match="ACR connection refused"):
+            oci.Image.from_docker_registry(
+                "ubuntu@22.04", image_dir=Path("images/dir"), arch="amd64"
+            )
+
+        assert mock_run.call_count == 2
+
+    @pytest.mark.parametrize(
+        ("message", "expected"),
+        [
+            pytest.param(
+                "toomanyrequests: Data limit exceeded",
+                True,
+                id="toomanyrequests",
+            ),
+            pytest.param(
+                "429 Too Many Requests",
+                True,
+                id="429-too-many-requests",
+            ),
+            pytest.param(
+                "StatusCode: 429",
+                True,
+                id="status-code-429",
+            ),
+            pytest.param(
+                "Too many requests to registry",
+                True,
+                id="too-many-requests",
+            ),
+            pytest.param(
+                "manifest unknown",
+                False,
+                id="manifest-unknown",
+            ),
+            pytest.param(
+                "sha256:1a429bdeadbeef",
+                False,
+                id="hex-digest-containing-429",
+            ),
+            pytest.param(
+                "connection refused",
+                False,
+                id="connection-refused",
+            ),
+            pytest.param(
+                "404 Not Found",
+                False,
+                id="404-not-found",
+            ),
+        ],
+    )
+    def test_is_rate_limit_error(self, message: str, expected: bool) -> None:
+        assert oci._is_rate_limit_error(message) is expected
 
     def _get_arch_from_call(self, mock_call):
         class ArchData(NamedTuple):
