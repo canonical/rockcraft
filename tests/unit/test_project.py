@@ -105,7 +105,7 @@ class DevelProject(Project):
     "development", but we want to test the behavior anyway.
     """
 
-    base: str  # ty: ignore[invalid-attribute-override]
+    base: str  # ty: ignore[incompatible-attribute-override]
 
 
 @pytest.fixture
