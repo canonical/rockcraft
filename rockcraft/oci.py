@@ -544,6 +544,12 @@ class Image:
         emit.progress("Control data written")
         shutil.rmtree(local_control_data_path)
 
+    def set_created(self, created: str) -> None:
+        """Set the top-level OCI creation timestamp."""
+        _config_image(
+            self.path / self.image_name, ["--created", created, "--no-history"]
+        )
+
     def set_annotations(self, annotations: dict[str, Any]) -> None:
         """Add the given annotations to the final image.
 
