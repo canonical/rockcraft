@@ -17,30 +17,10 @@
 """Rockcraft error definitions."""
 
 from craft_cli import CraftError
-from craft_parts import PartsError
 
 
 class RockcraftError(CraftError):
     """Failure in a Rockcraft operation."""
-
-
-class RockcraftInitError(RockcraftError):
-    """Error while initializing rockcraft project."""
-
-
-class PartsLifecycleError(RockcraftError):
-    """Error during parts processing."""
-
-    @staticmethod
-    def from_parts_error(err: PartsError) -> "PartsLifecycleError":
-        """Shortcut to create a PartsLifecycleError from a PartsError."""
-        return PartsLifecycleError(
-            message=err.brief, details=err.details, resolution=err.resolution
-        )
-
-
-class ProjectLoadError(RockcraftError):
-    """Error loading rockcraft.yaml."""
 
 
 class LayerArchivingError(RockcraftError):
