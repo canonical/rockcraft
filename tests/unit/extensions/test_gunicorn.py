@@ -999,7 +999,7 @@ def test_flask_v2_full_apply_26_04(tmp_path, monkeypatch):
             "flask": {
                 "after": ["statsd-exporter"],
                 "command": "/bin/python3 -m gunicorn -c "
-                "/var/lib/gunicorn/gunicorn.conf.py 'app:app' -k sync",
+                "/var/lib/gunicorn/gunicorn.conf.py 'app:app' -k [ sync ]",
                 "override": "replace",
                 "startup": "enabled",
                 "user": "_daemon_",
@@ -1628,7 +1628,7 @@ def test_django_extension_v2_default(tmp_path):
                 "after": ["statsd-exporter"],
                 "command": (
                     "/bin/python3 -m gunicorn -c /var/lib/gunicorn/gunicorn.conf.py "
-                    "'foo_bar.wsgi:application' -k sync"
+                    "'foo_bar.wsgi:application' -k [ sync ]"
                 ),
                 "override": "replace",
                 "startup": "enabled",
