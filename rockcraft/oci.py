@@ -20,6 +20,7 @@ import hashlib
 import json
 import logging
 import os
+import re
 import shutil
 import subprocess
 import tempfile
@@ -42,6 +43,10 @@ logger = logging.getLogger(__name__)
 # Public Amazon Elastic Container Registry has images that are updated more frequently
 # and with less severe pull-rate limits than Docker Hub.
 ECR_URL = "public.ecr.aws/ubuntu"
+
+# Canonical's Ubuntu images are also mirrored to Azure Container Registry;
+# this serves as a fallback when ECR rate-limits us (HTTP 429).
+ACR_URL = "ubuntu.azurecr.io"
 
 REGISTRY_URL = ECR_URL
 
@@ -75,18 +80,19 @@ class Image:
         *,
         image_dir: Path,
         arch: str,
+        registry_url: str = REGISTRY_URL,
     ) -> tuple["Image", str]:
         """Obtain an image from a docker registry.
 
-        The image is fetched from the registry at ``REGISTRY_URL``.
+        The image is fetched from the registry at ``registry_url``. If fetching
+        from ECR fails due to rate limiting (HTTP 429), it falls back to ``ACR_URL``.
 
         :param image_name: The image to retrieve, in ``name@tag`` format.
         :param image_dir: The directory to store local OCI images.
         :param arch: The architecture of the Docker image to fetch, in Debian format.
-        :param variant: The variant, if any, of the Docker image to fetch.
+        :param registry_url: The registry URL to fetch the image from.
 
-
-        :returns: The downloaded image and it's corresponding source image
+        :returns: The downloaded image and its corresponding source image
         """
         if "@" not in image_name:
             raise ValueError(f"Bad image name: {image_name}")
@@ -96,7 +102,6 @@ class Image:
         image_dir.mkdir(parents=True, exist_ok=True)
         image_target = image_dir / image_name
 
-        source_image = f"docker://{REGISTRY_URL}/{image_name}"
         copy_params = ["--retry-times", str(MAX_DOWNLOAD_RETRIES)]
 
         mapping = SUPPORTED_ARCHS[arch]
@@ -108,12 +113,32 @@ class Image:
         if mapping.go_variant:
             platform_params += ["--override-variant", mapping.go_variant]
 
-        _copy_image(
-            source_image,
-            f"oci:{image_target}",
-            *platform_params,
-            copy_params=copy_params,
-        )
+        def _fetch_from_registry(url: str) -> str:
+            source = f"docker://{url}/{image_name}"
+            _copy_image(
+                source,
+                f"oci:{image_target}",
+                *platform_params,
+                copy_params=copy_params,
+            )
+            return source
+
+        try:
+            source_image = _fetch_from_registry(registry_url)
+        except errors.ImageCopyError as err:
+            if (
+                registry_url == ECR_URL
+                and err.returncode == 1
+                and _is_rate_limit_error(str(err))
+            ):
+                emit.progress(
+                    f"Rate-limiting (HTTP 429) encountered while fetching from ECR; "
+                    f"falling back to ACR ({ACR_URL})..."
+                )
+                shutil.rmtree(image_target, ignore_errors=True)
+                source_image = _fetch_from_registry(ACR_URL)
+            else:
+                raise
 
         return cls(image_name=image_name, path=image_dir), source_image
 
@@ -576,6 +601,23 @@ class Image:
         )
 
 
+def _is_rate_limit_error(error_message: str) -> bool:
+    """Return True if the error indicates an HTTP 429 / rate-limiting response.
+
+    Containers/image (used by skopeo) reports HTTP 429 in one of two ways:
+    1. OCI Distribution spec error code: 'TOOMANYREQUESTS' (e.g.
+       'toomanyrequests: Data limit exceeded' from AWS ECR).
+    2. HTTP status code/text: 'StatusCode: 429', 'status: 429',
+       '429 Too Many Requests', or 'too many requests to registry'.
+    """
+    lower = error_message.lower()
+    return bool(
+        re.search(r"\b429\b", error_message)
+        or "toomanyrequests" in lower
+        or "too many requests" in lower
+    )
+
+
 def _copy_image(
     source: str,
     destination: str,
@@ -588,7 +630,7 @@ def _copy_image(
         skopeo command (and not to skopeo itself).
     """
     copy_extra = copy_params if copy_params else []
-    _process_run(
+    result = _process_run(
         [
             "skopeo",
             "--insecure-policy",
@@ -597,8 +639,17 @@ def _copy_image(
             *copy_extra,
             source,
             destination,
-        ]
+        ],
+        check=False,
     )
+    if result.returncode != 0:
+        msg = (
+            f"Failed to copy image: Command {result.args!r}"
+            f" returned non-zero exit status {result.returncode}."
+        )
+        if result.stderr:
+            msg += f" ({result.stderr.strip()!s})"
+        raise errors.ImageCopyError(msg, returncode=result.returncode)
 
 
 def _config_image(
@@ -708,8 +759,15 @@ def _inject_oci_fields(image_path: Path, arch_variant: str | None = None) -> Non
     tl_index_path.write_bytes(json.dumps(tl_index).encode("utf-8"))
 
 
-def _process_run(command: list[str], **kwargs: Any) -> subprocess.CompletedProcess[Any]:
-    """Run a command and handle its output."""
+def _process_run(
+    command: list[str], *, check: bool = True, **kwargs: Any
+) -> subprocess.CompletedProcess[Any]:
+    """Run a command and handle its output.
+
+    :param check: If True (default), raise a RockcraftError when the process
+        exits with a non-zero status. If False, return the CompletedProcess
+        regardless of exit status.
+    """
     if not Path(command[0]).is_absolute():
         command[0] = get_snap_command_path(command[0])
         emit.trace(f"Found command absolute path: {command[0]!r}")
@@ -720,7 +778,7 @@ def _process_run(command: list[str], **kwargs: Any) -> subprocess.CompletedProce
             command,
             **kwargs,
             capture_output=True,
-            check=True,
+            check=check,
             text=True,
         )
     except subprocess.CalledProcessError as err:
