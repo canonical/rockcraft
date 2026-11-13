@@ -16,6 +16,8 @@
 
 """Rockcraft error definitions."""
 
+from typing import Any
+
 from craft_cli import CraftError
 from craft_parts import PartsError
 
@@ -49,3 +51,13 @@ class LayerArchivingError(RockcraftError):
 
 class ExtensionError(RockcraftError):
     """Error related to extension handling."""
+
+
+class ImageCopyError(RockcraftError):
+    """Error copying an image with skopeo."""
+
+    def __init__(
+        self, message: str, *, returncode: int | None = None, **kwargs: Any
+    ) -> None:
+        super().__init__(message, **kwargs)
+        self.returncode = returncode

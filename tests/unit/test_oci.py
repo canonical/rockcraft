@@ -17,6 +17,7 @@ import datetime as dt
 import hashlib
 import json
 import os
+import subprocess
 import tarfile
 from pathlib import Path
 from typing import NamedTuple, cast
@@ -42,7 +43,11 @@ MOCK_NEW_USER = {
 
 @pytest.fixture
 def mock_run(mocker):
-    return mocker.patch("rockcraft.oci._process_run")
+    mock = mocker.patch("rockcraft.oci._process_run")
+    mock.return_value = subprocess.CompletedProcess(
+        args=[], returncode=0, stdout="", stderr=""
+    )
+    return mock
 
 
 @pytest.fixture
@@ -124,7 +129,8 @@ class TestImage:
                     str(oci.MAX_DOWNLOAD_RETRIES),
                     f"docker://{oci.REGISTRY_URL}/a:b",
                     "oci:images/dir/a:b",
-                ]
+                ],
+                check=False,
             )
         ]
         mock_run.reset_mock()
@@ -145,7 +151,8 @@ class TestImage:
                     str(oci.MAX_DOWNLOAD_RETRIES),
                     f"docker://{oci.REGISTRY_URL}/a:b",
                     "oci:images/dir/a:b",
-                ]
+                ],
+                check=False,
             )
         ]
 
@@ -178,8 +185,18 @@ class TestImage:
         error_msg: str,
     ) -> None:
         mock_run.side_effect = [
-            errors.RockcraftError(f"Failed to copy image: {error_msg}"),
-            None,
+            subprocess.CompletedProcess(
+                args=["skopeo", "copy"],
+                returncode=1,
+                stdout="",
+                stderr=error_msg,
+            ),
+            subprocess.CompletedProcess(
+                args=["skopeo", "copy"],
+                returncode=0,
+                stdout="",
+                stderr="",
+            ),
         ]
 
         image, source_image = oci.Image.from_docker_registry(
@@ -203,7 +220,8 @@ class TestImage:
                     str(oci.MAX_DOWNLOAD_RETRIES),
                     f"docker://{oci.ECR_URL}/ubuntu:22.04",
                     "oci:images/dir/ubuntu:22.04",
-                ]
+                ],
+                check=False,
             ),
             call(
                 [
@@ -216,7 +234,8 @@ class TestImage:
                     str(oci.MAX_DOWNLOAD_RETRIES),
                     f"docker://{oci.ACR_URL}/ubuntu:22.04",
                     "oci:images/dir/ubuntu:22.04",
-                ]
+                ],
+                check=False,
             ),
         ]
 
@@ -226,15 +245,40 @@ class TestImage:
         mock_rmtree: MagicMock,
         new_dir: Path,
     ) -> None:
-        mock_run.side_effect = errors.RockcraftError(
-            "Failed to copy image: manifest unknown"
+        mock_run.return_value = subprocess.CompletedProcess(
+            args=["skopeo", "copy"],
+            returncode=1,
+            stdout="",
+            stderr="manifest unknown",
         )
 
-        with pytest.raises(errors.RockcraftError, match="manifest unknown"):
+        with pytest.raises(errors.ImageCopyError, match="manifest unknown"):
             oci.Image.from_docker_registry(
                 "ubuntu@22.04", image_dir=Path("images/dir"), arch="amd64"
             )
 
+        mock_rmtree.assert_not_called()
+        assert mock_run.call_count == 1
+
+    def test_from_docker_registry_non_exit_one_does_not_fallback(
+        self,
+        mock_run: MagicMock,
+        mock_rmtree: MagicMock,
+        new_dir: Path,
+    ) -> None:
+        mock_run.return_value = subprocess.CompletedProcess(
+            args=["skopeo", "copy"],
+            returncode=2,
+            stdout="",
+            stderr="This is another error",
+        )
+
+        with pytest.raises(errors.ImageCopyError, match="This is another error") as err:
+            oci.Image.from_docker_registry(
+                "ubuntu@22.04", image_dir=Path("images/dir"), arch="amd64"
+            )
+
+        assert err.value.returncode == 2
         mock_rmtree.assert_not_called()
         assert mock_run.call_count == 1
 
@@ -245,11 +289,21 @@ class TestImage:
         new_dir: Path,
     ) -> None:
         mock_run.side_effect = [
-            errors.RockcraftError("Failed to copy image: 429 Too Many Requests"),
-            errors.RockcraftError("Failed to copy image: ACR connection refused"),
+            subprocess.CompletedProcess(
+                args=["skopeo", "copy"],
+                returncode=1,
+                stdout="",
+                stderr="429 Too Many Requests",
+            ),
+            subprocess.CompletedProcess(
+                args=["skopeo", "copy"],
+                returncode=1,
+                stdout="",
+                stderr="ACR connection refused",
+            ),
         ]
 
-        with pytest.raises(errors.RockcraftError, match="ACR connection refused"):
+        with pytest.raises(errors.ImageCopyError, match="ACR connection refused"):
             oci.Image.from_docker_registry(
                 "ubuntu@22.04", image_dir=Path("images/dir"), arch="amd64"
             )
@@ -416,7 +470,8 @@ class TestImage:
                     "copy",
                     "oci:/c/a:b",
                     "oci:/f/d:e",
-                ]
+                ],
+                check=False,
             )
         ]
 
@@ -685,7 +740,8 @@ class TestImage:
                     "copy",
                     "oci:/c/a:tag",
                     "docker-daemon:a:tag",
-                ]
+                ],
+                check=False,
             )
         ]
 
@@ -700,9 +756,35 @@ class TestImage:
                     "copy",
                     "oci:/c/a:tag",
                     "oci-archive:foobar:tag",
-                ]
+                ],
+                check=False,
             )
         ]
+
+    def test_copy_image_failure_raises_image_copy_error(self, mock_run):
+        mock_run.return_value = subprocess.CompletedProcess(
+            args=["skopeo", "copy", "src", "dst"],
+            returncode=125,
+            stdout="",
+            stderr="fatal error from skopeo",
+        )
+
+        with pytest.raises(errors.ImageCopyError) as exc_info:
+            oci._copy_image("src", "dst")
+
+        assert exc_info.value.returncode == 125
+        assert "fatal error from skopeo" in str(exc_info.value)
+
+    def test_process_run_check_false_returns_completed_process(self):
+        result = oci._process_run(["/bin/false"], check=False)
+
+        assert result.returncode == 1
+
+    def test_process_run_check_true_raises_rockcraft_error(self):
+        with pytest.raises(errors.RockcraftError) as exc_info:
+            oci._process_run(["/bin/false"], check=True)
+
+        assert "returned non-zero exit status 1" in str(exc_info.value)
 
     def test_digest(self, mocker):
         source_image = "docker://ubuntu:22.04"

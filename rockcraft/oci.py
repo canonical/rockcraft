@@ -125,8 +125,12 @@ class Image:
 
         try:
             source_image = _fetch_from_registry(registry_url)
-        except errors.RockcraftError as err:
-            if registry_url == ECR_URL and _is_rate_limit_error(str(err)):
+        except errors.ImageCopyError as err:
+            if (
+                registry_url == ECR_URL
+                and err.returncode == 1
+                and _is_rate_limit_error(str(err))
+            ):
                 emit.progress(
                     f"Rate-limiting (HTTP 429) encountered while fetching from ECR; "
                     f"falling back to ACR ({ACR_URL})..."
@@ -626,7 +630,7 @@ def _copy_image(
         skopeo command (and not to skopeo itself).
     """
     copy_extra = copy_params if copy_params else []
-    _process_run(
+    result = _process_run(
         [
             "skopeo",
             "--insecure-policy",
@@ -635,8 +639,17 @@ def _copy_image(
             *copy_extra,
             source,
             destination,
-        ]
+        ],
+        check=False,
     )
+    if result.returncode != 0:
+        msg = (
+            f"Failed to copy image: Command {result.args!r}"
+            f" returned non-zero exit status {result.returncode}."
+        )
+        if result.stderr:
+            msg += f" ({result.stderr.strip()!s})"
+        raise errors.ImageCopyError(msg, returncode=result.returncode)
 
 
 def _config_image(
@@ -746,8 +759,15 @@ def _inject_oci_fields(image_path: Path, arch_variant: str | None = None) -> Non
     tl_index_path.write_bytes(json.dumps(tl_index).encode("utf-8"))
 
 
-def _process_run(command: list[str], **kwargs: Any) -> subprocess.CompletedProcess[Any]:
-    """Run a command and handle its output."""
+def _process_run(
+    command: list[str], *, check: bool = True, **kwargs: Any
+) -> subprocess.CompletedProcess[Any]:
+    """Run a command and handle its output.
+
+    :param check: If True (default), raise a RockcraftError when the process
+        exits with a non-zero status. If False, return the CompletedProcess
+        regardless of exit status.
+    """
     if not Path(command[0]).is_absolute():
         command[0] = get_snap_command_path(command[0])
         emit.trace(f"Found command absolute path: {command[0]!r}")
@@ -758,7 +778,7 @@ def _process_run(command: list[str], **kwargs: Any) -> subprocess.CompletedProce
             command,
             **kwargs,
             capture_output=True,
-            check=True,
+            check=check,
             text=True,
         )
     except subprocess.CalledProcessError as err:
