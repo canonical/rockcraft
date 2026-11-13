@@ -19,8 +19,8 @@ environment:
   BUILD_BASE/python_in_install_bare_2510: "ubuntu@25.10"
   BUILD_BASE/python_in_install_ubuntu_2604: "ubuntu@26.04"
   BUILD_BASE/python_in_install_bare_2604: "ubuntu@26.04"
-  BUILD_BASE/python_in_install_ubuntu_2610: "devel"
-  BUILD_BASE/python_in_install_bare_2610: "devel"
+  BUILD_BASE/python_in_install_ubuntu_2610: "ubuntu@26.10"
+  BUILD_BASE/python_in_install_bare_2610: "ubuntu@26.10"
 
   # python3 comes from the stage dir
   SCENARIO/python_in_stage_ubuntu_2510: "python-in-stage-ubuntu"
@@ -40,8 +40,8 @@ environment:
   BUILD_BASE/python_in_stage_bare_2510: "ubuntu@25.10"
   BUILD_BASE/python_in_stage_ubuntu_2604: "ubuntu@26.04"
   BUILD_BASE/python_in_stage_bare_2604: "ubuntu@26.04"
-  BUILD_BASE/python_in_stage_ubuntu_2610: "devel"
-  BUILD_BASE/python_in_stage_bare_2610: "devel"
+  BUILD_BASE/python_in_stage_ubuntu_2610: "ubuntu@26.10"
+  BUILD_BASE/python_in_stage_bare_2610: "ubuntu@26.10"
 
   # python3 comes from chisel slices
   SCENARIO/python_from_chisel_ubuntu_2510: "python-from-chisel-ubuntu"
@@ -61,8 +61,8 @@ environment:
   BUILD_BASE/python_from_chisel_bare_2510: "ubuntu@25.10"
   BUILD_BASE/python_from_chisel_ubuntu_2604: "ubuntu@26.04"
   BUILD_BASE/python_from_chisel_bare_2604: "ubuntu@26.04"
-  BUILD_BASE/python_from_chisel_ubuntu_2610: "devel"
-  BUILD_BASE/python_from_chisel_bare_2610: "devel"
+  BUILD_BASE/python_from_chisel_ubuntu_2610: "ubuntu@26.10"
+  BUILD_BASE/python_from_chisel_bare_2610: "ubuntu@26.10"
 
 prepare: cp -r src/ "$SCENARIO"/
 
