@@ -1,5 +1,5 @@
 .. meta::
-    :description: How to install a custom Chisel package slice into a Rockcraft project when the slice definition is not yet available in upstream Chisel releases.
+    :description: How to install a custom Chisel package slice into a Rockcraft project when the package slices file is not yet available in upstream Chisel releases.
 
 .. _how-to-install-a-custom-package-slice:
 
@@ -14,8 +14,8 @@ In this guide, we show how to install the vim-tiny slice built in
 :external+chisel:ref:`slice_package` from the Chisel documentation. As you're working through it, replace any mention of vim-tiny with your slice.
 
 Chisel will only recognize slices belonging to a Chisel release, so you need to copy
-your slice definitions file -- ``vim-tiny.yaml`` -- into the ``chisel-releases/slices/``
-folder in your clone of the chisel-releases repository. Note that if a slice definitions
+your package slices file -- ``vim-tiny.yaml`` -- into the ``chisel-releases/slices/``
+folder in your clone of the chisel-releases repository. Note that if a package slices
 file with the same name already exists, it most likely means that the package you're
 slicing has already been sliced before, and in this case, you only need to merge your
 changes into that existing file.
@@ -62,7 +62,7 @@ The ``build-context`` part allows you to send the local ``chisel-releases`` fold
 the builder. The ``override-build`` key enables you to install your custom slice.
 
 This level of customization is only needed when you want to install from a custom Chisel
-release. If the desired slice definitions are already upstream, then you can simply use
+release. If the desired slices are already upstream, then you can simply use
 the ``stage-packages`` key, as demonstrated in :ref:`how-to-chisel-a-rock`.
 
 Build your rock with:
