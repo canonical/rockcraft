@@ -20,12 +20,37 @@ endif
 
 include common.mk
 
+.PHONY: docs-lint
+docs-lint: docs-install
+ifneq ($(CI),)
+	@echo ::group::$@
+endif
+	uv run $(UV_DOCS_GROUPS) sphinx-lint docs \
+	--ignore docs/_dev \
+	--ignore docs/_build \
+	--ignore docs/reference/commands \
+	--enable all \
+	-d line-too-long,missing-underscore-after-hyperlink,missing-space-in-hyperlink
+	$(MAKE) -C docs spelling --no-print-directory
+	$(MAKE) -C docs woke --no-print-directory
+ifneq ($(CI),)
+	@echo ::endgroup::
+endif
+
+.PHONY: docs-linkcheck
+docs-linkcheck: docs-install
+ifneq ($(CI),)
+	@echo ::group::$@
+endif
+	$(MAKE) -C docs linkcheck --no-print-directory
+ifneq ($(CI),)
+	@echo ::endgroup::
+endif
 .PHONY: format
 format: format-ruff format-codespell format-prettier format-shfmt format-tombi format-pre-commit  ## Run all automatic formatters
 
 .PHONY: lint
-lint: lint-code lint-docs lint-twine lint-uv-lockfile lint-actions  ## Run all linters
-
+lint: lint-code lint-docs lint-twine lint-uv-lockfile lint-actions docs-linkcheck  ## Run all linters
 .PHONY: lint-code
 lint-code: lint-ruff lint-ty lint-codespell lint-prettier lint-shfmt lint-shellcheck lint-tombi  ## Run code-specific linters
 
