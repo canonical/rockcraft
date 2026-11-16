@@ -16,6 +16,7 @@
 
 """Rockcraft Image Service."""
 
+import os
 from dataclasses import dataclass
 from pathlib import Path
 from typing import cast
@@ -29,6 +30,8 @@ from craft_application import (
 from craft_cli import emit
 
 from rockcraft import oci
+
+BASE_IMAGE_REGISTRY_URL_ENVIRONMENT_VARIABLE = "ROCKCRAFT_BASE_IMAGE_REGISTRY_URL"
 
 
 @dataclass(frozen=True)
@@ -54,6 +57,10 @@ class RockcraftImageService(ProjectService):
         super().__init__(app, services, project_dir=project_dir)
 
         self._work_dir = work_dir
+        self._registry_url = os.environ.get(
+            BASE_IMAGE_REGISTRY_URL_ENVIRONMENT_VARIABLE,
+            oci.DEFAULT_REGISTRY_URL,
+        )
         self._image_info: ImageInfo | None = None
 
     def obtain_image(self) -> ImageInfo:
@@ -87,6 +94,7 @@ class RockcraftImageService(ProjectService):
                 base,
                 image_dir=image_dir,
                 arch=build_for,
+                registry_url=self._registry_url,
             )
             emit.progress(f"Retrieved base {base} for {build_for}")
 

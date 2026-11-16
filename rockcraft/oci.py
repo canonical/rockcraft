@@ -27,6 +27,7 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlsplit
 
 import yaml
 from craft_cli import emit
@@ -41,11 +42,9 @@ logger = logging.getLogger(__name__)
 
 # Public Amazon Elastic Container Registry has images that are updated more frequently
 # and with less severe pull-rate limits than Docker Hub.
-ECR_URL = "public.ecr.aws/ubuntu"
+DEFAULT_REGISTRY_URL = "public.ecr.aws/ubuntu"
 
-REGISTRY_URL = ECR_URL
-
-# The number of times to try downloading an image from `REGISTRY_URL`.
+# The number of times to try downloading an image from the registry.
 MAX_DOWNLOAD_RETRIES = 5
 
 MANIFEST_MEDIA_TYPE = "application/vnd.oci.image.manifest.v1+json"
@@ -55,6 +54,20 @@ MANIFEST_MEDIA_TYPE = "application/vnd.oci.image.manifest.v1+json"
 # across runs, so base_digest stays stable and craft-parts does not spuriously
 # invalidate overlay layer state.
 _FIXED_OCI_CREATED = "1970-01-01T00:00:00Z"
+
+
+def _normalize_registry_url(registry_url: str) -> str:
+    """Return a registry URL in the form expected by the Docker transport."""
+    if "://" not in registry_url:
+        registry_url = f"//{registry_url}"
+
+    parsed_url = urlsplit(registry_url)
+    if parsed_url.scheme not in ("", "https"):
+        raise ValueError(f"Unsupported registry URL scheme: {parsed_url.scheme}")
+    if not parsed_url.netloc or parsed_url.query or parsed_url.fragment:
+        raise ValueError(f"Bad registry URL: {registry_url}")
+
+    return f"{parsed_url.netloc}{parsed_url.path}".rstrip("/")
 
 
 @dataclass(frozen=True)
@@ -75,10 +88,11 @@ class Image:
         *,
         image_dir: Path,
         arch: str,
+        registry_url: str = DEFAULT_REGISTRY_URL,
     ) -> tuple["Image", str]:
         """Obtain an image from a docker registry.
 
-        The image is fetched from the registry at ``REGISTRY_URL``.
+        The image is fetched from the provided registry URL.
 
         :param image_name: The image to retrieve, in ``name@tag`` format.
         :param image_dir: The directory to store local OCI images.
@@ -96,7 +110,8 @@ class Image:
         image_dir.mkdir(parents=True, exist_ok=True)
         image_target = image_dir / image_name
 
-        source_image = f"docker://{REGISTRY_URL}/{image_name}"
+        registry_url = _normalize_registry_url(registry_url)
+        source_image = f"docker://{registry_url}/{image_name}"
         copy_params = ["--retry-times", str(MAX_DOWNLOAD_RETRIES)]
 
         mapping = SUPPORTED_ARCHS[arch]
