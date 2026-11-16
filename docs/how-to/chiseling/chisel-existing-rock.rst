@@ -19,7 +19,7 @@ For this guide, let's take the example of a Python runtime rock.
 A Python rock
 -------------
 
-Our starting point is an Ubuntu 22.04-based Python rock, described by the
+Our starting point is an Ubuntu 26.04-based Python rock, described by the
 following project file:
 
 .. literalinclude:: ../code/chisel-existing-rock/rock/rockcraft.yaml
@@ -45,7 +45,7 @@ running a very simply "Hello, world" Python script in it, with Docker:
     :dedent: 2
 
 This rock will also have other utilities like ``bash`` and ``apt`` which come
-from the rock's underlying Ubuntu 22.04 base.
+from the rock's underlying Ubuntu 26.04 base.
 
 Rebuild the rock with a ``bare`` base
 -------------------------------------
@@ -55,9 +55,9 @@ of all the software that is not necessary at runtime, and the first step
 towards achieving that goal is to use a ``bare`` base.
 
 In a separate directory, copy the contents of ``rockcraft.yaml`` from above and
-replace ``base: ubuntu@22.04`` with ``base: bare``. With this change, you must
+replace ``base: ubuntu@26.04`` with ``base: bare``. With this change, you must
 also remember to tell Rockcraft which Ubuntu release to use for its build
-environment. Do this by adding ``build-base: ubuntu@22.04`` to the
+environment. Do this by adding ``build-base: ubuntu@26.04`` to the
 project file, which should now look like this:
 
 .. literalinclude:: ../code/chisel-existing-rock/bare-rock/rockcraft.yaml
