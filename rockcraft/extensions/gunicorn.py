@@ -28,10 +28,10 @@ from typing import Any, cast
 
 try:
     # Available in Python 3.11 and later
-    import tomllib  # ty: ignore[unresolved-import]
+    import tomllib  # ty: ignore[import-not-found]
 except ModuleNotFoundError:
     # Use the backported tomli package
-    import tomli as tomllib  # ty: ignore[unresolved-import]
+    import tomli as tomllib  # ty: ignore[import-not-found]
 
 from packaging.requirements import InvalidRequirement, Requirement
 from typing_extensions import override
