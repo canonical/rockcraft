@@ -574,7 +574,6 @@ class FlaskFrameworkV2(AppDataDirMixin, FlaskFramework):
 
     _gunicorn_package = "gunicorn~=26.0"
     _statsd_exporter_tag = "v0.30.0"
-    _worker_class_template = "{}"
 
     @property
     @override
@@ -788,7 +787,6 @@ class DjangoFrameworkV2(AppDataDirMixin, DjangoFramework):
 
     _gunicorn_package = "gunicorn~=26.0"
     _statsd_exporter_tag = "v0.30.0"
-    _worker_class_template = "{}"
 
     @property
     @override
