@@ -56,7 +56,7 @@ def test_packed_image_metadata(fake_services: ServiceFactory, tmp_path):
     )
     creation_label = config["config"]["Labels"]["org.opencontainers.image.created"]
     # umoci uses Z and trims trailing fractional zeros, both of which can make
-    # its timestamp unparseable by datetime.fromisoformat() on Python 3.10.
+    # its timestamp unparsable by datetime.fromisoformat() on Python 3.10.
     created = config["created"]
     timestamp_format = "%Y-%m-%dT%H:%M:%S"
     if "." in created:
