@@ -18,9 +18,7 @@
 
 import os
 import re
-from typing import Any
-
-from typing_extensions import override
+from typing import Any, override
 
 from rockcraft.errors import ExtensionError
 from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES

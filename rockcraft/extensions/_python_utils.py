@@ -19,11 +19,10 @@
 import ast
 from collections.abc import Callable, Iterable
 from pathlib import Path
-from typing import TypeAlias
 
 from rockcraft.errors import ExtensionError
 
-MatchFn: TypeAlias = Callable[[Path], str | None]
+type MatchFn = Callable[[Path], str | None]
 
 
 def _find_python_file(

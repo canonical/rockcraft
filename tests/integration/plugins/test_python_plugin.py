@@ -29,12 +29,27 @@ from rockcraft.models.project import BaseT, Project
 from rockcraft.plugins.python_common import SITECUSTOMIZE_TEMPLATE, get_python_plugins
 
 from tests.testing.project import create_project
-from tests.util import ubuntu_only
-
-pytestmark = [ubuntu_only, pytest.mark.slow]
 
 # These are the bases that use the PythonPlugin v1
 UBUNTU_BASES = {"ubuntu@20.04", "ubuntu@22.04", "ubuntu@24.04"}
+
+
+def plugin_v1_host() -> bool:
+    """Return True if the host running the tests matches the bases supported by Python Plugin v1."""
+    release = OsRelease()
+    try:
+        base = f"{release.id()}@{release.version_id()}"
+    except OsReleaseVersionIdError:
+        return False
+    return base in UBUNTU_BASES
+
+
+pytestmark = [
+    pytest.mark.skipif(
+        not plugin_v1_host(), reason="platform be supported by PythonPlugin v1"
+    ),
+    pytest.mark.slow,
+]
 
 
 @pytest.fixture(autouse=True)

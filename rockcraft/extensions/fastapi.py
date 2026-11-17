@@ -21,9 +21,7 @@ import os
 import pathlib
 import posixpath
 import re
-from typing import Any
-
-from typing_extensions import override
+from typing import Any, override
 
 from rockcraft.errors import ExtensionError
 from rockcraft.extensions._utils import find_ubuntu_base_python_version

@@ -19,7 +19,7 @@
 import re
 import typing
 from collections.abc import Iterable, Mapping
-from typing import Any, Literal
+from typing import Any, Literal, override
 
 import craft_cli
 import pydantic
@@ -36,7 +36,6 @@ from craft_providers.bases import BuilddBaseAlias
 from craft_providers.errors import BaseConfigurationError
 from pydantic import GetCoreSchemaHandler
 from pydantic_core import core_schema
-from typing_extensions import override
 
 from rockcraft.architectures import SUPPORTED_ARCHS
 from rockcraft.parts import part_has_overlay
