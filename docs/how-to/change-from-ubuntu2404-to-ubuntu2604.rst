@@ -38,7 +38,7 @@ Check extension support
 -----------------------
 
 Not all extensions are compatible with ``ubuntu@26.04`` at launch. If your rock uses an extension,
-run ``rockcraft extensions`` to see if it's available for ``ubuntu@26.04``. If your rock uses an
+run ``rockcraft list-extensions`` to see if it's available for ``ubuntu@26.04``. If your rock uses an
 extension that does not yet support ``ubuntu@26.04``, it's best to wait to upgrade.
 
 The Ubuntu 26.04 LTS implementations of the Flask, Django, FastAPI, Go, Express,
@@ -93,9 +93,12 @@ Python plugin that seamlessly integrates the usrmerge changes implemented in tho
 two versions of the plugin have the same options, so in most cases the rock should pack and run
 without manual intervention.
 
-However, there are no equivalent new versions for the uv and Poetry plugins. Users of these
-plugins should either wait until new versions become available, or should instead use the
-corresponding tool to generate a requirements specification file that the Python plugin can use.
+However, there is no equivalent new version for the Poetry plugin. Users of this
+plugin should either wait until a new version becomes available, or should instead use Poetry
+to generate a requirements specification file that the Python plugin can use.
+
+The uv plugin works unchanged on ``ubuntu@26.04``. To use the Python plugin
+instead, generate a requirements specification file with uv.
 
 For example, the following part using the uv plugin in ``ubuntu@24.04``:
 

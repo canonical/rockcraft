@@ -17,10 +17,11 @@ import datetime as dt
 import hashlib
 import json
 import os
+import subprocess
 import tarfile
 from pathlib import Path
 from typing import NamedTuple, cast
-from unittest.mock import ANY, call, mock_open, patch
+from unittest.mock import ANY, MagicMock, call, mock_open, patch
 
 import pytest
 from rockcraft import errors, oci
@@ -42,7 +43,11 @@ MOCK_NEW_USER = {
 
 @pytest.fixture
 def mock_run(mocker):
-    return mocker.patch("rockcraft.oci._process_run")
+    mock = mocker.patch("rockcraft.oci._process_run")
+    mock.return_value = subprocess.CompletedProcess(
+        args=[], returncode=0, stdout="", stderr=""
+    )
+    return mock
 
 
 @pytest.fixture
@@ -124,7 +129,8 @@ class TestImage:
                     str(oci.MAX_DOWNLOAD_RETRIES),
                     f"docker://{oci.REGISTRY_URL}/a:b",
                     "oci:images/dir/a:b",
-                ]
+                ],
+                check=False,
             )
         ]
         mock_run.reset_mock()
@@ -145,9 +151,212 @@ class TestImage:
                     str(oci.MAX_DOWNLOAD_RETRIES),
                     f"docker://{oci.REGISTRY_URL}/a:b",
                     "oci:images/dir/a:b",
-                ]
+                ],
+                check=False,
             )
         ]
+
+    @pytest.mark.parametrize(
+        "error_msg",
+        [
+            pytest.param(
+                "toomanyrequests: Data limit exceeded",
+                id="toomanyrequests",
+            ),
+            pytest.param(
+                "received unexpected HTTP status: 429 Too Many Requests",
+                id="429-too-many-requests",
+            ),
+            pytest.param(
+                "StatusCode: 429, error parsing HTTP response",
+                id="status-code-429",
+            ),
+            pytest.param(
+                "too many requests to registry",
+                id="too-many-requests-to-registry",
+            ),
+        ],
+    )
+    def test_from_docker_registry_ecr_rate_limit_fallback_to_acr(
+        self,
+        mock_run: MagicMock,
+        mock_rmtree: MagicMock,
+        new_dir: Path,
+        error_msg: str,
+    ) -> None:
+        mock_run.side_effect = [
+            subprocess.CompletedProcess(
+                args=["skopeo", "copy"],
+                returncode=1,
+                stdout="",
+                stderr=error_msg,
+            ),
+            subprocess.CompletedProcess(
+                args=["skopeo", "copy"],
+                returncode=0,
+                stdout="",
+                stderr="",
+            ),
+        ]
+
+        image, source_image = oci.Image.from_docker_registry(
+            "ubuntu@22.04", image_dir=Path("images/dir"), arch="amd64"
+        )
+
+        assert source_image == f"docker://{oci.ACR_URL}/ubuntu:22.04"
+        assert image.image_name == "ubuntu:22.04"
+        mock_rmtree.assert_called_once_with(
+            Path("images/dir/ubuntu:22.04"), ignore_errors=True
+        )
+        assert mock_run.mock_calls == [
+            call(
+                [
+                    "skopeo",
+                    "--insecure-policy",
+                    "--override-arch",
+                    "amd64",
+                    "copy",
+                    "--retry-times",
+                    str(oci.MAX_DOWNLOAD_RETRIES),
+                    f"docker://{oci.ECR_URL}/ubuntu:22.04",
+                    "oci:images/dir/ubuntu:22.04",
+                ],
+                check=False,
+            ),
+            call(
+                [
+                    "skopeo",
+                    "--insecure-policy",
+                    "--override-arch",
+                    "amd64",
+                    "copy",
+                    "--retry-times",
+                    str(oci.MAX_DOWNLOAD_RETRIES),
+                    f"docker://{oci.ACR_URL}/ubuntu:22.04",
+                    "oci:images/dir/ubuntu:22.04",
+                ],
+                check=False,
+            ),
+        ]
+
+    def test_from_docker_registry_non_rate_limit_error_does_not_fallback(
+        self,
+        mock_run: MagicMock,
+        mock_rmtree: MagicMock,
+        new_dir: Path,
+    ) -> None:
+        mock_run.return_value = subprocess.CompletedProcess(
+            args=["skopeo", "copy"],
+            returncode=1,
+            stdout="",
+            stderr="manifest unknown",
+        )
+
+        with pytest.raises(errors.ImageCopyError, match="manifest unknown"):
+            oci.Image.from_docker_registry(
+                "ubuntu@22.04", image_dir=Path("images/dir"), arch="amd64"
+            )
+
+        mock_rmtree.assert_not_called()
+        assert mock_run.call_count == 1
+
+    def test_from_docker_registry_non_exit_one_does_not_fallback(
+        self,
+        mock_run: MagicMock,
+        mock_rmtree: MagicMock,
+        new_dir: Path,
+    ) -> None:
+        mock_run.return_value = subprocess.CompletedProcess(
+            args=["skopeo", "copy"],
+            returncode=2,
+            stdout="",
+            stderr="This is another error",
+        )
+
+        with pytest.raises(errors.ImageCopyError, match="This is another error") as err:
+            oci.Image.from_docker_registry(
+                "ubuntu@22.04", image_dir=Path("images/dir"), arch="amd64"
+            )
+
+        assert err.value.returncode == 2
+        mock_rmtree.assert_not_called()
+        assert mock_run.call_count == 1
+
+    def test_from_docker_registry_acr_failure_raises(
+        self,
+        mock_run: MagicMock,
+        mock_rmtree: MagicMock,
+        new_dir: Path,
+    ) -> None:
+        mock_run.side_effect = [
+            subprocess.CompletedProcess(
+                args=["skopeo", "copy"],
+                returncode=1,
+                stdout="",
+                stderr="429 Too Many Requests",
+            ),
+            subprocess.CompletedProcess(
+                args=["skopeo", "copy"],
+                returncode=1,
+                stdout="",
+                stderr="ACR connection refused",
+            ),
+        ]
+
+        with pytest.raises(errors.ImageCopyError, match="ACR connection refused"):
+            oci.Image.from_docker_registry(
+                "ubuntu@22.04", image_dir=Path("images/dir"), arch="amd64"
+            )
+
+        assert mock_run.call_count == 2
+
+    @pytest.mark.parametrize(
+        ("message", "expected"),
+        [
+            pytest.param(
+                "toomanyrequests: Data limit exceeded",
+                True,
+                id="toomanyrequests",
+            ),
+            pytest.param(
+                "429 Too Many Requests",
+                True,
+                id="429-too-many-requests",
+            ),
+            pytest.param(
+                "StatusCode: 429",
+                True,
+                id="status-code-429",
+            ),
+            pytest.param(
+                "Too many requests to registry",
+                True,
+                id="too-many-requests",
+            ),
+            pytest.param(
+                "manifest unknown",
+                False,
+                id="manifest-unknown",
+            ),
+            pytest.param(
+                "sha256:1a429bdeadbeef",
+                False,
+                id="hex-digest-containing-429",
+            ),
+            pytest.param(
+                "connection refused",
+                False,
+                id="connection-refused",
+            ),
+            pytest.param(
+                "404 Not Found",
+                False,
+                id="404-not-found",
+            ),
+        ],
+    )
+    def test_is_rate_limit_error(self, message: str, expected: bool) -> None:
+        assert oci._is_rate_limit_error(message) is expected
 
     def _get_arch_from_call(self, mock_call):
         class ArchData(NamedTuple):
@@ -261,7 +470,8 @@ class TestImage:
                     "copy",
                     "oci:/c/a:b",
                     "oci:/f/d:e",
-                ]
+                ],
+                check=False,
             )
         ]
 
@@ -530,7 +740,8 @@ class TestImage:
                     "copy",
                     "oci:/c/a:tag",
                     "docker-daemon:a:tag",
-                ]
+                ],
+                check=False,
             )
         ]
 
@@ -545,9 +756,35 @@ class TestImage:
                     "copy",
                     "oci:/c/a:tag",
                     "oci-archive:foobar:tag",
-                ]
+                ],
+                check=False,
             )
         ]
+
+    def test_copy_image_failure_raises_image_copy_error(self, mock_run):
+        mock_run.return_value = subprocess.CompletedProcess(
+            args=["skopeo", "copy", "src", "dst"],
+            returncode=125,
+            stdout="",
+            stderr="fatal error from skopeo",
+        )
+
+        with pytest.raises(errors.ImageCopyError) as exc_info:
+            oci._copy_image("src", "dst")
+
+        assert exc_info.value.returncode == 125
+        assert "fatal error from skopeo" in str(exc_info.value)
+
+    def test_process_run_check_false_returns_completed_process(self):
+        result = oci._process_run(["/bin/false"], check=False)
+
+        assert result.returncode == 1
+
+    def test_process_run_check_true_raises_rockcraft_error(self):
+        with pytest.raises(errors.RockcraftError) as exc_info:
+            oci._process_run(["/bin/false"], check=True)
+
+        assert "returned non-zero exit status 1" in str(exc_info.value)
 
     def test_digest(self, mocker):
         source_image = "docker://ubuntu:22.04"

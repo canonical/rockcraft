@@ -28,10 +28,10 @@ from typing import Any, cast
 
 try:
     # Available in Python 3.11 and later
-    import tomllib  # ty: ignore[unresolved-import]
+    import tomllib  # ty: ignore[import-not-found]
 except ModuleNotFoundError:
     # Use the backported tomli package
-    import tomli as tomllib  # ty: ignore[unresolved-import]
+    import tomli as tomllib  # ty: ignore[import-not-found]
 
 from packaging.requirements import InvalidRequirement, Requirement
 from typing_extensions import override
@@ -574,7 +574,6 @@ class FlaskFrameworkV2(AppDataDirMixin, FlaskFramework):
 
     _gunicorn_package = "gunicorn~=26.0"
     _statsd_exporter_tag = "v0.30.0"
-    _worker_class_template = "{}"
 
     @property
     @override
@@ -788,7 +787,6 @@ class DjangoFrameworkV2(AppDataDirMixin, DjangoFramework):
 
     _gunicorn_package = "gunicorn~=26.0"
     _statsd_exporter_tag = "v0.30.0"
-    _worker_class_template = "{}"
 
     @property
     @override
