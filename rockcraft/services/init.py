@@ -17,11 +17,10 @@
 """Rockcraft Init Service."""
 
 import pathlib
-from typing import Any
+from typing import Any, override
 
 from craft_application.services import InitService
 from craft_cli import emit
-from typing_extensions import override
 
 
 class RockcraftInitService(InitService):
