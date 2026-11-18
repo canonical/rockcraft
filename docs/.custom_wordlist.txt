@@ -23,6 +23,7 @@ buildd
 Bundler
 Canonical('s)?
 Charmcraft
+chroot
 cjk
 classpath
 CMake
@@ -37,6 +38,7 @@ crypto
 cryptographically
 ctypes?
 DBus
+Deadsnakes
 declaratively
 devmode
 distroless
@@ -95,6 +97,7 @@ libcurl
 linter('?s)?
 liquidctl
 literalinclude
+lockfile
 Makefile
 Makefiles?
 Miniconda
@@ -124,6 +127,7 @@ plantuml
 PNG
 Podman
 POMs
+PPAs?
 PR
 precompiled?
 prepended
