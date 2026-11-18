@@ -17,11 +17,11 @@
 import contextlib
 from collections.abc import Callable, Collection
 from pathlib import Path
+from typing import override
 from unittest import mock
 
 import pytest
 from craft_providers import Executor, Provider, base
-from typing_extensions import override
 
 
 @pytest.fixture

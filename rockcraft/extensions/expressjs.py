@@ -18,10 +18,9 @@
 
 import json
 from pathlib import Path
-from typing import Any, cast
+from typing import Any, cast, override
 
 import craft_cli
-from typing_extensions import override
 
 from rockcraft.errors import ExtensionError
 from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES

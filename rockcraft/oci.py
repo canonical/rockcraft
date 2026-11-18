@@ -25,7 +25,7 @@ import shutil
 import subprocess
 import tempfile
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -340,8 +340,7 @@ class Image:
 
             if user_files["shadow"]:  # ty: ignore[redundant-condition]
                 days_since_epoch = (
-                    datetime.now(timezone.utc)
-                    - datetime(1970, 1, 1, tzinfo=timezone.utc)
+                    datetime.now(UTC) - datetime(1970, 1, 1, tzinfo=UTC)
                 ).days
 
                 # only add the shadow file if there's already one in the base image
