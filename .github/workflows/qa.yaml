@@ -46,3 +46,4 @@ jobs:
       fast-test-platforms: '["ubuntu-22.04", "ubuntu-24.04"]'
       fast-test-python-versions: '["3.10", "3.12"]'
       slow-test-platforms: '["ubuntu-22.04", "ubuntu-24.04"]'
+      use-lxd: false
