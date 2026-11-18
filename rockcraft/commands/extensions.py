@@ -19,12 +19,12 @@
 import abc
 import argparse
 import textwrap
+from typing import override
 
 import tabulate
 from craft_application.commands import AppCommand
 from craft_cli import emit
 from pydantic import BaseModel
-from typing_extensions import override
 
 from rockcraft import extensions
 from rockcraft.models import Project
