@@ -18,9 +18,9 @@
 
 import pathlib
 from textwrap import dedent
+from typing import override
 
 from craft_parts.plugins import uv_plugin
-from typing_extensions import override
 
 from rockcraft.plugins import python_common
 

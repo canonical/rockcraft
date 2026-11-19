@@ -21,9 +21,7 @@ import os
 import pathlib
 import posixpath
 import re
-from typing import Any
-
-from typing_extensions import override
+from typing import Any, override
 
 from rockcraft.errors import ExtensionError
 from rockcraft.extensions._utils import find_ubuntu_base_python_version
@@ -129,10 +127,10 @@ class FastAPIFramework(Extension):
         if self.yaml_data["base"] == "bare":
             parts[self.get_part_name("runtime")] = {
                 "plugin": "nil",
-                "override-build": "mkdir -m 777 ${CRAFT_PART_INSTALL}/tmp\n"
-                "ln -sf /usr/bin/bash ${CRAFT_PART_INSTALL}/usr/bin/sh",
+                "override-build": "ln -sf /usr/bin/bash ${CRAFT_PART_INSTALL}/usr/bin/sh",
                 "stage-packages": [
                     "bash_bins",
+                    "base-files_tmp",
                     "coreutils_bins",
                     "ca-certificates_data",
                 ],

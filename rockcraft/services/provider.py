@@ -19,9 +19,9 @@
 from __future__ import annotations
 
 import os
+from typing import override
 
 from craft_application import ProviderService
-from typing_extensions import override
 
 
 class RockcraftProviderService(ProviderService):

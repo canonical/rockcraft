@@ -18,9 +18,7 @@
 
 import os
 import re
-from typing import Any
-
-from typing_extensions import override
+from typing import Any, override
 
 from rockcraft.errors import ExtensionError
 from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
@@ -66,7 +64,7 @@ class GoFramework(Extension):
 
         stage_packages = ["ca-certificates_data"]
         if self.yaml_data["base"] == "bare":
-            stage_packages.extend(["bash_bins", "coreutils_bins"])
+            stage_packages.extend(["bash_bins", "base-files_tmp", "coreutils_bins"])
 
         snippet["parts"] = {
             # This is needed in case there is no assets part, as the working directory is /app

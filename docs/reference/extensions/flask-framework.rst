@@ -20,8 +20,8 @@ lightweight image.
     experimental.
 
     Part names added by the extension vary by Ubuntu version. On Ubuntu 22.04 LTS
-    and Ubuntu 24.04 LTS, write ``extension/part``. On Ubuntu 26.04 LTS and
-    higher, write ``extension.part``. For rocks with ``base: bare``, follow the
+    and Ubuntu 24.04 LTS, write ``extension/part``. On Ubuntu 26.04 LTS,
+    write ``extension.part``. For rocks with ``base: bare``, follow the
     convention for the configured ``build-base``.
 
 The Flask extension supports both synchronous and asynchronous
@@ -50,11 +50,22 @@ Project requirements
 
 There are 2 requirements to be able to use the ``flask-framework`` extension:
 
-1. There must be a ``requirements.txt``  or ``pyproject.toml`` file in the root of the project with
-   ``Flask`` declared as a dependency
-2. The project must include a Web Server Gateway Interface (WSGI) app with the path ``app:app``.
-   This means there must be an ``app.py`` file at the root of the project where the Flask object
-   is named ``app``.
+1. There must be a ``requirements.txt`` or ``pyproject.toml`` file in the root of the project with
+   ``Flask`` declared as a dependency. On Ubuntu 26.04 LTS, you can use a
+   :ref:`uv project <reference-flask-framework-uv>` instead, in which case the extension
+   doesn't check for this dependency.
+2. The project must include a Web Server Gateway Interface (WSGI) app. The extension
+   looks for a global variable named ``app`` or ``application`` in these files,
+   in this order:
+
+   - ``app.py``, then ``main.py``, at the root of the project.
+   - ``__init__.py``, then ``app.py``, then ``main.py`` in each of the ``app``
+     and ``src`` directories, and in the directory named like the ``name`` in
+     the project file, with any ``-`` replaced by ``_``.
+
+   If no such variable exists, the extension looks for an application factory
+   function named ``create_app`` or ``make_app`` in the same files and calls it
+   at startup.
 
 For the project to make use of asynchronous Gunicorn workers:
 
@@ -74,7 +85,7 @@ uv projects
         application with the Python plugin and installs dependencies from
         ``requirements.txt`` or ``pyproject.toml``.
 
-    .. tab-item:: Ubuntu 26.04 LTS and higher
+    .. tab-item:: Ubuntu 26.04 LTS
         :sync: base-26-plus
 
         If both a ``uv.lock`` and a ``pyproject.toml`` file are present in the
@@ -97,7 +108,9 @@ App dependencies
 The ``stage-packages`` key specifies all additional dependencies. If the Flask app
 has its own special dependencies, this key must declare them.
 
-The following example specifies the ``libpq-dev`` package:
+The following example specifies the ``libpq-dev`` package. For rocks built
+on the ``bare`` base, list slices instead. Instead of ``libpq-dev``, for example, you'd
+list ``libpq5_libs``.
 
 .. tab-set::
 
@@ -113,7 +126,7 @@ The following example specifies the ``libpq-dev`` package:
                 # list required packages or slices for your Flask app below.
                 - libpq-dev
 
-    .. tab-item:: Ubuntu 26.04 LTS and higher
+    .. tab-item:: Ubuntu 26.04 LTS
         :sync: base-26-plus
 
         .. code-block:: yaml
@@ -166,8 +179,9 @@ for more information.
 Gunicorn worker selection
 -------------------------
 
-If the project has gevent as a dependency, Rockcraft automatically updates the
-pebble plan to spawn asynchronous Gunicorn workers.
+If ``gevent`` is listed as a dependency in either the ``requirements.txt`` or
+``pyproject.toml`` file, Rockcraft sets the Gunicorn worker to
+``gevent`` in the Pebble plan. Otherwise, it uses ``sync``.
 
 When the project instead needs synchronous workers, you can override the worker
 type by adding ``--args flask sync`` to the Docker command that launches the
@@ -184,12 +198,16 @@ Included or excluded files
 --------------------------
 
 Some files, if they exist, are included by default in the rock. These include:
-``app``, ``app.py``, ``migrate``, ``migrate.sh``, ``migrate.py``, ``static``,
-``templates``.
+``app``, ``app.py``, ``main.py``, ``src``, ``migrate``, ``migrate.sh``,
+``migrate.py``, ``static``, ``templates``. Any other file or directory, such
+as an additional Python module that your app imports, isn't included unless you
+list it in ``prime``. If none of these exist and ``prime`` isn't set, the whole
+project is included, except ``node_modules``, ``.git``, ``.yarn`` and ``*.rock``.
 
 The ``prime`` key specifies the files to be included or excluded from
-the rock upon ``rockcraft pack``, following the ``app/<filename>`` notation. For
-example:
+the rock upon ``rockcraft pack``. Prefix each entry with ``flask/app/`` (Ubuntu
+22.04 LTS and Ubuntu 24.04 LTS) or ``app/`` (Ubuntu 26.04 LTS),
+followed by the path relative to the project root. For example:
 
 .. tab-set::
 
@@ -208,7 +226,7 @@ example:
                 - flask/app/templates
                 - flask/app/static
 
-    .. tab-item:: Ubuntu 26.04 LTS and higher
+    .. tab-item:: Ubuntu 26.04 LTS
         :sync: base-26-plus
 
         .. code-block:: yaml

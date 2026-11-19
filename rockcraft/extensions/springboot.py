@@ -19,9 +19,7 @@
 import os
 import pathlib
 import re
-from typing import Any, Literal
-
-from typing_extensions import override
+from typing import Any, Literal, override
 
 from rockcraft.errors import ExtensionError
 

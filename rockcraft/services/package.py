@@ -20,11 +20,10 @@ import datetime as dt
 import pathlib
 import typing
 from collections.abc import Mapping
-from typing import cast
+from typing import cast, override
 
 from craft_application import PackageService, errors, models
 from craft_cli import emit
-from typing_extensions import override
 
 from rockcraft import oci
 from rockcraft.models import Project
@@ -217,8 +216,11 @@ def _create_rock(
     # Set annotations and metadata, both dynamic and the ones based on user-provided properties
     # Also include the "created" timestamp, just before packing the image
     emit.progress("Adding metadata")
+    created = dt.datetime.now(dt.UTC).isoformat()
+    if project.base == "bare":
+        new_image.set_created(created)
     oci_annotations, rock_metadata = project.generate_metadata(
-        dt.datetime.now(dt.timezone.utc).isoformat(), base_digest, build_for
+        created, base_digest, build_for
     )
     new_image.set_annotations(oci_annotations)
     new_image.set_control_data(rock_metadata)
