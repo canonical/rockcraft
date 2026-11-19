@@ -233,7 +233,10 @@ def test_run_init_flask(mocker, emitter, monkeypatch, new_dir, tmp_path):
     assert len(rock_project_yaml["summary"]) < 80
     assert len(rock_project_yaml["description"].split()) < 100
     expected_rockcraft_yaml_path = Path(tmp_path / "expected_rockcraft.yaml")
-    assert rockcraft_yaml_path.read_text() == expected_rockcraft_yaml_path.read_text()
+    expected_rockcraft_yaml = expected_rockcraft_yaml_path.read_text().replace(
+        "https://documentation.ubuntu.com/rockcraft/latest", versioned_url
+    )
+    assert rockcraft_yaml_path.read_text() == expected_rockcraft_yaml
 
     emitter.assert_message(
         textwrap.dedent(
@@ -265,7 +268,10 @@ def test_run_init_django(mocker, emitter, monkeypatch, new_dir, tmp_path):
 
     assert len(rock_project_yaml["summary"]) < 80
     assert len(rock_project_yaml["description"].split()) < 100
-    assert rockcraft_yaml_path.read_text() == expected_rockcraft_yaml_path.read_text()
+    expected_rockcraft_yaml = expected_rockcraft_yaml_path.read_text().replace(
+        "https://documentation.ubuntu.com/rockcraft/latest", versioned_url
+    )
+    assert rockcraft_yaml_path.read_text() == expected_rockcraft_yaml
 
     emitter.assert_message(
         textwrap.dedent(
