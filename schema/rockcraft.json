@@ -2367,6 +2367,7 @@
               },
               "ant-build-targets": {
                 "default": [],
+                "description": "The targets to build.",
                 "items": {
                   "type": "string"
                 },
@@ -2383,6 +2384,7 @@
                   }
                 ],
                 "default": null,
+                "description": "The name of the main XML build file.",
                 "title": "Ant-Build-File"
               },
               "ant-properties": {
@@ -2390,6 +2392,7 @@
                   "type": "string"
                 },
                 "default": {},
+                "description": "The properties of the Ant build.",
                 "title": "Ant-Properties",
                 "type": "object"
               },
@@ -2879,6 +2882,7 @@
               },
               "autotools-configure-parameters": {
                 "default": [],
+                "description": "The parameters to pass to Autotools.",
                 "items": {
                   "type": "string"
                 },
@@ -2887,6 +2891,7 @@
               },
               "autotools-bootstrap-parameters": {
                 "default": [],
+                "description": "The bootstrap flags to pass to Autotools.",
                 "items": {
                   "type": "string"
                 },
@@ -3381,6 +3386,7 @@
                 "default": [
                   "//..."
                 ],
+                "description": "The targets to build.",
                 "items": {
                   "type": "string"
                 },
@@ -3389,6 +3395,7 @@
               },
               "bazel-parameters": {
                 "default": [],
+                "description": "The parameters to pass to Bazel.",
                 "items": {
                   "type": "string"
                 },
@@ -4365,6 +4372,7 @@
               },
               "cmake-parameters": {
                 "default": [],
+                "description": "The parameters to pass to the build system.",
                 "items": {
                   "type": "string"
                 },
@@ -4373,6 +4381,7 @@
               },
               "cmake-generator": {
                 "default": "Unix Makefiles",
+                "description": "The build system to use.",
                 "title": "Cmake-Generator",
                 "type": "string"
               },
@@ -4862,6 +4871,7 @@
               },
               "dotnet-build-configuration": {
                 "default": "Release",
+                "description": "The .NET build configuration to use.",
                 "title": "Dotnet-Build-Configuration",
                 "type": "string"
               },
@@ -4875,6 +4885,7 @@
                   }
                 ],
                 "default": null,
+                "description": "The Runtime Identifier of the .NET project.",
                 "title": "Dotnet-Self-Contained-Runtime-Identifier"
               },
               "source-checksum": {
@@ -5363,6 +5374,7 @@
               },
               "go-buildtags": {
                 "default": [],
+                "description": "The build tags to pass to the compiler.",
                 "items": {
                   "type": "string"
                 },
@@ -5371,6 +5383,7 @@
               },
               "go-generate": {
                 "default": [],
+                "description": "The parameters to pass to ``go generate`` before building.",
                 "items": {
                   "type": "string"
                 },
@@ -6347,11 +6360,13 @@
               },
               "gradle-init-script": {
                 "default": "",
+                "description": "The path to the initialization script to run before the build script is run.",
                 "title": "Gradle-Init-Script",
                 "type": "string"
               },
               "gradle-parameters": {
                 "default": [],
+                "description": "The extra arguments to pass to Gradle.",
                 "items": {
                   "type": "string"
                 },
@@ -6360,11 +6375,13 @@
               },
               "gradle-task": {
                 "default": "build",
+                "description": "The Gradle task to run during build.",
                 "title": "Gradle-Task",
                 "type": "string"
               },
               "gradle-use-daemon": {
                 "default": false,
+                "description": "Whether to use the Gradle daemon during build.",
                 "title": "Gradle-Use-Daemon",
                 "type": "boolean"
               },
@@ -6854,11 +6871,13 @@
               },
               "gradle-init-script": {
                 "default": "",
+                "description": "The path to the initialization script to run before the build script is run.",
                 "title": "Gradle-Init-Script",
                 "type": "string"
               },
               "gradle-parameters": {
                 "default": [],
+                "description": "The extra arguments to pass to Gradle.",
                 "items": {
                   "type": "string"
                 },
@@ -6867,6 +6886,7 @@
               },
               "gradle-use-daemon": {
                 "default": false,
+                "description": "Whether to use the Gradle daemon during build.",
                 "title": "Gradle-Use-Daemon",
                 "type": "boolean"
               },
@@ -7356,6 +7376,7 @@
               },
               "jlink-jars": {
                 "default": [],
+                "description": "The paths to the part's JAR files.",
                 "items": {
                   "type": "string"
                 },
@@ -7364,6 +7385,7 @@
               },
               "jlink-extra-modules": {
                 "default": [],
+                "description": "Additional modules to include in the OpenJDK image.",
                 "items": {
                   "type": "string"
                 },
@@ -7372,6 +7394,7 @@
               },
               "jlink-modules": {
                 "default": [],
+                "description": "The exhaustive list of modules to include in the OpenJDK image.",
                 "items": {
                   "type": "string"
                 },
@@ -7388,6 +7411,7 @@
                   }
                 ],
                 "default": "base",
+                "description": "The OpenJDK version to use for multi-release JARs.",
                 "title": "Jlink-Multi-Release"
               },
               "source-checksum": {
@@ -7876,6 +7900,7 @@
               },
               "make-parameters": {
                 "default": [],
+                "description": "The options to pass to Make.",
                 "items": {
                   "type": "string"
                 },
@@ -8368,6 +8393,7 @@
               },
               "maven-parameters": {
                 "default": [],
+                "description": "The parameters to pass to Maven.",
                 "items": {
                   "type": "string"
                 },
@@ -8376,6 +8402,7 @@
               },
               "maven-use-wrapper": {
                 "default": false,
+                "description": "Whether the build uses the Maven wrapper provided in the part.",
                 "title": "Maven-Use-Wrapper",
                 "type": "boolean"
               },
@@ -9357,6 +9384,7 @@
               },
               "meson-parameters": {
                 "default": [],
+                "description": "The parameters to pass to Meson.",
                 "items": {
                   "type": "string"
                 },
@@ -9849,6 +9877,7 @@
               },
               "npm-include-node": {
                 "default": false,
+                "description": "Whether to download and include the Node.js binaries and its dependencies in the part.",
                 "title": "Npm-Include-Node",
                 "type": "boolean"
               },
@@ -9862,6 +9891,7 @@
                   }
                 ],
                 "default": null,
+                "description": "The version of Node.js to download and include in the part.",
                 "title": "Npm-Node-Version"
               },
               "build-attributes": {
@@ -10350,6 +10380,7 @@
               },
               "npm-include-node": {
                 "default": false,
+                "description": "Whether to download and include the Node.js binaries and its dependencies in the part.",
                 "title": "Npm-Include-Node",
                 "type": "boolean"
               },
@@ -10363,6 +10394,7 @@
                   }
                 ],
                 "default": null,
+                "description": "The version of Node.js to download and include in the part.",
                 "title": "Npm-Node-Version"
               },
               "build-attributes": {
@@ -10850,28 +10882,28 @@
                 "title": "Source"
               },
               "poetry-with": {
-                "description": "dependency groups to include. By default, only the main dependencies are included.",
+                "description": "The dependency groups to include.",
                 "items": {
                   "type": "string"
                 },
-                "title": "Dependency groups to include",
+                "title": "The dependency groups to include.",
                 "type": "array",
                 "uniqueItems": true
               },
               "poetry-export-extra-args": {
-                "description": "extra arguments to pass to poetry export when creating requirements.txt.",
+                "description": "The extra arguments to pass at the end of the Poetry export command.",
                 "items": {
                   "type": "string"
                 },
-                "title": "Extra arguments for poetry export",
+                "title": "The extra arguments to pass at the end of the Poetry export command.",
                 "type": "array"
               },
               "poetry-pip-extra-args": {
-                "description": "extra arguments to pass to pip install installing dependencies.",
+                "description": "The arguments to pass to pip when installing dependencies.",
                 "items": {
                   "type": "string"
                 },
-                "title": "Extra arguments for pip install",
+                "title": "The arguments to pass to pip when installing dependencies.",
                 "type": "array"
               },
               "source-checksum": {
@@ -11360,6 +11392,7 @@
               },
               "python-requirements": {
                 "default": [],
+                "description": "The paths to requirements files.",
                 "items": {
                   "type": "string"
                 },
@@ -11368,6 +11401,7 @@
               },
               "python-constraints": {
                 "default": [],
+                "description": "The paths to constraint files.",
                 "items": {
                   "type": "string"
                 },
@@ -11380,6 +11414,7 @@
                   "setuptools",
                   "wheel"
                 ],
+                "description": "The dependencies to install from PyPI.",
                 "items": {
                   "type": "string"
                 },
@@ -11872,6 +11907,7 @@
               },
               "qmake-parameters": {
                 "default": [],
+                "description": "The parameters to pass to qmake.",
                 "items": {
                   "type": "string"
                 },
@@ -11880,11 +11916,13 @@
               },
               "qmake-project-file": {
                 "default": "",
+                "description": "The path to the qmake project file to use.",
                 "title": "Qmake-Project-File",
                 "type": "string"
               },
               "qmake-major-version": {
                 "default": 5,
+                "description": "The major version of Qt to use.",
                 "title": "Qmake-Major-Version",
                 "type": "integer"
               },
@@ -12374,6 +12412,7 @@
               },
               "ruby-gems": {
                 "default": [],
+                "description": "The gems to install.",
                 "items": {
                   "type": "string"
                 },
@@ -12382,6 +12421,7 @@
               },
               "ruby-use-bundler": {
                 "default": false,
+                "description": "Whether to use Bundler to build the gems.",
                 "title": "Ruby-Use-Bundler",
                 "type": "boolean"
               },
@@ -12394,7 +12434,8 @@
                     "type": "null"
                   }
                 ],
-                "default": null
+                "default": null,
+                "description": "The Ruby interpreter to build and include."
               },
               "ruby-version": {
                 "anyOf": [
@@ -12406,20 +12447,24 @@
                   }
                 ],
                 "default": null,
+                "description": "The version of the Ruby interpreter to build.",
                 "title": "Ruby-Version"
               },
               "ruby-use-jemalloc": {
                 "default": false,
+                "description": "Whether to build Ruby with support for jemalloc.",
                 "title": "Ruby-Use-Jemalloc",
                 "type": "boolean"
               },
               "ruby-shared": {
                 "default": false,
+                "description": "Whether to build libruby.so, a shared library that other binaries can link against.",
                 "title": "Ruby-Shared",
                 "type": "boolean"
               },
               "ruby-configure-options": {
                 "default": [],
+                "description": "The extra arguments to pass to the configure script when building the Ruby interpreter.",
                 "items": {
                   "type": "string"
                 },
@@ -12912,6 +12957,7 @@
               },
               "rust-features": {
                 "default": [],
+                "description": "The build features to use for optional dependencies.",
                 "items": {
                   "type": "string"
                 },
@@ -12922,6 +12968,7 @@
                 "default": [
                   "."
                 ],
+                "description": "The path to the directory containing the manifest.",
                 "items": {
                   "type": "string"
                 },
@@ -12938,25 +12985,30 @@
                   }
                 ],
                 "default": null,
+                "description": "The Rust channel or version to use.",
                 "title": "Rust-Channel"
               },
               "rust-use-global-lto": {
                 "default": false,
+                "description": "Whether to use global LTO.",
                 "title": "Rust-Use-Global-Lto",
                 "type": "boolean"
               },
               "rust-no-default-features": {
                 "default": false,
+                "description": "Whether to ignore the features specified by the project.",
                 "title": "Rust-No-Default-Features",
                 "type": "boolean"
               },
               "rust-ignore-toolchain-file": {
                 "default": false,
+                "description": "Whether to ignore the rust-toolchain.toml and rust-toolchain files.",
                 "title": "Rust-Ignore-Toolchain-File",
                 "type": "boolean"
               },
               "rust-cargo-parameters": {
                 "default": [],
+                "description": "The extra parameters to pass to Cargo.",
                 "items": {
                   "type": "string"
                 },
@@ -12965,6 +13017,7 @@
               },
               "rust-inherit-ldflags": {
                 "default": false,
+                "description": "Whether to inherit the LDFLAGS environment variable.",
                 "title": "Rust-Inherit-Ldflags",
                 "type": "boolean"
               },
@@ -13454,6 +13507,7 @@
               },
               "scons-parameters": {
                 "default": [],
+                "description": "The parameters to pass to SCons.",
                 "items": {
                   "type": "string"
                 },
@@ -13945,20 +13999,20 @@
                 "title": "Source"
               },
               "uv-extras": {
-                "description": "Optional extra dependencies to include when installing.",
+                "description": "The extra dependencies to include in the part.",
                 "items": {
                   "type": "string"
                 },
-                "title": "Optional extra dependencies",
+                "title": "The extra dependencies to include in the part.",
                 "type": "array",
                 "uniqueItems": true
               },
               "uv-groups": {
-                "description": "Optional dependency groups to include when installing.",
+                "description": "The extra dependency groups to build with.",
                 "items": {
                   "type": "string"
                 },
-                "title": "Optional dependency groups",
+                "title": "The extra dependency groups to build with.",
                 "type": "array",
                 "uniqueItems": true
               },
@@ -14535,6 +14589,7 @@
             "ubuntu@24.04",
             "ubuntu@25.10",
             "ubuntu@26.04",
+            "ubuntu@26.10",
             "devel"
           ],
           "type": "string"

@@ -22,19 +22,12 @@ import fnmatch
 import os.path
 import posixpath
 import re
+import tomllib
 from collections.abc import Iterable
 from pathlib import Path
-from typing import Any, cast
-
-try:
-    # Available in Python 3.11 and later
-    import tomllib  # ty: ignore[unresolved-import]
-except ModuleNotFoundError:
-    # Use the backported tomli package
-    import tomli as tomllib  # ty: ignore[unresolved-import]
+from typing import Any, cast, override
 
 from packaging.requirements import InvalidRequirement, Requirement
-from typing_extensions import override
 
 from rockcraft.errors import ExtensionError
 from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
@@ -278,10 +271,7 @@ class _GunicornBase(Extension):
 
         if pyproject_file.exists():
             with pyproject_file.open("rb") as f:
-                pyproject_data = cast(
-                    dict[str, Any],
-                    tomllib.load(f),
-                )
+                pyproject_data = tomllib.load(f)
 
             deps = cast(
                 list[str], pyproject_data.get("project", {}).get("dependencies", [])
@@ -574,7 +564,6 @@ class FlaskFrameworkV2(AppDataDirMixin, FlaskFramework):
 
     _gunicorn_package = "gunicorn~=26.0"
     _statsd_exporter_tag = "v0.30.0"
-    _worker_class_template = "{}"
 
     @property
     @override
@@ -788,7 +777,6 @@ class DjangoFrameworkV2(AppDataDirMixin, DjangoFramework):
 
     _gunicorn_package = "gunicorn~=26.0"
     _statsd_exporter_tag = "v0.30.0"
-    _worker_class_template = "{}"
 
     @property
     @override

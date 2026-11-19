@@ -105,7 +105,7 @@ class DevelProject(Project):
     "development", but we want to test the behavior anyway.
     """
 
-    base: str  # ty: ignore[invalid-attribute-override]
+    base: str  # ty: ignore[incompatible-attribute-override]
 
 
 @pytest.fixture
@@ -710,7 +710,7 @@ def pebble_project(pebble_spec) -> str:
 
 def test_project_generate_metadata(yaml_loaded_data):
     project = Project.unmarshal(yaml_loaded_data)
-    now = dt.datetime.now(dt.timezone.utc).isoformat()
+    now = dt.datetime.now(dt.UTC).isoformat()
 
     digest = "a1b2c3"  # mock digest
     oci_annotations, rock_metadata = project.generate_metadata(
@@ -758,7 +758,7 @@ def test_metadata_base_devel(yaml_loaded_data):
     yaml_loaded_data["build-base"] = "devel"
     project = Project.unmarshal(yaml_loaded_data)
 
-    now = dt.datetime.now(dt.timezone.utc).isoformat()
+    now = dt.datetime.now(dt.UTC).isoformat()
     digest = "a1b2c3"  # mock digest
 
     _, rock_metadata = project.generate_metadata(
@@ -776,7 +776,7 @@ def test_metadata_base_bare(yaml_loaded_data):
     }  # Avoid validation error for no overlay with bare base
     project = Project.unmarshal(yaml_loaded_data)
 
-    now = dt.datetime.now(dt.timezone.utc).isoformat()
+    now = dt.datetime.now(dt.UTC).isoformat()
     digest = "a1b2c3"  # mock digest
 
     oci_annotations, rock_metadata = project.generate_metadata(

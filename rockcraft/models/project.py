@@ -19,7 +19,7 @@
 import re
 import typing
 from collections.abc import Iterable, Mapping
-from typing import Any, Literal
+from typing import Any, Literal, override
 
 import craft_cli
 import pydantic
@@ -32,11 +32,9 @@ from craft_application.models.base import alias_generator
 from craft_application.models.project import DevelBaseInfo
 from craft_platforms import DebianArchitecture
 from craft_providers import bases
-from craft_providers.bases import BuilddBaseAlias
 from craft_providers.errors import BaseConfigurationError
 from pydantic import GetCoreSchemaHandler
 from pydantic_core import core_schema
-from typing_extensions import override
 
 from rockcraft.architectures import SUPPORTED_ARCHS
 from rockcraft.parts import part_has_overlay
@@ -79,6 +77,7 @@ BuildBaseT = typing.Annotated[
         "ubuntu@24.04",
         "ubuntu@25.10",
         "ubuntu@26.04",
+        "ubuntu@26.10",
         "devel",
     ]
     | None,
@@ -90,10 +89,10 @@ class Project(BaseProject):
     """Rockcraft project definition."""
 
     # Type of summary is Optional[str] in BaseProject
-    summary: str = pydantic.Field(  # ty: ignore[invalid-mutable-override]
+    summary: str = pydantic.Field(  # ty: ignore[incompatible-mutable-override]
         description="A short, single line description of the rock."
     )
-    description: str = pydantic.Field(  # ty: ignore[invalid-mutable-override]
+    description: str = pydantic.Field(  # ty: ignore[incompatible-mutable-override]
         description="A full description of the rock, potentially including multiple paragraphs."
     )
     """A full description of the rock, potentially including multiple paragraphs.
@@ -166,7 +165,7 @@ class Project(BaseProject):
 
     This key is mutually incompatible with the ``entrypoint-service`` key.
     """
-    base: BaseT = pydantic.Field(  # ty: ignore[invalid-mutable-override]
+    base: BaseT = pydantic.Field(  # ty: ignore[incompatible-mutable-override]
         description="The base system image for the rock.",
     )
     """
@@ -177,7 +176,7 @@ class Project(BaseProject):
     which is typically used with static binaries or
     :ref:`Chisel slices <explanation-chisel>`.
     """
-    build_base: BuildBaseT = pydantic.Field(  # ty: ignore[invalid-mutable-override]
+    build_base: BuildBaseT = pydantic.Field(  # ty: ignore[incompatible-mutable-override]
         default=None, description="The system used to build the rock."
     )
     """The system and version that will be used during the rock's build, but not
@@ -500,9 +499,4 @@ class Project(BaseProject):
     @classmethod
     @override
     def _get_devel_bases(cls) -> Iterable[DevelBaseInfo]:
-        return [
-            DevelBaseInfo(
-                current_devel_base=BuilddBaseAlias.STONKING,
-                devel_base=BuilddBaseAlias.DEVEL,
-            )
-        ]
+        return []
