@@ -721,7 +721,7 @@ def test_project_generate_metadata(yaml_loaded_data):
         "org.opencontainers.image.title": yaml_loaded_data["title"],
         "org.opencontainers.image.licenses": yaml_loaded_data["license"],
         "org.opencontainers.image.created": now,
-        "org.opencontainers.image.base.digest": digest,
+        "org.opencontainers.image.base.digest": f"sha256:{digest}",
         "org.opencontainers.image.description": f"{yaml_loaded_data['summary']}\n\n{yaml_loaded_data['description']}",
     }
     assert rock_metadata == {
@@ -731,7 +731,7 @@ def test_project_generate_metadata(yaml_loaded_data):
         "version": yaml_loaded_data["version"],
         "created": now,
         "base": yaml_loaded_data["base"],
-        "base-digest": digest,
+        "base-digest": f"sha256:{digest}",
         "architecture": str(DebianArchitecture.from_host()),
     }
 
