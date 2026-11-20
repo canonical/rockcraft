@@ -7,7 +7,7 @@ dependencies = [
   # craft-lib @ git+https://github.com/canonical/craft-lib@ref
   "craft-application>=7.5.0",
   "craft-archives>=2.2.2",
-  "craft-cli>=3.4.1",
+  "craft-cli>=3.5.0",
   "craft-parts>=2.38.0",
   "craft-platforms>=0.12.0",
   "craft-providers>=3.8.1",
@@ -52,6 +52,7 @@ store = [
 dev = [
   "build>=0.7.0",
   "coverage[toml]~=7.4",
+  "craft-cli[pytest]>=3.5.0",
   "poetry>=2.0.0",  # Needed for testing the poetry plugin.
   "poetry-plugin-export",
   "pytest~=9.0",
