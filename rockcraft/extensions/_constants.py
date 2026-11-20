@@ -18,10 +18,13 @@
 
 _PYTHON_3_10 = "3.10"
 _PYTHON_3_12 = "3.12"
+_PYTHON_3_14 = "3.14"
 
 UBUNTU_PYTHON_VERSION_MAP = {
     "ubuntu@22.04": _PYTHON_3_10,
     "ubuntu:22.04": _PYTHON_3_10,
     "ubuntu@24.04": _PYTHON_3_12,
     "ubuntu:24.04": _PYTHON_3_12,
+    "ubuntu@26.04": _PYTHON_3_14,
+    "ubuntu:26.04": _PYTHON_3_14,
 }

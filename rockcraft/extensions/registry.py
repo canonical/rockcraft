@@ -21,9 +21,12 @@ from typing import TYPE_CHECKING
 from rockcraft import errors
 
 if TYPE_CHECKING:
-    from .extension import Extension
+    from .extension import Extension, _FrameworkFactory
 
-    ExtensionType = type[Extension]
+    # A registered extension is either an Extension subclass or a factory that
+    # dispatches to one. Both are callable as ``(project_root, yaml_data)`` and
+    # expose ``get_supported_bases``/``is_experimental``.
+    ExtensionType = type[Extension] | _FrameworkFactory
 
 _EXTENSIONS: dict[str, "ExtensionType"] = {}
 

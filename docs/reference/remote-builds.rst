@@ -1,9 +1,10 @@
-.. _ref-remote-builds:
+.. meta::
+    :description: Reference documentation for remote rock builds on Launchpad. How remote builds work, the supported architectures, and details about the remote build command.
 
+.. _reference-remote-builds:
 
-*************
 Remote builds
-*************
+=============
 
 Remote builds offload rock builds to the `build farm`_ hosted by `Launchpad`_.
 With remote builds, you can assemble multiple rocks simultaneously and build

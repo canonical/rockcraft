@@ -53,13 +53,13 @@ You can report any issues or bugs on the project's [GitHub
 repository](https://github.com/canonical/Rockcraft/issues).
 
 Rockcraft is covered by the [Ubuntu Code of
-Conduct](https://ubuntu.com/community/ethos/code-of-conduct).
+Conduct](https://ubuntu.com/community/docs/ethos/code-of-conduct).
 
 ## Contribute to Rockcraft
 
 Rockcraft is open source and part of the Canonical family. We would love your help.
 
-If you're interested, start with the [contribution guide](HACKING.md).
+If you're interested, start with the [contribution guide](CONTRIBUTING.md).
 
 We welcome any suggestions and help with the docs. The [Canonical Open Documentation
 Academy](https://github.com/canonical/open-documentation-academy) is the hub for doc

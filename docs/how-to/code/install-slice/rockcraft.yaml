@@ -1,10 +1,10 @@
-name: custom-openssl-rock
+name: custom-<package>-rock
 base: bare
-build-base: "ubuntu@22.04"
+build-base: "ubuntu@26.04"
 version: "0.0.1"
-summary: A chiselled rock with a custom OpenSSL slice
+summary: A chiseled rock with a custom vim-tiny slice
 description: |
-  A rock containing only the binaries (and corresponding dependencies) from the OpenSSL package.
+  A rock containing only the binaries (and corresponding dependencies) from the vim-tiny package.
   Built from a custom Chisel release.
 license: GPL-3.0
 platforms:
@@ -14,4 +14,4 @@ parts:
     plugin: nil
     source: chisel-releases/
     source-type: local
-    override-build: chisel cut --release ./ --root ${CRAFT_PART_INSTALL} openssl_bins
+    override-build: chisel cut --release ./ --root ${CRAFT_PART_INSTALL} vim-tiny_bins

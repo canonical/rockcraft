@@ -19,16 +19,16 @@
 """Creation of schema for rockcraft.yaml."""
 
 import json
-import os
 import sys
 from pathlib import Path
 
 import yaml
 from craft_parts import Part
 from craft_parts.plugins import plugins
+from jinja2 import Template
 
-script_dir = os.path.dirname(os.path.realpath(__file__))
-sys.path.append(os.path.join(script_dir, "../../"))
+script_dir = Path(__file__).resolve().parent
+sys.path.append(str(script_dir / "../.."))
 
 import rockcraft  # noqa: E402
 from rockcraft.models.project import Project  # noqa: E402
@@ -36,9 +36,12 @@ from rockcraft.models.project import Project  # noqa: E402
 
 def generate_project_schema() -> str:
     """Generate the schema."""
-    # Render the default template with a name
+    # Render the default template with its standard init context.
     template = Path(rockcraft.__file__).parent / "templates/simple/rockcraft.yaml.j2"
-    contents = template.read_text().replace("{{name}}", "my-rock-name")
+    contents = Template(template.read_text()).render(
+        name="my-rock-name",
+        versioned_url="",
+    )
 
     # Initiate a project with all required fields
     project = Project.unmarshal(yaml.safe_load(contents))
@@ -54,6 +57,14 @@ def generate_project_schema() -> str:
     project_schema["title"] = "Rockcraft project"
     # combine both schemas
     project_schema = {**initial_schema, **project_schema}
+
+    # add extensions field (DX only)
+    project_schema["properties"]["extensions"] = {
+        "type": "array",
+        "items": {"type": "string"},
+        "description": "List of extensions to apply to the rock.",
+        "examples": [["twelve-factor"]],
+    }
 
     # tweak the platforms definition on the Project (each value can be empty)
     project_schema["properties"]["platforms"]["additionalProperties"] = {
@@ -99,10 +110,14 @@ def generate_project_schema() -> str:
     # add each plugin's property names in a conditional block
     if_array = []
     for name, cls in plugins.get_registered_plugins().items():
-        properties_dict = {}
-        for k, v in cls.properties_class.schema().get("properties", {}).items():
-            properties_dict[k] = v
+        plugin_schema = cls.properties_class.schema()
+        properties_dict = dict(plugin_schema.get("properties", {}))
         properties_dict.update(project_schema["$defs"]["Part"]["properties"])
+
+        # Merge plugin-specific definitions into the main schema
+        if "$defs" in plugin_schema:
+            project_schema["$defs"].update(plugin_schema["$defs"])
+
         if_array.append(
             {
                 "if": {"properties": {"plugin": {"const": name}}},

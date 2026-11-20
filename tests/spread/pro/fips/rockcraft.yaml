@@ -1,0 +1,14 @@
+name: fips-test
+summary: Rock to test FIPS Pro overlay upgrade.
+description: Test that --pro=fips-updates packs a rock with a full base.
+version: "latest"
+license: Apache-2.0
+
+base: ubuntu@24.04
+
+platforms:
+  amd64:
+
+parts:
+  my-part:
+    plugin: nil

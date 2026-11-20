@@ -17,72 +17,70 @@
 """Project definition and helpers."""
 
 import re
-import shlex
 import typing
-from collections.abc import Mapping
-from typing import TYPE_CHECKING, Annotated, Any, Literal
+from collections.abc import Iterable, Mapping
+from typing import Any, Literal, override
 
 import craft_cli
 import pydantic
-import spdx_lookup  # type: ignore[import-untyped]
+import spdx_lookup
 from craft_application.models import (
     Platform,
-    get_validator_by_regex,
 )
 from craft_application.models import Project as BaseProject
 from craft_application.models.base import alias_generator
+from craft_application.models.project import DevelBaseInfo
+from craft_platforms import DebianArchitecture
 from craft_providers import bases
 from craft_providers.errors import BaseConfigurationError
-from typing_extensions import override
+from pydantic import GetCoreSchemaHandler
+from pydantic_core import core_schema
 
 from rockcraft.architectures import SUPPORTED_ARCHS
 from rockcraft.parts import part_has_overlay
 from rockcraft.pebble import Check, Service
 from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
-
-# pyright workaround
-if TYPE_CHECKING:
-    _RunUser = str | None
-else:
-    _RunUser = Literal[tuple(SUPPORTED_GLOBAL_USERNAMES)] | None
+from rockcraft.utils import parse_command
 
 
-PROJECT_NAME_REGEX = r"^([a-z](?:-?[a-z0-9]){2,})$"
-_PROJECT_NAME_DESCRIPTION = """\
-Valid names for rocks. It matches the accepted values for pebble layer files:
+class _RunUser(str):
+    @classmethod
+    def __get_pydantic_core_schema__(
+        cls, source_type: str, handler: GetCoreSchemaHandler
+    ) -> core_schema.CoreSchema:
+        return core_schema.literal_schema(list(SUPPORTED_GLOBAL_USERNAMES.keys()))
 
-- must start with a lowercase letter [a-z]
-- must contain only lowercase letters [a-z], numbers [0-9] or hyphens
-- must not end with a hyphen, and must not contain two or more consecutive hyphens
-"""
-PROJECT_NAME_COMPILED_REGEX = re.compile(PROJECT_NAME_REGEX)
 
-MESSAGE_INVALID_NAME = (
-    "invalid name for rock: Names can only use ASCII lowercase letters, numbers, and hyphens. "
-    "They must start with a lowercase letter, may not end with a hyphen, "
-    "and may not have two hyphens in a row."
+MESSAGE_ENTRYPOINT_CHANGED = (
+    "This operation will result in a rock with an "
+    "atypical OCI Entrypoint. While that might be acceptable for testing and "
+    "personal use, it shall require prior approval before submitting to a "
+    "Canonical registry namespace."
 )
 
 DEPRECATED_COLON_BASES = ["ubuntu:20.04", "ubuntu:22.04"]
 
 
-ProjectName = Annotated[
-    str,
-    pydantic.BeforeValidator(
-        get_validator_by_regex(PROJECT_NAME_COMPILED_REGEX, MESSAGE_INVALID_NAME)
-    ),
-    pydantic.Field(
-        min_length=1,
-        strict=True,
-        pattern=PROJECT_NAME_REGEX,
-        description=_PROJECT_NAME_DESCRIPTION,
-        title="Project Name",
-    ),
+BaseT = Literal[
+    "bare",
+    "ubuntu@20.04",
+    "ubuntu@22.04",
+    "ubuntu@24.04",
+    "ubuntu@25.10",
+    "ubuntu@26.04",
+    "ubuntu@26.10",
 ]
-
-BaseT = Literal["bare", "ubuntu@20.04", "ubuntu@22.04", "ubuntu@24.04"]
 BuildBaseT = typing.Annotated[
-    Literal["ubuntu@20.04", "ubuntu@22.04", "ubuntu@24.04", "devel"] | None,
+    Literal[
+        "ubuntu@20.04",
+        "ubuntu@22.04",
+        "ubuntu@24.04",
+        "ubuntu@25.10",
+        "ubuntu@26.04",
+        "ubuntu@26.10",
+        "devel",
+    ]
+    | None,
     pydantic.Field(validate_default=True),
 ]
 
@@ -90,17 +88,106 @@ BuildBaseT = typing.Annotated[
 class Project(BaseProject):
     """Rockcraft project definition."""
 
-    name: ProjectName  # type: ignore[reportIncompatibleVariableOverride]
     # Type of summary is Optional[str] in BaseProject
-    summary: str  # type: ignore[reportIncompatibleVariableOverride]
-    description: str  # type: ignore[reportIncompatibleVariableOverride]
-    environment: dict[str, str] | None = None
-    run_user: _RunUser = None
-    services: dict[str, Service] | None = None
-    checks: dict[str, Check] | None = None
-    entrypoint_service: str | None = None
-    base: BaseT  # type: ignore[reportIncompatibleVariableOverride]
-    build_base: BuildBaseT = None  # type: ignore[reportIncompatibleVariableOverride]
+    summary: str = pydantic.Field(  # ty: ignore[incompatible-mutable-override]
+        description="A short, single line description of the rock."
+    )
+    description: str = pydantic.Field(  # ty: ignore[incompatible-mutable-override]
+        description="A full description of the rock, potentially including multiple paragraphs."
+    )
+    """A full description of the rock, potentially including multiple paragraphs.
+
+    The description should say in full what the rock is for and who may find it useful.
+    """
+    environment: dict[str, str] | None = pydantic.Field(
+        default=None,
+        description="Additional environment variables for the base image's OCI environment.",
+    )
+    run_user: _RunUser | None = pydantic.Field(
+        default=None, description="The default OCI user. If unset, runs as root."
+    )
+    """The default OCI user. Must be a shared user.
+
+    Currently, the only supported shared user is ``_daemon_`` (UID/GID 584792).
+    If unset, the user ``root`` (UID/GID 0) is selected as the default OCI user.
+    """
+    services: dict[str, Service] | None = pydantic.Field(
+        default=None,
+        description="Services to run in the rock, using Pebble's layer specification syntax.",
+    )
+    """Services to run in the rock.
+
+    This map of services is added to the Pebble configuration layer conforming to the
+    :external+pebble:ref:`layer specification <layer-specification>`.
+    """
+    checks: dict[str, Check] | None = pydantic.Field(
+        default=None,
+        description="Health checks for this rock.",
+    )
+    entrypoint_service: str | None = pydantic.Field(
+        default=None,
+        description=(
+            "The optional name of the Pebble service to serve as the entrypoint."
+        ),
+        examples=["my-service"],
+    )
+    """The optional name of the Pebble service to serve as the `OCI entrypoint
+    <https://specs.opencontainers.org/image-spec/config/?v=v1.0.1#properties>`_.
+
+    .. caution::
+
+        Only set this key when the deployment environment has a container image
+        entrypoint that is guaranteed to be static.
+
+    If set, this makes Rockcraft extend ``["/bin/pebble", "enter"]`` with
+    ``["--args", "<serviceName>"]``. The command of the Pebble service must
+    contain an optional argument that will become the `OCI CMD
+    <https://specs.opencontainers.org/image-spec/config/?v=v1.0.1#properties>`_.
+
+    This key is mutually incompatible with the ``entrypoint-command`` key.
+    """
+    entrypoint_command: str | None = pydantic.Field(
+        default=None,
+        examples=["echo [ Hello ]"],
+        description=(
+            "Overrides the rock's default Pebble OCI entrypoint and CMD properties."
+        ),
+    )
+    """Overrides the rock's default Pebble OCI ``entrypoint`` and ``CMD`` properties.
+
+    .. important::
+
+        Only set this key for certain categories of general-purpose rocks where
+        Pebble services aren't appropriate, such as the Ubuntu OS and base images.
+
+    The value can be suffixed with default entrypoint arguments using square
+    brackets (``[]``). These entrypoint arguments become the rock's OCI CMD.
+
+    This key is mutually incompatible with the ``entrypoint-service`` key.
+    """
+    base: BaseT = pydantic.Field(  # ty: ignore[incompatible-mutable-override]
+        description="The base system image for the rock.",
+    )
+    """
+    The base system image that the rock's contents will be layered on.
+
+    :ref:`This system <explanation-bases>` is mounted and made available when using
+    overlays. The special value ``bare`` means that the rock will have no base system,
+    which is typically used with static binaries or
+    :ref:`Chisel slices <explanation-chisel>`.
+    """
+    build_base: BuildBaseT = pydantic.Field(  # ty: ignore[incompatible-mutable-override]
+        default=None, description="The system used to build the rock."
+    )
+    """The system and version that will be used during the rock's build, but not
+    included in the final rock itself.
+
+    The :ref:`build base <explanation-bases>` comprises the set of tools and libraries
+    that Rockcraft uses when building the rock's contents.
+
+    This key is mandatory if ``base`` is ``bare``. Otherwise, it is optional and
+    defaults to the value of ``base``.
+    """
 
     model_config = pydantic.ConfigDict(
         validate_assignment=True,
@@ -137,7 +224,7 @@ class Project(BaseProject):
     def _check_unsupported_options(cls, values: Mapping[str, Any]) -> Mapping[str, Any]:
         """Before validation, check if unsupported fields exist. Exit if so."""
         # pylint: disable=unused-argument
-        unsupported_msg = str(
+        unsupported_msg = (
             "The fields 'entrypoint', 'cmd' and 'env' are not supported in "
             "Rockcraft. All rocks have Pebble as their entrypoint, so you must "
             "use 'services' to define your container application and "
@@ -204,12 +291,12 @@ class Project(BaseProject):
             # This is the license name we use on our stores.
             return license
 
-        lic: spdx_lookup.License | None = spdx_lookup.by_id(license)  # type: ignore[reportUnknownMemberType]
+        lic: spdx_lookup.License | None = spdx_lookup.by_id(license)
         if lic is None:
             raise ValueError(
                 f"License {license} not valid. It must be either 'proprietary' or in SPDX format.",
             )
-        return str(lic.id)  # type: ignore[reportUnknownMemberType]
+        return str(lic.id)
 
     @pydantic.model_validator(mode="before")
     @classmethod
@@ -243,10 +330,7 @@ class Project(BaseProject):
     ) -> str | None:
         """Verify that the entrypoint_service exists in the services dict."""
         craft_cli.emit.message(
-            "Warning: defining an entrypoint-service will result in a rock with an "
-            "atypical OCI Entrypoint. While that might be acceptable for testing and "
-            "personal use, it shall require prior approval before submitting to a "
-            "Canonical registry namespace."
+            f"Warning: 'entrypoint-service' is defined. {MESSAGE_ENTRYPOINT_CHANGED}"
         )
 
         if entrypoint_service not in info.data.get("services", {}):
@@ -255,23 +339,35 @@ class Project(BaseProject):
                 "valid Pebble service."
             )
 
-        command = info.data["services"][entrypoint_service].command
-        command_sh_args = shlex.split(command)
-        # optional arg is surrounded by brackets, so check that they exist in the
-        # right order
-        try:
-            if command_sh_args.index("[") >= command_sh_args.index("]"):
-                raise IndexError(
-                    "Bad syntax for the entrypoint-service command's additional args."
-                )
-        except ValueError as ex:
+        command, args = parse_command(info.data["services"][entrypoint_service].command)
+
+        if args is None:
             raise ValueError(
-                f"The Pebble service '{entrypoint_service}' has a command {command} "
+                f"The Pebble service '{entrypoint_service}' has a command {' '.join(command)} "
                 "without default arguments and thus cannot be used as the "
                 "entrypoint-service."
-            ) from ex
+            )
 
         return entrypoint_service
+
+    @pydantic.field_validator("entrypoint_command")
+    @classmethod
+    def _validate_entrypoint_command(
+        cls, entrypoint_command: str, info: pydantic.ValidationInfo
+    ) -> str | None:
+        if info.data.get("entrypoint_service", None):
+            raise ValueError(
+                "The option 'entrypoint-command' cannot be used along 'entrypoint-service'."
+            )
+
+        craft_cli.emit.message(
+            f"Warning: 'entrypoint-command' is defined. {MESSAGE_ENTRYPOINT_CHANGED}"
+        )
+
+        # Check arguments
+        parse_command(entrypoint_command)
+
+        return entrypoint_command
 
     @pydantic.field_validator("environment")
     @classmethod
@@ -296,7 +392,10 @@ class Project(BaseProject):
         return environment
 
     def generate_metadata(
-        self, generation_time: str, base_digest: bytes
+        self,
+        generation_time: str,
+        base_digest: bytes,
+        architecture: DebianArchitecture | str,
     ) -> tuple[dict[str, Any], dict[str, Any]]:
         """Generate the rock's metadata (both the OCI annotation and internal metadata.
 
@@ -312,7 +411,10 @@ class Project(BaseProject):
             "version": self.version,
             "created": generation_time,
             "base": self.base,
-            "base-digest": base_digest.hex(),
+            # `architecture` "looks like" a string since it inherits from it, but serialization
+            # represents it as a DebianArchitecture, which comes out wrong (see rockcraft#992)
+            # instead, explicitly cast it to just be an actual string
+            "architecture": str(architecture),
         }
 
         if self.build_base == "devel":
@@ -322,9 +424,7 @@ class Project(BaseProject):
         annotations = {
             "org.opencontainers.image.version": self.version,
             "org.opencontainers.image.title": self.title,
-            "org.opencontainers.image.ref.name": self.name,
             "org.opencontainers.image.created": generation_time,
-            "org.opencontainers.image.base.digest": base_digest.hex(),
             "org.opencontainers.image.description": re.sub(
                 r"\n{2,}", "\n", self.summary
             )
@@ -333,26 +433,18 @@ class Project(BaseProject):
         if self.license:
             annotations["org.opencontainers.image.licenses"] = self.license
 
+        # The base digest is only valid for non-bare bases, since there isn't an image
+        # sharing the zero-indexed layers with the target image for a bare-based image.
+        if self.base != "bare":
+            metadata["base-digest"] = base_digest.hex()
+            annotations["org.opencontainers.image.base.digest"] = base_digest.hex()
+
         return (annotations, metadata)
 
     @override
     @classmethod
-    def transform_pydantic_error(cls, error: pydantic.ValidationError) -> None:
-        BaseProject.transform_pydantic_error(error)
-
-        for error_dict in error.errors():
-            loc = str(error_dict["loc"][0]) if error_dict["loc"] else ""
-            loc_and_type = (loc, error_dict["type"])
-            if loc_and_type == ("name", "value_error.str.regex"):
-                # Note: The base Project class already changes the error message
-                # for the "name" regex, but we re-change it here because
-                # Rockcraft's name regex is slightly stricter.
-                error_dict["msg"] = MESSAGE_INVALID_NAME
-
-    @override
-    @classmethod
     def model_reference_slug(cls) -> str | None:
-        return "/reference/rockcraft.yaml"
+        return "/reference/rockcraft-yaml"
 
     @pydantic.field_validator("platforms")
     @classmethod
@@ -403,3 +495,8 @@ class Project(BaseProject):
                 )
 
         return platforms
+
+    @classmethod
+    @override
+    def _get_devel_bases(cls) -> Iterable[DevelBaseInfo]:
+        return []

@@ -22,6 +22,7 @@ from unittest.mock import DEFAULT, call
 
 import pytest
 import yaml
+from craft_application.services import StateService
 from craft_cli import emit
 from rockcraft import cli, extensions, services
 from rockcraft.application import APP_METADATA, Rockcraft
@@ -33,6 +34,7 @@ DATA_DIR = pathlib.Path(__file__).parent.parent / "data"
 pytestmark = [pytest.mark.usefixtures("fake_services")]
 
 
+@pytest.mark.skip_overlay_enable
 @pytest.mark.usefixtures("fake_project_file")
 def test_run_pack_services(mocker, monkeypatch, tmp_path):
     # Pretend it's running inside the managed instance
@@ -40,10 +42,15 @@ def test_run_pack_services(mocker, monkeypatch, tmp_path):
 
     log_path = tmp_path / "rockcraft.log"
     mock_ended_ok = mocker.spy(emit, "ended_ok")
-    mocker.patch.object(Rockcraft, "get_project")
     mocker.patch.object(Rockcraft, "log_path", new=log_path)
 
     fake_prime_dir = Path("/fake/prime/dir")
+
+    # In managed mode the StateService expects "/tmp/craft-state" to exist, but it
+    # doesn't in this case.
+    state_dir = tmp_path / "craft-state"
+    state_dir.mkdir()
+    mocker.patch.object(StateService, "_get_state_dir", return_value=state_dir)
 
     # Mock the relevant methods from the lifecycle and package services
     lifecycle_mocks = mocker.patch.multiple(
@@ -54,10 +61,14 @@ def test_run_pack_services(mocker, monkeypatch, tmp_path):
         project_info=DEFAULT,
     )
 
+    rock_path = tmp_path / "project/my-rock.rock"
     package_mocks = mocker.patch.multiple(
-        services.RockcraftPackageService, write_metadata=DEFAULT, pack=DEFAULT
+        services.RockcraftPackageService,
+        write_metadata=DEFAULT,
+        get_artifacts=lambda self: {None: rock_path},
+        pack_artifacts=lambda self: {None: True},
+        write_artifacts_state=DEFAULT,
     )
-    package_mocks["pack"].return_value = [tmp_path / "project/my-rock.rock"]
 
     command_line = ["rockcraft", "pack"]
     mocker.patch.object(sys, "argv", command_line)
@@ -67,7 +78,7 @@ def test_run_pack_services(mocker, monkeypatch, tmp_path):
     lifecycle_mocks["run"].assert_called_once_with(step_name="prime")
 
     package_mocks["write_metadata"].assert_called_once_with(fake_prime_dir)
-    package_mocks["pack"].assert_called_once_with(fake_prime_dir, Path())
+    package_mocks["write_artifacts_state"].assert_called_once()
 
     assert mock_ended_ok.called
     assert log_path.is_file()
@@ -112,16 +123,84 @@ def test_run_init_with_name(mocker):
     assert rock_project.name == "foobar"
 
 
+@pytest.mark.parametrize(
+    ("profile", "base", "base_key"),
+    [
+        ("simple", "ubuntu@22.04", "base"),
+        ("simple", "ubuntu@24.04", "base"),
+        ("simple", "ubuntu@26.04", "base"),
+        ("django-framework", "ubuntu@22.04", "build-base"),
+        ("django-framework", "ubuntu@24.04", "build-base"),
+        ("django-framework", "ubuntu@26.04", "build-base"),
+        ("expressjs-framework", "ubuntu@24.04", "build-base"),
+        ("expressjs-framework", "ubuntu@26.04", "build-base"),
+        ("fastapi-framework", "ubuntu@24.04", "build-base"),
+        ("fastapi-framework", "ubuntu@26.04", "build-base"),
+        ("flask-framework", "ubuntu@22.04", "build-base"),
+        ("flask-framework", "ubuntu@24.04", "build-base"),
+        ("flask-framework", "ubuntu@26.04", "build-base"),
+        ("go-framework", "ubuntu@24.04", "build-base"),
+        ("go-framework", "ubuntu@26.04", "build-base"),
+        ("spring-boot-framework", "ubuntu@24.04", "build-base"),
+        ("spring-boot-framework", "ubuntu@26.04", "build-base"),
+    ],
+)
+@pytest.mark.usefixtures("valid_dir")
+def test_run_init_with_base(mocker, profile, base, base_key):
+    mocker.patch.object(
+        sys,
+        "argv",
+        [
+            "rockcraft",
+            "init",
+            f"--profile={profile}",
+            f"--base={base}",
+        ],
+    )
+
+    cli.run()
+
+    rockcraft_yaml = yaml.safe_load(Path("rockcraft.yaml").read_text())
+
+    assert rockcraft_yaml[base_key] == base
+
+
+@pytest.mark.parametrize(
+    "profile",
+    [
+        "expressjs-framework",
+        "fastapi-framework",
+        "go-framework",
+        "spring-boot-framework",
+    ],
+)
+@pytest.mark.usefixtures("valid_dir")
+def test_run_init_with_unsupported_extension_base(mocker, profile):
+    mocker.patch.object(
+        sys,
+        "argv",
+        [
+            "rockcraft",
+            "init",
+            f"--profile={profile}",
+            "--base=ubuntu@22.04",
+        ],
+    )
+
+    assert cli.run() == 1
+    assert not Path("rockcraft.yaml").exists()
+
+
 @pytest.mark.usefixtures("valid_dir")
 def test_run_init_with_invalid_name(mocker):
-    mocker.patch.object(sys, "argv", ["rockcraft", "init", "--name=f"])
+    mocker.patch.object(sys, "argv", ["rockcraft", "init", "--name=-f"])
     return_code = cli.run()
     assert return_code == 1
 
 
 def test_run_init_fallback_name(mocker, new_dir, monkeypatch):
     mocker.patch.object(sys, "argv", ["rockcraft", "init"])
-    invalid_dir = pathlib.Path(new_dir) / "f"
+    invalid_dir = pathlib.Path(new_dir) / "-f"
     invalid_dir.mkdir()
     monkeypatch.chdir(invalid_dir)
 

@@ -1,0 +1,18 @@
+# Actual parts definition for the rockcraft + python cases that we are testing.
+# (this gets appended to all rockcraft.yaml files in the subdirectories in the
+# main task.yaml).
+
+version: "0.1"
+summary: A rock that stages an ill-formed mkdir.
+description: A rock that stages an ill-formed mkdir.
+license: GPL-3.0
+platforms:
+  amd64:
+
+parts:
+  my-part:
+    plugin: nil
+    override-build: |
+      mkdir -p ${CRAFT_PART_INSTALL}/usr/bin
+      echo -e "#!/usr/bin/env bash\n echo 'Fake mkdir!'\nexit 1" > ${CRAFT_PART_INSTALL}/usr/bin/mkdir
+      chmod +x ${CRAFT_PART_INSTALL}/usr/bin/mkdir

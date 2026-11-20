@@ -1,3 +1,6 @@
+.. meta::
+    :description: Release notes for Rockcraft 1.11.
+
 .. _release-1.11:
 
 Rockcraft 1.11 release notes
@@ -90,16 +93,15 @@ Contributors
 We would like to express a big thank you to all the people who contributed to
 this release.
 
-:literalref:`@bepri<https://github.com/bepri>`,
-:literalref:`@lengau<https://github.com/lengau>`,
-:literalref:`@medubelko<https://github.com/medubelko>`,
-:literalref:`@mr-cal<https://github.com/mr-cal>`,
-:literalref:`@sergiusens<https://github.com/sergiusens>`,
-and :literalref:`@tigarmo<https://github.com/tigarmo>`.
+:literalref:`@bepri <https://github.com/bepri>`,
+:literalref:`@lengau <https://github.com/lengau>`,
+:literalref:`@medubelko <https://github.com/medubelko>`,
+:literalref:`@mr-cal <https://github.com/mr-cal>`,
+:literalref:`@sergiusens <https://github.com/sergiusens>`,
+and :literalref:`@tigarmo <https://github.com/tigarmo>`.
 
 
 .. _Gradle: https://gradle.org/
-.. _LXD: https://canonical.com/lxd
 .. _Rust: https://doc.rust-lang.org/stable/
-.. _Spread: https://github.com/snapcore/spread
+.. _Spread: https://github.com/canonical/spread
 .. _cargo registry: https://doc.rust-lang.org/cargo/reference/registries.html

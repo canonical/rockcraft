@@ -20,12 +20,12 @@ import hashlib
 import json
 import logging
 import os
-import shlex
+import re
 import shutil
 import subprocess
 import tempfile
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -44,12 +44,22 @@ logger = logging.getLogger(__name__)
 # and with less severe pull-rate limits than Docker Hub.
 ECR_URL = "public.ecr.aws/ubuntu"
 
+# Canonical's Ubuntu images are also mirrored to Azure Container Registry;
+# this serves as a fallback when ECR rate-limits us (HTTP 429).
+ACR_URL = "ubuntu.azurecr.io"
+
 REGISTRY_URL = ECR_URL
 
 # The number of times to try downloading an image from `REGISTRY_URL`.
 MAX_DOWNLOAD_RETRIES = 5
 
 MANIFEST_MEDIA_TYPE = "application/vnd.oci.image.manifest.v1+json"
+
+# Fixed 'created' timestamp used when synthesizing the empty base image via
+# 'umoci new'. Pinning this makes the resulting manifest digest deterministic
+# across runs, so base_digest stays stable and craft-parts does not spuriously
+# invalidate overlay layer state.
+_FIXED_OCI_CREATED = "1970-01-01T00:00:00Z"
 
 
 @dataclass(frozen=True)
@@ -70,18 +80,19 @@ class Image:
         *,
         image_dir: Path,
         arch: str,
+        registry_url: str = REGISTRY_URL,
     ) -> tuple["Image", str]:
         """Obtain an image from a docker registry.
 
-        The image is fetched from the registry at ``REGISTRY_URL``.
+        The image is fetched from the registry at ``registry_url``. If fetching
+        from ECR fails due to rate limiting (HTTP 429), it falls back to ``ACR_URL``.
 
         :param image_name: The image to retrieve, in ``name@tag`` format.
         :param image_dir: The directory to store local OCI images.
         :param arch: The architecture of the Docker image to fetch, in Debian format.
-        :param variant: The variant, if any, of the Docker image to fetch.
+        :param registry_url: The registry URL to fetch the image from.
 
-
-        :returns: The downloaded image and it's corresponding source image
+        :returns: The downloaded image and its corresponding source image
         """
         if "@" not in image_name:
             raise ValueError(f"Bad image name: {image_name}")
@@ -91,7 +102,6 @@ class Image:
         image_dir.mkdir(parents=True, exist_ok=True)
         image_target = image_dir / image_name
 
-        source_image = f"docker://{REGISTRY_URL}/{image_name}"
         copy_params = ["--retry-times", str(MAX_DOWNLOAD_RETRIES)]
 
         mapping = SUPPORTED_ARCHS[arch]
@@ -103,12 +113,32 @@ class Image:
         if mapping.go_variant:
             platform_params += ["--override-variant", mapping.go_variant]
 
-        _copy_image(
-            source_image,
-            f"oci:{image_target}",
-            *platform_params,
-            copy_params=copy_params,
-        )
+        def _fetch_from_registry(url: str) -> str:
+            source = f"docker://{url}/{image_name}"
+            _copy_image(
+                source,
+                f"oci:{image_target}",
+                *platform_params,
+                copy_params=copy_params,
+            )
+            return source
+
+        try:
+            source_image = _fetch_from_registry(registry_url)
+        except errors.ImageCopyError as err:
+            if (
+                registry_url == ECR_URL
+                and err.returncode == 1
+                and _is_rate_limit_error(str(err))
+            ):
+                emit.progress(
+                    f"Rate-limiting (HTTP 429) encountered while fetching from ECR; "
+                    f"falling back to ACR ({ACR_URL})..."
+                )
+                shutil.rmtree(image_target, ignore_errors=True)
+                source_image = _fetch_from_registry(ACR_URL)
+            else:
+                raise
 
         return cls(image_name=image_name, path=image_dir), source_image
 
@@ -146,8 +176,25 @@ class Image:
 
         # Unfortunately, umoci does not allow initializing an image
         # with arch and variant. We can configure the arch via
-        # umoci config, but not the variant. Need to do it manually
-        _config_image(image_target, ["--architecture", mapping.go_arch, "--no-history"])
+        # umoci config, but not the variant. Need to do it manually.
+        #
+        # We also pin --created to a fixed epoch timestamp so the manifest
+        # digest is deterministic across runs. Without this, 'umoci new'
+        # embeds the current time in the image config, which changes the
+        # manifest digest on every invocation. That instability propagates
+        # to base_digest and invalidates craft-parts' overlay layer state,
+        # forcing unnecessary repacks. --no-history keeps umoci from adding
+        # a history entry whose 'created' would still track the current time.
+        _config_image(
+            image_target,
+            [
+                "--architecture",
+                mapping.go_arch,
+                "--created",
+                _FIXED_OCI_CREATED,
+                "--no-history",
+            ],
+        )
 
         _inject_oci_fields(
             image_target,
@@ -199,6 +246,7 @@ class Image:
         tag: str,
         new_layer_dir: Path,
         base_layer_dir: Path | None = None,
+        comment: str | None = None,
     ) -> "Image":
         """Add a layer to the image.
 
@@ -206,6 +254,7 @@ class Image:
         :param new_layer_dir: The path to the new layer root filesystem.
         :param base_layer_dir: An optional path to the extracted contents of the
           new layer's base layer. Used to preserve lower-layer symlinks.
+        :param comment: An optional comment to add to the layer's history.
         """
         image_path = self.path / self.image_name
 
@@ -214,7 +263,9 @@ class Image:
 
         try:
             layers.archive_layer(new_layer_dir, temp_file, base_layer_dir)
-            _add_layer_into_image(image_path, temp_file, **{"--tag": tag})
+            _add_layer_into_image(
+                image_path, temp_file, comment=comment, **{"--tag": tag}
+            )
         finally:
             temp_file.unlink(missing_ok=True)
 
@@ -287,8 +338,10 @@ class Image:
             with (tmpfs_etc / "group").open("a+") as groupf:
                 groupf.write(user_files["group"])
 
-            if user_files["shadow"]:
-                days_since_epoch = (datetime.utcnow() - datetime(1970, 1, 1)).days  # type: ignore[reportDeprecated]
+            if user_files["shadow"]:  # ty: ignore[redundant-condition]
+                days_since_epoch = (
+                    datetime.now(UTC) - datetime(1970, 1, 1, tzinfo=UTC)
+                ).days
 
                 # only add the shadow file if there's already one in the base image
                 with (tmpfs_etc / "shadow").open("a+") as shadowf:
@@ -298,7 +351,11 @@ class Image:
                     )
 
             emit.progress(f"Adding user {username}:{uid} with group {username}:{uid}")
-            self.add_layer(tag, Path(tmpfs))
+            self.add_layer(
+                tag,
+                Path(tmpfs),
+                comment=f"Add user {username}:{uid} with group {username}:{uid}",
+            )
 
     def stat(self) -> dict[str, Any]:
         """Obtain the image statistics, as reported by "umoci stat --json"."""
@@ -365,43 +422,35 @@ class Image:
         """
         image_path = self.path / self.image_name
         params = ["--clear=config.entrypoint", "--config.user", str(userid)]
-        _config_image(image_path, params)
+        _config_image(image_path, params, comment="Set default user")
         emit.progress(f"Default user set to {userid} ({username})")
 
-    def set_entrypoint(self, entrypoint_service: str | None, build_base: str) -> None:
+    def set_entrypoint(self, entrypoint: list[str]) -> None:
         """Set the OCI image entrypoint. It is always Pebble."""
         emit.progress("Configuring entrypoint...")
         image_path = self.path / self.image_name
-        entrypoint = Pebble.get_entrypoint(build_base)
-        if entrypoint_service:
-            entrypoint.extend(["--args", entrypoint_service])
+
         params = ["--clear=config.entrypoint"]
         for entry in entrypoint:
             params.extend(["--config.entrypoint", entry])
+
         params.extend(["--clear=config.cmd"])
-        _config_image(image_path, params)
+        _config_image(image_path, params, comment="Set entrypoint")
         emit.progress(f"Entrypoint set to {entrypoint}")
 
-    def set_cmd(self, command: str | None = None) -> None:
-        """Set the OCI image CMD."""
+    def set_cmd(self, command: list[str] | None = None) -> None:
+        """Set the OCI image CMD.
+
+        :param command: List of CMD arguments to set, or None to clear CMD without setting new values
+        """
         emit.progress("Configuring CMD...")
         image_path = self.path / self.image_name
         cmd_params = ["--clear=config.cmd"]
-        command_sh_args = shlex.split(command or "")
-        try:
-            opt_args = command_sh_args[
-                command_sh_args.index("[") + 1 : command_sh_args.index("]")
-            ]
-        except ValueError:
-            emit.debug(
-                f"The entrypoint-service command '{command}' has no default "
-                "arguments. CMD won't be set."
-            )
-            return
-        for arg in opt_args:
+
+        for arg in command or []:
             cmd_params.extend(["--config.cmd", arg])
-        _config_image(image_path, cmd_params)
-        emit.progress(f"CMD set to {opt_args}")
+        _config_image(image_path, cmd_params, comment="Set default commands")
+        emit.progress(f"CMD set to {command}")
 
     def set_default_path(self, base: str) -> None:
         """Set the default PATH on the image (only for bare rocks)."""
@@ -416,7 +465,11 @@ class Image:
         image_path = self.path / self.image_name
 
         emit.debug(f"Setting bare-based rock PATH to {pebble_path!r}")
-        _config_image(image_path, ["--config.env", f"PATH={pebble_path}"])
+        _config_image(
+            image_path,
+            ["--config.env", f"PATH={pebble_path}"],
+            comment="Set default PATH for bare-based rock",
+        )
 
     def set_pebble_layer(
         self,
@@ -462,7 +515,7 @@ class Image:
             )
 
             emit.progress("Writing new Pebble layer file")
-            self.add_layer(tag, tmpfs_path)
+            self.add_layer(tag, tmpfs_path, comment="Add Pebble layer file")
 
     def set_environment(self, env: dict[str, str]) -> None:
         """Set the OCI image environment.
@@ -479,7 +532,7 @@ class Image:
             env_item = f"{name}={value}"
             env_list.append(env_item)
             params.extend(["--config.env", env_item])
-        _config_image(image_path, params)
+        _config_image(image_path, params, comment="Set environment variables")
         emit.progress(f"Environment set to {env_list}")
 
     def set_control_data(self, metadata: dict[str, Any]) -> None:
@@ -504,12 +557,22 @@ class Image:
 
         try:
             layers.archive_layer(local_control_data_path, temp_tar_file)
-            _add_layer_into_image(self.path / self.image_name, temp_tar_file)
+            _add_layer_into_image(
+                self.path / self.image_name,
+                temp_tar_file,
+                comment="Add rock control metadata",
+            )
         finally:
             temp_tar_file.unlink(missing_ok=True)
 
         emit.progress("Control data written")
         shutil.rmtree(local_control_data_path)
+
+    def set_created(self, created: str) -> None:
+        """Set the top-level OCI creation timestamp."""
+        _config_image(
+            self.path / self.image_name, ["--created", created, "--no-history"]
+        )
 
     def set_annotations(self, annotations: dict[str, Any]) -> None:
         """Add the given annotations to the final image.
@@ -528,20 +591,36 @@ class Image:
             label_params.extend(["--config.label", label_item])
             annotation_params.extend(["--manifest.annotation", label_item])
         # Set the labels
-        _config_image(image_path, label_params)
+        _config_image(image_path, label_params, comment="Set labels")
         # Set the annotations as a copy of these labels (for OCI compliance only)
-        _config_image(image_path, annotation_params)
+        _config_image(image_path, annotation_params, comment="Set annotations")
         emit.progress(f"Labels and annotations set to {labels_list}")
 
-    def set_media_type(
-        self,
-    ) -> None:
+    def set_media_type(self, arch: str) -> None:
         """Set the media type in the target image's manifest."""
         image_path = self.path / self.image_name
+        mapping = SUPPORTED_ARCHS[arch]
         _inject_oci_fields(
             image_path,
-            arch_variant=None,
+            arch_variant=mapping.go_variant,
         )
+
+
+def _is_rate_limit_error(error_message: str) -> bool:
+    """Return True if the error indicates an HTTP 429 / rate-limiting response.
+
+    Containers/image (used by skopeo) reports HTTP 429 in one of two ways:
+    1. OCI Distribution spec error code: 'TOOMANYREQUESTS' (e.g.
+       'toomanyrequests: Data limit exceeded' from AWS ECR).
+    2. HTTP status code/text: 'StatusCode: 429', 'status: 429',
+       '429 Too Many Requests', or 'too many requests to registry'.
+    """
+    lower = error_message.lower()
+    return bool(
+        re.search(r"\b429\b", error_message)
+        or "toomanyrequests" in lower
+        or "too many requests" in lower
+    )
 
 
 def _copy_image(
@@ -556,7 +635,7 @@ def _copy_image(
         skopeo command (and not to skopeo itself).
     """
     copy_extra = copy_params if copy_params else []
-    _process_run(
+    result = _process_run(
         [
             "skopeo",
             "--insecure-policy",
@@ -565,22 +644,39 @@ def _copy_image(
             *copy_extra,
             source,
             destination,
-        ]
+        ],
+        check=False,
     )
+    if result.returncode != 0:
+        msg = (
+            f"Failed to copy image: Command {result.args!r}"
+            f" returned non-zero exit status {result.returncode}."
+        )
+        if result.stderr:
+            msg += f" ({result.stderr.strip()!s})"
+        raise errors.ImageCopyError(msg, returncode=result.returncode)
 
 
-def _config_image(image_path: Path, params: list[str]) -> None:
+def _config_image(
+    image_path: Path, params: list[str], comment: str | None = None
+) -> None:
     """Configure the OCI image."""
-    _process_run(["umoci", "config", "--image", str(image_path), *params])
+    cmd = ["umoci", "config", "--image", str(image_path), *params]
+    if "--no-history" not in params:
+        cmd.extend(["--history.created_by", " ".join(cmd)])
+    if comment:
+        cmd.extend(["--history.comment", comment])
+    _process_run(cmd)
 
 
 def _add_layer_into_image(
-    image_path: Path, archived_content: Path, **kwargs: str
+    image_path: Path, archived_content: Path, comment: str | None = None, **kwargs: str
 ) -> None:
     """Add raw layer (archived) into the OCI image.
 
     :param image_path: path of the OCI image, in the format <image>:<tar>
     :param archived_content: path to the archived content to be added
+    :param comment: optional comment to add to the layer's history
     """
     cmd = [
         "umoci",
@@ -590,7 +686,10 @@ def _add_layer_into_image(
         str(image_path),
         str(archived_content),
     ] + [arg_val for k, v in kwargs.items() for arg_val in [k, v]]
-    _process_run([*cmd, "--history.created_by", " ".join(cmd)])
+    cmd.extend(["--history.created_by", " ".join(cmd)])
+    if comment:
+        cmd.extend(["--history.comment", comment])
+    _process_run(cmd)
 
 
 def _inject_oci_fields(image_path: Path, arch_variant: str | None = None) -> None:
@@ -609,6 +708,10 @@ def _inject_oci_fields(image_path: Path, arch_variant: str | None = None) -> Non
     # The manifest of the image being built contains both the base image
     # and the target image. We need to find the manifest that matches the
     # tag of the target image, and ensure the tag is not ambiguous.
+    # The annotation "org.opencontainers.image.ref.name" here is set by umoci
+    # when calling the method `add_layer` to distinguish images with different
+    # tags within the same OCI directory. This annotation is irrelevant to the
+    # annotation field with the same name in the manifest of the target image.
     manifest_digests: list[tuple[str, int]] = [
         (manifest["digest"].split(":")[-1], i)
         for i, manifest in enumerate(tl_index["manifests"])
@@ -661,8 +764,15 @@ def _inject_oci_fields(image_path: Path, arch_variant: str | None = None) -> Non
     tl_index_path.write_bytes(json.dumps(tl_index).encode("utf-8"))
 
 
-def _process_run(command: list[str], **kwargs: Any) -> subprocess.CompletedProcess[Any]:
-    """Run a command and handle its output."""
+def _process_run(
+    command: list[str], *, check: bool = True, **kwargs: Any
+) -> subprocess.CompletedProcess[Any]:
+    """Run a command and handle its output.
+
+    :param check: If True (default), raise a RockcraftError when the process
+        exits with a non-zero status. If False, return the CompletedProcess
+        regardless of exit status.
+    """
     if not Path(command[0]).is_absolute():
         command[0] = get_snap_command_path(command[0])
         emit.trace(f"Found command absolute path: {command[0]!r}")
@@ -673,7 +783,7 @@ def _process_run(command: list[str], **kwargs: Any) -> subprocess.CompletedProce
             command,
             **kwargs,
             capture_output=True,
-            check=True,
+            check=check,
             text=True,
         )
     except subprocess.CalledProcessError as err:

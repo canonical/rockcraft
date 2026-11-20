@@ -17,9 +17,9 @@
 """The Rockcraft Maven plugin."""
 
 import logging
+from typing import override
 
 from craft_parts.plugins import maven_plugin
-from overrides import override  # type: ignore[reportUnknownVariableType]
 
 from .java_common import create_usr_bin_java
 

@@ -13,14 +13,15 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-import datetime
+import datetime as dt
 import hashlib
 import json
 import os
+import subprocess
 import tarfile
 from pathlib import Path
-from typing import NamedTuple
-from unittest.mock import ANY, call, mock_open, patch
+from typing import NamedTuple, cast
+from unittest.mock import ANY, MagicMock, call, mock_open, patch
 
 import pytest
 from rockcraft import errors, oci
@@ -35,16 +36,18 @@ MOCK_NEW_USER = {
     "passwd": "foo:x:585287:585287::/var/lib/pebble/default:/usr/bin/false\n",
     "group": "foo:x:585287:\n",
     "shadow": str(
-        "foo:!:"
-        f"{(datetime.datetime.utcnow() - datetime.datetime(1970, 1, 1)).days}"
-        "::::::\n"
+        f"foo:!:{(dt.datetime.now() - dt.datetime(1970, 1, 1)).days}::::::\n"
     ),
 }
 
 
 @pytest.fixture
 def mock_run(mocker):
-    return mocker.patch("rockcraft.oci._process_run")
+    mock = mocker.patch("rockcraft.oci._process_run")
+    mock.return_value = subprocess.CompletedProcess(
+        args=[], returncode=0, stdout="", stderr=""
+    )
+    return mock
 
 
 @pytest.fixture
@@ -126,7 +129,8 @@ class TestImage:
                     str(oci.MAX_DOWNLOAD_RETRIES),
                     f"docker://{oci.REGISTRY_URL}/a:b",
                     "oci:images/dir/a:b",
-                ]
+                ],
+                check=False,
             )
         ]
         mock_run.reset_mock()
@@ -147,9 +151,212 @@ class TestImage:
                     str(oci.MAX_DOWNLOAD_RETRIES),
                     f"docker://{oci.REGISTRY_URL}/a:b",
                     "oci:images/dir/a:b",
-                ]
+                ],
+                check=False,
             )
         ]
+
+    @pytest.mark.parametrize(
+        "error_msg",
+        [
+            pytest.param(
+                "toomanyrequests: Data limit exceeded",
+                id="toomanyrequests",
+            ),
+            pytest.param(
+                "received unexpected HTTP status: 429 Too Many Requests",
+                id="429-too-many-requests",
+            ),
+            pytest.param(
+                "StatusCode: 429, error parsing HTTP response",
+                id="status-code-429",
+            ),
+            pytest.param(
+                "too many requests to registry",
+                id="too-many-requests-to-registry",
+            ),
+        ],
+    )
+    def test_from_docker_registry_ecr_rate_limit_fallback_to_acr(
+        self,
+        mock_run: MagicMock,
+        mock_rmtree: MagicMock,
+        new_dir: Path,
+        error_msg: str,
+    ) -> None:
+        mock_run.side_effect = [
+            subprocess.CompletedProcess(
+                args=["skopeo", "copy"],
+                returncode=1,
+                stdout="",
+                stderr=error_msg,
+            ),
+            subprocess.CompletedProcess(
+                args=["skopeo", "copy"],
+                returncode=0,
+                stdout="",
+                stderr="",
+            ),
+        ]
+
+        image, source_image = oci.Image.from_docker_registry(
+            "ubuntu@22.04", image_dir=Path("images/dir"), arch="amd64"
+        )
+
+        assert source_image == f"docker://{oci.ACR_URL}/ubuntu:22.04"
+        assert image.image_name == "ubuntu:22.04"
+        mock_rmtree.assert_called_once_with(
+            Path("images/dir/ubuntu:22.04"), ignore_errors=True
+        )
+        assert mock_run.mock_calls == [
+            call(
+                [
+                    "skopeo",
+                    "--insecure-policy",
+                    "--override-arch",
+                    "amd64",
+                    "copy",
+                    "--retry-times",
+                    str(oci.MAX_DOWNLOAD_RETRIES),
+                    f"docker://{oci.ECR_URL}/ubuntu:22.04",
+                    "oci:images/dir/ubuntu:22.04",
+                ],
+                check=False,
+            ),
+            call(
+                [
+                    "skopeo",
+                    "--insecure-policy",
+                    "--override-arch",
+                    "amd64",
+                    "copy",
+                    "--retry-times",
+                    str(oci.MAX_DOWNLOAD_RETRIES),
+                    f"docker://{oci.ACR_URL}/ubuntu:22.04",
+                    "oci:images/dir/ubuntu:22.04",
+                ],
+                check=False,
+            ),
+        ]
+
+    def test_from_docker_registry_non_rate_limit_error_does_not_fallback(
+        self,
+        mock_run: MagicMock,
+        mock_rmtree: MagicMock,
+        new_dir: Path,
+    ) -> None:
+        mock_run.return_value = subprocess.CompletedProcess(
+            args=["skopeo", "copy"],
+            returncode=1,
+            stdout="",
+            stderr="manifest unknown",
+        )
+
+        with pytest.raises(errors.ImageCopyError, match="manifest unknown"):
+            oci.Image.from_docker_registry(
+                "ubuntu@22.04", image_dir=Path("images/dir"), arch="amd64"
+            )
+
+        mock_rmtree.assert_not_called()
+        assert mock_run.call_count == 1
+
+    def test_from_docker_registry_non_exit_one_does_not_fallback(
+        self,
+        mock_run: MagicMock,
+        mock_rmtree: MagicMock,
+        new_dir: Path,
+    ) -> None:
+        mock_run.return_value = subprocess.CompletedProcess(
+            args=["skopeo", "copy"],
+            returncode=2,
+            stdout="",
+            stderr="This is another error",
+        )
+
+        with pytest.raises(errors.ImageCopyError, match="This is another error") as err:
+            oci.Image.from_docker_registry(
+                "ubuntu@22.04", image_dir=Path("images/dir"), arch="amd64"
+            )
+
+        assert err.value.returncode == 2
+        mock_rmtree.assert_not_called()
+        assert mock_run.call_count == 1
+
+    def test_from_docker_registry_acr_failure_raises(
+        self,
+        mock_run: MagicMock,
+        mock_rmtree: MagicMock,
+        new_dir: Path,
+    ) -> None:
+        mock_run.side_effect = [
+            subprocess.CompletedProcess(
+                args=["skopeo", "copy"],
+                returncode=1,
+                stdout="",
+                stderr="429 Too Many Requests",
+            ),
+            subprocess.CompletedProcess(
+                args=["skopeo", "copy"],
+                returncode=1,
+                stdout="",
+                stderr="ACR connection refused",
+            ),
+        ]
+
+        with pytest.raises(errors.ImageCopyError, match="ACR connection refused"):
+            oci.Image.from_docker_registry(
+                "ubuntu@22.04", image_dir=Path("images/dir"), arch="amd64"
+            )
+
+        assert mock_run.call_count == 2
+
+    @pytest.mark.parametrize(
+        ("message", "expected"),
+        [
+            pytest.param(
+                "toomanyrequests: Data limit exceeded",
+                True,
+                id="toomanyrequests",
+            ),
+            pytest.param(
+                "429 Too Many Requests",
+                True,
+                id="429-too-many-requests",
+            ),
+            pytest.param(
+                "StatusCode: 429",
+                True,
+                id="status-code-429",
+            ),
+            pytest.param(
+                "Too many requests to registry",
+                True,
+                id="too-many-requests",
+            ),
+            pytest.param(
+                "manifest unknown",
+                False,
+                id="manifest-unknown",
+            ),
+            pytest.param(
+                "sha256:1a429bdeadbeef",
+                False,
+                id="hex-digest-containing-429",
+            ),
+            pytest.param(
+                "connection refused",
+                False,
+                id="connection-refused",
+            ),
+            pytest.param(
+                "404 Not Found",
+                False,
+                id="404-not-found",
+            ),
+        ],
+    )
+    def test_is_rate_limit_error(self, message: str, expected: bool) -> None:
+        assert oci._is_rate_limit_error(message) is expected
 
     def _get_arch_from_call(self, mock_call):
         class ArchData(NamedTuple):
@@ -217,6 +424,8 @@ class TestImage:
                     f"{image_dir}/bare:latest",
                     "--architecture",
                     expected.go_arch,
+                    "--created",
+                    "1970-01-01T00:00:00Z",
                     "--no-history",
                 ]
             ),
@@ -224,6 +433,29 @@ class TestImage:
         mock_inject_oci_fields.assert_called_once_with(
             image_dir / "bare:latest", arch_variant=expected.go_variant
         )
+
+    def test_new_oci_image_pins_created_timestamp(
+        self, mock_inject_oci_fields, mock_run, new_dir
+    ):
+        """The umoci config call pins --created so the digest is deterministic.
+
+        Regression test for skip-repack: without a fixed --created value,
+        'umoci new' embeds the current time in the image config, causing
+        base_digest to change across runs and invalidating overlay layer
+        state.
+        """
+        image_dir = Path("images/dir")
+        oci.Image.new_oci_image("bare@latest", image_dir=image_dir, arch="amd64")
+
+        config_calls = [
+            c for c in mock_run.mock_calls if c.args and "config" in c.args[0]
+        ]
+        assert len(config_calls) == 1
+
+        config_args = config_calls[0].args[0]
+        assert "--created" in config_args
+        assert config_args[config_args.index("--created") + 1] == "1970-01-01T00:00:00Z"
+        assert "--no-history" in config_args
 
     def test_copy_to(self, mock_run):
         image = oci.Image("a:b", Path("/c"))
@@ -238,7 +470,8 @@ class TestImage:
                     "copy",
                     "oci:/c/a:b",
                     "oci:/f/d:e",
-                ]
+                ],
+                check=False,
             )
         ]
 
@@ -324,8 +557,8 @@ class TestImage:
             tmp_path / "prime",
             tmp_path,
             "mock-tag",
-            MOCK_NEW_USER["user"],
-            MOCK_NEW_USER["uid"],
+            cast(str, MOCK_NEW_USER["user"]),
+            cast(int, MOCK_NEW_USER["uid"]),
         )
 
         mock_tmpdir.assert_called_once()
@@ -339,7 +572,9 @@ class TestImage:
         )
 
         check.is_false((fake_tmpfs / "etc/shadow").exists())
-        mock_add_layer.assert_called_once_with("mock-tag", fake_tmpfs)
+        mock_add_layer.assert_called_once_with(
+            "mock-tag", fake_tmpfs, comment="Add user foo:585287 with group foo:585287"
+        )
 
         # Test with a conflicting user or ID.
         # Use the new fs as a base to force the error.
@@ -348,8 +583,8 @@ class TestImage:
                 tmp_path / "prime",
                 fake_tmpfs,
                 "mock-tag",
-                MOCK_NEW_USER["user"],
-                MOCK_NEW_USER["uid"] + 1,
+                cast(str, MOCK_NEW_USER["user"]),
+                cast(int, MOCK_NEW_USER["uid"]) + 1,
             )
         check.is_in(
             "conflict with existing user/group in the base filesystem", str(err)
@@ -360,8 +595,8 @@ class TestImage:
                 tmp_path / "prime",
                 fake_tmpfs,
                 "mock-tag",
-                MOCK_NEW_USER["user"] + "bar",
-                MOCK_NEW_USER["uid"],
+                cast(str, MOCK_NEW_USER["user"]) + "bar",
+                cast(int, MOCK_NEW_USER["uid"]),
             )
         check.is_in(
             "conflict with existing user/group in the base filesystem", str(err)
@@ -470,12 +705,16 @@ class TestImage:
             fake_prime,
             tmp_path,
             "mock-tag",
-            MOCK_NEW_USER["user"],
-            MOCK_NEW_USER["uid"],
+            cast(str, MOCK_NEW_USER["user"]),
+            cast(int, MOCK_NEW_USER["uid"]),
         )
 
         mock_tmpdir.assert_called_once()
-        mock_add_layer.assert_called_once_with("mock-tag", fake_tmp_new_layer)
+        mock_add_layer.assert_called_once_with(
+            "mock-tag",
+            fake_tmp_new_layer,
+            comment="Add user foo:585287 with group foo:585287",
+        )
         check.equal(
             (fake_tmp_new_layer / "etc/passwd").read_text(),
             expected_user_files["passwd"],
@@ -501,7 +740,8 @@ class TestImage:
                     "copy",
                     "oci:/c/a:tag",
                     "docker-daemon:a:tag",
-                ]
+                ],
+                check=False,
             )
         ]
 
@@ -516,9 +756,35 @@ class TestImage:
                     "copy",
                     "oci:/c/a:tag",
                     "oci-archive:foobar:tag",
-                ]
+                ],
+                check=False,
             )
         ]
+
+    def test_copy_image_failure_raises_image_copy_error(self, mock_run):
+        mock_run.return_value = subprocess.CompletedProcess(
+            args=["skopeo", "copy", "src", "dst"],
+            returncode=125,
+            stdout="",
+            stderr="fatal error from skopeo",
+        )
+
+        with pytest.raises(errors.ImageCopyError) as exc_info:
+            oci._copy_image("src", "dst")
+
+        assert exc_info.value.returncode == 125
+        assert "fatal error from skopeo" in str(exc_info.value)
+
+    def test_process_run_check_false_returns_completed_process(self):
+        result = oci._process_run(["/bin/false"], check=False)
+
+        assert result.returncode == 1
+
+    def test_process_run_check_true_raises_rockcraft_error(self):
+        with pytest.raises(errors.RockcraftError) as exc_info:
+            oci._process_run(["/bin/false"], check=True)
+
+        assert "returned non-zero exit status 1" in str(exc_info.value)
 
     def test_digest(self, mocker):
         source_image = "docker://ubuntu:22.04"
@@ -554,69 +820,41 @@ class TestImage:
 
         image.set_default_user(584792, "_daemon_")
 
+        expected_cmd = [
+            "umoci",
+            "config",
+            "--image",
+            "/c/a:b",
+            "--clear=config.entrypoint",
+            "--config.user",
+            "584792",
+        ]
+
         assert mock_run.mock_calls == [
             call(
                 [
-                    "umoci",
-                    "config",
-                    "--image",
-                    "/c/a:b",
-                    "--clear=config.entrypoint",
-                    "--config.user",
-                    "584792",
+                    *expected_cmd,
+                    "--history.created_by",
+                    " ".join(expected_cmd),
+                    "--history.comment",
+                    "Set default user",
                 ]
             )
         ]
 
     @pytest.mark.parametrize(
-        ("service", "build_base", "pebble_binary", "verbose", "service_config"),
+        "entrypoint",
         [
-            (
-                None,
-                "ubuntu@22.04",
-                Pebble.PEBBLE_BINARY_PATH_PREVIOUS,
-                [],
-                [],
-            ),
-            (
-                None,
-                "ubuntu@24.04",
-                Pebble.PEBBLE_BINARY_PATH,
-                [],
-                [],
-            ),
-            (
-                "test-service",
-                "ubuntu@22.04",
-                Pebble.PEBBLE_BINARY_PATH_PREVIOUS,
-                [],
-                [
-                    "--config.entrypoint",
-                    "--args",
-                    "--config.entrypoint",
-                    "test-service",
-                ],
-            ),
-            (
-                "test-service",
-                "ubuntu@24.04",
-                Pebble.PEBBLE_BINARY_PATH,
-                [],
-                [
-                    "--config.entrypoint",
-                    "--args",
-                    "--config.entrypoint",
-                    "test-service",
-                ],
-            ),
+            [Pebble.PEBBLE_BINARY_PATH_PREVIOUS, "enter"],
+            [Pebble.PEBBLE_BINARY_PATH, "enter"],
+            ["echo", "Test"],
+            [],
         ],
     )
-    def test_set_entrypoint_default(
-        self, mock_run, service, build_base, pebble_binary, verbose, service_config
-    ):
+    def test_set_entrypoint_default(self, mock_run, entrypoint):
         image = oci.Image("a:b", Path("/tmp"))
 
-        image.set_entrypoint(service, build_base)
+        image.set_entrypoint(entrypoint)
 
         arg_list = [
             "umoci",
@@ -624,61 +862,53 @@ class TestImage:
             "--image",
             "/tmp/a:b",
             "--clear=config.entrypoint",
-            "--config.entrypoint",
-            f"/{pebble_binary}",
-            "--config.entrypoint",
-            "enter",
         ]
-        arg_list.extend(verbose)
 
-        arg_list.extend(service_config)
+        for e in entrypoint:
+            arg_list.extend(["--config.entrypoint", e])
 
         arg_list.append("--clear=config.cmd")
+
+        arg_list.extend(
+            [
+                "--history.created_by",
+                " ".join(arg_list),
+                "--history.comment",
+                "Set entrypoint",
+            ]
+        )
 
         assert mock_run.mock_calls == [
             call(arg_list),
         ]
 
-    def test_set_cmd_empty(self, mock_run):
+    @pytest.mark.parametrize(("cmd"), [(["echo", "Test"]), ([])])
+    def test_set_cmd(self, mock_run, cmd):
         image = oci.Image("a:b", Path("/c"))
-        image.set_cmd()
+        image.set_cmd(cmd)
 
-        assert mock_run.mock_calls == []
-
-    def test_set_cmd_nonempty(self, mock_run):
-        image = oci.Image("a:b", Path("/c"))
-        image.set_cmd("echo [ foo ]")
-
-        assert mock_run.mock_calls == [
-            call(
-                [
-                    "umoci",
-                    "config",
-                    "--image",
-                    "/c/a:b",
-                    "--clear=config.cmd",
-                    "--config.cmd",
-                    "foo",
-                ]
-            ),
+        arg_list = [
+            "umoci",
+            "config",
+            "--image",
+            "/c/a:b",
+            "--clear=config.cmd",
         ]
 
-    def test_set_cmd_nonempty2(self, mock_run):
-        image = oci.Image("a:b", Path("/c"))
-        image.set_cmd("echo foo [ bar ]")
+        for arg in cmd:
+            arg_list.extend(["--config.cmd", arg])
+
+        arg_list.extend(
+            [
+                "--history.created_by",
+                " ".join(arg_list),
+                "--history.comment",
+                "Set default commands",
+            ]
+        )
 
         assert mock_run.mock_calls == [
-            call(
-                [
-                    "umoci",
-                    "config",
-                    "--image",
-                    "/c/a:b",
-                    "--clear=config.cmd",
-                    "--config.cmd",
-                    "bar",
-                ]
-            ),
+            call(arg_list),
         ]
 
     @pytest.mark.parametrize(
@@ -765,7 +995,9 @@ class TestImage:
         )
 
         mock_tmpdir.assert_called_once()
-        mock_add_layer.assert_called_once_with(mock_tag, fake_tmpfs)
+        mock_add_layer.assert_called_once_with(
+            mock_tag, fake_tmpfs, comment="Add Pebble layer file"
+        )
         mock_define_pebble_layer.assert_called_once_with(
             fake_tmpfs, mock_base_layer_dir, expected_layer, mock_name
         )
@@ -775,17 +1007,25 @@ class TestImage:
 
         image.set_environment({"NAME1": "VALUE1", "NAME2": "VALUE2"})
 
+        expected_cmd = [
+            "umoci",
+            "config",
+            "--image",
+            "/c/a:b",
+            "--config.env",
+            "NAME1=VALUE1",
+            "--config.env",
+            "NAME2=VALUE2",
+        ]
+
         assert mock_run.mock_calls == [
             call(
                 [
-                    "umoci",
-                    "config",
-                    "--image",
-                    "/c/a:b",
-                    "--config.env",
-                    "NAME1=VALUE1",
-                    "--config.env",
-                    "NAME2=VALUE2",
+                    *expected_cmd,
+                    "--history.created_by",
+                    " ".join(expected_cmd),
+                    "--history.comment",
+                    "Set environment variables",
                 ]
             )
         ]
@@ -803,7 +1043,7 @@ class TestImage:
         mock_control_data_path = "layer_dir"
         mock_mkdtemp.return_value = mock_control_data_path
 
-        now = datetime.datetime.now(datetime.timezone.utc).isoformat()
+        now = dt.datetime.now(dt.UTC).isoformat()
         metadata = {"name": "rock-name", "version": 1, "created": now}
 
         expected = (f"created: '{now}'" + "{n}name: rock-name{n}version: 1{n}").format(
@@ -839,7 +1079,13 @@ class TestImage:
         ]
         assert mock_run.mock_calls == [
             call(
-                [*expected_cmd, "--history.created_by", " ".join(expected_cmd)],
+                [
+                    *expected_cmd,
+                    "--history.created_by",
+                    " ".join(expected_cmd),
+                    "--history.comment",
+                    "Add rock control metadata",
+                ],
             )
         ]
         mock_rmtree.assert_called_once_with(Path(mock_control_data_path))
@@ -851,18 +1097,38 @@ class TestImage:
 
         image.set_annotations({"NAME1": "VALUE1", "NAME2": "VALUE2"})
 
+        expected_label_cmd = [
+            "umoci",
+            "config",
+            "--image",
+            "/c/a:b",
+            "--clear=config.labels",
+            "--config.label",
+            "NAME1=VALUE1",
+            "--config.label",
+            "NAME2=VALUE2",
+        ]
+
+        expected_anno_cmd = [
+            "umoci",
+            "config",
+            "--image",
+            "/c/a:b",
+            "--clear=manifest.annotations",
+            "--manifest.annotation",
+            "NAME1=VALUE1",
+            "--manifest.annotation",
+            "NAME2=VALUE2",
+        ]
+
         assert mock_run.mock_calls == [
             call(
                 [
-                    "umoci",
-                    "config",
-                    "--image",
-                    "/c/a:b",
-                    "--clear=config.labels",
-                    "--config.label",
-                    "NAME1=VALUE1",
-                    "--config.label",
-                    "NAME2=VALUE2",
+                    *expected_label_cmd,
+                    "--history.created_by",
+                    " ".join(expected_label_cmd),
+                    "--history.comment",
+                    "Set labels",
                 ],
                 capture_output=True,
                 check=True,
@@ -870,15 +1136,11 @@ class TestImage:
             ),
             call(
                 [
-                    "umoci",
-                    "config",
-                    "--image",
-                    "/c/a:b",
-                    "--clear=manifest.annotations",
-                    "--manifest.annotation",
-                    "NAME1=VALUE1",
-                    "--manifest.annotation",
-                    "NAME2=VALUE2",
+                    *expected_anno_cmd,
+                    "--history.created_by",
+                    " ".join(expected_anno_cmd),
+                    "--history.comment",
+                    "Set annotations",
                 ],
                 capture_output=True,
                 check=True,
@@ -894,7 +1156,13 @@ class TestImage:
                     "annotations": {
                         "org.opencontainers.image.ref.name": "latest",
                     },
-                }
+                },
+                {
+                    "digest": "sha256:basemanifest",
+                    "annotations": {
+                        "org.opencontainers.image.ref.name": "origin",
+                    },
+                },
             ]
         }
         test_manifest = {"config": {"digest": "sha256:fooconfig"}}
@@ -933,7 +1201,13 @@ class TestImage:
                             "org.opencontainers.image.ref.name": "latest",
                         },
                         "size": len(new_test_manifest_bytes),
-                    }
+                    },
+                    {
+                        "digest": "sha256:basemanifest",
+                        "annotations": {
+                            "org.opencontainers.image.ref.name": "origin",
+                        },
+                    },
                 ]
             },
         }
@@ -1003,16 +1277,24 @@ class TestImage:
 
         image.set_default_path("bare")
 
-        expected = "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+        expected_path = "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+        expected_cmd = [
+            "umoci",
+            "config",
+            "--image",
+            "/c/a:b",
+            "--config.env",
+            f"PATH={expected_path}",
+        ]
+
         assert mock_run.mock_calls == [
             call(
                 [
-                    "umoci",
-                    "config",
-                    "--image",
-                    "/c/a:b",
-                    "--config.env",
-                    f"PATH={expected}",
+                    *expected_cmd,
+                    "--history.created_by",
+                    " ".join(expected_cmd),
+                    "--history.comment",
+                    "Set default PATH for bare-based rock",
                 ]
             )
         ]

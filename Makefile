@@ -4,7 +4,7 @@ PROJECT=rockcraft
 # COVERAGE_SOURCE="starcraft"
 UV_TEST_GROUPS := "--group=dev"
 UV_DOCS_GROUPS := "--group=docs"
-UV_LINT_GROUPS := "--group=lint" "--group=types"
+UV_LINT_GROUPS := "--group=lint" "--group=types" $(UV_DOCS_GROUPS)
 UV_TICS_GROUPS := "--group=tics"
 
 # If you have dev dependencies that depend on your distro version, uncomment these:
@@ -20,11 +20,39 @@ endif
 
 include common.mk
 
+.PHONY: docs-lint
+docs-lint: docs-install
+ifneq ($(CI),)
+	@echo ::group::$@
+endif
+	uv run $(UV_DOCS_GROUPS) sphinx-lint docs \
+	--ignore docs/_dev \
+	--ignore docs/_build \
+	--ignore docs/reference/commands \
+	--enable all \
+	-d line-too-long,missing-underscore-after-hyperlink,missing-space-in-hyperlink
+	$(MAKE) -C docs spelling --no-print-directory
+	$(MAKE) -C docs woke --no-print-directory
+ifneq ($(CI),)
+	@echo ::endgroup::
+endif
+
+.PHONY: docs-linkcheck
+docs-linkcheck: docs-install
+ifneq ($(CI),)
+	@echo ::group::$@
+endif
+	$(MAKE) -C docs linkcheck --no-print-directory
+ifneq ($(CI),)
+	@echo ::endgroup::
+endif
 .PHONY: format
-format: format-ruff format-codespell format-prettier  ## Run all automatic formatters
+format: format-ruff format-codespell format-prettier format-shfmt format-tombi format-pre-commit  ## Run all automatic formatters
 
 .PHONY: lint
-lint: lint-ruff lint-codespell lint-mypy lint-prettier lint-pyright lint-shellcheck lint-docs lint-twine  ## Run all linters
+lint: lint-code lint-docs lint-twine lint-uv-lockfile lint-actions docs-linkcheck  ## Run all linters
+.PHONY: lint-code
+lint-code: lint-ruff lint-ty lint-codespell lint-prettier lint-shfmt lint-shellcheck lint-tombi  ## Run code-specific linters
 
 .PHONY: pack
 pack: pack-pip pack-snap  ## Build all packages
@@ -35,13 +63,6 @@ ifeq ($(shell which snapcraft),)
 	sudo snap install --classic snapcraft
 endif
 	snapcraft pack
-
-.PHONY: publish
-publish: publish-pypi  ## Publish packages
-
-.PHONY: publish-pypi
-publish-pypi: clean package-pip lint-twine  ##- Publish Python packages to pypi
-	uv tool run twine upload dist/*
 
 schema: install-uv  ## Generate the schema file.
 	mkdir -p schema

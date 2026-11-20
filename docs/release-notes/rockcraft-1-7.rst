@@ -1,3 +1,6 @@
+.. meta::
+    :description: Release notes for Rockcraft 1.7.
+
 .. _release-1.7.0:
 .. _release-1.7:
 
@@ -56,7 +59,7 @@ Support for remote builds
 
 We added support for remote builds, which leverage off-site compute for
 building rocks and can build for multiple architectures with a single command.
-For a description of the feature, see :ref:`ref-remote-builds`, or run
+For a description of the feature, see :ref:`reference-remote-builds`, or run
 ``rockcraft remote-build --help``.
 
 This feature is new and experimental -- we welcome feedback on the
@@ -84,8 +87,8 @@ The base of the Rockcraft snap was updated from core22 to core24.
 Go extension
 ~~~~~~~~~~~~
 
-A new :ref:`tutorial <build-a-rock-for-a-go-application>` and :ref:`reference
-<go-framework-reference>` are available for the go-framework extension.
+A new :ref:`tutorial <tutorial-build-a-rock-for-a-go-app>` and :ref:`reference
+<reference-go-framework>` are available for the go-framework extension.
 
 
 OCI image configuration
@@ -133,17 +136,17 @@ Contributors
 We would like to express a big thank you to all the people who contributed to
 this release.
 
-:literalref:`@alithethird<https://github.com/alithethird>`,
-:literalref:`@dariuszd21<https://github.com/dariuszd21>`,
-:literalref:`@erinecon<https://github.com/erinecon>`,
-:literalref:`@javierdelapuente<https://github.com/javierdelapuente>`,
-:literalref:`@lengau<https://github.com/lengau>`,
-:literalref:`@linostar<https://github.com/linostar>`,
-:literalref:`@tigarmo<https://github.com/tigarmo>`,
-:literalref:`@vpa1977<https://github.com/vpa1977>`
-and :literalref:`@yanksyoon<https://github.com/yanksyoon>`.
+:literalref:`@alithethird <https://github.com/alithethird>`,
+:literalref:`@dariuszd21 <https://github.com/dariuszd21>`,
+:literalref:`@erinecon <https://github.com/erinecon>`,
+:literalref:`@javierdelapuente <https://github.com/javierdelapuente>`,
+:literalref:`@lengau <https://github.com/lengau>`,
+:literalref:`@linostar <https://github.com/linostar>`,
+:literalref:`@tigarmo <https://github.com/tigarmo>`,
+:literalref:`@vpa1977 <https://github.com/vpa1977>`
+and :literalref:`@yanksyoon <https://github.com/yanksyoon>`.
 
-.. _Ubuntu Discourse: https://discourse.ubuntu.com/c/rocks/rockcraft/118
+.. _Ubuntu Discourse: https://discourse.ubuntu.com/c/project/rockcraft/118
 
 .. _#659: https://github.com/canonical/rockcraft/issues/659
 .. _#749: https://github.com/canonical/rockcraft/issues/659

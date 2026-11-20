@@ -1,3 +1,6 @@
+.. meta::
+    :description: Release notes for Rockcraft 1.8.
+
 .. _release-1.8.0:
 .. _release-1.8:
 
@@ -100,8 +103,8 @@ typing ``rockcraft`` and pressing :kbd:`Tab` in your terminal.
 Remote build how-to guide
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-We published :ref:`outsource-rock-builds-to-launchpad`, a how-to guide for
-remote rock builds.
+We published :ref:`how-to-outsource-rock-builds-to-launchpad`, a how-to guide for remote
+rock builds.
 
 
 Contributors

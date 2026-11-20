@@ -6,8 +6,7 @@ description: The most basic example of a rock.
 version: "latest"
 license: Apache-2.0
 
-base: bare
-build-base: ubuntu@22.04
+base: ubuntu@26.04
 platforms:
   amd64: # Make sure this value matches your computer's architecture
 

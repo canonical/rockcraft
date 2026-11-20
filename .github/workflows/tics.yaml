@@ -3,12 +3,15 @@ on:
   push:
     branches:
       - "main"
-      # to easy test changes to the workflow
-      - "tiobe"
+      # For troubleshooting
+      - "work/tiobe**"
 
 jobs:
   TICS:
+    permissions:
+      contents: read
     uses: canonical/starflow/.github/workflows/tics.yaml@main
     with:
       project: "rockcraft"
-    secrets: inherit
+    secrets:
+      TICSAUTHTOKEN: ${{ secrets.TICSAUTHTOKEN }}

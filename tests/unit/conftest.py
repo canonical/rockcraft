@@ -15,13 +15,13 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import contextlib
+from collections.abc import Callable, Collection
 from pathlib import Path
+from typing import override
 from unittest import mock
 
 import pytest
 from craft_providers import Executor, Provider, base
-
-# pylint: disable=import-outside-toplevel
 
 
 @pytest.fixture
@@ -66,10 +66,11 @@ def fake_provider(mock_instance):
         def is_provider_installed(cls) -> bool:
             return True
 
-        def create_environment(self, *, instance_name: str):  # type: ignore[reportIncompatibleVariableOverride]
-            yield mock_instance
+        @override
+        def create_environment(self, *, instance_name: str):
+            return mock_instance
 
-        @contextlib.contextmanager  # type: ignore[misc]
+        @contextlib.contextmanager
         def launched_environment(
             self,
             *,
@@ -78,7 +79,25 @@ def fake_provider(mock_instance):
             base_configuration: base.Base,
             instance_name: str,
             allow_unstable: bool = False,
+            shutdown_delay_mins: int | None = None,
+            use_base_instance: bool = True,
+            prepare_instance: Callable[[Executor], None] | None = None,
+            instance_architecture: str | None = None,
         ):
             yield mock_instance
+
+        @override
+        def list_instances(
+            self,
+            *,
+            project_name: str | None = None,
+            instance_name_prefix: str | None = None,
+            include_base_instances: bool = False,
+        ) -> Collection[Executor]:
+            return []
+
+        @override
+        def prune(self, *, project_name: str, prune_templates: bool = False) -> None:
+            pass
 
     return FakeProvider()

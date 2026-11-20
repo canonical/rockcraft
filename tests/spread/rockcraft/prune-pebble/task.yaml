@@ -1,0 +1,17 @@
+summary: Check that the lifecycle layer has no Pebble on bases 26.04 and higher
+
+execute: |
+  run_rockcraft pack
+
+  test -f ./*.rock
+
+  # Unpack the rock and verify that the lifecycle-based layer has no files in
+  # common with the base Ubuntu layer.
+  tar -xf ./*.rock
+  python3 check_layers.py ./*.rock
+
+restore: |
+  rm -f ./*.rock
+  rm -rf blobs/
+  # possibly created by check_layers.py
+  rm -rf ./tmp-diff

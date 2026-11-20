@@ -1,3 +1,6 @@
+.. meta::
+    :description: Release notes for Rockcraft 1.9.
+
 .. _release-1.9.0:
 .. _release-1.9:
 
@@ -76,7 +79,7 @@ Contributors
 We would like to express a big thank you to all the people who contributed to
 this release.
 
-:literalref:`@bepri<https://github.com/bepri>`,
-:literalref:`@erinecon<https://github.com/erinecon>`,
-:literalref:`@medubelko<https://github.com/medubelko>`.
-and :literalref:`@s-makin<https://github.com/s-makin>`.
+:literalref:`@bepri <https://github.com/bepri>`,
+:literalref:`@erinecon <https://github.com/erinecon>`,
+:literalref:`@medubelko <https://github.com/medubelko>`.
+and :literalref:`@s-makin <https://github.com/s-makin>`.

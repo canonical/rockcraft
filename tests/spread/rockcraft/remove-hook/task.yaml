@@ -23,14 +23,20 @@ execute: |
   if [[ -n "$(lxc list --project rockcraft --format=csv --columns=n)" ]]; then
     echo "instances were not removed"
 
+    # show instances
+    lxc list --project rockcraft
+
     # show snap log
     snap tasks --last=remove
     exit 1
   fi
 
   # verify images were deleted
-  if lxc image list --project rockcraft &> /dev/null; then
+  if [[ -n "$(lxc image list --project rockcraft --format=csv)" ]]; then
     echo "images were not removed"
+
+    # show images
+    lxc image list --project rockcraft
 
     # show snap log
     snap tasks --last=remove

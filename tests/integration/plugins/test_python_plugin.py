@@ -13,7 +13,6 @@
 #
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
-import typing
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -22,21 +21,35 @@ from craft_application import errors
 from craft_application.models import DEVEL_BASE_INFOS
 from craft_cli import EmitterMode, emit
 from craft_parts.errors import OsReleaseVersionIdError
+from craft_parts.packages import deb
 from craft_parts.utils.os_utils import OsRelease
+from craft_providers.bases import BaseName, get_base_alias
 from rockcraft import plugins
-from rockcraft.models.project import Project
+from rockcraft.models.project import BaseT, Project
 from rockcraft.plugins.python_common import SITECUSTOMIZE_TEMPLATE, get_python_plugins
 
 from tests.testing.project import create_project
-from tests.util import ubuntu_only
 
-pytestmark = [ubuntu_only, pytest.mark.slow]
+# These are the bases that use the PythonPlugin v1
+UBUNTU_BASES = {"ubuntu@20.04", "ubuntu@22.04", "ubuntu@24.04"}
 
-# Extract the possible "base" values from the Literal annotation.
-ALL_BASES = typing.get_args(typing.get_type_hints(Project)["base"])
 
-BARE_BASES = {"bare"}
-UBUNTU_BASES = set(ALL_BASES) - BARE_BASES
+def plugin_v1_host() -> bool:
+    """Return True if the host running the tests matches the bases supported by Python Plugin v1."""
+    release = OsRelease()
+    try:
+        base = f"{release.id()}@{release.version_id()}"
+    except OsReleaseVersionIdError:
+        return False
+    return base in UBUNTU_BASES
+
+
+pytestmark = [
+    pytest.mark.skipif(
+        not plugin_v1_host(), reason="platform be supported by PythonPlugin v1"
+    ),
+    pytest.mark.slow,
+]
 
 
 @pytest.fixture(autouse=True)
@@ -44,11 +57,13 @@ def setup_python_test(monkeypatch):
     # Keep craft-parts from trying to refresh apt's cache, so that we can run
     # this test as regular users.
     monkeypatch.setenv("CRAFT_PARTS_PACKAGE_REFRESH", "0")
-    plugins.register()
+    plugins.register("ubuntu@24.04")
     emit.set_mode(EmitterMode.VERBOSE)
 
 
-def create_python_project(base, extra_part_props=None, *, plugin: str) -> Project:
+def create_python_project(
+    base: BaseT, extra_part_props=None, *, plugin: str
+) -> Project:
     source = Path(__file__).parent / "python_source" / plugin
     extra = extra_part_props or {}
 
@@ -62,8 +77,11 @@ def create_python_project(base, extra_part_props=None, *, plugin: str) -> Projec
     }
 
     build_base = None
-    if base in [info.current_devel_base for info in DEVEL_BASE_INFOS]:
-        build_base = "devel"
+    if base != "bare":
+        name, version = base.split("@")
+        base_alias = get_base_alias(base_name=BaseName(name, version))
+        if base_alias in [info.current_devel_base for info in DEVEL_BASE_INFOS]:
+            build_base = "devel"
 
     return create_project(base=base, parts=parts, build_base=build_base)
 
@@ -77,9 +95,17 @@ class ExpectedValues:
     version_dir: str
 
 
+_PY_313_VALUES = ExpectedValues(
+    symlinks=["python", "python3", "python3.13"],
+    symlink_target=Path("../usr/bin/python3.13"),
+    version_dir="python3.13",
+)
+
 # A mapping from host Ubuntu to expected Python values; We need this mapping
 # because these integration tests run on the host machine as the "build base".
 RELEASE_TO_VALUES = {
+    "25.10": _PY_313_VALUES,
+    "25.04": _PY_313_VALUES,
     "24.04": ExpectedValues(
         symlinks=["python", "python3", "python3.12"],
         symlink_target=Path("../usr/bin/python3.12"),
@@ -102,15 +128,19 @@ try:
     VALUES_FOR_HOST = RELEASE_TO_VALUES[OsRelease().version_id()]
 except (OsReleaseVersionIdError, KeyError):
     # not running on supported Ubuntu; the tests will be skipped.
-    # Use the 22.04 values to make pyright happy.
+    # Use the 22.04 values to make type checkers happy.
     VALUES_FOR_HOST = RELEASE_TO_VALUES["22.04"]
 
 
-@pytest.mark.parametrize("plugin_name", list(get_python_plugins().keys()))
+@pytest.mark.usefixtures("overlay_mocks")
+@pytest.mark.parametrize("plugin_name", list(get_python_plugins("ubuntu@24.04").keys()))
 @pytest.mark.parametrize("base", tuple(UBUNTU_BASES))
 def test_python_plugin_ubuntu(
-    fake_services, fake_project_file, base, in_project_path, plugin_name: str
+    fake_services, fake_project_file, base, in_project_path, plugin_name: str, mocker
 ):
+    # The 'overlay_mocks' fixture causes craft-parts to try to call "apt-get update"
+    mocker.patch.object(deb.Ubuntu, "refresh_packages_list")
+
     project = create_python_project(base=base, plugin=plugin_name)
     project.to_yaml_file(in_project_path / "rockcraft.yaml")
     fake_services.get("project").configure(build_for=None, platform=None)
@@ -131,7 +161,7 @@ def test_python_plugin_ubuntu(
     # Check the extra sitecustomize.py module that we add
     expected_text = SITECUSTOMIZE_TEMPLATE.replace("EOF", "")
 
-    version_dir = VALUES_FOR_HOST.version_dir  # pyright: ignore[reportUnboundVariable]
+    version_dir = VALUES_FOR_HOST.version_dir
     sitecustom = in_project_path / f"stage/usr/lib/{version_dir}/sitecustomize.py"
     assert sitecustom.read_text().strip() == expected_text.strip()
 
@@ -141,7 +171,7 @@ def test_python_plugin_ubuntu(
     assert not pyvenv_cfg.is_file()
 
 
-@pytest.mark.parametrize("plugin_name", get_python_plugins().keys())
+@pytest.mark.parametrize("plugin_name", get_python_plugins("ubuntu@24.04").keys())
 def test_python_plugin_bare(in_project_path, fake_services, plugin_name):
     project = create_python_project(base="bare", plugin=plugin_name)
     project.to_yaml_file(in_project_path / "rockcraft.yaml")
@@ -156,9 +186,7 @@ def test_python_plugin_bare(in_project_path, fake_services, plugin_name):
     assert sorted(bin_dir.glob("python*")) == [
         bin_dir / i for i in VALUES_FOR_HOST.symlinks
     ]
-    assert (
-        (bin_dir / "python3").readlink() == VALUES_FOR_HOST.symlink_target  # pyright: ignore[reportUnboundVariable]
-    )
+    assert (bin_dir / "python3").readlink() == VALUES_FOR_HOST.symlink_target
 
     # Check the shebang in the "hello" script
     expected_shebang = "#!/bin/python3"
@@ -168,7 +196,7 @@ def test_python_plugin_bare(in_project_path, fake_services, plugin_name):
     # Check the extra sitecustomize.py module that we add
     expected_text = SITECUSTOMIZE_TEMPLATE.replace("EOF", "")
 
-    version_dir = VALUES_FOR_HOST.version_dir  # pyright: ignore[reportUnboundVariable]
+    version_dir = VALUES_FOR_HOST.version_dir
     sitecustom = in_project_path / f"stage/usr/lib/{version_dir}/sitecustomize.py"
     assert sitecustom.read_text().strip() == expected_text.strip()
 
@@ -178,7 +206,7 @@ def test_python_plugin_bare(in_project_path, fake_services, plugin_name):
     assert not pyvenv_cfg.is_file()
 
 
-@pytest.mark.parametrize("plugin_name", get_python_plugins().keys())
+@pytest.mark.parametrize("plugin_name", get_python_plugins("ubuntu@24.04").keys())
 def test_python_plugin_invalid_interpreter(
     tmp_path, in_project_path, fake_services, plugin_name
 ):

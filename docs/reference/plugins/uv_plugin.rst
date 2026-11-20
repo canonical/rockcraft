@@ -1,3 +1,6 @@
+.. meta::
+    :description: Reference documentation for the uv plugin.
+
 .. include:: /common/craft-parts/reference/plugins/uv_plugin.rst
    :end-before: .. _uv-details-begin:
 

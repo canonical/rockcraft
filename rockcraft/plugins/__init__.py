@@ -16,6 +16,7 @@
 
 """Rockcraft-specific plugins."""
 
+from .groups import get_plugin_group
 from .register import get_plugins, register
 
-__all__ = ["get_plugins", "register"]
+__all__ = ["get_plugin_group", "get_plugins", "register"]

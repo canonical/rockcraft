@@ -17,11 +17,10 @@
 """Rockcraft Init Service."""
 
 import pathlib
-from typing import Any
+from typing import Any, override
 
 from craft_application.services import InitService
 from craft_cli import emit
-from overrides import override  # type: ignore[reportUnknownVariableType]
 
 
 class RockcraftInitService(InitService):
@@ -34,14 +33,16 @@ class RockcraftInitService(InitService):
         project_dir: pathlib.Path,
         project_name: str,
         template_dir: pathlib.Path,
+        vcs: str,
     ) -> None:
         super().initialise_project(
             project_dir=project_dir,
             project_name=project_name,
             template_dir=template_dir,
+            vcs=vcs,
         )
 
-        init_profile = template_dir.name
+        init_profile = template_dir.name.split("__", maxsplit=1)[0]
         if init_profile != "simple":
             versioned_docs = self._app.versioned_docs_url
             reference_docs = f"{versioned_docs}/reference/extensions/{init_profile}"

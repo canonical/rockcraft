@@ -1,7 +1,7 @@
 summary: check that the lifecycle layer has no duplicated files from the base
 
 execute: |
-  run_rockcraft pack
+  run_rockcraft pack --ignore=unmaintained
 
   test -f ./*.rock
 

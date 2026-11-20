@@ -19,14 +19,14 @@ execute: |
   # [docs:build-rock-end]
 
   # [docs:skopeo-copy]
-  sudo rockcraft.skopeo --insecure-policy copy oci-archive:pyfiglet_0.7.6_amd64.rock docker-daemon:pyfiglet:0.7.6
+  sudo rockcraft.skopeo --insecure-policy copy oci-archive:pyfiglet_1.0.4_amd64.rock docker-daemon:pyfiglet:1.0.4
   # [docs:skopeo-copy-end]
 
-  rm pyfiglet_0.7.6_amd64.rock
+  rm pyfiglet_1.0.4_amd64.rock
 
   # [docs:docker-run]
-  docker run --rm pyfiglet:0.7.6 exec pyfiglet it works!
+  docker run --rm pyfiglet:1.0.4 exec pyfiglet it works!
   # [docs:docker-run-end]
 
-  docker run --rm  pyfiglet:0.7.6 exec pyfiglet it works! > obtained_output.txt
+  docker run --rm  pyfiglet:1.0.4 exec pyfiglet it works! > obtained_output.txt
   diff ../expected_output.txt obtained_output.txt
