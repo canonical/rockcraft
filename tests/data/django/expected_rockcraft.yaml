@@ -1,8 +1,8 @@
-# See https://documentation.ubuntu.com/rockcraft/latest/reference/extensions/django-framework
+# See https://ubuntu.com/containers/rockcraft/docs/latest/reference/extensions/django-framework
 # For questions or help, visit https://matrix.to/#/#12-factor-charms:ubuntu.com
 
 name: test-name
-# see https://documentation.ubuntu.com/rockcraft/latest/explanation/bases/
+# see https://ubuntu.com/containers/rockcraft/docs/latest/explanation/bases/
 # for more information about bases and using 'bare' bases for chiselled rocks
 base: bare # as an alternative, an ubuntu base can be used
 build-base: ubuntu@24.04 # build-base is required when the base is bare
