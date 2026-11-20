@@ -25,7 +25,7 @@
     // `sudo npm install -g express-generator@<version>` in the ExpressJS Spread task.
     {
       customType: "regex",
-      managerFilePatterns: ["/^docs/tutorial/code/expressjs/task\\.yaml$/"],
+      fileMatch: ["/^docs/tutorial/code/expressjs/task\\.yaml$/"],
       matchStrings: ["express-generator@(?<currentValue>\\S+)"],
       datasourceTemplate: "npm",
       depNameTemplate: "express-generator",
@@ -35,7 +35,7 @@
     // track spring-boot-starter-parent on Maven Central (identical version stream).
     {
       customType: "regex",
-      managerFilePatterns: ["/^docs/tutorial/code/spring-boot/task\\.yaml$/"],
+      fileMatch: ["/^docs/tutorial/code/spring-boot/task\\.yaml$/"],
       matchStrings: ["--boot-version (?<currentValue>\\S+)"],
       datasourceTemplate: "maven",
       depNameTemplate: "org.springframework.boot:spring-boot-starter-parent",
