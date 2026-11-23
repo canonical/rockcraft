@@ -224,6 +224,7 @@ def _create_package_json_file(app_path, *, with_build=False):
                         "source": "app/",
                         "stage-packages": [
                             "bash_bins",
+                            "base-files_tmp",
                             "ca-certificates_data",
                             "coreutils_bins",
                         ],
@@ -296,6 +297,7 @@ def _create_package_json_file(app_path, *, with_build=False):
                         "source": "app/",
                         "stage-packages": [
                             "bash_bins",
+                            "base-files_tmp",
                             "ca-certificates_data",
                             "coreutils_bins",
                         ],
@@ -483,6 +485,7 @@ def test_expressjs_extension_default(
                         "source": "app/",
                         "stage-packages": [
                             "bash_bins",
+                            "base-files_tmp",
                             "ca-certificates_data",
                             "coreutils_bins",
                         ],

@@ -18,13 +18,12 @@
 
 import re
 from pathlib import Path
-from typing import cast
+from typing import cast, override
 
 import craft_platforms
 from craft_application import LifecycleService
 from craft_parts.infos import StepInfo
 from craft_parts.plugins import Plugin
-from typing_extensions import override
 
 from rockcraft import layers, plugins
 from rockcraft.plugins.python_common import get_python_plugins

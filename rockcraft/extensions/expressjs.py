@@ -18,10 +18,9 @@
 
 import json
 from pathlib import Path
-from typing import Any, cast
+from typing import Any, cast, override
 
 import craft_cli
-from typing_extensions import override
 
 from rockcraft.errors import ExtensionError
 from rockcraft.usernames import SUPPORTED_GLOBAL_USERNAMES
@@ -221,7 +220,12 @@ class ExpressJSFramework(Extension):
     def _gen_app_stage_packages(self) -> list[str]:
         """Return the stage packages for the install app part."""
         if self._rock_base == "bare":
-            return ["bash_bins", "ca-certificates_data", "coreutils_bins"]
+            return [
+                "bash_bins",
+                "base-files_tmp",
+                "ca-certificates_data",
+                "coreutils_bins",
+            ]
         if not self._user_npm_include_node:
             return ["ca-certificates_data", "nodejs_bins"]
         return ["ca-certificates_data"]

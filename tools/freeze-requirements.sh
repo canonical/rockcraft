@@ -7,7 +7,6 @@ requirements_fixups() {
   sed -i '/^python-apt==/d' "$req_file"
 }
 
-
 venv_dir="$(mktemp -d)"
 
 python3 -m venv "$venv_dir"

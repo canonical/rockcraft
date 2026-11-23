@@ -264,9 +264,13 @@ def test_fastapi_extension_bare(
     }
     assert applied["parts"]["fastapi-framework/runtime"] == {
         "plugin": "nil",
-        "override-build": "mkdir -m 777 ${CRAFT_PART_INSTALL}/tmp\n"
-        "ln -sf /usr/bin/bash ${CRAFT_PART_INSTALL}/usr/bin/sh",
-        "stage-packages": ["bash_bins", "coreutils_bins", "ca-certificates_data"],
+        "override-build": "ln -sf /usr/bin/bash ${CRAFT_PART_INSTALL}/usr/bin/sh",
+        "stage-packages": [
+            "bash_bins",
+            "base-files_tmp",
+            "coreutils_bins",
+            "ca-certificates_data",
+        ],
     }
 
 
@@ -404,9 +408,9 @@ def test_fastapi_extension_v2_bare_26_04(
         "stage-packages"
     ] == ["tzdata"]
     assert deps["build-environment"] == [{"PIP_PYTHON": "$(which python3.14)"}]
-    assert applied["parts"]["fastapi-framework.runtime"]["override-build"] == (
-        "mkdir -m 777 ${CRAFT_PART_INSTALL}/tmp\n"
-        "ln -sf /usr/bin/bash ${CRAFT_PART_INSTALL}/usr/bin/sh"
+    assert (
+        applied["parts"]["fastapi-framework.runtime"]["override-build"]
+        == "ln -sf /usr/bin/bash ${CRAFT_PART_INSTALL}/usr/bin/sh"
     )
     if use_uv:
         assert deps["plugin"] == "uv"

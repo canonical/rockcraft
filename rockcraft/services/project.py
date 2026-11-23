@@ -14,15 +14,14 @@
 
 """Rockcraft Project service."""
 
-import datetime
+import datetime as dt
 import textwrap
 from pathlib import Path
-from typing import Any
+from typing import Any, override
 
 import craft_platforms
 from craft_application import ProjectService
 from craft_application.errors import CraftValidationError
-from typing_extensions import override
 
 from rockcraft.extensions._utils import apply_extensions
 from rockcraft.pebble import add_pebble_part
@@ -65,9 +64,7 @@ class RockcraftProjectService(ProjectService):
 
     @staticmethod
     @override
-    def _is_supported_on(
-        *, base: craft_platforms.DistroBase, date: datetime.date
-    ) -> bool:
+    def _is_supported_on(*, base: craft_platforms.DistroBase, date: dt.date) -> bool:
         """Temporary override for 'devel' bases."""
         if base.series == "devel":
             return True
