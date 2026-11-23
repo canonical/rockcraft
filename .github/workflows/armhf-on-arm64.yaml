@@ -1,0 +1,51 @@
+name: Pack armhf on arm64
+
+on:
+  pull_request:
+    paths-ignore:
+      - "docs/**"
+      - "**/*.md"
+      - "*.md"
+      - ".readthedocs.yaml"
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pack:
+    runs-on: ubuntu-24.04-arm
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Set up LXD
+        uses: canonical/setup-lxd@v1
+
+      - name: Install Rockcraft snap
+        run: sudo snap install rockcraft --classic
+
+      - name: Pack armhf rock
+        id: pack
+        working-directory: tests/data/armhf-on-arm64
+        run: |
+          test "$(dpkg --print-architecture)" = arm64
+          CRAFT_BUILD_ON=armhf CRAFT_DEBUG=1 rockcraft pack --verbosity=debug
+          test -f armhf-on-arm64_0.1_armhf.rock
+
+      - name: Dump Rockcraft log
+        if: failure() && steps.pack.outcome == 'failure'
+        run: |
+          log_file="$(find "$HOME/.local/state/rockcraft/log" -type f -name 'rockcraft-*.log' -printf '%T@ %p\n' 2>/dev/null \
+            | sort -nr | head -n 1 | cut -d ' ' -f 2- || true)"
+          if [[ -z "$log_file" ]]; then
+            echo "No Rockcraft log found."
+            exit 0
+          fi
+          cat "$log_file"

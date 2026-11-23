@@ -1,0 +1,13 @@
+name: armhf-on-arm64
+base: ubuntu@26.04
+version: "0.1"
+summary: A minimal armhf rock built on arm64
+description: A minimal armhf rock built on arm64
+license: GPL-3.0
+platforms:
+  arm64:
+  armhf:
+
+parts:
+  empty:
+    plugin: nil
