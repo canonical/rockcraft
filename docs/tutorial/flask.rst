@@ -108,7 +108,7 @@ The top of the file should look similar to the following snippet:
     :caption: ~/flask-hello-world/rockcraft.yaml
 
     name: flask-hello-world
-    # see https://documentation.ubuntu.com/rockcraft/en/1.6.0/explanation/bases/
+    # see https://ubuntu.com/containers/rockcraft/docs/latest/explanation/bases/
     # for more information about bases and bare bases
     base: bare # as an alternative, an ubuntu base can be used
     build-base: ubuntu@24.04 # build-base is required when the base is bare
@@ -315,7 +315,7 @@ top of the ``rockcraft.yaml`` file should look similar to the following:
     :emphasize-lines: 6
 
     name: flask-hello-world
-    # see https://documentation.ubuntu.com/rockcraft/en/1.6.0/explanation/bases/
+    # see https://ubuntu.com/containers/rockcraft/docs/latest/explanation/bases/
     # for more information about bases and bare bases
     base: bare
     build-base: ubuntu@24.04

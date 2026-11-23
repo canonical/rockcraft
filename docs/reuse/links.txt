@@ -1,5 +1,5 @@
 .. _Charmcraft: https://documentation.ubuntu.com/charmcraft/
-.. _Chisel: https://documentation.ubuntu.com/chisel/
+.. _Chisel: https://ubuntu.com/chisel/docs/
 .. _`Chisel releases`: https://github.com/canonical/chisel-releases
 .. _Docker: https://docs.docker.com/
 .. _`OCI archive format`: https://github.com/opencontainers/image-spec/blob/main/layer.md#distributable-format

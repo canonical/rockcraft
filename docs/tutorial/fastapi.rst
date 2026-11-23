@@ -109,7 +109,7 @@ The top of the file should look similar to the following snippet:
     :caption: ~/fastapi-hello-world/rockcraft.yaml
 
     name: fastapi-hello-world
-    # see https://documentation.ubuntu.com/rockcraft/latest/explanation/bases/
+    # see https://ubuntu.com/containers/rockcraft/docs/latest/explanation/bases/
     # for more information about bases and bare bases
     base: bare
     build-base: ubuntu@24.04
@@ -310,7 +310,7 @@ The top of the ``rockcraft.yaml`` file should look similar to the following:
     :emphasize-lines: 6
 
     name: fastapi-hello-world
-    # see https://documentation.ubuntu.com/rockcraft/latest/explanation/bases/
+    # see https://ubuntu.com/containers/rockcraft/docs/latest/explanation/bases/
     # for more information about bases and bare bases
     base: bare
     build-base: ubuntu@24.04
