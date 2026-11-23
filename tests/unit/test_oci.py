@@ -1043,7 +1043,7 @@ class TestImage:
         mock_control_data_path = "layer_dir"
         mock_mkdtemp.return_value = mock_control_data_path
 
-        now = dt.datetime.now(dt.timezone.utc).isoformat()
+        now = dt.datetime.now(dt.UTC).isoformat()
         metadata = {"name": "rock-name", "version": 1, "created": now}
 
         expected = (f"created: '{now}'" + "{n}name: rock-name{n}version: 1{n}").format(

@@ -16,8 +16,9 @@
 
 """The Rockcraft Python plugin."""
 
+from typing import override
+
 from craft_parts.plugins import python_plugin
-from typing_extensions import override
 
 from rockcraft.plugins import python_common
 
