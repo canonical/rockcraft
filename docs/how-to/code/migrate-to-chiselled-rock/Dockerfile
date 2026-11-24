@@ -5,7 +5,7 @@ FROM amd64/buildpack-deps:resolute-curl AS installer
 
 # Retrieve .NET Runtime
 RUN dotnet_version=10.0.8 \
-    && curl --connect-timeout 5 --retry 3 --retry-all-errors --fail --show-error --location \
+    && curl --connect-timeout 5 --retry 3 --fail --show-error --location \
         --remote-name https://builds.dotnet.microsoft.com/dotnet/Runtime/$dotnet_version/dotnet-runtime-$dotnet_version-linux-x64.tar.gz \
         --remote-name https://builds.dotnet.microsoft.com/dotnet/Runtime/$dotnet_version/dotnet-runtime-$dotnet_version-linux-x64.tar.gz.sha512 \
     && sha512sum -c dotnet-runtime-$dotnet_version-linux-x64.tar.gz.sha512 \
