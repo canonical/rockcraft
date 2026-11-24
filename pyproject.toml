@@ -417,3 +417,4 @@ explicit = true
 
 [tool.uv.sources]
 python-apt = { index = "python-apt-wheels" }
+craft-application = { git = "https://github.com/canonical/craft-application.git", rev = "work/ROCKCRAFT-335-armhf-on-arm64" }
