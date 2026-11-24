@@ -168,9 +168,9 @@ parts:
       ${SNAP}/libexec/snapcraft/craftctl default
 
       version="$(uv pip show rockcraft | grep "Version:" | cut -d' ' -f2)"
-      ${SNAP}/libexec/snapcraft/craftctl set version="$version"
-
       [ -n "$(echo $version | grep "post")" ] && grade=devel || grade=stable
+      version="${version:0:32}"
+      ${SNAP}/libexec/snapcraft/craftctl set version="${version%%[.+_-]}"
       ${SNAP}/libexec/snapcraft/craftctl set grade="${grade}"
 
       sed -i -e '1 s|^#!/.*|#!/snap/rockcraft/current/bin/python -E|' $CRAFT_PART_INSTALL/bin/craftctl
