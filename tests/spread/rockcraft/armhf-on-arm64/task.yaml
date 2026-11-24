@@ -1,0 +1,15 @@
+summary: Pack an armhf rock on an arm64 runner
+
+systems:
+  - ubuntu-24.04-arm-64
+
+execute: |
+  test "$(dpkg --print-architecture)" = arm64
+
+  CRAFT_BUILD_ON=armhf rockcraft pack --verbosity=debug
+
+  test -f different-architecture_0.1_armhf.rock
+
+restore: |
+  rockcraft clean
+  rm -f ./*.rock
