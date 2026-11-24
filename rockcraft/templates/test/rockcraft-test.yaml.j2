@@ -17,7 +17,7 @@ suites:
 
       # Wait for docker daemon to come online
       sudo apt install --yes retry
-      retry --times=10 --delay 2 -- docker run --rm mirror.gcr.io/library/hello-world
+      retry --times=10 --delay 2 -- docker run --rm mcr.microsoft.com/mcr/hello-world
       sudo apt remove --yes retry
 
       # Load the rock into docker
