@@ -122,9 +122,9 @@ prepare: |
   # the command "snap install lxd" does *not* fail.
   # 5.21 is necessary for some tests, like the ones in the pro suite.
   if snap list lxd; then
-    snap refresh --channel=${lxd_channel} lxd
+    retry -n 5 --wait 10 snap refresh --channel=${lxd_channel} lxd
   else
-    snap install --channel=${lxd_channel} lxd
+    retry -n 5 --wait 10 snap install --channel=${lxd_channel} lxd
   fi
 
   # Hold snap refreshes for 24h.
@@ -147,7 +147,7 @@ prepare: |
     lxc config set core.proxy_ignore_hosts "$NO_PROXY"
   fi
 
-  snap install docker
+  retry -n 5 --wait 10 snap install docker
 
   if [ -n "${HTTP_PROXY:-}" ]; then
     # Configure the proxy for the docker daemon through systemd
