@@ -31,10 +31,10 @@ jobs:
       - name: Set up LXD
         uses: canonical/setup-lxd@v1
 
-      - name: Install rockcraft snap
+      - name: Install locally built rockcraft snap
         run: sudo snap install --dangerous --classic "${{ steps.build-rockcraft.outputs.snap }}"
 
-      - name: Pack armhf rock
+      - name: Pack armhf rock with locally built rockcraft
         working-directory: tests/spread/rockcraft/armhf-on-arm64
         env:
           CRAFT_BUILD_ON: armhf
@@ -43,3 +43,31 @@ jobs:
           test "$(dpkg --print-architecture)" = arm64
           rockcraft pack --verbosity=debug
           test -f different-architecture_0.1_armhf.rock
+
+      - name: Clean locally built rockcraft output
+        working-directory: tests/spread/rockcraft/armhf-on-arm64
+        env:
+          CRAFT_BUILD_ON: armhf
+        run: |
+          rockcraft clean
+          rm -f ./*.rock
+
+      - name: Install stable rockcraft snap
+        run: |
+          sudo snap remove rockcraft
+          sudo snap install rockcraft --classic --channel=latest/stable
+
+      - name: Confirm stable rockcraft fails to pack
+        working-directory: tests/spread/rockcraft/armhf-on-arm64
+        env:
+          CRAFT_BUILD_ON: armhf
+          CRAFT_DEBUG: "1"
+        run: |
+          set +e
+          rockcraft pack --verbosity=debug 2>&1 | tee stable-pack.log
+          pack_status=${PIPESTATUS[0]}
+          set -e
+
+          test "$pack_status" -ne 0
+          grep -F "Build plan contains 0 build(s)." stable-pack.log
+          grep -F "No build matches the current execution environment." stable-pack.log
