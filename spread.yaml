@@ -114,8 +114,13 @@ prepare: |
   fi
 
   # 5.21/stable is the latest stable LTS. Use 5.21/candidate as a "first line of
-  # defense" against LXD regressions.
-  lxd_channel="5.21/candidate"
+  # defense" against LXD regressions. Try 6/stable on Fedora to test whether it
+  # avoids transient `lxc exec` PID retrieval failures seen on 5.21/candidate.
+  if os.query is-fedora; then
+    lxd_channel="6/stable"
+  else
+    lxd_channel="5.21/candidate"
+  fi
 
   # Note: check and either refresh or install, because the image might come with
   # the lxd snap pre-installed and tracking a different channel, and in this case
