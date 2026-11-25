@@ -65,7 +65,8 @@ execute: |
   # Workaround for transient fetch failures (e.g. rate limiting or proxy hiccups)
   # from https://repo.maven.apache.org when downloading the Maven wrapper.
   if [ -f mvnw ]; then
-    sed -i 's/\bcurl -/curl --retry 5 --retry-delay 60 --retry-all-errors -/g' mvnw
+    sed -i 's/^\([[:space:]]*\)curl /\1curl --retry 5 --retry-delay 60 --retry-all-errors /' mvnw
+    grep -q -- '--retry-all-errors' mvnw
   fi
 
   cat > src/main/java/com/example/demo/WriteDataController.java <<'EOF'
