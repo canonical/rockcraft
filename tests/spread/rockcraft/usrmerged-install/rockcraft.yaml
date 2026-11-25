@@ -57,6 +57,4 @@ services:
     override: merge
     command: /usr/bin/hello
     startup: enabled
-    after:
-      - go-hello
-    on-success: shutdown
+    on-success: ignore

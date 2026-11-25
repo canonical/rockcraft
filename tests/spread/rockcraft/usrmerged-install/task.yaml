@@ -5,8 +5,10 @@ execute: |
   sudo rockcraft.skopeo --insecure-policy copy oci-archive:usrmerged-install_1.0_amd64.rock docker-daemon:usrmerged-install:latest
 
   # Check the pebble services, so we can check pebble itself
-  docker run usrmerged-install:latest -v | MATCH "\[go-hello\] hello world from go"
-  docker run usrmerged-install:latest -v | MATCH "\[overlay-hello\] Hello, world!"
+  docker run -d --name usrmerged-install-test usrmerged-install:latest -v
+  retry -n 10 --wait 1 sh -c 'docker logs usrmerged-install-test 2>&1 | grep -q "\[go-hello\] hello world from go"'
+  retry -n 10 --wait 1 sh -c 'docker logs usrmerged-install-test 2>&1 | grep -q "\[overlay-hello\] Hello, world!"'
+  docker rm -f usrmerged-install-test
 
   # Exactly one file in /etc/config - "file.txt" from source-dump/
   docker run usrmerged-install:latest exec bash -c "ls -1 /etc/config/ | wc -l"  | MATCH "^1$"
