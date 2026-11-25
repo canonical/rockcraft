@@ -51,10 +51,10 @@ services:
     override: merge
     command: /usr/bin/go-hello
     startup: enabled
-    on-success: shutdown
+    on-success: ignore
 
   overlay-hello:
     override: merge
     command: /usr/bin/hello
     startup: enabled
-    on-success: shutdown
+    on-success: ignore

@@ -58,5 +58,5 @@ execute: |
   # [docs:run-rock-end]
 
 restore: |
-  rm dotnet-runtime_chiselled_amd64.rock
+  rm -f dotnet-runtime_chiselled_amd64.rock
   docker rmi -f dotnet-runtime:chiselled dotnet-runtime:reference
