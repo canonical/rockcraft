@@ -444,13 +444,28 @@ following:
     :dedent: 2
 
 We can also clean the Multipass instance up.
-Start by exiting it:
+
+.. note::
+
+    During setup, we ran ``newgrp docker``, which opens a nested shell.
+    We may therefore need to run ``exit`` twice to return to the host.
+    Only run the first ``exit`` if that nested shell is still active.
+    Otherwise, we might accidentally exit the host shell.
+
+If the nested shell is still active, exit it. This returns us to the
+Multipass VM shell:
 
 .. code-block:: bash
 
     exit
 
-And then we can proceed with its deletion:
+Then exit the Multipass VM. This returns us to the host:
+
+.. code-block:: bash
+
+    exit
+
+From the host, we can proceed with deleting the instance:
 
 .. code-block:: bash
 
