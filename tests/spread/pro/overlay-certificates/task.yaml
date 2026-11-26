@@ -9,18 +9,34 @@ execute: |
     docker-daemon:overlay-certificates:0.1
 
   docker run --rm -i overlay-certificates:0.1 exec /bin/bash -ex <<'EOF'
-    CERTS_DIR=/etc/ssl/certs
-    test -s "$CERTS_DIR/ca-certificates.crt"
-    grep -q -- "-----BEGIN CERTIFICATE-----" "$CERTS_DIR/ca-certificates.crt"
-    HASH_CERT=$(find "$CERTS_DIR" -maxdepth 1 -type l -name "????????.[0-9]" -print -quit)
-    test -n "$HASH_CERT"
-    test -s "$HASH_CERT"
+    fail() {
+      echo "ERROR: $*" >&2
+      exit 1
+    }
 
-    test -s "$CERTS_DIR/java/cacerts"
+    CERTS_DIR=/etc/ssl/certs
+    test -s "$CERTS_DIR/ca-certificates.crt" ||
+      fail "CA bundle is missing or empty: $CERTS_DIR/ca-certificates.crt"
+    grep -q -- "-----BEGIN CERTIFICATE-----" "$CERTS_DIR/ca-certificates.crt" ||
+      fail "CA bundle contains no PEM certificates: $CERTS_DIR/ca-certificates.crt"
+    HASH_CERT=$(find "$CERTS_DIR" -maxdepth 1 -type l -name "????????.[0-9]" -print -quit) ||
+      fail "Cannot search for hashed certificate symlinks in $CERTS_DIR"
+    test -n "$HASH_CERT" ||
+      fail "No hashed certificate symlinks found in $CERTS_DIR"
+    test -s "$HASH_CERT" ||
+      fail "Hashed certificate symlink target is missing or empty: $HASH_CERT"
+
+    test -s "$CERTS_DIR/java/cacerts" ||
+      fail "Java truststore is missing or empty: $CERTS_DIR/java/cacerts"
     JVM_CACERTS=/usr/lib/jvm/java-17-openjdk-amd64/lib/security/cacerts
-    test -L "$JVM_CACERTS"
-    test -s "$JVM_CACERTS"
-    test "$(readlink -f "$JVM_CACERTS")" = /etc/ssl/certs/java/cacerts
+    test -L "$JVM_CACERTS" ||
+      fail "JVM truststore path is not a symlink: $JVM_CACERTS"
+    test -s "$JVM_CACERTS" ||
+      fail "JVM truststore symlink target is missing or empty: $JVM_CACERTS"
+    JVM_CACERTS_TARGET=$(readlink -f "$JVM_CACERTS") ||
+      fail "Cannot resolve JVM truststore symlink: $JVM_CACERTS"
+    test "$JVM_CACERTS_TARGET" = /etc/ssl/certs/java/cacerts ||
+      fail "JVM truststore resolves to $JVM_CACERTS_TARGET instead of /etc/ssl/certs/java/cacerts"
   EOF
 
 restore: |
