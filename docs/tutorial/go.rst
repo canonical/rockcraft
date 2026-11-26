@@ -120,11 +120,14 @@ From the ``~/go-hello-world`` directory, initialize the rock:
 The ``rockcraft.yaml`` file will automatically be created and set the name
 based on your working directory.
 
-Check out the contents of ``rockcraft.yaml``:
+As you inspect the file, check that the ``name`` is ``go-hello-world`` and
+that ``platforms`` matches the architecture of your host.
+
+Inspect the contents of ``rockcraft.yaml``:
 
 .. code-block:: bash
 
-    cat rockcraft.yaml
+    less rockcraft.yaml
 
 The top of the file should look similar to the following snippet:
 
@@ -151,10 +154,7 @@ The top of the file should look similar to the following snippet:
         # ppc64el:
         # s390x:
 
-Verify that the ``name`` is ``go-hello-world``.
-
-The ``platforms`` key must match the architecture of your host. Check
-the architecture of your system:
+Check the architecture of your system:
 
 .. code-block:: bash
 

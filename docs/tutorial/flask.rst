@@ -96,11 +96,14 @@ From the ``~/flask-hello-world`` directory, initialize the rock:
 The project file will automatically be created in the project's working
 directory as ``rockcraft.yaml``.
 
-Check out the contents of ``rockcraft.yaml``:
+As you inspect the file, check that the ``name`` is ``flask-hello-world`` and
+that ``platforms`` matches the architecture of your host.
+
+Inspect the contents of ``rockcraft.yaml``:
 
 .. code-block:: bash
 
-    cat rockcraft.yaml
+    less rockcraft.yaml
 
 The top of the file should look similar to the following snippet:
 
@@ -128,10 +131,7 @@ The top of the file should look similar to the following snippet:
         # s390x:
 
 
-Verify that the ``name`` is ``flask-hello-world``.
-
-The ``platforms`` key must match the architecture of your host. Check
-the architecture of your system:
+Check the architecture of your system:
 
 .. code-block:: bash
 
