@@ -4,11 +4,11 @@ summary: |
 execute: |
   rockcraft pack --pro=esm-apps,esm-infra
 
-  mkdir image
-  tar -xf overlay-certificates_0.1_amd64.rock -C image
-  /snap/rockcraft/current/bin/umoci unpack --rootless --image image:0.1 bundle
+  rockcraft.skopeo copy --insecure-policy \
+    oci-archive:overlay-certificates_0.1_amd64.rock \
+    docker-daemon:overlay-certificates:0.1
 
-  chroot bundle/rootfs /bin/sh -e <<'EOF'
+  docker run --rm -i overlay-certificates:0.1 exec /bin/bash -ex <<'EOF'
     CERTS_DIR=/etc/ssl/certs
     test -s "$CERTS_DIR/ca-certificates.crt"
     grep -q -- "-----BEGIN CERTIFICATE-----" "$CERTS_DIR/ca-certificates.crt"
@@ -26,4 +26,3 @@ execute: |
 restore: |
   rockcraft clean
   rm -f overlay-certificates_0.1_amd64.rock
-  rm -rf image bundle
