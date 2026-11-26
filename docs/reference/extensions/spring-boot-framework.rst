@@ -56,6 +56,54 @@ The project must not contain both files, otherwise the rock initialization will 
 For the build process to execute correctly, the ``mvnw`` or
 ``gradlew`` wrapper must have executable permissions.
 
+.. _reference-spring-boot-framework-stage:
+
+Included or excluded files
+--------------------------
+
+If ``migrate`` or ``migrate.sh`` exist in the project's root directory, they will be
+included in the rock's ``/app`` directory by default.
+
+The ``stage`` key of the generated assets part
+specifies the files to be included or excluded from
+the rock upon ``rockcraft pack``, following the ``app/<filename>`` notation. For
+example:
+
+.. tab-set::
+
+    .. tab-item:: Ubuntu 24.04 LTS
+        :sync: base-24
+
+        .. code-block:: yaml
+          :caption: rockcraft.yaml
+
+          parts:
+            spring-boot-framework/assets:
+              stage:
+                - app/migrate
+                - app/migrate.sh
+                - app/another_file_or_directory
+
+    .. tab-item:: Ubuntu 26.04 LTS
+        :sync: base-26-plus
+
+        .. code-block:: yaml
+          :caption: rockcraft.yaml
+
+          parts:
+            spring-boot-framework.assets:
+              stage:
+                - app/migrate
+                - app/migrate.sh
+                - app/another_file_or_directory
+
+The ``stage`` key supports glob patterns to define the list of files. See :ref:`filesets_explanation`
+for the various ways you can specify files in your rock.
+
+Adding the ``stage`` key to the project file overrides the default files to be included.
+Files are excluded from the rock by defining ``stage`` and omitting the file to
+be excluded.
+
 .. _reference-spring-boot-framework-plugin:
 
 Maven or Gradle usage
@@ -200,54 +248,6 @@ The ``spring-boot-framework`` uses the following configuration:
                 - base-files_chisel
                 - base-files_tmp
                 - coreutils_bins
-
-.. _reference-spring-boot-framework-stage:
-
-Included or excluded files
---------------------------
-
-If ``migrate`` or ``migrate.sh`` exist in the project's root directory, they will be
-included in the rock's ``/app`` directory by default.
-
-The ``stage`` key of the generated assets part
-specifies the files to be included or excluded from
-the rock upon ``rockcraft pack``, following the ``app/<filename>`` notation. For
-example:
-
-.. tab-set::
-
-    .. tab-item:: Ubuntu 24.04 LTS
-        :sync: base-24
-
-        .. code-block:: yaml
-          :caption: rockcraft.yaml
-
-          parts:
-            spring-boot-framework/assets:
-              stage:
-                - app/migrate
-                - app/migrate.sh
-                - app/another_file_or_directory
-
-    .. tab-item:: Ubuntu 26.04 LTS
-        :sync: base-26-plus
-
-        .. code-block:: yaml
-          :caption: rockcraft.yaml
-
-          parts:
-            spring-boot-framework.assets:
-              stage:
-                - app/migrate
-                - app/migrate.sh
-                - app/another_file_or_directory
-
-The ``stage`` key supports glob patterns to define the list of files. See :ref:`filesets_explanation`
-for the various ways you can specify files in your rock.
-
-Adding the ``stage`` key to the project file overrides the default files to be included.
-Files are excluded from the rock by defining ``stage`` and omitting the file to
-be excluded.
 
 Useful links
 ------------

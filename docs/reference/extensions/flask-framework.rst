@@ -71,6 +71,62 @@ For the project to make use of asynchronous Gunicorn workers:
 
 - The ``requirements.txt`` or ``pyproject.toml`` file must include ``gevent`` as a dependency.
 
+.. _reference-flask-framework-prime:
+
+Included or excluded files
+--------------------------
+
+Some files, if they exist, are included by default in the rock. These include:
+``app``, ``app.py``, ``main.py``, ``src``, ``migrate``, ``migrate.sh``,
+``migrate.py``, ``static``, ``templates``. Any other file or directory, such
+as an additional Python module that your app imports, isn't included unless you
+list it in ``prime``. If none of these exist and ``prime`` isn't set, the whole
+project is included, except ``node_modules``, ``.git``, ``.yarn`` and ``*.rock``.
+
+The ``prime`` key specifies the files to be included or excluded from
+the rock upon ``rockcraft pack``. Prefix each entry with ``flask/app/`` (Ubuntu
+22.04 LTS and Ubuntu 24.04 LTS) or ``app/`` (Ubuntu 26.04 LTS),
+followed by the path relative to the project root. For example:
+
+.. tab-set::
+
+    .. tab-item:: Ubuntu 22.04 LTS and Ubuntu 24.04 LTS
+        :sync: base-22-24
+
+        .. code-block:: yaml
+          :caption: rockcraft.yaml
+
+          parts:
+            flask-framework/install-app:
+              prime:
+                - flask/app/.env
+                - flask/app/app.py
+                - flask/app/webapp
+                - flask/app/templates
+                - flask/app/static
+
+    .. tab-item:: Ubuntu 26.04 LTS
+        :sync: base-26-plus
+
+        .. code-block:: yaml
+          :caption: rockcraft.yaml
+
+          parts:
+            flask-framework.install-app:
+              prime:
+                - app/.env
+                - app/app.py
+                - app/webapp
+                - app/templates
+                - app/static
+
+The ``prime`` key supports glob patterns to define the list of files. See :ref:`filesets_explanation`
+for the various ways you can specify files in your rock.
+
+Adding the ``prime`` key to the project file overrides the default files to be included.
+Files are excluded from the rock by defining ``prime`` and omitting the file to
+be excluded.
+
 .. _reference-flask-framework-uv:
 
 uv projects
@@ -191,62 +247,6 @@ rock:
 
    docker run --name flask-container -d -p 8000:8000 flask-image:1.0 \
    --args flask sync
-
-.. _reference-flask-framework-prime:
-
-Included or excluded files
---------------------------
-
-Some files, if they exist, are included by default in the rock. These include:
-``app``, ``app.py``, ``main.py``, ``src``, ``migrate``, ``migrate.sh``,
-``migrate.py``, ``static``, ``templates``. Any other file or directory, such
-as an additional Python module that your app imports, isn't included unless you
-list it in ``prime``. If none of these exist and ``prime`` isn't set, the whole
-project is included, except ``node_modules``, ``.git``, ``.yarn`` and ``*.rock``.
-
-The ``prime`` key specifies the files to be included or excluded from
-the rock upon ``rockcraft pack``. Prefix each entry with ``flask/app/`` (Ubuntu
-22.04 LTS and Ubuntu 24.04 LTS) or ``app/`` (Ubuntu 26.04 LTS),
-followed by the path relative to the project root. For example:
-
-.. tab-set::
-
-    .. tab-item:: Ubuntu 22.04 LTS and Ubuntu 24.04 LTS
-        :sync: base-22-24
-
-        .. code-block:: yaml
-          :caption: rockcraft.yaml
-
-          parts:
-            flask-framework/install-app:
-              prime:
-                - flask/app/.env
-                - flask/app/app.py
-                - flask/app/webapp
-                - flask/app/templates
-                - flask/app/static
-
-    .. tab-item:: Ubuntu 26.04 LTS
-        :sync: base-26-plus
-
-        .. code-block:: yaml
-          :caption: rockcraft.yaml
-
-          parts:
-            flask-framework.install-app:
-              prime:
-                - app/.env
-                - app/app.py
-                - app/webapp
-                - app/templates
-                - app/static
-
-The ``prime`` key supports glob patterns to define the list of files. See :ref:`filesets_explanation`
-for the various ways you can specify files in your rock.
-
-Adding the ``prime`` key to the project file overrides the default files to be included.
-Files are excluded from the rock by defining ``prime`` and omitting the file to
-be excluded.
 
 Useful links
 ------------
