@@ -617,8 +617,8 @@ wheels = [
 
 [[package]]
 name = "craft-parts"
-version = "2.38.1.post7+gd1bcf51b"
-source = { git = "https://github.com/canonical/craft-parts?rev=work%2FCRAFT-5448-overlay-certificates#d1bcf51b8ec2de8e048fc465d85a7362f7cf4e99" }
+version = "2.38.2"
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "lxml" },
     { name = "pydantic" },
@@ -628,6 +628,10 @@ dependencies = [
     { name = "requests-unixsocket2" },
     { name = "semver" },
     { name = "zstandard" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/73/41/36b04bec3d81b4e27cb337033cfa7bb5c2aabc239e1487e233115b9bcdbe/craft_parts-2.38.2.tar.gz", hash = "sha256:d22538c0655ea8aa85b365d8c1570d928a79156b9649453c003e2702a4fc40b0", size = 1079976, upload-time = "2026-11-23T16:01:00.17Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/98/d4/eceab4f7dc5713139b57026112bec34a02aac8a6b1a1240f44c0b7c8c16a/craft_parts-2.38.2-py3-none-any.whl", hash = "sha256:d11ee017ac3155546c98d10f068003d174ce0d3d9b7e4a4552c12ef7b23fc562", size = 576083, upload-time = "2026-11-23T16:00:57.873Z" },
 ]
 
 [[package]]
@@ -2556,7 +2560,7 @@ requires-dist = [
     { name = "craft-application", specifier = ">=7.5.0" },
     { name = "craft-archives", specifier = ">=2.2.2" },
     { name = "craft-cli", specifier = ">=3.4.1" },
-    { name = "craft-parts", git = "https://github.com/canonical/craft-parts?rev=work%2FCRAFT-5448-overlay-certificates" },
+    { name = "craft-parts", specifier = ">=2.38.0" },
     { name = "craft-platforms", specifier = ">=0.12.0" },
     { name = "craft-providers", specifier = ">=3.8.1" },
     { name = "craft-store", marker = "extra == 'store'" },
