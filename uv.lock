@@ -617,8 +617,8 @@ wheels = [
 
 [[package]]
 name = "craft-parts"
-version = "2.38.1.post7+gd1bcf51b"
-source = { git = "https://github.com/canonical/craft-parts?rev=work%2FCRAFT-5448-overlay-certificates#d1bcf51b8ec2de8e048fc465d85a7362f7cf4e99" }
+version = "2.38.2.post2+g51af597e"
+source = { git = "https://github.com/canonical/craft-parts?rev=51af597e54c93f73dc0547c65620d55aeed2ceb1#51af597e54c93f73dc0547c65620d55aeed2ceb1" }
 dependencies = [
     { name = "lxml" },
     { name = "pydantic" },
@@ -2494,7 +2494,6 @@ docs = [
     { name = "myst-parser" },
     { name = "packaging" },
     { name = "pydantic-kitbash" },
-    { name = "rst2html" },
     { name = "sphinx-autobuild" },
     { name = "sphinx-autodoc-typehints" },
     { name = "sphinx-copybutton" },
@@ -2518,7 +2517,6 @@ docs-sphinx-stack = [
     { name = "canonical-sphinx" },
     { name = "myst-parser" },
     { name = "packaging" },
-    { name = "rst2html" },
     { name = "sphinx-autobuild" },
     { name = "sphinx-design" },
     { name = "sphinx-llm" },
@@ -2556,7 +2554,7 @@ requires-dist = [
     { name = "craft-application", specifier = ">=7.5.0" },
     { name = "craft-archives", specifier = ">=2.2.2" },
     { name = "craft-cli", specifier = ">=3.4.1" },
-    { name = "craft-parts", git = "https://github.com/canonical/craft-parts?rev=work%2FCRAFT-5448-overlay-certificates" },
+    { name = "craft-parts", git = "https://github.com/canonical/craft-parts?rev=51af597e54c93f73dc0547c65620d55aeed2ceb1" },
     { name = "craft-platforms", specifier = ">=0.12.0" },
     { name = "craft-providers", specifier = ">=3.8.1" },
     { name = "craft-store", marker = "extra == 'store'" },
@@ -2593,7 +2591,6 @@ docs = [
     { name = "myst-parser", specifier = "~=4.0" },
     { name = "packaging", specifier = "~=26.1" },
     { name = "pydantic-kitbash", specifier = "~=1.0.1" },
-    { name = "rst2html", specifier = ">=2020.7.4" },
     { name = "sphinx-autobuild", specifier = ">=2024.10.3" },
     { name = "sphinx-autodoc-typehints" },
     { name = "sphinx-copybutton" },
@@ -2617,7 +2614,6 @@ docs-sphinx-stack = [
     { name = "canonical-sphinx", specifier = "~=0.6" },
     { name = "myst-parser", specifier = "~=4.0" },
     { name = "packaging", specifier = "~=26.1" },
-    { name = "rst2html", specifier = ">=2020.7.4" },
     { name = "sphinx-autobuild", specifier = ">=2024.10.3" },
     { name = "sphinx-design", specifier = "==0.6.1" },
     { name = "sphinx-llm", specifier = "~=0.4" },
@@ -2656,15 +2652,6 @@ sdist = { url = "https://files.pythonhosted.org/packages/9c/7c/3901b35ed856329bf
 wheels = [
     { url = "https://files.pythonhosted.org/packages/10/14/ea3cdd7276fcd731a9003fe4abeb6b395a38110ddff6a6a509f4ee00f741/roman-5.2-py3-none-any.whl", hash = "sha256:89d3b47400388806d06ff77ea77c79ab080bc127820dea6bf34e1f1c1b8e676e", size = 6041, upload-time = "2025-11-11T08:03:56.051Z" },
 ]
-
-[[package]]
-name = "rst2html"
-version = "2020.7.4"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "docutils" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/29/8e/050653d3f88c7c0ef3ba6df84421dc022d84f152e2c84fc23d49b2d60d1f/rst2html-2020.7.4.tar.gz", hash = "sha256:ea450c6f3dfc0d1cac2a2dc76067d1efc7bb98414487faf2f1abc468463bc6e4", size = 1517, upload-time = "2020-07-15T18:37:40.884Z" }
 
 [[package]]
 name = "ruamel-yaml"
