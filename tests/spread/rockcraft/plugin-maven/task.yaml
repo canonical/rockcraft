@@ -2,9 +2,8 @@ summary: Maven plugin tests
 
 environment:
   BUILD_BASE/2404: ubuntu@24.04
-  # Disabled until we have a chisel branch
-  # https://github.com/canonical/rockcraft/issues/953
-  # BUILD_BASE/2510: ubuntu@25.10
+  BUILD_BASE/2604: ubuntu@26.04
+  BUILD_BASE/2610: ubuntu@26.10
 
 prepare: |
   sed "s/BUILD_BASE/${BUILD_BASE}/" rockcraft-template.yaml > rockcraft.yaml
