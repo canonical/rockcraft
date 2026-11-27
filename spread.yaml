@@ -2,6 +2,7 @@ project: rockcraft
 
 path: /rockcraft
 environment:
+  LXD_CHANNEL: $(HOST:printf %s "${LXD_CHANNEL:-6/stable}")
   PROJECT_PATH: /rockcraft
   SNAPD_TESTING_TOOLS: $PROJECT_PATH/tools/external/tools
   PATH: /snap/bin:$PATH:$SNAPD_TESTING_TOOLS:$PROJECT_PATH/tools/spread
@@ -113,18 +114,13 @@ prepare: |
     tests.pkgs remove lxd
   fi
 
-  # 5.21/stable is the latest stable LTS. Use 5.21/candidate as a "first line of
-  # defense" against LXD regressions.
-  lxd_channel="5.21/candidate"
-
   # Note: check and either refresh or install, because the image might come with
   # the lxd snap pre-installed and tracking a different channel, and in this case
   # the command "snap install lxd" does *not* fail.
-  # 5.21 is necessary for some tests, like the ones in the pro suite.
-  if snap list lxd; then
-    retry -n 5 --wait 10 snap refresh --channel=${lxd_channel} lxd
+  if snap list lxd >/dev/null; then
+    retry -n 5 --wait 10 snap refresh --channel="$LXD_CHANNEL" lxd
   else
-    retry -n 5 --wait 10 snap install --channel=${lxd_channel} lxd
+    retry -n 5 --wait 10 snap install --channel="$LXD_CHANNEL" lxd
   fi
 
   # Hold snap refreshes for 24h.
