@@ -97,6 +97,18 @@ We've made improvements to the documentation:
   writing style and conventions in Rockcraft.
 * Updated the guidance on how to update the documentation tooling.
 
+Fixed bugs and issues
+---------------------
+
+The following issues have been resolved in Rockcraft 1.22.
+
+
+Rockcraft 1.22.1
+~~~~~~~~~~~~~~~~
+
+- `#1044 <https://github.com/canonical/craft-providers/issues/1044>`_ snapd fails to start in ubuntu\@20.04 bases on hosts running Linux 7.0.0+
+- `#1444 <https://github.com/canonical/rockcraft/issues/1444>`_ Trying to pack an armhf rock on arm64 doesn't work
+
 Contributors
 ------------
 
