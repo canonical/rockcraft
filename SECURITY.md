@@ -50,9 +50,9 @@ mitigations for the issue.
 The [Ubuntu Security disclosure and embargo policy] contains more information about
 what you can expect when you contact us and what we expect from you.
 
-[current major release]: https://documentation.ubuntu.com/rockcraft/en/stable/release-notes/#current-releases
-[base]: https://documentation.ubuntu.com/rockcraft/en/stable/reference/rockcraft.yaml/#base
-[destructive]: https://documentation.ubuntu.com/rockcraft/en/stable/reference/commands/pack/#pack
+[current major release]: https://ubuntu.com/containers/rockcraft/docs/latest/release-notes/#current-releases
+[base]: https://ubuntu.com/containers/rockcraft/docs/latest/reference/rockcraft.yaml/#base
+[destructive]: https://ubuntu.com/containers/rockcraft/docs/latest/reference/commands/pack/#pack
 [Private Security Report]: https://github.com/canonical/rockcraft/security/advisories/new
 [LXD]: https://canonical.com/lxd
 [Multipass]: https://canonical.com/multipass
