@@ -2,6 +2,7 @@ project: rockcraft
 
 path: /rockcraft
 environment:
+  LXD_CHANNEL: $(HOST:printf %s "${LXD_CHANNEL:-6/stable}")
   PROJECT_PATH: /rockcraft
   SNAPD_TESTING_TOOLS: $PROJECT_PATH/tools/external/tools
   PATH: /snap/bin:$PATH:$SNAPD_TESTING_TOOLS:$PROJECT_PATH/tools/spread
@@ -113,18 +114,13 @@ prepare: |
     tests.pkgs remove lxd
   fi
 
-  # 5.21/stable is the latest stable LTS. Use 5.21/candidate as a "first line of
-  # defense" against LXD regressions.
-  lxd_channel="5.21/candidate"
-
   # Note: check and either refresh or install, because the image might come with
   # the lxd snap pre-installed and tracking a different channel, and in this case
   # the command "snap install lxd" does *not* fail.
-  # 5.21 is necessary for some tests, like the ones in the pro suite.
-  if snap list lxd; then
-    snap refresh --channel=${lxd_channel} lxd
+  if snap list lxd >/dev/null; then
+    retry -n 5 --wait 10 snap refresh --channel="$LXD_CHANNEL" lxd
   else
-    snap install --channel=${lxd_channel} lxd
+    retry -n 5 --wait 10 snap install --channel="$LXD_CHANNEL" lxd
   fi
 
   # Hold snap refreshes for 24h.
@@ -147,7 +143,7 @@ prepare: |
     lxc config set core.proxy_ignore_hosts "$NO_PROXY"
   fi
 
-  snap install docker
+  retry -n 5 --wait 10 snap install docker
 
   if [ -n "${HTTP_PROXY:-}" ]; then
     # Configure the proxy for the docker daemon through systemd
@@ -243,18 +239,20 @@ suites:
       fi
 
       if [ -n "${HTTP_PROXY:-}" ]; then
-        sudo pro config set http_proxy="$http_proxy"
-        sudo pro config set https_proxy="$https_proxy"
+        retry -n 5 --wait 10 sudo pro config set http_proxy="$http_proxy"
+        retry -n 5 --wait 10 sudo pro config set https_proxy="$https_proxy"
       fi
 
-      sudo pro attach --no-auto-enable $UBUNTU_PRO_TOKEN
+      retry -n 5 --wait 10 sudo pro attach --no-auto-enable $UBUNTU_PRO_TOKEN
 
       # The destructive-mode tests pack with esm-apps
-      sudo pro enable --assume-yes esm-apps
+      retry -n 5 --wait 10 sudo pro enable --assume-yes esm-apps
 
       # Enable guest attachment so that Rockcraft can enable Pro on the instances
       sudo pro config set lxd_guest_attach=available
       sudo snap restart lxd
 
     restore: |
-      sudo pro detach --assume-yes
+      if ! sudo pro status 2>&1 | grep -q "not attached"; then
+        sudo pro detach --assume-yes
+      fi
