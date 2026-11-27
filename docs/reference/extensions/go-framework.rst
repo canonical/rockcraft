@@ -46,49 +46,6 @@ Project requirements
 To use the ``go-framework`` extension, there must be a ``go.mod`` file
 in the root directory of the project.
 
-.. _reference-go-framework-organize:
-
-App binary
-----------
-
-If the main package is in the base directory and the Rockcraft ``name``
-attribute is equal to the last element of the module path in ``go.mod``, the
-extension finds the binary. For example, the module
-``github.com/example/myapp`` requires the name ``myapp``. The same applies to a module ending in a version
-suffix, such as ``github.com/example/myapp/v2``. Otherwise, packing
-fails with a ``No such file or directory`` error, because the extension looks
-for a binary named after the rock. Use the ``organize`` key as shown below.
-
-The ``organize`` key specifies a different binary to be used as the
-main application, without having to override the service command. For example,
-if a Go application contains a ``main`` package in the directory
-``cmd/anotherserver``, the following snippet will override the main application
-to use the binary ``anotherserver``:
-
-.. tab-set::
-
-    .. tab-item:: Ubuntu 24.04 LTS
-        :sync: base-24
-
-        .. code-block:: yaml
-          :caption: rockcraft.yaml
-
-          parts:
-            go-framework/install-app:
-              organize:
-                bin/anotherserver: usr/local/bin/<rockcraft project name>
-
-    .. tab-item:: Ubuntu 26.04 LTS
-        :sync: base-26-plus
-
-        .. code-block:: yaml
-          :caption: rockcraft.yaml
-
-          parts:
-            go-framework.install-app:
-              organize:
-                bin/anotherserver: usr/local/bin/<rockcraft project name>
-
 .. _reference-go-framework-stage:
 
 Included or excluded files
@@ -139,6 +96,49 @@ for the various ways you can specify files in your rock.
 Adding the ``stage`` key to the project file overrides the default files to be included.
 Files are excluded from the rock by defining ``stage`` and omitting the file to
 be excluded.
+
+.. _reference-go-framework-organize:
+
+App binary
+----------
+
+If the main package is in the base directory and the Rockcraft ``name``
+attribute is equal to the last element of the module path in ``go.mod``, the
+extension finds the binary. For example, the module
+``github.com/example/myapp`` requires the name ``myapp``. The same applies to a module ending in a version
+suffix, such as ``github.com/example/myapp/v2``. Otherwise, packing
+fails with a ``No such file or directory`` error, because the extension looks
+for a binary named after the rock. Use the ``organize`` key as shown below.
+
+The ``organize`` key specifies a different binary to be used as the
+main application, without having to override the service command. For example,
+if a Go application contains a ``main`` package in the directory
+``cmd/anotherserver``, the following snippet will override the main application
+to use the binary ``anotherserver``:
+
+.. tab-set::
+
+    .. tab-item:: Ubuntu 24.04 LTS
+        :sync: base-24
+
+        .. code-block:: yaml
+          :caption: rockcraft.yaml
+
+          parts:
+            go-framework/install-app:
+              organize:
+                bin/anotherserver: usr/local/bin/<rockcraft project name>
+
+    .. tab-item:: Ubuntu 26.04 LTS
+        :sync: base-26-plus
+
+        .. code-block:: yaml
+          :caption: rockcraft.yaml
+
+          parts:
+            go-framework.install-app:
+              organize:
+                bin/anotherserver: usr/local/bin/<rockcraft project name>
 
 Useful links
 ------------

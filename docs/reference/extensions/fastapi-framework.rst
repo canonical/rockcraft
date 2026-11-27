@@ -61,6 +61,64 @@ There are 2 requirements to be able to use the ``fastapi-framework`` extension:
      directory or within a directory with the name of the rock as declared in
      the project file, with any ``-`` replaced by ``_``.
 
+.. _reference-fastapi-framework-prime:
+
+Included or excluded files
+--------------------------
+
+Some files, if they exist, are included by default in the rock. These include:
+``migrate``, ``migrate.sh``, ``migrate.py``, ``static``, ``templates``, and the
+file or directory that contains the ASGI app: ``app.py``, ``main.py``, ``app``,
+``src``, or ``<rock name>``. The extension includes the ASGI app only if you did
+not set a custom ``command`` for the ``fastapi`` service. Any other file or
+directory, such as an additional Python module that your app imports, isn't
+included unless you list it in ``prime``. If none of these exist and ``prime``
+isn't set, the whole project is included, except ``node_modules``, ``.git``,
+``.yarn`` and ``*.rock``.
+
+The ``prime`` key specifies the files to be included or excluded from
+the rock upon ``rockcraft pack``, following the ``app/<filename>`` notation. For
+example:
+
+.. tab-set::
+
+    .. tab-item:: Ubuntu 24.04 LTS
+        :sync: base-24
+
+        .. code-block:: yaml
+          :caption: rockcraft.yaml
+
+          parts:
+            fastapi-framework/install-app:
+              prime:
+                - app/.env
+                - app/app.py
+                - app/webapp
+                - app/templates
+                - app/static
+
+    .. tab-item:: Ubuntu 26.04 LTS
+        :sync: base-26-plus
+
+        .. code-block:: yaml
+          :caption: rockcraft.yaml
+
+          parts:
+            fastapi-framework.install-app:
+              prime:
+                - app/.env
+                - app/app.py
+                - app/webapp
+                - app/templates
+                - app/static
+
+The ``prime`` key supports glob patterns to define the list of files. See :ref:`filesets_explanation`
+for the various ways you can specify files in your rock.
+
+Adding the ``prime`` key to the project file overrides the default files to be included.
+Files are excluded from the rock by defining ``prime`` and omitting the file to
+be excluded.
+
 .. _reference-fastapi-framework-uv:
 
 uv projects
@@ -128,64 +186,6 @@ list ``libpq5_libs``.
               stage-packages:
                 # list required packages or slices for your FastAPI application below.
                 - libpq-dev
-
-.. _reference-fastapi-framework-prime:
-
-Included or excluded files
---------------------------
-
-Some files, if they exist, are included by default in the rock. These include:
-``migrate``, ``migrate.sh``, ``migrate.py``, ``static``, ``templates``, and the
-file or directory that contains the ASGI app: ``app.py``, ``main.py``, ``app``,
-``src``, or ``<rock name>``. The extension includes the ASGI app only if you did
-not set a custom ``command`` for the ``fastapi`` service. Any other file or
-directory, such as an additional Python module that your app imports, isn't
-included unless you list it in ``prime``. If none of these exist and ``prime``
-isn't set, the whole project is included, except ``node_modules``, ``.git``,
-``.yarn`` and ``*.rock``.
-
-The ``prime`` key specifies the files to be included or excluded from
-the rock upon ``rockcraft pack``, following the ``app/<filename>`` notation. For
-example:
-
-.. tab-set::
-
-    .. tab-item:: Ubuntu 24.04 LTS
-        :sync: base-24
-
-        .. code-block:: yaml
-          :caption: rockcraft.yaml
-
-          parts:
-            fastapi-framework/install-app:
-              prime:
-                - app/.env
-                - app/app.py
-                - app/webapp
-                - app/templates
-                - app/static
-
-    .. tab-item:: Ubuntu 26.04 LTS
-        :sync: base-26-plus
-
-        .. code-block:: yaml
-          :caption: rockcraft.yaml
-
-          parts:
-            fastapi-framework.install-app:
-              prime:
-                - app/.env
-                - app/app.py
-                - app/webapp
-                - app/templates
-                - app/static
-
-The ``prime`` key supports glob patterns to define the list of files. See :ref:`filesets_explanation`
-for the various ways you can specify files in your rock.
-
-Adding the ``prime`` key to the project file overrides the default files to be included.
-Files are excluded from the rock by defining ``prime`` and omitting the file to
-be excluded.
 
 Useful links
 ------------
