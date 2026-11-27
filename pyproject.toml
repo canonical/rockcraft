@@ -5,12 +5,12 @@ dynamic = ["version"]
 dependencies = [
   # To use a dev version of a craft library:
   # craft-lib @ git+https://github.com/canonical/craft-lib@ref
-  "craft-application>=7.5.0",
+  "craft-application>=7.5.1",
   "craft-archives>=2.2.2",
   "craft-cli>=3.4.1",
   "craft-parts>=2.38.0",
   "craft-platforms>=0.12.0",
-  "craft-providers>=3.8.1",
+  "craft-providers>=3.8.2",
   "overrides>=7.7.0",
   "setuptools>=84.1.0",  # https://osv.dev/GHSA-xmj3-9gf7-h52w
   "spdx-lookup>=0.3.3",
@@ -84,7 +84,6 @@ docs-sphinx-stack = [
   "canonical-sphinx~=0.6",
   "myst-parser~=4.0",
   "packaging~=26.1",
-  "rst2html>=2020.7.4",
   "sphinx-autobuild>=2024.10.3",
   # "sphinx-config-options~=0.1",
   # "sphinx-contributor-listing~=0.1",
