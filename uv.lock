@@ -617,8 +617,8 @@ wheels = [
 
 [[package]]
 name = "craft-parts"
-version = "2.38.0"
-source = { registry = "https://pypi.org/simple" }
+version = "2.38.2.post2+g51af597e"
+source = { git = "https://github.com/canonical/craft-parts?rev=51af597e54c93f73dc0547c65620d55aeed2ceb1#51af597e54c93f73dc0547c65620d55aeed2ceb1" }
 dependencies = [
     { name = "lxml" },
     { name = "pydantic" },
@@ -628,10 +628,6 @@ dependencies = [
     { name = "requests-unixsocket2" },
     { name = "semver" },
     { name = "zstandard" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/0b/b7/b5a13ec5dbf4e41657687ee27c105c53ad54ae7575d08e6001bfaad2a452/craft_parts-2.38.0.tar.gz", hash = "sha256:5410dea02bfd68056af2b9131f0734994465fb61af55e30698daf0a9701a0a8f", size = 1078672, upload-time = "2026-11-17T18:30:28.92Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/9e/e8/7f1454561a616d635c3c61a52d57bbc8f7037370b5ca1ae0a491435a17db/craft_parts-2.38.0-py3-none-any.whl", hash = "sha256:74b53e19f7b2ba11727f2fee410f2a4ac5e0f718b9dbc05bb630ea8416ec9c85", size = 575539, upload-time = "2026-11-17T18:30:26.538Z" },
 ]
 
 [[package]]
@@ -2044,30 +2040,30 @@ resolution-markers = [
     "python_full_version < '3.13' and sys_platform == 'linux'",
 ]
 wheels = [
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-2.4.0+ubuntu4.1-cp312-cp312-manylinux_2_35_aarch64.whl", hash = "sha256:ebbc8bca25c587857c494e9b965cb43a1d60e5969fe3b8a062ea27ca4cbb74e9" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-2.4.0+ubuntu4.1-cp312-cp312-manylinux_2_35_armv7l.whl", hash = "sha256:8cbe9d5531b3b74b97b263088a1eb355f221b36a4d16f22e64527e7172020e6f" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-2.4.0+ubuntu4.1-cp312-cp312-manylinux_2_35_ppc64le.whl", hash = "sha256:6716a92adb6478bd7d31aeaff38e0680144b5eccfb0844fdf5ca1137f69434fd" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-2.4.0+ubuntu4.1-cp312-cp312-manylinux_2_35_riscv64.whl", hash = "sha256:d52d21227597ecc6d7b4fdf17842756abe437afd458566500fe49ea96e71c795" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-2.4.0+ubuntu4.1-cp312-cp312-manylinux_2_35_s390x.whl", hash = "sha256:9bcb295cf216d7064df80559fe348ea50a365a961f9f041a0c9821c9c7c36811" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-2.4.0+ubuntu4.1-cp312-cp312-manylinux_2_35_x86_64.whl", hash = "sha256:8b0daee584f870f2d4112890d6deecd84958f0a021eab91476842cdbb00e0d4d" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-2.4.0+ubuntu4.1-cp313-cp313-manylinux_2_35_aarch64.whl", hash = "sha256:6f85c2a49c4a2769a46f37c633191790c9c1054ecbeceace414ac13b555fd404" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-2.4.0+ubuntu4.1-cp313-cp313-manylinux_2_35_armv7l.whl", hash = "sha256:f5a54d756d9c5555e87a823ad809bd11d02adfa729afd0d6717deead497449c1" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-2.4.0+ubuntu4.1-cp313-cp313-manylinux_2_35_ppc64le.whl", hash = "sha256:c074818bb7ff38d857a2bf04ee41e2e68d9c450047a02fa6f0dc6a0cfd7974e3" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-2.4.0+ubuntu4.1-cp313-cp313-manylinux_2_35_riscv64.whl", hash = "sha256:ee42228ea48c4b545d1d4a02a039c0a71726b23a4ed0d59a3c687dd05b93cc87" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-2.4.0+ubuntu4.1-cp313-cp313-manylinux_2_35_s390x.whl", hash = "sha256:c5a22297940888a7996326b3ff8db5daf34fe94689bfe2aa881e08e961750592" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-2.4.0+ubuntu4.1-cp313-cp313-manylinux_2_35_x86_64.whl", hash = "sha256:4276f0f775d5ba77be49ae6538dcc7090b07e057e23a87ddd89658cf852a2a4e" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-2.4.0+ubuntu4.1-cp314-cp314-manylinux_2_35_aarch64.whl", hash = "sha256:b0e044ab0f9f74ef2caa05b45a2d1d27b74fc518ecae21e9f736ee06e4a24c89" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-2.4.0+ubuntu4.1-cp314-cp314-manylinux_2_35_armv7l.whl", hash = "sha256:a659c829b40b4d8d3ed2891bcbbabc30830e8dc32c520f9c94a31ec2da5c17ee" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-2.4.0+ubuntu4.1-cp314-cp314-manylinux_2_35_ppc64le.whl", hash = "sha256:2582e3c3dc894c64af1f2e917a27532845bfbf579b472c9d3b557e072e133e5c" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-2.4.0+ubuntu4.1-cp314-cp314-manylinux_2_35_riscv64.whl", hash = "sha256:4851b957d0b5e04bcf688592fcd0af2cdcb888d460b0552e8a1360d8d1352133" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-2.4.0+ubuntu4.1-cp314-cp314-manylinux_2_35_s390x.whl", hash = "sha256:7a59137a7eb9f70521f78ac6d8508e63d5d3667ad07130493078c18950b8ac73" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-2.4.0+ubuntu4.1-cp314-cp314-manylinux_2_35_x86_64.whl", hash = "sha256:f126fea6c1c3565a8bc36410dca82383fd8f9d6ce470c9db1e80f250811dc824" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-2.4.0+ubuntu4.1-cp314-cp314t-manylinux_2_35_aarch64.whl", hash = "sha256:c0b6c278825a7c86ce677a1a18866e741a74bd45a563c272c6e0e5ee73c94211" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-2.4.0+ubuntu4.1-cp314-cp314t-manylinux_2_35_armv7l.whl", hash = "sha256:40453df710a165647b1fa16b3b2a63c1d6be318dee5054fb2f48f51be6b20f71" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-2.4.0+ubuntu4.1-cp314-cp314t-manylinux_2_35_ppc64le.whl", hash = "sha256:0f5c3b0af7ae70aa46b39548428831bd3b3a090ca80ee8f9f88d6257c2821faf" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-2.4.0+ubuntu4.1-cp314-cp314t-manylinux_2_35_riscv64.whl", hash = "sha256:484aa87c5e98aeb305e0bee685cb17c1b5733415cd0f6511f2fafcf90e9cb5e6" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-2.4.0+ubuntu4.1-cp314-cp314t-manylinux_2_35_s390x.whl", hash = "sha256:a3ef69f1cede48d25a490d95fab39c772d3e4b7dbf0919e7917f041d48568fc5" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-2.4.0+ubuntu4.1-cp314-cp314t-manylinux_2_35_x86_64.whl", hash = "sha256:a9619e4bbec46a546452806616bd6feba5652d4e53c0cfa2850a83d6247db261" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-2.4.0+ubuntu4.1-cp312-cp312-manylinux_2_35_aarch64.whl", hash = "sha256:fceb515af279d35015710e8af58821c173b94c7c0221ff79cbb611e5e9fc3fa7" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-2.4.0+ubuntu4.1-cp312-cp312-manylinux_2_35_armv7l.whl", hash = "sha256:4060a0cc8f1c738e9f6b4cdea19ebb4d939ddc45a12843f3dca77fd14084b5fc" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-2.4.0+ubuntu4.1-cp312-cp312-manylinux_2_35_ppc64le.whl", hash = "sha256:ea51136400ead76f668ef448fb623e1734a5d8da7e473b8a8703bbf5f5688ed7" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-2.4.0+ubuntu4.1-cp312-cp312-manylinux_2_35_riscv64.whl", hash = "sha256:d2f80a2f4f1e3544a80d8ec4acaa0cba1d7aebd06f870b3757d23ba813fb1f4a" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-2.4.0+ubuntu4.1-cp312-cp312-manylinux_2_35_s390x.whl", hash = "sha256:e1827d7d404804eb53f8173408a9213033ca0827c81de7ae0cc897b47dc6ef7c" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-2.4.0+ubuntu4.1-cp312-cp312-manylinux_2_35_x86_64.whl", hash = "sha256:25ec23bd5100ceaf246284393f00c25653565ee663e930bfe007cb4e9576cf05" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-2.4.0+ubuntu4.1-cp313-cp313-manylinux_2_35_aarch64.whl", hash = "sha256:3fdf256083acff792c51e313692645c46c22abf5ba220208740cd4df8075b6f2" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-2.4.0+ubuntu4.1-cp313-cp313-manylinux_2_35_armv7l.whl", hash = "sha256:01b6311fd867d8aafec1af13a2030fe4beef3b220b30f7f80ba1f08793e734d9" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-2.4.0+ubuntu4.1-cp313-cp313-manylinux_2_35_ppc64le.whl", hash = "sha256:4dd109f0a1b62bbe9dcf357e5d94bab16a6bfc77b1499be6686e7ee2afa8f715" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-2.4.0+ubuntu4.1-cp313-cp313-manylinux_2_35_riscv64.whl", hash = "sha256:61fb96444be60abdae55013c6f6e905f69714ce0f5f81db475606436490aa3b4" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-2.4.0+ubuntu4.1-cp313-cp313-manylinux_2_35_s390x.whl", hash = "sha256:d3af2bd918274b2688b12fb1fa2038c895d5e1c5c1079cb23c2dc65cbacf2162" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-2.4.0+ubuntu4.1-cp313-cp313-manylinux_2_35_x86_64.whl", hash = "sha256:53d2fa2ab822fe475bd7510deb45234326145d16aaf394fac49a9972a3a5c478" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-2.4.0+ubuntu4.1-cp314-cp314-manylinux_2_35_aarch64.whl", hash = "sha256:ffe099c9854c8ea7e00afd8202cfe58e94e0ff0b5553c8ccf5d95a305e96c98a" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-2.4.0+ubuntu4.1-cp314-cp314-manylinux_2_35_armv7l.whl", hash = "sha256:18e6b26755e11d80a9a48e606a442f879fda5a2912b716ef6d716aeb14bb88b5" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-2.4.0+ubuntu4.1-cp314-cp314-manylinux_2_35_ppc64le.whl", hash = "sha256:cf5ff27fe1a29bf894786101a887dc4a469a196ded941690a41ea96d8dedb532" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-2.4.0+ubuntu4.1-cp314-cp314-manylinux_2_35_riscv64.whl", hash = "sha256:fd1e9f766046d783a29a9f8e9aa474e1d80e07e5f27f260e47739b739184dbae" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-2.4.0+ubuntu4.1-cp314-cp314-manylinux_2_35_s390x.whl", hash = "sha256:a73ff450a466f413e677a5e0ef849233c4348bf705c5a2a1c89ee8730d03243b" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-2.4.0+ubuntu4.1-cp314-cp314-manylinux_2_35_x86_64.whl", hash = "sha256:4991dcb41994137f9c18e3293379ea060c892d4fce9725d6c6daae1a6776efc0" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-2.4.0+ubuntu4.1-cp314-cp314t-manylinux_2_35_aarch64.whl", hash = "sha256:eff619098e926f04b980df3d5479dcb7bb3435cf76728f99e7830aa3d6600022" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-2.4.0+ubuntu4.1-cp314-cp314t-manylinux_2_35_armv7l.whl", hash = "sha256:7a6a84116d05cd8e53c1299070fd8761aa88e2bccde0499508cfbf7b0be62c74" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-2.4.0+ubuntu4.1-cp314-cp314t-manylinux_2_35_ppc64le.whl", hash = "sha256:fdec6764ff96ccafbe817b668a692433d93464c582a35e0b84c6bcc812b5fc07" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-2.4.0+ubuntu4.1-cp314-cp314t-manylinux_2_35_riscv64.whl", hash = "sha256:1f0d23aac8d80d0906804cb2a779e5be30858d5106cd8d9cd7991abe7dc36358" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-2.4.0+ubuntu4.1-cp314-cp314t-manylinux_2_35_s390x.whl", hash = "sha256:49dc1ef8bc2c0dd94adf16fcdffb76c3c08e3d01f2da7573def1b82d1bfcc45b" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-2.4.0+ubuntu4.1-cp314-cp314t-manylinux_2_35_x86_64.whl", hash = "sha256:c39938972fcc35630591a25fd5e7f319b1354140d68cdaf1065343ece75efc0d" },
 ]
 
 [[package]]
@@ -2079,30 +2075,30 @@ resolution-markers = [
     "python_full_version < '3.13' and sys_platform == 'linux'",
 ]
 wheels = [
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-2.7.7+ubuntu5.3-cp312-cp312-manylinux_2_39_aarch64.whl", hash = "sha256:107a5355f66b80c61aac7a5cc04d463175ebf98c423e1663d9fe9185507ff1d0" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-2.7.7+ubuntu5.3-cp312-cp312-manylinux_2_39_armv7l.whl", hash = "sha256:9084c1a45c53f42db8cf0908de9f61ff5ca0a6ed73f13363a67fcabd66eed5b3" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-2.7.7+ubuntu5.3-cp312-cp312-manylinux_2_39_ppc64le.whl", hash = "sha256:f2886efdc9bb53e9b201981e257bf232ead1c729841ecec2746dc4715ae57fc1" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-2.7.7+ubuntu5.3-cp312-cp312-manylinux_2_39_riscv64.whl", hash = "sha256:21ed53b4ad0a3c1faa44872ba8b966a6fc6ec529963e0950853089a11780a41e" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-2.7.7+ubuntu5.3-cp312-cp312-manylinux_2_39_s390x.whl", hash = "sha256:05ffe14ae9f753d1953490a9b92577bb207b00a90defa2aae1a1ddbf500a7055" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-2.7.7+ubuntu5.3-cp312-cp312-manylinux_2_39_x86_64.whl", hash = "sha256:71174c7ce0a8a399e821b955bb0cfcf88b94cf290b9def3aee2fb90db3a12c82" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-2.7.7+ubuntu5.3-cp313-cp313-manylinux_2_39_aarch64.whl", hash = "sha256:3cbe583ad525f43e6db4840afb388a83cae6d75e41deb7f8c3579132985cdccc" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-2.7.7+ubuntu5.3-cp313-cp313-manylinux_2_39_armv7l.whl", hash = "sha256:9cced49fa56d1b3655b2df39f27bcf744341b11812779bbfbc0bf322a403ceee" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-2.7.7+ubuntu5.3-cp313-cp313-manylinux_2_39_ppc64le.whl", hash = "sha256:4ae4532d7aa2973bbfff30ee634e3e1316e43435d904a782bcf07018bb7da711" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-2.7.7+ubuntu5.3-cp313-cp313-manylinux_2_39_riscv64.whl", hash = "sha256:9c54e33a68332e51ec7608672a269e774d5f61f5b51c0dd0208b9108968b776a" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-2.7.7+ubuntu5.3-cp313-cp313-manylinux_2_39_s390x.whl", hash = "sha256:812ebb7d906eb6f53564ad5d7d2a01c5942be0a0f0fd7fbaa963e61f1de6e59d" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-2.7.7+ubuntu5.3-cp313-cp313-manylinux_2_39_x86_64.whl", hash = "sha256:a1f110f4c5fe6087a9f9b75679dd145d9fe9bc4e6f600572473efca8c0b2e42c" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-2.7.7+ubuntu5.3-cp314-cp314-manylinux_2_39_aarch64.whl", hash = "sha256:2509f4546ad991d14c7f7e595effea2007830fd26f4c68287b22a9dfd78011bc" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-2.7.7+ubuntu5.3-cp314-cp314-manylinux_2_39_armv7l.whl", hash = "sha256:5d9c23c7538b321ee18046c39ac3a4a85eebb569b99b2dbb905af5da78976946" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-2.7.7+ubuntu5.3-cp314-cp314-manylinux_2_39_ppc64le.whl", hash = "sha256:fa5d56808c5d08fa1c530cd02bc3e5629c1390a345fa503cbf352028a7c86fb3" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-2.7.7+ubuntu5.3-cp314-cp314-manylinux_2_39_riscv64.whl", hash = "sha256:88c7a188dd8adf3ed23fb96d765abec8a9e5a175f0ea83822423977a44fccf8b" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-2.7.7+ubuntu5.3-cp314-cp314-manylinux_2_39_s390x.whl", hash = "sha256:dc09d97d58c818bf99ddb4ad19c9897a0dbc4cf1da589756b792051a1316e496" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-2.7.7+ubuntu5.3-cp314-cp314-manylinux_2_39_x86_64.whl", hash = "sha256:031a69111ea46a58747d6daa4efa8452a57567731dcc155f8dc428de62058b7f" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-2.7.7+ubuntu5.3-cp314-cp314t-manylinux_2_39_aarch64.whl", hash = "sha256:e56e47c5eaf02af2684ca1f73477f410245710a73ccc2751103b7ee0e88d7105" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-2.7.7+ubuntu5.3-cp314-cp314t-manylinux_2_39_armv7l.whl", hash = "sha256:ea8866ae98eda1de72f80f82f698a3e71bb74de5c9ec362578cb8ab01a23a392" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-2.7.7+ubuntu5.3-cp314-cp314t-manylinux_2_39_ppc64le.whl", hash = "sha256:2c51b125a1351ac6eecaf603c72b10967df260e75976732f054960df308dcffd" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-2.7.7+ubuntu5.3-cp314-cp314t-manylinux_2_39_riscv64.whl", hash = "sha256:ca0cc29134d14a3460694ae60e0c36e55fd3aecd645343c7b05c6069fb8febdd" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-2.7.7+ubuntu5.3-cp314-cp314t-manylinux_2_39_s390x.whl", hash = "sha256:ef308168901c999970ee5e1adb66232ede17f074cf4765410a44f8d6157085e0" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-2.7.7+ubuntu5.3-cp314-cp314t-manylinux_2_39_x86_64.whl", hash = "sha256:3ad69c852dd08051abd016c9706ea2ad453852d771b1afd43aed3a4a80ad9cd8" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-2.7.7+ubuntu5.3-cp312-cp312-manylinux_2_39_aarch64.whl", hash = "sha256:d419002a29df47109eda682d42091c5dc1430f602f14b646dae5cd063959add7" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-2.7.7+ubuntu5.3-cp312-cp312-manylinux_2_39_armv7l.whl", hash = "sha256:b23b99c375de891bad6f43d26a29fef25b6a11350c9c6d4c79a36e20352ab8e1" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-2.7.7+ubuntu5.3-cp312-cp312-manylinux_2_39_ppc64le.whl", hash = "sha256:4e614f53081248aad5d86ef3c966c30483b73e9eaf93337ef0bbb6b5a8311940" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-2.7.7+ubuntu5.3-cp312-cp312-manylinux_2_39_riscv64.whl", hash = "sha256:507a9a2f0cb646eca6694c3f4127261ab5099f1692ba9831cc189e9636f74291" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-2.7.7+ubuntu5.3-cp312-cp312-manylinux_2_39_s390x.whl", hash = "sha256:ba4b7478abfb14cec8f0b881bda9a847b8584721aeb99be6e218688e0693429c" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-2.7.7+ubuntu5.3-cp312-cp312-manylinux_2_39_x86_64.whl", hash = "sha256:943cfe5c3222749fc710fba8c630f1ff003ebc52396635e0e191c4bf940ca5eb" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-2.7.7+ubuntu5.3-cp313-cp313-manylinux_2_39_aarch64.whl", hash = "sha256:11604b2a04602342755f5bd0ee85bfc6d8015813260a76c8b35cae43737bb102" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-2.7.7+ubuntu5.3-cp313-cp313-manylinux_2_39_armv7l.whl", hash = "sha256:8acb5ac78a8df9edbd5a45ef5d7485fb9fee1c130588dd4b94b97be9663647bf" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-2.7.7+ubuntu5.3-cp313-cp313-manylinux_2_39_ppc64le.whl", hash = "sha256:b983c92f60b187bb6de8c2f8bc094d0376a19594b3260e87f757cc6dec9d3715" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-2.7.7+ubuntu5.3-cp313-cp313-manylinux_2_39_riscv64.whl", hash = "sha256:5062ac3843a3e0d6a761e9383c9326e08704e5a2c26a4d9efc6a70863f5b13ad" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-2.7.7+ubuntu5.3-cp313-cp313-manylinux_2_39_s390x.whl", hash = "sha256:2f77e3d5fe7aeb444e1ffdd49d9833243f9341023776813bf15ccb0aea871f2c" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-2.7.7+ubuntu5.3-cp313-cp313-manylinux_2_39_x86_64.whl", hash = "sha256:11dcaa67267ce284d5399e814ea76dbc10616dae57ca611ed1f40725f0ca93e6" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-2.7.7+ubuntu5.3-cp314-cp314-manylinux_2_39_aarch64.whl", hash = "sha256:e129f85ed02c436223bd95f5e67aada3668508b1d5c8a80cf01c9c5cf587896f" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-2.7.7+ubuntu5.3-cp314-cp314-manylinux_2_39_armv7l.whl", hash = "sha256:16cafafd55718b124fde035baede6962c0b713532ed9d7892909a9b0d0c6a95a" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-2.7.7+ubuntu5.3-cp314-cp314-manylinux_2_39_ppc64le.whl", hash = "sha256:6e6b7d8977ff96dc4d7dd3de6ed36d95d524552e17e0837c81dee71a933e6570" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-2.7.7+ubuntu5.3-cp314-cp314-manylinux_2_39_riscv64.whl", hash = "sha256:2e6174132b67212ef0f03889afe649ab4c44a125ecf188968c4b12492dda5c8d" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-2.7.7+ubuntu5.3-cp314-cp314-manylinux_2_39_s390x.whl", hash = "sha256:d72211a2d0a128be6653cff79626ea74d596a250ac14b830db943c7cf07695ce" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-2.7.7+ubuntu5.3-cp314-cp314-manylinux_2_39_x86_64.whl", hash = "sha256:5122fea78470edd319285d0c6380125fbdd6a9981c9572b9714b7f4805c79175" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-2.7.7+ubuntu5.3-cp314-cp314t-manylinux_2_39_aarch64.whl", hash = "sha256:772e6f490c2e7524e310037c94892c6f17561d9e1f8961f7460485da9532f987" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-2.7.7+ubuntu5.3-cp314-cp314t-manylinux_2_39_armv7l.whl", hash = "sha256:5154ea846638fcf7248cf9705e9f5c8c4db5345407e35c7c9f96ada1736285c3" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-2.7.7+ubuntu5.3-cp314-cp314t-manylinux_2_39_ppc64le.whl", hash = "sha256:3fe7fbfc705aebf600f9b86e653a4ba13db12e9d055fb5b8b1de3cd37be2dbfb" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-2.7.7+ubuntu5.3-cp314-cp314t-manylinux_2_39_riscv64.whl", hash = "sha256:b3d4473428b5f379b253beb398871cac9a62c7ac75944607ab0a15c0751a9d53" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-2.7.7+ubuntu5.3-cp314-cp314t-manylinux_2_39_s390x.whl", hash = "sha256:ab1e6dfaf968a346a3e1d57f67ded058cf7bcfdada1783b033af32ece2a7914f" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-2.7.7+ubuntu5.3-cp314-cp314t-manylinux_2_39_x86_64.whl", hash = "sha256:0adaed7cccc70d5a1154b0be993276cd5000c50b7d37d401b360427b958c9f5b" },
 ]
 
 [[package]]
@@ -2133,30 +2129,30 @@ resolution-markers = [
     "python_full_version < '3.13' and sys_platform == 'linux'",
 ]
 wheels = [
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-3.1.0+ubuntu2-cp312-cp312-manylinux_2_44_aarch64.whl", hash = "sha256:3dd96c25373f0754b25ec58c5cd7bba7af9ca4377b45c56eb8bea994426d55f0" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-3.1.0+ubuntu2-cp312-cp312-manylinux_2_44_armv7l.whl", hash = "sha256:0ce19f04377832cd2c4d1dae01b96c9e727fc2282fe050ba5040e18c4029af1d" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-3.1.0+ubuntu2-cp312-cp312-manylinux_2_44_ppc64le.whl", hash = "sha256:7e35c9e22a02c25c450ec6a5330eeffdeb6570646ee6ae7397499f90525572ba" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-3.1.0+ubuntu2-cp312-cp312-manylinux_2_44_riscv64.whl", hash = "sha256:3133dab11c1a429e4caea0d671ba1295dac8aecbab0937f602f404e1306d250d" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-3.1.0+ubuntu2-cp312-cp312-manylinux_2_44_s390x.whl", hash = "sha256:91ff11f57ef07356c7394c89dc1ab52df267bf16659b7e99945101828bf948bb" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-3.1.0+ubuntu2-cp312-cp312-manylinux_2_44_x86_64.whl", hash = "sha256:6eb5f71268bb9911a9ac07403e3c0626c42a19aa0a024227f206d77d05d3a5c7" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-3.1.0+ubuntu2-cp313-cp313-manylinux_2_44_aarch64.whl", hash = "sha256:1820fcba4b3f8f078b2fc10ef643f10af934f210bfb0b4efc1d7bb099fe40ac7" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-3.1.0+ubuntu2-cp313-cp313-manylinux_2_44_armv7l.whl", hash = "sha256:7048f1cb48a0cfbd651e5bf728e6eb1c5c14b4d4e9aed1cd00cafef8f5bc4b1e" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-3.1.0+ubuntu2-cp313-cp313-manylinux_2_44_ppc64le.whl", hash = "sha256:27240de2df102b85c05baceac1070848cf927bdad00f430c0c2879d2780d5948" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-3.1.0+ubuntu2-cp313-cp313-manylinux_2_44_riscv64.whl", hash = "sha256:6c495f03213367fb7bf81bebc157d94a8c039b02f5df717828eb8aa5f1519ab1" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-3.1.0+ubuntu2-cp313-cp313-manylinux_2_44_s390x.whl", hash = "sha256:0bbe772eb6f27a4f1c394e8c65f3f6ecea8b7ade1ac1d8500139775385307c3b" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-3.1.0+ubuntu2-cp313-cp313-manylinux_2_44_x86_64.whl", hash = "sha256:dad024508ae5f77d77779380154aec19aaed4e41b031ef8c005e3f15e9d302a5" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-3.1.0+ubuntu2-cp314-cp314-manylinux_2_44_aarch64.whl", hash = "sha256:1b0c551776762b9b9d9f53df2c98570b67a1d9e2708454c4985aca51d329560a" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-3.1.0+ubuntu2-cp314-cp314-manylinux_2_44_armv7l.whl", hash = "sha256:70c651f194145e9daed1c4311681896807d04c6d7d9964642e6c143e1bc99b0b" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-3.1.0+ubuntu2-cp314-cp314-manylinux_2_44_ppc64le.whl", hash = "sha256:6a4458c9d6867a1f76dbe60a45cc87e1727e7d503fada515b4da1e5a2ca0df39" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-3.1.0+ubuntu2-cp314-cp314-manylinux_2_44_riscv64.whl", hash = "sha256:c43b186ecdf24036c3c3713ec3230f0a30d108a551bed140780c5a263379c081" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-3.1.0+ubuntu2-cp314-cp314-manylinux_2_44_s390x.whl", hash = "sha256:e7d73289f37b693fdf82307c898485732421326f93ffa1945867231bc29e8fa7" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-3.1.0+ubuntu2-cp314-cp314-manylinux_2_44_x86_64.whl", hash = "sha256:284161f4383f6ce47c1bdc949cfe33a218fbda21349ac0a82bf4837a5cb6d088" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-3.1.0+ubuntu2-cp314-cp314t-manylinux_2_44_aarch64.whl", hash = "sha256:d3a326647533719f092824f1ace3432b510ab35c683f1dc1505b30a1111e7da0" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-3.1.0+ubuntu2-cp314-cp314t-manylinux_2_44_armv7l.whl", hash = "sha256:27f134079b9fd9d739e9c5da9c51ca408f764f6811ce8131a71dc45fb7f04ac4" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-3.1.0+ubuntu2-cp314-cp314t-manylinux_2_44_ppc64le.whl", hash = "sha256:4af96839d7be1c849836b7b027e0549a0c739e616c3299a8ee3431e331a09b70" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-3.1.0+ubuntu2-cp314-cp314t-manylinux_2_44_riscv64.whl", hash = "sha256:a96e7da857d8b3ca1720961b9247c8c2577f9beb145e44b1d3da931adf0f925b" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-3.1.0+ubuntu2-cp314-cp314t-manylinux_2_44_s390x.whl", hash = "sha256:cba41d888aa586d9fb9579c5fc1ffa1172ad5c21f15f5c18b7bf359672ac9dbb" },
-    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-14-81/python_apt-3.1.0+ubuntu2-cp314-cp314t-manylinux_2_44_x86_64.whl", hash = "sha256:5c874880a6b1a157a8190a0242503e46b1c83fa8851fbc2a05475af77f417ef1" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-3.1.0+ubuntu2-cp312-cp312-manylinux_2_44_aarch64.whl", hash = "sha256:9e2090574e6761240468942556a16a227f5548d456f28e6aa998648d7e907023" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-3.1.0+ubuntu2-cp312-cp312-manylinux_2_44_armv7l.whl", hash = "sha256:54a13db1ba598fd236c3179688417cb2ccc18f13a9a12a02697366eaaa3495ef" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-3.1.0+ubuntu2-cp312-cp312-manylinux_2_44_ppc64le.whl", hash = "sha256:13867c943d38e4daebd7b3a88e8768a76cb2aefada941940b34ef150e028559f" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-3.1.0+ubuntu2-cp312-cp312-manylinux_2_44_riscv64.whl", hash = "sha256:6d667b5c8b341dccb0f2c7c8257867eb115956837c76cc0ded70de40158284eb" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-3.1.0+ubuntu2-cp312-cp312-manylinux_2_44_s390x.whl", hash = "sha256:337a1b9a5ec2b8494885d127d1ee9b4b3c38e0b2812beee780ce59898ecb8686" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-3.1.0+ubuntu2-cp312-cp312-manylinux_2_44_x86_64.whl", hash = "sha256:81bb4f3a19c28fb02b6df7deea2a770d8cb2f069d3862c96e9484cb0f2491f8e" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-3.1.0+ubuntu2-cp313-cp313-manylinux_2_44_aarch64.whl", hash = "sha256:0d233237eee1cd69cbcb684ac0573817c105a158bf5e3a253c68db8d307574c8" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-3.1.0+ubuntu2-cp313-cp313-manylinux_2_44_armv7l.whl", hash = "sha256:5a467385627f9a9dfb62629e69185157e1a2057193835461e01dce5720d3744c" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-3.1.0+ubuntu2-cp313-cp313-manylinux_2_44_ppc64le.whl", hash = "sha256:970405cacb420bf38fcfcdf1666ba0891e8fed80b6ad306572a6d0c3ed6c5dd8" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-3.1.0+ubuntu2-cp313-cp313-manylinux_2_44_riscv64.whl", hash = "sha256:87465d5142cea3a32dfeb7c39c06ae2bf2cf062ec90696aa8385e3cec53576ab" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-3.1.0+ubuntu2-cp313-cp313-manylinux_2_44_s390x.whl", hash = "sha256:28063ff16df7d7701a9ea445408d6fd4479738493b87b2a2ba16dc200422ba1a" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-3.1.0+ubuntu2-cp313-cp313-manylinux_2_44_x86_64.whl", hash = "sha256:d4979d4ba189e59190e0419a024bca864d5e69a53467b0b43eee3a7cef2c72d0" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-3.1.0+ubuntu2-cp314-cp314-manylinux_2_44_aarch64.whl", hash = "sha256:b9a30729a72750cd09e5005b266bd62f053d122869ae6cc59bc4c8d1a80c4ac5" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-3.1.0+ubuntu2-cp314-cp314-manylinux_2_44_armv7l.whl", hash = "sha256:b24bb00c763c400b29758e5b98d8aff737777d4bc434bb2a351350df9757a85b" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-3.1.0+ubuntu2-cp314-cp314-manylinux_2_44_ppc64le.whl", hash = "sha256:d8a53a1fc4f9685c3c7773b70926e115742fde70be114ce05e488dc1cdb6483e" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-3.1.0+ubuntu2-cp314-cp314-manylinux_2_44_riscv64.whl", hash = "sha256:effab1292f9d42d0afd3ea4cbe0a9cc2b77f50e6a558266d7bc63f9394fc7efe" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-3.1.0+ubuntu2-cp314-cp314-manylinux_2_44_s390x.whl", hash = "sha256:cd39544dcdbd730e45ae42763ffba033e3301f6925a6215ea8a29a3d7e12634c" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-3.1.0+ubuntu2-cp314-cp314-manylinux_2_44_x86_64.whl", hash = "sha256:a2240647d01935dcce794030d3a56b334c751263f2f09e51489b8f61b8160db2" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-3.1.0+ubuntu2-cp314-cp314t-manylinux_2_44_aarch64.whl", hash = "sha256:320d2ad1c27a7e7902723e677ac668ba2375dbdd4247fbc2c40ba59cbe129c95" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-3.1.0+ubuntu2-cp314-cp314t-manylinux_2_44_armv7l.whl", hash = "sha256:eca1796980c06b964c2ed48e1019976a9e15e4119c28bba06aa37bef03398643" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-3.1.0+ubuntu2-cp314-cp314t-manylinux_2_44_ppc64le.whl", hash = "sha256:95fb66a566617bc670d61239dfda7e99912a05889cc9e85ba1877c782ea7a343" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-3.1.0+ubuntu2-cp314-cp314t-manylinux_2_44_riscv64.whl", hash = "sha256:db8118b311d2e04f14718508fbc2c8bf65d8f373a03635e36a9ac3058a9c758a" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-3.1.0+ubuntu2-cp314-cp314t-manylinux_2_44_s390x.whl", hash = "sha256:50380c5a5b303666f3ee27b1ce7f273230f0a9fe0737f7c99bab157ddcbb9b59" },
+    { url = "https://github.com/lengau/python-apt-wheels/releases/download/2026-11-21-82/python_apt-3.1.0+ubuntu2-cp314-cp314t-manylinux_2_44_x86_64.whl", hash = "sha256:2c26c3aca00b03ab6fdd065b7b5fe886250a20662af9383524d09d83b8749176" },
 ]
 
 [[package]]
@@ -2498,7 +2494,6 @@ docs = [
     { name = "myst-parser" },
     { name = "packaging" },
     { name = "pydantic-kitbash" },
-    { name = "rst2html" },
     { name = "sphinx-autobuild" },
     { name = "sphinx-autodoc-typehints" },
     { name = "sphinx-copybutton" },
@@ -2522,7 +2517,6 @@ docs-sphinx-stack = [
     { name = "canonical-sphinx" },
     { name = "myst-parser" },
     { name = "packaging" },
-    { name = "rst2html" },
     { name = "sphinx-autobuild" },
     { name = "sphinx-design" },
     { name = "sphinx-llm" },
@@ -2560,7 +2554,7 @@ requires-dist = [
     { name = "craft-application", specifier = ">=7.5.0" },
     { name = "craft-archives", specifier = ">=2.2.2" },
     { name = "craft-cli", specifier = ">=3.4.1" },
-    { name = "craft-parts", specifier = ">=2.38.0" },
+    { name = "craft-parts", git = "https://github.com/canonical/craft-parts?rev=51af597e54c93f73dc0547c65620d55aeed2ceb1" },
     { name = "craft-platforms", specifier = ">=0.12.0" },
     { name = "craft-providers", specifier = ">=3.8.1" },
     { name = "craft-store", marker = "extra == 'store'" },
@@ -2597,7 +2591,6 @@ docs = [
     { name = "myst-parser", specifier = "~=4.0" },
     { name = "packaging", specifier = "~=26.1" },
     { name = "pydantic-kitbash", specifier = "~=1.0.1" },
-    { name = "rst2html", specifier = ">=2020.7.4" },
     { name = "sphinx-autobuild", specifier = ">=2024.10.3" },
     { name = "sphinx-autodoc-typehints" },
     { name = "sphinx-copybutton" },
@@ -2621,7 +2614,6 @@ docs-sphinx-stack = [
     { name = "canonical-sphinx", specifier = "~=0.6" },
     { name = "myst-parser", specifier = "~=4.0" },
     { name = "packaging", specifier = "~=26.1" },
-    { name = "rst2html", specifier = ">=2020.7.4" },
     { name = "sphinx-autobuild", specifier = ">=2024.10.3" },
     { name = "sphinx-design", specifier = "==0.6.1" },
     { name = "sphinx-llm", specifier = "~=0.4" },
@@ -2660,15 +2652,6 @@ sdist = { url = "https://files.pythonhosted.org/packages/9c/7c/3901b35ed856329bf
 wheels = [
     { url = "https://files.pythonhosted.org/packages/10/14/ea3cdd7276fcd731a9003fe4abeb6b395a38110ddff6a6a509f4ee00f741/roman-5.2-py3-none-any.whl", hash = "sha256:89d3b47400388806d06ff77ea77c79ab080bc127820dea6bf34e1f1c1b8e676e", size = 6041, upload-time = "2025-11-11T08:03:56.051Z" },
 ]
-
-[[package]]
-name = "rst2html"
-version = "2020.7.4"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "docutils" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/29/8e/050653d3f88c7c0ef3ba6df84421dc022d84f152e2c84fc23d49b2d60d1f/rst2html-2020.7.4.tar.gz", hash = "sha256:ea450c6f3dfc0d1cac2a2dc76067d1efc7bb98414487faf2f1abc468463bc6e4", size = 1517, upload-time = "2020-07-15T18:37:40.884Z" }
 
 [[package]]
 name = "ruamel-yaml"
