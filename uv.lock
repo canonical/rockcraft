@@ -617,8 +617,8 @@ wheels = [
 
 [[package]]
 name = "craft-parts"
-version = "2.38.0"
-source = { registry = "https://pypi.org/simple" }
+version = "2.38.0.post7+g6dfd0961"
+source = { git = "https://github.com/cmatsuoka/craft-parts?rev=feat%2Fpartitions-always-enabled#6dfd09610194ac769936d93c92ebb679219b5f5a" }
 dependencies = [
     { name = "lxml" },
     { name = "pydantic" },
@@ -2560,7 +2560,7 @@ requires-dist = [
     { name = "craft-application", specifier = ">=7.5.0" },
     { name = "craft-archives", specifier = ">=2.2.2" },
     { name = "craft-cli", specifier = ">=3.4.1" },
-    { name = "craft-parts", specifier = ">=2.38.0" },
+    { name = "craft-parts", git = "https://github.com/cmatsuoka/craft-parts?rev=feat%2Fpartitions-always-enabled" },
     { name = "craft-platforms", specifier = ">=0.12.0" },
     { name = "craft-providers", specifier = ">=3.8.1" },
     { name = "craft-store", marker = "extra == 'store'" },
