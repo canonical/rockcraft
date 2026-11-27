@@ -22,11 +22,12 @@ This module provides a function to create a /usr/bin/java symlink.
 def create_usr_bin_java() -> list[str]:
     """Get the bash commands to create /usr/bin/java symlink."""
     return [
-        '# Find the "java" executable and make a link to it in $CRAFT_PART_INSTALL/bin/java',
+        '# Find the "java" executable and make a link to it in $CRAFT_PART_INSTALL/usr/bin/java',
         "java_bin=$(find ${CRAFT_PART_INSTALL} -name java -type f -executable)",
         (
-            "test -d ${CRAFT_PART_INSTALL}/usr/bin && "
-            "(test -f ${CRAFT_PART_INSTALL}/usr/bin/java || "
-            "ln -s --relative $java_bin ${CRAFT_PART_INSTALL}/usr/bin/java)"
+            "if [ -d ${CRAFT_PART_INSTALL}/usr/bin ] && "
+            '[ -n "$java_bin" ] && '
+            "[ ! -f ${CRAFT_PART_INSTALL}/usr/bin/java ]; then "
+            "ln -sfn --relative $java_bin ${CRAFT_PART_INSTALL}/usr/bin/java; fi"
         ),
     ]
